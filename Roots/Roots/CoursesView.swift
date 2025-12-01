@@ -93,7 +93,7 @@ struct CoursesView: View {
 
                 // Main area
                 if visibleCourses.isEmpty {
-                    DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                    AppCard {
                         VStack(spacing: DesignSystem.Spacing.small) {
                             Image(systemName: "book.closed")
                                 .imageScale(.large)
@@ -106,9 +106,9 @@ struct CoursesView: View {
                     }
                     .frame(minHeight: DesignSystem.Cards.defaultHeight)
                 } else {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 300), spacing: DesignSystem.Spacing.medium)], spacing: DesignSystem.Spacing.medium) {
+                    CardGrid {
                         ForEach(visibleCourses, id: \.id) { course in
-                            DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                            AppCard {
                                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
                                     HStack {
                                         Circle()

@@ -17,7 +17,7 @@ struct GradesView: View {
                     // Overall Status
                     Section(header: Text("Overall Status").font(DesignSystem.Typography.body)) {
                         if gradesSummary.isEmpty {
-                            DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                            AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "chart.bar")
                                         .imageScale(.large)
@@ -37,7 +37,7 @@ struct GradesView: View {
                     // By Course
                     Section(header: Text("By Course").font(DesignSystem.Typography.body)) {
                         if courseGrades.isEmpty {
-                            DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                            AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "list.bullet")
                                         .imageScale(.large)
@@ -57,7 +57,7 @@ struct GradesView: View {
                     // Grade Components
                     Section(header: Text("Grade Components").font(DesignSystem.Typography.body)) {
                         if gradeComponents.isEmpty {
-                            DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                            AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "list.bullet.rectangle")
                                         .imageScale(.large)
@@ -77,7 +77,7 @@ struct GradesView: View {
                     // Trends & Analytics
                     Section(header: Text("Trends & Analytics").font(DesignSystem.Typography.body)) {
                         if analytics.isEmpty {
-                            DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                            AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "chart.line.uptrend.xyaxis")
                                         .imageScale(.large)

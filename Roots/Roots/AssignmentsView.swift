@@ -45,7 +45,7 @@ struct AssignmentsView: View {
                     Section(header: Text("Due Today").font(DesignSystem.Typography.body)) {
                         let tasks = assignmentsStore.tasks.filter { $0.due != nil && Calendar.current.isDateInToday($0.due!) }
                         if tasks.isEmpty {
-                            DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                            AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "doc.text")
                                         .imageScale(.large)
@@ -70,7 +70,7 @@ struct AssignmentsView: View {
                             return false
                         }
                         if tasks.isEmpty {
-                            DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                            AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "calendar")
                                         .imageScale(.large)
@@ -92,7 +92,7 @@ struct AssignmentsView: View {
                     Section(header: Text("Upcoming").font(DesignSystem.Typography.body)) {
                         let tasks = assignmentsStore.tasks.filter { $0.due == nil }
                         if tasks.isEmpty {
-                            DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                            AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "clock")
                                         .imageScale(.large)
@@ -117,7 +117,7 @@ struct AssignmentsView: View {
                             return false
                         }
                         if tasks.isEmpty {
-                            DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                            AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "clock.badge.exclamationmark")
                                         .imageScale(.large)

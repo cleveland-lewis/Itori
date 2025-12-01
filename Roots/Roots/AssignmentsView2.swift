@@ -18,7 +18,7 @@ struct AssignmentsView2: View {
                 LazyVStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
                     // Simple combined list for now
                     if assignmentsStore.tasks.isEmpty {
-                        DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                        AppCard {
                             VStack(spacing: DesignSystem.Spacing.small) {
                                 Image(systemName: "tray")
                                     .imageScale(.large)

@@ -6,7 +6,7 @@ struct DesignPage: View {
     var body: some View {
         NavigationView {
             VStack(spacing: DesignSystem.Spacing.large) {
-                DesignCard(imageName: "Tahoe", material: .constant(selectedMaterialToken.material)) {
+                AppCard {
                     Image(systemName: "cube.fill")
                         .imageScale(.large)
 

@@ -100,7 +100,7 @@ struct PlannerView: View {
                     Section(header: Text("Today's Plan").font(DesignSystem.Typography.body)) {
                         if todayTasks.isEmpty {
                             if permissions.remindersStatus == .denied || permissions.remindersStatus == .restricted {
-                                DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                                AppCard {
                                     VStack(spacing: DesignSystem.Spacing.small) {
                                         Image(systemName: "calendar.badge.exclamationmark")
                                             .imageScale(.large)
@@ -125,7 +125,7 @@ struct PlannerView: View {
                                 }
                                 .frame(minHeight: DesignSystem.Cards.defaultHeight)
                             } else {
-                                DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                                AppCard {
                                     VStack(spacing: DesignSystem.Spacing.small) {
                                         Image(systemName: "checklist")
                                             .imageScale(.large)
@@ -146,7 +146,7 @@ struct PlannerView: View {
                     // This Week
                     Section(header: Text("This Week").font(DesignSystem.Typography.body)) {
                         if weekTasks.isEmpty {
-                            DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                            AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "calendar.badge.clock")
                                         .imageScale(.large)
@@ -166,7 +166,7 @@ struct PlannerView: View {
                     // Unscheduled Tasks
                     Section(header: Text("Unscheduled Tasks").font(DesignSystem.Typography.body)) {
                         if unscheduledTasks.isEmpty {
-                            DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                            AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "tray")
                                         .imageScale(.large)
@@ -240,7 +240,7 @@ private struct ScheduleResultView: View {
 
             Text("Blocks: \(result.blocks.count)")
             if result.blocks.isEmpty {
-                DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                AppCard {
                     VStack(spacing: DesignSystem.Spacing.small) {
                         Image(systemName: "calendar.badge.exclamationmark")
                             .imageScale(.large)

@@ -43,7 +43,7 @@ struct RootDesignPreviewPage: View {
                     }
                     .pickerStyle(.segmented)
 
-                    DesignCard(imageName: "Tahoe", material: .constant(selectedMaterial.material)) {
+                    AppCard {
                         Image(systemName: "cube.fill")
                             .imageScale(.large)
                         Text("Material preview")

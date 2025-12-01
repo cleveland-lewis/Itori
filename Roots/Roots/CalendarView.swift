@@ -55,7 +55,7 @@ struct CalendarView: View {
                     // If there are no events for the selected mode, show empty state
                     if events.isEmpty {
                         if permissions.calendarStatus == .denied || permissions.calendarStatus == .restricted {
-                            DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                            AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "calendar.badge.exclamationmark")
                                         .imageScale(.large)
@@ -81,7 +81,7 @@ struct CalendarView: View {
                             }
                             .frame(minHeight: DesignSystem.Cards.defaultHeight)
                         } else {
-                            DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                            AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "calendar")
                                         .imageScale(.large)

@@ -29,7 +29,7 @@ struct DashboardView: View {
                     }
 
                     if calendarManager.calendars.isEmpty {
-                        DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                        AppCard {
                             VStack(spacing: DesignSystem.Spacing.small) {
                                 Image(systemName: "calendar")
                                     .imageScale(.large)
@@ -41,7 +41,7 @@ struct DashboardView: View {
                         }
                         .frame(minHeight: DesignSystem.Cards.defaultHeight)
                     } else {
-                        DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                        AppCard {
                             VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
                                 Image(systemName: "calendar")
                                     .imageScale(.large)
@@ -94,7 +94,7 @@ struct DashboardView: View {
             }
 
             if insightsVM.insights.isEmpty {
-                DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                AppCard {
                     VStack(spacing: DesignSystem.Spacing.small) {
                         Image(systemName: "lightbulb")
                             .imageScale(.large)
@@ -107,7 +107,7 @@ struct DashboardView: View {
                 .frame(minHeight: DesignSystem.Cards.defaultHeight)
             } else {
                 ForEach(insightsVM.insights) { insight in
-                    DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                    AppCard {
                         VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
                             HStack {
                                 Image(systemName: icon(for: insight))
@@ -149,7 +149,7 @@ private struct SectionView: View {
 
             if items.isEmpty {
                 // Single empty state card
-                DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                AppCard {
                     VStack(spacing: DesignSystem.Spacing.small) {
                         Image(systemName: "exclamationmark.circle")
                             .imageScale(.large)
@@ -162,9 +162,9 @@ private struct SectionView: View {
                 .frame(minHeight: DesignSystem.Cards.defaultHeight)
             } else {
                 // Render a card per item (structural only)
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 300), spacing: DesignSystem.Spacing.medium)]) {
+                CardGrid {
                     ForEach(Array(items.indices), id: \.self) { idx in
-                        DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                        AppCard {
                             VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
                                 Text(title)
                                     .font(DesignSystem.Typography.body)
