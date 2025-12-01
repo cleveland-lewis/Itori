@@ -68,10 +68,13 @@ struct ContentView: View {
         }
     }
 
+        @State private var showFilterControls: Bool = false
+    @State private var isShowingSettings: Bool = false
+
     // MARK: - Top toolbar
     private var topToolbar: some View {
-        HStack(spacing: 12) {
-            // Hamburger / three-bar menu
+        HStack {
+            // Left: circular glass hamburger
             Button {
                 withAnimation(.spring(response: 0.25, dampingFraction: 0.85)) {
                     isNavMenuVisible.toggle()
@@ -79,27 +82,44 @@ struct ContentView: View {
             } label: {
                 Image(systemName: "line.3.horizontal")
                     .font(.system(size: 14, weight: .medium))
-                    .padding(6)
-                    .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .frame(width: 28, height: 28)
+                    .background(
+                        Circle()
+                            .fill(.thinMaterial)
+                            .shadow(radius: 8, y: 4)
+                    )
             }
             .buttonStyle(.plain)
 
             Spacer()
 
-            // Settings and add button
+            // Right: single glass container for filter/settings/etc.
             HStack(spacing: 8) {
-                NavigationLink(destination: SettingsView()) {
-                    Image(systemName: "gearshape")
+                if showFilterControls {
+                    // Placeholder for filter controls; keep lightweight
+                    Text("All")
+                        .font(.caption)
                 }
 
-                Button(action: addItem) {
-                    Image(systemName: "plus")
+                Button {
+                    isShowingSettings = true
+                } label: {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 13, weight: .regular))
                 }
+                .buttonStyle(.plain)
             }
-            .buttonStyle(.plain)
-            .padding(6)
-            .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(
+                Capsule(style: .continuous)
+                    .fill(.thinMaterial)
+                    .shadow(radius: 8, y: 4)
+            )
+            .frame(minHeight: 32)
         }
+        .padding(.horizontal, 16)
+        .padding(.top, 10)
     }
 
     // MARK: - Dropdown nav menu
@@ -124,7 +144,7 @@ struct ContentView: View {
                     .padding(.vertical, 6)
                     .background(
                         RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .fill(selectedPage == page ? Color.accentColor.opacity(0.15) : Color.clear)
+                            .fill(selectedPage == page ? Color.accentColor.opacity(0.18) : Color.clear)
                     )
                 }
                 .bounceOnTap()
@@ -133,14 +153,13 @@ struct ContentView: View {
         }
         .padding(8)
         .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(.thinMaterial)
-                .shadow(radius: 12, y: 4)
+                .shadow(radius: 14, y: 6)
         )
         .fixedSize()
     }
-
-    private func addItem() {
+private func addItem() {
         withAnimation {
             let newItem = Item(timestamp: Date())
             modelContext.insert(newItem)
