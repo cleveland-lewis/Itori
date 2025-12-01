@@ -69,8 +69,8 @@ struct DashboardView: View {
                 // Energy & Focus
                 SectionView(title: "Energy & Focus", items: energyData, icon: Image(systemName: "bolt.heart"))
 
-                // Insights
-                SectionView(title: "Insights", items: insights, icon: Image(systemName: "chart.bar.doc.horizontal"))
+                // Insights (rule-based)
+                insightsSection
 
                 Spacer()
             }
@@ -79,8 +79,59 @@ struct DashboardView: View {
         .background(DesignSystem.background(for: .light))
         .task {
             calendarManager.requestAccess { _ in }
+            insightsVM.refresh()
         }
         .navigationTitle("Dashboard")
+    }
+
+    @StateObject private var insightsVM = InsightsViewModel()
+
+    private var insightsSection: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+            HStack(spacing: DesignSystem.Spacing.small) {
+                Image(systemName: "lightbulb")
+                Text("Insights").font(DesignSystem.Typography.body)
+            }
+
+            if insightsVM.insights.isEmpty {
+                DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                    VStack(spacing: DesignSystem.Spacing.small) {
+                        Image(systemName: "lightbulb")
+                            .imageScale(.large)
+                        Text("Insights")
+                            .font(DesignSystem.Typography.title)
+                        Text(DesignSystem.emptyStateMessage)
+                            .font(DesignSystem.Typography.body)
+                    }
+                }
+                .frame(height: DesignSystem.Cards.defaultHeight)
+            } else {
+                ForEach(insightsVM.insights) { insight in
+                    DesignCard(imageName: "Tahoe", material: .constant(DesignSystem.materials.first?.material ?? Material.regularMaterial)) {
+                        VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+                            HStack {
+                                Image(systemName: icon(for: insight))
+                                Text(insight.title).font(DesignSystem.Typography.body)
+                            }
+                            Text(insight.message)
+                                .font(DesignSystem.Typography.caption)
+                        }
+                    }
+                    .frame(height: DesignSystem.Cards.defaultHeight / 2)
+                }
+            }
+        }
+        .padding(.bottom, DesignSystem.Spacing.large)
+    }
+
+    private func icon(for insight: Insight) -> String {
+        switch insight.category {
+        case .timeOfDay:     return "clock"
+        case .loadBalance:   return "calendar.badge.exclamationmark"
+        case .estimation:    return "chart.bar.doc.horizontal"
+        case .taskType:      return "list.bullet.clipboard"
+        case .adherence:     return "checklist"
+        }
     }
 }
 
