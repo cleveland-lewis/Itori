@@ -12,25 +12,22 @@ struct DesignCard<Content: View>: View {
     }
 
     var body: some View {
-        ZStack {
-            Image(imageName)
-                .resizable()
-                .scaledToFill()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-            ZStack {
-                RoundedRectangle(cornerRadius: DesignSystem.Corners.medium, style: .continuous)
-                    .fill(material)
+        // Use the new AppCard for consistent visuals; keep image overlay for backwards compatibility
+        AppCard {
+            ZStack(alignment: .topLeading) {
+                Image(imageName)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .clipped()
 
                 VStack(spacing: DesignSystem.Spacing.medium) {
                     content()
                 }
                 .padding(DesignSystem.Spacing.medium)
             }
-            .padding(DesignSystem.Spacing.small)
         }
-        .frame(minHeight: DesignSystem.Cards.defaultHeight, maxHeight: .infinity)
-        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Corners.medium, style: .continuous))
+        .frame(minHeight: DesignSystem.Cards.defaultHeight)
     }
 }
 
