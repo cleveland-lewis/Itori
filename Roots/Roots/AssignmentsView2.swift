@@ -40,7 +40,7 @@ struct AssignmentsView2: View {
         }
         .background(DesignSystem.background(for: .light))
         .sheet(isPresented: $showingAddSheet) {
-            AddAssignmentView_new { task in
+            AddAssignmentView { task in
                 AssignmentsStore.shared.addTask(task)
             }
         }
