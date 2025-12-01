@@ -1,0 +1,1 @@
+add automated tests that inject fake NetworkStatusMonitor states and validate behavior as described in Ticket_064

@@ -1,0 +1,22 @@
+# `Changelog.md` Rules
+
+- The `changelog.md` records every meaningful change to the project in strict chronological order.
+- All entries are grouped under date headers written in ISO format (`YYYY-MM-DD`).
+- Entries for each date are organized into the following categories: Added, Changed, Fixed, Removed, and Security, in that order.
+- Each bullet point must reference a ticket number using the format `TICKET-###`.
+- All entries must be written in the third person with clear, technical, and concise language.
+- No vague or ambiguous entries are allowed; every bullet must describe a specific action or change.
+- Every functional code change must have a corresponding `changelog.md` entry before the ticket is marked completed.
+- Each `changelog.md` entry must correspond to updates documented in the associated ticket’s Markdown file.
+- All `changelog.md` entries must describe user-visible behavior changes when applicable.
+- The `changelog.md` file grows by adding new entries to the top, not the bottom.
+- No deletions or rewriting of `changelog.MD history is permitted; corrections are added as new `(Corrected)` lines.
+- Each date may include multiple category sections, but categories appear only if they contain at least one entry.
+- No ticket can be closed until the `changelog.md` entry is added and verified.
+- Any changes to Criticality-3 tickets must be explicitly reflected in the `changelog.md`.
+- If a change spans multiple days, each milestone is logged under its respective date.
+- All `changelog.md` entries must remain human-readable and formatted strictly in Markdown.
+- No bundling of unrelated changes into a single bullet is allowed.
+- Every change affecting security, privacy, or data handling must include a dedicated `Security` entry.
+- Renaming, restructuring, or refactoring that alters behavior must be documented under `Changed`.
+- Deprecated features or removed components must be documented under `Removed`.

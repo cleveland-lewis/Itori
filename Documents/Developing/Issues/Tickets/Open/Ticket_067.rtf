@@ -1,0 +1,108 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2867
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+{\info
+{\author Cleveland Lewis}}\margl1440\margr1440\vieww13080\viewh15600\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \
+\
+# Ticket 067 \'97 UI Smoothness Optimization  \
+**Date:** 2025-11-30  \
+**Status:** Open  \
+**Priority:** Medium  \
+**Area:** UI/Animation/Rendering  \
+**Path:** /Users/clevelandlewis/PyCharm/Roots/Documents/Developing/Issues/Tickets/Open/Ticket_067.md\
+\
+---\
+\
+## Objective  \
+Improve the visual and interaction smoothness of the dashboard and all subpages by refining animations, transitions, rendering strategies, and layout stability to achieve a calm, Apple-native UI feeling with zero jitter, snapping, or visual popping.\
+\
+---\
+\
+## Problem  \
+Current UI transitions and element behaviors show intermittent jitter, inconsistent card animations, and visible layout shifts. Some elements snap into place or resize abruptly, breaking the expected macOS fluidity. The dashboard must feel stable, consistent, and engineered with attention to micro-detail.\
+\
+---\
+\
+## Requirements  \
+\
+### 1. Layout Stability  \
+- Eliminate resizing jumps when navigating between screens.  \
+- Ensure all card grids adopt precomputed sizing before appearing.  \
+- Remove async view-loading stutters by preloading layout where possible.\
+\
+### 2. Animation Consistency  \
+- Standardize animation curves (Apple-native: `.easeInOut`, `.smooth`, `.interactiveSpring`).  \
+- Remove over-animated or inconsistent transitions.  \
+- Create a unified animation constants file.\
+\
+### 3. Rendering Pipeline Improvements  \
+- Ensure cards render before opacity or blur effects animate.  \
+- Fix any material flickering (common in blurred backgrounds).  \
+- Reduce SwiftUI diffing churn by stabilizing view identity.\
+\
+### 4. Navigation Smoothness  \
+- Prevent flashing of raw HTML or unrelated views when switching pages.  \
+- Implement a transition wrapper to keep background consistency static.  \
+- Ensure inter-page fade or slide matches Apple HIG expectations.\
+\
+### 5. Performance Profiling  \
+- Profile with Instruments for UI hitches.  \
+- Identify excessive recomposition triggers and eliminate unnecessary `@State` updates.  \
+- Optimize grid rendering for large content sets.\
+\
+### 6. Accessibility Consistency  \
+- Ensure animations reduce automatically under \'93Reduce Motion\'94.  \
+- Guarantee layout stability for keyboard navigation and focus changes.\
+\
+---\
+\
+## Implementation Tasks  \
+\
+### A. Create UIAnimationConstants.swift  \
+- Define shared `animationDuration`  \
+- Define shared curves  \
+- Define material fade timings  \
+- Standardize transitions across the entire app\
+\
+### B. Dashboard Rendering Rewrite  \
+- Stage card render before entry animation  \
+- Cache sizing values  \
+- Remove dynamic grid jitter through stable metrics\
+\
+### C. Navigation Transition Wrapper  \
+- Implement view wrapper controlling opacity/slide transitions  \
+- Ensure transition timing is equal across all pages  \
+- Remove initial-load flashes\
+\
+### D. Performance Scan  \
+- Use Instruments \uc0\u8594  Core Animation  \
+- Identify slow frames, diffing spikes, layout passes  \
+- Optimize or memoize expensive views\
+\
+### E. Developer QA Checklist  \
+- Smooth card loading?  \
+- No snapping during page transitions?  \
+- No flashing backgrounds?  \
+- Animation curve consistency confirmed?  \
+\
+---\
+\
+## Acceptance Criteria  \
+- Dashboard feels fully smooth with no visible jitter.  \
+- All transitions use unified animation constants.  \
+- No sudden resizing or layout pops.  \
+- Cards and materials load seamlessly without flashes.  \
+- Background transitions remain visually stable.  \
+- Verified through performance profiling (0 dropped frames during normal interactions).\
+\
+---\
+\
+## Linked Tickets  \
+- **066 \'97 Dashboard UI Rework**  \
+- **071 \'97 Settings Organization Overhaul**  \
+- **074 \'97 Course Material Attachments**  \
+- **075 \'97 Material Tagging for Study Types**  }

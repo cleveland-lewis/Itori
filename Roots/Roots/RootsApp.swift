@@ -26,6 +26,11 @@ struct RootsApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(AssignmentsStore.shared)
+                .task {
+                    // Run adaptation on launch
+                    SchedulerAdaptationManager.shared.runAdaptiveSchedulerUpdateIfNeeded()
+                }
         }
         .modelContainer(sharedModelContainer)
     }

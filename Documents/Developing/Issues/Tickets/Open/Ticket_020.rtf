@@ -1,0 +1,128 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2867
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+{\info
+{\author Cleveland Lewis}}\margl1440\margr1440\vieww13080\viewh15600\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 # Ticket 020 \'97 Course Performance Dashboard  \
+**Date:** 2025-11-30  \
+**Status:** Open  \
+**Priority:** Medium  \
+**Area:** Analytics / Student Dashboard  \
+**Path:** /Users/clevelandlewis/PyCharm/Roots/Documents/Developing/Issues/Tickets/Open/Ticket_020.md\
+\
+---\
+\
+## Objective  \
+Create a performance dashboard that gives students a clear, data-driven view of their academic status across all courses. The dashboard should integrate assignments, grades, weights, study progress, AI\uc0\u8209 generated risk signals, and upcoming deadlines into a single visual interface.\
+\
+---\
+\
+## Problem  \
+The current system provides assignments and grades in isolation, but lacks a comprehensive performance visualization. Students cannot easily see:\
+- Their grade trajectory  \
+- Weighted contributions  \
+- Risk areas  \
+- Upcoming workload distribution  \
+- AI\uc0\u8209 detected trouble spots  \
+- How their study habits align with performance  \
+\
+This prevents informed decision-making and reduces the usefulness of the study planner.\
+\
+---\
+\
+## Requirements  \
+\
+### 1. Grade Summary  \
+- Display weighted grade for each course  \
+- Show unweighted average  \
+- Include missing assignments flag  \
+- Show grade projection (curve-based + weighted)\
+\
+### 2. AI Risk Indicators  \
+- Identify patterns such as:  \
+  - Frequent late submissions  \
+  - Decreasing scores  \
+  - Upcoming high\uc0\u8209 weight assignments  \
+  - Lack of study sessions logged  \
+- Display risk level: low, medium, high  \
+- Provide actionable recommendations\
+\
+### 3. Visual Charts  \
+- Course grade trend line  \
+- Pie chart of grade components (tests, homework, labs, projects)  \
+- Study\uc0\u8209 time vs performance correlation chart  \
+- Distribution of upcoming workload (next 30 days)\
+\
+### 4. Integration with Assignments  \
+- Show next 5 upcoming assignments  \
+- Highlight ones with high weight  \
+- Provide \'93study plan impact\'94 (how schedule changes when completed)\
+\
+### 5. Weekly Overview  \
+- Tasks due this week  \
+- Expected study hours  \
+- Completion percentage for each task  \
+- Color\uc0\u8209 coded stress indicator\
+\
+### 6. Local\uc0\u8209 Only Data Handling  \
+- All dashboard computations must remain on\uc0\u8209 device  \
+- No external servers  \
+- Compliant with Tickets 072 & 073\
+\
+---\
+\
+## Implementation Tasks  \
+\
+### A. Dashboard View  \
+- Create `CoursePerformanceDashboardView.swift`  \
+- Layout: left summary pane + right analytics pane  \
+- Use Apple\uc0\u8209 native graph styles (Swift Charts)\
+\
+### B. Data Aggregation Layer  \
+- Build `PerformanceAnalyticsEngine`  \
+- Inputs: assignments, grades, weights, study logs  \
+- Outputs: grade projections, trends, risk scores\
+\
+### C. Risk Scoring Module  \
+- Algorithm for weighted risk assessment  \
+- Flags repeating patterns  \
+- Integrates with AIScheduler recommendations\
+\
+### D. Study Correlation Engine  \
+- Track study hours per course  \
+- Correlate with grade performance  \
+- Produce actionable insights\
+\
+### E. Visual Chart Components  \
+- Line chart (grades)  \
+- Pie chart (weights)  \
+- Bar chart (workload distribution)  \
+- Scatter/correlation chart\
+\
+### F. Testing  \
+- Validate risk score correctness  \
+- Validate weighting calculations  \
+- Verify charts display correct values\
+\
+---\
+\
+## Acceptance Criteria  \
+- Dashboard displays accurate grade summaries and trend lines  \
+- Risk indicators properly reflect academic status  \
+- Visuals render smoothly without layout shifts  \
+- All calculations performed locally  \
+- Dashboard dynamically updates as new assignments/grades are entered  \
+- Integrated with Tickets 047 and 076 for study planning impact\
+\
+---\
+\
+## Linked Tickets  \
+- **047 \'97 Task Breakdown / Tell Me What To Do**  \
+- **076 \'97 Material-Aware Study Plan Integration**  \
+- **036 \'97 Data & Privacy Settings**  \
+- **072 \'97 Local-Only Storage**  \
+- **073 \'97 No-Account Architecture**\
+}

@@ -1,0 +1,143 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2867
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+{\info
+{\author Cleveland Lewis}}\margl1440\margr1440\vieww12080\viewh14880\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 # Ticket 076 \'97 Material-Aware Study Plan Integration  \
+**Date:** 2025-11-30  \
+**Status:** Open  \
+**Priority:** Low  \
+**Area:** AI Study Planner / Course Intelligence  \
+**Path:** /Users/clevelandlewis/PyCharm/Roots/Documents/Developing/Issues/Tickets/Open/Ticket_076.md\
+\
+---\
+\
+## Objective  \
+Integrate attached course materials, tagged roles, syllabus content, and assignments into a unified engine that generates an accurate, adaptive, and dynamic study plan. This feature transforms course data into structured study tasks automatically.\
+\
+---\
+\
+## Problem  \
+Current study planning is based on either user input or parsed syllabus data alone. The app cannot yet leverage attached materials (slides, PDFs, exam packets, project briefs, homework sheets) to generate fine\uc0\u8209 grained tasks. This limits precision and prevents the AI from producing the kind of \'93tell me exactly what to do\'94 daily plan the user requires.\
+\
+---\
+\
+## Requirements  \
+\
+### 1. Unified Material Ingestion  \
+The engine must pull from:\
+- Course metadata  \
+- Attached materials (`CourseMaterial`)  \
+- Material roles (exam, homework, project, syllabus, reading, reference)  \
+- Parsed syllabus structure (topics, weekly flow, grading weights)  \
+- Assignment deadlines (exams, quizzes, projects, homework)  \
+- User difficulty settings and performance context (later integration)  \
+\
+### 2. Task Generation Architecture  \
+The system must convert materials into actionable tasks:\
+- Reading tasks  \
+- Slide review tasks  \
+- Problem sets  \
+- Exam prep sessions  \
+- Project planning sessions  \
+- Syllabus-driven topic segments  \
+\
+Each task must include:\
+- Source material reference  \
+- Estimated duration  \
+- Priority score  \
+- Suggested timing based on deadlines and pacing  \
+\
+### 3. AI-Aware Scheduling  \
+Integrate task output with AIScheduler:\
+- Each task must be schedulable  \
+- Tasks must contain metadata for urgency, difficulty, and role  \
+- The engine must merge scheduled tasks with existing calendar events  \
+\
+### 4. Priority Logic  \
+Tasks must be ranked using a combination of:\
+- Deadline proximity  \
+- Material role weighting  \
+- Weekly pacing from the syllabus  \
+- Course difficulty slider  \
+- User-selected focus modes (later integration)  \
+\
+### 5. Local-Only Privacy  \
+Planner must:\
+- Analyze all files on-device  \
+- Never upload content  \
+- Never use remote inference  \
+- Integrate into Tickets 072 and 073 compliance requirements  \
+\
+---\
+\
+## Implementation Tasks  \
+\
+### A. Build StudyPlanEngine  \
+Create a new module:  \
+`Sources/Roots/AI/StudyPlanEngine/StudyPlanEngine.swift`\
+\
+Subtasks:\
+1. Data fetch pipeline for materials, roles, syllabus, and assignments  \
+2. Topic extraction handling  \
+3. Task generation pipeline  \
+4. Priority scoring module  \
+5. Output model for `StudyTask`  \
+\
+### B. Define the StudyTask model  \
+Fields:\
+- `id`  \
+- `courseId`  \
+- `materialId` (optional)  \
+- `role` (exam/homework/project/etc.)  \
+- `taskType`  \
+- `durationEstimate`  \
+- `priorityScore`  \
+- `dueDate`  \
+- `contentPreview`  \
+\
+### C. Integrate with Syllabus Parser (Ticket 046)  \
+- Feed weekly topic flow into StudyPlanEngine  \
+- Allow syllabus objectives to influence task order  \
+\
+### D. Integrate with \'93Tell Me What To Do\'94 mode (Ticket 047)  \
+- Pull highest priority tasks  \
+- Surface clear, concrete instructions  \
+- Do not overwhelm user \'97 chunk tasks intelligently  \
+\
+### E. Integrate with AIScheduler  \
+- Map StudyTasks \uc0\u8594  schedulable tasks  \
+- Ensure conflict\uc0\u8209 free insertion  \
+- Log decisions  \
+\
+### F. Create developer test harness  \
+A standalone test suite to confirm:\
+- Proper extraction  \
+- Proper scoring  \
+- Correct ordering  \
+- Realistic workload distribution  \
+\
+---\
+\
+## Acceptance Criteria  \
+- Adding materials + tagging roles + syllabus parsing produces daily tasks.  \
+- User sees a precise, context-aware study plan without manually breaking down materials.  \
+- The engine produces a minimum of 10\'9620 tasks per syllabus + material set.  \
+- Tasks are correctly scheduled through AIScheduler.  \
+- Entire system remains fully local and privacy-compliant.  \
+\
+---\
+\
+## Linked Tickets  \
+- **074 \'96 Course Material Attachments**  \
+- **075 \'96 Material Tagging for Study Types**  \
+- **046 \'96 Syllabus Parser**  \
+- **047 \'96 Task Breakdown / Tell Me What To Do**  \
+- **060 \'96 Fullscreen Capability**  \
+- **072 \'96 Local-Only Data Storage**  \
+- **073 \'96 No-Account Architecture**  \
+\
+---}
