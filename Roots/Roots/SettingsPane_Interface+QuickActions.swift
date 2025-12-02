@@ -46,6 +46,9 @@ struct QuickActionsEditorView: View {
                 Button("Restore Defaults") {
                     settings.quickActions = [.add_assignment, .add_course, .quick_note]
                 }
+                Button("Add Custom Action") {
+                    // placeholder: custom quick action creation UI may be added
+                }
                 Spacer()
             }
         }
