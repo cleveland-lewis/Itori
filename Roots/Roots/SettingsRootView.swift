@@ -18,11 +18,24 @@ struct SettingsRootView: View {
                 .fill(.ultraThinMaterial)
                 .shadow(color: Color.primary.opacity(0.05), radius: 12, x: 0, y: 6)
 
-            ScrollView {
-                paneContent
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 26)
-                    .padding(.vertical, 20)
+            HStack(spacing: 0) {
+                // Left navigation stack
+                List(selection: $selectedPane) {
+                    ForEach(SettingsToolbarIdentifier.allCases) { id in
+                        Label(id.label, systemImage: id.systemImageName)
+                            .tag(id)
+                    }
+                }
+                .listStyle(.sidebar)
+                .frame(minWidth: 180, idealWidth: 220, maxWidth: 260)
+
+                // Right detail area
+                ScrollView {
+                    paneContent
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 26)
+                        .padding(.vertical, 20)
+                }
             }
         }
         .frame(minWidth: 540, minHeight: 420)
