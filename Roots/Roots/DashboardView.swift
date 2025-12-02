@@ -34,7 +34,7 @@ struct DashboardView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("No data available")
                             .foregroundColor(.secondary)
-                            .font(settings.font(for: .body))
+                            .font(settings.font(for: AppTypography.TextStyle.body))
                     }
                 }
                 .onTapGesture {

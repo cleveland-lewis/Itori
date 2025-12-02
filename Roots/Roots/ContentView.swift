@@ -71,7 +71,7 @@ struct ContentView: View {
                     }
                     if settings.iconLabelMode != .iconsOnly {
                         Text(page.title)
-                            .font(settings.font(for: .body))
+                            .font(settings.font(for: AppTypography.TextStyle.body))
                     }
                 }
                 .buttonStyle(.glassBlueProminent)
@@ -103,7 +103,7 @@ struct ContentView: View {
                                     Image(systemName: page.systemImage)
                                         .symbolEffect(.bounce)
                                     Text(page.title)
-                                        .font(settings.font(for: .body))
+                                        .font(settings.font(for: AppTypography.TextStyle.body))
                                 }
                             }
                             .buttonStyle(GlassButtonStyle())

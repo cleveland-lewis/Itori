@@ -23,13 +23,13 @@ struct AppCard<Content: View>: View {
                             .font(.title3)
                     }
                     Text(title)
-                        .font(settings.font(for: .title2))
+                        .font(settings.font(for: AppTypography.TextStyle.title2))
                         .fontWeight(.semibold)
                 }
                 Divider()
             }
             content
-                .font(settings.font(for: .body))
+                .font(settings.font(for: AppTypography.TextStyle.body))
         }
         .padding(20)
         .background(.ultraThinMaterial)
