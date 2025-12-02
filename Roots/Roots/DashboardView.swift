@@ -7,16 +7,9 @@ struct DashboardView: View {
     @State private var insightsBounce = false
     @State private var deadlinesBounce = false
 
-    private var showIcons: Bool { settings.iconLabelMode != .textOnly }
-    private var showText: Bool { settings.iconLabelMode != .iconsOnly }
-
-    private var labelModeBinding: Binding<IconLabelMode> {
-        Binding(get: { settings.iconLabelMode }, set: { newValue in
-            withAnimation(.easeInOut(duration: 0.25)) {
-                settings.iconLabelMode = newValue
-            }
-        })
-    }
+    // Icons and text are now fixed for the dashboard homepage
+    private var showIcons: Bool { true }
+    private var showText: Bool { true }
 
     var body: some View {
         ScrollView {
@@ -44,15 +37,6 @@ struct DashboardView: View {
                 .font(settings.font(for: .headline))
                 .foregroundStyle(.primary)
             Spacer()
-            Picker("", selection: labelModeBinding) {
-                ForEach(IconLabelMode.allCases, id: \.self) { mode in
-                    Text(mode.label).tag(mode)
-                }
-            }
-            .pickerStyle(.segmented)
-            .frame(width: 280)
-            .labelsHidden()
-            .help("Toggle how the cards present icons and text")
         }
     }
 
