@@ -33,15 +33,18 @@ struct ContentView: View {
 
     private var topBar: some View {
         HStack {
-            Button {
-                toggleMenu()
+            Menu {
+                ForEach(AppSettingsModel.shared.quickActions, id: \.self) { action in
+                    Button {
+                        performQuickAction(action)
+                    } label: {
+                        Label(action.title, systemImage: action.systemImage)
+                    }
+                }
             } label: {
-                Image(systemName: "line.3.horizontal")
+                Image(systemName: "plus")
                     .font(.title2.weight(.semibold))
                     .foregroundStyle(.primary)
-                    .rotationEffect(.degrees(isMenuOpen ? 6 : 0))
-                    .scaleEffect(isMenuOpen ? 1.08 : 1)
-                    .symbolEffect(.bounce, value: isMenuOpen)
             }
             .buttonStyle(.glassCircularProminent)
             .background(
@@ -150,6 +153,25 @@ struct ContentView: View {
         selectedTab = tab
         print("[NavMenu] navigate -> \(tab.title)")
         setMenu(open: false)
+    }
+
+    private func performQuickAction(_ action: QuickAction) {
+        switch action {
+        case .add_assignment:
+            // open add assignment flow
+            LOG_UI(.info, "QuickAction", "Add Assignment")
+            // placeholder: open AddAssignment sheet if implemented
+            break
+        case .add_course:
+            LOG_UI(.info, "QuickAction", "Add Course")
+            break
+        case .quick_note:
+            LOG_UI(.info, "QuickAction", "Quick Note")
+            break
+        case .open_new_note:
+            LOG_UI(.info, "QuickAction", "Open New Note")
+            break
+        }
     }
 
     private func menuCardXOffset(in proxy: GeometryProxy) -> CGFloat {

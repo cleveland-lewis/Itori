@@ -62,7 +62,12 @@ struct SettingsPane_Interface: View {
 
             Divider().padding(.vertical)
 
-            tabEditor
+            HStack(spacing: 20) {
+                tabEditor
+                Divider()
+                quickActionsEditor
+            }
+            .padding(.top)
         }
         .frame(maxWidth: 640)
     }

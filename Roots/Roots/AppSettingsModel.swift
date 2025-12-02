@@ -232,6 +232,7 @@ final class AppSettingsModel: ObservableObject {
         static let tabBarMode = "roots.settings.tabBarMode"
         static let visibleTabs = "roots.settings.visibleTabs"
         static let tabOrder = "roots.settings.tabOrder"
+        static let quickActions = "roots.settings.quickActions"
         static let enableGlassEffects = "roots.settings.enableGlassEffects"
         static let cardRadius = "roots.settings.cardRadius"
         static let animationSoftness = "roots.settings.animationSoftness"
@@ -257,6 +258,7 @@ final class AppSettingsModel: ObservableObject {
     @AppStorage(Keys.tabBarMode) private var tabBarModeRaw: String = TabBarMode.iconsAndText.rawValue
     @AppStorage(Keys.visibleTabs) private var visibleTabsRaw: String = "dashboard,calendar,planner,assignments,courses,grades"
     @AppStorage(Keys.tabOrder) private var tabOrderRaw: String = "dashboard,calendar,planner,assignments,courses,grades"
+    @AppStorage(Keys.quickActions) private var quickActionsRaw: String = "add_assignment,add_course,quick_note"
     @AppStorage(Keys.enableGlassEffects) private var enableGlassEffectsStorage: Bool = true
     @AppStorage(Keys.cardRadius) private var cardRadiusRaw: String = CardRadius.medium.rawValue
     @AppStorage(Keys.animationSoftness) private var animationSoftnessStorage: Double = 0.42
@@ -361,6 +363,12 @@ final class AppSettingsModel: ObservableObject {
     var iconLabelMode: TabBarMode {
         get { tabBarMode }
         set { tabBarMode = newValue }
+    }
+
+    // Quick Actions
+    var quickActions: [QuickAction] {
+        get { quickActionsRaw.split(separator: ",").compactMap { QuickAction(rawValue: String($0)) } }
+        set { quickActionsRaw = newValue.map { $0.rawValue }.joined(separator: ","); objectWillChange.send() }
     }
 
     var enableGlassEffects: Bool {
