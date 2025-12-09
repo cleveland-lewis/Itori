@@ -3,13 +3,46 @@ import SwiftUI
 enum RootsIconButtonRole { case primaryAccent, secondary, destructive }
 
 struct RootsIconButton: View {
-    var iconName: String
+    var systemName: String
     var role: RootsIconButtonRole = .primaryAccent
     var size: CGFloat = 44
+    var accessibilityLabel: String? = nil
     var action: () -> Void
 
-    @State private var hover = false
-    @State private var press = false
+    var body: some View {
+        RootsHeaderButton(icon: systemName, size: size) {
+            action()
+        }
+        .accessibilityLabel(accessibilityLabel ?? systemName)
+    }
+}
+
+struct RootsIconButtonLabel: View {
+    var role: RootsIconButtonRole = .primaryAccent
+    var systemName: String
+    var size: CGFloat = 44
+
+    var body: some View {
+        Image(systemName: systemName)
+            .font(DesignSystem.Typography.body)
+            .foregroundColor(role == .secondary ? .primary : .white)
+            .frame(width: size, height: size)
+            .background(
+                Circle()
+                    .fill((role == .secondary ? Color.primary.opacity(0.1) : RootsColor.accent.opacity(0.8)))
+                    .background(Circle().fill(DesignSystem.Materials.hud))
+            )
+            .overlay(
+                Circle().stroke(.white.opacity(0.12), lineWidth: 0.75)
+            )
+            .shadow(color: (role == .secondary ? Color.primary.opacity(0.1) : RootsColor.accent.opacity(0.25)), radius: 14, y: 8)
+    }
+}
+
+struct RootsIconButtonLabel: View {
+    var role: RootsIconButtonRole = .primaryAccent
+    var systemName: String
+    var size: CGFloat = 44
 
     private var background: Color {
         switch role {
@@ -20,30 +53,18 @@ struct RootsIconButton: View {
     }
 
     var body: some View {
-        Button(action: action) {
-            Image(systemName: iconName)
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(role == .secondary ? .primary : .white)
-                .frame(width: size, height: size)
-                .background(
-                    Circle()
-                        .fill(background.opacity(role == .secondary ? 0.1 : 0.8))
-                        .background(Circle().fill(.ultraThinMaterial))
-                )
-                .overlay(
-                    Circle().stroke(.white.opacity(0.12), lineWidth: 0.75)
-                )
-                .shadow(color: background.opacity(0.25), radius: 14, y: 8)
-                .scaleEffect(press ? 0.96 : (hover ? 1.03 : 1.0))
-        }
-        .buttonStyle(.plain)
-        .onHover { hover = $0 }
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { _ in press = true }
-                .onEnded { _ in press = false }
-        )
-        .contentShape(Circle())
+        Image(systemName: systemName)
+            .font(DesignSystem.Typography.body)
+            .foregroundColor(role == .secondary ? .primary : .white)
+            .frame(width: size, height: size)
+            .background(
+                Circle()
+                    .fill(background.opacity(role == .secondary ? 0.1 : 0.8))
+                    .background(Circle().fill(DesignSystem.Materials.hud))
+            )
+            .overlay(
+                Circle().stroke(.white.opacity(0.12), lineWidth: 0.75)
+            )
+            .shadow(color: background.opacity(0.25), radius: 14, y: 8)
     }
 }
-

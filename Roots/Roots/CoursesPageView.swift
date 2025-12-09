@@ -229,12 +229,12 @@ struct CoursesPageView: View {
     private var emptyDetailState: some View {
         VStack(spacing: 12) {
             Image(systemName: "books.vertical")
-                .font(.system(size: 36, weight: .semibold))
+                .font(DesignSystem.Typography.body)
                 .foregroundStyle(.secondary)
             Text("Select or create a course")
-                .font(.headline)
+                .font(DesignSystem.Typography.subHeader)
             Text("Your course overview will appear here.")
-                .font(.caption)
+                .font(DesignSystem.Typography.caption)
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -255,9 +255,9 @@ struct CoursesSidebarView: View {
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Courses")
-                    .font(.system(size: 22, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                 Text(currentTerm)
-                    .font(.caption)
+                    .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
             }
             .padding(.horizontal, 12)
@@ -268,7 +268,7 @@ struct CoursesSidebarView: View {
                 .padding(.horizontal, 12)
 
             ScrollView {
-                VStack(spacing: 10) {
+                VStack(spacing: DesignSystem.Layout.spacing.small) {
                     ForEach(courses) { course in
                         CourseSidebarRow(course: course, isSelected: course == selectedCourse) {
                             selectedCourse = course
@@ -284,15 +284,10 @@ struct CoursesSidebarView: View {
                     onNewCourse()
                 } label: {
                     Label("New Course", systemImage: "plus")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(DesignSystem.Typography.body)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .background(Color(nsColor: .controlBackgroundColor).opacity(0.06))
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
-                        )
+                        .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
                 }
                 .buttonStyle(.plain)
                 .frame(maxWidth: .infinity)
@@ -301,15 +296,10 @@ struct CoursesSidebarView: View {
                     settingsCoordinator.show(selecting: .courses)
                 } label: {
                     Label("Edit Courses", systemImage: "pencil")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(DesignSystem.Typography.body)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .background(Color(nsColor: .controlBackgroundColor).opacity(0.06))
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
-                        )
+                        .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
                 }
                 .buttonStyle(.plain)
                 .frame(maxWidth: .infinity)
@@ -319,14 +309,7 @@ struct CoursesSidebarView: View {
         }
         .padding(.vertical, 8)
         .frame(maxHeight: .infinity, alignment: .top)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(.thinMaterial)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
-        )
+        .glassCard(cornerRadius: 22)
     }
 
     private var currentTerm: String {
@@ -341,7 +324,7 @@ struct CourseSidebarRow: View {
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 10) {
+            HStack(spacing: DesignSystem.Layout.spacing.small) {
                 Circle()
                     .fill(course.colorTag.color.opacity(0.9))
                     .frame(width: 12, height: 12)
@@ -409,7 +392,7 @@ struct CoursesPageDetailView: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(course.code)
-                        .font(.headline)
+                        .font(DesignSystem.Typography.subHeader)
                         .foregroundStyle(.secondary)
                     Text(course.title)
                         .font(.title2.weight(.semibold))
@@ -425,7 +408,7 @@ struct CoursesPageDetailView: View {
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
                         .background(Color.white.opacity(0.06))
-                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
                         .buttonStyle(.plain)
                 }
             }
@@ -436,7 +419,7 @@ struct CoursesPageDetailView: View {
                 Label("\(course.credits) credits", systemImage: "number")
                 Label(course.semesterName, systemImage: "calendar")
             }
-            .font(.caption)
+            .font(DesignSystem.Typography.caption)
             .foregroundStyle(.secondary)
         }
         .padding(18)
@@ -469,7 +452,7 @@ struct CoursesPageDetailView: View {
                     ForEach(course.meetingTimes) { meeting in
                         VStack(alignment: .leading, spacing: 4) {
                             Text("\(weekdayName(meeting.weekday)) · \(timeRange(for: meeting))")
-                                .font(.system(size: 13.5, weight: .semibold))
+                                .font(DesignSystem.Typography.body)
                             Text(meeting.type)
                                 .rootsCaption()
                         }
@@ -501,12 +484,12 @@ struct CoursesPageDetailView: View {
         VStack(alignment: .leading, spacing: 12) {
             sectionHeader("Syllabus")
             if let syllabus = course.syllabus {
-                VStack(spacing: 10) {
+                VStack(spacing: DesignSystem.Layout.spacing.small) {
                     ForEach(syllabus.categories) { category in
                         VStack(alignment: .leading, spacing: 6) {
                             HStack {
                                 Text(category.name)
-                                    .font(.system(size: 13.5, weight: .semibold))
+                                    .font(DesignSystem.Typography.body)
                                 Spacer()
                                 Text("\(Int(category.weight))%")
                                     .font(.caption.weight(.semibold))
@@ -519,13 +502,13 @@ struct CoursesPageDetailView: View {
                 }
 
                 Text(syllabus.notes)
-                    .font(.caption)
+                    .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
                     .padding(.top, 6)
             } else {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("No syllabus added yet.")
-                        .font(.caption)
+                        .font(DesignSystem.Typography.caption)
                         .foregroundStyle(.secondary)
                     Text("You’ll eventually be able to import this from a syllabus parser.")
                         .font(.caption2)
@@ -533,7 +516,7 @@ struct CoursesPageDetailView: View {
                 }
             }
         }
-        .padding(16)
+        .padding(DesignSystem.Layout.padding.card)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: cardCorner, style: .continuous)
@@ -583,7 +566,7 @@ struct CoursesPageDetailView: View {
         } label: {
             VStack(alignment: .leading, spacing: RootsSpacing.m) {
                 Image(systemName: systemImage)
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                     .frame(width: 32, height: 32)
                     .foregroundStyle(.white)
                     .background(
@@ -606,7 +589,7 @@ struct CoursesPageDetailView: View {
             .rootsCardBackground(radius: 14)
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(RootsLiquidButtonStyle())
     }
 
     // MARK: - Quick action handlers
@@ -645,7 +628,7 @@ struct CoursesPageDetailView: View {
 
     private func sectionHeader(_ title: String) -> some View {
         Text(title)
-            .font(.system(size: 14, weight: .semibold))
+            .font(DesignSystem.Typography.body)
     }
 
     private var cardBackground: some ShapeStyle {
@@ -753,14 +736,14 @@ struct GradeChip: View {
                 }
             } else {
                 Text("No grade yet")
-                    .font(.caption)
+                    .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
             }
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
         .background(Color(nsColor: .controlBackgroundColor).opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
     }
 }
 
@@ -782,7 +765,7 @@ struct GradeRing: View {
 
                 VStack(spacing: 2) {
                     Text("\(Int(current))%")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(DesignSystem.Typography.body)
                     Text("Current")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
@@ -790,7 +773,7 @@ struct GradeRing: View {
             } else {
                 VStack(spacing: 2) {
                     Text("—")
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(DesignSystem.Typography.body)
                     Text("No grade")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
@@ -807,7 +790,7 @@ struct ColorTagPicker: View {
     @EnvironmentObject private var appSettings: AppSettingsModel
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: DesignSystem.Layout.spacing.small) {
             ForEach(ColorTag.allCases) { tag in
                 Button {
                     selected = tag

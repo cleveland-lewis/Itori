@@ -12,13 +12,18 @@ struct GlassButtonStyle: ButtonStyle {
 
         var body: some View {
             configuration.label
-                .padding()
+                .padding(DesignSystem.Layout.padding.card)
                 .frame(width: 48, height: 48)
-                .background(.ultraThinMaterial)
+                .background(DesignSystem.Materials.hud)
                 .opacity(configuration.isPressed ? 0.6 : settings.glassOpacity(for: colorScheme))
                 .clipShape(Circle())
                 .shadow(color: Color(nsColor: .separatorColor).opacity(0.08), radius: 16, x: 0, y: 8)
                 .symbolEffect(.bounce)
+                .onHover { hovering in
+                        #if canImport(AppKit)
+                        if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                        #endif
+                    }
         }
     }
 }

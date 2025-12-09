@@ -35,6 +35,22 @@ struct AppTask: Equatable {
     let importance: Double     // 0…1
     let type: TaskType
     let locked: Bool
+    let attachments: [Attachment]
+
+    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = []) {
+        self.id = id
+        self.title = title
+        self.courseId = courseId
+        self.due = due
+        self.estimatedMinutes = estimatedMinutes
+        self.minBlockMinutes = minBlockMinutes
+        self.maxBlockMinutes = maxBlockMinutes
+        self.difficulty = difficulty
+        self.importance = importance
+        self.type = type
+        self.locked = locked
+        self.attachments = attachments
+    }
 }
 
 struct Constraints {

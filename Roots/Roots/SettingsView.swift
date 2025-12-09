@@ -3,8 +3,12 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject var settings: AppSettingsModel
+    @EnvironmentObject var coursesStore: CoursesStore
+    @EnvironmentObject var assignmentsStore: AssignmentsStore
     // design tokens
     @State private var selectedMaterial: DesignMaterial = .regular
+    @State private var diagnosticReport: DiagnosticReport? = nil
+    @State private var showingHealthCheck = false
 
     var body: some View {
         NavigationView {
@@ -13,6 +17,13 @@ struct SettingsView: View {
                     Toggle("Use 24-hour time", isOn: $settings.use24HourTime)
                     Toggle("Show Energy Panel", isOn: $settings.showEnergyPanel)
                     Toggle("High Contrast Mode", isOn: $settings.highContrastMode)
+                }
+
+                Section(header: Text("Academic")) {
+                    // Note: Courses & Semesters management now handled via SettingsRootView
+                    // NavigationLink(destination: CoursesSettingsView().environmentObject(coursesStore)) {
+                    //     Label("Courses & Semesters", systemImage: "book.closed")
+                    // }
                 }
 
                 Section(header: Text("Workday")) {
@@ -40,6 +51,21 @@ struct SettingsView: View {
                     }
                     .pickerStyle(.segmented)
                 }
+
+                Section {
+                    Button {
+                        diagnosticReport = AppDebugger.shared.runFullDiagnostic(
+                            dataManager: coursesStore,
+                            calendarManager: CalendarManager.shared,
+                            assignmentsStore: assignmentsStore
+                        )
+                        showingHealthCheck = true
+                    } label: {
+                        Label("Run Health Check", systemImage: "stethoscope")
+                    }
+                } footer: {
+                    Text("Runs a quick self-diagnostic across data, permissions, and local files.")
+                }
             }
             #if os(iOS)
             #if os(iOS)
@@ -57,7 +83,16 @@ struct SettingsView: View {
             .onChange(of: settings.defaultWorkdayStart) { _ in settings.save() }
             .onChange(of: settings.defaultWorkdayEnd) { _ in settings.save() }
         }
-        .rootsSystemBackground()
+        .background(DesignSystem.Colors.appBackground)
+        .alert("Health Check", isPresented: $showingHealthCheck, presenting: diagnosticReport) { _ in
+            Button("OK", role: .cancel) { }
+        } message: { report in
+            if report.issues.isEmpty {
+                Text("All systems look healthy.")
+            } else {
+                Text(report.formattedSummary)
+            }
+        }
     }
 }
 

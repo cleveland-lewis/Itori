@@ -9,7 +9,7 @@ struct SettingsPane_Appearance: View {
                 VStack(alignment: .leading, spacing: 16) {
                     Picker("Accent color", selection: $settings.accentColorChoice) {
                         ForEach(AppAccentColor.allCases) { accent in
-                            HStack(spacing: 8) {
+                            HStack(spacing: DesignSystem.Layout.spacing.small) {
                                 Circle()
                                     .fill(accent.color)
                                     .frame(width: 14, height: 14)
@@ -19,14 +19,15 @@ struct SettingsPane_Appearance: View {
                         }
                     }
                     .pickerStyle(.menu)
-
+                    .onChange(of: settings.accentColorChoice) { _, _ in settings.save() }
                     Toggle("Enable custom accent color", isOn: $settings.isCustomAccentEnabled)
+                        .onChange(of: settings.isCustomAccentEnabled) { _, _ in settings.save() }
 
                     ColorPicker(
                         "Custom accent tint",
                         selection: Binding(
                             get: { settings.customAccentColor },
-                            set: { settings.customAccentColor = $0 }
+                            set: { settings.customAccentColor = $0; settings.save() }
                         )
                     )
                     .disabled(!settings.isCustomAccentEnabled)
@@ -48,6 +49,7 @@ struct SettingsPane_Appearance: View {
                         }
                     }
                     .pickerStyle(.segmented)
+                    .onChange(of: settings.interfaceStyle) { _, _ in settings.save() }
 
                     Text("Choose how Roots reacts to system appearance changes.")
                         .font(.footnote)

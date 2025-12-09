@@ -8,13 +8,13 @@ struct GlassAccentIconButton: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: systemName)
-                .font(.system(size: 16, weight: .semibold))
+                .font(DesignSystem.Typography.body)
                 .foregroundColor(.white)
                 .frame(width: 44, height: 44)
                 .background(
                     Circle()
                         .fill(Color.accentColor.opacity(0.8))
-                        .background(Circle().fill(.ultraThinMaterial))
+                        .background(Circle().fill(DesignSystem.Materials.hud))
                 )
                 .overlay(
                     Circle().stroke(.white.opacity(0.12), lineWidth: 0.75)
@@ -23,6 +23,11 @@ struct GlassAccentIconButton: View {
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
+        .onHover { hovering in
+            #if canImport(AppKit)
+            if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+            #endif
+        }
         .accessibilityLabel(Text(accessibilityLabel))
     }
 }
@@ -35,13 +40,13 @@ struct GlassSecondaryIconButton: View {
     var body: some View {
         Button(action: action) {
             Image(systemName: systemName)
-                .font(.system(size: 16, weight: .semibold))
+                .font(DesignSystem.Typography.body)
                 .foregroundColor(.primary)
                 .frame(width: 44, height: 44)
                 .background(
                     Circle()
                         .fill(Color.primary.opacity(0.06))
-                        .background(Circle().fill(.ultraThinMaterial))
+                        .background(Circle().fill(DesignSystem.Materials.hud))
                 )
                 .overlay(
                     Circle().stroke(.white.opacity(0.12), lineWidth: 0.75)
@@ -50,7 +55,11 @@ struct GlassSecondaryIconButton: View {
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
+        .onHover { hovering in
+            #if canImport(AppKit)
+            if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+            #endif
+        }
         .accessibilityLabel(Text(accessibilityLabel))
     }
 }
-

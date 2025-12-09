@@ -4,9 +4,9 @@ extension SettingsPane_Interface {
     var quickActionsEditor: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Quick Actions")
-                .font(.headline)
+                .font(DesignSystem.Typography.subHeader)
             Text("Configure the quick actions shown under the + button in the top-left of the app.")
-                .font(.caption)
+                .font(DesignSystem.Typography.caption)
                 .foregroundColor(.secondary)
 
             QuickActionsEditorView()
@@ -34,6 +34,7 @@ struct QuickActionsEditorView: View {
                                 cur.removeAll { $0 == action }
                             }
                             settings.quickActions = cur
+                            settings.save()
                         }))
                         .labelsHidden()
                     }
@@ -45,7 +46,9 @@ struct QuickActionsEditorView: View {
             HStack {
                 Button("Restore Defaults") {
                     settings.quickActions = [.add_assignment, .add_course, .quick_note]
+                    settings.save()
                 }
+                .onChange(of: settings.quickActions) { _, _ in settings.save() }
                 Button("Add Custom Action") {
                     // placeholder: custom quick action creation UI may be added
                 }
@@ -58,5 +61,6 @@ struct QuickActionsEditorView: View {
         var cur = settings.quickActions
         cur.move(fromOffsets: from, toOffset: to)
         settings.quickActions = cur
+        settings.save()
     }
 }

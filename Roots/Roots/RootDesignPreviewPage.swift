@@ -12,7 +12,7 @@ struct RootDesignPreviewPage: View {
 
                 // Colors
                 VStack(alignment: .leading) {
-                    Text("Colors").font(.headline)
+                    Text("Colors").font(DesignSystem.Typography.subHeader)
                     HStack {
                         ColorSwatch(name: "Primary", color: DesignSystem.Colors.primary)
                         ColorSwatch(name: "Secondary", color: DesignSystem.Colors.secondary)
@@ -24,7 +24,7 @@ struct RootDesignPreviewPage: View {
 
                 // Typography
                 VStack(alignment: .leading) {
-                    Text("Typography").font(.headline)
+                    Text("Typography").font(DesignSystem.Typography.subHeader)
                     Text("Title / body / caption")
                         .font(DesignSystem.Typography.title)
                     Text("Body example")
@@ -35,7 +35,7 @@ struct RootDesignPreviewPage: View {
 
                 // Materials
                 VStack(alignment: .leading) {
-                    Text("Materials").font(.headline)
+                    Text("Materials").font(DesignSystem.Typography.subHeader)
                     Picker("Material", selection: $selectedMaterial) {
                         ForEach(DesignSystem.materials, id: \.name) { token in
                             Text(token.name).tag(token)
@@ -53,7 +53,7 @@ struct RootDesignPreviewPage: View {
 
                 // Corners & spacing
                 VStack(alignment: .leading) {
-                    Text("Corners & Spacing").font(.headline)
+                    Text("Corners & Spacing").font(DesignSystem.Typography.subHeader)
                     HStack {
                         RoundedRectangle(cornerRadius: DesignSystem.Corners.small)
                             .fill(Color.secondary)
@@ -69,7 +69,7 @@ struct RootDesignPreviewPage: View {
 
                 Spacer()
             }
-            .padding()
+            .padding(DesignSystem.Layout.padding.card)
         }
         .navigationTitle("Design System Preview")
         .background(DesignSystem.background(for: colorScheme))
@@ -86,7 +86,7 @@ private struct ColorSwatch: View {
                 .fill(color)
                 .frame(width: 60, height: 60)
                 .cornerRadius(8)
-            Text(name).font(.caption)
+            Text(name).font(DesignSystem.Typography.caption)
         }
     }
 }

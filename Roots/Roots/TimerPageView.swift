@@ -116,6 +116,22 @@ struct TimerPageView: View {
 
     private var topBar: some View {
         HStack(alignment: .center, spacing: 16) {
+            currentActivityPill
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            Spacer()
+
+            VStack(spacing: 2) {
+                Text(clockString)
+                    .font(DesignSystem.Typography.body)
+                Text(dateString)
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+            }
+            .frame(maxWidth: .infinity)
+
+            Spacer()
+
             Picker("Mode", selection: $mode.animation(.spring(response: 0.3, dampingFraction: 0.85))) {
                 ForEach(LocalTimerMode.allCases) { m in
                     Text(m.label).tag(m)
@@ -123,40 +139,27 @@ struct TimerPageView: View {
             }
             .pickerStyle(.segmented)
             .frame(maxWidth: 320)
-
-            // Make clock occupy flexible center space so Current Activity stays right-aligned
-            VStack(spacing: 2) {
-                Text(clockString)
-                    .font(.system(size: 28, weight: .semibold, design: .rounded))
-                Text(dateString)
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
-            }
-            .frame(maxWidth: .infinity)
-
-            currentActivityPill
-                .frame(width: 320, alignment: .trailing)
         }
     }
 
     private var currentActivityPill: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: DesignSystem.Layout.spacing.small) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Current Activity")
                     .font(.footnote)
                     .foregroundColor(.secondary)
                 if let activity = currentActivity {
                     Text(activity.name)
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(DesignSystem.Typography.body)
                         .lineLimit(1)
                     if let code = activity.courseCode {
                         Text(code)
-                            .font(.caption)
+                            .font(DesignSystem.Typography.caption)
                             .foregroundColor(.secondary)
                     }
                 } else {
                     Text("No activity selected")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(DesignSystem.Typography.body)
                         .foregroundColor(.secondary)
                 }
             }
@@ -174,14 +177,7 @@ struct TimerPageView: View {
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
         .frame(maxWidth: 320)
-        .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(.thinMaterial)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
-                )
-        )
+        .glassChrome(cornerRadius: 14)
     }
 
     // MARK: Main Grid
@@ -217,7 +213,7 @@ struct TimerPageView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Activities")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                 Spacer()
             }
 
@@ -227,10 +223,10 @@ struct TimerPageView: View {
                 .textFieldStyle(.roundedBorder)
 
             ScrollView {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                     if !pinnedActivities.isEmpty {
                         Text("Pinned")
-                            .font(.caption)
+                            .font(DesignSystem.Typography.caption)
                             .foregroundColor(.secondary)
                         ForEach(pinnedActivities) { activity in
                             TimerActivityRow(
@@ -249,7 +245,7 @@ struct TimerPageView: View {
                     }
 
                     Text("All Activities")
-                        .font(.caption)
+                        .font(DesignSystem.Typography.caption)
                         .foregroundColor(.secondary)
                     ForEach(filteredActivities) { activity in
                         TimerActivityRow(
@@ -274,19 +270,18 @@ struct TimerPageView: View {
                 showActivityEditor = true
             } label: {
                 Label("New Activity", systemImage: "plus")
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.small)
         }
-        .padding(16)
-        .background(glassyCardBackground)
-        .overlay(glassyCardStroke)
+        .padding(DesignSystem.Layout.padding.card)
+        .glassCard(cornerRadius: 24)
     }
 
     private var collectionsRow: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
+            HStack(spacing: DesignSystem.Layout.spacing.small) {
                 ForEach(collections, id: \.self) { collection in
                     let isSelected = selectedCollection == collection
                     Button(action: { selectedCollection = collection }) {
@@ -328,20 +323,6 @@ struct TimerPageView: View {
         return Array(set).sorted()
     }
 
-    private var glassyCardBackground: some View {
-        RoundedRectangle(cornerRadius: 24, style: .continuous)
-            .fill(.thinMaterial)
-            .overlay(
-                RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .stroke(RootsColor.glassBorder, lineWidth: 1)
-            )
-    }
-
-    private var glassyCardStroke: some View {
-        RoundedRectangle(cornerRadius: 24, style: .continuous)
-            .stroke(RootsColor.glassBorder, lineWidth: 1)
-    }
-
     // MARK: Timer Core Card
 
     private var timerCoreCard: some View {
@@ -355,9 +336,8 @@ struct TimerPageView: View {
             onReset: resetTimer,
             onSkip: completeCurrentBlock
         )
-        .padding(16)
-        .background(glassyCardBackground)
-        .overlay(glassyCardStroke)
+        .padding(DesignSystem.Layout.padding.card)
+        .glassCard(cornerRadius: 24)
     }
 
     // MARK: Analytics Card
@@ -370,9 +350,8 @@ struct TimerPageView: View {
             activities: activities,
             sessions: sessions
         )
-        .padding(16)
-        .background(glassyCardBackground)
-        .overlay(glassyCardStroke)
+        .padding(DesignSystem.Layout.padding.card)
+        .glassCard(cornerRadius: 24)
     }
 
     // MARK: Bottom Summary
@@ -537,13 +516,13 @@ struct TimerActivityRow: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(activity.name)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                     .lineLimit(1)
                 HStack(spacing: 6) {
                     Text(activity.category)
                     if let code = activity.courseCode { Text("· \(code)") }
                 }
-                .font(.caption)
+                .font(DesignSystem.Typography.caption)
                 .foregroundColor(.secondary)
                 .lineLimit(1)
 
@@ -569,11 +548,11 @@ struct TimerActivityRow: View {
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
         .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
+            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                 .fill(isSelected ? Color(nsColor: .controlAccentColor).opacity(0.12) : Color(nsColor: .controlBackgroundColor))
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
+            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                 .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
         )
         .onTapGesture { onSelect() }
@@ -605,10 +584,10 @@ struct TimerCoreCard: View {
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             Text("\(mode.label)")
-                .font(.system(size: 14, weight: .semibold))
+                .font(DesignSystem.Typography.body)
 
             Text(timeDisplay)
-                .font(.system(size: 58, weight: .semibold, design: .rounded))
+                .font(DesignSystem.Typography.body)
                 .monospacedDigit()
 
             HStack(spacing: 12) {
@@ -696,7 +675,7 @@ struct StudyAnalyticsCard: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Today's Time Studying")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                 Spacer()
                 Picker("Mode", selection: $showHistory) {
                     Text("Live").tag(false)
@@ -720,7 +699,7 @@ struct StudyAnalyticsCard: View {
     }
 
     private var summaryView: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     let completed = Int(totalToday / 60)
@@ -744,7 +723,7 @@ struct StudyAnalyticsCard: View {
                 Spacer()
                 Button(action: { expandedSection = "summary" }) {
                     Image(systemName: "arrow.up.left.and.arrow.down.right")
-                        .padding(8)
+                        .padding(DesignSystem.Layout.spacing.small)
                         .background(RoundedRectangle(cornerRadius: 8).fill(Color(nsColor: .controlBackgroundColor)))
                 }
                 .buttonStyle(.plain)
@@ -753,14 +732,14 @@ struct StudyAnalyticsCard: View {
     }
 
     private var stackedTodayView: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             HStack {
                 Text("Today by Category")
                     .font(.subheadline.weight(.semibold))
                 Spacer()
                 Button(action: { expandedSection = "today" }) {
                     Image(systemName: "arrow.up.left.and.arrow.down.right")
-                        .padding(8)
+                        .padding(DesignSystem.Layout.spacing.small)
                         .background(RoundedRectangle(cornerRadius: 8).fill(Color(nsColor: .controlBackgroundColor)))
                 }
                 .buttonStyle(.plain)
@@ -792,14 +771,14 @@ struct StudyAnalyticsCard: View {
     }
 
     private var stackedWeekView: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             HStack {
                 Text("This Week by Category")
                     .font(.subheadline.weight(.semibold))
                 Spacer()
                 Button(action: { expandedSection = "week" }) {
                     Image(systemName: "arrow.up.left.and.arrow.down.right")
-                        .padding(8)
+                        .padding(DesignSystem.Layout.spacing.small)
                         .background(RoundedRectangle(cornerRadius: 8).fill(Color(nsColor: .controlBackgroundColor)))
                 }
                 .buttonStyle(.plain)

@@ -19,15 +19,15 @@ struct TimerHeaderView: View {
         VStack(spacing: 12) {
             VStack(spacing: 2) {
                 Text(settings.formattedTime(now))
-                    .font(.system(size: 34, weight: .bold, design: .rounded))
+                    .font(DesignSystem.Typography.body)
                     .monospacedDigit()
                 Text(dateFormatter.string(from: now))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
         }
-        .padding()
-        .background(.ultraThinMaterial)
+        .padding(DesignSystem.Layout.padding.card)
+        .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 }

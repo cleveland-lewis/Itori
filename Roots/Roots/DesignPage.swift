@@ -22,12 +22,12 @@ struct DesignPage: View {
                     }
                 }
                 .pickerStyle(.segmented)
-                .padding()
+                .padding(DesignSystem.Layout.padding.card)
 
                 Spacer()
             }
             .navigationTitle("Design")
-            .padding()
+            .padding(DesignSystem.Layout.padding.card)
             .background(DesignSystem.background(for: .light))
         }
     }

@@ -18,7 +18,7 @@ struct CoursesView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Text("Current semester")
-                                .font(.headline)
+                                .font(DesignSystem.Typography.subHeader)
 
                             Spacer()
 
@@ -60,7 +60,7 @@ struct CoursesView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Text("Courses in this semester")
-                                .font(.headline)
+                                .font(DesignSystem.Typography.subHeader)
 
                             Spacer()
 
@@ -110,11 +110,11 @@ struct CourseCard: View {
         NavigationLink(destination: CourseDetailView(course: course, semester: semester)) {
             VStack(alignment: .leading, spacing: 6) {
                 Text(course.code)
-                    .font(.caption)
+                    .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
 
                 Text(course.title)
-                    .font(.headline)
+                    .font(DesignSystem.Typography.subHeader)
 
                 Text(semester.name)
                     .font(.caption2)

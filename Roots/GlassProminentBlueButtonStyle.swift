@@ -34,7 +34,7 @@ public struct GlassProminentBlueButtonStyle: ButtonStyle {
             let yOffset: CGFloat = isPressed ? 2 : (hovering ? -3 : -0.5)
 
             configuration.label
-                .font(.headline) // Default typography (short labels look best)
+                .font(DesignSystem.Typography.subHeader) // Default typography (short labels look best)
                 .foregroundStyle(.primary)
                 .padding(.horizontal, 18)
                 .padding(.vertical, 10)
@@ -42,7 +42,7 @@ public struct GlassProminentBlueButtonStyle: ButtonStyle {
                     ZStack {
                         // Material glass layer
                         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                            .fill(.ultraThinMaterial)
+                            .fill(DesignSystem.Materials.card)
                             .opacity(glassOpacity)
 
                         // Blue tint overlay

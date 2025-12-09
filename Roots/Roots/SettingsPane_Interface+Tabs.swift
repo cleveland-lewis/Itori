@@ -5,9 +5,9 @@ extension SettingsPane_Interface {
     var tabEditor: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Tab Bar Pages")
-                .font(.headline)
+                .font(DesignSystem.Typography.subHeader)
             Text("Choose which pages appear in the floating tab bar and reorder them.")
-                .font(.caption)
+                .font(DesignSystem.Typography.caption)
                 .foregroundColor(.secondary)
 
             TabEditorView()
@@ -35,6 +35,7 @@ struct TabEditorView: View {
                                 current.removeAll { $0 == tab }
                             }
                             settings.visibleTabs = current
+                            settings.save()
                         }))
                         .labelsHidden()
                     }

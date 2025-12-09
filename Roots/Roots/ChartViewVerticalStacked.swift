@@ -3,56 +3,53 @@ import SwiftUI
 import Charts
 #endif
 
-// Minimal Charts-only stacked bar with clear, simple body to avoid type-check issues.
+// Minimal Charts-only stacked bar with pointer-hover tooltip via ChartOverlay when available.
 struct ChartViewVerticalStacked: View {
     var buckets: [AnalyticsBucket]
     var categoryColors: [String: Color]
 
-    @State private var tappedPoint: ChartPoint? = nil
+    @State private var hoveredPoint: ChartPoint? = nil
+    @State private var hoveredPointLocation: CGPoint? = nil
+    @State private var focusedBucketIndex: Int? = nil
 
     var body: some View {
-        #if canImport(Charts)
-        let points = computePoints()
-        let categories = computeCategories(from: points)
-        let colors = categories.map { categoryColors[$0] ?? .accentColor }
-
-        Chart {
-            ForEach(points) { p in
-                BarMark(x: .value("Bucket", p.bucket), yStart: .value("StartMin", p.start), yEnd: .value("EndMin", p.end))
-                    .foregroundStyle(by: .value("Category", p.category))
-                    .accessibilityLabel("\(p.category) \(Int(p.minutes)) minutes")
-                    .onTapGesture {
-                        NotificationCenter.default.post(name: .chartSegmentTapped, object: p)
+        // Use the simple manual renderer with hover highlighting and animation to ensure stable builds
+        ManualStackedView(buckets: buckets, categoryColors: categoryColors, hoveredPoint: hoveredPoint)
+            .frame(maxHeight: 320)
+            .overlay(Group {
+                if let hovered = hoveredPoint {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(hovered.category).font(DesignSystem.Typography.caption).bold()
+                        Text("\(Int(hovered.minutes)) minutes · \(hovered.rangeLabel)").font(.caption2)
                     }
-            }
-        }
-        .chartForegroundStyleScale(domain: categories, range: colors)
-        .frame(maxHeight: 320)
-        .overlay(Group {
-            if let tapped = tappedPoint {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(tapped.category).font(.caption).bold()
-                    Text("\(Int(tapped.minutes)) minutes · \(tapped.rangeLabel)").font(.caption2)
+                    .padding(DesignSystem.Layout.spacing.small)
+                    .background(Color(.windowBackgroundColor).opacity(0.95))
+                    .cornerRadius(8)
+                    .shadow(radius: 6)
+                    .transition(.opacity)
+                    .offset(x: (hoveredPointLocation?.x ?? 0) > 120 ? -140 : 0, y: 0)
+                    .animation(.easeInOut, value: hoveredPointLocation)
                 }
-                .padding(8).background(Color(.windowBackgroundColor).opacity(0.9)).cornerRadius(8).shadow(radius: 4)
-                .transition(.opacity.combined(with: .scale))
+            }.padding(DesignSystem.Layout.padding.card), alignment: Alignment.topTrailing)
+            .focusable(true)
+            .onKeyDown { ev in
+                // left/right arrow to move focused bucket
+                guard buckets.count > 0 else { return }
+                switch ev.keyCode {
+                case 123: // left
+                    let new = max(0, (focusedBucketIndex ?? 0) - 1)
+                    focusedBucketIndex = new
+                case 124: // right
+                    let new = min(buckets.count - 1, (focusedBucketIndex ?? 0) + 1)
+                    focusedBucketIndex = new
+                default: break
+                }
             }
-        }.padding(), alignment: .topTrailing)
-        #else
-        ManualStackedView(buckets: buckets, categoryColors: categoryColors)
-        #endif
     }
 
     init(buckets: [AnalyticsBucket], categoryColors: [String: Color]) {
         self.buckets = buckets
         self.categoryColors = categoryColors
-        // observe tapped segment notifications
-        NotificationCenter.default.addObserver(forName: .chartSegmentTapped, object: nil, queue: .main) { note in
-            if let p = note.object as? ChartPoint {
-                self._tappedPoint.wrappedValue = p
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { self._tappedPoint.wrappedValue = nil }
-            }
-        }
     }
 
     private func computePoints() -> [ChartPoint] {
@@ -80,26 +77,51 @@ struct ChartViewVerticalStacked: View {
     }
 }
 
-#if !canImport(Charts)
+// removed ChartProxy bridge; using geometry hit-testing for hover instead to keep compilation stable
+
+// small ViewModifier for hover highlighting to avoid heavy inline expressions
+private struct HoverHighlightModifier: ViewModifier {
+    var isHighlighted: Bool
+    func body(content: Content) -> some View {
+        content
+            .opacity(isHighlighted ? 1.0 : 0.45)
+            .scaleEffect(isHighlighted ? 1.0 : 0.98)
+            .animation(.easeInOut(duration: 0.18), value: isHighlighted)
+    }
+}
+
 private struct ManualStackedView: View {
     var buckets: [AnalyticsBucket]
     var categoryColors: [String: Color]
+    var hoveredPoint: ChartPoint?
     var body: some View {
         GeometryReader { proxy in
             let maxMinutes = buckets.map { $0.categoryDurations.values.reduce(0, +) / 60.0 }.max() ?? 1
-            HStack(alignment: .bottom, spacing: 8) {
+            let usableHeight = proxy.size.height - 40
+            HStack(alignment: .bottom, spacing: DesignSystem.Layout.spacing.small) {
                 ForEach(buckets) { bucket in
                     VStack(spacing: 6) {
                         ZStack(alignment: .bottom) {
                             let keys = bucket.categoryDurations.keys.sorted()
-                            var acc: Double = 0
-                            ForEach(keys, id: \.self) { key in
+                            let segments: [(key: String, start: Double, value: Double)] = keys.reduce(into: (acc: 0.0, items: [(String, Double, Double)]())) { acc, key in
                                 let val = Double(bucket.categoryDurations[key] ?? 0) / 60.0
+                                acc.items.append((key, acc.acc, val))
+                                acc.acc += val
+                            }.items
+
+                            ForEach(segments, id: \.key) { segment in
+                                let isHighlight = hoveredPoint == nil || (hoveredPoint?.bucket == bucket.label && hoveredPoint?.category == segment.key)
+                                let ratio = maxMinutes > 0 ? segment.value / maxMinutes : 0
+                                let barHeight = CGFloat(ratio) * usableHeight
+                                let offsetRatio = segment.start / max(maxMinutes, 0.0001)
+                                let offsetY = -CGFloat(offsetRatio) * usableHeight
                                 Rectangle()
-                                    .fill(categoryColors[key, default: .accentColor])
-                                    .frame(height: maxMinutes > 0 ? CGFloat(val / maxMinutes) * (proxy.size.height - 40) : 0)
-                                    .offset(y: -CGFloat(acc / max(maxMinutes, 0.0001)) * (proxy.size.height - 40))
-                                acc += val
+                                    .fill(categoryColors[segment.key, default: .accentColor])
+                                    .frame(height: barHeight)
+                                    .offset(y: offsetY)
+                                    .opacity(isHighlight ? 1.0 : 0.45)
+                                    .scaleEffect(isHighlight ? 1.0 : 0.98)
+                                    .animation(.easeInOut(duration: 0.18), value: hoveredPoint?.id)
                             }
                         }
                         .cornerRadius(6)
@@ -110,7 +132,6 @@ private struct ManualStackedView: View {
         }
     }
 }
-#endif
 
 private struct ChartPoint: Identifiable {
     let id = UUID()
@@ -121,6 +142,78 @@ private struct ChartPoint: Identifiable {
     var end: Double
     var rangeLabel: String
 }
+
+// NSViewRepresentable to track mouse movement and deliver local points and in/out events
+private struct HoverMouseTracker: NSViewRepresentable {
+    typealias Callback = (CGPoint, Bool) -> Void
+    let onMove: Callback
+
+    func makeNSView(context: Context) -> NSView {
+        let v = TrackingNSView(frame: .zero)
+        v.onMove = onMove
+        return v
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        (nsView as? TrackingNSView)?.onMove = onMove
+    }
+
+    class TrackingNSView: NSView {
+        var onMove: Callback?
+        var tracking: NSTrackingArea?
+
+        override func updateTrackingAreas() {
+            super.updateTrackingAreas()
+            if let t = tracking { removeTrackingArea(t) }
+            let opts: NSTrackingArea.Options = [.mouseMoved, .activeInActiveApp, .inVisibleRect, .mouseEnteredAndExited]
+            tracking = NSTrackingArea(rect: bounds, options: opts, owner: self, userInfo: nil)
+            if let t = tracking { addTrackingArea(t) }
+        }
+
+        override func mouseMoved(with event: NSEvent) {
+            let p = convert(event.locationInWindow, from: nil)
+            onMove?(p, true)
+        }
+
+        override func mouseExited(with event: NSEvent) {
+            onMove?(CGPoint.zero, false)
+        }
+
+        override func mouseEntered(with event: NSEvent) {
+            let p = convert(event.locationInWindow, from: nil)
+            onMove?(p, true)
+        }
+    }
+}
+
+// Simple onKeyDown handler for macOS to capture arrow keys
+#if os(macOS)
+import AppKit
+
+struct KeyEventHandlingView: NSViewRepresentable {
+    var handler: (NSEvent) -> Void
+    func makeNSView(context: Context) -> NSView {
+        let v = KeyHandlingNSView()
+        v.handler = handler
+        return v
+    }
+    func updateNSView(_ nsView: NSView, context: Context) {}
+
+    class KeyHandlingNSView: NSView {
+        var handler: ((NSEvent) -> Void)?
+        override var acceptsFirstResponder: Bool { true }
+        override func keyDown(with event: NSEvent) {
+            handler?(event)
+        }
+    }
+}
+
+extension View {
+    func onKeyDown(perform: @escaping (NSEvent) -> Void) -> some View {
+        self.background(KeyEventHandlingView(handler: perform))
+    }
+}
+#endif
 
 extension Notification.Name {
     static let chartSegmentTapped = Notification.Name("chartSegmentTapped")

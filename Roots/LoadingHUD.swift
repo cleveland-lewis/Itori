@@ -22,7 +22,7 @@ struct LoadingHUD: View {
                             .environmentObject(appSettings)
 
                         Text(title)
-                            .font(.headline)
+                            .font(DesignSystem.Typography.subHeader)
 
                         if let message = message {
                             Text(message)
@@ -32,7 +32,7 @@ struct LoadingHUD: View {
                                 .padding(.horizontal, 4)
                         }
                     }
-                    .padding(20)
+                    .padding(DesignSystem.Layout.padding.window)
                     .background(
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
                             .fill(.thinMaterial)

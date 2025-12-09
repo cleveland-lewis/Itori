@@ -1,0 +1,78 @@
+{
+  "buildCommand" : {
+    "command" : "build",
+    "skipDependencies" : false,
+    "style" : "buildAndRun"
+  },
+  "configuredTargets" : [
+    {
+      "guid" : "dbb88d1bbde1b270d3c6601e163097d9226c6846e01abd05fbcd71ccc740035e"
+    },
+    {
+      "guid" : "dbb88d1bbde1b270d3c6601e163097d9fa2df4d83f86f0ef9511702380929e73"
+    },
+    {
+      "guid" : "dbb88d1bbde1b270d3c6601e163097d959c736fb83205cb637d1816fc446b576"
+    }
+  ],
+  "containerPath" : "/Users/clevelandlewis/Desktop/Roots/Roots/Roots.xcodeproj",
+  "continueBuildingAfterErrors" : false,
+  "dependencyScope" : "workspace",
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "build",
+    "activeArchitecture" : "arm64",
+    "activeRunDestination" : {
+      "disableOnlyActiveArch" : false,
+      "platform" : "iphonesimulator",
+      "sdk" : "iphonesimulator26.1",
+      "sdkVariant" : "iphonesimulator",
+      "supportedArchitectures" : [
+        "arm64"
+      ],
+      "targetArchitecture" : "arm64"
+    },
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex",
+      "buildProductsPath" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Products",
+      "derivedDataPath" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived",
+      "indexDataStoreFolderPath" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Index.noindex/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Index.noindex/PrecompiledHeaders",
+      "pchPath" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/PrecompiledHeaders"
+    },
+    "configurationName" : "Debug",
+    "overrides" : {
+      "commandLine" : {
+        "table" : {
+
+        }
+      },
+      "synthesized" : {
+        "table" : {
+          "ASSETCATALOG_FILTER_FOR_DEVICE_MODEL" : "iPhone18,3",
+          "ASSETCATALOG_FILTER_FOR_DEVICE_OS_VERSION" : "26.1",
+          "ASSETCATALOG_FILTER_FOR_THINNING_DEVICE_CONFIGURATION" : "iPhone18,3",
+          "BUILD_ACTIVE_RESOURCES_ONLY" : "YES",
+          "CLANG_COVERAGE_MAPPING" : "YES",
+          "CLANG_PROFILE_DATA_DIRECTORY" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/ProfileData",
+          "ENABLE_PREVIEWS" : "NO",
+          "ENABLE_XOJIT_PREVIEWS" : "YES",
+          "ONLY_ACTIVE_ARCH" : "YES",
+          "TARGET_DEVICE_IDENTIFIER" : "E426DBD0-EA84-46CC-AE60-8B542360E584",
+          "TARGET_DEVICE_MODEL" : "iPhone18,3",
+          "TARGET_DEVICE_OS_VERSION" : "26.1",
+          "TARGET_DEVICE_PLATFORM_NAME" : "iphonesimulator",
+          "TOOLCHAINS" : "com.apple.dt.toolchain.Metal.32023 $(inherited)"
+        }
+      }
+    }
+  },
+  "schemeCommand" : "test",
+  "showNonLoggedProgress" : true,
+  "useDryRun" : false,
+  "useImplicitDependencies" : true,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : true
+}

@@ -22,7 +22,7 @@ struct FloatingTabBar: View {
         .padding(.vertical, 10)
         .background(
             Capsule()
-                .fill(.ultraThinMaterial)
+                .fill(DesignSystem.Materials.hud)
         )
         .overlay(
             Capsule()
@@ -50,13 +50,13 @@ struct FloatingTabBar: View {
         return HStack(spacing: 6) {
             if showIcons {
                 Image(systemName: tab.systemImage)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                     .symbolEffect(.bounce, value: bounceTab == tab)
             }
 
             if showText {
                 Text(tab.title)
-                    .font(.system(size: 15, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                     .lineLimit(1)
             }
         }
@@ -103,7 +103,7 @@ private struct FloatingTabButtonStyle: ButtonStyle {
             .padding(.horizontal, isSelected ? 12 : 8)
             .background(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(.ultraThinMaterial.opacity(isSelected ? 0.95 : (colorScheme == .dark ? 0.6 : 0.7)))
+                    .fill(DesignSystem.Materials.hud.opacity(isSelected ? 0.95 : (colorScheme == .dark ? 0.6 : 0.7)))
                     .background(
                         isSelected ?
                         RoundedRectangle(cornerRadius: 16, style: .continuous)

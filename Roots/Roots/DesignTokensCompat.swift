@@ -11,6 +11,7 @@ enum RootsSpacing {
     static let m: CGFloat = 12
     static let l: CGFloat = 16
     static let xl: CGFloat = 24
+    static let section: CGFloat = 40
 }
 
 // MARK: - Radius
@@ -25,9 +26,15 @@ enum RootsColor {
     static var glassBorder: Color { Color(nsColor: .separatorColor) }
     static var textPrimary: Color { .primary }
     static var textSecondary: Color { .secondary }
+    static var label: Color { .primary }
+    static var secondaryLabel: Color { .secondary }
     static var cardBackground: Color { Color(nsColor: .controlBackgroundColor) }
+    static var inputBackground: Color { Color(nsColor: .textBackgroundColor) }
     static var subtleFill: Color { Color(nsColor: .controlBackgroundColor).opacity(0.4) }
     static var accent: Color { .accentColor }
+    static var calendarDensityLow: Color { Color.green.opacity(0.8) }
+    static var calendarDensityMedium: Color { Color.yellow.opacity(0.85) }
+    static var calendarDensityHigh: Color { Color.red.opacity(0.88) }
 }
 
 // MARK: - Typography
@@ -57,18 +64,19 @@ extension View {
     func rootsCardBackground(radius: CGFloat = RootsRadius.card) -> some View {
         background(
             RoundedRectangle(cornerRadius: radius, style: .continuous)
-                .fill(.thinMaterial)
+                .fill(DesignSystem.Materials.card)
         )
+        .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: radius, style: .continuous)
-                .stroke(RootsColor.glassBorder, lineWidth: 1)
+                .stroke(Color.white.opacity(0.08), lineWidth: 1)
         )
     }
 
     func rootsGlassBackground(opacity: Double = 0.2, radius: CGFloat = RootsRadius.card) -> some View {
         background(
             RoundedRectangle(cornerRadius: radius, style: .continuous)
-                .fill(.ultraThinMaterial)
+                .fill(DesignSystem.Materials.card)
                 .opacity(opacity)
         )
         .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
@@ -79,7 +87,7 @@ extension View {
     }
 
     func rootsCardShadow() -> some View {
-        shadow(color: Color.primary.opacity(0.08), radius: 18, y: 8)
+        shadow(color: Color.black.opacity(0.15), radius: 10, y: 5)
     }
 }
 
@@ -105,7 +113,10 @@ struct RootsPopupContainer<Content: View, Footer: View>: View {
         .padding(.horizontal, RootsSpacing.xl)
         .padding(.vertical, RootsSpacing.l)
         .frame(maxWidth: 560)
-        .rootsGlassBackground(opacity: 0.20, radius: RootsRadius.popup)
+        .background(
+            DesignSystem.Materials.popup,
+            in: RoundedRectangle(cornerRadius: RootsRadius.popup, style: .continuous)
+        )
         .rootsFloatingShadow()
         .popupTextAlignedLeft()
     }
@@ -164,8 +175,16 @@ struct RootsCard<Content: View>: View {
             }
         }
         .padding(compact ? RootsSpacing.m : RootsSpacing.l)
-        .rootsCardBackground()
-        .rootsCardShadow()
+        .background(
+            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
+                .fill(DesignSystem.Materials.card)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
+                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+        )
+        .shadow(color: Color.black.opacity(0.12), radius: 10, y: 5)
     }
 }
 
@@ -183,7 +202,7 @@ struct RootsFloatingTabBar: View {
                 availableWidth: availableWidth,
                 tabCount: items.count
             )
-            HStack(spacing: 8) {
+            HStack(spacing: DesignSystem.Layout.spacing.small) {
                 ForEach(items) { tab in
                     let isSelected = tab == selected
                     RootTabBarItem(
@@ -203,7 +222,7 @@ struct RootsFloatingTabBar: View {
             .padding(10)
             .background(
                 RoundedRectangle(cornerRadius: 28, style: .continuous)
-                    .fill(.ultraThinMaterial)
+                    .fill(DesignSystem.Materials.hud)
                     .overlay(
                         RoundedRectangle(cornerRadius: 28, style: .continuous)
                             .stroke(RootsColor.glassBorder, lineWidth: 1)
@@ -248,11 +267,11 @@ struct RootTabBarItem: View {
         Button(action: action) {
             HStack(spacing: displayMode == .iconsOnly ? 0 : 6) {
                 Image(systemName: icon)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
 
                 if displayMode != .iconsOnly {
                     Text(title)
-                        .font(.system(size: 12, weight: .medium))
+                        .font(DesignSystem.Typography.body)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                 }
@@ -275,6 +294,11 @@ struct RootTabBarItem: View {
         .buttonStyle(.plain)
         .onHover { hovering in
             withAnimation(.easeOut(duration: 0.15)) { isHovering = hovering }
+        }
+        .onHover { hovering in
+            #if canImport(AppKit)
+            if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+            #endif
         }
         .accessibilityLabel(title)
     }

@@ -1,0 +1,16 @@
+# Build artifacts
+DerivedData/
+
+# Index stores
+DerivedData/Index.noindex/
+DerivedData/Build/
+
+# Xcode user data and logs
+*.xcuserstate
+xcuserdata/
+*.xcworkspace/xcuserdata/
+*.xcuserdatad
+
+# OS junk
+.DS_Store
+

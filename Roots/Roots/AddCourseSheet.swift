@@ -38,7 +38,7 @@ struct AddCourseSheet: View {
                     .font(.callout)
                 }
             }
-            .padding(20)
+            .padding(DesignSystem.Layout.padding.window)
         }
         .frame(width: 420)
     }

@@ -10,14 +10,10 @@ struct GlassLoadingCard: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(.thinMaterial)
-                .shadow(radius: 18, y: 8)
-
             VStack(spacing: 12) {
                 if !title.isEmpty {
                     Text(title)
-                        .font(.headline)
+                        .font(DesignSystem.Typography.subHeader)
                 }
 
                 if let message = message {
@@ -30,8 +26,9 @@ struct GlassLoadingCard: View {
                 LoadingIndicatorLinear(progress: $progress)
                     .padding(.top, 8)
             }
-            .padding(16)
+            .padding(DesignSystem.Layout.padding.card)
         }
+        .glassCard(cornerRadius: 18)
         .frame(minWidth: 260, maxWidth: 360, minHeight: 140)
         .onReceive(timer) { _ in
             if progress < 100 { progress += 1 } else { progress = 0 }

@@ -15,7 +15,7 @@ struct RootsFloatingTabBar: View {
                 availableWidth: availableWidth,
                 tabCount: items.count
             )
-            HStack(spacing: 8) {
+            HStack(spacing: DesignSystem.Layout.spacing.small) {
                 ForEach(items) { tab in
                     let isSelected = tab == selected
                     RootTabBarItem(
@@ -33,14 +33,7 @@ struct RootsFloatingTabBar: View {
                 }
             }
             .padding(10)
-            .background(
-                RoundedRectangle(cornerRadius: 28, style: .continuous)
-                    .fill(.ultraThinMaterial)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 28, style: .continuous)
-                            .stroke(RootsColor.glassBorder, lineWidth: 1)
-                    )
-            )
+            .glassChrome(cornerRadius: 28)
             .frame(maxWidth: min(availableWidth - 32, 640))
             .frame(maxWidth: .infinity)
         }
@@ -84,11 +77,11 @@ struct RootTabBarItem: View {
         Button(action: action) {
             HStack(spacing: displayMode == .iconsOnly ? 0 : 6) {
                 Image(systemName: icon)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
 
                 if displayMode != .iconsOnly {
                     Text(title)
-                        .font(.system(size: 12, weight: .medium))
+                        .font(DesignSystem.Typography.body)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                 }
@@ -98,11 +91,11 @@ struct RootTabBarItem: View {
             .frame(minWidth: 44, minHeight: 32)
             .background(
                 Capsule(style: .continuous)
-                    .fill(isSelected ? Color.accentColor : Color.primary.opacity(0.09))
+                    .fill(isSelected ? Color.accentColor.opacity(0.9) : Color.primary.opacity(0.08))
             )
             .overlay(
                 Capsule(style: .continuous)
-                    .stroke(Color.primary.opacity(isSelected ? 0 : 0.12), lineWidth: 0.5)
+                    .stroke(Color.primary.opacity(isSelected ? 0 : 0.14), lineWidth: 0.5)
             )
             .foregroundStyle(isSelected ? Color.white : Color.primary)
             .scaleEffect(isHovering ? 1.03 : 1.0)

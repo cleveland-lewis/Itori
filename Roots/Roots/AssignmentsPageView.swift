@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - Models
 
-enum AssignmentStatus: String, CaseIterable, Identifiable {
+enum AssignmentStatus: String, CaseIterable, Identifiable, Codable {
     case notStarted, inProgress, completed, archived
     var id: String { rawValue }
 
@@ -16,7 +16,7 @@ enum AssignmentStatus: String, CaseIterable, Identifiable {
     }
 }
 
-enum AssignmentUrgency: String, CaseIterable, Identifiable {
+enum AssignmentUrgency: String, CaseIterable, Identifiable, Codable {
     case low, medium, high, critical
     var id: String { rawValue }
 
@@ -30,13 +30,75 @@ enum AssignmentUrgency: String, CaseIterable, Identifiable {
     }
 }
 
-struct Assignment: Identifiable, Hashable {
+enum AssignmentCategory: String, CaseIterable, Codable, Identifiable {
+    case homework
+    case reading
+    case examTest
+    case quiz
+    case project
+    case review
+
+    var id: String { rawValue }
+
+    var displayName: String {
+        switch self {
+        case .homework: return "Homework"
+        case .reading:  return "Reading"
+        case .examTest: return "Exam/Test"
+        case .quiz:     return "Quiz"
+        case .project:  return "Project"
+        case .review:   return "Review"
+        }
+    }
+}
+
+enum EffortBias: String, Codable {
+    case shortBursts
+    case mediumBlocks
+    case longBlocks
+}
+
+struct CategoryEffortProfile: Codable, Equatable {
+    let baseMinutes: Int
+    let minSessions: Int
+    let spreadDaysBeforeDue: Int
+    let sessionBias: EffortBias
+}
+
+extension AssignmentCategory {
+    var effortProfile: CategoryEffortProfile {
+        switch self {
+        case .homework:
+            return .init(baseMinutes: 60, minSessions: 1, spreadDaysBeforeDue: 1, sessionBias: .mediumBlocks)
+        case .reading:
+            return .init(baseMinutes: 45, minSessions: 1, spreadDaysBeforeDue: 1, sessionBias: .shortBursts)
+        case .examTest:
+            return .init(baseMinutes: 180, minSessions: 3, spreadDaysBeforeDue: 5, sessionBias: .mediumBlocks)
+        case .quiz:
+            return .init(baseMinutes: 60, minSessions: 2, spreadDaysBeforeDue: 2, sessionBias: .shortBursts)
+        case .project:
+            return .init(baseMinutes: 240, minSessions: 4, spreadDaysBeforeDue: 7, sessionBias: .longBlocks)
+        case .review:
+            return .init(baseMinutes: 90, minSessions: 2, spreadDaysBeforeDue: 3, sessionBias: .shortBursts)
+        }
+    }
+}
+
+func suggestedSessionLength(_ bias: EffortBias) -> Int {
+    switch bias {
+    case .shortBursts:  return 30
+    case .mediumBlocks: return 60
+    case .longBlocks:   return 90
+    }
+}
+
+struct Assignment: Identifiable, Hashable, Codable {
     let id: UUID
     var courseId: UUID? = nil
     var title: String
     var courseCode: String
     var courseName: String
-    var category: String
+    var category: AssignmentCategory
     var dueDate: Date
     var estimatedMinutes: Int
     var status: AssignmentStatus
@@ -44,6 +106,23 @@ struct Assignment: Identifiable, Hashable {
     var weightPercent: Double?
     var isLockedToDueDate: Bool
     var notes: String
+
+    // backward-compat convenience init for older data
+    init(id: UUID = UUID(), courseId: UUID? = nil, title: String = "", courseCode: String = "", courseName: String = "", category: AssignmentCategory = .homework, dueDate: Date = Date(), estimatedMinutes: Int = 60, status: AssignmentStatus = .notStarted, urgency: AssignmentUrgency = .medium, weightPercent: Double? = nil, isLockedToDueDate: Bool = false, notes: String = "") {
+        self.id = id
+        self.courseId = courseId
+        self.title = title
+        self.courseCode = courseCode
+        self.courseName = courseName
+        self.category = category
+        self.dueDate = dueDate
+        self.estimatedMinutes = estimatedMinutes
+        self.status = status
+        self.urgency = urgency
+        self.weightPercent = weightPercent
+        self.isLockedToDueDate = isLockedToDueDate
+        self.notes = notes
+    }
 }
 
 enum AssignmentSegment: String, CaseIterable, Identifiable {
@@ -154,7 +233,7 @@ struct AssignmentsPageView: View {
             .buttonStyle(.plain)
             .popover(isPresented: $showFilterPopover, arrowEdge: .top) {
                 filterPopover
-                    .padding()
+                    .padding(DesignSystem.Layout.padding.card)
                     .frame(width: 260)
             }
 
@@ -163,11 +242,11 @@ struct AssignmentsPageView: View {
                 showNewAssignmentSheet = true
             } label: {
                 Label("New", systemImage: "plus")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .background(Color(nsColor: NSColor.alternatingContentBackgroundColors[0]).opacity(0.18))
-                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
             }
             .buttonStyle(.plain)
 
@@ -175,11 +254,11 @@ struct AssignmentsPageView: View {
                 autoPlanSelectedAssignments()
             } label: {
                 Label("Auto-Plan", systemImage: "wand.and.stars")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .background(RootsColor.cardBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
             }
             .buttonStyle(.plain)
         }
@@ -188,7 +267,7 @@ struct AssignmentsPageView: View {
     private var filterPopover: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Filters")
-                .font(.headline)
+                .font(DesignSystem.Typography.subHeader)
             Divider()
             Picker("Status", selection: Binding(
                 get: { filterStatus },
@@ -241,7 +320,7 @@ struct AssignmentsPageView: View {
             }
 
             ScrollView {
-                VStack(spacing: 10) {
+                VStack(spacing: DesignSystem.Layout.spacing.small) {
                     ForEach(filteredAndSortedAssignments) { assignment in
                         AssignmentsPageRow(
                             assignment: assignment,
@@ -255,7 +334,7 @@ struct AssignmentsPageView: View {
                 .padding(.vertical, 4)
             }
         }
-        .padding(16)
+        .padding(DesignSystem.Layout.padding.card)
         .rootsCardBackground(radius: cardCorner)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
@@ -306,7 +385,7 @@ struct AssignmentsPageView: View {
                 $0.title.lowercased().contains(q) ||
                 $0.courseCode.lowercased().contains(q) ||
                 $0.courseName.lowercased().contains(q) ||
-                $0.category.lowercased().contains(q)
+                $0.category.displayName.lowercased().contains(q)
             }
         }
 
@@ -369,9 +448,29 @@ struct AssignmentsPageView: View {
         } else {
             targetAssignments = filteredAndSortedAssignments
         }
-        // Placeholder: replace with AIScheduler integration
-        let titles = targetAssignments.map { $0.title }.joined(separator: ", ")
-        print("Auto-plan requested for: \(titles)")
+
+        for assignment in targetAssignments {
+            // Use category profile to compute suggested sessions
+            let defaultProfile = assignment.category.effortProfile
+            var profile = defaultProfile
+            // Allow settings override if present
+            if let stored = AppSettingsModel.shared.categoryEffortProfilesStorage[assignment.category.rawValue] {
+                profile = CategoryEffortProfile(baseMinutes: stored.baseMinutes, minSessions: stored.minSessions, spreadDaysBeforeDue: stored.spreadDaysBeforeDue, sessionBias: EffortBias(rawValue: stored.sessionBiasRaw) ?? defaultProfile.sessionBias)
+            }
+
+            var totalMinutes = assignment.estimatedMinutes
+            // If estimated is the generic 60 (or zero), override with profile base
+            if totalMinutes == 0 || totalMinutes == 60 {
+                totalMinutes = profile.baseMinutes
+            }
+            let suggestedLen = suggestedSessionLength(profile.sessionBias)
+            let computedSessions = max(profile.minSessions, Int(round(Double(totalMinutes) / Double(suggestedLen))))
+            // Spread sessions across days before due date
+            let days = max(1, profile.spreadDaysBeforeDue)
+            print("Auto-plan for '\(assignment.title)': Typical: \(computedSessions) × \(suggestedLen) min across \(days) days (category: \(assignment.category.displayName))")
+
+            // TODO: integrate with Planner engine to actually schedule SuggestedBlocks
+        }
     }
 }
 
@@ -431,7 +530,7 @@ struct ByCourseSummaryCard: View {
         let grouped = Dictionary(grouping: assignments.filter { $0.status != .archived }) { $0.courseCode }
             .map { CourseLoad(course: $0.key, count: $0.value.count) }
             .sorted { $0.count > $1.count }
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             Text("By Course").rootsSectionHeader()
 
             ForEach(grouped.prefix(4)) { item in
@@ -444,11 +543,11 @@ struct ByCourseSummaryCard: View {
                 .padding(.vertical, 6)
                 .padding(.horizontal, 10)
                 .background(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                         .fill(RootsColor.cardBackground)
                 )
                 .overlay(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                         .stroke(RootsColor.glassBorder, lineWidth: 1)
                 )
                 .onTapGesture {
@@ -469,7 +568,7 @@ struct LoadTimelineCard: View {
         let today = calendar.startOfDay(for: Date())
         let next7 = (0..<7).map { calendar.date(byAdding: .day, value: $0, to: today) ?? today }
 
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             Text("Upcoming Load").rootsSectionHeader()
 
             HStack(alignment: .bottom, spacing: 6) {
@@ -532,7 +631,7 @@ struct AssignmentsPageRow: View {
 
     var body: some View {
         Button(action: onSelect) {
-            HStack(spacing: 10) {
+            HStack(spacing: DesignSystem.Layout.spacing.small) {
                 Rectangle()
                     .fill(urgencyColor)
                     .frame(width: 4)
@@ -546,19 +645,19 @@ struct AssignmentsPageRow: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(assignment.title)
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(DesignSystem.Typography.body)
                         .foregroundColor(.primary)
                         .lineLimit(1)
                     HStack(spacing: 6) {
                         Text(assignment.courseCode)
-                        Text("· \(assignment.category)")
+                        Text("· \(assignment.category.displayName)")
                         Text("· ~\(assignment.estimatedMinutes) min")
                         Text("· Due \(dueFormatter.string(from: assignment.dueDate))")
                         if let weight = assignment.weightPercent {
                             Text("· \(Int(weight))%")
                         }
                     }
-                    .font(.caption)
+                    .font(DesignSystem.Typography.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(1)
                 }
@@ -623,14 +722,14 @@ struct AssignmentDetailPanel: View {
                 Divider()
                 dueSection(for: assignment)
                 gradeImpact(for: assignment)
-                plannerSection(for: assignment)
+                actionsSection(for: assignment)
                 notesSection(for: assignment)
                 footerActions(for: assignment)
             } else {
                 placeholder
             }
         }
-        .padding(16)
+        .padding(DesignSystem.Layout.padding.card)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .rootsCardBackground(radius: cardCorner)
     }
@@ -641,7 +740,7 @@ struct AssignmentDetailPanel: View {
                 Text(assignment.title)
                     .font(.title3.weight(.semibold))
                 Text("\(assignment.courseCode) · \(assignment.courseName)")
-                    .font(.caption)
+                    .font(DesignSystem.Typography.caption)
                     .foregroundColor(.secondary)
             }
             Spacer()
@@ -656,17 +755,17 @@ struct AssignmentDetailPanel: View {
     }
 
     private func dueSection(for assignment: Assignment) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             Text("Due \(fullDateFormatter.string(from: assignment.dueDate))")
-                .font(.headline)
+                .font(DesignSystem.Typography.subHeader)
             Text(countdownText(for: assignment.dueDate))
                 .font(.footnote)
                 .foregroundColor(.secondary)
 
-            HStack(spacing: 8) {
+            HStack(spacing: DesignSystem.Layout.spacing.small) {
                 Label("~\(assignment.estimatedMinutes) min focus block", systemImage: "timer")
-                    .font(.caption)
-                    .padding(8)
+                    .font(DesignSystem.Typography.caption)
+                    .padding(DesignSystem.Layout.spacing.small)
                     .background(Capsule().fill(Color(nsColor: NSColor.alternatingContentBackgroundColors[0])))
                 Toggle("Lock work to due date", isOn: Binding(
                     get: { assignment.isLockedToDueDate },
@@ -685,10 +784,10 @@ struct AssignmentDetailPanel: View {
     private func gradeImpact(for assignment: Assignment) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Grade Impact")
-                .font(.headline)
+                .font(DesignSystem.Typography.subHeader)
             if let weight = assignment.weightPercent {
-                Text("Worth \(Int(weight))% of final grade in \(assignment.category)")
-                    .font(.caption)
+                Text("Worth \(Int(weight))% of final grade in \(assignment.category.displayName)")
+                    .font(DesignSystem.Typography.caption)
                     .foregroundColor(.secondary)
                 ProgressView(value: min(max(weight / 100, 0), 1))
                     .progressViewStyle(.linear)
@@ -701,27 +800,35 @@ struct AssignmentDetailPanel: View {
         .padding(.vertical, 4)
     }
 
-    private func plannerSection(for assignment: Assignment) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Planner & Omodoro")
-                .font(.headline)
-            HStack {
-                Button("Plan a focus block") {
-                    // stub planner hook
+    private func actionsSection(for assignment: Assignment) -> some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+            Text("Actions").rootsSectionHeader()
+            HStack(spacing: RootsSpacing.m) {
+                Button {
+                    // TODO: navigate to Planner with this assignment
+                } label: {
+                    Text("Planner")
+                        .frame(maxWidth: .infinity)
                 }
-                Button("Add to Omodoro queue") {
-                    // stub timer hook
+                .buttonStyle(.borderedProminent)
+                .accessibilityLabel("Open Planner for this assignment")
+
+                Button {
+                    // TODO: open Timer with this assignment
+                } label: {
+                    Text("Timer")
+                        .frame(maxWidth: .infinity)
                 }
+                .buttonStyle(.borderedProminent)
+                .accessibilityLabel("Open Timer for this assignment")
             }
-            .buttonStyle(.bordered)
-            .controlSize(.small)
         }
     }
 
     private func notesSection(for assignment: Assignment) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Notes")
-                .font(.headline)
+                .font(DesignSystem.Typography.subHeader)
             TextEditor(text: Binding(
                 get: { assignment.notes },
                 set: { newValue in
@@ -733,11 +840,11 @@ struct AssignmentDetailPanel: View {
             ))
             .frame(minHeight: 140)
             .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                     .fill(Color(nsColor: .controlBackgroundColor))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                     .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
             )
         }
@@ -766,7 +873,7 @@ struct AssignmentDetailPanel: View {
     private var placeholder: some View {
         VStack(spacing: 12) {
             Image(systemName: "tray.full")
-                .font(.largeTitle)
+                .font(DesignSystem.Typography.display)
                 .foregroundColor(.secondary)
             Text("Select an assignment to see details.")
                 .font(.footnote)
@@ -798,14 +905,14 @@ struct AssignmentDetailPanel: View {
 
 struct AssignmentEditorSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var coursesStore: CoursesStore
 
     var assignment: Assignment?
     var onSave: (Assignment) -> Void
 
     @State private var title: String = ""
-    @State private var courseCode: String = ""
-    @State private var courseName: String = ""
-    @State private var category: String = "Homework"
+    @State private var selectedCourseId: UUID? = nil
+    @State private var category: AssignmentCategory = .homework
     @State private var dueDate: Date = Date()
     @State private var estimatedMinutes: Int = 60
     @State private var urgency: AssignmentUrgency = .medium
@@ -821,25 +928,22 @@ struct AssignmentEditorSheet: View {
         ) {
             ScrollView {
                 VStack(alignment: .leading, spacing: RootsSpacing.l) {
-                    VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                        Text("Task").rootsSectionHeader()
-                        RootsFormRow(label: "Title") {
-                            TextField("Title", text: $title)
-                                .textFieldStyle(.roundedBorder)
-                        }
-                        RootsFormRow(label: "Course code") {
-                            TextField("Course code", text: $courseCode)
-                                .textFieldStyle(.roundedBorder)
-                        }
-                        RootsFormRow(label: "Course name") {
-                            TextField("Course name", text: $courseName)
-                                .textFieldStyle(.roundedBorder)
-                        }
-                        RootsFormRow(label: "Category") {
-                            TextField("Category", text: $category)
-                                .textFieldStyle(.roundedBorder)
-                        }
+                VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                    Text("Task").rootsSectionHeader()
+                    RootsFormRow(label: "Title") {
+                        TextField("Title", text: $title)
+                            .textFieldStyle(.roundedBorder)
                     }
+                    coursePickerRow
+                    RootsFormRow(label: "Category") {
+                        Picker("Category", selection: $category) {
+                            ForEach(AssignmentCategory.allCases) { cat in
+                                Text(cat.displayName).tag(cat)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                    }
+                }
 
                     VStack(alignment: .leading, spacing: RootsSpacing.m) {
                         Text("Timing").rootsSectionHeader()
@@ -848,7 +952,18 @@ struct AssignmentEditorSheet: View {
                                 .labelsHidden()
                         }
                         RootsFormRow(label: "Estimated") {
-                            Stepper("Estimated time: \(estimatedMinutes) min", value: $estimatedMinutes, in: 15...240, step: 15)
+                            Stepper(value: $estimatedMinutes, in: 15...240, step: 15) {
+                                Text("\(estimatedMinutes) min")
+                                    .rootsBody()
+                            }
+                        } helper: {
+                            // Show category-driven suggestion
+                            let profile = category.effortProfile
+                            let sessionLen = suggestedSessionLength(profile.sessionBias)
+                            let sessions = max(profile.minSessions, Int(round(Double(profile.baseMinutes) / Double(sessionLen))))
+                            Text("Typical: \(sessions) × \(sessionLen) min over \(profile.spreadDaysBeforeDue) days for \(category.displayName)")
+                                .rootsCaption()
+                                .foregroundColor(.secondary)
                         }
                         RootsFormRow(label: "Urgency") {
                             Picker("", selection: $urgency) {
@@ -883,8 +998,15 @@ struct AssignmentEditorSheet: View {
                     VStack(alignment: .leading, spacing: RootsSpacing.m) {
                         Text("Notes").rootsSectionHeader()
                         TextEditor(text: $notes)
+                            .textEditorStyle(.plain)
+                            .scrollContentBackground(.hidden)
+                            .padding(DesignSystem.Layout.spacing.small)
                             .frame(minHeight: 120)
-                            .rootsCardBackground(radius: 12)
+                            .background(
+                                RoundedRectangle(cornerRadius: DesignSystem.Cards.cardCornerRadius, style: .continuous)
+                                    .fill(RootsColor.inputBackground)
+                            )
+                            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Cards.cardCornerRadius, style: .continuous))
                     }
                 }
             }
@@ -894,12 +1016,13 @@ struct AssignmentEditorSheet: View {
                 Button("Cancel") { dismiss() }
                 Button("Save") {
                     let weight = Double(weightText)
+                    let course = coursesStore.courses.first(where: { $0.id == selectedCourseId })
                     let newAssignment = Assignment(
                         id: assignment?.id ?? UUID(),
-                        courseId: assignment?.courseId,
+                        courseId: course?.id,
                         title: title,
-                        courseCode: courseCode,
-                        courseName: courseName.isEmpty ? courseCode : courseName,
+                        courseCode: course?.code ?? "",
+                        courseName: course?.title ?? "",
                         category: category,
                         dueDate: dueDate,
                         estimatedMinutes: estimatedMinutes,
@@ -913,14 +1036,14 @@ struct AssignmentEditorSheet: View {
                     dismiss()
                 }
                 .keyboardShortcut(.defaultAction)
-                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedCourseId == nil)
             }
         }
         .onAppear {
+            prefillCourse()
             if let assignment {
                 title = assignment.title
-                courseCode = assignment.courseCode
-                courseName = assignment.courseName
+                selectedCourseId = assignment.courseId
                 category = assignment.category
                 dueDate = assignment.dueDate
                 estimatedMinutes = assignment.estimatedMinutes
@@ -935,6 +1058,57 @@ struct AssignmentEditorSheet: View {
         }
         .frame(minWidth: RootsWindowSizing.minPopupWidth, minHeight: RootsWindowSizing.minPopupHeight)
     }
+
+    private var coursePickerRow: some View {
+        let activeCourses = currentSemesterCourses
+        return RootsFormRow(label: "Course") {
+            if activeCourses.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("No courses in this semester")
+                        .foregroundStyle(.secondary)
+                    Button("Add Course…") {
+                        // TODO: open Settings → Courses
+                    }
+                    .buttonStyle(.link)
+                }
+            } else {
+                Picker("Course", selection: $selectedCourseId) {
+                    ForEach(activeCourses) { course in
+                        Text("\(course.code) · \(course.title)")
+                            .tag(Optional(course.id))
+                    }
+                }
+                .pickerStyle(.menu)
+            }
+        } helper: {
+            if selectedCourseId == nil {
+                Text("Select a course from the active semester to save.")
+                    .rootsCaption()
+                    .foregroundStyle(.red)
+            }
+        }
+    }
+
+    private var currentSemesterCourses: [Course] {
+        if let current = coursesStore.currentSemesterId {
+            return coursesStore.courses.filter { $0.semesterId == current }
+        }
+        // Fallback to most recent semester by start date
+        if let recent = coursesStore.semesters.sorted(by: { $0.startDate > $1.startDate }).first {
+            return coursesStore.courses.filter { $0.semesterId == recent.id }
+        }
+        return []
+    }
+
+    private func prefillCourse() {
+        if let assignment, let existingId = assignment.courseId {
+            selectedCourseId = existingId
+            return
+        }
+        if selectedCourseId == nil {
+            selectedCourseId = currentSemesterCourses.first?.id
+        }
+    }
 }
 
 // MARK: - Samples
@@ -948,11 +1122,11 @@ private extension AssignmentsPageView {
         let day3 = calendar.date(byAdding: .day, value: 5, to: now) ?? now
 
         return [
-            Assignment(id: UUID(), courseId: UUID(), title: "Problem Set 5", courseCode: "MA 231", courseName: "Calculus II", category: "Homework", dueDate: day1, estimatedMinutes: 90, status: .inProgress, urgency: .high, weightPercent: 8, isLockedToDueDate: false, notes: "Focus on integrals."),
-            Assignment(id: UUID(), courseId: UUID(), title: "Quiz 3 Review", courseCode: "CS 240", courseName: "Data Structures", category: "Quiz", dueDate: day2, estimatedMinutes: 45, status: .notStarted, urgency: .medium, weightPercent: 5, isLockedToDueDate: false, notes: "Queue to planner."),
-            Assignment(id: UUID(), courseId: UUID(), title: "Lab Report", courseCode: "BIO 101", courseName: "Biology", category: "Lab", dueDate: day3, estimatedMinutes: 120, status: .notStarted, urgency: .critical, weightPercent: 10, isLockedToDueDate: true, notes: "Need data from partner."),
-            Assignment(id: UUID(), courseId: UUID(), title: "Essay Outline", courseCode: "ENG 210", courseName: "Literature", category: "Essay", dueDate: day1, estimatedMinutes: 60, status: .completed, urgency: .low, weightPercent: nil, isLockedToDueDate: false, notes: ""),
-            Assignment(id: UUID(), courseId: UUID(), title: "Exam Prep", courseCode: "MA 231", courseName: "Calculus II", category: "Exam", dueDate: day2, estimatedMinutes: 180, status: .notStarted, urgency: .critical, weightPercent: 20, isLockedToDueDate: true, notes: "Create flashcards.")
+            Assignment(id: UUID(), courseId: UUID(), title: "Problem Set 5", courseCode: "MA 231", courseName: "Calculus II", category: .homework, dueDate: day1, estimatedMinutes: 90, status: .inProgress, urgency: .high, weightPercent: 8, isLockedToDueDate: false, notes: "Focus on integrals."),
+            Assignment(id: UUID(), courseId: UUID(), title: "Quiz 3 Review", courseCode: "CS 240", courseName: "Data Structures", category: .quiz, dueDate: day2, estimatedMinutes: 45, status: .notStarted, urgency: .medium, weightPercent: 5, isLockedToDueDate: false, notes: "Queue to planner."),
+            Assignment(id: UUID(), courseId: UUID(), title: "Lab Report", courseCode: "BIO 101", courseName: "Biology", category: .project, dueDate: day3, estimatedMinutes: 120, status: .notStarted, urgency: .critical, weightPercent: 10, isLockedToDueDate: true, notes: "Need data from partner."),
+            Assignment(id: UUID(), courseId: UUID(), title: "Essay Outline", courseCode: "ENG 210", courseName: "Literature", category: .project, dueDate: day1, estimatedMinutes: 60, status: .completed, urgency: .low, weightPercent: nil, isLockedToDueDate: false, notes: ""),
+            Assignment(id: UUID(), courseId: UUID(), title: "Exam Prep", courseCode: "MA 231", courseName: "Calculus II", category: .examTest, dueDate: day2, estimatedMinutes: 180, status: .notStarted, urgency: .critical, weightPercent: 20, isLockedToDueDate: true, notes: "Create flashcards.")
         ]
     }
 }

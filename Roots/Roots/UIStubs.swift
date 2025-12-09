@@ -7,9 +7,9 @@ import SwiftUI
 struct EmptyStateView: View {
     let icon: String
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: DesignSystem.Layout.spacing.small) {
             Image(systemName: icon)
-                .font(.largeTitle)
+                .font(DesignSystem.Typography.display)
             Text(DesignSystem.emptyStateMessage)
                 .foregroundStyle(.secondary)
         }
@@ -26,10 +26,10 @@ struct GlassLoadingCard: View {
             RoundedRectangle(cornerRadius: DesignSystem.Cards.cardCornerRadius, style: .continuous)
                 .fill(.thinMaterial)
             VStack(alignment: .leading) {
-                Text(title).font(.headline)
-                if let m = message { Text(m).font(.caption).foregroundStyle(.secondary) }
+                Text(title).font(DesignSystem.Typography.subHeader)
+                if let m = message { Text(m).font(DesignSystem.Typography.caption).foregroundStyle(.secondary) }
             }
-            .padding()
+            .padding(DesignSystem.Layout.padding.card)
         }
         .frame(minHeight: DesignSystem.Cards.cardMinHeight)
     }

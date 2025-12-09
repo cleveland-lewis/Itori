@@ -6,9 +6,9 @@ struct TimerControlsView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            VStack(spacing: 8) {
+            VStack(spacing: DesignSystem.Layout.spacing.small) {
                 Text(timeDisplay)
-                    .font(.system(size: 64, weight: .heavy, design: .rounded))
+                    .font(DesignSystem.Typography.body)
                     .monospacedDigit()
                     .foregroundColor(.primary)
                     .shadow(color: Color(nsColor: .separatorColor).opacity(0.08), radius: 10, x: 0, y: 10)
@@ -46,14 +46,14 @@ struct TimerControlsView: View {
                         .font(.subheadline.weight(.semibold))
                         .padding(10)
                         .background(.thinMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
                 }
             } else if currentMode == .timer {
                 durationControl(title: "Duration", duration: $viewModel.timerDuration, symbol: "clock")
             }
         }
-        .padding()
-        .background(.ultraThinMaterial)
+        .padding(DesignSystem.Layout.padding.card)
+        .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 
@@ -81,7 +81,7 @@ struct TimerControlsView: View {
         }
         .padding(10)
         .background(.thinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
     }
 
     private var timeDisplay: String {

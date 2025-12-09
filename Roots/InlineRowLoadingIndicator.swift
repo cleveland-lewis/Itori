@@ -13,7 +13,7 @@ struct InlineRowLoadingIndicator: View {
                 .tint(appSettings.accentColor)
 
             Text("Loading…")
-                .font(.caption)
+                .font(DesignSystem.Typography.caption)
                 .foregroundStyle(.secondary)
         }
         .onReceive(timer) { _ in

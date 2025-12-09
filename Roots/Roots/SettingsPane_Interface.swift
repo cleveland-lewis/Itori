@@ -7,7 +7,7 @@ struct SettingsPane_Interface: View {
         VStack(alignment: .leading, spacing: 28) {
             GroupBox {
                 VStack(alignment: .leading, spacing: 18) {
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                         HStack {
                             Text("Light glass strength")
                             Spacer()
@@ -16,11 +16,11 @@ struct SettingsPane_Interface: View {
                         }
                         Slider(value: Binding(
                             get: { settings.glassStrength.light },
-                            set: { settings.glassStrength = GlassStrength(light: $0, dark: settings.glassStrength.dark) }
+                            set: { newVal in settings.glassStrength = GlassStrength(light: newVal, dark: settings.glassStrength.dark); settings.save() }
                         ), in: 0.05...0.5)
                     }
 
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                         HStack {
                             Text("Dark glass strength")
                             Spacer()
@@ -29,7 +29,7 @@ struct SettingsPane_Interface: View {
                         }
                         Slider(value: Binding(
                             get: { settings.glassStrength.dark },
-                            set: { settings.glassStrength = GlassStrength(light: settings.glassStrength.light, dark: $0) }
+                            set: { newVal in settings.glassStrength = GlassStrength(light: settings.glassStrength.light, dark: newVal); settings.save() }
                         ), in: 0.05...0.5)
                     }
                 }
@@ -48,7 +48,7 @@ struct SettingsPane_Interface: View {
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Animation softness")
-                        Slider(value: $settings.animationSoftness, in: 0.15...1)
+                        Slider(value: Binding(get: { settings.animationSoftness }, set: { newVal in settings.animationSoftness = newVal; settings.save() }), in: 0.15...1)
                         Text("Higher values make transitions feel gentler.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)

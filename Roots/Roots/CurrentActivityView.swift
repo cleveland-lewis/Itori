@@ -7,11 +7,11 @@ struct CurrentActivityView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Current Activity")
-                .font(.headline)
+                .font(DesignSystem.Typography.subHeader)
             content
         }
-        .padding()
-        .background(.ultraThinMaterial)
+        .padding(DesignSystem.Layout.padding.card)
+        .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 
@@ -19,21 +19,21 @@ struct CurrentActivityView: View {
         Group {
             if let id = viewModel.currentActivityID, let activity = viewModel.activities.first(where: { $0.id == id }) {
                 VStack(alignment: .leading, spacing: 6) {
-                    HStack(spacing: 10) {
+                    HStack(spacing: DesignSystem.Layout.spacing.small) {
                         if let emoji = activity.emoji { Text(emoji).font(.title) }
                         VStack(alignment: .leading, spacing: 2) {
                             Text(activity.name)
                                 .font(.title3.weight(.semibold))
                             if let note = activity.note {
                                 Text(note)
-                                    .font(.caption)
+                                    .font(DesignSystem.Typography.caption)
                                     .foregroundColor(.secondary)
                             }
                         }
                         Spacer()
                     }
 
-                    HStack(spacing: 8) {
+                    HStack(spacing: DesignSystem.Layout.spacing.small) {
                         if let category = activity.studyCategory {
                             tag(category.displayName, systemName: "tag.fill")
                         }
@@ -49,7 +49,7 @@ struct CurrentActivityView: View {
                     }
                 }
             } else {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                     Text("No activity selected")
                         .font(.title3.weight(.semibold))
                     Button(action: onChoose) {
@@ -66,6 +66,6 @@ struct CurrentActivityView: View {
             .font(.caption2)
             .padding(6)
             .background(Color.secondary.opacity(0.12))
-            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
     }
 }

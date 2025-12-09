@@ -9,6 +9,7 @@ struct AddAssignmentView: View {
     @State private var estimatedMinutes: Int = 60
     @State private var selectedCourseId: UUID? = nil
     @State private var type: TaskType
+    @State private var attachments: [Attachment] = []
 
     var onSave: (AppTask) -> Void
 
@@ -36,14 +37,14 @@ struct AddAssignmentView: View {
                 Divider()
 
                 // Core
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                     Text("Title").font(.subheadline).bold()
                     TextField("e.g. Read Chapter 3", text: $title)
                         .textFieldStyle(.roundedBorder)
                 }
 
                 // Schedule
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                     Text("Schedule").font(.subheadline).bold()
 
                     DatePicker("Due date", selection: $due, displayedComponents: [.date, .hourAndMinute])
@@ -55,12 +56,12 @@ struct AddAssignmentView: View {
                 }
 
                 // Context
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                     Text("Context").font(.subheadline).bold()
 
                     // Course picker
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Course").font(.caption)
+                        Text("Course").font(DesignSystem.Typography.caption)
                         if coursesStore.currentSemesterId == nil {
                             Text("Select a current semester in Courses before adding assignments.")
                                 .font(.footnote)
@@ -91,13 +92,44 @@ struct AddAssignmentView: View {
 
                     // Type picker
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Type").font(.caption)
+                        Text("Type").font(DesignSystem.Typography.caption)
                         Picker("Type", selection: $type) {
                             ForEach(TaskType.allCases, id: \.self) { t in
                                 Text(displayName(for: t)).tag(t)
                             }
                         }
                         .pickerStyle(.segmented)
+                    }
+                }
+
+                Divider()
+
+                // References & Rubrics
+                VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+                    Text("References & Rubrics").font(.subheadline).bold()
+
+                    // Inline simple attachments UI used while AttachmentListView is not available in this target
+                    VStack(alignment: .leading, spacing: 8) {
+                        if attachments.isEmpty {
+                            Text("No attachments yet")
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(.secondary)
+                        } else {
+                            ForEach(attachments) { a in
+                                HStack {
+                                    Image(systemName: a.tag.icon)
+                                    Text(a.name)
+                                    Spacer()
+                                }
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(.primary)
+                            }
+                        }
+                        Button("Add Attachment") {
+                            // Defer to global attachment flow
+                            // This placeholder ensures compilation
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
 
@@ -115,7 +147,7 @@ struct AddAssignmentView: View {
                         guard !trimmed.isEmpty else { return }
                         guard let courseId = selectedCourseId else { return }
 
-                        let task = AppTask(id: UUID(), title: trimmed, courseId: courseId, due: due, estimatedMinutes: estimatedMinutes, minBlockMinutes: 20, maxBlockMinutes: 180, difficulty: 0.5, importance: 0.5, type: type, locked: false)
+                        let task = AppTask(id: UUID(), title: trimmed, courseId: courseId, due: due, estimatedMinutes: estimatedMinutes, minBlockMinutes: 20, maxBlockMinutes: 180, difficulty: 0.5, importance: 0.5, type: type, locked: false, attachments: attachments)
                         onSave(task)
                         dismiss()
                     }
@@ -124,7 +156,7 @@ struct AddAssignmentView: View {
                     .disabled(isSaveDisabled)
                 }
             }
-            .padding(8)
+            .padding(DesignSystem.Layout.spacing.small)
         }        .frame(minWidth: 420)
     }
 

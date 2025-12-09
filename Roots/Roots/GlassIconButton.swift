@@ -7,23 +7,9 @@ struct GlassIconButton: View {
     var action: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            Image(systemName: systemName)
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(Color.primary)
-                .frame(width: 40, height: 40)
-                .background(
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(.ultraThinMaterial)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .stroke(Color.primary.opacity(0.12), lineWidth: 0.5)
-                )
-                .shadow(color: Color.primary.opacity(0.12), radius: 12, y: 6)
-                .contentShape(Circle())
+        RootsHeaderButton(icon: systemName, size: 40) {
+            action()
         }
-        .buttonStyle(.plain)
         .accessibilityLabel(accessibilityLabel ?? systemName)
     }
 }
@@ -36,12 +22,12 @@ struct GlassIconButtonLabel: View {
     var body: some View {
         // Render as a non-interactive label visually matching the icon button
         Image(systemName: systemName)
-            .font(.system(size: 16, weight: .semibold))
+            .font(DesignSystem.Typography.body)
             .foregroundStyle(Color.primary)
             .frame(width: 40, height: 40)
             .background(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(.ultraThinMaterial)
+                    .fill(DesignSystem.Materials.hud)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)

@@ -6,5 +6,9 @@
     <string>Roots needs access to your calendar to show and schedule classes and events.</string>
     <key>NSRemindersUsageDescription</key>
     <string>Roots needs access to your reminders to show tasks alongside your assignments.</string>
+    <key>NSCalendarsFullAccessUsageDescription</key>
+    <string>Roots needs calendar access to show your schedule.</string>
+    <key>NSRemindersFullAccessUsageDescription</key>
+    <string>Roots needs access to sync your tasks.</string>
 </dict>
 </plist>

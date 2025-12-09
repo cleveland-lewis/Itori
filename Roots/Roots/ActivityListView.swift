@@ -9,7 +9,7 @@ struct ActivityListView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Activities")
-                    .font(.headline)
+                    .font(DesignSystem.Typography.subHeader)
                 Spacer()
                 Button(action: onAdd) {
                     Label("New", systemImage: "plus")
@@ -18,7 +18,7 @@ struct ActivityListView: View {
             }
 
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 10) {
+                HStack(spacing: DesignSystem.Layout.spacing.small) {
                     collectionPill(name: "All", selected: viewModel.selectedCollectionID == nil) {
                         viewModel.selectedCollectionID = nil
                     }
@@ -42,7 +42,7 @@ struct ActivityListView: View {
 
             List {
                 ForEach(viewModel.filteredActivities) { activity in
-                    HStack(spacing: 10) {
+                    HStack(spacing: DesignSystem.Layout.spacing.small) {
                         if let emoji = activity.emoji { Text(emoji) }
                         VStack(alignment: .leading, spacing: 4) {
                             Text(activity.name)
@@ -95,10 +95,10 @@ struct ActivityListView: View {
                 .padding(.vertical, 6)
                 .background(selected ? Color.accentColor.opacity(0.18) : Color.secondary.opacity(0.12))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                         .stroke(selected ? Color.accentColor.opacity(0.6) : Color(nsColor: .separatorColor).opacity(0.08), lineWidth: 1)
                 )
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
         }
         .buttonStyle(.plain)
     }

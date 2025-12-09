@@ -46,56 +46,14 @@ struct RootsSettingsWindow: View {
 
             ZStack {
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(.ultraThinMaterial)
+                    .fill(DesignSystem.Materials.card)
                     .opacity(0.20)
                     .shadow(radius: 24, y: 10)
                     .ignoresSafeArea()
 
                 VStack(spacing: 0) {
-                    // Header with close and expand buttons
-                    HStack {
-                        Button {
-                            dismiss()
-                        } label: {
-                            Image(systemName: "xmark")
-                                .font(.system(size: 12, weight: .semibold))
-                                .padding(8)
-                                .background(Circle().fill(.thinMaterial))
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Close Settings")
-
-                        Spacer()
-
-                        SettingsBreadcrumbView(
-                            segments: ["Settings", selection.title],
-                            activeIndex: 1
-                        ) { index in
-                            if index == 0 {
-                                selection = .general
-                            } else {
-                                // no-op for current
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .center)
-
-                        Spacer()
-
-                        Button {
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) {
-                                sidebarExpanded.toggle()
-                            }
-                        } label: {
-                            Image(systemName: sidebarExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
-                                .font(.system(size: 12, weight: .semibold))
-                                .padding(8)
-                                .background(Circle().fill(.thinMaterial))
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Toggle expanded settings window")
-                    }
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
+                    // Empty top spacer to align content under traffic lights
+                    Spacer().frame(height: 8)
 
                     HStack(spacing: 0) {
                         SettingsSidebar(selection: $selection, query: $query, accentColor: accentColor)
@@ -166,11 +124,11 @@ private struct SettingsSidebar: View {
     @ViewBuilder
     private func sidebarRow(for section: SettingsSection) -> some View {
         let isSelected = selection == section
-        HStack(spacing: 8) {
+        HStack(spacing: DesignSystem.Layout.spacing.small) {
             Image(systemName: section.iconName)
-                .font(.system(size: 14, weight: .semibold))
+                .font(DesignSystem.Typography.body)
             Text(section.title)
-                .font(.system(size: 14, weight: .semibold))
+                .font(DesignSystem.Typography.body)
                 .lineLimit(1)
                 .truncationMode(.tail)
             Spacer()
@@ -178,11 +136,11 @@ private struct SettingsSidebar: View {
         .padding(.vertical, 8)
         .padding(.horizontal, 10)
         .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
+            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                 .fill(isSelected ? accentColor.opacity(0.9) : Color.clear)
         )
         .foregroundColor(isSelected ? .white : .primary)
-        .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .contentShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
     }
 }
 
@@ -198,13 +156,14 @@ private struct SettingsDetail: View {
         VStack {
             switch selection {
             case .general:
-                GeneralSettingsView(accentColor: accentColor)
+                LegacyGeneralSettingsView(accentColor: accentColor)
             case .appearance:
                 AppearanceSettingsView(accentColor: accentColor)
             case .interface:
-                InterfaceSettingsView(accentColor: accentColor)
+                LegacyInterfaceSettingsView(accentColor: accentColor)
             case .courses:
-                SettingsPane_Courses()
+                // Note: Legacy courses settings - use SettingsRootView for new settings system
+                CoursesSettingsView()
                     .environmentObject(coursesStore)
             case .accounts:
                 AccountsSettingsView(accentColor: accentColor)
@@ -309,7 +268,7 @@ private struct SettingsGroup<Content: View>: View {
             VStack(alignment: .leading, spacing: 12) {
                 content
             }
-            .padding(16)
+            .padding(DesignSystem.Layout.padding.card)
             .rootsCardBackground(radius: 18)
         }
     }
@@ -317,13 +276,13 @@ private struct SettingsGroup<Content: View>: View {
 
 // MARK: - Sections
 
-private struct GeneralSettingsView: View {
+private struct LegacyGeneralSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     var accentColor: Color
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.large) {
                 Text("General")
                     .font(.title2.weight(.semibold))
 
@@ -332,10 +291,12 @@ private struct GeneralSettingsView: View {
                         SettingsRow(title: "Enable hover wiggle", description: nil) {
                             Toggle("", isOn: $settings.wiggleOnHover)
                                 .labelsHidden()
+                                .onChange(of: settings.wiggleOnHover) { _, _ in settings.save() }
                         }
                         SettingsRow(title: "Keep glass accents active", description: "Prevents cards from desaturating when idle.") {
                             Toggle("", isOn: $settings.enableGlassEffects)
                                 .labelsHidden()
+                                .onChange(of: settings.enableGlassEffects) { _, _ in settings.save() }
                         }
                     }
                 }
@@ -366,7 +327,7 @@ private struct GeneralSettingsView: View {
 
                 Spacer(minLength: 0)
             }
-            .padding(24)
+            .padding(DesignSystem.Layout.spacing.large)
             .frame(maxWidth: .infinity, alignment: .topLeading)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -389,7 +350,7 @@ private struct AppearanceSettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.large) {
                 Text("Appearance")
                     .font(.title2.weight(.semibold))
 
@@ -441,7 +402,7 @@ private struct AppearanceSettingsView: View {
 
                 Spacer(minLength: 0)
             }
-            .padding(24)
+            .padding(DesignSystem.Layout.spacing.large)
             .frame(maxWidth: .infinity, alignment: .topLeading)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -449,13 +410,13 @@ private struct AppearanceSettingsView: View {
     }
 }
 
-private struct InterfaceSettingsView: View {
+private struct LegacyInterfaceSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     var accentColor: Color
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.large) {
                 Text("Interface")
                     .font(.title2.weight(.semibold))
 
@@ -478,7 +439,7 @@ private struct InterfaceSettingsView: View {
 
                 Spacer(minLength: 0)
             }
-            .padding(24)
+            .padding(DesignSystem.Layout.spacing.large)
             .frame(maxWidth: .infinity, alignment: .topLeading)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -519,13 +480,13 @@ private struct AccountsSettingsView: View {
     }
 }
 
-private struct CoursesSettingsView: View {
+private struct LegacyCoursesSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     var accentColor: Color
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.large) {
                 Text("Courses")
                     .font(.title2.weight(.semibold))
 
@@ -564,11 +525,10 @@ private struct CoursesSettingsView: View {
 
                 Spacer(minLength: 0)
             }
-            .padding(24)
+            .padding(DesignSystem.Layout.spacing.large)
             .frame(maxWidth: .infinity, alignment: .topLeading)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .tint(accentColor)
     }
 }
-

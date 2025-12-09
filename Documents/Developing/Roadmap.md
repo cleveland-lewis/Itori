@@ -1,4 +1,4 @@
-# Treydashboard Roadmap
+# Roots Roadmap
 
 roadmap.md — UI Revamp Phase (Dashboard + Liquid Glass Popups)
 

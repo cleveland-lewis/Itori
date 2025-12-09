@@ -26,7 +26,7 @@ struct CourseDetailView: View {
                     practiceQuizzesCard
                 }
             }
-            .padding(20)
+            .padding(DesignSystem.Layout.padding.window)
         }
     }
 
@@ -44,9 +44,9 @@ struct CourseDetailView: View {
 
     private var assignmentsCard: some View {
         AppCard {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                 Text("Assignments")
-                    .font(.headline)
+                    .font(DesignSystem.Typography.subHeader)
 
                 if courseAssignments.isEmpty {
                     Text("No assignments linked to this course yet.")
@@ -60,7 +60,7 @@ struct CourseDetailView: View {
                                     .font(.subheadline)
                                 if let due = assignment.due {
                                     Text(due, style: .date)
-                                        .font(.caption)
+                                        .font(DesignSystem.Typography.caption)
                                         .foregroundStyle(.secondary)
                                 }
                             }
@@ -75,9 +75,9 @@ struct CourseDetailView: View {
 
     private var examsCard: some View {
         AppCard {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                 Text("Exams")
-                    .font(.headline)
+                    .font(DesignSystem.Typography.subHeader)
 
                 if courseExams.isEmpty {
                     Text("No exams linked to this course yet.")
@@ -91,7 +91,7 @@ struct CourseDetailView: View {
                                     .font(.subheadline)
                                 if let due = exam.due {
                                     Text(due, style: .date)
-                                        .font(.caption)
+                                        .font(DesignSystem.Typography.caption)
                                         .foregroundStyle(.secondary)
                                 }
                             }
@@ -106,9 +106,9 @@ struct CourseDetailView: View {
 
     private var documentsCard: some View {
         AppCard {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                 Text("Documents")
-                    .font(.headline)
+                    .font(DesignSystem.Typography.subHeader)
                 Text("No documents added.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
@@ -118,9 +118,9 @@ struct CourseDetailView: View {
 
     private var practiceQuizzesCard: some View {
         AppCard {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                 Text("Practice Quizzes")
-                    .font(.headline)
+                    .font(DesignSystem.Typography.subHeader)
                 Text("No practice quizzes yet.")
                     .font(.callout)
                     .foregroundStyle(.secondary)

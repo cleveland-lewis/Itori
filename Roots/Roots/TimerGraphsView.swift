@@ -28,8 +28,8 @@ struct TimerGraphsView: View {
                 historyGraph
             }
         }
-        .padding()
-        .background(.ultraThinMaterial)
+        .padding(DesignSystem.Layout.padding.card)
+        .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 
@@ -40,12 +40,12 @@ struct TimerGraphsView: View {
                     .progressViewStyle(.linear)
                 HStack {
                     Text("Elapsed \(format(minutes: sessionElapsed / 60))")
-                        .font(.caption)
+                        .font(DesignSystem.Typography.caption)
                         .foregroundColor(.secondary)
                     Spacer()
                     if let planned = session.plannedDuration {
                         Text("Remaining \(format(minutes: sessionRemaining / 60))")
-                            .font(.caption)
+                            .font(DesignSystem.Typography.caption)
                             .foregroundColor(.secondary)
                         Text("\(Int((liveProgress(for: session)) * 100))%")
                             .font(.caption.weight(.semibold))
@@ -75,7 +75,7 @@ struct TimerGraphsView: View {
             }
             .frame(height: 180)
             #else
-            HStack(alignment: .bottom, spacing: 8) {
+            HStack(alignment: .bottom, spacing: DesignSystem.Layout.spacing.small) {
                 ForEach(historyPoints) { point in
                     VStack {
                         RoundedRectangle(cornerRadius: 6)
@@ -95,7 +95,7 @@ struct TimerGraphsView: View {
                 Text("Today: \(format(minutes: todayMinutes))")
                 Text("This Week: \(format(minutes: weekMinutes))")
             }
-            .font(.caption)
+            .font(DesignSystem.Typography.caption)
             .foregroundColor(.secondary)
         }
     }

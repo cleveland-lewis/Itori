@@ -8,40 +8,103 @@ struct CalendarDayCell: View {
     let calendar: Calendar
 
     @EnvironmentObject private var settings: AppSettingsModel
+    @State private var isPressed = false
 
     var body: some View {
-        let color = eventDensityColor(for: eventCount)
+        let level = densityLevel(for: eventCount)
+        let isToday = calendar.isDateInToday(date)
 
-        VStack(spacing: 6) {
+        VStack(spacing: 7) {
             Text(dayString)
-                .font(.system(size: 12, weight: .semibold))
-                .frame(width: 28, height: 28)
-                .foregroundColor(isInCurrentMonth ? .primary : Color.secondary)
+                .font(DesignSystem.Typography.body)
+                .frame(width: 32, height: 32)
+                .foregroundColor(textColor(isToday: isToday))
                 .background(
                     Circle()
-                        .fill(isSelected ? Color.accentColor : Color.clear)
+                        .fill(backgroundFill(isToday: isToday))
+                )
+                .overlay(
+                    Circle()
+                        .strokeBorder(isToday && !isSelected ? Color.accentColor.opacity(0.5) : Color.clear, lineWidth: 1.5)
                 )
 
-            // load bar
-            RoundedRectangle(cornerRadius: 2, style: .continuous)
-                .fill(color)
-                .frame(height: 6)
-                .frame(maxWidth: 36)
+            // Event density bar removed per UI request
         }
         .frame(maxWidth: .infinity)
+        .scaleEffect(isPressed ? 0.92 : 1.0)
+        .animation(.easeInOut(duration: 0.1), value: isPressed)
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in isPressed = true }
+                .onEnded { _ in isPressed = false }
+        )
     }
 
     private var dayString: String {
         String(calendar.component(.day, from: date))
     }
 
-    private func eventDensityColor(for count: Int) -> Color {
-        switch count {
-        case 0: return .secondary.opacity(0.2)
-        case 1...3: return .green.opacity(0.7)
-        case 4...6: return .yellow.opacity(0.8)
-        default: return .red.opacity(0.8)
+    private func textColor(isToday: Bool) -> Color {
+        if isSelected {
+            return .white
+        } else if !isInCurrentMonth {
+            return .secondary.opacity(0.5)
+        } else if isToday {
+            return .accentColor
+        } else {
+            return .primary
         }
+    }
+
+    private func backgroundFill(isToday: Bool) -> Color {
+        if isSelected {
+            return .accentColor
+        } else if isToday {
+            return .accentColor.opacity(0.12)
+        } else {
+            return .clear
+        }
+    }
+
+    private func densityLevel(for count: Int) -> EventDensityLevel {
+        switch count {
+        case 0: return .none
+        case 1...3: return .low
+        case 4...6: return .medium
+        default: return .high
+        }
+    }
+}
+
+enum EventDensityLevel {
+    case none, low, medium, high
+
+    var color: Color {
+        switch self {
+        case .none: return Color.secondary.opacity(0.25)
+        case .low: return RootsColor.calendarDensityLow
+        case .medium: return RootsColor.calendarDensityMedium
+        case .high: return RootsColor.calendarDensityHigh
+        }
+    }
+
+    static func fromCount(_ count: Int) -> EventDensityLevel {
+        switch count {
+        case 0: return .none
+        case 1...3: return .low
+        case 4...6: return .medium
+        default: return .high
+        }
+    }
+}
+
+struct EventDensityBar: View {
+    var level: EventDensityLevel
+    var body: some View {
+        RoundedRectangle(cornerRadius: 2.5, style: .continuous)
+            .fill(level.color)
+            .frame(height: 5)
+            .frame(maxWidth: 32)
     }
 }
 
@@ -54,7 +117,7 @@ struct CalendarDayCell_Previews: PreviewProvider {
             CalendarDayCell(date: Date(), isInCurrentMonth: true, isSelected: true, eventCount: 5, calendar: Calendar.current)
         }
         .preferredColorScheme(.dark)
-        .padding()
+        .padding(DesignSystem.Layout.padding.card)
         .background(Color.black)
     }
 }

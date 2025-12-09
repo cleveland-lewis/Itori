@@ -18,6 +18,7 @@ struct AddEditCourseView: View {
     @State private var credits: Int = 3
     @State private var color: Color = .accentColor
     @State private var isArchived: Bool = false
+    @State private var attachments: [Attachment] = []
 
     init(mode: Mode, onSave: @escaping (Course) -> Void) {
         self.mode = mode
@@ -27,7 +28,7 @@ struct AddEditCourseView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text(title)
-                .font(.title2.bold())
+                .font(DesignSystem.Typography.header)
 
             Form {
                 TextField("Course Title", text: $title)
@@ -40,6 +41,32 @@ struct AddEditCourseView: View {
             }
             .formStyle(.grouped)
 
+            // Course Materials Section
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Course Materials")
+                    .font(.headline)
+
+                // Inline attachments fallback while AttachmentListView is not exposed to this target
+                VStack(alignment: .leading, spacing: 8) {
+                    if attachments.isEmpty {
+                        Text("No materials added")
+                            .font(DesignSystem.Typography.caption)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        ForEach(attachments) { a in
+                            HStack {
+                                Image(systemName: a.tag.icon)
+                                Text(a.name)
+                                Spacer()
+                            }
+                        }
+                    }
+                    Button("Add Material") {}
+                        .buttonStyle(.plain)
+                }
+            }
+            .padding(.vertical, 8)
+
             HStack {
                 Button("Cancel") { dismiss() }
                 Spacer()
@@ -50,9 +77,9 @@ struct AddEditCourseView: View {
                     let course: Course
                     switch mode {
                     case .new:
-                        course = Course(title: trimmed, code: code, semesterId: UUID())
+                        course = Course(title: trimmed, code: code, semesterId: UUID(), attachments: attachments)
                     case .edit(let existing):
-                        course = Course(id: existing.id, title: trimmed, code: code, semesterId: existing.semesterId, colorHex: existing.colorHex)
+                        course = Course(id: existing.id, title: trimmed, code: code, semesterId: existing.semesterId, colorHex: existing.colorHex, attachments: attachments)
                     }
 
                     onSave(course)
@@ -61,12 +88,13 @@ struct AddEditCourseView: View {
                 .keyboardShortcut(.defaultAction)
             }
         }
-        .padding()
+        .padding(DesignSystem.Layout.padding.card)
         .frame(minWidth: 420)
         .onAppear {
             if case .edit(let existing) = mode {
                 title = existing.title
                 code = existing.code
+                attachments = existing.attachments
                 // colorHex -> Color mapping not implemented; keep color default
                 isArchived = false
             }

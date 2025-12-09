@@ -1,0 +1,6 @@
+Target dependency graph (3 targets)
+Target 'RootsUITests' in project 'Roots'
+➜ Explicit dependency on target 'Roots' in project 'Roots'
+Target 'RootsTests' in project 'Roots'
+➜ Explicit dependency on target 'Roots' in project 'Roots'
+Target 'Roots' in project 'Roots' (no dependencies)

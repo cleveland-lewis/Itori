@@ -52,7 +52,7 @@ struct PlannerTaskDraft {
     var dueDate: Date
     var estimatedMinutes: Int
     var lockToDueDate: Bool
-    var priority: TaskPriority
+    var priority: PlannerTaskPriority
 }
 
 // Overdue task row view
@@ -95,10 +95,10 @@ struct OverdueTaskRow: View {
         Button {
             onTap()
         } label: {
-            HStack(spacing: 10) {
+            HStack(spacing: DesignSystem.Layout.spacing.small) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(item.title)
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(DesignSystem.Typography.body)
                         .lineLimit(1)
 
                     HStack(spacing: 6) {
@@ -106,7 +106,7 @@ struct OverdueTaskRow: View {
                         Text("·")
                         Text(dueText(from: item.dueDate))
                     }
-                    .font(.caption)
+                    .font(DesignSystem.Typography.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(1)
                 }
@@ -123,7 +123,7 @@ struct OverdueTaskRow: View {
                     onComplete()
                 } label: {
                     Image(systemName: "checkmark.circle")
-                        .font(.system(size: 18, weight: .semibold))
+                        .font(DesignSystem.Typography.body)
                 }
                 .buttonStyle(.plain)
                 .padding(.leading, 4)
@@ -132,7 +132,7 @@ struct OverdueTaskRow: View {
             .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(.ultraThinMaterial)
+                    .fill(DesignSystem.Materials.card)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
@@ -144,20 +144,9 @@ struct OverdueTaskRow: View {
     }
 }
 
-enum TaskPriority: String, CaseIterable, Identifiable {
+enum PlannerTaskPriority: String, CaseIterable, Identifiable {
     case low, normal, high, critical
     var id: String { rawValue }
-}
-
-/// Shared planner preferences for Omodoro linking and related behaviors.
-final class PlannerSettings: ObservableObject {
-    @Published var isOmodoroLinkedForToday: Bool = false
-}
-
-/// Timer integration model; shared queue of Omodoro-linked blocks for the Timer page.
-final class TimerPageModel: ObservableObject {
-    static let shared = TimerPageModel()
-    @Published var queuedOmodoroBlocks: [PlannedBlock] = []
 }
 
 /// Tracks day progress (time remaining / elapsed) for header metrics or future use.
@@ -208,9 +197,14 @@ struct CourseSummary: Identifiable, Hashable {
 
 // MARK: - Root Planner Page
 
+// Minimal PlannerSettings used locally
+struct PlannerSettings {
+    var isOmodoroLinkedForToday: Bool = false
+}
+
+
 struct PlannerPageView: View {
     @EnvironmentObject var settings: AppSettings
-    @StateObject private var plannerSettings = PlannerSettings()
     @StateObject private var dayProgress = DayProgressModel()
 
     @State private var scope: PlannerScope = .today
@@ -223,6 +217,9 @@ struct PlannerPageView: View {
 
     // new sheet state
     @State private var editingTaskDraft: PlannerTaskDraft? = nil
+
+    // local simplified planner settings used during build
+    @State private var plannerSettings = PlannerSettings()
 
     private let cardCornerRadius: CGFloat = 26
 
@@ -266,7 +263,6 @@ struct PlannerPageView: View {
         .onDisappear {
             dayProgress.stopUpdating()
         }
-        .environmentObject(plannerSettings)
     }
 }
 
@@ -275,31 +271,31 @@ struct PlannerPageView: View {
 private extension PlannerPageView {
     var headerBar: some View {
         HStack(alignment: .center, spacing: 16) {
-            HStack(spacing: 10) {
+            HStack(spacing: DesignSystem.Layout.spacing.small) {
                 Button {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) { adjustDate(by: -1) }
                 } label: {
                     Image(systemName: "chevron.left")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(DesignSystem.Typography.body)
                         .frame(width: 32, height: 32)
                         .background(Color(nsColor: .controlBackgroundColor))
-                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
                 }
                 VStack(alignment: .leading, spacing: 2) {
                     Text(Self.dayFormatter.string(from: selectedDate))
-                        .font(.system(size: 18, weight: .semibold))
+                        .font(DesignSystem.Typography.body)
                     Text(subtitleText)
-                        .font(.caption)
+                        .font(DesignSystem.Typography.caption)
                         .foregroundStyle(.secondary)
                 }
                 Button {
                     withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) { adjustDate(by: 1) }
                 } label: {
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(DesignSystem.Typography.body)
                         .frame(width: 32, height: 32)
                         .background(Color(nsColor: .controlBackgroundColor))
-                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
                 }
             }
 
@@ -315,12 +311,12 @@ private extension PlannerPageView {
 
             Spacer()
 
-            HStack(spacing: 10) {
+            HStack(spacing: DesignSystem.Layout.spacing.small) {
                 Button {
                     showNewTaskSheet()
                 } label: {
                     Label("New Task", systemImage: "plus")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(DesignSystem.Typography.body)
                         .padding(.horizontal, 14)
                         .padding(.vertical, 10)
                         .frame(height: 38)
@@ -332,11 +328,11 @@ private extension PlannerPageView {
                 Button {
                     runAIScheduler()
                 } label: {
-                    HStack(spacing: 8) {
+                    HStack(spacing: DesignSystem.Layout.spacing.small) {
                         Image(systemName: "wand.and.stars")
                         Text(isRunningPlanner ? "Planning..." : "Auto-Plan Day")
                     }
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
                     .frame(height: 38)
@@ -375,30 +371,8 @@ private extension PlannerPageView {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 Text("Planner Timeline")
-                    .font(.headline)
+                    .font(DesignSystem.Typography.subHeader)
                 Spacer()
-                // This pill toggles whether today's planner blocks link to Omodoro sessions in Timer.
-                Button(action: toggleOmodoroLinked) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "clock.badge.checkmark")
-                        Text("Omodoro linked")
-                    }
-                    .font(.caption.weight(.semibold))
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(plannerSettings.isOmodoroLinkedForToday ? Color.accentColor : Color(nsColor: .controlBackgroundColor))
-                            .opacity(plannerSettings.isOmodoroLinkedForToday ? 0.9 : 1)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
-                    )
-                    .foregroundColor(plannerSettings.isOmodoroLinkedForToday ? .white : .primary)
-                    .scaleEffect(plannerSettings.isOmodoroLinkedForToday ? 1.02 : 1.0)
-                }
-                .buttonStyle(.plain)
             }
 
             VStack(alignment: .leading, spacing: 14) {
@@ -419,11 +393,11 @@ private extension PlannerPageView {
 
         return HStack(alignment: .top, spacing: 12) {
             Text(Self.hourFormatter.string(from: hourDate))
-                .font(.system(size: 13, weight: .medium))
+                .font(DesignSystem.Typography.body)
                 .foregroundStyle(.secondary)
                 .frame(width: 64, alignment: .leading)
 
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                 if blocks.isEmpty {
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
                         .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
@@ -433,7 +407,7 @@ private extension PlannerPageView {
                         )
                         .frame(height: 46)
                         .overlay(
-                            HStack { Text("Free").font(.system(size: 13, weight: .medium)).foregroundStyle(.secondary); Spacer() }
+                            HStack { Text("Free").font(DesignSystem.Typography.body).foregroundStyle(.secondary); Spacer() }
                                 .padding(.horizontal, 14)
                         )
                 } else {
@@ -461,20 +435,20 @@ private extension PlannerPageView {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Unscheduled Tasks")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                 Spacer()
                 Button {
                     showNewTaskSheet()
                 } label: {
                     Image(systemName: "plus")
-                        .font(.system(size: 14, weight: .semibold))
-                        .padding(8)
+                        .font(DesignSystem.Typography.body)
+                        .padding(DesignSystem.Layout.spacing.small)
                         .background(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                                 .fill(Color(nsColor: .controlBackgroundColor))
                         )
                         .overlay(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                                 .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
                         )
                 }
@@ -488,7 +462,7 @@ private extension PlannerPageView {
                     .padding(.vertical, 12)
             } else {
                 ScrollView(showsIndicators: false) {
-                    VStack(spacing: 10) {
+                    VStack(spacing: DesignSystem.Layout.spacing.small) {
                         ForEach(unscheduledTasks) { task in
                             PlannerTaskRow(task: task) {
                                 editingTask = task
@@ -511,7 +485,7 @@ private extension PlannerPageView {
                 }
             }
         }
-        .padding(16)
+        .padding(DesignSystem.Layout.padding.card)
         .rootsCardBackground(radius: cardCornerRadius)
     }
 
@@ -519,7 +493,7 @@ private extension PlannerPageView {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Overdue Tasks")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                 Spacer()
                 if !overdueTasks.isEmpty {
                     Text("● \(overdueTasks.count)")
@@ -543,7 +517,7 @@ private extension PlannerPageView {
             } else {
                 let items = overdueTasks
                 ScrollView(showsIndicators: false) {
-                    VStack(spacing: 8) {
+                    VStack(spacing: DesignSystem.Layout.spacing.small) {
                         ForEach(items.prefix(10)) { item in
                             OverdueTaskRow(item: item,
                                            onTap: {
@@ -576,7 +550,7 @@ private extension PlannerPageView {
                 .frame(maxHeight: 320)
             }
         }
-        .padding(16)
+        .padding(DesignSystem.Layout.padding.card)
         .background(
             RoundedRectangle(cornerRadius: cardCornerRadius, style: .continuous)
                 .fill(.thinMaterial)
@@ -653,28 +627,6 @@ private extension PlannerPageView {
         showTaskSheet = true
     }
 
-    /// Toggles whether today's planner blocks are Omodoro-linked and updates TimerPageModel queue.
-    private func toggleOmodoroLinked() {
-        plannerSettings.isOmodoroLinkedForToday.toggle()
-        updateOmodoroLinking()
-    }
-
-    /// Updates the isOmodoroLinked flag for today's blocks and pushes them to the Timer queue.
-    private func updateOmodoroLinking() {
-        let calendar = Calendar.current
-        plannedBlocks = plannedBlocks.map { block in
-            if calendar.isDate(block.start, inSameDayAs: selectedDate) {
-                var updated = block
-                updated.isOmodoroLinked = plannerSettings.isOmodoroLinkedForToday
-                return updated
-            }
-            return block
-        }
-
-        let linked = plannedBlocks.filter { $0.isOmodoroLinked && calendar.isDate($0.start, inSameDayAs: selectedDate) }
-        TimerPageModel.shared.queuedOmodoroBlocks = linked.sorted(by: { $0.start < $1.start })
-    }
-
     func runAIScheduler() {
         guard !isRunningPlanner else { return }
         isRunningPlanner = true
@@ -698,7 +650,7 @@ private extension PlannerPageView {
                     isLocked: task.isLockedToDueDate,
                     status: .upcoming,
                     source: "Auto-scheduled",
-                    isOmodoroLinked: plannerSettings.isOmodoroLinkedForToday
+                    isOmodoroLinked: false
                 )
                 newBlocks.append(block)
                 currentStart = endDate
@@ -777,11 +729,11 @@ struct PlannerBlockRow: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(block.title)
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                     .lineLimit(1)
 
                 Text(metadataText)
-                    .font(.caption)
+                    .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
@@ -790,7 +742,7 @@ struct PlannerBlockRow: View {
 
             if block.isLocked {
                 Image(systemName: "lock.fill")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                     .foregroundStyle(.secondary)
             }
         }
@@ -829,7 +781,7 @@ struct PlannerTaskRow: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(task.title)
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(DesignSystem.Typography.body)
                         .lineLimit(1)
 
                     HStack(spacing: 6) {
@@ -840,7 +792,7 @@ struct PlannerTaskRow: View {
                             Image(systemName: "lock.fill")
                         }
                     }
-                    .font(.caption)
+                    .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
                 }
@@ -878,8 +830,6 @@ struct NewTaskSheet: View {
     let availableCourses: [CourseSummary]
     var onSave: (PlannerTaskDraft) -> Void
 
-    @State private var linkToOmodoro: Bool = false
-
     private var isSaveDisabled: Bool {
         draft.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
@@ -900,13 +850,12 @@ struct NewTaskSheet: View {
     var body: some View {
         RootsPopupContainer(
             title: isNew ? "New Task" : "Edit Task",
-            subtitle: "Tasks are auto-scheduled into the Planner timeline and synced to Omodoro."
+            subtitle: "Tasks are auto-scheduled into the Planner timeline."
         ) {
             VStack(alignment: .leading, spacing: RootsSpacing.l) {
                 taskSection
                 courseSection
                 timingSection
-                optionsSection
             }
         } footer: {
             footer
@@ -931,7 +880,7 @@ struct NewTaskSheet: View {
             }
             RootsFormRow(label: "Priority") {
                 Picker("", selection: $draft.priority) {
-                    ForEach(TaskPriority.allCases) { p in
+                    ForEach(PlannerTaskPriority.allCases) { p in
                         Text(p.rawValue.capitalized).tag(p)
                     }
                 }
@@ -983,16 +932,6 @@ struct NewTaskSheet: View {
                     Text("When locked, the AI planner schedules this block only on the due date.")
                         .rootsCaption()
                 }
-            }
-        }
-    }
-
-    private var optionsSection: some View {
-        VStack(alignment: .leading, spacing: RootsSpacing.m) {
-            Text("Focus options").rootsSectionHeader()
-            RootsFormRow(label: "Mode") {
-                Toggle("Link to Omodoro focus sessions", isOn: $linkToOmodoro)
-                    .toggleStyle(.switch)
             }
         }
     }

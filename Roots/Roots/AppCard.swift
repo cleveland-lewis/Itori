@@ -39,20 +39,13 @@ struct AppCard<Content: View>: View {
         }
         .padding(cardPadding)
         .frame(minHeight: unifiedCardMinHeight)
-        .background(
-            RoundedRectangle(cornerRadius: cardCornerRadius, style: .continuous)
-                .fill(.thinMaterial)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: cardCornerRadius, style: .continuous)
-                .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
-        )
+        .glassCard(cornerRadius: cardCornerRadius)
         .contentTransition(.opacity)
         .modifier(PopupAlignmentModifier(isPopup: isPopup))
     }
 
     private var header: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: DesignSystem.Layout.spacing.small) {
             if let icon {
                 icon
                     .font(.title2)

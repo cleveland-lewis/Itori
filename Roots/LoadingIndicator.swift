@@ -21,7 +21,7 @@ struct LoadingIndicatorLinear: View {
         } currentValueLabel: {
             Text("\(Int(progress))%")
                 .monospacedDigit()
-                .font(.caption)
+                .font(DesignSystem.Typography.caption)
         }
         .progressViewStyle(.linear)
         .tint(appSettings.accentColor)

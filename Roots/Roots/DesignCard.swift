@@ -41,7 +41,7 @@ struct DesignCard_Previews: PreviewProvider {
                     .foregroundStyle(.primary)
             }
             .frame(height: 260)
-            .padding()
+            .padding(DesignSystem.Layout.padding.card)
         }
     }
 }

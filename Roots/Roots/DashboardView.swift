@@ -1,7 +1,12 @@
 import SwiftUI
+import EventKit
+import Foundation
+import _Concurrency
 
 struct DashboardView: View {
     @EnvironmentObject private var settings: AppSettings
+    @EnvironmentObject private var calendarManager: CalendarManager
+    @State private var isLoaded = false
     @State private var todayBounce = false
     @State private var energyBounce = false
     @State private var insightsBounce = false
@@ -12,6 +17,17 @@ struct DashboardView: View {
         .init(title: "ST 311 – Quiz Review", course: "ST 311", isDone: false),
         .init(title: "Read Genetics notes", course: "GN 311", isDone: true)
     ]
+    @State private var taskList: [Task] = {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        return [
+            Task(title: "Finish lab report", dueDate: today, priority: .high),
+            Task(title: "Read Chapter 5", dueDate: today, priority: .medium),
+            Task(title: "Prep for quiz", dueDate: calendar.date(byAdding: .day, value: 1, to: today) ?? today, priority: .high),
+            Task(title: "Start project outline", dueDate: calendar.date(byAdding: .day, value: 3, to: today) ?? today, priority: .low),
+            Task(title: "Submit assignment", dueDate: calendar.date(byAdding: .day, value: -1, to: today) ?? today, priority: .medium)
+        ]
+    }()
     @State private var events: [DashboardEvent] = {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
@@ -24,31 +40,50 @@ struct DashboardView: View {
     }()
 
     var body: some View {
-        GeometryReader { proxy in
-            let width = proxy.size.width
-            let columns: Int = width > 1400 ? 3 : (width > 900 ? 2 : 1)
-
-            ScrollView {
-                LazyVGrid(
-                    columns: Array(repeating: GridItem(.flexible(), spacing: RootsSpacing.l), count: columns),
-                    spacing: RootsSpacing.l
-                ) {
-                    todayCard
-                    energyCard
-                    deadlinesCard
-                    DashboardCalendarColumn(selectedDate: $selectedDate, events: events)
-                    DashboardTasksColumn(tasks: $tasks)
-                    DashboardEventsColumn(events: events)
+        ScrollView {
+            RootsDashboardGrid {
+                RootsResponsiveGrid(statsItems) { item in
+                    item.view
+                        .frame(maxWidth: .infinity)
+                        .animateEntry(isLoaded: isLoaded, index: item.index)
                 }
-                .padding(.horizontal, RootsSpacing.s)
-                .padding(.bottom, RootsSpacing.xl)
-                .frame(maxWidth: .infinity)
+
+                RootsCard {
+                    VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                        Text("Calendar").rootsSectionHeader()
+                        DashboardCalendarColumn(selectedDate: $selectedDate, events: events)
+                    }
+                }
+                .animateEntry(isLoaded: isLoaded, index: 4)
+
+                RootsCard {
+                    VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                        Text("Upcoming Assignments").rootsSectionHeader()
+                        DashboardTasksColumn(tasks: $tasks)
+                    }
+                }
+                .animateEntry(isLoaded: isLoaded, index: 5)
+
+                TaskDashboardCard(tasks: $taskList)
+                    .animateEntry(isLoaded: isLoaded, index: 6)
+
+                RootsCard {
+                    VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                        Text("Events").rootsSectionHeader()
+                        DashboardEventsColumn(events: events)
+                    }
+                }
+                .animateEntry(isLoaded: isLoaded, index: 7)
+
+                quickActionsCard
+                    .animateEntry(isLoaded: isLoaded, index: 8)
             }
-            .padding(.top, RootsSpacing.m)
-            .background(Color.clear)
         }
-        .onAppear { LOG_UI(.info, "Navigation", "Displayed DashboardView") }
-        .rootsSystemBackground()
+        .onAppear {
+            isLoaded = true
+            LOG_UI(.info, "Navigation", "Displayed DashboardView")
+        }
+        .background(DesignSystem.Colors.appBackground)
     }
 
     private var todayCard: some View {
@@ -56,12 +91,54 @@ struct DashboardView: View {
             title: cardTitle("Today Overview"),
             icon: "sun.max"
         ) {
-            DashboardTileBody(
-                rows: [
-                    ("Schedule Today", "No data available"),
-                    ("Mood", "Balanced")
-                ]
-            )
+            VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                let eventStatus = EKEventStore.authorizationStatus(for: .event)
+                switch eventStatus {
+                case .notDetermined:
+                    HStack {
+                        Text("Connect Apple Calendar to show events")
+                            .rootsBody()
+                        Spacer()
+                        Button("Connect Apple Calendar", action: {
+                            print("🔘 [Dashboard] Connect button tapped")
+                            _Concurrency.Task {
+                                await calendarManager.requestAccess()
+                            }
+                        })
+                        .buttonStyle(RootsLiquidButtonStyle())
+                    }
+                case .denied, .restricted:
+                    HStack {
+                        Text("Access Denied. Open Settings.")
+                            .rootsBody()
+                        Spacer()
+                        Button("Open Settings") {
+                            calendarManager.openSystemPrivacySettings()
+                        }
+                        .buttonStyle(RootsLiquidButtonStyle())
+                    }
+                default:
+                    if calendarManager.dailyEvents.isEmpty {
+                        Text("No events today")
+                            .rootsBodySecondary()
+                    } else {
+                        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+                            ForEach(calendarManager.dailyEvents, id: \.eventIdentifier) { event in
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text(event.title)
+                                            .font(DesignSystem.Typography.body)
+                                        Text("\(event.startDate.formatted(date: .omitted, time: .shortened)) – \(event.endDate.formatted(date: .omitted, time: .shortened))")
+                                            .font(DesignSystem.Typography.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         .onTapGesture {
             todayBounce.toggle()
@@ -100,7 +177,7 @@ struct DashboardView: View {
             title: cardTitle("Insights"),
             icon: "lightbulb.fill"
         ) {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                 Text("No data available")
                     .foregroundColor(.secondary)
                     .rootsBody()
@@ -134,23 +211,72 @@ struct DashboardView: View {
 
     private func cardTitle(_ title: String) -> String? { title }
 
+    private var statsItems: [StatsCardItem] {
+        [
+            StatsCardItem(index: 0, view: AnyView(todayCard)),
+            StatsCardItem(index: 1, view: AnyView(energyCard)),
+            StatsCardItem(index: 2, view: AnyView(insightsCard)),
+            StatsCardItem(index: 3, view: AnyView(deadlinesCard))
+        ]
+    }
+
+    private var quickActionsCard: some View {
+        RootsCard(
+            title: "Quick Actions",
+            icon: "bolt.fill"
+        ) {
+            HStack(spacing: RootsSpacing.m) {
+                Button {
+                    print("[Dashboard] Quick action: Add Assignment")
+                } label: {
+                    Label("Add Assignment", systemImage: "plus.circle")
+                        .font(DesignSystem.Typography.body)
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button {
+                    print("[Dashboard] Quick action: Add Event")
+                } label: {
+                    Label("Add Event", systemImage: "calendar.badge.plus")
+                        .font(DesignSystem.Typography.body)
+                }
+                .buttonStyle(.bordered)
+            }
+        }
+    }
+
+}
+
+struct StatsCardItem: Identifiable {
+    let id = UUID()
+    let index: Int
+    let view: AnyView
 }
 
 struct DashboardTileBody: View {
     let rows: [(String, String)]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
                 VStack(alignment: .leading, spacing: 4) {
                     Text(row.0)
                         .rootsBodySecondary()
                     Text(row.1)
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(DesignSystem.Typography.body)
                         .foregroundStyle(RootsColor.textPrimary)
                 }
             }
         }
+    }
+}
+
+private extension View {
+    func animateEntry(isLoaded: Bool, index: Int) -> some View {
+        self
+            .opacity(isLoaded ? 1 : 0)
+            .offset(y: isLoaded ? 0 : 20)
+            .animation(.easeOut(duration: 0.5).delay(Double(index) * 0.05), value: isLoaded)
     }
 }
 
@@ -184,8 +310,9 @@ private struct DashboardCalendarColumn: View {
             Text("Calendar").rootsSectionHeader()
             Text(monthHeader(for: selectedDate)).rootsBodySecondary()
 
-            LazyVGrid(columns: columns, spacing: 8) {
-                ForEach(days, id: \.self) { day in
+            LazyVGrid(columns: columns, spacing: DesignSystem.Layout.spacing.small) {
+                       ForEach(dayItems) { item in
+                         let day = item.date
                     let isInMonth = calendar.isDate(day, equalTo: selectedDate, toGranularity: .month)
                     let isSelected = calendar.isDate(day, inSameDayAs: selectedDate)
                     let normalized = calendar.startOfDay(for: day)
@@ -208,7 +335,7 @@ private struct DashboardCalendarColumn: View {
             .padding(12)
             .rootsCardBackground(radius: 20)
         }
-        .padding()
+        .padding(DesignSystem.Layout.padding.card)
         .rootsCardBackground(radius: 22)
     }
 
@@ -217,35 +344,48 @@ private struct DashboardCalendarColumn: View {
             .mapValues { $0.count }
     }
 
+    private struct DayItem: Identifiable, Hashable {
+        let id = UUID()
+        let date: Date
+        let isCurrentMonth: Bool
+    }
+
+    private var dayItems: [DayItem] {
+        days.map { DayItem(date: $0, isCurrentMonth: calendar.isDate($0, equalTo: selectedDate, toGranularity: .month)) }
+    }
+
     private var days: [Date] {
-        guard
-            let monthInterval = calendar.dateInterval(of: .month, for: selectedDate),
-            let startWeekday = calendar.dateComponents([.weekday], from: monthInterval.start).weekday,
-            let range = calendar.range(of: .day, in: .month, for: selectedDate)
-        else { return [] }
+        // Safe generator that yields unique start-of-day Dates covering the month grid
+        guard let monthInterval = calendar.dateInterval(of: .month, for: selectedDate) else { return [] }
+        let monthStart = calendar.startOfDay(for: monthInterval.start)
+        guard let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: monthStart)) else { return [] }
 
-        let firstWeekdayIndex = (startWeekday - calendar.firstWeekday + 7) % 7
+        let lastOfMonth = calendar.date(byAdding: .second, value: -1, to: monthInterval.end) ?? monthInterval.end
+        guard let endOfWeekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: lastOfMonth)),
+              let endOfWeek = calendar.date(byAdding: .day, value: 7, to: endOfWeekStart) else { return [] }
+
         var items: [Date] = []
+        var seen = Set<Date>()
+        var current = startOfWeek
 
-        if let prevMonth = calendar.date(byAdding: .month, value: -1, to: selectedDate),
-           let prevRange = calendar.range(of: .day, in: .month, for: prevMonth) {
-            let prefixDays = prevRange.suffix(firstWeekdayIndex)
-            for day in prefixDays {
-                if let date = calendar.date(bySetting: .day, value: day, of: prevMonth) {
-                    items.append(date)
-                }
+        while current < endOfWeek && items.count < 42 {
+            let s = calendar.startOfDay(for: current)
+            if !seen.contains(s) {
+                items.append(s)
+                seen.insert(s)
             }
+            guard let next = calendar.date(byAdding: .day, value: 1, to: current) else { break }
+            current = next
         }
 
-        for day in range {
-            if let date = calendar.date(bySetting: .day, value: day, of: selectedDate) {
-                items.append(date)
-            }
-        }
-
+        // ensure full week rows
         while items.count % 7 != 0 {
-            if let nextDate = calendar.date(byAdding: .day, value: 1, to: items.last ?? selectedDate) {
-                items.append(nextDate)
+            if let last = items.last, let next = calendar.date(byAdding: .day, value: 1, to: last) {
+                let s = calendar.startOfDay(for: next)
+                if !seen.contains(s) {
+                    items.append(s)
+                    seen.insert(s)
+                } else { break }
             } else { break }
         }
 
@@ -283,7 +423,7 @@ private struct DashboardTasksColumn: View {
                 }
             }
         }
-        .padding()
+        .padding(DesignSystem.Layout.padding.card)
         .rootsCardBackground(radius: 22)
     }
 }
@@ -303,10 +443,10 @@ private struct DashboardEventsColumn: View {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 12) {
                         ForEach(events) { event in
-                            HStack(alignment: .top, spacing: 10) {
+                            HStack(alignment: .top, spacing: DesignSystem.Layout.spacing.small) {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(event.title)
-                                        .font(.system(size: 13, weight: .semibold))
+                                        .font(DesignSystem.Typography.body)
                                     Text(event.time)
                                         .rootsBodySecondary()
                                     if let location = event.location {
@@ -324,8 +464,8 @@ private struct DashboardEventsColumn: View {
                 }
             }
         }
-        .padding()
-        .background(.regularMaterial)
+        .padding(DesignSystem.Layout.padding.card)
+        .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
 }
@@ -371,7 +511,7 @@ private struct TaskRow: View {
                         .frame(width: 22, height: 22)
                         .overlay(
                             Image(systemName: "checkmark")
-                                .font(.system(size: 12, weight: .bold))
+                                .font(DesignSystem.Typography.body)
                                 .foregroundColor(.white)
                                 .opacity(task.isDone ? 1.0 : 0.0)
                         )
@@ -382,7 +522,7 @@ private struct TaskRow: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(task.title)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                     .strikethrough(task.isDone, color: .secondary)
 
                 if let course = task.course {
@@ -407,9 +547,9 @@ struct StaticMonthCalendarView: View {
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 6), count: 7)
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: DesignSystem.Layout.spacing.small) {
             weekdayHeader
-            LazyVGrid(columns: columns, spacing: 8) {
+            LazyVGrid(columns: columns, spacing: DesignSystem.Layout.spacing.small) {
                 ForEach(leadingBlanks, id: \.self) { _ in
                     Text(" ")
                         .frame(maxWidth: .infinity, minHeight: 28)

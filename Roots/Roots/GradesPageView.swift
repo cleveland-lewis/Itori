@@ -28,13 +28,12 @@ struct CourseGradeDetail: Identifiable, Hashable {
 }
 
 enum GradeViewSegment: String, CaseIterable, Identifiable {
-    case overall, byCourse, scenarios
+    case overall, scenarios
     var id: String { rawValue }
 
     var label: String {
         switch self {
         case .overall: return "Overall"
-        case .byCourse: return "By Course"
         case .scenarios: return "What-If"
         }
     }
@@ -67,7 +66,7 @@ struct GradesPageView: View {
 
                     footer
                 }
-                .padding(16)
+                .padding(DesignSystem.Layout.padding.card)
             }
             .rootsSystemBackground()
         }
@@ -121,11 +120,11 @@ struct GradesPageView: View {
                 // stub export
             } label: {
                 Label("Export", systemImage: "square.and.arrow.up")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(DesignSystem.Typography.body)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .background(.thinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
             }
             .buttonStyle(.plain)
         }
@@ -164,8 +163,8 @@ struct GradesPageView: View {
     private var courseListCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("By Course")
-                    .font(.system(size: 14, weight: .semibold))
+                Text("Courses")
+                    .font(DesignSystem.Typography.body)
                 Spacer()
                 Picker("Sort", selection: .constant(0)) {
                     Text("Course").tag(0)
@@ -176,7 +175,7 @@ struct GradesPageView: View {
             }
 
             ScrollView {
-                VStack(spacing: 10) {
+                VStack(spacing: DesignSystem.Layout.spacing.small) {
                     ForEach(filteredCourses) { course in
                         CourseGradeRow(
                             course: course,
@@ -197,7 +196,7 @@ struct GradesPageView: View {
                 .padding(.vertical, 4)
             }
         }
-        .padding(16)
+        .padding(DesignSystem.Layout.padding.card)
         .background(cardBackground)
         .overlay(cardStroke)
     }
@@ -223,7 +222,7 @@ struct GradesPageView: View {
                 }
             }
         )
-        .padding(16)
+        .padding(DesignSystem.Layout.padding.card)
         .background(cardBackground)
         .overlay(cardStroke)
     }
@@ -285,12 +284,12 @@ struct OverallStatusCard: View {
     var body: some View {
         let overallPercent = weightedOverallPercent
         let gpa = gpaValue(overallPercent: overallPercent)
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             Text("Overall Status")
-                .font(.system(size: 14, weight: .semibold))
+                .font(DesignSystem.Typography.body)
 
             Text("GPA \(String(format: "%.2f", gpa)) / \(String(format: "%.1f", gpaScale))")
-                .font(.system(size: emphasize ? 28 : 24, weight: .bold))
+                .font(DesignSystem.Typography.body)
 
             Text("Weighted \(String(format: "%.1f", overallPercent))% • \(courses.count) courses")
                 .font(.footnote)
@@ -302,18 +301,18 @@ struct OverallStatusCard: View {
             HStack {
                 if let maxCourse = courses.max(by: { ($0.currentPercentage ?? 0) < ($1.currentPercentage ?? 0) }) {
                     Text("Highest: \(maxCourse.courseCode) \(Int(maxCourse.currentPercentage ?? 0))%")
-                        .font(.caption)
+                        .font(DesignSystem.Typography.caption)
                         .foregroundColor(.secondary)
                 }
                 Spacer()
                 if let minCourse = courses.min(by: { ($0.currentPercentage ?? 0) < ($1.currentPercentage ?? 0) }) {
                     Text("Lowest: \(minCourse.courseCode) \(Int(minCourse.currentPercentage ?? 0))%")
-                        .font(.caption)
+                        .font(DesignSystem.Typography.caption)
                         .foregroundColor(.secondary)
                 }
             }
         }
-        .padding(16)
+        .padding(DesignSystem.Layout.padding.card)
         .background(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .fill(.thinMaterial)
@@ -362,7 +361,7 @@ struct CourseGradeRow: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("\(course.courseCode) · \(course.courseTitle)")
-                        .font(.system(size: 13, weight: .semibold))
+                        .font(DesignSystem.Typography.body)
                         .foregroundColor(.primary)
                         .lineLimit(1)
                     HStack(spacing: 6) {
@@ -374,7 +373,7 @@ struct CourseGradeRow: View {
                         if let letter = course.letterGrade { Text("· \(letter)") }
                         Text("· \(course.creditHours) credits")
                     }
-                    .font(.caption)
+                    .font(DesignSystem.Typography.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(1)
                 }
@@ -424,7 +423,7 @@ struct CourseGradeRow: View {
                     .font(.caption2.weight(.semibold))
             } else {
                 Text("—")
-                    .font(.caption)
+                    .font(DesignSystem.Typography.caption)
                     .foregroundColor(.secondary)
             }
         }
@@ -456,7 +455,7 @@ struct GradeDetailCard: View {
         } else {
             VStack(spacing: 12) {
                 Image(systemName: "chart.bar.doc.horizontal")
-                    .font(.largeTitle)
+                    .font(DesignSystem.Typography.display)
                     .foregroundColor(.secondary)
                 Text("Select a course from the center panel to see its grade breakdown.")
                     .font(.footnote)
@@ -469,10 +468,10 @@ struct GradeDetailCard: View {
     private func header(_ course: GradeCourseSummary) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Grade Components – \(course.courseCode)")
-                .font(.system(size: 14, weight: .semibold))
+                .font(DesignSystem.Typography.body)
             Text(course.courseTitle)
-                .font(.headline)
-            HStack(spacing: 8) {
+                .font(DesignSystem.Typography.subHeader)
+            HStack(spacing: DesignSystem.Layout.spacing.small) {
                 if let current = course.currentPercentage {
                     Text("Current: \(String(format: "%.1f", current))%")
                 } else { Text("Current: —") }
@@ -481,7 +480,7 @@ struct GradeDetailCard: View {
                 }
                 if let letter = course.letterGrade { Text("· \(letter)") }
             }
-            .font(.caption)
+            .font(DesignSystem.Typography.caption)
             .foregroundColor(.secondary)
 
             Button("Edit target") {
@@ -493,24 +492,24 @@ struct GradeDetailCard: View {
     }
 
     private func components(_ components: [GradeComponent]) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             ForEach(components) { comp in
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
                         Text(comp.name)
-                            .font(.system(size: 13, weight: .semibold))
+                            .font(DesignSystem.Typography.body)
                         Spacer()
                         if let earned = comp.earnedPercent {
                             Text("\(Int(earned))%")
                                 .font(.caption.weight(.semibold))
                         } else {
                             Text("No data yet")
-                                .font(.caption)
+                                .font(DesignSystem.Typography.caption)
                                 .foregroundColor(.secondary)
                         }
                     }
                     Text("Weight: \(Int(comp.weightPercent))%")
-                        .font(.caption)
+                        .font(DesignSystem.Typography.caption)
                         .foregroundColor(.secondary)
 
                     if let earned = comp.earnedPercent {
@@ -533,9 +532,9 @@ struct GradeDetailCard: View {
     }
 
     private func whatIf(_ detail: CourseGradeDetail) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             Text("What-If Scenario")
-                .font(.system(size: 14, weight: .semibold))
+                .font(DesignSystem.Typography.body)
             Slider(value: $whatIfInput, in: 50...100, step: 1) {
                 Text("Expected average on remaining work")
             }
@@ -560,7 +559,7 @@ struct GradeDetailCard: View {
     private func notes(_ detail: CourseGradeDetail) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Notes")
-                .font(.system(size: 14, weight: .semibold))
+                .font(DesignSystem.Typography.body)
             TextEditor(text: Binding(
                 get: { detail.notes },
                 set: { newValue in
@@ -572,11 +571,11 @@ struct GradeDetailCard: View {
             ))
             .frame(minHeight: 120)
             .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                     .fill(Color(nsColor: .controlBackgroundColor))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                     .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
             )
         }
@@ -603,7 +602,7 @@ struct EditTargetGradeSheet: View {
                         Text("Target %")
                     }
                     Text("\(Int(targetPercent))%")
-                        .font(.headline)
+                        .font(DesignSystem.Typography.subHeader)
                 }
 
                 Section("Letter") {

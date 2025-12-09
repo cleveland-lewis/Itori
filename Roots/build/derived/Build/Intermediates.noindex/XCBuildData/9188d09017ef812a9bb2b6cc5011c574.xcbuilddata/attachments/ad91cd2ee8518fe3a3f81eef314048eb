@@ -1,0 +1,29 @@
+{
+  "" : {
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/RootsTests-primary.dia",
+    "emit-module-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/RootsTests-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/RootsTests-primary-emit-module.dia",
+    "pch" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/RootsTests-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/RootsTests-primary.swiftdeps"
+  },
+  "/Users/clevelandlewis/Desktop/Roots/Roots/RootsTests/CoursesStoreTests.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/CoursesStoreTests.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/CoursesStoreTests.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/CoursesStoreTests.dia",
+    "index-unit-output-path" : "/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/CoursesStoreTests.o",
+    "llvm-bc" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/CoursesStoreTests.bc",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/CoursesStoreTests.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/CoursesStoreTests.swiftdeps",
+    "swiftmodule" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/CoursesStoreTests~partial.swiftmodule"
+  },
+  "/Users/clevelandlewis/Desktop/Roots/Roots/RootsTests/RootsTests.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/RootsTests.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/RootsTests.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/RootsTests.dia",
+    "index-unit-output-path" : "/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/RootsTests.o",
+    "llvm-bc" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/RootsTests.bc",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/RootsTests.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/RootsTests.swiftdeps",
+    "swiftmodule" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/derived/Build/Intermediates.noindex/Roots.build/Debug-iphonesimulator/RootsTests.build/Objects-normal/arm64/RootsTests~partial.swiftmodule"
+  }
+}

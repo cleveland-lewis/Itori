@@ -17,8 +17,8 @@ struct GlassPopupContainer<Content: View>: View {
                     onDismiss()
                 }
             content
-                .padding()
-                .background(.ultraThinMaterial)
+                .padding(DesignSystem.Layout.padding.card)
+                .background(DesignSystem.Materials.popup)
                 .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
                 .shadow(color: Color(nsColor: .separatorColor).opacity(0.08), radius: 24, x: 0, y: 10)
                 .transition(.opacity)

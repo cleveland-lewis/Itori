@@ -8,7 +8,7 @@ struct UploadProgressView: View {
         ViewThatFits(in: .horizontal) {
 
             // 1. Full layout (text + bar + spacer)
-            HStack(spacing: 8) {
+            HStack(spacing: DesignSystem.Layout.spacing.small) {
                 Text(uploadProgress.formatted(.percent))
                     .monospacedDigit()
 
@@ -43,7 +43,7 @@ struct UploadProgressView_Previews: PreviewProvider {
         AppCard {
             UploadProgressView()
         }
-        .padding()
+        .padding(DesignSystem.Layout.padding.card)
         .frame(width: 360)
     }
 }
