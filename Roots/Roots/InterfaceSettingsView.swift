@@ -116,9 +116,11 @@ struct InterfaceSettingsView: View {
     }
 }
 
+#if !DISABLE_PREVIEWS
 #Preview {
     InterfaceSettingsView()
         .environmentObject(AppSettingsModel.shared)
         .environmentObject(AppPreferences())
         .frame(width: 500, height: 600)
 }
+#endif

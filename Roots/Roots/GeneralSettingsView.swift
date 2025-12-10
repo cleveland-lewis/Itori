@@ -1,14 +1,16 @@
 import SwiftUI
-import EventKit
 
 struct GeneralSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
-    @EnvironmentObject var calendarManager: CalendarManager
     @EnvironmentObject var timerManager: TimerManager
-    // replaced PermissionsManager with CalendarManager usage
+    @EnvironmentObject var assignmentsStore: AssignmentsStore
+    @EnvironmentObject var coursesStore: CoursesStore
 
     @State private var userName: String = ""
-    @State private var showingRevokeAlert = false
+    @State private var showResetSheet = false
+    @State private var resetCode: String = ""
+    @State private var resetInput: String = ""
+    @State private var isResetting = false
 
     enum StartOfWeek: String, CaseIterable, Identifiable {
         case sunday = "Sunday"
@@ -28,30 +30,6 @@ struct GeneralSettingsView: View {
 
     @State private var startOfWeek: StartOfWeek = .sunday
     @State private var defaultView: DefaultView = .dashboard
-
-    private var calendarToggleBinding: Binding<Bool> {
-        Binding(get: {
-            calendarManager.eventAuthorizationStatus == .authorized || calendarManager.eventAuthorizationStatus == .fullAccess
-        }, set: { newValue in
-            if newValue {
-                _Concurrency.Task { await calendarManager.requestCalendarAccess() }
-            } else {
-                showingRevokeAlert = true
-            }
-        })
-    }
-
-    private var remindersToggleBinding: Binding<Bool> {
-        Binding(get: {
-            calendarManager.reminderAuthorizationStatus == .authorized || calendarManager.reminderAuthorizationStatus == .fullAccess
-        }, set: { newValue in
-            if newValue {
-                _Concurrency.Task { await calendarManager.requestRemindersAccess() }
-            } else {
-                showingRevokeAlert = true
-            }
-        })
-    }
 
     var body: some View {
         List {
@@ -94,55 +72,6 @@ struct GeneralSettingsView: View {
                     .onChange(of: settings.showEnergyPanel) { _, _ in settings.save() }
             }
 
-            // MARK: - Sync & Integrations
-            Section(header: Text("Sync & Integrations").accessibilityIdentifier("Settings.SyncIntegrations")) {
-                HStack {
-                    Text("Enable Apple Sync")
-                    Spacer()
-                    Toggle("", isOn: Binding(get: { calendarManager.isAuthorized }, set: { val in
-                        if val { _Concurrency.Task { await calendarManager.requestAccess() } }
-                        else { showingRevokeAlert = true }
-                    }))
-                    .toggleStyle(.switch)
-                }
-
-                if calendarManager.isAuthorized {
-                    Divider()
-
-                    Picker("School Calendar", selection: $calendarManager.selectedCalendarID) {
-                        Text("Select a Calendar").tag("")
-                        ForEach(calendarManager.availableCalendars, id: \.calendarIdentifier) { cal in
-                            HStack {
-                                let calColor = (cal.cgColor != nil ? (NSColor(cgColor: cal.cgColor!) ?? NSColor.controlAccentColor) : NSColor.controlAccentColor)
-                                Circle().fill(Color(nsColor: calColor)).frame(width: 8, height: 8)
-                                Text(cal.title)
-                            }
-                            .tag(cal.calendarIdentifier)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .onChange(of: calendarManager.selectedCalendarID) { _, _ in _Concurrency.Task { await calendarManager.refreshAll() } }
-
-                    Picker("School Reminders", selection: $calendarManager.selectedReminderListID) {
-                        Text("Select a List").tag("")
-                        ForEach(calendarManager.availableReminderLists, id: \.calendarIdentifier) { list in
-                            HStack {
-                                let listColor = (list.cgColor != nil ? (NSColor(cgColor: list.cgColor!) ?? NSColor.controlAccentColor) : NSColor.controlAccentColor)
-                                Circle().fill(Color(nsColor: listColor)).frame(width: 8, height: 8)
-                                Text(list.title)
-                            }
-                            .tag(list.calendarIdentifier)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    .onChange(of: calendarManager.selectedReminderListID) { _, _ in _Concurrency.Task { await calendarManager.refreshAll() } }
-
-                    Text("Only events and tasks from these specific lists will appear in Roots.")
-                        .font(DesignSystem.Typography.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-
             Section("Workday") {
                 DatePicker("Start", selection: Binding(
                     get: { settings.date(from: settings.defaultWorkdayStart) },
@@ -154,41 +83,90 @@ struct GeneralSettingsView: View {
                     set: { settings.defaultWorkdayEnd = settings.components(from: $0); settings.save() }
                 ), displayedComponents: .hourAndMinute)
             }
+
+            Section("Danger Zone") {
+                Button(role: .destructive) {
+                    resetCode = generateResetCode()
+                    resetInput = ""
+                    showResetSheet = true
+                } label: {
+                    Text("Reset All Data")
+                        .fontWeight(.semibold)
+                }
+            }
         }
         .listStyle(.sidebar)
-        .alert("Disable Sync", isPresented: $showingRevokeAlert) {
-            Button("Open System Settings") {
-                calendarManager.openSystemPrivacySettings()
-            }
-            Button("Cancel", role: .cancel) { }
-        } message: {
-            Text("To disconnect Roots from your Calendar, please revoke access in System Settings.")
-        }
         .onAppear {
             // Load current values
             userName = settings.userName ?? ""
             startOfWeek = StartOfWeek(rawValue: settings.startOfWeek ?? "Sunday") ?? .sunday
             defaultView = DefaultView(rawValue: settings.defaultView ?? "Dashboard") ?? .dashboard
-            _Concurrency.Task { await calendarManager.refreshAuthStatus() }
+        }
+        .sheet(isPresented: $showResetSheet) {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Reset All Data")
+                    .font(.title2.weight(.bold))
+                Text("This will remove all app data including courses, assignments, settings, and cached sessions. This action cannot be undone.")
+                    .foregroundColor(.secondary)
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Type the code to confirm:")
+                        .font(.headline)
+                    Text(resetCode)
+                        .font(.system(.title3, design: .monospaced).weight(.bold))
+                        .padding(8)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.secondary.opacity(0.1)))
+                }
+                TextField("Enter code exactly", text: $resetInput)
+                    .textFieldStyle(.roundedBorder)
+                    .autocorrectionDisabled(true)
+                    .disableAutocorrection(true)
+
+                HStack {
+                    Button("Cancel") { showResetSheet = false }
+                    Spacer()
+                    Button("Reset Now") {
+                        performReset()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(resetInput != resetCode || isResetting)
+                }
+            }
+            .padding(24)
+            .frame(minWidth: 420)
         }
     }
 
-    private func statusDescription(for status: EKAuthorizationStatus) -> String {
-        switch status {
-        case .authorized, .fullAccess: return "Authorized"
-        case .writeOnly: return "Write-only"
-        case .denied, .restricted: return "Denied"
-        case .notDetermined: return "Not determined"
-        @unknown default: return "Unknown"
-        }
+    private func generateResetCode() -> String {
+        let chars = Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+        return String((0..<12).compactMap { _ in chars.randomElement() })
+    }
+
+    private func performReset() {
+        guard resetInput == resetCode else { return }
+        isResetting = true
+        // Clear app state
+        assignmentsStore.resetAll()
+        coursesStore.resetAll()
+        settings.resetUserDefaults()
+        settings.save()
+        timerManager.stop()
+        // Reset local UI state
+        userName = ""
+        startOfWeek = .sunday
+        defaultView = .dashboard
+        resetInput = ""
+        showResetSheet = false
+        isResetting = false
     }
 }
 
+#if !DISABLE_PREVIEWS
 #Preview {
     GeneralSettingsView()
         .environmentObject(AppSettingsModel.shared)
-        .environmentObject(CalendarManager.shared)
         .environmentObject(TimerManager())
-        
+        .environmentObject(AssignmentsStore.shared)
+        .environmentObject(CoursesStore())
         .frame(width: 500, height: 600)
 }
+#endif

@@ -19,10 +19,17 @@ struct AddEditCourseView: View {
     @State private var color: Color = .accentColor
     @State private var isArchived: Bool = false
     @State private var attachments: [Attachment] = []
+    @State private var showDiscardDialog = false
 
     init(mode: Mode, onSave: @escaping (Course) -> Void) {
         self.mode = mode
         self.onSave = onSave
+    }
+
+    private var hasUnsavedChanges: Bool {
+        !title.trimmingCharacters(in: .whitespaces).isEmpty ||
+        !code.trimmingCharacters(in: .whitespaces).isEmpty ||
+        !attachments.isEmpty
     }
 
     var body: some View {
@@ -44,52 +51,45 @@ struct AddEditCourseView: View {
             // Course Materials Section
             VStack(alignment: .leading, spacing: 12) {
                 Text("Course Materials")
-                    .font(.headline)
+                    .font(DesignSystem.Typography.subHeader)
 
-                // Inline attachments fallback while AttachmentListView is not exposed to this target
-                VStack(alignment: .leading, spacing: 8) {
-                    if attachments.isEmpty {
-                        Text("No materials added")
-                            .font(DesignSystem.Typography.caption)
-                            .foregroundStyle(.secondary)
-                    } else {
-                        ForEach(attachments) { a in
-                            HStack {
-                                Image(systemName: a.tag.icon)
-                                Text(a.name)
-                                Spacer()
-                            }
-                        }
-                    }
-                    Button("Add Material") {}
-                        .buttonStyle(.plain)
-                }
+                AttachmentListView(attachments: $attachments, courseId: nil)
             }
             .padding(.vertical, 8)
 
             HStack {
-                Button("Cancel") { dismiss() }
+                Button("Cancel") {
+                    if hasUnsavedChanges {
+                        showDiscardDialog = true
+                    } else {
+                        dismiss()
+                    }
+                }
                 Spacer()
                 Button("Save") {
-                    let trimmed = title.trimmingCharacters(in: .whitespaces)
-                    guard !trimmed.isEmpty else { return }
-
-                    let course: Course
-                    switch mode {
-                    case .new:
-                        course = Course(title: trimmed, code: code, semesterId: UUID(), attachments: attachments)
-                    case .edit(let existing):
-                        course = Course(id: existing.id, title: trimmed, code: code, semesterId: existing.semesterId, colorHex: existing.colorHex, attachments: attachments)
-                    }
-
-                    onSave(course)
-                    dismiss()
+                    saveCourse()
                 }
                 .keyboardShortcut(.defaultAction)
             }
         }
         .padding(DesignSystem.Layout.padding.card)
         .frame(minWidth: 420)
+        .interactiveDismissDisabled(hasUnsavedChanges)
+        .confirmationDialog(
+            "Discard changes?",
+            isPresented: $showDiscardDialog,
+            titleVisibility: .visible
+        ) {
+            Button("Save and Close") {
+                saveCourse()
+            }
+            Button("Discard Changes", role: .destructive) {
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("You have unsaved edits. Save before closing to avoid losing them.")
+        }
         .onAppear {
             if case .edit(let existing) = mode {
                 title = existing.title
@@ -106,5 +106,21 @@ struct AddEditCourseView: View {
         case .new: return "Add Course"
         case .edit: return "Edit Course"
         }
+    }
+
+    private func saveCourse() {
+        let trimmed = title.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return }
+
+        let course: Course
+        switch mode {
+        case .new:
+            course = Course(title: trimmed, code: code, semesterId: UUID(), attachments: attachments)
+        case .edit(let existing):
+            course = Course(id: existing.id, title: trimmed, code: code, semesterId: existing.semesterId, colorHex: existing.colorHex, attachments: attachments)
+        }
+
+        onSave(course)
+        dismiss()
     }
 }

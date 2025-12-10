@@ -18,7 +18,7 @@ struct RootsPressEffect: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .scaleEffect(isPressed ? 0.96 : 1)
+            .scaleEffect(isPressed ? 0.92 : 1)
             .animation(DesignSystem.Motion.interactiveSpring, value: isPressed)
             .onLongPressGesture(minimumDuration: .infinity, maximumDistance: .infinity, pressing: { pressing in
                 isPressed = pressing

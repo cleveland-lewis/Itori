@@ -1,4 +1,18 @@
 {
+  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/SettingsRootView.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/SettingsRootView.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/SettingsRootView.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/SettingsRootView.dia",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/SettingsRootView.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/SettingsRootView.swiftdeps"
+  },
+  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/SettingsToolbarIdentifiers.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/SettingsToolbarIdentifiers.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/SettingsToolbarIdentifiers.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/SettingsToolbarIdentifiers.dia",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/SettingsToolbarIdentifiers.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/SettingsToolbarIdentifiers.swiftdeps"
+  },
   "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/SettingsView.swift" : {
     "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/SettingsView.swiftconstvalues",
     "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/SettingsView.d",
@@ -61,6 +75,13 @@
     "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/TimerHeaderView.dia",
     "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/TimerHeaderView.o",
     "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/TimerHeaderView.swiftdeps"
+  },
+  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/TimerManager.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/TimerManager.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/TimerManager.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/TimerManager.dia",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/TimerManager.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/TimerManager.swiftdeps"
   },
   "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/TimerModels.swift" : {
     "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/TimerModels.swiftconstvalues",

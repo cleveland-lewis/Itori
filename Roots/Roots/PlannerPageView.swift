@@ -278,9 +278,9 @@ private extension PlannerPageView {
                     Image(systemName: "chevron.left")
                         .font(DesignSystem.Typography.body)
                         .frame(width: 32, height: 32)
-                        .background(Color(nsColor: .controlBackgroundColor))
-                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+                        .foregroundStyle(.primary)
                 }
+                .buttonStyle(.plain)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(Self.dayFormatter.string(from: selectedDate))
                         .font(DesignSystem.Typography.body)
@@ -294,9 +294,9 @@ private extension PlannerPageView {
                     Image(systemName: "chevron.right")
                         .font(DesignSystem.Typography.body)
                         .frame(width: 32, height: 32)
-                        .background(Color(nsColor: .controlBackgroundColor))
-                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+                        .foregroundStyle(.primary)
                 }
+                .buttonStyle(.plain)
             }
 
             Spacer()

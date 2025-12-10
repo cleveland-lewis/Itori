@@ -33,9 +33,9 @@ struct RootsIconButtonLabel: View {
                     .background(Circle().fill(DesignSystem.Materials.hud))
             )
             .overlay(
-                Circle().stroke(.white.opacity(0.12), lineWidth: 0.75)
+                Circle().stroke(Color(nsColor: .separatorColor).opacity(0.06), lineWidth: 0.75)
             )
-            .shadow(color: (role == .secondary ? Color.primary.opacity(0.1) : RootsColor.accent.opacity(0.25)), radius: 14, y: 8)
+            .shadow(color: (role == .secondary ? Color.primary.opacity(0.06) : RootsColor.accent.opacity(0.12)), radius: 8, y: 4)
     }
 }
 

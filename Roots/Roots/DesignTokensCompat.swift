@@ -69,7 +69,7 @@ extension View {
         .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: radius, style: .continuous)
-                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                .stroke(Color(nsColor: .separatorColor).opacity(0.06), lineWidth: 1)
         )
     }
 
@@ -117,7 +117,11 @@ struct RootsPopupContainer<Content: View, Footer: View>: View {
             DesignSystem.Materials.popup,
             in: RoundedRectangle(cornerRadius: RootsRadius.popup, style: .continuous)
         )
-        .rootsFloatingShadow()
+        .shadow(color: .black.opacity(0.25), radius: 20, y: 10)
+        .overlay(
+            RoundedRectangle(cornerRadius: RootsRadius.popup, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.1), lineWidth: 1)
+        )
         .popupTextAlignedLeft()
     }
 }
@@ -184,7 +188,7 @@ struct RootsCard<Content: View>: View {
             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                 .stroke(Color.white.opacity(0.08), lineWidth: 1)
         )
-        .shadow(color: Color.black.opacity(0.12), radius: 10, y: 5)
+        .shadow(color: Color.black.opacity(0.06), radius: 6, y: 3)
     }
 }
 

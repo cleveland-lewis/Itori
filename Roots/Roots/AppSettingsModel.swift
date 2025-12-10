@@ -102,6 +102,33 @@ enum TypographyMode: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
+enum AssignmentSwipeAction: String, CaseIterable, Identifiable, Codable {
+    case complete
+    case edit
+    case delete
+    case openDetail
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .complete: return "Complete / Undo"
+        case .edit: return "Edit"
+        case .delete: return "Delete"
+        case .openDetail: return "Open Details"
+        }
+    }
+
+    var systemImage: String {
+        switch self {
+        case .complete: return "checkmark.circle"
+        case .edit: return "pencil"
+        case .delete: return "trash"
+        case .openDetail: return "info.circle"
+        }
+    }
+}
+
 struct AppTypography {
     enum TextStyle {
         case headline, title2, body
@@ -202,6 +229,9 @@ final class AppSettingsModel: ObservableObject, Codable {
         case enableICloudSyncStorage
         case enableAIPlannerStorage
         case plannerHorizonStorage
+        case enableFlashcardsStorage
+        case assignmentSwipeLeadingRaw
+        case assignmentSwipeTrailingRaw
     }
 
 
@@ -309,6 +339,9 @@ final class AppSettingsModel: ObservableObject, Codable {
     var highContrastModeStorage: Bool = false
     var enableAIPlannerStorage: Bool = false
     var plannerHorizonStorage: String = "1w"
+    var enableFlashcardsStorage: Bool = true
+    var assignmentSwipeLeadingRaw: String = AssignmentSwipeAction.complete.rawValue
+    var assignmentSwipeTrailingRaw: String = AssignmentSwipeAction.delete.rawValue
 
     // General Settings
     var userNameStorage: String? = nil
@@ -436,6 +469,20 @@ final class AppSettingsModel: ObservableObject, Codable {
         set { plannerHorizonStorage = newValue }
     }
 
+    var enableFlashcards: Bool {
+        get { enableFlashcardsStorage }
+        set { enableFlashcardsStorage = newValue }
+    }
+
+    /// Derived convenience: visible tabs minus flashcards if disabled
+    var effectiveVisibleTabs: [RootTab] {
+        var tabs = visibleTabs
+        if !enableFlashcards {
+            tabs.removeAll { $0 == .decks }
+        }
+        return tabs
+    }
+
     var tabOrder: [RootTab] {
         get { tabOrderRaw.split(separator: ",").compactMap { RootTab(rawValue: String($0)) } }
         set { tabOrderRaw = newValue.map { $0.rawValue }.joined(separator: ",") }
@@ -472,6 +519,16 @@ final class AppSettingsModel: ObservableObject, Codable {
     var typographyMode: TypographyMode {
         get { TypographyMode(rawValue: typographyModeRaw) ?? .system }
         set { typographyModeRaw = newValue.rawValue }
+    }
+
+    var assignmentSwipeLeading: AssignmentSwipeAction {
+        get { AssignmentSwipeAction(rawValue: assignmentSwipeLeadingRaw) ?? .complete }
+        set { assignmentSwipeLeadingRaw = newValue.rawValue }
+    }
+
+    var assignmentSwipeTrailing: AssignmentSwipeAction {
+        get { AssignmentSwipeAction(rawValue: assignmentSwipeTrailingRaw) ?? .delete }
+        set { assignmentSwipeTrailingRaw = newValue.rawValue }
     }
 
     var devModeEnabled: Bool {
@@ -775,6 +832,9 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(enableICloudSyncStorage, forKey: .enableICloudSyncStorage)
         try container.encode(enableAIPlannerStorage, forKey: .enableAIPlannerStorage)
         try container.encode(plannerHorizonStorage, forKey: .plannerHorizonStorage)
+        try container.encode(enableFlashcardsStorage, forKey: .enableFlashcardsStorage)
+        try container.encode(assignmentSwipeLeadingRaw, forKey: .assignmentSwipeLeadingRaw)
+        try container.encode(assignmentSwipeTrailingRaw, forKey: .assignmentSwipeTrailingRaw)
     }
 
     required init(from decoder: Decoder) throws {
@@ -804,5 +864,15 @@ final class AppSettingsModel: ObservableObject, Codable {
         devModeSchedulerLoggingStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeSchedulerLoggingStorage) ?? false
         devModePerformanceStorage = try container.decodeIfPresent(Bool.self, forKey: .devModePerformanceStorage) ?? false
         enableICloudSyncStorage = try container.decodeIfPresent(Bool.self, forKey: .enableICloudSyncStorage) ?? false
+        enableFlashcardsStorage = try container.decodeIfPresent(Bool.self, forKey: .enableFlashcardsStorage) ?? true
+        assignmentSwipeLeadingRaw = try container.decodeIfPresent(String.self, forKey: .assignmentSwipeLeadingRaw) ?? AssignmentSwipeAction.complete.rawValue
+        assignmentSwipeTrailingRaw = try container.decodeIfPresent(String.self, forKey: .assignmentSwipeTrailingRaw) ?? AssignmentSwipeAction.delete.rawValue
+    }
+
+    func resetUserDefaults() {
+        if let bundle = Bundle.main.bundleIdentifier {
+            UserDefaults.standard.removePersistentDomain(forName: bundle)
+        }
+        UserDefaults.standard.synchronize()
     }
 }

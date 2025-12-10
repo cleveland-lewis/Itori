@@ -4,14 +4,20 @@ struct CoursesDashboardSidebar: View {
     let courses: [CourseDashboard]
     @Binding var selectedCourse: CourseDashboard?
     @State private var searchText = ""
+    @State private var selectedSemesterID: UUID?
+    let semesters: [Semester]
     let onNewCourse: () -> Void
     let onEditCourses: () -> Void
 
     private var filteredCourses: [CourseDashboard] {
-        if searchText.isEmpty {
-            return courses
-        }
-        return courses.filter {
+        let semesterFiltered: [CourseDashboard] = {
+            guard let selectedSemesterID else { return courses }
+            return courses.filter { $0.semesterId == selectedSemesterID }
+        }()
+
+        guard !searchText.isEmpty else { return semesterFiltered }
+
+        return semesterFiltered.filter {
             $0.title.localizedCaseInsensitiveContains(searchText) ||
             $0.code.localizedCaseInsensitiveContains(searchText) ||
             $0.instructor.localizedCaseInsensitiveContains(searchText)
@@ -26,8 +32,8 @@ struct CoursesDashboardSidebar: View {
                 .padding(.top, 20)
                 .padding(.bottom, 12)
 
-            // Search Bar
-            searchBar
+            // Search + Semester Filter
+            filterBar
                 .padding(.horizontal, 16)
                 .padding(.bottom, 12)
 
@@ -76,20 +82,31 @@ struct CoursesDashboardSidebar: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var searchBar: some View {
+    private var filterBar: some View {
         HStack(spacing: DesignSystem.Layout.spacing.small) {
-            Image(systemName: "magnifyingglass")
-                .foregroundStyle(.secondary)
-                .font(DesignSystem.Typography.body)
+            HStack(spacing: DesignSystem.Layout.spacing.small) {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.secondary)
+                    .font(DesignSystem.Typography.body)
 
-            TextField("Search courses...", text: $searchText)
-                .textFieldStyle(.plain)
-                .font(DesignSystem.Typography.body)
+                TextField("Search courses...", text: $searchText)
+                    .textFieldStyle(.plain)
+                    .font(DesignSystem.Typography.body)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(Color(nsColor: .controlBackgroundColor).opacity(0.5))
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+
+            Picker("", selection: $selectedSemesterID) {
+                Text("All").tag(Optional<UUID>(nil))
+                ForEach(semesters) { semester in
+                    Text(semester.name).tag(Optional(semester.id))
+                }
+            }
+            .frame(width: 140)
+            .labelsHidden()
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 6)
-        .background(Color(nsColor: .controlBackgroundColor).opacity(0.5))
-        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 
     private var sidebarFooter: some View {
@@ -173,7 +190,8 @@ struct CourseListRow: View {
                 .background(gradeColor.opacity(0.9), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
         }
         .padding(.horizontal, 12)
-        .padding(.vertical, 10)
+        .padding(.vertical, 12)
+        .frame(minHeight: 60, alignment: .center)
         .background(
             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                 .fill(isSelected ? Color.accentColor.opacity(0.15) : Color(nsColor: .controlBackgroundColor).opacity(0.3))
@@ -186,11 +204,6 @@ struct CourseListRow: View {
     }
 
     private var gradeColor: Color {
-        switch course.currentGrade {
-        case 90...100: return Color.green
-        case 80..<90: return Color.blue
-        case 70..<80: return Color.orange
-        default: return Color.red
-        }
+        Color.accentColor
     }
 }

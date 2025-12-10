@@ -77,11 +77,11 @@ struct SettingsView: View {
             .listStyle(.plain)
 #endif
             .navigationTitle("Settings")
-            .onChange(of: settings.use24HourTime) { _ in settings.save() }
-            .onChange(of: settings.showEnergyPanel) { _ in settings.save() }
-            .onChange(of: settings.highContrastMode) { _ in settings.save() }
-            .onChange(of: settings.defaultWorkdayStart) { _ in settings.save() }
-            .onChange(of: settings.defaultWorkdayEnd) { _ in settings.save() }
+            .onChange(of: settings.use24HourTime) { _, _ in settings.save() }
+            .onChange(of: settings.showEnergyPanel) { _, _ in settings.save() }
+            .onChange(of: settings.highContrastMode) { _, _ in settings.save() }
+            .onChange(of: settings.defaultWorkdayStart) { _, _ in settings.save() }
+            .onChange(of: settings.defaultWorkdayEnd) { _, _ in settings.save() }
         }
         .background(DesignSystem.Colors.appBackground)
         .alert("Health Check", isPresented: $showingHealthCheck, presenting: diagnosticReport) { _ in
@@ -117,6 +117,8 @@ private struct DebugSettingsView: View {
     }
 }
 
+#if !DISABLE_PREVIEWS
 #Preview {
     SettingsView()
 }
+#endif

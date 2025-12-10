@@ -4,8 +4,10 @@ import Combine
 
 @MainActor
 final class CoursesStore: ObservableObject {
+    static weak var shared: CoursesStore?
     @Published private(set) var semesters: [Semester] = []
     @Published private(set) var courses: [Course] = []
+    @Published private(set) var currentGPA: Double = 0
 
     @Published var currentSemesterId: UUID? {
         didSet {
@@ -15,6 +17,7 @@ final class CoursesStore: ObservableObject {
     }
 
     private let storageURL: URL
+    private let cacheURL: URL
 
     init(storageURL: URL? = nil) {
         let fm = FileManager.default
@@ -28,9 +31,15 @@ final class CoursesStore: ObservableObject {
             try? fm.createDirectory(at: folder, withIntermediateDirectories: true)
             self.storageURL = folder.appendingPathComponent("courses.json")
         }
+        let cacheFolder = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("RootsCourses", isDirectory: true)
+        try? FileManager.default.createDirectory(at: cacheFolder, withIntermediateDirectories: true)
+        self.cacheURL = cacheFolder.appendingPathComponent("courses_cache.json")
 
+        loadCache()
         load()
         cleanupOldData()
+        CoursesStore.shared = self
+        recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
 
     // MARK: - Public API
@@ -69,23 +78,37 @@ final class CoursesStore: ObservableObject {
         let newCourse = Course(title: title, code: code, semesterId: semester.id, isArchived: false)
         courses.append(newCourse)
         persist()
+        recalcGPA(tasks: AssignmentsStore.shared.tasks)
+    }
+
+    func resetAll() {
+        semesters.removeAll()
+        courses.removeAll()
+        currentSemesterId = nil
+        try? FileManager.default.removeItem(at: storageURL)
+        try? FileManager.default.removeItem(at: cacheURL)
+        persist()
+        recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
 
     func addCourse(_ course: Course) {
         courses.append(course)
         persist()
+        recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
 
     func updateCourse(_ course: Course) {
         guard let idx = courses.firstIndex(where: { $0.id == course.id }) else { return }
         courses[idx] = course
         persist()
+        recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
 
     func toggleArchiveCourse(_ course: Course) {
         guard let idx = courses.firstIndex(where: { $0.id == course.id }) else { return }
         courses[idx].isArchived.toggle()
         persist()
+        recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
 
     func deleteCourse(_ course: Course) {
@@ -93,6 +116,7 @@ final class CoursesStore: ObservableObject {
         // Detach other entities via notification so dependent stores can react.
         NotificationCenter.default.post(name: .courseDeleted, object: nil, userInfo: ["courseId": course.id])
         persist()
+        recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
 
     func courses(in semester: Semester) -> [Course] {
@@ -119,6 +143,7 @@ final class CoursesStore: ObservableObject {
         guard let idx = semesters.firstIndex(where: { $0.id == semester.id }) else { return }
         semesters[idx].isArchived.toggle()
         persist()
+        recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
 
     func deleteSemester(_ id: UUID) {
@@ -129,12 +154,14 @@ final class CoursesStore: ObservableObject {
             currentSemesterId = nil
         }
         persist()
+        recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
 
     func recoverSemester(_ id: UUID) {
         guard let idx = semesters.firstIndex(where: { $0.id == id }) else { return }
         semesters[idx].deletedAt = nil
         persist()
+        recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
 
     func permanentlyDeleteSemester(_ id: UUID) {
@@ -144,6 +171,7 @@ final class CoursesStore: ObservableObject {
             currentSemesterId = nil
         }
         persist()
+        recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
 
     var activeSemesters: [Semester] {
@@ -184,6 +212,19 @@ final class CoursesStore: ObservableObject {
         }
     }
 
+    private func loadCache() {
+        guard FileManager.default.fileExists(atPath: cacheURL.path) else { return }
+        do {
+            let data = try Data(contentsOf: cacheURL)
+            let decoded = try JSONDecoder().decode(PersistedData.self, from: data)
+            self.semesters = decoded.semesters
+            self.courses = decoded.courses
+            self.currentSemesterId = decoded.currentSemesterId
+        } catch {
+            print("Failed to load courses cache: \(error)")
+        }
+    }
+
     private func persist() {
         let snapshot = PersistedData(
             semesters: semesters,
@@ -193,9 +234,18 @@ final class CoursesStore: ObservableObject {
         do {
             let data = try JSONEncoder().encode(snapshot)
             try data.write(to: storageURL, options: [.atomic, .completeFileProtection])
+            try data.write(to: cacheURL, options: [.atomic, .completeFileProtection])
         } catch {
             print("Failed to persist courses data: \(error)")
         }
+    }
+
+    // MARK: - GPA recalculation
+
+    @MainActor
+    func recalcGPA(tasks: [AppTask]) {
+        let gradedCourses = courses.filter { !$0.isArchived }
+        currentGPA = GradeCalculator.calculateGPA(courses: gradedCourses, tasks: tasks)
     }
 
     func cleanupOldData() {

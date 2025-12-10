@@ -48,7 +48,7 @@ struct StudyAnalyticsAggregator {
         let now = Date()
         let weekday = calendar.component(.weekday, from: now)
         // start on Monday: weekday 2 (in Gregorian), adjust accordingly
-        var startDiff = (weekday + 5) % 7 // days to subtract to get Monday
+        let startDiff = (weekday + 5) % 7 // days to subtract to get Monday
         if let monday = calendar.date(byAdding: .day, value: -startDiff, to: now) {
             let startOfMonday = calendar.startOfDay(for: monday)
             var buckets: [AnalyticsBucket] = []
@@ -72,11 +72,10 @@ struct StudyAnalyticsAggregator {
             guard let end = session.endDate else { continue }
             // clamp session into buckets by overlap
             for i in 0..<result.count {
-                var bucket = result[i]
-                if session.startDate < bucket.end && end > bucket.start {
+                if session.startDate < result[i].end && end > result[i].start {
                     // overlap duration
-                    let s = max(session.startDate, bucket.start)
-                    let e = min(end, bucket.end)
+                    let s = max(session.startDate, result[i].start)
+                    let e = min(end, result[i].end)
                     let overlapped = e.timeIntervalSince(s)
                     let cat = activityMap[session.activityID]?.category ?? "Uncategorized"
                     result[i].categoryDurations[cat, default: 0] += overlapped
@@ -87,7 +86,6 @@ struct StudyAnalyticsAggregator {
     }
 
     private static func hourLabel(for date: Date, calendar: Calendar) -> String {
-        let hour = calendar.component(.hour, from: date)
         let formatter = DateFormatter()
         formatter.dateFormat = "ha"
         return formatter.string(from: date).lowercased()

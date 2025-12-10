@@ -1,9 +1,11 @@
 import SwiftUI
 import Combine
+import AppKit
+import EventKit
 
 // MARK: - Models
 
-enum LocalTimerMode: String, CaseIterable, Identifiable {
+enum LocalTimerMode: String, CaseIterable, Identifiable, Codable {
     case pomodoro
     case countdown
     case stopwatch
@@ -45,13 +47,17 @@ struct LocalTimerActivity: Identifiable, Hashable {
     var todayTrackedSeconds: TimeInterval
 }
 
-struct LocalTimerSession: Identifiable {
+struct LocalTimerSession: Identifiable, Codable, Hashable {
     let id: UUID
     var activityID: UUID
     var mode: LocalTimerMode
     var startDate: Date
     var endDate: Date?
     var duration: TimeInterval
+
+    enum CodingKeys: String, CodingKey {
+        case id, activityID, mode, startDate, endDate, duration
+    }
 }
 
 // MARK: - Root View
@@ -59,6 +65,8 @@ struct LocalTimerSession: Identifiable {
 struct TimerPageView: View {
     @EnvironmentObject private var settings: AppSettingsModel
     @EnvironmentObject private var settingsCoordinator: SettingsCoordinator
+    @EnvironmentObject private var assignmentsStore: AssignmentsStore
+    @EnvironmentObject private var calendarManager: CalendarManager
 
     @State private var mode: LocalTimerMode = .pomodoro
     @State private var activities: [LocalTimerActivity] = TimerPageView.sampleActivities
@@ -67,8 +75,12 @@ struct TimerPageView: View {
     @State private var isRunning: Bool = false
     @State private var remainingSeconds: TimeInterval = 25 * 60
     @State private var elapsedSeconds: TimeInterval = 0
+    @State private var pomodoroSessions: Int = 4
     @State private var activeSession: LocalTimerSession? = nil
     @State private var sessions: [LocalTimerSession] = []
+    @State private var activityNotes: [UUID: String] = [:]
+    private let notesKeyPrefix = "timer.activity.notes."
+    @State private var loadedSessions = false
 
     @State private var showActivityEditor: Bool = false
     @State private var editingActivity: LocalTimerActivity? = nil
@@ -81,21 +93,24 @@ struct TimerPageView: View {
 
     @State private var searchText: String = ""
     @State private var selectedCollection: String = "All"
+    @State private var focusWindowController: NSWindowController? = nil
 
     private let cardCorner: CGFloat = 24
     private var timerCancellable: AnyCancellable?
 
     var body: some View {
-        ZStack {
-            Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
+        ScrollView {
+            ZStack {
+                Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                topBar
-                mainGrid
-                bottomSummary
+                VStack(spacing: 20) {
+                    topBar
+                    mainGrid
+                    bottomSummary
+                }
+                .padding(.horizontal, 32)
+                .padding(.vertical, 24)
             }
-            .padding(.horizontal, 32)
-            .padding(.vertical, 24)
         }
         .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
             let use24h = AppSettingsModel.shared.use24HourTime
@@ -110,35 +125,77 @@ struct TimerPageView: View {
                 upsertActivity(updated)
             }
         }
+        .onAppear {
+            if !loadedSessions {
+                loadSessions()
+                loadedSessions = true
+            }
+            syncTimerWithAssignment()
+        }
+        .onChange(of: sessions) { _, _ in
+            persistSessions()
+        }
+        .onChange(of: selectedActivityID) { _, _ in
+            syncTimerWithAssignment()
+        }
     }
 
     // MARK: Top Bar
 
     private var topBar: some View {
         HStack(alignment: .center, spacing: 16) {
-            currentActivityPill
-                .frame(maxWidth: .infinity, alignment: .leading)
-
             Spacer()
-
-            VStack(spacing: 2) {
-                Text(clockString)
-                    .font(DesignSystem.Typography.body)
-                Text(dateString)
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
-            }
-            .frame(maxWidth: .infinity)
-
+            // Top spacer only; time/date removed per request
             Spacer()
+        }
+    }
 
-            Picker("Mode", selection: $mode.animation(.spring(response: 0.3, dampingFraction: 0.85))) {
-                ForEach(LocalTimerMode.allCases) { m in
-                    Text(m.label).tag(m)
-                }
-            }
-            .pickerStyle(.segmented)
-            .frame(maxWidth: 320)
+    private func activityTasks(_ activityId: UUID) -> [AppTask]? {
+        guard let activity = activities.first(where: { $0.id == activityId }) else { return nil }
+        let normName = activity.name.lowercased()
+        let tasks = assignmentsStore.tasks.filter { task in
+            guard !task.isCompleted else { return false }
+            let title = task.title.lowercased()
+            return normName.contains(title) || title.contains(normName)
+        }
+        return tasks.isEmpty ? nil : tasks
+    }
+
+    private func saveNotes(_ notes: String, for activityId: UUID) {
+        let key = notesKeyPrefix + activityId.uuidString
+        UserDefaults.standard.set(notes, forKey: key)
+    }
+
+    private func loadNotes(for activityId: UUID) {
+        let key = notesKeyPrefix + activityId.uuidString
+        if let stored = UserDefaults.standard.string(forKey: key) {
+            activityNotes[activityId] = stored
+        }
+    }
+
+    // MARK: Persistence
+
+    private var sessionsURL: URL {
+        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        return docs.appendingPathComponent("TimerSessions.json")
+    }
+
+    private func persistSessions() {
+        do {
+            let data = try JSONEncoder().encode(sessions)
+            try data.write(to: sessionsURL, options: .atomic)
+        } catch {
+            print("Failed to persist timer sessions: \(error)")
+        }
+    }
+
+    private func loadSessions() {
+        do {
+            let data = try Data(contentsOf: sessionsURL)
+            let decoded = try JSONDecoder().decode([LocalTimerSession].self, from: data)
+            sessions = decoded
+        } catch {
+            // OK if first run or missing file
         }
     }
 
@@ -176,7 +233,6 @@ struct TimerPageView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
-        .frame(maxWidth: 320)
         .glassChrome(cornerRadius: 14)
     }
 
@@ -191,14 +247,18 @@ struct TimerPageView: View {
                 VStack(spacing: 16) {
                     activitiesColumn
                     timerCoreCard
+                    activityDetailPanel
                     analyticsCard
                 }
             } else {
                 HStack(alignment: .top, spacing: 16) {
                     activitiesColumn
                         .frame(width: width * 0.30)
-                    timerCoreCard
-                        .frame(width: width * 0.38)
+                    VStack(spacing: 16) {
+                        timerCoreCard
+                        activityDetailPanel
+                    }
+                    .frame(width: width * 0.38)
                     StudyAnalyticsCard(showHistory: $showHistoryGraph, selectedRange: $selectedRange, activity: currentActivity, activities: activities, sessions: sessions)
                         .frame(width: width * 0.32)
                 }
@@ -251,7 +311,10 @@ struct TimerPageView: View {
                         TimerActivityRow(
                             activity: activity,
                             isSelected: activity.id == selectedActivityID,
-                            onSelect: { selectedActivityID = activity.id },
+                            onSelect: {
+                                selectedActivityID = activity.id
+                                loadNotes(for: activity.id)
+                            },
                             onEdit: {
                                 editingActivity = activity
                                 showActivityEditor = true
@@ -323,6 +386,55 @@ struct TimerPageView: View {
         return Array(set).sorted()
     }
 
+    private func openFocusWindow() {
+        let selectedActivity = currentActivity
+        let notesBinding: Binding<String> = Binding(
+            get: { selectedActivity.flatMap { activityNotes[$0.id] } ?? "" },
+            set: { newValue in
+                if let id = selectedActivity?.id {
+                    activityNotes[id] = newValue
+                    saveNotes(newValue, for: id)
+                }
+            }
+        )
+
+        let tasksLeft = assignmentsStore.tasks.filter { task in
+            guard let due = task.due else { return false }
+            let cal = Calendar.current
+            return !task.isCompleted && cal.isDateInToday(due)
+        }.count
+
+        let nextEvent: EKEvent? = {
+            let selectedId = calendarManager.selectedCalendarID
+            let events = calendarManager.cachedMonthEvents.filter {
+                selectedId.isEmpty || $0.calendar.calendarIdentifier == selectedId
+            }
+            let todayEvents = events.filter { Calendar.current.isDateInToday($0.startDate) && $0.startDate > Date() }
+            return todayEvents.sorted(by: { $0.startDate < $1.startDate }).first
+        }()
+
+        let focusView = FocusWindowView(
+            mode: mode,
+            timerText: TimerCoreCard.timeDisplayStatic(mode: mode, remainingSeconds: remainingSeconds, elapsedSeconds: elapsedSeconds),
+            clockString: clockString,
+            activityName: selectedActivity?.name,
+            activityNotes: notesBinding,
+            tasksLeftToday: tasksLeft,
+            nextEventTitle: nextEvent?.title,
+            nextEventTime: nextEvent?.startDate,
+            activityCourse: selectedActivity?.courseCode
+        )
+        let hosting = NSHostingController(rootView: focusView)
+        let window = NSWindow(contentViewController: hosting)
+        window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
+        window.setContentSize(NSSize(width: 640, height: 480))
+        window.center()
+        window.title = "Focus"
+        window.isReleasedWhenClosed = false
+        window.makeKeyAndOrderFront(nil)
+        focusWindowController = NSWindowController(window: window)
+    }
+
     // MARK: Timer Core Card
 
     private var timerCoreCard: some View {
@@ -331,10 +443,12 @@ struct TimerPageView: View {
             isRunning: $isRunning,
             remainingSeconds: $remainingSeconds,
             elapsedSeconds: $elapsedSeconds,
+            pomodoroSessions: pomodoroSessions,
             onStart: startTimer,
             onPause: pauseTimer,
             onReset: resetTimer,
-            onSkip: completeCurrentBlock
+            onSkip: completeCurrentBlock,
+            onOpenFocus: openFocusWindow
         )
         .padding(DesignSystem.Layout.padding.card)
         .glassCard(cornerRadius: 24)
@@ -350,6 +464,64 @@ struct TimerPageView: View {
             activities: activities,
             sessions: sessions
         )
+        .padding(DesignSystem.Layout.padding.card)
+        .glassCard(cornerRadius: 24)
+    }
+
+    private var activityDetailPanel: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            currentActivityPill
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            if let activity = currentActivity {
+                if let tasks = activityTasks(activity.id), !tasks.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Tasks for this Activity")
+                            .font(DesignSystem.Typography.caption)
+                            .foregroundStyle(.secondary)
+                        ForEach(tasks, id: \.id) { task in
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(task.title)
+                                        .font(DesignSystem.Typography.body)
+                                    if let due = task.due {
+                                        Text(due, style: .date)
+                                            .font(DesignSystem.Typography.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                                Spacer()
+                                if task.isCompleted {
+                                    Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                                }
+                            }
+                            .padding(8)
+                            .background(DesignSystem.Materials.surface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        }
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Notes")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(.secondary)
+                    TextEditor(text: Binding(
+                        get: { activityNotes[activity.id] ?? "" },
+                        set: { newValue in
+                            activityNotes[activity.id] = newValue
+                            saveNotes(newValue, for: activity.id)
+                        })
+                    )
+                    .frame(minHeight: 120)
+                    .padding(8)
+                    .background(DesignSystem.Materials.surface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                }
+            } else {
+                Text("Select an activity to view details.")
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
         .padding(DesignSystem.Layout.padding.card)
         .glassCard(cornerRadius: 24)
     }
@@ -437,6 +609,19 @@ struct TimerPageView: View {
         isRunning = false
         elapsedSeconds = 0
         remainingSeconds = 25 * 60
+    }
+
+    private func assignmentForCurrentActivity() -> AppTask? {
+        guard let activity = currentActivity, let tasks = activityTasks(activity.id) else { return nil }
+        return tasks.first
+    }
+
+    private func syncTimerWithAssignment() {
+        guard !isRunning, let task = assignmentForCurrentActivity() else { return }
+        remainingSeconds = TimeInterval(max(1, task.estimatedMinutes) * 60)
+        if mode == .pomodoro {
+            pomodoroSessions = max(1, Int(ceil(Double(task.estimatedMinutes) / 25.0)))
+        }
     }
 
     private func tick() {
@@ -540,10 +725,10 @@ struct TimerActivityRow: View {
                 Divider()
                 Button("Delete", role: .destructive, action: onDelete)
             } label: {
-                Image(systemName: "ellipsis")
-                    .rotationEffect(.degrees(90))
+                Image(systemName: "ellipsis.circle")
             }
             .menuStyle(.borderlessButton)
+            .menuIndicator(.hidden)
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
@@ -575,20 +760,34 @@ struct TimerCoreCard: View {
     @Binding var isRunning: Bool
     @Binding var remainingSeconds: TimeInterval
     @Binding var elapsedSeconds: TimeInterval
+    var pomodoroSessions: Int
 
     var onStart: () -> Void
     var onPause: () -> Void
     var onReset: () -> Void
     var onSkip: () -> Void
+    var onOpenFocus: () -> Void
 
     var body: some View {
-        VStack(alignment: .center, spacing: 16) {
-            Text("\(mode.label)")
-                .font(DesignSystem.Typography.body)
+        VStack(alignment: .center, spacing: 18) {
+            RootsAnalogClock(diameter: 260, showSecondHand: true)
 
             Text(timeDisplay)
-                .font(DesignSystem.Typography.body)
+                .font(.title2.weight(.semibold))
                 .monospacedDigit()
+
+            HStack(spacing: 12) {
+                Image(systemName: "gauge.with.dots.needle.0percent")
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+                Picker("Mode", selection: $mode.animation(.spring(response: 0.3, dampingFraction: 0.85))) {
+                    ForEach(LocalTimerMode.allCases) { m in
+                        Text(m.label).tag(m)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .frame(maxWidth: 320)
+            }
 
             HStack(spacing: 12) {
                 Button(isRunning ? "Pause" : "Start") {
@@ -604,6 +803,13 @@ struct TimerCoreCard: View {
                     Button("Skip", action: onSkip)
                         .buttonStyle(.bordered)
                 }
+
+                Button {
+                    onOpenFocus()
+                } label: {
+                    Image(systemName: "arrow.up.left.and.arrow.down.right")
+                }
+                .buttonStyle(.bordered)
             }
 
             HStack(alignment: .center) {
@@ -644,16 +850,126 @@ struct TimerCoreCard: View {
     private var infoLine: String {
         switch mode {
         case .pomodoro:
-            return "Focus 25m · Break 5m · Session 1 of 4"
+            return "Focus 25m · Break 5m · Session 1 of \(pomodoroSessions)"
         case .countdown:
             return "Countdown in progress"
         case .stopwatch:
             return "Tracking elapsed time"
         }
     }
+
+    // Static helper for focus window
+    static func timeDisplayStatic(mode: LocalTimerMode, remainingSeconds: TimeInterval, elapsedSeconds: TimeInterval) -> String {
+        switch mode {
+        case .stopwatch:
+            let h = Int(elapsedSeconds) / 3600
+            let m = (Int(elapsedSeconds) % 3600) / 60
+            let s = Int(elapsedSeconds) % 60
+            if h > 0 {
+                return String(format: "%02d:%02d:%02d", h, m, s)
+            } else {
+                return String(format: "%02d:%02d", m, s)
+            }
+        case .pomodoro, .countdown:
+            let m = Int(remainingSeconds) / 60
+            let s = Int(remainingSeconds) % 60
+            return String(format: "%02d:%02d", m, s)
+        }
+    }
 }
 
 // MARK: - Analytics Card
+// MARK: - Analog Clock (local definition to ensure availability)
+
+import SwiftUI
+
+struct RootsAnalogClock: View {
+    var diameter: CGFloat = 200
+    var showSecondHand: Bool = true
+
+    private var radius: CGFloat { diameter / 2 }
+
+    var body: some View {
+        TimelineView(.animation) { timeline in
+            let date = timeline.date
+            let components = Calendar.current.dateComponents([.hour, .minute, .second, .nanosecond], from: date)
+            let seconds = Double(components.second ?? 0) + Double(components.nanosecond ?? 0) / 1_000_000_000
+            let minutes = Double(components.minute ?? 0) + seconds / 60
+            let hours = Double(components.hour ?? 0 % 12) + minutes / 60
+
+            ZStack {
+                face
+                ticks
+                hands(hours: hours, minutes: minutes, seconds: seconds)
+            }
+            .frame(width: diameter, height: diameter)
+        }
+    }
+
+    private var face: some View {
+        ZStack {
+            Circle()
+                .fill(.clear)
+                .overlay(
+                    Circle().stroke(Color.secondary.opacity(0.15), lineWidth: 1)
+                )
+
+            ForEach(1..<4) { idx in
+                Circle()
+                    .stroke(Color.secondary.opacity(0.12), lineWidth: 1)
+                    .frame(width: diameter * (1 - CGFloat(idx) * 0.15), height: diameter * (1 - CGFloat(idx) * 0.15))
+            }
+        }
+    }
+
+    private var ticks: some View {
+        ZStack {
+            ForEach([0, 90, 180, 270], id: \.self) { angle in
+                Capsule(style: .continuous)
+                    .fill(Color.primary.opacity(0.65))
+                    .frame(width: 6, height: 18)
+                    .offset(y: -radius + 14)
+                    .rotationEffect(.degrees(Double(angle)))
+            }
+
+            ForEach(0..<12) { idx in
+                Capsule(style: .continuous)
+                    .fill(Color.secondary.opacity(0.4))
+                    .frame(width: 3, height: 10)
+                    .offset(y: -radius + 12)
+                    .rotationEffect(.degrees(Double(idx) * 30))
+            }
+        }
+    }
+
+    private func hands(hours: Double, minutes: Double, seconds: Double) -> some View {
+        ZStack {
+            Capsule(style: .continuous)
+                .fill(Color.primary)
+                .frame(width: 8, height: radius * 0.5)
+                .offset(y: -radius * 0.25)
+                .rotationEffect(.degrees((hours / 12) * 360))
+
+            Capsule(style: .continuous)
+                .fill(Color.primary.opacity(0.9))
+                .frame(width: 6, height: radius * 0.7)
+                .offset(y: -radius * 0.35)
+                .rotationEffect(.degrees((minutes / 60) * 360))
+
+            if showSecondHand {
+                Capsule(style: .continuous)
+                    .fill(Color.accentColor)
+                    .frame(width: 2, height: radius * 0.85)
+                    .offset(y: -radius * 0.42)
+                    .rotationEffect(.degrees((seconds / 60) * 360))
+            }
+
+            Circle()
+                .fill(Color.primary.opacity(0.9))
+                .frame(width: 10, height: 10)
+        }
+    }
+}
 
 struct StudyAnalyticsCard: View {
     @Binding var showHistory: Bool
@@ -831,6 +1147,91 @@ struct StudyAnalyticsCard: View {
         // Simple placeholder: reuse today proportions
         let segs = segmentsForToday()
         return segs
+    }
+}
+
+// MARK: - Focus Window
+
+private struct FocusWindowView: View {
+    let mode: LocalTimerMode
+    let timerText: String
+    let clockString: String
+    let activityName: String?
+    let activityNotes: Binding<String>
+    let tasksLeftToday: Int
+    let nextEventTitle: String?
+    let nextEventTime: Date?
+    let activityCourse: String?
+
+    var body: some View {
+        VStack(spacing: 20) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Tasks Left Today")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text("\(tasksLeftToday)")
+                        .font(.title2.bold())
+                }
+                Spacer()
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text("Next Event")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    if let title = nextEventTitle, let time = nextEventTime {
+                        Text(title)
+                            .font(.headline)
+                        Text(time, style: .time)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("None")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
+            VStack(spacing: 8) {
+                Text(mode.label)
+                    .font(.title.weight(.semibold))
+                Text(timerText)
+                    .font(.system(size: 72, weight: .heavy, design: .rounded))
+                    .monospacedDigit()
+            }
+            .frame(maxWidth: .infinity, alignment: .center)
+
+            HStack(alignment: .top, spacing: 16) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(activityName ?? "No Activity")
+                        .font(.headline)
+                    if let course = activityCourse {
+                        Text(course)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Text("Notes")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    TextEditor(text: activityNotes)
+                        .frame(minHeight: 80, maxHeight: 140)
+                        .padding(8)
+                        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text("Current Time")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text(clockString)
+                        .font(.title3.monospacedDigit())
+                }
+                .frame(alignment: .trailing)
+            }
+        }
+        .padding(20)
+        .frame(minWidth: 520, minHeight: 400)
     }
 }
 

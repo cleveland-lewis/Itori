@@ -6,13 +6,15 @@ struct ContentView: View {
     @EnvironmentObject var coursesStore: CoursesStore
     @EnvironmentObject var settingsCoordinator: SettingsCoordinator
     @State private var selectedTab: RootTab = .dashboard
+    @State private var settingsRotation: Double = 0
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         GeometryReader { proxy in
-            ZStack {
+            ZStack(alignment: .topLeading) {
                 Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
 
+                // LAYER 1: Main content
                 VStack(spacing: 0) {
                     topBar
                         .padding(.horizontal, 24)
@@ -22,7 +24,30 @@ struct ContentView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                         .padding(.horizontal, 24)
                         .padding(.top, 12)
+                        // Keep content flowing behind the floating tab bar; only respect safe area.
+                        .padding(.bottom, proxy.safeAreaInsets.bottom + 8)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
 
+                // LAYER 2: Floating quick actions menu
+                RootsFanOutMenu(items: [
+                    FanOutMenuItem(icon: "doc.badge.plus", label: "Add Assignment") {
+                        performQuickAction(.add_assignment)
+                    },
+                    FanOutMenuItem(icon: "calendar.badge.plus", label: "Add Event") {
+                        // Integrate with calendar flow as needed
+                    },
+                    FanOutMenuItem(icon: "graduationcap", label: "Add Course") {
+                        performQuickAction(.add_course)
+                    }
+                ])
+                .padding(.leading, 24)
+                .padding(.top, 16)
+                .zIndex(1)
+
+                // Floating tab bar stays at bottom; keep above content
+                VStack {
+                    Spacer()
                     RootsFloatingTabBar(
                         items: RootTab.allCases,
                         selected: $selectedTab,
@@ -32,9 +57,10 @@ struct ContentView: View {
                     .frame(height: 72)
                     .frame(maxWidth: 640)
                     .padding(.horizontal, 16)
-                        .padding(.bottom, proxy.safeAreaInsets.bottom == 0 ? 16 : proxy.safeAreaInsets.bottom)
-                        .frame(maxWidth: .infinity)
+                    .padding(.bottom, proxy.safeAreaInsets.bottom == 0 ? 16 : proxy.safeAreaInsets.bottom)
+                    .frame(maxWidth: .infinity)
                 }
+                .zIndex(1)
             }
         }
         .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
@@ -51,13 +77,36 @@ struct ContentView: View {
 
     private var topBar: some View {
         HStack {
-            // Header pill and fan-out menu removed per request
+            RootsFanOutMenu(items: [
+                FanOutMenuItem(icon: "doc.badge.plus", label: "Add Assignment") {
+                    performQuickAction(.add_assignment)
+                },
+                FanOutMenuItem(icon: "calendar.badge.plus", label: "Add Event") {
+                    // Integrate with calendar flow as needed
+                },
+                FanOutMenuItem(icon: "graduationcap", label: "Add Course") {
+                    performQuickAction(.add_course)
+                }
+            ])
 
             Spacer()
 
-            RootsHeaderButton(icon: "gearshape") { settingsCoordinator.show() }
-                .rootsStandardInteraction()
-                .accessibilityIdentifier("Header.Settings")
+            Button(action: {
+                withAnimation(.easeInOut(duration: 0.6)) {
+                    settingsRotation += 360
+                }
+                settingsCoordinator.show()
+            }) {
+                Image(systemName: "gearshape")
+                    .font(DesignSystem.Typography.body)
+                    .rotationEffect(.degrees(settingsRotation))
+                    .foregroundStyle(.primary)
+                    .frame(width: 36, height: 36)
+                    .background(DesignSystem.Materials.hud.opacity(0.9), in: Circle())
+            }
+            .buttonStyle(.plain)
+            .rootsStandardInteraction()
+            .accessibilityIdentifier("Header.Settings")
         }
         .contentTransition(.opacity)
     }
@@ -80,9 +129,21 @@ struct ContentView: View {
         case .timer:
             TimerPageView()
         case .decks:
-            FlashcardDashboard()
-        case .settings:
-            SettingsView()
+            if settings.enableFlashcards {
+                FlashcardDashboard()
+            } else {
+                VStack(spacing: 12) {
+                    Image(systemName: "rectangle.stack.badge.person.crop")
+                        .font(.title)
+                        .foregroundStyle(.secondary)
+                    Text("Flashcards are turned off")
+                        .font(DesignSystem.Typography.subHeader)
+                    Text("Enable flashcards in Settings → Flashcards to study decks.")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
         }
     }
 

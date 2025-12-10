@@ -35,6 +35,22 @@ struct SettingsPane_General: View {
                 }
                 .onChange(of: settings.compactMode) { _, _ in settings.save() }
             }
+
+            Section("Assignments") {
+                Picker("Swipe Leading", selection: $settings.assignmentSwipeLeading) {
+                    ForEach(AssignmentSwipeAction.allCases) { action in
+                        Text(action.label).tag(action)
+                    }
+                }
+                .onChange(of: settings.assignmentSwipeLeading) { _, _ in settings.save() }
+
+                Picker("Swipe Trailing", selection: $settings.assignmentSwipeTrailing) {
+                    ForEach(AssignmentSwipeAction.allCases) { action in
+                        Text(action.label).tag(action)
+                    }
+                }
+                .onChange(of: settings.assignmentSwipeTrailing) { _, _ in settings.save() }
+            }
         }
         .formStyle(.grouped)
     }

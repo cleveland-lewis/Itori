@@ -47,7 +47,9 @@ struct RecentlyDeletedSemestersView: View {
     }
 }
 
+#if !DISABLE_PREVIEWS
 #Preview {
     RecentlyDeletedSemestersView()
         .environmentObject(CoursesStore())
 }
+#endif

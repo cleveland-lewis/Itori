@@ -6,84 +6,64 @@ import _Concurrency
 struct DashboardView: View {
     @EnvironmentObject private var settings: AppSettings
     @EnvironmentObject private var calendarManager: CalendarManager
+    @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @State private var isLoaded = false
     @State private var todayBounce = false
     @State private var energyBounce = false
-    @State private var insightsBounce = false
-    @State private var deadlinesBounce = false
     @State private var selectedDate: Date = Date()
-    @State private var tasks: [DashboardTask] = [
-        .init(title: "MA 231 – Problem Set 5", course: "MA 231", isDone: false),
-        .init(title: "ST 311 – Quiz Review", course: "ST 311", isDone: false),
-        .init(title: "Read Genetics notes", course: "GN 311", isDone: true)
-    ]
-    @State private var taskList: [Task] = {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        return [
-            Task(title: "Finish lab report", dueDate: today, priority: .high),
-            Task(title: "Read Chapter 5", dueDate: today, priority: .medium),
-            Task(title: "Prep for quiz", dueDate: calendar.date(byAdding: .day, value: 1, to: today) ?? today, priority: .high),
-            Task(title: "Start project outline", dueDate: calendar.date(byAdding: .day, value: 3, to: today) ?? today, priority: .low),
-            Task(title: "Submit assignment", dueDate: calendar.date(byAdding: .day, value: -1, to: today) ?? today, priority: .medium)
-        ]
-    }()
-    @State private var events: [DashboardEvent] = {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        return [
-            .init(title: "MA 231 Lecture", time: "9:00–9:50 AM", location: "Biltmore 204", date: today),
-            .init(title: "GN 311 Lab", time: "2:30–4:20 PM", location: "Jordan 112", date: calendar.date(byAdding: .day, value: 1, to: today) ?? today),
-            .init(title: "Study Block – Library", time: "7:00–9:00 PM", location: "DHH Hill", date: calendar.date(byAdding: .day, value: 3, to: today) ?? today),
-            .init(title: "Advisor Meeting", time: "3:00–3:45 PM", location: "Student Center", date: today)
-        ]
-    }()
+    @State private var tasks: [DashboardTask] = []
+    @State private var events: [DashboardEvent] = []
 
     var body: some View {
         ScrollView {
-            RootsDashboardGrid {
-                RootsResponsiveGrid(statsItems) { item in
-                    item.view
-                        .frame(maxWidth: .infinity)
-                        .animateEntry(isLoaded: isLoaded, index: item.index)
-                }
+            VStack(spacing: 12) {
+                let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
+                LazyVGrid(columns: columns, spacing: 12) {
+                    todayCard
+                        .animateEntry(isLoaded: isLoaded, index: 0)
 
-                RootsCard {
-                    VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                        Text("Calendar").rootsSectionHeader()
-                        DashboardCalendarColumn(selectedDate: $selectedDate, events: events)
-                    }
-                }
-                .animateEntry(isLoaded: isLoaded, index: 4)
+                    eventsCard
+                        .animateEntry(isLoaded: isLoaded, index: 1)
 
-                RootsCard {
-                    VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                        Text("Upcoming Assignments").rootsSectionHeader()
-                        DashboardTasksColumn(tasks: $tasks)
-                    }
-                }
-                .animateEntry(isLoaded: isLoaded, index: 5)
+                    assignmentsCard
+                        .animateEntry(isLoaded: isLoaded, index: 2)
 
-                TaskDashboardCard(tasks: $taskList)
-                    .animateEntry(isLoaded: isLoaded, index: 6)
+                    calendarCard
+                        .animateEntry(isLoaded: isLoaded, index: 3)
 
-                RootsCard {
-                    VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                        Text("Events").rootsSectionHeader()
-                        DashboardEventsColumn(events: events)
-                    }
+                    energyCard
+                        .animateEntry(isLoaded: isLoaded, index: 4)
+
+                    clockCard
+                        .animateEntry(isLoaded: isLoaded, index: 5)
                 }
-                .animateEntry(isLoaded: isLoaded, index: 7)
 
                 quickActionsCard
-                    .animateEntry(isLoaded: isLoaded, index: 8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .animateEntry(isLoaded: isLoaded, index: 6)
             }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 12)
         }
         .onAppear {
             isLoaded = true
             LOG_UI(.info, "Navigation", "Displayed DashboardView")
+            syncTasks()
+            syncEvents()
         }
         .background(DesignSystem.Colors.appBackground)
+        .onReceive(assignmentsStore.$tasks) { _ in
+            syncTasks()
+        }
+        .onReceive(calendarManager.$dailyEvents) { _ in
+            syncEvents()
+        }
+        .onReceive(calendarManager.$cachedMonthEvents) { _ in
+            syncEvents()
+        }
+        .onChange(of: calendarManager.selectedCalendarID) { _, _ in
+            syncEvents()
+        }
     }
 
     private var todayCard: some View {
@@ -118,25 +98,7 @@ struct DashboardView: View {
                         .buttonStyle(RootsLiquidButtonStyle())
                     }
                 default:
-                    if calendarManager.dailyEvents.isEmpty {
-                        Text("No events today")
-                            .rootsBodySecondary()
-                    } else {
-                        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                            ForEach(calendarManager.dailyEvents, id: \.eventIdentifier) { event in
-                                HStack {
-                                    VStack(alignment: .leading) {
-                                        Text(event.title)
-                                            .font(DesignSystem.Typography.body)
-                                        Text("\(event.startDate.formatted(date: .omitted, time: .shortened)) – \(event.endDate.formatted(date: .omitted, time: .shortened))")
-                                            .font(DesignSystem.Typography.caption)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                    Spacer()
-                                }
-                            }
-                        }
-                    }
+                    dashboardTodayStats
                 }
             }
         }
@@ -145,81 +107,143 @@ struct DashboardView: View {
             print("[Dashboard] card tapped: todayOverview")
         }
         .help("Today Overview")
+        .accessibilityIdentifier("DashboardHeader")
     }
 
     private var energyCard: some View {
         Group {
             if settings.showEnergyPanel {
                 RootsCard(
-                    title: cardTitle("Energy & Focus"),
-                    icon: "heart.fill"
+                    title: cardTitle("Energy"),
+                    icon: "bolt.heart.fill"
                 ) {
-                    DashboardTileBody(
-                        rows: [
-                            ("Streak", "4 days"),
-                            ("Focus Window", "Next slot 2h")
-                        ]
-                    )
+                    HStack(spacing: 10) {
+                        Button("High") { setEnergy(.high) }
+                            .buttonStyle(.borderedProminent)
+                        Button("Medium") { setEnergy(.medium) }
+                            .buttonStyle(.bordered)
+                        Button("Low") { setEnergy(.low) }
+                            .buttonStyle(.bordered)
+                    }
+                    .font(DesignSystem.Typography.body)
                 }
                 .onTapGesture {
                     energyBounce.toggle()
                     print("[Dashboard] card tapped: energyFocus")
                 }
                 .help("Energy & Focus")
-            } else {
-                EmptyView()
             }
         }
     }
 
-    private var insightsCard: some View {
-        RootsCard(
-            title: cardTitle("Insights"),
-            icon: "lightbulb.fill"
-        ) {
-            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                Text("No data available")
-                    .foregroundColor(.secondary)
-                    .rootsBody()
+    private var eventsCard: some View {
+        RootsCard {
+            VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                Text("Events Today").rootsSectionHeader()
+                DashboardEventsColumn(events: events)
             }
         }
-        .onTapGesture {
-            insightsBounce.toggle()
-            print("[Dashboard] card tapped: insights")
-        }
-        .help("Insights")
     }
 
-    private var deadlinesCard: some View {
-        RootsCard(
-            title: cardTitle("Upcoming Deadlines"),
-            icon: "clock.arrow.circlepath"
-        ) {
-            DashboardTileBody(
-                rows: [
-                    ("Next", "Assignment - due tomorrow"),
-                    ("Following", "Quiz - Friday")
-                ]
-            )
+    private var assignmentsCard: some View {
+        RootsCard {
+            VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                Text("Assignments Due Today").rootsSectionHeader()
+                DashboardTasksColumn(tasks: $tasks)
+            }
         }
-        .onTapGesture {
-            deadlinesBounce.toggle()
-            print("[Dashboard] card tapped: upcomingDeadlines")
+    }
+
+    private var calendarCard: some View {
+        RootsCard {
+            VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                Text("Calendar").rootsSectionHeader()
+                DashboardCalendarColumn(selectedDate: $selectedDate, events: events)
+            }
         }
-        .help("Upcoming Deadlines")
+    }
+
+    private var clockCard: some View {
+        RootsCard {
+            VStack {
+                RootsAnalogClock(diameter: 180, showSecondHand: true)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(12)
+        }
     }
 
     private func cardTitle(_ title: String) -> String? { title }
 
-    private var statsItems: [StatsCardItem] {
-        [
-            StatsCardItem(index: 0, view: AnyView(todayCard)),
-            StatsCardItem(index: 1, view: AnyView(energyCard)),
-            StatsCardItem(index: 2, view: AnyView(insightsCard)),
-            StatsCardItem(index: 3, view: AnyView(deadlinesCard))
-        ]
+    private var dashboardTodayStats: some View {
+        let eventsTodayCount = todaysCalendarEvents().count
+        let dueToday = tasksDueToday().count
+
+        return DashboardTileBody(
+            rows: [
+                ("Events Today", "\(eventsTodayCount)"),
+                ("Items Due Today", "\(dueToday)")
+            ]
+        )
     }
 
+    private func syncTasks() {
+        let dueTodayTasks = tasksDueToday()
+        tasks = dueTodayTasks.map { appTask in
+            DashboardTask(title: appTask.title, course: appTask.courseId?.uuidString, isDone: appTask.isCompleted)
+        }
+    }
+
+    private func syncEvents() {
+        let todayEvents = todaysCalendarEvents()
+        let mapped = todayEvents.map { event in
+            DashboardEvent(
+                title: event.title,
+                time: "\(event.startDate.formatted(date: .omitted, time: .shortened)) – \(event.endDate.formatted(date: .omitted, time: .shortened))",
+                location: event.location,
+                date: event.startDate
+            )
+        }
+        events = mapped.sorted { $0.date < $1.date }
+    }
+
+    private func todaysCalendarEvents() -> [EKEvent] {
+        let cal = Calendar.current
+        let source = calendarManager.dailyEvents.isEmpty ? calendarManager.cachedMonthEvents : calendarManager.dailyEvents
+        return source.filter { event in
+            cal.isDateInToday(event.startDate) &&
+            (calendarManager.selectedCalendarID.isEmpty || event.calendar.calendarIdentifier == calendarManager.selectedCalendarID)
+        }
+    }
+
+    private func tasksDueToday() -> [AppTask] {
+        let cal = Calendar.current
+        return assignmentsStore.tasks
+            .filter { !$0.isCompleted }
+            .filter { task in
+                guard let due = task.due else { return false }
+                return cal.isDateInToday(due)
+            }
+            .sorted { ($0.due ?? Date.distantFuture) < ($1.due ?? Date.distantFuture) }
+    }
+
+    private func setEnergy(_ level: EnergyLevel) {
+        let current = SchedulerPreferencesStore.shared.preferences.learnedEnergyProfile
+        let base: [Int: Double]
+        switch level {
+        case .high:
+            base = current.mapValues { min(1.0, $0 + 0.2) }
+        case .medium:
+            base = current
+        case .low:
+            base = current.mapValues { max(0.1, $0 - 0.2) }
+        }
+        SchedulerPreferencesStore.shared.updateEnergyProfile(base)
+    }
+
+    private enum EnergyLevel {
+        case high, medium, low
+    }
     private var quickActionsCard: some View {
         RootsCard(
             title: "Quick Actions",
@@ -245,12 +269,6 @@ struct DashboardView: View {
         }
     }
 
-}
-
-struct StatsCardItem: Identifiable {
-    let id = UUID()
-    let index: Int
-    let view: AnyView
 }
 
 struct DashboardTileBody: View {
@@ -404,11 +422,11 @@ private struct DashboardTasksColumn: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Today’s Tasks")
+            Text("Due Today")
                 .rootsSectionHeader()
 
             if tasks.isEmpty {
-                Text("No tasks scheduled.")
+                Text("No assignments due today.")
                     .rootsBodySecondary()
             } else {
                 ScrollView {

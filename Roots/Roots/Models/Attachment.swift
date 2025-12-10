@@ -39,6 +39,17 @@ enum AttachmentTag: String, Codable, CaseIterable, Identifiable {
     }
 }
 
+enum CourseTaskType: String, CaseIterable, Codable, Identifiable {
+    case homework = "Homework"
+    case quiz = "Quiz"
+    case exam = "Exam"
+    case project = "Project"
+    case essay = "Essay"
+    case other = "Other"
+
+    var id: String { rawValue }
+}
+
 /// Represents a file attachment for courses or tasks
 struct Attachment: Identifiable, Codable, Hashable {
     var id: UUID
@@ -46,6 +57,8 @@ struct Attachment: Identifiable, Codable, Hashable {
     var localURL: URL
     var tag: AttachmentTag
     var moduleNumber: Int?
+    var taskType: CourseTaskType
+    var associatedCourseID: UUID?
     var dateAdded: Date
 
     init(id: UUID = UUID(),
@@ -53,12 +66,16 @@ struct Attachment: Identifiable, Codable, Hashable {
          localURL: URL,
          tag: AttachmentTag,
          moduleNumber: Int? = nil,
+         taskType: CourseTaskType = .other,
+         associatedCourseID: UUID? = nil,
          dateAdded: Date = Date()) {
         self.id = id
         self.name = name
         self.localURL = localURL
         self.tag = tag
         self.moduleNumber = moduleNumber
+        self.taskType = taskType
+        self.associatedCourseID = associatedCourseID
         self.dateAdded = dateAdded
     }
 

@@ -57,7 +57,8 @@ final class TimerManager: ObservableObject {
                 if granted {
                     LOG_UI(.info, "Notifications", "Permission granted")
                 } else if let error {
-                    LOG_UI(.error, "Notifications", "Permission error: \(error.localizedDescription)")
+                    // Non-fatal: permissions can be denied in sandboxed or user-blocked environments.
+                    LOG_UI(.warn, "Notifications", "Permission request failed: \(error.localizedDescription)")
                 } else {
                     LOG_UI(.info, "Notifications", "Permission denied")
                 }

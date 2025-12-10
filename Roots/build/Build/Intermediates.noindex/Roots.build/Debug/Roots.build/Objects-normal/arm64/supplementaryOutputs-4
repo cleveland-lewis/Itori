@@ -1,4 +1,74 @@
 {
+  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/CoursesDashboardRootView.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesDashboardRootView.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesDashboardRootView.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesDashboardRootView.dia",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesDashboardRootView.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesDashboardRootView.swiftdeps"
+  },
+  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/CoursesDashboardSidebar.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesDashboardSidebar.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesDashboardSidebar.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesDashboardSidebar.dia",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesDashboardSidebar.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesDashboardSidebar.swiftdeps"
+  },
+  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/CoursesPageView.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesPageView.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesPageView.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesPageView.dia",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesPageView.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesPageView.swiftdeps"
+  },
+  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/CoursesSettingsView.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesSettingsView.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesSettingsView.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesSettingsView.dia",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesSettingsView.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesSettingsView.swiftdeps"
+  },
+  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/CoursesStore.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesStore.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesStore.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesStore.dia",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesStore.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesStore.swiftdeps"
+  },
+  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/CoursesView.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesView.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesView.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesView.dia",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesView.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CoursesView.swiftdeps"
+  },
+  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/CurrentActivityView.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CurrentActivityView.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CurrentActivityView.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CurrentActivityView.dia",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CurrentActivityView.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/CurrentActivityView.swiftdeps"
+  },
+  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/DashboardView.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DashboardView.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DashboardView.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DashboardView.dia",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DashboardView.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DashboardView.swiftdeps"
+  },
+  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/DataManagerAlias.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DataManagerAlias.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DataManagerAlias.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DataManagerAlias.dia",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DataManagerAlias.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DataManagerAlias.swiftdeps"
+  },
+  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/DateDaySelector.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DateDaySelector.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DateDaySelector.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DateDaySelector.dia",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DateDaySelector.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DateDaySelector.swiftdeps"
+  },
   "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/DesignCard.swift" : {
     "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DesignCard.swiftconstvalues",
     "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DesignCard.d",
@@ -19,6 +89,13 @@
     "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DesignShell.dia",
     "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DesignShell.o",
     "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DesignShell.swiftdeps"
+  },
+  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/DesignSystem+Motion.swift" : {
+    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DesignSystem+Motion.swiftconstvalues",
+    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DesignSystem+Motion.d",
+    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DesignSystem+Motion.dia",
+    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DesignSystem+Motion.o",
+    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DesignSystem+Motion.swiftdeps"
   },
   "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/DesignSystem.swift" : {
     "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/DesignSystem.swiftconstvalues",
@@ -75,54 +152,5 @@
     "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/FlashcardManager.dia",
     "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/FlashcardManager.o",
     "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/FlashcardManager.swiftdeps"
-  },
-  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/FloatingTabBar.swift" : {
-    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/FloatingTabBar.swiftconstvalues",
-    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/FloatingTabBar.d",
-    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/FloatingTabBar.dia",
-    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/FloatingTabBar.o",
-    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/FloatingTabBar.swiftdeps"
-  },
-  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/GeneralSettingsView.swift" : {
-    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GeneralSettingsView.swiftconstvalues",
-    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GeneralSettingsView.d",
-    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GeneralSettingsView.dia",
-    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GeneralSettingsView.o",
-    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GeneralSettingsView.swiftdeps"
-  },
-  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/Glass.swift" : {
-    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/Glass.swiftconstvalues",
-    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/Glass.d",
-    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/Glass.dia",
-    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/Glass.o",
-    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/Glass.swiftdeps"
-  },
-  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/GlassBlueProminentButtonStyle.swift" : {
-    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassBlueProminentButtonStyle.swiftconstvalues",
-    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassBlueProminentButtonStyle.d",
-    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassBlueProminentButtonStyle.dia",
-    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassBlueProminentButtonStyle.o",
-    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassBlueProminentButtonStyle.swiftdeps"
-  },
-  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/GlassButtonStyle.swift" : {
-    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassButtonStyle.swiftconstvalues",
-    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassButtonStyle.d",
-    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassButtonStyle.dia",
-    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassButtonStyle.o",
-    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassButtonStyle.swiftdeps"
-  },
-  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/GlassButtons.swift" : {
-    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassButtons.swiftconstvalues",
-    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassButtons.d",
-    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassButtons.dia",
-    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassButtons.o",
-    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassButtons.swiftdeps"
-  },
-  "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/GlassCircleButton.swift" : {
-    "const-values" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassCircleButton.swiftconstvalues",
-    "dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassCircleButton.d",
-    "diagnostics" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassCircleButton.dia",
-    "object" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassCircleButton.o",
-    "swift-dependencies" : "/Users/clevelandlewis/Desktop/Roots/Roots/build/Build/Intermediates.noindex/Roots.build/Debug/Roots.build/Objects-normal/arm64/GlassCircleButton.swiftdeps"
   }
 }

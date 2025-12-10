@@ -128,7 +128,7 @@ struct TimeEstimationModel {
                 switch cat {
                 case .reading:
                     baseMinutes = 90
-                case .examTest:
+                case .exam:
                     baseMinutes = 180
                 default:
                     baseMinutes = 120

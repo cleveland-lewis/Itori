@@ -17,9 +17,9 @@ struct GlassAccentIconButton: View {
                         .background(Circle().fill(DesignSystem.Materials.hud))
                 )
                 .overlay(
-                    Circle().stroke(.white.opacity(0.12), lineWidth: 0.75)
+                    Circle().stroke(Color(nsColor: .separatorColor).opacity(0.06), lineWidth: 0.75)
                 )
-                .shadow(color: Color.accentColor.opacity(0.25), radius: 14, y: 8)
+                .shadow(color: Color.accentColor.opacity(0.12), radius: 8, y: 4)
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
@@ -49,9 +49,9 @@ struct GlassSecondaryIconButton: View {
                         .background(Circle().fill(DesignSystem.Materials.hud))
                 )
                 .overlay(
-                    Circle().stroke(.white.opacity(0.12), lineWidth: 0.75)
+                    Circle().stroke(Color(nsColor: .separatorColor).opacity(0.06), lineWidth: 0.75)
                 )
-                .shadow(color: Color.primary.opacity(0.12), radius: 14, y: 8)
+                .shadow(color: Color.primary.opacity(0.06), radius: 8, y: 4)
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)

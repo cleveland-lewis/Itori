@@ -211,8 +211,10 @@ struct ProfilesSettingsView: View {
     }
 }
 
+#if !DISABLE_PREVIEWS
 #Preview {
     ProfilesSettingsView()
         .environmentObject(AppSettingsModel.shared)
         .frame(width: 500, height: 600)
 }
+#endif

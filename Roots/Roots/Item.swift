@@ -5,6 +5,7 @@
 //  Created by Cleveland Lewis III on 11/30/25.
 //
 
+#if !DISABLE_SWIFTDATA
 import Foundation
 import SwiftData
 
@@ -16,3 +17,4 @@ final class Item {
         self.timestamp = timestamp
     }
 }
+#endif

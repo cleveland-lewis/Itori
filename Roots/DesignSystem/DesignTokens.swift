@@ -22,7 +22,7 @@ enum RootsColor {
 // MARK: - Shadows
 extension View {
     func rootsCardShadow() -> some View {
-        shadow(color: Color.black.opacity(0.15), radius: 10, y: 5)
+        shadow(color: Color.black.opacity(0.06), radius: 6, y: 3)
     }
 
     func rootsFloatingShadow() -> some View {
@@ -59,7 +59,7 @@ extension View {
         .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: radius, style: .continuous)
-                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                .stroke(Color(nsColor: .separatorColor).opacity(0.06), lineWidth: 1)
         )
     }
 }

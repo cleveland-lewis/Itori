@@ -345,7 +345,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG DISABLE_PREVIEWS DISABLE_SWIFTDATA $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -410,6 +410,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				AUTOMATION_APPLE_EVENTS = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = V9ZWYKRGTL;
@@ -430,9 +432,12 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "";
-				INFOPLIST_KEY_NSFaceIDUsageDescription = "";
-				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Roots needs full calendar access to display and manage your schedule across courses and tasks.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Roots needs access to your calendar to show and schedule classes and events.";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Roots uses Face ID to securely authenticate you when required features request identity verification.";
+				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Roots needs full reminders access to sync and manage your tasks safely across devices.";
+				INFOPLIST_KEY_NSRemindersUsageDescription = "Roots needs access to your reminders to show tasks alongside your assignments.";
+				INFOPLIST_KEY_NSUserNotificationUsageDescription = "Roots uses notifications to alert you when timers or scheduled tasks are finished.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -495,9 +500,12 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "";
-				INFOPLIST_KEY_NSFaceIDUsageDescription = "";
-				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Roots needs full calendar access to display and manage your schedule across courses and tasks.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Roots needs access to your calendar to show and schedule classes and events.";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Roots uses Face ID to securely authenticate you when required features request identity verification.";
+				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Roots needs full reminders access to sync and manage your tasks safely across devices.";
+				INFOPLIST_KEY_NSRemindersUsageDescription = "Roots needs access to your reminders to show tasks alongside your assignments.";
+				INFOPLIST_KEY_NSUserNotificationUsageDescription = "Roots uses notifications to alert you when timers or scheduled tasks are finished.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -539,6 +547,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = V9ZWYKRGTL;
@@ -565,6 +575,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = V9ZWYKRGTL;

@@ -91,6 +91,8 @@ private struct ColorSwatch: View {
     }
 }
 
+#if !DISABLE_PREVIEWS
 #Preview {
     RootDesignPreviewPage()
 }
+#endif

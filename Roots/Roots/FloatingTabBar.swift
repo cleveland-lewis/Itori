@@ -14,7 +14,8 @@ struct FloatingTabBar: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            ForEach(settings.tabOrder.filter { settings.visibleTabs.contains($0) }) { tab in
+            let tabs = settings.tabOrder.filter { settings.effectiveVisibleTabs.contains($0) }
+            ForEach(tabs) { tab in
                 tabButton(for: tab)
             }
         }
@@ -22,7 +23,7 @@ struct FloatingTabBar: View {
         .padding(.vertical, 10)
         .background(
             Capsule()
-                .fill(DesignSystem.Materials.hud)
+                .fill(DesignSystem.Materials.hud.opacity(0.28))
         )
         .overlay(
             Capsule()

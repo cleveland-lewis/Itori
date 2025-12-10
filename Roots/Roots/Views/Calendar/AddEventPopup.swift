@@ -11,7 +11,6 @@ struct AddEventPopup: View {
     @State private var startDate: Date = Date()
     @State private var endDate: Date = Date().addingTimeInterval(3600)
     @State private var notes: String = ""
-    @State private var selectedCalendar: EKCalendar?
 
     @State private var isSaving = false
     @State private var errorMessage: String?
@@ -22,7 +21,6 @@ struct AddEventPopup: View {
                 VStack(spacing: DesignSystem.Spacing.large) {
                     titleLocationSection
                     timeSection
-                    calendarSection
                     notesSection
                     if let error = errorMessage {
                         Text(error)
@@ -33,9 +31,7 @@ struct AddEventPopup: View {
                 .padding(DesignSystem.Spacing.large)
             }
             .frame(width: 450, height: 520)
-            .onAppear {
-                selectedCalendar = calendarManager.defaultCalendarForNewEvents
-            }
+            
         } footer: {
             footer
         }
@@ -46,7 +42,6 @@ struct AddEventPopup: View {
             VStack(spacing: DesignSystem.Spacing.large) {
                 titleLocationSection
                 timeSection
-                calendarSection
                 notesSection
             }
             .padding(DesignSystem.Spacing.large)
@@ -93,30 +88,6 @@ struct AddEventPopup: View {
         }
     }
 
-    private var calendarSection: some View {
-        RootsCard {
-            HStack {
-                Text("Calendar")
-                    .foregroundStyle(.secondary)
-                Spacer()
-                Picker("", selection: $selectedCalendar) {
-                    Text("Default").tag(nil as EKCalendar?)
-                    ForEach(calendarManager.writableCalendars, id: \.calendarIdentifier) { calendar in
-                        HStack(spacing: 6) {
-                            Circle()
-                                .fill(Color(nsColor: calendar.color))
-                                .frame(width: 8, height: 8)
-                            Text(calendar.title)
-                        }
-                        .tag(calendar as EKCalendar?)
-                    }
-                }
-                .labelsHidden()
-                .fixedSize()
-            }
-            .padding(DesignSystem.Spacing.medium)
-        }
-    }
 
     private var notesSection: some View {
         RootsCard {
@@ -176,7 +147,7 @@ struct AddEventPopup: View {
                     isAllDay: isAllDay,
                     location: location,
                     notes: notes,
-                    calendar: selectedCalendar
+                    calendar: calendarManager.availableCalendars.first { $0.calendarIdentifier == calendarManager.selectedCalendarID } ?? calendarManager.defaultCalendarForNewEvents
                 )
                 await MainActor.run {
                     dismiss()

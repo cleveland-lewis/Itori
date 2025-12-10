@@ -1,0 +1,16 @@
+{
+  "source": "/Users/clevelandlewis/Desktop/Roots/Roots/Roots/Views/Grades/GPABreakdownCard.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "GPA Breakdown",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 11
+        }
+      }
+    ]
+  },
+  "version": 1
+}

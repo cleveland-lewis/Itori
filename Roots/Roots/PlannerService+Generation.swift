@@ -88,8 +88,9 @@ final class PlannerService {
                 maxBlockMinutes: 120,
                 difficulty: 0.6,
                 importance: 0.8,
-                type: .examPrep,
-                locked: block.daysBefore == 2 // cram is high priority; keep tight to date
+                type: .exam,
+                locked: block.daysBefore == 2, // cram is high priority; keep tight to date
+                attachments: []
             )
 
             generated.append(task)

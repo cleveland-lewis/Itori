@@ -7,8 +7,10 @@
 
 import SwiftUI
 import _Concurrency
-import SwiftData
 import Combine
+#if !DISABLE_SWIFTDATA
+import SwiftData
+#endif
 
 @main
 struct RootsApp: App {
@@ -30,6 +32,7 @@ struct RootsApp: App {
         _ = DeveloperSettingsSynchronizer.shared
     }
 
+#if !DISABLE_SWIFTDATA
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
@@ -42,6 +45,7 @@ struct RootsApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
+#endif
 
     var body: some Scene {
         WindowGroup {
@@ -88,11 +92,12 @@ struct RootsApp: App {
                     SchedulerAdaptationManager.shared.runAdaptiveSchedulerUpdateIfNeeded()
                     // Refresh and request permissions on launch
                     await calendarManager.checkPermissionsOnStartup()
+                    await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
                     timerManager.checkNotificationPermissions()
                 }
         }
         Settings {
-            SettingsRootView(initialPane: settingsCoordinator.selectedSection, paneChanged: { _ in })
+            SettingsRootView(selection: $settingsCoordinator.selectedSection)
                 .environmentObject(AssignmentsStore.shared)
                 .environmentObject(coursesStore)
                 .environmentObject(appSettings)
@@ -104,14 +109,18 @@ struct RootsApp: App {
                 .environmentObject(FlashcardManager.shared)
                 .environmentObject(preferences)
         }
-        .onChange(of: scenePhase, perform: handleScenePhaseChange)
+        .onChange(of: scenePhase) { _, newPhase in
+            handleScenePhaseChange(newPhase)
+        }
         .commands {
             AppCommands()
             SettingsCommands(showSettings: {
                 settingsCoordinator.show()
             })
         }
+#if !DISABLE_SWIFTDATA
         .modelContainer(sharedModelContainer)
+#endif
     }
 
     private func handleScenePhaseChange(_ phase: ScenePhase) {
@@ -120,7 +129,9 @@ struct RootsApp: App {
         } else if phase == .active {
             _Concurrency.Task {
                 await calendarManager.checkPermissionsOnStartup()
+                await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
             }
+            NotificationManager.shared.clearBadge()
         }
     }
 }

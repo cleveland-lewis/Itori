@@ -5,6 +5,7 @@ import SwiftUI
 
 struct CourseDashboard: Identifiable, Hashable {
     let id: UUID
+    var semesterId: UUID?
     var title: String
     var code: String
     var instructor: String

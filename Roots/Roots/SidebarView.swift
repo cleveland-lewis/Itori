@@ -38,7 +38,6 @@ private struct SidebarItemRow: View {
         switch tab {
         case .calendar: return "Sidebar.Calendar"
         case .dashboard: return "Sidebar.Dashboard"
-        case .settings: return "Sidebar.Settings"
         default: return ""
         }
     }
@@ -89,10 +88,10 @@ private struct SidebarTooltipModifier: ViewModifier {
             .overlay(alignment: .top) {
                 if isVisible {
                     Text(text)
-                        .font(.caption2)
+                        .font(DesignSystem.Typography.caption)
                         .foregroundStyle(.secondary)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
+                        .padding(.horizontal, DesignSystem.Layout.spacing.small)
+                        .padding(.vertical, DesignSystem.Layout.spacing.small)
                         .background(DesignSystem.Materials.hud, in: Capsule())
                         .shadow(radius: 4, y: 2)
                         .offset(y: -40)

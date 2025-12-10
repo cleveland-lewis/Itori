@@ -4,6 +4,7 @@ struct CoursesDashboardRootView: View {
     @State private var courses: [CourseDashboard] = CourseDashboard.dummyData
     @State private var selectedCourse: CourseDashboard?
     @State private var selectedTab: CoursesDashboardFloatingNav.DashboardTab = .courses
+    @State private var semesters: [Semester] = []
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -13,6 +14,7 @@ struct CoursesDashboardRootView: View {
                 CoursesDashboardSidebar(
                     courses: courses,
                     selectedCourse: $selectedCourse,
+                    semesters: semesters,
                     onNewCourse: {
                         print("New Course tapped")
                     },
@@ -42,6 +44,10 @@ struct CoursesDashboardRootView: View {
             if selectedCourse == nil, let first = courses.first {
                 selectedCourse = first
             }
+            // Populate semesters from dummy if available (hook to real data manager in production)
+            if semesters.isEmpty {
+                semesters = []
+            }
         }
     }
 
@@ -66,7 +72,9 @@ struct CoursesDashboardRootView: View {
 
 // MARK: - Preview
 
+#if !DISABLE_PREVIEWS
 #Preview {
     CoursesDashboardRootView()
         .frame(width: 1200, height: 800)
 }
+#endif

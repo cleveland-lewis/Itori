@@ -9,7 +9,6 @@ enum RootTab: String, CaseIterable, Identifiable {
     case grades
     case timer
     case decks
-    case settings
 
     var id: String { rawValue }
 
@@ -23,7 +22,6 @@ enum RootTab: String, CaseIterable, Identifiable {
         case .grades:       return "Grades"
         case .timer:        return "Timer"
         case .decks:        return "Decks"
-        case .settings:     return "Settings"
         }
     }
 
@@ -34,10 +32,9 @@ enum RootTab: String, CaseIterable, Identifiable {
         case .planner:      return "pencil.and.list.clipboard"
         case .assignments:  return "slider.horizontal.3"
         case .courses:      return "book.closed"
-        case .grades:       return "doc.text.magnifyingglass"
+        case .grades:       return "number.circle"
         case .timer:        return "timer"
         case .decks:        return "rectangle.stack"
-        case .settings:     return "gearshape"
         }
     }
 

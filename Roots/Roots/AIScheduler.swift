@@ -6,12 +6,37 @@ enum EventSource {
     case calendar, `class`, exam, external
 }
 
-enum TaskType: String, Codable, Hashable, CaseIterable {
-    case reading
-    case problemSet
+enum TaskType: String, Hashable, CaseIterable, Codable {
     case project
-    case examPrep
-    case other
+    case exam
+    case quiz
+    case practiceHomework
+    case reading
+    case review
+    case studying
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let raw = try container.decode(String.self)
+        switch raw {
+        case "homework", "problemSet": self = .practiceHomework
+        case "examPrep": self = .exam
+        case "study": self = .studying
+        case "meeting": self = .project
+        case "other": self = .studying
+        default:
+            if let val = TaskType(rawValue: raw) {
+                self = val
+            } else {
+                self = .studying
+            }
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(rawValue)
+    }
 }
 
 struct FixedEvent: Equatable {
@@ -23,7 +48,7 @@ struct FixedEvent: Equatable {
     let source: EventSource
 }
 
-struct AppTask: Equatable {
+struct AppTask: Codable, Equatable, Hashable {
     let id: UUID
     let title: String
     let courseId: UUID?
@@ -36,8 +61,12 @@ struct AppTask: Equatable {
     let type: TaskType
     let locked: Bool
     let attachments: [Attachment]
+    var isCompleted: Bool
+    var gradeWeightPercent: Double?
+    var gradePossiblePoints: Double?
+    var gradeEarnedPoints: Double?
 
-    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = []) {
+    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil) {
         self.id = id
         self.title = title
         self.courseId = courseId
@@ -50,6 +79,10 @@ struct AppTask: Equatable {
         self.type = type
         self.locked = locked
         self.attachments = attachments
+        self.isCompleted = isCompleted
+        self.gradeWeightPercent = gradeWeightPercent
+        self.gradePossiblePoints = gradePossiblePoints
+        self.gradeEarnedPoints = gradeEarnedPoints
     }
 }
 
@@ -112,7 +145,7 @@ struct AIScheduler {
         let dayIntervals = buildFreeIntervalsPerDay(fixedEvents: fixedEvents, constraints: constraints)
 
         // 2. Compute task priorities
-        var tasks = inputTasks.filter { !$0.locked } // leave locked tasks out; assume already scheduled
+        var tasks = inputTasks // include locked tasks; they can be forced to due date
         let horizonDays = daysBetween(start: constraints.horizonStart, end: constraints.horizonEnd)
         var priorityMap: [UUID: Double] = [:]
         for task in tasks {

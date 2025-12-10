@@ -1,19 +1,51 @@
 import SwiftUI
 
 struct CalendarHeader: View {
+    @Binding var viewMode: CalendarViewMode
     @Binding var currentMonth: Date
-    
+    var onPrevious: () -> Void
+    var onNext: () -> Void
+    var onToday: () -> Void
+    var onSearch: (() -> Void)? = nil
+
     var body: some View {
         HStack {
-            // Month Title
+            // Left: Month / Year
             Text(currentMonth.formatted(.dateTime.month(.wide).year()))
                 .font(DesignSystem.Typography.header)
-            
+
             Spacer()
-            
-            // Navigation Buttons
+
+            // Center: View mode picker
+            Picker("", selection: $viewMode) {
+                ForEach(CalendarViewMode.allCases) { mode in
+                    Text(mode.rawValue).tag(mode)
+                }
+            }
+            .pickerStyle(.segmented)
+            .frame(maxWidth: 320)
+
+            Spacer()
+
             HStack(spacing: DesignSystem.Layout.spacing.small) {
-                Button(action: { changeMonth(by: -1) }) {
+                if let onSearch {
+                    Button(action: onSearch) {
+                        Image(systemName: "magnifyingglass")
+                            .font(.body.bold())
+                            .frame(width: 32, height: 32)
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                Button("Today") { onToday() }
+                    .font(.caption.bold())
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.secondary.opacity(0.1))
+                    .clipShape(Capsule())
+                    .buttonStyle(.plain)
+
+                Button(action: onPrevious) {
                     Image(systemName: "chevron.left")
                         .font(.body.bold())
                         .frame(width: 32, height: 32)
@@ -21,20 +53,8 @@ struct CalendarHeader: View {
                         .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
-                
-                Button("Today") {
-                    withAnimation {
-                        currentMonth = Date()
-                    }
-                }
-                .font(.caption.bold())
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(Color.secondary.opacity(0.1))
-                .clipShape(Capsule())
-                .buttonStyle(.plain)
-                
-                Button(action: { changeMonth(by: 1) }) {
+
+                Button(action: onNext) {
                     Image(systemName: "chevron.right")
                         .font(.body.bold())
                         .frame(width: 32, height: 32)
@@ -42,14 +62,6 @@ struct CalendarHeader: View {
                         .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
-            }
-        }
-    }
-    
-    private func changeMonth(by value: Int) {
-        if let newDate = Calendar.current.date(byAdding: .month, value: value, to: currentMonth) {
-            withAnimation {
-                currentMonth = newDate
             }
         }
     }

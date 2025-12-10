@@ -13,6 +13,11 @@ final class SchedulerPreferencesStore {
 
     var preferences: SchedulerPreferences = SchedulerPreferences.default()
 
+    func updateEnergyProfile(_ energy: [Int: Double]) {
+        preferences.learnedEnergyProfile = energy
+        save()
+    }
+
     func load() {
         guard let url = fileURL, FileManager.default.fileExists(atPath: url.path) else { return }
         do {

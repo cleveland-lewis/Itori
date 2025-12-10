@@ -440,12 +440,6 @@ struct CoursesPageDetailView: View {
                     Text("No meetings added yet.")
                         .rootsBodySecondary()
 
-                    Button("View Device's Calendar") {
-                        openCalendar(for: nil)
-                    }
-                    .buttonStyle(.plain)
-                    .font(.caption.weight(.semibold))
-                    .foregroundColor(.accentColor)
                 }
             } else {
                 VStack(alignment: .leading, spacing: RootsSpacing.s) {
@@ -460,13 +454,6 @@ struct CoursesPageDetailView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
 
-                    Button("View Device's Calendar") {
-                        openCalendar(for: course.meetingTimes.first)
-                    }
-                    .buttonStyle(.plain)
-                    .font(.caption.weight(.semibold))
-                    .foregroundColor(.accentColor)
-                    .padding(.top, RootsSpacing.xs)
                 }
             }
         }

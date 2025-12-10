@@ -1,7 +1,6 @@
 import SwiftUI
 
 func makeSidebarBackground(colorScheme: ColorScheme) -> AnyView {
-    let tint = Color.primary.opacity(colorScheme == .dark ? 0.03 : 0.02)
     let bg = Color.clear
         .background(DesignSystem.Materials.sidebar)
         .overlay(

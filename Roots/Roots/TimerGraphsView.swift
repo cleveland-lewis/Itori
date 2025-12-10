@@ -43,7 +43,7 @@ struct TimerGraphsView: View {
                         .font(DesignSystem.Typography.caption)
                         .foregroundColor(.secondary)
                     Spacer()
-                    if let planned = session.plannedDuration {
+                    if session.plannedDuration != nil {
                         Text("Remaining \(format(minutes: sessionRemaining / 60))")
                             .font(DesignSystem.Typography.caption)
                             .foregroundColor(.secondary)
@@ -62,18 +62,16 @@ struct TimerGraphsView: View {
     private var historyGraph: some View {
         VStack(alignment: .leading, spacing: 12) {
             #if canImport(Charts)
-            Chart(historyPoints) { point in
-                BarMark(
-                    x: .value("Day", point.date, unit: .day),
-                    y: .value("Minutes", point.minutes)
-                )
-                .foregroundStyle(Color.accentColor.gradient)
-                .cornerRadius(6)
-            }
-            .chartYAxis {
-                AxisMarks(position: .leading)
-            }
-            .frame(height: 180)
+            TimerBarChart(
+                data: historyDataPoints,
+                minutesPerDot: 5,
+                xLabelFormatter: { date in
+                    let f = DateFormatter()
+                    f.dateFormat = "E"
+                    return f.string(from: date)
+                }
+            )
+            .frame(height: 220)
             #else
             HStack(alignment: .bottom, spacing: DesignSystem.Layout.spacing.small) {
                 ForEach(historyPoints) { point in
@@ -122,6 +120,17 @@ struct TimerGraphsView: View {
         }
     }
 
+    private var historyDataPoints: [TimerDataPoint] {
+        let calendar = Calendar.current
+        return historyPoints.map { point in
+            TimerDataPoint(
+                date: point.date,
+                minutes: point.minutes,
+                isCurrent: calendar.isDateInToday(point.date)
+            )
+        }
+    }
+
     private var todayMinutes: Double {
         let calendar = Calendar.current
         return sessions
@@ -167,3 +176,65 @@ private struct HistoryPoint: Identifiable {
         return f.string(from: date)
     }
 }
+
+// Lightweight data model for dotted history chart
+struct TimerDataPoint: Identifiable {
+    let id = UUID()
+    let date: Date
+    let minutes: Double
+    let isCurrent: Bool
+}
+
+#if canImport(Charts)
+import Charts
+
+// Local dotted bar chart to avoid missing target membership issues.
+struct TimerBarChart: View {
+    let data: [TimerDataPoint]
+    var minutesPerDot: Double = 5
+    var xLabelFormatter: (Date) -> String = { date in
+        let f = DateFormatter()
+        f.dateFormat = "E"
+        return f.string(from: date)
+    }
+
+    var body: some View {
+        Chart {
+            ForEach(data) { point in
+                let dotCount = max(1, Int(ceil(point.minutes / minutesPerDot)))
+                ForEach(0..<dotCount, id: \.self) { idx in
+                    PointMark(
+                        x: .value("Time", point.date),
+                        y: .value("Minutes", Double(idx) * minutesPerDot)
+                    )
+                    .symbolSize(28)
+                    .foregroundStyle(point.isCurrent ? Color.yellow : Color.secondary.opacity(0.55))
+                }
+
+                if point.isCurrent {
+                    PointMark(
+                        x: .value("Time", point.date),
+                        y: .value("Minutes", max(point.minutes, minutesPerDot))
+                    )
+                    .symbol(.circle)
+                    .symbolSize(120)
+                }
+            }
+        }
+        .chartYAxis(.hidden)
+        .chartXAxis {
+            AxisMarks(values: data.map(\.date)) { value in
+                if let date = value.as(Date.self) {
+                    AxisValueLabel {
+                        Text(xLabelFormatter(date))
+                            .font(DesignSystem.Typography.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    AxisTick()
+                }
+            }
+        }
+        .frame(height: 220)
+    }
+}
+#endif

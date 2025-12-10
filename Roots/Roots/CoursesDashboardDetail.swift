@@ -3,6 +3,8 @@ import SwiftUI
 struct CoursesDashboardDetail: View {
     let course: CourseDashboard
 
+    @EnvironmentObject private var appPreferences: AppPreferences
+
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
@@ -77,7 +79,7 @@ struct CoursesDashboardDetail: View {
                 .trim(from: 0, to: course.currentGrade / 100.0)
                 .stroke(
                     AngularGradient(
-                        colors: [course.color, course.color.opacity(0.7)],
+                        colors: [appPreferences.currentAccentColor, appPreferences.currentAccentColor.opacity(0.7)],
                         center: .center
                     ),
                     style: StrokeStyle(lineWidth: 12, lineCap: .round)
@@ -222,21 +224,21 @@ struct CoursesDashboardDetail: View {
 
     private var quickActionsRow: some View {
         HStack(spacing: 12) {
-            quickActionButton(title: "Add Assignment", icon: "doc.badge.plus", color: .blue)
-            quickActionButton(title: "Add Exam", icon: "checkmark.seal", color: .orange)
-            quickActionButton(title: "Add Grade", icon: "chart.line.uptrend.xyaxis", color: .green)
-            quickActionButton(title: "View Plan", icon: "calendar.day.timeline.left", color: .purple)
+            quickActionButton(title: "Add Assignment", icon: "doc.badge.plus")
+            quickActionButton(title: "Add Exam", icon: "checkmark.seal")
+            quickActionButton(title: "Add Grade", icon: "chart.line.uptrend.xyaxis")
+            quickActionButton(title: "View Plan", icon: "calendar.day.timeline.left")
         }
     }
 
-    private func quickActionButton(title: String, icon: String, color: Color) -> some View {
+    private func quickActionButton(title: String, icon: String) -> some View {
         Button {
             // Action
         } label: {
             VStack(spacing: DesignSystem.Layout.spacing.small) {
                 Image(systemName: icon)
                     .font(DesignSystem.Typography.body)
-                    .foregroundStyle(color)
+                    .foregroundStyle(appPreferences.currentAccentColor)
 
                 Text(title)
                     .font(DesignSystem.Typography.body)
@@ -287,28 +289,28 @@ struct CoursesDashboardDetail: View {
                     title: "Assignments",
                     value: "\(course.analytics.assignmentsCompleted)/\(course.analytics.assignmentsTotal)",
                     icon: "checkmark.circle.fill",
-                    color: .green
+                    color: appPreferences.currentAccentColor
                 )
 
                 analyticRow(
                     title: "Average Score",
                     value: String(format: "%.1f%%", course.analytics.averageScore),
                     icon: "star.fill",
-                    color: .yellow
+                    color: appPreferences.currentAccentColor
                 )
 
                 analyticRow(
                     title: "Attendance",
                     value: String(format: "%.0f%%", course.analytics.attendanceRate * 100),
                     icon: "person.fill.checkmark",
-                    color: .blue
+                    color: appPreferences.currentAccentColor
                 )
 
                 analyticRow(
                     title: "Hours Studied",
                     value: String(format: "%.1fh", course.analytics.hoursStudied),
                     icon: "clock.fill",
-                    color: .purple
+                    color: appPreferences.currentAccentColor
                 )
             }
         }

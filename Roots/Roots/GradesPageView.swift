@@ -43,16 +43,20 @@ enum GradeViewSegment: String, CaseIterable, Identifiable {
 
 struct GradesPageView: View {
     @EnvironmentObject private var settings: AppSettings
+    @EnvironmentObject private var assignmentsStore: AssignmentsStore
+    @EnvironmentObject private var coursesStore: CoursesStore
 
     @State private var segment: GradeViewSegment = .overall
     @State private var allCourses: [GradeCourseSummary] = GradesPageView.sampleCourses
     @State private var courseDetails: [CourseGradeDetail] = GradesPageView.sampleCourseDetails
     @State private var selectedCourseDetail: CourseGradeDetail? = nil
     @State private var searchText: String = ""
-    @State private var gpaScale: Double = 4.0
+    @AppStorage("grades.gpaScale") private var gpaScale: Double = 4.0
     @State private var showEditTargetSheet: Bool = false
     @State private var courseToEditTarget: GradeCourseSummary? = nil
     @State private var whatIfSlider: Double = 90
+    @State private var showAddGradeSheet: Bool = false
+    @State private var gradeAnalyticsWindowOpen: Bool = false
 
     private let cardCorner: CGFloat = 24
 
@@ -66,7 +70,7 @@ struct GradesPageView: View {
 
                     footer
                 }
-                .padding(DesignSystem.Layout.padding.card)
+                .padding(16)
             }
             .rootsSystemBackground()
         }
@@ -77,10 +81,41 @@ struct GradesPageView: View {
                 }
             }
         }
+        .sheet(isPresented: $showAddGradeSheet) {
+            AddGradeSheet(
+                assignments: assignmentsStore.tasks,
+                courses: allCourses,
+                onSave: { updatedTask in
+                    assignmentsStore.updateTask(updatedTask)
+                    // Refresh local selections if the updated assignment is tied to a course detail
+                    if let courseId = updatedTask.courseId,
+                       let course = allCourses.first(where: { $0.id == courseId }) {
+                        // No-op placeholder: hook into course grade aggregation here if needed
+                        print("Grade updated for \(course.courseCode)")
+                    }
+                }
+            )
+        }
+        .sheet(isPresented: $gradeAnalyticsWindowOpen) {
+            VStack(spacing: 16) {
+                Text("Grade Analytics")
+                    .font(.title2.weight(.semibold))
+                Text("Placeholder window. Integrate analytics dashboard here.")
+                    .foregroundStyle(.secondary)
+                Button("Close") { gradeAnalyticsWindowOpen = false }
+                    .buttonStyle(.borderedProminent)
+            }
+            .padding(24)
+            .frame(minWidth: 360, minHeight: 240)
+        }
         .onAppear {
             if selectedCourseDetail == nil {
                 selectedCourseDetail = courseDetails.first
             }
+            coursesStore.recalcGPA(tasks: assignmentsStore.tasks)
+        }
+        .onReceive(assignmentsStore.$tasks) { tasks in
+            coursesStore.recalcGPA(tasks: tasks)
         }
     }
 
@@ -104,27 +139,25 @@ struct GradesPageView: View {
                 }
             }
             .pickerStyle(.segmented)
-            .frame(maxWidth: 320)
+            .frame(maxWidth: 220)
 
             TextField("Search courses", text: $searchText)
                 .textFieldStyle(.roundedBorder)
                 .frame(maxWidth: 260)
 
-            Picker("GPA Scale", selection: $gpaScale) {
-                Text("4.0").tag(4.0)
-                Text("5.0").tag(5.0)
-            }
-            .pickerStyle(.menu)
+            Text("GPA Scale: \(String(format: "%.1f", gpaScale))")
+                .font(.footnote.weight(.semibold))
+                .foregroundColor(.secondary)
 
             Button {
                 // stub export
             } label: {
                 Label("Export", systemImage: "square.and.arrow.up")
-                    .font(DesignSystem.Typography.body)
+                    .font(.system(size: 12, weight: .semibold))
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .background(.thinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             }
             .buttonStyle(.plain)
         }
@@ -156,7 +189,36 @@ struct GradesPageView: View {
 
     private var overallColumn: some View {
         VStack(spacing: 12) {
-            OverallStatusCard(courses: filteredCourses, gpaScale: gpaScale, emphasize: segment == .overall)
+            GPABreakdownCard(
+                currentGPA: coursesStore.currentGPA,
+                academicYearGPA: coursesStore.currentGPA,
+                cumulativeGPA: coursesStore.currentGPA
+            )
+            HStack(spacing: 12) {
+                Button {
+                    showAddGradeSheet = true
+                } label: {
+                    Label("Add Grade", systemImage: "plus.circle")
+                        .font(.system(size: 13, weight: .semibold))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+
+                Button {
+                    gradeAnalyticsWindowOpen = true
+                    // Placeholder: open analytics window
+                    print("Open Grade Analytics tapped")
+                } label: {
+                    Label("Open Grade Analytics", systemImage: "chart.bar.xaxis")
+                        .font(.system(size: 13, weight: .semibold))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+            }
         }
     }
 
@@ -164,7 +226,7 @@ struct GradesPageView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Courses")
-                    .font(DesignSystem.Typography.body)
+                    .font(.system(size: 14, weight: .semibold))
                 Spacer()
                 Picker("Sort", selection: .constant(0)) {
                     Text("Course").tag(0)
@@ -175,7 +237,7 @@ struct GradesPageView: View {
             }
 
             ScrollView {
-                VStack(spacing: DesignSystem.Layout.spacing.small) {
+                VStack(spacing: 10) {
                     ForEach(filteredCourses) { course in
                         CourseGradeRow(
                             course: course,
@@ -196,7 +258,7 @@ struct GradesPageView: View {
                 .padding(.vertical, 4)
             }
         }
-        .padding(DesignSystem.Layout.padding.card)
+        .padding(16)
         .background(cardBackground)
         .overlay(cardStroke)
     }
@@ -222,7 +284,7 @@ struct GradesPageView: View {
                 }
             }
         )
-        .padding(DesignSystem.Layout.padding.card)
+        .padding(16)
         .background(cardBackground)
         .overlay(cardStroke)
     }
@@ -237,9 +299,17 @@ struct GradesPageView: View {
     // MARK: Helpers
 
     private var filteredCourses: [GradeCourseSummary] {
-        guard !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return allCourses }
+        let hydrated = allCourses.map { course -> GradeCourseSummary in
+            var updated = course
+            if let pct = GradeCalculator.calculateCourseGrade(courseID: course.id, tasks: assignmentsStore.tasks) {
+                updated.currentPercentage = pct
+            }
+            return updated
+        }
+
+        guard !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return hydrated }
         let q = searchText.lowercased()
-        return allCourses.filter { course in
+        return hydrated.filter { course in
             course.courseCode.lowercased().contains(q) || course.courseTitle.lowercased().contains(q)
         }
     }
@@ -284,12 +354,12 @@ struct OverallStatusCard: View {
     var body: some View {
         let overallPercent = weightedOverallPercent
         let gpa = gpaValue(overallPercent: overallPercent)
-        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+        VStack(alignment: .leading, spacing: 10) {
             Text("Overall Status")
-                .font(DesignSystem.Typography.body)
+                .font(.system(size: 14, weight: .semibold))
 
             Text("GPA \(String(format: "%.2f", gpa)) / \(String(format: "%.1f", gpaScale))")
-                .font(DesignSystem.Typography.body)
+                .font(.system(size: emphasize ? 28 : 24, weight: .bold))
 
             Text("Weighted \(String(format: "%.1f", overallPercent))% • \(courses.count) courses")
                 .font(.footnote)
@@ -301,18 +371,18 @@ struct OverallStatusCard: View {
             HStack {
                 if let maxCourse = courses.max(by: { ($0.currentPercentage ?? 0) < ($1.currentPercentage ?? 0) }) {
                     Text("Highest: \(maxCourse.courseCode) \(Int(maxCourse.currentPercentage ?? 0))%")
-                        .font(DesignSystem.Typography.caption)
+                        .font(.caption)
                         .foregroundColor(.secondary)
                 }
                 Spacer()
                 if let minCourse = courses.min(by: { ($0.currentPercentage ?? 0) < ($1.currentPercentage ?? 0) }) {
                     Text("Lowest: \(minCourse.courseCode) \(Int(minCourse.currentPercentage ?? 0))%")
-                        .font(DesignSystem.Typography.caption)
+                        .font(.caption)
                         .foregroundColor(.secondary)
                 }
             }
         }
-        .padding(DesignSystem.Layout.padding.card)
+        .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .fill(.thinMaterial)
@@ -361,7 +431,7 @@ struct CourseGradeRow: View {
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("\(course.courseCode) · \(course.courseTitle)")
-                        .font(DesignSystem.Typography.body)
+                        .font(.system(size: 13, weight: .semibold))
                         .foregroundColor(.primary)
                         .lineLimit(1)
                     HStack(spacing: 6) {
@@ -373,7 +443,7 @@ struct CourseGradeRow: View {
                         if let letter = course.letterGrade { Text("· \(letter)") }
                         Text("· \(course.creditHours) credits")
                     }
-                    .font(DesignSystem.Typography.caption)
+                    .font(.caption)
                     .foregroundColor(.secondary)
                     .lineLimit(1)
                 }
@@ -423,7 +493,7 @@ struct CourseGradeRow: View {
                     .font(.caption2.weight(.semibold))
             } else {
                 Text("—")
-                    .font(DesignSystem.Typography.caption)
+                    .font(.caption)
                     .foregroundColor(.secondary)
             }
         }
@@ -447,7 +517,6 @@ struct GradeDetailCard: View {
                 if segment == .scenarios {
                     whatIf(detail)
                 }
-                notes(detail)
                 Text("Grades are approximations and may differ from your institution's official system.")
                     .font(.footnote)
                     .foregroundColor(.secondary)
@@ -455,7 +524,7 @@ struct GradeDetailCard: View {
         } else {
             VStack(spacing: 12) {
                 Image(systemName: "chart.bar.doc.horizontal")
-                    .font(DesignSystem.Typography.display)
+                    .font(.largeTitle)
                     .foregroundColor(.secondary)
                 Text("Select a course from the center panel to see its grade breakdown.")
                     .font(.footnote)
@@ -468,10 +537,10 @@ struct GradeDetailCard: View {
     private func header(_ course: GradeCourseSummary) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Grade Components – \(course.courseCode)")
-                .font(DesignSystem.Typography.body)
+                .font(.system(size: 14, weight: .semibold))
             Text(course.courseTitle)
-                .font(DesignSystem.Typography.subHeader)
-            HStack(spacing: DesignSystem.Layout.spacing.small) {
+                .font(.headline)
+            HStack(spacing: 8) {
                 if let current = course.currentPercentage {
                     Text("Current: \(String(format: "%.1f", current))%")
                 } else { Text("Current: —") }
@@ -480,7 +549,7 @@ struct GradeDetailCard: View {
                 }
                 if let letter = course.letterGrade { Text("· \(letter)") }
             }
-            .font(DesignSystem.Typography.caption)
+            .font(.caption)
             .foregroundColor(.secondary)
 
             Button("Edit target") {
@@ -492,24 +561,24 @@ struct GradeDetailCard: View {
     }
 
     private func components(_ components: [GradeComponent]) -> some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+        VStack(alignment: .leading, spacing: 8) {
             ForEach(components) { comp in
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
                         Text(comp.name)
-                            .font(DesignSystem.Typography.body)
+                            .font(.system(size: 13, weight: .semibold))
                         Spacer()
                         if let earned = comp.earnedPercent {
                             Text("\(Int(earned))%")
                                 .font(.caption.weight(.semibold))
                         } else {
                             Text("No data yet")
-                                .font(DesignSystem.Typography.caption)
+                                .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                     }
                     Text("Weight: \(Int(comp.weightPercent))%")
-                        .font(DesignSystem.Typography.caption)
+                        .font(.caption)
                         .foregroundColor(.secondary)
 
                     if let earned = comp.earnedPercent {
@@ -532,9 +601,9 @@ struct GradeDetailCard: View {
     }
 
     private func whatIf(_ detail: CourseGradeDetail) -> some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+        VStack(alignment: .leading, spacing: 8) {
             Text("What-If Scenario")
-                .font(DesignSystem.Typography.body)
+                .font(.system(size: 14, weight: .semibold))
             Slider(value: $whatIfInput, in: 50...100, step: 1) {
                 Text("Expected average on remaining work")
             }
@@ -559,7 +628,7 @@ struct GradeDetailCard: View {
     private func notes(_ detail: CourseGradeDetail) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Notes")
-                .font(DesignSystem.Typography.body)
+                .font(.system(size: 14, weight: .semibold))
             TextEditor(text: Binding(
                 get: { detail.notes },
                 set: { newValue in
@@ -571,11 +640,11 @@ struct GradeDetailCard: View {
             ))
             .frame(minHeight: 120)
             .background(
-                RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .fill(Color(nsColor: .controlBackgroundColor))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
             )
         }
@@ -602,7 +671,7 @@ struct EditTargetGradeSheet: View {
                         Text("Target %")
                     }
                     Text("\(Int(targetPercent))%")
-                        .font(DesignSystem.Typography.subHeader)
+                        .font(.headline)
                 }
 
                 Section("Letter") {
@@ -668,4 +737,3 @@ private extension GradesPageView {
         }
     }
 }
-

@@ -178,8 +178,10 @@ struct CourseSettingsRow: View {
     }
 }
 
+#if !DISABLE_PREVIEWS
 #Preview {
     CoursesSettingsView()
         .environmentObject(CoursesStore())
         .frame(width: 500, height: 600)
 }
+#endif

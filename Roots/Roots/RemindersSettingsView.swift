@@ -3,23 +3,31 @@ import EventKit
 
 struct RemindersSettingsView: View {
     @EnvironmentObject var calendarManager: CalendarManager
+    @State private var showingRevokeAlert = false
+
+    private var isAuthorized: Bool {
+        calendarManager.reminderAuthorizationStatus == .authorized || calendarManager.reminderAuthorizationStatus == .fullAccess
+    }
 
     var body: some View {
-        Form {
-            Section("Reminders") {
+        List {
+            Section("Reminders Sync") {
                 Toggle("Enable Reminders Sync", isOn: Binding(
-                    get: { calendarManager.reminderAuthorizationStatus == .authorized || calendarManager.reminderAuthorizationStatus == .fullAccess },
+                    get: { isAuthorized },
                     set: { newValue in
-                        if newValue { _Concurrency.Task { await calendarManager.requestRemindersAccess() } }
+                        if newValue {
+                            _Concurrency.Task { await calendarManager.requestAccess() }
+                        } else {
+                            showingRevokeAlert = true
+                        }
                     }
                 ))
                 .toggleStyle(.switch)
-                .onChange(of: calendarManager.reminderAuthorizationStatus) { _, _ in /* UI updates via calendarManager published */ }
 
                 HStack {
                     Text("Status:")
                         .foregroundStyle(.secondary)
-                    if calendarManager.reminderAuthorizationStatus == .authorized || calendarManager.reminderAuthorizationStatus == .fullAccess {
+                    if isAuthorized {
                         Text("Connected").foregroundStyle(.green)
                     } else if calendarManager.isRemindersAccessDenied {
                         Text("Access Denied").foregroundStyle(.red)
@@ -31,7 +39,53 @@ struct RemindersSettingsView: View {
                 }
                 .font(DesignSystem.Typography.caption)
             }
+
+            if isAuthorized {
+                Section("School List") {
+                    Picker("School List", selection: $calendarManager.selectedReminderListID) {
+                        Text("Select a List").tag("")
+                        ForEach(calendarManager.availableReminderLists, id: \.calendarIdentifier) { list in
+                            HStack {
+                                if let cgColor = list.cgColor, let nsColor = NSColor(cgColor: cgColor) {
+                                    Circle().fill(Color(nsColor: nsColor)).frame(width: 8, height: 8)
+                                } else {
+                                    Circle().fill(Color.accentColor).frame(width: 8, height: 8)
+                                }
+                                Text(list.title)
+                            }
+                            .tag(list.calendarIdentifier)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .onChange(of: calendarManager.selectedReminderListID) { _, _ in
+                        _Concurrency.Task { await calendarManager.refreshAll() }
+                    }
+
+                    Text("Only reminders from this list will appear in Roots.")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
         }
-        .formStyle(.grouped)
+        .listStyle(.sidebar)
+        .alert("Disable Reminders Sync", isPresented: $showingRevokeAlert) {
+            Button("Open System Settings") {
+                calendarManager.openSystemPrivacySettings()
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("To disconnect Roots from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders.")
+        }
+        .onAppear {
+            _Concurrency.Task { await calendarManager.refreshAuthStatus() }
+        }
     }
 }
+
+#if !DISABLE_PREVIEWS
+#Preview {
+    RemindersSettingsView()
+        .environmentObject(CalendarManager.shared)
+        .frame(width: 500, height: 600)
+}
+#endif

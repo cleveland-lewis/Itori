@@ -42,6 +42,7 @@ struct DesignShell<Content: View>: View {
     }
 }
 
+#if !DISABLE_PREVIEWS
 #Preview {
     StatefulPreviewWrapper(DesignMaterial.regular) { binding in
         DesignShell(selectedMaterial: binding, timestamp: Date(timeIntervalSince1970: 1760000000)) {
@@ -53,3 +54,4 @@ struct DesignShell<Content: View>: View {
         .padding(DesignSystem.Layout.padding.card)
     }
 }
+#endif

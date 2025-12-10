@@ -49,7 +49,7 @@ public struct RootsLiquidButtonStyle: ButtonStyle {
                         .stroke(Color.primary.opacity(0.03))
                 )
                 .shadow(color: Color.black.opacity(isHovering ? 0.06 : 0.03), radius: isHovering ? 10 : 6, x: 0, y: 4)
-                .scaleEffect(reducedMotion ? 1.0 : (configuration.isPressed ? 0.96 : 1.0))
+                .scaleEffect(reducedMotion ? 1.0 : (configuration.isPressed ? 0.92 : 1.0))
                 .animation(reducedMotion ? .none : DesignSystem.Motion.interactiveSpring, value: configuration.isPressed)
                 .animation(reducedMotion ? .none : DesignSystem.Motion.interactiveSpring, value: isHovering)
                 .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))

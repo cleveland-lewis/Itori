@@ -3,23 +3,31 @@ import EventKit
 
 struct CalendarSettingsView: View {
     @EnvironmentObject var calendarManager: CalendarManager
+    @State private var showingRevokeAlert = false
+
+    private var isAuthorized: Bool {
+        calendarManager.eventAuthorizationStatus == .authorized || calendarManager.eventAuthorizationStatus == .fullAccess
+    }
 
     var body: some View {
-        Form {
-            Section("Calendar") {
+        List {
+            Section("Calendar Sync") {
                 Toggle("Enable Calendar Sync", isOn: Binding(
-                    get: { calendarManager.eventAuthorizationStatus == .authorized || calendarManager.eventAuthorizationStatus == .fullAccess },
+                    get: { isAuthorized },
                     set: { newValue in
-                        if newValue { _Concurrency.Task { await calendarManager.requestCalendarAccess() } }
+                        if newValue {
+                            _Concurrency.Task { await calendarManager.requestAccess() }
+                        } else {
+                            showingRevokeAlert = true
+                        }
                     }
                 ))
                 .toggleStyle(.switch)
-                .onChange(of: calendarManager.eventAuthorizationStatus) { _, _ in /* UI updates via calendarManager published */ }
 
                 HStack {
                     Text("Status:")
                         .foregroundStyle(.secondary)
-                    if calendarManager.eventAuthorizationStatus == .authorized || calendarManager.eventAuthorizationStatus == .fullAccess {
+                    if isAuthorized {
                         Text("Connected").foregroundStyle(.green)
                     } else if calendarManager.isCalendarAccessDenied {
                         Text("Access Denied").foregroundStyle(.red)
@@ -31,7 +39,53 @@ struct CalendarSettingsView: View {
                 }
                 .font(DesignSystem.Typography.caption)
             }
+
+            if isAuthorized {
+                Section("School Calendar") {
+                    Picker("School Calendar", selection: $calendarManager.selectedCalendarID) {
+                        Text("Select a Calendar").tag("")
+                        ForEach(calendarManager.availableCalendars, id: \.calendarIdentifier) { cal in
+                            HStack {
+                                if let cgColor = cal.cgColor, let nsColor = NSColor(cgColor: cgColor) {
+                                    Circle().fill(Color(nsColor: nsColor)).frame(width: 8, height: 8)
+                                } else {
+                                    Circle().fill(Color.accentColor).frame(width: 8, height: 8)
+                                }
+                                Text(cal.title)
+                            }
+                            .tag(cal.calendarIdentifier)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .onChange(of: calendarManager.selectedCalendarID) { _, _ in
+                        _Concurrency.Task { await calendarManager.refreshAll() }
+                    }
+
+                    Text("Only events from this calendar will appear in Roots.")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
         }
-        .formStyle(.grouped)
+        .listStyle(.sidebar)
+        .alert("Disable Calendar Sync", isPresented: $showingRevokeAlert) {
+            Button("Open System Settings") {
+                calendarManager.openSystemPrivacySettings()
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("To disconnect Roots from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars.")
+        }
+        .onAppear {
+            _Concurrency.Task { await calendarManager.refreshAuthStatus() }
+        }
     }
 }
+
+#if !DISABLE_PREVIEWS
+#Preview {
+    CalendarSettingsView()
+        .environmentObject(CalendarManager.shared)
+        .frame(width: 500, height: 600)
+}
+#endif

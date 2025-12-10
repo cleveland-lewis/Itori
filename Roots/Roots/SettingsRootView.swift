@@ -38,25 +38,24 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
 struct SettingsRootView: View {
     @EnvironmentObject var settings: AppSettingsModel
     @EnvironmentObject var coursesStore: CoursesStore
-    @State private var selectedCategory: SettingsCategory = .general
+    @Binding private var selectedPane: SettingsToolbarIdentifier
 
-    // Legacy initializer for compatibility with SettingsWindowController
-    init(initialPane: SettingsToolbarIdentifier, paneChanged: @escaping (SettingsToolbarIdentifier) -> Void) {
-        // We ignore these parameters since we're using a new NavigationSplitView-based approach
+    init(selection: Binding<SettingsToolbarIdentifier>) {
+        _selectedPane = selection
     }
 
     var body: some View {
         NavigationSplitView {
-            List(SettingsCategory.allCases, selection: $selectedCategory) { category in
-                NavigationLink(value: category) {
-                    Label(category.rawValue, systemImage: category.icon)
+            List(SettingsToolbarIdentifier.allCases, selection: $selectedPane) { pane in
+                NavigationLink(value: pane) {
+                    Label(pane.label, systemImage: pane.systemImageName)
                 }
             }
             .navigationTitle("Settings")
             .navigationSplitViewColumnWidth(min: 180, ideal: 200, max: 250)
         } detail: {
             Group {
-                switch selectedCategory {
+                switch selectedPane {
                 case .general:
                     GeneralSettingsView()
                 case .calendar:
@@ -73,20 +72,15 @@ struct SettingsRootView: View {
                     InterfaceSettingsView()
                 case .profiles:
                     ProfilesSettingsView()
-                case .account:
-                    Text("Account settings are unavailable in this build.")
+                case .flashcards:
+                    FlashcardSettingsView()
                 case .privacy:
                     PrivacySettingsView()
                 }
             }
+            .id(selectedPane)
             .frame(minWidth: 400, minHeight: 400)
         }
         .frame(minWidth: 600, minHeight: 400)
-        .onReceive(settings.objectWillChange) { _ in
-            // Persist settings whenever they change
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                settings.save()
-            }
-        }
     }
 }

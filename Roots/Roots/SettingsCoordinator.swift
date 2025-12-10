@@ -19,6 +19,10 @@ final class SettingsCoordinator: ObservableObject {
     init(appSettings: AppSettingsModel, coursesStore: CoursesStore) {
         self.appSettings = appSettings
         self.coursesStore = coursesStore
+        if let stored = UserDefaults.standard.string(forKey: SettingsWindowController.lastPaneKey),
+           let pane = SettingsToolbarIdentifier(rawValue: stored) {
+            selectedSection = pane
+        }
     }
 
     func show() {
