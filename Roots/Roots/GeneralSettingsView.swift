@@ -103,36 +103,58 @@ struct GeneralSettingsView: View {
             defaultView = DefaultView(rawValue: settings.defaultView ?? "Dashboard") ?? .dashboard
         }
         .sheet(isPresented: $showResetSheet) {
-            VStack(alignment: .leading, spacing: 16) {
-                Text("Reset All Data")
-                    .font(.title2.weight(.bold))
-                Text("This will remove all app data including courses, assignments, settings, and cached sessions. This action cannot be undone.")
-                    .foregroundColor(.secondary)
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Type the code to confirm:")
-                        .font(.headline)
-                    Text(resetCode)
-                        .font(.system(.title3, design: .monospaced).weight(.bold))
-                        .padding(8)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.secondary.opacity(0.1)))
+            VStack(spacing: 18) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Reset All Data")
+                        .font(.title2.weight(.bold))
+                    Text("This will remove all app data including courses, assignments, settings, and cached sessions. This action cannot be undone.")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                TextField("Enter code exactly", text: $resetInput)
-                    .textFieldStyle(.roundedBorder)
-                    .autocorrectionDisabled(true)
-                    .disableAutocorrection(true)
 
-                HStack {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Type the code to confirm")
+                        .font(.headline.weight(.semibold))
+                    HStack {
+                        Text(resetCode)
+                            .font(.system(.title3, design: .monospaced).weight(.bold))
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 8)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                    .fill(Color(nsColor: .controlBackgroundColor))
+                            )
+                        Spacer()
+                    }
+                    TextField("Enter code exactly", text: $resetInput)
+                        .textFieldStyle(.roundedBorder)
+                        .font(.system(.body, design: .monospaced))
+                        .disableAutocorrection(true)
+                        .textInputAutocapitalization(.never)
+                }
+
+                HStack(spacing: 12) {
                     Button("Cancel") { showResetSheet = false }
+                        .buttonStyle(.bordered)
                     Spacer()
                     Button("Reset Now") {
                         performReset()
                     }
                     .buttonStyle(.borderedProminent)
+                    .tint(.red)
+                    .keyboardShortcut(.defaultAction)
                     .disabled(resetInput != resetCode || isResetting)
                 }
             }
-            .padding(24)
-            .frame(minWidth: 420)
+            .padding(26)
+            .frame(minWidth: 440, maxWidth: 520)
+            .background(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(.regularMaterial)
+            )
+            .shadow(color: Color.black.opacity(0.12), radius: 22, x: 0, y: 12)
+            .padding()
         }
     }
 
