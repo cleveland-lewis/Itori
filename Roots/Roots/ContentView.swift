@@ -41,6 +41,7 @@ struct ContentView: View {
                         performQuickAction(.add_course)
                     }
                 ])
+                .opacity(0.9)
                 .padding(.leading, 24)
                 .padding(.top, 16)
                 .zIndex(1)
@@ -100,6 +101,7 @@ struct ContentView: View {
                     performQuickAction(.add_course)
                 }
             ])
+            .opacity(0.9)
 
             Spacer()
 
@@ -114,7 +116,7 @@ struct ContentView: View {
                     .rotationEffect(.degrees(settingsRotation))
                     .foregroundStyle(.primary)
                     .frame(width: 36, height: 36)
-                    .background(DesignSystem.Materials.hud.opacity(0.9), in: Circle())
+                    .background(DesignSystem.Materials.hud.opacity(0.75), in: Circle())
             }
             .buttonStyle(.plain)
             .rootsStandardInteraction()
