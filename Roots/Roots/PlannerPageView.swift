@@ -320,11 +320,12 @@ private extension PlannerPageView {
                 } label: {
                     Text(isRunningPlanner ? "Planning..." : "Plan Day")
                         .font(DesignSystem.Typography.body)
-                        .frame(height: 42)
-                        .frame(minWidth: 140)
+                        .frame(height: 36)
+                        .frame(minWidth: 120)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
                 .tint(settings.activeAccentColor)
+                .controlSize(.regular)
                 .disabled(isRunningPlanner)
                 .opacity(isRunningPlanner ? 0.85 : 1)
             }

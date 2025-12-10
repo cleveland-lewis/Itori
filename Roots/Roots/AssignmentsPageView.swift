@@ -323,12 +323,13 @@ struct AssignmentsPageView: View {
             } label: {
                 Text("Plan Day")
                     .font(DesignSystem.Typography.body)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
-                    .frame(height: 42)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .frame(height: 36)
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.bordered)
             .tint(settings.activeAccentColor)
+            .controlSize(.regular)
         }
     }
 
