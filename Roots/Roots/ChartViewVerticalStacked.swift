@@ -7,6 +7,7 @@ import Charts
 struct ChartViewVerticalStacked: View {
     var buckets: [AnalyticsBucket]
     var categoryColors: [String: Color]
+    var showLabels: Bool = true
 
     @State private var hoveredPoint: ChartPoint? = nil
     @State private var hoveredPointLocation: CGPoint? = nil
@@ -14,7 +15,7 @@ struct ChartViewVerticalStacked: View {
 
     var body: some View {
         // Use the simple manual renderer with hover highlighting and animation to ensure stable builds
-        ManualStackedView(buckets: buckets, categoryColors: categoryColors, hoveredPoint: hoveredPoint)
+        ManualStackedView(buckets: buckets, categoryColors: categoryColors, hoveredPoint: hoveredPoint, showLabels: showLabels)
             .frame(maxHeight: 320)
             .overlay(Group {
                 if let hovered = hoveredPoint {
@@ -47,9 +48,10 @@ struct ChartViewVerticalStacked: View {
             }
     }
 
-    init(buckets: [AnalyticsBucket], categoryColors: [String: Color]) {
+    init(buckets: [AnalyticsBucket], categoryColors: [String: Color], showLabels: Bool = true) {
         self.buckets = buckets
         self.categoryColors = categoryColors
+        self.showLabels = showLabels
     }
 
     private func computePoints() -> [ChartPoint] {
@@ -94,6 +96,7 @@ private struct ManualStackedView: View {
     var buckets: [AnalyticsBucket]
     var categoryColors: [String: Color]
     var hoveredPoint: ChartPoint?
+    var showLabels: Bool
     var body: some View {
         GeometryReader { proxy in
             let maxMinutes = buckets.map { $0.categoryDurations.values.reduce(0, +) / 60.0 }.max() ?? 1
@@ -125,7 +128,9 @@ private struct ManualStackedView: View {
                             }
                         }
                         .cornerRadius(6)
-                        Text(bucket.label).font(.caption2).foregroundColor(.secondary).frame(height: 18)
+                        if showLabels {
+                            Text(bucket.label).font(.caption2).foregroundColor(.secondary).frame(height: 18)
+                        }
                     }
                 }
             }

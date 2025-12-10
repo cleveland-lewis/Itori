@@ -29,16 +29,26 @@ struct CalendarDayView: View {
                                     Button {
                                         onSelectEvent?(event)
                                     } label: {
-                                        VStack(alignment: .leading, spacing: 2) {
-                                            Text(categoryLabel(for: event.title))
-                                                .font(.caption2.weight(.semibold))
-                                                .foregroundStyle(.secondary)
-                                            Text(event.title)
-                                                .font(.caption2)
+                                        HStack(alignment: .center, spacing: 8) {
+                                            RoundedRectangle(cornerRadius: 3, style: .continuous)
+                                                .fill(event.calendar.cgColor.map { Color($0) } ?? Color.accentColor)
+                                                .frame(width: 4, height: 20)
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text(categoryLabel(for: event.title))
+                                                    .font(.caption2.weight(.semibold))
+                                                    .foregroundStyle(.secondary)
+                                                Text(event.title)
+                                                    .font(.caption2.weight(.medium))
+                                            }
+                                            Spacer()
                                         }
                                         .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding(6)
-                                        .background(Color.accentColor.opacity(0.15), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                                        .padding(8)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
+                                                .fill(Color(nsColor: .windowBackgroundColor).opacity(0.92))
+                                                .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 1)
+                                        )
                                     }
                                     .buttonStyle(.plain)
                                 }

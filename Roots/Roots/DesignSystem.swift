@@ -89,6 +89,19 @@ struct DesignSystem {
         static let cornerRadiusSmall: CGFloat = 12
         static let cornerRadiusStandard: CGFloat = 16
         static let cornerRadiusLarge: CGFloat = 24
+
+        // Shared sizing tokens for rows and pills
+        struct rowHeight {
+            static let small: CGFloat = 32
+            static let medium: CGFloat = 44
+            static let large: CGFloat = 56
+        }
+
+        struct radii {
+            static let card: CGFloat = 22
+            static let block: CGFloat = 15
+            static let pill: CGFloat = 10
+        }
     }
 
     // Backwards-compatible spacing tokens
@@ -126,6 +139,9 @@ struct DesignSystem {
         static let small: CGFloat = Layout.cornerRadiusSmall
         static let medium: CGFloat = Layout.cornerRadiusStandard
         static let large: CGFloat = Layout.cornerRadiusLarge
+        static let card: CGFloat = Layout.radii.card
+        static let block: CGFloat = Layout.radii.block
+        static let pill: CGFloat = Layout.radii.pill
     }
 
     struct Icons {

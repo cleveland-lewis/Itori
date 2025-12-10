@@ -1,12 +1,8 @@
 import SwiftUI
 import Combine
+import AppKit
 
 // MARK: - Models
-
-enum PlannerScope: String, CaseIterable, Identifiable {
-    case today, week, all
-    var id: String { rawValue }
-}
 
 enum PlannerBlockStatus {
     case upcoming
@@ -40,6 +36,9 @@ struct PlannerTask: Identifiable {
     var isLockedToDueDate: Bool
     var isScheduled: Bool
     var isCompleted: Bool
+    var importance: Double? = nil   // 0...1
+    var difficulty: Double? = nil   // 0...1
+    var category: AssignmentCategory? = nil
 }
 
 // New task drafting types
@@ -207,10 +206,9 @@ struct PlannerPageView: View {
     @EnvironmentObject var settings: AppSettings
     @StateObject private var dayProgress = DayProgressModel()
 
-    @State private var scope: PlannerScope = .today
     @State private var selectedDate: Date = Date()
-    @State private var plannedBlocks: [PlannedBlock] = PlannerPageView.samplePlannedBlocks(for: Date())
-    @State private var unscheduledTasks: [PlannerTask] = PlannerPageView.sampleUnscheduledTasks(for: Date())
+    @State private var plannedBlocks: [PlannedBlock] = []
+    @State private var unscheduledTasks: [PlannerTask] = []
     @State private var isRunningPlanner: Bool = false
     @State private var showTaskSheet: Bool = false
     @State private var editingTask: PlannerTask? = nil
@@ -222,6 +220,7 @@ struct PlannerPageView: View {
     @State private var plannerSettings = PlannerSettings()
 
     private let cardCornerRadius: CGFloat = 26
+    private let studySettings = StudyPlanSettings()
 
     var body: some View {
         ZStack {
@@ -258,10 +257,13 @@ struct PlannerPageView: View {
         }
         .onAppear {
             dayProgress.startUpdating()
-            // ensure roots settings are available and used if needed
+            syncTodayTasksAndSchedule()
         }
         .onDisappear {
             dayProgress.stopUpdating()
+        }
+        .onChange(of: selectedDate) { _, _ in
+            syncTodayTasksAndSchedule()
         }
     }
 }
@@ -299,18 +301,6 @@ private extension PlannerPageView {
                 .buttonStyle(.plain)
             }
 
-            Spacer()
-
-            Picker("Scope", selection: $scope.animation(.spring(response: 0.3, dampingFraction: 0.85))) {
-                Text("Today").tag(PlannerScope.today)
-                Text("This Week").tag(PlannerScope.week)
-                Text("All").tag(PlannerScope.all)
-            }
-            .pickerStyle(.segmented)
-            .frame(maxWidth: 320)
-
-            Spacer()
-
             HStack(spacing: DesignSystem.Layout.spacing.small) {
                 Button {
                     showNewTaskSheet()
@@ -328,18 +318,13 @@ private extension PlannerPageView {
                 Button {
                     runAIScheduler()
                 } label: {
-                    HStack(spacing: DesignSystem.Layout.spacing.small) {
-                        Image(systemName: "wand.and.stars")
-                        Text(isRunningPlanner ? "Planning..." : "Auto-Plan Day")
-                    }
-                    .font(DesignSystem.Typography.body)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .frame(height: 38)
-                    .background(Color(nsColor: .controlBackgroundColor))
-                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    Text(isRunningPlanner ? "Planning..." : "Plan Day")
+                        .font(DesignSystem.Typography.body)
+                        .frame(height: 42)
+                        .frame(minWidth: 140)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.borderedProminent)
+                .tint(settings.activeAccentColor)
                 .disabled(isRunningPlanner)
                 .opacity(isRunningPlanner ? 0.85 : 1)
             }
@@ -348,17 +333,12 @@ private extension PlannerPageView {
     }
 
     var subtitleText: String {
-        switch scope {
-        case .today: return "AI-planned focus blocks"
-        case .week: return "Week overview"
-        case .all: return "All"
-        }
+        return "AI-planned focus blocks"
     }
 
     func adjustDate(by offset: Int) {
         let component: Calendar.Component = .day
-        let value = scope == .week ? offset * 7 : offset
-        if let newDate = Calendar.current.date(byAdding: component, value: value, to: selectedDate) {
+        if let newDate = Calendar.current.date(byAdding: component, value: offset, to: selectedDate) {
             selectedDate = newDate
         }
     }
@@ -367,16 +347,109 @@ private extension PlannerPageView {
 // MARK: - Timeline Card
 
 private extension PlannerPageView {
+    func syncTodayTasksAndSchedule() {
+        // Generate sessions for all assignments, schedule across days, then filter for selected date.
+        func urgency(from importance: Double) -> AssignmentUrgency {
+            if importance >= 0.75 { return .high }
+            if importance >= 0.5 { return .medium }
+            return .low
+        }
+
+        func category(from type: TaskType) -> AssignmentCategory {
+            switch type {
+            case .exam: return .exam
+            case .quiz: return .quiz
+            case .project: return .project
+            case .practiceHomework: return .practiceHomework
+            case .reading: return .reading
+            case .review: return .review
+            }
+        }
+
+        let assignments = AssignmentsStore.shared.tasks.map { task in
+            Assignment(
+                id: task.id,
+                courseId: task.courseId,
+                title: task.title,
+                courseCode: "",
+                courseName: "",
+                category: category(from: task.type),
+                dueDate: task.due ?? Date(),
+                estimatedMinutes: max(30, task.estimatedMinutes),
+                status: task.isCompleted ? .completed : .notStarted,
+                urgency: urgency(from: task.importance),
+                weightPercent: nil,
+                isLockedToDueDate: task.locked,
+                notes: "",
+                plan: []
+            )
+        }
+
+        let sessions = assignments.flatMap { PlannerEngine.generateSessions(for: $0, settings: studySettings) }
+        let energy = SchedulerPreferencesStore.shared.preferences.learnedEnergyProfile
+        let scheduledResult = PlannerEngine.scheduleSessions(sessions, settings: studySettings, energyProfile: energy)
+
+        let dayBlocks: [PlannedBlock] = scheduledResult.scheduled.compactMap { scheduled -> PlannedBlock? in
+            let start = scheduled.start
+            if !Calendar.current.isDate(start, inSameDayAs: selectedDate) { return nil }
+            return PlannedBlock(
+                id: scheduled.id,
+                taskId: scheduled.session.assignmentId,
+                courseId: nil,
+                title: scheduled.session.title,
+                course: nil,
+                start: scheduled.start,
+                end: scheduled.end,
+                isLocked: scheduled.session.isLockedToDueDate,
+                status: .upcoming,
+                source: "Auto-plan",
+                isOmodoroLinked: false
+            )
+        }
+
+        plannedBlocks = dayBlocks
+
+        let overflow = scheduledResult.overflow
+        unscheduledTasks = overflow.map { session in
+            PlannerTask(
+                id: session.id,
+                courseId: nil,
+                assignmentId: session.assignmentId,
+                title: session.title,
+                course: nil,
+                dueDate: session.dueDate,
+                estimatedMinutes: session.estimatedMinutes,
+                isLockedToDueDate: session.isLockedToDueDate,
+                isScheduled: false,
+                isCompleted: false,
+                importance: session.importance == .high ? 0.8 : 0.5,
+                difficulty: session.difficulty == .high ? 0.8 : 0.5,
+                category: session.category
+            )
+        }
+    }
+
     var timelineCard: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
                 Text("Planner Timeline")
                     .font(DesignSystem.Typography.subHeader)
+                if !unscheduledTasks.isEmpty {
+                    Text("• \(unscheduledTasks.count) overflow")
+                        .font(.caption.weight(.semibold))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(Color(nsColor: .controlBackgroundColor))
+                        .clipShape(Capsule())
+                        .overlay(
+                            Capsule().stroke(Color(nsColor: .separatorColor).opacity(0.2), lineWidth: 1)
+                        )
+                }
                 Spacer()
             }
 
-            VStack(alignment: .leading, spacing: 14) {
-                ForEach(6...22, id: \.self) { hour in
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(9...21, id: \.self) { hour in
                     timelineRow(for: hour)
                 }
             }
@@ -393,32 +466,37 @@ private extension PlannerPageView {
 
         return HStack(alignment: .top, spacing: 12) {
             Text(Self.hourFormatter.string(from: hourDate))
-                .font(DesignSystem.Typography.body)
+                .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
-                .frame(width: 64, alignment: .leading)
+                .frame(width: 52, alignment: .leading)
 
-            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+            VStack(alignment: .leading, spacing: 6) {
                 if blocks.isEmpty {
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
+                        .stroke(Color(nsColor: .separatorColor).opacity(0.8), lineWidth: 1)
                         .background(
-                            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                .fill(Color(nsColor: .controlBackgroundColor))
+                            RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
+                                .fill(Color(nsColor: .controlBackgroundColor).opacity(0.7))
                         )
-                        .frame(height: 46)
+                        .frame(height: 34)
                         .overlay(
-                            HStack { Text("Free").font(DesignSystem.Typography.body).foregroundStyle(.secondary); Spacer() }
-                                .padding(.horizontal, 14)
+                            HStack { Text("Free").font(.caption).foregroundStyle(.secondary); Spacer() }
+                                .padding(.horizontal, 10)
                         )
                 } else {
                     ForEach(blocks) { block in
                         PlannerBlockRow(block: block)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
+                                    .stroke(Color(nsColor: .separatorColor).opacity(0.25), lineWidth: 1)
+                            )
                     }
                 }
             }
             .frame(maxWidth: .infinity)
         }
     }
+
 }
 
 // MARK: - Right Column
@@ -437,6 +515,17 @@ private extension PlannerPageView {
                 Text("Unscheduled Tasks")
                     .font(DesignSystem.Typography.body)
                 Spacer()
+                if !unscheduledTasks.isEmpty {
+                    Text("\(unscheduledTasks.count)")
+                        .font(.caption.weight(.semibold))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(Color(nsColor: .controlBackgroundColor))
+                        .clipShape(Capsule())
+                        .overlay(
+                            Capsule().stroke(Color(nsColor: .separatorColor).opacity(0.2), lineWidth: 1)
+                        )
+                }
                 Button {
                     showNewTaskSheet()
                 } label: {
@@ -712,6 +801,21 @@ private extension PlannerPageView {
 struct PlannerBlockRow: View {
     var block: PlannedBlock
 
+    private var isFixedEvent: Bool {
+        let lower = block.source.lowercased()
+        return lower.contains("class") || lower.contains("calendar") || lower.contains("event")
+    }
+
+    private var accentBarColor: Color {
+        if isFixedEvent { return .blue.opacity(0.8) }
+        switch block.status {
+        case .upcoming: return .accentColor
+        case .inProgress: return .yellow
+        case .completed: return .green
+        case .overdue: return .red
+        }
+    }
+
     private var statusColor: Color {
         switch block.status {
         case .upcoming: return .accentColor
@@ -723,13 +827,13 @@ struct PlannerBlockRow: View {
 
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
-            Circle()
-                .fill(statusColor)
-                .frame(width: 10, height: 10)
+            RoundedRectangle(cornerRadius: 3, style: .continuous)
+                .fill(accentBarColor)
+                .frame(width: 4, height: 32)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(block.title)
-                    .font(DesignSystem.Typography.body)
+                    .font(.body.weight(.semibold))
                     .lineLimit(1)
 
                 Text(metadataText)
@@ -746,15 +850,15 @@ struct PlannerBlockRow: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 12)
+        .padding(.horizontal, 12)
+        .frame(height: DesignSystem.Layout.rowHeight.medium)
         .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color(nsColor: .controlBackgroundColor))
+            RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
+                .fill(Color(nsColor: .controlBackgroundColor).opacity(isFixedEvent ? 0.95 : 0.85))
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+            RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
+                .stroke(Color(nsColor: .separatorColor).opacity(0.25), lineWidth: 1)
         )
     }
 

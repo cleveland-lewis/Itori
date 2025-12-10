@@ -37,7 +37,6 @@ enum AssignmentCategory: String, CaseIterable, Codable, Identifiable {
     case practiceHomework
     case reading
     case review
-    case studying
 
     var id: String { rawValue }
 
@@ -46,10 +45,9 @@ enum AssignmentCategory: String, CaseIterable, Codable, Identifiable {
         case .project:           return "Project"
         case .exam:              return "Exam"
         case .quiz:              return "Quiz"
-        case .practiceHomework:  return "Practice Homework"
+        case .practiceHomework:  return "Homework"
         case .reading:           return "Reading"
         case .review:            return "Review"
-        case .studying:          return "Studying"
         }
     }
 }
@@ -82,8 +80,6 @@ extension AssignmentCategory {
             return .init(baseMinutes: 45, minSessions: 1, spreadDaysBeforeDue: 1, sessionBias: .shortBursts)
         case .review:
             return .init(baseMinutes: 90, minSessions: 2, spreadDaysBeforeDue: 3, sessionBias: .shortBursts)
-        case .studying:
-            return .init(baseMinutes: 75, minSessions: 2, spreadDaysBeforeDue: 2, sessionBias: .mediumBlocks)
         }
     }
 }
@@ -133,12 +129,6 @@ extension Assignment {
             return [
                 PlanStep(id: UUID(), title: "Review Key Points", targetDate: dayOffset(2), expectedMinutes: max(30, minutes / 2), notes: nil),
                 PlanStep(id: UUID(), title: "Flashcards / Drill", targetDate: dayOffset(1), expectedMinutes: max(20, minutes / 2), notes: nil)
-            ]
-        case .studying:
-            return [
-                PlanStep(id: UUID(), title: "Warmup & Plan", targetDate: dayOffset(2), expectedMinutes: max(20, minutes / 3), notes: nil),
-                PlanStep(id: UUID(), title: "Deep Work", targetDate: dayOffset(1), expectedMinutes: max(40, minutes / 2), notes: nil),
-                PlanStep(id: UUID(), title: "Review & Retain", targetDate: due, expectedMinutes: max(20, minutes / 3), notes: nil)
             ]
         }
     }
@@ -284,10 +274,6 @@ struct AssignmentsPageView: View {
             Spacer()
 
             HStack(spacing: RootsSpacing.s) {
-                TextField("Search assignments", text: $searchText)
-                    .textFieldStyle(.roundedBorder)
-                    .frame(maxWidth: 320)
-
                 Picker("Sort", selection: $sortOption) {
                     ForEach(AssignmentSortOption.allCases) { opt in
                         Text(opt.label).tag(opt)
@@ -325,14 +311,14 @@ struct AssignmentsPageView: View {
             Button {
                 autoPlanSelectedAssignments()
             } label: {
-                Label("Auto-Plan", systemImage: "wand.and.stars")
+                Text("Plan Day")
                     .font(DesignSystem.Typography.body)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(RootsColor.cardBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .frame(height: 42)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.borderedProminent)
+            .tint(settings.activeAccentColor)
         }
     }
 
@@ -386,11 +372,10 @@ struct AssignmentsPageView: View {
     private var assignmentListCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Assignments")
-                    .rootsSectionHeader()
+                TextField("Search assignments", text: $searchText)
+                    .textFieldStyle(.roundedBorder)
+                    .frame(maxWidth: 360)
                 Spacer()
-                Text(activeFiltersLabel)
-                    .rootsCaption()
             }
 
             ScrollView {
@@ -411,7 +396,14 @@ struct AssignmentsPageView: View {
             }
         }
         .padding(DesignSystem.Layout.padding.card)
-        .rootsCardBackground(radius: cardCorner)
+        .background(
+            RoundedRectangle(cornerRadius: DesignSystem.Corners.card, style: .continuous)
+                .fill(Color(nsColor: NSColor.alternatingContentBackgroundColors[0]).opacity(0.85))
+                .overlay(
+                    RoundedRectangle(cornerRadius: DesignSystem.Corners.card, style: .continuous)
+                        .stroke(Color(nsColor: .separatorColor).opacity(0.2), lineWidth: 1)
+                )
+        )
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
@@ -753,6 +745,7 @@ struct UpcomingCountCard: View {
                     .foregroundColor(.secondary)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -778,6 +771,7 @@ struct MissedCountCard: View {
                     .foregroundColor(.secondary)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -796,7 +790,7 @@ struct AssignmentsPageRow: View {
 
     var body: some View {
         Button(action: onSelect) {
-            HStack(spacing: DesignSystem.Layout.spacing.small) {
+            HStack(spacing: 10) {
                 Rectangle()
                     .fill(urgencyColor)
                     .frame(width: 4)
@@ -813,11 +807,22 @@ struct AssignmentsPageRow: View {
                         .font(DesignSystem.Typography.body)
                         .foregroundColor(.primary)
                         .lineLimit(1)
-                    HStack(spacing: 6) {
+                    HStack(spacing: 8) {
                         Text(assignment.courseCode)
                         Text("· \(assignment.category.displayName)")
                         Text("· ~\(assignment.estimatedMinutes) min")
-                        Text("· Due \(dueFormatter.string(from: assignment.dueDate))")
+                        Text("·")
+                        Text("Due \(dueFormatter.string(from: assignment.dueDate))")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.primary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(Color(nsColor: .controlBackgroundColor).opacity(0.95))
+                            .overlay(
+                                Capsule()
+                                    .stroke(Color.accentColor.opacity(0.5), lineWidth: 1)
+                            )
+                            .clipShape(Capsule())
                         if let weight = assignment.weightPercent {
                             Text("· \(Int(weight))%")
                         }
@@ -832,14 +837,14 @@ struct AssignmentsPageRow: View {
                 statusChip
             }
             .padding(.horizontal, 10)
-            .padding(.vertical, 8)
+            .frame(height: DesignSystem.Layout.rowHeight.medium)
             .background(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(isSelected ? Color(nsColor: NSColor.unemphasizedSelectedContentBackgroundColor).opacity(0.12) : Color(nsColor: NSColor.alternatingContentBackgroundColors[0]))
+                RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
+                    .fill(isSelected ? Color(nsColor: NSColor.unemphasizedSelectedContentBackgroundColor).opacity(0.14) : Color(nsColor: NSColor.alternatingContentBackgroundColors[0]).opacity(0.9))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
+                    .stroke(Color(nsColor: .separatorColor).opacity(0.35), lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -1023,24 +1028,42 @@ struct AssignmentDetailPanel: View {
     private func actionsSection(for assignment: Assignment) -> some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             Text("Actions").rootsSectionHeader()
-            HStack(spacing: RootsSpacing.m) {
-                Button {
-                    // TODO: navigate to Planner with this assignment
-                } label: {
-                    Text("Planner")
-                        .frame(maxWidth: .infinity)
+            HStack(spacing: RootsSpacing.s) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("State")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                    Button("Mark Completed") {
+                        var updated = assignment
+                        updated.status = .completed
+                        onUpdate(updated)
+                        self.assignment = updated
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
                 }
-                .buttonStyle(.borderedProminent)
-                .accessibilityLabel("Open Planner for this assignment")
-
-                Button {
-                    // TODO: open Timer with this assignment
-                } label: {
-                    Text("Timer")
-                        .frame(maxWidth: .infinity)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Planning")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                    Button("Planner") {
+                        // TODO: navigate to Planner with this assignment
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
+                    .accessibilityLabel("Open Planner for this assignment")
                 }
-                .buttonStyle(.borderedProminent)
-                .accessibilityLabel("Open Timer for this assignment")
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Execution")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                    Button("Timer") {
+                        // TODO: open Timer with this assignment
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
+                    .accessibilityLabel("Open Timer for this assignment")
+                }
             }
         }
     }

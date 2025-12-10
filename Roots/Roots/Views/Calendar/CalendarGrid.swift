@@ -21,12 +21,22 @@ struct CalendarGrid: View {
                     let dayEvents = eventsForDay(day)
                     VStack(alignment: .leading, spacing: 4) {
                         ForEach(dayEvents.prefix(3), id: \.rootsIdentifier) { event in
-                            Text(event.title)
-                                .font(.caption2)
-                                .lineLimit(1)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 4)
-                                .background(Color.accentColor.opacity(0.12), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                            HStack(spacing: 6) {
+                                RoundedRectangle(cornerRadius: 3, style: .continuous)
+                                    .fill(event.calendar.cgColor.map { Color($0) } ?? Color.accentColor)
+                                    .frame(width: 4, height: 16)
+                                Text(event.title)
+                                    .font(.caption2.weight(.medium))
+                                    .lineLimit(1)
+                                    .foregroundStyle(.primary)
+                            }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 6)
+                            .background(
+                                RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
+                                    .fill(Color(nsColor: .windowBackgroundColor).opacity(0.92))
+                                    .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 1)
+                            )
                         }
                         if dayEvents.count > 3 {
                             Text("+\(dayEvents.count - 3) more")

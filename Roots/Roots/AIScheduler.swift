@@ -13,7 +13,6 @@ enum TaskType: String, Hashable, CaseIterable, Codable {
     case practiceHomework
     case reading
     case review
-    case studying
 
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
@@ -21,14 +20,12 @@ enum TaskType: String, Hashable, CaseIterable, Codable {
         switch raw {
         case "homework", "problemSet": self = .practiceHomework
         case "examPrep": self = .exam
-        case "study": self = .studying
         case "meeting": self = .project
-        case "other": self = .studying
         default:
             if let val = TaskType(rawValue: raw) {
                 self = val
             } else {
-                self = .studying
+                self = .practiceHomework
             }
         }
     }

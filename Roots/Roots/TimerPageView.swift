@@ -769,64 +769,26 @@ struct TimerCoreCard: View {
     var onOpenFocus: () -> Void
 
     var body: some View {
-        VStack(alignment: .center, spacing: 18) {
-            RootsAnalogClock(diameter: 260, showSecondHand: true)
-
-            Text(timeDisplay)
-                .font(.title2.weight(.semibold))
-                .monospacedDigit()
-
-            HStack(spacing: 12) {
-                Image(systemName: "gauge.with.dots.needle.0percent")
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
-                Picker("Mode", selection: $mode.animation(.spring(response: 0.3, dampingFraction: 0.85))) {
-                    ForEach(LocalTimerMode.allCases) { m in
-                        Text(m.label).tag(m)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .frame(maxWidth: 320)
+        VStack(spacing: 16) {
+            if isRunning {
+                FocusSessionView(
+                    mode: mode,
+                    timeText: timeDisplay,
+                    onPause: onPause,
+                    onStop: onReset
+                )
+            } else {
+                TimerSetupView(
+                    mode: $mode,
+                    timeText: timeDisplay,
+                    onStart: onStart,
+                    onOpenFocus: onOpenFocus,
+                    onReset: onReset,
+                    settingsCoordinator: settingsCoordinator
+                )
             }
-
-            HStack(spacing: 12) {
-                Button(isRunning ? "Pause" : "Start") {
-                    isRunning ? onPause() : onStart()
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-
-                Button("Reset", action: onReset)
-                    .buttonStyle(.bordered)
-
-                if mode == .pomodoro {
-                    Button("Skip", action: onSkip)
-                        .buttonStyle(.bordered)
-                }
-
-                Button {
-                    onOpenFocus()
-                } label: {
-                    Image(systemName: "arrow.up.left.and.arrow.down.right")
-                }
-                .buttonStyle(.bordered)
-            }
-
-            HStack(alignment: .center) {
-                Text(infoLine)
-                    .font(.footnote)
-                    .foregroundColor(.secondary)
-                Spacer()
-                Button("Edit") {
-                    // open settings and request Timer pane selection
-                    settingsCoordinator.show(selecting: "timer")
-                }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-            }
-            .padding(.top, 6)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var timeDisplay: String {
@@ -847,17 +809,6 @@ struct TimerCoreCard: View {
         }
     }
 
-    private var infoLine: String {
-        switch mode {
-        case .pomodoro:
-            return "Focus 25m · Break 5m · Session 1 of \(pomodoroSessions)"
-        case .countdown:
-            return "Countdown in progress"
-        case .stopwatch:
-            return "Tracking elapsed time"
-        }
-    }
-
     // Static helper for focus window
     static func timeDisplayStatic(mode: LocalTimerMode, remainingSeconds: TimeInterval, elapsedSeconds: TimeInterval) -> String {
         switch mode {
@@ -874,6 +825,91 @@ struct TimerCoreCard: View {
             let m = Int(remainingSeconds) / 60
             let s = Int(remainingSeconds) % 60
             return String(format: "%02d:%02d", m, s)
+        }
+    }
+}
+
+// Minimal setup card: time + start + mode menu.
+private struct TimerSetupView: View {
+    @Binding var mode: LocalTimerMode
+    var timeText: String
+    var onStart: () -> Void
+    var onOpenFocus: () -> Void
+    var onReset: () -> Void
+    var settingsCoordinator: SettingsCoordinator
+
+    var body: some View {
+        VStack(alignment: .center, spacing: 14) {
+            HStack {
+                Menu {
+                    ForEach(LocalTimerMode.allCases) { m in
+                        Button {
+                            mode = m
+                        } label: {
+                            HStack {
+                                if mode == m {
+                                    Image(systemName: "checkmark")
+                                }
+                                Text(m.label)
+                            }
+                        }
+                    }
+                } label: {
+                    Image(systemName: "speedometer")
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                        .padding(8)
+                        .background(.ultraThinMaterial, in: Circle())
+                }
+                .menuStyle(.borderlessButton)
+            }
+
+            Text(timeText)
+                .font(.system(size: 60, weight: .light, design: .monospaced))
+                .monospacedDigit()
+                .padding(.vertical, 12)
+
+            Button("Start Focus", action: onStart)
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .padding(.top, 4)
+        }
+    }
+}
+
+// Active session view with analog clock + icon controls.
+private struct FocusSessionView: View {
+    var mode: LocalTimerMode
+    var timeText: String
+    var onPause: () -> Void
+    var onStop: () -> Void
+
+    var body: some View {
+        VStack(spacing: 16) {
+            RootsAnalogClock(diameter: 280, showSecondHand: true)
+
+            Text(timeText)
+                .font(.system(size: 60, weight: .light, design: .monospaced))
+                .monospacedDigit()
+
+            HStack(spacing: 18) {
+                Button(action: onPause) {
+                    Image(systemName: "pause.fill")
+                        .font(.title2)
+                }
+                .buttonStyle(.bordered)
+
+                Button(action: onStop) {
+                    Image(systemName: "stop.fill")
+                        .font(.title2)
+                }
+                .buttonStyle(.borderedProminent)
+            }
+
+            Text(mode.label)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .opacity(0.35)
         }
     }
 }
@@ -978,8 +1014,6 @@ struct StudyAnalyticsCard: View {
     var activities: [LocalTimerActivity]
     var sessions: [LocalTimerSession]
 
-    @State private var expandedSection: String? = nil
-
     // category color helper local to the analytics card
     private func categoryColorMap() -> [String: Color] {
         var map: [String: Color] = [:]
@@ -988,85 +1022,21 @@ struct StudyAnalyticsCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("Today's Time Studying")
-                    .font(DesignSystem.Typography.body)
-                Spacer()
-                Picker("Mode", selection: $showHistory) {
-                    Text("Live").tag(false)
-                    Text("History").tag(true)
-                }
-                .pickerStyle(.segmented)
-                .frame(maxWidth: 200)
-            }
-
-            summaryView
-
-            Divider()
-
+        VStack(alignment: .leading, spacing: 14) {
             stackedTodayView
-
-            Divider()
-
             stackedWeekView
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var summaryView: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    let completed = Int(totalToday / 60)
-                    let target = 120 // minutes target placeholder
-                    let remaining = max(0, target - completed)
-                    Text("Completed: \(completed/60)h \(completed%60)m • Remaining: \(remaining/60)h \(remaining%60)m")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                    GeometryReader { proxy in
-                        let progress = min(max(totalToday / Double(target*60), 0), 1)
-                        ZStack(alignment: .leading) {
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(Color.secondary.opacity(0.12))
-                            RoundedRectangle(cornerRadius: 6)
-                                .fill(Color.accentColor)
-                                .frame(width: proxy.size.width * progress)
-                        }
-                    }
-                    .frame(height: 10)
-                }
-                Spacer()
-                Button(action: { expandedSection = "summary" }) {
-                    Image(systemName: "arrow.up.left.and.arrow.down.right")
-                        .padding(DesignSystem.Layout.spacing.small)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(nsColor: .controlBackgroundColor)))
-                }
-                .buttonStyle(.plain)
-            }
-        }
-    }
-
     private var stackedTodayView: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-            HStack {
-                Text("Today by Category")
-                    .font(.subheadline.weight(.semibold))
-                Spacer()
-                Button(action: { expandedSection = "today" }) {
-                    Image(systemName: "arrow.up.left.and.arrow.down.right")
-                        .padding(DesignSystem.Layout.spacing.small)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(nsColor: .controlBackgroundColor)))
-                }
-                .buttonStyle(.plain)
-            }
-
             if #available(macOS 13.0, *), (true) {
                 // Build hour buckets and stack
                 let buckets: [AnalyticsBucket] = { StudyAnalyticsAggregator.bucketsForToday() }()
                 let aggregated = StudyAnalyticsAggregator.aggregate(sessions: sessions, activities: activities, into: buckets)
-                ChartViewVerticalStacked(buckets: aggregated, categoryColors: categoryColorMap())
-                    .frame(height: expandedSection == "today" ? 280 : 160)
+                ChartViewVerticalStacked(buckets: aggregated, categoryColors: categoryColorMap(), showLabels: false)
+                    .frame(height: 200)
             } else {
                 // fallback simple horizontal
                 GeometryReader { proxy in
@@ -1077,7 +1047,6 @@ struct StudyAnalyticsCard: View {
                             Rectangle()
                                 .fill(seg.color)
                                 .frame(width: proxy.size.width * CGFloat(seg.frac))
-                                .overlay(Text(seg.label).font(.caption2).foregroundColor(.white).padding(4), alignment: .center)
                         }
                     }
                 }
@@ -1088,18 +1057,6 @@ struct StudyAnalyticsCard: View {
 
     private var stackedWeekView: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-            HStack {
-                Text("This Week by Category")
-                    .font(.subheadline.weight(.semibold))
-                Spacer()
-                Button(action: { expandedSection = "week" }) {
-                    Image(systemName: "arrow.up.left.and.arrow.down.right")
-                        .padding(DesignSystem.Layout.spacing.small)
-                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(nsColor: .controlBackgroundColor)))
-                }
-                .buttonStyle(.plain)
-            }
-
             if #available(macOS 13.0, *), (true) {
                 let buckets: [AnalyticsBucket] = {
                     switch selectedRange {
@@ -1110,8 +1067,8 @@ struct StudyAnalyticsCard: View {
                     }
                 }()
                 let aggregated = StudyAnalyticsAggregator.aggregate(sessions: sessions, activities: activities, into: buckets)
-                ChartViewVerticalStacked(buckets: aggregated, categoryColors: categoryColorMap())
-                    .frame(height: expandedSection == "week" ? 320 : 160)
+                ChartViewVerticalStacked(buckets: aggregated, categoryColors: categoryColorMap(), showLabels: false)
+                    .frame(height: 200)
             } else {
                 GeometryReader { proxy in
                     let segments = segmentsForWeek()
@@ -1121,7 +1078,6 @@ struct StudyAnalyticsCard: View {
                             Rectangle()
                                 .fill(seg.color)
                                 .frame(width: proxy.size.width * CGFloat(seg.frac))
-                                .overlay(Text(seg.label).font(.caption2).foregroundColor(.white).padding(4), alignment: .center)
                         }
                     }
                 }
@@ -1130,13 +1086,9 @@ struct StudyAnalyticsCard: View {
         }
     }
 
-    private var totalToday: Double {
-        activities.reduce(0) { $0 + $1.todayTrackedSeconds }
-    }
-
     private func segmentsForToday() -> [(label: String, color: Color, frac: Double)] {
         let grouped = Dictionary(grouping: activities) { $0.category }
-        let total = max(1, totalToday)
+        let total = max(1, activities.reduce(0) { $0 + $1.todayTrackedSeconds })
         return grouped.map { (k, v) in
             let secs = v.reduce(0) { $0 + $1.todayTrackedSeconds }
             return (label: k, color: v.first?.colorTag.color ?? .gray, frac: secs / total)

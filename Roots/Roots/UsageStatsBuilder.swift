@@ -86,7 +86,7 @@ enum UsageStatsBuilder {
             dayMap[day] = dayEntry
 
             // TaskType stats – try to get type from feedback, else from task store
-            var taskType: TaskType = .studying
+            var taskType: TaskType = .practiceHomework
             if let fbType = fb?.type {
                 taskType = fbType
             } else if let task = AssignmentsStore.shared.tasks.first(where: { $0.id == block.taskId }) {

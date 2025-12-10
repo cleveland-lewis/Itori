@@ -73,6 +73,18 @@ struct ContentView: View {
                 }
             }
         }
+        #if os(macOS)
+        .onKeyDown { event in
+            switch event.keyCode {
+            case 125: // down arrow
+                scrollActiveView(by: 120)
+            case 126: // up arrow
+                scrollActiveView(by: -120)
+            default:
+                break
+            }
+        }
+        #endif
     }
 
     private var topBar: some View {
@@ -165,4 +177,20 @@ struct ContentView: View {
             break
         }
     }
+
+    #if os(macOS)
+    /// Scrolls the currently focused scroll view (if any) by the given delta.
+    private func scrollActiveView(by deltaY: CGFloat) {
+        guard let responder = NSApp.keyWindow?.firstResponder as? NSView else { return }
+        let targetScrollView = responder.enclosingScrollView ?? responder.superview?.enclosingScrollView
+        guard let scrollView = targetScrollView, let documentView = scrollView.documentView else { return }
+
+        let clipView = scrollView.contentView
+        var newOrigin = clipView.bounds.origin
+        let maxY = max(0, documentView.bounds.height - clipView.bounds.height)
+        newOrigin.y = min(max(newOrigin.y + deltaY, 0), maxY)
+        clipView.setBoundsOrigin(newOrigin)
+        scrollView.reflectScrolledClipView(clipView)
+    }
+    #endif
 }

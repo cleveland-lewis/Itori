@@ -4,9 +4,6 @@ import Charts
 #endif
 
 struct TimerGraphsView: View {
-    enum GraphMode: String, CaseIterable, Identifiable { case live, history; var id: String { rawValue } }
-
-    @Binding var mode: GraphMode
     let sessions: [FocusSession]
     let currentSession: FocusSession?
     let sessionElapsed: TimeInterval
@@ -14,19 +11,8 @@ struct TimerGraphsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Picker("Graph Mode", selection: $mode) {
-                ForEach(GraphMode.allCases) { m in
-                    Text(m == .live ? "Live" : "History").tag(m)
-                }
-            }
-            .pickerStyle(.segmented)
-
-            switch mode {
-            case .live:
-                liveGraph
-            case .history:
-                historyGraph
-            }
+            liveGraph
+            historyGraph
         }
         .padding(DesignSystem.Layout.padding.card)
         .background(DesignSystem.Materials.card)
@@ -34,27 +20,14 @@ struct TimerGraphsView: View {
     }
 
     private var liveGraph: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             if let session = currentSession {
-                ProgressView(value: liveProgress(for: session))
+                let progress = liveProgress(for: session)
+                ProgressView(value: progress)
                     .progressViewStyle(.linear)
-                HStack {
-                    Text("Elapsed \(format(minutes: sessionElapsed / 60))")
-                        .font(DesignSystem.Typography.caption)
-                        .foregroundColor(.secondary)
-                    Spacer()
-                    if session.plannedDuration != nil {
-                        Text("Remaining \(format(minutes: sessionRemaining / 60))")
-                            .font(DesignSystem.Typography.caption)
-                            .foregroundColor(.secondary)
-                        Text("\(Int((liveProgress(for: session)) * 100))%")
-                            .font(.caption.weight(.semibold))
-                            .foregroundColor(.accentColor)
-                    }
-                }
-            } else {
-                Text("No active session")
-                    .foregroundColor(.secondary)
+                Text("\(Int(progress * 100))%")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
         }
     }
@@ -72,6 +45,10 @@ struct TimerGraphsView: View {
                 }
             )
             .frame(height: 220)
+            .chartXAxis(.hidden)
+            .chartYAxis(.hidden)
+            .chartLegend(.hidden)
+            .padding(.top, 4)
             #else
             HStack(alignment: .bottom, spacing: DesignSystem.Layout.spacing.small) {
                 ForEach(historyPoints) { point in
@@ -79,22 +56,11 @@ struct TimerGraphsView: View {
                         RoundedRectangle(cornerRadius: 6)
                             .fill(Color.accentColor.opacity(0.8))
                             .frame(width: 16, height: CGFloat(point.minutes))
-                        Text(point.label)
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                            .frame(width: 28)
                     }
                 }
             }
             .frame(maxWidth: .infinity, minHeight: 180)
             #endif
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Today: \(format(minutes: todayMinutes))")
-                Text("This Week: \(format(minutes: weekMinutes))")
-            }
-            .font(DesignSystem.Typography.caption)
-            .foregroundColor(.secondary)
         }
     }
 
@@ -131,38 +97,6 @@ struct TimerGraphsView: View {
         }
     }
 
-    private var todayMinutes: Double {
-        let calendar = Calendar.current
-        return sessions
-            .filter { session in
-                guard let end = session.endedAt else { return false }
-                return calendar.isDateInToday(end)
-            }
-            .reduce(0.0) { partial, session in
-                partial + (session.actualDuration ?? session.plannedDuration ?? 0)
-            } / 60
-    }
-
-    private var weekMinutes: Double {
-        let calendar = Calendar.current
-        guard let start = calendar.date(byAdding: .day, value: -6, to: Date()) else { return 0 }
-        return sessions
-            .filter { session in
-                guard let end = session.endedAt else { return false }
-                return end >= start
-            }
-            .reduce(0.0) { partial, session in
-                partial + (session.actualDuration ?? session.plannedDuration ?? 0)
-            } / 60
-    }
-
-    private func format(minutes: Double) -> String {
-        let totalSeconds = Int(minutes * 60)
-        let h = totalSeconds / 3600
-        let m = (totalSeconds % 3600) / 60
-        if h > 0 { return "\(h)h \(m)m" }
-        return "\(m)m"
-    }
 }
 
 private struct HistoryPoint: Identifiable {

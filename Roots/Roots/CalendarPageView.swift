@@ -1208,7 +1208,7 @@ private struct CalendarStatsRow: View {
     }
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 20) {
             nextEventCard
             statCard(title: "Due Tomorrow", value: "\(calendarManager.tasksDueTomorrow(using: assignmentsStore))", subtitle: "Tasks scheduled", systemImage: "checklist", tint: .orange)
             statCard(title: "7-Day Load", value: "\(calendarManager.tasksDueThisWeek(using: assignmentsStore))", subtitle: "Upcoming deadlines", systemImage: "tray.full.fill", tint: .purple)
@@ -1235,20 +1235,26 @@ private struct CalendarStatsRow: View {
     }
 
     private func statCard(title: String, value: String, subtitle: String, systemImage: String, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 8) {
             Label(title, systemImage: systemImage)
-                .font(DesignSystem.Typography.caption)
+                .font(.body.weight(.semibold))
                 .foregroundStyle(tint)
             Text(value)
-                .font(DesignSystem.Typography.subHeader)
+                .font(.title2.weight(.semibold))
             if !subtitle.isEmpty {
                 Text(subtitle)
-                    .font(DesignSystem.Typography.caption)
+                    .font(.callout)
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(12)
-        .glassCard(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
+        .padding(.vertical, 18)
+        .padding(.horizontal, 20)
+        .background(
+            RoundedRectangle(cornerRadius: DesignSystem.Corners.card, style: .continuous)
+                .fill(Color(nsColor: .windowBackgroundColor).opacity(0.9))
+                .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 1)
+        )
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -1260,10 +1266,10 @@ private struct DayDetailSidebar: View {
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             Text(date, style: .date)
-                .font(DesignSystem.Typography.subHeader)
+                .font(.headline.weight(.semibold))
             if events.isEmpty {
                 Text("No events for this day.")
-                    .font(DesignSystem.Typography.caption)
+                    .font(.footnote)
                     .foregroundStyle(.secondary)
             } else {
                 ScrollView {
@@ -1272,21 +1278,28 @@ private struct DayDetailSidebar: View {
                             Button {
                                 onSelectEvent(event)
                             } label: {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(eventCategoryLabel(for: event.title))
-                                        .font(DesignSystem.Typography.caption)
-                                        .foregroundStyle(.secondary)
-                                    Text(event.title)
-                                        .font(DesignSystem.Typography.body)
-                                    Text(event.formattedTimeRange(use24HourTime: AppSettingsModel.shared.use24HourTime))
-                                        .font(DesignSystem.Typography.caption)
-                                        .foregroundStyle(.secondary)
+                                HStack(alignment: .top, spacing: 10) {
+                                    RoundedRectangle(cornerRadius: 3, style: .continuous)
+                                        .fill(Color.accentColor)
+                                        .frame(width: 4, height: 36)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(eventCategoryLabel(for: event.title))
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        Text(event.title)
+                                            .font(.body.weight(.medium))
+                                        Text(event.formattedTimeRange(use24HourTime: AppSettingsModel.shared.use24HourTime))
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
                                 }
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(10)
                                 .background(
-                                    RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                                        .fill(DesignSystem.Materials.card)
+                                    RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
+                                        .fill(Color(nsColor: .windowBackgroundColor).opacity(0.9))
+                                        .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 1)
                                 )
                             }
                             .buttonStyle(.plain)
@@ -1296,10 +1309,18 @@ private struct DayDetailSidebar: View {
             }
             Spacer()
         }
-        .padding(12)
+        .padding(16)
         .frame(width: 280)
         .frame(maxHeight: .infinity)
-        .background(DesignSystem.Materials.card)
+        .background(
+            RoundedRectangle(cornerRadius: DesignSystem.Corners.card, style: .continuous)
+                .fill(Color(nsColor: .windowBackgroundColor).opacity(0.9))
+                .shadow(color: Color.black.opacity(0.06), radius: 6, x: 0, y: 2)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: DesignSystem.Corners.card, style: .continuous)
+                .stroke(Color(nsColor: .separatorColor).opacity(0.15), lineWidth: 1)
+        )
     }
 }
 
@@ -1520,16 +1541,13 @@ struct CalendarView: View {
             switch event.keyCode {
             case 123: // left
                 step(by: -1)
+                return nil
             case 124: // right
                 step(by: 1)
-            case 125: // down -> later in time
-                step(by: 1)
-            case 126: // up -> back in time
-                step(by: -1)
+                return nil
             default:
-                break
+                return event
             }
-            return event
         }
     }
 
