@@ -1198,68 +1198,6 @@ private struct EventEditSheet: View {
     }
 }
 
-// MARK: - Supporting Views (Stats & Sidebar)
-
-    @EnvironmentObject private var calendarManager: CalendarManager
-    @EnvironmentObject private var assignmentsStore: AssignmentsStore
-    @EnvironmentObject private var dataManager: CoursesStore
-    private var visibleEvents: [EKEvent] {
-        let selectedId = calendarManager.selectedCalendarID
-        guard !selectedId.isEmpty else { return [] }
-        return calendarManager.cachedMonthEvents.filter { $0.calendar.calendarIdentifier == selectedId }
-    }
-
-    var body: some View {
-        HStack(spacing: 20) {
-            nextEventCard
-            statCard(title: "Due Tomorrow", value: "\(calendarManager.tasksDueTomorrow(using: assignmentsStore))", subtitle: "Tasks scheduled", systemImage: "checklist", tint: .orange)
-            statCard(title: "7-Day Load", value: "\(calendarManager.tasksDueThisWeek(using: assignmentsStore))", subtitle: "Upcoming deadlines", systemImage: "tray.full.fill", tint: .purple)
-            semesterCard
-        }
-    }
-
-    private var nextEventCard: some View {
-        let next = calendarManager.nextEvent(allEvents: visibleEvents)
-        let title = next?.title ?? "Free"
-        let subtitle: String = {
-            guard let next else { return "No upcoming events" }
-            let relative = next.startDate.formatted(.relative(presentation: .named, unitsStyle: .wide))
-            return "Starts \(relative)"
-        }()
-        return statCard(title: "Next Up", value: title, subtitle: subtitle, systemImage: "clock.fill", tint: .blue)
-    }
-
-    private var semesterCard: some View {
-        let days = calendarManager.daysLeftInSemester(using: dataManager)
-        let value = days != nil ? "\(days!)" : "--"
-        let subtitle = days != nil ? "Days remaining" : "No active semester"
-        return statCard(title: "Semester End", value: value, subtitle: subtitle, systemImage: "graduationcap.fill", tint: .green)
-    }
-
-    private func statCard(title: String, value: String, subtitle: String, systemImage: String, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label(title, systemImage: systemImage)
-                .font(.body.weight(.semibold))
-                .foregroundStyle(tint)
-            Text(value)
-                .font(.title2.weight(.semibold))
-            if !subtitle.isEmpty {
-                Text(subtitle)
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding(.vertical, 18)
-        .padding(.horizontal, 20)
-        .background(
-            RoundedRectangle(cornerRadius: DesignSystem.Corners.card, style: .continuous)
-                .fill(Color(nsColor: .windowBackgroundColor).opacity(0.9))
-                .shadow(color: Color.black.opacity(0.05), radius: 4, x: 0, y: 1)
-        )
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
 private struct DayDetailSidebar: View {
     let date: Date
     let events: [CalendarEvent]
