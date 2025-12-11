@@ -1,4 +1,5 @@
 import SwiftUI
+import EventKit
 
 // Lightweight stubs for missing design components used throughout the app.
 // These are minimal implementations to allow the project to compile; substitute
