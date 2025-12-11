@@ -30,9 +30,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		1AD7D4362EDD328800D403F3 /* Source */ = {
+		1AD7D46B2EDD328800D403F3 /* SharedCore */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Source;
+			path = SharedCore;
+			sourceTree = "<group>";
+		};
+		1AD7D46C2EDD328800D403F3 /* macOSApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = macOSApp;
 			sourceTree = "<group>";
 		};
 		1AD7D4462EDD328A00D403F3 /* RootsTests */ = {
@@ -75,7 +80,8 @@
 		1AD7D42B2EDD328800D403F3 = {
 			isa = PBXGroup;
 			children = (
-				1AD7D4362EDD328800D403F3 /* Source */,
+				1AD7D46B2EDD328800D403F3 /* SharedCore */,
+				1AD7D46C2EDD328800D403F3 /* macOSApp */,
 				1AD7D4462EDD328A00D403F3 /* RootsTests */,
 				1AD7D4502EDD328A00D403F3 /* RootsUITests */,
 				1AD7D4352EDD328800D403F3 /* Products */,
@@ -108,7 +114,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				1AD7D4362EDD328800D403F3 /* Source */,
+				1AD7D46B2EDD328800D403F3 /* SharedCore */,
+				1AD7D46C2EDD328800D403F3 /* macOSApp */,
 			);
 			name = Roots;
 			packageProductDependencies = (
