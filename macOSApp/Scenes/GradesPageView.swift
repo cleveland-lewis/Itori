@@ -97,7 +97,7 @@ struct GradesPageView: View {
         }
         .onAppear {
             refreshCourses()
-            coursesStore.recalcGPA(tasks: assignmentsStore.tasks)
+            requestGPARecalc()
 
             // Subscribe to course deletions
             courseDeletedCancellable = CoursesStore.courseDeletedPublisher
@@ -110,8 +110,8 @@ struct GradesPageView: View {
                     }
                 }
         }
-        .onReceive(assignmentsStore.$tasks) { tasks in
-            coursesStore.recalcGPA(tasks: tasks)
+        .onReceive(assignmentsStore.$tasks) { _ in
+            requestGPARecalc()
         }
         .onReceive(coursesStore.$courses) { _ in
             refreshCourses()
@@ -365,6 +365,12 @@ struct GradesPageView: View {
         }
     }
 
+    private func requestGPARecalc() {
+        Task { @MainActor in
+            coursesStore.recalcGPA(tasks: assignmentsStore.tasks)
+        }
+    }
+
     private func persistGrade(for task: AppTask) {
         guard let courseId = task.courseId,
               let earned = task.gradeEarnedPoints,
@@ -374,7 +380,7 @@ struct GradesPageView: View {
         let percent = (earned / possible) * 100
         let letter = GradeCalculator.letterGrade(for: percent)
         gradesStore.upsert(courseId: courseId, percent: percent, letter: letter)
-        coursesStore.recalcGPA(tasks: assignmentsStore.tasks)
+        requestGPARecalc()
     }
 
     private func colorTag(for hex: String?) -> ColorTag {

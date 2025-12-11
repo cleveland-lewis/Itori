@@ -29,3 +29,11 @@ struct GlassButtonStyle: ButtonStyle {
 }
 
 // Keep file for legacy GlassButtonStyle only.
+
+extension ButtonStyle where Self == GlassButtonStyle {
+    static var glass: GlassButtonStyle { GlassButtonStyle() }
+}
+
+extension ButtonStyle where Self == LegacyGlassProminentButtonStyle {
+    static var glassProminent: LegacyGlassProminentButtonStyle { LegacyGlassProminentButtonStyle() }
+}

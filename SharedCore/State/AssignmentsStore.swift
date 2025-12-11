@@ -24,14 +24,14 @@ final class AssignmentsStore: ObservableObject {
         updateAppBadge()
         saveCache()
         _Concurrency.Task { await CalendarManager.shared.syncPlannerTaskToCalendar(task) }
-        CoursesStore.shared?.recalcGPA(tasks: tasks)
+        refreshGPA()
     }
 
     func removeTask(id: UUID) {
         tasks.removeAll { $0.id == id }
         updateAppBadge()
         saveCache()
-        CoursesStore.shared?.recalcGPA(tasks: tasks)
+        refreshGPA()
     }
 
     func updateTask(_ task: AppTask) {
@@ -41,7 +41,7 @@ final class AssignmentsStore: ObservableObject {
         updateAppBadge()
         saveCache()
         _Concurrency.Task { await CalendarManager.shared.syncPlannerTaskToCalendar(task) }
-        CoursesStore.shared?.recalcGPA(tasks: tasks)
+        refreshGPA()
     }
 
     func incompleteTasks() -> [AppTask] {
@@ -56,6 +56,12 @@ final class AssignmentsStore: ObservableObject {
             try? FileManager.default.removeItem(at: url)
         }
         saveCache()
+    }
+
+    private func refreshGPA() {
+        Task { @MainActor in
+            CoursesStore.shared?.recalcGPA(tasks: tasks)
+        }
     }
 
     private func updateAppBadge() {
