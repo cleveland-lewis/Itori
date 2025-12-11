@@ -203,7 +203,8 @@ struct CourseDetailView: View {
                         .font(.callout)
                         .foregroundStyle(.secondary)
                 } else {
-                    ForEach(groupedAttachments.keys.sorted(), id: \.self) { moduleNum in
+                    let moduleNums = groupedAttachments.keys.sorted()
+                    ForEach(moduleNums, id: \.self) { moduleNum in
                         DisclosureGroup("Module \(moduleNum)") {
                             ForEach(groupedAttachments[moduleNum] ?? []) { file in
                                 HStack(spacing: 10) {
