@@ -95,4 +95,46 @@ public class SettingsWindowController {
     public func showSettings() {}
 }
 
+
+
+// Additional lightweight stubs for shared types referenced by iOS target when macOS sources are excluded
+
+public enum RootTab: String, CaseIterable, Identifiable {
+    case dashboard, planner, courses, grades, timer
+    public var id: String { rawValue }
+}
+
+public enum AssignmentCategory: String, CaseIterable, Codable {
+    case reading, exam, homework, other
+}
+
+public struct Assignment: Identifiable, Codable, Hashable {
+    public let id: UUID
+    public var courseId: UUID?
+    public var title: String
+    public var dueDate: Date
+    public var estimatedMinutes: Int?
+    public var weightPercent: Double?
+    public var category: AssignmentCategory?
+}
+
+public enum CalendarViewMode: String, Codable {
+    case day, week, month
+}
+
+public struct GradeCourseSummary: Hashable {
+    public var id: UUID
+    public var title: String
+}
+
+public struct StoredScheduledSession: Codable, Hashable {
+    public var id: UUID = UUID()
+}
+
+public struct StoredOverflowSession: Codable, Hashable {
+    public var id: UUID = UUID()
+}
+
+open class LoadableViewModel: ObservableObject {}
+
 #endif

@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import EventKit
 import _Concurrency
@@ -1765,3 +1766,4 @@ private struct MetricCard: View {
         .glassCard(cornerRadius: 14)
     }
 }
+#endif
