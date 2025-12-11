@@ -190,11 +190,15 @@ struct GradesPageView: View {
                 detailCard
             }
         } else {
-            HStack(alignment: .top, spacing: 16) {
+            let spacing: CGFloat = 12
+            let overallWidth = max(280, width * 0.22)
+            let courseWidth = max(340, width * 0.34)
+
+            HStack(alignment: .top, spacing: spacing) {
                 overallColumn
-                    .frame(width: width * 0.25)
+                    .frame(width: overallWidth)
                 courseListCard
-                    .frame(width: width * 0.35)
+                    .frame(width: courseWidth)
                 detailCard
                     .frame(maxWidth: .infinity)
             }
@@ -227,7 +231,7 @@ struct GradesPageView: View {
                     // Placeholder: open analytics window
                     print("Open Grade Analytics tapped")
                 } label: {
-                    Label("Open Grade Analytics", systemImage: "chart.bar.xaxis")
+                    Label("Analytics", systemImage: "chart.bar.xaxis")
                         .font(.system(size: 13, weight: .semibold))
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
