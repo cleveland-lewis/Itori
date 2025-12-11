@@ -48,6 +48,8 @@ struct GradesPageView: View {
     @State private var whatIfSlider: Double = 90
     @State private var showAddGradeSheet: Bool = false
     @State private var gradeAnalyticsWindowOpen: Bool = false
+    @State private var showNewCourseSheet: Bool = false
+    @State private var editingCourse: Course? = nil
     @State private var courseDeletedCancellable: AnyCancellable? = nil
 
     private let cardCorner: CGFloat = 24
@@ -71,6 +73,18 @@ struct GradesPageView: View {
                 EditTargetGradeSheet(course: course, detail: detail) { updatedTarget, letter, components in
                     updateTarget(for: course, to: updatedTarget, letter: letter, components: components)
                 }
+            }
+        }
+        .sheet(isPresented: $showNewCourseSheet) {
+            CourseEditorSheet(course: editingCourse) { updated in
+                // persist through CoursesStore
+                if editingCourse == nil {
+                    coursesStore.addCourse(updated)
+                } else {
+                    coursesStore.updateCourse(updated)
+                }
+                // refresh local course lists
+                refreshCourses()
             }
         }
         .sheet(isPresented: $showAddGradeSheet) {
@@ -252,6 +266,13 @@ struct GradesPageView: View {
                             onEditTarget: {
                                 courseToEditTarget = course
                                 showEditTargetSheet = true
+                            },
+                            onEditCourse: {
+                                // find full Course model and present editor
+                                if let full = coursesStore.courses.first(where: { $0.id == course.id }) {
+                                    editingCourse = full
+                                    showNewCourseSheet = true
+                                }
                             }
                         )
                     }
@@ -481,6 +502,7 @@ struct CourseGradeRow: View {
     var isScenarioHighlight: Bool
     var onSelect: () -> Void
     var onEditTarget: () -> Void
+    var onEditCourse: (() -> Void)? = nil
 
     private var ringColor: Color { course.colorTag }
 
@@ -537,7 +559,10 @@ struct CourseGradeRow: View {
         }
         .buttonStyle(.plain)
         .contextMenu {
-            Button("Edit target") { onEditTarget() }
+            Button("Edit Target") { onEditTarget() }
+            if let onEditCourse = onEditCourse {
+                Button("Edit Course") { onEditCourse() }
+            }
         }
     }
 
