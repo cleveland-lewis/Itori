@@ -63,3 +63,35 @@ struct TimerBarChart: View {
         #endif
     }
 }
+
+#if canImport(Charts)
+private struct DottedBarStack: View {
+    let point: TimerDataPoint
+    let minutesPerDot: Double
+
+    var body: some View {
+        ForEach(0..<max(1, Int(ceil(point.minutes / minutesPerDot))), id: \.self) { idx in
+            PointMark(
+                x: .value("Time", point.date),
+                y: .value("Minutes", Double(idx) * minutesPerDot)
+            )
+            .symbolSize(28)
+            .foregroundStyle(point.isCurrent ? Color.yellow : Color.secondary.opacity(0.55))
+        }
+    }
+}
+
+private struct CurrentPointMark: View {
+    let point: TimerDataPoint
+    let minutesPerDot: Double
+
+    var body: some View {
+        PointMark(
+            x: .value("Time", point.date),
+            y: .value("Minutes", max(point.minutes, minutesPerDot))
+        )
+        .symbol(Circle().strokeBorder(lineWidth: 0).background(Circle().fill(Color.yellow)))
+        .symbolSize(120)
+    }
+}
+#endif
