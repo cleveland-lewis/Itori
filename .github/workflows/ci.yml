@@ -42,12 +42,17 @@ jobs:
           set -o pipefail
           LOG_FILE="$GITHUB_WORKSPACE/xcodebuild.log"
           JUNIT_FILE="$GITHUB_WORKSPACE/tests.xml"
-          if [ -d "RootsApp.xcodeproj/project.xcworkspace" ]; then
-            xcodebuild -workspace "RootsApp.xcodeproj/project.xcworkspace" -scheme "Roots" -destination "platform=macOS" clean test | tee "$LOG_FILE" | xcpretty -r junit --output "$JUNIT_FILE"
-          elif [ -f "RootsApp.xcodeproj" ]; then
-            xcodebuild -project "RootsApp.xcodeproj" -scheme "Roots" -destination "platform=macOS" clean test | tee "$LOG_FILE" | xcpretty -r junit --output "$JUNIT_FILE"
+          # Auto-detect first workspace or project in the repository
+          WS=$(find . -maxdepth 3 -type d -name "*.xcworkspace" | head -n 1)
+          PROJ=$(find . -maxdepth 3 -name "*.xcodeproj" | head -n 1)
+          if [ -n "$WS" ]; then
+            echo "Using workspace: $WS"
+            xcodebuild -workspace "$WS" -scheme "Roots" -destination "platform=macOS" clean test | tee "$LOG_FILE" | xcpretty -r junit --output "$JUNIT_FILE"
+          elif [ -n "$PROJ" ]; then
+            echo "Using project: $PROJ"
+            xcodebuild -project "$PROJ" -scheme "Roots" -destination "platform=macOS" clean test | tee "$LOG_FILE" | xcpretty -r junit --output "$JUNIT_FILE"
           else
-            echo "No Roots.xcworkspace or Roots.xcodeproj found in repo root" >&2
+            echo "No .xcworkspace or .xcodeproj found in repo" >&2
             ls -la
             exit 1
           fi
