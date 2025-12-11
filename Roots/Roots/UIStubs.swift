@@ -187,8 +187,51 @@ struct AddGradeSheet: View {
 }
 
 // Charts used in timer
-struct CategoryPieChart: View { var body: some View { Text("Category Chart") } }
-struct StudyHistoryBarChart: View { var body: some View { Text("History Chart") } }
+enum TimerChartRange {
+    case today, thisWeek, thisMonth
+}
+
+struct CategoryPieChart: View {
+    var initialRange: TimerChartRange
+
+    var body: some View {
+        VStack {
+            Text("Category Chart")
+            Text("Range: \(label(for: initialRange))")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func label(for range: TimerChartRange) -> String {
+        switch range {
+        case .today: return "Today"
+        case .thisWeek: return "This Week"
+        case .thisMonth: return "This Month"
+        }
+    }
+}
+
+struct StudyHistoryBarChart: View {
+    var initialRange: TimerChartRange
+
+    var body: some View {
+        VStack {
+            Text("History Chart")
+            Text("Range: \(label(for: initialRange))")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func label(for range: TimerChartRange) -> String {
+        switch range {
+        case .today: return "Today"
+        case .thisWeek: return "This Week"
+        case .thisMonth: return "This Month"
+        }
+    }
+}
 
 // Privacy settings shell
 struct PrivacySettingsView: View { var body: some View { Text("Privacy Settings") } }
