@@ -10,9 +10,12 @@ jobs:
     name: macOS UI Tests
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: ./.github/actions/checkout
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Select Xcode
-        uses: maxim-lobanov/setup-xcode@v1
+        uses: ./.github/actions/setup-xcode
         with:
           xcode-version: latest-stable
       - name: Install xcpretty
@@ -30,20 +33,22 @@ jobs:
             echo "no project/workspace" && exit 1
           fi
       - name: Upload macOS UI artifacts
-        uses: actions/upload-artifact@v4
+        uses: ./.github/actions/upload-artifact
         with:
           name: macos-ui-logs
-          path: |
-            ${{ github.workspace }}/xcodebuild-macos-ui.log
-            ${{ github.workspace }}/macos-ui-tests.xml
+          path: "${{ github.workspace }}/xcodebuild-macos-ui.log\n${{ github.workspace }}/macos-ui-tests.xml"
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   ios-ui:
     name: iOS UI Tests (Simulator)
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: ./.github/actions/checkout
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Select Xcode
-        uses: maxim-lobanov/setup-xcode@v1
+        uses: ./.github/actions/setup-xcode
         with:
           xcode-version: latest-stable
       - name: Install tools
@@ -64,9 +69,8 @@ jobs:
             echo "no project/workspace" && exit 1
           fi
       - name: Upload iOS UI artifacts
-        uses: actions/upload-artifact@v4
+        uses: ./.github/actions/upload-artifact
         with:
           name: ios-ui-logs
-          path: |
-            ${{ github.workspace }}/xcodebuild-ios-ui.log
-            ${{ github.workspace }}/ios-ui-tests.xml
+          path: "${{ github.workspace }}/xcodebuild-ios-ui.log\n${{ github.workspace }}/ios-ui-tests.xml"
+          token: ${{ secrets.GITHUB_TOKEN }}

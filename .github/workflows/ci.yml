@@ -14,10 +14,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: ./.github/actions/checkout
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Select Xcode
-        uses: maxim-lobanov/setup-xcode@v1
+        uses: ./.github/actions/setup-xcode
         with:
           xcode-version: latest-stable
 
@@ -43,12 +45,11 @@ jobs:
 
       - name: Upload test artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: ./.github/actions/upload-artifact
         with:
           name: xcodebuild-logs
-          path: |
-            ${{ github.workspace }}/xcodebuild.log
-            ${{ github.workspace }}/tests.xml
+          path: "${{ github.workspace }}/xcodebuild.log\n${{ github.workspace }}/tests.xml"
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fail on test failures
         if: always()
