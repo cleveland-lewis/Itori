@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import AppKit
 
@@ -1163,3 +1164,4 @@ private extension CoursesPageView {
         .frame(minWidth: 360)
     }
 }
+#endif

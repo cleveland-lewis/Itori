@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import Combine
 import AppKit
@@ -532,3 +533,4 @@ private struct LegacyCoursesSettingsView: View {
         .tint(accentColor)
     }
 }
+#endif

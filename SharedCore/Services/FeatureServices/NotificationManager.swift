@@ -2,7 +2,9 @@ import Foundation
 import UserNotifications
 import Combine
 #if os(macOS)
+#if os(macOS)
 import AppKit
+#endif
 #endif
 
 final class NotificationManager: ObservableObject {

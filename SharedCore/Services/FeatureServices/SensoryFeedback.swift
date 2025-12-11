@@ -2,7 +2,9 @@ import SwiftUI
 #if os(iOS)
 import UIKit
 #elseif os(macOS)
+#if os(macOS)
 import AppKit
+#endif
 #endif
 
 enum SensoryFeedback {

@@ -1,7 +1,9 @@
 import Foundation
 import Combine
 import EventKit
+#if os(macOS)
 import AppKit
+#endif
 import _Concurrency
 import SwiftUI
 

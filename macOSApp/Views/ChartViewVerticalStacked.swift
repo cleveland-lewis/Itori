@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 #if canImport(Charts)
 import Charts
@@ -223,3 +224,4 @@ extension View {
 extension Notification.Name {
     static let chartSegmentTapped = Notification.Name("chartSegmentTapped")
 }
+#endif

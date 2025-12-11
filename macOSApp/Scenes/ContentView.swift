@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import AppKit
 import Combine
@@ -202,3 +203,4 @@ struct ContentView: View {
     }
     #endif
 }
+#endif

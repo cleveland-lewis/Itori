@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import Combine
 import AppKit
@@ -1240,3 +1241,4 @@ private extension View {
 private extension TimerPageView {
     static var sampleActivities: [LocalTimerActivity] { [] }
 }
+#endif

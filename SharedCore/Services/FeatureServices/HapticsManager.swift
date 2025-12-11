@@ -1,7 +1,9 @@
 #if os(macOS)
 import Foundation
 import CoreHaptics
+#if os(macOS)
 import AppKit
+#endif
 
 enum HapticEventKind {
     case warning

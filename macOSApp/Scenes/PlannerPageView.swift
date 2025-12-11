@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import Combine
 import AppKit
@@ -1166,3 +1167,4 @@ struct PlannerPageView_Previews: PreviewProvider {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
+#endif

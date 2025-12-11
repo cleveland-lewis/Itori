@@ -1,5 +1,7 @@
 import SwiftUI
+#if os(macOS)
 import AppKit
+#endif
 
 struct SettingsPane_Accounts: View {
     var body: some View {

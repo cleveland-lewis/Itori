@@ -1,6 +1,8 @@
 import SwiftUI
 import Combine
+#if os(macOS)
 import AppKit
+#endif
 
 @MainActor
 final class SettingsCoordinator: ObservableObject {

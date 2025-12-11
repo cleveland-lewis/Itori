@@ -1,3 +1,4 @@
+#if os(macOS)
 import AppKit
 
 enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
@@ -52,3 +53,4 @@ enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
         "Settings"
     }
 }
+#endif

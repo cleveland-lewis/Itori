@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import AppKit
 import Combine
@@ -167,3 +168,4 @@ extension SettingsWindowController: NSToolbarDelegate {
         }
     }
 }
+#endif

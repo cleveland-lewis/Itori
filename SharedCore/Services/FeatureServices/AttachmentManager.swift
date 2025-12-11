@@ -1,6 +1,8 @@
 import Foundation
 #if os(macOS)
+#if os(macOS)
 import AppKit
+#endif
 #endif
 
 /// Manages file attachments - saving, deleting, and organizing files
