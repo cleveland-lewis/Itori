@@ -815,8 +815,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     // Codable
     init() {}
 
-    @MainActor
-    func encode(to encoder: Encoder) throws {
+    nonisolated func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(accentColorRaw, forKey: .accentColorRaw)
         try container.encode(customAccentEnabledStorage, forKey: .customAccentEnabledStorage)
@@ -850,8 +849,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(assignmentSwipeTrailingRaw, forKey: .assignmentSwipeTrailingRaw)
     }
 
-    @MainActor
-    required init(from decoder: Decoder) throws {
+    required nonisolated init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         accentColorRaw = try container.decodeIfPresent(String.self, forKey: .accentColorRaw) ?? AppAccentColor.multicolor.rawValue
         customAccentEnabledStorage = try container.decodeIfPresent(Bool.self, forKey: .customAccentEnabledStorage) ?? false

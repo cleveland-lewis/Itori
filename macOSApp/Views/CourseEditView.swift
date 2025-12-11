@@ -45,7 +45,6 @@ struct CourseEditView: View {
                 Section("Basic Information") {
                     TextField("Course Title", text: $course.title)
                     TextField("Course Code", text: $course.code)
-                        .textCase(.uppercase)
 
                     Picker("Course Type", selection: $course.courseType) {
                         ForEach(CourseType.allCases) { type in

@@ -138,7 +138,7 @@ struct ContentView: View {
         case .dashboard:
             DashboardView()
         case .calendar:
-            CalendarView()
+            CalendarPageView()
         case .planner:
             PlannerPageView()
         case .assignments:
