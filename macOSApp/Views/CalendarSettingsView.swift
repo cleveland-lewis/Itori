@@ -43,8 +43,8 @@ struct CalendarSettingsView: View {
 
             if isAuthorized {
                 Section("School Calendar") {
-                    Picker("School Calendar", selection: $calendarManager.selectedCalendarID) {
-                        Text("Select a Calendar").tag("")
+                    Picker("School Calendar", selection: Binding(get: { calendarManager.selectedCalendarID.isEmpty ? nil : calendarManager.selectedCalendarID }, set: { calendarManager.selectedCalendarID = $0 ?? "" })) {
+                        Text("Select a Calendar").tag(String?.none)
                         ForEach(calendarManager.availableCalendars, id: \.calendarIdentifier) { cal in
                             HStack {
                                 if let cgColor = cal.cgColor, let nsColor = NSColor(cgColor: cgColor) {
@@ -54,7 +54,7 @@ struct CalendarSettingsView: View {
                                 }
                                 Text(cal.title)
                             }
-                            .tag(cal.calendarIdentifier)
+                            .tag(Optional(cal.calendarIdentifier))
                         }
                     }
                     .pickerStyle(.menu)

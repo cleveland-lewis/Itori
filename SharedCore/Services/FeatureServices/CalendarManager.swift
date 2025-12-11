@@ -8,7 +8,7 @@ import _Concurrency
 import SwiftUI
 
 @MainActor
-final class CalendarManager: ObservableObject, @MainActor LoadableViewModel {
+final class CalendarManager: ObservableObject, LoadableViewModel {
     // Loadable conformance
     @Published var isLoading: Bool = false
     @Published var loadingMessage: String? = nil
