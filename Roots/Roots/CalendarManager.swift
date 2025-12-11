@@ -100,12 +100,27 @@ final class CalendarManager: ObservableObject, @MainActor LoadableViewModel {
             self.reminderAuthorizationStatus = EKEventStore.authorizationStatus(for: .reminder)
             self.isCalendarAccessDenied = (self.eventAuthorizationStatus == .denied || self.eventAuthorizationStatus == .restricted)
             self.isRemindersAccessDenied = (self.reminderAuthorizationStatus == .denied || self.reminderAuthorizationStatus == .restricted)
-            self.isAuthorized = (self.eventAuthorizationStatus == .fullAccess || self.eventAuthorizationStatus == .authorized) || (self.reminderAuthorizationStatus == .fullAccess || self.reminderAuthorizationStatus == .authorized)
+            self.isAuthorized = (self.eventAuthorizationStatus == .fullAccess || self.eventAuthorizationStatus == .writeOnly) || (self.reminderAuthorizationStatus == .fullAccess || self.reminderAuthorizationStatus == .writeOnly)
         }
         if self.isAuthorized {
             refreshSources()
             await refreshAll()
             await planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
+        }
+    }
+
+    /// Ensures the month cache is hydrated and surfaces a real loading state.
+    func ensureMonthCache(for date: Date) {
+        _Concurrency.Task { [weak self] in
+            guard let self else { return }
+            _ = try await self.withLoading(message: "Loading calendar…") {
+                if !self.isAuthorized {
+                    await self.checkPermissionsOnStartup()
+                } else {
+                    self.refreshMonthlyCache(for: date)
+                }
+                return ()
+            }
         }
     }
 
@@ -124,7 +139,7 @@ final class CalendarManager: ObservableObject, @MainActor LoadableViewModel {
             self.reminderAuthorizationStatus = reminderStatus
             self.isCalendarAccessDenied = (eventStatus == .denied || eventStatus == .restricted)
             self.isRemindersAccessDenied = (reminderStatus == .denied || reminderStatus == .restricted)
-            self.isAuthorized = (eventStatus == .fullAccess || eventStatus == .authorized) || (reminderStatus == .fullAccess || reminderStatus == .authorized)
+            self.isAuthorized = (eventStatus == .fullAccess || eventStatus == .writeOnly) || (reminderStatus == .fullAccess || reminderStatus == .writeOnly)
         }
 
         if isAuthorized {
@@ -336,8 +351,13 @@ final class CalendarManager: ObservableObject, @MainActor LoadableViewModel {
                 try await store.requestFullAccessToEvents()
                 _ = try await store.requestFullAccessToReminders()
             } else {
-                _ = try await store.requestAccess(to: .event)
-                _ = try await store.requestAccess(to: .reminder)
+                // Bridge legacy callback-based API to async
+                let _ : Bool = await withCheckedContinuation { cont in
+                    store.requestAccess(to: .event) { granted, _ in cont.resume(returning: granted) }
+                }
+                let _ : Bool = await withCheckedContinuation { cont in
+                    store.requestAccess(to: .reminder) { granted, _ in cont.resume(returning: granted) }
+                }
             }
             await checkPermissionsOnStartup()
         } catch {
@@ -350,7 +370,9 @@ final class CalendarManager: ObservableObject, @MainActor LoadableViewModel {
             if #available(macOS 14.0, *) {
                 _ = try await store.requestFullAccessToEvents()
             } else {
-                _ = try await store.requestAccess(to: .event)
+                _ = await withCheckedContinuation { cont in
+                    store.requestAccess(to: .event) { granted, _ in cont.resume(returning: granted) }
+                }
             }
             await refreshAuthStatus()
         } catch {
@@ -498,12 +520,64 @@ final class CalendarManager: ObservableObject, @MainActor LoadableViewModel {
     }
 }
 
+// MARK: - Quick Add Event
+
+extension CalendarManager {
+    func quickAddEvent(title: String = "New Event", start: Date = Date(), durationMinutes: Int = 60) async {
+        let granted = await requestEventAccessIfNeeded()
+        guard granted else { return }
+        let event = EKEvent(eventStore: store)
+        event.title = title
+        event.startDate = start
+        event.endDate = start.addingTimeInterval(Double(durationMinutes) * 60)
+        event.calendar = store.defaultCalendarForNewEvents ?? store.calendars(for: .event).first
+        do {
+            try store.save(event, span: .thisEvent, commit: true)
+            await MainActor.run {
+                dailyEvents.append(event)
+                cachedMonthEvents.append(event)
+            }
+        } catch {
+            print("Failed to add quick event: \(error)")
+        }
+    }
+
+    private func requestEventAccessIfNeeded() async -> Bool {
+        let status = EKEventStore.authorizationStatus(for: .event)
+        if status == .fullAccess || status == .writeOnly {
+            return true
+        }
+        if #available(macOS 14.0, *) {
+            do {
+                try await store.requestFullAccessToEvents()
+                await MainActor.run {
+                    self.eventAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
+                    self.isAuthorized = (self.eventAuthorizationStatus == .fullAccess || self.eventAuthorizationStatus == .writeOnly)
+                }
+                return (self.eventAuthorizationStatus == .fullAccess || self.eventAuthorizationStatus == .writeOnly)
+            } catch {
+                print("Event access request failed: \(error)")
+                return false
+            }
+        } else {
+            return await withCheckedContinuation { cont in
+                store.requestAccess(to: .event) { granted, _ in
+                    DispatchQueue.main.async {
+                        self.eventAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
+                        self.isAuthorized = granted
+                    }
+                    cont.resume(returning: granted)
+                }
+            }
+        }
+    }
+}
 extension EKEvent {
     /// Safe identifier for UI lists even when eventIdentifier is nil (e.g., cached events).
     var rootsIdentifier: String {
         if !eventIdentifier.isEmpty { return eventIdentifier }
         if !calendarItemIdentifier.isEmpty { return calendarItemIdentifier }
         let time = startDate?.timeIntervalSince1970 ?? 0
-        return "\(title)-\(time)"
+        return "\(title ?? "")-\(time)"
     }
 }

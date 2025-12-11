@@ -45,10 +45,11 @@ struct GradesPageView: View {
     @EnvironmentObject private var settings: AppSettings
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var coursesStore: CoursesStore
+    @EnvironmentObject private var gradesStore: GradesStore
 
     @State private var segment: GradeViewSegment = .overall
-    @State private var allCourses: [GradeCourseSummary] = GradesPageView.sampleCourses
-    @State private var courseDetails: [CourseGradeDetail] = GradesPageView.sampleCourseDetails
+    @State private var allCourses: [GradeCourseSummary] = []
+    @State private var courseDetails: [CourseGradeDetail] = []
     @State private var selectedCourseDetail: CourseGradeDetail? = nil
     @State private var searchText: String = ""
     @AppStorage("grades.gpaScale") private var gpaScale: Double = 4.0
@@ -63,7 +64,7 @@ struct GradesPageView: View {
     var body: some View {
         GeometryReader { proxy in
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
                     header
 
                     adaptiveColumns(width: proxy.size.width)
@@ -87,12 +88,7 @@ struct GradesPageView: View {
                 courses: allCourses,
                 onSave: { updatedTask in
                     assignmentsStore.updateTask(updatedTask)
-                    // Refresh local selections if the updated assignment is tied to a course detail
-                    if let courseId = updatedTask.courseId,
-                       let course = allCourses.first(where: { $0.id == courseId }) {
-                        // No-op placeholder: hook into course grade aggregation here if needed
-                        print("Grade updated for \(course.courseCode)")
-                    }
+                    persistGrade(for: updatedTask)
                 }
             )
         }
@@ -109,13 +105,17 @@ struct GradesPageView: View {
             .frame(minWidth: 360, minHeight: 240)
         }
         .onAppear {
-            if selectedCourseDetail == nil {
-                selectedCourseDetail = courseDetails.first
-            }
+            refreshCourses()
             coursesStore.recalcGPA(tasks: assignmentsStore.tasks)
         }
         .onReceive(assignmentsStore.$tasks) { tasks in
             coursesStore.recalcGPA(tasks: tasks)
+        }
+        .onReceive(coursesStore.$courses) { _ in
+            refreshCourses()
+        }
+        .onReceive(gradesStore.$grades) { _ in
+            refreshCourses()
         }
     }
 
@@ -192,7 +192,9 @@ struct GradesPageView: View {
             GPABreakdownCard(
                 currentGPA: coursesStore.currentGPA,
                 academicYearGPA: coursesStore.currentGPA,
-                cumulativeGPA: coursesStore.currentGPA
+                cumulativeGPA: coursesStore.currentGPA,
+                isLoading: gradesStore.isLoading,
+                courseCount: coursesStore.activeCourses.count
             )
             HStack(spacing: 12) {
                 Button {
@@ -331,6 +333,62 @@ struct GradesPageView: View {
             courseDetails[detailIdx].course.targetPercentage = target
             courseDetails[detailIdx].course.letterGrade = letter ?? courseDetails[detailIdx].course.letterGrade
             selectedCourseDetail = courseDetails[detailIdx]
+        }
+    }
+
+    private func refreshCourses() {
+        let summaries = coursesStore.activeCourses.map { course in
+            let grade = gradesStore.grade(for: course.id)
+            return GradeCourseSummary(
+                id: course.id,
+                courseCode: course.code,
+                courseTitle: course.title,
+                currentPercentage: grade?.percent,
+                targetPercentage: nil,
+                letterGrade: grade?.letter,
+                creditHours: Int(course.credits ?? 0),
+                colorTag: colorTag(for: course.colorHex)
+            )
+        }
+        allCourses = summaries
+        courseDetails = summaries.map { summary in
+            return CourseGradeDetail(
+                id: summary.id,
+                course: summary,
+                components: [],
+                notes: "Add grade components to see breakdown."
+            )
+        }
+        if selectedCourseDetail == nil {
+            selectedCourseDetail = courseDetails.first
+        } else if let current = selectedCourseDetail, !courseDetails.contains(where: { $0.id == current.id }) {
+            selectedCourseDetail = courseDetails.first
+        }
+    }
+
+    private func persistGrade(for task: AppTask) {
+        guard let courseId = task.courseId,
+              let earned = task.gradeEarnedPoints,
+              let possible = task.gradePossiblePoints,
+              possible > 0 else { return }
+
+        let percent = (earned / possible) * 100
+        let letter = GradeCalculator.letterGrade(for: percent)
+        gradesStore.upsert(courseId: courseId, percent: percent, letter: letter)
+        coursesStore.recalcGPA(tasks: assignmentsStore.tasks)
+    }
+
+    private func colorTag(for hex: String?) -> ColorTag {
+        guard let hex = hex?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() else { return .blue }
+        switch hex {
+        case "#4c78ff", "blue": return .blue
+        case "#34c759", "green": return .green
+        case "#af52de", "purple": return .purple
+        case "#ff9f0a", "orange": return .orange
+        case "#ff2d55", "pink": return .pink
+        case "#ffd60a", "yellow": return .yellow
+        case "#8e8e93", "gray": return .gray
+        default: return .blue
         }
     }
 
@@ -712,28 +770,7 @@ struct EditTargetGradeSheet: View {
 // MARK: - Samples
 
 private extension GradesPageView {
-    static var sampleCourses: [GradeCourseSummary] {
-        [
-            GradeCourseSummary(id: UUID(), courseCode: "MA 231", courseTitle: "Calculus II", currentPercentage: 92.3, targetPercentage: 95, letterGrade: "A-", creditHours: 4, colorTag: .blue),
-            GradeCourseSummary(id: UUID(), courseCode: "CS 240", courseTitle: "Data Structures", currentPercentage: 88.5, targetPercentage: 92, letterGrade: "B+", creditHours: 3, colorTag: .purple),
-            GradeCourseSummary(id: UUID(), courseCode: "BIO 101", courseTitle: "Biology", currentPercentage: 79.8, targetPercentage: 85, letterGrade: "C+", creditHours: 3, colorTag: .green),
-            GradeCourseSummary(id: UUID(), courseCode: "HIS 120", courseTitle: "World History", currentPercentage: 85.4, targetPercentage: 90, letterGrade: "B", creditHours: 3, colorTag: .orange)
-        ]
-    }
+    static var sampleCourses: [GradeCourseSummary] { [] }
 
-    static var sampleCourseDetails: [CourseGradeDetail] {
-        sampleCourses.map { course in
-            CourseGradeDetail(
-                id: UUID(),
-                course: course,
-                components: [
-                    GradeComponent(id: UUID(), name: "Homework", weightPercent: 25, earnedPercent: 90),
-                    GradeComponent(id: UUID(), name: "Exams", weightPercent: 40, earnedPercent: 85),
-                    GradeComponent(id: UUID(), name: "Labs", weightPercent: 20, earnedPercent: 88),
-                    GradeComponent(id: UUID(), name: "Participation", weightPercent: 15, earnedPercent: 95)
-                ],
-                notes: "Track upcoming exam weight adjustments here."
-            )
-        }
-    }
+    static var sampleCourseDetails: [CourseGradeDetail] { [] }
 }

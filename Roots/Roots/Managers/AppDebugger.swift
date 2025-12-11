@@ -116,8 +116,8 @@ final class AppDebugger {
         authProvider: () -> (EKAuthorizationStatus, EKAuthorizationStatus)
     ) -> DiagnosticIssue? {
         let (eventStatus, reminderStatus) = authProvider()
-        let actualAuthorized = (eventStatus == .authorized || eventStatus == .fullAccess) ||
-        (reminderStatus == .authorized || reminderStatus == .fullAccess)
+        let actualAuthorized = (eventStatus == .fullAccess || eventStatus == .writeOnly) ||
+        (reminderStatus == .fullAccess || reminderStatus == .writeOnly)
 
         guard actualAuthorized == calendarManager.isAuthorized else {
             return DiagnosticIssue(

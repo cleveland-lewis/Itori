@@ -18,6 +18,9 @@ struct RootsApp: App {
     @StateObject private var coursesStore: CoursesStore
     @StateObject private var appSettings = AppSettingsModel.shared
     @StateObject private var settingsCoordinator: SettingsCoordinator
+    @StateObject private var gradesStore = GradesStore.shared
+    @StateObject private var plannerStore = PlannerStore.shared
+    @StateObject private var plannerCoordinator = PlannerCoordinator.shared
     @StateObject private var appModel = AppModel()
     @StateObject private var calendarManager = CalendarManager.shared
     @StateObject private var timerManager = TimerManager()
@@ -47,6 +50,8 @@ struct RootsApp: App {
     }()
 #endif
 
+    @State private var resetCancellable: AnyCancellable? = nil
+
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -61,11 +66,25 @@ struct RootsApp: App {
                 .environmentObject(timerManager)
                 .environmentObject(FlashcardManager.shared)
                 .environmentObject(preferences)
+                .environmentObject(gradesStore)
+                .environmentObject(plannerStore)
+                .environmentObject(plannerCoordinator)
                 .onAppear {
                     // Sync stored AppSettingsModel -> AppPreferences on launch
                     preferences.highContrast = appSettings.highContrastMode
                     preferences.reduceTransparency = appSettings.increaseTransparency
                     if let g = appSettings.glassIntensity { preferences.glassIntensity = g }
+
+                    // Subscribe to app reset requests from AppModel
+                    resetCancellable = AppModel.shared.resetPublisher
+                        .receive(on: DispatchQueue.main)
+                        .sink { _ in
+                            // perform global resets
+                            AssignmentsStore.shared.resetAll()
+                            CoursesStore.shared?.resetAll()
+                            PlannerStore.shared.reset()
+                            GradesStore.shared.resetAll()
+                        }
                 }
                 .onChange(of: preferences.highContrast) { _, newValue in
                     appSettings.highContrastMode = newValue
@@ -108,6 +127,8 @@ struct RootsApp: App {
                 .environmentObject(timerManager)
                 .environmentObject(FlashcardManager.shared)
                 .environmentObject(preferences)
+                .environmentObject(gradesStore)
+                .environmentObject(plannerStore)
         }
         .onChange(of: scenePhase) { _, newPhase in
             handleScenePhaseChange(newPhase)

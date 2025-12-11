@@ -284,34 +284,45 @@ struct CoursesDashboardDetail: View {
                 .font(DesignSystem.Typography.body)
                 .foregroundStyle(.primary)
 
-            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                analyticRow(
-                    title: "Assignments",
-                    value: "\(course.analytics.assignmentsCompleted)/\(course.analytics.assignmentsTotal)",
-                    icon: "checkmark.circle.fill",
-                    color: appPreferences.currentAccentColor
-                )
+            if hasAnalyticsData {
+                VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+                    analyticRow(
+                        title: "Assignments",
+                        value: "\(course.analytics.assignmentsCompleted)/\(course.analytics.assignmentsTotal)",
+                        icon: "checkmark.circle.fill",
+                        color: appPreferences.currentAccentColor
+                    )
 
-                analyticRow(
-                    title: "Average Score",
-                    value: String(format: "%.1f%%", course.analytics.averageScore),
-                    icon: "star.fill",
-                    color: appPreferences.currentAccentColor
-                )
+                    analyticRow(
+                        title: "Average Score",
+                        value: String(format: "%.1f%%", course.analytics.averageScore),
+                        icon: "star.fill",
+                        color: appPreferences.currentAccentColor
+                    )
 
-                analyticRow(
-                    title: "Attendance",
-                    value: String(format: "%.0f%%", course.analytics.attendanceRate * 100),
-                    icon: "person.fill.checkmark",
-                    color: appPreferences.currentAccentColor
-                )
+                    analyticRow(
+                        title: "Attendance",
+                        value: String(format: "%.0f%%", course.analytics.attendanceRate * 100),
+                        icon: "person.fill.checkmark",
+                        color: appPreferences.currentAccentColor
+                    )
 
-                analyticRow(
-                    title: "Hours Studied",
-                    value: String(format: "%.1fh", course.analytics.hoursStudied),
-                    icon: "clock.fill",
-                    color: appPreferences.currentAccentColor
-                )
+                    analyticRow(
+                        title: "Hours Studied",
+                        value: String(format: "%.1fh", course.analytics.hoursStudied),
+                        icon: "clock.fill",
+                        color: appPreferences.currentAccentColor
+                    )
+                }
+            } else {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("No analytics yet.")
+                        .font(.subheadline.weight(.semibold))
+                    Text("We’ll show assignment progress and study time once this course has data.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
         .padding(14)
@@ -336,6 +347,13 @@ struct CoursesDashboardDetail: View {
                 .font(DesignSystem.Typography.body)
                 .foregroundStyle(.primary)
         }
+    }
+
+    private var hasAnalyticsData: Bool {
+        course.analytics.assignmentsTotal > 0
+        || course.analytics.assignmentsCompleted > 0
+        || course.analytics.averageScore > 0
+        || course.analytics.hoursStudied > 0
     }
 
     private var instructorNotesColumn: some View {

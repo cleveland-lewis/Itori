@@ -27,20 +27,8 @@ final class AnalyticsService {
         let seconds: Double
     }
 
-    // Placeholder sample data; in a real app this would pull from persisted timer sessions.
-    private lazy var sampleSessions: [StudySession] = {
-        let now = Date()
-        return [
-            StudySession(date: now.addingTimeInterval(-3600), category: "Homework", seconds: 45 * 60),
-            StudySession(date: now.addingTimeInterval(-7200), category: "Reading", seconds: 30 * 60),
-            StudySession(date: now.addingTimeInterval(-86400 * 1.2), category: "Project", seconds: 90 * 60),
-            StudySession(date: now.addingTimeInterval(-86400 * 3), category: "Exam Prep", seconds: 80 * 60),
-            StudySession(date: now.addingTimeInterval(-86400 * 6), category: "Homework", seconds: 70 * 60),
-            StudySession(date: now.addingTimeInterval(-86400 * 14), category: "Reading", seconds: 50 * 60),
-            StudySession(date: now.addingTimeInterval(-86400 * 25), category: "Project", seconds: 120 * 60),
-            StudySession(date: now.addingTimeInterval(-86400 * 70), category: "Exam Prep", seconds: 140 * 60)
-        ]
-    }()
+    // Placeholder sample data removed; sessions must be provided by the app.
+    private lazy var sampleSessions: [StudySession] = []
 
     func getCategoryDistribution(range: AnalyticsTimeRange) -> [(category: String, seconds: Double)] {
         let sessions = filteredSessions(for: range)

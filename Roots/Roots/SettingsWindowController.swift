@@ -103,6 +103,8 @@ final class SettingsWindowController: NSWindowController {
                 .environmentObject(AssignmentsStore.shared)
                 .environmentObject(appSettings)
                 .environmentObject(coursesStore)
+                .environmentObject(GradesStore.shared)
+                .environmentObject(PlannerStore.shared)
                 .environmentObject(AppModel())
                 .environmentObject(coordinator)
                 .environmentObject(EventsCountStore())

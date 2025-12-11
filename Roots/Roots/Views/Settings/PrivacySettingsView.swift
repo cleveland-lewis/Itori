@@ -74,10 +74,12 @@ struct PrivacySettingsView: View {
 
     private func refreshPermissions() {
         let store = EKEventStore()
-        store.requestAccess(to: .event) { granted, _ in
-            DispatchQueue.main.async {
-                self.calendarAccessGranted = granted
+        // Bridge legacy callback to async to avoid deprecated synchronous usage
+        _Concurrency.Task {
+            let granted: Bool = await withCheckedContinuation { cont in
+                store.requestAccess(to: .event) { granted, _ in cont.resume(returning: granted) }
             }
+            DispatchQueue.main.async { self.calendarAccessGranted = granted }
         }
 
         UNUserNotificationCenter.current().getNotificationSettings { settings in
@@ -143,7 +145,8 @@ struct PrivacySettingsView: View {
         }
 
         // Notify app to reset state
-        NotificationCenter.default.post(name: Notification.Name("AppShouldResetData"), object: nil)
+        // Signal app reset via AppModel instead of NotificationCenter
+        AppModel.shared.requestReset()
     }
 }
 

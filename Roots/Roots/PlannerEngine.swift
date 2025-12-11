@@ -178,7 +178,15 @@ enum PlannerEngine {
             var s = session
             s.scheduleIndex = computeScheduleIndex(for: session, today: today)
             return s
-        }.sorted { $0.scheduleIndex > $1.scheduleIndex }
+        }.sorted { lhs, rhs in
+            if lhs.scheduleIndex == rhs.scheduleIndex {
+                if lhs.dueDate == rhs.dueDate {
+                    return lhs.assignmentId.uuidString < rhs.assignmentId.uuidString
+                }
+                return lhs.dueDate < rhs.dueDate
+            }
+            return lhs.scheduleIndex > rhs.scheduleIndex
+        }
 
         // build per-day slot maps
         var daySlots: [Date: [Bool]] = [:] // false = free, true = occupied
@@ -231,6 +239,11 @@ enum PlannerEngine {
         for session in scored {
             let slotsNeeded = max(1, Int(ceil(Double(session.estimatedMinutes) / 30.0)))
             let window = computeWindow(for: session)
+            if window.1 < window.0 {
+                assertionFailure("Invalid scheduling window for session \(session.id)")
+                overflow.append(session)
+                continue
+            }
             let days = dateRange(start: window.0, end: window.1)
 
             var bestPlacement: (day: Date, slot: Int, score: Double)?

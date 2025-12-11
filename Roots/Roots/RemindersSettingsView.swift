@@ -6,7 +6,7 @@ struct RemindersSettingsView: View {
     @State private var showingRevokeAlert = false
 
     private var isAuthorized: Bool {
-        calendarManager.reminderAuthorizationStatus == .authorized || calendarManager.reminderAuthorizationStatus == .fullAccess
+        calendarManager.reminderAuthorizationStatus == .fullAccess || calendarManager.reminderAuthorizationStatus == .writeOnly
     }
 
     var body: some View {

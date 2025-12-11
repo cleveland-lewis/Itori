@@ -77,7 +77,7 @@ struct CalendarPageView: View {
     @State private var selectedEvent: CalendarEvent?
     @State private var metrics: CalendarStats = .empty
     @State private var showingNewEventSheet = false
-    @State private var events: [CalendarEvent] = CalendarPageView.sampleEvents
+    @State private var events: [CalendarEvent] = []
     @State private var syncedEvents: [CalendarEvent] = []
     private let eventStore = EKEventStore()
 
@@ -270,14 +270,14 @@ struct CalendarPageView: View {
             if #available(macOS 14.0, *) {
                 return calendarManager.eventAuthorizationStatus == .fullAccess || calendarManager.eventAuthorizationStatus == .writeOnly
             } else {
-                return calendarManager.eventAuthorizationStatus == .authorized
+                return calendarManager.eventAuthorizationStatus == .fullAccess || calendarManager.eventAuthorizationStatus == .writeOnly
             }
         }()
         let hasReminderAccess: Bool = {
             if #available(macOS 14.0, *) {
                 return calendarManager.reminderAuthorizationStatus == .fullAccess || calendarManager.reminderAuthorizationStatus == .writeOnly
             } else {
-                return calendarManager.reminderAuthorizationStatus == .authorized
+                return calendarManager.reminderAuthorizationStatus == .fullAccess || calendarManager.reminderAuthorizationStatus == .writeOnly
             }
         }()
 
@@ -1327,17 +1327,7 @@ private struct DayDetailSidebar: View {
 // MARK: - Sample Data
 
 private extension CalendarPageView {
-    static var sampleEvents: [CalendarEvent] {
-        let calendar = Calendar.current
-        let now = Date()
-        let laterToday = calendar.date(byAdding: .hour, value: 1, to: now) ?? now
-        return [
-            CalendarEvent(title: "CS Lecture", startDate: now, endDate: laterToday, location: "Hall A"),
-            CalendarEvent(title: "Group Project Sync", startDate: calendar.date(bySettingHour: 13, minute: 0, second: 0, of: now) ?? now, endDate: calendar.date(bySettingHour: 13, minute: 45, second: 0, of: now) ?? now, location: "Library"),
-            CalendarEvent(title: "Math Problem Set", startDate: calendar.date(bySettingHour: 23, minute: 0, second: 0, of: calendar.date(byAdding: .day, value: 1, to: now) ?? now) ?? now, endDate: calendar.date(bySettingHour: 23, minute: 59, second: 0, of: calendar.date(byAdding: .day, value: 1, to: now) ?? now) ?? now, location: nil),
-            CalendarEvent(title: "Lab Session", startDate: calendar.date(bySettingHour: 15, minute: 0, second: 0, of: calendar.date(byAdding: .day, value: 3, to: now) ?? now) ?? now, endDate: calendar.date(bySettingHour: 17, minute: 0, second: 0, of: calendar.date(byAdding: .day, value: 3, to: now) ?? now) ?? now, location: "Science Center")
-        ]
-    }
+    static var sampleEvents: [CalendarEvent] { [] }
 }
 
 private extension CalendarEvent {
@@ -1431,6 +1421,10 @@ struct CalendarView: View {
         return calendarManager.cachedMonthEvents.filter { $0.calendar.calendarIdentifier == selectedId }
     }
 
+    private var isLoading: Bool {
+        calendarManager.isLoading
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -1456,31 +1450,47 @@ struct CalendarView: View {
                         )
                         .padding()
 
-                        switch viewMode {
-                        case .day:
-                            CalendarDayView(
-                                date: calendarManager.selectedDate ?? Date(),
-                                events: displayEKEvents.filter { Calendar.current.isDate($0.startDate, inSameDayAs: calendarManager.selectedDate ?? Date()) },
-                                onSelectEvent: { ek in selectedEvent = mapEvent(ek) }
+                        if isLoading {
+                            loadingState
+                        } else if !calendarManager.isAuthorized {
+                            CalendarEmptyState(
+                                title: "Calendar access needed",
+                                message: "Grant permission to pull your events. You can do this in Settings → Privacy."
                             )
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        case .week:
-                            CalendarWeekView(
-                                currentDate: currentMonth,
-                                events: displayEKEvents,
-                                onSelectEvent: { ek in selectedEvent = mapEvent(ek) }
+                        } else if displayEKEvents.isEmpty {
+                            CalendarEmptyState(
+                                title: "No events found",
+                                message: "Nothing is scheduled for this calendar yet. Create an event to see it here."
                             )
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        case .month:
-                            CalendarGrid(currentMonth: $currentMonth, events: monthEvents)
+                        } else {
+                            switch viewMode {
+                            case .day:
+                                CalendarDayView(
+                                    date: calendarManager.selectedDate ?? Date(),
+                                    events: displayEKEvents.filter { Calendar.current.isDate($0.startDate, inSameDayAs: calendarManager.selectedDate ?? Date()) },
+                                    onSelectEvent: { ek in selectedEvent = mapEvent(ek) }
+                                )
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                .padding(.horizontal, 8)
-                        case .year:
-                            CalendarYearView(currentYear: currentMonth)
+                            case .week:
+                                CalendarWeekView(
+                                    currentDate: currentMonth,
+                                    events: displayEKEvents,
+                                    onSelectEvent: { ek in selectedEvent = mapEvent(ek) }
+                                )
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        @unknown default:
-                            CalendarGrid(currentMonth: $currentMonth, events: monthEvents)
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            case .month:
+                                CalendarGrid(currentMonth: $currentMonth, events: monthEvents)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .padding(.horizontal, 8)
+                            case .year:
+                                CalendarYearView(currentYear: currentMonth)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            @unknown default:
+                                CalendarGrid(currentMonth: $currentMonth, events: monthEvents)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            }
                         }
                     }
                     .background(DesignSystem.Materials.card)
@@ -1496,10 +1506,14 @@ struct CalendarView: View {
         .onAppear {
             calendarManager.selectedDate = calendarManager.selectedDate ?? Date()
             currentMonth = calendarManager.selectedDate ?? Date()
+            calendarManager.ensureMonthCache(for: currentMonth)
             startKeyboardMonitoring()
         }
         .onDisappear {
             stopKeyboardMonitoring()
+        }
+        .onChange(of: currentMonth) { _, newValue in
+            calendarManager.ensureMonthCache(for: newValue)
         }
         .sheet(item: $selectedEvent) { event in
             EventDetailView(
@@ -1507,6 +1521,17 @@ struct CalendarView: View {
                 isPresented: Binding(get: { selectedEvent != nil }, set: { if !$0 { selectedEvent = nil } })
             )
         }
+    }
+
+    private var loadingState: some View {
+        VStack(spacing: 12) {
+            ProgressView()
+            Text("Loading events…")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding()
     }
 
     private func step(by value: Int) {
@@ -1644,6 +1669,27 @@ private struct NewEventPlaceholder: View {
             }
         }
         .padding(DesignSystem.Layout.padding.window)
+    }
+}
+
+private struct CalendarEmptyState: View {
+    let title: String
+    let message: String
+
+    var body: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "calendar.badge.exclamationmark")
+                .font(.title2)
+                .foregroundStyle(.secondary)
+            Text(title)
+                .font(.headline)
+            Text(message)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding()
     }
 }
 

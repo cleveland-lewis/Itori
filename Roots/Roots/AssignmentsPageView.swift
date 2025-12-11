@@ -217,7 +217,7 @@ enum AssignmentSortOption: String, CaseIterable, Identifiable {
 struct AssignmentsPageView: View {
     @EnvironmentObject private var settings: AppSettings
 
-    @State private var assignments: [Assignment] = AssignmentsPageView.sampleAssignments
+    @State private var assignments: [Assignment] = []
     @State private var selectedSegment: AssignmentSegment = .all
     @State private var selectedAssignment: Assignment? = nil
     @State private var searchText: String = ""
@@ -1363,21 +1363,7 @@ struct AssignmentEditorSheet: View {
 // MARK: - Samples
 
 private extension AssignmentsPageView {
-    static var sampleAssignments: [Assignment] {
-        let now = Date()
-        let calendar = Calendar.current
-        let day1 = calendar.date(byAdding: .day, value: 1, to: now) ?? now
-        let day2 = calendar.date(byAdding: .day, value: 3, to: now) ?? now
-        let day3 = calendar.date(byAdding: .day, value: 5, to: now) ?? now
-
-        return [
-            Assignment(id: UUID(), courseId: UUID(), title: "Problem Set 5", courseCode: "MA 231", courseName: "Calculus II", category: .practiceHomework, dueDate: day1, estimatedMinutes: 90, status: .inProgress, urgency: .high, weightPercent: 8, isLockedToDueDate: false, notes: "Focus on integrals."),
-            Assignment(id: UUID(), courseId: UUID(), title: "Quiz 3 Review", courseCode: "CS 240", courseName: "Data Structures", category: .quiz, dueDate: day2, estimatedMinutes: 45, status: .notStarted, urgency: .medium, weightPercent: 5, isLockedToDueDate: false, notes: "Queue to planner."),
-            Assignment(id: UUID(), courseId: UUID(), title: "Lab Report", courseCode: "BIO 101", courseName: "Biology", category: .project, dueDate: day3, estimatedMinutes: 120, status: .notStarted, urgency: .critical, weightPercent: 10, isLockedToDueDate: true, notes: "Need data from partner."),
-            Assignment(id: UUID(), courseId: UUID(), title: "Essay Outline", courseCode: "ENG 210", courseName: "Literature", category: .project, dueDate: day1, estimatedMinutes: 60, status: .completed, urgency: .low, weightPercent: nil, isLockedToDueDate: false, notes: ""),
-            Assignment(id: UUID(), courseId: UUID(), title: "Exam Prep", courseCode: "MA 231", courseName: "Calculus II", category: .exam, dueDate: day2, estimatedMinutes: 180, status: .notStarted, urgency: .critical, weightPercent: 20, isLockedToDueDate: true, notes: "Create flashcards.")
-        ]
-    }
+    static var sampleAssignments: [Assignment] { [] }
 }
 
 // MARK: - Drag Selection (Assignments)

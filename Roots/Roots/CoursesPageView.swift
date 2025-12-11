@@ -77,9 +77,21 @@ typealias ColorTag = CoursesPageModel.ColorTag
 struct CoursesPageView: View {
     @EnvironmentObject private var settings: AppSettingsModel
     @EnvironmentObject private var settingsCoordinator: SettingsCoordinator
+    @EnvironmentObject private var coursesStore: CoursesStore
+    @EnvironmentObject private var assignmentsStore: AssignmentsStore
+    @EnvironmentObject private var timerManager: TimerManager
+    @EnvironmentObject private var calendarManager: CalendarManager
+    @EnvironmentObject private var gradesStore: GradesStore
+    @EnvironmentObject private var plannerCoordinator: PlannerCoordinator
 
-    @State private var courses: [CoursePageCourse] = CoursesPageView.sampleCourses
-    @State private var selectedCourse: CoursePageCourse? = nil
+    @State private var showingAddTaskSheet = false
+    @State private var addTaskType: TaskType = .practiceHomework
+    @State private var addTaskCourseId: UUID? = nil
+    @State private var showingGradeSheet = false
+    @State private var gradePercentInput: Double = 90
+    @State private var gradeLetterInput: String = "A"
+
+    @State private var selectedCourseId: UUID? = nil
     @State private var searchText: String = ""
     @State private var showNewCourseSheet: Bool = false
     @State private var editingCourse: CoursePageCourse? = nil
@@ -129,19 +141,36 @@ struct CoursesPageView: View {
         .accentColor(settings.activeAccentColor)
         .sheet(isPresented: $showNewCourseSheet) {
             CourseEditorSheet(course: editingCourse) { updated in
-                upsertCourse(updated)
-                selectedCourse = updated
+                persistCourse(updated)
+                selectedCourseId = updated.id
             }
         }
+        .sheet(isPresented: $showingAddTaskSheet) {
+            AddAssignmentView(initialType: addTaskType, preselectedCourseId: addTaskCourseId) { task in
+                assignmentsStore.addTask(task)
+            }
+            .environmentObject(coursesStore)
+        }
+        .sheet(isPresented: $showingGradeSheet) {
+            gradeEntrySheet
+        }
         .onAppear {
-            if selectedCourse == nil { selectedCourse = filteredCourses.first }
+            if selectedCourseId == nil {
+                selectedCourseId = filteredCourses.first?.id
+            }
+        }
+        .onChange(of: filteredCourses.count) { _, _ in
+            guard let currentSelection = selectedCourseId else { return }
+            if !filteredCourses.contains(where: { $0.id == currentSelection }) {
+                selectedCourseId = filteredCourses.first?.id
+            }
         }
     }
 
     private var sidebarView: some View {
         CoursesSidebarView(
             courses: filteredCourses,
-            selectedCourse: $selectedCourse,
+            selectedCourse: $selectedCourseId,
             searchText: $searchText,
             onNewCourse: {
                 editingCourse = nil
@@ -153,12 +182,24 @@ struct CoursesPageView: View {
 
     private var rightColumn: some View {
         VStack(alignment: .leading, spacing: RootsSpacing.m) {
-            if let course = selectedCourse ?? filteredCourses.first {
+            if let course = currentSelection {
                 CoursesPageDetailView(
-                    course: binding(for: course),
+                    course: course,
                     onEdit: {
                         editingCourse = course
                         showNewCourseSheet = true
+                    },
+                    onAddAssignment: {
+                        beginAddTask(for: course, type: .practiceHomework)
+                    },
+                    onAddExam: {
+                        beginAddTask(for: course, type: .exam)
+                    },
+                    onAddGrade: {
+                        beginAddGrade(for: course)
+                    },
+                    onViewPlanner: {
+                        openPlanner(for: course)
                     }
                 )
                 .frame(maxWidth: .infinity, alignment: .topLeading)
@@ -201,7 +242,7 @@ struct CoursesPageView: View {
     }
 
     private var filteredCourses: [CoursePageCourse] {
-        let active = courses.filter { !$0.isArchived }
+        let active = liveCourses.filter { !$0.isArchived }
         guard !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return active }
         let query = searchText.lowercased()
         return active.filter { course in
@@ -211,19 +252,118 @@ struct CoursesPageView: View {
         }
     }
 
-    private func binding(for course: CoursePageCourse) -> Binding<CoursePageCourse> {
-        guard let index = courses.firstIndex(of: course) else {
-            return .constant(course)
-        }
-        return $courses[index]
+    private var liveCourses: [CoursePageCourse] {
+        coursesStore.activeCourses.map { vm(from: $0) }
     }
 
-    private func upsertCourse(_ course: CoursePageCourse) {
-        if let idx = courses.firstIndex(where: { $0.id == course.id }) {
-            courses[idx] = course
+    private var currentSelection: CoursePageCourse? {
+        guard let selectedCourseId else { return filteredCourses.first }
+        return filteredCourses.first(where: { $0.id == selectedCourseId }) ?? filteredCourses.first
+    }
+
+    private func vm(from course: Course) -> CoursePageCourse {
+        let semesterName = coursesStore.semesters.first(where: { $0.id == course.semesterId })?.name ?? "Current Term"
+        let colorTag = ColorTag.fromHex(course.colorHex) ?? .blue
+        let gradeEntry = gradesStore.grade(for: course.id)
+        let gradeInfo = CourseGradeInfo(currentPercentage: gradeEntry?.percent, targetPercentage: nil, letterGrade: gradeEntry?.letter)
+        return CoursePageCourse(
+            id: course.id,
+            code: course.code,
+            title: course.title,
+            instructor: course.instructor ?? "Instructor",
+            location: course.location ?? "Location TBA",
+            credits: Int(course.credits ?? 3),
+            colorTag: colorTag,
+            semesterId: course.semesterId,
+            semesterName: semesterName,
+            isArchived: course.isArchived,
+            meetingTimes: [],
+            gradeInfo: gradeInfo,
+            syllabus: nil
+        )
+    }
+
+    private func persistCourse(_ course: CoursePageCourse) {
+        let semesterId = course.semesterId ?? ensureSemester()
+        if let idx = coursesStore.courses.firstIndex(where: { $0.id == course.id }) {
+            var existing = coursesStore.courses[idx]
+            existing.code = course.code
+            existing.title = course.title
+            existing.instructor = course.instructor
+            existing.location = course.location
+            existing.credits = Double(course.credits)
+            existing.semesterId = semesterId
+            existing.isArchived = course.isArchived
+            existing.colorHex = ColorTag.hex(for: course.colorTag)
+            coursesStore.updateCourse(existing)
         } else {
-            courses.append(course)
+            let newCourse = Course(
+                id: course.id,
+                title: course.title,
+                code: course.code,
+                semesterId: semesterId,
+                colorHex: ColorTag.hex(for: course.colorTag),
+                isArchived: course.isArchived,
+                courseType: .regular,
+                instructor: course.instructor,
+                location: course.location,
+                credits: Double(course.credits),
+                creditType: .credits,
+                meetingTimes: nil,
+                syllabus: nil,
+                notes: nil,
+                attachments: []
+            )
+            coursesStore.addCourse(newCourse)
         }
+
+        if coursesStore.currentSemesterId == nil {
+            coursesStore.currentSemesterId = semesterId
+        }
+    }
+
+    private func ensureSemester() -> UUID {
+        if let current = coursesStore.currentSemesterId {
+            return current
+        }
+        if let first = coursesStore.semesters.first {
+            coursesStore.currentSemesterId = first.id
+            return first.id
+        }
+
+        let calendar = Calendar.current
+        let now = Date()
+        let end = calendar.date(byAdding: .month, value: 4, to: now) ?? now
+        let defaultSemester = Semester(
+            startDate: now,
+            endDate: end,
+            isCurrent: true,
+            educationLevel: .college,
+            semesterTerm: .fall,
+            academicYear: "\(calendar.component(.year, from: now))-\(calendar.component(.year, from: end))"
+        )
+        coursesStore.addSemester(defaultSemester)
+        coursesStore.currentSemesterId = defaultSemester.id
+        return defaultSemester.id
+    }
+
+    private func beginAddTask(for course: CoursePageCourse, type: TaskType) {
+        selectedCourseId = course.id
+        addTaskCourseId = course.id
+        addTaskType = type
+        showingAddTaskSheet = true
+    }
+
+    private func beginAddGrade(for course: CoursePageCourse) {
+        selectedCourseId = course.id
+        gradePercentInput = gradesStore.grade(for: course.id)?.percent ?? 90
+        gradeLetterInput = gradesStore.grade(for: course.id)?.letter ?? "A"
+        showingGradeSheet = true
+    }
+
+    private func openPlanner(for course: CoursePageCourse) {
+        selectedCourseId = course.id
+        plannerCoordinator.openPlanner(with: course.id)
     }
 
     private var emptyDetailState: some View {
@@ -247,7 +387,7 @@ struct CoursesSidebarView: View {
     @EnvironmentObject private var settingsCoordinator: SettingsCoordinator
 
     var courses: [CoursePageCourse]
-    @Binding var selectedCourse: CoursePageCourse?
+    @Binding var selectedCourse: UUID?
     @Binding var searchText: String
     var onNewCourse: () -> Void
 
@@ -270,8 +410,8 @@ struct CoursesSidebarView: View {
             ScrollView {
                 VStack(spacing: DesignSystem.Layout.spacing.small) {
                     ForEach(courses) { course in
-                        CourseSidebarRow(course: course, isSelected: course == selectedCourse) {
-                            selectedCourse = course
+                        CourseSidebarRow(course: course, isSelected: selectedCourse == course.id) {
+                            selectedCourse = course.id
                         }
                     }
                 }
@@ -351,11 +491,20 @@ struct CourseSidebarRow: View {
             .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(isSelected ? Color(nsColor: NSColor.alternatingContentBackgroundColors[0]).opacity(0.08) : Color(nsColor: NSColor.alternatingContentBackgroundColors[0]).opacity(0.04))
+                    .fill(
+                        isSelected
+                        ? Color.accentColor.opacity(0.14)
+                        : Color(nsColor: .controlBackgroundColor).opacity(0.12)
+                    )
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(Color(nsColor: .separatorColor).opacity(isSelected ? 0.14 : 0.08), lineWidth: 1)
+                    .stroke(
+                        isSelected
+                        ? Color.accentColor.opacity(0.35)
+                        : Color(nsColor: .separatorColor).opacity(0.18),
+                        lineWidth: isSelected ? 1.5 : 1
+                    )
             )
         }
         .buttonStyle(.plain)
@@ -367,8 +516,12 @@ struct CourseSidebarRow: View {
 // MARK: - Detail
 
 struct CoursesPageDetailView: View {
-    @Binding var course: CoursePageCourse
+    let course: CoursePageCourse
     var onEdit: () -> Void
+    var onAddAssignment: () -> Void
+    var onAddExam: () -> Void
+    var onAddGrade: () -> Void
+    var onViewPlanner: () -> Void
 
     private let cardCorner: CGFloat = 24
 
@@ -520,28 +673,28 @@ struct CoursesPageDetailView: View {
                     title: "Add Assignment",
                     subtitle: "Create a new assignment for this course",
                     systemImage: "doc.badge.plus",
-                    action: addAssignment
+                    action: onAddAssignment
                 )
 
                 quickActionTile(
                     title: "Add Exam",
                     subtitle: "Schedule an exam or quiz",
                     systemImage: "calendar.badge.clock",
-                    action: addExam
+                    action: onAddExam
                 )
 
                 quickActionTile(
                     title: "Add Grade",
                     subtitle: "Log a grade for this course",
                     systemImage: "checkmark.seal",
-                    action: addGrade
+                    action: onAddGrade
                 )
 
                 quickActionTile(
                     title: "View Plan for Course",
                     subtitle: "Open Planner with this course filtered",
                     systemImage: "list.bullet.rectangle",
-                    action: viewPlanner
+                    action: onViewPlanner
                 )
             }
         }
@@ -579,39 +732,6 @@ struct CoursesPageDetailView: View {
         .buttonStyle(RootsLiquidButtonStyle())
     }
 
-    // MARK: - Quick action handlers
-
-    private func addAssignment() {
-        NotificationCenter.default.post(
-            name: .coursesRequestedAddAssignment,
-            object: nil,
-            userInfo: ["courseId": course.id, "courseCode": course.code, "courseTitle": course.title]
-        )
-    }
-
-    private func addExam() {
-        NotificationCenter.default.post(
-            name: .coursesRequestedAddExam,
-            object: nil,
-            userInfo: ["courseId": course.id, "courseCode": course.code, "courseTitle": course.title]
-        )
-    }
-
-    private func addGrade() {
-        NotificationCenter.default.post(
-            name: .coursesRequestedAddGrade,
-            object: nil,
-            userInfo: ["courseId": course.id, "courseCode": course.code, "courseTitle": course.title]
-        )
-    }
-
-    private func viewPlanner() {
-        NotificationCenter.default.post(
-            name: .coursesRequestedOpenPlanner,
-            object: nil,
-            userInfo: ["courseId": course.id, "courseCode": course.code, "courseTitle": course.title]
-        )
-    }
 
     private func sectionHeader(_ title: String) -> some View {
         Text(title)
@@ -700,10 +820,7 @@ struct CoursesPageDetailView: View {
 // MARK: - Notifications for quick actions
 
 extension Notification.Name {
-    static let coursesRequestedAddAssignment = Notification.Name("coursesRequestedAddAssignment")
-    static let coursesRequestedAddExam = Notification.Name("coursesRequestedAddExam")
-    static let coursesRequestedAddGrade = Notification.Name("coursesRequestedAddGrade")
-    static let coursesRequestedOpenPlanner = Notification.Name("coursesRequestedOpenPlanner")
+    // Legacy Notification names removed — use PlannerCoordinator and Combine publishers instead
 }
 
 // MARK: - Grade chips/rings
@@ -839,7 +956,7 @@ struct CourseEditorSheet: View {
         .frame(maxWidth: 580, maxHeight: 420)
         .frame(minWidth: RootsWindowSizing.minPopupWidth, minHeight: RootsWindowSizing.minPopupHeight)
         .onAppear(perform: loadDraft)
-        .onChange(of: semesterId) { newValue in
+        .onChange(of: semesterId) { _, newValue in
             if let id = newValue, let match = coursesStore.semesters.first(where: { $0.id == id }) {
                 semesterName = match.name
             }
@@ -863,7 +980,7 @@ struct CourseEditorSheet: View {
             .validationHint(isInvalid: title.trimmingCharacters(in: .whitespaces).isEmpty, text: "Course title is required.")
 
             RootsFormRow(label: "Instructor") {
-                TextField("Instructor", text: $instructor)
+                TextField("Dr. Smith", text: $instructor)
                     .textFieldStyle(.roundedBorder)
             }
 
@@ -951,6 +1068,12 @@ struct CourseEditorSheet: View {
             semesterId = course.semesterId
             semesterName = course.semesterName
             colorTag = course.colorTag
+        } else {
+            if let current = coursesStore.currentSemesterId ?? coursesStore.semesters.first?.id,
+               let match = coursesStore.semesters.first(where: { $0.id == current }) {
+                semesterId = match.id
+                semesterName = match.name
+            }
         }
     }
 }
@@ -968,89 +1091,75 @@ private extension View {
     }
 }
 
+private extension ColorTag {
+    static func fromHex(_ hex: String?) -> ColorTag? {
+        guard let hex = hex?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() else { return nil }
+        switch hex {
+        case "#4c78ff", "blue": return .blue
+        case "#34c759", "green": return .green
+        case "#af52de", "purple": return .purple
+        case "#ff9f0a", "orange": return .orange
+        case "#ff2d55", "pink": return .pink
+        case "#ffd60a", "yellow": return .yellow
+        case "#8e8e93", "gray": return .gray
+        default: return nil
+        }
+    }
+
+    static func hex(for tag: ColorTag) -> String {
+        switch tag {
+        case .blue: return "#4C78FF"
+        case .green: return "#34C759"
+        case .purple: return "#AF52DE"
+        case .orange: return "#FF9F0A"
+        case .pink: return "#FF2D55"
+        case .yellow: return "#FFD60A"
+        case .gray: return "#8E8E93"
+        }
+    }
+}
+
 // MARK: - Sample Data
 
+private extension CoursesPageView {}
+
+// MARK: - Grade Entry Sheet
+
 private extension CoursesPageView {
-    static var sampleCourses: [CoursePageCourse] {
-        let calendar = Calendar.current
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
+    var gradeEntrySheet: some View {
+        VStack(alignment: .leading, spacing: RootsSpacing.m) {
+            Text("Add Grade for \(currentSelection?.code ?? "Course")")
+                .font(.title3.weight(.semibold))
 
-        func time(_ string: String) -> Date {
-            formatter.date(from: string) ?? Date()
+            VStack(alignment: .leading, spacing: RootsSpacing.s) {
+                Text("Percentage")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Slider(value: $gradePercentInput, in: 0...100, step: 1)
+                HStack {
+                    Text("\(Int(gradePercentInput))%")
+                    Spacer()
+                    TextField("Letter", text: $gradeLetterInput)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 80)
+                }
+            }
+
+            HStack {
+                Spacer()
+                Button("Cancel") {
+                    showingGradeSheet = false
+                }
+                Button("Save") {
+                    if let courseId = currentSelection?.id {
+                        gradesStore.upsert(courseId: courseId, percent: gradePercentInput, letter: gradeLetterInput.isEmpty ? nil : gradeLetterInput)
+                    }
+                    showingGradeSheet = false
+                }
+                .buttonStyle(.borderedProminent)
+            }
         }
-
-        let mathMeetings = [
-            CourseMeeting(id: UUID(), weekday: 2, startTime: time("09:35"), endTime: time("10:25"), type: "Lecture"),
-            CourseMeeting(id: UUID(), weekday: 4, startTime: time("09:35"), endTime: time("10:25"), type: "Lecture")
-        ]
-
-        let csMeetings = [
-            CourseMeeting(id: UUID(), weekday: 3, startTime: time("13:00"), endTime: time("14:15"), type: "Lecture"),
-            CourseMeeting(id: UUID(), weekday: 5, startTime: time("13:00"), endTime: time("14:15"), type: "Recitation")
-        ]
-
-        let syllabus = CourseSyllabus(
-            categories: [
-                SyllabusCategory(id: UUID(), name: "Homework", weight: 25),
-                SyllabusCategory(id: UUID(), name: "Projects", weight: 35),
-                SyllabusCategory(id: UUID(), name: "Exams", weight: 40)
-            ],
-            notes: "Review the rubric each week. Major project checkpoints at weeks 5 and 9."
-        )
-
-        let fall2025 = UUID()
-
-        let math = CoursePageCourse(
-            id: UUID(),
-            code: "MA 231",
-            title: "Calculus II",
-            instructor: "Prof. Lane",
-            location: "SAS 2104",
-            credits: 4,
-            colorTag: .blue,
-            semesterId: fall2025,
-            semesterName: "Fall 2025",
-            isArchived: false,
-            meetingTimes: mathMeetings,
-            gradeInfo: CourseGradeInfo(currentPercentage: 92, targetPercentage: 95, letterGrade: "A-"),
-            syllabus: syllabus
-        )
-
-        let cs = CoursePageCourse(
-            id: UUID(),
-            code: "CS 240",
-            title: "Data Structures",
-            instructor: "Dr. Kim",
-            location: "EB2 1230",
-            credits: 3,
-            colorTag: .purple,
-            semesterId: fall2025,
-            semesterName: "Fall 2025",
-            isArchived: false,
-            meetingTimes: csMeetings,
-            gradeInfo: CourseGradeInfo(currentPercentage: 88, targetPercentage: 93, letterGrade: "B+"),
-            syllabus: syllabus
-        )
-
-        let hist = CoursePageCourse(
-            id: UUID(),
-            code: "HIS 120",
-            title: "Modern World History",
-            instructor: "Dr. Alvarez",
-            location: "Tompkins 112",
-            credits: 3,
-            colorTag: .orange,
-            semesterId: fall2025,
-            semesterName: "Fall 2025",
-            isArchived: false,
-            meetingTimes: [
-                CourseMeeting(id: UUID(), weekday: 2, startTime: time("11:15"), endTime: time("12:30"), type: "Lecture")
-            ],
-            gradeInfo: CourseGradeInfo(currentPercentage: nil, targetPercentage: 90, letterGrade: nil),
-            syllabus: nil
-        )
-
-        return [math, cs, hist]
+        .padding(24)
+        .frame(minWidth: 360)
     }
 }

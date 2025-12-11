@@ -1,10 +1,12 @@
 import SwiftUI
 import AppKit
+import Combine
 
 struct ContentView: View {
     @EnvironmentObject var settings: AppSettingsModel
     @EnvironmentObject var coursesStore: CoursesStore
     @EnvironmentObject var settingsCoordinator: SettingsCoordinator
+    @EnvironmentObject var plannerCoordinator: PlannerCoordinator
     @State private var selectedTab: RootTab = .dashboard
     @State private var settingsRotation: Double = 0
     @Environment(\.colorScheme) private var colorScheme
@@ -35,7 +37,7 @@ struct ContentView: View {
                         performQuickAction(.add_assignment)
                     },
                     FanOutMenuItem(icon: "calendar.badge.plus", label: "Add Event") {
-                        // Integrate with calendar flow as needed
+                        _Concurrency.Task { await CalendarManager.shared.quickAddEvent() }
                     },
                     FanOutMenuItem(icon: "graduationcap", label: "Add Course") {
                         performQuickAction(.add_course)
@@ -73,6 +75,10 @@ struct ContentView: View {
                     win.titlebarAppearsTransparent = true
                 }
             }
+        }
+        .onChange(of: plannerCoordinator.requestedCourseId) { courseId in
+            selectedTab = .planner
+            plannerCoordinator.selectedCourseFilter = courseId
         }
         #if os(macOS)
         .onKeyDown { event in

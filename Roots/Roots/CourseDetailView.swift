@@ -44,7 +44,7 @@ struct CourseDetailView: View {
                     practiceQuizzesCard
                 }
             }
-            .padding(DesignSystem.Layout.padding.window)
+            .padding(DesignSystem.Layout.padding.window) // unified token (no-op but ensures presence)
         }
         .onChange(of: draftCourse.attachments) { _, _ in
             dataManager.updateCourse(draftCourse)

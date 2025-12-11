@@ -204,6 +204,8 @@ struct PlannerSettings {
 
 struct PlannerPageView: View {
     @EnvironmentObject var settings: AppSettings
+    @EnvironmentObject var plannerStore: PlannerStore
+    @EnvironmentObject var assignmentsStore: AssignmentsStore
     @StateObject private var dayProgress = DayProgressModel()
 
     @State private var selectedDate: Date = Date()
@@ -222,14 +224,22 @@ struct PlannerPageView: View {
     private let cardCornerRadius: CGFloat = 26
     private let studySettings = StudyPlanSettings()
 
+    private var plannerLoading: Bool {
+        plannerStore.isLoading || isRunningPlanner
+    }
+
+    private var hasStoredSessionsForSelectedDay: Bool {
+        plannerStore.scheduled.contains { Calendar.current.isDate($0.start, inSameDayAs: selectedDate) }
+    }
+
     var body: some View {
         ZStack {
             Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
                     headerBar
-                        .padding(.top, 6)
+                        .padding(.top, DesignSystem.Layout.spacing.small)
 
                     HStack(alignment: .top, spacing: 18) {
                         timelineCard
@@ -239,8 +249,8 @@ struct PlannerPageView: View {
                             .frame(width: 340, alignment: .top)
                     }
                 }
-                .padding(.horizontal, 6)
-                .padding(.bottom, 24)
+                .padding(.horizontal, DesignSystem.Layout.padding.window)
+                .padding(.bottom, DesignSystem.Layout.spacing.large)
             }
         }
         .accentColor(settings.activeAccentColor)
@@ -257,12 +267,16 @@ struct PlannerPageView: View {
         }
         .onAppear {
             dayProgress.startUpdating()
+            hydrateFromStoredScheduleIfNeeded()
             syncTodayTasksAndSchedule()
         }
         .onDisappear {
             dayProgress.stopUpdating()
         }
         .onChange(of: selectedDate) { _, _ in
+            syncTodayTasksAndSchedule()
+        }
+        .onReceive(assignmentsStore.$tasks) { _ in
             syncTodayTasksAndSchedule()
         }
     }
@@ -330,7 +344,7 @@ private extension PlannerPageView {
                 .opacity(isRunningPlanner ? 0.85 : 1)
             }
         }
-        .padding(.horizontal, 18)
+        .padding(.horizontal, DesignSystem.Layout.padding.card)
     }
 
     var subtitleText: String {
@@ -367,7 +381,7 @@ private extension PlannerPageView {
             }
         }
 
-        let assignments = AssignmentsStore.shared.tasks.map { task in
+        let assignments = assignmentsStore.tasks.map { task in
             Assignment(
                 id: task.id,
                 courseId: task.courseId,
@@ -389,6 +403,7 @@ private extension PlannerPageView {
         let sessions = assignments.flatMap { PlannerEngine.generateSessions(for: $0, settings: studySettings) }
         let energy = SchedulerPreferencesStore.shared.preferences.learnedEnergyProfile
         let scheduledResult = PlannerEngine.scheduleSessions(sessions, settings: studySettings, energyProfile: energy)
+        plannerStore.persist(scheduled: scheduledResult.scheduled, overflow: scheduledResult.overflow)
 
         let dayBlocks: [PlannedBlock] = scheduledResult.scheduled.compactMap { scheduled -> PlannedBlock? in
             let start = scheduled.start
@@ -430,6 +445,48 @@ private extension PlannerPageView {
         }
     }
 
+    private func hydrateFromStoredScheduleIfNeeded() {
+        if !plannedBlocks.isEmpty || plannerStore.scheduled.isEmpty {
+            return
+        }
+
+        let calendar = Calendar.current
+        let dayBlocks: [PlannedBlock] = plannerStore.scheduled.compactMap { stored -> PlannedBlock? in
+            if !calendar.isDate(stored.start, inSameDayAs: selectedDate) { return nil }
+            return PlannedBlock(
+                id: stored.id,
+                taskId: stored.assignmentId,
+                courseId: nil,
+                title: stored.title,
+                course: nil,
+                start: stored.start,
+                end: stored.end,
+                isLocked: stored.isLockedToDueDate,
+                status: .upcoming,
+                source: "Auto-plan",
+                isOmodoroLinked: false
+            )
+        }
+        plannedBlocks = dayBlocks
+        unscheduledTasks = plannerStore.overflow.map { stored in
+            PlannerTask(
+                id: stored.id,
+                courseId: nil,
+                assignmentId: stored.assignmentId,
+                title: stored.title,
+                course: nil,
+                dueDate: stored.dueDate,
+                estimatedMinutes: stored.estimatedMinutes,
+                isLockedToDueDate: stored.isLockedToDueDate,
+                isScheduled: false,
+                isCompleted: false,
+                importance: stored.category == .exam ? 0.8 : 0.5,
+                difficulty: stored.category == .project ? 0.7 : 0.5,
+                category: stored.category
+            )
+        }
+    }
+
     var timelineCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
@@ -450,8 +507,14 @@ private extension PlannerPageView {
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                ForEach(9...21, id: \.self) { hour in
-                    timelineRow(for: hour)
+                if plannerLoading {
+                    plannerLoadingState
+                } else if plannedBlocks.isEmpty && !hasStoredSessionsForSelectedDay {
+                    plannerEmptyState
+                } else {
+                    ForEach(9...21, id: \.self) { hour in
+                        timelineRow(for: hour)
+                    }
                 }
             }
         }
@@ -496,6 +559,29 @@ private extension PlannerPageView {
             }
             .frame(maxWidth: .infinity)
         }
+    }
+
+    private var plannerLoadingState: some View {
+        HStack(spacing: 8) {
+            ProgressView()
+            Text("Loading sessions…")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, 12)
+    }
+
+    private var plannerEmptyState: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("No sessions for this day yet.")
+                .font(.subheadline.weight(.semibold))
+            Text("Run Plan Day to schedule tasks or add a task manually.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, 8)
     }
 
 }
@@ -545,8 +631,11 @@ private extension PlannerPageView {
                 .buttonStyle(.plain)
             }
 
-            if unscheduledTasks.isEmpty {
-                Text("All tasks are scheduled. Nice.")
+            if plannerLoading {
+                plannerLoadingState
+                    .padding(.vertical, 4)
+            } else if unscheduledTasks.isEmpty && plannerStore.overflow.isEmpty {
+                Text("No overflow tasks from the planner right now.")
                     .font(.footnote)
                     .foregroundColor(.secondary)
                     .padding(.vertical, 12)
@@ -768,32 +857,15 @@ private extension PlannerPageView {
     }()
 
     static func samplePlannedBlocks(for date: Date) -> [PlannedBlock] {
-        let calendar = Calendar.current
-        let start1 = calendar.date(bySettingHour: 9, minute: 0, second: 0, of: date) ?? date
-        let end1 = calendar.date(byAdding: .minute, value: 90, to: start1) ?? date
-        let start2 = calendar.date(bySettingHour: 13, minute: 0, second: 0, of: date) ?? date
-        let end2 = calendar.date(byAdding: .minute, value: 60, to: start2) ?? date
-
-        return [
-            PlannedBlock(id: UUID(), taskId: nil, courseId: nil, title: "Read Chapter 5", course: "CS 240", start: start1, end: end1, isLocked: false, status: .inProgress, source: "Assignment", isOmodoroLinked: false),
-            PlannedBlock(id: UUID(), taskId: nil, courseId: nil, title: "Study Group", course: "MA 231", start: start2, end: end2, isLocked: true, status: .upcoming, source: "Class", isOmodoroLinked: false)
-        ]
+        []
     }
 
     static func sampleUnscheduledTasks(for date: Date) -> [PlannerTask] {
-        let calendar = Calendar.current
-        let due1 = calendar.date(byAdding: .day, value: 1, to: date) ?? date
-        return [
-            PlannerTask(id: UUID(), courseId: nil, assignmentId: nil, title: "Draft lab report", course: "BIO 101", dueDate: due1, estimatedMinutes: 60, isLockedToDueDate: false, isScheduled: false, isCompleted: false)
-        ]
+        []
     }
 
     static var sampleCourses: [CourseSummary] {
-        [
-            CourseSummary(id: UUID(), code: "MA 231", title: "Calculus II"),
-            CourseSummary(id: UUID(), code: "CS 240", title: "Data Structures"),
-            CourseSummary(id: UUID(), code: "BIO 101", title: "Biology")
-        ]
+        []
     }
 }
 

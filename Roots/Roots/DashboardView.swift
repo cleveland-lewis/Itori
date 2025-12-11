@@ -17,7 +17,7 @@ struct DashboardView: View {
     var body: some View {
         ScrollView {
             GeometryReader { geo in
-                let spacing: CGFloat = 12
+                let spacing: CGFloat = DesignSystem.Layout.spacing.medium
 
                 HStack(alignment: .top, spacing: spacing) {
                     VStack(alignment: .leading, spacing: spacing) {
@@ -46,8 +46,8 @@ struct DashboardView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .padding(.horizontal, spacing)
-                .padding(.vertical, spacing)
+                .padding(.horizontal, DesignSystem.Layout.padding.window)
+                .padding(.vertical, DesignSystem.Layout.spacing.medium)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             }
             .frame(minHeight: 0)

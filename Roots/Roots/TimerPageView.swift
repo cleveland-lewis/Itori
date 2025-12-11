@@ -69,7 +69,7 @@ struct TimerPageView: View {
     @EnvironmentObject private var calendarManager: CalendarManager
 
     @State private var mode: LocalTimerMode = .pomodoro
-    @State private var activities: [LocalTimerActivity] = TimerPageView.sampleActivities
+    @State private var activities: [LocalTimerActivity] = []
     @State private var selectedActivityID: UUID? = nil
 
     @State private var isRunning: Bool = false
@@ -1329,11 +1329,5 @@ private extension View {
 // MARK: - Samples
 
 private extension TimerPageView {
-    static var sampleActivities: [LocalTimerActivity] {
-        [
-            LocalTimerActivity(id: UUID(), name: "MA 231 – Problem Set 5", category: "Studying", courseCode: "MA 231", assignmentTitle: "Problem Set 5", colorTag: .blue, isPinned: true, totalTrackedSeconds: 60*60*5, todayTrackedSeconds: 60*42),
-            LocalTimerActivity(id: UUID(), name: "CS 240 – Project", category: "Coding", courseCode: "CS 240", assignmentTitle: nil, colorTag: .purple, isPinned: false, totalTrackedSeconds: 60*60*12, todayTrackedSeconds: 60*30),
-            LocalTimerActivity(id: UUID(), name: "Writing – Essay", category: "Writing", courseCode: nil, assignmentTitle: nil, colorTag: .orange, isPinned: false, totalTrackedSeconds: 60*60*3, todayTrackedSeconds: 60*25)
-        ]
-    }
+    static var sampleActivities: [LocalTimerActivity] { [] }
 }

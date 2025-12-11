@@ -5,6 +5,9 @@ import Combine
 @MainActor
 final class CoursesStore: ObservableObject {
     static weak var shared: CoursesStore?
+    // Publishes course deleted events
+    fileprivate let courseDeleted = PassthroughSubject<UUID, Never>()
+
     @Published private(set) var semesters: [Semester] = []
     @Published private(set) var courses: [Course] = []
     @Published private(set) var currentGPA: Double = 0
@@ -113,8 +116,8 @@ final class CoursesStore: ObservableObject {
 
     func deleteCourse(_ course: Course) {
         courses.removeAll { $0.id == course.id }
-        // Detach other entities via notification so dependent stores can react.
-        NotificationCenter.default.post(name: .courseDeleted, object: nil, userInfo: ["courseId": course.id])
+        // Publish course deleted event via Combine for subscribers
+        courseDeleted.send(course.id)
         persist()
         recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
@@ -276,6 +279,11 @@ final class CoursesStore: ObservableObject {
     }
 }
 
-extension Notification.Name {
-    static let courseDeleted = Notification.Name("courseDeleted")
+// Combine publisher replaces brittle NotificationCenter bridges
+extension CoursesStore {
+    // Emits courseId when a course is removed
+    static var courseDeletedPublisher: AnyPublisher<UUID, Never> {
+        guard let s = CoursesStore.shared else { return Empty<UUID, Never>().eraseToAnyPublisher() }
+        return s.courseDeleted.eraseToAnyPublisher()
+    }
 }

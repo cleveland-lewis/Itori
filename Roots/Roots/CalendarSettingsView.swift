@@ -6,7 +6,7 @@ struct CalendarSettingsView: View {
     @State private var showingRevokeAlert = false
 
     private var isAuthorized: Bool {
-        calendarManager.eventAuthorizationStatus == .authorized || calendarManager.eventAuthorizationStatus == .fullAccess
+        calendarManager.eventAuthorizationStatus == .fullAccess || calendarManager.eventAuthorizationStatus == .writeOnly
     }
 
     var body: some View {

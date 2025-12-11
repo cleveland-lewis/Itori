@@ -145,7 +145,8 @@ struct CourseAnalytics: Hashable {
     var hoursStudied: Double = 24.5
 
     var completionRate: Double {
-        Double(assignmentsCompleted) / Double(assignmentsTotal)
+        guard assignmentsTotal > 0 else { return 0 }
+        return Double(assignmentsCompleted) / Double(assignmentsTotal)
     }
 }
 

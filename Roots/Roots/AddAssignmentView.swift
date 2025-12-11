@@ -20,9 +20,10 @@ struct AddAssignmentView: View {
 
     var onSave: (AppTask) -> Void
 
-    init(initialType: TaskType = .project, onSave: @escaping (AppTask) -> Void) {
+    init(initialType: TaskType = .project, preselectedCourseId: UUID? = nil, onSave: @escaping (AppTask) -> Void) {
         self.onSave = onSave
         self._type = State(initialValue: initialType)
+        self._selectedCourseId = State(initialValue: preselectedCourseId)
     }
 
     private var isSaveDisabled: Bool {
