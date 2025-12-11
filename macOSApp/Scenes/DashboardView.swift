@@ -22,6 +22,7 @@ struct DashboardView: View {
         ScrollView {
             GeometryReader { geo in
                 let spacing: CGFloat = DesignSystem.Layout.spacing.medium
+                let columnWidth = max(0, (geo.size.width - spacing) / 2)
 
                 HStack(alignment: .top, spacing: spacing) {
                     VStack(alignment: .leading, spacing: spacing) {
@@ -35,7 +36,7 @@ struct DashboardView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .animateEntry(isLoaded: isLoaded, index: 2)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(width: columnWidth, alignment: .leading)
 
                     VStack(alignment: .leading, spacing: spacing) {
                         clockCard
@@ -48,7 +49,7 @@ struct DashboardView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .animateEntry(isLoaded: isLoaded, index: 5)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(width: columnWidth, alignment: .leading)
                 }
                 .padding(.horizontal, DesignSystem.Layout.padding.window)
                 .padding(.vertical, DesignSystem.Layout.spacing.medium)
