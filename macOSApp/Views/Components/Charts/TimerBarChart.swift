@@ -31,7 +31,7 @@ struct TimerBarChart: View {
         data.map(\.minutes).max() ?? 0
     }
 
-    private static func defaultTimeFormatter(_ date: Date) -> String {
+    private static nonisolated func defaultTimeFormatter(_ date: Date) -> String {
         let f = DateFormatter()
         f.dateFormat = "ha"
         return f.string(from: date)
