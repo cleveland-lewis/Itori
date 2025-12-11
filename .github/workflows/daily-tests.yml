@@ -1,0 +1,110 @@
+name: Daily Test Suite
+
+on:
+  schedule:
+    # Runs every day at 09:00 UTC; adjust as needed
+    - cron: "0 9 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  test:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "16.0"
+
+      - name: Run unit tests
+        id: run_tests
+        run: |
+          set -o pipefail
+          # Example: adapt this to your scheme / destination
+          xcodebuild \
+            -project RootsApp.xcodeproj \
+            -scheme Roots \
+            -sdk macosx \
+            -destination "platform=macOS" \
+            test | tee xcodebuild_daily_tests.log
+
+      - name: Upload test log artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-daily-tests-log
+          path: xcodebuild_daily_tests.log
+
+      - name: Mark failure status
+        if: failure()
+        run: echo "TESTS_FAILED=true" >> $GITHUB_ENV
+
+  create_failure_issue:
+    needs: test
+    runs-on: ubuntu-latest
+    if: needs.test.result == "failure"
+
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract short commit info
+        id: meta
+        run: |
+          echo "SHA_SHORT=${GITHUB_SHA::7}" >> $GITHUB_ENV
+          echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+      - name: Create or update failure issue
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const repo = context.repo;
+            const branch = process.env.BRANCH_NAME || "unknown";
+            const shaShort = process.env.SHA_SHORT || context.sha.substring(0,7);
+            const today = new Date().toISOString().split("T")[0];
+
+            const title = `[CI] Daily tests failing on ${branch}`;
+            const bodyHeader = `
+            Daily test run failed.
+
+            - Date: ${today}
+            - Branch: ${branch}
+            - Commit: ${shaShort}
+            - Workflow: ${context.workflow}
+            - Run: ${context.runNumber}
+            - URL: ${context.serverUrl}/${repo.owner}/${repo.repo}/actions/runs/${context.runId}
+            `;
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: repo.owner,
+              repo: repo.repo,
+              state: "open",
+              labels: "ci,daily-tests"
+            });
+
+            const existing = issues.find(i => i.title === title);
+
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner: repo.owner,
+                repo: repo.repo,
+                issue_number: existing.number,
+                body: `Another failure occurred:\n${bodyHeader}`
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: repo.owner,
+                repo: repo.repo,
+                title,
+                body: `${bodyHeader}\n\nLabels: \`ci\`, \`daily-tests\``,
+                labels: ["ci", "daily-tests"]
+              });
+            }
