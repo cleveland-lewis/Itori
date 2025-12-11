@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    # Run once per day at 07:00 UTC (~2am Eastern)
     - cron: "0 7 * * *"
 
 jobs:
@@ -22,10 +21,43 @@ jobs:
         with:
           xcode-version: latest-stable
 
+      - name: Install dependencies
+        run: |
+          gem install --no-document xcpretty
+
       - name: Build and Test
+        id: build
         run: |
           set -o pipefail
-          xcodebuild \
-            -scheme "Roots" \
-            -destination "platform=macOS" \
-            clean test
+          LOG_FILE="$GITHUB_WORKSPACE/xcodebuild.log"
+          JUNIT_FILE="$GITHUB_WORKSPACE/tests.xml"
+          if [ -f "Roots.xcworkspace" ]; then
+            xcodebuild -workspace "Roots.xcworkspace" -scheme "Roots" -destination "platform=macOS" clean test | tee "$LOG_FILE" | xcpretty -r junit --output "$JUNIT_FILE"
+          elif [ -f "Roots.xcodeproj" ]; then
+            xcodebuild -project "Roots.xcodeproj" -scheme "Roots" -destination "platform=macOS" clean test | tee "$LOG_FILE" | xcpretty -r junit --output "$JUNIT_FILE"
+          else
+            echo "No Roots.xcworkspace or Roots.xcodeproj found in repo root" >&2
+            ls -la
+            exit 1
+          fi
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-logs
+          path: |
+            ${{ github.workspace }}/xcodebuild.log
+            ${{ github.workspace }}/tests.xml
+
+      - name: Fail on test failures
+        if: always()
+        run: |
+          if [ -f "$GITHUB_WORKSPACE/tests.xml" ]; then
+            if grep -q "failures=\"0\"" "$GITHUB_WORKSPACE/tests.xml"; then
+              echo "No test failures"
+            else
+              echo "Tests reported failures"
+              exit 1
+            fi
+          fi
