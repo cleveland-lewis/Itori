@@ -44,7 +44,9 @@ struct SettingsPane_Interface: View {
                             Text(radius.label).tag(radius)
                         }
                     }
+                    #if os(macOS)
                     .pickerStyle(.radioGroup)
+                    #endif
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Animation softness")

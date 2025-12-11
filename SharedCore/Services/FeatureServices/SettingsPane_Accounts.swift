@@ -21,6 +21,10 @@ struct SettingsPane_Accounts: View {
 
     private func openSystemSettings() {
         guard let url = URL(string: "x-apple.systempreferences:") else { return }
+        #if os(macOS)
         NSWorkspace.shared.open(url)
+        #else
+        UIApplication.shared.open(url)
+        #endif
     }
 }

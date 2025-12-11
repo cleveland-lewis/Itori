@@ -8,6 +8,13 @@ import UIKit
 // Map NSColor to UIColor for cross-platform compatibility
 public typealias NSColor = UIColor
 
+// Allow constructing SwiftUI Color from an NSColor-like initializer used in shared code
+public extension Color {
+    init(nsColor: NSColor) {
+        self.init(nsColor)
+    }
+} 
+
 // Provide commonly used NSColor-like static properties used in code
 public extension NSColor {
     static var controlAccentColor: NSColor { UIColor.systemBlue }
@@ -21,14 +28,18 @@ public extension NSColor {
 }
 
 public struct LocalTimerSession: Identifiable, Codable, Hashable {
+    public enum Mode: String, Codable, Hashable {
+        case work, breakMode = "break", other
+    }
+
     public let id: UUID
     public var activityID: UUID
-    public var mode: String
+    public var mode: Mode
     public var startDate: Date
     public var endDate: Date?
     public var duration: TimeInterval
 
-    public init(id: UUID = UUID(), activityID: UUID, mode: String = "", startDate: Date, endDate: Date? = nil, duration: TimeInterval = 0) {
+    public init(id: UUID = UUID(), activityID: UUID, mode: Mode = .other, startDate: Date, endDate: Date? = nil, duration: TimeInterval = 0) {
         self.id = id
         self.activityID = activityID
         self.mode = mode
