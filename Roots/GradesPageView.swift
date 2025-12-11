@@ -767,6 +767,118 @@ struct EditTargetGradeSheet: View {
     }
 }
 
+// MARK: - GPA Breakdown Card
+
+struct GPABreakdownCard: View {
+    var currentGPA: Double
+    var academicYearGPA: Double
+    var cumulativeGPA: Double
+    var isLoading: Bool
+    var courseCount: Int
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("GPA Overview")
+                .font(.system(size: 14, weight: .semibold))
+            
+            if isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.vertical, 20)
+            } else {
+                VStack(alignment: .leading, spacing: 8) {
+                    GPARow(label: "Current Semester", value: currentGPA)
+                    Divider()
+                    GPARow(label: "Academic Year", value: academicYearGPA)
+                    Divider()
+                    GPARow(label: "Cumulative", value: cumulativeGPA)
+                }
+                
+                Text("\(courseCount) active courses")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .padding(.top, 4)
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(.thinMaterial)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+        )
+    }
+}
+
+struct GPARow: View {
+    var label: String
+    var value: Double
+    
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.subheadline)
+            Spacer()
+            Text(String(format: "%.2f", value))
+                .font(.subheadline.weight(.semibold))
+        }
+    }
+}
+
+// MARK: - AddGradeSheet
+
+struct AddGradeSheet: View {
+    var assignments: [AppTask]
+    var courses: [GradeCourseSummary]
+    var onSave: (AppTask) -> Void
+    
+    @Environment(\.dismiss) private var dismiss
+    @State private var selectedTask: AppTask? = nil
+    @State private var earnedPoints: String = ""
+    @State private var possiblePoints: String = ""
+    
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Select Assignment") {
+                    Picker("Assignment", selection: $selectedTask) {
+                        Text("Choose...").tag(AppTask?.none)
+                        ForEach(assignments) { task in
+                            Text(task.title).tag(Optional(task))
+                        }
+                    }
+                }
+                
+                Section("Grade") {
+                    TextField("Points Earned", text: $earnedPoints)
+                        .textFieldStyle(.roundedBorder)
+                    TextField("Points Possible", text: $possiblePoints)
+                        .textFieldStyle(.roundedBorder)
+                }
+            }
+            .navigationTitle("Add Grade")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        guard var task = selectedTask,
+                              let earned = Double(earnedPoints),
+                              let possible = Double(possiblePoints) else { return }
+                        task.gradeEarnedPoints = earned
+                        task.gradePossiblePoints = possible
+                        onSave(task)
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+}
+
 // MARK: - Samples
 
 private extension GradesPageView {

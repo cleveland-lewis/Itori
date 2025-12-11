@@ -163,6 +163,15 @@ final class CoursesStore: ObservableObject {
         return semesters.filter { !$0.isArchived && $0.deletedAt == nil && $0.startDate > now }.sorted { $0.startDate < $1.startDate }
     }
 
+    // MARK: - GPA Calculation
+    
+    @Published private(set) var currentGPA: Double = 0.0
+    
+    func recalcGPA(tasks: [AppTask]) {
+        let activeCoursesList = activeCourses
+        currentGPA = GradeCalculator.calculateGPA(courses: activeCoursesList, tasks: tasks)
+    }
+
     // MARK: - Persistence
 
     private struct PersistedData: Codable {
