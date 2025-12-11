@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct TimerControlsView: View {
@@ -128,3 +129,4 @@ struct TimerControlsView: View {
         viewModel.sessionRemaining = 0
     }
 }
+#endif

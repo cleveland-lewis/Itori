@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import EventKit
 import Foundation
@@ -659,3 +660,4 @@ struct StaticMonthCalendarView: View {
         return Array(0..<adjusted)
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct RootDesignPreviewPage: View {
@@ -95,4 +96,5 @@ private struct ColorSwatch: View {
 #Preview {
     RootDesignPreviewPage()
 }
+#endif
 #endif

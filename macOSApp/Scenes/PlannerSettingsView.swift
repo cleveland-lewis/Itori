@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct PlannerSettingsView: View {
@@ -38,3 +39,4 @@ struct PlannerSettingsView: View {
         .formStyle(.grouped)
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 // Adapt DataManager to the existing CoursesStore so the view can reuse the same semantics.
@@ -263,3 +264,4 @@ struct SemesterEditorView: View {
         dismiss()
     }
 }
+#endif

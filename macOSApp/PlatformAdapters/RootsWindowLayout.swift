@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 /// Minimal app window layout helper used by screens to provide stable sizes and background.
@@ -19,3 +20,4 @@ public struct RootsWindowLayout<Content: View>: View {
         }
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct AddSemesterSheet: View {
@@ -88,3 +89,4 @@ struct AddSemesterSheet: View {
         .frame(width: 420)
     }
 }
+#endif

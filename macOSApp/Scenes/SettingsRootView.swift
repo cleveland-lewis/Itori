@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import Combine
 
@@ -84,3 +85,4 @@ struct SettingsRootView: View {
         .frame(minWidth: 600, minHeight: 400)
     }
 }
+#endif

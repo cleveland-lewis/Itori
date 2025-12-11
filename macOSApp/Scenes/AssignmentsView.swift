@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct AssignmentsView: View {
@@ -150,3 +151,4 @@ struct AssignmentsView_Previews: PreviewProvider {
         AssignmentsView().environmentObject(AssignmentsStore.shared)
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import Combine
 
@@ -1530,3 +1531,4 @@ private struct AssignmentFramePreference: PreferenceKey {
         value.merge(nextValue(), uniquingKeysWith: { $1 })
     }
 }
+#endif

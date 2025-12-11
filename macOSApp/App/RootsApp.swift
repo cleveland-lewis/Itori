@@ -1,3 +1,4 @@
+#if os(macOS)
 //
 //  RootsApp.swift
 //  Roots
@@ -156,3 +157,4 @@ struct RootsApp: App {
         }
     }
 }
+#endif

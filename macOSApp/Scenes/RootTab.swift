@@ -1,3 +1,4 @@
+#if os(macOS)
 import Foundation
 
 enum RootTab: String, CaseIterable, Identifiable {
@@ -40,3 +41,4 @@ enum RootTab: String, CaseIterable, Identifiable {
 
     var logKey: String { title.lowercased().replacingOccurrences(of: " ", with: "") }
 }
+#endif

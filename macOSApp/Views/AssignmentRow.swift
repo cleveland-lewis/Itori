@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct AssignmentRow: View {
@@ -28,4 +29,4 @@ struct AssignmentRow: View {
             }
         }
     }
-}
+}#endif

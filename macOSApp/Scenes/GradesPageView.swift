@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import Combine
 
@@ -787,3 +788,4 @@ private extension GradesPageView {
 
     static var sampleCourseDetails: [CourseGradeDetail] { [] }
 }
+#endif

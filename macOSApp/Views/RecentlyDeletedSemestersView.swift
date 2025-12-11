@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct RecentlyDeletedSemestersView: View {
@@ -52,4 +53,5 @@ struct RecentlyDeletedSemestersView: View {
     RecentlyDeletedSemestersView()
         .environmentObject(CoursesStore())
 }
+#endif
 #endif

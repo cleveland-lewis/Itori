@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import _Concurrency
 
@@ -131,3 +132,4 @@ private struct TabLabelStyleModifier: ViewModifier {
         }
     }
 }
+#endif

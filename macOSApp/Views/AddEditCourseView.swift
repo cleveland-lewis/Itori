@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct AddEditCourseView: View {
@@ -124,3 +125,4 @@ struct AddEditCourseView: View {
         dismiss()
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct TimerHeaderView: View {
@@ -31,3 +32,4 @@ struct TimerHeaderView: View {
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 }
+#endif

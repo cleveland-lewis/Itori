@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct CoursesDashboardRootView: View {
@@ -145,4 +146,5 @@ private extension CoursesDashboardRootView {
         .environmentObject(GradesStore.shared)
         .frame(width: 1200, height: 800)
 }
+#endif
 #endif

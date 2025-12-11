@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct InterfaceSettingsView: View {
@@ -123,4 +124,5 @@ struct InterfaceSettingsView: View {
         .environmentObject(AppPreferences())
         .frame(width: 500, height: 600)
 }
+#endif
 #endif

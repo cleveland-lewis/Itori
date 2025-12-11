@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct ActivityListView: View {
@@ -111,3 +112,4 @@ struct ActivityListView: View {
             .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 }
+#endif

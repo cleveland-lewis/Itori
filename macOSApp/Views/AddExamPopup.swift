@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -105,3 +106,4 @@ struct AddExamPopup: View {
         }
     }
 }
+#endif

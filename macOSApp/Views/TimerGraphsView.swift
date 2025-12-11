@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 #if canImport(Charts)
 import Charts
@@ -110,3 +111,4 @@ private struct HistoryPoint: Identifiable {
         return f.string(from: date)
     }
 }
+#endif

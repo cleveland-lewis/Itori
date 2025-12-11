@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct CalendarDayCell: View {
@@ -121,3 +122,4 @@ struct CalendarDayCell_Previews: PreviewProvider {
         .background(Color.black)
     }
 }
+#endif

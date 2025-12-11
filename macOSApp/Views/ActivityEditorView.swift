@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct ActivityEditorView: View {
@@ -121,3 +122,4 @@ struct ActivityEditorView: View {
         onCancel()
     }
 }
+#endif

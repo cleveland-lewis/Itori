@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import EventKit
 
@@ -88,4 +89,5 @@ struct RemindersSettingsView: View {
         .environmentObject(CalendarManager.shared)
         .frame(width: 500, height: 600)
 }
+#endif
 #endif

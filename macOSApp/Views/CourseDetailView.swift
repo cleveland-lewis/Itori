@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -270,3 +271,4 @@ struct CourseDetailView: View {
         .padding(.vertical, 4)
     }
 }
+#endif

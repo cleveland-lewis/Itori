@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct SettingsView: View {
@@ -121,4 +122,5 @@ private struct DebugSettingsView: View {
 #Preview {
     SettingsView()
 }
+#endif
 #endif

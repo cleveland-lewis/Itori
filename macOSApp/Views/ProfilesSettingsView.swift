@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct ProfilesSettingsView: View {
@@ -217,4 +218,5 @@ struct ProfilesSettingsView: View {
         .environmentObject(AppSettingsModel.shared)
         .frame(width: 500, height: 600)
 }
+#endif
 #endif

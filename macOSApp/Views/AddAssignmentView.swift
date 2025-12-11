@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct AddAssignmentView: View {
@@ -264,3 +265,4 @@ struct AddAssignmentView: View {
         dismiss()
     }
 }
+#endif

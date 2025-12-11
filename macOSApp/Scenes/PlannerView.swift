@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 import EventKit
 
@@ -319,3 +320,4 @@ struct PlannerView_Previews: PreviewProvider {
         PlannerView()
     }
 }
+#endif

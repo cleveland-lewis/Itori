@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct CoursesSettingsView: View {
@@ -184,4 +185,5 @@ struct CourseSettingsRow: View {
         .environmentObject(CoursesStore())
         .frame(width: 500, height: 600)
 }
+#endif
 #endif

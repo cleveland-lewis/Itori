@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct TimerView: View {
@@ -118,3 +119,4 @@ struct TimerView: View {
         return String(format: "%02d:%02d", min, sec)
     }
 }
+#endif

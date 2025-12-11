@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct GradesView: View {
@@ -105,3 +106,4 @@ struct GradesView_Previews: PreviewProvider {
         GradesView()
     }
 }
+#endif

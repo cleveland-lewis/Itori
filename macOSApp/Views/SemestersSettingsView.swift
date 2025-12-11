@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct SemestersSettingsView: View {
@@ -202,4 +203,5 @@ struct SemesterSettingsRow: View {
         .environmentObject(CoursesStore())
         .frame(width: 500, height: 600)
 }
+#endif
 #endif

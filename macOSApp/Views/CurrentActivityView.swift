@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct CurrentActivityView: View {
@@ -69,3 +70,4 @@ struct CurrentActivityView: View {
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
     }
 }
+#endif

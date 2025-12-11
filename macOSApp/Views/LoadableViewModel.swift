@@ -1,3 +1,4 @@
+#if os(macOS)
 import Foundation
 import Combine
 import _Concurrency
@@ -31,3 +32,4 @@ extension LoadableViewModel {
         return try await work()
     }
 }
+#endif

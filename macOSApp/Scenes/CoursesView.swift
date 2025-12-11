@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct CoursesView: View {
@@ -125,3 +126,4 @@ struct CourseCard: View {
         .buttonStyle(.plain)
     }
 }
+#endif
