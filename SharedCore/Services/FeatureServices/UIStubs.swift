@@ -140,11 +140,25 @@ struct FlashcardDashboard: View {
 }
 
 // Calendar shells
-struct CalendarDayView: View { var body: some View { Text("Day") } }
+struct CalendarDayView: View {
+    let date: Date
+    let events: [EKEvent]
+    var onSelectEvent: ((EKEvent) -> Void)?
+    var body: some View { Text("Day: \(date.formatted())") }
+}
 struct CalendarWeekView: View { var body: some View { Text("Week") } }
 struct CalendarYearView: View { var body: some View { Text("Year") } }
 struct CalendarGrid: View { var body: some View { Text("Grid") } }
-struct CalendarHeader: View { var body: some View { Text("Calendar") } }
+struct CalendarHeader: View {
+    @Binding var viewMode: CalendarViewMode
+    @Binding var currentMonth: Date
+    var onPrevious: () -> Void = {}
+    var onNext: () -> Void = {}
+    var onToday: () -> Void = {}
+    var onSearch: ((String) -> Void)? = nil
+
+    var body: some View { Text("Calendar Header") }
+}
 struct AddEventPopup: View { var body: some View { Text("Add Event") } }
 
 // Grades + analytics shells
