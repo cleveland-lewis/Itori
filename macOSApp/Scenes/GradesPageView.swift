@@ -29,17 +29,6 @@ struct CourseGradeDetail: Identifiable, Hashable {
     var notes: String
 }
 
-enum GradeViewSegment: String, CaseIterable, Identifiable {
-    case overall, scenarios
-    var id: String { rawValue }
-
-    var label: String {
-        switch self {
-        case .overall: return "Overall"
-        case .scenarios: return "What-If"
-        }
-    }
-}
 
 // MARK: - Root View
 
@@ -49,7 +38,6 @@ struct GradesPageView: View {
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var gradesStore: GradesStore
 
-    @State private var segment: GradeViewSegment = .overall
     @State private var allCourses: [GradeCourseSummary] = []
     @State private var courseDetails: [CourseGradeDetail] = []
     @State private var selectedCourseDetail: CourseGradeDetail? = nil
@@ -147,13 +135,6 @@ struct GradesPageView: View {
 
             Spacer()
 
-            Picker("Segment", selection: $segment.animation(.spring(response: 0.3, dampingFraction: 0.85))) {
-                ForEach(GradeViewSegment.allCases) { seg in
-                    Text(seg.label).tag(seg)
-                }
-            }
-            .pickerStyle(.segmented)
-            .frame(maxWidth: 220)
 
             TextField("Search courses", text: $searchText)
                 .textFieldStyle(.roundedBorder)
@@ -262,7 +243,7 @@ struct GradesPageView: View {
                         CourseGradeRow(
                             course: course,
                             isSelected: course.id == selectedCourseDetail?.course.id,
-                            isScenarioHighlight: segment == .scenarios && isNearThreshold(course),
+                            isScenarioHighlight: false,
                             onSelect: {
                                 withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) {
                                     selectedCourseDetail = courseDetails.first(where: { $0.course.id == course.id })
@@ -289,8 +270,7 @@ struct GradesPageView: View {
                 get: { selectedCourseDetail },
                 set: { selectedCourseDetail = $0 }
             ),
-            segment: segment,
-            whatIfInput: $whatIfSlider,
+                        whatIfInput: $whatIfSlider,
             onEditTarget: { course in
                 courseToEditTarget = course
                 showEditTargetSheet = true
@@ -590,9 +570,6 @@ struct GradeDetailCard: View {
             VStack(alignment: .leading, spacing: 12) {
                 header(detail.course)
                 components(detail.components)
-                if segment == .scenarios {
-                    whatIf(detail)
-                }
                 Text("Grades are approximations and may differ from your institution's official system.")
                     .font(.footnote)
                     .foregroundColor(.secondary)
