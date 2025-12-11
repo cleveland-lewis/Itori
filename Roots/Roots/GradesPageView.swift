@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 // MARK: - Models
 
@@ -112,7 +113,7 @@ struct GradesPageView: View {
             courseDeletedCancellable = CoursesStore.courseDeletedPublisher
                 .receive(on: DispatchQueue.main)
                 .sink { deletedId in
-                    gradesStore.removeGrade(for: deletedId)
+                    gradesStore.remove(courseId: deletedId)
                     refreshCourses()
                     if let selected = selectedCourseDetail, selected.id == deletedId {
                         selectedCourseDetail = nil

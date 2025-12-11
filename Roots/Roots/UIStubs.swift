@@ -41,3 +41,154 @@ extension View {
         self
     }
 }
+
+
+// MARK: - Missing model + view shells
+
+// Lightweight attachment model used across scheduling and course flows.
+struct Attachment: Codable, Equatable, Hashable, Identifiable {
+    var id: UUID = UUID()
+    var name: String?
+    var localURL: URL?
+    var dateAdded: Date?
+}
+
+/// Simple list view for attachments to unblock builds.
+struct AttachmentListView: View {
+    @Binding var attachments: [Attachment]
+    var courseId: UUID?
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(attachments) { attachment in
+                HStack {
+                    Image(systemName: "paperclip")
+                    Text(attachment.name ?? "Attachment")
+                    Spacer()
+                }
+            }
+            Button {
+                attachments.append(Attachment(name: "New Attachment"))
+            } label: {
+                Label("Add Attachment", systemImage: "plus")
+            }
+        }
+    }
+}
+
+// Flashcard models to satisfy manager usage.
+enum FlashcardDifficulty: String, Codable, CaseIterable {
+    case easy, medium, hard
+}
+
+struct Flashcard: Codable, Identifiable, Hashable {
+    var id: UUID = UUID()
+    var frontText: String
+    var backText: String
+    var difficulty: FlashcardDifficulty
+    var dueDate: Date
+    var repetition: Int = 0
+    var interval: Int = 0
+    var easeFactor: Double = 2.5
+    var lastReviewed: Date? = nil
+}
+
+struct FlashcardDeck: Codable, Identifiable, Hashable {
+    var id: UUID = UUID()
+    var title: String
+    var courseID: UUID?
+    var cards: [Flashcard] = []
+}
+
+// Fan-out menu shell to keep dashboard compiling.
+struct FanOutMenuItem: Identifiable {
+    let id = UUID()
+    let icon: String
+    let title: String
+    let action: () -> Void
+}
+
+struct RootsFanOutMenu: View {
+    let items: [FanOutMenuItem]
+    var body: some View {
+        HStack(spacing: 12) {
+            ForEach(items) { item in
+                Button(action: item.action) {
+                    Label(item.title, systemImage: item.icon)
+                }
+            }
+        }
+    }
+}
+
+struct FlashcardDashboard: View {
+    var body: some View {
+        Text("Flashcards")
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+// Calendar shells
+struct CalendarDayView: View { var body: some View { Text("Day") } }
+struct CalendarWeekView: View { var body: some View { Text("Week") } }
+struct CalendarYearView: View { var body: some View { Text("Year") } }
+struct CalendarGrid: View { var body: some View { Text("Grid") } }
+struct CalendarHeader: View { var body: some View { Text("Calendar") } }
+struct AddEventPopup: View { var body: some View { Text("Add Event") } }
+
+// Grades + analytics shells
+struct GPABreakdownCard: View {
+    var currentGPA: Double
+    var academicYearGPA: Double
+    var cumulativeGPA: Double
+    var isLoading: Bool
+    var courseCount: Int
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("GPA Overview")
+                .font(.headline)
+            Text("Current: \(currentGPA, specifier: "%.2f")")
+            Text("Year: \(academicYearGPA, specifier: "%.2f")")
+            Text("Cumulative: \(cumulativeGPA, specifier: "%.2f")")
+            Text("Courses: \(courseCount)")
+            if isLoading {
+                ProgressView().progressViewStyle(.circular)
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.thinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+}
+
+struct AddGradeSheet: View {
+    var assignments: [AppTask]
+    var courses: [GradeCourseSummary]
+    var onSave: (AppTask) -> Void
+
+    var body: some View {
+        VStack(spacing: 12) {
+            Text("Add Grade")
+                .font(.headline)
+            if let first = assignments.first {
+                Button("Save Sample Grade") {
+                    onSave(first)
+                }
+                .buttonStyle(.borderedProminent)
+            } else {
+                Text("No assignments available yet.")
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding()
+        .frame(minWidth: 320, minHeight: 200)
+    }
+}
+
+// Charts used in timer
+struct CategoryPieChart: View { var body: some View { Text("Category Chart") } }
+struct StudyHistoryBarChart: View { var body: some View { Text("History Chart") } }
+
+// Privacy settings shell
+struct PrivacySettingsView: View { var body: some View { Text("Privacy Settings") } }

@@ -44,6 +44,11 @@ final class GradesStore: ObservableObject {
         save()
     }
 
+    func remove(courseId: UUID) {
+        grades.removeAll { $0.courseId == courseId }
+        save()
+    }
+
     func resetAll() {
         grades.removeAll()
         save()

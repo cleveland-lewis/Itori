@@ -70,7 +70,8 @@ class AttachmentManager {
     /// - Parameter attachment: The attachment to delete
     func deleteFile(for attachment: Attachment) {
         do {
-            try fileManager.removeItem(at: attachment.localURL)
+            guard let url = attachment.localURL else { return }
+            try fileManager.removeItem(at: url)
         } catch {
             print("Error deleting attachment file: \(error)")
         }
@@ -79,15 +80,16 @@ class AttachmentManager {
     /// Checks if the file exists at the given URL
     /// - Parameter url: The URL to check
     /// - Returns: True if the file exists, false otherwise
-    func fileExists(at url: URL) -> Bool {
+    func fileExists(at url: URL?) -> Bool {
+        guard let url = url else { return false }
         return fileManager.fileExists(atPath: url.path)
     }
 
     /// Returns the size of the file in bytes
     /// - Parameter url: The URL of the file
     /// - Returns: The file size in bytes, or nil if it couldn't be determined
-    func fileSize(at url: URL) -> Int64? {
-        guard let attributes = try? fileManager.attributesOfItem(atPath: url.path) else {
+    func fileSize(at url: URL?) -> Int64? {
+        guard let url = url, let attributes = try? fileManager.attributesOfItem(atPath: url.path) else {
             return nil
         }
         return attributes[.size] as? Int64
@@ -97,7 +99,8 @@ class AttachmentManager {
     /// - Parameter attachment: The attachment to open
     func openFile(_ attachment: Attachment) {
         #if os(macOS)
-        NSWorkspace.shared.open(attachment.localURL)
+        guard let url = attachment.localURL else { return }
+        NSWorkspace.shared.open(url)
         #else
         // For iOS, you'd use a document interaction controller or QuickLook
         print("Opening files is primarily supported on macOS")
@@ -108,7 +111,8 @@ class AttachmentManager {
     /// - Parameter attachment: The attachment to reveal
     func revealInFinder(_ attachment: Attachment) {
         #if os(macOS)
-        NSWorkspace.shared.activateFileViewerSelecting([attachment.localURL])
+        guard let url = attachment.localURL else { return }
+        NSWorkspace.shared.activateFileViewerSelecting([url])
         #endif
     }
 }

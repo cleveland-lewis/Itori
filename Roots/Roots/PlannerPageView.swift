@@ -278,8 +278,7 @@ struct PlannerPageView: View {
             // subscribe to planner filter changes
             filterCancellable = plannerCoordinator.$selectedCourseFilter
                 .receive(on: DispatchQueue.main)
-                .sink { [weak self] courseId in
-                    guard let self = self else { return }
+                .sink { courseId in
                     if let cid = courseId {
                         // filter existing views immediately
                         plannedBlocks.removeAll { $0.courseId != nil && $0.courseId != cid }
@@ -293,8 +292,7 @@ struct PlannerPageView: View {
             // subscribe to course deletions
             courseDeletedCancellable = CoursesStore.courseDeletedPublisher
                 .receive(on: DispatchQueue.main)
-                .sink { [weak self] deletedId in
-                    guard let self = self else { return }
+                .sink { deletedId in
                     plannedBlocks.removeAll { $0.courseId == deletedId }
                     unscheduledTasks.removeAll { $0.courseId == deletedId }
                     if plannerCoordinator.selectedCourseFilter == deletedId {
