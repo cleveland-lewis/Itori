@@ -7,11 +7,11 @@ import _Concurrency
 protocol LoadableViewModel: AnyObject, ObservableObject {
     var isLoading: Bool { get set }
     var loadingMessage: String? { get set }
-    var objectWillChange: ObservableObjectPublisher { get }
+    nonisolated var objectWillChange: ObservableObjectPublisher { get }
 }
 
 extension LoadableViewModel {
-    var objectWillChange: ObservableObjectPublisher { ObservableObjectPublisher() }
+    nonisolated var objectWillChange: ObservableObjectPublisher { ObservableObjectPublisher() }
 
     func withLoading<T>(
         message: String? = nil,
