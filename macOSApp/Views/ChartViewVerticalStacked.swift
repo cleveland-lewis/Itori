@@ -13,8 +13,16 @@ struct ChartViewVerticalStacked: View {
     @State private var hoveredPoint: ChartPoint? = nil
     @State private var hoveredPointLocation: CGPoint? = nil
     @State private var focusedBucketIndex: Int? = nil
+    @AppStorage("chartLegendExpanded") private var isLegendExpanded: Bool = true
 
     var body: some View {
+        VStack(spacing: DesignSystem.Layout.spacing.small) {
+            chartContentView
+            legendView
+        }
+    }
+    
+    private var chartContentView: some View {
         // Use the simple manual renderer with hover highlighting and animation to ensure stable builds
         ManualStackedView(buckets: buckets, categoryColors: categoryColors, hoveredPoint: hoveredPoint, showLabels: showLabels)
             .frame(maxHeight: 320)
@@ -47,6 +55,51 @@ struct ChartViewVerticalStacked: View {
                 default: break
                 }
             }
+    }
+    
+    private var legendView: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.tiny) {
+            HStack {
+                Text("Categories")
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Button(action: { withAnimation(.easeInOut(duration: 0.2)) { isLegendExpanded.toggle() } }) {
+                    Image(systemName: isLegendExpanded ? "chevron.up.circle.fill" : "chevron.down.circle.fill")
+                        .font(.system(size: 14))
+                        .foregroundStyle(.secondary)
+                        .symbolRenderingMode(.hierarchical)
+                }
+                .buttonStyle(.plain)
+                .help(isLegendExpanded ? "Collapse legend" : "Expand legend")
+            }
+            
+            if isLegendExpanded {
+                let categories = categoryColors.keys.sorted()
+                let columns = [GridItem(.adaptive(minimum: 100, maximum: 150), spacing: DesignSystem.Layout.spacing.small)]
+                LazyVGrid(columns: columns, alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+                    ForEach(categories, id: \.self) { category in
+                        HStack(spacing: 4) {
+                            Circle()
+                                .fill(categoryColors[category] ?? .gray)
+                                .frame(width: 8, height: 8)
+                            Text(category)
+                                .font(.caption)
+                                .foregroundStyle(.primary)
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(
+                            RoundedRectangle(cornerRadius: 6)
+                                .fill(Color(.controlBackgroundColor).opacity(0.5))
+                        )
+                    }
+                }
+                .transition(.opacity.combined(with: .scale(scale: 0.95, anchor: .top)))
+            }
+        }
+        .padding(.horizontal, DesignSystem.Layout.padding.card)
+        .padding(.vertical, DesignSystem.Layout.spacing.small)
     }
 
     init(buckets: [AnalyticsBucket], categoryColors: [String: Color], showLabels: Bool = true) {

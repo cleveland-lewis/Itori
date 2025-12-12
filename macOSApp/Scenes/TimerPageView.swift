@@ -93,6 +93,7 @@ struct TimerPageView: View {
     @State private var searchText: String = ""
     @State private var selectedCollection: String = "All"
     @State private var focusWindowController: NSWindowController? = nil
+    @State private var focusWindowDelegate: FocusWindowDelegate? = nil
 
     private let cardCorner: CGFloat = 24
     private var timerCancellable: AnyCancellable?
@@ -408,8 +409,17 @@ struct TimerPageView: View {
         window.center()
         window.title = "Focus"
         window.isReleasedWhenClosed = false
-        window.delegate = FocusWindowDelegate { focusWindowController = nil }
-        window.makeKeyAndOrderFront(nil as Any?)
+        
+        // Create and store delegate with strong reference to prevent deallocation
+        let delegate = FocusWindowDelegate()
+        delegate.onWindowWillClose = { [weak self] in
+            self?.focusWindowController = nil
+            self?.focusWindowDelegate = nil
+        }
+        window.delegate = delegate
+        focusWindowDelegate = delegate
+        
+        window.makeKeyAndOrderFront(nil)
         focusWindowController = NSWindowController(window: window)
     }
 
@@ -1250,4 +1260,25 @@ private extension View {
 private extension TimerPageView {
     static var sampleActivities: [LocalTimerActivity] { [] }
 }
+
+// MARK: - Focus Window Delegate
+
+/// Delegate for managing focus window lifecycle.
+/// Stored as a strong reference to prevent premature deallocation.
+#if os(macOS)
+import AppKit
+
+class FocusWindowDelegate: NSObject, NSWindowDelegate {
+    var onWindowWillClose: (() -> Void)?
+    
+    func windowWillClose(_ notification: Notification) {
+        onWindowWillClose?()
+    }
+    
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        return true
+    }
+}
+#endif
+
 #endif
