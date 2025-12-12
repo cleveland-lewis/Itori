@@ -38,7 +38,7 @@ struct DayDetailSidebar: View {
                     .frame(maxWidth: .infinity)
                     .padding(.top, 40)
                 } else {
-                    LazyVStack(spacing: 10) {
+                    LazyVStack(spacing: 12) {
                         ForEach(events) { event in
                             Button {
                                 onSelectEvent(event)
@@ -49,13 +49,27 @@ struct DayDetailSidebar: View {
                                         .frame(width: 6)
                                         .cornerRadius(2)
 
-                                    VStack(alignment: .leading, spacing: 4) {
+                                    VStack(alignment: .leading, spacing: 6) {
                                         Text(event.title)
-                                            .font(.body)
+                                            .font(.body.weight(.semibold))
                                             .foregroundStyle(.primary)
+                                            .lineLimit(2)
+                                        
                                         Text(timeRange(for: event))
                                             .font(.caption)
                                             .foregroundStyle(.secondary)
+                                        
+                                        if let location = event.location, !location.isEmpty {
+                                            HStack(spacing: 4) {
+                                                Image(systemName: "mappin.circle.fill")
+                                                    .font(.caption2)
+                                                    .foregroundStyle(.tertiary)
+                                                Text(location)
+                                                    .font(.caption2)
+                                                    .foregroundStyle(.tertiary)
+                                            }
+                                            .lineLimit(1)
+                                        }
                                     }
                                     Spacer()
                                 }
