@@ -27,10 +27,7 @@ struct TodayStudyStackedBarChart: View {
     }
 
     private func deterministicColor(for key: String) -> Color {
-        var hash = 5381
-        for c in key.unicodeScalars { hash = ((hash << 5) &+ hash) &+ Int(c.value) }
-        let hue = Double((hash % 360)) / 360.0
-        return Color(hue: hue, saturation: 0.45, brightness: 0.75)
+        CourseColorPalette.color(for: key)
     }
 
     var body: some View {
