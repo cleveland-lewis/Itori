@@ -220,6 +220,7 @@ struct AssignmentsPageView: View {
     @EnvironmentObject private var settings: AppSettings
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
+    @EnvironmentObject private var appModel: AppModel
 
     @State private var assignments: [Assignment] = []
     @State private var courseDeletedCancellable: AnyCancellable? = nil
@@ -285,6 +286,11 @@ struct AssignmentsPageView: View {
                         selectedAssignment = nil
                     }
                 }
+        }
+        .onChange(of: appModel.requestedAssignmentDueDate) { dueDate in
+            guard let dueDate else { return }
+            focusAssignment(closestTo: dueDate)
+            appModel.requestedAssignmentDueDate = nil
         }
     }
 
@@ -582,38 +588,38 @@ struct AssignmentsPageView: View {
         }
 
         for assignment in targetAssignments {
-            // Use category profile to compute suggested sessions
             let defaultProfile = assignment.category.effortProfile
             var profile = defaultProfile
-            // Allow settings override if present
             if let stored = AppSettingsModel.shared.categoryEffortProfilesStorage[assignment.category.rawValue] {
-                profile = CategoryEffortProfile(baseMinutes: stored.baseMinutes, minSessions: stored.minSessions, spreadDaysBeforeDue: stored.spreadDaysBeforeDue, sessionBias: EffortBias(rawValue: stored.sessionBiasRaw) ?? defaultProfile.sessionBias)
+                profile = CategoryEffortProfile(
+                    baseMinutes: stored.baseMinutes,
+                    minSessions: stored.minSessions,
+                    spreadDaysBeforeDue: stored.spreadDaysBeforeDue,
+                    sessionBias: EffortBias(rawValue: stored.sessionBiasRaw) ?? defaultProfile.sessionBias
+                )
             }
 
             var totalMinutes = assignment.estimatedMinutes
-            // If estimated is the generic 60 (or zero), override with profile base
             if totalMinutes == 0 || totalMinutes == 60 {
                 totalMinutes = profile.baseMinutes
             }
             let suggestedLen = suggestedSessionLength(profile.sessionBias)
             let computedSessions = max(profile.minSessions, Int(round(Double(totalMinutes) / Double(suggestedLen))))
-            // Spread sessions across days before due date
             let days = max(1, profile.spreadDaysBeforeDue)
             print("Auto-plan for '\(assignment.title)': Typical: \(computedSessions) × \(suggestedLen) min across \(days) days (category: \(assignment.category.displayName))")
 
             // TODO: integrate with Planner engine to actually schedule SuggestedBlocks
         }
     }
-}
 
-private func ensurePlan(_ assignment: Assignment) -> Assignment {
-    if assignment.plan.isEmpty {
-        var updated = assignment
-        updated.plan = Assignment.defaultPlan(for: assignment.category, due: assignment.dueDate, totalMinutes: assignment.estimatedMinutes)
-        return updated
+    private func ensurePlan(_ assignment: Assignment) -> Assignment {
+        if assignment.plan.isEmpty {
+            var updated = assignment
+            updated.plan = Assignment.defaultPlan(for: assignment.category, due: assignment.dueDate, totalMinutes: assignment.estimatedMinutes)
+            return updated
+        }
+        return assignment
     }
-    return assignment
-}
 
 // MARK: - Summary Cards
 
@@ -648,6 +654,18 @@ struct TodaySummaryCard: View {
                     }
                 }
             }
+        }
+    }
+
+    private func focusAssignment(closestTo dueDate: Date) {
+        let sorted = assignments
+            .filter { $0.status != .archived }
+            .sorted { $0.dueDate < $1.dueDate }
+        guard !sorted.isEmpty else { return }
+        if let match = sorted.first(where: { $0.dueDate >= dueDate }) {
+            selectedAssignment = match
+        } else {
+            selectedAssignment = sorted.first
         }
     }
 }

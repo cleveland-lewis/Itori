@@ -5,6 +5,7 @@ final class AppModel: ObservableObject {
     static let shared = AppModel()
 
     @Published var selectedPage: AppPage = .dashboard
+    @Published var requestedAssignmentDueDate: Date? = nil
     @Published var isPresentingAddHomework: Bool = false
     @Published var isPresentingAddExam: Bool = false
 

@@ -10,6 +10,8 @@ struct DashboardView: View {
     @EnvironmentObject private var calendarManager: CalendarManager
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var coursesStore: CoursesStore
+    @EnvironmentObject private var gradesStore: GradesStore
+    @EnvironmentObject private var appModel: AppModel
     @State private var isLoaded = false
     @State private var cancellables: Set<AnyCancellable> = []
     @State private var todayBounce = false
@@ -17,45 +19,78 @@ struct DashboardView: View {
     @State private var selectedDate: Date = Date()
     @State private var tasks: [DashboardTask] = []
     @State private var events: [DashboardEvent] = []
+    @State private var showAddAssignmentSheet = false
+    @State private var showAddGradeSheet = false
+    @State private var showAddEventSheet = false
+    @State private var showAddTaskSheet = false
 
     var body: some View {
         ScrollView {
-            GeometryReader { geo in
-                let spacing: CGFloat = DesignSystem.Layout.spacing.medium
-                let columnWidth = max(0, (geo.size.width - spacing) / 2)
+            VStack(spacing: DesignSystem.Layout.spacing.medium) {
+                dashboardHeader
+                    .padding(.horizontal, DesignSystem.Layout.padding.window)
 
-                HStack(alignment: .top, spacing: spacing) {
-                    VStack(alignment: .leading, spacing: spacing) {
-                        todayCard
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .animateEntry(isLoaded: isLoaded, index: 0)
-                        eventsCard
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .animateEntry(isLoaded: isLoaded, index: 1)
-                        calendarCard
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .animateEntry(isLoaded: isLoaded, index: 2)
-                    }
-                    .frame(width: columnWidth, alignment: .leading)
+                GeometryReader { geo in
+                    let spacing: CGFloat = DesignSystem.Layout.spacing.medium
+                    let columnWidth = max(0, (geo.size.width - spacing) / 2)
 
-                    VStack(alignment: .leading, spacing: spacing) {
-                        clockCard
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .animateEntry(isLoaded: isLoaded, index: 3)
-                        assignmentsCard
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .animateEntry(isLoaded: isLoaded, index: 4)
-                        energyCard
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .animateEntry(isLoaded: isLoaded, index: 5)
+                    HStack(alignment: .top, spacing: spacing) {
+                        VStack(alignment: .leading, spacing: spacing) {
+                            todayCard
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .animateEntry(isLoaded: isLoaded, index: 0)
+                            eventsCard
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .animateEntry(isLoaded: isLoaded, index: 1)
+                            calendarCard
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .animateEntry(isLoaded: isLoaded, index: 2)
+                        }
+                        .frame(width: columnWidth, alignment: .leading)
+
+                        VStack(alignment: .leading, spacing: spacing) {
+                            clockCard
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .animateEntry(isLoaded: isLoaded, index: 3)
+                            assignmentsCard
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .animateEntry(isLoaded: isLoaded, index: 4)
+                            energyCard
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .animateEntry(isLoaded: isLoaded, index: 5)
+                        }
+                        .frame(width: columnWidth, alignment: .leading)
                     }
-                    .frame(width: columnWidth, alignment: .leading)
+                    .padding(.horizontal, DesignSystem.Layout.padding.window)
+                    .padding(.vertical, DesignSystem.Layout.spacing.medium)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
                 }
-                .padding(.horizontal, DesignSystem.Layout.padding.window)
-                .padding(.vertical, DesignSystem.Layout.spacing.medium)
-                .frame(maxWidth: .infinity, alignment: .topLeading)
+                .frame(minHeight: 0)
             }
-            .frame(minHeight: 0)
+        }
+        .sheet(isPresented: $showAddAssignmentSheet) {
+            AddAssignmentView(initialType: .practiceHomework) { task in
+                assignmentsStore.addTask(task)
+            }
+            .environmentObject(coursesStore)
+        }
+        .sheet(isPresented: $showAddTaskSheet) {
+            AddAssignmentView(initialType: .project) { task in
+                assignmentsStore.addTask(task)
+            }
+            .environmentObject(coursesStore)
+        }
+        .sheet(isPresented: $showAddGradeSheet) {
+            AddGradeSheet(
+                assignments: assignmentsStore.tasks,
+                courses: gradeCourseSummaries
+            ) { task in
+                LOG_UI(.info, "Dashboard", "Add Grade saved sample for \(task.title)")
+            }
+        }
+        .sheet(isPresented: $showAddEventSheet) {
+            AddEventPopup()
+                .environmentObject(calendarManager)
         }
         .onAppear {
             isLoaded = true
@@ -85,6 +120,75 @@ struct DashboardView: View {
         .onChange(of: calendarManager.selectedCalendarID) { _, _ in
             syncEvents()
         }
+    }
+
+    private var dashboardHeader: some View {
+        RootsCard(compact: true) {
+            HStack(spacing: DesignSystem.Layout.spacing.small) {
+                headerActionButton("Add Assignment", icon: "doc.badge.plus") {
+                    showAddAssignmentSheet = true
+                }
+                headerActionButton("Next Assignment", icon: "arrow.right.circle") {
+                    triggerNextAssignment()
+                }
+                headerActionButton("Add Grade", icon: "chart.bar.doc.horizontal") {
+                    showAddGradeSheet = true
+                }
+                headerActionButton("Add Event", icon: "calendar.badge.plus") {
+                    showAddEventSheet = true
+                }
+                headerActionButton("Add Task", icon: "list.bullet.rectangle") {
+                    showAddTaskSheet = true
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func headerActionButton(_ label: String, icon: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Label(label, systemImage: icon)
+                .font(.subheadline.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+        }
+        .buttonStyle(.glassBlueProminent)
+        .controlSize(.large)
+    }
+
+    private func triggerNextAssignment() {
+        let today = Calendar.current.startOfDay(for: Date())
+        let upcoming = assignmentsStore.tasks
+            .filter { !$0.isCompleted }
+            .compactMap { task -> (task: AppTask, due: Date)? in
+                guard let due = task.due else { return nil }
+                return (task, due)
+            }
+            .sorted { $0.due < $1.due }
+
+        let candidateDue = upcoming.first(where: { $0.due >= today })?.due ?? upcoming.first?.due
+        appModel.selectedPage = .assignments
+        appModel.requestedAssignmentDueDate = candidateDue
+    }
+
+    private var gradeCourseSummaries: [GradeCourseSummary] {
+        coursesStore.activeCourses.map { course in
+            let grade = gradesStore.grade(for: course.id)
+            return GradeCourseSummary(
+                id: course.id,
+                courseCode: course.code,
+                courseTitle: course.title,
+                currentPercentage: grade?.percent,
+                targetPercentage: nil,
+                letterGrade: grade?.letter,
+                creditHours: Int(course.credits ?? 0),
+                colorTag: gradeColor(for: course.colorHex)
+            )
+        }
+    }
+
+    private func gradeColor(for hex: String?) -> Color {
+        (CoursesPageModel.ColorTag.fromHex(hex) ?? .blue).color
     }
 
     private var todayCard: some View {

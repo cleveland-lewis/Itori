@@ -8,6 +8,7 @@ struct ContentView: View {
     @EnvironmentObject var coursesStore: CoursesStore
     @EnvironmentObject var settingsCoordinator: SettingsCoordinator
     @EnvironmentObject var plannerCoordinator: PlannerCoordinator
+    @EnvironmentObject private var appModel: AppModel
     @State private var selectedTab: RootTab = .dashboard
     @State private var settingsRotation: Double = 0
     @Environment(\.colorScheme) private var colorScheme
@@ -56,7 +57,7 @@ struct ContentView: View {
                         items: RootTab.allCases,
                         selected: $selectedTab,
                         mode: settings.tabBarMode,
-                        onSelect: { _ in }
+                        onSelect: handleTabSelection
                     )
                     .frame(height: 72)
                     .frame(maxWidth: 640)
@@ -76,10 +77,18 @@ struct ContentView: View {
                     win.titlebarAppearsTransparent = true
                 }
             }
+            if let initialTab = RootTab(rawValue: appModel.selectedPage.rawValue) {
+                selectedTab = initialTab
+            }
         }
         .onChange(of: plannerCoordinator.requestedCourseId) { courseId in
             selectedTab = .planner
             plannerCoordinator.selectedCourseFilter = courseId
+        }
+        .onReceive(appModel.$selectedPage) { page in
+            if let tab = RootTab(rawValue: page.rawValue), selectedTab != tab {
+                selectedTab = tab
+            }
         }
         #if os(macOS)
         .onKeyDown { event in
@@ -184,6 +193,13 @@ struct ContentView: View {
         case .open_new_note:
             LOG_UI(.info, "QuickAction", "Open New Note")
             break
+        }
+    }
+
+    private func handleTabSelection(_ tab: RootTab) {
+        selectedTab = tab
+        if let page = AppPage(rawValue: tab.rawValue), appModel.selectedPage != page {
+            appModel.selectedPage = page
         }
     }
 
