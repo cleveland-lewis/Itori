@@ -84,78 +84,106 @@ struct CalendarPageView: View {
 
     private let calendar = Calendar.current
 
+    @State private var chevronLeftHover = false
+    @State private var chevronRightHover = false
+    @State private var todayHover = false
+
     var body: some View {
         VStack(spacing: 20) {
-            // 1. Top Stats Row
-            CalendarStatsRow()
-                .frame(height: 100)
+            // Header: Add button, Title, View selector, Navigation
+            HStack(alignment: .center, spacing: DesignSystem.Layout.spacing.medium) {                Button {
+                    showingNewEventSheet = true
+                } label: {
+                    Image(systemName: "plus")
+                        .font(.system(size: 14, weight: .semibold))
+                        .frame(width: 36, height: 36)
+                        .background(DesignSystem.Materials.hud.opacity(0.75), in: Circle())
+                }
+                .buttonStyle(.plain)
+                .rootsStandardInteraction()
 
-            // 2. Main Content Area
-            HStack(spacing: 20) {
-                // Left: Selected Day Details
-                if let _ = calendarManager.selectedDate ?? selectedDate {
-                    DayDetailSidebar(
-                        date: calendarManager.selectedDate ?? focusedDate,
-                        events: events(on: calendarManager.selectedDate ?? focusedDate),
-                        onSelectEvent: { event in
-                            // Animate sidebar out and then present event detail
-                            withAnimation(.easeInOut(duration: 0.22)) {
-                                // temporarily clear selectedDate to collapse sidebar
-                                selectedDate = nil
-                            }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
-                                withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                                    selectedEvent = event
-                                }
-                            }
+                VStack(alignment: .leading, spacing: 2) {
+                    // Large title driven by current view mode
+                    Group {
+                        switch currentViewMode {
+                        case .day:
+                            Text(focusedDate.formatted(.dateTime.weekday().month().day()))
+                        case .week:
+                            Text(weekTitle(for: focusedDate))
+                        case .month:
+                            Text(monthTitle(for: focusedDate))
+                        case .year:
+                            Text(String(Calendar.current.component(.year, from: focusedDate)))
                         }
-                    )
-                } else {
-                    // keep layout spacing when sidebar is hidden
-                    Color.clear.frame(width: 280)
+                    }
+                    .font(.system(size: 34, weight: .semibold))
+                    .lineLimit(1)
+
+                    // Subtitle / small metadata
+                    Text(currentViewMode == .week ? weekSubtitle(for: focusedDate) : "")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(.secondary)
                 }
 
-                // Right: The Grid Area
-                VStack(spacing: 12) {
-                    // Keep existing header controls
-                    VStack(spacing: DesignSystem.Layout.spacing.small) {
-                        Text(monthTitle(for: focusedDate))
-                            .font(.title3.weight(.semibold))
-                            .frame(maxWidth: .infinity)
-                            .accessibilityIdentifier("CalendarMonthLabel")
+                Spacer()
 
-                        HStack(spacing: DesignSystem.Layout.spacing.small) {
-                            RootsHeaderButton(icon: "chevron.left") { shift(by: -1) }
-                                .rootsStandardInteraction()
-                            RootsHeaderButton(icon: "chevron.right") { shift(by: 1) }
-                                .rootsStandardInteraction()
-                            RootsHeaderButton(icon: "plus") { showingNewEventSheet = true }
-                                .rootsStandardInteraction()
+                Picker("View", selection: $currentViewMode) {
+                    ForEach(CalendarViewMode.allCases) { mode in
+                        Text(mode.title).tag(mode)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .frame(maxWidth: 420)
+                .tint(settings.activeAccentColor)
 
-                            Spacer()
-
-                            Picker("View", selection: $currentViewMode) {
-                                Text("Month").tag(CalendarViewMode.month)
-                                Text("Week").tag(CalendarViewMode.week)
-                                Text("Day").tag(CalendarViewMode.day)
-                                Text("Year").tag(CalendarViewMode.year)
-                            }
-                            .pickerStyle(.segmented)
-                            .frame(maxWidth: 420)
-
-                            Spacer(minLength: 0)
-                        }
-                        .padding(.horizontal, 12)
+                HStack(spacing: 8) {
+                    Button { shift(by: -1) } label: {
+                        Image(systemName: "chevron.left")
+                            .foregroundStyle(chevronLeftHover ? settings.activeAccentColor : .primary)
+                            .scaleEffect(chevronLeftHover ? 1.06 : 1.0)
+                    }
+                    .buttonStyle(.plain)
+                    .rootsStandardInteraction()
+                    .onHover { hovering in
+                        withAnimation(.easeInOut(duration: 0.12)) { chevronLeftHover = hovering }
                     }
 
-                    // The grid content
-                    gridContent
+                    Button { jumpToToday() } label: {
+                        Text("Today")
+                            .font(.subheadline.weight(.semibold))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(RoundedRectangle(cornerRadius: 8).fill(settings.activeAccentColor).opacity(todayHover ? 0.18 : 0.12))
+                    }
+                    .buttonStyle(.plain)
+                    .rootsStandardInteraction()
+                    .onHover { hovering in
+                        withAnimation(.easeInOut(duration: 0.12)) { todayHover = hovering }
+                    }
+
+                    Button { shift(by: 1) } label: {
+                        Image(systemName: "chevron.right")
+                            .foregroundStyle(chevronRightHover ? settings.activeAccentColor : .primary)
+                            .scaleEffect(chevronRightHover ? 1.06 : 1.0)
+                    }
+                    .buttonStyle(.plain)
+                    .rootsStandardInteraction()
+                    .onHover { hovering in
+                        withAnimation(.easeInOut(duration: 0.12)) { chevronRightHover = hovering }
+                    }
                 }
-                .padding()
-                .background(.regularMaterial)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: .infinity, alignment: .trailing)
             }
+            .padding(.horizontal, DesignSystem.Layout.padding.window)
+            .padding(.vertical, 6)
+
+            // Main content: single glass area without sidebars
+            VStack(spacing: 12) {
+                gridContent
+            }
+            .padding()
+            .background(DesignSystem.Materials.card)
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding(20)
@@ -254,6 +282,27 @@ struct CalendarPageView: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "LLLL yyyy"
         return formatter.string(from: date)
+    }
+
+    private func weekTitle(for date: Date) -> String {
+        let start = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)) ?? date
+        let end = Calendar.current.date(byAdding: .day, value: 6, to: start) ?? date
+        let f = DateFormatter()
+        f.dateFormat = "d MMM"
+        return "\(f.string(from: start)) – \(f.string(from: end))"
+    }
+
+    private func weekSubtitle(for date: Date) -> String {
+        let f = DateFormatter()
+        f.dateFormat = "LLLL yyyy"
+        return f.string(from: date)
+    }
+
+    private func jumpToToday() {
+        let today = Date()
+        focusedDate = today
+        selectedDate = today
+        calendarManager.selectedDate = today
     }
 
     private var effectiveEvents: [CalendarEvent] {

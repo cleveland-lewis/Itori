@@ -24,52 +24,52 @@ struct DashboardView: View {
     @State private var showAddEventSheet = false
     @State private var showAddTaskSheet = false
 
+    // Layout tokens
+    private let rowSpacing: CGFloat = 24
+    private let columnSpacing: CGFloat = 24
+    private let bottomDockClearancePadding: CGFloat = 120
+
     var body: some View {
-        ScrollView {
-            VStack(spacing: DesignSystem.Layout.spacing.medium) {
-                dashboardHeader
-                    .padding(.horizontal, DesignSystem.Layout.padding.window)
+        // Dashboard scrollable container
+        ScrollView(.vertical, showsIndicators: true) {
+            VStack(spacing: rowSpacing) {
+                // Row spacing + padding
+                HStack(alignment: .top, spacing: columnSpacing) {
+                    todayCard
+                        .frame(maxWidth: .infinity, alignment: .top)
+                        .animateEntry(isLoaded: isLoaded, index: 0)
 
-                GeometryReader { geo in
-                    let spacing: CGFloat = DesignSystem.Layout.spacing.medium
-
-                    VStack(spacing: spacing) {
-                        HStack(spacing: spacing) {
-                            todayCard
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .animateEntry(isLoaded: isLoaded, index: 0)
-
-                            clockCard
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .animateEntry(isLoaded: isLoaded, index: 3)
-                        }
-
-                        HStack(spacing: spacing) {
-                            eventsCard
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .animateEntry(isLoaded: isLoaded, index: 1)
-
-                            assignmentsCard
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .animateEntry(isLoaded: isLoaded, index: 4)
-                        }
-
-                        HStack(spacing: spacing) {
-                            calendarCard
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .animateEntry(isLoaded: isLoaded, index: 2)
-
-                            energyCard
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .animateEntry(isLoaded: isLoaded, index: 5)
-                        }
-                    }
-                    .padding(.horizontal, DesignSystem.Layout.padding.window)
-                    .padding(.vertical, DesignSystem.Layout.spacing.medium)
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                    clockCard
+                        .frame(maxWidth: .infinity, alignment: .top)
+                        .animateEntry(isLoaded: isLoaded, index: 3)
+                        .frame(minHeight: 160)
                 }
-                .frame(minHeight: 0)
+
+                HStack(alignment: .top, spacing: columnSpacing) {
+                    eventsCard
+                        .frame(maxWidth: .infinity, alignment: .top)
+                        .animateEntry(isLoaded: isLoaded, index: 1)
+
+                    assignmentsCard
+                        .frame(maxWidth: .infinity, alignment: .top)
+                        .animateEntry(isLoaded: isLoaded, index: 4)
+                }
+
+                HStack(alignment: .top, spacing: columnSpacing) {
+                    calendarCard
+                        .frame(maxWidth: .infinity, alignment: .top)
+                        .animateEntry(isLoaded: isLoaded, index: 2)
+
+                    energyCard
+                        .frame(maxWidth: .infinity, alignment: .top)
+                        .animateEntry(isLoaded: isLoaded, index: 5)
+                        .frame(minHeight: 160)
+                }
             }
+            .frame(maxWidth: .infinity, alignment: .top)
+            .padding(.horizontal, DesignSystem.Layout.padding.window)
+            .padding(.top, DesignSystem.Layout.spacing.medium)
+            .padding(.bottom, bottomDockClearancePadding)
         }
         .sheet(isPresented: $showAddAssignmentSheet) {
             AddAssignmentView(initialType: .practiceHomework) { task in
