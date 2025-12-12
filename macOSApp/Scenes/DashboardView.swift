@@ -19,6 +19,7 @@ struct DashboardView: View {
     @State private var selectedDate: Date = Date()
     @State private var tasks: [DashboardTask] = []
     @State private var events: [DashboardEvent] = []
+    @EnvironmentObject private var deviceCalendar: DeviceCalendarManager
     @State private var showAddAssignmentSheet = false
     @State private var showAddGradeSheet = false
     @State private var showAddEventSheet = false
@@ -114,10 +115,7 @@ struct DashboardView: View {
         .onReceive(assignmentsStore.$tasks) { _ in
             syncTasks()
         }
-        .onReceive(calendarManager.$dailyEvents) { _ in
-            syncEvents()
-        }
-        .onReceive(calendarManager.$cachedMonthEvents) { _ in
+        .onReceive(deviceCalendar.$events) { _ in
             syncEvents()
         }
         .onChange(of: calendarManager.selectedCalendarID) { _, _ in
@@ -200,7 +198,7 @@ struct DashboardView: View {
             icon: "sun.max"
         ) {
             VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                let eventStatus = EKEventStore.authorizationStatus(for: .event)
+                let eventStatus = calendarManager.eventAuthorizationStatus
                 switch eventStatus {
                 case .notDetermined:
                     HStack {
@@ -448,7 +446,7 @@ struct DashboardView: View {
 
     private func todaysCalendarEvents() -> [EKEvent] {
         let cal = Calendar.current
-        let source = calendarManager.dailyEvents.isEmpty ? calendarManager.cachedMonthEvents : calendarManager.dailyEvents
+        let source = DeviceCalendarManager.shared.events
         return source.filter { event in
             cal.isDateInToday(event.startDate) &&
             (calendarManager.selectedCalendarID.isEmpty || event.calendar.calendarIdentifier == calendarManager.selectedCalendarID)

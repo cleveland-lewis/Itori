@@ -407,7 +407,7 @@ struct TimerPageView: View {
 
         let nextEvent: EKEvent? = {
             let selectedId = calendarManager.selectedCalendarID
-            let events = calendarManager.cachedMonthEvents.filter {
+            let events = DeviceCalendarManager.shared.events.filter {
                 selectedId.isEmpty || $0.calendar.calendarIdentifier == selectedId
             }
             let todayEvents = events.filter { Calendar.current.isDateInToday($0.startDate) && $0.startDate > Date() }

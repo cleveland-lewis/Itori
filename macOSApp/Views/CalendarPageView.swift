@@ -72,6 +72,7 @@ struct CalendarPageView: View {
 
     @EnvironmentObject var eventsStore: EventsCountStore
     @EnvironmentObject var calendarManager: CalendarManager
+    @EnvironmentObject var deviceCalendar: DeviceCalendarManager
     @State private var currentViewMode: CalendarViewMode = .month
     @State private var focusedDate: Date = Date()
     @State private var selectedDate: Date? = Date()
@@ -80,7 +81,7 @@ struct CalendarPageView: View {
     @State private var showingNewEventSheet = false
     @State private var events: [CalendarEvent] = []
     @State private var syncedEvents: [CalendarEvent] = []
-    private let eventStore = EKEventStore()
+    private var eventStore: EKEventStore { DeviceCalendarManager.shared.store }
 
     private let calendar = Calendar.current
 
@@ -192,15 +193,15 @@ struct CalendarPageView: View {
         }
         .onAppear {
             requestAccessAndSync()
-            calendarManager.refreshMonthlyCache(for: focusedDate)
+            Task { await deviceCalendar.refreshEventsForVisibleRange() }
             updateMetrics()
         }
         .onChange(of: focusedDate) { _, newValue in
-            calendarManager.refreshMonthlyCache(for: focusedDate)
+            Task { await deviceCalendar.refreshEventsForVisibleRange() }
             updateMetrics()
         }
         .onChange(of: currentViewMode) { _, _ in updateMetrics() }
-        .onReceive(calendarManager.$cachedMonthEvents) { _ in
+        .onReceive(deviceCalendar.$events) { _ in
             updateMetrics()
         }
         // Present event detail without resizing layout
@@ -240,7 +241,7 @@ struct CalendarPageView: View {
         case .week:
             WeekCalendarView(focusedDate: $focusedDate, events: effectiveEvents)
         case .day:
-            CalendarDayView(date: focusedDate, events: calendarManager.cachedMonthEvents)
+            CalendarDayView(date: focusedDate, events: deviceCalendar.events)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .year:
             CalendarYearView(currentYear: focusedDate)
@@ -422,7 +423,7 @@ struct CalendarPageView: View {
     }
 
     private func updateMetrics() {
-        metrics = CalendarStats.calculate(from: calendarManager.cachedMonthEvents, for: focusedDate)
+        metrics = CalendarStats.calculate(from: deviceCalendar.events.map { CalendarEvent(title: $0.title ?? "", startDate: $0.startDate, endDate: $0.endDate, ekIdentifier: $0.eventIdentifier) }, for: focusedDate)
     }
 }
 
@@ -1324,6 +1325,7 @@ private struct WeekHeaderView: View {
 
 struct CalendarView: View {
     @EnvironmentObject private var calendarManager: CalendarManager
+    @EnvironmentObject private var deviceCalendar: DeviceCalendarManager
     @State private var viewMode: CalendarViewMode = .month
     @State private var currentMonth: Date = Date()
     @State private var selectedEvent: CalendarEvent? = nil
@@ -1342,7 +1344,7 @@ struct CalendarView: View {
     private var displayEKEvents: [EKEvent] {
         let selectedId = calendarManager.selectedCalendarID
         guard !selectedId.isEmpty else { return [] }
-        return calendarManager.cachedMonthEvents.filter { $0.calendar.calendarIdentifier == selectedId }
+        return deviceCalendar.events.filter { $0.calendar.calendarIdentifier == selectedId }
     }
 
     private var isLoading: Bool {

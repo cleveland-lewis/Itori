@@ -23,6 +23,7 @@ struct RootsApp: App {
     @StateObject private var plannerCoordinator = PlannerCoordinator.shared
     @StateObject private var appModel = AppModel()
     @StateObject private var calendarManager = CalendarManager.shared
+    @StateObject private var deviceCalendar = DeviceCalendarManager.shared
     @StateObject private var timerManager = TimerManager()
     @StateObject private var preferences = AppPreferences()
 
@@ -62,6 +63,7 @@ struct RootsApp: App {
                 .environmentObject(settingsCoordinator)
                 .environmentObject(EventsCountStore())
                 .environmentObject(calendarManager)
+                .environmentObject(DeviceCalendarManager.shared)
                 .environmentObject(timerManager)
                 .environmentObject(FlashcardManager.shared)
                 .environmentObject(preferences)

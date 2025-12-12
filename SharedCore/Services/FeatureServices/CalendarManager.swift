@@ -9,41 +9,39 @@ import SwiftUI
 
 @MainActor
 final class CalendarManager: ObservableObject, LoadableViewModel {
-    // Loadable conformance
+    // Shim only. No EventKit. No caches. No observers. Do not add logic here.
+    // All EventKit ownership and permissions live in DeviceCalendarManager.
+    // Use DeviceCalendarManager directly for new code. This shim forwards existing APIs.
     @Published var isLoading: Bool = false
     @Published var loadingMessage: String? = nil
     nonisolated let objectWillChange = ObservableObjectPublisher()
 
     static let shared = CalendarManager()
-    let store = EKEventStore()
-    private let cacheURL: URL?
+    private var deviceManager = DeviceCalendarManager.shared
+    private var store: EKEventStore { deviceManager.store }
 
     // Persistent selection
     @AppStorage("selectedCalendarID") var selectedCalendarID: String = ""
     @AppStorage("selectedReminderListID") var selectedReminderListID: String = ""
 
-    // Sources for pickers
+    // Forwarded sources for pickers
     @Published var availableCalendars: [EKCalendar] = []
     @Published var availableReminderLists: [EKCalendar] = []
 
-    // Data
-    @Published var dailyEvents: [EKEvent] = []
-    @Published var reminders: [EKReminder] = []
-    @Published var cachedMonthEvents: [EKEvent] = []
-    @Published var selectedDate: Date? = nil
-    private let lastPlanKey = "roots.lastDailyPlan"
+    // NOTE: Do not keep own event caches here. UI should observe DeviceCalendarManager.
 
-    // Permissions
+    // Permissions (forwarded)
     @Published var eventAuthorizationStatus: EKAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
     @Published var reminderAuthorizationStatus: EKAuthorizationStatus = EKEventStore.authorizationStatus(for: .reminder)
     @Published var isAuthorized: Bool = false
     @Published var isCalendarAccessDenied: Bool = false
     @Published var isRemindersAccessDenied: Bool = false
+    @Published var selectedDate: Date? = nil
 
-    // Helpers used by AddEventPopup
-    var writableCalendars: [EKCalendar] { store.calendars(for: .event).filter { $0.allowsContentModifications } }
-    var defaultCalendarForNewEvents: EKCalendar? { store.defaultCalendarForNewEvents }
-    func defaultCalendarForNewReminders() -> EKCalendar? { store.defaultCalendarForNewReminders() }
+    // Helpers used by AddEventPopup - forwarded
+    var writableCalendars: [EKCalendar] { deviceManager.store.calendars(for: .event).filter { $0.allowsContentModifications } }
+    var defaultCalendarForNewEvents: EKCalendar? { deviceManager.store.defaultCalendarForNewEvents }
+    func defaultCalendarForNewReminders() -> EKCalendar? { deviceManager.store.defaultCalendarForNewReminders() }
 
     // MARK: - Insights
 
@@ -82,31 +80,35 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         return comps.day
     }
 
+    private let cacheURL: URL?
+    private let lastPlanKey = "roots.lastDailyPlan"
+
     private init() {
-        let fm = FileManager.default
-        if let dir = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            let folder = dir.appendingPathComponent("RootsCalendarCache", isDirectory: true)
-            try? fm.createDirectory(at: folder, withIntermediateDirectories: true)
-            cacheURL = folder.appendingPathComponent("month_events.json")
-        } else {
-            cacheURL = nil
+        cacheURL = nil
+        // Observe store changes via DeviceCalendarManager's store
+        deviceManager.startObservingStoreChanges()
+        // Also subscribe to notification to refresh local caches
+        NotificationCenter.default.addObserver(forName: .EKEventStoreChanged, object: nil, queue: .main) { [weak self] _ in
+            Task { @MainActor in
+                await self?.refreshAuthStatus()
+            }
         }
-        NotificationCenter.default.addObserver(self, selector: #selector(storeChanged), name: .EKEventStoreChanged, object: store)
-        loadCachedEvents()
         _Concurrency.Task { await self.refreshAuthStatus() }
     }
 
     func refreshAuthStatus() async {
+        // Forward to DeviceCalendarManager for authorization state
         await MainActor.run {
+            self.isAuthorized = DeviceCalendarManager.shared.isAuthorized
             self.eventAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
             self.reminderAuthorizationStatus = EKEventStore.authorizationStatus(for: .reminder)
             self.isCalendarAccessDenied = (self.eventAuthorizationStatus == .denied || self.eventAuthorizationStatus == .restricted)
             self.isRemindersAccessDenied = (self.reminderAuthorizationStatus == .denied || self.reminderAuthorizationStatus == .restricted)
-            self.isAuthorized = (self.eventAuthorizationStatus == .fullAccess || self.eventAuthorizationStatus == .writeOnly) || (self.reminderAuthorizationStatus == .fullAccess || self.reminderAuthorizationStatus == .writeOnly)
         }
         if self.isAuthorized {
             refreshSources()
-            await refreshAll()
+            // DeviceCalendarManager owns fetching; UI should observe it directly.
+            await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
             await planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
         }
     }
@@ -119,7 +121,8 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
                 if !self.isAuthorized {
                     await self.checkPermissionsOnStartup()
                 } else {
-                    self.refreshMonthlyCache(for: date)
+                    // Forward to device manager
+                    await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
                 }
                 return ()
             }
@@ -127,28 +130,15 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     }
 
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .EKEventStoreChanged, object: store)
+        NotificationCenter.default.removeObserver(self, name: .EKEventStoreChanged, object: nil)
     }
 
     // MARK: - Permissions & Sources
 
     func checkPermissionsOnStartup() async {
-        let eventStatus = EKEventStore.authorizationStatus(for: .event)
-        let reminderStatus = EKEventStore.authorizationStatus(for: .reminder)
-
-        await MainActor.run {
-            self.eventAuthorizationStatus = eventStatus
-            self.reminderAuthorizationStatus = reminderStatus
-            self.isCalendarAccessDenied = (eventStatus == .denied || eventStatus == .restricted)
-            self.isRemindersAccessDenied = (reminderStatus == .denied || reminderStatus == .restricted)
-            self.isAuthorized = (eventStatus == .fullAccess || eventStatus == .writeOnly) || (reminderStatus == .fullAccess || reminderStatus == .writeOnly)
-        }
-
-        if isAuthorized {
-            await MainActor.run { refreshSources() }
-            await refreshAll()
-            await planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
-        }
+        // Forward to DeviceCalendarManager bootstrap
+        await DeviceCalendarManager.shared.bootstrapOnLaunch()
+        await refreshAuthStatus()
     }
 
     @MainActor
@@ -167,51 +157,16 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     // MARK: - Refreshing
 
     func refreshAll() async {
-        guard isAuthorized else { return }
-
-        // Fetch ALL events for the day; Views will distinguish school vs other using selectedCalendarID
-        let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: Date())
-        guard let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay) else { return }
-
-        let predicateAll = store.predicateForEvents(withStart: startOfDay, end: endOfDay, calendars: nil)
-        let eventsFound = store.events(matching: predicateAll).sorted { $0.startDate < $1.startDate }
-
-        await MainActor.run {
-            self.dailyEvents = eventsFound
-        }
-
-        // Reminders - keep it filtered by selectedReminderListID
-        let listsToSearch = store.calendars(for: .reminder).filter { $0.calendarIdentifier == selectedReminderListID }
-
-        if !listsToSearch.isEmpty {
-            let predicate = store.predicateForReminders(in: listsToSearch)
-            store.fetchReminders(matching: predicate) { foundReminders in
-                DispatchQueue.main.async {
-                    self.reminders = foundReminders ?? []
-                }
-            }
-        } else {
-            await MainActor.run { self.reminders = [] }
-        }
-
-        refreshMonthlyCache(for: Date())
-
-        // After refreshing, attempt daily planning for tasks due today
+        // Forward refresh to device manager; CalendarManager does not hold caches.
+        guard DeviceCalendarManager.shared.isAuthorized else { return }
+        await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
+        // Reminders handling remains in device manager; shim simply forwards.
         await planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
     }
 
     func refreshMonthlyCache(for date: Date) {
-        let calendar = Calendar.current
-        guard let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: date)),
-              let monthEnd = calendar.date(byAdding: .month, value: 1, to: monthStart) else { return }
-
-        let predicate = store.predicateForEvents(withStart: monthStart, end: monthEnd, calendars: nil)
-        let monthEvents = store.events(matching: predicate).sorted { $0.startDate < $1.startDate }
-        DispatchQueue.main.async {
-            self.cachedMonthEvents = monthEvents
-            self.saveCachedEvents(monthEvents)
-        }
+        // Forward to device manager; it manages the canonical event cache
+        Task { await DeviceCalendarManager.shared.refreshEventsForVisibleRange() }
     }
 
     // Helper
@@ -339,8 +294,9 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     }
 
     private func save(event: EKEvent) {
+        // Forward to device manager
         do {
-            try store.save(event, span: .thisEvent)
+            try DeviceCalendarManager.shared.store.save(event, span: .thisEvent)
         } catch {
             print("📅 [CalendarManager] Failed to save event: \(error)")
         }
@@ -348,51 +304,21 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
 
     // MARK: - Request Access
     func requestAccess() async {
-        do {
-            if #available(macOS 14.0, *) {
-                try await store.requestFullAccessToEvents()
-                _ = try await store.requestFullAccessToReminders()
-            } else {
-                // Bridge legacy callback-based API to async
-                let _ : Bool = await withCheckedContinuation { cont in
-                    store.requestAccess(to: .event) { granted, _ in cont.resume(returning: granted) }
-                }
-                let _ : Bool = await withCheckedContinuation { cont in
-                    store.requestAccess(to: .reminder) { granted, _ in cont.resume(returning: granted) }
-                }
-            }
-            await checkPermissionsOnStartup()
-        } catch {
-            print("Access request failed: \(error)")
-        }
+        // Forward to DeviceCalendarManager
+        await DeviceCalendarManager.shared.bootstrapOnLaunch()
+        await refreshAuthStatus()
     }
 
     func requestCalendarAccess() async {
-        do {
-            if #available(macOS 14.0, *) {
-                _ = try await store.requestFullAccessToEvents()
-            } else {
-                _ = await withCheckedContinuation { cont in
-                    store.requestAccess(to: .event) { granted, _ in cont.resume(returning: granted) }
-                }
-            }
-            await refreshAuthStatus()
-        } catch {
-            print("Calendar access request failed: \(error)")
-        }
+        // Forward to device manager
+        await DeviceCalendarManager.shared.bootstrapOnLaunch()
+        await refreshAuthStatus()
     }
 
     func requestRemindersAccess() async {
-        do {
-            if #available(macOS 14.0, *) {
-                _ = try await store.requestFullAccessToReminders()
-            } else {
-                _ = try await store.requestAccess(to: .reminder)
-            }
-            await refreshAuthStatus()
-        } catch {
-            print("Reminders access request failed: \(error)")
-        }
+        // Forward to device manager
+        await DeviceCalendarManager.shared.bootstrapOnLaunch()
+        await refreshAuthStatus()
     }
 
     // Create and save events (used by AddEventPopup)
@@ -403,18 +329,20 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
                    location: String,
                    notes: String,
                    calendar: EKCalendar?) async throws {
-        guard let targetCalendar = calendar ?? store.defaultCalendarForNewEvents else { return }
+        // Forward create to device manager
+        guard let targetCalendar = calendar ?? DeviceCalendarManager.shared.store.defaultCalendarForNewEvents else { return }
+        try await MainActor.run {
+            let newEvent = EKEvent(eventStore: DeviceCalendarManager.shared.store)
+            newEvent.title = title
+            newEvent.startDate = startDate
+            newEvent.endDate = endDate
+            newEvent.isAllDay = isAllDay
+            newEvent.location = location
+            newEvent.notes = notes
+            newEvent.calendar = targetCalendar
 
-        let newEvent = EKEvent(eventStore: store)
-        newEvent.title = title
-        newEvent.startDate = startDate
-        newEvent.endDate = endDate
-        newEvent.isAllDay = isAllDay
-        newEvent.location = location
-        newEvent.notes = notes
-        newEvent.calendar = targetCalendar
-
-        try store.save(newEvent, span: .thisEvent)
+            try DeviceCalendarManager.shared.store.save(newEvent, span: .thisEvent)
+        }
         await refreshAll()
     }
 
@@ -427,7 +355,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
                      location: String?,
                      notes: String?,
                      recurrence: RecurrenceOption = .none) async throws {
-        guard let item = store.calendarItem(withIdentifier: identifier) as? EKEvent else { return }
+        guard let item = DeviceCalendarManager.shared.store.calendarItem(withIdentifier: identifier) as? EKEvent else { return }
         item.title = title
         item.startDate = startDate
         item.endDate = endDate
@@ -435,16 +363,16 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         item.location = location
         item.notes = notes
         item.recurrenceRules = recurrence.rule.map { [$0] }
-        try store.save(item, span: .thisEvent, commit: true)
+        try DeviceCalendarManager.shared.store.save(item, span: .thisEvent, commit: true)
         await refreshAll()
     }
 
     // Delete an event or reminder by identifier
     func deleteCalendarItem(identifier: String, isReminder: Bool) async throws {
-        if isReminder, let reminder = store.calendarItem(withIdentifier: identifier) as? EKReminder {
-            try store.remove(reminder, commit: true)
-        } else if let event = store.calendarItem(withIdentifier: identifier) as? EKEvent {
-            try store.remove(event, span: .thisEvent, commit: true)
+        if isReminder, let reminder = DeviceCalendarManager.shared.store.calendarItem(withIdentifier: identifier) as? EKReminder {
+            try DeviceCalendarManager.shared.store.remove(reminder, commit: true)
+        } else if let event = DeviceCalendarManager.shared.store.calendarItem(withIdentifier: identifier) as? EKEvent {
+            try DeviceCalendarManager.shared.store.remove(event, span: .thisEvent, commit: true)
         }
         await refreshAll()
     }
@@ -459,46 +387,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
 #endif
     }
 
-    // MARK: - Caching
-    private struct CachedEKEvent: Codable {
-        let title: String
-        let start: Date
-        let end: Date
-        let location: String?
-        let notes: String?
-        let identifier: String
-        let calendarId: String
-    }
 
-    private func saveCachedEvents(_ events: [EKEvent]) {
-        guard let url = cacheURL else { return }
-        let toCache = events.map { CachedEKEvent(title: $0.title, start: $0.startDate, end: $0.endDate, location: $0.location, notes: $0.notes, identifier: $0.eventIdentifier, calendarId: $0.calendar.calendarIdentifier) }
-        do {
-            let data = try JSONEncoder().encode(toCache)
-            try data.write(to: url, options: [.atomic, .completeFileProtection])
-        } catch {
-            print("Failed to cache events: \(error)")
-        }
-    }
-
-    private func loadCachedEvents() {
-        guard let url = cacheURL, let data = try? Data(contentsOf: url) else { return }
-        guard let decoded = try? JSONDecoder().decode([CachedEKEvent].self, from: data) else { return }
-
-        let ekEvents: [EKEvent] = decoded.compactMap { cached in
-            let ev = EKEvent(eventStore: store)
-            ev.title = cached.title
-            ev.startDate = cached.start
-            ev.endDate = cached.end
-            ev.location = cached.location
-            ev.notes = cached.notes
-            ev.calendar = store.calendars(for: .event).first(where: { $0.calendarIdentifier == cached.calendarId }) ?? store.defaultCalendarForNewEvents
-            return ev
-        }
-        DispatchQueue.main.async {
-            self.cachedMonthEvents = ekEvents
-        }
-    }
 
     enum RecurrenceOption: String, CaseIterable, Identifiable {
         case none, daily, weekly, monthly
@@ -528,8 +417,12 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
 
 extension CalendarManager {
     func quickAddEvent(title: String = "New Event", start: Date = Date(), durationMinutes: Int = 60) async {
-        let granted = await requestEventAccessIfNeeded()
-        guard granted else { return }
+        // Forward permission check to DeviceCalendarManager
+        if !DeviceCalendarManager.shared.isAuthorized {
+            await DeviceCalendarManager.shared.bootstrapOnLaunch()
+        }
+        guard DeviceCalendarManager.shared.isAuthorized else { return }
+        let store = deviceManager.store
         let event = EKEvent(eventStore: store)
         event.title = title
         event.startDate = start
@@ -537,43 +430,14 @@ extension CalendarManager {
         event.calendar = store.defaultCalendarForNewEvents ?? store.calendars(for: .event).first
         do {
             try store.save(event, span: .thisEvent, commit: true)
-            await MainActor.run {
-                dailyEvents.append(event)
-                cachedMonthEvents.append(event)
-            }
+            await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
         } catch {
             print("Failed to add quick event: \(error)")
         }
     }
 
     private func requestEventAccessIfNeeded() async -> Bool {
-        let status = EKEventStore.authorizationStatus(for: .event)
-        if status == .fullAccess || status == .writeOnly {
-            return true
-        }
-        if #available(macOS 14.0, *) {
-            do {
-                try await store.requestFullAccessToEvents()
-                await MainActor.run {
-                    self.eventAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
-                    self.isAuthorized = (self.eventAuthorizationStatus == .fullAccess || self.eventAuthorizationStatus == .writeOnly)
-                }
-                return (self.eventAuthorizationStatus == .fullAccess || self.eventAuthorizationStatus == .writeOnly)
-            } catch {
-                print("Event access request failed: \(error)")
-                return false
-            }
-        } else {
-            return await withCheckedContinuation { cont in
-                store.requestAccess(to: .event) { granted, _ in
-                    DispatchQueue.main.async {
-                        self.eventAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
-                        self.isAuthorized = granted
-                    }
-                    cont.resume(returning: granted)
-                }
-            }
-        }
+        await DeviceCalendarManager.shared.requestFullAccessIfNeeded()
     }
 }
 extension EKEvent {

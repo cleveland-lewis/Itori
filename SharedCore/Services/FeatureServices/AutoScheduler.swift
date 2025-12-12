@@ -104,7 +104,7 @@ final class AutoScheduler {
     // MARK: - Helpers
 
     private static func createEvent(for task: AutoScheduleTask, start: Date, durationMinutes: Int) -> EKEvent {
-        let store = EKEventStore()
+        let store = DeviceCalendarManager.shared.store
         let event = EKEvent(eventStore: store)
         event.title = task.title
         event.startDate = start
