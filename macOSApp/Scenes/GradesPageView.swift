@@ -62,6 +62,7 @@ struct GradesPageView: View {
     @State private var gradeAnalyticsWindowOpen: Bool = false
     @State private var showNewCourseSheet: Bool = false
     @State private var editingCourse: Course? = nil
+    @State private var selectedSegment: GradeViewSegment = .overall
     @State private var courseDeletedCancellable: AnyCancellable? = nil
 
     private let cardCorner: CGFloat = 24
@@ -88,14 +89,10 @@ struct GradesPageView: View {
             }
         }
         .sheet(isPresented: $showNewCourseSheet) {
-            CourseEditorSheet(course: editingCourse) { updated in
-                // persist through CoursesStore
-                if editingCourse == nil {
-                    coursesStore.addCourse(updated)
-                } else {
-                    coursesStore.updateCourse(updated)
-                }
-                // refresh local course lists
+            let editorModel = editingCourse.flatMap(courseEditorModel(from:))
+            CourseEditorSheet(course: editorModel) { updated in
+                persistCourseEditorModel(updated)
+                editingCourse = nil
                 refreshCourses()
             }
         }
@@ -298,28 +295,50 @@ struct GradesPageView: View {
     }
 
     private var detailCard: some View {
-        GradeDetailCard(
-            detail: Binding(
-                get: { selectedCourseDetail },
-                set: { selectedCourseDetail = $0 }
-            ),
-                        whatIfInput: $whatIfSlider,
-            onEditTarget: { course in
-                courseToEditTarget = course
-                showEditTargetSheet = true
-            },
-            onUpdateNotes: { updated in
-                if let idx = courseDetails.firstIndex(where: { $0.id == updated.id }) {
-                    courseDetails[idx] = updated
-                    if selectedCourseDetail?.id == updated.id {
-                        selectedCourseDetail = updated
+        VStack(spacing: 16) {
+            detailSegmentPicker
+            GradeDetailCard(
+                detail: Binding(
+                    get: { selectedCourseDetail },
+                    set: { selectedCourseDetail = $0 }
+                ),
+                segment: selectedSegment,
+                whatIfInput: $whatIfSlider,
+                onEditTarget: { course in
+                    courseToEditTarget = course
+                    showEditTargetSheet = true
+                },
+                onUpdateNotes: { updated in
+                    if let idx = courseDetails.firstIndex(where: { $0.id == updated.id }) {
+                        courseDetails[idx] = updated
+                        if selectedCourseDetail?.id == updated.id {
+                            selectedCourseDetail = updated
+                        }
                     }
                 }
-            }
-        )
+            )
+        }
         .padding(16)
         .background(cardBackground)
         .overlay(cardStroke)
+    }
+
+    private var detailSegmentPicker: some View {
+        HStack(spacing: 10) {
+            Text("Segment")
+                .font(.caption2.weight(.semibold))
+                .foregroundColor(.secondary)
+
+            Picker("Segment", selection: $selectedSegment) {
+                ForEach(GradeViewSegment.allCases) { segment in
+                    Text(segment.label).tag(segment)
+                }
+            }
+            .pickerStyle(.segmented)
+            .controlSize(.small)
+
+            Spacer()
+        }
     }
 
     private var footer: some View {
@@ -416,18 +435,97 @@ struct GradesPageView: View {
         requestGPARecalc()
     }
 
-    private func colorTag(for hex: String?) -> ColorTag {
-        guard let hex = hex?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() else { return .blue }
-        switch hex {
-        case "#4c78ff", "blue": return .blue
-        case "#34c759", "green": return .green
-        case "#af52de", "purple": return .purple
-        case "#ff9f0a", "orange": return .orange
-        case "#ff2d55", "pink": return .pink
-        case "#ffd60a", "yellow": return .yellow
-        case "#8e8e93", "gray": return .gray
-        default: return .blue
+    private func colorTag(for hex: String?) -> Color {
+        (CoursesPageModel.ColorTag.fromHex(hex) ?? .blue).color
+    }
+
+    private func courseEditorModel(from course: Course) -> CoursesPageModel.Course {
+        let semesterName = coursesStore.semesters.first(where: { $0.id == course.semesterId })?.name ?? "Current Term"
+        let colorTag = CoursesPageModel.ColorTag.fromHex(course.colorHex) ?? .blue
+        let gradeEntry = gradesStore.grade(for: course.id)
+        let gradeInfo = CoursesPageModel.CourseGradeInfo(
+            currentPercentage: gradeEntry?.percent,
+            targetPercentage: nil,
+            letterGrade: gradeEntry?.letter
+        )
+
+        return CoursesPageModel.Course(
+            id: course.id,
+            code: course.code,
+            title: course.title,
+            instructor: course.instructor ?? "Instructor",
+            location: course.location ?? "Location TBA",
+            credits: Int(course.credits ?? 3),
+            colorTag: colorTag,
+            semesterId: course.semesterId,
+            semesterName: semesterName,
+            isArchived: course.isArchived,
+            meetingTimes: [],
+            gradeInfo: gradeInfo,
+            syllabus: nil
+        )
+    }
+
+    private func persistCourseEditorModel(_ course: CoursesPageModel.Course) {
+        let semesterId = course.semesterId ?? ensureSemester()
+        if let idx = coursesStore.courses.firstIndex(where: { $0.id == course.id }) {
+            var existing = coursesStore.courses[idx]
+            existing.code = course.code
+            existing.title = course.title
+            existing.instructor = course.instructor
+            existing.location = course.location
+            existing.credits = Double(course.credits)
+            existing.semesterId = semesterId
+            existing.isArchived = course.isArchived
+            existing.colorHex = CoursesPageModel.ColorTag.hex(for: course.colorTag)
+            coursesStore.updateCourse(existing)
+        } else {
+            let newCourse = Course(
+                id: course.id,
+                title: course.title,
+                code: course.code,
+                semesterId: semesterId,
+                colorHex: CoursesPageModel.ColorTag.hex(for: course.colorTag),
+                isArchived: course.isArchived,
+                courseType: .regular,
+                instructor: course.instructor,
+                location: course.location,
+                credits: Double(course.credits),
+                creditType: .credits,
+                meetingTimes: nil,
+                syllabus: nil,
+                notes: nil,
+                attachments: []
+            )
+            coursesStore.addCourse(newCourse)
         }
+
+        if coursesStore.currentSemesterId == nil {
+            coursesStore.currentSemesterId = semesterId
+        }
+    }
+
+    private func ensureSemester() -> UUID {
+        if let current = coursesStore.currentSemesterId { return current }
+        if let first = coursesStore.semesters.first {
+            coursesStore.currentSemesterId = first.id
+            return first.id
+        }
+
+        let calendar = Calendar.current
+        let now = Date()
+        let end = calendar.date(byAdding: .month, value: 4, to: now) ?? now
+        let defaultSemester = Semester(
+            startDate: now,
+            endDate: end,
+            isCurrent: true,
+            educationLevel: .college,
+            semesterTerm: .fall,
+            academicYear: "\(calendar.component(.year, from: now))-\(calendar.component(.year, from: end))"
+        )
+        coursesStore.addSemester(defaultSemester)
+        coursesStore.currentSemesterId = defaultSemester.id
+        return defaultSemester.id
     }
 
     private var cardBackground: some View {
@@ -613,7 +711,12 @@ struct GradeDetailCard: View {
         if let detail {
             VStack(alignment: .leading, spacing: 12) {
                 header(detail.course)
-                components(detail.components)
+                if segment == .overall {
+                    components(detail.components)
+                } else if segment == .scenarios {
+                    whatIf(detail)
+                }
+                notes(detail)
                 Text("Grades are approximations and may differ from your institution's official system.")
                     .font(.footnote)
                     .foregroundColor(.secondary)

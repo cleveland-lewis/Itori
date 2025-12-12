@@ -77,18 +77,6 @@ final class SettingsWindowController: NSWindowController {
                     self.window?.toolbar?.selectedItemIdentifier = pane.toolbarItemIdentifier
                     self.updateTitle(for: pane)
                     self.persistPane(pane)
-                    if let navController = self.contentViewController as? NSHostingController<AnyView> {
-                        let selectionBinding = Binding<SettingsToolbarIdentifier>(
-                            get: { self.coordinator.selectedSection },
-                            set: { newValue in self.coordinator.selectedSection = newValue }
-                        )
-                        navController.rootView = SettingsWindowController.makeRootView(
-                            selection: selectionBinding,
-                            appSettings: self.appSettings,
-                            coursesStore: self.coursesStore,
-                            coordinator: self.coordinator
-                        )
-                    }
                 }
             }
     }
