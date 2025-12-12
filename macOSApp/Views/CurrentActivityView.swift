@@ -56,7 +56,7 @@ struct CurrentActivityView: View {
                     Button(action: onChoose) {
                         Label("Choose Activity", systemImage: "plus")
                     }
-                    .buttonStyle(.glassProminent)
+                    .buttonStyle(LegacyGlassProminentButtonStyle())
                 }
             }
         }

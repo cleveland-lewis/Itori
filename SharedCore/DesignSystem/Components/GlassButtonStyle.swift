@@ -33,7 +33,3 @@ struct GlassButtonStyle: ButtonStyle {
 extension ButtonStyle where Self == GlassButtonStyle {
     static var glass: GlassButtonStyle { GlassButtonStyle() }
 }
-
-extension ButtonStyle where Self == LegacyGlassProminentButtonStyle {
-    static var glassProminent: LegacyGlassProminentButtonStyle { LegacyGlassProminentButtonStyle() }
-}

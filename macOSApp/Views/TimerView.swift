@@ -73,7 +73,7 @@ struct TimerView: View {
                 Button(action: toggleRunning) {
                     Label(isRunning ? "Pause" : "Start", systemImage: isRunning ? "pause.fill" : "play.fill")
                 }
-                .buttonStyle(.glassProminent)
+                .buttonStyle(LegacyGlassProminentButtonStyle())
 
                 Button("Reset") {
                     reset()

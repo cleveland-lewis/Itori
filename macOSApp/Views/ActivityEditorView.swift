@@ -99,7 +99,7 @@ struct ActivityEditorView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") { save() }
-                        .buttonStyle(.glassProminent)
+                    .buttonStyle(LegacyGlassProminentButtonStyle())
                 }
             }
         }
