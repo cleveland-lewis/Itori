@@ -226,6 +226,9 @@ struct AddEventPopup: View {
     @State private var location: String = ""
     @State private var notes: String = ""
     @State private var recurrence: CalendarManager.RecurrenceOption = .none
+    @State private var urlString: String = ""
+    @State private var primaryAlertMinutes: Int? = nil
+    @State private var secondaryAlertMinutes: Int? = nil
     @State private var isSaving: Bool = false
 
     var body: some View {
@@ -306,7 +309,13 @@ struct AddEventPopup: View {
             }
 
             do {
-                try await calendarManager.saveEvent(title: finalTitle, startDate: startDate, endDate: endDate, isAllDay: isAllDay, location: location, notes: notes, calendar: nil)
+                var alarms: [EKAlarm]? = nil
+                var builtAlarms: [EKAlarm] = []
+                if let pm = primaryAlertMinutes { builtAlarms.append(EKAlarm(relativeOffset: TimeInterval(-pm * 60))) }
+                if let sm = secondaryAlertMinutes { builtAlarms.append(EKAlarm(relativeOffset: TimeInterval(-sm * 60))) }
+                if !builtAlarms.isEmpty { alarms = builtAlarms }
+                let urlVal = URL(string: urlString)
+                try await calendarManager.saveEvent(title: finalTitle, startDate: startDate, endDate: endDate, isAllDay: isAllDay, location: location, notes: notes, url: urlVal, alarms: alarms, recurrenceRule: recurrence.rule, calendar: nil)
                 // refresh device events
                 await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
             } catch {

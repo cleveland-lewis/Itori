@@ -93,8 +93,9 @@ private struct DayEventRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
+            let cat = parseEventCategory(from: event.title) ?? .other
             Rectangle()
-                .fill(accentColor)
+                .fill(cat.color)
                 .frame(width: 3)
                 .cornerRadius(1.5)
                 .padding(.top, 4)

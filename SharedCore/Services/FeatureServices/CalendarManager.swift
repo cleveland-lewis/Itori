@@ -328,6 +328,9 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
                    isAllDay: Bool,
                    location: String,
                    notes: String,
+                   url: URL? = nil,
+                   alarms: [EKAlarm]? = nil,
+                   recurrenceRule: EKRecurrenceRule? = nil,
                    calendar: EKCalendar?) async throws {
         // Forward create to device manager
         guard let targetCalendar = calendar ?? DeviceCalendarManager.shared.store.defaultCalendarForNewEvents else { return }
@@ -339,6 +342,9 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
             newEvent.isAllDay = isAllDay
             newEvent.location = location
             newEvent.notes = notes
+            if let url = url { newEvent.url = url }
+            if let rule = recurrenceRule { newEvent.recurrenceRules = [rule] }
+            if let alarms = alarms { newEvent.alarms = alarms }
             newEvent.calendar = targetCalendar
 
             try DeviceCalendarManager.shared.store.save(newEvent, span: .thisEvent)

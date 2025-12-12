@@ -73,6 +73,12 @@ struct CalendarPageView: View {
     @EnvironmentObject var eventsStore: EventsCountStore
     @EnvironmentObject var calendarManager: CalendarManager
     @EnvironmentObject var deviceCalendar: DeviceCalendarManager
+
+    private var deviceEventsFiltered: [EKEvent] {
+        let selectedId = calendarManager.selectedCalendarID
+        if selectedId.isEmpty { return deviceCalendar.events }
+        return deviceCalendar.events.filter { $0.calendar.calendarIdentifier == selectedId }
+    }
     @State private var currentViewMode: CalendarViewMode = .month
     @State private var focusedDate: Date = Date()
     @State private var selectedDate: Date = Date()
@@ -195,7 +201,7 @@ struct CalendarPageView: View {
                 // Right sidebar (no visible divider)
                 DayEventsSidebar(
                     selectedDate: selectedDate,
-                    events: eventsForDay(selectedDate, from: deviceCalendar.events),
+                    events: eventsForDay(selectedDate, from: deviceEventsFiltered),
                     accentColor: settings.activeAccentColor
                 ) { ekEvent in
                     let calendarEvent = self.calendarEvent(from: ekEvent)
@@ -263,7 +269,7 @@ struct CalendarPageView: View {
                 selectDay(date)
             }
         case .day:
-            DayCalendarView(date: focusedDate, events: deviceCalendar.events.map { calendarEvent(from: $0) }) { ev in
+            DayCalendarView(date: focusedDate, events: deviceEventsFiltered.map { calendarEvent(from: $0) }) { ev in
                 selectedEvent = ev
                 selectDay(ev.startDate)
             }
@@ -477,7 +483,8 @@ struct CalendarPageView: View {
 
     private func updateMetrics() {
         // CalendarStats.calculate expects [EKEvent]
-        metrics = CalendarStats.calculate(from: deviceCalendar.events, for: focusedDate)
+        // Calculate metrics only from the visible calendar in settings
+        metrics = CalendarStats.calculate(from: deviceEventsFiltered, for: focusedDate)
     }
 }
 
@@ -689,9 +696,12 @@ private struct MonthCalendarView: View {
                                                                     .fill(Color.accentColor.opacity(0.85))
                                                                     .frame(width: 3)
                                                                 VStack(alignment: .leading, spacing: 2) {
-                                                                    Text(eventCategoryLabel(for: event.title))
-                                                                        .font(DesignSystem.Typography.caption)
-                                                                        .foregroundStyle(.secondary)
+                                                                    // show only small colored dot + title in month cells
+                                                                    if let cat = parseEventCategory(from: event.title) {
+                                                                        Circle().fill(cat.color).frame(width: 6, height: 6)
+                                                                    } else {
+                                                                        Circle().fill(EventCategory.other.color).frame(width: 6, height: 6)
+                                                                    }
                                                                     Text(event.title)
                                                                         .font(DesignSystem.Typography.caption)
                                                                         .foregroundStyle(.primary)
@@ -994,12 +1004,13 @@ private struct DayCalendarView: View {
         let totalHeight = proxy.size.height
         let hourHeight = totalHeight / 24.0
         ForEach(events) { event in
-            if let start = event.startDate, let end = event.endDate {
-                let startHour = calendar.component(.hour, from: start) + Double(calendar.component(.minute, from: start)) / 60.0
-                let endHour = calendar.component(.hour, from: end) + Double(calendar.component(.minute, from: end)) / 60.0
-                let y = CGFloat(startHour) * hourHeight
-                let h = max(24, CGFloat(max(0.5, endHour - startHour)) * hourHeight)
-                Button {
+            let start = event.startDate
+            let end = event.endDate
+            let startHour = Double(calendar.component(.hour, from: start)) + Double(calendar.component(.minute, from: start)) / 60.0
+            let endHour = Double(calendar.component(.hour, from: end)) + Double(calendar.component(.minute, from: end)) / 60.0
+            let y = CGFloat(startHour) * hourHeight
+            let h = max(24, CGFloat(max(0.5, endHour - startHour)) * hourHeight)
+            Button {
                     onSelectEvent?(event)
                 } label: {
                     RoundedRectangle(cornerRadius: 8, style: .continuous)
@@ -1322,16 +1333,17 @@ private struct EventDetailView: View {
             EventEditSheet(item: item) { updated in
                 _Concurrency.Task {
                     guard let id = item.ekIdentifier else { return }
-                    try? await calendarManager.updateEvent(
-                        identifier: id,
-                        title: updated.title,
-                        startDate: updated.startDate,
-                        endDate: updated.endDate,
-                        isAllDay: updated.isAllDay,
-                        location: updated.location,
-                        notes: updated.notes,
-                        recurrence: updated.recurrence
-                    )
+                    guard let ek = DeviceCalendarManager.shared.store.calendarItem(withIdentifier: id) as? EKEvent else { return }
+                    ek.title = updated.title
+                    ek.startDate = updated.startDate
+                    ek.endDate = updated.endDate
+                    ek.isAllDay = updated.isAllDay
+                    ek.location = updated.location
+                    ek.notes = updated.notes
+                    ek.recurrenceRules = updated.recurrence.rule.map { [$0] }
+                    if let url = updated.url { ek.url = url } else { ek.url = nil }
+                    if let alarms = updated.alarms { ek.alarms = alarms }
+                    try? DeviceCalendarManager.shared.store.save(ek, span: .thisEvent, commit: true)
                     isPresented = false
                 }
             }
@@ -1350,6 +1362,9 @@ private struct EventEditSheet: View {
     @State private var location: String
     @State private var notes: String
     @State private var recurrence: CalendarManager.RecurrenceOption = .none
+    @State private var urlString: String = ""
+    @State private var primaryAlertMinutes: Int? = nil
+    @State private var secondaryAlertMinutes: Int? = nil
 
     init(item: CalendarEvent, onSave: @escaping (UpdatedEvent) -> Void) {
         self.item = item
@@ -1360,6 +1375,7 @@ private struct EventEditSheet: View {
         _isAllDay = State(initialValue: item.isReminder ? true : false)
         _location = State(initialValue: item.location ?? "")
         _notes = State(initialValue: item.notes ?? "")
+        _urlString = State(initialValue: item.ekIdentifier == nil ? "" : (item.notes ?? ""))
     }
 
     var body: some View {
@@ -1377,6 +1393,7 @@ private struct EventEditSheet: View {
                 DatePicker("Starts", selection: $startDate)
                 DatePicker("Ends", selection: $endDate)
                 TextField("Location", text: $location)
+                TextField("URL", text: $urlString)
                 TextEditor(text: $notes).frame(height: 120)
 
                 Picker("Repeat", selection: $recurrence) {
@@ -1384,12 +1401,32 @@ private struct EventEditSheet: View {
                         Text(opt.rawValue.capitalized).tag(opt)
                     }
                 }
+
+                // Alerts
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading) {
+                        Text("Primary alert (minutes before)")
+                            .font(.caption)
+                        TextField("e.g. 15", value: $primaryAlertMinutes, formatter: NumberFormatter())
+                            .frame(width: 80)
+                    }
+                    VStack(alignment: .leading) {
+                        Text("Secondary alert (minutes before)")
+                            .font(.caption)
+                        TextField("e.g. 60", value: $secondaryAlertMinutes, formatter: NumberFormatter())
+                            .frame(width: 80)
+                    }
+                }
             }
 
             HStack {
                 Spacer()
                 Button("Save") {
-                    onSave(UpdatedEvent(title: title, startDate: startDate, endDate: endDate, isAllDay: isAllDay, location: location.isEmpty ? nil : location, notes: notes.isEmpty ? nil : notes, recurrence: recurrence))
+                    var alarms: [EKAlarm] = []
+                    if let pm = primaryAlertMinutes { alarms.append(EKAlarm(relativeOffset: TimeInterval(-pm * 60))) }
+                    if let sm = secondaryAlertMinutes { alarms.append(EKAlarm(relativeOffset: TimeInterval(-sm * 60))) }
+                    let urlVal = URL(string: urlString)
+                    onSave(UpdatedEvent(title: title, startDate: startDate, endDate: endDate, isAllDay: isAllDay, location: location.isEmpty ? nil : location, notes: notes.isEmpty ? nil : notes, url: urlVal, alarms: alarms.isEmpty ? nil : alarms, recurrence: recurrence))
                     dismiss()
                 }
                 .keyboardShortcut(.defaultAction)
@@ -1407,6 +1444,8 @@ private struct UpdatedEvent {
     var isAllDay: Bool
     var location: String?
     var notes: String?
+    var url: URL?
+    var alarms: [EKAlarm]?
     var recurrence: CalendarManager.RecurrenceOption
 }
 
