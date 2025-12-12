@@ -300,18 +300,22 @@ struct DashboardView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
 
                     ZStack(alignment: .trailing) {
-                        HStack(spacing: 8) {
+                        HStack(spacing: 10) {
                             if quickActionsExpanded {
-                                quickActionButton("Add Assignment", systemImage: "doc.badge.plus")
-                                quickActionButton("Add Event", systemImage: "calendar.badge.plus")
-                                quickActionButton("Add Course", systemImage: "graduationcap.fill")
-                                quickActionButton("Open Planner", systemImage: "calendar")
+                                ForEach(Array(["Add Assignment", "Add Event", "Add Course", "Open Planner"].enumerated()), id: \.offset) { idx, title in
+                                    let icons = ["doc.badge.plus", "calendar.badge.plus", "graduationcap.fill", "calendar"]
+                                    quickActionButton(title, systemImage: icons[idx])
+                                        .scaleEffect(quickActionsExpanded ? 1 : 0.92)
+                                        .opacity(quickActionsExpanded ? 1 : 0)
+                                        .offset(x: quickActionsExpanded ? 0 : 8)
+                                        .animation(.spring(response: 0.34, dampingFraction: 0.78).delay(Double(idx) * 0.035), value: quickActionsExpanded)
+                                }
                             }
                         }
                         .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .move(edge: .trailing).combined(with: .opacity)))
 
                         GlassIconButton(systemName: "plus", accessibilityLabel: "Quick Actions") {
-                            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                            withAnimation(.spring(response: 0.36, dampingFraction: 0.75)) {
                                 quickActionsExpanded.toggle()
                             }
                         }
