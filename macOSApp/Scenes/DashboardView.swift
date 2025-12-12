@@ -370,8 +370,6 @@ struct DashboardView: View {
         .controlSize(.small)
         .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .move(edge: .trailing).combined(with: .opacity)))
     }
-        .buttonStyle(.borderedProminent)
-    }
 
     private var quickActions: [(label: String, icon: String, handler: () -> Void)] {
         [
