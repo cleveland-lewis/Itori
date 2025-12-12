@@ -12,7 +12,7 @@ struct CalendarDayCell: View {
     @State private var isPressed = false
 
     var body: some View {
-        let level = densityLevel(for: eventCount)
+        _ = densityLevel(for: eventCount)
         let isToday = calendar.isDateInToday(date)
 
         VStack(spacing: 7) {

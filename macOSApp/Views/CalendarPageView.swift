@@ -75,7 +75,7 @@ struct CalendarPageView: View {
     @EnvironmentObject var deviceCalendar: DeviceCalendarManager
     @State private var currentViewMode: CalendarViewMode = .month
     @State private var focusedDate: Date = Date()
-    @State private var selectedDate: Date? = Date()
+    @State private var selectedDate: Date = Date()
     @State private var selectedEvent: CalendarEvent?
     @State private var metrics: CalendarStats = .empty
     @State private var showingNewEventSheet = false
@@ -178,14 +178,26 @@ struct CalendarPageView: View {
             .padding(.horizontal, DesignSystem.Layout.padding.window)
             .padding(.vertical, 6)
 
-            // Main content: single glass area without sidebars
-            VStack(spacing: 12) {
-                gridContent
+            HSplitView {
+                VStack(spacing: 12) {
+                    gridContent
+                }
+                .padding()
+                .background(DesignSystem.Materials.card)
+                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+                .frame(minWidth: 520, maxWidth: .infinity, maxHeight: .infinity)
+
+                DayEventsSidebar(
+                    selectedDate: selectedDate,
+                    events: eventsForDay(selectedDate, from: deviceCalendar.events),
+                    accentColor: settings.activeAccentColor
+                ) { ekEvent in
+                    let calendarEvent = self.calendarEvent(from: ekEvent)
+                    selectedEvent = calendarEvent
+                    selectDay(ekEvent.startDate ?? selectedDate)
+                }
+                .frame(minWidth: 320, idealWidth: 360, maxWidth: 440)
             }
-            .padding()
-            .background(DesignSystem.Materials.card)
-            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding(20)
         .sheet(isPresented: $showingNewEventSheet) {
@@ -207,7 +219,8 @@ struct CalendarPageView: View {
         // Present event detail without resizing layout
         .sheet(item: $selectedEvent, onDismiss: {
             // restore sidebar when the detail sheet is dismissed
-            withAnimation(.easeInOut(duration: 0.22)) { selectedDate = calendarManager.selectedDate ?? focusedDate }
+            let focus = calendarManager.selectedDate ?? focusedDate
+            withAnimation(.easeInOut(duration: 0.22)) { selectDay(focus) }
             selectedEvent = nil
         }, content: { event in
             // Add a subtle presentation animation inside the sheet
@@ -223,23 +236,22 @@ struct CalendarPageView: View {
             MonthCalendarView(
                 focusedDate: $focusedDate,
                 events: effectiveEvents,
+                selectedDate: $selectedDate,
                 onSelectDate: { day in
-                    focusedDate = day
-                    selectedDate = day
-                    calendarManager.selectedDate = day
+                    selectDay(day)
                     selectedEvent = events(on: day).first
                     updateMetrics()
                 },
                 onSelectEvent: { event in
                     selectedEvent = event
-                    focusedDate = event.startDate
-                    selectedDate = event.startDate
-                    calendarManager.selectedDate = event.startDate
+                    selectDay(event.startDate)
                     updateMetrics()
                 }
             )
         case .week:
-            WeekCalendarView(focusedDate: $focusedDate, events: effectiveEvents)
+            WeekCalendarView(focusedDate: $focusedDate, events: effectiveEvents, selectedDate: selectedDate) { date in
+                selectDay(date)
+            }
         case .day:
             CalendarDayView(date: focusedDate, events: deviceCalendar.events)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -258,25 +270,28 @@ struct CalendarPageView: View {
         switch currentViewMode {
         case .month:
             if let newDate = calendar.date(byAdding: .month, value: value, to: focusedDate) {
-                focusedDate = newDate
-                selectedDate = newDate
+                selectDay(newDate)
             }
         case .week:
             if let newDate = calendar.date(byAdding: .weekOfYear, value: value, to: focusedDate) {
-                focusedDate = newDate
-                selectedDate = newDate
+                selectDay(newDate)
             }
         case .day:
             if let newDate = calendar.date(byAdding: .day, value: value, to: focusedDate) {
-                focusedDate = newDate
-                selectedDate = newDate
+                selectDay(newDate)
             }
         case .year:
             if let newDate = calendar.date(byAdding: .year, value: value, to: focusedDate) {
-                focusedDate = newDate
-                selectedDate = newDate
+                selectDay(newDate)
             }
         }
+    }
+
+    private func selectDay(_ date: Date) {
+        let normalized = calendar.startOfDay(for: date)
+        selectedDate = normalized
+        focusedDate = date
+        calendarManager.selectedDate = date
     }
 
     private func monthTitle(for date: Date) -> String {
@@ -301,9 +316,7 @@ struct CalendarPageView: View {
 
     private func jumpToToday() {
         let today = Date()
-        focusedDate = today
-        selectedDate = today
-        calendarManager.selectedDate = today
+        selectDay(today)
     }
 
     private var effectiveEvents: [CalendarEvent] {
@@ -398,6 +411,33 @@ struct CalendarPageView: View {
             .sorted { $0.startDate < $1.startDate }
     }
 
+    private func eventsForDay(_ date: Date, from events: [EKEvent]) -> [EKEvent] {
+        let start = calendar.startOfDay(for: date)
+        guard let end = calendar.date(byAdding: .day, value: 1, to: start) else { return [] }
+        let filtered = events.filter { ek in
+            guard let eventStart = ek.startDate else { return false }
+            return (eventStart >= start && eventStart < end) || (ek.isAllDay && calendar.isDate(eventStart, inSameDayAs: start))
+        }
+        return filtered.sorted {
+            if $0.isAllDay != $1.isAllDay { return $0.isAllDay }
+            return ($0.startDate ?? Date.distantPast) < ($1.startDate ?? Date.distantPast)
+        }
+    }
+
+    private func calendarEvent(from ekEvent: EKEvent) -> CalendarEvent {
+        let start = ekEvent.startDate ?? Date()
+        let end = ekEvent.endDate ?? start
+        CalendarEvent(
+            title: ekEvent.title,
+            startDate: start,
+            endDate: end,
+            location: ekEvent.location,
+            notes: ekEvent.notes,
+            ekIdentifier: ekEvent.eventIdentifier,
+            isReminder: ekEvent.calendar?.type == .reminder
+        )
+    }
+
     private func visibleInterval() -> DateInterval {
         switch currentViewMode {
         case .month:
@@ -447,6 +487,7 @@ private struct MonthCalendarSplitView: View {
         } detail: {
             MonthCalendarView(
                 focusedDate: $focusedDate,
+                selectedDate: normalizedSelectedDate,
                 events: events,
                 onSelectDate: { day in
                     selectedDate = day
@@ -459,6 +500,13 @@ private struct MonthCalendarSplitView: View {
                 }
             )
         }
+    }
+
+    private var normalizedSelectedDate: Binding<Date> {
+        Binding(
+            get: { selectedDate ?? focusedDate },
+            set: { selectedDate = $0 }
+        )
     }
 
     private var sidebar: some View {
@@ -566,6 +614,7 @@ private struct MonthCalendarSplitView: View {
 
 private struct MonthCalendarView: View {
     @Binding var focusedDate: Date
+    @Binding var selectedDate: Date
     let events: [CalendarEvent]
     let onSelectDate: (Date) -> Void
     let onSelectEvent: (CalendarEvent) -> Void
@@ -583,7 +632,7 @@ private struct MonthCalendarView: View {
                     ForEach(days) { day in
                         let normalized = calendar.startOfDay(for: day.date)
                         let count = eventsStore.eventsByDate[normalized] ?? events(for: day.date).count
-                        let isSelected = calendar.isDate(day.date, inSameDayAs: focusedDate)
+                        let isSelected = calendar.isDate(day.date, inSameDayAs: selectedDate)
                         let calendarDay = CalendarDay(
                             date: day.date,
                             isToday: calendar.isDateInToday(day.date),
@@ -727,7 +776,9 @@ private struct MonthCalendarView: View {
 
 private struct WeekCalendarView: View {
     @Binding var focusedDate: Date
+    let selectedDate: Date
     let events: [CalendarEvent]
+    let onSelectDate: (Date) -> Void
     @EnvironmentObject var settings: AppSettingsModel
     private let calendar = Calendar.current
 
@@ -750,7 +801,14 @@ private struct WeekCalendarView: View {
             Text(weekTitle)
                 .font(DesignSystem.Typography.subHeader)
 
-            WeekHeaderView(weekDays: weekDays, focusedDate: $focusedDate, calendar: calendar, events: events)
+            WeekHeaderView(
+                weekDays: weekDays,
+                focusedDate: $focusedDate,
+                selectedDate: selectedDate,
+                calendar: calendar,
+                events: events,
+                onSelectDate: onSelectDate
+            )
 
             Divider().background(Color(nsColor: .separatorColor).opacity(0.12))
 
@@ -1285,8 +1343,10 @@ private extension View {
 private struct WeekHeaderView: View {
     let weekDays: [Date]
     @Binding var focusedDate: Date
+    let selectedDate: Date
     let calendar: Calendar
     let events: [CalendarEvent]
+    let onSelectDate: (Date) -> Void
     private let spacing: CGFloat = 8
 
     var body: some View {
@@ -1296,7 +1356,7 @@ private struct WeekHeaderView: View {
                 let day = CalendarDay(
                     date: date,
                     isToday: calendar.isDateInToday(date),
-                    isSelected: calendar.isDate(date, inSameDayAs: focusedDate),
+                    isSelected: calendar.isDate(date, inSameDayAs: selectedDate),
                     hasEvents: count > 0,
                     densityLevel: EventDensityLevel.fromCount(count),
                     isInCurrentMonth: true
@@ -1304,6 +1364,7 @@ private struct WeekHeaderView: View {
                 Button {
                     withAnimation(.easeInOut(duration: 0.15)) {
                         focusedDate = date
+                        onSelectDate(date)
                     }
                 } label: {
                     DayHeaderCard(day: day)

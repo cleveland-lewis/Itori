@@ -15,8 +15,9 @@ final class TimerManager: ObservableObject {
         isRunning = true
         // Throttled to 1s
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            guard let strongSelf = self else { return }
             _Concurrency.Task { @MainActor in
-                self?.tick()
+                strongSelf.tick()
             }
         }
         if let t = timer {

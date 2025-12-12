@@ -20,7 +20,7 @@ final class InsightsViewModel: LoadableViewModel {
 
     func refresh(windowDays: Int = 14) {
         _Concurrency.Task { [weak self] in
-            _ = try await self?.withLoading(message: "Analyzing usage…") {
+            _ = await self?.withLoading(message: "Analyzing usage…") {
                 guard let self else { return () }
                 let stats = UsageStatsBuilder.build(
                     from: self.historyStore,

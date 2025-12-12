@@ -234,7 +234,7 @@ struct AIScheduler {
                 }
 
                 guard let chosenIdx = bestIdx else { break }
-                var chosen = candidates[chosenIdx]
+                let chosen = candidates[chosenIdx]
 
                 // Determine duration to schedule in this candidate
                 let chosenDuration = min(task.maxBlockMinutes, chosen.durationMinutes, remaining)

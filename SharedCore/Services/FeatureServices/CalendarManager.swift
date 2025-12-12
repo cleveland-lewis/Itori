@@ -117,7 +117,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     func ensureMonthCache(for date: Date) {
         _Concurrency.Task { [weak self] in
             guard let self else { return }
-            _ = try await self.withLoading(message: "Loading calendar…") {
+            _ = await self.withLoading(message: "Loading calendar…") {
                 if !self.isAuthorized {
                     await self.checkPermissionsOnStartup()
                 } else {

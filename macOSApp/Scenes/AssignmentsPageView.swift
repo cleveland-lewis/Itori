@@ -273,7 +273,7 @@ struct AssignmentsPageView: View {
                 upsertAssignment(newAssignment)
             }
         }
-        .onChange(of: appModel.requestedAssignmentDueDate) { dueDate in
+        .onChange(of: appModel.requestedAssignmentDueDate) { _, dueDate in
             guard let dueDate else { return }
             focusAssignment(closestTo: dueDate)
             appModel.requestedAssignmentDueDate = nil

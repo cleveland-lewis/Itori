@@ -81,7 +81,7 @@ struct ContentView: View {
                 selectedTab = initialTab
             }
         }
-        .onChange(of: plannerCoordinator.requestedCourseId) { courseId in
+        .onChange(of: plannerCoordinator.requestedCourseId) { _, courseId in
             selectedTab = .planner
             plannerCoordinator.selectedCourseFilter = courseId
         }

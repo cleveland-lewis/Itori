@@ -41,7 +41,7 @@ final class AutoScheduler {
         maxStudyMinutesPerDay: Int = 360
     ) -> ScheduleResult {
         var proposedEvents: [EKEvent] = []
-        var remainingTasks = tasks.sorted {
+        let remainingTasks = tasks.sorted {
             if $0.priority != $1.priority { return $0.priority > $1.priority }
             return $0.dueDate < $1.dueDate
         }

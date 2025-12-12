@@ -41,10 +41,8 @@ final class TimerPageViewModel: ObservableObject {
     }
 
     deinit {
-        _Concurrency.Task { @MainActor in
-            stopClock()
-            modeCancellable?.cancel()
-        }
+        stopClock()
+        modeCancellable?.cancel()
     }
 
     // MARK: - Clock

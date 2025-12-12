@@ -20,7 +20,7 @@ struct SensoryFeedbackModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: trigger) { newValue in
+            .onChange(of: trigger) { _, newValue in
                 guard newValue else { return }
                 performFeedback()
             }
