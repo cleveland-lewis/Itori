@@ -40,11 +40,11 @@ final class TimerPageViewModel: ObservableObject {
         requestNotificationPermissionIfNeeded()
     }
 
+    @MainActor
     deinit {
-        Task { @MainActor in
-            stopClock()
-            modeCancellable?.cancel()
-        }
+        // Run on main actor so we can call actor-isolated cleanup synchronously
+        stopClock()
+        modeCancellable?.cancel()
     }
 
     // MARK: - Clock

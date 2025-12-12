@@ -226,6 +226,10 @@ struct AddEventPopup: View {
     @State private var location: String = ""
     @State private var notes: String = ""
     @State private var recurrence: CalendarManager.RecurrenceOption = .none
+    @State private var recurrenceInterval: Int = 1
+    @State private var recurrenceEndCount: Int? = nil
+    @State private var recurrenceEndDate: Date? = nil
+    @State private var weekdaySelection: [Int: Bool] = Dictionary(uniqueKeysWithValues: (1...7).map { ($0, false) })
     @State private var urlString: String = ""
     @State private var primaryAlertMinutes: Int? = nil
     @State private var secondaryAlertMinutes: Int? = nil
@@ -242,7 +246,7 @@ struct AddEventPopup: View {
 
             Form {
                 TextField("Title", text: $title)
-                    .onChange(of: title) { new in
+                    .onChange(of: title) { _, new in
                         // If user has not explicitly selected category, parse from title
                         if !userSelectedCategory {
                             if let parsed = parseCategory(from: new) {
@@ -269,6 +273,34 @@ struct AddEventPopup: View {
                 Picker("Repeat", selection: $recurrence) {
                     ForEach(CalendarManager.RecurrenceOption.allCases, id: \.self) { opt in
                         Text(opt.rawValue.capitalized).tag(opt)
+                    }
+                }
+
+                // Advanced recurrence controls
+                if recurrence != .none {
+                    HStack(spacing: 12) {
+                        Stepper("Every \(recurrenceInterval)", value: $recurrenceInterval, in: 1...52)
+                        Picker("End", selection: Binding(get: { recurrenceEndCount == nil ? "none" : "count" }, set: { new in
+                            if new == "none" { recurrenceEndCount = nil; recurrenceEndDate = nil }
+                            else { recurrenceEndCount = recurrenceEndCount ?? 1; recurrenceEndDate = nil }
+                        })) {
+                            Text("None").tag("none")
+                            Text("After count").tag("count")
+                        }
+                        .frame(width: 160)
+                    }
+                    if recurrence == .weekly {
+                        VStack(alignment: .leading) {
+                            Text("Weekdays")
+                                .font(.caption)
+                            HStack {
+                                ForEach(1...7, id: \.self) { idx in
+                                    let symbol = Calendar.current.veryShortWeekdaySymbols[(idx - 1 + 7) % 7]
+                                    Toggle(symbol, isOn: Binding(get: { weekdaySelection[idx] ?? false }, set: { weekdaySelection[idx] = $0 }))
+                                        .toggleStyle(.button)
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -298,6 +330,27 @@ struct AddEventPopup: View {
     }
 
     private func createEvent() {
+        func buildRecurrenceRule(option: CalendarManager.RecurrenceOption, interval: Int, weekdays: [Int: Bool], endCount: Int?, endDate: Date?) -> EKRecurrenceRule? {
+            guard option != .none else { return nil }
+            let frequency: EKRecurrenceFrequency
+            switch option {
+            case .daily: frequency = .daily
+            case .weekly: frequency = .weekly
+            case .monthly: frequency = .monthly
+            case .none: return nil
+            }
+            var days: [EKRecurrenceDayOfWeek]? = nil
+            if option == .weekly {
+                let selected = weekdays.filter { $0.value }.map { (index, _) in
+                    EKRecurrenceDayOfWeek(EKWeekday(rawValue: index)!)
+                }
+                if !selected.isEmpty { days = selected }
+            }
+            var end: EKRecurrenceEnd? = nil
+            if let count = endCount { end = EKRecurrenceEnd(occurrenceCount: count) }
+            else if let d = endDate { end = EKRecurrenceEnd(end: d) }
+            return EKRecurrenceRule(recurrenceWith: frequency, interval: interval, daysOfTheWeek: days, daysOfTheMonth: nil, monthsOfTheYear: nil, weeksOfTheYear: nil, daysOfTheYear: nil, setPositions: nil, end: end)
+        }
         Task {
             isSaving = true
             // If category not explicitly chosen, ensure title contains category keyword to surface label parsing
@@ -315,7 +368,8 @@ struct AddEventPopup: View {
                 if let sm = secondaryAlertMinutes { builtAlarms.append(EKAlarm(relativeOffset: TimeInterval(-sm * 60))) }
                 if !builtAlarms.isEmpty { alarms = builtAlarms }
                 let urlVal = URL(string: urlString)
-                try await calendarManager.saveEvent(title: finalTitle, startDate: startDate, endDate: endDate, isAllDay: isAllDay, location: location, notes: notes, url: urlVal, alarms: alarms, recurrenceRule: recurrence.rule, calendar: nil)
+                let rule = buildRecurrenceRule(option: recurrence, interval: recurrenceInterval, weekdays: weekdaySelection, endCount: recurrenceEndCount, endDate: recurrenceEndDate)
+                try await calendarManager.saveEvent(title: finalTitle, startDate: startDate, endDate: endDate, isAllDay: isAllDay, location: location, notes: notes, url: urlVal, alarms: alarms, recurrenceRule: rule, calendar: nil)
                 // refresh device events
                 await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
             } catch {

@@ -249,7 +249,7 @@ enum PlannerEngine {
             var bestPlacement: (day: Date, slot: Int, score: Double)?
 
             for day in days {
-                var slotsForDay = slots(for: day)
+                let slotsForDay = slots(for: day)
                 let lastStart = max(0, slotsForDay.count - slotsNeeded)
                 for startIdx in 0...lastStart {
                     let endIdx = startIdx + slotsNeeded

@@ -1031,7 +1031,6 @@ private struct DayCalendarView: View {
             }
         }
     }
-}
 
 private struct YearCalendarView: View {
     var currentYear: Date
@@ -1340,9 +1339,10 @@ private struct EventDetailView: View {
                     ek.isAllDay = updated.isAllDay
                     ek.location = updated.location
                     ek.notes = updated.notes
-                    ek.recurrenceRules = updated.recurrence.rule.map { [$0] }
+                    // apply recurrence rule if present
+                    if let rule = updated.recurrenceRule { ek.recurrenceRules = [rule] } else { ek.recurrenceRules = [] }
                     if let url = updated.url { ek.url = url } else { ek.url = nil }
-                    if let alarms = updated.alarms { ek.alarms = alarms }
+                    if let alarms = updated.alarms { ek.alarms = alarms } else { ek.alarms = nil }
                     try? DeviceCalendarManager.shared.store.save(ek, span: .thisEvent, commit: true)
                     isPresented = false
                 }
@@ -1362,6 +1362,10 @@ private struct EventEditSheet: View {
     @State private var location: String
     @State private var notes: String
     @State private var recurrence: CalendarManager.RecurrenceOption = .none
+    @State private var recurrenceInterval: Int = 1
+    @State private var recurrenceEndCount: Int? = nil
+    @State private var recurrenceEndDate: Date? = nil
+    @State private var weekdaySelection: [Int: Bool] = Dictionary(uniqueKeysWithValues: (1...7).map { ($0, false) })
     @State private var urlString: String = ""
     @State private var primaryAlertMinutes: Int? = nil
     @State private var secondaryAlertMinutes: Int? = nil
@@ -1402,6 +1406,33 @@ private struct EventEditSheet: View {
                     }
                 }
 
+                if recurrence != .none {
+                    HStack(spacing: 12) {
+                        Stepper("Every \(recurrenceInterval)", value: $recurrenceInterval, in: 1...52)
+                        Picker("End", selection: Binding(get: { recurrenceEndCount == nil ? "none" : "count" }, set: { new in
+                            if new == "none" { recurrenceEndCount = nil; recurrenceEndDate = nil }
+                            else { recurrenceEndCount = recurrenceEndCount ?? 1; recurrenceEndDate = nil }
+                        })) {
+                            Text("None").tag("none")
+                            Text("After count").tag("count")
+                        }
+                        .frame(width: 160)
+                    }
+                    if recurrence == .weekly {
+                        VStack(alignment: .leading) {
+                            Text("Weekdays")
+                                .font(.caption)
+                            HStack {
+                                ForEach(1...7, id: \.self) { idx in
+                                    let symbol = Calendar.current.veryShortWeekdaySymbols[(idx - 1 + 7) % 7]
+                                    Toggle(symbol, isOn: Binding(get: { weekdaySelection[idx] ?? false }, set: { weekdaySelection[idx] = $0 }))
+                                        .toggleStyle(.button)
+                                }
+                            }
+                        }
+                    }
+                }
+
                 // Alerts
                 HStack(spacing: 12) {
                     VStack(alignment: .leading) {
@@ -1426,7 +1457,9 @@ private struct EventEditSheet: View {
                     if let pm = primaryAlertMinutes { alarms.append(EKAlarm(relativeOffset: TimeInterval(-pm * 60))) }
                     if let sm = secondaryAlertMinutes { alarms.append(EKAlarm(relativeOffset: TimeInterval(-sm * 60))) }
                     let urlVal = URL(string: urlString)
-                    onSave(UpdatedEvent(title: title, startDate: startDate, endDate: endDate, isAllDay: isAllDay, location: location.isEmpty ? nil : location, notes: notes.isEmpty ? nil : notes, url: urlVal, alarms: alarms.isEmpty ? nil : alarms, recurrence: recurrence))
+                    // build recurrence rule from advanced controls
+                    let rule: EKRecurrenceRule? = buildRecurrenceRuleGlobal(option: recurrence, interval: recurrenceInterval, weekdays: weekdaySelection, endCount: recurrenceEndCount, endDate: recurrenceEndDate)
+                    onSave(UpdatedEvent(title: title, startDate: startDate, endDate: endDate, isAllDay: isAllDay, location: location.isEmpty ? nil : location, notes: notes.isEmpty ? nil : notes, url: urlVal, alarms: alarms.isEmpty ? nil : alarms, recurrenceRule: rule))
                     dismiss()
                 }
                 .keyboardShortcut(.defaultAction)
@@ -1446,7 +1479,34 @@ private struct UpdatedEvent {
     var notes: String?
     var url: URL?
     var alarms: [EKAlarm]?
-    var recurrence: CalendarManager.RecurrenceOption
+    var recurrenceRule: EKRecurrenceRule?
+}
+
+// Helper to create EKRecurrenceRule from UI controls
+private func buildRecurrenceRuleGlobal(option: CalendarManager.RecurrenceOption, interval: Int, weekdays: [Int: Bool], endCount: Int?, endDate: Date?) -> EKRecurrenceRule? {
+    guard option != .none else { return nil }
+    let frequency: EKRecurrenceFrequency
+    switch option {
+    case .daily: frequency = .daily
+    case .weekly: frequency = .weekly
+    case .monthly: frequency = .monthly
+    case .none: return nil
+    }
+
+    var days: [EKRecurrenceDayOfWeek]? = nil
+    if option == .weekly {
+        let selected = weekdays.filter { $0.value }.map { (index, _) in
+            // Calendar weekday symbols use 1=Sunday
+            EKRecurrenceDayOfWeek(EKWeekday(rawValue: index)!)
+        }
+        if !selected.isEmpty { days = selected }
+    }
+
+    var end: EKRecurrenceEnd? = nil
+    if let count = endCount { end = EKRecurrenceEnd(occurrenceCount: count) }
+    else if let d = endDate { end = EKRecurrenceEnd(end: d) }
+
+    return EKRecurrenceRule(recurrenceWith: frequency, interval: interval, daysOfTheWeek: days, daysOfTheMonth: nil, monthsOfTheYear: nil, weeksOfTheYear: nil, daysOfTheYear: nil, setPositions: nil, end: end)
 }
 
     private var dateRange: String {
