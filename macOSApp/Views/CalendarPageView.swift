@@ -52,16 +52,22 @@ public struct CalendarEvent: Identifiable, Hashable {
     var endDate: Date
     var location: String?
     var notes: String?
+    var url: URL?
+    var alarms: [EKAlarm]?
+    var travelTime: TimeInterval?
     var ekIdentifier: String?
     var isReminder: Bool = false
 
-    init(id: UUID = UUID(), title: String, startDate: Date, endDate: Date, location: String? = nil, notes: String? = nil, ekIdentifier: String? = nil, isReminder: Bool = false) {
+    init(id: UUID = UUID(), title: String, startDate: Date, endDate: Date, location: String? = nil, notes: String? = nil, url: URL? = nil, alarms: [EKAlarm]? = nil, travelTime: TimeInterval? = nil, ekIdentifier: String? = nil, isReminder: Bool = false) {
         self.id = id
         self.title = title
         self.startDate = startDate
         self.endDate = endDate
         self.location = location
         self.notes = notes
+        self.url = url
+        self.alarms = alarms
+        self.travelTime = travelTime
         self.ekIdentifier = ekIdentifier
         self.isReminder = isReminder
     }
@@ -73,15 +79,9 @@ struct CalendarPageView: View {
     @EnvironmentObject var eventsStore: EventsCountStore
     @EnvironmentObject var calendarManager: CalendarManager
     @EnvironmentObject var deviceCalendar: DeviceCalendarManager
-
-    private var deviceEventsFiltered: [EKEvent] {
-        let selectedId = calendarManager.selectedCalendarID
-        if selectedId.isEmpty { return deviceCalendar.events }
-        return deviceCalendar.events.filter { $0.calendar.calendarIdentifier == selectedId }
-    }
     @State private var currentViewMode: CalendarViewMode = .month
     @State private var focusedDate: Date = Date()
-    @State private var selectedDate: Date = Date()
+    @State private var selectedDate: Date? = Date()
     @State private var selectedEvent: CalendarEvent?
     @State private var metrics: CalendarStats = .empty
     @State private var showingNewEventSheet = false
@@ -110,33 +110,31 @@ struct CalendarPageView: View {
                 .rootsStandardInteraction()
 
                 VStack(alignment: .leading, spacing: 2) {
-                    // Compact title (remove big month/year)
-                    HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        if currentViewMode == .month {
-                            Text(monthTitle(for: focusedDate))
-                                .font(.headline)
-                        } else if currentViewMode == .week {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(weekTitle(for: focusedDate))
-                                    .font(.headline)
-                                Text(weekSubtitle(for: focusedDate))
-                                    .font(DesignSystem.Typography.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        } else if currentViewMode == .day {
+                    // Large title driven by current view mode
+                    Group {
+                        switch currentViewMode {
+                        case .day:
                             Text(focusedDate.formatted(.dateTime.weekday().month().day()))
-                                .font(.headline)
-                        } else {
+                        case .week:
+                            Text(weekTitle(for: focusedDate))
+                        case .month:
+                            Text(monthTitle(for: focusedDate))
+                        case .year:
                             Text(String(Calendar.current.component(.year, from: focusedDate)))
-                                .font(.headline)
                         }
                     }
+                    .font(.system(size: 34, weight: .semibold))
                     .lineLimit(1)
+
+                    // Subtitle / small metadata
+                    Text(currentViewMode == .week ? weekSubtitle(for: focusedDate) : "")
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(.secondary)
                 }
 
                 Spacer()
 
-                Picker("", selection: $currentViewMode) {
+                Picker("View", selection: $currentViewMode) {
                     ForEach(CalendarViewMode.allCases) { mode in
                         Text(mode.title).tag(mode)
                     }
@@ -186,32 +184,14 @@ struct CalendarPageView: View {
             .padding(.horizontal, DesignSystem.Layout.padding.window)
             .padding(.vertical, 6)
 
-            HStack(alignment: .top, spacing: 12) {
-                // Left calendar card
-                VStack(spacing: 12) {
-                    gridContent
-                }
-                .padding(DesignSystem.Layout.padding.card)
-                .background(DesignSystem.Materials.card)
-                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
-                .shadow(color: Color.black.opacity(0.06), radius: 8, y: 4)
-                .padding(.trailing, 8) // align spacing with sidebar padding
-                .frame(minWidth: 520, maxWidth: .infinity, maxHeight: .infinity)
-
-                // Right sidebar (no visible divider)
-                DayEventsSidebar(
-                    selectedDate: selectedDate,
-                    events: eventsForDay(selectedDate, from: deviceEventsFiltered),
-                    accentColor: settings.activeAccentColor
-                ) { ekEvent in
-                    let calendarEvent = self.calendarEvent(from: ekEvent)
-                    selectedEvent = calendarEvent
-                    selectDay(ekEvent.startDate ?? selectedDate)
-                }
-                .frame(minWidth: 320, idealWidth: 360, maxWidth: 440)
-                .frame(maxHeight: .infinity)
+            // Main content: single glass area without sidebars
+            VStack(spacing: 12) {
+                gridContent
             }
-
+            .padding()
+            .background(DesignSystem.Materials.card)
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding(20)
         .sheet(isPresented: $showingNewEventSheet) {
@@ -233,8 +213,7 @@ struct CalendarPageView: View {
         // Present event detail without resizing layout
         .sheet(item: $selectedEvent, onDismiss: {
             // restore sidebar when the detail sheet is dismissed
-            let focus = calendarManager.selectedDate ?? focusedDate
-            withAnimation(.easeInOut(duration: 0.22)) { selectDay(focus) }
+            withAnimation(.easeInOut(duration: 0.22)) { selectedDate = calendarManager.selectedDate ?? focusedDate }
             selectedEvent = nil
         }, content: { event in
             // Add a subtle presentation animation inside the sheet
@@ -249,31 +228,27 @@ struct CalendarPageView: View {
         case .month:
             MonthCalendarView(
                 focusedDate: $focusedDate,
-                selectedDate: $selectedDate,
                 events: effectiveEvents,
                 onSelectDate: { day in
-                    selectDay(day)
+                    focusedDate = day
+                    selectedDate = day
+                    calendarManager.selectedDate = day
                     selectedEvent = events(on: day).first
                     updateMetrics()
                 },
                 onSelectEvent: { event in
                     selectedEvent = event
-                    selectDay(event.startDate)
+                    focusedDate = event.startDate
+                    selectedDate = event.startDate
+                    calendarManager.selectedDate = event.startDate
                     updateMetrics()
                 }
             )
-            .frame(maxHeight: .infinity)
-
         case .week:
-            WeekCalendarView(focusedDate: $focusedDate, selectedDate: selectedDate, events: effectiveEvents) { date in
-                selectDay(date)
-            }
+            WeekCalendarView(focusedDate: $focusedDate, events: effectiveEvents)
         case .day:
-            DayCalendarView(date: focusedDate, events: deviceEventsFiltered.map { calendarEvent(from: $0) }) { ev in
-                selectedEvent = ev
-                selectDay(ev.startDate)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            CalendarDayView(date: focusedDate, events: deviceCalendar.events)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .year:
             CalendarYearView(currentYear: focusedDate)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -289,28 +264,25 @@ struct CalendarPageView: View {
         switch currentViewMode {
         case .month:
             if let newDate = calendar.date(byAdding: .month, value: value, to: focusedDate) {
-                selectDay(newDate)
+                focusedDate = newDate
+                selectedDate = newDate
             }
         case .week:
             if let newDate = calendar.date(byAdding: .weekOfYear, value: value, to: focusedDate) {
-                selectDay(newDate)
+                focusedDate = newDate
+                selectedDate = newDate
             }
         case .day:
             if let newDate = calendar.date(byAdding: .day, value: value, to: focusedDate) {
-                selectDay(newDate)
+                focusedDate = newDate
+                selectedDate = newDate
             }
         case .year:
             if let newDate = calendar.date(byAdding: .year, value: value, to: focusedDate) {
-                selectDay(newDate)
+                focusedDate = newDate
+                selectedDate = newDate
             }
         }
-    }
-
-    private func selectDay(_ date: Date) {
-        let normalized = calendar.startOfDay(for: date)
-        selectedDate = normalized
-        focusedDate = date
-        calendarManager.selectedDate = date
     }
 
     private func monthTitle(for date: Date) -> String {
@@ -335,7 +307,9 @@ struct CalendarPageView: View {
 
     private func jumpToToday() {
         let today = Date()
-        selectDay(today)
+        focusedDate = today
+        selectedDate = today
+        calendarManager.selectedDate = today
     }
 
     private var effectiveEvents: [CalendarEvent] {
@@ -382,7 +356,7 @@ struct CalendarPageView: View {
         let predicate = eventStore.predicateForEvents(withStart: window.start, end: window.end, calendars: targetCalendars)
         let ekEvents = eventStore.events(matching: predicate)
         let mapped = ekEvents.map { ek in
-            CalendarEvent(title: ek.title, startDate: ek.startDate, endDate: ek.endDate, location: ek.location, notes: ek.notes, ekIdentifier: ek.eventIdentifier, isReminder: false)
+            CalendarEvent(title: ek.title, startDate: ek.startDate, endDate: ek.endDate, location: ek.location, notes: ek.notes, url: ek.url, alarms: ek.alarms, travelTime: ek.travelTime, ekIdentifier: ek.eventIdentifier, isReminder: false)
         }
         syncedEvents = mapped
         updateMetrics()
@@ -402,7 +376,7 @@ struct CalendarPageView: View {
             guard let reminders else { return }
             let mappedReminders = reminders.compactMap { reminder -> CalendarEvent? in
                 guard let dueDate = reminder.dueDateComponents?.date else { return nil }
-                return CalendarEvent(title: reminder.title, startDate: dueDate, endDate: dueDate, location: reminder.location, notes: reminder.notes, ekIdentifier: reminder.calendarItemIdentifier, isReminder: true)
+                return CalendarEvent(title: reminder.title, startDate: dueDate, endDate: dueDate, location: reminder.location, notes: reminder.notes, url: nil, alarms: nil, travelTime: nil, ekIdentifier: reminder.calendarItemIdentifier, isReminder: true)
             }
             DispatchQueue.main.async {
                 self.syncedEvents.append(contentsOf: mappedReminders)
@@ -428,33 +402,6 @@ struct CalendarPageView: View {
         return effectiveEvents
             .filter { calendar.isDate($0.startDate, inSameDayAs: startOfDay) }
             .sorted { $0.startDate < $1.startDate }
-    }
-
-    private func eventsForDay(_ date: Date, from events: [EKEvent]) -> [EKEvent] {
-        let start = calendar.startOfDay(for: date)
-        guard let end = calendar.date(byAdding: .day, value: 1, to: start) else { return [] }
-        let filtered = events.filter { ek in
-            guard let eventStart = ek.startDate else { return false }
-            return (eventStart >= start && eventStart < end) || (ek.isAllDay && calendar.isDate(eventStart, inSameDayAs: start))
-        }
-        return filtered.sorted {
-            if $0.isAllDay != $1.isAllDay { return $0.isAllDay }
-            return ($0.startDate ?? Date.distantPast) < ($1.startDate ?? Date.distantPast)
-        }
-    }
-
-    private func calendarEvent(from ekEvent: EKEvent) -> CalendarEvent {
-        let start = ekEvent.startDate ?? Date()
-        let end = ekEvent.endDate ?? start
-        return CalendarEvent(
-            title: ekEvent.title,
-            startDate: start,
-            endDate: end,
-            location: ekEvent.location,
-            notes: ekEvent.notes,
-            ekIdentifier: ekEvent.eventIdentifier,
-            isReminder: false
-        )
     }
 
     private func visibleInterval() -> DateInterval {
@@ -483,8 +430,7 @@ struct CalendarPageView: View {
 
     private func updateMetrics() {
         // CalendarStats.calculate expects [EKEvent]
-        // Calculate metrics only from the visible calendar in settings
-        metrics = CalendarStats.calculate(from: deviceEventsFiltered, for: focusedDate)
+        metrics = CalendarStats.calculate(from: deviceCalendar.events, for: focusedDate)
     }
 }
 
@@ -507,7 +453,6 @@ private struct MonthCalendarSplitView: View {
         } detail: {
             MonthCalendarView(
                 focusedDate: $focusedDate,
-                selectedDate: normalizedSelectedDate,
                 events: events,
                 onSelectDate: { day in
                     selectedDate = day
@@ -520,13 +465,6 @@ private struct MonthCalendarSplitView: View {
                 }
             )
         }
-    }
-
-    private var normalizedSelectedDate: Binding<Date> {
-        Binding(
-            get: { selectedDate ?? focusedDate },
-            set: { selectedDate = $0 }
-        )
     }
 
     private var sidebar: some View {
@@ -634,13 +572,12 @@ private struct MonthCalendarSplitView: View {
 
 private struct MonthCalendarView: View {
     @Binding var focusedDate: Date
-    @Binding var selectedDate: Date
     let events: [CalendarEvent]
     let onSelectDate: (Date) -> Void
     let onSelectEvent: (CalendarEvent) -> Void
     @EnvironmentObject var eventsStore: EventsCountStore
     private let calendar = Calendar.current
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: 12), count: 7)
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 6), count: 7)
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -648,93 +585,68 @@ private struct MonthCalendarView: View {
                 Text(monthHeader)
                     .font(DesignSystem.Typography.subHeader)
                 weekdayHeader
-                GeometryReader { proxy in
-                    let spacing: CGFloat = 12
-                    let totalSpacing = spacing * CGFloat(columns.count - 1)
-                    let columnWidth = (proxy.size.width - totalSpacing) / CGFloat(columns.count)
-
-                    LazyVGrid(columns: columns, spacing: spacing) {
-                        ForEach(days) { day in
-                            let normalized = calendar.startOfDay(for: day.date)
-                            let count = eventsStore.eventsByDate[normalized] ?? events(for: day.date).count
-                            let isSelected = calendar.isDate(day.date, inSameDayAs: selectedDate)
-                            let calendarDay = CalendarDay(
-                                date: day.date,
-                                isToday: calendar.isDateInToday(day.date),
-                                isSelected: isSelected,
-                                hasEvents: count > 0,
-                                densityLevel: EventDensityLevel.fromCount(count),
-                                isInCurrentMonth: day.isCurrentMonth
-                            )
-                            let dayEvents = events(for: day.date).sorted { $0.startDate < $1.startDate }
-
-                            VStack(alignment: .leading, spacing: 6) {
-                                Button {
-                                    withAnimation(.easeInOut(duration: 0.2)) {
-                                        focusedDate = day.date
-                                    }
-                                    onSelectDate(day.date)
-                                } label: {
-                                    MonthDayCell(day: calendarDay)
-                                        .frame(width: columnWidth, height: columnWidth * 0.28) // keep day pill compact
+                LazyVGrid(columns: columns, spacing: 12) {
+                    ForEach(days) { day in
+                        let normalized = calendar.startOfDay(for: day.date)
+                        let count = eventsStore.eventsByDate[normalized] ?? events(for: day.date).count
+                        let isSelected = calendar.isDate(day.date, inSameDayAs: focusedDate)
+                        let calendarDay = CalendarDay(
+                            date: day.date,
+                            isToday: calendar.isDateInToday(day.date),
+                            isSelected: isSelected,
+                            hasEvents: count > 0,
+                            densityLevel: EventDensityLevel.fromCount(count),
+                            isInCurrentMonth: day.isCurrentMonth
+                        )
+                        let dayEvents = events(for: day.date).sorted { $0.startDate < $1.startDate }
+                        VStack(alignment: .leading, spacing: 6) {
+                            Button {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    focusedDate = day.date
                                 }
-                                .buttonStyle(.plain)
+                                onSelectDate(day.date)
+                            } label: {
+                                MonthDayCell(day: calendarDay)
+                            }
+                            .buttonStyle(.plain)
 
-                                if !dayEvents.isEmpty {
-                                    VStack(alignment: .leading, spacing: 6) {
-                                        ForEach(dayEvents.prefix(3)) { event in
-                                            Button {
-                                                onSelectEvent(event)
-                                            } label: {
-                                                HStack(spacing: 8) {
-                                                    // soft accent highlight with left bar
-                                                    RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                                        .fill(Color.accentColor.opacity(0.06))
-                                                        .overlay(
-                                                            HStack(spacing: 8) {
-                                                                Rectangle()
-                                                                    .fill(Color.accentColor.opacity(0.85))
-                                                                    .frame(width: 3)
-                                                                VStack(alignment: .leading, spacing: 2) {
-                                                                    // show only small colored dot + title in month cells
-                                                                    if let cat = parseEventCategory(from: event.title) {
-                                                                        Circle().fill(cat.color).frame(width: 6, height: 6)
-                                                                    } else {
-                                                                        Circle().fill(EventCategory.other.color).frame(width: 6, height: 6)
-                                                                    }
-                                                                    Text(event.title)
-                                                                        .font(DesignSystem.Typography.caption)
-                                                                        .foregroundStyle(.primary)
-                                                                        .lineLimit(1)
-                                                                }
-                                                                Spacer()
-                                                            }
-                                                            .padding(.vertical, 6)
-                                                            .padding(.leading, 6)
-                                                        )
-                                                        .fixedSize(horizontal: false, vertical: true)
-                                                }
+                            if !dayEvents.isEmpty {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    ForEach(dayEvents.prefix(3)) { event in
+                                        Button {
+                                            onSelectEvent(event)
+                                        } label: {
+                                            HStack(spacing: 6) {
+                                                Circle()
+                                                    .fill(Color.accentColor.opacity(0.8))
+                                                    .frame(width: 6, height: 6)
+                                                Text(eventCategoryLabel(for: event.title))
+                                                    .font(DesignSystem.Typography.caption)
+                                                    .foregroundStyle(.secondary)
+                                                Text(event.title)
+                                                    .font(DesignSystem.Typography.caption)
+                                                    .foregroundStyle(.primary)
+                                                    .lineLimit(1)
+                                                Spacer()
                                             }
-                                            .buttonStyle(.plain)
                                         }
-                                        if dayEvents.count > 3 {
-                                            Text("+\(dayEvents.count - 3) more")
-                                                .font(DesignSystem.Typography.caption)
-                                                .foregroundStyle(.secondary)
-                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                    if dayEvents.count > 3 {
+                                        Text("+\(dayEvents.count - 3) more")
+                                            .font(DesignSystem.Typography.caption)
+                                            .foregroundStyle(.secondary)
                                     }
                                 }
                             }
-                            .padding(6)
-                            .frame(width: columnWidth, height: columnWidth)
-                            .background(
-                                RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusSmall, style: .continuous)
-                                    .fill(isSelected ? DesignSystem.Materials.surfaceHover : DesignSystem.Materials.surface)
-                            )
                         }
+                        .padding(6)
+                        .background(
+                            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusSmall, style: .continuous)
+                                .fill(isSelected ? DesignSystem.Materials.surfaceHover : DesignSystem.Materials.surface)
+                        )
                     }
                 }
-                .frame(minHeight: 0)
             }
         }
     }
@@ -821,9 +733,7 @@ private struct MonthCalendarView: View {
 
 private struct WeekCalendarView: View {
     @Binding var focusedDate: Date
-    let selectedDate: Date
     let events: [CalendarEvent]
-    let onSelectDate: (Date) -> Void
     @EnvironmentObject var settings: AppSettingsModel
     private let calendar = Calendar.current
 
@@ -846,14 +756,7 @@ private struct WeekCalendarView: View {
             Text(weekTitle)
                 .font(DesignSystem.Typography.subHeader)
 
-            WeekHeaderView(
-                weekDays: weekDays,
-                focusedDate: $focusedDate,
-                selectedDate: selectedDate,
-                calendar: calendar,
-                events: events,
-                onSelectDate: onSelectDate
-            )
+            WeekHeaderView(weekDays: weekDays, focusedDate: $focusedDate, calendar: calendar, events: events)
 
             Divider().background(Color(nsColor: .separatorColor).opacity(0.12))
 
@@ -951,145 +854,6 @@ private struct WeekCalendarView: View {
         let formatter = DateFormatter()
         formatter.dateFormat = AppSettingsModel.shared.use24HourTime ? "HH:mm" : "h a"
         return formatter.string(from: base)
-    }
-}
-
-// MARK: - Day & Year Views
-
-private struct DayCalendarView: View {
-    var date: Date
-    var events: [CalendarEvent]
-    var onSelectEvent: ((CalendarEvent) -> Void)? = nil
-    @EnvironmentObject var settings: AppSettingsModel
-    private let calendar = Calendar.current
-
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                Text(date.formatted(.dateTime.weekday().month().day()))
-                    .font(DesignSystem.Typography.subHeader)
-                // timeline
-                GeometryReader { proxy in
-                    let hours = Array(0...23)
-                    VStack(spacing: 0) {
-                        ForEach(hours, id: \.self) { hour in
-                            HStack(alignment: .top) {
-                                Text(hourLabel(hour))
-                                    .font(.caption2)
-                                    .foregroundColor(.secondary)
-                                    .frame(width: 48, alignment: .trailing)
-                                Rectangle().fill(Color(nsColor: .separatorColor).opacity(0.06)).frame(height: 1)
-                            }
-                            .frame(height: 48)
-                        }
-                    }
-                    .overlay(timelineEvents(proxy: proxy))
-                }
-                .frame(minHeight: 48 * 24)
-            }
-            .padding(DesignSystem.Layout.padding.card)
-            .glassCard(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
-        }
-    }
-
-    private func hourLabel(_ hour: Int) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = settings.use24HourTime ? "HH:mm" : "h a"
-        let d = calendar.date(bySettingHour: hour, minute: 0, second: 0, of: date) ?? date
-        return formatter.string(from: d)
-    }
-
-    @ViewBuilder
-    private func timelineEvents(proxy: GeometryProxy) -> some View {
-        let totalHeight = proxy.size.height
-        let hourHeight = totalHeight / 24.0
-        ForEach(events) { event in
-            let start = event.startDate
-            let end = event.endDate
-            let startHour = Double(calendar.component(.hour, from: start)) + Double(calendar.component(.minute, from: start)) / 60.0
-            let endHour = Double(calendar.component(.hour, from: end)) + Double(calendar.component(.minute, from: end)) / 60.0
-            let y = CGFloat(startHour) * hourHeight
-            let h = max(24, CGFloat(max(0.5, endHour - startHour)) * hourHeight)
-            Button {
-                    onSelectEvent?(event)
-                } label: {
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(Color.accentColor.opacity(0.18))
-                        .frame(height: h)
-                        .overlay(
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(event.title).font(.caption.weight(.semibold))
-                                Text(eventCategoryLabel(for: event.title)).font(.caption2).foregroundColor(.secondary)
-                            }
-                            .padding(8), alignment: .topLeading
-                        )
-                }
-                .buttonStyle(.plain)
-                .offset(y: y)
-                .padding(.leading, 56)
-                .padding(.trailing, 12)
-            }
-        }
-    }
-
-private struct YearCalendarView: View {
-    var currentYear: Date
-    private let calendar = Calendar.current
-
-    var body: some View {
-        let year = calendar.component(.year, from: currentYear)
-        ScrollView {
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 3), spacing: 12) {
-                ForEach(1...12, id: \.self) { m in
-                    if let monthDate = calendar.date(from: DateComponents(year: year, month: m)) {
-                        MiniMonthView(monthDate: monthDate)
-                            .frame(height: 160)
-                    }
-                }
-            }
-            .padding(DesignSystem.Layout.padding.card)
-        }
-    }
-}
-
-private struct MiniMonthView: View {
-    var monthDate: Date
-    private let calendar = Calendar.current
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(monthName).font(.subheadline.weight(.semibold))
-            // small grid of days
-            let days = generateDays()
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 4), count: 7), spacing: 4) {
-                ForEach(days, id: \.self) { d in
-                    Text("\(calendar.component(.day, from: d))")
-                        .font(.caption2)
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(calendar.isDate(d, equalTo: monthDate, toGranularity: .month) ? .primary : .secondary.opacity(0.6))
-                }
-            }
-        }
-        .padding(8)
-        .background(DesignSystem.Materials.surface)
-        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-    }
-
-    private var monthName: String {
-        let fmt = DateFormatter()
-        fmt.dateFormat = "LLLL"
-        return fmt.string(from: monthDate)
-    }
-
-    private func generateDays() -> [Date] {
-        guard let monthInterval = calendar.dateInterval(of: .month, for: monthDate) else { return [] }
-        var items: [Date] = []
-        var current = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: monthInterval.start)) ?? monthInterval.start
-        while current < monthInterval.end {
-            items.append(current)
-            current = calendar.date(byAdding: .day, value: 1, to: current) ?? current
-        }
-        return items
     }
 }
 
@@ -1214,6 +978,8 @@ private struct EventDetailView: View {
     @EnvironmentObject private var calendarManager: CalendarManager
     @State private var showDeleteConfirm = false
     @State private var showEdit = false
+    @State private var errorMessage: String?
+    @State private var showError = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -1268,6 +1034,47 @@ private struct EventDetailView: View {
                             .symbolRenderingMode(.hierarchical)
                             .frame(width: 24)
                         Text(location)
+                            .font(.body)
+                            .foregroundStyle(.primary)
+                    }
+                }
+                
+                if let url = item.url {
+                    HStack(spacing: DesignSystem.Layout.spacing.small) {
+                        Image(systemName: "link.circle.fill")
+                            .font(.body)
+                            .foregroundStyle(.blue)
+                            .symbolRenderingMode(.hierarchical)
+                            .frame(width: 24)
+                        Link(url.absoluteString, destination: url)
+                            .font(.body)
+                            .foregroundStyle(.blue)
+                    }
+                }
+                
+                if let alarms = item.alarms, !alarms.isEmpty {
+                    HStack(spacing: DesignSystem.Layout.spacing.small) {
+                        Image(systemName: "bell.fill")
+                            .font(.body)
+                            .foregroundStyle(.orange)
+                            .symbolRenderingMode(.hierarchical)
+                            .frame(width: 24)
+                        Text(alarms.compactMap { alarm in
+                            CalendarManager.AlertOption.from(alarm: alarm).rawValue
+                        }.joined(separator: ", "))
+                            .font(.body)
+                            .foregroundStyle(.primary)
+                    }
+                }
+                
+                if let travelTime = item.travelTime, travelTime > 0 {
+                    HStack(spacing: DesignSystem.Layout.spacing.small) {
+                        Image(systemName: "car.fill")
+                            .font(.body)
+                            .foregroundStyle(.green)
+                            .symbolRenderingMode(.hierarchical)
+                            .frame(width: 24)
+                        Text("Travel time: \(CalendarManager.TravelTimeOption.from(interval: travelTime).rawValue)")
                             .font(.body)
                             .foregroundStyle(.primary)
                     }
@@ -1331,183 +1138,47 @@ private struct EventDetailView: View {
         .sheet(isPresented: $showEdit) {
             EventEditSheet(item: item) { updated in
                 _Concurrency.Task {
-                    guard let id = item.ekIdentifier else { return }
-                    guard let ek = DeviceCalendarManager.shared.store.calendarItem(withIdentifier: id) as? EKEvent else { return }
-                    ek.title = updated.title
-                    ek.startDate = updated.startDate
-                    ek.endDate = updated.endDate
-                    ek.isAllDay = updated.isAllDay
-                    ek.location = updated.location
-                    ek.notes = updated.notes
-                    // apply recurrence rule if present
-                    if let rule = updated.recurrenceRule { ek.recurrenceRules = [rule] } else { ek.recurrenceRules = [] }
-                    if let url = updated.url { ek.url = url } else { ek.url = nil }
-                    if let alarms = updated.alarms { ek.alarms = alarms } else { ek.alarms = nil }
-                    try? DeviceCalendarManager.shared.store.save(ek, span: .thisEvent, commit: true)
-                    isPresented = false
-                }
-            }
-        }
-    }
-
-// Minimal Event Edit Sheet implementation
-private struct EventEditSheet: View {
-    let item: CalendarEvent
-    var onSave: (UpdatedEvent) -> Void
-    @Environment(\.dismiss) private var dismiss
-    @State private var title: String
-    @State private var startDate: Date
-    @State private var endDate: Date
-    @State private var isAllDay: Bool
-    @State private var location: String
-    @State private var notes: String
-    @State private var recurrence: CalendarManager.RecurrenceOption = .none
-    @State private var recurrenceInterval: Int = 1
-    @State private var recurrenceEndCount: Int? = nil
-    @State private var recurrenceEndDate: Date? = nil
-    @State private var weekdaySelection: [Int: Bool] = Dictionary(uniqueKeysWithValues: (1...7).map { ($0, false) })
-    @State private var urlString: String = ""
-    @State private var primaryAlertMinutes: Int? = nil
-    @State private var secondaryAlertMinutes: Int? = nil
-
-    init(item: CalendarEvent, onSave: @escaping (UpdatedEvent) -> Void) {
-        self.item = item
-        self.onSave = onSave
-        _title = State(initialValue: item.title)
-        _startDate = State(initialValue: item.startDate)
-        _endDate = State(initialValue: item.endDate)
-        _isAllDay = State(initialValue: item.isReminder ? true : false)
-        _location = State(initialValue: item.location ?? "")
-        _notes = State(initialValue: item.notes ?? "")
-        _urlString = State(initialValue: item.ekIdentifier == nil ? "" : (item.notes ?? ""))
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text(item.title.isEmpty ? "New Event" : "Edit Event")
-                    .font(.title2.weight(.bold))
-                Spacer()
-                Button("Close") { dismiss() }
-            }
-
-            Form {
-                TextField("Title", text: $title)
-                Toggle("All-day", isOn: $isAllDay)
-                DatePicker("Starts", selection: $startDate)
-                DatePicker("Ends", selection: $endDate)
-                TextField("Location", text: $location)
-                TextField("URL", text: $urlString)
-                TextEditor(text: $notes).frame(height: 120)
-
-                Picker("Repeat", selection: $recurrence) {
-                    ForEach(CalendarManager.RecurrenceOption.allCases, id: \.self) { opt in
-                        Text(opt.rawValue.capitalized).tag(opt)
-                    }
-                }
-
-                if recurrence != .none {
-                    HStack(spacing: 12) {
-                        Stepper("Every \(recurrenceInterval)", value: $recurrenceInterval, in: 1...52)
-                        Picker("End", selection: Binding(get: { recurrenceEndCount == nil ? "none" : "count" }, set: { new in
-                            if new == "none" { recurrenceEndCount = nil; recurrenceEndDate = nil }
-                            else { recurrenceEndCount = recurrenceEndCount ?? 1; recurrenceEndDate = nil }
-                        })) {
-                            Text("None").tag("none")
-                            Text("After count").tag("count")
+                    guard let id = item.ekIdentifier else { 
+                        await MainActor.run {
+                            errorMessage = "Event identifier not found"
+                            showError = true
                         }
-                        .frame(width: 160)
+                        return 
                     }
-                    if recurrence == .weekly {
-                        VStack(alignment: .leading) {
-                            Text("Weekdays")
-                                .font(.caption)
-                            HStack {
-                                ForEach(1...7, id: \.self) { idx in
-                                    let symbol = Calendar.current.veryShortWeekdaySymbols[(idx - 1 + 7) % 7]
-                                    Toggle(symbol, isOn: Binding(get: { weekdaySelection[idx] ?? false }, set: { weekdaySelection[idx] = $0 }))
-                                        .toggleStyle(.button)
-                                }
-                            }
+                    
+                    do {
+                        try await calendarManager.updateEvent(
+                            identifier: id,
+                            title: updated.title,
+                            startDate: updated.startDate,
+                            endDate: updated.endDate,
+                            isAllDay: updated.isAllDay,
+                            location: updated.location,
+                            notes: updated.notes,
+                            url: updated.url,
+                            primaryAlert: updated.primaryAlert,
+                            secondaryAlert: updated.secondaryAlert,
+                            travelTime: updated.travelTime.timeInterval,
+                            recurrence: updated.recurrence
+                        )
+                        await MainActor.run {
+                            isPresented = false
+                        }
+                    } catch {
+                        await MainActor.run {
+                            errorMessage = "Failed to save event: \(error.localizedDescription)"
+                            showError = true
                         }
                     }
                 }
-
-                // Alerts
-                HStack(spacing: 12) {
-                    VStack(alignment: .leading) {
-                        Text("Primary alert (minutes before)")
-                            .font(.caption)
-                        TextField("e.g. 15", value: $primaryAlertMinutes, formatter: NumberFormatter())
-                            .frame(width: 80)
-                    }
-                    VStack(alignment: .leading) {
-                        Text("Secondary alert (minutes before)")
-                            .font(.caption)
-                        TextField("e.g. 60", value: $secondaryAlertMinutes, formatter: NumberFormatter())
-                            .frame(width: 80)
-                    }
-                }
-            }
-
-            HStack {
-                Spacer()
-                Button("Save") {
-                    var alarms: [EKAlarm] = []
-                    if let pm = primaryAlertMinutes { alarms.append(EKAlarm(relativeOffset: TimeInterval(-pm * 60))) }
-                    if let sm = secondaryAlertMinutes { alarms.append(EKAlarm(relativeOffset: TimeInterval(-sm * 60))) }
-                    let urlVal = URL(string: urlString)
-                    // build recurrence rule from advanced controls
-                    let rule: EKRecurrenceRule? = buildRecurrenceRuleGlobal(option: recurrence, interval: recurrenceInterval, weekdays: weekdaySelection, endCount: recurrenceEndCount, endDate: recurrenceEndDate)
-                    onSave(UpdatedEvent(title: title, startDate: startDate, endDate: endDate, isAllDay: isAllDay, location: location.isEmpty ? nil : location, notes: notes.isEmpty ? nil : notes, url: urlVal, alarms: alarms.isEmpty ? nil : alarms, recurrenceRule: rule))
-                    dismiss()
-                }
-                .keyboardShortcut(.defaultAction)
             }
         }
-        .padding(16)
-        .frame(minWidth: 420, minHeight: 360)
-    }
-}
-
-private struct UpdatedEvent {
-    var title: String
-    var startDate: Date
-    var endDate: Date
-    var isAllDay: Bool
-    var location: String?
-    var notes: String?
-    var url: URL?
-    var alarms: [EKAlarm]?
-    var recurrenceRule: EKRecurrenceRule?
-}
-
-// Helper to create EKRecurrenceRule from UI controls
-private func buildRecurrenceRuleGlobal(option: CalendarManager.RecurrenceOption, interval: Int, weekdays: [Int: Bool], endCount: Int?, endDate: Date?) -> EKRecurrenceRule? {
-    guard option != .none else { return nil }
-    let frequency: EKRecurrenceFrequency
-    switch option {
-    case .daily: frequency = .daily
-    case .weekly: frequency = .weekly
-    case .monthly: frequency = .monthly
-    case .none: return nil
-    }
-
-    var days: [EKRecurrenceDayOfWeek]? = nil
-    if option == .weekly {
-        let selected = weekdays.filter { $0.value }.map { (index, _) in
-            // Calendar weekday symbols use 1=Sunday
-            EKRecurrenceDayOfWeek(EKWeekday(rawValue: index)!)
+        .alert("Error", isPresented: $showError, presenting: errorMessage) { _ in
+            Button("OK", role: .cancel) { }
+        } message: { message in
+            Text(message)
         }
-        if !selected.isEmpty { days = selected }
     }
-
-    var end: EKRecurrenceEnd? = nil
-    if let count = endCount { end = EKRecurrenceEnd(occurrenceCount: count) }
-    else if let d = endDate { end = EKRecurrenceEnd(end: d) }
-
-    return EKRecurrenceRule(recurrenceWith: frequency, interval: interval, daysOfTheWeek: days, daysOfTheMonth: nil, monthsOfTheYear: nil, weeksOfTheYear: nil, daysOfTheYear: nil, setPositions: nil, end: end)
-}
 
     private var dateRange: String {
         let f = DateFormatter()
@@ -1580,7 +1251,12 @@ private struct EventEditSheet: View {
     @State private var isAllDay: Bool
     @State private var location: String
     @State private var notes: String
+    @State private var urlString: String
+    @State private var primaryAlert: CalendarManager.AlertOption
+    @State private var secondaryAlert: CalendarManager.AlertOption
+    @State private var travelTime: CalendarManager.TravelTimeOption
     @State private var recurrence: CalendarManager.RecurrenceOption = .none
+    @State private var urlError: String?
 
     init(item: CalendarEvent, onSave: @escaping (EditableEvent) -> Void) {
         self.item = item
@@ -1591,6 +1267,19 @@ private struct EventEditSheet: View {
         _isAllDay = State(initialValue: false)
         _location = State(initialValue: item.location ?? "")
         _notes = State(initialValue: item.notes ?? "")
+        _urlString = State(initialValue: item.url?.absoluteString ?? "")
+        _primaryAlert = State(initialValue: item.alarms?.first.map { CalendarManager.AlertOption.from(alarm: $0) } ?? .none)
+        _secondaryAlert = State(initialValue: item.alarms?.dropFirst().first.map { CalendarManager.AlertOption.from(alarm: $0) } ?? .none)
+        _travelTime = State(initialValue: CalendarManager.TravelTimeOption.from(interval: item.travelTime))
+    }
+    
+    private var isValidURL: Bool {
+        guard !urlString.isEmpty else { return true }
+        return URL(string: urlString) != nil
+    }
+    
+    private var canSave: Bool {
+        !title.isEmpty && isValidURL
     }
 
     var body: some View {
@@ -1611,12 +1300,44 @@ private struct EventEditSheet: View {
             DatePicker("End", selection: $endDate, in: startDate..., displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute])
 
             TextField("Location", text: $location)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                TextField("URL", text: $urlString)
+                    .textContentType(.URL)
+                
+                if !urlString.isEmpty && !isValidURL {
+                    Text("Invalid URL format")
+                        .font(.caption)
+                        .foregroundColor(.red)
+                }
+            }
+            
             TextField("Notes", text: $notes, axis: .vertical)
                 .lineLimit(3, reservesSpace: true)
 
             Picker("Repeat", selection: $recurrence) {
                 ForEach(CalendarManager.RecurrenceOption.allCases) { opt in
                     Text(opt.rawValue.capitalized).tag(opt)
+                }
+            }
+            
+            Picker("Alert", selection: $primaryAlert) {
+                ForEach(CalendarManager.AlertOption.allCases) { opt in
+                    Text(opt.rawValue).tag(opt)
+                }
+            }
+            
+            if primaryAlert != .none {
+                Picker("2nd Alert", selection: $secondaryAlert) {
+                    ForEach(CalendarManager.AlertOption.allCases) { opt in
+                        Text(opt.rawValue).tag(opt)
+                    }
+                }
+            }
+            
+            Picker("Travel Time", selection: $travelTime) {
+                ForEach(CalendarManager.TravelTimeOption.allCases) { opt in
+                    Text(opt.rawValue).tag(opt)
                 }
             }
 
@@ -1630,12 +1351,17 @@ private struct EventEditSheet: View {
                         isAllDay: isAllDay,
                         location: location.isEmpty ? nil : location,
                         notes: notes.isEmpty ? nil : notes,
+                        url: urlString.isEmpty ? nil : urlString,
+                        primaryAlert: primaryAlert,
+                        secondaryAlert: secondaryAlert,
+                        travelTime: travelTime,
                         recurrence: recurrence
                     )
                     onSave(updated)
                     dismiss()
                 }
                 .buttonStyle(.borderedProminent)
+                .disabled(!canSave)
             }
         }
         .padding()
@@ -1649,6 +1375,10 @@ private struct EventEditSheet: View {
         var isAllDay: Bool
         var location: String?
         var notes: String?
+        var url: String?
+        var primaryAlert: CalendarManager.AlertOption
+        var secondaryAlert: CalendarManager.AlertOption
+        var travelTime: CalendarManager.TravelTimeOption
         var recurrence: CalendarManager.RecurrenceOption
     }
 }
@@ -1688,10 +1418,8 @@ private extension View {
 private struct WeekHeaderView: View {
     let weekDays: [Date]
     @Binding var focusedDate: Date
-    let selectedDate: Date
     let calendar: Calendar
     let events: [CalendarEvent]
-    let onSelectDate: (Date) -> Void
     private let spacing: CGFloat = 8
 
     var body: some View {
@@ -1701,7 +1429,7 @@ private struct WeekHeaderView: View {
                 let day = CalendarDay(
                     date: date,
                     isToday: calendar.isDateInToday(date),
-                    isSelected: calendar.isDate(date, inSameDayAs: selectedDate),
+                    isSelected: calendar.isDate(date, inSameDayAs: focusedDate),
                     hasEvents: count > 0,
                     densityLevel: EventDensityLevel.fromCount(count),
                     isInCurrentMonth: true
@@ -1709,7 +1437,6 @@ private struct WeekHeaderView: View {
                 Button {
                     withAnimation(.easeInOut(duration: 0.15)) {
                         focusedDate = date
-                        onSelectDate(date)
                     }
                 } label: {
                     DayHeaderCard(day: day)
@@ -1750,7 +1477,7 @@ struct CalendarView: View {
 
     private var calendarEvents: [CalendarEvent] {
         displayEKEvents.map {
-            CalendarEvent(title: $0.title, startDate: $0.startDate, endDate: $0.endDate, location: $0.location, notes: $0.notes, ekIdentifier: $0.eventIdentifier, isReminder: false)
+            CalendarEvent(title: $0.title, startDate: $0.startDate, endDate: $0.endDate, location: $0.location, notes: $0.notes, url: $0.url, alarms: $0.alarms, travelTime: $0.travelTime, ekIdentifier: $0.eventIdentifier, isReminder: false)
         }
     }
 
@@ -1968,7 +1695,7 @@ struct CalendarView: View {
     }
 
     private func mapEvent(_ ek: EKEvent) -> CalendarEvent {
-        CalendarEvent(title: ek.title, startDate: ek.startDate, endDate: ek.endDate, location: ek.location, notes: ek.notes, ekIdentifier: ek.eventIdentifier, isReminder: false)
+        CalendarEvent(title: ek.title, startDate: ek.startDate, endDate: ek.endDate, location: ek.location, notes: ek.notes, url: ek.url, alarms: ek.alarms, travelTime: ek.travelTime, ekIdentifier: ek.eventIdentifier, isReminder: false)
     }
 
     private func eventCategoryLabel(for title: String) -> String {
