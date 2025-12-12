@@ -42,7 +42,7 @@ final class TimerPageViewModel: ObservableObject {
 
     @MainActor
     deinit {
-        // Run on main actor so we can call actor-isolated cleanup synchronously
+        // Cancel observables synchronously - no Task needed since these are already on MainActor
         stopClock()
         modeCancellable?.cancel()
     }
