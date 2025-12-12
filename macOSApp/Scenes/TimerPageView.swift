@@ -697,7 +697,7 @@ struct TimerActivityRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Circle()
-                .fill(activity.colorTag)
+                .fill(activity.colorTag.color)
                 .frame(width: 10, height: 10)
 
             VStack(alignment: .leading, spacing: 4) {
@@ -927,7 +927,7 @@ struct StudyAnalyticsCard: View {
     // category color helper local to the analytics card
     private func categoryColorMap() -> [String: Color] {
         var map: [String: Color] = [:]
-        for a in activities { map[a.category] = a.colorTag }
+        for a in activities { map[a.category] = a.colorTag.color }
         return map
     }
 
@@ -996,14 +996,14 @@ struct StudyAnalyticsCard: View {
         }
     }
 
-    private func segmentsForToday() -> [(label: String, color: Color, frac: Double)] {
-        let grouped = Dictionary(grouping: activities) { $0.category }
-        let total = max(1, activities.reduce(0) { $0 + $1.todayTrackedSeconds })
-        return grouped.map { (k, v) in
-            let secs = v.reduce(0) { $0 + $1.todayTrackedSeconds }
-            return (label: k, color: v.first?.colorTag ?? .gray, frac: secs / total)
-        }
+private func segmentsForToday() -> [(label: String, color: Color, frac: Double)] {
+    let grouped = Dictionary(grouping: activities) { $0.category }
+    let total = max(1, activities.reduce(0) { $0 + $1.todayTrackedSeconds })
+    return grouped.map { (k, v) in
+        let secs = v.reduce(0) { $0 + $1.todayTrackedSeconds }
+        return (label: k, color: v.first?.colorTag.color ?? .gray, frac: secs / total)
     }
+}
 
     private func segmentsForWeek() -> [(label: String, color: Color, frac: Double)] {
         // Simple placeholder: reuse today proportions
