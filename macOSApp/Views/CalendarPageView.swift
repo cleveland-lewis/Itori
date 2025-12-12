@@ -643,6 +643,7 @@ private struct MonthCalendarView: View {
                             }
                         }
                         .padding(6)
+                        .frame(maxWidth: 180)
                         .background(
                             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusSmall, style: .continuous)
                                 .fill(isSelected ? DesignSystem.Materials.surfaceHover : DesignSystem.Materials.surface)
