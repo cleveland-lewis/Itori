@@ -423,7 +423,8 @@ struct CalendarPageView: View {
     }
 
     private func updateMetrics() {
-        metrics = CalendarStats.calculate(from: deviceCalendar.events.map { CalendarEvent(title: $0.title ?? "", startDate: $0.startDate, endDate: $0.endDate, ekIdentifier: $0.eventIdentifier) }, for: focusedDate)
+        // CalendarStats.calculate expects [EKEvent]
+        metrics = CalendarStats.calculate(from: deviceCalendar.events, for: focusedDate)
     }
 }
 

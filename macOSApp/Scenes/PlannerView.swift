@@ -205,7 +205,7 @@ struct PlannerView: View {
         let tasks: [AppTask] = AssignmentsStore.shared.incompleteTasks()
 
         // Build fixed events from CalendarManager's events (treat as locked)
-        let fixed: [FixedEvent] = calendarManager.dailyEvents.map { ev in
+        let fixed: [FixedEvent] = DeviceCalendarManager.shared.events.map { ev in
             FixedEvent(id: UUID(), title: ev.title ?? "", start: ev.startDate, end: ev.endDate, isLocked: true, source: .calendar)
         }
 
