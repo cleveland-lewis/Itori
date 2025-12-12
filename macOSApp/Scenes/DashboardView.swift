@@ -323,51 +323,82 @@ struct DashboardView: View {
     }
 
     private var clockCard: some View {
-        RootsCard {
-            let buttonHeight: CGFloat = 36
-            let columnSpacing: CGFloat = 24
+        // quickActionsExpanded controls fan-out
+        @State var quickActionsExpanded: Bool = false
 
-            HStack(alignment: .center, spacing: columnSpacing) {
-                // COLUMN 1 — Clock centered vertically
-                VStack {
-                    Spacer(minLength: 0)
+        return RootsCard {
+            VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                // Header with title and plus launcher
+                HStack(spacing: 12) {
+                    Text("Quick Actions")
+                        .rootsSectionHeader()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    ZStack(alignment: .trailing) {
+                        HStack(spacing: 8) {
+                            if quickActionsExpanded {
+                                quickActionButton("Add Assignment", systemImage: "doc.badge.plus")
+                                quickActionButton("Add Event", systemImage: "calendar.badge.plus")
+                                quickActionButton("Add Course", systemImage: "graduationcap.fill")
+                                quickActionButton("Open Planner", systemImage: "calendar")
+                            }
+                        }
+                        .transition(.asymmetric(insertion: .move(edge: .trailing).combined(with: .opacity), removal: .move(edge: .trailing).combined(with: .opacity)))
+
+                        Button(action: {
+                            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                                quickActionsExpanded.toggle()
+                            }
+                        }) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 14, weight: .semibold))
+                                .rotationEffect(.degrees(quickActionsExpanded ? 360 : 0))
+                                .animation(.easeInOut(duration: 0.35), value: quickActionsExpanded)
+                                .frame(width: 36, height: 36)
+                                .background(DesignSystem.Materials.hud.opacity(0.75), in: Circle())
+                        }
+                        .buttonStyle(.plain)
+                        .rootsStandardInteraction()
+                    }
+                }
+
+                // Main content: quick area (left) + clock (right)
+                HStack(alignment: .center, spacing: 24) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        // When collapsed, show a single compact placeholder or nothing
+                        if !quickActionsExpanded {
+                            Text("Actions")
+                                .rootsBodySecondary()
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
                     RootsAnalogClock(diameter: 160, showSecondHand: true, accentColor: settings.activeAccentColor)
                         .frame(width: 160, height: 160)
-                    Spacer(minLength: 0)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                .frame(maxWidth: .infinity, alignment: .center)
-
-                // COLUMN 2 — Buttons
-                VStack(spacing: 12) {
-                    actionButton("Add Assignment", systemImage: "doc.badge.plus")
-                    actionButton("Add Event", systemImage: "calendar.badge.plus")
-                    actionButton("Add Course", systemImage: "graduationcap.fill")
-                    actionButton("Open Planner", systemImage: "calendar")
-                }
-                .frame(maxWidth: 180)
             }
-            .frame(maxWidth: .infinity, minHeight: 220, alignment: .center)
             .padding(12)
         }
     }
 
-    private func actionButton(_ title: String, systemImage: String) -> some View {
+    private func quickActionButton(_ title: String, systemImage: String) -> some View {
         Button {
-            // TODO: wire actions
             switch title {
-            case "Add Assignment": print("Quick: Add Assignment")
-            case "Add Event": print("Quick: Add Event")
-            case "Add Course": print("Quick: Add Course")
+            case "Add Assignment": showAddAssignmentSheet = true
+            case "Add Event": showAddEventSheet = true
+            case "Add Course": appModel.selectedPage = .courses
             case "Open Planner": appModel.selectedPage = .planner
             default: break
             }
         } label: {
-            HStack {
+            HStack(spacing: 6) {
                 Image(systemName: systemImage)
                 Text(title)
             }
             .font(.subheadline)
-            .frame(maxWidth: .infinity, minHeight: 36)
+            .padding(.horizontal, 10)
+            .frame(minHeight: 34)
         }
         .buttonStyle(.borderedProminent)
     }
