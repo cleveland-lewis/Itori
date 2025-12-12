@@ -29,6 +29,18 @@ struct CourseGradeDetail: Identifiable, Hashable {
     var notes: String
 }
 
+enum GradeViewSegment: String, CaseIterable, Identifiable {
+    case overall, scenarios
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .overall: return "Overall"
+        case .scenarios: return "What-If"
+        }
+    }
+}
+
 
 // MARK: - Root View
 
