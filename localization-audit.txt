@@ -1,0 +1,464 @@
+===================================
+Roots Localization Audit
+===================================
+
+Generated: Sat Dec 13 15:23:25 EST 2025
+
+## 1. HARDCODED STRINGS IN TEXT() CALLS
+========================================
+
+### Text(...) instances:
+
+macOSApp/Scenes/PlannerSettingsView.swift:21:                    Text("1 Week").tag("1w")
+macOSApp/Scenes/PlannerSettingsView.swift:22:                    Text("2 Weeks").tag("2w")
+macOSApp/Scenes/PlannerSettingsView.swift:23:                    Text("1 Month").tag("1m")
+macOSApp/Scenes/PlannerSettingsView.swift:32:                    Text("1 Week").tag("1w")
+macOSApp/Scenes/PlannerSettingsView.swift:33:                    Text("2 Weeks").tag("2w")
+macOSApp/Scenes/PlannerSettingsView.swift:34:                    Text("1 Month").tag("1m")
+macOSApp/Scenes/DashboardView.swift:172:                        Text("Connect Apple Calendar to show events")
+macOSApp/Scenes/DashboardView.swift:185:                        Text("Access Denied. Open Settings.")
+macOSApp/Scenes/DashboardView.swift:263:                Text("Events Today").rootsSectionHeader()
+macOSApp/Scenes/DashboardView.swift:272:                Text("Assignments Due Today").rootsSectionHeader()
+macOSApp/Scenes/DashboardView.swift:284:                Text("Calendar").rootsSectionHeader()
+macOSApp/Scenes/DashboardView.swift:298:                    Text("Quick Actions")
+macOSApp/Scenes/DashboardView.swift:506:            Text("Calendar").rootsSectionHeader()
+macOSApp/Scenes/DashboardView.swift:603:            Text("Due Today")
+macOSApp/Scenes/DashboardView.swift:607:                Text("No assignments due today.")
+macOSApp/Scenes/DashboardView.swift:632:            Text("Upcoming Events")
+macOSApp/Scenes/DashboardView.swift:636:                Text("No upcoming events.")
+macOSApp/Scenes/DashboardView.swift:750:                    Text(" ")
+macOSApp/Scenes/DashboardView.swift:781:        return Text("\(day)")
+macOSApp/Scenes/GradesView.swift:18:                    Section(header: Text("Overall Status").font(DesignSystem.Typography.body)) {
+macOSApp/Scenes/GradesView.swift:24:                                    Text("Overall Status")
+macOSApp/Scenes/GradesView.swift:33:                            Text("TODO: Overall status")
+macOSApp/Scenes/GradesView.swift:38:                    Section(header: Text("By Course").font(DesignSystem.Typography.body)) {
+macOSApp/Scenes/GradesView.swift:44:                                    Text("By Course")
+macOSApp/Scenes/GradesView.swift:53:                            Text("TODO: By course")
+macOSApp/Scenes/GradesView.swift:58:                    Section(header: Text("Grade Components").font(DesignSystem.Typography.body)) {
+macOSApp/Scenes/GradesView.swift:64:                                    Text("Grade Components")
+macOSApp/Scenes/GradesView.swift:73:                            Text("TODO: Grade components")
+macOSApp/Scenes/GradesView.swift:78:                    Section(header: Text("Trends & Analytics").font(DesignSystem.Typography.body)) {
+macOSApp/Scenes/GradesView.swift:84:                                    Text("Trends & Analytics")
+macOSApp/Scenes/GradesView.swift:93:                            Text("TODO: Trends & Analytics")
+macOSApp/Scenes/CoursesView.swift:21:                            Text("Current semester")
+macOSApp/Scenes/CoursesView.swift:36:                            Text("No semesters yet. Add one to begin organizing your courses.")
+macOSApp/Scenes/CoursesView.swift:63:                            Text("Courses in this semester")
+macOSApp/Scenes/SettingsView.swift:17:                Section(header: Text("General")) {
+macOSApp/Scenes/SettingsView.swift:23:                Section(header: Text("Academic")) {
+macOSApp/Scenes/SettingsView.swift:30:                Section(header: Text("Workday")) {
+macOSApp/Scenes/SettingsView.swift:41:                Section(header: Text("Advanced")) {
+macOSApp/Scenes/SettingsView.swift:47:                Section(header: Text("Design")) {
+macOSApp/Scenes/SettingsView.swift:68:                    Text("Runs a quick self-diagnostic across data, permissions, and local files.")
+macOSApp/Scenes/SettingsView.swift:92:                Text("All systems look healthy.")
+macOSApp/Scenes/SettingsView.swift:108:            Section(header: Text("Design debug")) {
+macOSApp/Scenes/SettingsView.swift:110:                    Text("Selected material")
+macOSApp/Scenes/CoursesPageView.swift:199:                    Text("Coming soon")
+macOSApp/Scenes/CoursesPageView.swift:360:            Text("Select or create a course")
+macOSApp/Scenes/CoursesPageView.swift:362:            Text("Your course overview will appear here.")
+macOSApp/Scenes/CoursesPageView.swift:383:                Text("Courses")
+macOSApp/Scenes/CoursesPageView.swift:579:                    Text("No meetings added yet.")
+macOSApp/Scenes/CoursesPageView.swift:587:                            Text("\(weekdayName(meeting.weekday)) · \(timeRange(for: meeting))")
+macOSApp/Scenes/CoursesPageView.swift:620:                                Text("\(Int(category.weight))%")
+macOSApp/Scenes/CoursesPageView.swift:636:                    Text("No syllabus added yet.")
+macOSApp/Scenes/CoursesPageView.swift:639:                    Text("You’ll eventually be able to import this from a syllabus parser.")
+macOSApp/Scenes/CoursesPageView.swift:820:                Text("\(Int(current))%")
+macOSApp/Scenes/CoursesPageView.swift:828:                Text("No grade yet")
+macOSApp/Scenes/CoursesPageView.swift:857:                    Text("\(Int(current))%")
+macOSApp/Scenes/CoursesPageView.swift:859:                    Text("Current")
+macOSApp/Scenes/CoursesPageView.swift:865:                    Text("—")
+macOSApp/Scenes/CoursesPageView.swift:867:                    Text("No grade")
+macOSApp/Scenes/CoursesPageView.swift:954:            Text("Course").rootsSectionHeader()
+macOSApp/Scenes/CoursesPageView.swift:988:            Text("Details").rootsSectionHeader()
+macOSApp/Scenes/CoursesPageView.swift:991:                    Text("\(credits)")
+macOSApp/Scenes/CoursesPageView.swift:1010:            Text("You can edit course details later from the Courses page.")
+macOSApp/Scenes/CoursesPageView.swift:1089:            Text("Add Grade for \(currentSelection?.code ?? "Course")")
+macOSApp/Scenes/CoursesPageView.swift:1093:                Text("Percentage")
+macOSApp/Scenes/CoursesPageView.swift:1098:                    Text("\(Int(gradePercentInput))%")
+macOSApp/Scenes/AssignmentsPageView.swift:349:                Text("Plan Day")
+macOSApp/Scenes/AssignmentsPageView.swift:363:            Text("Filters")
+macOSApp/Scenes/AssignmentsPageView.swift:370:                Text("Any").tag(AssignmentStatus?.none)
+macOSApp/Scenes/AssignmentsPageView.swift:381:                Text("All courses").tag(String?.none)
+macOSApp/Scenes/AssignmentsPageView.swift:653:                Text("Today").rootsSectionHeader()
+macOSApp/Scenes/AssignmentsPageView.swift:657:            Text("\(dueToday.count) due · \(planned.count) planned · \(remaining.count) remaining")
+macOSApp/Scenes/AssignmentsPageView.swift:690:            Text("By Course").rootsSectionHeader()
+macOSApp/Scenes/AssignmentsPageView.swift:697:                    Text("\(item.count)").rootsCaption()
+macOSApp/Scenes/AssignmentsPageView.swift:728:            Text("Upcoming Load").rootsSectionHeader()
+macOSApp/Scenes/AssignmentsPageView.swift:744:                        Text("\(count)")
+macOSApp/Scenes/AssignmentsPageView.swift:796:                Text("Upcoming").rootsSectionHeader()
+macOSApp/Scenes/AssignmentsPageView.swift:797:                Text("\(upcoming)")
+macOSApp/Scenes/AssignmentsPageView.swift:799:                Text("Assignments due today or later")
+macOSApp/Scenes/AssignmentsPageView.swift:822:                Text("Missed").rootsSectionHeader()
+macOSApp/Scenes/AssignmentsPageView.swift:823:                Text("\(missed)")
+macOSApp/Scenes/AssignmentsPageView.swift:825:                Text("Overdue assignments")
+macOSApp/Scenes/AssignmentsPageView.swift:868:                        Text("· \(assignment.category.displayName)")
+macOSApp/Scenes/AssignmentsPageView.swift:869:                        Text("· ~\(assignment.estimatedMinutes) min")
+macOSApp/Scenes/AssignmentsPageView.swift:870:                        Text("·")
+macOSApp/Scenes/AssignmentsPageView.swift:871:                        Text("Due \(dueFormatter.string(from: assignment.dueDate))")
+macOSApp/Scenes/AssignmentsPageView.swift:883:                            Text("· \(Int(weight))%")
+macOSApp/Scenes/AssignmentsPageView.swift:990:                Text("\(assignment.courseCode) · \(assignment.courseName)")
+macOSApp/Scenes/AssignmentsPageView.swift:1013:            Text("Due \(fullDateFormatter.string(from: assignment.dueDate))")
+macOSApp/Scenes/AssignmentsPageView.swift:1040:            Text("Grade Impact")
+macOSApp/Scenes/AssignmentsPageView.swift:1043:                Text("Worth \(Int(weight))% of final grade in \(assignment.category.displayName)")
+macOSApp/Scenes/AssignmentsPageView.swift:1049:                Text("No weight specified yet. This will sync from Syllabus later.")
+macOSApp/Scenes/AssignmentsPageView.swift:1059:            Text("Plan")
+macOSApp/Scenes/AssignmentsPageView.swift:1071:                    Text("~\(step.expectedMinutes) min")
+macOSApp/Scenes/AssignmentsPageView.swift:1086:            Text("Actions").rootsSectionHeader()
+macOSApp/Scenes/AssignmentsPageView.swift:1089:                    Text("State")
+macOSApp/Scenes/AssignmentsPageView.swift:1102:                    Text("Planning")
+macOSApp/Scenes/AssignmentsPageView.swift:1113:                    Text("Execution")
+macOSApp/Scenes/AssignmentsPageView.swift:1153:                Text("Delete Assignment")
+macOSApp/Scenes/AssignmentsPageView.swift:1166:            Text("Select an assignment to see details.")
+macOSApp/Scenes/AssignmentsPageView.swift:1220:                    Text("Task").rootsSectionHeader()
+macOSApp/Scenes/AssignmentsPageView.swift:1237:                        Text("Timing").rootsSectionHeader()
+macOSApp/Scenes/AssignmentsPageView.swift:1244:                                Text("\(estimatedMinutes) min")
+macOSApp/Scenes/AssignmentsPageView.swift:1252:                            Text("Typical: \(sessions) × \(sessionLen) min over \(profile.spreadDaysBeforeDue) days for \(category.displayName)")
+macOSApp/Scenes/AssignmentsPageView.swift:1275:                        Text("Status").rootsSectionHeader()
+macOSApp/Scenes/AssignmentsPageView.swift:1287:                        Text("Notes").rootsSectionHeader()
+macOSApp/Scenes/AssignmentsPageView.swift:1355:                    Text("No courses in this semester")
+macOSApp/Scenes/AssignmentsPageView.swift:1365:                        Text("\(course.code) · \(course.title)")
+macOSApp/Scenes/AssignmentsPageView.swift:1373:                Text("Select a course from the active semester to save.")
+macOSApp/Scenes/AssignmentsView.swift:43:                    Section(header: Text("Due Today").font(DesignSystem.Typography.body)) {
+macOSApp/Scenes/AssignmentsView.swift:50:                                    Text("Due Today")
+macOSApp/Scenes/AssignmentsView.swift:65:                    Section(header: Text("Due This Week").font(DesignSystem.Typography.body)) {
+macOSApp/Scenes/AssignmentsView.swift:75:                                    Text("Due This Week")
+macOSApp/Scenes/AssignmentsView.swift:90:                    Section(header: Text("Upcoming").font(DesignSystem.Typography.body)) {
+macOSApp/Scenes/AssignmentsView.swift:97:                                    Text("Upcoming")
+macOSApp/Scenes/AssignmentsView.swift:112:                    Section(header: Text("Overdue").font(DesignSystem.Typography.body)) {
+macOSApp/Scenes/AssignmentsView.swift:122:                                    Text("Overdue")
+macOSApp/Scenes/CoursesDashboardRootView.swift:66:            Text("Select a Course")
+macOSApp/Scenes/CoursesDashboardRootView.swift:70:            Text("Choose a course from the sidebar to view details")
+macOSApp/Scenes/CoursesDashboardRootView.swift:81:            Text("Loading course analytics…")
+macOSApp/Scenes/PlannerPageView.swift:106:                        Text("·")
+macOSApp/Scenes/PlannerPageView.swift:524:                Text("Planner Timeline")
+macOSApp/Scenes/PlannerPageView.swift:527:                    Text("• \(unscheduledTasks.count) overflow")
+macOSApp/Scenes/PlannerPageView.swift:578:                            HStack { Text("Free").font(.caption).foregroundStyle(.secondary); Spacer() }
+macOSApp/Scenes/PlannerPageView.swift:598:            Text("Loading sessions…")
+macOSApp/Scenes/PlannerPageView.swift:608:            Text("No sessions for this day yet.")
+macOSApp/Scenes/PlannerPageView.swift:610:            Text("Run Plan Day to schedule tasks or add a task manually.")
+macOSApp/Scenes/PlannerPageView.swift:633:                Text("Unscheduled Tasks")
+macOSApp/Scenes/PlannerPageView.swift:637:                    Text("\(unscheduledTasks.count)")
+macOSApp/Scenes/PlannerPageView.swift:669:                Text("No overflow tasks from the planner right now.")
+macOSApp/Scenes/PlannerPageView.swift:705:                Text("Overdue Tasks")
+macOSApp/Scenes/PlannerPageView.swift:709:                    Text("● \(overdueTasks.count)")
+macOSApp/Scenes/PlannerPageView.swift:719:                    Text("You’re caught up.")
+macOSApp/Scenes/PlannerPageView.swift:721:                    Text("Anything overdue will appear here so the planner can prioritize it.")
+macOSApp/Scenes/PlannerPageView.swift:997:                        Text("· ~\(task.estimatedMinutes) min")
+macOSApp/Scenes/PlannerPageView.swift:998:                        Text("· Due \(PlannerTaskRow.dateFormatter.string(from: task.dueDate))")
+macOSApp/Scenes/PlannerPageView.swift:1084:            Text("Task").rootsSectionHeader()
+macOSApp/Scenes/PlannerPageView.swift:1103:            Text("Course").rootsSectionHeader()
+macOSApp/Scenes/PlannerPageView.swift:1106:                    Text("None").tag(UUID?.none)
+macOSApp/Scenes/PlannerPageView.swift:1108:                        Text("\(course.code) · \(course.title)").tag(Optional(course.id))
+macOSApp/Scenes/PlannerPageView.swift:1126:            Text("Timing").rootsSectionHeader()
+macOSApp/Scenes/PlannerPageView.swift:1133:                    Text("\(draft.estimatedMinutes) min")
+macOSApp/Scenes/PlannerPageView.swift:1140:                    Text("When locked, the AI planner schedules this block only on the due date.")
+macOSApp/Scenes/PlannerView.swift:65:                        Text("Min block")
+macOSApp/Scenes/PlannerView.swift:71:                        Text("Max block")
+macOSApp/Scenes/PlannerView.swift:77:                        Text("Horizon (days)")
+macOSApp/Scenes/PlannerView.swift:84:                        Text("Weights")
+macOSApp/Scenes/PlannerView.swift:87:                            HStack { Text("Urgency"); Slider(value: $weightUrgency, in: 0...1) }
+macOSApp/Scenes/PlannerView.swift:88:                            HStack { Text("Importance"); Slider(value: $weightImportance, in: 0...1) }
+macOSApp/Scenes/PlannerView.swift:89:                            HStack { Text("Difficulty"); Slider(value: $weightDifficulty, in: 0...1) }
+macOSApp/Scenes/PlannerView.swift:90:                            HStack { Text("Size"); Slider(value: $weightSize, in: 0...1) }
+macOSApp/Scenes/PlannerView.swift:99:                    Section(header: Text("Today's Plan").font(DesignSystem.Typography.body)) {
+macOSApp/Scenes/PlannerView.swift:106:                                        Text("Reminders access is turned off")
+macOSApp/Scenes/PlannerView.swift:108:                                        Text("Enable Reminders access in System Settings → Privacy so Roots can show your tasks.")
+macOSApp/Scenes/PlannerView.swift:131:                                        Text("Today's Plan")
+macOSApp/Scenes/PlannerView.swift:141:                            Text("TODO: Today's tasks")
+macOSApp/Scenes/PlannerView.swift:146:                    Section(header: Text("This Week").font(DesignSystem.Typography.body)) {
+macOSApp/Scenes/PlannerView.swift:152:                                    Text("This Week")
+macOSApp/Scenes/PlannerView.swift:161:                            Text("TODO: Week tasks")
+macOSApp/Scenes/PlannerView.swift:166:                    Section(header: Text("Unscheduled Tasks").font(DesignSystem.Typography.body)) {
+macOSApp/Scenes/PlannerView.swift:172:                                    Text("Unscheduled Tasks")
+macOSApp/Scenes/PlannerView.swift:181:                            Text("TODO: Unscheduled tasks")
+macOSApp/Scenes/PlannerView.swift:196:                Text("No schedule result")
+macOSApp/Scenes/PlannerView.swift:236:            Text("Schedule Result")
+macOSApp/Scenes/PlannerView.swift:239:            Text("Blocks: \(result.blocks.count)")
+macOSApp/Scenes/PlannerView.swift:260:                                    Text("Course: \(course.uuidString)")
+macOSApp/Scenes/PlannerView.swift:303:            Text("Logs")
+macOSApp/Scenes/ContentView.swift:171:                    Text("Flashcards are turned off")
+macOSApp/Scenes/ContentView.swift:173:                    Text("Enable flashcards in Settings → Flashcards to study decks.")
+macOSApp/Scenes/CoursesSettingsView.swift:19:                            Text("No active courses")
+macOSApp/Scenes/CoursesSettingsView.swift:41:                    Text("Active Courses")
+macOSApp/Scenes/CoursesSettingsView.swift:52:                Text("Manage your current courses. Archived courses are hidden from the main interface but remain accessible.")
+macOSApp/Scenes/CoursesSettingsView.swift:81:                    Text("No Active Semester")
+macOSApp/Scenes/CoursesSettingsView.swift:83:                    Text("Please create a semester first in the Semesters section.")
+macOSApp/Scenes/CoursesSettingsView.swift:126:                        Text("ARCHIVED")
+macOSApp/Scenes/GradesPageView.swift:111:                Text("Grade Analytics")
+macOSApp/Scenes/GradesPageView.swift:113:                Text("Placeholder window. Integrate analytics dashboard here.")
+macOSApp/Scenes/GradesPageView.swift:152:                Text("Grades")
+macOSApp/Scenes/GradesPageView.swift:154:                Text("Synced from Courses and Assignments")
+macOSApp/Scenes/GradesPageView.swift:166:            Text("GPA Scale: \(String(format: "%.1f", gpaScale))")
+macOSApp/Scenes/GradesPageView.swift:252:                Text("Courses")
+macOSApp/Scenes/GradesPageView.swift:256:                    Text("Course").tag(0)
+macOSApp/Scenes/GradesPageView.swift:257:                    Text("Grade").tag(1)
+macOSApp/Scenes/GradesPageView.swift:258:                    Text("Credits").tag(2)
+macOSApp/Scenes/GradesPageView.swift:328:            Text("Segment")
+macOSApp/Scenes/GradesPageView.swift:345:        Text("Grades are approximations and may differ from your institution's official system.")
+macOSApp/Scenes/GradesPageView.swift:552:            Text("Overall Status")
+macOSApp/Scenes/GradesPageView.swift:555:            Text("GPA \(String(format: "%.2f", gpa)) / \(String(format: "%.1f", gpaScale))")
+macOSApp/Scenes/GradesPageView.swift:558:            Text("Weighted \(String(format: "%.1f", overallPercent))% • \(courses.count) courses")
+macOSApp/Scenes/GradesPageView.swift:567:                    Text("Highest: \(maxCourse.courseCode) \(Int(maxCourse.currentPercentage ?? 0))%")
+macOSApp/Scenes/GradesPageView.swift:573:                    Text("Lowest: \(minCourse.courseCode) \(Int(minCourse.currentPercentage ?? 0))%")
+macOSApp/Scenes/GradesPageView.swift:628:                    Text("\(course.courseCode) · \(course.courseTitle)")
+macOSApp/Scenes/GradesPageView.swift:634:                            Text("\(String(format: "%.1f", pct))%")
+macOSApp/Scenes/GradesPageView.swift:636:                            Text("No grade yet")
+macOSApp/Scenes/GradesPageView.swift:638:                        if let letter = course.letterGrade { Text("· \(letter)") }
+macOSApp/Scenes/GradesPageView.swift:639:                        Text("· \(course.creditHours) credits")
+macOSApp/Scenes/GradesPageView.swift:651:                        Text("Target \(Int(target))%")
+macOSApp/Scenes/GradesPageView.swift:690:                Text("\(Int(pct))%")
+macOSApp/Scenes/GradesPageView.swift:693:                Text("—")
+macOSApp/Scenes/GradesPageView.swift:720:                Text("Grades are approximations and may differ from your institution's official system.")
+macOSApp/Scenes/GradesPageView.swift:729:                Text("Select a course from the center panel to see its grade breakdown.")
+
+Total Text() instances with potential hardcoded strings:
+     492
+
+
+## 2. STRINGS ALREADY LOCALIZED
+================================
+
+### NSLocalizedString usage:
+
+
+Total NSLocalizedString instances:
+       0
+
+
+## 3. LABEL() CALLS WITH HARDCODED STRINGS
+===========================================
+
+macOSApp/Scenes/DashboardView.swift:329:                        .accessibilityLabel("Quick Actions")
+macOSApp/Scenes/CoursesView.swift:29:                                Label("Add Semester", systemImage: "plus")
+macOSApp/Scenes/CoursesView.swift:71:                                Label("Add Course", systemImage: "plus")
+macOSApp/Scenes/SettingsView.swift:26:                    //     Label("Courses & Semesters", systemImage: "book.closed")
+macOSApp/Scenes/SettingsView.swift:43:                        Label("Developer", systemImage: "hammer")
+macOSApp/Scenes/SettingsView.swift:65:                        Label("Run Health Check", systemImage: "stethoscope")
+macOSApp/Scenes/CoursesPageView.swift:412:                    Label("New Course", systemImage: "plus")
+macOSApp/Scenes/CoursesPageView.swift:424:                    Label("Edit Courses", systemImage: "pencil")
+macOSApp/Scenes/CoursesPageView.swift:498:        .accessibilityLabel("\(course.code), \(course.title)")
+macOSApp/Scenes/CoursesPageView.swift:558:                Label("\(course.credits) credits", systemImage: "number")
+macOSApp/Scenes/AssignmentsPageView.swift:337:                Label("New", systemImage: "plus")
+macOSApp/Scenes/AssignmentsPageView.swift:664:                        Label("\(count)", systemImage: "circle.fill")
+macOSApp/Scenes/AssignmentsPageView.swift:1020:                Label("Est. Time: \(assignment.estimatedMinutes) min", systemImage: "timer")
+macOSApp/Scenes/AssignmentsPageView.swift:1110:                    .accessibilityLabel("Open Planner for this assignment")
+macOSApp/Scenes/AssignmentsPageView.swift:1121:                    .accessibilityLabel("Open Timer for this assignment")
+macOSApp/Scenes/AssignmentsView.swift:28:                            Label("Add Assignment", systemImage: "plus")
+macOSApp/Scenes/PlannerPageView.swift:143:        .accessibilityLabel("Overdue, due \(item.dueDate)")
+macOSApp/Scenes/PlannerPageView.swift:353:                    Label("New Task", systemImage: "plus")
+macOSApp/Scenes/CoursesSettingsView.swift:46:                        Label("Add Course", systemImage: "plus")
+macOSApp/Scenes/GradesPageView.swift:173:                Label("Export", systemImage: "square.and.arrow.up")
+macOSApp/Scenes/GradesPageView.swift:225:                    Label("Add Grade", systemImage: "plus.circle")
+macOSApp/Scenes/GradesPageView.swift:238:                    Label("Analytics", systemImage: "chart.bar.xaxis")
+macOSApp/Scenes/GradesPageView.swift:897:                            Label("Add Component", systemImage: "plus")
+macOSApp/Scenes/TimerPageView.swift:312:                Label("New Activity", systemImage: "plus")
+macOSApp/Scenes/TimerPageView.swift:1019:                    .accessibilityLabel("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
+macOSApp/Scenes/TimerPageView.swift:1093:                    .accessibilityLabel("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
+macOSApp/Scenes/TimerPageView.swift:1162:                    .accessibilityLabel("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
+macOSApp/Views/CurrentActivityView.swift:57:                        Label("Choose Activity", systemImage: "plus")
+macOSApp/Views/CourseOutlineEditorView.swift:39:                    Label("Add", systemImage: "plus")
+macOSApp/Views/CourseOutlineEditorView.swift:76:                Label("Create First Node", systemImage: "plus.circle.fill")
+macOSApp/Views/CourseOutlineEditorView.swift:160:                    Label("Rename", systemImage: "pencil")
+macOSApp/Views/CourseOutlineEditorView.swift:170:                    Label("Delete", systemImage: "trash")
+macOSApp/Views/CalendarPageView.swift:1123:                        Label("Edit", systemImage: "pencil")
+macOSApp/Views/CalendarPageView.swift:1130:                        Label("Delete", systemImage: "trash")
+macOSApp/Views/SemestersSettingsView.swift:58:                        Label("Add Semester", systemImage: "plus")
+macOSApp/Views/ActivityListView.swift:16:                    Label("New", systemImage: "plus")
+macOSApp/Views/ActivityListView.swift:39:                Label("Add Collection", systemImage: "folder.badge.plus")
+macOSApp/Views/CourseDetailView.swift:186:                        Label("Import Syllabus", systemImage: "square.and.arrow.down")
+macOSApp/Views/CourseDetailView.swift:207:                        Label("Edit Outline", systemImage: "list.bullet.indent")
+SharedCore/Services/FeatureServices/SettingsPane_Interface.swift:37:                Label("Glass", systemImage: "circle.hexagongrid")
+SharedCore/Services/FeatureServices/SettingsPane_Interface.swift:60:                Label("Geometry & Motion", systemImage: "sparkles")
+SharedCore/Services/FeatureServices/SettingsPane_Interface.swift:78:                Label("Clock", systemImage: "clock")
+SharedCore/Services/FeatureServices/UIStubs.swift:71:                Label("Add Attachment", systemImage: "plus")
+SharedCore/Services/FeatureServices/SettingsPane_Appearance.swift:41:                Label("Accent", systemImage: "paintpalette")
+SharedCore/Services/FeatureServices/SettingsPane_Appearance.swift:59:                Label("Interface", systemImage: "circle.lefthalf.fill")
+SharedCore/Services/FeatureServices/CoursesDashboardDetail.swift:54:                    Label("\(course.credits, specifier: "%.1f") Credits", systemImage: "book.fill")
+SharedCore/Services/FeatureServices/CoursesDashboardDetail.swift:108:                Label("Meetings", systemImage: "clock.fill")
+SharedCore/Services/FeatureServices/CoursesDashboardDetail.swift:162:            Label("Syllabus Breakdown", systemImage: "chart.bar.fill")
+SharedCore/Services/FeatureServices/CoursesDashboardDetail.swift:283:            Label("Analytics", systemImage: "chart.xyaxis.line")
+SharedCore/Services/FeatureServices/CoursesDashboardDetail.swift:361:            Label("Instructor Notes", systemImage: "note.text")
+SharedCore/Services/FeatureServices/CoursesDashboardDetail.swift:384:            Label("Upcoming Deadlines", systemImage: "calendar.badge.exclamationmark")
+
+Total Label() instances:
+      51
+
+
+## 4. BUTTON() CALLS WITH HARDCODED STRINGS
+============================================
+
+macOSApp/Scenes/DashboardView.swift:175:                        Button("Connect Apple Calendar", action: {
+macOSApp/Scenes/DashboardView.swift:188:                        Button("Open Settings") {
+macOSApp/Scenes/DashboardView.swift:215:                        energyButton("High", level: .high)
+macOSApp/Scenes/DashboardView.swift:216:                        energyButton("Medium", level: .medium)
+macOSApp/Scenes/DashboardView.swift:217:                        energyButton("Low", level: .low)
+macOSApp/Scenes/DashboardView.swift:218:                        plannerButton("Open Planner")
+macOSApp/Scenes/SettingsView.swift:89:            Button("OK", role: .cancel) { }
+macOSApp/Scenes/SettingsView.swift:106:            Button("Reset demo data") { }
+macOSApp/Scenes/CoursesPageView.swift:545:                    Button("Edit") { onEdit() }
+macOSApp/Scenes/CoursesPageView.swift:1014:            Button("Cancel") { dismiss() }
+macOSApp/Scenes/CoursesPageView.swift:1108:                Button("Cancel") {
+macOSApp/Scenes/CoursesPageView.swift:1111:                Button("Save") {
+macOSApp/Scenes/AssignmentsPageView.swift:1092:                    Button("Mark Completed") {
+macOSApp/Scenes/AssignmentsPageView.swift:1105:                    Button("Planner") {
+macOSApp/Scenes/AssignmentsPageView.swift:1116:                    Button("Timer") {
+macOSApp/Scenes/AssignmentsPageView.swift:1130:                Button("Mark as completed") {
+macOSApp/Scenes/AssignmentsPageView.swift:1137:                Button("Archive") {
+macOSApp/Scenes/AssignmentsPageView.swift:1304:                Button("Cancel") { dismiss() }
+macOSApp/Scenes/AssignmentsPageView.swift:1305:                Button("Save") {
+macOSApp/Scenes/AssignmentsPageView.swift:1357:                    Button("Add Course…") {
+macOSApp/Scenes/AssignmentsPageView.swift:1461:            Button("Cut") { cutSelection() }
+macOSApp/Scenes/AssignmentsPageView.swift:1463:            Button("Copy") { copySelection() }
+macOSApp/Scenes/AssignmentsPageView.swift:1465:            Button("Duplicate") { duplicateSelection() }
+macOSApp/Scenes/AssignmentsPageView.swift:1467:            Button("Paste") { pasteClipboard() }
+macOSApp/Scenes/PlannerPageView.swift:1150:            Button("Cancel") { dismiss() }
+macOSApp/Scenes/PlannerView.swift:41:                    Button("Schedule") { runScheduler() }
+macOSApp/Scenes/PlannerView.swift:43:                    Button("Re-learn") {
+macOSApp/Scenes/PlannerView.swift:110:                                        Button("Open System Settings") {
+macOSApp/Scenes/PlannerView.swift:268:                            Button("Mark as kept") {
+macOSApp/Scenes/PlannerView.swift:274:                            Button("Mark as rescheduled") {
+macOSApp/Scenes/PlannerView.swift:280:                            Button("Mark as deleted") {
+macOSApp/Scenes/PlannerView.swift:286:                            Button("Mark as shortened") {
+macOSApp/Scenes/PlannerView.swift:292:                            Button("Mark as extended") {
+macOSApp/Scenes/CoursesSettingsView.swift:22:                            Button("Add Your First Course") {
+macOSApp/Scenes/CoursesSettingsView.swift:87:                    Button("Go to Semesters") {
+macOSApp/Scenes/GradesPageView.swift:115:                Button("Close") { gradeAnalyticsWindowOpen = false }
+macOSApp/Scenes/GradesPageView.swift:672:            Button("Edit Target") { onEditTarget() }
+macOSApp/Scenes/GradesPageView.swift:674:                Button("Edit Course") { onEditCourse() }
+macOSApp/Scenes/GradesPageView.swift:755:            Button("Edit target") {
+macOSApp/Scenes/GradesPageView.swift:920:                    Button("Cancel") { dismiss() }
+macOSApp/Scenes/GradesPageView.swift:923:                    Button("Save") {
+macOSApp/Scenes/TimerPageView.swift:197:            Button("Change") {
+macOSApp/Scenes/TimerPageView.swift:816:                Button("Edit", action: onEdit)
+macOSApp/Scenes/TimerPageView.swift:817:                Button("Reset totals", action: onReset)
+macOSApp/Scenes/TimerPageView.swift:819:                Button("Delete", role: .destructive, action: onDelete)
+macOSApp/Scenes/TimerPageView.swift:1027:            Button("Start", action: onStart)
+macOSApp/Scenes/TimerPageView.swift:1432:            Button("Cancel") { dismiss() }
+macOSApp/App/AppCommands.swift:7:            Button("New Homework…") {
+macOSApp/App/AppCommands.swift:12:            Button("New Exam…") {
+macOSApp/App/AppCommands.swift:19:            Button("Go to Courses") {
+macOSApp/App/AppCommands.swift:24:            Button("Go to Grades") {
+macOSApp/App/AppCommands.swift:37:            Button("Preferences…", action: showSettings)
+macOSApp/PlatformAdapters/RootsSettingsWindow.swift:467:                Button("Manage…") { }
+macOSApp/Views/SemesterEditView.swift:168:                Button("Delete Semester", role: .destructive) {
+macOSApp/Views/SemesterEditView.swift:175:                    Button("Delete", role: .destructive) {
+macOSApp/Views/SemesterEditView.swift:178:                    Button("Cancel", role: .cancel) { }
+macOSApp/Views/SemesterEditView.swift:184:            Button("Cancel") {
+macOSApp/Views/RemindersSettingsView.swift:35:                        Button("Open Settings") { calendarManager.openSystemPrivacySettings() }
+macOSApp/Views/RemindersSettingsView.swift:73:            Button("Open System Settings") {
+macOSApp/Views/RemindersSettingsView.swift:76:            Button("Cancel", role: .cancel) { }
+macOSApp/Views/CourseEditView.swift:107:                    Button("Cancel") {
+macOSApp/Views/AddEditCourseView.swift:62:                Button("Cancel") {
+macOSApp/Views/AddEditCourseView.swift:70:                Button("Save") {
+macOSApp/Views/AddEditCourseView.swift:84:            Button("Save and Close") {
+macOSApp/Views/AddEditCourseView.swift:87:            Button("Discard Changes", role: .destructive) {
+macOSApp/Views/AddEditCourseView.swift:90:            Button("Cancel", role: .cancel) { }
+macOSApp/Views/RecentlyDeletedSemestersView.swift:32:                            Button("Recover") {
+macOSApp/Views/RecentlyDeletedSemestersView.swift:37:                            Button("Delete Immediately", role: .destructive) {
+macOSApp/Views/ActivityEditorView.swift:98:                    Button("Cancel") { dismissView() }
+macOSApp/Views/ActivityEditorView.swift:101:                    Button("Save") { save() }
+macOSApp/Views/CourseOutlineEditorView.swift:218:                Button("Cancel") { dismiss() }
+macOSApp/Views/CourseOutlineEditorView.swift:221:                Button("Add") {
+macOSApp/Views/CourseOutlineEditorView.swift:261:                Button("Cancel") { dismiss() }
+macOSApp/Views/CourseOutlineEditorView.swift:264:                Button("Save") {
+macOSApp/Views/MenuBarView.swift:117:                Button("End") {
+macOSApp/Views/TimerView.swift:78:                Button("Reset") {
+macOSApp/Views/SettingsPane_Interface+Tabs.swift:49:                Button("Restore Defaults") {
+macOSApp/Views/AddAssignmentView.swift:139:                        Button("Cancel") {
+macOSApp/Views/AddAssignmentView.swift:150:                        Button("Save") {
+macOSApp/Views/AddAssignmentView.swift:185:            Button("Save and Close") {
+macOSApp/Views/AddAssignmentView.swift:188:            Button("Discard Changes", role: .destructive) {
+macOSApp/Views/AddAssignmentView.swift:191:            Button("Cancel", role: .cancel) { }
+macOSApp/Views/Components/GlobalContextMenu.swift:17:                Button("Refresh Calendar") {
+macOSApp/Views/Components/GlobalContextMenu.swift:22:                Button("Go to Planner") {
+macOSApp/Views/Components/GlobalContextMenu.swift:26:                Button("Add Assignment") {
+macOSApp/Views/Components/GlobalContextMenu.swift:30:                Button("Add Grade") {
+macOSApp/Views/Components/GlobalContextMenu.swift:50:                Button("Start clock") {
+macOSApp/Views/Components/GlobalContextMenu.swift:55:                Button("Stop clock") {
+macOSApp/Views/Components/GlobalContextMenu.swift:60:                Button("End clock") {
+macOSApp/Views/Components/GlobalContextMenu.swift:68:                Button("Refresh Calendar") {
+macOSApp/Views/Components/GlobalContextMenu.swift:73:                Button("Go to Planner") {
+macOSApp/Views/Components/GlobalContextMenu.swift:77:                Button("Add Assignment") {
+macOSApp/Views/Components/GlobalContextMenu.swift:81:                Button("Add Grade") {
+macOSApp/Views/CalendarPageView.swift:1136:                    Button("Delete", role: .destructive) {
+macOSApp/Views/CalendarPageView.swift:1142:                    Button("Cancel", role: .cancel) { }
+macOSApp/Views/CalendarPageView.swift:1190:            Button("OK", role: .cancel) { }
+macOSApp/Views/CalendarPageView.swift:1392:                Button("Cancel") { 
+macOSApp/Views/CalendarPageView.swift:1399:                Button("Save") {
+macOSApp/Views/CalendarPageView.swift:1827:                Button("Close") { onDismiss() }
+macOSApp/Views/AddExamPopup.swift:72:                    Button("Cancel") { dismiss() }
+
+Total Button() instances:
+     120
+
+
+## 5. FILES BY SECTION (Priority Order)
+========================================
+
+### Dashboard:
+macOSApp/Scenes/DashboardView.swift
+macOSApp/Scenes/CoursesDashboardRootView.swift
+
+### Calendar:
+macOSApp/Views/CalendarDayCell.swift
+macOSApp/Views/Components/Calendar/CalendarStatsRow.swift
+macOSApp/Views/CalendarPageView.swift
+macOSApp/Views/CalendarSettingsView.swift
+
+### Assignments:
+macOSApp/Scenes/AssignmentsPageView.swift
+macOSApp/Scenes/AssignmentsView.swift
+macOSApp/Views/AssignmentsDueTodayCompactList.swift
+macOSApp/Views/AddAssignmentView.swift
+macOSApp/Views/AssignmentsView2.swift
+macOSApp/Views/AssignmentRow.swift
+
+### Timer:
+macOSApp/Scenes/TimerPageView.swift
+macOSApp/Views/TimerRightPane.swift
+macOSApp/Views/TimerView.swift
+macOSApp/Views/TimerSettingsView.swift
+macOSApp/Views/Components/Charts/TimerBarChart.swift
+macOSApp/Views/TimerHeaderView.swift
+macOSApp/Views/TimerControlsView.swift
+macOSApp/Views/TimerGraphsView.swift
+
+### Settings:
+macOSApp/Scenes/PlannerSettingsView.swift
+macOSApp/Scenes/SettingsView.swift
+macOSApp/Scenes/SettingsRootView.swift
+macOSApp/Scenes/CoursesSettingsView.swift
+macOSApp/Views/RemindersSettingsView.swift
+macOSApp/Views/Settings/NotificationsSettingsView.swift
+macOSApp/Views/SettingsPane_Interface+Tabs.swift
+macOSApp/Views/ProfilesSettingsView.swift
+macOSApp/Views/InterfaceSettingsView.swift
+macOSApp/Views/TimerSettingsView.swift
+macOSApp/Views/GeneralSettingsView.swift
+macOSApp/Views/SemestersSettingsView.swift
+macOSApp/Views/CalendarSettingsView.swift
+macOSApp/Views/DeveloperSettingsView.swift
+
+
+## 6. SUMMARY
+=============
+
+Hardcoded Text() calls:           492
+Already localized:                  0
+Hardcoded Label() calls:           51
+Hardcoded Button() calls:         120
+
+Total strings needing work:  663
+
+
+## 7. RECOMMENDED PRIORITY
+==========================
+
+1. Dashboard (high visibility, user entry point)
+2. Calendar (core feature)
+3. Assignments (core feature)
+4. Timer/Focus (core feature)
+5. Settings (lower priority)
+
+===================================
+Audit Complete!
+===================================

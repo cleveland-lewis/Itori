@@ -353,13 +353,8 @@ struct AddEventPopup: View {
         }
         Task {
             isSaving = true
-            // If category not explicitly chosen, ensure title contains category keyword to surface label parsing
-            var finalTitle = title
-            if !userSelectedCategory {
-                if category != .other && !title.lowercased().contains(category.rawValue.lowercased()) {
-                    finalTitle = "\(category.rawValue) \(title)"
-                }
-            }
+            // Title is stored exactly as entered - no category munging
+            // Category is managed separately via the category field
 
             do {
                 var alarms: [EKAlarm]? = nil
@@ -369,7 +364,7 @@ struct AddEventPopup: View {
                 if !builtAlarms.isEmpty { alarms = builtAlarms }
                 let urlVal = URL(string: urlString)
                 let rule = buildRecurrenceRule(option: recurrence, interval: recurrenceInterval, weekdays: weekdaySelection, endCount: recurrenceEndCount, endDate: recurrenceEndDate)
-                try await calendarManager.saveEvent(title: finalTitle, startDate: startDate, endDate: endDate, isAllDay: isAllDay, location: location, notes: notes, url: urlVal, alarms: alarms, recurrenceRule: rule, calendar: nil)
+                try await calendarManager.saveEvent(title: title, startDate: startDate, endDate: endDate, isAllDay: isAllDay, location: location, notes: notes, url: urlVal, alarms: alarms, recurrenceRule: rule, calendar: nil)
                 // refresh device events
                 await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
             } catch {

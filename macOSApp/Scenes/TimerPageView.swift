@@ -34,7 +34,7 @@ struct TimerPageView: View {
     @State private var selectedActivityID: UUID? = nil
 
     @State private var isRunning: Bool = false
-    @State private var remainingSeconds: TimeInterval = 25 * 60
+    @State private var remainingSeconds: TimeInterval = 0
     @State private var elapsedSeconds: TimeInterval = 0
     @State private var pomodoroSessions: Int = 4
     @State private var completedPomodoroSessions: Int = 0
@@ -89,6 +89,10 @@ struct TimerPageView: View {
         }
         .onAppear {
             pomodoroSessions = settings.pomodoroIterations
+            // Initialize timer duration from settings
+            if remainingSeconds == 0 {
+                remainingSeconds = TimeInterval(settings.pomodoroFocusMinutes * 60)
+            }
             setupTimerNotificationObservers()
             if !loadedSessions {
                 loadSessions()
@@ -582,7 +586,7 @@ struct TimerPageView: View {
         guard !isRunning else { return }
         isRunning = true
         if activeSession == nil, let activity = currentActivity {
-            activeSession = LocalTimerSession(id: UUID(), activityID: activity.id, mode: mode, startDate: Date(), endDate: nil, duration: 0)
+            activeSession = LocalTimerSession(id: UUID(), activityID: activity.id, mode: mode, startDate: Date(), endDate: nil, duration: 0, workSeconds: 0, breakSeconds: 0, isBreakSession: isPomodorBreak)
         }
         postTimerStateChangeNotification()
     }
@@ -595,7 +599,7 @@ struct TimerPageView: View {
     private func resetTimer() {
         isRunning = false
         elapsedSeconds = 0
-        remainingSeconds = 25 * 60
+        remainingSeconds = TimeInterval(settings.pomodoroFocusMinutes * 60)
         completedPomodoroSessions = 0
         isPomodorBreak = false
         postTimerStateChangeNotification()
@@ -607,6 +611,22 @@ struct TimerPageView: View {
             session.endDate = Date()
             let elapsed = Date().timeIntervalSince(session.startDate)
             session.duration = elapsed
+            
+            // Update work/break seconds based on mode and phase
+            if mode == .pomodoro {
+                if session.isBreakSession {
+                    session.breakSeconds = elapsed
+                    session.workSeconds = 0
+                } else {
+                    session.workSeconds = elapsed
+                    session.breakSeconds = 0
+                }
+            } else {
+                // Stopwatch and Timer: all time is work time
+                session.workSeconds = elapsed
+                session.breakSeconds = 0
+            }
+            
             logSession(session)
             sessions.append(session)
             activeSession = nil
@@ -666,14 +686,15 @@ struct TimerPageView: View {
             // Send notification for stopwatch complete
             NotificationManager.shared.scheduleTimerCompleted(mode: "Stopwatch", duration: duration)
         case .pomodoro:
-            duration = 25 * 60 - remainingSeconds
+            let workDuration = TimeInterval(settings.pomodoroFocusMinutes * 60)
+            duration = workDuration - remainingSeconds
             
             // Pomodoro cycle logic: work → break → work → break...
             if isPomodorBreak {
                 // Break just finished - increment completed sessions
                 completedPomodoroSessions += 1
                 isPomodorBreak = false
-                remainingSeconds = 25 * 60 // Reset to work time
+                remainingSeconds = workDuration // Reset to work time
                 
                 // Send notification for break complete
                 let longBreakCadence = settings.longBreakCadence
@@ -697,8 +718,9 @@ struct TimerPageView: View {
                 }
             }
         case .countdown:
-            duration = 25 * 60 - remainingSeconds
-            remainingSeconds = 25 * 60
+            let countdownDuration = TimeInterval(settings.pomodoroFocusMinutes * 60)
+            duration = countdownDuration - remainingSeconds
+            remainingSeconds = countdownDuration
             
             // Send notification for countdown complete
             NotificationManager.shared.scheduleTimerCompleted(mode: "Timer", duration: duration)
@@ -707,6 +729,22 @@ struct TimerPageView: View {
         if var session = activeSession {
             session.endDate = Date()
             session.duration = duration
+            
+            // Update work/break seconds based on mode and phase
+            if mode == .pomodoro {
+                if session.isBreakSession {
+                    session.breakSeconds = duration
+                    session.workSeconds = 0
+                } else {
+                    session.workSeconds = duration
+                    session.breakSeconds = 0
+                }
+            } else {
+                // Stopwatch and Timer: all time is work time
+                session.workSeconds = duration
+                session.breakSeconds = 0
+            }
+            
             logSession(session)
             // store session for analytics
             sessions.append(session)
@@ -717,8 +755,9 @@ struct TimerPageView: View {
 
     private func logSession(_ session: LocalTimerSession) {
         guard let idx = activities.firstIndex(where: { $0.id == session.activityID }) else { return }
-        activities[idx].todayTrackedSeconds += session.duration
-        activities[idx].totalTrackedSeconds += session.duration
+        // Only count work time toward study metrics (not break time)
+        activities[idx].todayTrackedSeconds += session.workSeconds
+        activities[idx].totalTrackedSeconds += session.workSeconds
     }
 
     // MARK: Static formatters
@@ -854,11 +893,11 @@ struct TimerCoreCard: View {
             .frame(maxWidth: .infinity, alignment: .center)
 
             Button(action: onOpenFocus) {
-                Text("􀅊")
-                    .font(.system(size: 20))
-                    .foregroundStyle(.primary)
-                    .padding(6)
-                    .background(DesignSystem.Materials.surface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                Image(systemName: "arrow.up.left.and.arrow.down.right")
+                    .font(.system(size: 13))
+                    .foregroundStyle(.secondary)
+                    .padding(8)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .padding(12)

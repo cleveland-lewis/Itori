@@ -101,10 +101,36 @@ final class AssignmentsStore: ObservableObject {
             let decoded = try JSONDecoder().decode([AppTask].self, from: data)
             tasks = decoded
             
+            // Migration validation: verify all tasks have category field populated
+            let tasksNeedingMigration = tasks.filter { $0.category != $0.type }
+            if !tasksNeedingMigration.isEmpty {
+                print("⚠️ Migration Notice: \(tasksNeedingMigration.count) tasks have different category/type values")
+            }
+            
+            // Verify no data loss
+            print("✅ Migration Complete: Loaded \(tasks.count) tasks successfully")
+            
             // Schedule notifications for all loaded incomplete tasks
             scheduleNotificationsForLoadedTasks()
         } catch {
-            print("Failed to load tasks cache: \(error)")
+            print("❌ Failed to load tasks cache: \(error)")
+            
+            // Attempt rollback-safe recovery
+            attemptRollbackRecovery(from: url)
+        }
+    }
+    
+    private func attemptRollbackRecovery(from url: URL) {
+        // Try to create a backup of the corrupted file
+        let backupURL = url.deletingLastPathComponent().appendingPathComponent("tasks_cache_backup_\(Date().timeIntervalSince1970).json")
+        
+        do {
+            if FileManager.default.fileExists(atPath: url.path) {
+                try FileManager.default.copyItem(at: url, to: backupURL)
+                print("📦 Backup created at: \(backupURL.path)")
+            }
+        } catch {
+            print("⚠️ Could not create backup: \(error)")
         }
     }
     

@@ -21,13 +21,9 @@ struct MenuBarView: View {
             return Calendar.current.isDateInToday(endedAt)
         }
         
+        // Sum only work time (excludes break time for Pomodoro)
         let totalSeconds = todaySessions.reduce(0.0) { total, session in
-            if session.mode == .pomodoro && !viewModel.isPomodorBreak {
-                return total + session.duration
-            } else if session.mode != .pomodoro {
-                return total + session.duration
-            }
-            return total
+            return total + session.workSeconds
         }
         
         let hours = Int(totalSeconds) / 3600
