@@ -86,6 +86,17 @@ struct ProfilesSettingsView: View {
                     settings.defaultEnergyLevel = newValue.rawValue
                     settings.save()
                 }
+
+                Stepper("Pomodoro Iterations: \(settings.pomodoroIterations)", value: $settings.pomodoroIterations, in: 1...10)
+                    .onChange(of: settings.pomodoroIterations) { _, _ in
+                        settings.save()
+                    }
+
+                Stepper("Long Break After: \(settings.longBreakCadence) iterations", value: $settings.longBreakCadence, in: 2...10)
+                    .onChange(of: settings.longBreakCadence) { _, _ in
+                        settings.save()
+                    }
+
             } header: {
                 Text("Study Session Defaults")
             } footer: {

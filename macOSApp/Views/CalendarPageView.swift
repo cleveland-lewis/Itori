@@ -1294,66 +1294,106 @@ private struct EventEditSheet: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 16) {
             HStack {
                 Text("Edit Event")
                     .font(.title2.weight(.semibold))
                 Spacer()
-                Button("Cancel") { dismiss() }
-                    .buttonStyle(.plain)
             }
 
             TextField("Title", text: $title)
+                .textFieldStyle(.roundedBorder)
+                .font(.body.weight(.medium))
 
-            Toggle("All Day", isOn: $isAllDay)
+            Divider()
 
-            DatePicker("Start", selection: $startDate, displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute])
-            DatePicker("End", selection: $endDate, in: startDate..., displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute])
-
-            TextField("Location", text: $location)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                TextField("URL", text: $urlString)
-                    .textContentType(.URL)
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Time")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .textCase(.uppercase)
                 
-                if !urlString.isEmpty && !isValidURL {
-                    Text("Invalid URL format")
-                        .font(.caption)
-                        .foregroundColor(.red)
+                Toggle("All Day", isOn: $isAllDay)
+                
+                VStack(alignment: .leading, spacing: 6) {
+                    DatePicker("Start", selection: $startDate, displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute])
+                    DatePicker("End", selection: $endDate, in: startDate..., displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute])
                 }
             }
-            
-            TextField("Notes", text: $notes, axis: .vertical)
-                .lineLimit(3, reservesSpace: true)
 
-            Picker("Repeat", selection: $recurrence) {
-                ForEach(CalendarManager.RecurrenceOption.allCases) { opt in
-                    Text(opt.rawValue.capitalized).tag(opt)
+            Divider()
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Details")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .textCase(.uppercase)
+                
+                TextField("Location", text: $location)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    TextField("URL", text: $urlString)
+                        .textContentType(.URL)
+                    
+                    if !urlString.isEmpty && !isValidURL {
+                        Text("Invalid URL format")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                    }
                 }
+                
+                TextField("Notes", text: $notes, axis: .vertical)
+                    .lineLimit(2, reservesSpace: true)
             }
-            
-            Picker("Alert", selection: $primaryAlert) {
-                ForEach(CalendarManager.AlertOption.allCases) { opt in
-                    Text(opt.rawValue).tag(opt)
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Options")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .textCase(.uppercase)
+                
+                Picker("Repeat", selection: $recurrence) {
+                    ForEach(CalendarManager.RecurrenceOption.allCases) { opt in
+                        Text(opt.rawValue.capitalized).tag(opt)
+                    }
                 }
-            }
-            
-            if primaryAlert != .none {
-                Picker("2nd Alert", selection: $secondaryAlert) {
-                    ForEach(CalendarManager.AlertOption.allCases) { opt in
+                
+                VStack(alignment: .leading, spacing: 6) {
+                    Picker("Primary Alert", selection: $primaryAlert) {
+                        ForEach(CalendarManager.AlertOption.allCases) { opt in
+                            Text(opt.rawValue).tag(opt)
+                        }
+                    }
+                    
+                    if primaryAlert != .none {
+                        Picker("Secondary Alert", selection: $secondaryAlert) {
+                            ForEach(CalendarManager.AlertOption.allCases) { opt in
+                                Text(opt.rawValue).tag(opt)
+                            }
+                        }
+                    }
+                }
+                
+                Picker("Travel Time", selection: $travelTime) {
+                    ForEach(CalendarManager.TravelTimeOption.allCases) { opt in
                         Text(opt.rawValue).tag(opt)
                     }
                 }
             }
-            
-            Picker("Travel Time", selection: $travelTime) {
-                ForEach(CalendarManager.TravelTimeOption.allCases) { opt in
-                    Text(opt.rawValue).tag(opt)
-                }
-            }
+
+            Divider()
+                .padding(.top, 4)
 
             HStack {
+                Button("Cancel") { 
+                    dismiss() 
+                }
+                .keyboardShortcut(.cancelAction)
+                
                 Spacer()
+                
                 Button("Save") {
                     let updated = EditableEvent(
                         title: title.isEmpty ? item.title : title,
@@ -1372,6 +1412,7 @@ private struct EventEditSheet: View {
                     dismiss()
                 }
                 .buttonStyle(.borderedProminent)
+                .keyboardShortcut(.defaultAction)
                 .disabled(!canSave)
             }
         }
@@ -1868,15 +1909,18 @@ private struct MonthDayCell: View {
                 .frame(width: 32, height: 32)
                 .foregroundColor(textColor)
                 .background(
-                    Circle()
-                        .fill(backgroundFill)
-                        .background(
-                            Circle().fill(DesignSystem.Materials.hud)
-                        )
-                        .shadow(color: shadowColor, radius: shadowRadius, x: 0, y: shadowY)
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(DesignSystem.Materials.hud)
+                        
+                        RoundedRectangle(cornerRadius: 6, style: .continuous)
+                            .fill(backgroundFill)
+                            .padding(2)
+                    }
+                    .shadow(color: shadowColor, radius: shadowRadius, x: 0, y: shadowY)
                 )
                 .overlay(
-                    Circle()
+                    RoundedRectangle(cornerRadius: 8, style: .continuous)
                         .strokeBorder(outlineColor, lineWidth: outlineWidth)
                 )
 

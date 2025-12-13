@@ -78,6 +78,8 @@ struct TimerPageView: View {
     @State private var remainingSeconds: TimeInterval = 25 * 60
     @State private var elapsedSeconds: TimeInterval = 0
     @State private var pomodoroSessions: Int = 4
+    @State private var completedPomodoroSessions: Int = 0
+    @State private var isPomodorBreak: Bool = false
     @State private var activeSession: LocalTimerSession? = nil
     @State private var sessions: [LocalTimerSession] = []
     @State private var activityNotes: [UUID: String] = [:]
@@ -112,6 +114,12 @@ struct TimerPageView: View {
                 .padding(.vertical, 24)
             }
         }
+        .timerContextMenu(
+            isRunning: $isRunning,
+            onStart: startTimer,
+            onStop: pauseTimer,
+            onEnd: endTimerSession
+        )
         .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
             tick()
         }
@@ -121,6 +129,8 @@ struct TimerPageView: View {
             }
         }
         .onAppear {
+            pomodoroSessions = settings.pomodoroIterations
+            setupTimerNotificationObservers()
             if !loadedSessions {
                 loadSessions()
                 loadedSessions = true
@@ -132,6 +142,9 @@ struct TimerPageView: View {
         }
         .onChange(of: selectedActivityID) { _, _ in
             syncTimerWithAssignment()
+        }
+        .onChange(of: settings.pomodoroIterations) { _, newValue in
+            pomodoroSessions = newValue
         }
     }
 
@@ -429,7 +442,9 @@ struct TimerPageView: View {
             isRunning: $isRunning,
             remainingSeconds: $remainingSeconds,
             elapsedSeconds: $elapsedSeconds,
-            pomodoroSessions: pomodoroSessions,
+            pomodoroSessions: settings.pomodoroIterations,
+            completedPomodoroSessions: completedPomodoroSessions,
+            isPomodorBreak: isPomodorBreak,
             onStart: startTimer,
             onPause: pauseTimer,
             onReset: resetTimer,
@@ -599,6 +614,35 @@ struct TimerPageView: View {
         isRunning = false
         elapsedSeconds = 0
         remainingSeconds = 25 * 60
+        completedPomodoroSessions = 0
+        isPomodorBreak = false
+    }
+    
+    private func endTimerSession() {
+        pauseTimer()
+        if var session = activeSession {
+            session.endDate = Date()
+            let elapsed = Date().timeIntervalSince(session.startDate)
+            session.duration = elapsed
+            logSession(session)
+            sessions.append(session)
+            activeSession = nil
+        }
+        resetTimer()
+    }
+    
+    private func setupTimerNotificationObservers() {
+        NotificationCenter.default.addObserver(forName: .timerStartRequested, object: nil, queue: .main) { _ in
+            self.startTimer()
+        }
+        
+        NotificationCenter.default.addObserver(forName: .timerStopRequested, object: nil, queue: .main) { _ in
+            self.pauseTimer()
+        }
+        
+        NotificationCenter.default.addObserver(forName: .timerEndRequested, object: nil, queue: .main) { _ in
+            self.endTimerSession()
+        }
     }
 
     private func assignmentForCurrentActivity() -> AppTask? {
@@ -609,9 +653,6 @@ struct TimerPageView: View {
     private func syncTimerWithAssignment() {
         guard !isRunning, let task = assignmentForCurrentActivity() else { return }
         remainingSeconds = TimeInterval(max(1, task.estimatedMinutes) * 60)
-        if mode == .pomodoro {
-            pomodoroSessions = max(1, Int(ceil(Double(task.estimatedMinutes) / 25.0)))
-        }
     }
 
     private func tick() {
@@ -636,7 +677,30 @@ struct TimerPageView: View {
         case .stopwatch:
             duration = elapsedSeconds
             elapsedSeconds = 0
-        case .pomodoro, .countdown:
+        case .pomodoro:
+            duration = 25 * 60 - remainingSeconds
+            
+            // Pomodoro cycle logic: work → break → work → break...
+            if isPomodorBreak {
+                // Break just finished - increment completed sessions
+                completedPomodoroSessions += 1
+                isPomodorBreak = false
+                remainingSeconds = 25 * 60 // Reset to work time
+            } else {
+                // Work just finished - switch to break
+                isPomodorBreak = true
+                
+                // Determine if it's time for a long break
+                let longBreakCadence = settings.longBreakCadence
+                let isLongBreak = (completedPomodoroSessions + 1) % longBreakCadence == 0
+                
+                if isLongBreak {
+                    remainingSeconds = TimeInterval(settings.pomodoroLongBreakMinutes * 60)
+                } else {
+                    remainingSeconds = TimeInterval(settings.pomodoroShortBreakMinutes * 60)
+                }
+            }
+        case .countdown:
             duration = 25 * 60 - remainingSeconds
             remainingSeconds = 25 * 60
         }
@@ -751,6 +815,8 @@ struct TimerCoreCard: View {
     @Binding var remainingSeconds: TimeInterval
     @Binding var elapsedSeconds: TimeInterval
     var pomodoroSessions: Int
+    var completedPomodoroSessions: Int
+    var isPomodorBreak: Bool
 
     var onStart: () -> Void
     var onPause: () -> Void
@@ -765,6 +831,9 @@ struct TimerCoreCard: View {
                     FocusSessionView(
                         mode: mode,
                         timeText: timeDisplay,
+                        pomodoroSessions: pomodoroSessions,
+                        completedPomodoroSessions: completedPomodoroSessions,
+                        isPomodorBreak: isPomodorBreak,
                         onPause: onPause,
                         onStop: onReset
                     )
@@ -772,6 +841,9 @@ struct TimerCoreCard: View {
                     TimerSetupView(
                         mode: $mode,
                         timeText: timeDisplay,
+                        pomodoroSessions: pomodoroSessions,
+                        completedPomodoroSessions: completedPomodoroSessions,
+                        isPomodorBreak: isPomodorBreak,
                         onStart: onStart,
                         onOpenFocus: onOpenFocus,
                         onReset: onReset,
@@ -835,6 +907,9 @@ struct TimerCoreCard: View {
 private struct TimerSetupView: View {
     @Binding var mode: LocalTimerMode
     var timeText: String
+    var pomodoroSessions: Int
+    var completedPomodoroSessions: Int
+    var isPomodorBreak: Bool
     var onStart: () -> Void
     var onOpenFocus: () -> Void
     var onReset: () -> Void
@@ -868,12 +943,38 @@ private struct TimerSetupView: View {
                 .menuIndicator(.hidden)
             }
 
-            Text(timeText)
-                .font(.system(size: 60, weight: .light, design: .monospaced))
-                .monospacedDigit()
-                .padding(.vertical, 12)
+            VStack(spacing: 8) {
+                if mode == .pomodoro {
+                    Text(isPomodorBreak ? "Break" : "Work")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+                } else {
+                    Text(mode.label)
+                        .font(.system(size: 17, weight: .medium))
+                        .foregroundStyle(.primary)
+                }
+                
+                Text(timeText)
+                    .font(.system(size: 60, weight: .light, design: .monospaced))
+                    .monospacedDigit()
+            }
+            .padding(.vertical, 12)
+            
+            if mode == .pomodoro {
+                HStack(spacing: 8) {
+                    ForEach(0..<pomodoroSessions, id: \.self) { index in
+                        Circle()
+                            .fill(index < completedPomodoroSessions ? Color.accentColor : Color.accentColor.opacity(0.3))
+                            .frame(width: 8, height: 8)
+                    }
+                }
+                .padding(.bottom, 4)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
+            }
 
-            Button("Start (\(mode.label))", action: onStart)
+            Button("Start", action: onStart)
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
                 .padding(.top, 4)
@@ -885,14 +986,36 @@ private struct TimerSetupView: View {
 private struct FocusSessionView: View {
     var mode: LocalTimerMode
     var timeText: String
+    var pomodoroSessions: Int
+    var completedPomodoroSessions: Int
+    var isPomodorBreak: Bool
     var onPause: () -> Void
     var onStop: () -> Void
 
     var body: some View {
         VStack(spacing: 16) {
+            if mode == .pomodoro {
+                Text(isPomodorBreak ? "Break" : "Work")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(.secondary)
+                    .textCase(.uppercase)
+            }
+            
             Text(timeText)
                 .font(.system(size: 60, weight: .light, design: .monospaced))
                 .monospacedDigit()
+            
+            if mode == .pomodoro {
+                HStack(spacing: 8) {
+                    ForEach(0..<pomodoroSessions, id: \.self) { index in
+                        Circle()
+                            .fill(index < completedPomodoroSessions ? Color.accentColor : Color.secondary.opacity(0.3))
+                            .frame(width: 8, height: 8)
+                    }
+                }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
+            }
 
             HStack(spacing: 18) {
                 Button(action: onPause) {

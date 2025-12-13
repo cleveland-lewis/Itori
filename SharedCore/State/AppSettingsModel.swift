@@ -233,6 +233,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         case enableFlashcardsStorage
         case assignmentSwipeLeadingRaw
         case assignmentSwipeTrailingRaw
+        case longBreakCadenceStorage
     }
 
 
@@ -378,6 +379,8 @@ final class AppSettingsModel: ObservableObject, Codable {
     var pomodoroFocusStorage: Int = 25
     var pomodoroShortBreakStorage: Int = 5
     var pomodoroLongBreakStorage: Int = 15
+    var pomodoroIterationsStorage: Int = 4
+    var longBreakCadenceStorage: Int = 4
 
     // Event load thresholds (persisted)
     var loadLowThresholdStorage: Int = 1
@@ -592,6 +595,16 @@ final class AppSettingsModel: ObservableObject, Codable {
     var pomodoroLongBreakMinutes: Int {
         get { pomodoroLongBreakStorage }
         set { pomodoroLongBreakStorage = newValue }
+    }
+
+    var pomodoroIterations: Int {
+        get { pomodoroIterationsStorage }
+        set { pomodoroIterationsStorage = newValue }
+    }
+    
+    var longBreakCadence: Int {
+        get { longBreakCadenceStorage }
+        set { longBreakCadenceStorage = newValue }
     }
 
     // Event load thresholds exposed to views

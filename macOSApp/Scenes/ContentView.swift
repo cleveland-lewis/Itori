@@ -69,7 +69,9 @@ struct ContentView: View {
             }
         }
         .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
+        .globalContextMenu()
         .onAppear {
+            setupNotificationObservers()
             DispatchQueue.main.async {
                 if let win = NSApp.keyWindow ?? NSApp.windows.first {
                     win.title = ""
@@ -200,6 +202,29 @@ struct ContentView: View {
         selectedTab = tab
         if let page = AppPage(rawValue: tab.rawValue), appModel.selectedPage != page {
             appModel.selectedPage = page
+        }
+    }
+
+    private func setupNotificationObservers() {
+        NotificationCenter.default.addObserver(forName: .navigateToTab, object: nil, queue: .main) { notification in
+            if let tabString = notification.userInfo?["tab"] as? String,
+               let tab = RootTab(rawValue: tabString) {
+                selectedTab = tab
+            }
+        }
+        
+        NotificationCenter.default.addObserver(forName: .addAssignmentRequested, object: nil, queue: .main) { _ in
+            performQuickAction(.add_assignment)
+        }
+        
+        NotificationCenter.default.addObserver(forName: .addGradeRequested, object: nil, queue: .main) { _ in
+            // TODO: Implement add grade flow
+            LOG_UI(.info, "ContextMenu", "Add Grade requested")
+        }
+        
+        NotificationCenter.default.addObserver(forName: .refreshRequested, object: nil, queue: .main) { _ in
+            // Trigger refresh for current view
+            LOG_UI(.info, "ContextMenu", "Refresh requested")
         }
     }
 
