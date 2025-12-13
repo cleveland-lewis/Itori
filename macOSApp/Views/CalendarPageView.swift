@@ -57,8 +57,9 @@ public struct CalendarEvent: Identifiable, Hashable {
     var travelTime: TimeInterval?
     var ekIdentifier: String?
     var isReminder: Bool = false
+    var category: EventCategory
 
-    init(id: UUID = UUID(), title: String, startDate: Date, endDate: Date, location: String? = nil, notes: String? = nil, url: URL? = nil, alarms: [EKAlarm]? = nil, travelTime: TimeInterval? = nil, ekIdentifier: String? = nil, isReminder: Bool = false) {
+    init(id: UUID = UUID(), title: String, startDate: Date, endDate: Date, location: String? = nil, notes: String? = nil, url: URL? = nil, alarms: [EKAlarm]? = nil, travelTime: TimeInterval? = nil, ekIdentifier: String? = nil, isReminder: Bool = false, category: EventCategory? = nil) {
         self.id = id
         self.title = title
         self.startDate = startDate
@@ -70,6 +71,7 @@ public struct CalendarEvent: Identifiable, Hashable {
         self.travelTime = travelTime
         self.ekIdentifier = ekIdentifier
         self.isReminder = isReminder
+        self.category = category ?? parseEventCategory(from: title) ?? .other
     }
 }
 
@@ -621,17 +623,23 @@ private struct MonthCalendarView: View {
                                         } label: {
                                             HStack(spacing: 6) {
                                                 Circle()
-                                                    .fill(categoryColor(for: event.title))
+                                                    .fill(event.category.color)
                                                     .frame(width: 8, height: 8)
-                                                Text(eventCategoryLabel(for: event.title))
+                                                Text(event.category.rawValue)
                                                     .font(DesignSystem.Typography.caption)
                                                     .foregroundStyle(.secondary)
                                                 Text(event.title)
                                                     .font(DesignSystem.Typography.caption)
                                                     .foregroundStyle(.primary)
                                                     .lineLimit(1)
-                                                Spacer()
+                                                Spacer(minLength: 0)
                                             }
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 3)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                                    .fill(event.category.color.opacity(0.08))
+                                            )
                                         }
                                         .buttonStyle(.plain)
                                     }
@@ -1554,7 +1562,7 @@ struct CalendarView: View {
                         date: calendarManager.selectedDate ?? Date(),
                         events: sidebarEvents(for: calendarManager.selectedDate ?? Date())
                     ) { event in
-                        calendarManager.selectedDate = event.startDate
+                        selectedEvent = event
                     }
 
                     VStack(spacing: 0) {

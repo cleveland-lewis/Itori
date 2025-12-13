@@ -5,6 +5,7 @@ class MenuBarManager {
     private var statusItem: NSStatusItem
     private var viewModel = MenuBarViewModel()
     private var cancellables = Set<AnyCancellable>()
+    private var hostingController: NSHostingController<MenuBarView>?
 
     init(focusManager: FocusManager, assignmentsStore: AssignmentsStore, settings: AppSettingsModel) {
         self.statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -12,6 +13,8 @@ class MenuBarManager {
         let menu = NSMenu()
         let view = MenuBarView(viewModel: viewModel, assignmentsStore: assignmentsStore, settings: settings)
         let hostingController = NSHostingController(rootView: view)
+        self.hostingController = hostingController
+        
         let menuItem = NSMenuItem()
         menuItem.view = hostingController.view
         menu.addItem(menuItem)
@@ -25,51 +28,79 @@ class MenuBarManager {
             self?.handleTimerStateChange(notification)
         }
     }
+    
+    deinit {
+        if let statusItem = statusItem as NSStatusItem? {
+            NSStatusBar.system.removeStatusItem(statusItem)
+        }
+    }
 
     private func handleTimerStateChange(_ notification: Notification) {
         guard let userInfo = notification.userInfo else { return }
         
-        viewModel.mode = userInfo["mode"] as? LocalTimerMode ?? .pomodoro
-        viewModel.isRunning = userInfo["isRunning"] as? Bool ?? false
-        viewModel.remainingSeconds = userInfo["remainingSeconds"] as? TimeInterval ?? 0
-        viewModel.elapsedSeconds = userInfo["elapsedSeconds"] as? TimeInterval ?? 0
-        viewModel.pomodoroSessions = userInfo["pomodoroSessions"] as? Int ?? 0
-        viewModel.completedPomodoroSessions = userInfo["completedPomodoroSessions"] as? Int ?? 0
-        viewModel.isPomodorBreak = userInfo["isPomodorBreak"] as? Bool ?? false
-        viewModel.selectedActivityID = userInfo["selectedActivityID"] as? UUID
-        viewModel.activities = userInfo["activities"] as? [LocalTimerActivity] ?? []
-        viewModel.sessions = userInfo["sessions"] as? [LocalTimerSession] ?? []
+        let mode = userInfo["mode"] as? LocalTimerMode ?? .pomodoro
+        let isRunning = userInfo["isRunning"] as? Bool ?? false
+        let remainingSeconds = userInfo["remainingSeconds"] as? TimeInterval ?? 0
+        let elapsedSeconds = userInfo["elapsedSeconds"] as? TimeInterval ?? 0
+        let isPomodorBreak = userInfo["isPomodorBreak"] as? Bool ?? false
         
-        updateMenuBar()
+        // Update button directly (avoids SwiftUI view rebuilds)
+        updateMenuBarButton(mode: mode, isRunning: isRunning, remainingSeconds: remainingSeconds, elapsedSeconds: elapsedSeconds, isPomodorBreak: isPomodorBreak)
+        
+        // Only update viewModel for menu content (throttled)
+        if shouldUpdateMenuContent(mode: mode, isRunning: isRunning) {
+            viewModel.mode = mode
+            viewModel.isRunning = isRunning
+            viewModel.remainingSeconds = remainingSeconds
+            viewModel.elapsedSeconds = elapsedSeconds
+            viewModel.pomodoroSessions = userInfo["pomodoroSessions"] as? Int ?? 0
+            viewModel.completedPomodoroSessions = userInfo["completedPomodoroSessions"] as? Int ?? 0
+            viewModel.isPomodorBreak = isPomodorBreak
+            viewModel.selectedActivityID = userInfo["selectedActivityID"] as? UUID
+            viewModel.activities = userInfo["activities"] as? [LocalTimerActivity] ?? []
+            viewModel.sessions = userInfo["sessions"] as? [LocalTimerSession] ?? []
+        }
+    }
+    
+    private var lastMenuUpdate: Date = .distantPast
+    private let menuUpdateThrottle: TimeInterval = 1.0
+    
+    private func shouldUpdateMenuContent(mode: LocalTimerMode, isRunning: Bool) -> Bool {
+        let now = Date()
+        let shouldUpdate = now.timeIntervalSince(lastMenuUpdate) >= menuUpdateThrottle
+        if shouldUpdate {
+            lastMenuUpdate = now
+        }
+        return shouldUpdate
     }
 
-    private func updateMenuBar() {
+    private func updateMenuBarButton(mode: LocalTimerMode, isRunning: Bool, remainingSeconds: TimeInterval, elapsedSeconds: TimeInterval, isPomodorBreak: Bool) {
         guard let button = statusItem.button else { return }
         
         let timeString: String
         let iconName: String
         
-        switch viewModel.mode {
+        switch mode {
         case .pomodoro:
-            let minutes = Int(viewModel.remainingSeconds) / 60
-            let seconds = Int(viewModel.remainingSeconds) % 60
+            let minutes = Int(remainingSeconds) / 60
+            let seconds = Int(remainingSeconds) % 60
             timeString = String(format: "%02d:%02d", minutes, seconds)
-            iconName = viewModel.isPomodorBreak ? "pause.circle" : "timer"
+            iconName = isPomodorBreak ? "pause.circle" : "timer"
             
         case .countdown:
-            let minutes = Int(viewModel.remainingSeconds) / 60
-            let seconds = Int(viewModel.remainingSeconds) % 60
+            let minutes = Int(remainingSeconds) / 60
+            let seconds = Int(remainingSeconds) % 60
             timeString = String(format: "%02d:%02d", minutes, seconds)
             iconName = "timer"
             
         case .stopwatch:
-            let minutes = Int(viewModel.elapsedSeconds) / 60
-            let seconds = Int(viewModel.elapsedSeconds) % 60
+            let minutes = Int(elapsedSeconds) / 60
+            let seconds = Int(elapsedSeconds) % 60
             timeString = String(format: "%02d:%02d", minutes, seconds)
             iconName = "stopwatch"
         }
         
-        button.image = NSImage(systemSymbolName: iconName, accessibilityDescription: viewModel.mode.label)
+        button.image = NSImage(systemSymbolName: iconName, accessibilityDescription: mode.label)
         button.title = timeString
     }
 }

@@ -209,3 +209,91 @@ struct Course: Identifiable, Codable, Hashable {
 protocol CourseLinkable {
     var courseId: UUID { get set }
 }
+
+// MARK: - Course Outline System
+
+enum CourseOutlineNodeType: String, Codable, CaseIterable, Identifiable {
+    case module = "Module"
+    case unit = "Unit"
+    case section = "Section"
+    case chapter = "Chapter"
+    case part = "Part"
+    case lesson = "Lesson"
+    
+    var id: String { rawValue }
+}
+
+struct CourseOutlineNode: Identifiable, Codable, Hashable {
+    var id: UUID
+    var courseId: UUID
+    var parentId: UUID?  // nil means root node
+    var type: CourseOutlineNodeType
+    var title: String
+    var sortIndex: Int  // Deterministic ordering within siblings
+    var createdAt: Date
+    var updatedAt: Date
+    
+    init(
+        id: UUID = UUID(),
+        courseId: UUID,
+        parentId: UUID? = nil,
+        type: CourseOutlineNodeType,
+        title: String,
+        sortIndex: Int = 0,
+        createdAt: Date = Date(),
+        updatedAt: Date = Date()
+    ) {
+        self.id = id
+        self.courseId = courseId
+        self.parentId = parentId
+        self.type = type
+        self.title = title
+        self.sortIndex = sortIndex
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+    }
+    
+    // Helper to check if this is a root node
+    var isRoot: Bool {
+        parentId == nil
+    }
+}
+
+// MARK: - Course Files
+
+struct CourseFile: Identifiable, Codable, Hashable {
+    var id: UUID
+    var courseId: UUID
+    var nodeId: UUID?  // nil means attached to course root
+    var filename: String
+    var fileType: String  // e.g., "pdf", "docx"
+    var localURL: String?  // File path or bookmark data
+    var isSyllabus: Bool
+    var isPracticeExam: Bool
+    var createdAt: Date
+    var updatedAt: Date
+    
+    init(
+        id: UUID = UUID(),
+        courseId: UUID,
+        nodeId: UUID? = nil,
+        filename: String,
+        fileType: String = "",
+        localURL: String? = nil,
+        isSyllabus: Bool = false,
+        isPracticeExam: Bool = false,
+        createdAt: Date = Date(),
+        updatedAt: Date = Date()
+    ) {
+        self.id = id
+        self.courseId = courseId
+        self.nodeId = nodeId
+        self.filename = filename
+        self.fileType = fileType
+        self.localURL = localURL
+        self.isSyllabus = isSyllabus
+        self.isPracticeExam = isPracticeExam
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+    }
+}

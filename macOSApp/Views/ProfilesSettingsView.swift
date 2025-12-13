@@ -87,31 +87,6 @@ struct ProfilesSettingsView: View {
                     settings.save()
                 }
 
-                Stepper("Pomodoro Focus: \(settings.pomodoroFocusMinutes) minutes", value: $settings.pomodoroFocusMinutes, in: 5...60, step: 5)
-                    .onChange(of: settings.pomodoroFocusMinutes) { _, _ in
-                        settings.save()
-                    }
-                
-                Stepper("Pomodoro Short Break: \(settings.pomodoroShortBreakMinutes) minutes", value: $settings.pomodoroShortBreakMinutes, in: 1...15)
-                    .onChange(of: settings.pomodoroShortBreakMinutes) { _, _ in
-                        settings.save()
-                    }
-                
-                Stepper("Pomodoro Long Break: \(settings.pomodoroLongBreakMinutes) minutes", value: $settings.pomodoroLongBreakMinutes, in: 10...60, step: 5)
-                    .onChange(of: settings.pomodoroLongBreakMinutes) { _, _ in
-                        settings.save()
-                    }
-
-                Stepper("Pomodoro Iterations: \(settings.pomodoroIterations)", value: $settings.pomodoroIterations, in: 1...10)
-                    .onChange(of: settings.pomodoroIterations) { _, _ in
-                        settings.save()
-                    }
-
-                Stepper("Long Break After: \(settings.longBreakCadence) iterations", value: $settings.longBreakCadence, in: 2...10)
-                    .onChange(of: settings.longBreakCadence) { _, _ in
-                        settings.save()
-                    }
-
             } header: {
                 Text("Study Session Defaults")
             } footer: {

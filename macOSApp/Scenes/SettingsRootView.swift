@@ -73,6 +73,8 @@ struct SettingsRootView: View {
                     InterfaceSettingsView()
                 case .profiles:
                     ProfilesSettingsView()
+                case .timer:
+                    TimerSettingsView()
                 case .flashcards:
                     FlashcardSettingsView()
                 case .notifications:

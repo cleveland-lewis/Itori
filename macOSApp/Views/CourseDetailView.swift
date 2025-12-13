@@ -196,8 +196,19 @@ struct CourseDetailView: View {
     private var modulesCard: some View {
         AppCard {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                Text("Modules")
-                    .font(DesignSystem.Typography.subHeader)
+                HStack {
+                    Text("Modules")
+                        .font(DesignSystem.Typography.subHeader)
+                    Spacer()
+                    NavigationLink {
+                        CourseOutlineEditorView(course: course)
+                            .environmentObject(dataManager)
+                    } label: {
+                        Label("Edit Outline", systemImage: "list.bullet.indent")
+                            .font(DesignSystem.Typography.caption)
+                    }
+                    .buttonStyle(.borderless)
+                }
 
                 if groupedAttachments.isEmpty {
                     Text("No module files yet.")

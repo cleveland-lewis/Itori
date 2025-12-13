@@ -36,8 +36,36 @@ struct LocalTimerSession: Identifiable, Codable, Hashable {
     var startDate: Date
     var endDate: Date?
     var duration: TimeInterval
+    var workSeconds: TimeInterval
+    var breakSeconds: TimeInterval
+    var isBreakSession: Bool
 
     enum CodingKeys: String, CodingKey {
-        case id, activityID, mode, startDate, endDate, duration
+        case id, activityID, mode, startDate, endDate, duration, workSeconds, breakSeconds, isBreakSession
+    }
+    
+    init(id: UUID, activityID: UUID, mode: LocalTimerMode, startDate: Date, endDate: Date?, duration: TimeInterval, workSeconds: TimeInterval? = nil, breakSeconds: TimeInterval? = nil, isBreakSession: Bool = false) {
+        self.id = id
+        self.activityID = activityID
+        self.mode = mode
+        self.startDate = startDate
+        self.endDate = endDate
+        self.duration = duration
+        self.isBreakSession = isBreakSession
+        
+        // For Pomodoro mode, distinguish work vs break time
+        if mode == .pomodoro {
+            if isBreakSession {
+                self.workSeconds = 0
+                self.breakSeconds = duration
+            } else {
+                self.workSeconds = duration
+                self.breakSeconds = 0
+            }
+        } else {
+            // For stopwatch and timer, all time is work time
+            self.workSeconds = workSeconds ?? duration
+            self.breakSeconds = breakSeconds ?? 0
+        }
     }
 }

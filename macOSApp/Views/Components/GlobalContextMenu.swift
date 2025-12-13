@@ -14,14 +14,10 @@ struct GlobalContextMenuModifier: ViewModifier {
         content
             .contextMenu {
                 // Global items
-                Button("Refresh") {
+                Button("Refresh Calendar") {
                     GlobalMenuActions.shared.refresh()
                 }
                 .keyboardShortcut("r", modifiers: .command)
-                
-                Button("Calendar") {
-                    GlobalMenuActions.shared.navigateToCalendar()
-                }
                 
                 Button("Go to Planner") {
                     GlobalMenuActions.shared.navigateToPlanner()
@@ -69,14 +65,10 @@ struct TimerContextMenuModifier: ViewModifier {
                 Divider()
                 
                 // Global items
-                Button("Refresh") {
+                Button("Refresh Calendar") {
                     GlobalMenuActions.shared.refresh()
                 }
                 .keyboardShortcut("r", modifiers: .command)
-                
-                Button("Calendar") {
-                    GlobalMenuActions.shared.navigateToCalendar()
-                }
                 
                 Button("Go to Planner") {
                     GlobalMenuActions.shared.navigateToPlanner()

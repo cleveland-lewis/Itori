@@ -56,6 +56,7 @@ struct AppTask: Codable, Equatable, Hashable {
     let difficulty: Double     // 0…1
     let importance: Double     // 0…1
     let type: TaskType
+    let category: TaskType     // First-class category field (aliased to type for now)
     let locked: Bool
     let attachments: [Attachment]
     var isCompleted: Bool
@@ -63,7 +64,7 @@ struct AppTask: Codable, Equatable, Hashable {
     var gradePossiblePoints: Double?
     var gradeEarnedPoints: Double?
 
-    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil) {
+    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil, category: TaskType? = nil) {
         self.id = id
         self.title = title
         self.courseId = courseId
@@ -74,6 +75,7 @@ struct AppTask: Codable, Equatable, Hashable {
         self.difficulty = difficulty
         self.importance = importance
         self.type = type
+        self.category = category ?? type  // Use provided category or default to type
         self.locked = locked
         self.attachments = attachments
         self.isCompleted = isCompleted
