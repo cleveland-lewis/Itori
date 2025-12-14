@@ -40,14 +40,10 @@ struct DashboardView: View {
                         .frame(maxWidth: .infinity, alignment: .top)
                         .animateEntry(isLoaded: isLoaded, index: 0)
 
-                    clockCard
+                    clockAndCalendarCard
                         .frame(maxWidth: .infinity, alignment: .top)
                         .animateEntry(isLoaded: isLoaded, index: 3)
                         .frame(minHeight: 160)
-                    
-                    calendarCard
-                        .frame(maxWidth: 280)
-                        .animateEntry(isLoaded: isLoaded, index: 2)
                 }
 
                 HStack(alignment: .top, spacing: columnSpacing) {
@@ -278,16 +274,7 @@ struct DashboardView: View {
         .frame(maxWidth: .infinity)
     }
 
-    private var calendarCard: some View {
-        RootsCard {
-            VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                Text("Calendar").rootsSectionHeader()
-                DashboardCalendarColumn(selectedDate: $selectedDate, events: events)
-            }
-        }
-    }
-
-    private var clockCard: some View {
+    private var clockAndCalendarCard: some View {
         // quickActionsExpanded controls fan-out
         @State var quickActionsExpanded: Bool = false
 
@@ -330,25 +317,36 @@ struct DashboardView: View {
                     }
                 }
 
-                // Main content: CLOCK (left) + Study graph (right)
+                // Main content: CLOCK + Study graph + Calendar in HStack
                 let clockGraphSize: CGFloat = 180
-                HStack(alignment: .center, spacing: DesignSystem.Layout.spacing.large) {
+                HStack(alignment: .top, spacing: DesignSystem.Layout.spacing.large) {
+                    // Left: Clock
                     RootsAnalogClock(diameter: clockGraphSize, showSecondHand: true, accentColor: settings.activeAccentColor)
                         .frame(width: clockGraphSize, height: clockGraphSize)
-                        .frame(maxWidth: .infinity, alignment: .leading)
 
-                    // Build samples from analytics service (last 7 days)
+                    // Middle: Build samples from analytics service (last 7 days)
                     let raw = AnalyticsService.shared.getStudyTrends(range: .last7Days)
                     let studySamples = raw.map { StudySample(date: $0.date, minutes: $0.seconds / 60.0) }
 
                     StudyTimeLineGraphView(samples: studySamples, accentColor: settings.activeAccentColor)
                         .frame(width: clockGraphSize, height: clockGraphSize)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
+                    
+                    // Right: Calendar
+                    VStack(alignment: .leading, spacing: RootsSpacing.s) {
+                        Text("Calendar")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.secondary)
+                        DashboardCalendarColumn(selectedDate: $selectedDate, events: events)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
             .padding(12)
         }
     }
+
+
 
     private func quickActionButton(_ title: String, systemImage: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
