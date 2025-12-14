@@ -64,12 +64,6 @@ struct LogEvent {
 final class Diagnostics: ObservableObject {
     static let shared = Diagnostics()
 
-    @AppStorage("developer.mode.enabled") var isDeveloperModeEnabled: Bool = false
-    @Published var enableUILogging: Bool = false
-    @Published var enableDataLogging: Bool = false
-    @Published var enableSchedulerLogging: Bool = false
-    @Published var enablePerformanceWarnings: Bool = false
-
     @Published private(set) var recentEvents: [LogEvent] = []
     private let maxEvents = 500
     private let iso8601: ISO8601DateFormatter = {
@@ -83,6 +77,28 @@ final class Diagnostics: ObservableObject {
     private let maxErrorsPerWindow = 3
 
     private init() {}
+    
+    // Read settings directly from AppSettingsModel to avoid recursion
+    // nonisolated to allow access from any thread
+    nonisolated var isDeveloperModeEnabled: Bool {
+        AppSettingsModel.shared.devModeEnabled
+    }
+    
+    nonisolated var enableUILogging: Bool {
+        AppSettingsModel.shared.devModeUILogging
+    }
+    
+    nonisolated var enableDataLogging: Bool {
+        AppSettingsModel.shared.devModeDataLogging
+    }
+    
+    nonisolated var enableSchedulerLogging: Bool {
+        AppSettingsModel.shared.devModeSchedulerLogging
+    }
+    
+    nonisolated var enablePerformanceWarnings: Bool {
+        AppSettingsModel.shared.devModePerformance
+    }
 
     func log(_ severity: LogSeverity,
              subsystem: LogSubsystem,

@@ -3,12 +3,13 @@ import SwiftUI
 
 struct DeveloperSettingsView: View {
     @ObservedObject private var diagnostics = Diagnostics.shared
+    @ObservedObject private var settings = AppSettingsModel.shared
     
     var body: some View {
         Form {
             Section {
                 VStack(alignment: .leading, spacing: 8) {
-                    Toggle("Developer Mode", isOn: $diagnostics.isDeveloperModeEnabled)
+                    Toggle("Developer Mode", isOn: $settings.devModeEnabled)
                         .font(.headline)
                     
                     Text("When enabled, the app emits structured debug logging to the Xcode console. This helps with debugging, triage, and understanding app behavior at runtime.")
@@ -23,10 +24,10 @@ struct DeveloperSettingsView: View {
             if diagnostics.isDeveloperModeEnabled {
                 Section {
                     VStack(alignment: .leading, spacing: 12) {
-                        Toggle("UI Logging", isOn: $diagnostics.enableUILogging)
-                        Toggle("Data & Sync Logging", isOn: $diagnostics.enableDataLogging)
-                        Toggle("Scheduler & Planner Logging", isOn: $diagnostics.enableSchedulerLogging)
-                        Toggle("Performance Warnings", isOn: $diagnostics.enablePerformanceWarnings)
+                        Toggle("UI Logging", isOn: $settings.devModeUILogging)
+                        Toggle("Data & Sync Logging", isOn: $settings.devModeDataLogging)
+                        Toggle("Scheduler & Planner Logging", isOn: $settings.devModeSchedulerLogging)
+                        Toggle("Performance Warnings", isOn: $settings.devModePerformance)
                     }
                 } header: {
                     Text("Subsystem Toggles")

@@ -45,7 +45,6 @@ struct RootsApp: App {
         let focus = FocusManager()
         _focusManager = StateObject(wrappedValue: focus)
         menuBarManager = MenuBarManager(focusManager: focus, assignmentsStore: assignments, settings: settings)
-        _ = DeveloperSettingsSynchronizer.shared
         LOG_LIFECYCLE(.info, "AppInit", "RootsApp initialization complete")
     }
 
