@@ -27,12 +27,14 @@ struct RootsApp: App {
     @StateObject private var timerManager = TimerManager()
     @StateObject private var focusManager = FocusManager()
     @StateObject private var preferences = AppPreferences()
+    @StateObject private var parsingStore = SyllabusParsingStore.shared
 
     @Environment(\.scenePhase) private var scenePhase
 
     private var menuBarManager: MenuBarManager
 
     init() {
+        LOG_LIFECYCLE(.info, "AppInit", "RootsApp initializing")
         let store = CoursesStore()
         _coursesStore = StateObject(wrappedValue: store)
         let settings = AppSettingsModel.shared
@@ -44,13 +46,15 @@ struct RootsApp: App {
         let focus = FocusManager()
         _focusManager = StateObject(wrappedValue: focus)
         menuBarManager = MenuBarManager(focusManager: focus, assignmentsStore: assignments, settings: settings)
-        _ = DeveloperSettingsSynchronizer.shared
+        LOG_LIFECYCLE(.info, "AppInit", "RootsApp initialization complete")
     }
 
 #if !DISABLE_SWIFTDATA
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
+            AssignmentPlan.self,
+            PlanStep.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -82,7 +86,9 @@ struct RootsApp: App {
                 .environmentObject(gradesStore)
                 .environmentObject(plannerStore)
                 .environmentObject(plannerCoordinator)
+                .environmentObject(parsingStore)
                 .onAppear {
+                    LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")
                     // Sync stored AppSettingsModel -> AppPreferences on launch
                     preferences.highContrast = appSettings.highContrastMode
                     preferences.reduceTransparency = appSettings.increaseTransparency
@@ -92,11 +98,13 @@ struct RootsApp: App {
                     resetCancellable = AppModel.shared.resetPublisher
                         .receive(on: DispatchQueue.main)
                         .sink { _ in
+                            LOG_LIFECYCLE(.warn, "AppReset", "Global app reset requested")
                             // perform global resets
                             AssignmentsStore.shared.resetAll()
                             CoursesStore.shared?.resetAll()
                             PlannerStore.shared.reset()
                             GradesStore.shared.resetAll()
+                            LOG_LIFECYCLE(.info, "AppReset", "Global app reset complete")
                         }
                 }
                 .onChange(of: preferences.highContrast) { _, newValue in
@@ -120,6 +128,7 @@ struct RootsApp: App {
                 .tint(preferences.currentAccentColor)
                 .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
                 .task {
+                    LOG_LIFECYCLE(.info, "AppStartup", "Running startup tasks")
                     // Run adaptation on launch
                     SchedulerAdaptationManager.shared.runAdaptiveSchedulerUpdateIfNeeded()
                     // Refresh and request permissions on launch
@@ -129,8 +138,10 @@ struct RootsApp: App {
                     
                     // Schedule daily overview if enabled
                     if appSettings.dailyOverviewEnabled {
+                        LOG_NOTIFICATIONS(.info, "DailyOverview", "Scheduling daily overview notification")
                         NotificationManager.shared.scheduleDailyOverview()
                     }
+                    LOG_LIFECYCLE(.info, "AppStartup", "Startup tasks complete")
                 }
         }
         .onChange(of: scenePhase) { _, newPhase in
@@ -155,6 +166,7 @@ struct RootsApp: App {
                 .environmentObject(preferences)
                 .environmentObject(gradesStore)
                 .environmentObject(plannerStore)
+                .environmentObject(parsingStore)
         }
         .commands {
             AppCommands()
@@ -166,9 +178,12 @@ struct RootsApp: App {
     }
 
     private func handleScenePhaseChange(_ phase: ScenePhase) {
+        LOG_LIFECYCLE(.info, "ScenePhase", "Scene phase changed to: \(phase)")
         if phase == .background || phase == .inactive {
+            LOG_LIFECYCLE(.info, "ScenePhase", "App entering background, saving settings")
             appSettings.save()
         } else if phase == .active {
+            LOG_LIFECYCLE(.info, "ScenePhase", "App became active, refreshing calendar")
             _Concurrency.Task {
                 await calendarManager.checkPermissionsOnStartup()
                 await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)

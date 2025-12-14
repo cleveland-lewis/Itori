@@ -159,10 +159,10 @@ struct DayDetailSidebar: View {
         case .exam: return "Exam"
         case .class: return "Class"
         case .homework: return "Homework"
-        case .lab: return "Lab"
         case .study: return "Study"
         case .review: return "Review"
         case .reading: return "Reading"
+        case .lab: return "Lab"
         case .other: return "Event"
         }
     }
@@ -172,10 +172,10 @@ struct DayDetailSidebar: View {
         case .exam: return .red
         case .class: return .blue
         case .homework: return .orange
-        case .lab: return .purple
         case .study: return .green
         case .review: return .yellow
         case .reading: return .cyan
+        case .lab: return .purple
         case .other: return Color(nsColor: .controlAccentColor)
         }
     }

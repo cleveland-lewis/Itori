@@ -29,19 +29,6 @@ struct CourseGradeDetail: Identifiable, Hashable {
     var notes: String
 }
 
-enum GradeViewSegment: String, CaseIterable, Identifiable {
-    case overall, scenarios
-    var id: String { rawValue }
-
-    var label: String {
-        switch self {
-        case .overall: return "Overall"
-        case .scenarios: return "What-If"
-        }
-    }
-}
-
-
 // MARK: - Root View
 
 struct GradesPageView: View {
@@ -62,7 +49,6 @@ struct GradesPageView: View {
     @State private var gradeAnalyticsWindowOpen: Bool = false
     @State private var showNewCourseSheet: Bool = false
     @State private var editingCourse: Course? = nil
-    @State private var selectedSegment: GradeViewSegment = .overall
     @State private var courseDeletedCancellable: AnyCancellable? = nil
 
     private let cardCorner: CGFloat = 24
@@ -163,21 +149,17 @@ struct GradesPageView: View {
                 .textFieldStyle(.roundedBorder)
                 .frame(maxWidth: 260)
 
-            Text("GPA Scale: \(String(format: "%.1f", gpaScale))")
-                .font(.footnote.weight(.semibold))
-                .foregroundColor(.secondary)
-
             Button {
-                // stub export
+                // stub export/share functionality
             } label: {
-                Label("Export", systemImage: "square.and.arrow.up")
-                    .font(.system(size: 12, weight: .semibold))
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 16))
+                    .frame(width: 32, height: 32)
                     .background(.thinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             }
             .buttonStyle(.plain)
+            .help("Share or export grades")
         }
     }
 
@@ -296,14 +278,13 @@ struct GradesPageView: View {
 
     private var detailCard: some View {
         VStack(spacing: 16) {
-            detailSegmentPicker
             GradeDetailCard(
                 detail: Binding(
                     get: { selectedCourseDetail },
                     set: { selectedCourseDetail = $0 }
                 ),
-                segment: selectedSegment,
                 whatIfInput: $whatIfSlider,
+                gpaScale: gpaScale,
                 onEditTarget: { course in
                     courseToEditTarget = course
                     showEditTargetSheet = true
@@ -321,24 +302,6 @@ struct GradesPageView: View {
         .padding(16)
         .background(cardBackground)
         .overlay(cardStroke)
-    }
-
-    private var detailSegmentPicker: some View {
-        HStack(spacing: 10) {
-            Text("Segment")
-                .font(.caption2.weight(.semibold))
-                .foregroundColor(.secondary)
-
-            Picker("Segment", selection: $selectedSegment) {
-                ForEach(GradeViewSegment.allCases) { segment in
-                    Text(segment.label).tag(segment)
-                }
-            }
-            .pickerStyle(.segmented)
-            .controlSize(.small)
-
-            Spacer()
-        }
     }
 
     private var footer: some View {
@@ -702,8 +665,8 @@ struct CourseGradeRow: View {
 
 struct GradeDetailCard: View {
     @Binding var detail: CourseGradeDetail?
-    var segment: GradeViewSegment
     @Binding var whatIfInput: Double
+    var gpaScale: Double
     var onEditTarget: (GradeCourseSummary) -> Void
     var onUpdateNotes: (CourseGradeDetail) -> Void
 
@@ -711,11 +674,7 @@ struct GradeDetailCard: View {
         if let detail {
             VStack(alignment: .leading, spacing: 12) {
                 header(detail.course)
-                if segment == .overall {
-                    components(detail.components)
-                } else if segment == .scenarios {
-                    whatIf(detail)
-                }
+                components(detail.components)
                 notes(detail)
                 Text("Grades are approximations and may differ from your institution's official system.")
                     .font(.footnote)
@@ -736,8 +695,14 @@ struct GradeDetailCard: View {
 
     private func header(_ course: GradeCourseSummary) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Grade Components – \(course.courseCode)")
-                .font(.system(size: 14, weight: .semibold))
+            HStack {
+                Text("Grade Components – \(course.courseCode)")
+                    .font(.system(size: 14, weight: .semibold))
+                Spacer()
+                Text("GPA Scale: \(String(format: "%.1f", gpaScale))")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundColor(.secondary)
+            }
             Text(course.courseTitle)
                 .font(.headline)
             HStack(spacing: 8) {
