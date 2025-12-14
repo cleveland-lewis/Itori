@@ -27,6 +27,7 @@ struct RootsApp: App {
     @StateObject private var timerManager = TimerManager()
     @StateObject private var focusManager = FocusManager()
     @StateObject private var preferences = AppPreferences()
+    @StateObject private var parsingStore = SyllabusParsingStore.shared
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -85,6 +86,7 @@ struct RootsApp: App {
                 .environmentObject(gradesStore)
                 .environmentObject(plannerStore)
                 .environmentObject(plannerCoordinator)
+                .environmentObject(parsingStore)
                 .onAppear {
                     LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")
                     // Sync stored AppSettingsModel -> AppPreferences on launch
@@ -164,6 +166,7 @@ struct RootsApp: App {
                 .environmentObject(preferences)
                 .environmentObject(gradesStore)
                 .environmentObject(plannerStore)
+                .environmentObject(parsingStore)
         }
         .commands {
             AppCommands()
