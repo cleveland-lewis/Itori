@@ -9,17 +9,44 @@ struct GradesAnalyticsView: View {
     
     @Environment(\.dismiss) private var dismiss
     
+    // MARK: - Filter State
+    @State private var selectedCourseId: UUID?
+    @State private var showWeightedGPA: Bool = true
+    @State private var selectedDateRange: DateRangeFilter = .allTime
+    
+    // MARK: - What-If Simulator State
+    @State private var whatIfMode: Bool = false
+    @State private var whatIfAssignments: [UUID: Double] = [:] // taskId -> hypothetical grade
+    
+    // MARK: - Interaction State
+    @State private var selectedChartElement: String?
+    @State private var showRiskBreakdown: Bool = false
+    @State private var selectedForecastScenario: ForecastScenario = .realistic
+    
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
-                header
-                
-                chartsSection
+        ZStack(alignment: .top) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
+                    header
+                    
+                    // What-If Banner
+                    if whatIfMode {
+                        whatIfBanner
+                    }
+                    
+                    filterControls
+                    
+                    chartsSection
+                    
+                    if showRiskBreakdown {
+                        riskBreakdownSection
+                    }
+                }
+                .padding(DesignSystem.Spacing.large)
             }
-            .padding(DesignSystem.Spacing.large)
+            .frame(minWidth: 900, minHeight: 700)
+            .rootsSystemBackground()
         }
-        .frame(minWidth: 900, minHeight: 700)
-        .rootsSystemBackground()
     }
     
     // MARK: - Header
@@ -48,6 +75,143 @@ struct GradesAnalyticsView: View {
             .buttonStyle(.plain)
             .accessibilityLabel("Close")
         }
+    }
+    
+    // MARK: - What-If Banner
+    
+    private var whatIfBanner: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "wand.and.stars")
+                .foregroundStyle(settings.activeAccentColor)
+                .symbolRenderingMode(.hierarchical)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text("What-If Mode Active")
+                    .font(.subheadline.weight(.semibold))
+                
+                Text("Hypothetical grades won't be saved")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            Spacer()
+            
+            Button("Reset") {
+                resetWhatIfMode()
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+            
+            Button {
+                whatIfMode = false
+            } label: {
+                Image(systemName: "xmark")
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.secondary)
+        }
+        .padding()
+        .background(settings.activeAccentColor.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(settings.activeAccentColor.opacity(0.3), lineWidth: 1)
+        )
+    }
+    
+    // MARK: - Filter Controls
+    
+    private var filterControls: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Filters")
+                .font(.headline)
+            
+            HStack(spacing: 12) {
+                // Course Filter
+                Menu {
+                    Button("All Courses") {
+                        selectedCourseId = nil
+                    }
+                    
+                    Divider()
+                    
+                    ForEach(coursesStore.courses) { course in
+                        Button(course.code) {
+                            selectedCourseId = course.id
+                        }
+                    }
+                } label: {
+                    HStack {
+                        Image(systemName: "book")
+                        Text(selectedCourseId == nil ? "All Courses" : coursesStore.courses.first(where: { $0.id == selectedCourseId })?.code ?? "Course")
+                        Image(systemName: "chevron.down")
+                            .font(.caption)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color.secondary.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .buttonStyle(.plain)
+                
+                // Date Range Filter
+                Menu {
+                    ForEach(DateRangeFilter.allCases, id: \.self) { range in
+                        Button(range.label) {
+                            selectedDateRange = range
+                        }
+                    }
+                } label: {
+                    HStack {
+                        Image(systemName: "calendar")
+                        Text(selectedDateRange.label)
+                        Image(systemName: "chevron.down")
+                            .font(.caption)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color.secondary.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .buttonStyle(.plain)
+                
+                // Weighted Toggle
+                Toggle(isOn: $showWeightedGPA) {
+                    Label("Weighted", systemImage: "scalemass")
+                }
+                .toggleStyle(.button)
+                .controlSize(.regular)
+                
+                Spacer()
+                
+                // What-If Mode Toggle
+                Button {
+                    whatIfMode.toggle()
+                    if whatIfMode {
+                        whatIfAssignments = [:]
+                    }
+                } label: {
+                    Label("What-If Mode", systemImage: "wand.and.stars")
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(whatIfMode ? settings.activeAccentColor : .secondary)
+                
+                // Risk Breakdown Toggle
+                Button {
+                    showRiskBreakdown.toggle()
+                } label: {
+                    Label("Risk Analysis", systemImage: "exclamationmark.triangle")
+                }
+                .buttonStyle(.bordered)
+            }
+        }
+        .padding()
+        .background(DesignSystem.Materials.card)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(Color.white.opacity(0.05), lineWidth: 1)
+        )
     }
     
     // MARK: - Charts Section
@@ -286,6 +450,114 @@ struct GradesAnalyticsView: View {
         ]
     }
     
+    // MARK: - Risk Breakdown Section
+    
+    private var riskBreakdownSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text("Risk Analysis")
+                    .font(.title3.bold())
+                
+                Spacer()
+                
+                Button {
+                    showRiskBreakdown = false
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+            }
+            
+            VStack(spacing: 12) {
+                riskCard(
+                    level: "High Risk",
+                    courses: getCoursesAtRisk(threshold: 70),
+                    color: .red,
+                    icon: "exclamationmark.triangle.fill",
+                    description: "Courses below 70% need immediate attention"
+                )
+                
+                riskCard(
+                    level: "Moderate Risk",
+                    courses: getCoursesAtRisk(threshold: 80, max: 70),
+                    color: .orange,
+                    icon: "exclamationmark.circle.fill",
+                    description: "Courses between 70-80% require monitoring"
+                )
+                
+                riskCard(
+                    level: "On Track",
+                    courses: getCoursesAtRisk(threshold: 100, max: 80),
+                    color: .green,
+                    icon: "checkmark.circle.fill",
+                    description: "Courses above 80% are performing well"
+                )
+            }
+        }
+        .padding()
+        .background(DesignSystem.Materials.card)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.white.opacity(0.05), lineWidth: 1)
+        )
+    }
+    
+    private func riskCard(level: String, courses: [Course], color: Color, icon: String, description: String) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundStyle(color)
+                .symbolRenderingMode(.hierarchical)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                HStack {
+                    Text(level)
+                        .font(.headline)
+                    
+                    Text("(\(courses.count))")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                
+                if !courses.isEmpty {
+                    Text(courses.map { $0.code }.joined(separator: ", "))
+                        .font(.caption.bold())
+                        .foregroundStyle(color)
+                }
+            }
+            
+            Spacer()
+        }
+        .padding()
+        .background(color.opacity(0.05))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+    
+    private func getCoursesAtRisk(threshold: Double, max: Double? = nil) -> [Course] {
+        return coursesStore.courses.filter { course in
+            if let grade = GradeCalculator.calculateCourseGrade(courseID: course.id, tasks: assignmentsStore.tasks) {
+                if let max = max {
+                    return grade < threshold && grade >= max
+                } else {
+                    return grade < threshold
+                }
+            }
+            return false
+        }
+    }
+    
+    // MARK: - What-If Functions
+    
+    private func resetWhatIfMode() {
+        whatIfAssignments = [:]
+    }
+    
     // MARK: - Helpers
     
     private func colorForGrade(_ grade: String) -> Color {
@@ -296,6 +568,38 @@ struct GradesAnalyticsView: View {
         case "D": return .orange
         case "F": return .red
         default: return .gray
+        }
+    }
+}
+
+// MARK: - Supporting Types
+
+enum DateRangeFilter: CaseIterable {
+    case allTime
+    case thisMonth
+    case thisQuarter
+    case thisSemester
+    
+    var label: String {
+        switch self {
+        case .allTime: return "All Time"
+        case .thisMonth: return "This Month"
+        case .thisQuarter: return "This Quarter"
+        case .thisSemester: return "This Semester"
+        }
+    }
+}
+
+enum ForecastScenario: CaseIterable {
+    case optimistic
+    case realistic
+    case pessimistic
+    
+    var label: String {
+        switch self {
+        case .optimistic: return "Optimistic"
+        case .realistic: return "Realistic"
+        case .pessimistic: return "Pessimistic"
         }
     }
 }
