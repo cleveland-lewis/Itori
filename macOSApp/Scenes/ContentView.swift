@@ -124,7 +124,7 @@ struct ContentView: View {
             Spacer()
 
             Button(action: {
-                withAnimation(.easeInOut(duration: 0.6)) {
+                withAnimation(.easeInOut(duration: DesignSystem.Motion.deliberate)) {
                     settingsRotation += 360
                 }
                 settingsCoordinator.show()

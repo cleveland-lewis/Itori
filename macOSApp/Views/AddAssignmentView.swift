@@ -164,7 +164,7 @@ struct AddAssignmentView: View {
                 Color.black.opacity(0.2)
                     .ignoresSafeArea()
                     .onTapGesture {
-                        withAnimation(.spring()) { showingAddCourse = false }
+                        withAnimation(DesignSystem.Motion.standardSpring) { showingAddCourse = false }
                     }
 
                 // Placeholder for actual add-course UI
@@ -205,7 +205,7 @@ struct AddAssignmentView: View {
         Group {
             if coursesStore.currentSemesterCourses.isEmpty {
                 Button {
-                    withAnimation(.spring()) { showingAddCourse = true }
+                    withAnimation(DesignSystem.Motion.standardSpring) { showingAddCourse = true }
                 } label: {
                     HStack {
                         Image(systemName: "plus")

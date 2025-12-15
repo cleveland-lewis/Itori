@@ -87,6 +87,7 @@ struct RootsApp: App {
                 .environmentObject(plannerStore)
                 .environmentObject(plannerCoordinator)
                 .environmentObject(parsingStore)
+                .detectReduceMotion()
                 .onAppear {
                     LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")
                     // Sync stored AppSettingsModel -> AppPreferences on launch

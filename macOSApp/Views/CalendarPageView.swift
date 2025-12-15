@@ -155,7 +155,7 @@ struct CalendarPageView: View {
                     .buttonStyle(.plain)
                     .rootsStandardInteraction()
                     .onHover { hovering in
-                        withAnimation(.easeInOut(duration: 0.12)) { chevronLeftHover = hovering }
+                        withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { chevronLeftHover = hovering }
                     }
 
                     Button { jumpToToday() } label: {
@@ -168,7 +168,7 @@ struct CalendarPageView: View {
                     .buttonStyle(.plain)
                     .rootsStandardInteraction()
                     .onHover { hovering in
-                        withAnimation(.easeInOut(duration: 0.12)) { todayHover = hovering }
+                        withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { todayHover = hovering }
                     }
 
                     Button { shift(by: 1) } label: {
@@ -179,7 +179,7 @@ struct CalendarPageView: View {
                     .buttonStyle(.plain)
                     .rootsStandardInteraction()
                     .onHover { hovering in
-                        withAnimation(.easeInOut(duration: 0.12)) { chevronRightHover = hovering }
+                        withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { chevronRightHover = hovering }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -1896,7 +1896,7 @@ private struct DayHeaderCard: View {
         .frame(maxWidth: .infinity)
         .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusSmall)
         .scaleEffect(hovering ? 1.02 : 1.0)
-        .animation(.easeInOut(duration: 0.12), value: hovering)
+        .animation(.easeInOut(duration: DesignSystem.Motion.instant), value: hovering)
         .onHover { hovering = $0 }
     }
 
@@ -1936,7 +1936,7 @@ private struct MonthDayCell: View {
         .frame(maxWidth: .infinity)
         .contentShape(Rectangle())
         .scaleEffect(hovering ? 1.01 : 1.0)
-        .animation(.easeInOut(duration: 0.12), value: hovering)
+        .animation(.easeInOut(duration: DesignSystem.Motion.instant), value: hovering)
         .onHover { hovering = $0 }
     }
 

@@ -33,7 +33,7 @@ struct CalendarDayCell: View {
         }
         .frame(maxWidth: .infinity)
         .scaleEffect(isPressed ? 0.92 : 1.0)
-        .animation(.easeInOut(duration: 0.1), value: isPressed)
+        .animation(.easeInOut(duration: DesignSystem.Motion.instant), value: isPressed)
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { _ in isPressed = true }
