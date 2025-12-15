@@ -298,7 +298,7 @@ struct AssignmentsPageView: View {
 
     private var topControls: some View {
         HStack(spacing: RootsSpacing.m) {
-            Picker("Segment", selection: $selectedSegment.animation(.spring(response: 0.3, dampingFraction: 0.85))) {
+            Picker("Segment", selection: $selectedSegment.animation(DesignSystem.Motion.standardSpring)) {
                 ForEach(AssignmentSegment.allCases) { seg in
                     Text(seg.label).tag(seg)
                 }

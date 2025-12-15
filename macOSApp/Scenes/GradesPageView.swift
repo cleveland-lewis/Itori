@@ -237,7 +237,7 @@ struct GradesPageView: View {
                             isSelected: course.id == selectedCourseDetail?.course.id,
                             isScenarioHighlight: false,
                             onSelect: {
-                                withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) {
+                                withAnimation(DesignSystem.Motion.standardSpring) {
                                     selectedCourseDetail = courseDetails.first(where: { $0.course.id == course.id })
                                 }
                             },

@@ -103,14 +103,14 @@ private struct SidebarTooltipModifier: ViewModifier {
 
     private func handleHover(_ hovering: Bool) {
         if hovering {
-            let item = DispatchWorkItem { withAnimation(.easeInOut(duration: 0.2)) { isVisible = true } }
+            let item = DispatchWorkItem { withAnimation(DesignSystem.Motion.snappyEase) { isVisible = true } }
             workItem?.cancel()
             workItem = item
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.7, execute: item)
         } else {
             workItem?.cancel()
             workItem = nil
-            withAnimation(.easeInOut(duration: 0.2)) {
+            withAnimation(DesignSystem.Motion.snappyEase) {
                 isVisible = false
             }
         }

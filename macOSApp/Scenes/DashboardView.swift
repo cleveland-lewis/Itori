@@ -415,10 +415,7 @@ struct DashboardTileBody: View {
 
 private extension View {
     func animateEntry(isLoaded: Bool, index: Int) -> some View {
-        self
-            .opacity(isLoaded ? 1 : 0)
-            .offset(y: isLoaded ? 0 : 20)
-            .animation(.easeOut(duration: 0.5).delay(Double(index) * 0.05), value: isLoaded)
+        self.staggeredEntry(isLoaded: isLoaded, index: index)
     }
 }
 

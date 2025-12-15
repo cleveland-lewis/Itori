@@ -320,7 +320,7 @@ private extension PlannerPageView {
         HStack(alignment: .center, spacing: 16) {
             HStack(spacing: DesignSystem.Layout.spacing.small) {
                 Button {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) { adjustDate(by: -1) }
+                    withAnimation(DesignSystem.Motion.standardSpring) { adjustDate(by: -1) }
                 } label: {
                     Image(systemName: "chevron.left")
                         .font(DesignSystem.Typography.body)
@@ -336,7 +336,7 @@ private extension PlannerPageView {
                         .foregroundStyle(.secondary)
                 }
                 Button {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.85)) { adjustDate(by: 1) }
+                    withAnimation(DesignSystem.Motion.standardSpring) { adjustDate(by: 1) }
                 } label: {
                     Image(systemName: "chevron.right")
                         .font(DesignSystem.Typography.body)
@@ -749,7 +749,7 @@ private extension PlannerPageView {
                                                }
                                            },
                                            onComplete: {
-                                               withAnimation(.spring(response: 0.3, dampingFraction: 0.9)) {
+                                               withAnimation(DesignSystem.Motion.fluidSpring) {
                                                    markCompleted(item)
                                                }
                                            })

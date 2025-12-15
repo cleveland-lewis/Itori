@@ -84,7 +84,7 @@ struct EnergyChart: View {
                             }
                             .onEnded { _ in
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                                    withAnimation { selectedHour = nil }
+                                    withAnimation(DesignSystem.Motion.standardSpring) { selectedHour = nil }
                                 }
                             }
                         )

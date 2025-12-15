@@ -120,7 +120,7 @@ private struct OutlineNodeRow: View {
                 // Disclosure triangle
                 if hasChildren {
                     Button {
-                        withAnimation(.easeInOut(duration: 0.2)) {
+                        withAnimation(DesignSystem.Motion.snappyEase) {
                             isExpanded.toggle()
                         }
                     } label: {
