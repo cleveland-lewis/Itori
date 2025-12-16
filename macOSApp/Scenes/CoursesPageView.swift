@@ -206,22 +206,6 @@ struct CoursesPageView: View {
                 emptyDetailState
                     .frame(maxWidth: .infinity, alignment: .center)
             }
-
-            RootsCard(title: "Courses Secondary Panel") {
-                VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                    Text("Coming soon")
-                        .rootsBodySecondary()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 180), spacing: RootsSpacing.m)], spacing: RootsSpacing.m) {
-                        placeholderModule(title: "Course Analytics", detail: "Future visualizations for grades, attendance, and engagement.")
-                        placeholderModule(title: "Instructor Notes", detail: "Pin office hours, email templates, and recurring tasks.")
-                        placeholderModule(title: "Upcoming Deadlines", detail: "Sync from Assignments and Planner to surface risks.")
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .frame(maxWidth: .infinity, alignment: .topLeading)
         }
     }
 
@@ -395,7 +379,8 @@ struct CoursesSidebarView: View {
     var onNewCourse: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 0) {
+            // Header Section
             VStack(alignment: .leading, spacing: 4) {
                 Text("Courses")
                     .font(DesignSystem.Typography.body)
@@ -404,12 +389,15 @@ struct CoursesSidebarView: View {
                     .foregroundStyle(.secondary)
             }
             .padding(.horizontal, 12)
-            .padding(.top, 6)
+            .padding(.top, 14)
+            .padding(.bottom, 8)
 
             TextField("Search courses", text: $searchText)
                 .textFieldStyle(.roundedBorder)
                 .padding(.horizontal, 12)
+                .padding(.bottom, 8)
 
+            // Scrollable Course List
             ScrollView {
                 VStack(spacing: DesignSystem.Layout.spacing.small) {
                     ForEach(courses) { course in
@@ -421,37 +409,43 @@ struct CoursesSidebarView: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
             }
+            .frame(maxHeight: .infinity) // Allow scroll to expand
 
-            HStack(spacing: RootsSpacing.s) {
-                Button {
-                    onNewCourse()
-                } label: {
-                    Label("New Course", systemImage: "plus")
-                        .font(DesignSystem.Typography.body)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
-                        .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
-                }
-                .buttonStyle(.plain)
-                .frame(maxWidth: .infinity)
+            // Bottom Action Buttons (Pinned)
+            VStack(spacing: 0) {
+                Divider()
+                    .padding(.vertical, 8)
+                
+                HStack(spacing: RootsSpacing.s) {
+                    Button {
+                        onNewCourse()
+                    } label: {
+                        Label("New Course", systemImage: "plus")
+                            .font(DesignSystem.Typography.body)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                            .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
+                    }
+                    .buttonStyle(.plain)
+                    .frame(maxWidth: .infinity)
 
-                Button {
-                    settingsCoordinator.show(selecting: .courses)
-                } label: {
-                    Label("Edit Courses", systemImage: "pencil")
-                        .font(DesignSystem.Typography.body)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 10)
-                        .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
+                    Button {
+                        settingsCoordinator.show(selecting: .courses)
+                    } label: {
+                        Label("Edit Courses", systemImage: "pencil")
+                            .font(DesignSystem.Typography.body)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                            .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
+                    }
+                    .buttonStyle(.plain)
+                    .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.plain)
-                .frame(maxWidth: .infinity)
+                .padding(.horizontal, RootsSpacing.m)
+                .padding(.bottom, RootsSpacing.m)
             }
-            .padding(.horizontal, RootsSpacing.m)
-            .padding(.bottom, RootsSpacing.m)
         }
-        .padding(.vertical, 8)
-        .frame(maxHeight: .infinity, alignment: .top)
+        .frame(maxHeight: .infinity)
         .glassCard(cornerRadius: 22)
     }
 
@@ -738,11 +732,9 @@ struct CoursesPageDetailView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(RootsSpacing.m)
-            .rootsCardBackground(radius: 14)
             .contentShape(Rectangle())
         }
-        .buttonStyle(RootsLiquidButtonStyle())
+        .buttonStyle(RootsLiquidButtonStyle(cornerRadius: 14, verticalPadding: RootsSpacing.m, horizontalPadding: RootsSpacing.m))
     }
 
 

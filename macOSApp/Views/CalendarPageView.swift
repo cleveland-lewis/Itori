@@ -97,6 +97,14 @@ struct CalendarPageView: View {
     @State private var chevronRightHover = false
     @State private var todayHover = false
 
+    // Computed property to filter events based on settings
+    private var filteredEvents: [EKEvent] {
+        let allEvents = deviceCalendar.events
+        guard settings.showOnlySchoolCalendar else { return allEvents }
+        guard !calendarManager.selectedCalendarID.isEmpty else { return allEvents }
+        return allEvents.filter { $0.calendar.calendarIdentifier == calendarManager.selectedCalendarID }
+    }
+
     var body: some View {
         VStack(spacing: 16) {
             // Header: Add button, Title, View selector, Navigation
@@ -187,13 +195,21 @@ struct CalendarPageView: View {
             .padding(.horizontal, DesignSystem.Layout.padding.window)
             .padding(.vertical, 4)
 
-            // Main content: single glass area without sidebars
-            VStack(spacing: 12) {
-                gridContent
+            // Main content: sidebar + calendar grid
+            HStack(alignment: .top, spacing: 16) {
+                // Left sidebar showing events for selected date
+                eventSidebarView
+                    .frame(width: 280)
+                
+                // Main calendar grid
+                VStack(spacing: 12) {
+                    gridContent
+                }
+                .padding()
+                .background(DesignSystem.Materials.card)
+                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .padding()
-            .background(DesignSystem.Materials.card)
-            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding(20)
@@ -224,6 +240,167 @@ struct CalendarPageView: View {
                 .transition(.move(edge: .bottom).combined(with: .opacity))
         })
     }
+    
+    // MARK: - Event Sidebar
+    
+    @ViewBuilder
+    private var eventSidebarView: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Header with selected date
+            VStack(alignment: .leading, spacing: 4) {
+                Text(sidebarDateTitle)
+                    .font(.title3.weight(.semibold))
+                    .lineLimit(1)
+                
+                Text(sidebarDateSubtitle)
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
+            .padding(.bottom, 12)
+            
+            Divider()
+            
+            // Event list
+            eventListView
+        }
+        .frame(maxHeight: .infinity)
+        .background(DesignSystem.Materials.card)
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+    }
+    
+    @ViewBuilder
+    private var eventListView: some View {
+        let dayEvents = events(on: selectedDate ?? focusedDate)
+        
+        if dayEvents.isEmpty {
+            // Empty state
+            VStack(spacing: 12) {
+                Image(systemName: "calendar.badge.clock")
+                    .font(.system(size: 48))
+                    .foregroundStyle(.tertiary)
+                
+                Text("No Events")
+                    .font(DesignSystem.Typography.body)
+                
+                Text("No events scheduled for this day")
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding()
+        } else {
+            ScrollView {
+                VStack(spacing: 8) {
+                    ForEach(dayEvents) { event in
+                        sidebarEventRow(event: event)
+                    }
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 12)
+            }
+        }
+    }
+    
+    private func sidebarEventRow(event: CalendarEvent) -> some View {
+        Button {
+            selectedEvent = event
+        } label: {
+            HStack(alignment: .top, spacing: 12) {
+                // Time or "All-day"
+                VStack(alignment: .leading, spacing: 2) {
+                    if calendar.isDateInToday(event.startDate) && event.startDate.timeIntervalSinceNow < 0 && event.endDate.timeIntervalSinceNow > 0 {
+                        Text("Now")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(settings.activeAccentColor)
+                    } else if isAllDay(event: event) {
+                        Text("All-day")
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text(event.startDate.formatted(date: .omitted, time: .shortened))
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .frame(width: 50, alignment: .leading)
+                
+                // Category color indicator (outline SF Symbol)
+                Image(systemName: categoryIcon(for: event.category))
+                    .font(.system(size: 16))
+                    .foregroundStyle(settings.activeAccentColor)
+                    .frame(width: 20)
+                
+                // Event details
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(event.title)
+                        .font(DesignSystem.Typography.body)
+                        .lineLimit(2)
+                    
+                    if let location = event.location, !location.isEmpty {
+                        HStack(spacing: 4) {
+                            Image(systemName: "mappin")
+                                .font(.caption2)
+                            Text(location)
+                                .font(.caption)
+                        }
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(DesignSystem.Materials.hud.opacity(0.5))
+            )
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .rootsStandardInteraction()
+    }
+    
+    private var sidebarDateTitle: String {
+        let date = selectedDate ?? focusedDate
+        if calendar.isDateInToday(date) {
+            return "Today"
+        } else if calendar.isDateInTomorrow(date) {
+            return "Tomorrow"
+        } else if calendar.isDateInYesterday(date) {
+            return "Yesterday"
+        } else {
+            return date.formatted(.dateTime.weekday(.wide).month().day())
+        }
+    }
+    
+    private var sidebarDateSubtitle: String {
+        let date = selectedDate ?? focusedDate
+        let dayEvents = events(on: date)
+        let count = dayEvents.count
+        return count == 0 ? "No events" : "\(count) event\(count == 1 ? "" : "s")"
+    }
+    
+    private func isAllDay(event: CalendarEvent) -> Bool {
+        let duration = event.endDate.timeIntervalSince(event.startDate)
+        return duration >= 86400 - 60 // Consider >= 23h59m as all-day
+    }
+    
+    private func categoryIcon(for category: EventCategory) -> String {
+        switch category {
+        case .study: return "book"
+        case .homework: return "pencil"
+        case .exam: return "doc.text"
+        case .lab: return "flask"
+        case .class: return "graduationcap"
+        case .reading: return "book.pages"
+        case .review: return "checkmark.circle"
+        case .other: return "calendar"
+        }
+    }
 
     @ViewBuilder
     private var gridContent: some View {
@@ -250,7 +427,7 @@ struct CalendarPageView: View {
         case .week:
             WeekCalendarView(focusedDate: $focusedDate, events: effectiveEvents)
         case .day:
-            CalendarDayView(date: focusedDate, events: deviceCalendar.events)
+            CalendarDayView(date: focusedDate, events: filteredEvents)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .year:
             CalendarYearView(currentYear: focusedDate)
@@ -433,7 +610,7 @@ struct CalendarPageView: View {
 
     private func updateMetrics() {
         // CalendarStats.calculate expects [EKEvent]
-        metrics = CalendarStats.calculate(from: deviceCalendar.events, for: focusedDate)
+        metrics = CalendarStats.calculate(from: filteredEvents, for: focusedDate)
     }
 }
 
@@ -1178,7 +1355,8 @@ private struct EventDetailView: View {
                             primaryAlert: updated.primaryAlert,
                             secondaryAlert: updated.secondaryAlert,
                             travelTime: updated.travelTime.timeInterval,
-                            recurrence: updated.recurrence
+                            recurrence: updated.recurrence,
+                            category: updated.category
                         )
                         await MainActor.run {
                             isPresented = false
@@ -1265,6 +1443,7 @@ private struct EventEditSheet: View {
     var onSave: (EditableEvent) -> Void
 
     @State private var title: String
+    @State private var category: EventCategory
     @State private var startDate: Date
     @State private var endDate: Date
     @State private var isAllDay: Bool
@@ -1281,6 +1460,7 @@ private struct EventEditSheet: View {
         self.item = item
         self.onSave = onSave
         _title = State(initialValue: item.title)
+        _category = State(initialValue: item.category)
         _startDate = State(initialValue: item.startDate)
         _endDate = State(initialValue: item.endDate)
         _isAllDay = State(initialValue: false)
@@ -1312,6 +1492,13 @@ private struct EventEditSheet: View {
             TextField("Title", text: $title)
                 .textFieldStyle(.roundedBorder)
                 .font(.body.weight(.medium))
+
+            Picker("Category", selection: $category) {
+                ForEach(EventCategory.allCases) { cat in
+                    Text(cat.rawValue).tag(cat)
+                }
+            }
+            .pickerStyle(.segmented)
 
             Divider()
 
@@ -1405,6 +1592,7 @@ private struct EventEditSheet: View {
                 Button("Save") {
                     let updated = EditableEvent(
                         title: title.isEmpty ? item.title : title,
+                        category: category,
                         startDate: startDate,
                         endDate: endDate,
                         isAllDay: isAllDay,
@@ -1430,6 +1618,7 @@ private struct EventEditSheet: View {
 
     struct EditableEvent {
         var title: String
+        var category: EventCategory
         var startDate: Date
         var endDate: Date
         var isAllDay: Bool
@@ -1526,10 +1715,19 @@ struct CalendarView: View {
     }()
     @EnvironmentObject private var calendarManager: CalendarManager
     @EnvironmentObject private var deviceCalendar: DeviceCalendarManager
+    @EnvironmentObject private var settings: AppSettingsModel
     @State private var viewMode: CalendarViewMode = .month
     @State private var currentMonth: Date = Date()
     @State private var selectedEvent: CalendarEvent? = nil
     @State private var keyMonitor: Any?
+
+    // Computed property to filter events based on settings
+    private var filteredEvents: [EKEvent] {
+        let allEvents = deviceCalendar.events
+        guard settings.showOnlySchoolCalendar else { return allEvents }
+        guard !calendarManager.selectedCalendarID.isEmpty else { return allEvents }
+        return allEvents.filter { $0.calendar.calendarIdentifier == calendarManager.selectedCalendarID }
+    }
 
     private var monthEvents: [EKEvent] {
         displayEKEvents
@@ -1542,9 +1740,7 @@ struct CalendarView: View {
     }
 
     private var displayEKEvents: [EKEvent] {
-        let selectedId = calendarManager.selectedCalendarID
-        guard !selectedId.isEmpty else { return [] }
-        return deviceCalendar.events.filter { $0.calendar.calendarIdentifier == selectedId }
+        return filteredEvents
     }
 
     private var isLoading: Bool {
@@ -1755,7 +1951,8 @@ struct CalendarView: View {
     }
 
     private func mapEvent(_ ek: EKEvent) -> CalendarEvent {
-        CalendarEvent(title: ek.title, startDate: ek.startDate, endDate: ek.endDate, location: ek.location, notes: ek.notes, url: ek.url, alarms: ek.alarms, travelTime: nil, ekIdentifier: ek.eventIdentifier, isReminder: false)
+        let (cleanNotes, storedCategory) = calendarManager.decodeNotesWithCategory(notes: ek.notes)
+        return CalendarEvent(title: ek.title, startDate: ek.startDate, endDate: ek.endDate, location: ek.location, notes: cleanNotes, url: ek.url, alarms: ek.alarms, travelTime: nil, ekIdentifier: ek.eventIdentifier, isReminder: false, category: storedCategory)
     }
 
     private func eventCategoryLabel(for title: String) -> String {

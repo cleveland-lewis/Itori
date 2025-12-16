@@ -20,9 +20,6 @@ struct CoursesDashboardDetail: View {
                 // Quick Actions Row
                 quickActionsRow
 
-                // Secondary Panel
-                secondaryPanel
-
                 Spacer(minLength: 80) // Space for floating nav bar
             }
             .padding(DesignSystem.Layout.padding.card)
