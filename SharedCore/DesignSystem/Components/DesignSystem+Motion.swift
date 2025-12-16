@@ -40,7 +40,26 @@ extension DesignSystem {
         static let slideTrailingTransition: AnyTransition = .move(edge: .trailing).combined(with: .opacity)
         static let scaleTransition: AnyTransition = .scale(scale: 0.95).combined(with: .opacity)
         
-        // MARK: - Reduce Motion Support
+        // MARK: - Reduce Motion Support (AnimationPolicy Integration)
+        
+        /// Get animation using centralized policy
+        static func animation(for context: AnimationPolicy.AnimationContext) -> Animation? {
+            AnimationPolicy.shared.animation(for: context)
+        }
+        
+        /// Execute block with animation policy
+        static func withAnimation<Result>(
+            _ context: AnimationPolicy.AnimationContext,
+            _ body: () throws -> Result
+        ) rethrows -> Result {
+            try AnimationPolicy.shared.withAnimation(context, body)
+        }
+        
+        /// Check if animations should be shown for context
+        static func shouldAnimate(for context: AnimationPolicy.AnimationContext) -> Bool {
+            AnimationPolicy.shared.shouldAnimate(for: context)
+        }
+        
         @available(iOS 14.0, macOS 11.0, *)
         static func animation(_ animation: Animation, reduceMotion: Bool = false) -> Animation? {
             if reduceMotion {
