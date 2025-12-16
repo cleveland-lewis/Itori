@@ -206,22 +206,6 @@ struct CoursesPageView: View {
                 emptyDetailState
                     .frame(maxWidth: .infinity, alignment: .center)
             }
-
-            RootsCard(title: "Courses Secondary Panel") {
-                VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                    Text("Coming soon")
-                        .rootsBodySecondary()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 180), spacing: RootsSpacing.m)], spacing: RootsSpacing.m) {
-                        placeholderModule(title: "Course Analytics", detail: "Future visualizations for grades, attendance, and engagement.")
-                        placeholderModule(title: "Instructor Notes", detail: "Pin office hours, email templates, and recurring tasks.")
-                        placeholderModule(title: "Upcoming Deadlines", detail: "Sync from Assignments and Planner to surface risks.")
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .frame(maxWidth: .infinity, alignment: .topLeading)
         }
     }
 
