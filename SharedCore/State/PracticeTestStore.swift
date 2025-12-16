@@ -8,12 +8,23 @@ class PracticeTestStore {
     var currentTest: PracticeTest?
     var isGenerating: Bool = false
     var summary: PracticeTestSummary = PracticeTestSummary()
+    var useAlgorithmicGenerator: Bool = true // Toggle for blueprint-first generation
     
     private let llmService: LocalLLMService
+    private let algorithmicGenerator: AlgorithmicTestGenerator
     private let storageKey = "practice_tests_v1"
     
-    init(llmService: LocalLLMService = LocalLLMService()) {
+    init(
+        llmService: LocalLLMService = LocalLLMService(),
+        algorithmicGenerator: AlgorithmicTestGenerator? = nil,
+        useAlgorithmicGenerator: Bool = true
+    ) {
         self.llmService = llmService
+        self.algorithmicGenerator = algorithmicGenerator ?? AlgorithmicTestGenerator(
+            llmService: llmService,
+            enableDevLogs: false // Set to true for debugging
+        )
+        self.useAlgorithmicGenerator = useAlgorithmicGenerator
         loadTests()
     }
     
@@ -37,7 +48,23 @@ class PracticeTestStore {
         }
         
         do {
-            let questions = try await llmService.generateQuestions(request: request)
+            let questions: [PracticeQuestion]
+            
+            if useAlgorithmicGenerator {
+                // Use blueprint-first algorithmic generator
+                let result = await algorithmicGenerator.generateTest(request: request)
+                
+                switch result {
+                case .success(let validatedQuestions):
+                    questions = validatedQuestions.map { $0.question }
+                    
+                case .failure(let failure):
+                    throw failure
+                }
+            } else {
+                // Use legacy generation method
+                questions = try await llmService.generateQuestions(request: request)
+            }
             
             await MainActor.run {
                 if let index = tests.firstIndex(where: { $0.id == test.id }) {

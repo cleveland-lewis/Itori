@@ -263,40 +263,45 @@ struct CalendarPageView: View {
             Divider()
             
             // Event list
-            let dayEvents = events(on: selectedDate ?? focusedDate)
-            
-            if dayEvents.isEmpty {
-                // Empty state
-                VStack(spacing: 12) {
-                    Image(systemName: "calendar.badge.clock")
-                        .font(.system(size: 48))
-                        .foregroundStyle(.tertiary)
-                    
-                    Text("No Events")
-                        .font(DesignSystem.Typography.body)
-                    
-                    Text("No events scheduled for this day")
-                        .font(DesignSystem.Typography.caption)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding()
-            } else {
-                ScrollView {
-                    VStack(spacing: 8) {
-                        ForEach(dayEvents) { event in
-                            sidebarEventRow(event: event)
-                        }
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 12)
-                }
-            }
+            eventListView
         }
         .frame(maxHeight: .infinity)
         .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+    }
+    
+    @ViewBuilder
+    private var eventListView: some View {
+        let dayEvents = events(on: selectedDate ?? focusedDate)
+        
+        if dayEvents.isEmpty {
+            // Empty state
+            VStack(spacing: 12) {
+                Image(systemName: "calendar.badge.clock")
+                    .font(.system(size: 48))
+                    .foregroundStyle(.tertiary)
+                
+                Text("No Events")
+                    .font(DesignSystem.Typography.body)
+                
+                Text("No events scheduled for this day")
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding()
+        } else {
+            ScrollView {
+                VStack(spacing: 8) {
+                    ForEach(dayEvents) { event in
+                        sidebarEventRow(event: event)
+                    }
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 12)
+            }
+        }
     }
     
     private func sidebarEventRow(event: CalendarEvent) -> some View {
