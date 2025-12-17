@@ -29,28 +29,39 @@ struct TimerPageView: View {
     @EnvironmentObject private var calendarManager: CalendarManager
     @EnvironmentObject private var appModel: AppModel
 
-    @StateObject private var coordinator: TimerCoordinator
-    
+    @State private var mode: LocalTimerMode = .pomodoro
+    @State private var activities: [LocalTimerActivity] = []
+    @State private var selectedActivityID: UUID? = nil
+
+    @State private var isRunning: Bool = false
+    @State private var remainingSeconds: TimeInterval = 0
+    @State private var elapsedSeconds: TimeInterval = 0
+    @State private var pomodoroSessions: Int = 4
+    @State private var completedPomodoroSessions: Int = 0
+    @State private var isPomodorBreak: Bool = false
+    @State private var activeSession: LocalTimerSession? = nil
+    @State private var sessions: [LocalTimerSession] = []
+    @State private var activityNotes: [UUID: String] = [:]
+    private let notesKeyPrefix = "timer.activity.notes."
+    @State private var loadedSessions = false
+
     @State private var showActivityEditor: Bool = false
     @State private var editingActivity: LocalTimerActivity? = nil
+
     @State private var showHistoryGraph: Bool = false
     @State private var selectedRange: HistoryRange = .today
+
     @State private var searchText: String = ""
     @State private var selectedCollection: String = "All"
     @State private var focusWindowController: NSWindowController? = nil
     @State private var focusWindowDelegate: FocusWindowDelegate? = nil
 
     private let cardCorner: CGFloat = 24
-    
-    @State private var cachedPinnedActivities: [LocalTimerActivity] = []
-    @State private var cachedFilteredActivities: [LocalTimerActivity] = []
-    @State private var cachedCollections: [String] = ["All"]
-    
-    init() {
-        let settings = AppSettingsModel.shared
-        let notificationManager = NotificationManager.shared
-        _coordinator = StateObject(wrappedValue: TimerCoordinator(settings: settings, notificationManager: notificationManager))
-    }
+    @State private var timerCancellable: AnyCancellable?
+    @State private var notificationObservers: [NSObjectProtocol] = []
+    @State private var tickCancellable: AnyCancellable?
+    private let maxSessionHistoryDays = 400
+    private let maxSessionCount = 20000
 
     var body: some View {
         ScrollView {
@@ -67,39 +78,65 @@ struct TimerPageView: View {
             }
         }
         .timerContextMenu(
-            isRunning: Binding(
-                get: { coordinator.engine.isRunning },
-                set: { _ in }
-            ),
-            onStart: { coordinator.startTimer() },
-            onStop: { coordinator.pauseTimer() },
-            onEnd: { coordinator.endTimer() }
+            isRunning: $isRunning,
+            onStart: startTimer,
+            onStop: pauseTimer,
+            onEnd: endTimerSession
         )
         .sheet(isPresented: $showActivityEditor) {
             ActivityEditorSheet(activity: editingActivity) { updated in
-                coordinator.activityManager.update(updated)
-                updateCachedValues()
+                upsertActivity(updated)
             }
         }
-        .task {
-            await coordinator.initialize()
-            updateCachedValues()
-            coordinator.engine.updateFromSettings()
+        .onAppear {
+            print("[TimerPageView] onAppear START")
+            
+            // Start the tick timer
+            startTickTimer()
+            
+            updateCachedValues()  // Cache computed values to avoid repeated filtering
+            pomodoroSessions = settings.pomodoroIterations
+            // Initialize timer duration from settings
+            if remainingSeconds == 0 {
+                remainingSeconds = TimeInterval(settings.pomodoroFocusMinutes * 60)
+            }
+            print("[TimerPageView] setupTimerNotificationObservers START")
+            setupTimerNotificationObservers()
+            print("[TimerPageView] setupTimerNotificationObservers END")
+            if !loadedSessions {
+                print("[TimerPageView] loadSessions START")
+                loadSessions()
+                loadedSessions = true
+                print("[TimerPageView] loadSessions END")
+            }
+            print("[TimerPageView] syncTimerWithAssignment START")
             syncTimerWithAssignment()
+            print("[TimerPageView] syncTimerWithAssignment END")
+            print("[TimerPageView] onAppear END")
         }
-        .onDisappear {
-            coordinator.cleanup()
-        }
-        .onChange(of: coordinator.activityManager.activities) { _, _ in
-            updateCachedValues()
-        }
+        .onChange(of: activities) { updateCachedValues() }
         .onChange(of: searchText) { updateCachedValues() }
         .onChange(of: selectedCollection) { updateCachedValues() }
-        .onChange(of: coordinator.activityManager.selectedActivityID) { _, _ in
+        .onDisappear {
+            // Stop the tick timer
+            stopTickTimer()
+            
+            // Clean up notification observers to prevent dangling references
+            notificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
+            notificationObservers.removeAll()
+            
+            // Cancel any active timer
+            timerCancellable?.cancel()
+            timerCancellable = nil
+        }
+        .onChange(of: sessions) { _, _ in
+            persistSessions()
+        }
+        .onChange(of: selectedActivityID) { _, _ in
             syncTimerWithAssignment()
         }
-        .onChange(of: settings.pomodoroIterations) { _, _ in
-            coordinator.engine.updateFromSettings()
+        .onChange(of: settings.pomodoroIterations) { _, newValue in
+            pomodoroSessions = newValue
         }
     }
 
@@ -114,7 +151,7 @@ struct TimerPageView: View {
     }
 
     private func activityTasks(_ activityId: UUID) -> [AppTask]? {
-        guard let activity = coordinator.activityManager.activities.first(where: { $0.id == activityId }) else { return nil }
+        guard let activity = activities.first(where: { $0.id == activityId }) else { return nil }
         let normName = activity.name.lowercased()
         let tasks = assignmentsStore.tasks.filter { task in
             guard !task.isCompleted else { return false }
@@ -122,6 +159,84 @@ struct TimerPageView: View {
             return normName.contains(title) || title.contains(normName)
         }
         return tasks.isEmpty ? nil : tasks
+    }
+
+    private func saveNotes(_ notes: String, for activityId: UUID) {
+        let key = notesKeyPrefix + activityId.uuidString
+        UserDefaults.standard.set(notes, forKey: key)
+    }
+
+    private func loadNotes(for activityId: UUID) {
+        let key = notesKeyPrefix + activityId.uuidString
+        if let stored = UserDefaults.standard.string(forKey: key) {
+            activityNotes[activityId] = stored
+        }
+    }
+
+    // MARK: Persistence
+
+    private var sessionsURL: URL {
+        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        return docs.appendingPathComponent("TimerSessions.json")
+    }
+
+    private func persistSessions() {
+        let snapshot = sessions
+        let url = sessionsURL
+        DispatchQueue.global(qos: .utility).async {
+            do {
+                let data = try JSONEncoder().encode(snapshot)
+                try data.write(to: url, options: .atomic)
+            } catch {
+                print("Failed to persist timer sessions: \(error)")
+            }
+        }
+    }
+
+    private func loadSessions() {
+        let url = sessionsURL
+        let maxDays = maxSessionHistoryDays
+        let maxCount = maxSessionCount
+        
+        Task { @MainActor in
+            // Perform heavy I/O and processing on background thread
+            let finalSessions = await Task.detached(priority: .userInitiated) { () -> [LocalTimerSession] in
+                let loadedData: [LocalTimerSession]
+                do {
+                    let data = try Data(contentsOf: url)
+                    loadedData = try JSONDecoder().decode([LocalTimerSession].self, from: data)
+                } catch {
+                    // OK if first run or missing file
+                    return []
+                }
+                
+                let cutoff = Calendar.current.date(byAdding: .day, value: -maxDays, to: Date()) ?? .distantPast
+                var trimmed = loadedData.filter { session in
+                    let anchor = session.endDate ?? session.startDate
+                    return anchor >= cutoff
+                }
+                
+                if trimmed.count > maxCount {
+                    trimmed.sort { ($0.endDate ?? $0.startDate) > ($1.endDate ?? $1.startDate) }
+                    trimmed = Array(trimmed.prefix(maxCount)).sorted { $0.startDate < $1.startDate }
+                }
+                
+                // Compact file if needed (before returning)
+                if trimmed.count != loadedData.count {
+                    do {
+                        let data = try JSONEncoder().encode(trimmed)
+                        try data.write(to: url, options: .atomic)
+                    } catch {
+                        print("Failed to compact timer sessions: \(error)")
+                    }
+                }
+                
+                return trimmed
+            }.value
+            
+            // Update UI on main actor - explicitly guaranteed by @MainActor annotation above
+            self.sessions = finalSessions
+        }
     }
 
     private var currentActivityPill: some View {
@@ -180,7 +295,7 @@ struct TimerPageView: View {
                 .frame(maxWidth: .infinity)
 
                 // RIGHT: new study summary pane
-                TimerRightPane(activities: coordinator.activityManager.activities)
+                TimerRightPane(activities: activities)
                     .frame(width: 420, alignment: .top)
             }
             
@@ -219,15 +334,15 @@ struct TimerPageView: View {
                         ForEach(pinnedActivities) { activity in
                             TimerActivityRow(
                                 activity: activity,
-                                isSelected: activity.id == coordinator.activityManager.selectedActivityID,
-                                onSelect: { coordinator.activityManager.selectedActivityID = activity.id },
+                                isSelected: activity.id == selectedActivityID,
+                                onSelect: { selectedActivityID = activity.id },
                                 onEdit: {
                                     editingActivity = activity
                                     showActivityEditor = true
                                 },
-                                onPinToggle: { coordinator.activityManager.togglePin(activity); updateCachedValues() },
-                                onReset: { coordinator.activityManager.resetTracking(activity) },
-                                onDelete: { coordinator.activityManager.delete(activity); updateCachedValues() }
+                                onPinToggle: { togglePin(activity) },
+                                onReset: { resetActivity(activity) },
+                                onDelete: { deleteActivity(activity) }
                             )
                         }
                     }
@@ -238,18 +353,18 @@ struct TimerPageView: View {
                     ForEach(filteredActivities) { activity in
                         TimerActivityRow(
                             activity: activity,
-                            isSelected: activity.id == coordinator.activityManager.selectedActivityID,
+                            isSelected: activity.id == selectedActivityID,
                             onSelect: {
-                                coordinator.activityManager.selectedActivityID = activity.id
-                                coordinator.activityManager.loadNotes(for: activity.id)
+                                selectedActivityID = activity.id
+                                loadNotes(for: activity.id)
                             },
                             onEdit: {
                                 editingActivity = activity
                                 showActivityEditor = true
                             },
-                            onPinToggle: { coordinator.activityManager.togglePin(activity); updateCachedValues() },
-                            onReset: { coordinator.activityManager.resetTracking(activity) },
-                            onDelete: { coordinator.activityManager.delete(activity); updateCachedValues() }
+                            onPinToggle: { togglePin(activity) },
+                            onReset: { resetActivity(activity) },
+                            onDelete: { deleteActivity(activity) }
                         )
                     }
                 }
@@ -294,6 +409,11 @@ struct TimerPageView: View {
             }
         }
     }
+
+    // Memoized to avoid recomputing on every render
+    @State private var cachedPinnedActivities: [LocalTimerActivity] = []
+    @State private var cachedFilteredActivities: [LocalTimerActivity] = []
+    @State private var cachedCollections: [String] = ["All"]
     
     private var pinnedActivities: [LocalTimerActivity] {
         cachedPinnedActivities
@@ -308,7 +428,6 @@ struct TimerPageView: View {
     }
     
     private func updateCachedValues() {
-        let activities = coordinator.activityManager.activities
         cachedPinnedActivities = activities.filter { $0.isPinned }
         
         let query = searchText.lowercased()
@@ -326,18 +445,14 @@ struct TimerPageView: View {
     private func openFocusWindow() {
         let tasks = selectedActivity.flatMap { activityTasks($0.id) } ?? []
         let focusView = FocusWindowView(
-            mode: coordinator.engine.mode,
-            timeText: TimerCoreCard.timeDisplayStatic(
-                mode: coordinator.engine.mode,
-                remainingSeconds: coordinator.engine.remainingSeconds,
-                elapsedSeconds: coordinator.engine.elapsedSeconds
-            ),
+            mode: mode,
+            timeText: TimerCoreCard.timeDisplayStatic(mode: mode, remainingSeconds: remainingSeconds, elapsedSeconds: elapsedSeconds),
             accentColor: settings.activeAccentColor,
             activity: selectedActivity,
             tasks: tasks,
             pomodoroSessions: settings.pomodoroIterations,
-            completedPomodoroSessions: coordinator.engine.completedPomodoroSessions,
-            isPomodorBreak: coordinator.engine.isPomodorBreak,
+            completedPomodoroSessions: completedPomodoroSessions,
+            isPomodorBreak: isPomodorBreak,
             toggleTask: { task in
                 var updated = task
                 updated.isCompleted.toggle()
@@ -353,7 +468,10 @@ struct TimerPageView: View {
         window.title = "Focus"
         window.isReleasedWhenClosed = false
         
-        let delegate = FocusWindowDelegate { }
+        // Create and store delegate with strong reference to prevent deallocation
+        let delegate = FocusWindowDelegate {
+            // Window closed - cleanup will happen automatically
+        }
         window.delegate = delegate
         focusWindowDelegate = delegate
         
@@ -365,29 +483,17 @@ struct TimerPageView: View {
 
     private var timerCoreCard: some View {
         TimerCoreCard(
-            mode: Binding(
-                get: { coordinator.engine.mode },
-                set: { coordinator.setMode($0) }
-            ),
-            isRunning: Binding(
-                get: { coordinator.engine.isRunning },
-                set: { _ in }
-            ),
-            remainingSeconds: Binding(
-                get: { coordinator.engine.remainingSeconds },
-                set: { _ in }
-            ),
-            elapsedSeconds: Binding(
-                get: { coordinator.engine.elapsedSeconds },
-                set: { _ in }
-            ),
+            mode: $mode,
+            isRunning: $isRunning,
+            remainingSeconds: $remainingSeconds,
+            elapsedSeconds: $elapsedSeconds,
             pomodoroSessions: settings.pomodoroIterations,
-            completedPomodoroSessions: coordinator.engine.completedPomodoroSessions,
-            isPomodorBreak: coordinator.engine.isPomodorBreak,
-            onStart: { coordinator.startTimer() },
-            onPause: { coordinator.pauseTimer() },
-            onReset: { coordinator.resetTimer() },
-            onSkip: { coordinator.endTimer() },
+            completedPomodoroSessions: completedPomodoroSessions,
+            isPomodorBreak: isPomodorBreak,
+            onStart: startTimer,
+            onPause: pauseTimer,
+            onReset: resetTimer,
+            onSkip: completeCurrentBlock,
             onOpenFocus: openFocusWindow
         )
         .padding(DesignSystem.Layout.padding.card)
@@ -401,8 +507,8 @@ struct TimerPageView: View {
             showHistory: $showHistoryGraph,
             selectedRange: $selectedRange,
             activity: currentActivity,
-            activities: coordinator.activityManager.activities,
-            sessions: coordinator.sessionManager.sessions
+            activities: activities,
+            sessions: sessions
         )
         .padding(DesignSystem.Layout.padding.card)
         .glassCard(cornerRadius: 24)
@@ -446,9 +552,10 @@ struct TimerPageView: View {
                         .font(DesignSystem.Typography.caption)
                         .foregroundStyle(.secondary)
                     TextEditor(text: Binding(
-                        get: { coordinator.activityManager.activityNotes[activity.id] ?? "" },
+                        get: { activityNotes[activity.id] ?? "" },
                         set: { newValue in
-                            coordinator.activityManager.saveNotes(newValue, for: activity.id)
+                            activityNotes[activity.id] = newValue
+                            saveNotes(newValue, for: activity.id)
                         })
                     )
                     .frame(minHeight: 120)
@@ -488,11 +595,11 @@ struct TimerPageView: View {
     // MARK: Helpers
 
     private var totalToday: TimeInterval {
-        coordinator.activityManager.activities.reduce(0) { $0 + $1.todayTrackedSeconds }
+        activities.reduce(0) { $0 + $1.todayTrackedSeconds }
     }
 
     private var currentActivity: LocalTimerActivity? {
-        coordinator.activityManager.currentActivity()
+        activities.first(where: { $0.id == selectedActivityID }) ?? activities.first
     }
 
     private var selectedActivity: LocalTimerActivity? {
@@ -509,14 +616,252 @@ struct TimerPageView: View {
         }
     }
 
+    private func togglePin(_ activity: LocalTimerActivity) {
+        guard let idx = activities.firstIndex(of: activity) else { return }
+        activities[idx].isPinned.toggle()
+    }
+
+    private func resetActivity(_ activity: LocalTimerActivity) {
+        guard let idx = activities.firstIndex(of: activity) else { return }
+        activities[idx].todayTrackedSeconds = 0
+        activities[idx].totalTrackedSeconds = 0
+    }
+
+    private func deleteActivity(_ activity: LocalTimerActivity) {
+        activities.removeAll { $0.id == activity.id }
+        if selectedActivityID == activity.id { selectedActivityID = activities.first?.id }
+    }
+
+    private func upsertActivity(_ activity: LocalTimerActivity) {
+        if let idx = activities.firstIndex(where: { $0.id == activity.id }) {
+            activities[idx] = activity
+        } else {
+            activities.append(activity)
+        }
+        selectedActivityID = activity.id
+    }
+
+    // MARK: Timer Logic Skeleton
+    
+    private func startTickTimer() {
+        // Cancel any existing timer first
+        stopTickTimer()
+        
+        // Create a new timer publisher and subscribe to it
+        tickCancellable = Timer.publish(every: 1, on: .main, in: .common)
+            .autoconnect()
+            .sink { _ in
+                self.tick()
+            }
+    }
+    
+    private func stopTickTimer() {
+        tickCancellable?.cancel()
+        tickCancellable = nil
+    }
+
+    private func postTimerStateChangeNotification() {
+        var userInfo: [String: Any] = [
+            "mode": mode,
+            "isRunning": isRunning,
+            "remainingSeconds": remainingSeconds,
+            "elapsedSeconds": elapsedSeconds,
+            "pomodoroSessions": pomodoroSessions,
+            "completedPomodoroSessions": completedPomodoroSessions,
+            "isPomodorBreak": isPomodorBreak,
+            "activities": activities,
+            "sessions": sessions
+        ]
+        if let activityID = selectedActivityID {
+            userInfo["selectedActivityID"] = activityID
+        }
+        NotificationCenter.default.post(name: .timerStateDidChange, object: nil, userInfo: userInfo)
+    }
+
+    private func startTimer() {
+        guard !isRunning else { return }
+        isRunning = true
+        if activeSession == nil, let activity = currentActivity {
+            activeSession = LocalTimerSession(id: UUID(), activityID: activity.id, mode: mode, startDate: Date(), endDate: nil, duration: 0, workSeconds: 0, breakSeconds: 0, isBreakSession: isPomodorBreak)
+        }
+        postTimerStateChangeNotification()
+    }
+
+    private func pauseTimer() {
+        isRunning = false
+        postTimerStateChangeNotification()
+    }
+
+    private func resetTimer() {
+        isRunning = false
+        elapsedSeconds = 0
+        remainingSeconds = TimeInterval(settings.pomodoroFocusMinutes * 60)
+        completedPomodoroSessions = 0
+        isPomodorBreak = false
+        postTimerStateChangeNotification()
+    }
+    
+    private func endTimerSession() {
+        pauseTimer()
+        if var session = activeSession {
+            session.endDate = Date()
+            let elapsed = Date().timeIntervalSince(session.startDate)
+            session.duration = elapsed
+            
+            // Update work/break seconds based on mode and phase
+            if mode == .pomodoro {
+                if session.isBreakSession {
+                    session.breakSeconds = elapsed
+                    session.workSeconds = 0
+                } else {
+                    session.workSeconds = elapsed
+                    session.breakSeconds = 0
+                }
+            } else {
+                // Stopwatch and Timer: all time is work time
+                session.workSeconds = elapsed
+                session.breakSeconds = 0
+            }
+            
+            logSession(session)
+            sessions.append(session)
+            activeSession = nil
+        }
+        resetTimer()
+    }
+    
+    private func setupTimerNotificationObservers() {
+        // Remove any existing observers first
+        notificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
+        notificationObservers.removeAll()
+        
+        // Add observers and store their tokens for cleanup
+        let startObserver = NotificationCenter.default.addObserver(forName: .timerStartRequested, object: nil, queue: .main) { _ in
+            self.startTimer()
+        }
+        notificationObservers.append(startObserver)
+        
+        let stopObserver = NotificationCenter.default.addObserver(forName: .timerStopRequested, object: nil, queue: .main) { _ in
+            self.pauseTimer()
+        }
+        notificationObservers.append(stopObserver)
+        
+        let endObserver = NotificationCenter.default.addObserver(forName: .timerEndRequested, object: nil, queue: .main) { _ in
+            self.endTimerSession()
+        }
+        notificationObservers.append(endObserver)
+    }
+
     private func assignmentForCurrentActivity() -> AppTask? {
         guard let activity = currentActivity, let tasks = activityTasks(activity.id) else { return nil }
         return tasks.first
     }
 
     private func syncTimerWithAssignment() {
-        guard let task = assignmentForCurrentActivity() else { return }
-        coordinator.syncWithAssignment(task)
+        guard !isRunning, let task = assignmentForCurrentActivity() else { return }
+        remainingSeconds = TimeInterval(max(1, task.estimatedMinutes) * 60)
+        postTimerStateChangeNotification()
+    }
+
+    private func tick() {
+        guard isRunning else { return }
+
+        switch mode {
+        case .pomodoro, .countdown:
+            if remainingSeconds > 0 {
+                remainingSeconds -= 1
+            } else {
+                completeCurrentBlock()
+            }
+        case .stopwatch:
+            elapsedSeconds += 1
+        }
+        postTimerStateChangeNotification()
+    }
+
+    private func completeCurrentBlock() {
+        isRunning = false
+        let duration: TimeInterval
+        switch mode {
+        case .stopwatch:
+            duration = elapsedSeconds
+            elapsedSeconds = 0
+            
+            // Send notification for stopwatch complete
+            NotificationManager.shared.scheduleTimerCompleted(mode: "Stopwatch", duration: duration)
+        case .pomodoro:
+            let workDuration = TimeInterval(settings.pomodoroFocusMinutes * 60)
+            duration = workDuration - remainingSeconds
+            
+            // Pomodoro cycle logic: work → break → work → break...
+            if isPomodorBreak {
+                // Break just finished - increment completed sessions
+                completedPomodoroSessions += 1
+                isPomodorBreak = false
+                remainingSeconds = workDuration // Reset to work time
+                
+                // Send notification for break complete
+                let longBreakCadence = settings.longBreakCadence
+                let wasLongBreak = completedPomodoroSessions % longBreakCadence == 0
+                NotificationManager.shared.schedulePomodoroBreakComplete(isLongBreak: wasLongBreak)
+            } else {
+                // Work just finished - switch to break
+                isPomodorBreak = true
+                
+                // Send notification for work complete
+                NotificationManager.shared.schedulePomodoroWorkComplete()
+                
+                // Determine if it's time for a long break
+                let longBreakCadence = settings.longBreakCadence
+                let isLongBreak = (completedPomodoroSessions + 1) % longBreakCadence == 0
+                
+                if isLongBreak {
+                    remainingSeconds = TimeInterval(settings.pomodoroLongBreakMinutes * 60)
+                } else {
+                    remainingSeconds = TimeInterval(settings.pomodoroShortBreakMinutes * 60)
+                }
+            }
+        case .countdown:
+            let countdownDuration = TimeInterval(settings.pomodoroFocusMinutes * 60)
+            duration = countdownDuration - remainingSeconds
+            remainingSeconds = countdownDuration
+            
+            // Send notification for countdown complete
+            NotificationManager.shared.scheduleTimerCompleted(mode: "Timer", duration: duration)
+        }
+
+        if var session = activeSession {
+            session.endDate = Date()
+            session.duration = duration
+            
+            // Update work/break seconds based on mode and phase
+            if mode == .pomodoro {
+                if session.isBreakSession {
+                    session.breakSeconds = duration
+                    session.workSeconds = 0
+                } else {
+                    session.workSeconds = duration
+                    session.breakSeconds = 0
+                }
+            } else {
+                // Stopwatch and Timer: all time is work time
+                session.workSeconds = duration
+                session.breakSeconds = 0
+            }
+            
+            logSession(session)
+            // store session for analytics
+            sessions.append(session)
+        }
+        activeSession = nil
+        postTimerStateChangeNotification()
+    }
+
+    private func logSession(_ session: LocalTimerSession) {
+        guard let idx = activities.firstIndex(where: { $0.id == session.activityID }) else { return }
+        // Only count work time toward study metrics (not break time)
+        activities[idx].todayTrackedSeconds += session.workSeconds
+        activities[idx].totalTrackedSeconds += session.workSeconds
     }
 
     // MARK: Static formatters
