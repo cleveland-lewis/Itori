@@ -162,21 +162,30 @@ struct TimerPageView: View {
     }
 
     private func persistSessions() {
-        do {
-            let data = try JSONEncoder().encode(sessions)
-            try data.write(to: sessionsURL, options: .atomic)
-        } catch {
-            print("Failed to persist timer sessions: \(error)")
+        let snapshot = sessions
+        let url = sessionsURL
+        DispatchQueue.global(qos: .utility).async {
+            do {
+                let data = try JSONEncoder().encode(snapshot)
+                try data.write(to: url, options: .atomic)
+            } catch {
+                print("Failed to persist timer sessions: \(error)")
+            }
         }
     }
 
     private func loadSessions() {
-        do {
-            let data = try Data(contentsOf: sessionsURL)
-            let decoded = try JSONDecoder().decode([LocalTimerSession].self, from: data)
-            sessions = decoded
-        } catch {
-            // OK if first run or missing file
+        let url = sessionsURL
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                let data = try Data(contentsOf: url)
+                let decoded = try JSONDecoder().decode([LocalTimerSession].self, from: data)
+                DispatchQueue.main.async {
+                    self.sessions = decoded
+                }
+            } catch {
+                // OK if first run or missing file
+            }
         }
     }
 
@@ -1279,6 +1288,9 @@ struct StudyAnalyticsCard: View {
     var activity: LocalTimerActivity?
     var activities: [LocalTimerActivity]
     var sessions: [LocalTimerSession]
+    @State private var aggregatedToday: [AnalyticsBucket] = []
+    @State private var aggregatedRange: [AnalyticsBucket] = []
+    @State private var didLoadAggregates = false
 
     // category color helper local to the analytics card
     private func categoryColorMap() -> [String: Color] {
@@ -1293,15 +1305,22 @@ struct StudyAnalyticsCard: View {
             stackedWeekView
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .onAppear {
+            if !didLoadAggregates {
+                didLoadAggregates = true
+                updateAggregates()
+            }
+        }
+        .onChange(of: sessions) { _ in updateAggregates() }
+        .onChange(of: activities) { _ in updateAggregates() }
+        .onChange(of: selectedRange) { _ in updateAggregates() }
     }
 
     private var stackedTodayView: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             if #available(macOS 13.0, *), (true) {
-                // Build hour buckets and stack
-                let buckets: [AnalyticsBucket] = { StudyAnalyticsAggregator.bucketsForToday() }()
-                let aggregated = StudyAnalyticsAggregator.aggregate(sessions: sessions, activities: activities, into: buckets)
-                ChartViewVerticalStacked(buckets: aggregated, categoryColors: categoryColorMap(), showLabels: false)
+                let buckets = aggregatedToday.isEmpty ? StudyAnalyticsAggregator.bucketsForToday() : aggregatedToday
+                ChartViewVerticalStacked(buckets: buckets, categoryColors: categoryColorMap(), showLabels: false)
                     .frame(height: 200)
             } else {
                 // fallback simple horizontal
@@ -1324,16 +1343,8 @@ struct StudyAnalyticsCard: View {
     private var stackedWeekView: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             if #available(macOS 13.0, *), (true) {
-                let buckets: [AnalyticsBucket] = {
-                    switch selectedRange {
-                    case .today: return StudyAnalyticsAggregator.bucketsForToday()
-                    case .week: return StudyAnalyticsAggregator.bucketsForWeek()
-                    case .month: return StudyAnalyticsAggregator.bucketsForMonth()
-                    case .year: return StudyAnalyticsAggregator.bucketsForYear()
-                    }
-                }()
-                let aggregated = StudyAnalyticsAggregator.aggregate(sessions: sessions, activities: activities, into: buckets)
-                ChartViewVerticalStacked(buckets: aggregated, categoryColors: categoryColorMap(), showLabels: false)
+                let buckets = aggregatedRange.isEmpty ? bucketsForSelectedRange() : aggregatedRange
+                ChartViewVerticalStacked(buckets: buckets, categoryColors: categoryColorMap(), showLabels: false)
                     .frame(height: 200)
             } else {
                 GeometryReader { proxy in
@@ -1365,6 +1376,46 @@ private func segmentsForToday() -> [(label: String, color: Color, frac: Double)]
         // Simple placeholder: reuse today proportions
         let segs = segmentsForToday()
         return segs
+    }
+
+    private func bucketsForSelectedRange() -> [AnalyticsBucket] {
+        switch selectedRange {
+        case .today: return StudyAnalyticsAggregator.bucketsForToday()
+        case .week: return StudyAnalyticsAggregator.bucketsForWeek()
+        case .month: return StudyAnalyticsAggregator.bucketsForMonth()
+        case .year: return StudyAnalyticsAggregator.bucketsForYear()
+        }
+    }
+
+    private func updateAggregates() {
+        let sessionsSnapshot = sessions
+        let activitiesSnapshot = activities
+        let selected = selectedRange
+        DispatchQueue.global(qos: .userInitiated).async {
+            let todayBuckets = StudyAnalyticsAggregator.bucketsForToday()
+            let aggregatedToday = StudyAnalyticsAggregator.aggregate(
+                sessions: sessionsSnapshot,
+                activities: activitiesSnapshot,
+                into: todayBuckets
+            )
+            let rangeBuckets = {
+                switch selected {
+                case .today: return StudyAnalyticsAggregator.bucketsForToday()
+                case .week: return StudyAnalyticsAggregator.bucketsForWeek()
+                case .month: return StudyAnalyticsAggregator.bucketsForMonth()
+                case .year: return StudyAnalyticsAggregator.bucketsForYear()
+                }
+            }()
+            let aggregatedRange = StudyAnalyticsAggregator.aggregate(
+                sessions: sessionsSnapshot,
+                activities: activitiesSnapshot,
+                into: rangeBuckets
+            )
+            DispatchQueue.main.async {
+                self.aggregatedToday = aggregatedToday
+                self.aggregatedRange = aggregatedRange
+            }
+        }
     }
 }
 

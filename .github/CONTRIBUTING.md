@@ -1,50 +1,39 @@
-# Contributing Guidelines
+# Contributing
 
-## ⚠️ This Repository Does NOT Accept Contributions
+## Contribution Policy
 
-**This is NOT an open source project.**
+This repository does not accept external contributions. Pull requests are disabled by design and will not be reviewed or merged.
 
-This repository is made available in source-visible form for **inspection purposes only**. 
-The code is provided for:
-- Security auditing and vulnerability research
-- Educational review and learning
-- Transparency and accountability
+## Purpose of This Document
 
-## What You CANNOT Do
+This file exists to clarify repository governance. The codebase is made available for inspection, security auditing, and transparency purposes only. It is not an open source project.
 
-You may NOT:
-- Submit pull requests or code contributions
-- Fork this repository for development purposes
-- Copy, modify, or redistribute the code
-- Use any portion of this code in other projects
-- Create derivative works based on this code
-- Reimplement features or algorithms from this codebase
-- Submit feature requests or enhancement suggestions
+## Prohibited Actions
 
-## What You CAN Do
+The following actions are not permitted:
 
-You may:
-- View the source code for inspection
-- Report security vulnerabilities responsibly (see [SECURITY.md](../SECURITY.md))
-- Read and analyze the implementation for educational purposes
+- Submitting pull requests or code changes
+- Forking for development purposes
+- Redistributing modified or unmodified copies
+- Using code from this repository in other projects
+- Creating derivative works based on this codebase
 
-## Security Vulnerability Reporting
+## Issue Reporting
 
-If you discover a security vulnerability through code inspection, please report it 
-responsibly. See [SECURITY.md](../SECURITY.md) for the proper reporting process.
+If issues are enabled, they may be used for:
 
-**Do NOT:**
-- Open public issues describing security vulnerabilities
-- Submit pull requests attempting to fix security issues
+- Security vulnerability disclosure (private reporting preferred; see [SECURITY.md](../SECURITY.md))
+- Bug reports from authorized users
+- Questions about licensing terms
+
+Issues are not appropriate for feature requests, enhancement suggestions, or code contributions.
 
 ## License
 
-This software is licensed under a proprietary source-available license. 
-See [LICENSE](../LICENSE) for complete terms.
+This software operates under a proprietary source-available license. Refer to [LICENSE](../LICENSE) for complete terms.
 
-All rights reserved. No permission is granted to use, modify, or distribute 
-this software beyond viewing for inspection purposes.
+All rights reserved. No permissions are granted beyond viewing the source code for inspection purposes.
 
 ---
 
-**Questions?** Contact Cleveland Lewis for licensing inquiries.
+For licensing inquiries, contact Cleveland Lewis.
