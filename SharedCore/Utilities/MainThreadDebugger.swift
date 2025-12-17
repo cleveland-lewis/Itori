@@ -50,13 +50,38 @@ final class MainThreadDebugger: ObservableObject {
         events.removeAll()
         startMonitoring()
         log(.info, "Main Thread Debugger enabled")
+        
+        let timestamp = formatTimestamp(Date())
+        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        print("🐜 [MainThreadDebugger] ENABLED at \(timestamp)")
+        print("🐜 All events will be logged to console with full details")
+        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     }
     
     func disable() {
         guard isEnabled else { return }
+        
+        let timestamp = formatTimestamp(Date())
+        let totalBlocks = performanceMetrics.totalMainThreadBlocks
+        let totalEvents = events.count
+        
         isEnabled = false
         stopMonitoring()
         log(.info, "Main Thread Debugger disabled")
+        
+        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        print("🐜 [MainThreadDebugger] DISABLED at \(timestamp)")
+        print("🐜 Session Summary:")
+        print("🐜   - Total Events: \(totalEvents)")
+        print("🐜   - Main Thread Blocks: \(totalBlocks)")
+        print("🐜   - Memory Peak: \(String(format: "%.1f", performanceMetrics.memoryUsageMB))MB")
+        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    }
+    
+    private func formatTimestamp(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        return formatter.string(from: date)
     }
     
     func toggle() {
@@ -135,9 +160,10 @@ final class MainThreadDebugger: ObservableObject {
     
     private func recordMainThreadBlock(duration: TimeInterval) {
         let stackTrace = Thread.callStackSymbols.prefix(10).map { $0 }
+        let timestamp = Date()
         
         let event = DebugEvent(
-            timestamp: Date(),
+            timestamp: timestamp,
             type: duration > 0.1 ? .uiFreeze : .mainThreadBlock,
             message: "Main thread blocked for \(String(format: "%.2f", duration * 1000))ms",
             threadInfo: threadInfo(),
@@ -157,28 +183,47 @@ final class MainThreadDebugger: ObservableObject {
         performanceMetrics.averageBlockDuration = total / Double(performanceMetrics.totalMainThreadBlocks)
         
         logger.warning("⚠️ Main thread blocked for \(duration * 1000, format: .fixed(precision: 2))ms")
+        
+        // Console logging when debugger enabled
+        let timeStr = formatTimestamp(timestamp)
+        print("🔴 [\(timeStr)] [MainThreadDebugger] MAIN THREAD BLOCKED: \(String(format: "%.2f", duration * 1000))ms")
+        print("🔴 [MainThreadDebugger] Stack trace:")
+        for (index, frame) in stackTrace.enumerated() {
+            print("🔴   \(index): \(frame)")
+        }
     }
     
     func recordLongOperation(name: String, duration: TimeInterval) {
         guard isEnabled else { return }
         
+        let stackTrace = Thread.callStackSymbols.prefix(5).map { $0 }
+        let timestamp = Date()
+        
         let event = DebugEvent(
-            timestamp: Date(),
+            timestamp: timestamp,
             type: .longOperation,
             message: "\(name) took \(String(format: "%.2f", duration * 1000))ms",
             threadInfo: threadInfo(),
-            stackTrace: Thread.callStackSymbols.prefix(5).map { $0 }
+            stackTrace: stackTrace
         )
         
         addEvent(event)
         logger.info("🐌 Long operation: \(name) - \(duration * 1000, format: .fixed(precision: 2))ms")
+        
+        // Console logging when debugger enabled
+        let timeStr = formatTimestamp(timestamp)
+        print("🟡 [\(timeStr)] [MainThreadDebugger] LONG OPERATION: \(name) took \(String(format: "%.2f", duration * 1000))ms")
+        if !stackTrace.isEmpty {
+            print("🟡 [MainThreadDebugger] Top of stack: \(stackTrace[0])")
+        }
     }
     
     func recordTaskCreation(name: String) {
         guard isEnabled else { return }
         
+        let timestamp = Date()
         let event = DebugEvent(
-            timestamp: Date(),
+            timestamp: timestamp,
             type: .taskCreated,
             message: "Task created: \(name)",
             threadInfo: threadInfo(),
@@ -187,13 +232,18 @@ final class MainThreadDebugger: ObservableObject {
         
         addEvent(event)
         performanceMetrics.activeTasks += 1
+        
+        // Console logging when debugger enabled
+        let timeStr = formatTimestamp(timestamp)
+        print("📦 [\(timeStr)] [MainThreadDebugger] TASK CREATED: \(name) (Active: \(performanceMetrics.activeTasks))")
     }
     
     func recordTaskCompletion(name: String, duration: TimeInterval) {
         guard isEnabled else { return }
         
+        let timestamp = Date()
         let event = DebugEvent(
-            timestamp: Date(),
+            timestamp: timestamp,
             type: .taskCompleted,
             message: "Task completed: \(name) (\(String(format: "%.2f", duration * 1000))ms)",
             threadInfo: threadInfo(),
@@ -202,28 +252,43 @@ final class MainThreadDebugger: ObservableObject {
         
         addEvent(event)
         performanceMetrics.activeTasks = max(0, performanceMetrics.activeTasks - 1)
+        
+        // Console logging when debugger enabled
+        let timeStr = formatTimestamp(timestamp)
+        print("✅ [\(timeStr)] [MainThreadDebugger] TASK COMPLETED: \(name) in \(String(format: "%.2f", duration * 1000))ms (Active: \(performanceMetrics.activeTasks))")
     }
     
     func recordWarning(message: String) {
         guard isEnabled else { return }
         
+        let stackTrace = Thread.callStackSymbols.prefix(5).map { $0 }
+        let timestamp = Date()
+        
         let event = DebugEvent(
-            timestamp: Date(),
+            timestamp: timestamp,
             type: .warning,
             message: message,
             threadInfo: threadInfo(),
-            stackTrace: Thread.callStackSymbols.prefix(5).map { $0 }
+            stackTrace: stackTrace
         )
         
         addEvent(event)
         logger.warning("⚠️ \(message)")
+        
+        // Console logging when debugger enabled
+        let timeStr = formatTimestamp(timestamp)
+        print("⚠️  [\(timeStr)] [MainThreadDebugger] WARNING: \(message)")
+        if !stackTrace.isEmpty {
+            print("⚠️  [MainThreadDebugger] Location: \(stackTrace[0])")
+        }
     }
     
     func recordInfo(message: String) {
         guard isEnabled else { return }
         
+        let timestamp = Date()
         let event = DebugEvent(
-            timestamp: Date(),
+            timestamp: timestamp,
             type: .info,
             message: message,
             threadInfo: threadInfo(),
@@ -232,6 +297,10 @@ final class MainThreadDebugger: ObservableObject {
         
         addEvent(event)
         logger.info("ℹ️ \(message)")
+        
+        // Console logging when debugger enabled
+        let timeStr = formatTimestamp(timestamp)
+        print("ℹ️  [\(timeStr)] [MainThreadDebugger] \(message)")
     }
     
     private func addEvent(_ event: DebugEvent) {
