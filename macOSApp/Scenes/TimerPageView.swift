@@ -44,9 +44,6 @@ struct TimerPageView: View {
     @State private var activityNotes: [UUID: String] = [:]
     private let notesKeyPrefix = "timer.activity.notes."
     @State private var loadedSessions = false
-    
-    // Week 1 Migration: Session persistence manager (alongside old code)
-    @State private var sessionManager: SessionManager?
 
     @State private var showActivityEditor: Bool = false
     @State private var editingActivity: LocalTimerActivity? = nil
@@ -94,11 +91,6 @@ struct TimerPageView: View {
         .onAppear {
             print("[TimerPageView] onAppear START")
             
-            // Week 1: Initialize session manager (safe - after environment is ready)
-            if sessionManager == nil {
-                sessionManager = SessionManager()
-            }
-            
             // Start the tick timer
             startTickTimer()
             
@@ -113,8 +105,7 @@ struct TimerPageView: View {
             print("[TimerPageView] setupTimerNotificationObservers END")
             if !loadedSessions {
                 print("[TimerPageView] loadSessions START")
-                // Week 1: Use new SessionManager instead of old loadSessions
-                loadSessionsUsingManager()
+                loadSessions()
                 loadedSessions = true
                 print("[TimerPageView] loadSessions END")
             }
@@ -139,8 +130,7 @@ struct TimerPageView: View {
             timerCancellable = nil
         }
         .onChange(of: sessions) { _, _ in
-            // Week 1: Use new SessionManager for persistence
-            persistSessionsUsingManager()
+            persistSessions()
         }
         .onChange(of: selectedActivityID) { _, _ in
             syncTimerWithAssignment()
@@ -190,18 +180,6 @@ struct TimerPageView: View {
         return docs.appendingPathComponent("TimerSessions.json")
     }
 
-    // Week 1: New persistence using SessionManager
-    private func persistSessionsUsingManager() {
-        guard let manager = sessionManager else {
-            // Fallback to old method if manager not initialized
-            persistSessions()
-            return
-        }
-        // SessionManager auto-persists when sessions are added, so we just keep it in sync
-        // For now, do nothing - sessions are added via manager in logSession
-    }
-    
-    // Week 1: Keep old implementation as fallback (will be removed in Week 4)
     private func persistSessions() {
         let snapshot = sessions
         let url = sessionsURL
@@ -215,17 +193,6 @@ struct TimerPageView: View {
         }
     }
 
-    // Week 1: New session loading using SessionManager
-    private func loadSessionsUsingManager() {
-        Task {
-            guard let manager = sessionManager else { return }
-            await manager.load()
-            // Sync to legacy state for backward compatibility
-            sessions = manager.sessions
-        }
-    }
-    
-    // Week 1: Keep old implementation as fallback (will be removed in Week 4)
     private func loadSessions() {
         let url = sessionsURL
         let maxDays = maxSessionHistoryDays
@@ -757,8 +724,6 @@ struct TimerPageView: View {
             }
             
             logSession(session)
-            // Week 1: Use manager
-            addSessionUsingManager(session)
             sessions.append(session)
             activeSession = nil
         }
@@ -885,21 +850,11 @@ struct TimerPageView: View {
             }
             
             logSession(session)
-            // Week 1: Add to SessionManager (which auto-persists)
-            addSessionUsingManager(session)
-            // store session for analytics (legacy)
+            // store session for analytics
             sessions.append(session)
         }
         activeSession = nil
         postTimerStateChangeNotification()
-    }
-    
-    // Week 1: Add session through manager
-    private func addSessionUsingManager(_ session: LocalTimerSession) {
-        guard let manager = sessionManager else { return }
-        manager.add(session)
-        // Sync back to legacy state
-        sessions = manager.sessions
     }
 
     private func logSession(_ session: LocalTimerSession) {
