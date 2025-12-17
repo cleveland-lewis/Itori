@@ -92,18 +92,30 @@ struct TimerPageView: View {
             }
         }
         .onAppear {
+            print("[TimerPageView] onAppear START")
+            updateCachedValues()  // Cache computed values to avoid repeated filtering
             pomodoroSessions = settings.pomodoroIterations
             // Initialize timer duration from settings
             if remainingSeconds == 0 {
                 remainingSeconds = TimeInterval(settings.pomodoroFocusMinutes * 60)
             }
+            print("[TimerPageView] setupTimerNotificationObservers START")
             setupTimerNotificationObservers()
+            print("[TimerPageView] setupTimerNotificationObservers END")
             if !loadedSessions {
+                print("[TimerPageView] loadSessions START")
                 loadSessions()
                 loadedSessions = true
+                print("[TimerPageView] loadSessions END")
             }
+            print("[TimerPageView] syncTimerWithAssignment START")
             syncTimerWithAssignment()
+            print("[TimerPageView] syncTimerWithAssignment END")
+            print("[TimerPageView] onAppear END")
         }
+        .onChange(of: activities) { updateCachedValues() }
+        .onChange(of: searchText) { updateCachedValues() }
+        .onChange(of: selectedCollection) { updateCachedValues() }
         .onDisappear {
             // Clean up notification observers to prevent dangling references
             notificationObservers.forEach { NotificationCenter.default.removeObserver($0) }
@@ -397,23 +409,36 @@ struct TimerPageView: View {
         }
     }
 
+    // Memoized to avoid recomputing on every render
+    @State private var cachedPinnedActivities: [LocalTimerActivity] = []
+    @State private var cachedFilteredActivities: [LocalTimerActivity] = []
+    @State private var cachedCollections: [String] = ["All"]
+    
     private var pinnedActivities: [LocalTimerActivity] {
-        activities.filter { $0.isPinned }
+        cachedPinnedActivities
     }
 
     private var filteredActivities: [LocalTimerActivity] {
+        cachedFilteredActivities
+    }
+
+    private var collections: [String] {
+        cachedCollections
+    }
+    
+    private func updateCachedValues() {
+        cachedPinnedActivities = activities.filter { $0.isPinned }
+        
         let query = searchText.lowercased()
-        return activities.filter { activity in
+        cachedFilteredActivities = activities.filter { activity in
             (!activity.isPinned) &&
             (selectedCollection == "All" || activity.category.lowercased().contains(selectedCollection.lowercased())) &&
             (query.isEmpty || activity.name.lowercased().contains(query) || activity.category.lowercased().contains(query) || (activity.courseCode?.lowercased().contains(query) ?? false))
         }
-    }
-
-    private var collections: [String] {
+        
         var set: Set<String> = ["All"]
         set.formUnion(activities.map { $0.category })
-        return Array(set).sorted()
+        cachedCollections = Array(set).sorted()
     }
 
     private func openFocusWindow() {
