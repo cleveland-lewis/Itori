@@ -28,6 +28,7 @@ struct RootsApp: App {
     @StateObject private var focusManager = FocusManager()
     @StateObject private var preferences = AppPreferences()
     @StateObject private var parsingStore = SyllabusParsingStore.shared
+    @StateObject private var eventsCountStore = EventsCountStore()
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -76,7 +77,7 @@ struct RootsApp: App {
                 .environmentObject(appSettings)
                 .environmentObject(appModel)
                 .environmentObject(settingsCoordinator)
-                .environmentObject(EventsCountStore())
+                .environmentObject(eventsCountStore)
                 .environmentObject(calendarManager)
                 .environmentObject(DeviceCalendarManager.shared)
                 .environmentObject(timerManager)
@@ -159,7 +160,7 @@ struct RootsApp: App {
                 .environmentObject(appSettings)
                 .environmentObject(appModel)
                 .environmentObject(settingsCoordinator)
-                .environmentObject(EventsCountStore())
+                .environmentObject(eventsCountStore)
                 .environmentObject(calendarManager)
                 .environmentObject(timerManager)
                 .environmentObject(focusManager)

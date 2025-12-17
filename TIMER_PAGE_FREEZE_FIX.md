@@ -1,10 +1,30 @@
 # Timer Page Freeze Fix - Summary
 
 ## Issue Diagnosed
-The app was freezing when the Timer page was clicked in the tab bar.
+The app was **crashing/freezing** when the Timer page was clicked in the tab bar.
 
-## Root Cause
-The timer page freeze was caused by improper timer lifecycle management in `TimerPageView.swift`:
+## Root Cause (ACTUAL)
+**The freeze was caused by a memory corruption bug in `RootsApp.swift`**, NOT the timer lifecycle:
+
+### Critical Bug
+Lines 79 and 162 created `EventsCountStore()` as a **fresh instance** instead of using `@StateObject`:
+```swift
+.environmentObject(EventsCountStore())  // ❌ WRONG - creates new instance on every render
+```
+
+This caused:
+1. **Memory corruption**: Store deallocated while SwiftUI still tracked it
+2. **Crash**: `___BUG_IN_CLIENT_OF_LIBMALLOC_POINTER_BEING_FREED_WAS_NOT_ALLOCATED`
+3. **App freeze**: Attempting to access freed memory blocked the main thread
+
+From crash log:
+```
+8   Roots.debug.dylib    0x10390d02c EventsCountStore.__deallocating_deinit + 124
+5   libsystem_malloc.dylib    ___BUG_IN_CLIENT_OF_LIBMALLOC_POINTER_BEING_FREED_WAS_NOT_ALLOCATED
+```
+
+### Secondary Issue (Also Fixed)
+The timer lifecycle management in `TimerPageView.swift` was also problematic:
 
 1. **Line 62 (OLD CODE)**: `private let tickPublisher = Timer.publish(every: 1, on: .main, in: .common).autoconnect()`
    - The timer publisher was auto-connecting **immediately** when the view struct was initialized
@@ -22,6 +42,37 @@ The timer page freeze was caused by improper timer lifecycle management in `Time
    - User clicks on the tab bar would hang while waiting for initialization to complete
 
 ## Solution Implemented
+
+### PRIMARY FIX: Fixed EventsCountStore Memory Corruption
+
+**In `RootsApp.swift`:**
+
+**Added StateObject (Line 31):**
+```swift
+@StateObject private var eventsCountStore = EventsCountStore()
+```
+
+**Updated line 79:**
+```swift
+// OLD - Creates new instance every render, causes memory corruption
+.environmentObject(EventsCountStore())
+
+// NEW - Uses persistent StateObject instance
+.environmentObject(eventsCountStore)
+```
+
+**Updated line 162:**
+```swift
+// OLD - Creates new instance in Settings scene
+.environmentObject(EventsCountStore())
+
+// NEW - Uses same persistent StateObject instance
+.environmentObject(eventsCountStore)
+```
+
+This ensures the store is created **once** and persists for the app's lifetime, preventing deallocation while SwiftUI is tracking it.
+
+### SECONDARY FIX: Improved Timer Lifecycle
 
 ### 1. Removed Auto-Connecting Timer Publisher
 **Changed:**
@@ -119,8 +170,9 @@ Test case 'TimerPagePerformanceTests.testUpdateCachedValuesPerformance()' passed
 ✅ **BUILD SUCCEEDED** - The app compiles and runs correctly with the fix applied.
 
 ## Files Modified
-- `macOSApp/Scenes/TimerPageView.swift` - Fixed timer lifecycle management
-- `RootsTests/TimerPagePerformanceTests.swift` - Added performance tests (NEW)
+- ✅ **`macOSApp/App/RootsApp.swift`** - **CRITICAL FIX**: Fixed EventsCountStore memory corruption (3 lines)
+- ✅ `macOSApp/Scenes/TimerPageView.swift` - Improved timer lifecycle management (37 lines)
+- ✅ `RootsTests/TimerPagePerformanceTests.swift` - Added performance tests (NEW)
 
 ## Verification Steps
 1. ✅ Build succeeds without errors or warnings
@@ -128,8 +180,16 @@ Test case 'TimerPagePerformanceTests.testUpdateCachedValuesPerformance()' passed
 3. ✅ Timer lifecycle is properly managed
 4. ✅ No memory leaks (cancellables are properly cleaned up)
 
+## Root Cause Analysis Summary
+
+The freeze was a **cascading failure**:
+1. `EventsCountStore()` created fresh on each render → memory corruption
+2. Timer page loaded → triggered view updates
+3. SwiftUI attempted to access deallocated EventsCountStore → crash
+4. Crash manifested as freeze because deallocation happened during view initialization
+
 ## Recommendation
-The fix should be deployed immediately as it resolves a critical UX issue (app freeze) that prevents users from accessing the Timer page.
+**DEPLOY IMMEDIATELY** - This fixes a critical crash bug that prevents users from accessing the Timer page. The root cause was memory corruption, not a performance issue.
 
 ---
 **Fix Applied:** December 17, 2025
