@@ -182,44 +182,44 @@ struct TimerPageView: View {
         let maxDays = maxSessionHistoryDays
         let maxCount = maxSessionCount
         
-        Task(priority: .userInitiated) {
-            let loadedData: [LocalTimerSession]
-            do {
-                let data = try Data(contentsOf: url)
-                loadedData = try JSONDecoder().decode([LocalTimerSession].self, from: data)
-            } catch {
-                // OK if first run or missing file
-                return
-            }
-            
-            let cutoff = Calendar.current.date(byAdding: .day, value: -maxDays, to: Date()) ?? .distantPast
-            var trimmed = loadedData.filter { session in
-                let anchor = session.endDate ?? session.startDate
-                return anchor >= cutoff
-            }
-            
-            if trimmed.count > maxCount {
-                trimmed.sort { ($0.endDate ?? $0.startDate) > ($1.endDate ?? $1.startDate) }
-                trimmed = Array(trimmed.prefix(maxCount)).sorted { $0.startDate < $1.startDate }
-            }
-            
-            let finalSessions = trimmed
-            let shouldCompact = trimmed.count != loadedData.count
-            
-            // Update UI on main actor
-            self.sessions = finalSessions
-            
-            // Compact file if needed (detached so it doesn't block)
-            if shouldCompact {
-                Task.detached(priority: .utility) {
+        Task {
+            // Perform heavy I/O and processing on background thread
+            let finalSessions = await Task.detached(priority: .userInitiated) { () -> [LocalTimerSession] in
+                let loadedData: [LocalTimerSession]
+                do {
+                    let data = try Data(contentsOf: url)
+                    loadedData = try JSONDecoder().decode([LocalTimerSession].self, from: data)
+                } catch {
+                    // OK if first run or missing file
+                    return []
+                }
+                
+                let cutoff = Calendar.current.date(byAdding: .day, value: -maxDays, to: Date()) ?? .distantPast
+                var trimmed = loadedData.filter { session in
+                    let anchor = session.endDate ?? session.startDate
+                    return anchor >= cutoff
+                }
+                
+                if trimmed.count > maxCount {
+                    trimmed.sort { ($0.endDate ?? $0.startDate) > ($1.endDate ?? $1.startDate) }
+                    trimmed = Array(trimmed.prefix(maxCount)).sorted { $0.startDate < $1.startDate }
+                }
+                
+                // Compact file if needed (before returning)
+                if trimmed.count != loadedData.count {
                     do {
-                        let data = try JSONEncoder().encode(finalSessions)
+                        let data = try JSONEncoder().encode(trimmed)
                         try data.write(to: url, options: .atomic)
                     } catch {
                         print("Failed to compact timer sessions: \(error)")
                     }
                 }
-            }
+                
+                return trimmed
+            }.value
+            
+            // Update UI on main actor - Task in view context is already on MainActor
+            self.sessions = finalSessions
         }
     }
 
