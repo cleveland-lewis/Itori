@@ -136,6 +136,15 @@ struct RootsApp: App {
                 .environmentObject(plannerCoordinator)
                 .environmentObject(parsingStore)
                 .detectReduceMotion()
+                .onOpenURL { url in
+                    _ = DeepLinkRouter.shared.handle(
+                        url: url,
+                        appModel: appModel,
+                        plannerCoordinator: plannerCoordinator,
+                        calendarManager: calendarManager,
+                        settingsCoordinator: settingsCoordinator
+                    )
+                }
                 .onAppear {
                     LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")
                     // Sync stored AppSettingsModel -> AppPreferences on launch
@@ -242,4 +251,3 @@ struct RootsApp: App {
         }
     }
 }
-
