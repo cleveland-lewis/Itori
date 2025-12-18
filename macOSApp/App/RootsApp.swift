@@ -117,90 +117,92 @@ struct RootsApp: App {
 
     var body: some Scene {
         WindowGroup(id: "main") {
-            ContentView()
-                .handlesExternalEvents(preferring: Set<String>(), allowing: Set<String>())
-                .environmentObject(AssignmentsStore.shared)
-                .environmentObject(coursesStore)
-                .environmentObject(appSettings)
-                .environmentObject(appModel)
-                .environmentObject(settingsCoordinator)
-                .environmentObject(eventsCountStore)
-                .environmentObject(calendarManager)
-                .environmentObject(DeviceCalendarManager.shared)
-                .environmentObject(timerManager)
-                .environmentObject(focusManager)
-                .environmentObject(FlashcardManager.shared)
-                .environmentObject(preferences)
-                .environmentObject(gradesStore)
-                .environmentObject(plannerStore)
-                .environmentObject(plannerCoordinator)
-                .environmentObject(parsingStore)
-                .detectReduceMotion()
-                .onOpenURL { url in
-                    _ = DeepLinkRouter.shared.handle(
-                        url: url,
-                        appModel: appModel,
-                        plannerCoordinator: plannerCoordinator,
-                        calendarManager: calendarManager,
-                        settingsCoordinator: settingsCoordinator
-                    )
-                }
-                .onAppear {
-                    LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")
-                    // Sync stored AppSettingsModel -> AppPreferences on launch
-                    preferences.highContrast = appSettings.highContrastMode
-                    preferences.reduceTransparency = appSettings.increaseTransparency
-                    if let g = appSettings.glassIntensity { preferences.glassIntensity = g }
-
-                    // Subscribe to app reset requests from AppModel
-                    resetCancellable = AppModel.shared.resetPublisher
-                        .receive(on: DispatchQueue.main)
-                        .sink { _ in
-                            LOG_LIFECYCLE(.warn, "AppReset", "Global app reset requested")
-                            // perform global resets
-                            AssignmentsStore.shared.resetAll()
-                            CoursesStore.shared?.resetAll()
-                            PlannerStore.shared.reset()
-                            GradesStore.shared.resetAll()
-                            LOG_LIFECYCLE(.info, "AppReset", "Global app reset complete")
-                        }
-                }
-                .onChange(of: preferences.highContrast) { _, newValue in
-                    appSettings.highContrastMode = newValue
-                    appSettings.save()
-                }
-                .onChange(of: preferences.reduceTransparency) { _, newValue in
-                    appSettings.increaseTransparency = newValue
-                    appSettings.save()
-                }
-                // Reverse sync: when saved AppSettingsModel values change (from other settings UI), update AppPreferences
-                .onReceive(appSettings.objectWillChange) { _ in
-                    preferences.highContrast = appSettings.highContrastMode
-                    preferences.reduceTransparency = appSettings.increaseTransparency
-                    if let g = appSettings.glassIntensity { preferences.glassIntensity = g }
-                }
-                .accentColor(preferences.currentAccentColor)
-                .buttonStyle(.glassBlueProminent)
-                .controlSize(.regular)
-                .buttonBorderShape(.automatic)
-                .tint(preferences.currentAccentColor)
-                .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
-                .task {
-                    LOG_LIFECYCLE(.info, "AppStartup", "Running startup tasks")
-                    // Run adaptation on launch
-                    SchedulerAdaptationManager.shared.runAdaptiveSchedulerUpdateIfNeeded()
-                    // Refresh and request permissions on launch
-                    await calendarManager.checkPermissionsOnStartup()
-                    await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
-                    timerManager.checkNotificationPermissions()
-                    
-                    // Schedule daily overview if enabled
-                    if appSettings.dailyOverviewEnabled {
-                        LOG_NOTIFICATIONS(.info, "DailyOverview", "Scheduling daily overview notification")
-                        NotificationManager.shared.scheduleDailyOverview()
+            applyUITestOverrides(
+                ContentView()
+                    .handlesExternalEvents(preferring: Set<String>(), allowing: Set<String>())
+                    .environmentObject(AssignmentsStore.shared)
+                    .environmentObject(coursesStore)
+                    .environmentObject(appSettings)
+                    .environmentObject(appModel)
+                    .environmentObject(settingsCoordinator)
+                    .environmentObject(eventsCountStore)
+                    .environmentObject(calendarManager)
+                    .environmentObject(DeviceCalendarManager.shared)
+                    .environmentObject(timerManager)
+                    .environmentObject(focusManager)
+                    .environmentObject(FlashcardManager.shared)
+                    .environmentObject(preferences)
+                    .environmentObject(gradesStore)
+                    .environmentObject(plannerStore)
+                    .environmentObject(plannerCoordinator)
+                    .environmentObject(parsingStore)
+                    .detectReduceMotion()
+                    .onOpenURL { url in
+                        _ = DeepLinkRouter.shared.handle(
+                            url: url,
+                            appModel: appModel,
+                            plannerCoordinator: plannerCoordinator,
+                            calendarManager: calendarManager,
+                            settingsCoordinator: settingsCoordinator
+                        )
                     }
-                    LOG_LIFECYCLE(.info, "AppStartup", "Startup tasks complete")
-                }
+                    .onAppear {
+                        LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")
+                        // Sync stored AppSettingsModel -> AppPreferences on launch
+                        preferences.highContrast = appSettings.highContrastMode
+                        preferences.reduceTransparency = appSettings.increaseTransparency
+                        if let g = appSettings.glassIntensity { preferences.glassIntensity = g }
+
+                        // Subscribe to app reset requests from AppModel
+                        resetCancellable = AppModel.shared.resetPublisher
+                            .receive(on: DispatchQueue.main)
+                            .sink { _ in
+                                LOG_LIFECYCLE(.warn, "AppReset", "Global app reset requested")
+                                // perform global resets
+                                AssignmentsStore.shared.resetAll()
+                                CoursesStore.shared?.resetAll()
+                                PlannerStore.shared.reset()
+                                GradesStore.shared.resetAll()
+                                LOG_LIFECYCLE(.info, "AppReset", "Global app reset complete")
+                            }
+                    }
+                    .onChange(of: preferences.highContrast) { _, newValue in
+                        appSettings.highContrastMode = newValue
+                        appSettings.save()
+                    }
+                    .onChange(of: preferences.reduceTransparency) { _, newValue in
+                        appSettings.increaseTransparency = newValue
+                        appSettings.save()
+                    }
+                    // Reverse sync: when saved AppSettingsModel values change (from other settings UI), update AppPreferences
+                    .onReceive(appSettings.objectWillChange) { _ in
+                        preferences.highContrast = appSettings.highContrastMode
+                        preferences.reduceTransparency = appSettings.increaseTransparency
+                        if let g = appSettings.glassIntensity { preferences.glassIntensity = g }
+                    }
+                    .accentColor(preferences.currentAccentColor)
+                    .buttonStyle(.glassBlueProminent)
+                    .controlSize(.regular)
+                    .buttonBorderShape(.automatic)
+                    .tint(preferences.currentAccentColor)
+                    .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
+                    .task {
+                        LOG_LIFECYCLE(.info, "AppStartup", "Running startup tasks")
+                        // Run adaptation on launch
+                        SchedulerAdaptationManager.shared.runAdaptiveSchedulerUpdateIfNeeded()
+                        // Refresh and request permissions on launch
+                        await calendarManager.checkPermissionsOnStartup()
+                        await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
+                        timerManager.checkNotificationPermissions()
+                        
+                        // Schedule daily overview if enabled
+                        if appSettings.dailyOverviewEnabled {
+                            LOG_NOTIFICATIONS(.info, "DailyOverview", "Scheduling daily overview notification")
+                            NotificationManager.shared.scheduleDailyOverview()
+                        }
+                        LOG_LIFECYCLE(.info, "AppStartup", "Startup tasks complete")
+                    }
+            )
         }
         .handlesExternalEvents(matching: Set<String>())
         .onChange(of: scenePhase) { _, newPhase in
@@ -211,21 +213,23 @@ struct RootsApp: App {
 #endif
 #if os(macOS)
         Settings {
-            SettingsRootView(selection: $settingsCoordinator.selectedSection)
-                .environmentObject(AssignmentsStore.shared)
-                .environmentObject(coursesStore)
-                .environmentObject(appSettings)
-                .environmentObject(appModel)
-                .environmentObject(settingsCoordinator)
-                .environmentObject(eventsCountStore)
-                .environmentObject(calendarManager)
-                .environmentObject(timerManager)
-                .environmentObject(focusManager)
-                .environmentObject(FlashcardManager.shared)
-                .environmentObject(preferences)
-                .environmentObject(gradesStore)
-                .environmentObject(plannerStore)
-                .environmentObject(parsingStore)
+            applyUITestOverrides(
+                SettingsRootView(selection: $settingsCoordinator.selectedSection)
+                    .environmentObject(AssignmentsStore.shared)
+                    .environmentObject(coursesStore)
+                    .environmentObject(appSettings)
+                    .environmentObject(appModel)
+                    .environmentObject(settingsCoordinator)
+                    .environmentObject(eventsCountStore)
+                    .environmentObject(calendarManager)
+                    .environmentObject(timerManager)
+                    .environmentObject(focusManager)
+                    .environmentObject(FlashcardManager.shared)
+                    .environmentObject(preferences)
+                    .environmentObject(gradesStore)
+                    .environmentObject(plannerStore)
+                    .environmentObject(parsingStore)
+            )
         }
         .commands {
             AppCommands()
@@ -234,6 +238,37 @@ struct RootsApp: App {
             })
         }
 #endif
+    }
+
+    private var uiTestColorSchemeOverride: ColorScheme? {
+        guard let raw = ProcessInfo.processInfo.environment["UITEST_COLOR_SCHEME"] else { return nil }
+        return raw.lowercased() == "dark" ? .dark : .light
+    }
+
+    private var uiTestSizeCategoryOverride: ContentSizeCategory? {
+        guard let raw = ProcessInfo.processInfo.environment["UITEST_CONTENT_SIZE"] else { return nil }
+        return ContentSizeCategory(rawValue: raw)
+    }
+
+    private var shouldDisableAnimationsForUITests: Bool {
+        ProcessInfo.processInfo.environment["UITEST_DISABLE_ANIMATIONS"] == "1"
+    }
+
+    @ViewBuilder
+    private func applyUITestOverrides<Content: View>(to content: Content) -> some View {
+        let colored = content.preferredColorScheme(uiTestColorSchemeOverride)
+        if let sizeCategory = uiTestSizeCategoryOverride {
+            colored
+                .environment(\.sizeCategory, sizeCategory)
+                .transaction { txn in
+                    if shouldDisableAnimationsForUITests { txn.animation = nil }
+                }
+        } else {
+            colored
+                .transaction { txn in
+                    if shouldDisableAnimationsForUITests { txn.animation = nil }
+                }
+        }
     }
 
     private func handleScenePhaseChange(_ phase: ScenePhase) {
