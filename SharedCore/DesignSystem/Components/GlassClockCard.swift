@@ -13,6 +13,7 @@ struct GlassClockCard<Content: View>: View {
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.9), lineWidth: 1)
+                    .allowsHitTesting(false)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
@@ -27,6 +28,7 @@ struct GlassClockCard<Content: View>: View {
                         )
                     )
                     .opacity(0.9)
+                    .allowsHitTesting(false)
             )
             .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.35 : 0.18), radius: 22, x: 0, y: 14)
             .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.18 : 0.10), radius: 10, x: 0, y: 6)

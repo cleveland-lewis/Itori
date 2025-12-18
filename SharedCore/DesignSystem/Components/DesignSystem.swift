@@ -81,15 +81,24 @@ struct DesignSystem {
         /// - Dark mode: white (matches light-mode app background)
         static func neutralLine(for colorScheme: ColorScheme) -> Color {
             #if os(macOS)
-            let base = NSColor.windowBackgroundColor
-            let light = base.resolvedColor(with: NSAppearance(named: .aqua) ?? .current)
-            let dark = base.resolvedColor(with: NSAppearance(named: .darkAqua) ?? .current)
-            return colorScheme == .dark ? Color(light) : Color(dark)
+            func resolvedBackground(_ appearanceName: NSAppearance.Name) -> NSColor {
+                var color = NSColor.windowBackgroundColor
+                if let appearance = NSAppearance(named: appearanceName) {
+                    appearance.performAsCurrentDrawingAppearance {
+                        color = NSColor.windowBackgroundColor
+                    }
+                }
+                return color
+            }
+            let lightBackground = resolvedBackground(.aqua)
+            let darkBackground = resolvedBackground(.darkAqua)
+            // Invert: light scheme gets the dark background (charcoal), dark scheme gets light background (white)
+            return colorScheme == .dark ? Color(lightBackground) : Color(darkBackground)
             #else
-            let provider = UITraitCollection(userInterfaceStyle: .light)
-            let providerDark = UITraitCollection(userInterfaceStyle: .dark)
-            let light = UIColor.systemBackground.resolvedColor(with: provider)
-            let dark = UIColor.systemBackground.resolvedColor(with: providerDark)
+            let lightTrait = UITraitCollection(userInterfaceStyle: .light)
+            let darkTrait = UITraitCollection(userInterfaceStyle: .dark)
+            let light = UIColor.systemBackground.resolvedColor(with: lightTrait)
+            let dark = UIColor.systemBackground.resolvedColor(with: darkTrait)
             return colorScheme == .dark ? Color(light) : Color(dark)
             #endif
         }
