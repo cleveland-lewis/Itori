@@ -4,6 +4,7 @@ import Combine
 import AppKit
 
 struct TimerPageView: View {
+    @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject private var settings: AppSettingsModel
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var calendarManager: CalendarManager
@@ -221,7 +222,7 @@ struct TimerPageView: View {
                                     .fill(isSelected ? Color.accentColor.opacity(0.2) : Color(nsColor: .controlBackgroundColor))
                             )
                             .overlay(
-                                Capsule().stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                                Capsule().stroke(DesignSystem.Colors.neutralLine(for: colorScheme), lineWidth: 1)
                             )
                     }
                     .buttonStyle(.plain)
@@ -294,166 +295,150 @@ struct TimerPageView: View {
     @State private var showingModeMenu = false
     
     private var timerCoreCard: some View {
-        VStack(spacing: 16) {
-            // Top bar with expand button and mode menu
-            HStack(alignment: .center) {
-                Button(action: openFocusWindow) {
-                    Image(systemName: "arrow.up.left.and.arrow.down.right")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .padding(8)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                
-                Spacer()
-                
-                if !isRunning {
-                    Button(action: { showingModeMenu = true }) {
-                        Image(systemName: "ellipsis.circle")
-                            .font(.title2)
+        GlassClockCard(cornerRadius: cardCorner) {
+            VStack(spacing: 16) {
+                // Top bar with expand button and mode menu
+                HStack(alignment: .center) {
+                    Button(action: openFocusWindow) {
+                        Image(systemName: "arrow.up.left.and.arrow.down.right")
+                            .font(.caption)
                             .foregroundStyle(.secondary)
                             .padding(8)
-                            .contentShape(Circle())
+                            .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
-                    .popover(isPresented: $showingModeMenu, arrowEdge: .bottom) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            ForEach(LocalTimerMode.allCases, id: \.self) { timerMode in
-                                Button(action: {
-                                    mode = timerMode
-                                    showingModeMenu = false
-                                }) {
-                                    HStack {
-                                        if mode == timerMode {
-                                            Image(systemName: "checkmark")
-                                                .foregroundColor(.accentColor)
+                    
+                    Spacer()
+                    
+                    if !isRunning {
+                        Button(action: { showingModeMenu = true }) {
+                            Image(systemName: "ellipsis.circle")
+                                .font(.title2)
+                                .foregroundStyle(.secondary)
+                                .padding(8)
+                                .contentShape(Circle())
+                        }
+                        .buttonStyle(.plain)
+                        .popover(isPresented: $showingModeMenu, arrowEdge: .bottom) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                ForEach(LocalTimerMode.allCases, id: \.self) { timerMode in
+                                    Button(action: {
+                                        mode = timerMode
+                                        showingModeMenu = false
+                                    }) {
+                                        HStack {
+                                            if mode == timerMode {
+                                                Image(systemName: "checkmark")
+                                                    .foregroundColor(.accentColor)
+                                            }
+                                            Text(timerMode.label)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
                                         }
-                                        Text(timerMode.label)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
                                     }
-                                    .padding(.horizontal, 12)
-                                    .padding(.vertical, 6)
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
                             }
+                            .padding(8)
+                            .frame(minWidth: 150)
                         }
-                        .padding(8)
-                        .frame(minWidth: 150)
                     }
                 }
+                .frame(height: 36)
+                
+                if isRunning {
+                    clockDisplayContent(isRunningState: true)
+                    
+                    // POMODORO CIRCLES - FIXED VERSION
+                    Group {
+                        if mode == .pomodoro {
+                            HStack(spacing: 8) {
+                                ForEach(Array(0..<max(1, settings.pomodoroIterations)), id: \.self) { index in
+                                    Circle()
+                                        .fill(index < completedPomodoroSessions ? Color.accentColor : Color.secondary.opacity(0.3))
+                                        .frame(width: 8, height: 8)
+                                }
+                            }
+                            .id(settings.pomodoroIterations)
+                        } else {
+                            Color.clear.frame(height: 8)
+                        }
+                    }
+                    .frame(height: 12)
+                    .padding(.bottom, 4)
+                    
+                    HStack(spacing: 18) {
+                        Button(action: pauseTimer) {
+                            Image(systemName: "pause.fill")
+                                .font(.title2)
+                        }
+                        .buttonStyle(.bordered)
+                        
+                        Button(action: resetTimer) {
+                            Image(systemName: "stop.fill")
+                                .font(.title2)
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                } else {
+                    clockDisplayContent(isRunningState: false)
+                    
+                    // POMODORO CIRCLES - FIXED VERSION
+                    Group {
+                        if mode == .pomodoro {
+                            HStack(spacing: 8) {
+                                ForEach(Array(0..<max(1, settings.pomodoroIterations)), id: \.self) { index in
+                                    Circle()
+                                        .fill(index < completedPomodoroSessions ? Color.accentColor : Color.accentColor.opacity(0.3))
+                                        .frame(width: 8, height: 8)
+                                }
+                            }
+                            .id(settings.pomodoroIterations)
+                        } else {
+                            Color.clear.frame(height: 8)
+                        }
+                    }
+                    .frame(height: 12)
+                    .padding(.bottom, 4)
+                    
+                    Button("Start", action: startTimer)
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .padding(.top, 4)
+                }
+                
+                Text("Focus on your current activity")
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundColor(.secondary)
             }
-            .frame(height: 36)
-            
-            if isRunning {
-                VStack(spacing: 8) {
-                    if mode == .pomodoro {
-                        Text(isPomodorBreak ? "Break" : "Work")
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(.secondary)
-                            .textCase(.uppercase)
-                    } else {
-                        Text(mode.label)
-                            .font(.headline.weight(.medium))
-                    }
-                    
-                    GeometryReader { proxy in
-                        let base = min(proxy.size.width, proxy.size.height)
-                        let size = max(72, min(base * 0.35, 180))
-                        Text(timeDisplay)
-                            .font(.system(size: size, weight: .light, design: .monospaced))
-                            .monospacedDigit()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                    }
-                    .frame(height: 160)
-                }
-                .padding(.vertical, 12)
-                
-                // POMODORO CIRCLES - FIXED VERSION
-                Group {
-                    if mode == .pomodoro {
-                        HStack(spacing: 8) {
-                            ForEach(Array(0..<max(1, settings.pomodoroIterations)), id: \.self) { index in
-                                Circle()
-                                    .fill(index < completedPomodoroSessions ? Color.accentColor : Color.secondary.opacity(0.3))
-                                    .frame(width: 8, height: 8)
-                            }
-                        }
-                        .id(settings.pomodoroIterations)
-                    } else {
-                        Color.clear.frame(height: 8)
-                    }
-                }
-                .frame(height: 12)
-                .padding(.bottom, 4)
-                
-                HStack(spacing: 18) {
-                    Button(action: pauseTimer) {
-                        Image(systemName: "pause.fill")
-                            .font(.title2)
-                    }
-                    .buttonStyle(.bordered)
-                    
-                    Button(action: resetTimer) {
-                        Image(systemName: "stop.fill")
-                            .font(.title2)
-                    }
-                    .buttonStyle(.bordered)
-                }
-            } else {
-                VStack(spacing: 8) {
-                    if mode == .pomodoro {
-                        Text(isPomodorBreak ? "Break" : "Work")
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(.secondary)
-                            .textCase(.uppercase)
-                    } else {
-                        Text(mode.label)
-                            .font(.headline.weight(.medium))
-                    }
-                    
-                    GeometryReader { proxy in
-                        let base = min(proxy.size.width, proxy.size.height)
-                        let size = max(72, min(base * 0.35, 180))
-                        Text(timeDisplay)
-                            .font(.system(size: size, weight: .light, design: .monospaced))
-                            .monospacedDigit()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                    }
-                    .frame(height: 160)
-                }
-                .padding(.vertical, 12)
-                
-                // POMODORO CIRCLES - FIXED VERSION
-                Group {
-                    if mode == .pomodoro {
-                        HStack(spacing: 8) {
-                            ForEach(Array(0..<max(1, settings.pomodoroIterations)), id: \.self) { index in
-                                Circle()
-                                    .fill(index < completedPomodoroSessions ? Color.accentColor : Color.accentColor.opacity(0.3))
-                                    .frame(width: 8, height: 8)
-                            }
-                        }
-                        .id(settings.pomodoroIterations)
-                    } else {
-                        Color.clear.frame(height: 8)
-                    }
-                }
-                .frame(height: 12)
-                .padding(.bottom, 4)
-                
-                Button("Start", action: startTimer)
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .padding(.top, 4)
-            }
-            
-            Text("Focus on your current activity")
-                .font(DesignSystem.Typography.caption)
-                .foregroundColor(.secondary)
         }
-        .padding(cardPadding)
-        .glassCard(cornerRadius: cardCorner)
+    }
+
+    @ViewBuilder
+    private func clockDisplayContent(isRunningState: Bool) -> some View {
+        VStack(spacing: 8) {
+            if mode == .pomodoro {
+                Text(isPomodorBreak ? "Break" : "Work")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.secondary)
+                    .textCase(.uppercase)
+            } else {
+                Text(mode.label)
+                    .font(.headline.weight(.medium))
+            }
+            
+            GeometryReader { proxy in
+                let base = min(proxy.size.width, proxy.size.height)
+                let size = max(88, min(base * 0.45, 220))
+                Text(timeDisplay)
+                    .font(.system(size: size, weight: .light, design: .monospaced))
+                    .monospacedDigit()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            }
+            .frame(height: 200)
+        }
+        .padding(.vertical, 12)
     }
     
     private var timeDisplay: String {
@@ -643,55 +628,56 @@ private struct FocusWindowView: View {
     var toggleTask: (AppTask) -> Void
 
     var body: some View {
-        VStack(spacing: 24) {
-            RootsAnalogClock(
-                diameter: 240,
-                showSecondHand: true,
-                accentColor: accentColor,
-                overrideTime: clockOverride
-            )
+        GlassClockCard(cornerRadius: DesignSystem.Layout.cornerRadiusLarge) {
+            VStack(spacing: 24) {
+                RootsAnalogClock(
+                    diameter: 240,
+                    showSecondHand: true,
+                    accentColor: accentColor,
+                    overrideTime: clockOverride
+                )
 
-            VStack(spacing: 8) {
-                if mode == .pomodoro {
-                    Text(isPomodorBreak ? "Break" : "Work")
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(.secondary)
-                        .textCase(.uppercase)
-                }
-                
-                GeometryReader { proxy in
-                    let base = min(proxy.size.width, proxy.size.height)
-                    let size = max(96, min(base * 0.45, 220)) // ~3x larger, scales with window
-                    Text(timeText)
-                        .font(.system(size: size, weight: .light, design: .monospaced))
-                        .monospacedDigit()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                }
-                .frame(height: 200)
-                    
-                if mode == .pomodoro {
-                    HStack(spacing: 8) {
-                        ForEach(Array(0..<max(1, pomodoroSessions)), id: \.self) { index in
-                            Circle()
-                                .fill(index < completedPomodoroSessions ? accentColor : Color.secondary.opacity(0.3))
-                                .frame(width: 8, height: 8)
-                        }
+                VStack(spacing: 8) {
+                    if mode == .pomodoro {
+                        Text(isPomodorBreak ? "Break" : "Work")
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(.secondary)
+                            .textCase(.uppercase)
                     }
-                    .id(pomodoroSessions)
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
-                } else {
-                    Text("\(mode.label) running")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    
+                    GeometryReader { proxy in
+                        let base = min(proxy.size.width, proxy.size.height)
+                        let size = max(96, min(base * 0.45, 220)) // ~3x larger, scales with window
+                        Text(timeText)
+                            .font(.system(size: size, weight: .light, design: .monospaced))
+                            .monospacedDigit()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                    }
+                    .frame(height: 200)
+                        
+                    if mode == .pomodoro {
+                        HStack(spacing: 8) {
+                            ForEach(Array(0..<max(1, pomodoroSessions)), id: \.self) { index in
+                                Circle()
+                                    .fill(index < completedPomodoroSessions ? accentColor : Color.secondary.opacity(0.3))
+                                    .frame(width: 8, height: 8)
+                            }
+                        }
+                        .id(pomodoroSessions)
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
+                    } else {
+                        Text("\(mode.label) running")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
-            }
 
-            activityCard
+                activityCard
+            }
         }
         .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(DesignSystem.Materials.card)
     }
 
     private var activityCard: some View {
