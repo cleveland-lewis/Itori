@@ -41,6 +41,13 @@ final class AssignmentsStore: ObservableObject {
     }
 
     func updateTask(_ task: AppTask) {
+        // Check if this is a completion event (task was incomplete, now complete)
+        let wasJustCompleted: Bool = {
+            guard task.isCompleted else { return false }
+            guard let idx = tasks.firstIndex(where: { $0.id == task.id }) else { return false }
+            return !tasks[idx].isCompleted
+        }()
+        
         if let idx = tasks.firstIndex(where: { $0.id == task.id }) {
             tasks[idx] = task
         }
@@ -51,6 +58,13 @@ final class AssignmentsStore: ObservableObject {
         
         // Reschedule notification for updated task
         rescheduleNotificationIfNeeded(for: task)
+        
+        // Play completion feedback if task was just completed
+        if wasJustCompleted {
+            Task { @MainActor in
+                Feedback.shared.taskCompleted()
+            }
+        }
     }
 
     func incompleteTasks() -> [AppTask] {

@@ -45,7 +45,11 @@ class AIRouter: ObservableObject {
     // MARK: - Generation
     
     func generate(prompt: String, taskKind: AITaskKind, options: AIGenerateOptions = .default) async throws -> AIResult {
-        let startTime = Date()
+        // CRITICAL: Check global AI kill switch FIRST
+        guard AppSettingsModel.shared.aiEnabled else {
+            LOG_AI(.info, "PrivacyGate", "AI request blocked by privacy settings", metadata: ["taskKind": taskKind.rawValue])
+            throw AIError.disabledByPrivacy
+        }
         
         let provider = try selectProvider(for: taskKind)
         logger.logProviderSelection(provider: provider.name, taskKind: taskKind, mode: currentMode)

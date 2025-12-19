@@ -815,10 +815,20 @@ private extension PlannerPageView {
         if let idx = unscheduledTasks.firstIndex(where: { $0.id == item.id }) {
             unscheduledTasks[idx].isCompleted = true
             unscheduledTasks.remove(at: idx)
+            
+            // Play completion feedback
+            Task { @MainActor in
+                Feedback.shared.taskCompleted()
+            }
             return
         }
         if let idx = plannedBlocks.firstIndex(where: { $0.id == item.id }) {
             plannedBlocks[idx].status = .completed
+            
+            // Play completion feedback
+            Task { @MainActor in
+                Feedback.shared.taskCompleted()
+            }
         }
     }
 

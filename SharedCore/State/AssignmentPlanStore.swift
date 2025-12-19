@@ -70,6 +70,9 @@ final class AssignmentPlanStore: ObservableObject {
         guard var plan = plans[assignmentId] else { return }
         
         if let index = plan.steps.firstIndex(where: { $0.id == stepId }) {
+            // Check if this step is being completed (not already complete)
+            let wasJustCompleted = !plan.steps[index].isCompleted
+            
             plan.steps[index].isCompleted = true
             plan.steps[index].completedAt = Date()
             
@@ -82,6 +85,13 @@ final class AssignmentPlanStore: ObservableObject {
             saveCache()
             
             LOG_DATA(.info, "PlanStore", "Completed step \(stepId) in plan for assignment \(assignmentId)")
+            
+            // Play completion feedback if step was just completed
+            if wasJustCompleted {
+                Task { @MainActor in
+                    Feedback.shared.taskCompleted()
+                }
+            }
         }
     }
     

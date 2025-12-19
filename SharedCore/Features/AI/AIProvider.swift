@@ -71,6 +71,7 @@ enum AIError: LocalizedError {
     case generationFailed(String)
     case invalidResponse
     case timeout
+    case disabledByPrivacy
     
     var errorDescription: String? {
         switch self {
@@ -88,6 +89,8 @@ enum AIError: LocalizedError {
             return "Received invalid response from AI provider"
         case .timeout:
             return "AI request timed out"
+        case .disabledByPrivacy:
+            return "AI features are disabled in Privacy settings"
         }
     }
 }

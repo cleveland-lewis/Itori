@@ -5,6 +5,7 @@ struct TimerControlsView: View {
     @ObservedObject var viewModel: TimerPageViewModel
     @Binding var currentMode: TimerMode
     @Environment(\.colorScheme) private var colorScheme
+    @StateObject private var animationPolicy = AnimationPolicy.shared
 
     var body: some View {
         VStack(spacing: 16) {
@@ -24,14 +25,9 @@ struct TimerControlsView: View {
             .shadow(color: DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.12), radius: 10, x: 0, y: 10)
 
             HStack(spacing: 12) {
-                if viewModel.currentSession?.state == .running {
-                    button(label: "Pause", systemImage: "pause.fill", prominent: true) { viewModel.pauseSession() }
-                } else if viewModel.currentSession?.state == .paused {
-                    button(label: "Resume", systemImage: "play.fill", prominent: true) { viewModel.resumeSession() }
-                } else {
-                    button(label: "Start", systemImage: "play.fill", prominent: true) { viewModel.startSession(plannedDuration: currentMode == .timer ? viewModel.timerDuration : nil) }
-                }
-
+                // Primary play/pause button with morphing animation
+                playPauseButton
+                
                 button(label: viewModel.currentSession == nil ? "Reset" : "End", systemImage: "stop.fill", prominent: false) {
                     if viewModel.currentSession == nil {
                         resetDefaults()
@@ -65,6 +61,40 @@ struct TimerControlsView: View {
         .padding(DesignSystem.Layout.padding.card)
         .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+    }
+    
+    // MARK: - Play/Pause Morphing Button
+    
+    private var playPauseButton: some View {
+        let isRunning = viewModel.currentSession?.state == .running
+        let isPaused = viewModel.currentSession?.state == .paused
+        
+        let icon = isRunning ? "pause.fill" : "play.fill"
+        let label = isRunning ? "Pause" : (isPaused ? "Resume" : "Start")
+        
+        let action: () -> Void = {
+            if isRunning {
+                animationPolicy.withAnimation(.essential) {
+                    viewModel.pauseSession()
+                }
+            } else if isPaused {
+                animationPolicy.withAnimation(.essential) {
+                    viewModel.resumeSession()
+                }
+            } else {
+                animationPolicy.withAnimation(.essential) {
+                    viewModel.startSession(plannedDuration: currentMode == .timer ? viewModel.timerDuration : nil)
+                }
+            }
+        }
+        
+        return Button(action: action) {
+            Label(label, systemImage: icon)
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(GlassBlueProminentButtonStyle())
+        .animationPolicy(.essential, value: isRunning)
     }
 
     private func button(label: String, systemImage: String, prominent: Bool, action: @escaping () -> Void) -> some View {
