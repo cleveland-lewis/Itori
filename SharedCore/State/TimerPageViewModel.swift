@@ -159,6 +159,21 @@ final class TimerPageViewModel: ObservableObject {
         LOG_UI(.info, "Timer", "Ended session \(s.id) completed=\(completed)")
         cancelCompletionNotification()
     }
+    
+    /// Skip current Pomodoro segment and advance to the next one
+    func skipSegment() {
+        guard let session = currentSession, session.mode == .pomodoro else { return }
+        guard session.state == .running else { return }
+        
+        LOG_UI(.info, "Timer", "Skipping Pomodoro segment - was on break: \(isOnBreak)")
+        
+        // End current segment without counting remaining time as study time
+        // Mark as completed to trigger the break toggle
+        endSession(completed: true)
+        
+        // Automatically start the next segment
+        startSession()
+    }
 
     func sessions(for activityID: UUID?) -> [FocusSession] {
         pastSessions.filter { $0.activityID == activityID }

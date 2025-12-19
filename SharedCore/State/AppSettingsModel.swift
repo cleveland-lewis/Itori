@@ -323,7 +323,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     }
 
     // Backing storage - migrate to UserDefaults-backed values to persist across launches
-    var accentColorRaw: String = AppAccentColor.multicolor.rawValue
+    var accentColorRaw: String = AppAccentColor.blue.rawValue
     var customAccentEnabledStorage: Bool = false
     var customAccentRed: Double = 0
     var customAccentGreen: Double = 122 / 255
