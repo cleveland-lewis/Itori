@@ -5,6 +5,7 @@
 
 #if os(iOS)
 import Foundation
+import Combine
 
 #if canImport(ActivityKit)
 import ActivityKit
@@ -24,9 +25,21 @@ struct TimerLiveActivityAttributes: ActivityAttributes {
 }
 
 final class IOSTimerLiveActivityManager: ObservableObject {
-    private var activity: Any?
+    private var activity: Activity<TimerLiveActivityAttributes>?
     private var lastUpdate: Date?
     private let minUpdateInterval: TimeInterval = 1.0
+    private var lastContentState: TimerLiveActivityAttributes.ContentState?
+
+    var isAvailable: Bool {
+        if #available(iOS 16.1, *) {
+            return ActivityAuthorizationInfo().areActivitiesEnabled
+        }
+        return false
+    }
+
+    var isActive: Bool {
+        activity != nil
+    }
 
     func sync(currentMode: TimerMode, session: FocusSession?, elapsed: TimeInterval, remaining: TimeInterval, isOnBreak: Bool) {
         guard #available(iOS 16.1, *) else { return }
@@ -60,6 +73,7 @@ final class IOSTimerLiveActivityManager: ObservableObject {
             isRunning: session.state == .running,
             isOnBreak: isOnBreak
         )
+        lastContentState = contentState
 
         if activity == nil {
             let attributes = TimerLiveActivityAttributes(activityID: session.id.uuidString)
@@ -73,7 +87,12 @@ final class IOSTimerLiveActivityManager: ObservableObject {
     @available(iOS 16.1, *)
     private func start(attributes: TimerLiveActivityAttributes, contentState: TimerLiveActivityAttributes.ContentState) async {
         do {
-            activity = try Activity.request(attributes: attributes, contentState: contentState, pushType: nil)
+            if #available(iOS 16.2, *) {
+                let content = ActivityContent(state: contentState, staleDate: nil)
+                activity = try Activity.request(attributes: attributes, content: content, pushType: nil)
+            } else {
+                activity = try Activity.request(attributes: attributes, contentState: contentState, pushType: nil)
+            }
             lastUpdate = Date()
         } catch {
             activity = nil
@@ -87,13 +106,24 @@ final class IOSTimerLiveActivityManager: ObservableObject {
             return
         }
         lastUpdate = now
-        (activity as? Activity<TimerLiveActivityAttributes>)?.update(using: contentState)
+        guard let live = activity else { return }
+        if #available(iOS 16.2, *) {
+            let content = ActivityContent(state: contentState, staleDate: nil)
+            await live.update(content)
+        } else {
+            await live.update(using: contentState)
+        }
     }
 
     func end() async {
         guard #available(iOS 16.1, *) else { return }
-        guard let live = activity as? Activity<TimerLiveActivityAttributes> else { return }
-        await live.end(dismissalPolicy: .immediate)
+        guard let live = activity else { return }
+        if #available(iOS 16.2, *) {
+            let content = ActivityContent(state: lastContentState ?? .init(mode: "", label: "", remainingSeconds: 0, elapsedSeconds: 0, isRunning: false, isOnBreak: false), staleDate: nil)
+            await live.end(content, dismissalPolicy: .immediate)
+        } else {
+            await live.end(using: lastContentState ?? .init(mode: "", label: "", remainingSeconds: 0, elapsedSeconds: 0, isRunning: false, isOnBreak: false), dismissalPolicy: .immediate)
+        }
         activity = nil
         lastUpdate = nil
     }

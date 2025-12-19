@@ -177,6 +177,21 @@ final class TimerPageViewModel: ObservableObject {
         cancelCompletionNotification()
         persistState()
     }
+
+#if DEBUG
+    func debugAdvance(seconds: TimeInterval) {
+        guard var session = currentSession else { return }
+        sessionElapsed += seconds
+        if let planned = session.plannedDuration {
+            sessionRemaining = max(planned - sessionElapsed, 0)
+            if sessionRemaining == 0 {
+                endSession(completed: true)
+                return
+            }
+        }
+        currentSession = session
+    }
+#endif
     
     /// Skip current Pomodoro segment and advance to the next one
     func skipSegment() {

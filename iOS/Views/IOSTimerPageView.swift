@@ -26,55 +26,32 @@ struct IOSTimerPageView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    modePicker
-                    timerStatusCard
-                    durationControls
-                    settingsControls
-                    activityPicker
-                    activityManager
-                    sessionHistory
-#if DEBUG
-                    debugSection
-#endif
-                }
-                .padding(20)
-            }
-            .navigationTitle("Timer")
-            .onAppear {
-                if viewModel.alarmScheduler == nil {
-                    viewModel.alarmScheduler = IOSTimerAlarmScheduler()
-                }
-                syncSettingsFromApp()
-            }
-            .onChange(of: settings.pomodoroFocusMinutes) { _, _ in syncSettingsFromApp() }
-            .onChange(of: settings.pomodoroShortBreakMinutes) { _, _ in syncSettingsFromApp() }
-            .onChange(of: settings.pomodoroLongBreakMinutes) { _, _ in syncSettingsFromApp() }
-            .onChange(of: settings.timerAlertsEnabled) { _, _ in syncSettingsFromApp() }
-            .onChange(of: settings.pomodoroAlertsEnabled) { _, _ in syncSettingsFromApp() }
-            .onChange(of: viewModel.currentSession) { _, _ in
-                syncLiveActivity()
-            }
-            .onChange(of: viewModel.sessionElapsed) { _, _ in
-                syncLiveActivity()
-            }
-            .onChange(of: viewModel.sessionRemaining) { _, _ in
-                syncLiveActivity()
-            }
-            .onChange(of: viewModel.isOnBreak) { _, _ in
-                syncLiveActivity()
-            }
-            .onChange(of: viewModel.currentMode) { _, _ in
-                syncLiveActivity()
-            }
-            .onChange(of: viewModel.focusDuration) { _, newValue in
-                settings.pomodoroFocusMinutes = max(Int(newValue / 60), 1)
-            }
-            .onChange(of: viewModel.breakDuration) { _, newValue in
-                settings.pomodoroShortBreakMinutes = max(Int(newValue / 60), 1)
-            }
+            mainScroll
+                .navigationTitle("Timer")
+                .modifier(TimerSyncModifiers(viewModel: viewModel, settings: settings, syncLiveActivity: syncLiveActivity, syncSettingsFromApp: syncSettingsFromApp))
         }
+    }
+
+    private var mainScroll: some View {
+        ScrollView {
+            contentStack
+        }
+    }
+
+    private var contentStack: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            modePicker
+            timerStatusCard
+            durationControls
+            settingsControls
+            activityPicker
+            activityManager
+            sessionHistory
+#if DEBUG
+            debugSection
+#endif
+        }
+        .padding(20)
     }
 
     private var modePicker: some View {
@@ -351,5 +328,68 @@ struct IOSTimerPageView: View {
         return liveActivityManager.isActive ? "Active" : "Inactive"
     }
 #endif
+}
+
+private struct TimerSyncModifiers: ViewModifier {
+    @ObservedObject var viewModel: TimerPageViewModel
+    @ObservedObject var settings: AppSettingsModel
+    let syncLiveActivity: () -> Void
+    let syncSettingsFromApp: () -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .modifier(TimerSettingsSync(settings: settings, syncSettingsFromApp: syncSettingsFromApp))
+            .modifier(TimerLiveActivitySync(viewModel: viewModel, syncLiveActivity: syncLiveActivity))
+            .modifier(TimerDurationSync(viewModel: viewModel, settings: settings))
+            .onAppear {
+                if viewModel.alarmScheduler == nil {
+                    viewModel.alarmScheduler = IOSTimerAlarmScheduler()
+                }
+                syncSettingsFromApp()
+            }
+    }
+}
+
+private struct TimerSettingsSync: ViewModifier {
+    @ObservedObject var settings: AppSettingsModel
+    let syncSettingsFromApp: () -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: settings.pomodoroFocusMinutes) { _, _ in syncSettingsFromApp() }
+            .onChange(of: settings.pomodoroShortBreakMinutes) { _, _ in syncSettingsFromApp() }
+            .onChange(of: settings.pomodoroLongBreakMinutes) { _, _ in syncSettingsFromApp() }
+            .onChange(of: settings.timerAlertsEnabled) { _, _ in syncSettingsFromApp() }
+            .onChange(of: settings.pomodoroAlertsEnabled) { _, _ in syncSettingsFromApp() }
+    }
+}
+
+private struct TimerLiveActivitySync: ViewModifier {
+    @ObservedObject var viewModel: TimerPageViewModel
+    let syncLiveActivity: () -> Void
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: viewModel.currentSession) { _, _ in syncLiveActivity() }
+            .onChange(of: viewModel.sessionElapsed) { _, _ in syncLiveActivity() }
+            .onChange(of: viewModel.sessionRemaining) { _, _ in syncLiveActivity() }
+            .onChange(of: viewModel.isOnBreak) { _, _ in syncLiveActivity() }
+            .onChange(of: viewModel.currentMode) { _, _ in syncLiveActivity() }
+    }
+}
+
+private struct TimerDurationSync: ViewModifier {
+    @ObservedObject var viewModel: TimerPageViewModel
+    @ObservedObject var settings: AppSettingsModel
+
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: viewModel.focusDuration) { _, newValue in
+                settings.pomodoroFocusMinutes = max(Int(newValue / 60), 1)
+            }
+            .onChange(of: viewModel.breakDuration) { _, newValue in
+                settings.pomodoroShortBreakMinutes = max(Int(newValue / 60), 1)
+            }
+    }
 }
 #endif

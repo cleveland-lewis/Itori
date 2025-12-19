@@ -311,7 +311,7 @@ struct RootsApp: App {
 
     var body: some Scene {
         WindowGroup {
-            IOSContentView()
+            IOSRootView()
                 .environmentObject(AssignmentsStore.shared)
                 .environmentObject(coursesStore)
                 .environmentObject(appSettings)
@@ -334,16 +334,6 @@ struct RootsApp: App {
                     if let g = appSettings.glassIntensity { preferences.glassIntensity = g }
                 }
         }
-    }
-}
-
-struct IOSContentView: View {
-    @EnvironmentObject var appModel: AppModel
-    
-    var body: some View {
-        Text("Roots iOS - Coming Soon")
-            .font(.largeTitle)
-            .padding()
     }
 }
 #endif

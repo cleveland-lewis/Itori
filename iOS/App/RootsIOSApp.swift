@@ -7,7 +7,6 @@
 import SwiftUI
 import Combine
 
-@main
 struct RootsIOSApp: App {
     @StateObject private var coursesStore: CoursesStore
     @StateObject private var appSettings = AppSettingsModel.shared

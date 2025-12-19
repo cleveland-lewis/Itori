@@ -57,6 +57,11 @@
 			path = macOSApp;
 			sourceTree = "<group>";
 		};
+		1AD7D4702EDD328800D403F3 /* iOS */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = iOS;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +130,7 @@
 			fileSystemSynchronizedGroups = (
 				1AD7D46B2EDD328800D403F3 /* SharedCore */,
 				1AD7D46C2EDD328800D403F3 /* macOSApp */,
+				1AD7D4702EDD328800D403F3 /* iOS */,
 			);
 			name = Roots;
 			packageProductDependencies = (

@@ -1,6 +1,20 @@
 import SwiftUI
+#if canImport(AppKit)
+import AppKit
+#endif
+#if canImport(UIKit)
+import UIKit
+#endif
 
 #if DEBUG
+
+#if os(macOS)
+private let _panelBackground = Color(nsColor: .textBackgroundColor)
+private let _controlBackground = Color(nsColor: .controlBackgroundColor)
+#else
+private let _panelBackground = Color(uiColor: .systemBackground)
+private let _controlBackground = Color(uiColor: .secondarySystemBackground)
+#endif
 
 /// Debug-only view for testing accessibility features and simulating system settings
 /// Allows developers to preview accessibility states without changing system settings
@@ -25,7 +39,7 @@ struct AccessibilityDebugView: View {
             .padding(24)
         }
         .frame(minWidth: 600, minHeight: 500)
-        .background(Color(nsColor: .textBackgroundColor))
+        .background(_panelBackground)
     }
     
     // MARK: - Header
@@ -80,7 +94,7 @@ struct AccessibilityDebugView: View {
             .padding(12)
             .background(
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(Color(nsColor: .controlBackgroundColor))
+                    .fill(_controlBackground)
             )
             
             Divider()
@@ -108,7 +122,7 @@ struct AccessibilityDebugView: View {
             .padding(12)
             .background(
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(Color(nsColor: .controlBackgroundColor))
+                    .fill(_controlBackground)
             )
             
             Divider()
@@ -145,7 +159,7 @@ struct AccessibilityDebugView: View {
                 .background(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .fill(simulateReduceTransparency ? 
-                              AnyShapeStyle(Color(nsColor: .textBackgroundColor)) :
+                              AnyShapeStyle(_panelBackground) :
                               AnyShapeStyle(.regularMaterial))
                 )
                 .overlay(
@@ -170,7 +184,7 @@ struct AccessibilityDebugView: View {
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(Color(nsColor: .controlBackgroundColor).opacity(0.5))
+                    .fill(_controlBackground.opacity(0.5))
             )
         }
     }
@@ -198,3 +212,4 @@ struct AccessibilityDebugView_Previews: PreviewProvider {
 }
 
 #endif
+
