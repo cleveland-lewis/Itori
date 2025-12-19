@@ -60,6 +60,9 @@ struct OverdueTaskRow: View {
     var item: PlannerTask
     var onTap: () -> Void
     var onComplete: () -> Void
+    
+    @Environment(\.colorScheme) private var colorScheme
+    private var neutralLine: Color { DesignSystem.Colors.neutralLine(for: colorScheme) }
 
     private var daysLate: Int {
         let now = Date()
@@ -906,6 +909,9 @@ private extension PlannerPageView {
 
 struct PlannerBlockRow: View {
     var block: PlannedBlock
+    
+    @Environment(\.colorScheme) private var colorScheme
+    private var neutralLine: Color { DesignSystem.Colors.neutralLine(for: colorScheme) }
 
     private var isFixedEvent: Bool {
         let lower = block.source.lowercased()
@@ -979,6 +985,9 @@ struct PlannerBlockRow: View {
 struct PlannerTaskRow: View {
     var task: PlannerTask
     var onTap: (() -> Void)?
+    
+    @Environment(\.colorScheme) private var colorScheme
+    private var neutralLine: Color { DesignSystem.Colors.neutralLine(for: colorScheme) }
 
     var body: some View {
         Button {

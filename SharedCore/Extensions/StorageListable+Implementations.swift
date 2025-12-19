@@ -194,7 +194,11 @@ extension CalendarEvent: StorageListable {
         }
         // Fallback: use category + date
         let dateStr = startDate.formatted(date: .abbreviated, time: .omitted)
+        #if os(macOS)
+        let cat = category.rawValue
+        #else
         let cat = category?.rawValue ?? "Event"
+        #endif
         return "\(cat) (\(dateStr))"
     }
     

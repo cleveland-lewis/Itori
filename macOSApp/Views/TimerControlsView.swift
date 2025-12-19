@@ -4,6 +4,7 @@ import SwiftUI
 struct TimerControlsView: View {
     @ObservedObject var viewModel: TimerPageViewModel
     @Binding var currentMode: TimerMode
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(spacing: 16) {
@@ -12,7 +13,7 @@ struct TimerControlsView: View {
                     .font(DesignSystem.Typography.body)
                     .monospacedDigit()
                     .foregroundColor(.primary)
-                    .shadow(color: Color(nsColor: .separatorColor).opacity(0.08), radius: 10, x: 0, y: 10)
+                    .shadow(color: DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.12), radius: 10, x: 0, y: 10)
 
                 Text(modeSubtitle)
                     .font(.subheadline)
@@ -20,6 +21,7 @@ struct TimerControlsView: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
+            .shadow(color: DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.12), radius: 10, x: 0, y: 10)
 
             HStack(spacing: 12) {
                 if viewModel.currentSession?.state == .running {
