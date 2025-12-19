@@ -24,6 +24,23 @@ struct AISettingsView: View {
             }
             .listRowBackground(Color.clear)
             
+            // Show warning if AI is disabled globally
+            if !settings.aiEnabled {
+                Section {
+                    Label {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("AI Features Disabled")
+                                .font(.headline)
+                            Text("AI features are disabled in Privacy settings. Enable AI in Settings → Privacy to use these features.")
+                                .font(.caption)
+                        }
+                    } icon: {
+                        Image(systemName: "lock.shield.fill")
+                            .foregroundStyle(.orange)
+                    }
+                }
+            }
+            
             Section("AI Mode") {
                 Picker("Mode", selection: $settings.aiMode) {
                     ForEach(AIMode.allCases, id: \.self) { mode in
@@ -31,6 +48,7 @@ struct AISettingsView: View {
                     }
                 }
                 .pickerStyle(.radioGroup)
+                .disabled(!settings.aiEnabled)
                 .onChange(of: settings.aiMode) { _, _ in
                     settings.save()
                     LOG_SETTINGS(.info, "AIModeChanged", "AI mode changed", metadata: ["mode": settings.aiMode.rawValue])
@@ -40,6 +58,7 @@ struct AISettingsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            .opacity(settings.aiEnabled ? 1.0 : 0.5)
             
             // Apple Intelligence Status
             if settings.aiMode == .auto || settings.aiMode == .appleIntelligenceOnly {
@@ -59,6 +78,8 @@ struct AISettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                .disabled(!settings.aiEnabled)
+                .opacity(settings.aiEnabled ? 1.0 : 0.5)
             }
             
             // Local Model Settings
@@ -92,7 +113,7 @@ struct AISettingsView: View {
                             }
                             .buttonStyle(.borderedProminent)
                             .tint(settings.activeAccentColor)
-                            .disabled(isDownloadingModel)
+                            .disabled(isDownloadingModel || !settings.aiEnabled)
                         }
                     }
                     
@@ -108,6 +129,8 @@ struct AISettingsView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                .disabled(!settings.aiEnabled)
+                .opacity(settings.aiEnabled ? 1.0 : 0.5)
             }
             
             // BYO Provider Settings
@@ -119,6 +142,7 @@ struct AISettingsView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(settings.activeAccentColor)
+                    .disabled(!settings.aiEnabled)
                     
                     if !settings.byoProviderConfig.apiKey.isEmpty {
                         HStack {
@@ -131,6 +155,8 @@ struct AISettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                .disabled(!settings.aiEnabled)
+                .opacity(settings.aiEnabled ? 1.0 : 0.5)
                 .sheet(isPresented: $showingBYOConfig) {
                     BYOProviderConfigView(config: $byoConfig, onSave: {
                         settings.byoProviderConfig = byoConfig

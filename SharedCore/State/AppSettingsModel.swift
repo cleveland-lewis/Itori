@@ -252,6 +252,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         case byoProviderConfigData
         case localModelDownloadedMacOS
         case localModelDownloadediOS
+        case aiEnabledStorage
     }
 
 
@@ -426,6 +427,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     var byoProviderConfigData: Data? = nil
     var localModelDownloadedMacOS: Bool = false
     var localModelDownloadediOS: Bool = false
+    var aiEnabledStorage: Bool = true  // Global AI kill switch
     
     // Event load thresholds (persisted)
     var loadLowThresholdStorage: Int = 1
@@ -890,6 +892,11 @@ final class AppSettingsModel: ObservableObject, Codable {
         set {
             byoProviderConfigData = try? JSONEncoder().encode(newValue)
         }
+    }
+    
+    var aiEnabled: Bool {
+        get { aiEnabledStorage }
+        set { aiEnabledStorage = newValue }
     }
 
     // Convenience helpers to convert components to Date and back for bindings

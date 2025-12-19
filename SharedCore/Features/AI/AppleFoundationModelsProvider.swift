@@ -14,8 +14,6 @@ class AppleFoundationModelsProvider: AIProvider {
     )
     
     func generate(prompt: String, taskKind: AITaskKind, options: AIGenerateOptions) async throws -> AIResult {
-        let startTime = Date()
-        
         // This is a placeholder implementation
         // When Apple releases Foundation Models/Apple Intelligence APIs, this will be implemented
         #if os(iOS) || os(macOS) || os(visionOS)
