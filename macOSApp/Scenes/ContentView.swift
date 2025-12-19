@@ -25,6 +25,7 @@ struct ContentView: View {
                         .padding(.top, 16)
 
                     currentPageView
+                        .accessibilityIdentifier("Page.\(selectedTab.rawValue)")
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                         .padding(.horizontal, 24)
                         .padding(.top, 12)
@@ -124,7 +125,7 @@ struct ContentView: View {
             Spacer()
 
             Button(action: {
-                withAnimation(.easeInOut(duration: 0.6)) {
+                withAnimation(.easeInOut(duration: DesignSystem.Motion.deliberate)) {
                     settingsRotation += 360
                 }
                 settingsCoordinator.show()
@@ -176,6 +177,8 @@ struct ContentView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+        case .practice:
+            PracticeTestPageView()
         }
     }
 
@@ -199,6 +202,7 @@ struct ContentView: View {
     }
 
     private func handleTabSelection(_ tab: RootTab) {
+        LOG_NAVIGATION(.info, "TabSelection", "User navigated to tab: \(tab.rawValue)")
         selectedTab = tab
         if let page = AppPage(rawValue: tab.rawValue), appModel.selectedPage != page {
             appModel.selectedPage = page

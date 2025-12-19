@@ -1,4 +1,9 @@
 import SwiftUI
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
 
 enum DesignMaterial: String, CaseIterable, Identifiable, Hashable {
     var id: String { rawValue }
@@ -69,6 +74,33 @@ struct DesignSystem {
 
         static func background(for colorScheme: ColorScheme) -> Color {
             return appBackground
+        }
+
+        /// Semantic neutral line color that inverts by color scheme:
+        /// - Light mode: charcoal (matches dark-mode app background)
+        /// - Dark mode: white (matches light-mode app background)
+        static func neutralLine(for colorScheme: ColorScheme) -> Color {
+            #if os(macOS)
+            func resolvedBackground(_ appearanceName: NSAppearance.Name) -> NSColor {
+                var color = NSColor.windowBackgroundColor
+                if let appearance = NSAppearance(named: appearanceName) {
+                    appearance.performAsCurrentDrawingAppearance {
+                        color = NSColor.windowBackgroundColor
+                    }
+                }
+                return color
+            }
+            let lightBackground = resolvedBackground(.aqua)
+            let darkBackground = resolvedBackground(.darkAqua)
+            // Invert: light scheme gets the dark background (charcoal), dark scheme gets light background (white)
+            return colorScheme == .dark ? Color(lightBackground) : Color(darkBackground)
+            #else
+            let lightTrait = UITraitCollection(userInterfaceStyle: .light)
+            let darkTrait = UITraitCollection(userInterfaceStyle: .dark)
+            let light = UIColor.systemBackground.resolvedColor(with: lightTrait)
+            let dark = UIColor.systemBackground.resolvedColor(with: darkTrait)
+            return colorScheme == .dark ? Color(light) : Color(dark)
+            #endif
         }
     }
 

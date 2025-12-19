@@ -77,6 +77,12 @@ final class SyllabusParsingStore: ObservableObject {
         persist()
     }
     
+    func updateParsedAssignment(_ assignment: ParsedAssignment) {
+        guard let index = parsedAssignments.firstIndex(where: { $0.id == assignment.id }) else { return }
+        parsedAssignments[index] = assignment
+        persist()
+    }
+    
     // MARK: - Parsing Logic
     
     func startParsing(job: SyllabusParsingJob, fileURL: URL?) {
@@ -105,7 +111,7 @@ final class SyllabusParsingStore: ObservableObject {
         // Simple algorithmic parser (no LLM)
         // This is a placeholder - real implementation would parse PDF/text
         
-        guard let fileURL = fileURL else {
+        guard fileURL != nil else {
             throw NSError(domain: "SyllabusParser", code: 1, userInfo: [NSLocalizedDescriptionKey: "File URL not provided"])
         }
         

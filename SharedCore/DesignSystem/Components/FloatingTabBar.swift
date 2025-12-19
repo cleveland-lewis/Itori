@@ -27,9 +27,9 @@ struct FloatingTabBar: View {
         )
         .overlay(
             Capsule()
-                .stroke(Color(nsColor: .separatorColor).opacity(colorScheme == .dark ? 0.08 : 0.12), lineWidth: 0.6)
+                .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(colorScheme == .dark ? 0.18 : 0.14), lineWidth: 0.6)
         )
-        .shadow(color: Color(nsColor: .separatorColor).opacity(colorScheme == .dark ? 0.12 : 0.08), radius: 24, x: 0, y: 12)
+        .shadow(color: DesignSystem.Colors.neutralLine(for: colorScheme).opacity(colorScheme == .dark ? 0.12 : 0.09), radius: 24, x: 0, y: 12)
         .fixedSize(horizontal: true, vertical: true)
         .padding(.bottom, 26)
         .contextMenu {
@@ -113,7 +113,7 @@ private struct FloatingTabButtonStyle: ButtonStyle {
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .stroke(Color(nsColor: .separatorColor).opacity(isSelected ? 0.25 : (colorScheme == .dark ? 0.04 : 0.12)), lineWidth: 0.6)
+                            .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(isSelected ? 0.3 : 0.16), lineWidth: 0.6)
                     )
             )
                         .scaleEffect(configuration.isPressed ? (isSelected ? 0.96 : 0.97) : 1)

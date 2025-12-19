@@ -48,43 +48,54 @@ struct SettingsRootView: View {
     var body: some View {
         NavigationSplitView {
             List(SettingsToolbarIdentifier.allCases, selection: $selectedPane) { pane in
-                NavigationLink(value: pane) {
-                    Label(pane.label, systemImage: pane.systemImageName)
-                }
+                Label(pane.label, systemImage: pane.systemImageName)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        withAnimation(nil) { selectedPane = pane }
+                    }
+                    .tag(pane)
             }
             .navigationTitle("Settings")
             .navigationSplitViewColumnWidth(min: 180, ideal: 200, max: 250)
         } detail: {
-            Group {
-                switch selectedPane {
-                case .general:
-                    GeneralSettingsView()
-                case .calendar:
-                    CalendarSettingsView()
-                case .reminders:
-                    RemindersSettingsView()
-                case .planner:
-                    PlannerSettingsView()
-                case .courses:
-                    CoursesSettingsView()
-                case .semesters:
-                    SemestersSettingsView()
-                case .interface:
-                    InterfaceSettingsView()
-                case .profiles:
-                    ProfilesSettingsView()
-                case .timer:
-                    TimerSettingsView()
-                case .flashcards:
-                    FlashcardSettingsView()
-                case .notifications:
-                    NotificationsSettingsView()
-                case .privacy:
-                    PrivacySettingsView()
+            NavigationStack {
+                Group {
+                    switch selectedPane {
+                    case .general:
+                        GeneralSettingsView()
+                    case .calendar:
+                        CalendarSettingsView()
+                    case .reminders:
+                        RemindersSettingsView()
+                    case .planner:
+                        PlannerSettingsView()
+                    case .courses:
+                        CoursesSettingsView()
+                    case .semesters:
+                        SemestersSettingsView()
+                    case .interface:
+                        InterfaceSettingsView()
+                    case .profiles:
+                        ProfilesSettingsView()
+                    case .timer:
+                        TimerSettingsView()
+                    case .flashcards:
+                        FlashcardSettingsView()
+                    case .notifications:
+                        NotificationsSettingsView()
+                    case .privacy:
+                        PrivacySettingsView()
+                    case .developer:
+                        DeveloperSettingsView()
+                    }
                 }
+                .frame(minWidth: 400, minHeight: 400)
             }
+            // Reset the navigation stack when switching panes so the detail starts at the root.
             .id(selectedPane)
-            .frame(minWidth: 400, minHeight: 400)
+        }
+        .transaction { transaction in
+            transaction.animation = nil
         }
         .navigationSplitViewStyle(.balanced)
         .hideSplitViewDivider()

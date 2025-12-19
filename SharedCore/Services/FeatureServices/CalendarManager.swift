@@ -331,7 +331,8 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
                    url: URL? = nil,
                    alarms: [EKAlarm]? = nil,
                    recurrenceRule: EKRecurrenceRule? = nil,
-                   calendar: EKCalendar?) async throws {
+                   calendar: EKCalendar?,
+                   category: EventCategory? = nil) async throws {
         // Forward create to device manager
         guard let targetCalendar = calendar ?? DeviceCalendarManager.shared.store.defaultCalendarForNewEvents else { return }
         try await MainActor.run {
@@ -341,7 +342,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
             newEvent.endDate = endDate
             newEvent.isAllDay = isAllDay
             newEvent.location = location
-            newEvent.notes = notes
+            newEvent.notes = encodeNotesWithCategory(userNotes: notes, category: category)
             if let url = url { newEvent.url = url }
             if let rule = recurrenceRule { newEvent.recurrenceRules = [rule] }
             if let alarms = alarms { newEvent.alarms = alarms }
@@ -364,14 +365,35 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
                      primaryAlert: AlertOption?,
                      secondaryAlert: AlertOption?,
                      travelTime: TimeInterval?,
-                     recurrence: RecurrenceOption = .none) async throws {
-        guard let item = DeviceCalendarManager.shared.store.calendarItem(withIdentifier: identifier) as? EKEvent else { return }
+                     recurrence: RecurrenceOption = .none,
+                     category: EventCategory? = nil,
+                     span: EKSpan = .thisEvent) async throws {
+        enum CalendarUpdateError: LocalizedError {
+            case eventNotFound
+            case readOnlyCalendar
+            case unauthorized
+
+            var errorDescription: String? {
+                switch self {
+                case .eventNotFound: return "Event could not be loaded."
+                case .readOnlyCalendar: return "This calendar is read-only."
+                case .unauthorized: return "Calendar access is not granted."
+                }
+            }
+        }
+
+        guard DeviceCalendarManager.shared.isAuthorized else { throw CalendarUpdateError.unauthorized }
+        guard let item = DeviceCalendarManager.shared.store.event(withIdentifier: identifier) else {
+            throw CalendarUpdateError.eventNotFound
+        }
+        guard item.calendar.allowsContentModifications else { throw CalendarUpdateError.readOnlyCalendar }
+
         item.title = title
         item.startDate = startDate
         item.endDate = endDate
         item.isAllDay = isAllDay
         item.location = location
-        item.notes = notes
+        item.notes = encodeNotesWithCategory(userNotes: notes ?? "", category: category)
         
         // Handle URL
         if let urlString = url, !urlString.isEmpty, let validURL = URL(string: urlString) {
@@ -395,9 +417,14 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         
         // Handle recurrence
         item.recurrenceRules = recurrence.rule.map { [$0] }
+
+        let effectiveSpan: EKSpan = {
+            guard !(item.recurrenceRules?.isEmpty ?? true) else { return .thisEvent }
+            return span
+        }()
         
-        try DeviceCalendarManager.shared.store.save(item, span: .thisEvent, commit: true)
-        await refreshAll()
+        try DeviceCalendarManager.shared.store.save(item, span: effectiveSpan, commit: true)
+        await DeviceCalendarManager.shared.refreshEventsForVisibleRange(reason: "updateEvent")
     }
 
     // Delete an event or reminder by identifier
@@ -537,6 +564,40 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     // Backwards compatible API used in other views
     func openSystemPrivacySettings() {
         openCalendarPrivacySettings()
+    }
+    
+    // MARK: - Category Storage
+    
+    /// Encodes category into notes with a special marker that won't be displayed to users
+    private func encodeNotesWithCategory(userNotes: String, category: EventCategory?) -> String {
+        var result = userNotes
+        if let cat = category {
+            // Store category as metadata at the end of notes
+            let categoryMarker = "\n[RootsCategory:\(cat.rawValue)]"
+            // Remove any existing category marker first
+            result = result.replacingOccurrences(of: #"\n\[RootsCategory:.*?\]"#, with: "", options: .regularExpression)
+            result = result + categoryMarker
+        }
+        return result
+    }
+    
+    /// Extracts category from notes and returns both the clean user notes and category
+    func decodeNotesWithCategory(notes: String?) -> (userNotes: String, category: EventCategory?) {
+        guard let notes = notes else { return ("", nil) }
+        
+        let pattern = #"\[RootsCategory:(.*?)\]"#
+        if let regex = try? NSRegularExpression(pattern: pattern, options: []),
+           let match = regex.firstMatch(in: notes, options: [], range: NSRange(notes.startIndex..., in: notes)),
+           let categoryRange = Range(match.range(at: 1), in: notes) {
+            let categoryString = String(notes[categoryRange])
+            let category = EventCategory(rawValue: categoryString)
+            // Remove the category marker from displayed notes
+            let cleanNotes = notes.replacingOccurrences(of: pattern, with: "", options: .regularExpression)
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            return (cleanNotes, category)
+        }
+        
+        return (notes, nil)
     }
 }
 

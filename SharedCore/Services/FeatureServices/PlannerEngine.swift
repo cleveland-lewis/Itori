@@ -132,6 +132,8 @@ enum PlannerEngine {
                     makeSession(title: "\(assignment.title) – Work Session \(i)/\(sessionCount)", index: i, count: sessionCount, minutes: mins)
                 }
             }
+        @unknown default:
+            makeSession(title: assignment.title, index: 1, count: 1, minutes: totalMinutes)
         }
 
         return sessions
@@ -159,6 +161,7 @@ enum PlannerEngine {
             case .practiceHomework: return 0.7
             case .reading: return 0.6
             case .review: return 0.65
+            @unknown default: return 0.6
             }
         }()
         var base = 0.5 * priorityFactor + 0.4 * dueFactor + 0.1 * categoryFactor
@@ -230,6 +233,8 @@ enum PlannerEngine {
                     return calendar.date(byAdding: .day, value: delta, to: end) ?? end
                 case .project:
                     return calendar.date(byAdding: .day, value: -7, to: end) ?? end
+                @unknown default:
+                    return calendar.date(byAdding: .day, value: -2, to: end) ?? end
                 }
             }()
             let minStart = max(calendar.startOfDay(for: today), calendar.startOfDay(for: start))

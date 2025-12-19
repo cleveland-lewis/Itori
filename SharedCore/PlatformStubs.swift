@@ -27,6 +27,7 @@ public extension NSColor {
     static var unemphasizedSelectedContentBackgroundColor: NSColor { UIColor.systemGray2 }
 }
 
+#if os(watchOS)
 public struct LocalTimerSession: Identifiable, Codable, Hashable {
     public enum Mode: String, Codable, Hashable {
         case work, breakMode = "break", other
@@ -72,6 +73,7 @@ public struct LocalTimerActivity: Identifiable, Hashable {
         self.todayTrackedSeconds = todayTrackedSeconds
     }
 }
+#endif
 
 
 
@@ -134,7 +136,7 @@ public enum AssignmentUrgency: String, Codable, CaseIterable, Hashable {
     case low, medium, high, critical
 }
 
-public struct PlanStep: Codable, Hashable {
+public struct PlanStepStub: Codable, Hashable {
     public var title: String
     public var expectedMinutes: Int
     public init(title: String = "", expectedMinutes: Int = 0) { self.title = title; self.expectedMinutes = expectedMinutes }
@@ -150,9 +152,9 @@ public struct Assignment: Identifiable, Codable, Hashable {
     public var category: AssignmentCategory
     public var urgency: AssignmentUrgency
     public var isLockedToDueDate: Bool
-    public var plan: [PlanStep]
+    public var plan: [PlanStepStub]
 
-    public init(id: UUID = UUID(), courseId: UUID? = nil, title: String = "", dueDate: Date = Date(), estimatedMinutes: Int = 60, weightPercent: Double? = nil, category: AssignmentCategory = .practiceHomework, urgency: AssignmentUrgency = .medium, isLockedToDueDate: Bool = false, plan: [PlanStep] = []) {
+    public init(id: UUID = UUID(), courseId: UUID? = nil, title: String = "", dueDate: Date = Date(), estimatedMinutes: Int = 60, weightPercent: Double? = nil, category: AssignmentCategory = .practiceHomework, urgency: AssignmentUrgency = .medium, isLockedToDueDate: Bool = false, plan: [PlanStepStub] = []) {
         self.id = id
         self.courseId = courseId
         self.title = title
@@ -183,7 +185,8 @@ public struct CalendarEvent: Identifiable, Hashable {
     public var location: String?
     public var notes: String?
     public var url: URL?
-    public init(id: UUID = UUID(), title: String = "", startDate: Date = Date(), endDate: Date = Date(), location: String? = nil, notes: String? = nil, url: URL? = nil) {
+    public var category: EventCategoryStub?
+    public init(id: UUID = UUID(), title: String = "", startDate: Date = Date(), endDate: Date = Date(), location: String? = nil, notes: String? = nil, url: URL? = nil, category: EventCategoryStub? = nil) {
         self.id = id
         self.title = title
         self.startDate = startDate
@@ -191,7 +194,12 @@ public struct CalendarEvent: Identifiable, Hashable {
         self.location = location
         self.notes = notes
         self.url = url
+        self.category = category
     }
+}
+
+public enum EventCategoryStub: String, Codable, CaseIterable {
+    case homework, classSession, study, exam, meeting, other
 }
 
 // StoredScheduledSession and StoredOverflowSession are defined in SharedCore/State/PlannerStore.swift; avoid duplicating them here.

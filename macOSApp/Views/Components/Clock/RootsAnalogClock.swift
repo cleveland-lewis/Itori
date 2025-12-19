@@ -2,27 +2,39 @@ import SwiftUI
 
 /// Minimalist analog clock with concentric rings and cardinal ticks.
 struct RootsAnalogClock: View {
+    @Environment(\.colorScheme) private var colorScheme
     var diameter: CGFloat = 200
     var showSecondHand: Bool = true
     var accentColor: Color = .accentColor
+    /// Optional override to drive the clock with a provided time (hours/minutes/seconds) instead of wall time.
+    var overrideTime: (hours: Double, minutes: Double, seconds: Double)? = nil
 
     private var radius: CGFloat { diameter / 2 }
 
     var body: some View {
-        TimelineView(.animation) { timeline in
-            let date = timeline.date
-            let components = Calendar.current.dateComponents([.hour, .minute, .second, .nanosecond], from: date)
-            let seconds = Double(components.second ?? 0) + Double(components.nanosecond ?? 0) / 1_000_000_000
-            let minutes = Double(components.minute ?? 0) + seconds / 60
-            let hours = Double(components.hour ?? 0 % 12) + minutes / 60
-
-            ZStack {
-                face
-                ticks
-                hands(hours: hours, minutes: minutes, seconds: seconds)
+        if let override = overrideTime {
+            clockBody(hours: override.hours, minutes: override.minutes, seconds: override.seconds)
+        } else {
+            TimelineView(.animation) { timeline in
+                let date = timeline.date
+                let components = Calendar.current.dateComponents([.hour, .minute, .second, .nanosecond], from: date)
+                let seconds = Double(components.second ?? 0) + Double(components.nanosecond ?? 0) / 1_000_000_000
+                let minutes = Double(components.minute ?? 0) + seconds / 60
+                let rawHours = Double(components.hour ?? 0)
+                let hours = rawHours.truncatingRemainder(dividingBy: 12) + minutes / 60
+                clockBody(hours: hours, minutes: minutes, seconds: seconds)
             }
-            .frame(width: diameter, height: diameter)
         }
+    }
+
+    @ViewBuilder
+    private func clockBody(hours: Double, minutes: Double, seconds: Double) -> some View {
+        ZStack {
+            face
+            ticks
+            hands(hours: hours, minutes: minutes, seconds: seconds)
+        }
+        .frame(width: diameter, height: diameter)
     }
 
     private var face: some View {
@@ -30,12 +42,12 @@ struct RootsAnalogClock: View {
             Circle()
                 .fill(.clear)
                 .overlay(
-                    Circle().stroke(Color.secondary.opacity(0.15), lineWidth: 1)
+                    Circle().stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.28), lineWidth: 1)
                 )
 
             ForEach(1..<4) { idx in
                 Circle()
-                    .stroke(idx == 2 ? accentColor : Color.secondary.opacity(0.12), lineWidth: 1)
+                    .stroke(idx == 2 ? accentColor : DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.16), lineWidth: 1)
                     .frame(width: diameter * (1 - CGFloat(idx) * 0.15), height: diameter * (1 - CGFloat(idx) * 0.15))
             }
         }
@@ -46,7 +58,7 @@ struct RootsAnalogClock: View {
             // Cardinal ticks
             ForEach([0, 90, 180, 270], id: \.self) { angle in
                 Capsule(style: .continuous)
-                    .fill(Color.primary.opacity(0.65))
+                    .fill(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.9))
                     .frame(width: 6, height: 18)
                     .offset(y: -radius + 14)
                     .rotationEffect(.degrees(Double(angle)))
@@ -55,7 +67,7 @@ struct RootsAnalogClock: View {
             // Subtle hour ticks
             ForEach(0..<12) { idx in
                 Capsule(style: .continuous)
-                    .fill(Color.secondary.opacity(0.4))
+                    .fill(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.5))
                     .frame(width: 3, height: 10)
                     .offset(y: -radius + 12)
                     .rotationEffect(.degrees(Double(idx) * 30))

@@ -58,8 +58,10 @@ public struct CalendarEvent: Identifiable, Hashable {
     var ekIdentifier: String?
     var isReminder: Bool = false
     var category: EventCategory
+    var canEdit: Bool
+    var isRecurring: Bool
 
-    init(id: UUID = UUID(), title: String, startDate: Date, endDate: Date, location: String? = nil, notes: String? = nil, url: URL? = nil, alarms: [EKAlarm]? = nil, travelTime: TimeInterval? = nil, ekIdentifier: String? = nil, isReminder: Bool = false, category: EventCategory? = nil) {
+    init(id: UUID = UUID(), title: String, startDate: Date, endDate: Date, location: String? = nil, notes: String? = nil, url: URL? = nil, alarms: [EKAlarm]? = nil, travelTime: TimeInterval? = nil, ekIdentifier: String? = nil, isReminder: Bool = false, category: EventCategory? = nil, canEdit: Bool = true, isRecurring: Bool = false) {
         self.id = id
         self.title = title
         self.startDate = startDate
@@ -72,6 +74,8 @@ public struct CalendarEvent: Identifiable, Hashable {
         self.ekIdentifier = ekIdentifier
         self.isReminder = isReminder
         self.category = category ?? parseEventCategory(from: title) ?? .other
+        self.canEdit = canEdit
+        self.isRecurring = isRecurring
     }
 }
 
@@ -96,6 +100,22 @@ struct CalendarPageView: View {
     @State private var chevronLeftHover = false
     @State private var chevronRightHover = false
     @State private var todayHover = false
+    @State private var isHydratingInitial = false
+    @State private var isHydratingFull = false
+    @State private var openTimestamp: Date = Date()
+    @State private var firstFrameElapsed: TimeInterval?
+    @State private var dataReadyElapsed: TimeInterval?
+    @State private var fullDataReadyElapsed: TimeInterval?
+    @State private var loadedEventCount: Int = 0
+    @State private var hydratedEKEvents: [EKEvent] = []
+
+    // Computed property to filter events based on settings
+    private var filteredEvents: [EKEvent] {
+        let allEvents = deviceCalendar.events
+        guard settings.showOnlySchoolCalendar else { return allEvents }
+        guard !calendarManager.selectedCalendarID.isEmpty else { return allEvents }
+        return allEvents.filter { $0.calendar.calendarIdentifier == calendarManager.selectedCalendarID }
+    }
 
     var body: some View {
         VStack(spacing: 16) {
@@ -105,7 +125,7 @@ struct CalendarPageView: View {
                     showingNewEventSheet = true
                 } label: {
                     Image(systemName: "plus")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.subheadline.weight(.semibold))
                         .frame(width: 36, height: 36)
                         .background(DesignSystem.Materials.hud.opacity(0.75), in: Circle())
                 }
@@ -126,7 +146,7 @@ struct CalendarPageView: View {
                             Text(String(Calendar.current.component(.year, from: focusedDate)))
                         }
                     }
-                    .font(.system(size: 34, weight: .semibold))
+                    .font(.largeTitle.weight(.semibold))
                     .lineLimit(1)
 
                     // Subtitle / small metadata
@@ -155,7 +175,7 @@ struct CalendarPageView: View {
                     .buttonStyle(.plain)
                     .rootsStandardInteraction()
                     .onHover { hovering in
-                        withAnimation(.easeInOut(duration: 0.12)) { chevronLeftHover = hovering }
+                        withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { chevronLeftHover = hovering }
                     }
 
                     Button { jumpToToday() } label: {
@@ -168,7 +188,7 @@ struct CalendarPageView: View {
                     .buttonStyle(.plain)
                     .rootsStandardInteraction()
                     .onHover { hovering in
-                        withAnimation(.easeInOut(duration: 0.12)) { todayHover = hovering }
+                        withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { todayHover = hovering }
                     }
 
                     Button { shift(by: 1) } label: {
@@ -179,7 +199,7 @@ struct CalendarPageView: View {
                     .buttonStyle(.plain)
                     .rootsStandardInteraction()
                     .onHover { hovering in
-                        withAnimation(.easeInOut(duration: 0.12)) { chevronRightHover = hovering }
+                        withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { chevronRightHover = hovering }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .trailing)
@@ -187,13 +207,43 @@ struct CalendarPageView: View {
             .padding(.horizontal, DesignSystem.Layout.padding.window)
             .padding(.vertical, 4)
 
-            // Main content: single glass area without sidebars
-            VStack(spacing: 12) {
-                gridContent
+            if isHydratingInitial || isHydratingFull {
+                HStack(spacing: 8) {
+                    ProgressView()
+                    Text(isHydratingFull ? "Loading calendar…" : "Preparing events…")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
+                .padding(.horizontal, 4)
             }
-            .padding()
-            .background(DesignSystem.Materials.card)
-            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+
+            if settings.devModePerformance {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Calendar Performance")
+                        .font(.caption.weight(.semibold))
+                    Text("First frame: \(formattedMillis(firstFrameElapsed))  |  Data ready: \(formattedMillis(dataReadyElapsed))  |  Full ready: \(formattedMillis(fullDataReadyElapsed))  |  Events: \(loadedEventCount)")
+                        .font(.caption2.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 4)
+            }
+
+            // Main content: sidebar + calendar grid
+            HStack(alignment: .top, spacing: 16) {
+                // Left sidebar showing events for selected date
+                eventSidebarView
+                    .frame(width: 280)
+                
+                // Main calendar grid
+                VStack(spacing: 12) {
+                    gridContent
+                }
+                .padding()
+                .background(DesignSystem.Materials.card)
+                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding(20)
@@ -201,28 +251,194 @@ struct CalendarPageView: View {
             AddEventPopup().environmentObject(calendarManager)
         }
         .onAppear {
+            openTimestamp = Date()
+            markFirstFrame()
             requestAccessAndSync()
-            Task { await deviceCalendar.refreshEventsForVisibleRange() }
+            hydrateEventsIncrementally()
             updateMetrics()
         }
         .onChange(of: focusedDate) { _, newValue in
-            Task { await deviceCalendar.refreshEventsForVisibleRange() }
+            loadVisibleRangeEvents()
             updateMetrics()
         }
-        .onChange(of: currentViewMode) { _, _ in updateMetrics() }
+        .onChange(of: currentViewMode) { _, _ in
+            loadVisibleRangeEvents()
+            updateMetrics()
+        }
         .onReceive(deviceCalendar.$events) { _ in
             updateMetrics()
         }
         // Present event detail without resizing layout
         .sheet(item: $selectedEvent, onDismiss: {
             // restore sidebar when the detail sheet is dismissed
-            withAnimation(.easeInOut(duration: 0.22)) { selectedDate = calendarManager.selectedDate ?? focusedDate }
+            withAnimation(DesignSystem.Motion.standardEase) { selectedDate = calendarManager.selectedDate ?? focusedDate }
             selectedEvent = nil
         }, content: { event in
             // Add a subtle presentation animation inside the sheet
             EventDetailView(item: event, isPresented: Binding(get: { selectedEvent != nil }, set: { if !$0 { selectedEvent = nil } }))
                 .transition(.move(edge: .bottom).combined(with: .opacity))
         })
+    }
+    
+    // MARK: - Event Sidebar
+    
+    @ViewBuilder
+    private var eventSidebarView: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Header with selected date
+            VStack(alignment: .leading, spacing: 4) {
+                Text(sidebarDateTitle)
+                    .font(.title3.weight(.semibold))
+                    .lineLimit(1)
+                
+                Text(sidebarDateSubtitle)
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
+            .padding(.bottom, 12)
+            
+            Divider()
+            
+            // Event list
+            eventListView
+        }
+        .frame(maxHeight: .infinity)
+        .background(DesignSystem.Materials.card)
+        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+    }
+    
+    @ViewBuilder
+    private var eventListView: some View {
+        let dayEvents = events(on: selectedDate ?? focusedDate)
+        
+        if dayEvents.isEmpty {
+            // Empty state
+            VStack(spacing: 12) {
+                Image(systemName: "calendar.badge.clock")
+                    .font(.system(size: 48))
+                    .foregroundStyle(.tertiary)
+                
+                Text("No Events")
+                    .font(DesignSystem.Typography.body)
+                
+                Text("No events scheduled for this day")
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding()
+        } else {
+            ScrollView {
+                VStack(spacing: 8) {
+                    ForEach(dayEvents) { event in
+                        sidebarEventRow(event: event)
+                    }
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 12)
+            }
+        }
+    }
+    
+    private func sidebarEventRow(event: CalendarEvent) -> some View {
+        Button {
+            selectedEvent = event
+        } label: {
+            HStack(alignment: .top, spacing: 12) {
+                // Time or "All-day"
+                VStack(alignment: .leading, spacing: 2) {
+                    if calendar.isDateInToday(event.startDate) && event.startDate.timeIntervalSinceNow < 0 && event.endDate.timeIntervalSinceNow > 0 {
+                        Text("Now")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(settings.activeAccentColor)
+                    } else if isAllDay(event: event) {
+                        Text("All-day")
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text(event.startDate.formatted(date: .omitted, time: .shortened))
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .frame(width: 50, alignment: .leading)
+                
+                // Category color indicator (outline SF Symbol)
+                Image(systemName: categoryIcon(for: event.category))
+                    .font(.system(size: 16))
+                    .foregroundStyle(settings.activeAccentColor)
+                    .frame(width: 20)
+                
+                // Event details
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(event.title)
+                        .font(DesignSystem.Typography.body)
+                        .lineLimit(2)
+                    
+                    if let location = event.location, !location.isEmpty {
+                        HStack(spacing: 4) {
+                            Image(systemName: "mappin")
+                                .font(.caption2)
+                            Text(location)
+                                .font(.caption)
+                        }
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(DesignSystem.Materials.hud.opacity(0.5))
+            )
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .rootsStandardInteraction()
+    }
+    
+    private var sidebarDateTitle: String {
+        let date = selectedDate ?? focusedDate
+        if calendar.isDateInToday(date) {
+            return "Today"
+        } else if calendar.isDateInTomorrow(date) {
+            return "Tomorrow"
+        } else if calendar.isDateInYesterday(date) {
+            return "Yesterday"
+        } else {
+            return date.formatted(.dateTime.weekday(.wide).month().day())
+        }
+    }
+    
+    private var sidebarDateSubtitle: String {
+        let date = selectedDate ?? focusedDate
+        let dayEvents = events(on: date)
+        let count = dayEvents.count
+        return count == 0 ? "No events" : "\(count) event\(count == 1 ? "" : "s")"
+    }
+    
+    private func isAllDay(event: CalendarEvent) -> Bool {
+        let duration = event.endDate.timeIntervalSince(event.startDate)
+        return duration >= 86400 - 60 // Consider >= 23h59m as all-day
+    }
+    
+    private func categoryIcon(for category: EventCategory) -> String {
+        switch category {
+        case .study: return "book"
+        case .homework: return "pencil"
+        case .exam: return "doc.text"
+        case .lab: return "flask"
+        case .class: return "graduationcap"
+        case .reading: return "book.pages"
+        case .review: return "checkmark.circle"
+        case .other: return "calendar"
+        }
     }
 
     @ViewBuilder
@@ -250,7 +466,7 @@ struct CalendarPageView: View {
         case .week:
             WeekCalendarView(focusedDate: $focusedDate, events: effectiveEvents)
         case .day:
-            CalendarDayView(date: focusedDate, events: deviceCalendar.events)
+            CalendarDayView(date: focusedDate, events: filteredEvents)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .year:
             CalendarYearView(currentYear: focusedDate)
@@ -322,13 +538,73 @@ struct CalendarPageView: View {
     private func requestAccessAndSync() {
         _Concurrency.Task {
             await calendarManager.requestAccess()
-            // Only sync if access granted
-            syncEvents()
         }
     }
 
     private func syncEvents() {
-        // Guard: don't attempt to read if not authorized
+        hydrateEventsIncrementally()
+    }
+
+    private func hydrateEventsIncrementally() {
+        guard !isHydratingInitial else { return }
+        isHydratingInitial = true
+
+        let cal = Calendar.current
+        let start = cal.date(byAdding: .day, value: -1, to: Date()) ?? Date()
+        let end = cal.date(byAdding: .day, value: 3, to: Date()) ?? Date()
+        let targetCalendars = selectedEventCalendars()
+
+        fetchEventsAsync(start: start, end: end, targetCalendars: targetCalendars, includeReminders: false, reason: "initialRange") { ekEvents, events in
+            self.applyEvents(ekEvents, events: events)
+            self.loadedEventCount = events.count
+            if self.dataReadyElapsed == nil {
+                self.dataReadyElapsed = Date().timeIntervalSince(self.openTimestamp)
+            }
+            self.isHydratingInitial = false
+            self.loadVisibleRangeEvents()
+        }
+    }
+
+    private func loadVisibleRangeEvents() {
+        guard !isHydratingFull else { return }
+        isHydratingFull = true
+
+        let window = visibleInterval()
+        let targetCalendars = selectedEventCalendars()
+
+        fetchEventsAsync(start: window.start, end: window.end, targetCalendars: targetCalendars, includeReminders: true, reason: "visibleRange") { ekEvents, events in
+            self.applyEvents(ekEvents, events: events)
+            self.loadedEventCount = events.count
+            let elapsed = Date().timeIntervalSince(self.openTimestamp)
+            if self.dataReadyElapsed == nil { self.dataReadyElapsed = elapsed }
+            self.fullDataReadyElapsed = elapsed
+            self.isHydratingFull = false
+        }
+    }
+
+    private func selectedEventCalendars() -> [EKCalendar]? {
+        let selectedCalId = calendarManager.selectedCalendarID
+        guard !selectedCalId.isEmpty else { return nil }
+        return eventStore.calendars(for: .event).filter { $0.calendarIdentifier == selectedCalId }
+    }
+
+    private func markFirstFrame() {
+        DispatchQueue.main.async {
+            if self.firstFrameElapsed == nil {
+                self.firstFrameElapsed = Date().timeIntervalSince(self.openTimestamp)
+            }
+        }
+    }
+
+    private func fetchEventsAsync(
+        start: Date,
+        end: Date,
+        targetCalendars: [EKCalendar]?,
+        includeReminders: Bool,
+        reason: String,
+        completion: @escaping ([EKEvent], [CalendarEvent]) -> Void
+    ) {
+        // Guard permissions early
         let hasEventAccess: Bool = {
             if #available(macOS 14.0, *) {
                 return calendarManager.eventAuthorizationStatus == .fullAccess || calendarManager.eventAuthorizationStatus == .writeOnly
@@ -345,52 +621,85 @@ struct CalendarPageView: View {
         }()
 
         if !(hasEventAccess || hasReminderAccess) {
-            print("📅 [CalendarPageView] syncEvents called without permissions")
+            print("📅 [CalendarPageView] fetchEventsAsync called without permissions")
+            completion([], [])
             return
         }
 
-        let window = visibleInterval()
-        let selectedCalId = calendarManager.selectedCalendarID
-        let targetCalendars: [EKCalendar]? = {
-            if selectedCalId.isEmpty { return nil }
-            return eventStore.calendars(for: .event).filter { $0.calendarIdentifier == selectedCalId }
-        }()
+        let store = eventStore
+        DispatchQueue.global(qos: .userInitiated).async {
+            let predicate = store.predicateForEvents(withStart: start, end: end, calendars: targetCalendars)
+            let ekEvents = store.events(matching: predicate)
 
-        let predicate = eventStore.predicateForEvents(withStart: window.start, end: window.end, calendars: targetCalendars)
-        let ekEvents = eventStore.events(matching: predicate)
-        let mapped = ekEvents.map { ek in
-            CalendarEvent(title: ek.title, startDate: ek.startDate, endDate: ek.endDate, location: ek.location, notes: ek.notes, url: ek.url, alarms: ek.alarms, travelTime: nil, ekIdentifier: ek.eventIdentifier, isReminder: false)
+            DispatchQueue.main.async {
+                let mappedEvents = ekEvents.map { self.mapEventInline($0) }
+                guard includeReminders && hasReminderAccess else {
+                    completion(ekEvents, mappedEvents)
+                    return
+                }
+
+                let reminderCalendars: [EKCalendar]? = {
+                    if calendarManager.selectedReminderListID.isEmpty { return nil }
+                    return store.calendars(for: .reminder).filter { $0.calendarIdentifier == calendarManager.selectedReminderListID }
+                }()
+
+                let reminderPredicate = store.predicateForIncompleteReminders(withDueDateStarting: start, ending: end, calendars: reminderCalendars)
+                store.fetchReminders(matching: reminderPredicate) { reminders in
+                    let mappedReminders = reminders?.compactMap { reminder -> CalendarEvent? in
+                        guard let dueDate = reminder.dueDateComponents?.date else { return nil }
+                        return CalendarEvent(
+                            title: reminder.title,
+                            startDate: dueDate,
+                            endDate: dueDate,
+                            location: reminder.location,
+                            notes: reminder.notes,
+                            url: nil,
+                            alarms: nil,
+                            travelTime: nil,
+                            ekIdentifier: reminder.calendarItemIdentifier,
+                            isReminder: true,
+                            category: nil,
+                            canEdit: reminder.calendar.allowsContentModifications,
+                            isRecurring: false
+                        )
+                    } ?? []
+
+                    DispatchQueue.main.async {
+                        completion(ekEvents, mappedEvents + mappedReminders)
+                    }
+                }
+            }
         }
-        syncedEvents = mapped
-        updateMetrics()
-        // update precomputed counts
-        let dates = mapped.map { calendar.startOfDay(for: $0.startDate) }
+    }
+
+    /// Maps an EKEvent to our CalendarEvent model, decoding notes/category and preserving editability/recurrence flags.
+    private func mapEventInline(_ ek: EKEvent) -> CalendarEvent {
+        let (cleanNotes, storedCategory) = calendarManager.decodeNotesWithCategory(notes: ek.notes)
+        return CalendarEvent(
+            title: ek.title,
+            startDate: ek.startDate,
+            endDate: ek.endDate,
+            location: ek.location,
+            notes: cleanNotes,
+            url: ek.url,
+            alarms: ek.alarms,
+            travelTime: nil,
+            ekIdentifier: ek.eventIdentifier,
+            isReminder: false,
+            category: storedCategory,
+            canEdit: ek.calendar.allowsContentModifications,
+            isRecurring: !(ek.recurrenceRules?.isEmpty ?? true)
+        )
+    }
+
+    private func applyEvents(_ ekEvents: [EKEvent], events: [CalendarEvent]) {
+        self.syncedEvents = events
+        self.hydratedEKEvents = ekEvents
+        let dates = events.map { calendar.startOfDay(for: $0.startDate) }
         _Concurrency.Task { @MainActor in
             eventsStore.update(dates: dates)
         }
-        // Reminders (optional)
-        let reminderCalendars: [EKCalendar]? = {
-            if calendarManager.selectedReminderListID.isEmpty { return nil }
-            return eventStore.calendars(for: .reminder).filter { $0.calendarIdentifier == calendarManager.selectedReminderListID }
-        }()
-
-        let reminderPredicate = eventStore.predicateForIncompleteReminders(withDueDateStarting: window.start, ending: window.end, calendars: reminderCalendars)
-        eventStore.fetchReminders(matching: reminderPredicate) { reminders in
-            guard let reminders else { return }
-            let mappedReminders = reminders.compactMap { reminder -> CalendarEvent? in
-                guard let dueDate = reminder.dueDateComponents?.date else { return nil }
-                return CalendarEvent(title: reminder.title, startDate: dueDate, endDate: dueDate, location: reminder.location, notes: reminder.notes, url: nil, alarms: nil, travelTime: nil, ekIdentifier: reminder.calendarItemIdentifier, isReminder: true)
-            }
-            DispatchQueue.main.async {
-                self.syncedEvents.append(contentsOf: mappedReminders)
-                // update counts with reminders too
-                let dates = self.syncedEvents.map { calendar.startOfDay(for: $0.startDate) }
-                _Concurrency.Task { @MainActor in
-                    eventsStore.update(dates: dates)
-                }
-                updateMetrics()
-            }
-        }
+        updateMetrics()
     }
 
     private func formattedTimeRange(start: Date, end: Date) -> String {
@@ -433,7 +742,13 @@ struct CalendarPageView: View {
 
     private func updateMetrics() {
         // CalendarStats.calculate expects [EKEvent]
-        metrics = CalendarStats.calculate(from: deviceCalendar.events, for: focusedDate)
+        let source = hydratedEKEvents.isEmpty ? filteredEvents : hydratedEKEvents
+        metrics = CalendarStats.calculate(from: source, for: focusedDate)
+    }
+
+    private func formattedMillis(_ interval: TimeInterval?) -> String {
+        guard let interval else { return "—" }
+        return String(format: "%.0f ms", interval * 1000)
     }
 }
 
@@ -606,7 +921,7 @@ private struct MonthCalendarView: View {
                         let dayEvents = events(for: day.date).sorted { $0.startDate < $1.startDate }
                         VStack(alignment: .leading, spacing: 6) {
                             Button {
-                                withAnimation(.easeInOut(duration: 0.2)) {
+                                withAnimation(DesignSystem.Motion.snappyEase) {
                                     focusedDate = day.date
                                 }
                                 onSelectDate(day.date)
@@ -754,6 +1069,7 @@ private struct WeekCalendarView: View {
     @Binding var focusedDate: Date
     let events: [CalendarEvent]
     @EnvironmentObject var settings: AppSettingsModel
+    @Environment(\.colorScheme) private var colorScheme
     private let calendar = Calendar.current
 
     private struct PlaceholderBlock: Identifiable {
@@ -777,7 +1093,8 @@ private struct WeekCalendarView: View {
 
             WeekHeaderView(weekDays: weekDays, focusedDate: $focusedDate, calendar: calendar, events: events)
 
-            Divider().background(Color(nsColor: .separatorColor).opacity(0.12))
+            Divider()
+                .overlay(Rectangle().fill(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.26)).frame(height: 1))
 
             ScrollView {
                 ZStack(alignment: .topLeading) {
@@ -813,7 +1130,7 @@ private struct WeekCalendarView: View {
                         .foregroundColor(.secondary)
                         .frame(width: 50, alignment: .trailing)
                     Rectangle()
-                        .fill(Color(nsColor: .separatorColor).opacity(0.08))
+                        .fill(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.18))
                         .frame(height: 1)
                 }
             }
@@ -882,6 +1199,8 @@ private struct CalendarSidebarView: View {
     let selectedDate: Date
     let events: [CalendarEvent]
     let onSelectEvent: (CalendarEvent) -> Void
+    @Environment(\.colorScheme) private var colorScheme
+    private var neutralLine: Color { DesignSystem.Colors.neutralLine(for: colorScheme) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -900,7 +1219,9 @@ private struct CalendarSidebarView: View {
             .padding(.top, 16)
             .padding(.bottom, 12)
 
-            Divider()
+            Rectangle()
+                .fill(neutralLine.opacity(0.26))
+                .frame(height: 1)
 
             // Events list
             ScrollView {
@@ -933,7 +1254,7 @@ private struct CalendarSidebarView: View {
         .background(DesignSystem.Materials.popup, in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                .strokeBorder(Color(nsColor: .separatorColor).opacity(0.5), lineWidth: 1)
+                .strokeBorder(neutralLine.opacity(0.3), lineWidth: 1)
         )
     }
 }
@@ -978,7 +1299,7 @@ private struct EventRow: View {
                 .fill(isHovered ? Color(nsColor: .controlBackgroundColor).opacity(0.15) : Color.clear)
         )
         .onHover { hovering in
-            withAnimation(.easeInOut(duration: 0.15)) {
+            withAnimation(DesignSystem.Motion.snappyEase) {
                 isHovered = hovering
             }
         }
@@ -1121,14 +1442,31 @@ private struct EventDetailView: View {
             Spacer()
 
             if let identifier = item.ekIdentifier {
+                if !item.canEdit {
+                    Divider()
+                    HStack(spacing: 8) {
+                        Image(systemName: "lock.fill")
+                            .foregroundStyle(.secondary)
+                        Text("This calendar is read-only; edits are disabled.")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
                 Divider()
                 HStack {
                     Button {
-                        showEdit = true
+                        if item.canEdit {
+                            showEdit = true
+                        } else {
+                            errorMessage = "This calendar does not allow edits."
+                            showError = true
+                        }
                     } label: {
                         Label("Edit", systemImage: "pencil")
                     }
                     .buttonStyle(.plain)
+                    .disabled(!item.canEdit)
                     Spacer()
                     Button(role: .destructive) {
                         showDeleteConfirm = true
@@ -1155,7 +1493,7 @@ private struct EventDetailView: View {
         .frame(minWidth: 420, minHeight: 320)
         .glassCard(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
         .sheet(isPresented: $showEdit) {
-            EventEditSheet(item: item) { updated in
+            EventEditSheet(item: item) { updated, span in
                 _Concurrency.Task {
                     guard let id = item.ekIdentifier else { 
                         await MainActor.run {
@@ -1178,7 +1516,9 @@ private struct EventDetailView: View {
                             primaryAlert: updated.primaryAlert,
                             secondaryAlert: updated.secondaryAlert,
                             travelTime: updated.travelTime.timeInterval,
-                            recurrence: updated.recurrence
+                            recurrence: updated.recurrence,
+                            category: updated.category,
+                            span: span
                         )
                         await MainActor.run {
                             isPresented = false
@@ -1262,9 +1602,10 @@ private struct EventChipsRow: View {
 private struct EventEditSheet: View {
     @Environment(\.dismiss) private var dismiss
     let item: CalendarEvent
-    var onSave: (EditableEvent) -> Void
+    var onSave: (EditableEvent, EKSpan) -> Void
 
     @State private var title: String
+    @State private var category: EventCategory
     @State private var startDate: Date
     @State private var endDate: Date
     @State private var isAllDay: Bool
@@ -1276,11 +1617,14 @@ private struct EventEditSheet: View {
     @State private var travelTime: CalendarManager.TravelTimeOption
     @State private var recurrence: CalendarManager.RecurrenceOption = .none
     @State private var urlError: String?
+    @State private var pendingSave: EditableEvent?
+    @State private var showRecurrenceSpanPicker = false
 
-    init(item: CalendarEvent, onSave: @escaping (EditableEvent) -> Void) {
+    init(item: CalendarEvent, onSave: @escaping (EditableEvent, EKSpan) -> Void) {
         self.item = item
         self.onSave = onSave
         _title = State(initialValue: item.title)
+        _category = State(initialValue: item.category)
         _startDate = State(initialValue: item.startDate)
         _endDate = State(initialValue: item.endDate)
         _isAllDay = State(initialValue: false)
@@ -1308,10 +1652,22 @@ private struct EventEditSheet: View {
                     .font(.title2.weight(.semibold))
                 Spacer()
             }
+            if !item.canEdit {
+                Label("This calendar is read-only; changes cannot be saved.", systemImage: "lock.fill")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
 
             TextField("Title", text: $title)
                 .textFieldStyle(.roundedBorder)
                 .font(.body.weight(.medium))
+
+            Picker("Category", selection: $category) {
+                ForEach(EventCategory.allCases) { cat in
+                    Text(cat.rawValue).tag(cat)
+                }
+            }
+            .pickerStyle(.segmented)
 
             Divider()
 
@@ -1405,6 +1761,7 @@ private struct EventEditSheet: View {
                 Button("Save") {
                     let updated = EditableEvent(
                         title: title.isEmpty ? item.title : title,
+                        category: category,
                         startDate: startDate,
                         endDate: endDate,
                         isAllDay: isAllDay,
@@ -1416,20 +1773,46 @@ private struct EventEditSheet: View {
                         travelTime: travelTime,
                         recurrence: recurrence
                     )
-                    onSave(updated)
-                    dismiss()
+
+                    if item.isRecurring {
+                        pendingSave = updated
+                        showRecurrenceSpanPicker = true
+                    } else {
+                        onSave(updated, .thisEvent)
+                        dismiss()
+                    }
                 }
                 .buttonStyle(.borderedProminent)
                 .keyboardShortcut(.defaultAction)
-                .disabled(!canSave)
+                .disabled(!canSave || !item.canEdit)
             }
         }
         .padding()
         .frame(minWidth: 440)
+        .confirmationDialog("Apply changes to this event or future events?", isPresented: $showRecurrenceSpanPicker, titleVisibility: .visible) {
+            Button("This Event Only") {
+                if let pendingSave {
+                    onSave(pendingSave, .thisEvent)
+                    dismiss()
+                    self.pendingSave = nil
+                }
+            }
+            Button("This and Future Events") {
+                if let pendingSave {
+                    onSave(pendingSave, .futureEvents)
+                    dismiss()
+                    self.pendingSave = nil
+                }
+            }
+            Button("Cancel", role: .cancel) {
+                pendingSave = nil
+            }
+        }
     }
 
     struct EditableEvent {
         var title: String
+        var category: EventCategory
         var startDate: Date
         var endDate: Date
         var isAllDay: Bool
@@ -1495,7 +1878,7 @@ private struct WeekHeaderView: View {
                     isInCurrentMonth: true
                 )
                 Button {
-                    withAnimation(.easeInOut(duration: 0.15)) {
+                    withAnimation(DesignSystem.Motion.snappyEase) {
                         focusedDate = date
                     }
                 } label: {
@@ -1526,10 +1909,19 @@ struct CalendarView: View {
     }()
     @EnvironmentObject private var calendarManager: CalendarManager
     @EnvironmentObject private var deviceCalendar: DeviceCalendarManager
+    @EnvironmentObject private var settings: AppSettingsModel
     @State private var viewMode: CalendarViewMode = .month
     @State private var currentMonth: Date = Date()
     @State private var selectedEvent: CalendarEvent? = nil
     @State private var keyMonitor: Any?
+
+    // Computed property to filter events based on settings
+    private var filteredEvents: [EKEvent] {
+        let allEvents = deviceCalendar.events
+        guard settings.showOnlySchoolCalendar else { return allEvents }
+        guard !calendarManager.selectedCalendarID.isEmpty else { return allEvents }
+        return allEvents.filter { $0.calendar.calendarIdentifier == calendarManager.selectedCalendarID }
+    }
 
     private var monthEvents: [EKEvent] {
         displayEKEvents
@@ -1537,14 +1929,26 @@ struct CalendarView: View {
 
     private var calendarEvents: [CalendarEvent] {
         displayEKEvents.map {
-            CalendarEvent(title: $0.title, startDate: $0.startDate, endDate: $0.endDate, location: $0.location, notes: $0.notes, url: $0.url, alarms: $0.alarms, travelTime: nil, ekIdentifier: $0.eventIdentifier, isReminder: false)
+            CalendarEvent(
+                title: $0.title,
+                startDate: $0.startDate,
+                endDate: $0.endDate,
+                location: $0.location,
+                notes: $0.notes,
+                url: $0.url,
+                alarms: $0.alarms,
+                travelTime: nil,
+                ekIdentifier: $0.eventIdentifier,
+                isReminder: false,
+                category: nil,
+                canEdit: $0.calendar.allowsContentModifications,
+                isRecurring: !($0.recurrenceRules?.isEmpty ?? true)
+            )
         }
     }
 
     private var displayEKEvents: [EKEvent] {
-        let selectedId = calendarManager.selectedCalendarID
-        guard !selectedId.isEmpty else { return [] }
-        return deviceCalendar.events.filter { $0.calendar.calendarIdentifier == selectedId }
+        return filteredEvents
     }
 
     private var isLoading: Bool {
@@ -1596,14 +2000,14 @@ struct CalendarView: View {
                                 CalendarDayView(
                                     date: calendarManager.selectedDate ?? Date(),
                                     events: displayEKEvents.filter { Calendar.current.isDate($0.startDate, inSameDayAs: calendarManager.selectedDate ?? Date()) },
-                                    onSelectEvent: { ek in selectedEvent = mapEvent(ek) }
+                                    onSelectEvent: { ek in selectedEvent = mapEventInline(ek) }
                                 )
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                             case .week:
                                 CalendarWeekView(
                                     currentDate: currentMonth,
                                     events: displayEKEvents,
-                                    onSelectEvent: { ek in selectedEvent = mapEvent(ek) }
+                                    onSelectEvent: { ek in selectedEvent = mapEventInline(ek) }
                                 )
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                             case .month:
@@ -1754,8 +2158,23 @@ struct CalendarView: View {
             .sorted { $0.startDate < $1.startDate }
     }
 
-    private func mapEvent(_ ek: EKEvent) -> CalendarEvent {
-        CalendarEvent(title: ek.title, startDate: ek.startDate, endDate: ek.endDate, location: ek.location, notes: ek.notes, url: ek.url, alarms: ek.alarms, travelTime: nil, ekIdentifier: ek.eventIdentifier, isReminder: false)
+    private func mapEventInline(_ ek: EKEvent) -> CalendarEvent {
+        let (cleanNotes, storedCategory) = calendarManager.decodeNotesWithCategory(notes: ek.notes)
+        return CalendarEvent(
+            title: ek.title,
+            startDate: ek.startDate,
+            endDate: ek.endDate,
+            location: ek.location,
+            notes: cleanNotes,
+            url: ek.url,
+            alarms: ek.alarms,
+            travelTime: nil,
+            ekIdentifier: ek.eventIdentifier,
+            isReminder: false,
+            category: storedCategory,
+            canEdit: ek.calendar.allowsContentModifications,
+            isRecurring: !(ek.recurrenceRules?.isEmpty ?? true)
+        )
     }
 
     private func eventCategoryLabel(for title: String) -> String {
@@ -1896,7 +2315,7 @@ private struct DayHeaderCard: View {
         .frame(maxWidth: .infinity)
         .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusSmall)
         .scaleEffect(hovering ? 1.02 : 1.0)
-        .animation(.easeInOut(duration: 0.12), value: hovering)
+        .animation(.easeInOut(duration: DesignSystem.Motion.instant), value: hovering)
         .onHover { hovering = $0 }
     }
 
@@ -1936,7 +2355,7 @@ private struct MonthDayCell: View {
         .frame(maxWidth: .infinity)
         .contentShape(Rectangle())
         .scaleEffect(hovering ? 1.01 : 1.0)
-        .animation(.easeInOut(duration: 0.12), value: hovering)
+        .animation(.easeInOut(duration: DesignSystem.Motion.instant), value: hovering)
         .onHover { hovering = $0 }
     }
 
@@ -2041,8 +2460,8 @@ private struct MetricsRow: View {
             MetricCard(title: "Total This Month", value: "\(metrics.totalItems)", subtitle: "Calendar items", systemImage: "calendar")
             MetricCard(title: "Busiest Day", value: metrics.busiestDayName, subtitle: busiestSubtitle, systemImage: "flame")
         }
-        .transition(.opacity.combined(with: .move(edge: .bottom)))
-        .animation(.easeInOut, value: metrics.totalItems)
+        .transition(DesignSystem.Motion.slideUpTransition)
+        .animation(DesignSystem.Motion.standardEase, value: metrics.totalItems)
     }
 
     private var busiestSubtitle: String {
