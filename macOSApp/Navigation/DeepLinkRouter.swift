@@ -23,9 +23,9 @@ final class DeepLinkRouter {
     private init() {}
     
     func handle(url: URL,
-                appModel: AppModel = .shared,
-                plannerCoordinator: PlannerCoordinator = .shared,
-                calendarManager: CalendarManager = .shared,
+                appModel: AppModel,
+                plannerCoordinator: PlannerCoordinator,
+                calendarManager: CalendarManager,
                 settingsCoordinator: SettingsCoordinator) -> Bool {
         let route = parse(url: url)
         return open(route: route,

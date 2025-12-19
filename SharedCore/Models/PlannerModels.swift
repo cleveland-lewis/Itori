@@ -10,16 +10,16 @@ import Foundation
 import SwiftData
 
 @Model
-final class AssignmentPlan {
+final class AssignmentPlanEntity {
     @Attribute(.unique) var assignmentId: UUID
     var generatedAt: Date
     var version: Int
     var status: PlanStatus
     
-    @Relationship(deleteRule: .cascade, inverse: \PlanStep.plan)
-    var steps: [PlanStep]
+    @Relationship(deleteRule: .cascade, inverse: \PlanStepEntity.plan)
+    var steps: [PlanStepEntity]
     
-    init(assignmentId: UUID, generatedAt: Date = Date(), version: Int = 1, status: PlanStatus = .draft, steps: [PlanStep] = []) {
+    init(assignmentId: UUID, generatedAt: Date = Date(), version: Int = 1, status: PlanStatus = .draft, steps: [PlanStepEntity] = []) {
         self.assignmentId = assignmentId
         self.generatedAt = generatedAt
         self.version = version
@@ -29,7 +29,7 @@ final class AssignmentPlan {
 }
 
 @Model
-final class PlanStep {
+final class PlanStepEntity {
     var id: UUID
     var title: String
     var estimatedDuration: Int
@@ -38,7 +38,7 @@ final class PlanStep {
     var sequenceIndex: Int
     var stepType: StepType
     
-    var plan: AssignmentPlan?
+    var plan: AssignmentPlanEntity?
     
     init(id: UUID = UUID(), title: String, estimatedDuration: Int, recommendedWindow: Date? = nil, dueBy: Date? = nil, sequenceIndex: Int, stepType: StepType = .work) {
         self.id = id

@@ -131,16 +131,6 @@ class TimerMenuActions: NSObject {
 
 // MARK: - Notification Names
 
-extension Notification.Name {
-    static let refreshRequested = Notification.Name("refreshRequested")
-    static let navigateToTab = Notification.Name("navigateToTab")
-    static let addAssignmentRequested = Notification.Name("addAssignmentRequested")
-    static let addGradeRequested = Notification.Name("addGradeRequested")
-    static let timerStartRequested = Notification.Name("timerStartRequested")
-    static let timerStopRequested = Notification.Name("timerStopRequested")
-    static let timerEndRequested = Notification.Name("timerEndRequested")
-}
-
 // MARK: - View Extensions
 
 extension View {
@@ -154,3 +144,4 @@ extension View {
 }
 
 #endif
+

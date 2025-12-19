@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A58B1622EF58EAC0077C827 /* Notification+Names.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A58B1612EF58EAB0077C827 /* Notification+Names.swift */; };
 		1A6947212EF0891800072BDF /* roots.icon in Resources */ = {isa = PBXBuildFile; fileRef = 1A6947202EF0891800072BDF /* roots.icon */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1A58B1612EF58EAB0077C827 /* Notification+Names.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Names.swift"; sourceTree = "<group>"; };
 		1A6947202EF0891800072BDF /* roots.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = roots.icon; sourceTree = "<group>"; };
 		1AD7D4342EDD328800D403F3 /* Roots.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Roots.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AD7D4432EDD328A00D403F3 /* RootsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RootsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -91,6 +93,7 @@
 				1AD7D4502EDD328A00D403F3 /* RootsUITests */,
 				1AD7D4352EDD328800D403F3 /* Products */,
 				1A6947202EF0891800072BDF /* roots.icon */,
+				1A58B1612EF58EAB0077C827 /* Notification+Names.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -254,6 +257,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A58B1622EF58EAC0077C827 /* Notification+Names.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

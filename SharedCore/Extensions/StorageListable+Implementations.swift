@@ -194,7 +194,8 @@ extension CalendarEvent: StorageListable {
         }
         // Fallback: use category + date
         let dateStr = startDate.formatted(date: .abbreviated, time: .omitted)
-        return "\(category.rawValue) (\(dateStr))"
+        let cat = category.rawValue
+        return "\(cat) (\(dateStr))"
     }
     
     public var entityType: StorageEntityType {

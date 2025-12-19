@@ -622,7 +622,7 @@ struct CalendarPageView: View {
 
         if !(hasEventAccess || hasReminderAccess) {
             print("📅 [CalendarPageView] fetchEventsAsync called without permissions")
-            completion([])
+            completion([], [])
             return
         }
 
@@ -632,7 +632,7 @@ struct CalendarPageView: View {
             let ekEvents = store.events(matching: predicate)
 
             DispatchQueue.main.async {
-                let mappedEvents = ekEvents.map { self.mapEvent($0) }
+                let mappedEvents = ekEvents.map { self.mapEventInline($0) }
                 guard includeReminders && hasReminderAccess else {
                     completion(ekEvents, mappedEvents)
                     return
@@ -670,6 +670,26 @@ struct CalendarPageView: View {
                 }
             }
         }
+    }
+
+    /// Maps an EKEvent to our CalendarEvent model, decoding notes/category and preserving editability/recurrence flags.
+    private func mapEventInline(_ ek: EKEvent) -> CalendarEvent {
+        let (cleanNotes, storedCategory) = calendarManager.decodeNotesWithCategory(notes: ek.notes)
+        return CalendarEvent(
+            title: ek.title,
+            startDate: ek.startDate,
+            endDate: ek.endDate,
+            location: ek.location,
+            notes: cleanNotes,
+            url: ek.url,
+            alarms: ek.alarms,
+            travelTime: nil,
+            ekIdentifier: ek.eventIdentifier,
+            isReminder: false,
+            category: storedCategory,
+            canEdit: ek.calendar.allowsContentModifications,
+            isRecurring: !(ek.recurrenceRules?.isEmpty ?? true)
+        )
     }
 
     private func applyEvents(_ ekEvents: [EKEvent], events: [CalendarEvent]) {
@@ -1974,14 +1994,14 @@ struct CalendarView: View {
                                 CalendarDayView(
                                     date: calendarManager.selectedDate ?? Date(),
                                     events: displayEKEvents.filter { Calendar.current.isDate($0.startDate, inSameDayAs: calendarManager.selectedDate ?? Date()) },
-                                    onSelectEvent: { ek in selectedEvent = mapEvent(ek) }
+                                    onSelectEvent: { ek in selectedEvent = mapEventInline(ek) }
                                 )
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                             case .week:
                                 CalendarWeekView(
                                     currentDate: currentMonth,
                                     events: displayEKEvents,
-                                    onSelectEvent: { ek in selectedEvent = mapEvent(ek) }
+                                    onSelectEvent: { ek in selectedEvent = mapEventInline(ek) }
                                 )
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                             case .month:
@@ -2132,7 +2152,7 @@ struct CalendarView: View {
             .sorted { $0.startDate < $1.startDate }
     }
 
-    private func mapEvent(_ ek: EKEvent) -> CalendarEvent {
+    private func mapEventInline(_ ek: EKEvent) -> CalendarEvent {
         let (cleanNotes, storedCategory) = calendarManager.decodeNotesWithCategory(notes: ek.notes)
         return CalendarEvent(
             title: ek.title,
@@ -2473,3 +2493,4 @@ private struct MetricCard: View {
     }
 }
 #endif
+

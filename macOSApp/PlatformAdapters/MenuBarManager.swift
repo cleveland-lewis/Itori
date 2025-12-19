@@ -1,5 +1,7 @@
+ #if os(macOS)
 import SwiftUI
 import Combine
+import AppKit
 
 class MenuBarManager {
     private var statusItem: NSStatusItem
@@ -108,4 +110,4 @@ class MenuBarManager {
         button.title = timeString
     }
 }
-
+#endif

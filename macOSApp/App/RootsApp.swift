@@ -77,7 +77,9 @@ struct RootsApp: App {
 
     @Environment(\.scenePhase) private var scenePhase
 
+    #if os(macOS)
     private var menuBarManager: MenuBarManager
+    #endif
 
     init() {
         LOG_LIFECYCLE(.info, "AppInit", "RootsApp initializing")
@@ -91,7 +93,9 @@ struct RootsApp: App {
         _timerManager = StateObject(wrappedValue: timer)
         let focus = FocusManager()
         _focusManager = StateObject(wrappedValue: focus)
+        #if os(macOS)
         menuBarManager = MenuBarManager(focusManager: focus, assignmentsStore: assignments, settings: settings)
+        #endif
         LOG_LIFECYCLE(.info, "AppInit", "RootsApp initialization complete")
     }
 
@@ -272,8 +276,22 @@ struct RootsApp: App {
 
     private func sizeCategory(for raw: String) -> ContentSizeCategory? {
 #if os(macOS)
-        guard let nsCategory = NSContentSizeCategory(rawValue: raw) else { return nil }
-        return ContentSizeCategory(nsCategory)
+        // Map common UIKit-style identifiers used in UI tests to SwiftUI categories.
+        switch raw {
+        case "UICTContentSizeCategoryXS": return .extraSmall
+        case "UICTContentSizeCategoryS": return .small
+        case "UICTContentSizeCategoryM": return .medium
+        case "UICTContentSizeCategoryL": return .large
+        case "UICTContentSizeCategoryXL": return .extraLarge
+        case "UICTContentSizeCategoryXXL": return .extraExtraLarge
+        case "UICTContentSizeCategoryXXXL": return .extraExtraExtraLarge
+        case "UICTContentSizeCategoryAccessibilityM": return .accessibilityMedium
+        case "UICTContentSizeCategoryAccessibilityL": return .accessibilityLarge
+        case "UICTContentSizeCategoryAccessibilityXL": return .accessibilityExtraLarge
+        case "UICTContentSizeCategoryAccessibilityXXL": return .accessibilityExtraExtraLarge
+        case "UICTContentSizeCategoryAccessibilityXXXL": return .accessibilityExtraExtraExtraLarge
+        default: return nil
+        }
 #else
         guard let uiCategory = UIContentSizeCategory(rawValue: raw) else { return nil }
         return ContentSizeCategory(uiCategory)

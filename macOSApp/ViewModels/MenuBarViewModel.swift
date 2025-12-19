@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import SwiftUI
 
+@MainActor
 class MenuBarViewModel: ObservableObject {
     @Published var mode: LocalTimerMode = .pomodoro
     @Published var isRunning: Bool = false

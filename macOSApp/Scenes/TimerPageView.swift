@@ -670,6 +670,22 @@ struct TimerPageView: View {
             isRunning = false
         }
     }
+
+    private func applyFocusDeepLinkIfNeeded() {
+        if let link = appModel.focusDeepLink {
+            if let newMode = link.mode {
+                mode = newMode
+            }
+            if let activityId = link.activityId {
+                selectedActivityID = activityId
+            }
+            appModel.focusDeepLink = nil
+        }
+        if appModel.focusWindowRequested {
+            appModel.focusWindowRequested = false
+            openFocusWindow()
+        }
+    }
 }
 
 private struct FocusWindowView: View {
@@ -832,22 +848,6 @@ private struct FocusWindowView: View {
             let m = Int(remainingSeconds) / 60
             let s = Int(remainingSeconds) % 60
             return String(format: "%02d:%02d", m, s)
-        }
-    }
-    
-    private func applyFocusDeepLinkIfNeeded() {
-        if let link = appModel.focusDeepLink {
-            if let newMode = link.mode {
-                mode = newMode
-            }
-            if let activityId = link.activityId {
-                selectedActivityID = activityId
-            }
-            appModel.focusDeepLink = nil
-        }
-        if appModel.focusWindowRequested {
-            appModel.focusWindowRequested = false
-            openFocusWindow()
         }
     }
 }
