@@ -1,4 +1,7 @@
 import Foundation
+import SwiftUI // for Process availability on Apple platforms
+
+#if os(macOS)
 
 /// MLX LLM backend implementation (via Python subprocess)
 class MLXBackend: LLMBackend {
@@ -183,3 +186,5 @@ class MLXBackend: LLMBackend {
         return cleaned.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
+
+#endif

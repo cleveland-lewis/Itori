@@ -675,6 +675,7 @@ struct TodaySummaryCard: View {
 struct ByCourseSummaryCard: View {
     var assignments: [Assignment]
     var onSelectCourse: (String) -> Void
+    @Environment(\.colorScheme) private var colorScheme
 
     private struct CourseLoad: Identifiable {
         let id = UUID()
@@ -704,7 +705,7 @@ struct ByCourseSummaryCard: View {
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                        .stroke(RootsColor.glassBorder, lineWidth: 1)
+                        .stroke(RootsColor.glassBorder(for: colorScheme), lineWidth: 1)
                 )
                 .onTapGesture {
                     onSelectCourse(item.course)

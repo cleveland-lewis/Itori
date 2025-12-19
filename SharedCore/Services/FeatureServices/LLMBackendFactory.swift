@@ -9,7 +9,11 @@ class LLMBackendFactory {
             return MockLLMBackend(config: config)
             
         case .mlx:
+#if os(macOS)
             return MLXBackend(config: config)
+#else
+            return MockLLMBackend(config: config)
+#endif
             
         case .ollama:
             return OllamaBackend(config: config)
@@ -29,13 +33,15 @@ class LLMBackendFactory {
             return ollama
         }
         
-        // Try MLX
+        #if os(macOS)
+        // Try MLX (macOS only)
         let mlxConfig = LLMBackendConfig.mlxDefault
         let mlx = MLXBackend(config: mlxConfig)
         if await mlx.isAvailable {
             print("[LLM] Detected MLX backend")
             return mlx
         }
+        #endif
         
         // Fall back to mock
         print("[LLM] No real backend detected, using mock")

@@ -1,3 +1,4 @@
+ #if os(macOS)
 import SwiftUI
 
 struct DayDetailSidebar: View {
@@ -8,6 +9,7 @@ struct DayDetailSidebar: View {
     private let width: CGFloat = 280
     private let calendar = Calendar.current
     @State private var selectedIndex: Int = 0
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -24,7 +26,7 @@ struct DayDetailSidebar: View {
             .padding(.horizontal, 16)
             .padding(.top, 16)
 
-            Divider()
+            NeutralDivider()
 
             ScrollView {
                 if events.isEmpty {
@@ -39,75 +41,7 @@ struct DayDetailSidebar: View {
                     .frame(maxWidth: .infinity)
                     .padding(.top, 40)
                 } else {
-                    LazyVStack(spacing: 12) {
-                        ForEach(Array(events.enumerated()), id: \.element.id) { index, event in
-                            Button {
-                                selectedIndex = index
-                                onSelectEvent(event)
-                            } label: {
-                                HStack(alignment: .top, spacing: 12) {
-                                    Rectangle()
-                                        .fill(categoryColor(for: event.category))
-                                        .frame(width: 6)
-                                        .cornerRadius(2)
-
-                                    VStack(alignment: .leading, spacing: 6) {
-                                        HStack(spacing: 6) {
-                                            Text(event.title)
-                                                .font(.body.weight(.semibold))
-                                                .foregroundStyle(.primary)
-                                                .lineLimit(2)
-                                            
-                                            Spacer()
-                                            
-                                            Text(categoryLabel(for: event.category))
-                                                .font(.caption2.weight(.medium))
-                                                .foregroundStyle(.secondary)
-                                                .padding(.horizontal, 6)
-                                                .padding(.vertical, 2)
-                                                .background(
-                                                    Capsule()
-                                                        .fill(categoryColor(for: event.category).opacity(0.15))
-                                                )
-                                        }
-                                        
-                                        Text(timeRange(for: event))
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                        
-                                        if let location = event.location, !location.isEmpty {
-                                            HStack(spacing: 4) {
-                                                Image(systemName: "mappin.circle.fill")
-                                                    .font(.caption2)
-                                                    .foregroundStyle(.tertiary)
-                                                Text(location)
-                                                    .font(.caption2)
-                                                    .foregroundStyle(.tertiary)
-                                            }
-                                            .lineLimit(1)
-                                        }
-                                    }
-                                }
-                                .padding(.vertical, 8)
-                                .padding(.horizontal, 12)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                        .fill(selectedIndex == index ? Color(nsColor: .controlAccentColor).opacity(0.1) : Color.clear)
-                                )
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                        .stroke(selectedIndex == index ? Color(nsColor: .controlAccentColor).opacity(0.3) : Color.clear, lineWidth: 1)
-                                )
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(8)
-                    .onAppear {
-                        if !events.isEmpty {
-                            selectedIndex = 0
-                        }
-                    }
+                    eventList
                 }
             }
 
@@ -118,7 +52,7 @@ struct DayDetailSidebar: View {
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                .stroke(Color(nsColor: .separatorColor).opacity(0.06), lineWidth: 1)
+                .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.18), lineWidth: 1)
         )
         .padding(.vertical, 4)
         .focusable()
@@ -145,6 +79,92 @@ struct DayDetailSidebar: View {
                 selectedIndex = max(0, newEvents.count - 1)
             }
         }
+    }
+
+    @ViewBuilder
+    private var eventList: some View {
+        LazyVStack(spacing: 12) {
+            ForEach(Array(events.enumerated()), id: \.element.id) { index, event in
+                eventRow(event: event, index: index)
+            }
+        }
+        .padding(8)
+        .onAppear {
+            if !events.isEmpty {
+                selectedIndex = 0
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func eventRow(event: CalendarEvent, index: Int) -> some View {
+        Button {
+            selectedIndex = index
+            onSelectEvent(event)
+        } label: {
+            HStack(alignment: .top, spacing: 12) {
+                Rectangle()
+                    .fill(categoryColor(for: event.category))
+                    .frame(width: 6)
+                    .cornerRadius(2)
+
+                VStack(alignment: .leading, spacing: 6) {
+                    header(for: event)
+                    Text(timeRange(for: event))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    if let location = event.location, !location.isEmpty {
+                        locationRow(location)
+                    }
+                }
+            }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(selectedIndex == index ? Color(nsColor: .controlAccentColor).opacity(0.1) : Color.clear)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(selectedIndex == index ? Color(nsColor: .controlAccentColor).opacity(0.3) : Color.clear, lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
+    private func header(for event: CalendarEvent) -> some View {
+        HStack(spacing: 6) {
+            Text(event.title)
+                .font(.body.weight(.semibold))
+                .foregroundStyle(.primary)
+                .lineLimit(2)
+            
+            Spacer()
+            
+            Text(categoryLabel(for: event.category))
+                .font(.caption2.weight(.medium))
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(
+                    Capsule()
+                        .fill(categoryColor(for: event.category).opacity(0.15))
+                )
+        }
+    }
+
+    private func locationRow(_ location: String) -> some View {
+        HStack(spacing: 4) {
+            Image(systemName: "mappin.circle.fill")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+            Text(location)
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .lineLimit(1)
     }
 
     private func timeRange(for event: CalendarEvent) -> String {
@@ -181,6 +201,18 @@ struct DayDetailSidebar: View {
     }
 }
 
+private struct NeutralDivider: View {
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        Rectangle()
+            .fill(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.26))
+            .frame(height: 1)
+            .frame(maxWidth: .infinity)
+            .accessibilityHidden(true)
+    }
+}
+
 struct DayDetailSidebar_Previews: PreviewProvider {
     static var sampleEvents: [CalendarEvent] = [
         CalendarEvent(title: "Dentist Appointment", startDate: Date().addingTimeInterval(3600), endDate: Date().addingTimeInterval(5400), location: "Dental Office"),
@@ -199,3 +231,4 @@ struct DayDetailSidebar_Previews: PreviewProvider {
         }
     }
 }
+#endif

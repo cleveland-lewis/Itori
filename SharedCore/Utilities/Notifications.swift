@@ -1,5 +1,2 @@
-import Foundation
+// Intentionally left blank. Notification.Name constants are centralized in Notification+Names.swift
 
-extension Notification.Name {
-    static let timerStateDidChange = Notification.Name("timerStateDidChange")
-}

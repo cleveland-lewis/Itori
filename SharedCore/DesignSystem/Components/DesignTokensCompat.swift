@@ -29,7 +29,9 @@ enum RootsRadius {
 
 // MARK: - Colors
 enum RootsColor {
-    static var glassBorder: Color { Color(nsColor: .separatorColor) }
+    static func glassBorder(for colorScheme: ColorScheme) -> Color {
+        DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.16)
+    }
     static var textPrimary: Color { .primary }
     static var textSecondary: Color { .secondary }
     static var label: Color { .primary }
@@ -81,10 +83,7 @@ extension View {
                 .fill(DesignSystem.Materials.card)
         )
         .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: radius, style: .continuous)
-                .stroke(Color(nsColor: .separatorColor).opacity(0.06), lineWidth: 1)
-        )
+        .modifier(NeutralLineOverlay(radius: radius, opacity: 0.12))
     }
 
     func rootsGlassBackground(opacity: Double = 0.2, radius: CGFloat = RootsRadius.card) -> some View {
@@ -102,6 +101,19 @@ extension View {
 
     func rootsCardShadow() -> some View {
         shadow(color: Color.black.opacity(0.15), radius: 10, y: 5)
+    }
+}
+
+private struct NeutralLineOverlay: ViewModifier {
+    @Environment(\.colorScheme) private var colorScheme
+    var radius: CGFloat
+    var opacity: Double
+
+    func body(content: Content) -> some View {
+        content.overlay(
+            RoundedRectangle(cornerRadius: radius, style: .continuous)
+                .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(opacity), lineWidth: 1)
+        )
     }
 }
 
@@ -171,6 +183,7 @@ struct RootsCard<Content: View>: View {
     var footer: AnyView?
     var compact: Bool = false
     @ViewBuilder var content: Content
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: compact ? RootsSpacing.m : RootsSpacing.l) {
@@ -200,7 +213,7 @@ struct RootsCard<Content: View>: View {
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.18), lineWidth: 1)
         )
         .shadow(color: Color.black.opacity(0.06), radius: 6, y: 3)
     }
@@ -211,6 +224,7 @@ struct RootsFloatingTabBar: View {
     @Binding var selected: RootTab
     var mode: TabBarMode
     var onSelect: (RootTab) -> Void
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         GeometryReader { proxy in
@@ -246,7 +260,7 @@ struct RootsFloatingTabBar: View {
                     .fill(DesignSystem.Materials.hud)
                     .overlay(
                         RoundedRectangle(cornerRadius: 28, style: .continuous)
-                            .stroke(RootsColor.glassBorder, lineWidth: 1)
+                            .stroke(RootsColor.glassBorder(for: colorScheme), lineWidth: 1)
                     )
             )
             .frame(maxWidth: min(availableWidth - 32, 640))
@@ -284,6 +298,7 @@ struct RootTabBarItem: View {
     let action: () -> Void
 
     @State private var isHovering: Bool = false
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         Button(action: action) {
@@ -307,7 +322,7 @@ struct RootTabBarItem: View {
             )
             .overlay(
                 Capsule(style: .continuous)
-                    .stroke(Color.primary.opacity(isSelected ? 0 : 0.12), lineWidth: 0.5)
+                    .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(isSelected ? 0.3 : 0.16), lineWidth: 0.5)
             )
             .foregroundStyle(isSelected ? Color.white : Color.primary)
             .scaleEffect(isHovering ? 1.03 : 1.0)

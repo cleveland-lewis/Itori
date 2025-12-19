@@ -1069,6 +1069,7 @@ private struct WeekCalendarView: View {
     @Binding var focusedDate: Date
     let events: [CalendarEvent]
     @EnvironmentObject var settings: AppSettingsModel
+    @Environment(\.colorScheme) private var colorScheme
     private let calendar = Calendar.current
 
     private struct PlaceholderBlock: Identifiable {
@@ -1092,7 +1093,8 @@ private struct WeekCalendarView: View {
 
             WeekHeaderView(weekDays: weekDays, focusedDate: $focusedDate, calendar: calendar, events: events)
 
-            Divider().background(Color(nsColor: .separatorColor).opacity(0.12))
+            Divider()
+                .overlay(Rectangle().fill(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.26)).frame(height: 1))
 
             ScrollView {
                 ZStack(alignment: .topLeading) {
@@ -1128,7 +1130,7 @@ private struct WeekCalendarView: View {
                         .foregroundColor(.secondary)
                         .frame(width: 50, alignment: .trailing)
                     Rectangle()
-                        .fill(Color(nsColor: .separatorColor).opacity(0.08))
+                        .fill(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.18))
                         .frame(height: 1)
                 }
             }
@@ -1197,6 +1199,8 @@ private struct CalendarSidebarView: View {
     let selectedDate: Date
     let events: [CalendarEvent]
     let onSelectEvent: (CalendarEvent) -> Void
+    @Environment(\.colorScheme) private var colorScheme
+    private var neutralLine: Color { DesignSystem.Colors.neutralLine(for: colorScheme) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -1215,7 +1219,9 @@ private struct CalendarSidebarView: View {
             .padding(.top, 16)
             .padding(.bottom, 12)
 
-            Divider()
+            Rectangle()
+                .fill(neutralLine.opacity(0.26))
+                .frame(height: 1)
 
             // Events list
             ScrollView {
@@ -1248,7 +1254,7 @@ private struct CalendarSidebarView: View {
         .background(DesignSystem.Materials.popup, in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                .strokeBorder(Color(nsColor: .separatorColor).opacity(0.5), lineWidth: 1)
+                .strokeBorder(neutralLine.opacity(0.3), lineWidth: 1)
         )
     }
 }
@@ -2493,4 +2499,3 @@ private struct MetricCard: View {
     }
 }
 #endif
-

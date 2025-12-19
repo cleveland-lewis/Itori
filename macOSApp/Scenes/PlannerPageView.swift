@@ -136,7 +136,7 @@ struct OverdueTaskRow: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                    .stroke(neutralLine.opacity(0.22), lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -209,6 +209,7 @@ struct PlannerPageView: View {
     @EnvironmentObject var assignmentsStore: AssignmentsStore
     @EnvironmentObject var plannerCoordinator: PlannerCoordinator
     @EnvironmentObject var coursesStore: CoursesStore
+    @Environment(\.colorScheme) private var colorScheme
     @StateObject private var dayProgress = DayProgressModel()
 
     @State private var filterCancellable: AnyCancellable? = nil
@@ -229,6 +230,7 @@ struct PlannerPageView: View {
 
     private let cardCornerRadius: CGFloat = 26
     private let studySettings = StudyPlanSettings()
+    private var neutralLine: Color { DesignSystem.Colors.neutralLine(for: colorScheme) }
 
     private var plannerLoading: Bool {
         plannerStore.isLoading || isRunningPlanner
@@ -531,7 +533,7 @@ private extension PlannerPageView {
                         .background(Color(nsColor: .controlBackgroundColor))
                         .clipShape(Capsule())
                         .overlay(
-                            Capsule().stroke(Color(nsColor: .separatorColor).opacity(0.2), lineWidth: 1)
+                            Capsule().stroke(neutralLine.opacity(0.2), lineWidth: 1)
                         )
                 }
                 Spacer()
@@ -568,7 +570,7 @@ private extension PlannerPageView {
             VStack(alignment: .leading, spacing: 6) {
                 if blocks.isEmpty {
                     RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
-                        .stroke(Color(nsColor: .separatorColor).opacity(0.8), lineWidth: 1)
+                        .stroke(neutralLine.opacity(0.8), lineWidth: 1)
                         .background(
                             RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
                                 .fill(Color(nsColor: .controlBackgroundColor).opacity(0.7))
@@ -583,7 +585,7 @@ private extension PlannerPageView {
                         PlannerBlockRow(block: block)
                             .overlay(
                                 RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
-                                    .stroke(Color(nsColor: .separatorColor).opacity(0.25), lineWidth: 1)
+                                    .stroke(neutralLine.opacity(0.25), lineWidth: 1)
                             )
                     }
                 }
@@ -641,7 +643,7 @@ private extension PlannerPageView {
                         .background(Color(nsColor: .controlBackgroundColor))
                         .clipShape(Capsule())
                         .overlay(
-                            Capsule().stroke(Color(nsColor: .separatorColor).opacity(0.2), lineWidth: 1)
+                            Capsule().stroke(neutralLine.opacity(0.2), lineWidth: 1)
                         )
                 }
                 Button {
@@ -656,7 +658,7 @@ private extension PlannerPageView {
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                                .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                                .stroke(neutralLine.opacity(0.22), lineWidth: 1)
                         )
                 }
                 .buttonStyle(.plain)
@@ -767,7 +769,7 @@ private extension PlannerPageView {
         )
         .overlay(
             RoundedRectangle(cornerRadius: cardCornerRadius, style: .continuous)
-                .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                .stroke(neutralLine.opacity(0.22), lineWidth: 1)
         )
     }
 
@@ -962,7 +964,7 @@ struct PlannerBlockRow: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
-                .stroke(Color(nsColor: .separatorColor).opacity(0.25), lineWidth: 1)
+                .stroke(neutralLine.opacity(0.25), lineWidth: 1)
         )
     }
 
@@ -984,7 +986,7 @@ struct PlannerTaskRow: View {
         } label: {
             HStack(alignment: .center, spacing: 12) {
                 RoundedRectangle(cornerRadius: 6, style: .continuous)
-                    .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                    .stroke(neutralLine.opacity(0.22), lineWidth: 1)
                     .frame(width: 20, height: 20)
 
                 VStack(alignment: .leading, spacing: 4) {
@@ -1015,7 +1017,7 @@ struct PlannerTaskRow: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                    .stroke(neutralLine.opacity(0.22), lineWidth: 1)
             )
         }
         .buttonStyle(.plain)

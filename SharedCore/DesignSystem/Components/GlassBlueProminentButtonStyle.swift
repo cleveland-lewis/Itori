@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct GlassBlueProminentButtonStyle: ButtonStyle {
+    @Environment(\.colorScheme) private var colorScheme
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(DesignSystem.Typography.subHeader)
@@ -15,7 +17,7 @@ struct GlassBlueProminentButtonStyle: ButtonStyle {
                         .fill(DesignSystem.Materials.card)
                         .opacity(0.15)
                     RoundedRectangle(cornerRadius: DesignSystem.Cards.cardCornerRadius, style: .continuous)
-                        .strokeBorder(Color(nsColor: .separatorColor).opacity(0.25), lineWidth: 0.5)
+                        .strokeBorder(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.28), lineWidth: 0.5)
                 }
             )
             .overlay(

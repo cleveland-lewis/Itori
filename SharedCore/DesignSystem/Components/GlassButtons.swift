@@ -4,6 +4,7 @@ struct GlassAccentIconButton: View {
     let systemName: String
     let accessibilityLabel: String
     let action: () -> Void
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         Button(action: action) {
@@ -17,7 +18,7 @@ struct GlassAccentIconButton: View {
                         .background(Circle().fill(DesignSystem.Materials.hud))
                 )
                 .overlay(
-                    Circle().stroke(Color(nsColor: .separatorColor).opacity(0.06), lineWidth: 0.75)
+                    Circle().stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.12), lineWidth: 0.75)
                 )
                 .shadow(color: Color.accentColor.opacity(0.12), radius: 8, y: 4)
                 .contentShape(Circle())
@@ -36,6 +37,7 @@ struct GlassSecondaryIconButton: View {
     let systemName: String
     let accessibilityLabel: String
     let action: () -> Void
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         Button(action: action) {
@@ -49,7 +51,7 @@ struct GlassSecondaryIconButton: View {
                         .background(Circle().fill(DesignSystem.Materials.hud))
                 )
                 .overlay(
-                    Circle().stroke(Color(nsColor: .separatorColor).opacity(0.06), lineWidth: 0.75)
+                    Circle().stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.12), lineWidth: 0.75)
                 )
                 .shadow(color: Color.primary.opacity(0.06), radius: 8, y: 4)
                 .contentShape(Circle())

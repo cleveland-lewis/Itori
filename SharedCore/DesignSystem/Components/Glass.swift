@@ -35,43 +35,63 @@ enum GlassInsetShape {
 extension View {
     /// Applies a simple glass effect overlay. This is intentionally lightweight but can be extended.
     func glassEffect(_ glass: Glass, in shape: GlassInsetShape) -> some View {
-        let overlayView: AnyView = {
-            switch shape {
-            case .rect(let cornerRadius):
-                // Layer material, tint, highlights and subtle blur to resemble liquid glass
-                return AnyView(
-                    ZStack {
-                        RoundedRectangle(cornerRadius: cornerRadius)
-                            .fill(DesignSystem.Materials.card)
+        modifier(GlassEffectModifier(glass: glass, shape: shape))
+    }
+}
 
-                        // Tint overlay
-                        if glass.tintColor != .clear {
-                            RoundedRectangle(cornerRadius: cornerRadius)
-                                .fill(glass.tintColor.opacity(0.12))
-                        }
+private struct GlassEffectModifier: ViewModifier {
+    @Environment(\.colorScheme) private var colorScheme
+    var glass: Glass
+    var shape: GlassInsetShape
 
-                        // Glow/highlight
-                        RoundedRectangle(cornerRadius: cornerRadius)
-                            .stroke(LinearGradient(colors: [Color(nsColor: .separatorColor).opacity(0.6), Color(nsColor: .separatorColor).opacity(0.05)], startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1)
-                            .blendMode(.overlay)
-
-                        // Inner subtle shadow
-                        RoundedRectangle(cornerRadius: cornerRadius)
-                            .stroke(Color(nsColor: .separatorColor).opacity(0.04), lineWidth: 0.5)
-                            .blendMode(.multiply)
-                    }
-                )
-            }
-        }()
-
-        return self
+    func body(content: Content) -> some View {
+        content
             .overlay(overlayView)
-            .clipShape(RoundedRectangle(cornerRadius: {
-                switch shape {
-                case .rect(let r): return r
-                }
-            }()))
+            .clipShape(clipShape)
             .contentShape(Rectangle())
             .allowsHitTesting(glass.isInteractive)
+    }
+
+    @ViewBuilder
+    private var overlayView: some View {
+        switch shape {
+        case .rect(let cornerRadius):
+            // Layer material, tint, highlights and subtle blur to resemble liquid glass
+            ZStack {
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .fill(DesignSystem.Materials.card)
+
+                if glass.tintColor != .clear {
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .fill(glass.tintColor.opacity(0.12))
+                }
+
+                let neutral = DesignSystem.Colors.neutralLine(for: colorScheme)
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .stroke(
+                        LinearGradient(
+                            colors: [
+                                neutral.opacity(0.6),
+                                neutral.opacity(0.05)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1
+                    )
+                    .blendMode(.overlay)
+
+                RoundedRectangle(cornerRadius: cornerRadius)
+                    .stroke(neutral.opacity(0.04), lineWidth: 0.5)
+                    .blendMode(.multiply)
+            }
+        }
+    }
+
+    private var clipShape: some Shape {
+        switch shape {
+        case .rect(let r):
+            return RoundedRectangle(cornerRadius: r)
+        }
     }
 }

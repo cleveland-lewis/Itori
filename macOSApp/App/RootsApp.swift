@@ -1,64 +1,44 @@
 //
 //  RootsApp.swift
-//  Roots
-//
-//  Created by Cleveland Lewis III on 11/30/25.
+//  Roots (macOS)
 //
 
+#if os(macOS)
 import SwiftUI
-import _Concurrency
 import Combine
 #if !DISABLE_SWIFTDATA
 import SwiftData
 #endif
-
-#if os(macOS)
 import AppKit
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-    
     override init() {
         super.init()
-        // Completely disable window restoration
         UserDefaults.standard.set(false, forKey: "NSQuitAlwaysKeepsWindows")
         UserDefaults.standard.set(false, forKey: "ApplePersistenceIgnoreState")
     }
-    
+
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Close all windows except the first one (prevents duplicates)
         let windows = NSApplication.shared.windows
         if windows.count > 1 {
-            for window in windows.dropFirst() {
-                window.close()
-            }
+            for window in windows.dropFirst() { window.close() }
         }
     }
-    
-    func applicationWillTerminate(_ notification: Notification) {
-        // Clean up any resources if needed
-    }
-    
-    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
-        return false  // Changed to false to completely disable restoration
-    }
-    
-    // Prevent window restoration
+
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool { false }
+
     func application(_ app: NSApplication, didDecodeRestorableState coder: NSCoder) {
-        // Don't restore any state - do nothing
+        // noop
     }
-    
-    // Block window restoration attempts
+
     func application(_ application: NSApplication, willEncodeRestorableState coder: NSCoder) {
-        // Don't encode any state
+        // noop
     }
 }
-#endif
 
 @main
 struct RootsApp: App {
-#if os(macOS)
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-#endif
 
     @StateObject private var coursesStore: CoursesStore
     @StateObject private var appSettings = AppSettingsModel.shared
@@ -77,9 +57,7 @@ struct RootsApp: App {
 
     @Environment(\.scenePhase) private var scenePhase
 
-    #if os(macOS)
     private var menuBarManager: MenuBarManager
-    #endif
 
     init() {
         LOG_LIFECYCLE(.info, "AppInit", "RootsApp initializing")
@@ -93,9 +71,7 @@ struct RootsApp: App {
         _timerManager = StateObject(wrappedValue: timer)
         let focus = FocusManager()
         _focusManager = StateObject(wrappedValue: focus)
-        #if os(macOS)
         menuBarManager = MenuBarManager(focusManager: focus, assignmentsStore: assignments, settings: settings)
-        #endif
         LOG_LIFECYCLE(.info, "AppInit", "RootsApp initialization complete")
     }
 
@@ -151,17 +127,14 @@ struct RootsApp: App {
                     }
                     .onAppear {
                         LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")
-                        // Sync stored AppSettingsModel -> AppPreferences on launch
                         preferences.highContrast = appSettings.highContrastMode
                         preferences.reduceTransparency = appSettings.increaseTransparency
                         if let g = appSettings.glassIntensity { preferences.glassIntensity = g }
 
-                        // Subscribe to app reset requests from AppModel
                         resetCancellable = AppModel.shared.resetPublisher
                             .receive(on: DispatchQueue.main)
                             .sink { _ in
                                 LOG_LIFECYCLE(.warn, "AppReset", "Global app reset requested")
-                                // perform global resets
                                 AssignmentsStore.shared.resetAll()
                                 CoursesStore.shared?.resetAll()
                                 PlannerStore.shared.reset()
@@ -177,7 +150,6 @@ struct RootsApp: App {
                         appSettings.increaseTransparency = newValue
                         appSettings.save()
                     }
-                    // Reverse sync: when saved AppSettingsModel values change (from other settings UI), update AppPreferences
                     .onReceive(appSettings.objectWillChange) { _ in
                         preferences.highContrast = appSettings.highContrastMode
                         preferences.reduceTransparency = appSettings.increaseTransparency
@@ -191,14 +163,11 @@ struct RootsApp: App {
                     .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
                     .task {
                         LOG_LIFECYCLE(.info, "AppStartup", "Running startup tasks")
-                        // Run adaptation on launch
                         SchedulerAdaptationManager.shared.runAdaptiveSchedulerUpdateIfNeeded()
-                        // Refresh and request permissions on launch
                         await calendarManager.checkPermissionsOnStartup()
                         await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
                         timerManager.checkNotificationPermissions()
                         
-                        // Schedule daily overview if enabled
                         if appSettings.dailyOverviewEnabled {
                             LOG_NOTIFICATIONS(.info, "DailyOverview", "Scheduling daily overview notification")
                             NotificationManager.shared.scheduleDailyOverview()
@@ -214,7 +183,6 @@ struct RootsApp: App {
 #if !DISABLE_SWIFTDATA
         .modelContainer(sharedModelContainer)
 #endif
-#if os(macOS)
         Settings {
             applyUITestOverrides(
                 to: SettingsRootView(selection: $settingsCoordinator.selectedSection)
@@ -240,7 +208,6 @@ struct RootsApp: App {
                 settingsCoordinator.show()
             })
         }
-#endif
     }
 
     private var uiTestColorSchemeOverride: ColorScheme? {
@@ -275,7 +242,6 @@ struct RootsApp: App {
     }
 
     private func sizeCategory(for raw: String) -> ContentSizeCategory? {
-#if os(macOS)
         // Map common UIKit-style identifiers used in UI tests to SwiftUI categories.
         switch raw {
         case "UICTContentSizeCategoryXS": return .extraSmall
@@ -292,10 +258,6 @@ struct RootsApp: App {
         case "UICTContentSizeCategoryAccessibilityXXXL": return .accessibilityExtraExtraExtraLarge
         default: return nil
         }
-#else
-        guard let uiCategory = UIContentSizeCategory(rawValue: raw) else { return nil }
-        return ContentSizeCategory(uiCategory)
-#endif
     }
 
     private func handleScenePhaseChange(_ phase: ScenePhase) {
@@ -313,3 +275,4 @@ struct RootsApp: App {
         }
     }
 }
+#endif
