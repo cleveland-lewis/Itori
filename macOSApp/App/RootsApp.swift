@@ -48,8 +48,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     // Block window restoration attempts
-    func application(_ application: NSApplication, 
-                    willEncodeRestorableStateWith coder: NSCoder) {
+    func application(_ application: NSApplication, willEncodeRestorableState coder: NSCoder) {
         // Don't encode any state
     }
 }
@@ -118,7 +117,7 @@ struct RootsApp: App {
     var body: some Scene {
         WindowGroup(id: "main") {
             applyUITestOverrides(
-                ContentView()
+                to: ContentView()
                     .handlesExternalEvents(preferring: Set<String>(), allowing: Set<String>())
                     .environmentObject(AssignmentsStore.shared)
                     .environmentObject(coursesStore)
@@ -214,7 +213,7 @@ struct RootsApp: App {
 #if os(macOS)
         Settings {
             applyUITestOverrides(
-                SettingsRootView(selection: $settingsCoordinator.selectedSection)
+                to: SettingsRootView(selection: $settingsCoordinator.selectedSection)
                     .environmentObject(AssignmentsStore.shared)
                     .environmentObject(coursesStore)
                     .environmentObject(appSettings)

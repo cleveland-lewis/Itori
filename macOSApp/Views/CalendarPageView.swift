@@ -100,6 +100,14 @@ struct CalendarPageView: View {
     @State private var chevronLeftHover = false
     @State private var chevronRightHover = false
     @State private var todayHover = false
+    @State private var isHydratingInitial = false
+    @State private var isHydratingFull = false
+    @State private var openTimestamp: Date = Date()
+    @State private var firstFrameElapsed: TimeInterval?
+    @State private var dataReadyElapsed: TimeInterval?
+    @State private var fullDataReadyElapsed: TimeInterval?
+    @State private var loadedEventCount: Int = 0
+    @State private var hydratedEKEvents: [EKEvent] = []
 
     // Computed property to filter events based on settings
     private var filteredEvents: [EKEvent] {
@@ -199,6 +207,28 @@ struct CalendarPageView: View {
             .padding(.horizontal, DesignSystem.Layout.padding.window)
             .padding(.vertical, 4)
 
+            if isHydratingInitial || isHydratingFull {
+                HStack(spacing: 8) {
+                    ProgressView()
+                    Text(isHydratingFull ? "Loading calendar…" : "Preparing events…")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
+                .padding(.horizontal, 4)
+            }
+
+            if settings.devModePerformance {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Calendar Performance")
+                        .font(.caption.weight(.semibold))
+                    Text("First frame: \(formattedMillis(firstFrameElapsed))  |  Data ready: \(formattedMillis(dataReadyElapsed))  |  Full ready: \(formattedMillis(fullDataReadyElapsed))  |  Events: \(loadedEventCount)")
+                        .font(.caption2.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 4)
+            }
+
             // Main content: sidebar + calendar grid
             HStack(alignment: .top, spacing: 16) {
                 // Left sidebar showing events for selected date
@@ -221,15 +251,20 @@ struct CalendarPageView: View {
             AddEventPopup().environmentObject(calendarManager)
         }
         .onAppear {
+            openTimestamp = Date()
+            markFirstFrame()
             requestAccessAndSync()
-            Task { await deviceCalendar.refreshEventsForVisibleRange() }
+            hydrateEventsIncrementally()
             updateMetrics()
         }
         .onChange(of: focusedDate) { _, newValue in
-            Task { await deviceCalendar.refreshEventsForVisibleRange() }
+            loadVisibleRangeEvents()
             updateMetrics()
         }
-        .onChange(of: currentViewMode) { _, _ in updateMetrics() }
+        .onChange(of: currentViewMode) { _, _ in
+            loadVisibleRangeEvents()
+            updateMetrics()
+        }
         .onReceive(deviceCalendar.$events) { _ in
             updateMetrics()
         }
@@ -503,13 +538,73 @@ struct CalendarPageView: View {
     private func requestAccessAndSync() {
         _Concurrency.Task {
             await calendarManager.requestAccess()
-            // Only sync if access granted
-            syncEvents()
         }
     }
 
     private func syncEvents() {
-        // Guard: don't attempt to read if not authorized
+        hydrateEventsIncrementally()
+    }
+
+    private func hydrateEventsIncrementally() {
+        guard !isHydratingInitial else { return }
+        isHydratingInitial = true
+
+        let cal = Calendar.current
+        let start = cal.date(byAdding: .day, value: -1, to: Date()) ?? Date()
+        let end = cal.date(byAdding: .day, value: 3, to: Date()) ?? Date()
+        let targetCalendars = selectedEventCalendars()
+
+        fetchEventsAsync(start: start, end: end, targetCalendars: targetCalendars, includeReminders: false, reason: "initialRange") { ekEvents, events in
+            self.applyEvents(ekEvents, events: events)
+            self.loadedEventCount = events.count
+            if self.dataReadyElapsed == nil {
+                self.dataReadyElapsed = Date().timeIntervalSince(self.openTimestamp)
+            }
+            self.isHydratingInitial = false
+            self.loadVisibleRangeEvents()
+        }
+    }
+
+    private func loadVisibleRangeEvents() {
+        guard !isHydratingFull else { return }
+        isHydratingFull = true
+
+        let window = visibleInterval()
+        let targetCalendars = selectedEventCalendars()
+
+        fetchEventsAsync(start: window.start, end: window.end, targetCalendars: targetCalendars, includeReminders: true, reason: "visibleRange") { ekEvents, events in
+            self.applyEvents(ekEvents, events: events)
+            self.loadedEventCount = events.count
+            let elapsed = Date().timeIntervalSince(self.openTimestamp)
+            if self.dataReadyElapsed == nil { self.dataReadyElapsed = elapsed }
+            self.fullDataReadyElapsed = elapsed
+            self.isHydratingFull = false
+        }
+    }
+
+    private func selectedEventCalendars() -> [EKCalendar]? {
+        let selectedCalId = calendarManager.selectedCalendarID
+        guard !selectedCalId.isEmpty else { return nil }
+        return eventStore.calendars(for: .event).filter { $0.calendarIdentifier == selectedCalId }
+    }
+
+    private func markFirstFrame() {
+        DispatchQueue.main.async {
+            if self.firstFrameElapsed == nil {
+                self.firstFrameElapsed = Date().timeIntervalSince(self.openTimestamp)
+            }
+        }
+    }
+
+    private func fetchEventsAsync(
+        start: Date,
+        end: Date,
+        targetCalendars: [EKCalendar]?,
+        includeReminders: Bool,
+        reason: String,
+        completion: @escaping ([EKEvent], [CalendarEvent]) -> Void
+    ) {
+        // Guard permissions early
         let hasEventAccess: Bool = {
             if #available(macOS 14.0, *) {
                 return calendarManager.eventAuthorizationStatus == .fullAccess || calendarManager.eventAuthorizationStatus == .writeOnly
@@ -526,80 +621,65 @@ struct CalendarPageView: View {
         }()
 
         if !(hasEventAccess || hasReminderAccess) {
-            print("📅 [CalendarPageView] syncEvents called without permissions")
+            print("📅 [CalendarPageView] fetchEventsAsync called without permissions")
+            completion([])
             return
         }
 
-        let window = visibleInterval()
-        let selectedCalId = calendarManager.selectedCalendarID
-        let targetCalendars: [EKCalendar]? = {
-            if selectedCalId.isEmpty { return nil }
-            return eventStore.calendars(for: .event).filter { $0.calendarIdentifier == selectedCalId }
-        }()
+        let store = eventStore
+        DispatchQueue.global(qos: .userInitiated).async {
+            let predicate = store.predicateForEvents(withStart: start, end: end, calendars: targetCalendars)
+            let ekEvents = store.events(matching: predicate)
 
-        let predicate = eventStore.predicateForEvents(withStart: window.start, end: window.end, calendars: targetCalendars)
-        let ekEvents = eventStore.events(matching: predicate)
-        let mapped = ekEvents.map { ek in
-            CalendarEvent(
-                title: ek.title,
-                startDate: ek.startDate,
-                endDate: ek.endDate,
-                location: ek.location,
-                notes: ek.notes,
-                url: ek.url,
-                alarms: ek.alarms,
-                travelTime: nil,
-                ekIdentifier: ek.eventIdentifier,
-                isReminder: false,
-                category: nil,
-                canEdit: ek.calendar.allowsContentModifications,
-                isRecurring: !(ek.recurrenceRules?.isEmpty ?? true)
-            )
+            DispatchQueue.main.async {
+                let mappedEvents = ekEvents.map { self.mapEvent($0) }
+                guard includeReminders && hasReminderAccess else {
+                    completion(ekEvents, mappedEvents)
+                    return
+                }
+
+                let reminderCalendars: [EKCalendar]? = {
+                    if calendarManager.selectedReminderListID.isEmpty { return nil }
+                    return store.calendars(for: .reminder).filter { $0.calendarIdentifier == calendarManager.selectedReminderListID }
+                }()
+
+                let reminderPredicate = store.predicateForIncompleteReminders(withDueDateStarting: start, ending: end, calendars: reminderCalendars)
+                store.fetchReminders(matching: reminderPredicate) { reminders in
+                    let mappedReminders = reminders?.compactMap { reminder -> CalendarEvent? in
+                        guard let dueDate = reminder.dueDateComponents?.date else { return nil }
+                        return CalendarEvent(
+                            title: reminder.title,
+                            startDate: dueDate,
+                            endDate: dueDate,
+                            location: reminder.location,
+                            notes: reminder.notes,
+                            url: nil,
+                            alarms: nil,
+                            travelTime: nil,
+                            ekIdentifier: reminder.calendarItemIdentifier,
+                            isReminder: true,
+                            category: nil,
+                            canEdit: reminder.calendar.allowsContentModifications,
+                            isRecurring: false
+                        )
+                    } ?? []
+
+                    DispatchQueue.main.async {
+                        completion(ekEvents, mappedEvents + mappedReminders)
+                    }
+                }
+            }
         }
-        syncedEvents = mapped
-        updateMetrics()
-        // update precomputed counts
-        let dates = mapped.map { calendar.startOfDay(for: $0.startDate) }
+    }
+
+    private func applyEvents(_ ekEvents: [EKEvent], events: [CalendarEvent]) {
+        self.syncedEvents = events
+        self.hydratedEKEvents = ekEvents
+        let dates = events.map { calendar.startOfDay(for: $0.startDate) }
         _Concurrency.Task { @MainActor in
             eventsStore.update(dates: dates)
         }
-        // Reminders (optional)
-        let reminderCalendars: [EKCalendar]? = {
-            if calendarManager.selectedReminderListID.isEmpty { return nil }
-            return eventStore.calendars(for: .reminder).filter { $0.calendarIdentifier == calendarManager.selectedReminderListID }
-        }()
-
-        let reminderPredicate = eventStore.predicateForIncompleteReminders(withDueDateStarting: window.start, ending: window.end, calendars: reminderCalendars)
-        eventStore.fetchReminders(matching: reminderPredicate) { reminders in
-            guard let reminders else { return }
-            let mappedReminders = reminders.compactMap { reminder -> CalendarEvent? in
-                guard let dueDate = reminder.dueDateComponents?.date else { return nil }
-                return CalendarEvent(
-                    title: reminder.title,
-                    startDate: dueDate,
-                    endDate: dueDate,
-                    location: reminder.location,
-                    notes: reminder.notes,
-                    url: nil,
-                    alarms: nil,
-                    travelTime: nil,
-                    ekIdentifier: reminder.calendarItemIdentifier,
-                    isReminder: true,
-                    category: nil,
-                    canEdit: reminder.calendar.allowsContentModifications,
-                    isRecurring: false
-                )
-            }
-            DispatchQueue.main.async {
-                self.syncedEvents.append(contentsOf: mappedReminders)
-                // update counts with reminders too
-                let dates = self.syncedEvents.map { calendar.startOfDay(for: $0.startDate) }
-                _Concurrency.Task { @MainActor in
-                    eventsStore.update(dates: dates)
-                }
-                updateMetrics()
-            }
-        }
+        updateMetrics()
     }
 
     private func formattedTimeRange(start: Date, end: Date) -> String {
@@ -642,7 +722,13 @@ struct CalendarPageView: View {
 
     private func updateMetrics() {
         // CalendarStats.calculate expects [EKEvent]
-        metrics = CalendarStats.calculate(from: filteredEvents, for: focusedDate)
+        let source = hydratedEKEvents.isEmpty ? filteredEvents : hydratedEKEvents
+        metrics = CalendarStats.calculate(from: source, for: focusedDate)
+    }
+
+    private func formattedMillis(_ interval: TimeInterval?) -> String {
+        guard let interval else { return "—" }
+        return String(format: "%.0f ms", interval * 1000)
     }
 }
 
