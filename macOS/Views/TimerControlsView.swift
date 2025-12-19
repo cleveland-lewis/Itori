@@ -37,6 +37,13 @@ struct TimerControlsView: View {
                         viewModel.endSession(completed: false)
                     }
                 }
+                
+                // Skip button for Pomodoro mode only, when running
+                if currentMode == .pomodoro && viewModel.currentSession?.state == .running {
+                    button(label: "Skip", systemImage: "forward.fill", prominent: false) {
+                        viewModel.skipSegment()
+                    }
+                }
             }
 
             if currentMode == .pomodoro {

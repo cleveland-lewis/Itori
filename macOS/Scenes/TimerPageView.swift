@@ -64,19 +64,29 @@ struct TimerPageView: View {
     private let maxSessionCount = 20000
 
     var body: some View {
-        ScrollView {
-            ZStack {
-                Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
-
-                VStack(spacing: 20) {
-                    topBar
-                    mainGrid
-                    bottomSummary
-                }
-                .padding(.horizontal, 32)
-                .padding(.vertical, 24)
+        VStack(spacing: 0) {
+            // Top bar region
+            VStack(spacing: 20) {
+                topBar
             }
+            .padding(.horizontal, 32)
+            .padding(.top, 24)
+            
+            // Main content region (fills available space)
+            mainGrid
+                .padding(.horizontal, 32)
+                .padding(.vertical, 20)
+                .frame(maxHeight: .infinity, alignment: .top)
+            
+            // Bottom dock/summary region
+            VStack(spacing: 0) {
+                bottomSummary
+            }
+            .padding(.horizontal, 32)
+            .padding(.bottom, 24)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(nsColor: .windowBackgroundColor))
         .timerContextMenu(
             isRunning: $isRunning,
             onStart: startTimer,
@@ -279,35 +289,26 @@ struct TimerPageView: View {
     // MARK: Main Grid
 
     private var mainGrid: some View {
-        ViewThatFits {
-            // Wide layout
-            HStack(alignment: .top, spacing: DesignSystem.Layout.spacing.medium) {
-                // LEFT: existing timer UI (activities + center stack)
-                HStack(alignment: .top, spacing: 16) {
-                    activitiesColumn
-                        .frame(minWidth: 250, idealWidth: 350, maxWidth: 450)
-                    VStack(spacing: 16) {
-                        timerCoreCard
-                        activityDetailPanel
-                    }
-                    .frame(minWidth: 300, idealWidth: 400, maxWidth: 500)
-                }
-                .frame(maxWidth: .infinity)
-
-                // RIGHT: new study summary pane
-                TimerRightPane(activities: activities)
-                    .frame(width: 420, alignment: .top)
-            }
+        HStack(alignment: .top, spacing: 20) {
+            // LEFT: Activities panel
+            activitiesColumn
+                .frame(minWidth: 260, idealWidth: 320, maxWidth: 360)
+                .layoutPriority(0)
             
-            // Compact layout
+            // CENTER: Timer card (should stay centered)
             VStack(spacing: 16) {
-                activitiesColumn
                 timerCoreCard
                 activityDetailPanel
-                analyticsCard
             }
+            .frame(maxWidth: .infinity)
+            .layoutPriority(1)
+            
+            // RIGHT: Study summary pane
+            TimerRightPane(activities: activities)
+                .frame(minWidth: 220, idealWidth: 260, maxWidth: 320)
+                .layoutPriority(0)
         }
-        .frame(maxHeight: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
     // MARK: Activities Column
