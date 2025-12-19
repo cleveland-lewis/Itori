@@ -46,8 +46,8 @@ struct TimerControlsView: View {
 
             if currentMode == .pomodoro {
                 HStack(spacing: 12) {
-                    durationControl(title: "Focus", duration: $viewModel.focusDuration, symbol: "flame")
-                    durationControl(title: "Break", duration: $viewModel.breakDuration, symbol: "cup.and.saucer")
+                    durationControl(title: "Focus", duration: $viewModel.focusDuration, symbol: "flame", isDisabled: viewModel.currentSession?.state == .running)
+                    durationControl(title: "Break", duration: $viewModel.breakDuration, symbol: "cup.and.saucer", isDisabled: viewModel.currentSession?.state == .running)
                     Label(viewModel.isOnBreak ? "Break" : "Focus", systemImage: viewModel.isOnBreak ? "leaf" : "bolt.fill")
                         .font(.subheadline.weight(.semibold))
                         .padding(10)
@@ -55,7 +55,7 @@ struct TimerControlsView: View {
                         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
                 }
             } else if currentMode == .timer {
-                durationControl(title: "Duration", duration: $viewModel.timerDuration, symbol: "clock")
+                durationControl(title: "Duration", duration: $viewModel.timerDuration, symbol: "clock", isDisabled: viewModel.currentSession?.state == .running)
             }
         }
         .padding(DesignSystem.Layout.padding.card)
@@ -106,13 +106,14 @@ struct TimerControlsView: View {
         .buttonStyle(style)
     }
 
-    private func durationControl(title: String, duration: Binding<TimeInterval>, symbol: String) -> some View {
+    private func durationControl(title: String, duration: Binding<TimeInterval>, symbol: String, isDisabled: Bool = false) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Label(title, systemImage: symbol)
                 .font(.caption.weight(.semibold))
                 .foregroundColor(.secondary)
             HStack {
                 Slider(value: Binding(get: { duration.wrappedValue / 60 }, set: { duration.wrappedValue = $0 * 60 }), in: 5...120, step: 5)
+                    .disabled(isDisabled)
                 Text("\(Int(duration.wrappedValue / 60))m")
                     .font(.caption.monospacedDigit())
                     .foregroundColor(.secondary)
@@ -122,6 +123,7 @@ struct TimerControlsView: View {
         .padding(10)
         .background(.thinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+        .opacity(isDisabled ? 0.5 : 1.0)
     }
 
     private var timeDisplay: String {
