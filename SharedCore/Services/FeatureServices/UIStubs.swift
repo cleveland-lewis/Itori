@@ -215,6 +215,7 @@ extension EventCategory {
 // New shared Add Event popup used throughout the app
 struct AddEventPopup: View {
     @EnvironmentObject var calendarManager: CalendarManager
+    @EnvironmentObject var settings: AppSettingsModel
     @Environment(\.dismiss) private var dismiss
 
     @State private var title: String = ""
@@ -234,6 +235,11 @@ struct AddEventPopup: View {
     @State private var primaryAlertMinutes: Int? = nil
     @State private var secondaryAlertMinutes: Int? = nil
     @State private var isSaving: Bool = false
+    @State private var selectedCalendarID: String = ""
+
+    private var availableCalendars: [EKCalendar] {
+        DeviceCalendarManager.shared.store.calendars(for: .event).filter { $0.allowsContentModifications }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -395,6 +401,47 @@ struct AddEventPopup: View {
                     Divider()
                         .padding(.leading, 20)
                     
+                    // Calendar picker with school calendar lock support
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "calendar.badge.plus")
+                                .foregroundColor(.secondary)
+                                .frame(width: 20)
+                            Text("Calendar")
+                                .frame(width: 60, alignment: .leading)
+                            Picker("", selection: $selectedCalendarID) {
+                                ForEach(availableCalendars, id: \.calendarIdentifier) { calendar in
+                                    HStack(spacing: 6) {
+                                        if let cgColor = calendar.cgColor {
+                                            Circle()
+                                                .fill(Color(cgColor: cgColor))
+                                                .frame(width: 8, height: 8)
+                                        }
+                                        Text(calendar.title)
+                                    }
+                                    .tag(calendar.calendarIdentifier)
+                                }
+                            }
+                            .labelsHidden()
+                            .pickerStyle(.menu)
+                            .disabled(settings.lockCalendarPickerToSchool)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
+                        
+                        if settings.lockCalendarPickerToSchool {
+                            Text("Calendar locked to school calendar")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .padding(.leading, 52)
+                                .padding(.bottom, 6)
+                        }
+                    }
+                    
+                    Divider()
+                        .padding(.leading, 20)
+                    
                     // Category picker with menu style
                     HStack(spacing: 12) {
                         Image(systemName: "tag")
@@ -458,6 +505,16 @@ struct AddEventPopup: View {
             .padding(.vertical, 14)
         }
         .frame(width: 480, height: 560)
+        .onAppear {
+            // Initialize calendar selection to school calendar or default
+            if let schoolCalendar = getSelectedSchoolCalendar() {
+                selectedCalendarID = schoolCalendar.calendarIdentifier
+            } else if let defaultCalendar = DeviceCalendarManager.shared.store.defaultCalendarForNewEvents {
+                selectedCalendarID = defaultCalendar.calendarIdentifier
+            } else if let firstCalendar = availableCalendars.first {
+                selectedCalendarID = firstCalendar.calendarIdentifier
+            }
+        }
     }
 
     private func parseCategory(from title: String) -> EventCategory? {
@@ -507,7 +564,11 @@ struct AddEventPopup: View {
                 if !builtAlarms.isEmpty { alarms = builtAlarms }
                 let urlVal = URL(string: urlString)
                 let rule = buildRecurrenceRule(option: recurrence, interval: recurrenceInterval, weekdays: weekdaySelection, endCount: recurrenceEndCount, endDate: recurrenceEndDate)
-                try await calendarManager.saveEvent(title: title, startDate: startDate, endDate: endDate, isAllDay: isAllDay, location: location, notes: notes, url: urlVal, alarms: alarms, recurrenceRule: rule, calendar: nil)
+                
+                // Use selected calendar from picker
+                let targetCalendar = availableCalendars.first(where: { $0.calendarIdentifier == selectedCalendarID })
+                
+                try await calendarManager.saveEvent(title: title, startDate: startDate, endDate: endDate, isAllDay: isAllDay, location: location, notes: notes, url: urlVal, alarms: alarms, recurrenceRule: rule, calendar: targetCalendar, category: category)
                 // refresh device events
                 await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
             } catch {
@@ -516,6 +577,40 @@ struct AddEventPopup: View {
             isSaving = false
             dismiss()
         }
+    }
+    
+    /// Get the selected school calendar for new events
+    /// Returns the calendar if found and writable, otherwise nil (will fallback to default)
+    private func getSelectedSchoolCalendar() -> EKCalendar? {
+        let selectedID = calendarManager.selectedCalendarID
+        guard !selectedID.isEmpty else {
+            Task { @MainActor in
+                Diagnostics.shared.log(.info, subsystem: .calendar, category: "AddEvent", message: "No school calendar selected, will use system default")
+            }
+            return nil
+        }
+        
+        let store = DeviceCalendarManager.shared.store
+        let calendars = store.calendars(for: .event)
+        
+        guard let calendar = calendars.first(where: { $0.calendarIdentifier == selectedID }) else {
+            Task { @MainActor in
+                Diagnostics.shared.log(.warn, subsystem: .calendar, category: "AddEvent", message: "Selected school calendar (ID: \(selectedID)) not found, will use system default")
+            }
+            return nil
+        }
+        
+        guard calendar.allowsContentModifications else {
+            Task { @MainActor in
+                Diagnostics.shared.log(.warn, subsystem: .calendar, category: "AddEvent", message: "Selected school calendar '\(calendar.title)' is read-only, will use system default")
+            }
+            return nil
+        }
+        
+        Task { @MainActor in
+            Diagnostics.shared.log(.info, subsystem: .calendar, category: "AddEvent", message: "Using selected school calendar: \(calendar.title)")
+        }
+        return calendar
     }
 }
 
