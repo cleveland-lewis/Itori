@@ -28,6 +28,52 @@ final class AssignmentsStore: ObservableObject {
         
         // Schedule notification for new task
         scheduleNotificationIfNeeded(for: task)
+        
+        // Generate plan immediately for the new assignment
+        Task { @MainActor in
+            generatePlanForNewTask(task)
+        }
+    }
+    
+    private func generatePlanForNewTask(_ task: AppTask) {
+        guard let assignment = convertTaskToAssignment(task) else { return }
+        AssignmentPlansStore.shared.generatePlan(for: assignment, force: false)
+    }
+    
+    private func convertTaskToAssignment(_ task: AppTask) -> Assignment? {
+        guard let due = task.due else { return nil }
+        
+        let assignmentCategory: AssignmentCategory
+        switch task.category {
+        case .exam: assignmentCategory = .exam
+        case .quiz: assignmentCategory = .quiz
+        case .practiceHomework: assignmentCategory = .practiceHomework
+        case .reading: assignmentCategory = .reading
+        case .review: assignmentCategory = .review
+        case .project: assignmentCategory = .project
+        }
+        
+        return Assignment(
+            id: task.id,
+            courseId: task.courseId,
+            title: task.title,
+            dueDate: due,
+            estimatedMinutes: task.estimatedMinutes,
+            weightPercent: task.gradeWeightPercent,
+            category: assignmentCategory,
+            urgency: urgencyFromImportance(task.importance),
+            isLockedToDueDate: task.locked,
+            plan: []
+        )
+    }
+    
+    private func urgencyFromImportance(_ importance: Double) -> AssignmentUrgency {
+        switch importance {
+        case ..<0.3: return .low
+        case ..<0.6: return .medium
+        case ..<0.85: return .high
+        default: return .critical
+        }
     }
 
     func removeTask(id: UUID) {
@@ -48,6 +94,16 @@ final class AssignmentsStore: ObservableObject {
             return !tasks[idx].isCompleted
         }()
         
+        // Check if key fields changed that require plan regeneration
+        let needsPlanRegeneration: Bool = {
+            guard let idx = tasks.firstIndex(where: { $0.id == task.id }) else { return false }
+            let old = tasks[idx]
+            return old.due != task.due ||
+                   old.estimatedMinutes != task.estimatedMinutes ||
+                   old.category != task.category ||
+                   old.importance != task.importance
+        }()
+        
         if let idx = tasks.firstIndex(where: { $0.id == task.id }) {
             tasks[idx] = task
         }
@@ -58,6 +114,13 @@ final class AssignmentsStore: ObservableObject {
         
         // Reschedule notification for updated task
         rescheduleNotificationIfNeeded(for: task)
+        
+        // Regenerate plan if key fields changed
+        if needsPlanRegeneration {
+            Task { @MainActor in
+                generatePlanForNewTask(task)
+            }
+        }
         
         // Play completion feedback if task was just completed
         if wasJustCompleted {

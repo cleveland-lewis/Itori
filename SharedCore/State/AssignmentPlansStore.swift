@@ -48,6 +48,11 @@ final class AssignmentPlansStore: ObservableObject {
         let plan = AssignmentPlanEngine.generatePlan(for: assignment, settings: settings)
         plans[assignment.id] = plan
         save()
+        
+        // Trigger AI scheduler to schedule the sessions
+        Task { @MainActor in
+            scheduleAssignmentSessions(for: assignment)
+        }
     }
     
     /// Generate plans for multiple assignments
@@ -61,6 +66,45 @@ final class AssignmentPlansStore: ObservableObject {
     func regenerateAllPlans(for assignments: [Assignment]) {
         generatePlans(for: assignments, force: true)
         lastRefreshDate = Date()
+    }
+    
+    // MARK: - AI Scheduler Integration
+    
+    private func scheduleAssignmentSessions(for assignment: Assignment) {
+        // Convert assignment to PlannerEngine format and trigger scheduling
+        let plannerSession = PlannerSession(
+            id: UUID(),
+            assignmentId: assignment.id,
+            sessionIndex: 1,
+            sessionCount: 1,
+            title: assignment.title,
+            dueDate: assignment.dueDate,
+            category: assignment.category,
+            importance: assignment.urgency,
+            difficulty: assignment.urgency,
+            estimatedMinutes: assignment.estimatedMinutes,
+            isLockedToDueDate: assignment.isLockedToDueDate,
+            scheduleIndex: 0
+        )
+        
+        // Generate all sessions for this assignment
+        let settings = StudyPlanSettings()
+        let sessions = PlannerEngine.generateSessions(for: assignment, settings: settings)
+        
+        // Schedule them using the planner engine
+        let energyProfile = defaultEnergyProfile()
+        let result = PlannerEngine.scheduleSessions(sessions, settings: settings, energyProfile: energyProfile)
+        
+        // Persist to planner store
+        PlannerStore.shared.persist(scheduled: result.scheduled, overflow: result.overflow)
+    }
+    
+    private func defaultEnergyProfile() -> [Int: Double] {
+        [
+            9: 0.55, 10: 0.65, 11: 0.7, 12: 0.6,
+            13: 0.5, 14: 0.55, 15: 0.65, 16: 0.7,
+            17: 0.6, 18: 0.5, 19: 0.45, 20: 0.4
+        ]
     }
     
     // MARK: - Plan Lifecycle
