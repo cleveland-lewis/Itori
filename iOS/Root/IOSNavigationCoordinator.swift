@@ -41,7 +41,13 @@ struct IOSTabConfiguration {
     static func tabs(from settings: AppSettingsModel) -> [RootTab] {
         let visible = settings.effectiveVisibleTabs
         let ordered = settings.tabOrder
-        let filtered = ordered.filter { visible.contains($0) && tabCandidates.contains($0) }
+        var filtered = ordered.filter { visible.contains($0) && tabCandidates.contains($0) }
+        
+        // Always ensure settings is included if it's not already
+        if !filtered.contains(.settings) {
+            filtered.append(.settings)
+        }
+        
         return filtered.isEmpty ? defaultTabs : filtered
     }
 }
