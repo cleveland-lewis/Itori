@@ -4,7 +4,7 @@ import Combine
 
 // MARK: - Models
 
-enum AssignmentStatus: String, CaseIterable, Identifiable, Codable {
+enum LocalAssignmentStatus: String, CaseIterable, Identifiable, Codable {
     case notStarted, inProgress, completed, archived
     var id: String { rawValue }
 
@@ -18,7 +18,7 @@ enum AssignmentStatus: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-enum AssignmentUrgency: String, CaseIterable, Identifiable, Codable {
+enum LocalAssignmentUrgency: String, CaseIterable, Identifiable, Codable {
     case low, medium, high, critical
     var id: String { rawValue }
 
@@ -32,7 +32,7 @@ enum AssignmentUrgency: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-enum AssignmentCategory: String, CaseIterable, Codable, Identifiable {
+enum LocalAssignmentCategory: String, CaseIterable, Codable, Identifiable {
     case project
     case exam
     case quiz
@@ -87,7 +87,7 @@ extension AssignmentCategory {
 }
 
 extension Assignment {
-    static func defaultPlan(for category: AssignmentCategory, due: Date, totalMinutes: Int) -> [PlanStep] {
+    static func defaultPlan(for category: LocalAssignmentCategory, due: Date, totalMinutes: Int) -> [PlanStep] {
         let cal = Calendar.current
         func dayOffset(_ days: Int) -> Date {
             cal.date(byAdding: .day, value: -days, to: due) ?? due
@@ -136,7 +136,7 @@ extension Assignment {
     }
 }
 
-func suggestedSessionLength(_ bias: EffortBias) -> Int {
+fileprivate func suggestedSessionLength(_ bias: EffortBias) -> Int {
     switch bias {
     case .shortBursts:  return 30
     case .mediumBlocks: return 60
@@ -144,7 +144,7 @@ func suggestedSessionLength(_ bias: EffortBias) -> Int {
     }
 }
 
-struct Assignment: Identifiable, Hashable, Codable {
+struct LocalAssignment: Identifiable, Hashable, Codable {
     struct PlanStep: Identifiable, Hashable, Codable {
         let id: UUID
         var title: String
@@ -158,18 +158,18 @@ struct Assignment: Identifiable, Hashable, Codable {
     var title: String
     var courseCode: String
     var courseName: String
-    var category: AssignmentCategory
+    var category: LocalAssignmentCategory
     var dueDate: Date
     var estimatedMinutes: Int
-    var status: AssignmentStatus
-    var urgency: AssignmentUrgency
+    var status: LocalAssignmentStatus
+    var urgency: LocalAssignmentUrgency
     var weightPercent: Double?
     var isLockedToDueDate: Bool
     var notes: String
     var plan: [PlanStep]
 
     // backward-compat convenience init for older data
-    init(id: UUID = UUID(), courseId: UUID? = nil, title: String = "", courseCode: String = "", courseName: String = "", category: AssignmentCategory = .practiceHomework, dueDate: Date = Date(), estimatedMinutes: Int = 60, status: AssignmentStatus = .notStarted, urgency: AssignmentUrgency = .medium, weightPercent: Double? = nil, isLockedToDueDate: Bool = false, notes: String = "", plan: [PlanStep]? = nil) {
+    init(id: UUID = UUID(), courseId: UUID? = nil, title: String = "", courseCode: String = "", courseName: String = "", category: LocalAssignmentCategory = .practiceHomework, dueDate: Date = Date(), estimatedMinutes: Int = 60, status: LocalAssignmentStatus = .notStarted, urgency: LocalAssignmentUrgency = .medium, weightPercent: Double? = nil, isLockedToDueDate: Bool = false, notes: String = "", plan: [PlanStep]? = nil) {
         self.id = id
         self.courseId = courseId
         self.title = title
@@ -222,7 +222,7 @@ struct AssignmentsPageView: View {
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var appModel: AppModel
 
-    @State private var assignments: [Assignment] = []
+    @State private var assignments: [LocalAssignment] = []
     @State private var courseDeletedCancellable: AnyCancellable? = nil
     @State private var selectedSegment: AssignmentSegment = .all
     @State private var selectedAssignment: Assignment? = nil
@@ -230,7 +230,7 @@ struct AssignmentsPageView: View {
     @State private var showNewAssignmentSheet: Bool = false
     @State private var editingAssignment: Assignment? = nil
     @State private var sortOption: AssignmentSortOption = .byDueDate
-    @State private var filterStatus: AssignmentStatus? = nil
+    @State private var filterStatus: LocalAssignmentStatus? = nil
     @State private var filterCourse: String? = nil
     @State private var showFilterPopover: Bool = false
     // Drag selection state
@@ -239,7 +239,7 @@ struct AssignmentsPageView: View {
     @State private var selectionMenuLocation: CGPoint?
     @State private var selectedIDs: Set<UUID> = []
     @State private var assignmentFrames: [UUID: CGRect] = [:]
-    @State private var clipboard: [Assignment] = []
+    @State private var clipboard: [LocalAssignment] = []
 
     private let cardCorner: CGFloat = 24
 
@@ -470,7 +470,7 @@ struct AssignmentsPageView: View {
 
     // MARK: Helpers
 
-    private var filteredAndSortedAssignments: [Assignment] {
+    private var filteredAndSortedAssignments: [LocalAssignment] {
         let calendar = Calendar.current
         let todayStart = calendar.startOfDay(for: Date())
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: todayStart) ?? Date()
@@ -580,7 +580,7 @@ struct AssignmentsPageView: View {
     }
 
     private func autoPlanSelectedAssignments() {
-        let targetAssignments: [Assignment]
+        let targetAssignments: [LocalAssignment]
         if let selectedAssignment {
             targetAssignments = [selectedAssignment]
         } else {
@@ -638,7 +638,7 @@ struct AssignmentsPageView: View {
 // MARK: - Summary Cards
 
 struct TodaySummaryCard: View {
-    var assignments: [Assignment]
+    var assignments: [LocalAssignment]
     @Binding var selectedSegment: AssignmentSegment
 
     var body: some View {
@@ -673,7 +673,7 @@ struct TodaySummaryCard: View {
 }
 
 struct ByCourseSummaryCard: View {
-    var assignments: [Assignment]
+    var assignments: [LocalAssignment]
     var onSelectCourse: (String) -> Void
     @Environment(\.colorScheme) private var colorScheme
 
@@ -718,7 +718,7 @@ struct ByCourseSummaryCard: View {
 }
 
 struct LoadTimelineCard: View {
-    var assignments: [Assignment]
+    var assignments: [LocalAssignment]
 
     var body: some View {
         let calendar = Calendar.current
@@ -755,7 +755,7 @@ struct LoadTimelineCard: View {
         .frame(maxWidth: .infinity)
     }
 
-    private func urgencyValue(_ urgency: AssignmentUrgency) -> Int {
+    private func urgencyValue(_ urgency: LocalAssignmentUrgency) -> Int {
         switch urgency {
         case .low: return 1
         case .medium: return 2
@@ -781,7 +781,7 @@ struct LoadTimelineCard: View {
 }
 
 struct UpcomingCountCard: View {
-    var assignments: [Assignment]
+    var assignments: [LocalAssignment]
 
     var body: some View {
         let cal = Calendar.current
@@ -807,7 +807,7 @@ struct UpcomingCountCard: View {
 }
 
 struct MissedCountCard: View {
-    var assignments: [Assignment]
+    var assignments: [LocalAssignment]
 
     var body: some View {
         let cal = Calendar.current
@@ -834,7 +834,7 @@ struct MissedCountCard: View {
 
 // MARK: - Assignment Row
 
-struct AssignmentsPageRow: View {
+struct LocalAssignmentsPageRow: View {
     var assignment: Assignment
     var isSelected: Bool
     var onToggleComplete: () -> Void
@@ -956,11 +956,11 @@ struct AssignmentsPageRow: View {
 
 // MARK: - Detail Panel
 
-struct AssignmentDetailPanel: View {
+struct LocalAssignmentDetailPanel: View {
     @Binding var assignment: Assignment?
-    var onUpdate: (Assignment) -> Void
-    var onEdit: (Assignment) -> Void
-    var onDelete: (Assignment) -> Void
+    var onUpdate: (LocalAssignment) -> Void
+    var onEdit: (LocalAssignment) -> Void
+    var onDelete: (LocalAssignment) -> Void
 
     private let cardCorner: CGFloat = 24
 
@@ -1192,23 +1192,23 @@ struct AssignmentDetailPanel: View {
 
 // MARK: - Editor Sheet
 
-struct AssignmentEditorSheet: View {
+struct LocalAssignmentEditorSheet: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var coursesStore: CoursesStore
 
     var assignment: Assignment?
-    var onSave: (Assignment) -> Void
+    var onSave: (LocalAssignment) -> Void
 
     @State private var title: String = ""
     @State private var selectedCourseId: UUID? = nil
-    @State private var category: AssignmentCategory = .practiceHomework
+    @State private var category: LocalAssignmentCategory = .practiceHomework
     @State private var dueDate: Date = Date()
     @State private var estimatedMinutes: Int = 60
-    @State private var urgency: AssignmentUrgency = .medium
+    @State private var urgency: LocalAssignmentUrgency = .medium
     @State private var weightText: String = ""
     @State private var isLocked: Bool = false
     @State private var notes: String = ""
-    @State private var status: AssignmentStatus = .notStarted
+    @State private var status: LocalAssignmentStatus = .notStarted
 
     var body: some View {
         RootsPopupContainer(
@@ -1403,7 +1403,7 @@ struct AssignmentEditorSheet: View {
 // MARK: - Samples
 
 private extension AssignmentsPageView {
-    static var sampleAssignments: [Assignment] { [] }
+    static var sampleAssignments: [LocalAssignment] { [] }
 }
 
 // MARK: - Drag Selection (Assignments)
@@ -1546,7 +1546,7 @@ private extension AssignmentsPageView {
 
 // MARK: - Preferences
 
-private struct AssignmentFramePreference: PreferenceKey {
+private struct LocalAssignmentFramePreference: PreferenceKey {
     static var defaultValue: [UUID: CGRect] = [:]
     static func reduce(value: inout [UUID: CGRect], nextValue: () -> [UUID: CGRect]) {
         value.merge(nextValue(), uniquingKeysWith: { $1 })

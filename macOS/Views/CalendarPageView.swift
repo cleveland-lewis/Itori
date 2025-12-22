@@ -199,16 +199,17 @@ struct CalendarPageView: View {
             HStack(alignment: .top, spacing: 16) {
                 // Left sidebar showing events for selected date
                 eventSidebarView
-                    .frame(width: 280, maxHeight: .infinity)
-                
+                    .frame(width: 280, maxHeight: .infinity, alignment: .top)
+
                 // Main calendar grid
                 VStack(spacing: 12) {
                     gridContent
+                    Spacer(minLength: 0)
                 }
                 .padding()
                 .background(DesignSystem.Materials.card)
                 .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
@@ -265,7 +266,7 @@ struct CalendarPageView: View {
             // Event list
             eventListView
         }
-        .frame(maxHeight: .infinity)
+        .frame(maxHeight: .infinity, alignment: .top)
         .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
     }

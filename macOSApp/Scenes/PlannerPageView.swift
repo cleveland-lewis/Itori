@@ -400,13 +400,13 @@ private extension PlannerPageView {
 private extension PlannerPageView {
     func syncTodayTasksAndSchedule() {
         // Generate sessions for all assignments, schedule across days, then filter for selected date.
-        func urgency(from importance: Double) -> AssignmentUrgency {
+        func urgency(from importance: Double) -> LocalAssignmentUrgency {
             if importance >= 0.75 { return .high }
             if importance >= 0.5 { return .medium }
             return .low
         }
 
-        func category(from type: TaskType) -> AssignmentCategory {
+        func category(from type: TaskType) -> LocalAssignmentCategory {
             switch type {
             case .exam: return .exam
             case .quiz: return .quiz
@@ -418,7 +418,7 @@ private extension PlannerPageView {
         }
 
         let assignments = assignmentsStore.tasks.map { task in
-            Assignment(
+            LocalAssignment(
                 id: task.id,
                 courseId: task.courseId,
                 title: task.title,

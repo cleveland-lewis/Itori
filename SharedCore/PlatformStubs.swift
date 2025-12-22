@@ -1,6 +1,7 @@
-#if !os(macOS)
 import Foundation
 import SwiftUI
+
+#if !os(macOS)
 import UIKit
 
 // Minimal stubs for macOS-only types used by shared code when building for iOS.
@@ -130,46 +131,6 @@ public enum RootTab: String, CaseIterable, Identifiable {
     public var logKey: String { title.lowercased().replacingOccurrences(of: " ", with: "") }
 }
 
-public enum AssignmentCategory: String, CaseIterable, Codable {
-    case reading, exam, homework, practiceHomework, quiz, review, project
-}
-
-public enum AssignmentUrgency: String, Codable, CaseIterable, Hashable {
-    case low, medium, high, critical
-}
-
-public struct PlanStepStub: Codable, Hashable {
-    public var title: String
-    public var expectedMinutes: Int
-    public init(title: String = "", expectedMinutes: Int = 0) { self.title = title; self.expectedMinutes = expectedMinutes }
-}
-
-public struct Assignment: Identifiable, Codable, Hashable {
-    public let id: UUID
-    public var courseId: UUID?
-    public var title: String
-    public var dueDate: Date
-    public var estimatedMinutes: Int
-    public var weightPercent: Double?
-    public var category: AssignmentCategory
-    public var urgency: AssignmentUrgency
-    public var isLockedToDueDate: Bool
-    public var plan: [PlanStepStub]
-
-    public init(id: UUID = UUID(), courseId: UUID? = nil, title: String = "", dueDate: Date = Date(), estimatedMinutes: Int = 60, weightPercent: Double? = nil, category: AssignmentCategory = .practiceHomework, urgency: AssignmentUrgency = .medium, isLockedToDueDate: Bool = false, plan: [PlanStepStub] = []) {
-        self.id = id
-        self.courseId = courseId
-        self.title = title
-        self.dueDate = dueDate
-        self.estimatedMinutes = estimatedMinutes
-        self.weightPercent = weightPercent
-        self.category = category
-        self.urgency = urgency
-        self.isLockedToDueDate = isLockedToDueDate
-        self.plan = plan
-    }
-}
-
 public enum CalendarViewMode: String, Codable {
     case day, week, month
 }
@@ -226,8 +187,3 @@ public extension LoadableViewModel {
 }
 
 #endif
-
-// EventCategoryStub is used across platforms for calendar event categorization
-public enum EventCategoryStub: String, Codable, CaseIterable {
-    case homework, classSession, study, exam, meeting, other
-}

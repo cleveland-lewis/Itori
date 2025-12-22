@@ -57,19 +57,13 @@ struct IOSDashboardView: View {
                     )
                 )
                 .overlay(
-                    Circle()
-                        .fill(Color.white.opacity(0.08))
-                        .frame(width: 160, height: 160)
-                        .offset(x: 120, y: -90)
-                )
-                .overlay(
                     RoundedRectangle(cornerRadius: 26, style: .continuous)
                         .stroke(Color.white.opacity(0.12), lineWidth: 1)
                 )
 
             VStack(alignment: .leading, spacing: 10) {
                 Text(greeting)
-                    .font(.title2.weight(.semibold))
+                    .font(.largeTitle.weight(.bold))
                     .foregroundStyle(.white)
                 Text(formattedDate)
                     .font(.subheadline)
@@ -216,16 +210,43 @@ struct IOSDashboardView: View {
 
     private var greeting: String {
         let hour = calendar.component(.hour, from: Date())
+        let greetings: [String]
+        
         switch hour {
         case 5..<12:
-            return "Good morning"
+            greetings = [
+                "Good morning",
+                "Rise and shine",
+                "Morning",
+                "Start strong today",
+                "Welcome back"
+            ]
         case 12..<17:
-            return "Good afternoon"
+            greetings = [
+                "Good afternoon",
+                "Afternoon",
+                "Keep it up",
+                "Stay focused",
+                "Making progress"
+            ]
         case 17..<22:
-            return "Good evening"
+            greetings = [
+                "Good evening",
+                "Evening",
+                "Wrapping up",
+                "Almost there",
+                "Finish strong"
+            ]
         default:
-            return "Hello"
+            greetings = [
+                "Hello",
+                "Welcome back",
+                "Still working",
+                "Burning the midnight oil"
+            ]
         }
+        
+        return greetings.randomElement() ?? "Hello"
     }
 
     private var formattedDate: String {

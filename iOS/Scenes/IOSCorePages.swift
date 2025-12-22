@@ -739,16 +739,22 @@ struct IOSTaskEditorView: View {
         var importance: Double = 0.6
         var difficulty: Double = 0.6
 
-        init(task: AppTask? = nil) {
-            guard let task else { return }
-            title = task.title
-            hasDueDate = task.due != nil
-            dueDate = task.due ?? dueDate
-            estimatedMinutes = task.estimatedMinutes
-            courseId = task.courseId
-            type = task.type
-            importance = task.importance
-            difficulty = task.difficulty
+        init(task: AppTask? = nil, title: String? = nil, courseId: UUID? = nil, dueDate: Date? = nil, type: TaskType? = nil) {
+            if let task {
+                self.title = task.title
+                self.hasDueDate = task.due != nil
+                self.dueDate = task.due ?? Date()
+                self.estimatedMinutes = task.estimatedMinutes
+                self.courseId = task.courseId
+                self.type = task.type
+                self.importance = task.importance
+                self.difficulty = task.difficulty
+            } else {
+                if let title { self.title = title }
+                if let courseId { self.courseId = courseId }
+                if let dueDate { self.dueDate = dueDate }
+                if let type { self.type = type }
+            }
         }
 
         func makeTask(existing: AppTask?) -> AppTask {
@@ -1135,7 +1141,7 @@ private struct IOSBlockEditorView: View {
     }
 }
 
-private struct IOSFilterHeaderView: View {
+struct IOSFilterHeaderView: View {
     let coursesStore: CoursesStore
     let filterState: IOSFilterState
 
