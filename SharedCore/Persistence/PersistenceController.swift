@@ -4,12 +4,12 @@ import Foundation
 final class PersistenceController {
     static let shared = PersistenceController()
 
-    let container: NSPersistentCloudKitContainer
+    let container: NSPersistentContainer
 
     var viewContext: NSManagedObjectContext { container.viewContext }
 
     init(inMemory: Bool = false) {
-        container = NSPersistentCloudKitContainer(name: "Roots")
+        container = NSPersistentContainer(name: "Roots")
 
         guard let description = container.persistentStoreDescriptions.first else {
             fatalError("Missing persistent store description")
@@ -19,9 +19,7 @@ final class PersistenceController {
             description.url = URL(fileURLWithPath: "/dev/null")
         }
 
-        description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(containerIdentifier: "iCloud.com.cwlewisiii.Roots")
         description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
-        description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
 
         container.loadPersistentStores { _, error in
             if let error {
