@@ -254,6 +254,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         case localModelDownloadedMacOS
         case localModelDownloadediOS
         case aiEnabledStorage
+        case onboardingStateData
     }
 
 
@@ -430,6 +431,9 @@ final class AppSettingsModel: ObservableObject, Codable {
     var localModelDownloadedMacOS: Bool = false
     var localModelDownloadediOS: Bool = false
     var aiEnabledStorage: Bool = false  // Global AI kill switch - DISABLED BY DEFAULT per Issue #175.H
+    
+    // Onboarding state (Issue #208)
+    var onboardingStateData: Data? = nil
     
     // Event load thresholds (persisted)
     var loadLowThresholdStorage: Int = 1
@@ -904,6 +908,30 @@ final class AppSettingsModel: ObservableObject, Codable {
     var aiEnabled: Bool {
         get { aiEnabledStorage }
         set { aiEnabledStorage = newValue }
+    }
+    
+    var onboardingState: OnboardingState {
+        get {
+            guard let data = onboardingStateData else {
+                return .neverSeen
+            }
+            do {
+                let decoder = JSONDecoder()
+                return try decoder.decode(OnboardingState.self, from: data)
+            } catch {
+                LOG_SETTINGS(.error, "OnboardingStateLoad", "Failed to decode onboarding state", metadata: ["error": "\(error)"])
+                return .neverSeen
+            }
+        }
+        set {
+            do {
+                let encoder = JSONEncoder()
+                onboardingStateData = try encoder.encode(newValue)
+                LOG_SETTINGS(.info, "OnboardingStateUpdate", "Onboarding state updated", metadata: ["state": newValue.debugDescription])
+            } catch {
+                LOG_SETTINGS(.error, "OnboardingStateSave", "Failed to encode onboarding state", metadata: ["error": "\(error)"])
+            }
+        }
     }
 
     // Convenience helpers to convert components to Date and back for bindings
