@@ -400,13 +400,13 @@ private extension PlannerPageView {
 private extension PlannerPageView {
     func syncTodayTasksAndSchedule() {
         // Generate sessions for all assignments, schedule across days, then filter for selected date.
-        func urgency(from importance: Double) -> LocalAssignmentUrgency {
+        func urgency(from importance: Double) -> AssignmentUrgency {
             if importance >= 0.75 { return .high }
             if importance >= 0.5 { return .medium }
             return .low
         }
 
-        func category(from type: TaskType) -> LocalAssignmentCategory {
+        func category(from type: TaskType) -> AssignmentCategory {
             switch type {
             case .exam: return .exam
             case .quiz: return .quiz
@@ -418,20 +418,16 @@ private extension PlannerPageView {
         }
 
         let assignments = assignmentsStore.tasks.map { task in
-            LocalAssignment(
+            Assignment(
                 id: task.id,
                 courseId: task.courseId,
                 title: task.title,
-                courseCode: "",
-                courseName: "",
-                category: category(from: task.type),
                 dueDate: task.due ?? Date(),
                 estimatedMinutes: max(30, task.estimatedMinutes),
-                status: task.isCompleted ? .completed : .notStarted,
-                urgency: urgency(from: task.importance),
                 weightPercent: nil,
+                category: category(from: task.type),
+                urgency: urgency(from: task.importance),
                 isLockedToDueDate: task.locked,
-                notes: "",
                 plan: []
             )
         }
@@ -463,7 +459,21 @@ private extension PlannerPageView {
 
         let overflow = scheduledResult.overflow
         unscheduledTasks = overflow.map { session in
-            PlannerTask(
+            let importanceValue: Double
+            if session.importance == .high {
+                importanceValue = 0.8
+            } else {
+                importanceValue = 0.5
+            }
+            
+            let difficultyValue: Double
+            if session.difficulty == .high {
+                difficultyValue = 0.8
+            } else {
+                difficultyValue = 0.5
+            }
+            
+            return PlannerTask(
                 id: session.id,
                 courseId: nil,
                 assignmentId: session.assignmentId,
@@ -474,8 +484,8 @@ private extension PlannerPageView {
                 isLockedToDueDate: session.isLockedToDueDate,
                 isScheduled: false,
                 isCompleted: false,
-                importance: session.importance == .high ? 0.8 : 0.5,
-                difficulty: session.difficulty == .high ? 0.8 : 0.5,
+                importance: importanceValue,
+                difficulty: difficultyValue,
                 category: session.category
             )
         }
