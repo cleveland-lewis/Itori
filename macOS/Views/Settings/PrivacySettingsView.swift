@@ -18,8 +18,8 @@ struct PrivacySettingsView: View {
             }
             .listRowBackground(Color.clear)
             
-            Section("AI Features") {
-                Toggle("Enable AI Features", isOn: Binding(
+            Section("LLM Assistance") {
+                Toggle("Enable LLM Assistance", isOn: Binding(
                     get: { settings.aiEnabled },
                     set: { newValue in
                         if !newValue {
@@ -33,12 +33,12 @@ struct PrivacySettingsView: View {
                 ))
                 
                 if settings.aiEnabled {
-                    Text("AI features are enabled. Roots can use Apple Intelligence, local models, or custom providers based on your AI settings.")
+                    Text("LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } else {
                     Label {
-                        Text("All AI features are disabled. No AI providers will be used.")
+                        Text("All LLM features are disabled. Planning and parsing use deterministic algorithms only.")
                     } icon: {
                         Image(systemName: "lock.shield.fill")
                             .foregroundStyle(.green)
@@ -107,7 +107,7 @@ struct PrivacySettingsView: View {
         .formStyle(.grouped)
         .navigationTitle("Privacy")
         .frame(minWidth: 500, maxWidth: 700)
-        .alert("Disable AI Features?", isPresented: $showingAIDisabledAlert) {
+        .alert("Disable LLM Assistance?", isPresented: $showingAIDisabledAlert) {
             Button("Cancel", role: .cancel) { }
             Button("Disable", role: .destructive) {
                 settings.aiEnabled = false
@@ -115,7 +115,7 @@ struct PrivacySettingsView: View {
                 LOG_SETTINGS(.warn, "AIPrivacy", "AI features disabled by user")
             }
         } message: {
-            Text("This will disable all AI-powered features including Apple Intelligence, local models, and custom providers. Smart suggestions, content analysis, and AI scheduling will not be available.\n\nYou can re-enable AI features at any time.")
+            Text("This will disable all LLM-powered features including Apple Intelligence, local models, and custom providers. Parsing and planning will use deterministic algorithms only.\n\nYou can re-enable LLM assistance at any time.")
         }
     }
 }

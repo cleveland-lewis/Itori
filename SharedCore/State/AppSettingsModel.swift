@@ -429,7 +429,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     var byoProviderConfigData: Data? = nil
     var localModelDownloadedMacOS: Bool = false
     var localModelDownloadediOS: Bool = false
-    var aiEnabledStorage: Bool = true  // Global AI kill switch
+    var aiEnabledStorage: Bool = false  // Global AI kill switch - DISABLED BY DEFAULT per Issue #175.H
     
     // Event load thresholds (persisted)
     var loadLowThresholdStorage: Int = 1
