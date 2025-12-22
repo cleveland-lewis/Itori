@@ -97,7 +97,7 @@ public class SettingsWindowController {
 // Additional lightweight stubs for shared types referenced by iOS target when macOS sources are excluded
 
 public enum RootTab: String, CaseIterable, Identifiable {
-    case dashboard, calendar, planner, assignments, courses, grades, timer, decks, practice
+    case dashboard, calendar, planner, assignments, courses, grades, timer, decks, practice, settings
     public var id: String { rawValue }
 
     public var title: String {
@@ -111,6 +111,7 @@ public enum RootTab: String, CaseIterable, Identifiable {
         case .timer: return "Timer"
         case .decks: return "Decks"
         case .practice: return "Practice"
+        case .settings: return "Settings"
         }
     }
 
@@ -125,6 +126,7 @@ public enum RootTab: String, CaseIterable, Identifiable {
         case .timer: return "timer"
         case .decks: return "rectangle.stack"
         case .practice: return "list.clipboard"
+        case .settings: return "gearshape"
         }
     }
 
