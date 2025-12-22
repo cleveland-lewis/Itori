@@ -11,9 +11,9 @@ struct PlannerView: View {
         
         var localizedString: String {
             switch self {
-            case .today: return NSLocalizedString("planner.mode.today", comment: "Today mode label")
-            case .week: return NSLocalizedString("planner.mode.this_week", comment: "This Week mode label")
-            case .upcoming: return NSLocalizedString("planner.mode.upcoming", comment: "Upcoming mode label")
+            case .today: return String(localized: "planner.mode.today")
+            case .week: return String(localized: "planner.mode.this_week")
+            case .upcoming: return String(localized: "planner.mode.upcoming")
             }
         }
     }
@@ -46,7 +46,7 @@ struct PlannerView: View {
                 // Header controls (title removed)
                 HStack {
                     Spacer()
-                    Button(NSLocalizedString("planner.action.schedule", comment: "Schedule button label")) { runScheduler() }
+                    Button(String(localized: "planner.action.schedule")) { runScheduler() }
                         .buttonStyle(.glassBlueProminent)
                     Button("Re-learn") {
                         var prefs = SchedulerPreferencesStore.shared.preferences
@@ -59,7 +59,7 @@ struct PlannerView: View {
                 }
 
                 // Mode picker
-                Picker(NSLocalizedString("planner.mode.picker_label", comment: "Mode picker label"), selection: $mode) {
+                Picker(String(localized: "planner.mode.picker_label"), selection: $mode) {
                     ForEach(Mode.allCases) { m in
                         Text(m.localizedString).tag(m)
                     }
@@ -70,32 +70,32 @@ struct PlannerView: View {
                 // Scheduler tuning UI
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
                     HStack {
-                        Text(NSLocalizedString("planner.scheduler.min_block", comment: "Min block duration label"))
+                        Text(String(localized: "planner.scheduler.min_block"))
                         Spacer()
-                        Stepper("\(minBlockMinutes) \(NSLocalizedString("planner.scheduler.minutes_short", comment: "Short label for minutes"))", value: $minBlockMinutes, in: 15...60, step: 5)
+                        Stepper("\(minBlockMinutes) \(String(localized: "planner.scheduler.minutes_short"))", value: $minBlockMinutes, in: 15...60, step: 5)
                             .labelsHidden()
                     }
                     HStack {
-                        Text(NSLocalizedString("planner.scheduler.max_block", comment: "Max block duration label"))
+                        Text(String(localized: "planner.scheduler.max_block"))
                         Spacer()
-                        Stepper("\(maxBlockMinutes) \(NSLocalizedString("planner.scheduler.minutes_short", comment: "Short label for minutes"))", value: $maxBlockMinutes, in: 30...240, step: 5)
+                        Stepper("\(maxBlockMinutes) \(String(localized: "planner.scheduler.minutes_short"))", value: $maxBlockMinutes, in: 30...240, step: 5)
                             .labelsHidden()
                     }
                     HStack {
-                        Text(NSLocalizedString("planner.scheduler.horizon_days", comment: "Planning horizon label"))
+                        Text(String(localized: "planner.scheduler.horizon_days"))
                         Spacer()
                         Stepper("\(horizonDays)", value: $horizonDays, in: 1...30)
                             .labelsHidden()
                     }
 
                     HStack {
-                        Text(NSLocalizedString("planner.scheduler.weights", comment: "Weights section label"))
+                        Text(String(localized: "planner.scheduler.weights"))
                         Spacer()
                         VStack(alignment: .trailing) {
-                            HStack { Text(NSLocalizedString("planner.scheduler.weight.urgency", comment: "Urgency weight label")); Slider(value: $weightUrgency, in: 0...1) }
-                            HStack { Text(NSLocalizedString("planner.scheduler.weight.importance", comment: "Importance weight label")); Slider(value: $weightImportance, in: 0...1) }
-                            HStack { Text(NSLocalizedString("planner.scheduler.weight.difficulty", comment: "Difficulty weight label")); Slider(value: $weightDifficulty, in: 0...1) }
-                            HStack { Text(NSLocalizedString("planner.scheduler.weight.size", comment: "Size weight label")); Slider(value: $weightSize, in: 0...1) }
+                            HStack { Text(String(localized: "planner.scheduler.weight.urgency")); Slider(value: $weightUrgency, in: 0...1) }
+                            HStack { Text(String(localized: "planner.scheduler.weight.importance")); Slider(value: $weightImportance, in: 0...1) }
+                            HStack { Text(String(localized: "planner.scheduler.weight.difficulty")); Slider(value: $weightDifficulty, in: 0...1) }
+                            HStack { Text(String(localized: "planner.scheduler.weight.size")); Slider(value: $weightSize, in: 0...1) }
                         }
                     }
                 }
@@ -111,11 +111,11 @@ struct PlannerView: View {
                                     VStack(spacing: DesignSystem.Spacing.small) {
                                         Image(systemName: "calendar.badge.exclamationmark")
                                             .imageScale(.large)
-                                        Text(NSLocalizedString("planner.reminders.access_off", comment: "Reminders access turned off message"))
+                                        Text(String(localized: "planner.reminders.access_off"))
                                             .font(DesignSystem.Typography.title)
-                                        Text(NSLocalizedString("planner.reminders.enable_instructions", comment: "Instructions to enable Reminders access"))
+                                        Text(String(localized: "planner.reminders.enable_instructions"))
                                             .font(DesignSystem.Typography.body)
-                                        Button(NSLocalizedString("planner.reminders.open_settings", comment: "Open System Settings button label")) {
+                                        Button(String(localized: "planner.reminders.open_settings")) {
                                             if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Reminders") {
                                                 #if os(macOS)
                                                 NSWorkspace.shared.open(url)
@@ -151,13 +151,13 @@ struct PlannerView: View {
                     }
 
                     // This Week
-                    Section(header: Text(NSLocalizedString("planner.section.this_week", comment: "This Week section header")).font(DesignSystem.Typography.body)) {
+                    Section(header: Text(String(localized: "planner.section.this_week")).font(DesignSystem.Typography.body)) {
                         if weekTasks.isEmpty {
                             AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "calendar.badge.clock")
                                         .imageScale(.large)
-                                    Text(NSLocalizedString("planner.section.this_week", comment: "This Week empty state title"))
+                                    Text(String(localized: "planner.section.this_week"))
                                         .font(DesignSystem.Typography.title)
                                     Text(DesignSystem.emptyStateMessage)
                                         .font(DesignSystem.Typography.body)
@@ -171,13 +171,13 @@ struct PlannerView: View {
                     }
 
                     // Unscheduled Tasks
-                    Section(header: Text(NSLocalizedString("planner.section.unscheduled", comment: "Unscheduled Tasks section header")).font(DesignSystem.Typography.body)) {
+                    Section(header: Text(String(localized: "planner.section.unscheduled")).font(DesignSystem.Typography.body)) {
                         if unscheduledTasks.isEmpty {
                             AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "tray")
                                         .imageScale(.large)
-                                    Text(NSLocalizedString("planner.section.unscheduled", comment: "Unscheduled Tasks empty state title"))
+                                    Text(String(localized: "planner.section.unscheduled"))
                                         .font(DesignSystem.Typography.title)
                                     Text(DesignSystem.emptyStateMessage)
                                         .font(DesignSystem.Typography.body)
@@ -201,7 +201,7 @@ struct PlannerView: View {
             if let res = scheduleResult {
                 ScheduleResultView(result: res)
             } else {
-                Text(NSLocalizedString("planner.schedule_result.none", comment: "No schedule result message"))
+                Text(String(localized: "planner.schedule_result.none"))
             }
         }
     }

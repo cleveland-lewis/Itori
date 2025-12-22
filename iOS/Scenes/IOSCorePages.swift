@@ -597,7 +597,7 @@ struct IOSPracticeView: View {
 struct IOSSettingsView: View {
     @EnvironmentObject private var settings: AppSettingsModel
     @EnvironmentObject private var coursesStore: CoursesStore
-    @EnvironmentObject private var tabBarPrefs: TabBarPreferencesStore
+    @State private var tabBarPrefs: TabBarPreferencesStore?
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
@@ -636,23 +636,31 @@ struct IOSSettingsView: View {
             }
             
             Section("Tab Bar Pages") {
-                ForEach(TabDefinition.allTabs, id: \.id) { tab in
-                    Toggle(isOn: Binding(
-                        get: { tabBarPrefs.isEnabled(tab.id) },
-                        set: { newValue in
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                tabBarPrefs.setEnabled(newValue, for: tab.id)
+                if let tabPrefs = tabBarPrefs {
+                    ForEach(TabRegistry.allTabs) { tabDef in
+                        HStack {
+                            Toggle(isOn: Binding(
+                                get: { tabPrefs.visibleTabs().contains(tabDef.id) },
+                                set: { newValue in
+                                    tabPrefs.setTabVisibility(tabDef.id, visible: newValue)
+                                }
+                            )) {
+                                Label(tabDef.title, systemImage: tabDef.icon)
+                            }
+                            .disabled(tabDef.isSystemRequired)
+                            
+                            if tabDef.isSystemRequired {
+                                Spacer()
+                                Text("Required")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
                             }
                         }
-                    )) {
-                        Label(tab.title, systemImage: tab.systemImage)
+                        .accessibilityHint(tabDef.isSystemRequired ? "This tab cannot be disabled" : "")
                     }
-                    .disabled(tab.id == .settings)
-                }
 
-                Button("Restore Defaults") {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        tabBarPrefs.restoreDefaults()
+                    Button("Restore Defaults") {
+                        tabPrefs.resetToDefaults()
                     }
                 }
             }
@@ -674,6 +682,11 @@ struct IOSSettingsView: View {
             }
         }
         .modifier(IOSNavigationChrome(title: "Settings"))
+        .onAppear {
+            if tabBarPrefs == nil {
+                tabBarPrefs = TabBarPreferencesStore(settings: settings)
+            }
+        }
     }
 }
 

@@ -14,36 +14,57 @@ struct IOSRootView: View {
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var gradesStore: GradesStore
     @StateObject private var navigation = IOSNavigationCoordinator()
-    @StateObject private var tabBarPrefs = TabBarPreferencesStore()
+    
+    // Tab bar preferences initialized from settings
+    @State private var tabBarPrefs: TabBarPreferencesStore?
 
     private var tabs: [RootTab] {
-        tabBarPrefs.effectiveTabsInOrder()
+        tabBarPrefs?.effectiveTabsInOrder() ?? [TabRegistry.fallbackTab]
     }
 
     var body: some View {
         ZStack {
             NavigationStack(path: $navigation.path) {
-                TabView(selection: $tabBarPrefs.selectedTab) {
-                    ForEach(tabs, id: \.self) { tab in
-                        tabView(for: tab)
-                            .tag(tab)
-                            .tabItem {
-                                Label(tab.title, systemImage: tab.systemImage)
-                            }
+                if let tabPrefs = tabBarPrefs {
+                    TabView(selection: Binding(
+                        get: { tabPrefs.selectedTab },
+                        set: { tabPrefs.selectTab($0) }
+                    )) {
+                        ForEach(tabs, id: \.self) { tab in
+                            tabView(for: tab)
+                                .tag(tab)
+                                .tabItem {
+                                    if let def = TabRegistry.definition(for: tab) {
+                                        Label(def.title, systemImage: def.icon)
+                                    }
+                                }
+                        }
                     }
-                }
-                .navigationDestination(for: IOSNavigationTarget.self) { destination in
-                    switch destination {
-                    case .page(let page):
-                        pageView(for: page)
-                    case .settings:
-                        IOSSettingsView()
+                    .onAppear {
+                        // GUARD: Validate selection on appear
+                        tabPrefs.validateSelection()
+                    }
+                    .onChange(of: tabs) { _ in
+                        // GUARD: Revalidate when tabs change
+                        tabPrefs.validateSelection()
+                    }
+                    .navigationDestination(for: IOSNavigationTarget.self) { destination in
+                        switch destination {
+                        case .page(let page):
+                            pageView(for: page)
+                        case .settings:
+                            IOSSettingsView()
+                        }
                     }
                 }
             }
             .background(DesignSystem.Colors.appBackground)
             .environmentObject(navigation)
-            .environmentObject(tabBarPrefs)
+            .onAppear {
+                if tabBarPrefs == nil {
+                    tabBarPrefs = TabBarPreferencesStore(settings: settings)
+                }
+            }
 
             if let message = toastRouter.message {
                 toastView(message)

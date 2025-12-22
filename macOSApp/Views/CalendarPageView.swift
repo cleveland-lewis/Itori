@@ -179,7 +179,7 @@ struct CalendarPageView: View {
                     }
 
                     Button { jumpToToday() } label: {
-                        Text(NSLocalizedString("calendar.today", comment: "Today button label"))
+                        Text(String(localized: "calendar.today"))
                             .font(.subheadline.weight(.semibold))
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
@@ -323,10 +323,10 @@ struct CalendarPageView: View {
                     .font(.system(size: 48))
                     .foregroundStyle(.tertiary)
                 
-                Text(NSLocalizedString("calendar.no_events.title", comment: "No events header"))
+                Text(String(localized: "calendar.no_events.title"))
                     .font(DesignSystem.Typography.body)
                 
-                Text(NSLocalizedString("calendar.no_events.message", comment: "No events empty state message"))
+                Text(String(localized: "calendar.no_events.message"))
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -354,11 +354,11 @@ struct CalendarPageView: View {
                 // Time or "All-day"
                 VStack(alignment: .leading, spacing: 2) {
                     if calendar.isDateInToday(event.startDate) && event.startDate.timeIntervalSinceNow < 0 && event.endDate.timeIntervalSinceNow > 0 {
-                        Text(NSLocalizedString("calendar.now", comment: "Current time indicator"))
+                        Text(String(localized: "calendar.now"))
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(settings.activeAccentColor)
                     } else if isAllDay(event: event) {
-                        Text(NSLocalizedString("calendar.all_day", comment: "All-day event label"))
+                        Text(String(localized: "calendar.all_day"))
                             .font(.caption.weight(.medium))
                             .foregroundStyle(.secondary)
                     } else {
@@ -794,7 +794,7 @@ private struct MonthCalendarSplitView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Section header
             VStack(alignment: .leading, spacing: 6) {
-                Text(NSLocalizedString("calendar.selected_date", comment: "Selected date header"))
+                Text(String(localized: "calendar.selected_date"))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
                     .textCase(.uppercase)
@@ -804,7 +804,7 @@ private struct MonthCalendarSplitView: View {
                         .font(.title3.weight(.bold))
                         .foregroundStyle(.primary)
                 } else {
-                    Text(NSLocalizedString("calendar.no_date_selected", comment: "No date selected message"))
+                    Text(String(localized: "calendar.no_date_selected"))
                         .font(.title3.weight(.bold))
                         .foregroundStyle(.secondary)
                 }
@@ -824,7 +824,7 @@ private struct MonthCalendarSplitView: View {
                             Image(systemName: "calendar.badge.exclamationmark")
                                 .font(.title2)
                                 .foregroundStyle(.tertiary)
-                            Text(NSLocalizedString("calendar.no_events", comment: "No events label"))
+                            Text(String(localized: "calendar.no_events"))
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
@@ -853,7 +853,7 @@ private struct MonthCalendarSplitView: View {
                         Image(systemName: "calendar")
                             .font(.title2)
                             .foregroundStyle(.tertiary)
-                        Text(NSLocalizedString("calendar.select_day", comment: "Instruction to select a day"))
+                        Text(String(localized: "calendar.select_day"))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -864,7 +864,7 @@ private struct MonthCalendarSplitView: View {
             if let event = selectedEvent {
                 Divider()
                 VStack(alignment: .leading, spacing: 8) {
-                    Text(NSLocalizedString("calendar.details", comment: "Details section header"))
+                    Text(String(localized: "calendar.details"))
                         .font(DesignSystem.Typography.subHeader)
                     Text(timeFormatter(event.startDate, event.endDate))
                         .font(DesignSystem.Typography.body)
@@ -1209,7 +1209,7 @@ private struct CalendarSidebarView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Section header
             VStack(alignment: .leading, spacing: 6) {
-                Text(NSLocalizedString("calendar.selected_date", comment: "Selected date header"))
+                Text(String(localized: "calendar.selected_date"))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
                     .textCase(.uppercase)
@@ -1233,7 +1233,7 @@ private struct CalendarSidebarView: View {
                         Image(systemName: "calendar.badge.exclamationmark")
                             .font(.title2)
                             .foregroundStyle(.tertiary)
-                        Text(NSLocalizedString("calendar.no_events", comment: "No events label"))
+                        Text(String(localized: "calendar.no_events"))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -1428,7 +1428,7 @@ private struct EventDetailView: View {
                 Divider()
 
                 VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                    Text(NSLocalizedString("calendar.notes", comment: "Notes section header"))
+                    Text(String(localized: "calendar.notes"))
                         .font(DesignSystem.Typography.subHeader)
                         .foregroundStyle(.primary)
 
@@ -1450,7 +1450,7 @@ private struct EventDetailView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "lock.fill")
                             .foregroundStyle(.secondary)
-                        Text(NSLocalizedString("calendar.readonly", comment: "Read-only calendar message"))
+                        Text(String(localized: "calendar.readonly"))
                             .font(.footnote.weight(.semibold))
                             .foregroundStyle(.secondary)
                     }
@@ -1567,7 +1567,7 @@ private struct EventChipsRow: View {
                 .font(.subheadline.weight(.semibold))
                 .foregroundColor(.secondary)
             if events.isEmpty {
-                Text(NSLocalizedString("calendar.no_events_yet", comment: "No events yet message"))
+                Text(String(localized: "calendar.no_events_yet"))
                     .font(DesignSystem.Typography.caption)
                     .foregroundColor(.secondary)
             } else {
@@ -1651,7 +1651,7 @@ private struct EventEditSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Text(NSLocalizedString("calendar.edit_event", comment: "Edit event title"))
+                Text(String(localized: "calendar.edit_event"))
                     .font(.title2.weight(.semibold))
                 Spacer()
             }
@@ -1675,7 +1675,7 @@ private struct EventEditSheet: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 8) {
-                Text(NSLocalizedString("calendar.time", comment: "Time section header"))
+                Text(String(localized: "calendar.time"))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
                     .textCase(.uppercase)
@@ -1691,7 +1691,7 @@ private struct EventEditSheet: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 8) {
-                Text(NSLocalizedString("calendar.details", comment: "Details section header"))
+                Text(String(localized: "calendar.details"))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
                     .textCase(.uppercase)
@@ -1703,7 +1703,7 @@ private struct EventEditSheet: View {
                         .textContentType(.URL)
                     
                     if !urlString.isEmpty && !isValidURL {
-                        Text(NSLocalizedString("calendar.invalid_url", comment: "Invalid URL error message"))
+                        Text(String(localized: "calendar.invalid_url"))
                             .font(.caption)
                             .foregroundColor(.red)
                     }
@@ -1716,7 +1716,7 @@ private struct EventEditSheet: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 8) {
-                Text(NSLocalizedString("calendar.options", comment: "Options section header"))
+                Text(String(localized: "calendar.options"))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
                     .textCase(.uppercase)
@@ -2092,7 +2092,7 @@ struct CalendarView: View {
     private var loadingState: some View {
         VStack(spacing: 12) {
             ProgressView()
-            Text(NSLocalizedString("calendar.loading", comment: "Loading events message"))
+            Text(String(localized: "calendar.loading"))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -2243,7 +2243,7 @@ private struct NewEventPlaceholder: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(NSLocalizedString("calendar.new_event", comment: "New event title"))
+            Text(String(localized: "calendar.new_event"))
                 .font(.title2.weight(.semibold))
             Text(date.formatted(date: .long, time: .omitted))
                 .foregroundStyle(.secondary)

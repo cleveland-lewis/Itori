@@ -14,7 +14,7 @@ final class IOSNavigationCoordinator: ObservableObject {
         let visibleTabs = tabBarPrefs.effectiveTabsInOrder()
         if let tab = RootTab(rawValue: page.rawValue), visibleTabs.contains(tab) {
             path = NavigationPath()
-            tabBarPrefs.selectedTab = tab
+            tabBarPrefs.selectTab(tab)
         } else {
             path.append(IOSNavigationTarget.page(page))
         }
@@ -25,30 +25,20 @@ final class IOSNavigationCoordinator: ObservableObject {
     }
 }
 
+// MARK: - iOS Tab Configuration (Uses Shared TabRegistry)
+
+/// iOS-specific tab configuration helper
+/// Delegates to shared TabRegistry for platform-agnostic logic
 struct IOSTabConfiguration {
-    static let tabCandidates: [RootTab] = [
-        .timer,
-        .dashboard,
-        .planner,
-        .assignments,
-        .courses,
-        .practice,
-        .settings
-    ]
-
-    static let defaultTabs: [RootTab] = [.timer, .dashboard, .settings]
-
-    static func tabs(from settings: AppSettingsModel) -> [RootTab] {
-        let visible = settings.effectiveVisibleTabs
-        let ordered = settings.tabOrder
-        var filtered = ordered.filter { visible.contains($0) && tabCandidates.contains($0) }
-        
-        // Always ensure settings is included if it's not already
-        if !filtered.contains(.settings) {
-            filtered.append(.settings)
-        }
-        
-        return filtered.isEmpty ? defaultTabs : filtered
+    
+    /// Get tabs for iOS display (uses shared registry)
+    static func tabs(from tabPrefs: TabBarPreferencesStore) -> [RootTab] {
+        return tabPrefs.effectiveTabsInOrder()
+    }
+    
+    /// Available tabs for iOS (from registry)
+    static var availableTabs: [TabDefinition] {
+        return TabRegistry.allTabs
     }
 }
 

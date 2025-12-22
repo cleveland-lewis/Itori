@@ -38,6 +38,13 @@ struct DesignSystem {
         static let destructive = Color.red
         static let subtle = Color("Subtle")
         static let neutral = Color("Neutral")
+        
+        /// Global accent color - uses app settings accent color
+        /// Apply this to all generic UI elements (buttons, toggles, selections, etc.)
+        /// DO NOT use for semantic colors (event categories, course colors, status indicators)
+        static var accent: Color {
+            AppSettingsModel.shared.activeAccentColor
+        }
 
         // Semantic macOS / iOS colors to match Apple HIG
         static var appBackground: Color {
