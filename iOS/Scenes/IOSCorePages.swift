@@ -596,9 +596,44 @@ struct IOSPracticeView: View {
 
 struct IOSSettingsView: View {
     @EnvironmentObject private var settings: AppSettingsModel
+    @EnvironmentObject private var coursesStore: CoursesStore
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         Form {
+            Section(header: Text("General")) {
+                Toggle("Use 24-hour time", isOn: $settings.use24HourTime)
+                    .accessibilityLabel("Use 24-hour time format")
+                
+                Toggle("Show Energy Panel", isOn: $settings.showEnergyPanel)
+                    .accessibilityLabel("Show energy panel on dashboard")
+                
+                Toggle("High Contrast Mode", isOn: $settings.highContrastMode)
+                    .accessibilityLabel("Enable high contrast mode for better visibility")
+            }
+            
+            Section(header: Text("Workday")) {
+                DatePicker(
+                    "Start Time",
+                    selection: Binding(
+                        get: { settings.date(from: settings.defaultWorkdayStart) },
+                        set: { settings.defaultWorkdayStart = settings.components(from: $0) }
+                    ),
+                    displayedComponents: [.hourAndMinute]
+                )
+                .accessibilityLabel("Workday start time")
+                
+                DatePicker(
+                    "End Time",
+                    selection: Binding(
+                        get: { settings.date(from: settings.defaultWorkdayEnd) },
+                        set: { settings.defaultWorkdayEnd = settings.components(from: $0) }
+                    ),
+                    displayedComponents: [.hourAndMinute]
+                )
+                .accessibilityLabel("Workday end time")
+            }
+            
             Section("Tab Bar Pages") {
                 ForEach(IOSTabConfiguration.tabCandidates, id: \.self) { tab in
                     Toggle(isOn: Binding(get: {
@@ -614,6 +649,22 @@ struct IOSSettingsView: View {
                     settings.visibleTabs = IOSTabConfiguration.defaultTabs
                     settings.tabOrder = IOSTabConfiguration.defaultTabs
                     settings.save()
+                }
+            }
+            
+            Section(header: Text("About")) {
+                HStack {
+                    Text("Version")
+                    Spacer()
+                    Text("1.0.0")
+                        .foregroundColor(.secondary)
+                }
+                
+                HStack {
+                    Text("Build")
+                    Spacer()
+                    Text(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown")
+                        .foregroundColor(.secondary)
                 }
             }
         }

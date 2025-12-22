@@ -29,14 +29,14 @@ struct IOSTabConfiguration {
     static let tabCandidates: [RootTab] = [
         .timer,
         .dashboard,
-        .calendar,
         .planner,
         .assignments,
         .courses,
-        .practice
+        .practice,
+        .settings
     ]
 
-    static let defaultTabs: [RootTab] = [.timer, .dashboard, .calendar]
+    static let defaultTabs: [RootTab] = [.timer, .dashboard, .settings]
 
     static func tabs(from settings: AppSettingsModel) -> [RootTab] {
         let visible = settings.effectiveVisibleTabs
