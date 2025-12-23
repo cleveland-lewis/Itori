@@ -200,7 +200,61 @@ struct NotificationsSettingsView: View {
                         settings.save()
                         NotificationManager.shared.scheduleDailyOverview()
                     }
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Include in overview:")
+                        .font(.subheadline)
+                        .padding(.leading, 20)
+                        .padding(.top, 8)
+                    
+                    Toggle("Today's due assignments", isOn: $settings.dailyOverviewIncludeTasks)
+                        .toggleStyle(.switch)
+                        .padding(.leading, 40)
+                        .onChange(of: settings.dailyOverviewIncludeTasks) { _, _ in
+                            settings.save()
+                            NotificationManager.shared.scheduleDailyOverview()
+                        }
+                    
+                    Toggle("Today's calendar events", isOn: $settings.dailyOverviewIncludeEvents)
+                        .toggleStyle(.switch)
+                        .padding(.leading, 40)
+                        .onChange(of: settings.dailyOverviewIncludeEvents) { _, _ in
+                            settings.save()
+                            NotificationManager.shared.scheduleDailyOverview()
+                        }
+                    
+                    Toggle("Yesterday's completed tasks", isOn: $settings.dailyOverviewIncludeYesterdayCompleted)
+                        .toggleStyle(.switch)
+                        .padding(.leading, 40)
+                        .onChange(of: settings.dailyOverviewIncludeYesterdayCompleted) { _, _ in
+                            settings.save()
+                            NotificationManager.shared.scheduleDailyOverview()
+                        }
+                    
+                    Toggle("Yesterday's study time", isOn: $settings.dailyOverviewIncludeYesterdayStudyTime)
+                        .toggleStyle(.switch)
+                        .padding(.leading, 40)
+                        .onChange(of: settings.dailyOverviewIncludeYesterdayStudyTime) { _, _ in
+                            settings.save()
+                            NotificationManager.shared.scheduleDailyOverview()
+                        }
+                    
+                    Toggle("Motivational message", isOn: $settings.dailyOverviewIncludeMotivation)
+                        .toggleStyle(.switch)
+                        .padding(.leading, 40)
+                        .onChange(of: settings.dailyOverviewIncludeMotivation) { _, _ in
+                            settings.save()
+                            NotificationManager.shared.scheduleDailyOverview()
+                        }
+                }
             }
+            
+            Text("Receive a daily summary of your schedule and tasks")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.leading, 20)
+        }
+    }
             
             Text("Receive a daily summary of your schedule and tasks")
                 .font(.caption)

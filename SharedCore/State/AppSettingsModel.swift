@@ -247,6 +247,11 @@ final class AppSettingsModel: ObservableObject, Codable {
         case alarmKitTimersEnabledStorage
         case assignmentLeadTimeStorage
         case dailyOverviewTimeStorage
+        case dailyOverviewIncludeTasksStorage
+        case dailyOverviewIncludeEventsStorage
+        case dailyOverviewIncludeYesterdayCompletedStorage
+        case dailyOverviewIncludeYesterdayStudyTimeStorage
+        case dailyOverviewIncludeMotivationStorage
         case showOnlySchoolCalendarStorage
         case lockCalendarPickerToSchoolStorage
         case aiModeRaw
@@ -418,6 +423,13 @@ final class AppSettingsModel: ObservableObject, Codable {
         components.minute = 0
         return Calendar.current.date(from: components) ?? Date()
     }()
+    
+    // Daily overview content toggles
+    var dailyOverviewIncludeTasksStorage: Bool = true
+    var dailyOverviewIncludeEventsStorage: Bool = true
+    var dailyOverviewIncludeYesterdayCompletedStorage: Bool = true
+    var dailyOverviewIncludeYesterdayStudyTimeStorage: Bool = true
+    var dailyOverviewIncludeMotivationStorage: Bool = true
 
     // Calendar UI filter setting
     var showOnlySchoolCalendarStorage: Bool = false
@@ -707,6 +719,31 @@ final class AppSettingsModel: ObservableObject, Codable {
     var dailyOverviewTime: Date {
         get { dailyOverviewTimeStorage }
         set { dailyOverviewTimeStorage = newValue }
+    }
+    
+    var dailyOverviewIncludeTasks: Bool {
+        get { dailyOverviewIncludeTasksStorage }
+        set { dailyOverviewIncludeTasksStorage = newValue }
+    }
+    
+    var dailyOverviewIncludeEvents: Bool {
+        get { dailyOverviewIncludeEventsStorage }
+        set { dailyOverviewIncludeEventsStorage = newValue }
+    }
+    
+    var dailyOverviewIncludeYesterdayCompleted: Bool {
+        get { dailyOverviewIncludeYesterdayCompletedStorage }
+        set { dailyOverviewIncludeYesterdayCompletedStorage = newValue }
+    }
+    
+    var dailyOverviewIncludeYesterdayStudyTime: Bool {
+        get { dailyOverviewIncludeYesterdayStudyTimeStorage }
+        set { dailyOverviewIncludeYesterdayStudyTimeStorage = newValue }
+    }
+    
+    var dailyOverviewIncludeMotivation: Bool {
+        get { dailyOverviewIncludeMotivationStorage }
+        set { dailyOverviewIncludeMotivationStorage = newValue }
     }
 
     // Event load thresholds exposed to views
@@ -1035,6 +1072,11 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(alarmKitTimersEnabledStorage, forKey: .alarmKitTimersEnabledStorage)
         try container.encode(assignmentLeadTimeStorage, forKey: .assignmentLeadTimeStorage)
         try container.encode(dailyOverviewTimeStorage, forKey: .dailyOverviewTimeStorage)
+        try container.encode(dailyOverviewIncludeTasksStorage, forKey: .dailyOverviewIncludeTasksStorage)
+        try container.encode(dailyOverviewIncludeEventsStorage, forKey: .dailyOverviewIncludeEventsStorage)
+        try container.encode(dailyOverviewIncludeYesterdayCompletedStorage, forKey: .dailyOverviewIncludeYesterdayCompletedStorage)
+        try container.encode(dailyOverviewIncludeYesterdayStudyTimeStorage, forKey: .dailyOverviewIncludeYesterdayStudyTimeStorage)
+        try container.encode(dailyOverviewIncludeMotivationStorage, forKey: .dailyOverviewIncludeMotivationStorage)
         try container.encode(showOnlySchoolCalendarStorage, forKey: .showOnlySchoolCalendarStorage)
         try container.encode(lockCalendarPickerToSchoolStorage, forKey: .lockCalendarPickerToSchoolStorage)
     }
@@ -1088,6 +1130,11 @@ final class AppSettingsModel: ObservableObject, Codable {
             components.minute = 0
             return Calendar.current.date(from: components) ?? Date()
         }()
+        dailyOverviewIncludeTasksStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewIncludeTasksStorage) ?? true
+        dailyOverviewIncludeEventsStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewIncludeEventsStorage) ?? true
+        dailyOverviewIncludeYesterdayCompletedStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewIncludeYesterdayCompletedStorage) ?? true
+        dailyOverviewIncludeYesterdayStudyTimeStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewIncludeYesterdayStudyTimeStorage) ?? true
+        dailyOverviewIncludeMotivationStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewIncludeMotivationStorage) ?? true
         showOnlySchoolCalendarStorage = try container.decodeIfPresent(Bool.self, forKey: .showOnlySchoolCalendarStorage) ?? false
         lockCalendarPickerToSchoolStorage = try container.decodeIfPresent(Bool.self, forKey: .lockCalendarPickerToSchoolStorage) ?? false
     }
