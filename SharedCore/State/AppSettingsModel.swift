@@ -256,6 +256,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         case lockCalendarPickerToSchoolStorage
         case aiModeRaw
         case byoProviderConfigData
+        case localBackendTypeRaw
         case localModelDownloadedMacOS
         case localModelDownloadediOS
         case aiEnabledStorage
@@ -440,6 +441,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     // AI Settings
     var aiModeRaw: String = "auto"
     var byoProviderConfigData: Data? = nil
+    var localBackendTypeRaw: String = "mlx"  // Default to MLX for macOS
     var localModelDownloadedMacOS: Bool = false
     var localModelDownloadediOS: Bool = false
     var aiEnabledStorage: Bool = false  // Global AI kill switch - DISABLED BY DEFAULT per Issue #175.H
@@ -927,6 +929,11 @@ final class AppSettingsModel: ObservableObject, Codable {
     var aiMode: AIMode {
         get { AIMode(rawValue: aiModeRaw) ?? .auto }
         set { aiModeRaw = newValue.rawValue }
+    }
+    
+    var localBackendType: LLMBackendType {
+        get { LLMBackendType(rawValue: localBackendTypeRaw) ?? .mlx }
+        set { localBackendTypeRaw = newValue.rawValue }
     }
     
     var byoProviderConfig: BYOProviderConfig {
