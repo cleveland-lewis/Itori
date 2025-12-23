@@ -454,6 +454,9 @@ struct TimerPageView: View {
             pomodoroSessions: settings.pomodoroIterations,
             completedPomodoroSessions: completedPomodoroSessions,
             isPomodorBreak: isPomodorBreak,
+            remainingSeconds: remainingSeconds,
+            elapsedSeconds: elapsedSeconds,
+            isRunning: isRunning,
             toggleTask: { task in
                 var updated = task
                 updated.isCompleted.toggle()
@@ -548,21 +551,17 @@ struct TimerPageView: View {
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Notes")
-                        .font(DesignSystem.Typography.caption)
-                        .foregroundStyle(.secondary)
-                    TextEditor(text: Binding(
+                NotesEditor(
+                    title: "Notes",
+                    text: Binding(
                         get: { activityNotes[activity.id] ?? "" },
                         set: { newValue in
                             activityNotes[activity.id] = newValue
                             saveNotes(newValue, for: activity.id)
-                        })
-                    )
-                    .frame(minHeight: 120)
-                    .padding(8)
-                    .background(DesignSystem.Materials.surface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-                }
+                        }
+                    ),
+                    minHeight: 120
+                )
             } else {
                 Text("Select an activity to view details.")
                     .font(DesignSystem.Typography.caption)
@@ -1243,11 +1242,32 @@ private struct FocusWindowView: View {
     var pomodoroSessions: Int
     var completedPomodoroSessions: Int
     var isPomodorBreak: Bool
+    var remainingSeconds: TimeInterval
+    var elapsedSeconds: TimeInterval
+    var isRunning: Bool
     var toggleTask: (AppTask) -> Void
+    
+    private var clockTime: TimeInterval {
+        // Stopwatch shows elapsed time, others show remaining time
+        // When idle (not running), default to 0 which shows 12:00:00
+        guard isRunning else { return 0 }
+        
+        switch mode {
+        case .stopwatch:
+            return elapsedSeconds
+        case .pomodoro, .countdown:
+            return remainingSeconds
+        }
+    }
 
     var body: some View {
         VStack(spacing: 24) {
-            RootsAnalogClock(diameter: 240, showSecondHand: true, accentColor: accentColor)
+            RootsAnalogClock(
+                diameter: 240, 
+                showSecondHand: true, 
+                accentColor: accentColor,
+                timerSeconds: clockTime
+            )
 
             VStack(spacing: 8) {
                 if mode == .pomodoro {

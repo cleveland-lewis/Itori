@@ -561,6 +561,7 @@ struct TimerPageView: View {
             currentBlockDuration: $currentBlockDuration,
             completedPomodoroSessions: $completedPomodoroSessions,
             isPomodorBreak: $isPomodorBreak,
+            isRunning: $isRunning,
             accentColor: .accentColor,
             activity: selectedActivity,
             tasks: tasks,
@@ -695,12 +696,25 @@ private struct FocusWindowView: View {
     @Binding var currentBlockDuration: TimeInterval
     @Binding var completedPomodoroSessions: Int
     @Binding var isPomodorBreak: Bool
+    @Binding var isRunning: Bool
     
     var accentColor: Color
     var activity: LocalTimerActivity?
     var tasks: [AppTask]
     var pomodoroSessions: Int
     var toggleTask: (AppTask) -> Void
+    
+    private var clockTime: TimeInterval {
+        // When idle (not running), return 0 to show 12:00:00
+        guard isRunning else { return 0 }
+        
+        switch mode {
+        case .stopwatch:
+            return elapsedSeconds
+        case .pomodoro, .countdown:
+            return max(0, currentBlockDuration - remainingSeconds)
+        }
+    }
 
     var body: some View {
         GlassClockCard(cornerRadius: DesignSystem.Layout.cornerRadiusLarge) {
@@ -709,7 +723,7 @@ private struct FocusWindowView: View {
                     diameter: 240,
                     showSecondHand: true,
                     accentColor: accentColor,
-                    overrideTime: clockOverride
+                    timerSeconds: clockTime
                 )
 
                 VStack(spacing: 8) {
@@ -813,24 +827,6 @@ private struct FocusWindowView: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Color(nsColor: .controlBackgroundColor))
         )
-    }
-
-    private var clockOverride: (hours: Double, minutes: Double, seconds: Double) {
-        switch mode {
-        case .pomodoro, .countdown:
-            let elapsed = max(0, currentBlockDuration - remainingSeconds)
-            return timeComponents(from: elapsed)
-        case .stopwatch:
-            let total = max(0, elapsedSeconds)
-            return timeComponents(from: total)
-        }
-    }
-
-    private func timeComponents(from totalSeconds: TimeInterval) -> (hours: Double, minutes: Double, seconds: Double) {
-        let hours = (totalSeconds / 3600).truncatingRemainder(dividingBy: 12)
-        let minutes = (totalSeconds / 60).truncatingRemainder(dividingBy: 60)
-        let seconds = totalSeconds.truncatingRemainder(dividingBy: 60)
-        return (hours, minutes, seconds)
     }
     
     private var timeText: String {

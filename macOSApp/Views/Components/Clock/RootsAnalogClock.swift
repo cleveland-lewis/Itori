@@ -1,20 +1,24 @@
 import SwiftUI
 
 /// Minimalist analog clock with concentric rings and cardinal ticks.
+/// When timerSeconds is provided, displays that time (defaulting to 12:00:00 when 0).
+/// Otherwise shows system time.
 struct RootsAnalogClock: View {
     @Environment(\.colorScheme) private var colorScheme
     var diameter: CGFloat = 200
     var showSecondHand: Bool = true
     var accentColor: Color = .accentColor
-    /// Optional override to drive the clock with a provided time (hours/minutes/seconds) instead of wall time.
-    var overrideTime: (hours: Double, minutes: Double, seconds: Double)? = nil
+    var timerSeconds: TimeInterval? = nil // Timer state in seconds; nil = show system time
 
     private var radius: CGFloat { diameter / 2 }
 
     var body: some View {
-        if let override = overrideTime {
-            clockBody(hours: override.hours, minutes: override.minutes, seconds: override.seconds)
+        if let timerSeconds = timerSeconds {
+            // Timer mode: display timer/stopwatch time (defaults to 12:00:00 when 0)
+            let (hours, minutes, seconds) = timeComponents(from: timerSeconds)
+            clockBody(hours: hours, minutes: minutes, seconds: seconds)
         } else {
+            // System time mode: animated real-time clock
             TimelineView(.animation) { timeline in
                 let date = timeline.date
                 let components = Calendar.current.dateComponents([.hour, .minute, .second, .nanosecond], from: date)
@@ -25,6 +29,28 @@ struct RootsAnalogClock: View {
                 clockBody(hours: hours, minutes: minutes, seconds: seconds)
             }
         }
+    }
+    
+    /// Converts timer seconds to clock components (hours on 12-hour face, minutes, seconds)
+    /// Defaults to 12:00:00 when timerSeconds is 0 or very small
+    private func timeComponents(from timerSeconds: TimeInterval) -> (hours: Double, minutes: Double, seconds: Double) {
+        // Default to 12:00:00 when idle (0 seconds)
+        guard timerSeconds >= 1.0 else {
+            return (hours: 0.0, minutes: 0.0, seconds: 0.0)
+        }
+        
+        let totalSeconds = Int(timerSeconds)
+        let s = Double(totalSeconds % 60)
+        let m = Double((totalSeconds / 60) % 60)
+        let h = Double((totalSeconds / 3600) % 12)
+        
+        // Add fractional seconds for smooth animation
+        let fractionalSeconds = timerSeconds - Double(totalSeconds)
+        let seconds = s + fractionalSeconds
+        let minutes = m + seconds / 60.0
+        let hours = h + minutes / 60.0
+        
+        return (hours: hours, minutes: minutes, seconds: seconds)
     }
 
     @ViewBuilder
