@@ -73,8 +73,9 @@ struct IOSTimerPageView: View {
                 .font(.headline)
                 .accessibilityIdentifier("Timer.Status")
             Text(timeString(for: viewModel.sessionRemaining, elapsed: viewModel.sessionElapsed))
-                .font(.system(size: 48, weight: .bold, design: .rounded))
+                .font(DesignSystem.Typography.body)
                 .monospacedDigit()
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityIdentifier("Timer.Time")
             if viewModel.currentMode == .pomodoro {
                 Text(viewModel.isOnBreak ? "Break" : "Focus")

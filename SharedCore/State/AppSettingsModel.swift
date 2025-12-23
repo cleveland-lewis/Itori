@@ -228,6 +228,9 @@ final class AppSettingsModel: ObservableObject, Codable {
         case cardRadiusRaw, animationSoftnessStorage, typographyModeRaw
         case devModeEnabledStorage, devModeUILoggingStorage, devModeDataLoggingStorage, devModeSchedulerLoggingStorage, devModePerformanceStorage
         case enableICloudSyncStorage
+        case storageRetentionPolicyRaw
+        case lastRetentionRunAtStorage
+        case lastRetentionSummaryStorage
         case enableAIPlannerStorage
         case plannerHorizonStorage
         case enableFlashcardsStorage
@@ -351,6 +354,9 @@ final class AppSettingsModel: ObservableObject, Codable {
     var devModeSchedulerLoggingStorage: Bool = false
     var devModePerformanceStorage: Bool = false
     var enableICloudSyncStorage: Bool = false
+    var storageRetentionPolicyRaw: String = StorageRetentionPolicy.never.rawValue
+    var lastRetentionRunAtStorage: Date? = nil
+    var lastRetentionSummaryStorage: String? = nil
 
     // New UserDefaults-backed properties
     var use24HourTimeStorage: Bool = false
@@ -626,6 +632,21 @@ final class AppSettingsModel: ObservableObject, Codable {
     var enableICloudSync: Bool {
         get { enableICloudSyncStorage }
         set { enableICloudSyncStorage = newValue }
+    }
+
+    var storageRetentionPolicy: StorageRetentionPolicy {
+        get { StorageRetentionPolicy(rawValue: storageRetentionPolicyRaw) ?? .never }
+        set { storageRetentionPolicyRaw = newValue.rawValue }
+    }
+
+    var lastRetentionRunAt: Date? {
+        get { lastRetentionRunAtStorage }
+        set { lastRetentionRunAtStorage = newValue }
+    }
+
+    var lastRetentionSummary: String? {
+        get { lastRetentionSummaryStorage }
+        set { lastRetentionSummaryStorage = newValue }
     }
 
     // New computed settings exposed to views
@@ -1016,6 +1037,9 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(devModeSchedulerLoggingStorage, forKey: .devModeSchedulerLoggingStorage)
         try container.encode(devModePerformanceStorage, forKey: .devModePerformanceStorage)
         try container.encode(enableICloudSyncStorage, forKey: .enableICloudSyncStorage)
+        try container.encode(storageRetentionPolicyRaw, forKey: .storageRetentionPolicyRaw)
+        try container.encode(lastRetentionRunAtStorage, forKey: .lastRetentionRunAtStorage)
+        try container.encode(lastRetentionSummaryStorage, forKey: .lastRetentionSummaryStorage)
         try container.encode(enableAIPlannerStorage, forKey: .enableAIPlannerStorage)
         try container.encode(plannerHorizonStorage, forKey: .plannerHorizonStorage)
         try container.encode(enableFlashcardsStorage, forKey: .enableFlashcardsStorage)
@@ -1066,6 +1090,9 @@ final class AppSettingsModel: ObservableObject, Codable {
         devModeSchedulerLoggingStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeSchedulerLoggingStorage) ?? false
         devModePerformanceStorage = try container.decodeIfPresent(Bool.self, forKey: .devModePerformanceStorage) ?? false
         enableICloudSyncStorage = try container.decodeIfPresent(Bool.self, forKey: .enableICloudSyncStorage) ?? false
+        storageRetentionPolicyRaw = try container.decodeIfPresent(String.self, forKey: .storageRetentionPolicyRaw) ?? StorageRetentionPolicy.never.rawValue
+        lastRetentionRunAtStorage = try container.decodeIfPresent(Date.self, forKey: .lastRetentionRunAtStorage)
+        lastRetentionSummaryStorage = try container.decodeIfPresent(String.self, forKey: .lastRetentionSummaryStorage)
         enableFlashcardsStorage = try container.decodeIfPresent(Bool.self, forKey: .enableFlashcardsStorage) ?? true
         assignmentSwipeLeadingRaw = try container.decodeIfPresent(String.self, forKey: .assignmentSwipeLeadingRaw) ?? AssignmentSwipeAction.complete.rawValue
         assignmentSwipeTrailingRaw = try container.decodeIfPresent(String.self, forKey: .assignmentSwipeTrailingRaw) ?? AssignmentSwipeAction.delete.rawValue

@@ -144,6 +144,41 @@ final class AssignmentsStore: ObservableObject {
         saveCache()
     }
 
+    func detachTasks(fromCourseId courseId: UUID) {
+        var updatedTasks: [AppTask] = []
+        updatedTasks.reserveCapacity(tasks.count)
+        for task in tasks {
+            guard task.courseId == courseId else {
+                updatedTasks.append(task)
+                continue
+            }
+            let updated = AppTask(
+                id: task.id,
+                title: task.title,
+                courseId: nil,
+                due: task.due,
+                estimatedMinutes: task.estimatedMinutes,
+                minBlockMinutes: task.minBlockMinutes,
+                maxBlockMinutes: task.maxBlockMinutes,
+                difficulty: task.difficulty,
+                importance: task.importance,
+                type: task.type,
+                locked: task.locked,
+                attachments: task.attachments,
+                isCompleted: task.isCompleted,
+                gradeWeightPercent: task.gradeWeightPercent,
+                gradePossiblePoints: task.gradePossiblePoints,
+                gradeEarnedPoints: task.gradeEarnedPoints,
+                category: task.category
+            )
+            updatedTasks.append(updated)
+        }
+        tasks = updatedTasks
+        updateAppBadge()
+        saveCache()
+        refreshGPA()
+    }
+
     private func refreshGPA() {
         Task { @MainActor in
             CoursesStore.shared?.recalcGPA(tasks: tasks)

@@ -38,6 +38,11 @@ struct RootsIOSApp: App {
             settings.tabOrder = TabRegistry.allTabs.map { $0.id }
             settings.save()
         }
+        
+        // Register iOS feedback service
+        Task { @MainActor in
+            FeedbackCoordinator.shared.register(service: iOSFeedbackService())
+        }
     }
 
     var body: some Scene {

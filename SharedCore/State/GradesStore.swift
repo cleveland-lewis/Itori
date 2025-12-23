@@ -49,6 +49,13 @@ final class GradesStore: ObservableObject {
         save()
     }
 
+    func reassignCourse(from sourceId: UUID, to targetId: UUID) {
+        guard let existing = grades.first(where: { $0.courseId == sourceId }) else { return }
+        grades.removeAll { $0.courseId == sourceId || $0.courseId == targetId }
+        grades.append(GradeEntry(courseId: targetId, percent: existing.percent, letter: existing.letter, updatedAt: existing.updatedAt))
+        save()
+    }
+
     func resetAll() {
         grades.removeAll()
         save()

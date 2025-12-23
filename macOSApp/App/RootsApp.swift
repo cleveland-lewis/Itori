@@ -81,6 +81,12 @@ struct RootsApp: App {
         let focus = FocusManager()
         _focusManager = StateObject(wrappedValue: focus)
         menuBarManager = MenuBarManager(focusManager: focus, assignmentsStore: assignments, settings: settings)
+        
+        // Register macOS feedback service
+        Task { @MainActor in
+            FeedbackCoordinator.shared.register(service: macOSFeedbackService())
+        }
+        
         LOG_LIFECYCLE(.info, "AppInit", "RootsApp initialization complete")
     }
 

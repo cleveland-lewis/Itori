@@ -1,19 +1,8 @@
 #if os(macOS)
 import Foundation
 
-enum RootTab: String, CaseIterable, Identifiable {
-    case dashboard
-    case calendar
-    case planner
-    case assignments
-    case courses
-    case grades
-    case timer
-    case decks
-    case practice
-
-    var id: String { rawValue }
-
+// Import shared RootTab enum - platform extensions only
+extension RootTab {
     var title: String {
         switch self {
         case .dashboard:    return "Dashboard"
@@ -25,6 +14,7 @@ enum RootTab: String, CaseIterable, Identifiable {
         case .timer:        return "Timer"
         case .decks:        return "Decks"
         case .practice:     return "Practice"
+        case .settings:     return "Settings"  // Not typically used on macOS
         }
     }
 
@@ -39,6 +29,7 @@ enum RootTab: String, CaseIterable, Identifiable {
         case .timer:        return "timer"
         case .decks:        return "rectangle.stack"
         case .practice:     return "list.clipboard"
+        case .settings:     return "gearshape"
         }
     }
 

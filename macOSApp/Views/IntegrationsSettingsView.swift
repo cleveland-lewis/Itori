@@ -240,7 +240,7 @@ struct IntegrationCard: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(8)
-                .background(Color.orange.opacity(0.1))
+                .background(Color.orange.opacity(0.1)) // Semantic warning color
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             }
         }

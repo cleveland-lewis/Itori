@@ -11,16 +11,28 @@ public final class LocalModelSettings {
     // MARK: - Settings
     
     @ObservationIgnored
-    @AppStorage("localModel.tierSelection")
-    public var tierSelection: TierSelection = .auto
+    private var _tierSelection: AppStorage<TierSelection>
+    
+    public var tierSelection: TierSelection {
+        get { _tierSelection.wrappedValue }
+        set { _tierSelection.wrappedValue = newValue }
+    }
     
     @ObservationIgnored
-    @AppStorage("localModel.selectedModelID")
-    private var selectedModelID: String?
+    private var _selectedModelID: AppStorage<String?>
+    
+    private var selectedModelID: String? {
+        get { _selectedModelID.wrappedValue }
+        set { _selectedModelID.wrappedValue = newValue }
+    }
     
     @ObservationIgnored
-    @AppStorage("localModel.lastUsedDate")
-    private var lastUsedDateString: String?
+    private var _lastUsedDateString: AppStorage<String?>
+    
+    private var lastUsedDateString: String? {
+        get { _lastUsedDateString.wrappedValue }
+        set { _lastUsedDateString.wrappedValue = newValue }
+    }
     
     public var selectedModel: LocalModelEntry? {
         get {
@@ -89,6 +101,10 @@ public final class LocalModelSettings {
     // MARK: - Init
     
     private init() {
+        self._tierSelection = AppStorage(wrappedValue: .auto, "localModel.tierSelection")
+        self._selectedModelID = AppStorage(wrappedValue: nil, "localModel.selectedModelID")
+        self._lastUsedDateString = AppStorage(wrappedValue: nil, "localModel.lastUsedDate")
+        
         // Auto-select model on first launch
         if selectedModelID == nil {
             selectedModel = effectiveModel

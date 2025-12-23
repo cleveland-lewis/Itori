@@ -10,14 +10,25 @@ final class DeviceCalendarManager: ObservableObject {
 
     @Published private(set) var isAuthorized: Bool = false
     @Published private(set) var events: [EKEvent] = []
+    
+    /// Events with optimistic updates applied (computed from `events` + OptimisticEventStore)
+    @Published private(set) var displayEvents: [EKEvent] = []
 
     @Published private(set) var lastRefreshAt: Date? = nil
     @Published private(set) var isObservingStoreChanges: Bool = false
     @Published private(set) var lastRefreshReason: String? = nil
 
     private var storeChangedObserver: Any?
+    private var optimisticStoreObserver: AnyCancellable?
 
-    private init() {}
+    private init() {
+        // Observe optimistic store changes to recompute display events
+        optimisticStoreObserver = OptimisticEventStore.shared.objectWillChange.sink { [weak self] _ in
+            Task { @MainActor in
+                self?.recomputeDisplayEvents()
+            }
+        }
+    }
 
     func bootstrapOnLaunch() async {
         let granted = await requestFullAccessIfNeeded()
@@ -40,6 +51,7 @@ final class DeviceCalendarManager: ObservableObject {
             self.events = fetched
             self.lastRefreshAt = Date()
             self.lastRefreshReason = reason
+            self.recomputeDisplayEvents()
         }
     }
 
@@ -80,6 +92,24 @@ final class DeviceCalendarManager: ObservableObject {
 
         await MainActor.run {
             self.events = fetched
+            self.recomputeDisplayEvents()
+        }
+    }
+
+    func refreshEvents(in range: DateInterval, reason: String = "targetedRefresh") async {
+        let predicate = store.predicateForEvents(withStart: range.start, end: range.end, calendars: nil)
+        let fetched = store.events(matching: predicate)
+
+        await MainActor.run {
+            self.events.removeAll { event in
+                let start = event.startDate
+                let end = event.endDate
+                return start < range.end && end > range.start
+            }
+            self.events.append(contentsOf: fetched)
+            self.lastRefreshAt = Date()
+            self.lastRefreshReason = reason
+            self.recomputeDisplayEvents()
         }
     }
 
@@ -92,5 +122,45 @@ final class DeviceCalendarManager: ObservableObject {
         }
 
         isObservingStoreChanges = true
+    }
+    
+    /// Merges real EventKit events with optimistic updates to produce display events
+    private func recomputeDisplayEvents() {
+        let optimisticStore = OptimisticEventStore.shared
+        
+        // Create a copy of events with optimistic updates applied
+        displayEvents = events.map { event in
+            guard let identifier = event.eventIdentifier,
+                  !identifier.isEmpty,
+                  let optimistic = optimisticStore.optimisticEvent(for: identifier) else {
+                return event
+            }
+            
+            // Apply optimistic changes to a copy
+            let updated = event.copy() as! EKEvent
+            if let title = optimistic.title {
+                updated.title = title
+            }
+            if let start = optimistic.startDate {
+                updated.startDate = start
+            }
+            if let end = optimistic.endDate {
+                updated.endDate = end
+            }
+            if let isAllDay = optimistic.isAllDay {
+                updated.isAllDay = isAllDay
+            }
+            if let location = optimistic.location {
+                updated.location = location
+            }
+            if let notes = optimistic.notes {
+                updated.notes = notes
+            }
+            if let urlString = optimistic.url, let url = URL(string: urlString) {
+                updated.url = url
+            }
+            
+            return updated
+        }
     }
 }

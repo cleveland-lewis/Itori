@@ -83,9 +83,9 @@ public actor LocalLLMInferenceService {
     // MARK: - Generation (Streaming)
     
     /// Generate text with streaming tokens
-    public func generate(prompt: String, config: GenerationConfig = .default) -> AsyncStream<String> {
+    nonisolated public func generate(prompt: String, config: GenerationConfig) -> AsyncStream<String> {
         AsyncStream { continuation in
-            Task {
+            Task { @MainActor in
                 do {
                     guard let model = loadedModel else {
                         continuation.finish()

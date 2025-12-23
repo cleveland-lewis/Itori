@@ -1,10 +1,12 @@
 import Foundation
+import Combine
 
 @MainActor
 final class StorageAggregateStore: ObservableObject {
     static let shared = StorageAggregateStore()
 
     @Published private(set) var buckets: [String: [StorageEntityType: Int]] = [:]
+    @Published private(set) var aggregates = RetentionAggregates()
 
     private let storageURL: URL
 
@@ -29,6 +31,34 @@ final class StorageAggregateStore: ObservableObject {
         persist()
     }
 
+    func recordStudyTime(_ seconds: TimeInterval, key: AggregateKey) {
+        aggregates.studyTime[key, default: 0] += seconds
+        persist()
+    }
+
+    func recordAssignmentCompletion(isOnTime: Bool, key: AggregateKey) {
+        var metrics = aggregates.assignmentMetrics[key, default: AssignmentAggregateMetrics()]
+        metrics.completedCount += 1
+        if isOnTime { metrics.onTimeCount += 1 }
+        aggregates.assignmentMetrics[key] = metrics
+        persist()
+    }
+
+    func recordGrade(_ percentage: Double, key: AggregateKey) {
+        var metrics = aggregates.gradeMetrics[key, default: GradeAggregateMetrics()]
+        metrics.percentages.append(percentage)
+        aggregates.gradeMetrics[key] = metrics
+        persist()
+    }
+
+    func recordCalendarWorkload(events: Int, durationSeconds: TimeInterval, key: AggregateKey) {
+        var metrics = aggregates.calendarMetrics[key, default: CalendarAggregateMetrics()]
+        metrics.eventCount += events
+        metrics.totalDurationSeconds += durationSeconds
+        aggregates.calendarMetrics[key] = metrics
+        persist()
+    }
+
     private func monthKey(for date: Date) -> String {
         let comps = Calendar.current.dateComponents([.year, .month], from: date)
         let year = comps.year ?? 0
@@ -38,7 +68,8 @@ final class StorageAggregateStore: ObservableObject {
 
     private func persist() {
         do {
-            let data = try JSONEncoder().encode(buckets)
+            let payload = StorageAggregatePayload(buckets: buckets, aggregates: aggregates)
+            let data = try JSONEncoder().encode(payload)
             try data.write(to: storageURL, options: [.atomic])
         } catch {
             LOG_DATA(.error, "StorageAggregate", "Failed to persist aggregate storage: \(error.localizedDescription)")
@@ -49,9 +80,16 @@ final class StorageAggregateStore: ObservableObject {
         guard FileManager.default.fileExists(atPath: storageURL.path) else { return }
         do {
             let data = try Data(contentsOf: storageURL)
-            buckets = try JSONDecoder().decode([String: [StorageEntityType: Int]].self, from: data)
+            let payload = try JSONDecoder().decode(StorageAggregatePayload.self, from: data)
+            buckets = payload.buckets
+            aggregates = payload.aggregates
         } catch {
             LOG_DATA(.error, "StorageAggregate", "Failed to load aggregate storage: \(error.localizedDescription)")
         }
     }
+}
+
+private struct StorageAggregatePayload: Codable {
+    var buckets: [String: [StorageEntityType: Int]]
+    var aggregates: RetentionAggregates
 }

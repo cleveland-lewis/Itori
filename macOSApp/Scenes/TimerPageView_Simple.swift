@@ -253,7 +253,7 @@ struct TimerPageView_Simple: View {
         Button(action: { selectedActivityID = activity.id }) {
             HStack {
                 Circle()
-                    .fill(Color.blue)
+                    .fill(DesignSystem.Colors.accent)
                     .frame(width: 8, height: 8)
                 Text(activity.name)
                     .font(.body)

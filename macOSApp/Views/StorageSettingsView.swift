@@ -36,6 +36,7 @@ private enum StorageEditPayload: Identifiable {
 struct StorageSettingsView: View {
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
+    @EnvironmentObject private var gradesStore: GradesStore
     @State private var practiceStore = PracticeTestStore()
     @StateObject private var index = StorageIndex()
 
@@ -45,6 +46,8 @@ struct StorageSettingsView: View {
     @State private var activeEdit: StorageEditPayload?
     @State private var detailItem: StorageCenterItem?
     @State private var pendingDelete: StorageCenterItem?
+    @State private var showDeleteOptions = false
+    @State private var showDeleteConfirm = false
 
     private var allItems: [StorageCenterItem] {
         var all: [StorageCenterItem] = []
@@ -91,10 +94,10 @@ struct StorageSettingsView: View {
                     id: task.id,
                     displayTitle: task.displayTitle,
                     entityType: task.entityType,
-                    contextDescription: courseTitle ?? task.contextDescription,
+                    contextDescription: courseTitle ?? "Unassigned",
                     primaryDate: task.primaryDate,
                     statusDescription: task.statusDescription,
-                    searchText: "\(task.searchableText) \(courseTitle ?? "")".lowercased(),
+                    searchText: "\(task.searchableText) \(courseTitle ?? "Unassigned")".lowercased(),
                     editPayload: .assignment(task),
                     deleteAction: { assignmentsStore.removeTask(id: task.id) }
                 )
@@ -154,6 +157,77 @@ struct StorageSettingsView: View {
         return all
     }
 
+    private var semesterSummaries: [SemesterSummary] {
+        let coursesBySemester = Dictionary(grouping: coursesStore.courses, by: \.semesterId)
+        let assignmentsByCourse = Dictionary(grouping: assignmentsStore.tasks, by: { $0.courseId })
+        let filesByCourse = Dictionary(grouping: coursesStore.courseFiles, by: \.courseId)
+        let outlineByCourse = Dictionary(grouping: coursesStore.outlineNodes, by: \.courseId)
+        let testsByCourse = Dictionary(grouping: practiceStore.tests, by: \.courseId)
+
+        return coursesStore.semesters.map { semester in
+            let courses = coursesBySemester[semester.id] ?? []
+            let courseIds = Set(courses.map(\.id))
+            let assignmentCount = courseIds.reduce(0) { $0 + (assignmentsByCourse[$1] ?? []).count }
+            let fileCount = courseIds.reduce(0) { $0 + (filesByCourse[$1] ?? []).count }
+            let outlineCount = courseIds.reduce(0) { $0 + (outlineByCourse[$1] ?? []).count }
+            let testCount = courseIds.reduce(0) { $0 + (testsByCourse[$1] ?? []).count }
+            return SemesterSummary(
+                semester: semester,
+                courses: courses.count,
+                assignments: assignmentCount,
+                files: fileCount,
+                outlines: outlineCount,
+                tests: testCount
+            )
+        }
+        .sorted { $0.semester.startDate > $1.semester.startDate }
+    }
+
+    private var courseSummaries: [CourseSummary] {
+        let assignmentsByCourse = Dictionary(grouping: assignmentsStore.tasks, by: { $0.courseId })
+        let filesByCourse = Dictionary(grouping: coursesStore.courseFiles, by: \.courseId)
+        let outlineByCourse = Dictionary(grouping: coursesStore.outlineNodes, by: \.courseId)
+        let testsByCourse = Dictionary(grouping: practiceStore.tests, by: \.courseId)
+        let gradesByCourse = Dictionary(grouping: gradesStore.grades, by: \.courseId)
+
+        return coursesStore.courses.map { course in
+            let assignments = assignmentsByCourse[course.id] ?? []
+            let files = filesByCourse[course.id] ?? []
+            let outlines = outlineByCourse[course.id] ?? []
+            let tests = testsByCourse[course.id] ?? []
+            let grades = gradesByCourse[course.id] ?? []
+            return CourseSummary(
+                course: course,
+                assignments: assignments.count,
+                files: files.count,
+                outlines: outlines.count,
+                tests: tests.count,
+                grades: grades.count
+            )
+        }
+        .sorted { $0.course.title < $1.course.title }
+    }
+
+    private var assignmentSummaries: [AssignmentSummary] {
+        let courseById = Dictionary(uniqueKeysWithValues: coursesStore.courses.map { ($0.id, $0) })
+        return assignmentsStore.tasks.map { task in
+            let courseTitle = task.courseId.flatMap { courseById[$0]?.displayTitle } ?? "Unassigned"
+            return AssignmentSummary(task: task, courseTitle: courseTitle)
+        }
+        .sorted { $0.task.primaryDate > $1.task.primaryDate }
+    }
+
+    private var fileSummaries: [FileSummary] {
+        let courseById = Dictionary(uniqueKeysWithValues: coursesStore.courses.map { ($0.id, $0) })
+        let nodeById = Dictionary(uniqueKeysWithValues: coursesStore.outlineNodes.map { ($0.id, $0) })
+        return coursesStore.courseFiles.map { file in
+            let courseTitle = courseById[file.courseId]?.displayTitle ?? "Unassigned"
+            let nodeTitle = file.nodeId.flatMap { nodeById[$0]?.displayTitle }
+            return FileSummary(file: file, courseTitle: courseTitle, nodeTitle: nodeTitle)
+        }
+        .sorted { $0.file.createdAt > $1.file.createdAt }
+    }
+
     private var items: [StorageCenterItem] {
         let sortedIds = index.search(query: searchText, types: selectedTypes, sort: sortOption)
         let map = Dictionary(uniqueKeysWithValues: allItems.map { ($0.id, $0) })
@@ -199,6 +273,164 @@ struct StorageSettingsView: View {
                 Spacer()
             }
 
+            GroupBox("Semesters") {
+                VStack(spacing: 8) {
+                    ForEach(semesterSummaries) { summary in
+                        Button {
+                            let item = StorageCenterItem(
+                                id: summary.semester.id,
+                                displayTitle: summary.semester.displayTitle,
+                                entityType: summary.semester.entityType,
+                                contextDescription: summary.semester.contextDescription,
+                                primaryDate: summary.semester.primaryDate,
+                                statusDescription: summary.semester.statusDescription,
+                                searchText: summary.semester.searchableText.lowercased(),
+                                editPayload: .semester(summary.semester),
+                                deleteAction: { coursesStore.permanentlyDeleteSemester(summary.semester.id) }
+                            )
+                            detailItem = item
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(summary.semester.displayTitle)
+                                        .font(.headline)
+                                    Text("Courses: \(summary.courses)  Assignments: \(summary.assignments)  Files: \(summary.files)")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Text(summary.semester.primaryDate, style: .date)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.vertical, 4)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.vertical, 4)
+            }
+
+            GroupBox("Courses") {
+                VStack(spacing: 8) {
+                    ForEach(courseSummaries) { summary in
+                        Button {
+                            let item = StorageCenterItem(
+                                id: summary.course.id,
+                                displayTitle: summary.course.displayTitle,
+                                entityType: summary.course.entityType,
+                                contextDescription: summary.course.contextDescription,
+                                primaryDate: summary.course.primaryDate,
+                                statusDescription: summary.course.statusDescription,
+                                searchText: summary.course.searchableText.lowercased(),
+                                editPayload: .course(summary.course),
+                                deleteAction: { coursesStore.deleteCourse(summary.course) }
+                            )
+                            detailItem = item
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(summary.course.displayTitle)
+                                        .font(.headline)
+                                    Text("Assignments: \(summary.assignments)  Files: \(summary.files)  Tests: \(summary.tests)")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Text(summary.course.primaryDate, style: .date)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.vertical, 4)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.vertical, 4)
+            }
+
+            GroupBox("Assignments") {
+                VStack(spacing: 8) {
+                    ForEach(assignmentSummaries) { summary in
+                        Button {
+                            let item = StorageCenterItem(
+                                id: summary.task.id,
+                                displayTitle: summary.task.displayTitle,
+                                entityType: summary.task.entityType,
+                                contextDescription: summary.courseTitle,
+                                primaryDate: summary.task.primaryDate,
+                                statusDescription: summary.task.statusDescription,
+                                searchText: summary.task.searchableText.lowercased(),
+                                editPayload: .assignment(summary.task),
+                                deleteAction: { assignmentsStore.removeTask(id: summary.task.id) }
+                            )
+                            detailItem = item
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(summary.task.displayTitle)
+                                        .font(.headline)
+                                    Text(summary.courseTitle)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                if let due = summary.task.due {
+                                    Text(due, style: .date)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                            .padding(.vertical, 4)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.vertical, 4)
+            }
+
+            GroupBox("Files") {
+                VStack(spacing: 8) {
+                    ForEach(fileSummaries) { summary in
+                        Button {
+                            let item = StorageCenterItem(
+                                id: summary.file.id,
+                                displayTitle: summary.file.displayTitle,
+                                entityType: summary.file.entityType,
+                                contextDescription: summary.courseTitle,
+                                primaryDate: summary.file.primaryDate,
+                                statusDescription: summary.file.statusDescription,
+                                searchText: summary.file.searchableText.lowercased(),
+                                editPayload: .courseFile(summary.file),
+                                deleteAction: { coursesStore.deleteFile(summary.file.id) }
+                            )
+                            detailItem = item
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(summary.file.displayTitle)
+                                        .font(.headline)
+                                    var details = summary.courseTitle
+                                    if let nodeTitle = summary.nodeTitle {
+                                        details += " - \(nodeTitle)"
+                                    }
+                                    Text(details)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Text(summary.file.primaryDate, style: .date)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.vertical, 4)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.vertical, 4)
+            }
+
             List(items) { item in
                 HStack(spacing: 12) {
                     Image(systemName: item.entityType.icon)
@@ -242,7 +474,13 @@ struct StorageSettingsView: View {
                     .buttonStyle(.borderedProminent)
 
                     Button("Delete") {
-                        pendingDelete = item
+                        if requiresDeleteChoice(item) {
+                            pendingDelete = item
+                            showDeleteOptions = true
+                        } else {
+                            pendingDelete = item
+                            showDeleteConfirm = true
+                        }
                     }
                     .buttonStyle(.bordered)
                     .tint(.red)
@@ -267,18 +505,37 @@ struct StorageSettingsView: View {
         .sheet(item: $detailItem) { item in
             StorageDetailSheet(
                 item: item,
+                coursesStore: coursesStore,
+                assignmentsStore: assignmentsStore,
+                practiceStore: practiceStore,
                 onEdit: { activeEdit = item.editPayload },
-                onDelete: { pendingDelete = item }
+                onDelete: {
+                    pendingDelete = item
+                    if requiresDeleteChoice(item) {
+                        showDeleteOptions = true
+                    } else {
+                        showDeleteConfirm = true
+                    }
+                }
             )
         }
-        .alert("Delete Item?", isPresented: Binding(
-            get: { pendingDelete != nil },
-            set: { if !$0 { pendingDelete = nil } }
-        )) {
+        .confirmationDialog("Delete Container", isPresented: $showDeleteOptions, presenting: pendingDelete) { item in
+            Button("Delete Only (Keep Children)") {
+                handleDelete(item, mode: .detach)
+            }
+            Button("Delete with All Contents", role: .destructive) {
+                handleDelete(item, mode: .cascade)
+            }
+            Button("Cancel", role: .cancel) { pendingDelete = nil }
+        } message: { _ in
+            Text(deleteImpactSummary(for: pendingDelete))
+        }
+        .alert("Delete Item?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) { pendingDelete = nil }
             Button("Delete", role: .destructive) {
-                pendingDelete?.deleteAction()
-                pendingDelete = nil
+                if let pendingDelete {
+                    handleDelete(pendingDelete, mode: .simple)
+                }
             }
         } message: {
             Text("This will permanently remove the selected item.")
@@ -290,6 +547,118 @@ struct StorageSettingsView: View {
             selectedTypes.remove(entity)
         } else {
             selectedTypes.insert(entity)
+        }
+    }
+
+    private func requiresDeleteChoice(_ item: StorageCenterItem) -> Bool {
+        switch item.entityType {
+        case .semester, .course, .courseOutline:
+            return true
+        default:
+            return false
+        }
+    }
+
+    private enum DeleteMode {
+        case simple
+        case detach
+        case cascade
+    }
+
+    private func handleDelete(_ item: StorageCenterItem, mode: DeleteMode) {
+        switch item.editPayload {
+        case .semester(let semester):
+            switch mode {
+            case .detach:
+                let unassigned = coursesStore.ensureUnassignedSemester()
+                coursesStore.reassignCourses(fromSemesterId: semester.id, toSemesterId: unassigned.id)
+                coursesStore.permanentlyDeleteSemester(semester.id)
+            case .cascade:
+                let courses = coursesStore.courses.filter { $0.semesterId == semester.id }
+                for course in courses {
+                    deleteCourseCascade(course)
+                }
+                coursesStore.permanentlyDeleteSemester(semester.id)
+            case .simple:
+                coursesStore.permanentlyDeleteSemester(semester.id)
+            }
+        case .course(let course):
+            switch mode {
+            case .detach:
+                let unassignedCourse = coursesStore.ensureUnassignedCourse()
+                assignmentsStore.detachTasks(fromCourseId: course.id)
+                coursesStore.reassignCourseAssets(fromCourseId: course.id, toCourseId: unassignedCourse.id)
+                practiceStore.reassignCourse(from: course.id, to: unassignedCourse.id)
+                gradesStore.reassignCourse(from: course.id, to: unassignedCourse.id)
+                coursesStore.deleteCourse(course)
+            case .cascade:
+                deleteCourseCascade(course)
+            case .simple:
+                coursesStore.deleteCourse(course)
+            }
+        case .outlineNode(let node):
+            switch mode {
+            case .detach:
+                coursesStore.detachOutlineNodeChildren(nodeId: node.id)
+                coursesStore.deleteOutlineNode(node.id)
+            case .cascade:
+                coursesStore.deleteSubtree(node.id)
+            case .simple:
+                coursesStore.deleteOutlineNode(node.id)
+            }
+        case .assignment(let task):
+            assignmentsStore.removeTask(id: task.id)
+            AssignmentPlansStore.shared.deletePlan(for: task.id)
+        case .practiceTest(let test):
+            practiceStore.deleteTest(test.id)
+        case .courseFile(let file):
+            coursesStore.deleteFile(file.id)
+        }
+        refreshIndex()
+        pendingDelete = nil
+        showDeleteOptions = false
+        showDeleteConfirm = false
+    }
+
+    private func deleteCourseCascade(_ course: Course) {
+        let tasks = assignmentsStore.tasks.filter { $0.courseId == course.id }
+        for task in tasks {
+            assignmentsStore.removeTask(id: task.id)
+            AssignmentPlansStore.shared.deletePlan(for: task.id)
+        }
+        let tests = practiceStore.tests.filter { $0.courseId == course.id }
+        for test in tests {
+            practiceStore.deleteTest(test.id)
+        }
+        gradesStore.remove(courseId: course.id)
+        coursesStore.deleteCourseAssets(courseId: course.id)
+        coursesStore.deleteCourse(course)
+    }
+
+    private func deleteImpactSummary(for item: StorageCenterItem?) -> String {
+        guard let item else { return "Choose how to handle items inside this container." }
+        switch item.editPayload {
+        case .semester(let semester):
+            let courses = coursesStore.courses.filter { $0.semesterId == semester.id }
+            let courseIds = Set(courses.map(\.id))
+            let assignments = assignmentsStore.tasks.filter { $0.courseId.map { courseIds.contains($0) } ?? false }.count
+            let files = coursesStore.courseFiles.filter { courseIds.contains($0.courseId) }.count
+            let outlines = coursesStore.outlineNodes.filter { courseIds.contains($0.courseId) }.count
+            let tests = practiceStore.tests.filter { courseIds.contains($0.courseId) }.count
+            let grades = gradesStore.grades.filter { courseIds.contains($0.courseId) }.count
+            return "Contained items: Courses \(courses.count), Assignments \(assignments), Files \(files), Outline Nodes \(outlines), Practice Tests \(tests), Grades \(grades)."
+        case .course(let course):
+            let assignments = assignmentsStore.tasks.filter { $0.courseId == course.id }.count
+            let files = coursesStore.courseFiles.filter { $0.courseId == course.id }.count
+            let outlines = coursesStore.outlineNodes.filter { $0.courseId == course.id }.count
+            let tests = practiceStore.tests.filter { $0.courseId == course.id }.count
+            let grades = gradesStore.grades.filter { $0.courseId == course.id }.count
+            return "Contained items: Assignments \(assignments), Files \(files), Outline Nodes \(outlines), Practice Tests \(tests), Grades \(grades)."
+        case .outlineNode(let node):
+            let childCount = coursesStore.countSubtreeNodes(node.id) - 1
+            return "Contained items: Child outline nodes \(max(childCount, 0))."
+        case .assignment, .practiceTest, .courseFile:
+            return "Choose how to handle items inside this container."
         }
     }
 
@@ -307,12 +676,49 @@ struct StorageSettingsView: View {
     }
 }
 
+private struct SemesterSummary: Identifiable {
+    let id = UUID()
+    let semester: Semester
+    let courses: Int
+    let assignments: Int
+    let files: Int
+    let outlines: Int
+    let tests: Int
+}
+
+private struct CourseSummary: Identifiable {
+    let id = UUID()
+    let course: Course
+    let assignments: Int
+    let files: Int
+    let outlines: Int
+    let tests: Int
+    let grades: Int
+}
+
+private struct AssignmentSummary: Identifiable {
+    let id = UUID()
+    let task: AppTask
+    let courseTitle: String
+}
+
+private struct FileSummary: Identifiable {
+    let id = UUID()
+    let file: CourseFile
+    let courseTitle: String
+    let nodeTitle: String?
+}
+
 private struct StorageDetailSheet: View {
     let item: StorageCenterItem
+    let coursesStore: CoursesStore
+    let assignmentsStore: AssignmentsStore
+    let practiceStore: PracticeTestStore
     let onEdit: () -> Void
     let onDelete: () -> Void
 
     var body: some View {
+        let linked = linkedItems()
         VStack(alignment: .leading, spacing: 16) {
             Text(item.displayTitle)
                 .font(.title2.weight(.bold))
@@ -335,6 +741,19 @@ private struct StorageDetailSheet: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
+            if !linked.isEmpty {
+                Divider()
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Linked Items")
+                        .font(.headline)
+                    ForEach(linked, id: \.self) { entry in
+                        Text(entry)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
             Spacer()
 
             HStack {
@@ -346,6 +765,73 @@ private struct StorageDetailSheet: View {
         }
         .padding(24)
         .frame(minWidth: 420, minHeight: 240)
+    }
+
+    private func linkedItems() -> [String] {
+        switch item.editPayload {
+        case .course(let course):
+            let semesterTitle = coursesStore.semesters.first(where: { $0.id == course.semesterId })?.displayTitle
+            let assignments = assignmentsStore.tasks.filter { $0.courseId == course.id }.count
+            let files = coursesStore.courseFiles.filter { $0.courseId == course.id }.count
+            let outlines = coursesStore.outlineNodes.filter { $0.courseId == course.id }.count
+            let tests = practiceStore.tests.filter { $0.courseId == course.id }.count
+            let grades = gradesStore.grades.filter { $0.courseId == course.id }.count
+            var rows: [String] = []
+            if let semesterTitle { rows.append("Semester: \(semesterTitle)") }
+            rows.append("Assignments: \(assignments)")
+            rows.append("Course Files: \(files)")
+            rows.append("Outline Nodes: \(outlines)")
+            rows.append("Practice Tests: \(tests)")
+            if grades > 0 {
+                rows.append("Grades: \(grades)")
+            }
+            return rows
+        case .semester(let semester):
+            let courses = coursesStore.courses.filter { $0.semesterId == semester.id }
+            let courseIds = Set(courses.map(\.id))
+            let assignments = assignmentsStore.tasks.filter { $0.courseId.map { courseIds.contains($0) } ?? false }.count
+            let files = coursesStore.courseFiles.filter { courseIds.contains($0.courseId) }.count
+            let outlines = coursesStore.outlineNodes.filter { courseIds.contains($0.courseId) }.count
+            let tests = practiceStore.tests.filter { courseIds.contains($0.courseId) }.count
+            return [
+                "Courses: \(courses.count)",
+                "Assignments: \(assignments)",
+                "Course Files: \(files)",
+                "Outline Nodes: \(outlines)",
+                "Practice Tests: \(tests)"
+            ]
+        case .assignment(let task):
+            if let courseId = task.courseId,
+               let courseTitle = coursesStore.courses.first(where: { $0.id == courseId })?.title {
+                return ["Course: \(courseTitle)"]
+            }
+            return []
+        case .practiceTest(let test):
+            if let courseTitle = coursesStore.courses.first(where: { $0.id == test.courseId })?.title {
+                return ["Course: \(courseTitle)"]
+            }
+            return []
+        case .courseFile(let file):
+            var rows: [String] = []
+            if let courseTitle = coursesStore.courses.first(where: { $0.id == file.courseId })?.title {
+                rows.append("Course: \(courseTitle)")
+            }
+            if let nodeId = file.nodeId,
+               let nodeTitle = coursesStore.outlineNodes.first(where: { $0.id == nodeId })?.displayTitle {
+                rows.append("Outline Node: \(nodeTitle)")
+            }
+            return rows
+        case .outlineNode(let node):
+            var rows: [String] = []
+            if let courseTitle = coursesStore.courses.first(where: { $0.id == node.courseId })?.title {
+                rows.append("Course: \(courseTitle)")
+            }
+            if let parentId = node.parentId,
+               let parentTitle = coursesStore.outlineNodes.first(where: { $0.id == parentId })?.displayTitle {
+                rows.append("Parent Node: \(parentTitle)")
+            }
+            return rows
+        }
     }
 }
 
@@ -654,6 +1140,7 @@ private struct OutlineNodeEditSheet: View {
     StorageSettingsView()
         .environmentObject(CoursesStore())
         .environmentObject(AssignmentsStore.shared)
+        .environmentObject(GradesStore.shared)
         .frame(width: 900, height: 650)
 }
 #endif

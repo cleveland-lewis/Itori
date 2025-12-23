@@ -134,6 +134,12 @@ struct GradesAnalyticsView: View {
                     }
                     
                     Divider()
+
+                    if coursesStore.courses.contains(where: { $0.id == CoursesStore.unassignedCourseId }) {
+                        Button("Unassigned") {
+                            selectedCourseId = CoursesStore.unassignedCourseId
+                        }
+                    }
                     
                     ForEach(coursesStore.courses) { course in
                         Button(course.code) {
@@ -143,7 +149,7 @@ struct GradesAnalyticsView: View {
                 } label: {
                     HStack {
                         Image(systemName: "book")
-                        Text(selectedCourseId == nil ? "All Courses" : coursesStore.courses.first(where: { $0.id == selectedCourseId })?.code ?? "Course")
+                        Text(courseFilterLabel())
                         Image(systemName: "chevron.down")
                             .font(.caption)
                     }
@@ -236,6 +242,16 @@ struct GradesAnalyticsView: View {
                     .frame(maxWidth: .infinity)
             }
         }
+    }
+
+    private func courseFilterLabel() -> String {
+        if selectedCourseId == nil {
+            return "All Courses"
+        }
+        if selectedCourseId == CoursesStore.unassignedCourseId {
+            return "Unassigned"
+        }
+        return coursesStore.courses.first(where: { $0.id == selectedCourseId })?.code ?? "Course"
     }
     
     // MARK: - Individual Charts
