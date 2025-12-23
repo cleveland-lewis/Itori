@@ -244,7 +244,7 @@ struct StopwatchNumerals: View {
 
     var body: some View {
         ZStack {
-            ForEach(stride(from: 5, through: 60, by: 5), id: \.self) { value in
+            ForEach(Array(stride(from: 5, through: 60, by: 5)), id: \.self) { value in
                 let mapped = value % 60
                 let angle = Double(mapped) / 60.0 * 360.0 - 90.0
                 let radian = angle * .pi / 180.0
