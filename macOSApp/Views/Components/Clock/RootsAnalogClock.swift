@@ -95,12 +95,12 @@ struct RootsAnalogClock: View {
             Circle()
                 .fill(.clear)
                 .overlay(
-                    Circle().stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.28), lineWidth: 1)
+                    Circle().stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.5), lineWidth: 2)
                 )
 
             ForEach(1..<4) { idx in
                 Circle()
-                    .stroke(idx == 2 ? accentColor : DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.16), lineWidth: 1)
+                    .stroke(idx == 2 ? accentColor : DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.2), lineWidth: 1)
                     .frame(width: diameter * (1 - CGFloat(idx) * 0.15), height: diameter * (1 - CGFloat(idx) * 0.15))
             }
         }

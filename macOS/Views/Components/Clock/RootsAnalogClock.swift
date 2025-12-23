@@ -120,13 +120,13 @@ struct StopwatchBezel: View {
             Circle()
                 .fill(.clear)
                 .overlay(
-                    Circle().stroke(Color.primary.opacity(0.28), lineWidth: 2)
+                    Circle().stroke(Color.primary.opacity(0.5), lineWidth: 2)
                 )
             Circle()
-                .stroke(Color.primary.opacity(0.12), lineWidth: 1)
+                .stroke(Color.primary.opacity(0.18), lineWidth: 1)
                 .frame(width: diameter * 0.88, height: diameter * 0.88)
             Circle()
-                .stroke(accentColor.opacity(0.18), lineWidth: 1)
+                .stroke(accentColor.opacity(0.22), lineWidth: 1)
                 .frame(width: diameter * 0.68, height: diameter * 0.68)
         }
         .drawingGroup()
