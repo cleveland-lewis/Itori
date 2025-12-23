@@ -725,6 +725,7 @@ private struct FocusWindowView: View {
         GlassClockCard(cornerRadius: DesignSystem.Layout.cornerRadiusLarge) {
             VStack(spacing: 24) {
                 RootsAnalogClock(
+                    style: .stopwatch,
                     diameter: 240,
                     showSecondHand: true,
                     accentColor: accentColor,

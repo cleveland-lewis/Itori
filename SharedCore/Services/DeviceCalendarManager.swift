@@ -33,7 +33,16 @@ final class DeviceCalendarManager: ObservableObject {
         let start = cal.date(byAdding: .day, value: -30, to: .now)!
         let end   = cal.date(byAdding: .day, value:  90, to: .now)!
 
-        let predicate = store.predicateForEvents(withStart: start, end: end, calendars: nil)
+        // Filter by selected school calendar if one is set
+        let calendarsToFetch: [EKCalendar]?
+        if let calendarID = AppSettingsModel.shared.selectedSchoolCalendarID,
+           let selectedCalendar = store.calendar(withIdentifier: calendarID) {
+            calendarsToFetch = [selectedCalendar]
+        } else {
+            calendarsToFetch = nil
+        }
+        
+        let predicate = store.predicateForEvents(withStart: start, end: end, calendars: calendarsToFetch)
         let fetched = store.events(matching: predicate)
 
         await MainActor.run {
@@ -44,7 +53,16 @@ final class DeviceCalendarManager: ObservableObject {
     }
 
     func refreshEvents(from start: Date, to end: Date, reason: String) async {
-        let predicate = store.predicateForEvents(withStart: start, end: end, calendars: nil)
+        // Filter by selected school calendar if one is set
+        let calendarsToFetch: [EKCalendar]?
+        if let calendarID = AppSettingsModel.shared.selectedSchoolCalendarID,
+           let selectedCalendar = store.calendar(withIdentifier: calendarID) {
+            calendarsToFetch = [selectedCalendar]
+        } else {
+            calendarsToFetch = nil
+        }
+        
+        let predicate = store.predicateForEvents(withStart: start, end: end, calendars: calendarsToFetch)
         let fetched = store.events(matching: predicate)
 
         await MainActor.run {
@@ -86,7 +104,16 @@ final class DeviceCalendarManager: ObservableObject {
         let start = cal.date(byAdding: .day, value: -30, to: .now)!
         let end   = cal.date(byAdding: .day, value:  90, to: .now)!
 
-        let predicate = store.predicateForEvents(withStart: start, end: end, calendars: nil)
+        // Filter by selected school calendar if one is set
+        let calendarsToFetch: [EKCalendar]?
+        if let calendarID = AppSettingsModel.shared.selectedSchoolCalendarID,
+           let selectedCalendar = store.calendar(withIdentifier: calendarID) {
+            calendarsToFetch = [selectedCalendar]
+        } else {
+            calendarsToFetch = nil
+        }
+        
+        let predicate = store.predicateForEvents(withStart: start, end: end, calendars: calendarsToFetch)
         let fetched = store.events(matching: predicate)
 
         await MainActor.run {
@@ -103,5 +130,10 @@ final class DeviceCalendarManager: ObservableObject {
         }
 
         isObservingStoreChanges = true
+    }
+    
+    /// Get all available calendars from the event store
+    func getAvailableCalendars() -> [EKCalendar] {
+        return store.calendars(for: .event)
     }
 }

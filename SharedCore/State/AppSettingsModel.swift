@@ -254,6 +254,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         case dailyOverviewIncludeMotivationStorage
         case showOnlySchoolCalendarStorage
         case lockCalendarPickerToSchoolStorage
+        case selectedSchoolCalendarID
         case aiModeRaw
         case byoProviderConfigData
         case localBackendTypeRaw
@@ -437,6 +438,9 @@ final class AppSettingsModel: ObservableObject, Codable {
     
     // Calendar picker admin-lock setting
     var lockCalendarPickerToSchoolStorage: Bool = false
+    
+    // Selected school calendar identifier
+    var selectedSchoolCalendarID: String? = nil
     
     // AI Settings
     var aiModeRaw: String = "auto"
@@ -1089,6 +1093,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(dailyOverviewIncludeMotivationStorage, forKey: .dailyOverviewIncludeMotivationStorage)
         try container.encode(showOnlySchoolCalendarStorage, forKey: .showOnlySchoolCalendarStorage)
         try container.encode(lockCalendarPickerToSchoolStorage, forKey: .lockCalendarPickerToSchoolStorage)
+        try container.encodeIfPresent(selectedSchoolCalendarID, forKey: .selectedSchoolCalendarID)
     }
 
     required init(from decoder: Decoder) throws {
@@ -1147,6 +1152,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         dailyOverviewIncludeMotivationStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewIncludeMotivationStorage) ?? true
         showOnlySchoolCalendarStorage = try container.decodeIfPresent(Bool.self, forKey: .showOnlySchoolCalendarStorage) ?? false
         lockCalendarPickerToSchoolStorage = try container.decodeIfPresent(Bool.self, forKey: .lockCalendarPickerToSchoolStorage) ?? false
+        selectedSchoolCalendarID = try container.decodeIfPresent(String.self, forKey: .selectedSchoolCalendarID)
     }
 
     func resetUserDefaults() {

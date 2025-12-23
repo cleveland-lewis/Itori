@@ -590,7 +590,9 @@ struct IOSPracticeView: View {
 struct IOSSettingsView: View {
     @EnvironmentObject private var settings: AppSettingsModel
     @EnvironmentObject private var coursesStore: CoursesStore
+    @EnvironmentObject private var deviceCalendar: DeviceCalendarManager
     @State private var tabBarPrefs: TabBarPreferencesStore?
+    @State private var availableCalendars: [EKCalendar] = []
     @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
@@ -626,6 +628,37 @@ struct IOSSettingsView: View {
                     displayedComponents: [.hourAndMinute]
                 )
                 .accessibilityLabel(NSLocalizedString("settings.a11y.workday_end", comment: "Workday end"))
+            }
+            
+            Section(header: Text("Calendar")) {
+                Picker("School Calendar", selection: Binding(
+                    get: { settings.selectedSchoolCalendarID ?? "" },
+                    set: { newValue in
+                        settings.selectedSchoolCalendarID = newValue.isEmpty ? nil : newValue
+                        Task {
+                            await deviceCalendar.refreshEventsForVisibleRange(reason: "calendarChanged")
+                        }
+                    }
+                )) {
+                    Text("All Calendars").tag("")
+                    ForEach(availableCalendars, id: \.calendarIdentifier) { calendar in
+                        HStack {
+                            Circle()
+                                .fill(Color(cgColor: calendar.cgColor))
+                                .frame(width: 12, height: 12)
+                            Text(calendar.title)
+                        }
+                        .tag(calendar.calendarIdentifier)
+                    }
+                }
+                .accessibilityLabel("Select school calendar")
+                .accessibilityHint("Choose which calendar contains your school events")
+                
+                if settings.selectedSchoolCalendarID != nil {
+                    Text("Only events from the selected calendar will be shown throughout the app.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
             }
             
             Section(NSLocalizedString("settings.section.tab_bar_pages", comment: "Tab bar section")) {
@@ -679,6 +712,7 @@ struct IOSSettingsView: View {
             if tabBarPrefs == nil {
                 tabBarPrefs = TabBarPreferencesStore(settings: settings)
             }
+            availableCalendars = deviceCalendar.getAvailableCalendars()
         }
     }
 }

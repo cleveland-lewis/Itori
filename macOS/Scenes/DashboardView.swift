@@ -299,7 +299,12 @@ struct DashboardView: View {
                 let clockSize: CGFloat = 160
                 HStack(alignment: .center, spacing: DesignSystem.Layout.spacing.large) {
                     // Column 1: Clock
-                    RootsAnalogClock(diameter: clockSize, showSecondHand: true, accentColor: settings.activeAccentColor)
+                    RootsAnalogClock(
+                        style: .clock,
+                        diameter: clockSize,
+                        showSecondHand: true,
+                        accentColor: settings.activeAccentColor
+                    )
                         .frame(width: clockSize, height: clockSize)
                     
                     // Column 2: Calendar (integrated, no nested card)

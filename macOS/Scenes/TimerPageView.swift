@@ -1232,6 +1232,7 @@ private struct TimerSetupView: View {
                 }
                 if displayStyle == .analog {
                     RootsAnalogClock(
+                        style: .stopwatch,
                         diameter: 200,
                         showSecondHand: true,
                         accentColor: .accentColor,
@@ -1310,6 +1311,7 @@ private struct FocusSessionView: View {
                 }
                 if displayStyle == .analog {
                     RootsAnalogClock(
+                        style: .stopwatch,
                         diameter: 200,
                         showSecondHand: true,
                         accentColor: .accentColor,
@@ -1405,6 +1407,7 @@ private struct FocusWindowView: View {
         VStack(spacing: 24) {
             if displayStyle == .analog {
                 RootsAnalogClock(
+                    style: .stopwatch,
                     diameter: 240,
                     showSecondHand: true,
                     accentColor: accentColor,
