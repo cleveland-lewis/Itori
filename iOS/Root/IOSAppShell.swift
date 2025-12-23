@@ -39,16 +39,24 @@ struct IOSAppShell<Content: View>: View {
     }
     
     var body: some View {
-        ZStack(alignment: .top) {
+        ZStack(alignment: isPad ? .bottom : .top) {
             // Base content layer - scrolls under buttons
             content
             
             // Floating overlay buttons
             if shouldShowButtons {
-                VStack(spacing: 0) {
-                    floatingButtons
-                        .padding(.top, isPad ? 0 : 10) // Align with tab bar on iPad, slight offset on iPhone
-                    Spacer()
+                if isPad {
+                    VStack(spacing: 0) {
+                        Spacer()
+                        floatingButtons
+                            .padding(.bottom, 8)
+                    }
+                } else {
+                    VStack(spacing: 0) {
+                        floatingButtons
+                            .padding(.top, 10)
+                        Spacer()
+                    }
                 }
             }
         }
@@ -131,7 +139,6 @@ struct IOSAppShell<Content: View>: View {
             .accessibilityLabel(NSLocalizedString("ios.menu.quick_add", comment: "Quick add"))
         }
         .padding(.horizontal, 16)
-        .padding(.top, 10)
     }
     
     private var allMenuPages: [AppPage] {

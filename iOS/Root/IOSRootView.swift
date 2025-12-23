@@ -166,7 +166,7 @@ struct IOSRootView: View {
         case .practice:
             IOSPracticeView()
         case .settings:
-            IOSSettingsView()
+            SettingsRootView()
         default:
             IOSPlaceholderView(title: tab.title, subtitle: "This page is not available on iOS yet.")
         }

@@ -6,6 +6,7 @@ struct CalendarSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     @StateObject private var deviceCalendar = DeviceCalendarManager.shared
     @AppStorage("selectedCalendarID") private var selectedCalendarID: String?
+    @State private var showRevokeConfirmation = false
     
     var body: some View {
         List {
@@ -99,11 +100,36 @@ struct CalendarSettingsView: View {
                 } footer: {
                     Text(NSLocalizedString("settings.calendar.scheduling.footer", comment: "How far ahead to scan for events when refreshing"))
                 }
+                
+                Section {
+                    Button(role: .destructive) {
+                        showRevokeConfirmation = true
+                    } label: {
+                        HStack {
+                            Text(NSLocalizedString("settings.calendar.revoke_access", comment: "Revoke Calendar Access"))
+                            Spacer()
+                        }
+                    }
+                } footer: {
+                    Text(NSLocalizedString("settings.calendar.revoke_access.footer", comment: "Remove calendar access and clear all synced events. You'll need to manually revoke permission in iOS Settings."))
+                }
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle(NSLocalizedString("settings.category.calendar", comment: "Calendar"))
         .navigationBarTitleDisplayMode(.inline)
+        .confirmationDialog(
+            NSLocalizedString("settings.calendar.revoke_access.confirm.title", comment: "Revoke Calendar Access?"),
+            isPresented: $showRevokeConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button(NSLocalizedString("settings.calendar.revoke_access.confirm.button", comment: "Revoke Access"), role: .destructive) {
+                deviceCalendar.revokeAccess()
+            }
+            Button(NSLocalizedString("common.cancel", comment: "Cancel"), role: .cancel) {}
+        } message: {
+            Text(NSLocalizedString("settings.calendar.revoke_access.confirm.message", comment: "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Roots > Calendars."))
+        }
     }
     
     private var refreshRangeDays: Int {

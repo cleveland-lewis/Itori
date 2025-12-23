@@ -958,6 +958,11 @@
 "settings.calendar.range.2_months" = "2 Months";
 "settings.calendar.scheduling.header" = "Scheduling";
 "settings.calendar.scheduling.footer" = "How far ahead to scan for events when refreshing";
+"settings.calendar.revoke_access" = "Revoke Calendar Access";
+"settings.calendar.revoke_access.footer" = "Remove calendar access and clear all synced events. You'll need to manually revoke permission in iOS Settings.";
+"settings.calendar.revoke_access.confirm.title" = "Revoke Calendar Access?";
+"settings.calendar.revoke_access.confirm.message" = "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Roots > Calendars.";
+"settings.calendar.revoke_access.confirm.button" = "Revoke Access";
 
 /* Privacy Settings */
 "settings.privacy.local_only" = "Local-Only Mode";

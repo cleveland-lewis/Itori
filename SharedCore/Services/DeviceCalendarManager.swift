@@ -136,4 +136,23 @@ final class DeviceCalendarManager: ObservableObject {
     func getAvailableCalendars() -> [EKCalendar] {
         return store.calendars(for: .event)
     }
+    
+    /// Reset calendar authorization (user must manually revoke in Settings app)
+    func revokeAccess() {
+        // Clear all cached data
+        events = []
+        lastRefreshAt = nil
+        lastRefreshReason = nil
+        isAuthorized = false
+        
+        // Stop observing changes
+        if let observer = storeChangedObserver {
+            NotificationCenter.default.removeObserver(observer)
+            storeChangedObserver = nil
+            isObservingStoreChanges = false
+        }
+        
+        // Clear selected calendar
+        AppSettingsModel.shared.selectedSchoolCalendarID = nil
+    }
 }
