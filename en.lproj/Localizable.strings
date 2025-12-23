@@ -1052,3 +1052,38 @@
 /* Flashcards */
 "ios.flashcards.title" = "Flashcards";
 "ios.flashcards.coming_soon" = "Flashcard decks and study sessions coming soon";
+"settings.notifications.lead_time.6_hours" = "6 hours";
+"settings.notifications.lead_time.12_hours" = "12 hours";
+"settings.notifications.lead_time.1_day" = "1 day";
+"settings.notifications.lead_time.2_days" = "2 days";
+"settings.notifications.permission.denied.title" = "Notifications Disabled";
+"settings.notifications.permission.denied.message" = "Please enable notifications in Settings to use this feature";
+"settings.notifications.permission.open_settings" = "Open Settings";
+"settings.notifications.debug.header" = "Debug";
+"settings.notifications.debug.print" = "Print Pending Notifications";
+"settings.notifications.debug.test" = "Send Test Notification (5s)";
+
+/* Notification Content */
+"notification.assignment.title" = "Assignment Due Soon";
+"notification.assignment.body" = "%@ is due soon";
+"notification.daily_overview.title" = "Good Morning!";
+"notification.daily_overview.default" = "Open Roots to see today's plan";
+"notification.daily_overview.task_singular" = "1 task due today";
+"notification.daily_overview.tasks_plural" = "%d tasks due today";
+"notification.daily_overview.motivation" = "You've got this!";
+"notification.motivation.title" = "Stay Motivated";
+"notification.motivation.message_1" = "Keep up the great work!";
+"notification.motivation.message_2" = "You're making progress!";
+"notification.motivation.message_3" = "Stay focused on your goals!";
+"notification.motivation.message_4" = "Every small step counts!";
+"notification.motivation.message_5" = "Believe in yourself!";
+"notification.motivation.message_6" = "You're doing amazing!";
+
+/* Common */
+"common.cancel" = "Cancel";
+
+/* Privacy Settings - iCloud Sync */
+"settings.privacy.icloud_sync" = "iCloud Sync";
+"settings.privacy.icloud_sync.detail" = "Sync data across your devices using iCloud";
+"settings.privacy.icloud_sync.footer" = "Your data will be synced across all devices signed in to your iCloud account. Data is encrypted in transit and at rest.";
+"settings.privacy.local_only.footer" = "All your data stays on this device. No cloud sync or external services are used.";

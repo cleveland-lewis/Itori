@@ -192,8 +192,10 @@ final class NotificationManager: ObservableObject {
     // MARK: - Assignment Notifications
     
     func scheduleAssignmentDue(_ assignment: AppTask) {
+        guard AppSettingsModel.shared.notificationsEnabled else { return }
         guard AppSettingsModel.shared.assignmentRemindersEnabled else { return }
         guard let dueDate = assignment.due else { return }
+        guard !assignment.isCompleted else { return }
         
         let leadTime = AppSettingsModel.shared.assignmentLeadTime
         let notificationDate = dueDate.addingTimeInterval(-leadTime)
@@ -202,10 +204,17 @@ final class NotificationManager: ObservableObject {
         guard notificationDate > Date() else { return }
         
         let content = UNMutableNotificationContent()
-        content.title = "Assignment Due Soon"
-        content.body = "\(assignment.title) is due \(formatLeadTime(leadTime))"
+        content.title = NSLocalizedString("notification.assignment.title", comment: "Assignment Due Soon")
+        content.body = String(format: NSLocalizedString("notification.assignment.body", comment: "%@ is due soon"), assignment.title)
         content.sound = .default
         content.userInfo = ["assignmentId": assignment.id.uuidString]
+        content.categoryIdentifier = "roots.assignmentReminder"
+        
+        // Add course subtitle if available
+        if let courseId = assignment.courseId,
+           let course = CoursesStore.shared?.courses.first(where: { $0.id == courseId }) {
+            content.subtitle = course.title
+        }
         
         let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: notificationDate)
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
@@ -220,6 +229,25 @@ final class NotificationManager: ObservableObject {
         }
     }
     
+    func scheduleAllAssignmentReminders() {
+        let assignments = AssignmentsStore.shared.tasks
+        for assignment in assignments where !assignment.isCompleted {
+            scheduleAssignmentDue(assignment)
+        }
+    }
+    
+    func cancelAllAssignmentReminders() {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            let assignmentIds = requests
+                .filter { $0.identifier.hasPrefix("assignment-") }
+                .map { $0.identifier }
+            
+            if !assignmentIds.isEmpty {
+                UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: assignmentIds)
+            }
+        }
+    }
+    
     func cancelAssignmentNotification(_ assignmentId: UUID) {
         let identifier = "assignment-\(assignmentId.uuidString)"
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
@@ -228,6 +256,10 @@ final class NotificationManager: ObservableObject {
     // MARK: - Daily Overview
     
     func scheduleDailyOverview() {
+        guard AppSettingsModel.shared.notificationsEnabled else {
+            cancelDailyOverview()
+            return
+        }
         guard AppSettingsModel.shared.dailyOverviewEnabled else {
             cancelDailyOverview()
             return
@@ -256,10 +288,73 @@ final class NotificationManager: ObservableObject {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["daily-overview"])
     }
     
+    // MARK: - Motivational Messages
+    
+    func scheduleMotivationalMessages() {
+        guard AppSettingsModel.shared.notificationsEnabled else {
+            cancelMotivationalMessages()
+            return
+        }
+        guard AppSettingsModel.shared.affirmationsEnabled else {
+            cancelMotivationalMessages()
+            return
+        }
+        
+        // Cancel existing motivational messages
+        cancelMotivationalMessages()
+        
+        // Schedule 3 daily messages at 10am, 2pm, and 6pm
+        let times = [
+            DateComponents(hour: 10, minute: 0),
+            DateComponents(hour: 14, minute: 0),
+            DateComponents(hour: 18, minute: 0)
+        ]
+        
+        let messages = [
+            NSLocalizedString("notification.motivation.message_1", comment: "Keep up the great work!"),
+            NSLocalizedString("notification.motivation.message_2", comment: "You're making progress!"),
+            NSLocalizedString("notification.motivation.message_3", comment: "Stay focused on your goals!"),
+            NSLocalizedString("notification.motivation.message_4", comment: "Every small step counts!"),
+            NSLocalizedString("notification.motivation.message_5", comment: "Believe in yourself!"),
+            NSLocalizedString("notification.motivation.message_6", comment: "You're doing amazing!"),
+        ]
+        
+        for (index, timeComponents) in times.enumerated() {
+            let content = UNMutableNotificationContent()
+            content.title = NSLocalizedString("notification.motivation.title", comment: "Stay Motivated")
+            content.body = messages.randomElement() ?? messages[0]
+            content.sound = .default
+            content.categoryIdentifier = "roots.motivation"
+            
+            let trigger = UNCalendarNotificationTrigger(dateMatching: timeComponents, repeats: true)
+            let request = UNNotificationRequest(
+                identifier: "motivation-\(index)",
+                content: content,
+                trigger: trigger
+            )
+            
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error = error {
+                    LOG_UI(.error, "NotificationManager", "Failed to schedule motivational message", metadata: ["error": error.localizedDescription])
+                }
+            }
+        }
+    }
+    
+    func cancelMotivationalMessages() {
+        let identifiers = (0..<3).map { "motivation-\($0)" }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
+    }
+    
+    func cancelAllScheduledNotifications() {
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+    }
+    
     private func generateDailyOverviewContent() -> UNMutableNotificationContent {
         let content = UNMutableNotificationContent()
-        content.title = "Daily Overview"
+        content.title = NSLocalizedString("notification.daily_overview.title", comment: "Good Morning!")
         content.interruptionLevel = .timeSensitive
+        content.categoryIdentifier = "roots.dailyOverview"
         
         var bodyParts: [String] = []
         
@@ -274,37 +369,13 @@ final class NotificationManager: ObservableObject {
                 return due >= today && due < tomorrow
             }
             
-            if todayTasks.isEmpty {
-                bodyParts.append("No assignments due today")
-            } else {
-                let taskTitles = todayTasks.prefix(3).map { $0.title }.joined(separator: ", ")
-                if todayTasks.count <= 3 {
-                    bodyParts.append("\(todayTasks.count) due today: \(taskTitles)")
-                } else {
-                    bodyParts.append("\(todayTasks.count) due today: \(taskTitles), +\(todayTasks.count - 3) more")
-                }
+            if !todayTasks.isEmpty {
+                let taskText = todayTasks.count == 1 ?
+                    NSLocalizedString("notification.daily_overview.task_singular", comment: "1 task") :
+                    String(format: NSLocalizedString("notification.daily_overview.tasks_plural", comment: "%d tasks"), todayTasks.count)
+                bodyParts.append(taskText)
             }
         }
-        
-        // Yesterday's accomplishments
-        // TODO: Re-enable when AppTask has completedDate property
-        /*
-        if AppSettingsModel.shared.dailyOverviewIncludeYesterdayCompleted {
-            let yesterdayCompleted = AssignmentsStore.shared.tasks.filter { task in
-                guard task.isCompleted, let completedDate = task.completedDate else { return false }
-                return completedDate >= yesterday && completedDate < today
-            }
-            
-            if !yesterdayCompleted.isEmpty {
-                if yesterdayCompleted.count <= 2 {
-                    let titles = yesterdayCompleted.map { $0.title }.joined(separator: ", ")
-                    bodyParts.append("Yesterday: Completed \(titles)")
-                } else {
-                    bodyParts.append("Yesterday: Completed \(yesterdayCompleted.count) tasks")
-                }
-            }
-        }
-        */
         
         // Yesterday's study time from FocusManager/timer sessions
         if AppSettingsModel.shared.dailyOverviewIncludeYesterdayStudyTime {
@@ -331,12 +402,14 @@ final class NotificationManager: ObservableObject {
             }
         }
         
-        // Motivational closing (non-cringe, optional)
-        if !bodyParts.isEmpty && AppSettingsModel.shared.dailyOverviewIncludeMotivation && shouldIncludeMotivation() {
-            bodyParts.append(getMotivationalLine())
+        // Motivational closing
+        if AppSettingsModel.shared.dailyOverviewIncludeMotivation {
+            bodyParts.append(NSLocalizedString("notification.daily_overview.motivation", comment: "You've got this!"))
         }
         
-        content.body = bodyParts.joined(separator: "\n")
+        content.body = bodyParts.isEmpty ?
+            NSLocalizedString("notification.daily_overview.default", comment: "Open Roots to see today's plan") :
+            bodyParts.joined(separator: " • ")
         content.sound = .default
         
         return content
@@ -361,22 +434,40 @@ final class NotificationManager: ObservableObject {
         return nil
     }
     
-    private func shouldIncludeMotivation() -> Bool {
-        // Include motivation ~50% of the time to keep it fresh
-        return Bool.random()
+    // MARK: - Debug Helpers
+    
+    #if DEBUG
+    func printPendingNotifications() {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            print("📬 Pending Notifications: \(requests.count)")
+            for request in requests {
+                print("  • \(request.identifier)")
+                if let trigger = request.trigger as? UNCalendarNotificationTrigger,
+                   let nextTrigger = trigger.nextTriggerDate() {
+                    print("    Next: \(nextTrigger)")
+                }
+            }
+        }
     }
     
-    private func getMotivationalLine() -> String {
-        let lines = [
-            "Make today count!",
-            "You've got this!",
-            "One step at a time",
-            "Progress, not perfection",
-            "Stay focused, stay strong",
-            "Keep moving forward"
-        ]
-        return lines.randomElement() ?? lines[0]
+    func sendTestNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "Test Notification"
+        content.body = "This is a test notification from Roots (5 seconds)"
+        content.sound = .default
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        let request = UNNotificationRequest(identifier: "test-notification", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("❌ Test notification failed: \(error)")
+            } else {
+                print("✅ Test notification scheduled for 5 seconds")
+            }
+        }
     }
+    #endif
     
     // MARK: - Utility
     

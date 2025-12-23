@@ -8,19 +8,36 @@ struct PrivacySettingsView: View {
     var body: some View {
         List {
             Section {
-                Toggle(isOn: .constant(true)) {
+                Toggle(isOn: $settings.enableICloudSync) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(NSLocalizedString("settings.privacy.local_only", comment: "Local-Only Mode"))
-                        Text(NSLocalizedString("settings.privacy.local_only.detail", comment: "All data stays on this device"))
+                        Text(NSLocalizedString("settings.privacy.icloud_sync", comment: "iCloud Sync"))
+                        Text(NSLocalizedString("settings.privacy.icloud_sync.detail", comment: "Sync data across your devices using iCloud"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
                 }
-                .disabled(true)
+                
+                if !settings.enableICloudSync {
+                    HStack {
+                        Image(systemName: "checkmark.shield")
+                            .foregroundColor(.green)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(NSLocalizedString("settings.privacy.local_only", comment: "Local-Only Mode"))
+                                .font(.subheadline)
+                            Text(NSLocalizedString("settings.privacy.local_only.detail", comment: "All data stays on this device"))
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
             } header: {
                 Text(NSLocalizedString("settings.privacy.data.header", comment: "Data Storage"))
             } footer: {
-                Text(NSLocalizedString("settings.privacy.data.footer", comment: "Roots stores all your data locally. No cloud sync or external services are used."))
+                if settings.enableICloudSync {
+                    Text(NSLocalizedString("settings.privacy.icloud_sync.footer", comment: "Your data will be synced across all devices signed in to your iCloud account. Data is encrypted in transit and at rest."))
+                } else {
+                    Text(NSLocalizedString("settings.privacy.local_only.footer", comment: "All your data stays on this device. No cloud sync or external services are used."))
+                }
             }
             
             Section {
