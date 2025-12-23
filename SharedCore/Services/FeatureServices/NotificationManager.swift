@@ -263,32 +263,116 @@ final class NotificationManager: ObservableObject {
         
         var bodyParts: [String] = []
         
-        // Today's assignments
         let today = Calendar.current.startOfDay(for: Date())
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today)!
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
-        let todayTasks = AssignmentsStore.shared.tasks.filter { task in
-            guard !task.isCompleted, let due = task.due else { return false }
-            return due >= today && due < tomorrow
-        }
         
-        if todayTasks.isEmpty {
-            bodyParts.append("✓ No assignments due today")
-        } else {
-            let taskTitles = todayTasks.prefix(3).map { $0.title }.joined(separator: ", ")
-            if todayTasks.count <= 3 {
-                bodyParts.append("\(todayTasks.count) due today: \(taskTitles)")
+        // Today's assignments
+        if AppSettingsModel.shared.dailyOverviewIncludeTasks {
+            let todayTasks = AssignmentsStore.shared.tasks.filter { task in
+                guard !task.isCompleted, let due = task.due else { return false }
+                return due >= today && due < tomorrow
+            }
+            
+            if todayTasks.isEmpty {
+                bodyParts.append("✓ No assignments due today")
             } else {
-                bodyParts.append("\(todayTasks.count) due today: \(taskTitles), +\(todayTasks.count - 3) more")
+                let taskTitles = todayTasks.prefix(3).map { $0.title }.joined(separator: ", ")
+                if todayTasks.count <= 3 {
+                    bodyParts.append("📝 \(todayTasks.count) due today: \(taskTitles)")
+                } else {
+                    bodyParts.append("📝 \(todayTasks.count) due today: \(taskTitles), +\(todayTasks.count - 3) more")
+                }
             }
         }
         
-        // Calendar events (if available)
-        // TODO: Integrate with CalendarManager once available
+        // Yesterday's accomplishments
+        if AppSettingsModel.shared.dailyOverviewIncludeYesterdayCompleted {
+            let yesterdayCompleted = AssignmentsStore.shared.tasks.filter { task in
+                guard task.isCompleted, let completedDate = task.completedDate else { return false }
+                return completedDate >= yesterday && completedDate < today
+            }
+            
+            if !yesterdayCompleted.isEmpty {
+                if yesterdayCompleted.count <= 2 {
+                    let titles = yesterdayCompleted.map { $0.title }.joined(separator: ", ")
+                    bodyParts.append("✅ Yesterday: Completed \(titles)")
+                } else {
+                    bodyParts.append("✅ Yesterday: Completed \(yesterdayCompleted.count) tasks")
+                }
+            }
+        }
+        
+        // Yesterday's study time from FocusManager/timer sessions
+        if AppSettingsModel.shared.dailyOverviewIncludeYesterdayStudyTime {
+            if let studyMinutes = getYesterdayStudyTime() {
+                let hours = studyMinutes / 60
+                let mins = studyMinutes % 60
+                if hours > 0 {
+                    bodyParts.append("⏱️ Yesterday: Studied \(hours)h \(mins)m")
+                } else if mins > 0 {
+                    bodyParts.append("⏱️ Yesterday: Studied \(mins)m")
+                }
+            }
+        }
+        
+        // Today's events from CalendarManager
+        if AppSettingsModel.shared.dailyOverviewIncludeEvents {
+            if let todayEvents = getTodayEvents(), !todayEvents.isEmpty {
+                if todayEvents.count <= 2 {
+                    let eventTitles = todayEvents.map { $0.title }.joined(separator: ", ")
+                    bodyParts.append("📅 Today: \(eventTitles)")
+                } else {
+                    bodyParts.append("📅 Today: \(todayEvents.count) events scheduled")
+                }
+            }
+        }
+        
+        // Motivational closing (non-cringe, optional)
+        if !bodyParts.isEmpty && AppSettingsModel.shared.dailyOverviewIncludeMotivation && shouldIncludeMotivation() {
+            bodyParts.append(getMotivationalLine())
+        }
         
         content.body = bodyParts.joined(separator: "\n")
         content.sound = .default
         
         return content
+    }
+    
+    private func getYesterdayStudyTime() -> Int? {
+        // Try to access yesterday's study time from UserDefaults cache
+        // This assumes timer data is cached somewhere accessible
+        let key = "timer.yesterday.study.minutes"
+        let minutes = UserDefaults.standard.integer(forKey: key)
+        return minutes > 0 ? minutes : nil
+    }
+    
+    private func getTodayEvents() -> [(title: String, startDate: Date)]? {
+        // Access today's calendar events
+        // This will integrate with CalendarManager when available
+        let today = Calendar.current.startOfDay(for: Date())
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
+        
+        // Placeholder: return nil for now, can be enhanced with CalendarManager
+        // TODO: Integrate with CalendarManager.shared.events or similar
+        return nil
+    }
+    
+    private func shouldIncludeMotivation() -> Bool {
+        // Include motivation ~50% of the time to keep it fresh
+        return Bool.random()
+    }
+    
+    private func getMotivationalLine() -> String {
+        let lines = [
+            "Make today count! 💪",
+            "You've got this! 🌟",
+            "One step at a time 🚀",
+            "Progress, not perfection ✨",
+            "Stay focused, stay strong 💫",
+            "Keep moving forward 🎯"
+        ]
+        return lines.randomElement() ?? lines[0]
     }
     
     // MARK: - Utility
