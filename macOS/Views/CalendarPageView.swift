@@ -101,9 +101,6 @@ struct CalendarPageView: View {
 
     private let calendar = Calendar.current
 
-    @State private var chevronLeftHover = false
-    @State private var chevronRightHover = false
-    @State private var todayHover = false
     @State private var searchText: String = ""
     
     // Performance: Cache filtered events to avoid repeated filtering in body
@@ -548,39 +545,6 @@ struct CalendarPageView: View {
         }
     }
 
-    @ViewBuilder
-    private var gridContent: some View {
-        switch currentViewMode {
-        case .month:
-            MonthCalendarView(
-                focusedDate: $focusedDate,
-                events: effectiveEvents,
-                onSelectDate: { day in
-                    focusedDate = day
-                    selectedDate = day
-                    calendarManager.selectedDate = day
-                    selectedEvent = events(on: day).first
-                    updateMetrics()
-                },
-                onSelectEvent: { event in
-                    selectedEvent = event
-                    focusedDate = event.startDate
-                    selectedDate = event.startDate
-                    calendarManager.selectedDate = event.startDate
-                    updateMetrics()
-                }
-            )
-        case .week:
-            WeekCalendarView(focusedDate: $focusedDate, events: effectiveEvents)
-        case .day:
-            CalendarDayView(date: focusedDate, events: filteredEvents)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        case .year:
-            CalendarYearView(currentYear: focusedDate)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-    }
-
     private func eventsFor(date: Date) -> [CalendarEvent] {
         let start = calendar.startOfDay(for: date)
         return effectiveEvents.filter { calendar.isDate($0.startDate, inSameDayAs: start) }
@@ -1007,19 +971,15 @@ private struct MonthGridCell: View {
                 }
 
                 ForEach(events.prefix(3)) { event in
-                    Button {
-                        onSelectEvent(event)
-                    } label: {
-                        HStack(spacing: 4) {
-                            Rectangle()
-                                .fill(event.category.color)
-                                .frame(width: 3)
-                            Text(event.title)
-                                .font(.caption2)
-                                .lineLimit(1)
-                        }
+                    HStack(spacing: 4) {
+                        Rectangle()
+                            .fill(event.category.color)
+                            .frame(width: 3)
+                        Text(event.title)
+                            .font(.caption2)
+                            .lineLimit(1)
                     }
-                    .buttonStyle(.plain)
+                    .onTapGesture { onSelectEvent(event) }
                 }
 
                 if events.count > 3 {
@@ -1146,6 +1106,9 @@ private struct CalendarWeekTimelineView: View {
 
             Divider()
 
+            AllDayRow(days: weekDays, events: allDayEvents, onSelectEvent: onSelectEvent)
+                .padding(.bottom, 4)
+
             ScrollView {
                 ZStack(alignment: .topLeading) {
                     timeGrid
@@ -1159,6 +1122,10 @@ private struct CalendarWeekTimelineView: View {
     private var weekDays: [Date] {
         let start = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: focusedDate)) ?? focusedDate
         return (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: start) }
+    }
+
+    private var allDayEvents: [CalendarEvent] {
+        events.filter { isAllDayEvent($0) }
     }
 
     private var timeGrid: some View {
@@ -1182,7 +1149,7 @@ private struct CalendarWeekTimelineView: View {
     private var eventBlocks: some View {
         GeometryReader { proxy in
             let columnWidth = (proxy.size.width - 52) / 7
-            ForEach(events.filter { !isAllDay(event: $0) }) { event in
+            ForEach(events.filter { !isAllDayEvent($0) }) { event in
                 if let dayIndex = weekDays.firstIndex(where: { calendar.isDate($0, inSameDayAs: event.startDate) }) {
                     let startOffset = minutesFromStart(event.startDate) * hourHeight / 60
                     let duration = max(event.endDate.timeIntervalSince(event.startDate) / 60, 30)
@@ -1211,9 +1178,13 @@ private struct CalendarWeekTimelineView: View {
                 }
                 .stroke(Color.red, lineWidth: 1)
                 .overlay(
-                    Text("•")
+                    HStack(spacing: 4) {
+                        Text("•")
+                        Text(LocaleFormatters.timeFormatter(use24Hour: AppSettingsModel.shared.use24HourTime).string(from: Date()))
+                            .font(.caption2)
+                    }
                         .foregroundStyle(Color.red)
-                        .offset(x: 42, y: y - 6)
+                        .offset(x: 40, y: y - 8)
                 )
             }
         }
@@ -1264,6 +1235,54 @@ private struct WeekHeaderRow: View {
             }
         }
         .frame(height: rowHeight)
+    }
+}
+
+private struct AllDayRow: View {
+    let days: [Date]
+    let events: [CalendarEvent]
+    let onSelectEvent: (CalendarEvent) -> Void
+    private let calendar = Calendar.current
+
+    var body: some View {
+        HStack(spacing: 0) {
+            Text(String(localized: "calendar.all_day"))
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .frame(width: 52, alignment: .trailing)
+                .padding(.trailing, 4)
+
+            ForEach(days, id: \.self) { day in
+                VStack(alignment: .leading, spacing: 2) {
+                    ForEach(eventsForDay(day).prefix(2)) { event in
+                        Text(event.title)
+                            .font(.caption2)
+                            .lineLimit(1)
+                            .padding(.horizontal, 4)
+                            .padding(.vertical, 2)
+                            .background(
+                                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                    .fill(event.category.color.opacity(0.2))
+                            )
+                            .onTapGesture { onSelectEvent(event) }
+                    }
+                    if eventsForDay(day).count > 2 {
+                        Text(String(format: String(localized: "calendar.more_events"), eventsForDay(day).count - 2))
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .frame(maxWidth: .infinity, minHeight: 40, alignment: .topLeading)
+                .padding(.horizontal, 4)
+            }
+        }
+        .padding(.top, 4)
+    }
+
+    private func eventsForDay(_ day: Date) -> [CalendarEvent] {
+        events
+            .filter { calendar.isDate($0.startDate, inSameDayAs: day) }
+            .sorted { $0.startDate < $1.startDate }
     }
 }
 
@@ -1330,7 +1349,7 @@ private struct CalendarDayTimelineView: View {
 
     private var dayEvents: [CalendarEvent] {
         events
-            .filter { calendar.isDate($0.startDate, inSameDayAs: date) && !isAllDay(event: $0) }
+            .filter { calendar.isDate($0.startDate, inSameDayAs: date) && !isAllDayEvent($0) }
             .sorted { $0.startDate < $1.startDate }
     }
 
@@ -1378,9 +1397,13 @@ private struct CalendarDayTimelineView: View {
                 }
                 .stroke(Color.red, lineWidth: 1)
                 .overlay(
-                    Text("•")
+                    HStack(spacing: 4) {
+                        Text("•")
+                        Text(LocaleFormatters.timeFormatter(use24Hour: AppSettingsModel.shared.use24HourTime).string(from: Date()))
+                            .font(.caption2)
+                    }
                         .foregroundStyle(Color.red)
-                        .offset(x: 42, y: y - 6)
+                        .offset(x: 40, y: y - 8)
                 )
             }
         }
@@ -2559,290 +2582,6 @@ private struct WeekHeaderView: View {
     private func eventsCount(for date: Date) -> Int {
         let start = calendar.startOfDay(for: date)
         return events.filter { calendar.isDate($0.startDate, inSameDayAs: start) }.count
-    }
-}
-
-// MARK: - Modern Calendar Entry
-
-struct CalendarView: View {
-    private static var debugDateFormatter: DateFormatter {
-        LocaleFormatters.dateAndTime
-    }
-    @EnvironmentObject private var calendarManager: CalendarManager
-    @EnvironmentObject private var deviceCalendar: DeviceCalendarManager
-    @EnvironmentObject private var settings: AppSettingsModel
-    @State private var viewMode: CalendarViewMode = .month
-    @State private var currentMonth: Date = Date()
-    @State private var selectedEvent: CalendarEvent? = nil
-    @State private var keyMonitor: Any?
-
-    // Computed property to filter events based on settings
-    private var filteredEvents: [EKEvent] {
-        let allEvents = deviceCalendar.events
-        guard settings.showOnlySchoolCalendar else { return allEvents }
-        guard !calendarManager.selectedCalendarID.isEmpty else { return allEvents }
-        return allEvents.filter { $0.calendar.calendarIdentifier == calendarManager.selectedCalendarID }
-    }
-
-    private var monthEvents: [EKEvent] {
-        displayEKEvents
-    }
-
-    private var calendarEvents: [CalendarEvent] {
-        displayEKEvents.map {
-            CalendarEvent(title: $0.title, startDate: $0.startDate, endDate: $0.endDate, location: $0.location, notes: $0.notes, url: $0.url, alarms: $0.alarms, travelTime: nil, ekIdentifier: $0.eventIdentifier, isReminder: false)
-        }
-    }
-
-    private var displayEKEvents: [EKEvent] {
-        return filteredEvents
-    }
-
-    private var isLoading: Bool {
-        calendarManager.isLoading
-    }
-
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                CalendarStatsRow()
-                    .frame(height: 100)
-
-                HStack(spacing: 20) {
-                    DayDetailSidebar(
-                        date: calendarManager.selectedDate ?? Date(),
-                        events: sidebarEvents(for: calendarManager.selectedDate ?? Date())
-                    ) { event in
-                        selectedEvent = event
-                    }
-
-                    VStack(spacing: 0) {
-                        CalendarHeader(
-                            viewMode: $viewMode,
-                            currentMonth: $currentMonth,
-                            onPrevious: { step(by: -1) },
-                            onNext: { step(by: 1) },
-                            onToday: { jumpToToday() },
-                            onSearch: nil
-                        )
-                        .padding()
-
-                        if isLoading {
-                            loadingState
-                        } else if !calendarManager.isAuthorized {
-                            CalendarEmptyState(
-                                title: "Calendar access needed",
-                                message: "Grant permission to pull your events. You can do this in Settings → Privacy."
-                            )
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        } else if displayEKEvents.isEmpty {
-                            CalendarEmptyState(
-                                title: "No events found",
-                                message: "Nothing is scheduled for this calendar yet. Create an event to see it here."
-                            )
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        } else {
-                            switch viewMode {
-                            case .day:
-                                CalendarDayView(
-                                    date: calendarManager.selectedDate ?? Date(),
-                                    events: displayEKEvents.filter { Calendar.current.isDate($0.startDate, inSameDayAs: calendarManager.selectedDate ?? Date()) },
-                                    onSelectEvent: { ek in selectedEvent = mapEvent(ek) }
-                                )
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            case .week:
-                                CalendarWeekView(
-                                    currentDate: currentMonth,
-                                    events: displayEKEvents,
-                                    onSelectEvent: { ek in selectedEvent = mapEvent(ek) }
-                                )
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            case .month:
-                                CalendarGrid(currentMonth: $currentMonth, events: monthEvents)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                    .padding(.horizontal, 8)
-                            case .year:
-                                CalendarYearView(currentYear: currentMonth)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            @unknown default:
-                                CalendarGrid(currentMonth: $currentMonth, events: monthEvents)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            }
-                        }
-                    }
-                    .background(DesignSystem.Materials.card)
-                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                }
-                .frame(maxWidth: .infinity)
-            }
-            .frame(maxWidth: .infinity, alignment: .top)
-            .padding(20)
-            // Reserve space so the floating tab bar in the root ContentView stays visible.
-            .padding(.bottom, 120)
-        }
-        .onAppear {
-            calendarManager.selectedDate = calendarManager.selectedDate ?? Date()
-            currentMonth = calendarManager.selectedDate ?? Date()
-            calendarManager.ensureMonthCache(for: currentMonth)
-            startKeyboardMonitoring()
-        }
-        .overlay(alignment: .topTrailing) {
-            if AppSettingsModel.shared.devModeEnabled {
-                VStack(alignment: .trailing, spacing: 6) {
-                    HStack(spacing: 8) {
-                        Text(DeviceCalendarManager.shared.isAuthorized ? "Authorized" : "Unauthorized")
-                            .font(.caption2)
-                            .foregroundColor(.white)
-                            .padding(6)
-                            .background(RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.45)))
-
-                        Text("Events: \(DeviceCalendarManager.shared.events.count)")
-                            .font(.caption2)
-                            .foregroundColor(.white)
-                            .padding(6)
-                            .background(RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.45)))
-                    }
-
-                    Text("Last refresh: \(DeviceCalendarManager.shared.lastRefreshAt.map { Self.debugDateFormatter.string(from: $0) } ?? "never")")
-                        .font(.caption2)
-                        .foregroundColor(.white.opacity(0.85))
-                        .padding(6)
-                        .background(RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.35)))
-
-                    Text(DeviceCalendarManager.shared.isObservingStoreChanges ? "Observer: registered" : "Observer: not registered")
-                        .font(.caption2)
-                        .foregroundColor(.white)
-                        .padding(6)
-                        .background(RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.35)))
-                }
-                .padding(8)
-                .opacity(0.8)
-            }
-        }
-        .onDisappear {
-            stopKeyboardMonitoring()
-        }
-        .onChange(of: currentMonth) { _, newValue in
-            calendarManager.ensureMonthCache(for: newValue)
-        }
-        .sheet(item: $selectedEvent) { event in
-            EventDetailView(
-                item: event,
-                isPresented: Binding(get: { selectedEvent != nil }, set: { if !$0 { selectedEvent = nil } })
-            )
-        }
-    }
-
-    private var loadingState: some View {
-        VStack(spacing: 12) {
-            ProgressView()
-            Text(String(localized: "calendar.loading"))
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
-    }
-
-    private func step(by value: Int) {
-        var components = DateComponents()
-        switch viewMode {
-        case .day:
-            components.day = value
-        case .week:
-            components.day = value * 7
-        case .month:
-            components.month = value
-        case .year:
-            components.year = value
-        }
-        if let newDate = Calendar.current.date(byAdding: components, to: currentMonth) {
-            currentMonth = newDate
-            calendarManager.selectedDate = newDate
-        }
-    }
-
-    private func jumpToToday() {
-        let today = Date()
-        currentMonth = today
-        calendarManager.selectedDate = today
-    }
-
-    // MARK: - Keyboard navigation (arrow keys)
-#if os(macOS)
-    private func startKeyboardMonitoring() {
-        guard keyMonitor == nil else { return }
-        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-            switch event.keyCode {
-            case 123: // left
-                step(by: -1)
-                return nil
-            case 124: // right
-                step(by: 1)
-                return nil
-            default:
-                return event
-            }
-        }
-    }
-
-    private func stopKeyboardMonitoring() {
-        if let monitor = keyMonitor {
-            NSEvent.removeMonitor(monitor)
-            keyMonitor = nil
-        }
-    }
-#endif
-
-    private func eventsForDay(_ date: Date) -> [EKEvent] {
-        displayEKEvents.filter { Calendar.current.isDate($0.startDate, inSameDayAs: date) }
-    }
-
-    private func sidebarEvents(for date: Date) -> [CalendarEvent] {
-        let startOfDay = Calendar.current.startOfDay(for: date)
-        return calendarEvents
-            .filter { Calendar.current.isDate($0.startDate, inSameDayAs: startOfDay) }
-            .sorted { $0.startDate < $1.startDate }
-    }
-
-    private func mapEvent(_ ek: EKEvent) -> CalendarEvent {
-        let (cleanNotes, storedCategory) = calendarManager.decodeNotesWithCategory(notes: ek.notes)
-        return CalendarEvent(title: ek.title, startDate: ek.startDate, endDate: ek.endDate, location: ek.location, notes: cleanNotes, url: ek.url, alarms: ek.alarms, travelTime: nil, ekIdentifier: ek.eventIdentifier, isReminder: false, category: storedCategory)
-    }
-
-    private func eventCategoryLabel(for title: String) -> String {
-        let lower = title.lowercased()
-        let pairs: [(String, String)] = [
-            ("exam", "Exam"),
-            ("midterm", "Exam"),
-            ("final", "Exam"),
-            ("class", "Class"),
-            ("lecture", "Class"),
-            ("lab", "Class"),
-            ("study", "Study"),
-            ("read", "Reading"),
-            ("homework", "Homework"),
-            ("assignment", "Homework"),
-            ("problem set", "Homework"),
-            ("practice test", "Practice Test"),
-            ("mock", "Practice Test"),
-            ("quiz", "Practice Test"),
-            ("meeting", "Meeting"),
-            ("sync", "Meeting"),
-            ("1:1", "Meeting"),
-            ("one-on-one", "Meeting")
-        ]
-        for (key, label) in pairs {
-            if lower.contains(key) { return label }
-        }
-        return "Other"
-    }
-    
-    private func categoryColor(for title: String) -> Color {
-        if let category = parseEventCategory(from: title) {
-            return category.color
-        }
-        return Color.accentColor
     }
 }
 

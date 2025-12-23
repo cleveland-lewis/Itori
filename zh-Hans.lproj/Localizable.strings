@@ -353,6 +353,11 @@
 "calendar.invalid_url" = "无效的 URL 格式";
 "calendar.options" = "选项";
 "calendar.loading" = "正在加载事件…";
+"calendar.search" = "搜索";
+"calendar.calendars" = "日历";
+"calendar.all_calendars" = "所有日历";
+"calendar.event_details" = "事件详情";
+"calendar.no_event_selected" = "未选择事件";
 "calendar.new_event" = "新建事件";
 "calendar.readonly" = "此日历为只读；编辑已禁用。";
 

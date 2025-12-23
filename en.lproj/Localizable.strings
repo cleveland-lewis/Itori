@@ -410,6 +410,11 @@
 "calendar.invalid_url" = "Invalid URL format";
 "calendar.options" = "Options";
 "calendar.loading" = "Loading events…";
+"calendar.search" = "Search";
+"calendar.calendars" = "Calendars";
+"calendar.all_calendars" = "All Calendars";
+"calendar.event_details" = "Event Details";
+"calendar.no_event_selected" = "No Event Selected";
 "calendar.new_event" = "New Event";
 "calendar.readonly" = "This calendar is read-only; edits are disabled.";
 

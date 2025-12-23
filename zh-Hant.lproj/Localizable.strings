@@ -359,6 +359,11 @@
 "calendar.invalid_url" = "無效的 URL 格式";
 "calendar.options" = "選項";
 "calendar.loading" = "正在載入事件…";
+"calendar.search" = "搜尋";
+"calendar.calendars" = "行事曆";
+"calendar.all_calendars" = "所有行事曆";
+"calendar.event_details" = "事件詳細資訊";
+"calendar.no_event_selected" = "未選取事件";
 "calendar.new_event" = "新增事件";
 "calendar.readonly" = "此日曆為唯讀；編輯已停用。";
 
