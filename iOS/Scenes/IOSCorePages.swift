@@ -591,6 +591,7 @@ struct IOSSettingsView: View {
     @EnvironmentObject private var settings: AppSettingsModel
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var deviceCalendar: DeviceCalendarManager
+    @EnvironmentObject private var toastRouter: IOSToastRouter
     @State private var tabBarPrefs: TabBarPreferencesStore?
     @State private var availableCalendars: [EKCalendar] = []
     @Environment(\.colorScheme) var colorScheme
@@ -679,6 +680,33 @@ struct IOSSettingsView: View {
                 }
             }
             
+            Section(header: Text("Starred Tabs"),
+                    footer: Text("Select up to 5 pages to show in the tab bar. All pages remain accessible via the menu.")) {
+                ForEach(TabRegistry.allTabs) { tabDef in
+                    HStack {
+                        Button {
+                            toggleStarredTab(tabDef.id)
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: tabDef.icon)
+                                    .font(.system(size: 20))
+                                    .foregroundColor(.blue)
+                                    .frame(width: 28)
+                                Text(tabDef.title)
+                                    .foregroundColor(.primary)
+                                Spacer()
+                                if settings.starredTabs.contains(tabDef.id) {
+                                    Image(systemName: "star.fill")
+                                        .foregroundColor(.yellow)
+                                }
+                            }
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+            
             Section(NSLocalizedString("settings.section.tab_bar_pages", comment: "Tab bar section")) {
                 if let tabPrefs = tabBarPrefs {
                     ForEach(TabRegistry.allTabs) { tabDef in
@@ -732,6 +760,33 @@ struct IOSSettingsView: View {
             }
             availableCalendars = deviceCalendar.getAvailableCalendars()
         }
+    }
+    
+    private func toggleStarredTab(_ tab: RootTab) {
+        var starred = settings.starredTabs
+        
+        if starred.contains(tab) {
+            // Remove from starred
+            starred.removeAll { $0 == tab }
+            // Ensure at least Dashboard remains
+            if starred.isEmpty {
+                starred = [.dashboard]
+            }
+        } else {
+            // Add to starred if under limit
+            if starred.count >= 5 {
+                // Show alert
+                showStarredLimitAlert()
+                return
+            }
+            starred.append(tab)
+        }
+        
+        settings.starredTabs = starred
+    }
+    
+    private func showStarredLimitAlert() {
+        toastRouter.show("You can pin up to 5 pages")
     }
 }
 

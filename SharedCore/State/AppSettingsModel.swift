@@ -783,6 +783,16 @@ final class AppSettingsModel: ObservableObject, Codable {
         get { lockCalendarPickerToSchoolStorage }
         set { lockCalendarPickerToSchoolStorage = newValue }
     }
+    
+    // Starred tabs for iOS tab bar (max 5)
+    var starredTabs: [RootTab] {
+        get {
+            starredTabsRaw.compactMap { RootTab(rawValue: $0) }
+        }
+        set {
+            starredTabsRaw = newValue.map { $0.rawValue }
+        }
+    }
 
     var defaultWorkdayStart: DateComponents {
         get { DateComponents(hour: workdayStartHourStorage, minute: workdayStartMinuteStorage) }
@@ -1098,6 +1108,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(showOnlySchoolCalendarStorage, forKey: .showOnlySchoolCalendarStorage)
         try container.encode(lockCalendarPickerToSchoolStorage, forKey: .lockCalendarPickerToSchoolStorage)
         try container.encodeIfPresent(selectedSchoolCalendarID, forKey: .selectedSchoolCalendarID)
+        try container.encode(starredTabsRaw, forKey: .starredTabsRaw)
     }
 
     required init(from decoder: Decoder) throws {
@@ -1157,6 +1168,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         showOnlySchoolCalendarStorage = try container.decodeIfPresent(Bool.self, forKey: .showOnlySchoolCalendarStorage) ?? false
         lockCalendarPickerToSchoolStorage = try container.decodeIfPresent(Bool.self, forKey: .lockCalendarPickerToSchoolStorage) ?? false
         selectedSchoolCalendarID = try container.decodeIfPresent(String.self, forKey: .selectedSchoolCalendarID)
+        starredTabsRaw = try container.decodeIfPresent([String].self, forKey: .starredTabsRaw) ?? ["dashboard", "calendar", "timer", "assignments", "settings"]
     }
 
     func resetUserDefaults() {

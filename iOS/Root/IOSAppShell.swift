@@ -107,7 +107,8 @@ struct IOSAppShell<Content: View>: View {
                         ForEach(allMenuPages, id: \.self) { page in
                             Button {
                                 if let prefs = tabBarPrefs {
-                                    navigation.open(page: page, tabBarPrefs: prefs)
+                                    let starred = settings.starredTabs
+                                    navigation.open(page: page, starredTabs: starred)
                                 }
                                 showingHamburgerMenu = false
                             } label: {

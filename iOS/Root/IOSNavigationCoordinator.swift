@@ -10,12 +10,12 @@ enum IOSNavigationTarget: Hashable {
 final class IOSNavigationCoordinator: ObservableObject {
     @Published var path = NavigationPath()
 
-    func open(page: AppPage, tabBarPrefs: TabBarPreferencesStore) {
-        let visibleTabs = tabBarPrefs.effectiveTabsInOrder()
-        if let tab = RootTab(rawValue: page.rawValue), visibleTabs.contains(tab) {
+    func open(page: AppPage, starredTabs: [RootTab]) {
+        if let tab = RootTab(rawValue: page.rawValue), starredTabs.contains(tab) {
+            // Tab is starred, will be switched to via selectedTab binding
             path = NavigationPath()
-            tabBarPrefs.selectTab(tab)
         } else {
+            // Tab not starred, push as navigation destination
             path.append(IOSNavigationTarget.page(page))
         }
     }
@@ -43,17 +43,6 @@ struct IOSTabConfiguration {
 }
 
 struct IOSNavigationChrome<TrailingContent: View>: ViewModifier {
-    @EnvironmentObject private var settings: AppSettingsModel
-    @EnvironmentObject private var navigation: IOSNavigationCoordinator
-    @EnvironmentObject private var tabBarPrefs: TabBarPreferencesStore
-    @EnvironmentObject private var sheetRouter: IOSSheetRouter
-    @EnvironmentObject private var toastRouter: IOSToastRouter
-    @EnvironmentObject private var filterState: IOSFilterState
-    @EnvironmentObject private var coursesStore: CoursesStore
-    @EnvironmentObject private var assignmentsStore: AssignmentsStore
-    @EnvironmentObject private var plannerStore: PlannerStore
-    @State private var isQuickActionsExpanded = false
-
     let title: String
     let trailingContent: () -> TrailingContent
 
@@ -66,208 +55,10 @@ struct IOSNavigationChrome<TrailingContent: View>: ViewModifier {
         return content
             .navigationTitle(title)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    pageMenu()
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    quickActionsLauncher()
-                }
                 ToolbarItem(placement: .topBarTrailing) {
                     trailingContent()
                 }
             }
-            .overlay {
-                QuickActionsDismissLayer(isExpanded: isQuickActionsExpanded) {
-                    collapseQuickActions()
-                }
-            }
-    }
-
-    private func pageMenu() -> some View {
-        Menu {
-            Section("Quick Actions") {
-                Button {
-                    handleQuickAction(.add_assignment)
-                } label: {
-                    Label(QuickAction.add_assignment.title, systemImage: QuickAction.add_assignment.systemImage)
-                }
-                Button {
-                    handleQuickAction(.add_grade)
-                } label: {
-                    Label(QuickAction.add_grade.title, systemImage: QuickAction.add_grade.systemImage)
-                }
-                Button {
-                    handleQuickAction(.auto_schedule)
-                } label: {
-                    Label(QuickAction.auto_schedule.title, systemImage: QuickAction.auto_schedule.systemImage)
-                }
-            }
-
-            ForEach(menuPages, id: \.self) { page in
-                Button {
-                    navigation.open(page: page, tabBarPrefs: tabBarPrefs)
-                } label: {
-                    Label(menuTitle(for: page), systemImage: page.systemImage)
-                }
-            }
-
-            Divider()
-
-            Button {
-                navigation.openSettings()
-            } label: {
-                Label("Settings", systemImage: "gearshape")
-            }
-        } label: {
-            Image(systemName: "line.3.horizontal")
-        }
-        .accessibilityLabel("Open menu")
-    }
-
-    private func quickActionsLauncher() -> some View {
-        QuickActionsLauncher(isExpanded: $isQuickActionsExpanded, actions: quickActions, expansionDirection: .leading) { action in
-            handleQuickAction(action)
-        }
-        .accessibilityLabel("Quick actions")
-    }
-
-    private func handleQuickAction(_ action: QuickAction) {
-        switch action {
-        case .add_assignment:
-            let defaults = IOSSheetRouter.TaskDefaults(
-                courseId: filterState.selectedCourseId,
-                dueDate: Date(),
-                title: "",
-                type: .practiceHomework,
-                itemLabel: "Assignment"
-            )
-            sheetRouter.activeSheet = .addAssignment(defaults)
-        case .add_course:
-            let defaults = IOSSheetRouter.CourseDefaults(
-                semesterId: filterState.selectedSemesterId ?? coursesStore.currentSemesterId,
-                title: "",
-                code: ""
-            )
-            sheetRouter.activeSheet = .addCourse(defaults)
-        case .add_task:
-            let defaults = IOSSheetRouter.TaskDefaults(
-                courseId: filterState.selectedCourseId,
-                dueDate: Date(),
-                title: "",
-                type: .practiceHomework,
-                itemLabel: "Task"
-            )
-            sheetRouter.activeSheet = .addAssignment(defaults)
-        case .add_grade:
-            sheetRouter.activeSheet = .addGrade(UUID())
-        case .auto_schedule:
-            autoSchedule()
-        case .quick_note, .open_new_note:
-            break
-        }
-    }
-
-    private var menuPages: [AppPage] {
-        IOSNavigationChromeData.menuPages
-    }
-
-    private var quickActions: [QuickAction] {
-        let selection = settings.quickActions
-        return selection.isEmpty ? QuickAction.defaultSelection : selection
-    }
-
-    private func menuTitle(for page: AppPage) -> String {
-        switch page {
-        case .assignments:
-            return "Tasks"
-        default:
-            return page.title
-        }
-    }
-
-    private func autoSchedule() {
-        let assignments = assignmentsForPlanning()
-        guard !assignments.isEmpty else {
-            toastRouter.show("No tasks to schedule")
-            return
-        }
-        let settings = StudyPlanSettings()
-        let sessions = assignments.flatMap { PlannerEngine.generateSessions(for: $0, settings: settings) }
-        let result = PlannerEngine.scheduleSessions(sessions, settings: settings, energyProfile: defaultEnergyProfile())
-        plannerStore.persist(scheduled: result.scheduled, overflow: result.overflow)
-        toastRouter.show("Schedule updated")
-    }
-
-    private func collapseQuickActions() {
-        if isQuickActionsExpanded {
-            isQuickActionsExpanded = false
-        }
-    }
-
-    private func assignmentsForPlanning() -> [Assignment] {
-        let today = Calendar.current.startOfDay(for: Date())
-        return filteredTasks.compactMap { task in
-            guard !task.isCompleted, let due = task.due else { return nil }
-            if due < today { return nil }
-            return Assignment(
-                id: task.id,
-                courseId: task.courseId,
-                title: task.title,
-                dueDate: due,
-                estimatedMinutes: task.estimatedMinutes,
-                weightPercent: nil,
-                category: category(for: task),
-                urgency: urgency(for: task.importance),
-                isLockedToDueDate: task.locked,
-                plan: []
-            )
-        }
-    }
-
-    private var filteredTasks: [AppTask] {
-        let courseLookup = coursesStore.courses
-        return assignmentsStore.tasks.filter { task in
-            guard let courseId = task.courseId else {
-                return filterState.selectedCourseId == nil && filterState.selectedSemesterId == nil
-            }
-            if let selectedCourse = filterState.selectedCourseId, selectedCourse != courseId {
-                return false
-            }
-            if let semesterId = filterState.selectedSemesterId,
-               let course = courseLookup.first(where: { $0.id == courseId }),
-               course.semesterId != semesterId {
-                return false
-            }
-            return true
-        }
-    }
-
-    private func category(for task: AppTask) -> AssignmentCategory {
-        switch task.category {
-        case .exam: return .exam
-        case .quiz: return .quiz
-        case .practiceHomework: return .practiceHomework
-        case .reading: return .reading
-        case .review: return .review
-        case .project: return .project
-        }
-    }
-
-    private func urgency(for value: Double) -> AssignmentUrgency {
-        switch value {
-        case ..<0.3: return .low
-        case ..<0.6: return .medium
-        case ..<0.85: return .high
-        default: return .critical
-        }
-    }
-
-    private func defaultEnergyProfile() -> [Int: Double] {
-        [
-            9: 0.55, 10: 0.65, 11: 0.7, 12: 0.6,
-            13: 0.5, 14: 0.55, 15: 0.65, 16: 0.7,
-            17: 0.6, 18: 0.5, 19: 0.45, 20: 0.4
-        ]
     }
 }
 

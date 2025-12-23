@@ -13,6 +13,8 @@ struct IOSDashboardView: View {
     @EnvironmentObject private var deviceCalendar: DeviceCalendarManager
 
     @State private var selectedDate = Date()
+    @AppStorage("dashboard.greeting.dateKey") private var greetingDateKey: String = ""
+    @AppStorage("dashboard.greeting.text") private var storedGreeting: String = ""
 
     private let calendar = Calendar.current
 
@@ -209,9 +211,14 @@ struct IOSDashboardView: View {
     }
 
     private var greeting: String {
+        let todayKey = dateKey(for: Date())
+        if greetingDateKey == todayKey, !storedGreeting.isEmpty {
+            return storedGreeting
+        }
+
         let hour = calendar.component(.hour, from: Date())
         let greetings: [String]
-        
+
         switch hour {
         case 5..<12:
             greetings = [
@@ -245,8 +252,21 @@ struct IOSDashboardView: View {
                 "Burning the midnight oil"
             ]
         }
-        
-        return greetings.randomElement() ?? "Hello"
+
+        let selection = greetings.randomElement() ?? "Hello"
+        greetingDateKey = todayKey
+        storedGreeting = selection
+        return selection
+    }
+
+    private func dateKey(for date: Date) -> String {
+        let cutoffHour = 4
+        let adjustedDate = calendar.date(byAdding: .hour, value: -cutoffHour, to: date) ?? date
+        let comps = calendar.dateComponents([.year, .month, .day], from: adjustedDate)
+        let year = comps.year ?? 0
+        let month = comps.month ?? 0
+        let day = comps.day ?? 0
+        return String(format: "%04d-%02d-%02d", year, month, day)
     }
 
     private var formattedDate: String {

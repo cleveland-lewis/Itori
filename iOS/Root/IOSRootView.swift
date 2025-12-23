@@ -1,8 +1,3 @@
-//
-//  IOSRootView.swift
-//  Roots (iOS)
-//
-
 #if os(iOS)
 import SwiftUI
 
@@ -14,41 +9,34 @@ struct IOSRootView: View {
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var gradesStore: GradesStore
     @StateObject private var navigation = IOSNavigationCoordinator()
+    @StateObject private var tabBarPrefs = TabBarPreferencesStore(settings: AppSettingsModel.shared)
     
-    // Tab bar preferences initialized from settings
-    @State private var tabBarPrefs: TabBarPreferencesStore?
+    @State private var selectedTab: RootTab = .dashboard
 
-    private var tabs: [RootTab] {
-        tabBarPrefs?.effectiveTabsInOrder() ?? [TabRegistry.fallbackTab]
+    private var starredTabs: [RootTab] {
+        let starred = settings.starredTabs
+        // Ensure at least Dashboard is present
+        return starred.isEmpty ? [.dashboard] : starred
     }
 
     var body: some View {
         ZStack {
             NavigationStack(path: $navigation.path) {
-                if let tabPrefs = tabBarPrefs {
-                    TabView(selection: Binding(
-                        get: { tabPrefs.selectedTab },
-                        set: { tabPrefs.selectTab($0) }
-                    )) {
-                        ForEach(tabs, id: \.self) { tab in
+                TabView(selection: $selectedTab) {
+                    ForEach(starredTabs, id: \.self) { tab in
+                        IOSAppShell {
                             tabView(for: tab)
-                                .tag(tab)
-                                .tabItem {
-                                    if let def = TabRegistry.definition(for: tab) {
-                                        Label(def.title, systemImage: def.icon)
-                                    }
-                                }
+                        }
+                        .tag(tab)
+                        .tabItem {
+                            if let def = TabRegistry.definition(for: tab) {
+                                Label(def.title, systemImage: def.icon)
+                            }
                         }
                     }
-                    .onAppear {
-                        // GUARD: Validate selection on appear
-                        tabPrefs.validateSelection()
-                    }
-                    .onChange(of: tabs) { _ in
-                        // GUARD: Revalidate when tabs change
-                        tabPrefs.validateSelection()
-                    }
-                    .navigationDestination(for: IOSNavigationTarget.self) { destination in
+                }
+                .navigationDestination(for: IOSNavigationTarget.self) { destination in
+                    IOSAppShell {
                         switch destination {
                         case .page(let page):
                             pageView(for: page)
@@ -60,11 +48,7 @@ struct IOSRootView: View {
             }
             .background(DesignSystem.Colors.appBackground)
             .environmentObject(navigation)
-            .onAppear {
-                if tabBarPrefs == nil {
-                    tabBarPrefs = TabBarPreferencesStore(settings: settings)
-                }
-            }
+            .environmentObject(tabBarPrefs)
 
             if let message = toastRouter.message {
                 toastView(message)
