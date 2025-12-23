@@ -720,6 +720,3 @@ struct StudyHistoryBarChart: View {
         }
     }
 }
-
-// Privacy settings shell
-struct PrivacySettingsView: View { var body: some View { Text("Privacy Settings") } }

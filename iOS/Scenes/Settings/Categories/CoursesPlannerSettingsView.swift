@@ -1,4 +1,5 @@
 import SwiftUI
+#if os(iOS)
 
 struct CoursesPlannerSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
@@ -118,3 +119,4 @@ enum CourseDisplayMode: String {
             .environmentObject(AppSettingsModel.shared)
     }
 }
+#endif

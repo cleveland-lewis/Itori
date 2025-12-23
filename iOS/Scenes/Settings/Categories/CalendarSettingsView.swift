@@ -1,4 +1,5 @@
 import SwiftUI
+#if os(iOS)
 import EventKit
 
 struct CalendarSettingsView: View {
@@ -41,13 +42,6 @@ struct CalendarSettingsView: View {
                     ForEach(deviceCalendar.getAvailableCalendars(), id: \.calendarIdentifier) { calendar in
                         Button {
                             selectedCalendarID = calendar.calendarIdentifier
-                            Task {
-                                await deviceCalendar.refreshFromDeviceCalendar(
-                                    calendarID: calendar.calendarIdentifier,
-                                    lookbackDays: 7,
-                                    lookaheadDays: refreshRangeDays
-                                )
-                            }
                         } label: {
                             HStack {
                                 Circle()
@@ -135,3 +129,4 @@ struct CalendarSettingsView: View {
             .environmentObject(AppSettingsModel.shared)
     }
 }
+#endif

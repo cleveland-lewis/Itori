@@ -1,4 +1,5 @@
 import SwiftUI
+#if os(iOS)
 
 struct StorageSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
@@ -172,3 +173,4 @@ extension FileManager {
             .environmentObject(AppSettingsModel.shared)
     }
 }
+#endif

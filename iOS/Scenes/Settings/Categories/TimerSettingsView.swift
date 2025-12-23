@@ -1,4 +1,5 @@
 import SwiftUI
+#if os(iOS)
 
 struct TimerSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
@@ -99,3 +100,4 @@ struct TimerSettingsView: View {
             .environmentObject(AppSettingsModel.shared)
     }
 }
+#endif

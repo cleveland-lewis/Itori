@@ -3,14 +3,14 @@ import Foundation
 // MARK: - Models
 
 /// High level timer mode controlled by the shared selector.
-enum TimerMode: String, CaseIterable, Identifiable, Codable {
+public enum TimerMode: String, CaseIterable, Identifiable, Codable {
     case pomodoro
     case timer
     case stopwatch
 
-    var id: String { rawValue }
+    public var id: String { rawValue }
 
-    var displayName: String {
+    public var displayName: String {
         switch self {
         case .pomodoro: return "Pomodoro"
         case .timer: return "Timer"
@@ -18,7 +18,7 @@ enum TimerMode: String, CaseIterable, Identifiable, Codable {
         }
     }
 
-    var systemImage: String {
+    public var systemImage: String {
         switch self {
         case .pomodoro: return "hourglass"
         case .timer: return "timer"

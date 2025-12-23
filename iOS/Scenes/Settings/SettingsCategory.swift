@@ -1,3 +1,4 @@
+#if os(iOS)
 import SwiftUI
 
 enum SettingsCategory: String, CaseIterable, Identifiable {
@@ -90,3 +91,4 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
         }
     }
 }
+#endif

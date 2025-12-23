@@ -1,4 +1,5 @@
 import SwiftUI
+#if os(iOS)
 
 struct GeneralSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
@@ -88,3 +89,4 @@ struct GeneralSettingsView: View {
             .environmentObject(AppSettingsModel.shared)
     }
 }
+#endif

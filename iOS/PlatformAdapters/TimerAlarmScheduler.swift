@@ -115,9 +115,9 @@ final class IOSTimerAlarmScheduler: TimerAlarmScheduling {
 
     @available(iOS 17.0, *)
     private func alarmPresentation(title: String) -> AlarmPresentation {
-        let stop = AlarmButton(text: NSLocalizedString("alarm.stop", comment: "Stop"), textColor: .white, systemImageName: "stop.fill")
-        let pause = AlarmButton(text: NSLocalizedString("alarm.pause", comment: "Pause"), textColor: .white, systemImageName: "pause.fill")
-        let resume = AlarmButton(text: NSLocalizedString("alarm.resume", comment: "Resume"), textColor: .white, systemImageName: "play.fill")
+        let stop = AlarmButton(text: LocalizedStringResource(stringLiteral: NSLocalizedString("alarm.stop", comment: "Stop")), textColor: .white, systemImageName: "stop.fill")
+        let pause = AlarmButton(text: LocalizedStringResource(stringLiteral: NSLocalizedString("alarm.pause", comment: "Pause")), textColor: .white, systemImageName: "pause.fill")
+        let resume = AlarmButton(text: LocalizedStringResource(stringLiteral: NSLocalizedString("alarm.resume", comment: "Resume")), textColor: .white, systemImageName: "play.fill")
 
         let alert = AlarmPresentation.Alert(
             title: LocalizedStringResource(stringLiteral: title),

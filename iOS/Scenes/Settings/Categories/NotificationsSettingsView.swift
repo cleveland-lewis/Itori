@@ -1,4 +1,5 @@
 import SwiftUI
+#if os(iOS)
 import UserNotifications
 
 struct NotificationsSettingsView: View {
@@ -185,3 +186,4 @@ struct NotificationsSettingsView: View {
             .environmentObject(AppSettingsModel.shared)
     }
 }
+#endif

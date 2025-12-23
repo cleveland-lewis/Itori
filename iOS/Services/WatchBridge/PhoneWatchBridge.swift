@@ -1,7 +1,6 @@
 #if canImport(WatchConnectivity) && os(iOS)
 import Foundation
 import WatchConnectivity
-import SharedCore
 
 final class PhoneWatchBridge: NSObject {
     static let shared = PhoneWatchBridge()
@@ -13,7 +12,7 @@ final class PhoneWatchBridge: NSObject {
     private var activeTimer: ActiveTimerSummary?
 
     private override init() {
-        self.session = WCSession.isSupported ? WCSession.default : nil
+        self.session = WCSession.isSupported() ? WCSession.default : nil
         self.tasks = [
             TaskSummary(id: UUID(), title: "Weekly review notes", dueISO: nil, isComplete: false),
             TaskSummary(id: UUID(), title: "Prep slides for Tuesday sync", dueISO: nil, isComplete: false)

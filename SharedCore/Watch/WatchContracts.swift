@@ -1,10 +1,6 @@
 import Foundation
 
-public enum TimerMode: String, Codable, CaseIterable {
-    case pomodoro
-    case timer
-    case stopwatch
-}
+// TimerMode is defined in SharedCore/Models/TimerModels.swift
 
 public enum EnergyLevel: String, Codable, CaseIterable {
     case low

@@ -1126,7 +1126,7 @@ struct IOSTaskDetailView: View {
                 
                 // Time & Effort
                 Section("Time & Effort") {
-                    DetailRow(label: "Estimated Time", value: "\(task.estimatedMinutes) minutes")
+                    DetailRow(label: timeEstimateLabel(task.type), value: "\(task.estimatedMinutes) minutes")
                     DetailRow(label: "Importance", value: importanceLabel(task.importance))
                     DetailRow(label: "Difficulty", value: difficultyLabel(task.difficulty))
                     if task.locked {
@@ -1140,9 +1140,12 @@ struct IOSTaskDetailView: View {
                 }
                 
                 // Grade Information (if available)
-                if let gradePercent = task.gradePercent {
+                if let earnedPoints = task.gradeEarnedPoints,
+                   let possiblePoints = task.gradePossiblePoints,
+                   possiblePoints > 0 {
+                    let gradePercent = (earnedPoints / possiblePoints) * 100
                     Section("Grade") {
-                        DetailRow(label: "Score", value: String(format: "%.1f%%", gradePercent))
+                        DetailRow(label: "Score", value: String(format: "%.1f%% (%.1f/%.1f)", gradePercent, earnedPoints, possiblePoints))
                         if let weightPercent = task.gradeWeightPercent {
                             DetailRow(label: "Weight", value: String(format: "%.1f%% of course", weightPercent))
                         }
@@ -1193,6 +1196,15 @@ struct IOSTaskDetailView: View {
         case .reading: return "Reading"
         case .review: return "Review"
         case .project: return "Project"
+        }
+    }
+    
+    private func timeEstimateLabel(_ type: TaskType) -> String {
+        switch type {
+        case .exam, .quiz:
+            return "Estimated Study Time"
+        case .practiceHomework, .reading, .project, .review:
+            return "Estimated Work Time"
         }
     }
     
@@ -1417,7 +1429,7 @@ struct IOSTaskEditorView: View {
                     if draft.hasDueDate {
                         DatePicker("Due", selection: $draft.dueDate, displayedComponents: .date)
                     }
-                    Stepper("Estimated Minutes: \(draft.estimatedMinutes)", value: $draft.estimatedMinutes, in: 15...360, step: 15)
+                    Stepper("\(timeEstimateLabel(draft.type)): \(draft.estimatedMinutes) min", value: $draft.estimatedMinutes, in: 15...360, step: 15)
                 }
 
                 Section("Priority") {
@@ -1452,6 +1464,15 @@ struct IOSTaskEditorView: View {
                     draft.type = defaults.type
                 }
             }
+        }
+    }
+    
+    private func timeEstimateLabel(_ type: TaskType) -> String {
+        switch type {
+        case .exam, .quiz:
+            return "Estimated Study Time"
+        case .practiceHomework, .reading, .project, .review:
+            return "Estimated Work Time"
         }
     }
 }

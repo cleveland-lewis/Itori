@@ -1,3 +1,4 @@
+#if os(iOS)
 import SwiftUI
 
 struct AppearanceSettingsView: View {
@@ -93,3 +94,4 @@ struct AppearanceSettingsView: View {
             .environmentObject(AppSettingsModel.shared)
     }
 }
+#endif

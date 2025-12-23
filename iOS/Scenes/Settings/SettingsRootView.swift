@@ -1,3 +1,4 @@
+#if os(iOS)
 import SwiftUI
 
 struct SettingsRootView: View {
@@ -40,3 +41,4 @@ struct SettingsRootView: View {
     SettingsRootView()
         .environmentObject(AppSettingsModel.shared)
 }
+#endif
