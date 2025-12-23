@@ -94,7 +94,7 @@ struct IOSAppShell<Content: View>: View {
                 VStack(alignment: .leading, spacing: 0) {
                     ForEach(allMenuPages, id: \.self) { page in
                         Button {
-                            if let prefs = tabBarPrefs {
+                            if tabBarPrefs != nil {
                                 let starred = settings.starredTabs
                                 navigation.open(page: page, starredTabs: starred)
                             }

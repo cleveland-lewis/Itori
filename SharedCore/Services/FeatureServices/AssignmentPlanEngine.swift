@@ -453,7 +453,7 @@ enum AssignmentPlanEngine {
         let planId = UUID()
         let calendar = Calendar.current
         
-        let totalMinutes = oldPlan.reduce(0) { $0 + $1.expectedMinutes }
+        let _ = oldPlan.reduce(0) { $0 + $1.expectedMinutes }  // For future use
         let leadDays = settings.projectLeadDays
         
         guard let startDate = calendar.date(byAdding: .day, value: -leadDays, to: dueDate) else {
