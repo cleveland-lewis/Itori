@@ -12,8 +12,6 @@ struct IOSAppShell<Content: View>: View {
     @EnvironmentObject private var plannerStore: PlannerStore
     @EnvironmentObject private var filterState: IOSFilterState
     @State private var tabBarPrefs: TabBarPreferencesStore?
-    @State private var showingHamburgerMenu = false
-    @State private var showingQuickAddMenu = false
     
     let content: Content
     
@@ -22,10 +20,16 @@ struct IOSAppShell<Content: View>: View {
     }
     
     var body: some View {
-        content
-            .safeAreaInset(edge: .top, spacing: 0) {
-                topBar
+        ZStack(alignment: .top) {
+            // Base content layer - scrolls under buttons
+            content
+            
+            // Floating overlay buttons - no background strip
+            VStack(spacing: 0) {
+                floatingButtons
+                Spacer()
             }
+        }
         .onAppear {
             if tabBarPrefs == nil {
                 tabBarPrefs = TabBarPreferencesStore(settings: settings)
@@ -33,129 +37,79 @@ struct IOSAppShell<Content: View>: View {
         }
     }
     
-    private var topBar: some View {
-        ZStack(alignment: .top) {
-            // Top bar with buttons
-            HStack(spacing: 16) {
-                // Hamburger menu button
-                Button {
-                    showingHamburgerMenu.toggle()
-                } label: {
-                    Image(systemName: "line.3.horizontal")
-                        .font(.system(size: 20, weight: .medium))
-                        .foregroundColor(.primary)
-                        .frame(width: 44, height: 44)
-                }
-                .accessibilityLabel("Open menu")
-                
-                Spacer()
-                
-                // Quick add (+) button
-                Button {
-                    showingQuickAddMenu.toggle()
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundColor(.primary)
-                        .frame(width: 44, height: 44)
-                }
-                .accessibilityLabel("Quick add")
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
-            .background(.ultraThinMaterial)
-            
-            // Hamburger menu overlay
-            if showingHamburgerMenu {
-                HStack {
-                    FloatingMenuPanel(isPresented: $showingHamburgerMenu, width: 280, maxHeight: 500) {
-                        hamburgerMenuContent
-                    }
-                    .offset(x: 16, y: 60)
-                    .transition(.opacity.combined(with: .scale(scale: 0.95, anchor: .topLeading)))
-                    .animation(.spring(response: 0.3, dampingFraction: 0.8), value: showingHamburgerMenu)
-                    Spacer()
-                }
-            }
-            
-            // Quick add menu overlay
-            if showingQuickAddMenu {
-                HStack {
-                    Spacer()
-                    FloatingMenuPanel(isPresented: $showingQuickAddMenu, width: 280) {
-                        quickAddMenu
-                    }
-                    .offset(x: -16, y: 60)
-                    .transition(.opacity.combined(with: .scale(scale: 0.95, anchor: .topTrailing)))
-                    .animation(.spring(response: 0.3, dampingFraction: 0.8), value: showingQuickAddMenu)
-                }
-            }
-        }
-    }
-    
-    private var hamburgerMenuContent: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                // Navigation pages
-                ForEach(Array(allMenuPages.enumerated()), id: \.element) { index, page in
-                    FloatingMenuRow(
-                        title: menuTitle(for: page),
-                        icon: page.systemImage,
-                        showSeparator: index < allMenuPages.count - 1
-                    ) {
+    private var floatingButtons: some View {
+        HStack(spacing: 16) {
+            // Hamburger menu - floating button with individual background
+            Menu {
+                // Navigation pages section
+                ForEach(allMenuPages, id: \.self) { page in
+                    Button {
                         if tabBarPrefs != nil {
                             let starred = settings.starredTabs
                             navigation.open(page: page, starredTabs: starred)
                         }
-                        showingHamburgerMenu = false
+                    } label: {
+                        Label(menuTitle(for: page), systemImage: page.systemImage)
                     }
                 }
                 
-                // Section divider
-                FloatingMenuSectionDivider()
+                Divider()
                 
-                // Settings
-                FloatingMenuRow(
-                    title: "Settings",
-                    icon: "gearshape",
-                    showSeparator: false
-                ) {
+                // Settings section
+                Button {
                     navigation.openSettings()
-                    showingHamburgerMenu = false
+                } label: {
+                    Label(NSLocalizedString("ios.menu.settings", comment: "Settings"), systemImage: "gearshape")
                 }
+            } label: {
+                Image(systemName: "line.3.horizontal")
+                    .font(.system(size: 20, weight: .medium))
+                    .foregroundColor(.primary)
+                    .frame(width: 44, height: 44)
+                    .background(
+                        Circle()
+                            .fill(.thinMaterial)
+                            .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+                    )
             }
-            .padding(.vertical, 8)
-        }
-    }
-    
-    private var quickAddMenu: some View {
-        VStack(spacing: 0) {
-            FloatingMenuRow(
-                title: "Add Assignment",
-                icon: "plus.square.on.square"
-            ) {
-                handleQuickAction(.add_assignment)
-                showingQuickAddMenu = false
-            }
+            .accessibilityLabel(NSLocalizedString("ios.menu.hamburger", comment: "Open menu"))
             
-            FloatingMenuRow(
-                title: "Add Grade",
-                icon: "number.circle"
-            ) {
-                handleQuickAction(.add_grade)
-                showingQuickAddMenu = false
-            }
+            Spacer()
             
-            FloatingMenuRow(
-                title: "Auto Schedule",
-                icon: "calendar.badge.clock",
-                showSeparator: false
-            ) {
-                handleQuickAction(.auto_schedule)
-                showingQuickAddMenu = false
+            // Quick add menu - floating button with individual background
+            Menu {
+                Button {
+                    handleQuickAction(.add_assignment)
+                } label: {
+                    Label(NSLocalizedString("ios.menu.add_assignment", comment: "Add Assignment"), systemImage: "plus.square.on.square")
+                }
+                
+                Button {
+                    handleQuickAction(.add_grade)
+                } label: {
+                    Label(NSLocalizedString("ios.menu.add_grade", comment: "Add Grade"), systemImage: "number.circle")
+                }
+                
+                Button {
+                    handleQuickAction(.auto_schedule)
+                } label: {
+                    Label(NSLocalizedString("ios.menu.auto_schedule", comment: "Auto Schedule"), systemImage: "calendar.badge.clock")
+                }
+            } label: {
+                Image(systemName: "plus")
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundColor(.primary)
+                    .frame(width: 44, height: 44)
+                    .background(
+                        Circle()
+                            .fill(.thinMaterial)
+                            .shadow(color: .black.opacity(0.1), radius: 4, y: 2)
+                    )
             }
+            .accessibilityLabel(NSLocalizedString("ios.menu.quick_add", comment: "Quick add"))
         }
-        .padding(.vertical, 8)
+        .padding(.horizontal, 16)
+        .padding(.top, 10)
     }
     
     private var allMenuPages: [AppPage] {
@@ -173,7 +127,7 @@ struct IOSAppShell<Content: View>: View {
     private func menuTitle(for page: AppPage) -> String {
         switch page {
         case .assignments:
-            return "Tasks"
+            return NSLocalizedString("ios.menu.tasks", comment: "Tasks")
         default:
             return page.title
         }
@@ -202,14 +156,14 @@ struct IOSAppShell<Content: View>: View {
     private func autoSchedule() {
         let assignments = assignmentsForPlanning()
         guard !assignments.isEmpty else {
-            toastRouter.show("No tasks to schedule")
+            toastRouter.show(NSLocalizedString("ios.toast.no_tasks_schedule", comment: "No tasks to schedule"))
             return
         }
         let settings = StudyPlanSettings()
         let sessions = assignments.flatMap { PlannerEngine.generateSessions(for: $0, settings: settings) }
         let result = PlannerEngine.scheduleSessions(sessions, settings: settings, energyProfile: defaultEnergyProfile())
         plannerStore.persist(scheduled: result.scheduled, overflow: result.overflow)
-        toastRouter.show("Schedule updated")
+        toastRouter.show(NSLocalizedString("ios.toast.schedule_updated", comment: "Schedule updated"))
     }
     
     private func assignmentsForPlanning() -> [Assignment] {

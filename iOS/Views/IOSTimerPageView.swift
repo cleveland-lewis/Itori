@@ -37,7 +37,7 @@ struct IOSTimerPageView: View {
 
     var body: some View {
         mainScroll
-            .modifier(IOSNavigationChrome(title: "Timer"))
+            .modifier(IOSNavigationChrome(title: NSLocalizedString("ios.timer.title", comment: "Timer")))
             .modifier(TimerSyncModifiers(viewModel: viewModel, settings: settings, syncLiveActivity: syncLiveActivity, syncSettingsFromApp: syncSettingsFromApp))
     }
 
@@ -67,7 +67,7 @@ struct IOSTimerPageView: View {
     }
 
     private var modePicker: some View {
-        Picker("Mode", selection: $viewModel.currentMode) {
+        Picker(NSLocalizedString("ios.timer.mode", comment: "Mode"), selection: $viewModel.currentMode) {
             ForEach(TimerMode.allCases) { mode in
                 Label(mode.displayName, systemImage: mode.systemImage)
                     .tag(mode)
@@ -97,7 +97,7 @@ struct IOSTimerPageView: View {
                     .accessibilityIdentifier("Timer.Time")
             }
             if viewModel.currentMode == .pomodoro {
-                Text(viewModel.isOnBreak ? "Break" : "Focus")
+                Text(viewModel.isOnBreak ? NSLocalizedString("ios.timer.break", comment: "Break") : NSLocalizedString("ios.timer.focus", comment: "Focus"))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -113,26 +113,26 @@ struct IOSTimerPageView: View {
     private var controlRow: some View {
         HStack(spacing: 12) {
             if isRunning {
-                Button("Pause") { viewModel.pauseSession() }
+                Button(NSLocalizedString("ios.timer.pause", comment: "Pause")) { viewModel.pauseSession() }
                     .buttonStyle(.bordered)
                     .accessibilityIdentifier("Timer.Pause")
             } else if isPaused {
-                Button("Resume") { viewModel.resumeSession() }
+                Button(NSLocalizedString("ios.timer.resume", comment: "Resume")) { viewModel.resumeSession() }
                     .buttonStyle(.borderedProminent)
                     .accessibilityIdentifier("Timer.Resume")
             } else {
-                Button("Start") { viewModel.startSession() }
+                Button(NSLocalizedString("ios.timer.start", comment: "Start")) { viewModel.startSession() }
                     .buttonStyle(.borderedProminent)
                     .accessibilityIdentifier("Timer.Start")
             }
 
-            Button("Stop") { viewModel.endSession(completed: false) }
+            Button(NSLocalizedString("ios.timer.stop", comment: "Stop")) { viewModel.endSession(completed: false) }
                 .buttonStyle(.bordered)
                 .disabled(sessionState == .idle)
                 .accessibilityIdentifier("Timer.Stop")
 
             if viewModel.currentMode == .pomodoro {
-                Button("Skip") { viewModel.skipSegment() }
+                Button(NSLocalizedString("ios.timer.skip", comment: "Skip")) { viewModel.skipSegment() }
                     .buttonStyle(.bordered)
                     .disabled(!isRunning)
                     .accessibilityIdentifier("Timer.Skip")
@@ -142,18 +142,18 @@ struct IOSTimerPageView: View {
 
     private var durationControls: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(NSLocalizedString("timer.label.durations", comment: "Durations"))
+            Text(NSLocalizedString("ios.timer.label.durations", comment: "Durations"))
                 .font(.headline)
             switch viewModel.currentMode {
             case .pomodoro:
-                stepperRow(label: "Focus", value: $viewModel.focusDuration, range: 5 * 60...90 * 60, step: 5 * 60)
-                stepperRow(label: "Break", value: $viewModel.breakDuration, range: 1 * 60...30 * 60, step: 1 * 60)
-                stepperRow(label: "Long Break", value: longBreakDurationBinding, range: 5 * 60...60 * 60, step: 5 * 60)
+                stepperRow(label: NSLocalizedString("ios.timer.label.focus", comment: "Focus"), value: $viewModel.focusDuration, range: 5 * 60...90 * 60, step: 5 * 60)
+                stepperRow(label: NSLocalizedString("ios.timer.label.break", comment: "Break"), value: $viewModel.breakDuration, range: 1 * 60...30 * 60, step: 1 * 60)
+                stepperRow(label: NSLocalizedString("ios.timer.label.long_break", comment: "Long Break"), value: longBreakDurationBinding, range: 5 * 60...60 * 60, step: 5 * 60)
                 iterationsRow
             case .timer:
-                stepperRow(label: "Timer", value: $viewModel.timerDuration, range: 1 * 60...180 * 60, step: 1 * 60)
+                stepperRow(label: NSLocalizedString("ios.timer.label.timer", comment: "Timer"), value: $viewModel.timerDuration, range: 1 * 60...180 * 60, step: 1 * 60)
             case .stopwatch:
-                Text(NSLocalizedString("timer.mode.stopwatch_description", comment: "Stopwatch description"))
+                Text(NSLocalizedString("ios.timer.mode.stopwatch_description", comment: "Stopwatch description"))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }

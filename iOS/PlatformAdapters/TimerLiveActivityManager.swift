@@ -60,7 +60,7 @@ final class IOSTimerLiveActivityManager: ObservableObject {
 
         let label: String
         if currentMode == .pomodoro {
-            label = isOnBreak ? "Break" : "Work"
+            label = isOnBreak ? NSLocalizedString("alarm.break", comment: "Break") : NSLocalizedString("alarm.work", comment: "Work")
         } else {
             label = currentMode.displayName
         }

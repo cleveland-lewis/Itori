@@ -625,3 +625,420 @@
 "quick_add.assignment" = "Add Assignment";
 "quick_add.grade" = "Add Grade";
 "quick_add.schedule" = "Auto Schedule";
+
+/* iOS Dashboard */
+"ios.dashboard.title" = "Dashboard";
+"ios.dashboard.today" = "Jump to today";
+"ios.dashboard.stats.due_soon" = "Due Soon";
+"ios.dashboard.stats.next_7_days" = "Next 7 Days";
+"ios.dashboard.stats.courses" = "Courses";
+"ios.dashboard.upcoming.title" = "Upcoming";
+"ios.dashboard.upcoming.subtitle" = "From your calendar";
+"ios.dashboard.upcoming.no_events" = "No upcoming events.";
+"ios.dashboard.due_soon.title" = "Due Soon";
+"ios.dashboard.due_soon.subtitle" = "Next 7 days";
+"ios.dashboard.due_soon.no_tasks" = "No tasks due soon.";
+"ios.dashboard.greeting.morning.1" = "Good morning";
+"ios.dashboard.greeting.morning.2" = "Rise and shine";
+"ios.dashboard.greeting.morning.3" = "Morning";
+"ios.dashboard.greeting.morning.4" = "Start strong today";
+"ios.dashboard.greeting.morning.5" = "Welcome back";
+"ios.dashboard.greeting.afternoon.1" = "Good afternoon";
+"ios.dashboard.greeting.afternoon.2" = "Afternoon";
+"ios.dashboard.greeting.afternoon.3" = "Keep it up";
+"ios.dashboard.greeting.afternoon.4" = "Stay focused";
+"ios.dashboard.greeting.afternoon.5" = "Making progress";
+"ios.dashboard.greeting.evening.1" = "Good evening";
+"ios.dashboard.greeting.evening.2" = "Evening";
+"ios.dashboard.greeting.evening.3" = "Wrapping up";
+"ios.dashboard.greeting.evening.4" = "Almost there";
+"ios.dashboard.greeting.evening.5" = "Finish strong";
+"ios.dashboard.greeting.night.1" = "Hello";
+"ios.dashboard.greeting.night.2" = "Welcome back";
+"ios.dashboard.greeting.night.3" = "Still working";
+"ios.dashboard.greeting.night.4" = "Burning the midnight oil";
+"ios.dashboard.greeting.default" = "Hello";
+"ios.dashboard.events_label" = "%d events";
+"ios.dashboard.tasks_label" = "%d tasks";
+
+/* iOS Planner */
+"ios.planner.title" = "Planner";
+"ios.planner.generate_plan" = "Generate plan";
+"ios.planner.today" = "Today";
+"ios.planner.edit" = "Edit";
+"ios.planner.done" = "Done";
+"ios.planner.how_it_works" = "How it works";
+"ios.planner.generate_plan_button" = "Generate Plan";
+"ios.planner.schedule.title" = "Schedule";
+"ios.planner.schedule.subtitle" = "Time blocks";
+"ios.planner.schedule.empty" = "No blocks scheduled";
+"ios.planner.schedule.empty_subtitle" = "Generate a plan to fill today.";
+"ios.planner.overflow.title" = "Overflow";
+"ios.planner.overflow.subtitle" = "Not scheduled yet";
+"ios.planner.overflow.empty" = "All sessions placed";
+"ios.planner.overflow.empty_subtitle" = "Nothing waiting in overflow.";
+"ios.planner.unscheduled.title" = "Unscheduled";
+"ios.planner.unscheduled.subtitle" = "Needs attention";
+"ios.planner.unscheduled.empty" = "All tasks have dates";
+"ios.planner.unscheduled.empty_subtitle" = "Add due dates to keep planning accurate.";
+"ios.planner.unscheduled.add_due_date" = "Add a due date";
+"ios.planner.toast.block_updated" = "Block updated";
+"ios.planner.toast.time_conflict" = "Time conflict";
+"ios.planner.due_format" = "Due %@ · %d min";
+
+/* iOS Assignments (Tasks) */
+"ios.assignments.title" = "Tasks";
+"ios.assignments.add" = "Add task";
+"ios.assignments.empty.title" = "No tasks yet";
+"ios.assignments.empty.subtitle" = "Capture tasks and due dates here.";
+"ios.assignments.due_format" = "Due %@";
+"ios.assignments.no_due_date" = "No due date";
+
+/* iOS Courses */
+"ios.courses.title" = "Courses";
+"ios.courses.add" = "Add course";
+"ios.courses.empty.semester" = "No semester yet";
+"ios.courses.empty.semester_subtitle" = "Create a semester to organize courses.";
+"ios.courses.empty.courses" = "No active courses";
+"ios.courses.empty.courses_subtitle" = "Add a course to filter tasks and planner blocks.";
+"ios.courses.create_semester" = "Create Semester";
+"ios.courses.add_course" = "Add Course";
+"ios.courses.section.active" = "Active Courses";
+
+/* iOS Calendar */
+"ios.calendar.title" = "Calendar";
+"ios.calendar.connect.title" = "Connect Calendar";
+"ios.calendar.connect.subtitle" = "Access events on iOS";
+"ios.calendar.connect.detail" = "Enable calendar access to see your schedule.";
+"ios.calendar.empty.title" = "Nothing scheduled";
+"ios.calendar.empty.subtitle" = "Your calendar is clear";
+"ios.calendar.empty.detail" = "Add events quickly from the plus menu.";
+"ios.calendar.no_location" = "No location";
+
+/* iOS Practice */
+"ios.practice.title" = "Practice";
+"ios.practice.sessions.title" = "Practice Sessions";
+"ios.practice.sessions.subtitle" = "Warmups, drills, reviews";
+"ios.practice.sessions.detail" = "Build short, focused practice loops.";
+"ios.practice.progress.title" = "Track Progress";
+"ios.practice.progress.subtitle" = "Stay consistent";
+"ios.practice.progress.detail" = "Log repetitions and streaks over time.";
+
+/* iOS Timer */
+"ios.timer.title" = "Timer";
+"ios.timer.mode" = "Mode";
+"ios.timer.break" = "Break";
+"ios.timer.focus" = "Focus";
+"ios.timer.pause" = "Pause";
+"ios.timer.resume" = "Resume";
+"ios.timer.start" = "Start";
+"ios.timer.stop" = "Stop";
+"ios.timer.skip" = "Skip";
+"ios.timer.label.durations" = "Durations";
+"ios.timer.label.focus" = "Focus";
+"ios.timer.label.break" = "Break";
+"ios.timer.label.long_break" = "Long Break";
+"ios.timer.label.timer" = "Timer";
+"ios.timer.mode.stopwatch_description" = "No duration, tracks elapsed time only.";
+
+/* iOS Settings */
+"ios.settings.title" = "Settings";
+
+/* iOS Menu */
+"ios.menu.hamburger" = "Open menu";
+"ios.menu.quick_add" = "Quick add";
+"ios.menu.settings" = "Settings";
+"ios.menu.tasks" = "Tasks";
+"ios.menu.add_assignment" = "Add Assignment";
+"ios.menu.add_grade" = "Add Grade";
+"ios.menu.auto_schedule" = "Auto Schedule";
+
+/* iOS Toasts */
+"ios.toast.no_tasks_schedule" = "No tasks to schedule";
+"ios.toast.schedule_updated" = "Schedule updated";
+"ios.toast.assignment_added" = "%@ added";
+"ios.toast.course_added" = "Course added";
+"ios.toast.grade_added" = "Grade added";
+
+/* iOS Task Editor */
+"ios.task_editor.new_title" = "New %@";
+"ios.task_editor.edit_title" = "Edit %@";
+"ios.task_editor.section.basics" = "Basics";
+"ios.task_editor.title" = "Title";
+"ios.task_editor.type" = "Type";
+"ios.task_editor.course" = "Course";
+"ios.task_editor.section.schedule" = "Schedule";
+"ios.task_editor.has_due_date" = "Has Due Date";
+"ios.task_editor.due" = "Due";
+"ios.task_editor.estimated_minutes" = "Estimated Minutes: %d";
+"ios.task_editor.section.priority" = "Priority";
+"ios.task_editor.importance" = "Importance";
+"ios.task_editor.difficulty" = "Difficulty";
+"ios.task_editor.cancel" = "Cancel";
+"ios.task_editor.save" = "Save";
+
+/* iOS Course Editor */
+"ios.course_editor.new_title" = "New Course";
+"ios.course_editor.section.course" = "Course";
+"ios.course_editor.title" = "Title";
+"ios.course_editor.code" = "Code";
+"ios.course_editor.section.semester" = "Semester";
+"ios.course_editor.semester" = "Semester";
+"ios.course_editor.cancel" = "Cancel";
+"ios.course_editor.save" = "Save";
+
+/* iOS Semester Editor */
+"ios.semester_editor.new_title" = "New Semester";
+"ios.semester_editor.section.dates" = "Dates";
+"ios.semester_editor.start" = "Start";
+"ios.semester_editor.end" = "End";
+"ios.semester_editor.section.details" = "Details";
+"ios.semester_editor.education_level" = "Education Level";
+"ios.semester_editor.term" = "Term";
+"ios.semester_editor.cancel" = "Cancel";
+"ios.semester_editor.save" = "Save";
+
+/* iOS Block Editor */
+"ios.block_editor.title" = "Edit Block";
+"ios.block_editor.section.details" = "Details";
+"ios.block_editor.title_field" = "Title";
+"ios.block_editor.section.timing" = "Timing";
+"ios.block_editor.start" = "Start";
+"ios.block_editor.duration" = "Duration: %d min";
+"ios.block_editor.locked" = "Locked";
+"ios.block_editor.section.workday" = "Workday";
+"ios.block_editor.allowed_hours" = "Allowed hours: %d:00–%d:00";
+"ios.block_editor.cancel" = "Cancel";
+"ios.block_editor.save" = "Save";
+
+/* iOS Plan Help */
+"ios.plan_help.title" = "How Planner Works";
+"ios.plan_help.line1" = "Planner uses your assignment due dates to build a schedule of study blocks.";
+"ios.plan_help.line2" = "Generate Plan to create time blocks for today and the next few days.";
+"ios.plan_help.line3" = "Tasks without a due date stay in the Unscheduled section.";
+"ios.plan_help.done" = "Done";
+
+/* iOS Filters */
+"ios.filter.all_semesters" = "All Semesters";
+"ios.filter.all_courses" = "All Courses";
+
+/* iOS Assignment Plans */
+"ios.plans.title" = "Plans";
+"ios.plans.regenerate_all" = "Regenerate all plans";
+"ios.plans.header.title" = "Assignment Plans";
+"ios.plans.updated" = "Updated %@";
+"ios.plans.empty.title" = "No assignments";
+"ios.plans.empty.subtitle" = "Add assignments to see their plans";
+"ios.plans.card.due" = "Due %@";
+"ios.plans.card.steps" = "%d/%d steps";
+"ios.plans.card.minutes" = "%d min total";
+"ios.plans.card.no_plan" = "No plan yet";
+"ios.plans.card.generate" = "Generate Plan";
+"ios.plans.toast.generated" = "Plan generated";
+"ios.plans.toast.regenerated" = "Plans regenerated";
+"ios.plans.step.minutes" = "%d min";
+"ios.plans.step.overdue" = "Overdue";
+"ios.plans.step.blocked" = "Blocked";
+
+/* iOS Placeholder */
+"ios.placeholder.not_available" = "This page is not available on iOS yet.";
+"ios.placeholder.coming_soon" = "This view is coming soon.";
+"ios.placeholder.select_page" = "Select a page";
+"ios.placeholder.choose_page" = "Choose a page from the middle column.";
+
+/* iPad Sections */
+"ipad.section.core" = "Core";
+"ipad.section.planning" = "Planning";
+"ipad.section.focus" = "Focus";
+"ipad.menu" = "Menu";
+"ipad.pages" = "Pages";
+"ipad.placeholder.grade_insights" = "Grade insights are available on macOS.";
+"ipad.placeholder.not_available" = "This view is not available on iPad yet.";
+
+/* Alarm Kit */
+"alarm.stop" = "Stop";
+"alarm.pause" = "Pause";
+"alarm.resume" = "Resume";
+"alarm.paused" = "Paused";
+"alarm.break" = "Break";
+"alarm.work" = "Work";
+
+/* Settings Categories */
+"settings.category.general" = "General";
+"settings.category.accessibility" = "Accessibility";
+"settings.category.interface" = "Interface";
+"settings.category.appearance" = "Appearance";
+"settings.category.timer" = "Timer";
+"settings.category.calendar" = "Calendar";
+"settings.category.privacy" = "Privacy";
+"settings.category.storage" = "Storage";
+"settings.category.courses_planner" = "Courses & Planner";
+"settings.category.notifications" = "Notifications";
+
+/* General Settings */
+"settings.general.use_24h" = "Use 24-Hour Time";
+"settings.general.use_24h.detail" = "Display times in 24-hour format";
+"settings.general.workday_start" = "Workday Start";
+"settings.general.workday_end" = "Workday End";
+"settings.general.workday.header" = "Workday Hours";
+"settings.general.workday.footer" = "Affects planner scheduling and energy tracking";
+"settings.general.show_energy" = "Show Energy Panel";
+"settings.general.show_energy.detail" = "Display energy levels in dashboard and planner";
+"settings.general.high_contrast" = "High Contrast";
+"settings.general.high_contrast.detail" = "Increase visual contrast for better readability";
+"settings.general.display.header" = "Display";
+"time.am" = "AM";
+"time.pm" = "PM";
+"time.minutes" = "min";
+
+/* Accessibility Settings */
+"settings.accessibility.reduce_motion" = "Reduce Motion";
+"settings.accessibility.reduce_motion.detail" = "Minimize animations and transitions";
+"settings.accessibility.increase_transparency" = "Increase Transparency";
+"settings.accessibility.increase_transparency.detail" = "Reduce blur and transparency effects";
+"settings.accessibility.high_contrast" = "Increase Contrast";
+"settings.accessibility.high_contrast.detail" = "Make colors and borders more distinct";
+"settings.accessibility.visual.header" = "Visual";
+"settings.accessibility.haptics" = "Haptic Feedback";
+"settings.accessibility.haptics.detail" = "Feel tactile responses for actions";
+"settings.accessibility.interaction.header" = "Interaction";
+"settings.accessibility.tooltips" = "Show Tooltips";
+"settings.accessibility.tooltips.detail" = "Display helpful hints for interface elements";
+"settings.accessibility.guidance.header" = "Guidance";
+
+/* Interface Settings */
+"settings.interface.starred_tabs.header" = "Starred Tabs";
+"settings.interface.starred_tabs.footer" = "Select up to 5 pages to show in the tab bar. All pages remain accessible via the menu.";
+"settings.interface.show_sidebar" = "Show Sidebar";
+"settings.interface.show_sidebar.detail" = "Always display the navigation sidebar on iPad";
+"settings.interface.compact_mode" = "Compact Mode";
+"settings.interface.compact_mode.detail" = "Use denser layout with less spacing";
+"settings.interface.layout.header" = "Layout";
+
+/* Appearance Settings */
+"settings.appearance.theme" = "Theme";
+"settings.appearance.theme.header" = "Appearance";
+"settings.appearance.theme.system" = "System";
+"settings.appearance.theme.light" = "Light";
+"settings.appearance.theme.dark" = "Dark";
+"settings.appearance.theme.auto" = "Auto";
+"settings.appearance.glass_effects" = "Glass Effects";
+"settings.appearance.glass_effects.detail" = "Use translucent backgrounds and blur";
+"settings.appearance.animations" = "Show Animations";
+"settings.appearance.animations.detail" = "Enable smooth transitions and effects";
+"settings.appearance.effects.header" = "Effects";
+"settings.appearance.card_radius" = "Card Corner Radius";
+"settings.appearance.style.header" = "Style";
+
+/* Timer Settings */
+"settings.timer.focus_duration" = "Focus Duration";
+"settings.timer.short_break" = "Short Break";
+"settings.timer.long_break" = "Long Break";
+"settings.timer.iterations" = "Pomodoro Cycles";
+"settings.timer.pomodoro.header" = "Pomodoro Settings";
+"settings.timer.alerts" = "Timer Alerts";
+"settings.timer.alerts.detail" = "Show notification when timer completes";
+"settings.timer.pomodoro_alerts" = "Pomodoro Alerts";
+"settings.timer.pomodoro_alerts.detail" = "Alert at each pomodoro phase change";
+"settings.timer.alarmkit" = "AlarmKit Timers";
+"settings.timer.alarmkit.detail" = "Use iOS AlarmKit for loud system alarms";
+"settings.timer.alerts.header" = "Alerts";
+"settings.timer.alerts.footer" = "AlarmKit provides system-level alarms that work even when the app is closed.";
+
+/* Calendar Settings */
+"settings.calendar.not_authorized.title" = "Calendar Access Required";
+"settings.calendar.not_authorized.message" = "Grant calendar access to sync events with your schedule";
+"settings.calendar.request_access" = "Request Access";
+"settings.calendar.school_calendar.header" = "School Calendar";
+"settings.calendar.school_calendar.footer" = "Select the calendar to use for event tracking and scheduling";
+"settings.calendar.refresh_range" = "Refresh Range";
+"settings.calendar.range.1_week" = "1 Week";
+"settings.calendar.range.2_weeks" = "2 Weeks";
+"settings.calendar.range.1_month" = "1 Month";
+"settings.calendar.range.2_months" = "2 Months";
+"settings.calendar.scheduling.header" = "Scheduling";
+"settings.calendar.scheduling.footer" = "How far ahead to scan for events when refreshing";
+
+/* Privacy Settings */
+"settings.privacy.local_only" = "Local-Only Mode";
+"settings.privacy.local_only.detail" = "All data stays on this device";
+"settings.privacy.data.header" = "Data Storage";
+"settings.privacy.data.footer" = "Roots stores all your data locally. No cloud sync or external services are used.";
+"settings.privacy.clear_logs" = "Clear Debug Logs";
+"settings.privacy.clear_logs.confirm.title" = "Clear Debug Logs?";
+"settings.privacy.clear_logs.confirm.action" = "Clear Logs";
+"settings.privacy.clear_logs.confirm.message" = "This will clear all debug logs and analytics data stored on your device.";
+"settings.privacy.diagnostics.header" = "Diagnostics";
+"settings.privacy.permissions" = "Manage Permissions";
+"settings.privacy.permissions.header" = "Permissions";
+"settings.privacy.permissions.footer" = "Open iOS Settings to manage calendar, notifications, and other permissions";
+
+/* Storage Settings */
+"settings.storage.used" = "Storage Used";
+"settings.storage.location" = "Location";
+"settings.storage.location.local" = "Local";
+"settings.storage.info.header" = "Storage";
+"settings.storage.clear_cache" = "Clear Cache";
+"settings.storage.clear_cache.confirm.title" = "Clear Cache?";
+"settings.storage.clear_cache.confirm.action" = "Clear Cache";
+"settings.storage.clear_cache.confirm.message" = "This will clear temporary files and cached data. Your tasks, courses, and settings will not be affected.";
+"settings.storage.maintenance.header" = "Maintenance";
+"settings.storage.maintenance.footer" = "Clearing cache can free up storage space and may improve performance";
+"settings.storage.export" = "Export Data";
+"settings.storage.backup.header" = "Backup";
+"settings.storage.backup.footer" = "Export your data as a backup file";
+"settings.storage.export.title" = "Export Data";
+"settings.storage.export.message" = "Your data will be exported as a JSON file that you can save or share.";
+"settings.storage.export.button" = "Export Now";
+
+/* Courses & Planner Settings */
+"settings.planner.horizon" = "Planning Horizon";
+"settings.planner.horizon.1_week" = "1 Week";
+"settings.planner.horizon.2_weeks" = "2 Weeks";
+"settings.planner.horizon.1_month" = "1 Month";
+"settings.planner.scheduling.header" = "Scheduling";
+"settings.planner.scheduling.footer" = "How far ahead to schedule tasks and study sessions";
+"settings.planner.ai" = "AI-Powered Planning";
+"settings.planner.ai.detail" = "Use intelligent suggestions for task scheduling";
+"settings.planner.auto_breaks" = "Auto-Schedule Breaks";
+"settings.planner.auto_breaks.detail" = "Automatically add break periods between study sessions";
+"settings.planner.intelligence.header" = "Intelligence";
+"settings.planner.energy_tracking" = "Energy Tracking";
+"settings.planner.energy_tracking.detail" = "Track and optimize based on your energy levels";
+"settings.planner.track_hours" = "Track Study Hours";
+"settings.planner.track_hours.detail" = "Monitor total time spent studying";
+"settings.planner.tracking.header" = "Tracking";
+"settings.courses.display" = "Course Display";
+"settings.courses.display.name" = "Name";
+"settings.courses.display.code" = "Code";
+"settings.courses.display.both" = "Both";
+"settings.courses.display.header" = "Courses";
+"settings.courses.display.footer" = "How to display course information throughout the app";
+
+/* Notifications Settings */
+"settings.notifications.disabled.title" = "Notifications Disabled";
+"settings.notifications.disabled.message" = "Enable notifications in iOS Settings to receive reminders and alerts";
+"settings.notifications.open_settings" = "Open Settings";
+"settings.notifications.enable" = "Enable Notifications";
+"settings.notifications.enable.detail" = "Receive reminders and alerts";
+"settings.notifications.general.header" = "General";
+"settings.notifications.assignments" = "Assignment Reminders";
+"settings.notifications.assignments.detail" = "Remind me before assignments are due";
+"settings.notifications.lead_time" = "Reminder Lead Time";
+"settings.notifications.lead_time.5_min" = "5 minutes";
+"settings.notifications.lead_time.15_min" = "15 minutes";
+"settings.notifications.lead_time.30_min" = "30 minutes";
+"settings.notifications.lead_time.1_hour" = "1 hour";
+"settings.notifications.lead_time.2_hours" = "2 hours";
+"settings.notifications.reminders.header" = "Reminders";
+"settings.notifications.daily_overview" = "Daily Overview";
+"settings.notifications.daily_overview.detail" = "Morning summary of today's schedule";
+"settings.notifications.overview_time" = "Overview Time";
+"settings.notifications.summaries.header" = "Summaries";
+"settings.notifications.affirmations" = "Motivational Messages";
+"settings.notifications.affirmations.detail" = "Receive encouraging notifications";
+"settings.notifications.motivation.header" = "Motivation";
+
+/* Toast Messages for Settings */
+"ios.planner.toast.block_updated" = "Block updated";
+"ios.planner.toast.time_conflict" = "Time conflict";

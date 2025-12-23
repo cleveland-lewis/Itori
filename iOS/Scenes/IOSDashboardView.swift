@@ -32,13 +32,13 @@ struct IOSDashboardView: View {
             .padding(.bottom, 36)
         }
         .background(DesignSystem.Colors.appBackground.ignoresSafeArea())
-        .modifier(IOSNavigationChrome(title: "Dashboard") {
+        .modifier(IOSNavigationChrome(title: NSLocalizedString("ios.dashboard.title", comment: "Dashboard")) {
             Button {
                 selectedDate = Date()
             } label: {
                 Image(systemName: "dot.circle.and.hand.point.up.left.fill")
             }
-            .accessibilityLabel("Jump to today")
+            .accessibilityLabel(NSLocalizedString("ios.dashboard.today", comment: "Jump to today"))
         })
         .task {
             await deviceCalendar.bootstrapOnLaunch()
@@ -86,9 +86,9 @@ struct IOSDashboardView: View {
 
     private var quickStatsRow: some View {
         HStack(spacing: 12) {
-            statPill(title: "Due Soon", value: "\(dueSoonTasks.count)", icon: "bolt")
-            statPill(title: "Next 7 Days", value: "\(weekEventCount)", icon: "calendar.badge.clock")
-            statPill(title: "Courses", value: "\(coursesStore.activeCourses.count)", icon: "square.grid.2x2")
+            statPill(title: NSLocalizedString("ios.dashboard.stats.due_soon", comment: "Due Soon"), value: "\(dueSoonTasks.count)", icon: "bolt")
+            statPill(title: NSLocalizedString("ios.dashboard.stats.next_7_days", comment: "Next 7 Days"), value: "\(weekEventCount)", icon: "calendar.badge.clock")
+            statPill(title: NSLocalizedString("ios.dashboard.stats.courses", comment: "Courses"), value: "\(coursesStore.activeCourses.count)", icon: "square.grid.2x2")
         }
     }
 
@@ -123,12 +123,12 @@ struct IOSDashboardView: View {
     }
 
     private var upcomingEventsCard: some View {
-        RootsCard(title: "Upcoming", subtitle: "From your calendar", icon: "calendar") {
+        RootsCard(title: NSLocalizedString("ios.dashboard.upcoming.title", comment: "Upcoming"), subtitle: NSLocalizedString("ios.dashboard.upcoming.subtitle", comment: "From your calendar"), icon: "calendar") {
             if !deviceCalendar.isAuthorized {
-                Text("Connect your calendar to see upcoming events.")
+                Text(NSLocalizedString("dashboard.empty.calendar", comment: "Connect calendar"))
                     .rootsBodySecondary()
             } else if upcomingEvents.isEmpty {
-                Text("No upcoming events.")
+                Text(NSLocalizedString("ios.dashboard.upcoming.no_events", comment: "No events"))
                     .rootsBodySecondary()
             } else {
                 VStack(alignment: .leading, spacing: 12) {
@@ -158,9 +158,9 @@ struct IOSDashboardView: View {
     }
 
     private var dueTasksCard: some View {
-        RootsCard(title: "Due Soon", subtitle: "Next 7 days", icon: "checkmark.circle") {
+        RootsCard(title: NSLocalizedString("ios.dashboard.due_soon.title", comment: "Due Soon"), subtitle: NSLocalizedString("ios.dashboard.due_soon.subtitle", comment: "Next 7 days"), icon: "checkmark.circle") {
             if dueSoonTasks.isEmpty {
-                Text("No tasks due soon.")
+                Text(NSLocalizedString("ios.dashboard.due_soon.no_tasks", comment: "No tasks"))
                     .rootsBodySecondary()
             } else {
                 VStack(spacing: 12) {
@@ -222,38 +222,38 @@ struct IOSDashboardView: View {
         switch hour {
         case 5..<12:
             greetings = [
-                "Good morning",
-                "Rise and shine",
-                "Morning",
-                "Start strong today",
-                "Welcome back"
+                NSLocalizedString("ios.dashboard.greeting.morning.1", comment: "Good morning"),
+                NSLocalizedString("ios.dashboard.greeting.morning.2", comment: "Rise and shine"),
+                NSLocalizedString("ios.dashboard.greeting.morning.3", comment: "Morning"),
+                NSLocalizedString("ios.dashboard.greeting.morning.4", comment: "Start strong today"),
+                NSLocalizedString("ios.dashboard.greeting.morning.5", comment: "Welcome back")
             ]
         case 12..<17:
             greetings = [
-                "Good afternoon",
-                "Afternoon",
-                "Keep it up",
-                "Stay focused",
-                "Making progress"
+                NSLocalizedString("ios.dashboard.greeting.afternoon.1", comment: "Good afternoon"),
+                NSLocalizedString("ios.dashboard.greeting.afternoon.2", comment: "Afternoon"),
+                NSLocalizedString("ios.dashboard.greeting.afternoon.3", comment: "Keep it up"),
+                NSLocalizedString("ios.dashboard.greeting.afternoon.4", comment: "Stay focused"),
+                NSLocalizedString("ios.dashboard.greeting.afternoon.5", comment: "Making progress")
             ]
         case 17..<22:
             greetings = [
-                "Good evening",
-                "Evening",
-                "Wrapping up",
-                "Almost there",
-                "Finish strong"
+                NSLocalizedString("ios.dashboard.greeting.evening.1", comment: "Good evening"),
+                NSLocalizedString("ios.dashboard.greeting.evening.2", comment: "Evening"),
+                NSLocalizedString("ios.dashboard.greeting.evening.3", comment: "Wrapping up"),
+                NSLocalizedString("ios.dashboard.greeting.evening.4", comment: "Almost there"),
+                NSLocalizedString("ios.dashboard.greeting.evening.5", comment: "Finish strong")
             ]
         default:
             greetings = [
-                "Hello",
-                "Welcome back",
-                "Still working",
-                "Burning the midnight oil"
+                NSLocalizedString("ios.dashboard.greeting.night.1", comment: "Hello"),
+                NSLocalizedString("ios.dashboard.greeting.night.2", comment: "Welcome back"),
+                NSLocalizedString("ios.dashboard.greeting.night.3", comment: "Still working"),
+                NSLocalizedString("ios.dashboard.greeting.night.4", comment: "Burning the midnight oil")
             ]
         }
 
-        let selection = greetings.randomElement() ?? "Hello"
+        let selection = greetings.randomElement() ?? NSLocalizedString("ios.dashboard.greeting.default", comment: "Hello")
         greetingDateKey = todayKey
         storedGreeting = selection
         return selection

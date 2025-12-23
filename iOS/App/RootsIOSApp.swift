@@ -29,6 +29,7 @@ struct RootsIOSApp: App {
     @StateObject private var eventsCountStore = EventsCountStore()
 
     init() {
+        _ = PhoneWatchBridge.shared
         let store = CoursesStore()
         _coursesStore = StateObject(wrappedValue: store)
         let settings = AppSettingsModel.shared

@@ -41,11 +41,12 @@ struct IOSRootView: View {
                         case .page(let page):
                             pageView(for: page)
                         case .settings:
-                            IOSSettingsView()
+                            settingsContent
                         }
                     }
                 }
             }
+            .toolbarBackground(.hidden, for: .navigationBar)
             .background(DesignSystem.Colors.appBackground)
             .environmentObject(navigation)
             .environmentObject(tabBarPrefs)
@@ -72,7 +73,7 @@ struct IOSRootView: View {
                     onSave: { draft in
                         let task = draft.makeTask(existing: nil)
                         assignmentsStore.addTask(task)
-                        toastRouter.show("\(defaults.itemLabel) added")
+                        toastRouter.show(String(format: NSLocalizedString("ios.toast.assignment_added", comment: "Assignment added"), defaults.itemLabel))
                     }
                 )
             case .addCourse(let defaults):
@@ -83,7 +84,7 @@ struct IOSRootView: View {
                     onSave: { draft in
                         guard let semester = coursesStore.activeSemesters.first(where: { $0.id == draft.semesterId }) else { return }
                         coursesStore.addCourse(title: draft.title, code: draft.code, to: semester)
-                        toastRouter.show("Course added")
+                        toastRouter.show(NSLocalizedString("ios.toast.course_added", comment: "Course added"))
                     }
                 )
             case .addGrade:
@@ -95,7 +96,7 @@ struct IOSRootView: View {
                         if let courseId = updatedTask.courseId {
                             gradesStore.upsert(courseId: courseId, percent: updatedTask.gradeWeightPercent, letter: nil)
                         }
-                        toastRouter.show("Grade added")
+                        toastRouter.show(NSLocalizedString("ios.toast.grade_added", comment: "Grade added"))
                     }
                 )
             }
@@ -169,6 +170,25 @@ struct IOSRootView: View {
         default:
             IOSPlaceholderView(title: page.title, subtitle: "This view is coming soon.")
         }
+    }
+    
+    private var settingsContent: some View {
+        List {
+            ForEach(SettingsCategory.allCases) { category in
+                NavigationLink(destination: category.destinationView()) {
+                    Label {
+                        Text(category.title)
+                    } icon: {
+                        Image(systemName: category.systemImage)
+                            .foregroundColor(.accentColor)
+                            .frame(width: 28, height: 28)
+                    }
+                }
+            }
+        }
+        .listStyle(.insetGrouped)
+        .navigationTitle(NSLocalizedString("ios.settings.title", comment: "Settings"))
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 #endif

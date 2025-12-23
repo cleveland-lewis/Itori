@@ -54,6 +54,8 @@ struct IOSNavigationChrome<TrailingContent: View>: ViewModifier {
     func body(content: Content) -> some View {
         return content
             .navigationTitle(title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     trailingContent()

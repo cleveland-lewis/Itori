@@ -30,13 +30,13 @@ struct IOSPlannerView: View {
             .padding(20)
         }
         .background(DesignSystem.Colors.appBackground)
-        .modifier(IOSNavigationChrome(title: "Planner") {
+        .modifier(IOSNavigationChrome(title: NSLocalizedString("ios.planner.title", comment: "Planner")) {
             Button {
                 generatePlan()
             } label: {
                 Image(systemName: "sparkles")
             }
-            .accessibilityLabel("Generate plan")
+            .accessibilityLabel(NSLocalizedString("ios.planner.generate_plan", comment: "Generate plan"))
         })
         .sheet(isPresented: $showingPlanHelp) {
             IOSPlanHelpView()
@@ -49,9 +49,9 @@ struct IOSPlannerView: View {
                 onSave: { updated in
                     if canPlaceBlock(updated, excluding: block.id) {
                         plannerStore.updateScheduledSession(updated)
-                        toastRouter.show("Block updated")
+                        toastRouter.show(NSLocalizedString("ios.planner.toast.block_updated", comment: "Block updated"))
                     } else {
-                        toastRouter.show("Time conflict")
+                        toastRouter.show(NSLocalizedString("ios.planner.toast.time_conflict", comment: "Time conflict"))
                     }
                 }
             )
@@ -61,14 +61,14 @@ struct IOSPlannerView: View {
     private var planHeader: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Text("Today")
+                Text(NSLocalizedString("ios.planner.today", comment: "Today"))
                     .font(.title3.weight(.semibold))
                 Spacer()
-                Button(isEditing ? "Done" : "Edit") {
+                Button(isEditing ? NSLocalizedString("ios.planner.done", comment: "Done") : NSLocalizedString("ios.planner.edit", comment: "Edit")) {
                     isEditing.toggle()
                 }
                 .font(.caption.weight(.semibold))
-                Button("How it works") {
+                Button(NSLocalizedString("ios.planner.how_it_works", comment: "How it works")) {
                     showingPlanHelp = true
                 }
                 .font(.caption.weight(.semibold))
@@ -81,7 +81,7 @@ struct IOSPlannerView: View {
             } label: {
                 HStack(spacing: 8) {
                     Image(systemName: "sparkles")
-                    Text("Generate Plan")
+                    Text(NSLocalizedString("ios.planner.generate_plan_button", comment: "Generate Plan"))
                 }
                 .frame(maxWidth: .infinity)
             }
@@ -96,9 +96,9 @@ struct IOSPlannerView: View {
 
     private var scheduleSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader(title: "Schedule", subtitle: "Time blocks")
+            sectionHeader(title: NSLocalizedString("ios.planner.schedule.title", comment: "Schedule"), subtitle: NSLocalizedString("ios.planner.schedule.subtitle", comment: "Time blocks"))
             if scheduledToday.isEmpty {
-                IOSInlineEmptyState(title: "No blocks scheduled", subtitle: "Generate a plan to fill today.")
+                IOSInlineEmptyState(title: NSLocalizedString("ios.planner.schedule.empty", comment: "No blocks scheduled"), subtitle: NSLocalizedString("ios.planner.schedule.empty_subtitle", comment: "Generate a plan to fill today."))
             } else {
                 ForEach(scheduledToday) { session in
                     IOSPlannerBlockRow(
@@ -112,7 +112,7 @@ struct IOSPlannerView: View {
                             if canPlaceBlock(moved, excluding: session.id) {
                                 plannerStore.updateScheduledSession(moved)
                             } else {
-                                toastRouter.show("Time conflict")
+                                toastRouter.show(NSLocalizedString("ios.planner.toast.time_conflict", comment: "Time conflict"))
                             }
                         }
                     )
@@ -123,14 +123,14 @@ struct IOSPlannerView: View {
 
     private var overflowSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader(title: "Overflow", subtitle: "Not scheduled yet")
+            sectionHeader(title: NSLocalizedString("ios.planner.overflow.title", comment: "Overflow"), subtitle: NSLocalizedString("ios.planner.overflow.subtitle", comment: "Not scheduled yet"))
             if plannerStore.overflow.isEmpty {
-                IOSInlineEmptyState(title: "All sessions placed", subtitle: "Nothing waiting in overflow.")
+                IOSInlineEmptyState(title: NSLocalizedString("ios.planner.overflow.empty", comment: "All sessions placed"), subtitle: NSLocalizedString("ios.planner.overflow.empty_subtitle", comment: "Nothing waiting in overflow."))
             } else {
                 ForEach(plannerStore.overflow) { session in
                     IOSInfoRow(
                         title: session.title,
-                        subtitle: "Due \(formattedDate(session.dueDate)) · \(session.estimatedMinutes) min",
+                        subtitle: String(format: NSLocalizedString("ios.planner.due_format", comment: "Due date"), formattedDate(session.dueDate), session.estimatedMinutes),
                         systemImage: "clock.badge.exclamationmark"
                     )
                 }
@@ -140,14 +140,14 @@ struct IOSPlannerView: View {
 
     private var unscheduledSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader(title: "Unscheduled", subtitle: "Needs attention")
+            sectionHeader(title: NSLocalizedString("ios.planner.unscheduled.title", comment: "Unscheduled"), subtitle: NSLocalizedString("ios.planner.unscheduled.subtitle", comment: "Needs attention"))
             if tasksMissingDates.isEmpty {
-                IOSInlineEmptyState(title: "All tasks have dates", subtitle: "Add due dates to keep planning accurate.")
+                IOSInlineEmptyState(title: NSLocalizedString("ios.planner.unscheduled.empty", comment: "All tasks have dates"), subtitle: NSLocalizedString("ios.planner.unscheduled.empty_subtitle", comment: "Add due dates to keep planning accurate."))
             } else {
                 ForEach(tasksMissingDates, id: \.id) { task in
                     IOSInfoRow(
                         title: task.title,
-                        subtitle: "Add a due date",
+                        subtitle: NSLocalizedString("ios.planner.unscheduled.add_due_date", comment: "Add a due date"),
                         systemImage: "exclamationmark.triangle"
                     )
                 }
@@ -282,6 +282,8 @@ struct IOSAssignmentsView: View {
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var filterState: IOSFilterState
     @State private var showingEditor = false
+    @State private var showingDetail = false
+    @State private var selectedTask: AppTask? = nil
     @State private var editingTask: AppTask? = nil
 
     var body: some View {
@@ -325,8 +327,8 @@ struct IOSAssignmentsView: View {
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        editingTask = task
-                        showingEditor = true
+                        selectedTask = task
+                        showingDetail = true
                     }
                 }
                 .onDelete(perform: deleteTasks)
@@ -344,6 +346,26 @@ struct IOSAssignmentsView: View {
             }
             .accessibilityLabel("Add task")
         })
+        .sheet(isPresented: $showingDetail) {
+            if let task = selectedTask {
+                IOSTaskDetailView(
+                    task: task,
+                    courses: coursesStore.activeCourses,
+                    onEdit: {
+                        showingDetail = false
+                        editingTask = task
+                        showingEditor = true
+                    },
+                    onDelete: {
+                        assignmentsStore.removeTask(id: task.id)
+                        showingDetail = false
+                    },
+                    onToggleCompletion: {
+                        toggleCompletion(task)
+                    }
+                )
+            }
+        }
         .sheet(isPresented: $showingEditor) {
             IOSTaskEditorView(
                 task: editingTask,
@@ -1050,6 +1072,164 @@ private struct CalendarSelectionView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle(title)
+    }
+}
+
+struct IOSTaskDetailView: View {
+    let task: AppTask
+    let courses: [Course]
+    let onEdit: () -> Void
+    let onDelete: () -> Void
+    let onToggleCompletion: () -> Void
+    
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        NavigationStack {
+            List {
+                // Status Section
+                Section {
+                    HStack {
+                        Button {
+                            onToggleCompletion()
+                            dismiss()
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                                    .font(.title2)
+                                    .foregroundStyle(task.isCompleted ? Color.accentColor : Color.secondary)
+                                Text(task.isCompleted ? "Completed" : "Mark as Complete")
+                                    .font(.body.weight(.medium))
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                
+                // Basic Information
+                Section("Details") {
+                    DetailRow(label: "Title", value: task.title)
+                    
+                    if let courseId = task.courseId,
+                       let course = courses.first(where: { $0.id == courseId }) {
+                        DetailRow(label: "Course", value: course.code.isEmpty ? course.title : course.code)
+                    }
+                    
+                    DetailRow(label: "Type", value: typeLabel(task.type))
+                    
+                    if let due = task.due {
+                        DetailRow(label: "Due Date", value: formattedDate(due))
+                    } else {
+                        DetailRow(label: "Due Date", value: "Not set", isSecondary: true)
+                    }
+                }
+                
+                // Time & Effort
+                Section("Time & Effort") {
+                    DetailRow(label: "Estimated Time", value: "\(task.estimatedMinutes) minutes")
+                    DetailRow(label: "Importance", value: importanceLabel(task.importance))
+                    DetailRow(label: "Difficulty", value: difficultyLabel(task.difficulty))
+                    if task.locked {
+                        HStack {
+                            Image(systemName: "lock.fill")
+                                .foregroundStyle(.orange)
+                            Text("Locked to due date")
+                                .font(.subheadline)
+                        }
+                    }
+                }
+                
+                // Grade Information (if available)
+                if let gradePercent = task.gradePercent {
+                    Section("Grade") {
+                        DetailRow(label: "Score", value: String(format: "%.1f%%", gradePercent))
+                        if let weightPercent = task.gradeWeightPercent {
+                            DetailRow(label: "Weight", value: String(format: "%.1f%% of course", weightPercent))
+                        }
+                    }
+                }
+                
+                // Actions
+                Section {
+                    Button(role: .destructive) {
+                        onDelete()
+                    } label: {
+                        Label("Delete Assignment", systemImage: "trash")
+                            .foregroundStyle(.red)
+                    }
+                }
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Assignment Details")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Edit") {
+                        onEdit()
+                    }
+                    .font(.body.weight(.semibold))
+                }
+            }
+        }
+    }
+    
+    private func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        formatter.timeStyle = .none
+        return formatter.string(from: date)
+    }
+    
+    private func typeLabel(_ type: TaskType) -> String {
+        switch type {
+        case .practiceHomework: return "Homework"
+        case .quiz: return "Quiz"
+        case .exam: return "Exam"
+        case .reading: return "Reading"
+        case .review: return "Review"
+        case .project: return "Project"
+        }
+    }
+    
+    private func importanceLabel(_ value: Double) -> String {
+        switch value {
+        case ..<0.3: return "Low"
+        case ..<0.6: return "Medium"
+        case ..<0.85: return "High"
+        default: return "Critical"
+        }
+    }
+    
+    private func difficultyLabel(_ value: Double) -> String {
+        switch value {
+        case ..<0.3: return "Easy"
+        case ..<0.6: return "Medium"
+        case ..<0.85: return "Hard"
+        default: return "Very Hard"
+        }
+    }
+}
+
+private struct DetailRow: View {
+    let label: String
+    let value: String
+    var isSecondary: Bool = false
+    
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            Spacer()
+            Text(value)
+                .font(.body)
+                .foregroundStyle(isSecondary ? .secondary : .primary)
+        }
     }
 }
 
