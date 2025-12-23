@@ -40,61 +40,114 @@ class LocalModelProvider_macOS: AIProvider {
     )
     
     static let modelConfig = LocalModelConfig(
-        modelName: "roots-standard-7b",
+        modelName: "mlx-community/Meta-Llama-3-8B-Instruct-4bit",
         sizeBytes: 4_300_000_000, // ~4.3 GB
         platform: .macOS
     )
     
-    private var isModelDownloaded: Bool = false
+    private let llmService: LocalLLMService
+    
+    init() {
+        // Initialize with MLX backend by default
+        let config = LLMBackendConfig.mlxDefault
+        self.llmService = LocalLLMService(config: config)
+    }
+    
+    init(backend: LLMBackend) {
+        // Allow custom backend injection for testing
+        self.llmService = LocalLLMService(backend: backend)
+    }
     
     func generate(prompt: String, taskKind: AITaskKind, options: AIGenerateOptions) async throws -> AIResult {
-        let startTime = Date()
-        
-        guard isModelDownloaded else {
-            throw AIError.modelNotDownloaded
-        }
-        
         guard capabilities.supportedTaskKinds.contains(taskKind) else {
             throw AIError.taskNotSupported(taskKind)
         }
         
-        // Placeholder implementation
-        // In production, this would use a local LLM framework like:
-        // - mlx-swift (for Apple Silicon optimization)
-        // - llama.cpp
-        // - CoreML optimized model
+        guard llmService.isAvailable else {
+            throw AIError.modelNotDownloaded
+        }
         
-        let content = try await runLocalInference(prompt: prompt, taskKind: taskKind, options: options)
+        let startTime = Date()
         
-        let latencyMs = Int(Date().timeIntervalSince(startTime) * 1000)
+        // Build full prompt with task-specific instructions
+        let fullPrompt = buildPrompt(for: taskKind, userPrompt: prompt, options: options)
+        
+        // Use LLM backend for inference
+        let response: LLMResponse
+        if options.schema != nil {
+            // JSON mode requested
+            let jsonString = try await llmService.backend.generateJSON(
+                prompt: fullPrompt,
+                schema: options.schema
+            )
+            response = LLMResponse(
+                text: jsonString,
+                tokensUsed: nil,
+                finishReason: "stop",
+                model: llmService.modelName,
+                latencyMs: Date().timeIntervalSince(startTime) * 1000
+            )
+        } else {
+            // Regular text generation
+            response = try await llmService.backend.generate(prompt: fullPrompt)
+        }
+        
+        let latencyMs = Int(response.latencyMs ?? Date().timeIntervalSince(startTime) * 1000)
         
         return AIResult(
-            content: content,
+            content: response.text,
             metadata: AIResultMetadata(
                 provider: name,
                 latencyMs: latencyMs,
-                tokenCount: nil,
-                model: Self.modelConfig.modelName,
+                tokenCount: response.tokensUsed,
+                model: response.model ?? llmService.modelName,
                 timestamp: Date()
             )
         )
     }
     
-    private func runLocalInference(prompt: String, taskKind: AITaskKind, options: AIGenerateOptions) async throws -> String {
-        // Placeholder for local inference
-        // Real implementation would load and run the local model
-        throw AIError.generationFailed("Local model not yet implemented")
+    private func buildPrompt(for taskKind: AITaskKind, userPrompt: String, options: AIGenerateOptions) -> String {
+        var prompt = ""
+        
+        // Add system prompt if provided
+        if let systemPrompt = options.systemPrompt {
+            prompt += systemPrompt + "\n\n"
+        } else {
+            // Use default system prompt for task kind
+            prompt += defaultSystemPrompt(for: taskKind) + "\n\n"
+        }
+        
+        // Add user prompt
+        prompt += userPrompt
+        
+        return prompt
+    }
+    
+    private func defaultSystemPrompt(for taskKind: AITaskKind) -> String {
+        switch taskKind {
+        case .intentToAction:
+            return "You are a precise intent parser. Extract structured actions from user commands."
+        case .summarize:
+            return "You are a concise summarizer. Create clear, accurate summaries."
+        case .rewrite:
+            return "You are a skilled editor. Improve clarity while maintaining meaning."
+        case .studyQuestionGen:
+            return "You are an educational assistant. Generate thoughtful study questions."
+        case .syllabusParser:
+            return "You are a syllabus parser. Extract structured course information."
+        default:
+            return "You are a helpful assistant."
+        }
     }
     
     // MARK: - Model Management
     
-    func downloadModel(progress: @escaping (Double) -> Void) async throws {
-        // Placeholder for model download logic
-        throw AIError.generationFailed("Model download not yet implemented")
+    func checkModelAvailability() async -> Bool {
+        return llmService.isAvailable
     }
     
-    func checkModelAvailability() -> Bool {
-        return isModelDownloaded
+    func updateBackend(_ config: LLMBackendConfig) async {
+        await llmService.updateBackend(config)
     }
 }
 
@@ -112,60 +165,109 @@ class LocalModelProvider_iOS: AIProvider {
     )
     
     static let modelConfig = LocalModelConfig(
-        modelName: "roots-lite-1b",
+        modelName: "ollama/llama3.2:3b",
         sizeBytes: 800_000_000, // ~800 MB
         platform: .iOS
     )
     
-    private var isModelDownloaded: Bool = false
+    private let llmService: LocalLLMService
+    
+    init() {
+        // Initialize with Ollama backend by default (lighter than MLX)
+        let config = LLMBackendConfig.ollamaDefault
+        self.llmService = LocalLLMService(config: config)
+    }
+    
+    init(backend: LLMBackend) {
+        // Allow custom backend injection for testing
+        self.llmService = LocalLLMService(backend: backend)
+    }
     
     func generate(prompt: String, taskKind: AITaskKind, options: AIGenerateOptions) async throws -> AIResult {
-        let startTime = Date()
-        
-        guard isModelDownloaded else {
-            throw AIError.modelNotDownloaded
-        }
-        
         guard capabilities.supportedTaskKinds.contains(taskKind) else {
             throw AIError.taskNotSupported(taskKind)
         }
         
-        // Placeholder implementation
-        // In production, this would use a lightweight local LLM optimized for:
-        // - Low memory footprint
-        // - Battery efficiency
-        // - Fast inference on mobile chips
+        guard llmService.isAvailable else {
+            throw AIError.modelNotDownloaded
+        }
         
-        let content = try await runLocalInference(prompt: prompt, taskKind: taskKind, options: options)
+        let startTime = Date()
         
-        let latencyMs = Int(Date().timeIntervalSince(startTime) * 1000)
+        // Build full prompt with task-specific instructions
+        let fullPrompt = buildPrompt(for: taskKind, userPrompt: prompt, options: options)
+        
+        // Use LLM backend for inference
+        let response: LLMResponse
+        if options.schema != nil {
+            // JSON mode requested
+            let jsonString = try await llmService.backend.generateJSON(
+                prompt: fullPrompt,
+                schema: options.schema
+            )
+            response = LLMResponse(
+                text: jsonString,
+                tokensUsed: nil,
+                finishReason: "stop",
+                model: llmService.modelName,
+                latencyMs: Date().timeIntervalSince(startTime) * 1000
+            )
+        } else {
+            // Regular text generation
+            response = try await llmService.backend.generate(prompt: fullPrompt)
+        }
+        
+        let latencyMs = Int(response.latencyMs ?? Date().timeIntervalSince(startTime) * 1000)
         
         return AIResult(
-            content: content,
+            content: response.text,
             metadata: AIResultMetadata(
                 provider: name,
                 latencyMs: latencyMs,
-                tokenCount: nil,
-                model: Self.modelConfig.modelName,
+                tokenCount: response.tokensUsed,
+                model: response.model ?? llmService.modelName,
                 timestamp: Date()
             )
         )
     }
     
-    private func runLocalInference(prompt: String, taskKind: AITaskKind, options: AIGenerateOptions) async throws -> String {
-        // Placeholder for local inference
-        // Real implementation would use CoreML or optimized mobile LLM
-        throw AIError.generationFailed("Local model not yet implemented")
+    private func buildPrompt(for taskKind: AITaskKind, userPrompt: String, options: AIGenerateOptions) -> String {
+        var prompt = ""
+        
+        // Add system prompt if provided
+        if let systemPrompt = options.systemPrompt {
+            prompt += systemPrompt + "\n\n"
+        } else {
+            // Use default system prompt for task kind
+            prompt += defaultSystemPrompt(for: taskKind) + "\n\n"
+        }
+        
+        // Add user prompt
+        prompt += userPrompt
+        
+        return prompt
+    }
+    
+    private func defaultSystemPrompt(for taskKind: AITaskKind) -> String {
+        switch taskKind {
+        case .intentToAction:
+            return "You are a precise intent parser. Extract structured actions from user commands."
+        case .summarize:
+            return "You are a concise summarizer. Create clear, accurate summaries."
+        case .syllabusParser:
+            return "You are a syllabus parser. Extract structured course information."
+        default:
+            return "You are a helpful assistant."
+        }
     }
     
     // MARK: - Model Management
     
-    func downloadModel(progress: @escaping (Double) -> Void) async throws {
-        // Placeholder for model download logic
-        throw AIError.generationFailed("Model download not yet implemented")
+    func checkModelAvailability() async -> Bool {
+        return llmService.isAvailable
     }
     
-    func checkModelAvailability() -> Bool {
-        return isModelDownloaded
+    func updateBackend(_ config: LLMBackendConfig) async {
+        await llmService.updateBackend(config)
     }
 }

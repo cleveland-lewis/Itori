@@ -85,10 +85,26 @@ struct AISettingsView: View {
             // Local Model Settings
             if settings.aiMode == .auto || settings.aiMode == .localOnly {
                 Section("Local Model") {
+                    // Backend selection
+                    #if os(macOS)
+                    Picker("Backend", selection: $settings.localBackendType) {
+                        Text("MLX (Recommended)").tag(LLMBackendType.mlx)
+                        Text("Ollama").tag(LLMBackendType.ollama)
+                    }
+                    .pickerStyle(.segmented)
+                    .disabled(!settings.aiEnabled)
+                    .onChange(of: settings.localBackendType) { _, newValue in
+                        updateLocalBackend(newValue)
+                    }
+                    #endif
+                    
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
                             #if os(macOS)
-                            Text("macOS Model: \(LocalModelProvider_macOS.modelConfig.modelName)")
+                            let modelName = settings.localBackendType == .mlx 
+                                ? "Llama 3 8B (4-bit)" 
+                                : "Llama 3.2 3B"
+                            Text("Model: \(modelName)")
                             Text("Size: \(LocalModelProvider_macOS.modelConfig.displaySize)")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
@@ -105,15 +121,15 @@ struct AISettingsView: View {
                         if isModelDownloaded {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundStyle(.green)
-                            Text("Downloaded")
+                            Text("Available")
                                 .font(.caption)
                         } else {
-                            Button("Download") {
-                                downloadModel()
+                            Button("Setup") {
+                                showBackendSetup()
                             }
                             .buttonStyle(.borderedProminent)
                             .tint(settings.activeAccentColor)
-                            .disabled(isDownloadingModel || !settings.aiEnabled)
+                            .disabled(!settings.aiEnabled)
                         }
                     }
                     
@@ -125,9 +141,21 @@ struct AISettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                     
+                    #if os(macOS)
+                    if settings.localBackendType == .mlx {
+                        Text("MLX uses Python and auto-downloads the model (~4.3GB). Requires: pip install mlx-lm")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("Ollama provides local model hosting. Install via: brew install ollama")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    #else
                     Text("The local model runs entirely on your device with no internet connection required.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                    #endif
                 }
                 .disabled(!settings.aiEnabled)
                 .opacity(settings.aiEnabled ? 1.0 : 0.5)
@@ -279,6 +307,32 @@ struct AISettingsView: View {
                 settings.localModelDownloadediOS = true
                 #endif
                 settings.save()
+                
+                isDownloadingModel = false
+                LOG_SETTINGS(.info, "ModelDownloaded", "Local AI model downloaded")
+            }
+        }
+    }
+    
+    private func updateLocalBackend(_ backendType: LLMBackendType) {
+        settings.save()
+        LOG_SETTINGS(.info, "BackendChanged", "Local backend changed", metadata: ["backend": backendType.rawValue])
+    }
+    
+    private func showBackendSetup() {
+        #if os(macOS)
+        let setupInstructions = settings.localBackendType == .mlx
+            ? "Install MLX:\n\n1. Open Terminal\n2. Run: pip install mlx-lm\n3. Model will auto-download on first use (~4.3GB)"
+            : "Install Ollama:\n\n1. Run: brew install ollama\n2. Run: ollama serve\n3. Pull model: ollama pull llama3.2:3b"
+        
+        let alert = NSAlert()
+        alert.messageText = "Backend Setup"
+        alert.informativeText = setupInstructions
+        alert.alertStyle = .informational
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+        #endif
+    }
                 
                 isDownloadingModel = false
                 LOG_SETTINGS(.info, "ModelDownloaded", "Local AI model downloaded")
