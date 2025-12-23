@@ -267,6 +267,9 @@ final class AppSettingsModel: ObservableObject, Codable {
         case localModelDownloadediOS
         case aiEnabledStorage
         case onboardingStateData
+        case compactModeStorage
+        case largeTapTargetsStorage
+        case showSidebarByDefaultStorage
     }
 
 
@@ -363,6 +366,11 @@ final class AppSettingsModel: ObservableObject, Codable {
     var devModeSchedulerLoggingStorage: Bool = false
     var devModePerformanceStorage: Bool = false
     var enableICloudSyncStorage: Bool = false
+
+    // Layout preferences (iOS/iPad)
+    @AppStorage("roots.settings.compactMode") var compactModeStorage: Bool = false
+    @AppStorage("roots.settings.largeTapTargets") var largeTapTargetsStorage: Bool = false
+    @AppStorage("roots.settings.showSidebarByDefault") var showSidebarByDefaultStorage: Bool = true
 
     // New UserDefaults-backed properties
     @AppStorage(Keys.use24HourTime) var use24HourTimeStorage: Bool = false
@@ -680,6 +688,46 @@ final class AppSettingsModel: ObservableObject, Codable {
     var enableICloudSync: Bool {
         get { enableICloudSyncStorage }
         set { enableICloudSyncStorage = newValue }
+    }
+
+    // Layout settings (iOS/iPad)
+    var compactMode: Bool {
+        get { compactModeStorage }
+        set { compactModeStorage = newValue }
+    }
+    
+    var largeTapTargets: Bool {
+        get { largeTapTargetsStorage }
+        set { largeTapTargetsStorage = newValue }
+    }
+    
+    var showSidebarByDefault: Bool {
+        get { showSidebarByDefaultStorage }
+        set { showSidebarByDefaultStorage = newValue }
+    }
+    
+    // Starred tabs (iOS tab bar, max 5)
+    var starredTabs: [RootTab] {
+        get {
+            let tabs = starredTabsRaw.compactMap { RootTab(rawValue: $0) }
+            // Ensure Settings is always included
+            var result = tabs
+            if !result.contains(.settings) {
+                result.append(.settings)
+            }
+            // Limit to 5
+            return Array(result.prefix(5))
+        }
+        set {
+            var tabs = newValue
+            // Ensure Settings is always included
+            if !tabs.contains(.settings) {
+                tabs.append(.settings)
+            }
+            // Limit to 5
+            tabs = Array(tabs.prefix(5))
+            starredTabsRaw = tabs.map { $0.rawValue }
+        }
     }
 
     // New computed settings exposed to views
@@ -1159,6 +1207,9 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(lockCalendarPickerToSchoolStorage, forKey: .lockCalendarPickerToSchoolStorage)
         try container.encodeIfPresent(selectedSchoolCalendarID, forKey: .selectedSchoolCalendarID)
         try container.encode(starredTabsRaw, forKey: .starredTabsRaw)
+        try container.encode(compactModeStorage, forKey: .compactModeStorage)
+        try container.encode(largeTapTargetsStorage, forKey: .largeTapTargetsStorage)
+        try container.encode(showSidebarByDefaultStorage, forKey: .showSidebarByDefaultStorage)
     }
 
     required init(from decoder: Decoder) throws {
@@ -1221,6 +1272,9 @@ final class AppSettingsModel: ObservableObject, Codable {
         selectedSchoolCalendarID = try container.decodeIfPresent(String.self, forKey: .selectedSchoolCalendarID) ?? ""
         let decodedTabs = try container.decodeIfPresent([String].self, forKey: .starredTabsRaw) ?? ["dashboard", "calendar", "timer", "assignments", "settings"]
         starredTabsString = decodedTabs.joined(separator: ",")
+        compactModeStorage = try container.decodeIfPresent(Bool.self, forKey: .compactModeStorage) ?? false
+        largeTapTargetsStorage = try container.decodeIfPresent(Bool.self, forKey: .largeTapTargetsStorage) ?? false
+        showSidebarByDefaultStorage = try container.decodeIfPresent(Bool.self, forKey: .showSidebarByDefaultStorage) ?? true
     }
 
     func resetUserDefaults() {

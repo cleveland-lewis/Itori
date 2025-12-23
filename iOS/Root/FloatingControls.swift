@@ -12,6 +12,10 @@ struct FloatingControls: View {
     @EnvironmentObject private var filterState: IOSFilterState
 
     let safeInsets: EdgeInsets
+    
+    private var buttonSize: CGFloat {
+        settings.largeTapTargets ? 64 : 52
+    }
 
     var body: some View {
         HStack(spacing: 16) {
@@ -43,11 +47,12 @@ struct FloatingControls: View {
             }
         } label: {
             Image(systemName: "line.3.horizontal")
-                .font(.system(size: 24, weight: .medium))
+                .font(.system(size: buttonSize * 0.4, weight: .medium))
                 .foregroundColor(.primary)
-                .frame(width: 60, height: 60)
+                .frame(width: buttonSize, height: buttonSize)
                 .background(.ultraThinMaterial, in: Circle())
                 .shadow(color: .black.opacity(0.15), radius: 6, y: 3)
+                .contentShape(Rectangle().size(width: buttonSize + 8, height: buttonSize + 8))
         }
         .accessibilityLabel(NSLocalizedString("ios.menu.hamburger", comment: "Open menu"))
     }
@@ -73,11 +78,12 @@ struct FloatingControls: View {
             }
         } label: {
             Image(systemName: "plus")
-                .font(.system(size: 24, weight: .semibold))
+                .font(.system(size: buttonSize * 0.4, weight: .semibold))
                 .foregroundColor(.primary)
-                .frame(width: 60, height: 60)
+                .frame(width: buttonSize, height: buttonSize)
                 .background(.ultraThinMaterial, in: Circle())
                 .shadow(color: .black.opacity(0.15), radius: 6, y: 3)
+                .contentShape(Rectangle().size(width: buttonSize + 8, height: buttonSize + 8))
         }
         .accessibilityLabel(NSLocalizedString("ios.menu.quick_add", comment: "Quick add"))
     }

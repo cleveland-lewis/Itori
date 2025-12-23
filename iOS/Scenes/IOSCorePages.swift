@@ -722,8 +722,7 @@ struct IOSTaskDetailView: View {
                 // Time & Effort
                 Section("Time & Effort") {
                     DetailRow(label: timeEstimateLabel(task.type), value: "\(task.estimatedMinutes) minutes")
-                    DetailRow(label: "Importance", value: importanceLabel(task.importance))
-                    DetailRow(label: "Difficulty", value: difficultyLabel(task.difficulty))
+                    DetailRow(label: "Priority", value: priorityLabel(task.importance))
                     if task.locked {
                         HStack {
                             Image(systemName: "lock.fill")
@@ -803,21 +802,13 @@ struct IOSTaskDetailView: View {
         }
     }
     
-    private func importanceLabel(_ value: Double) -> String {
+    private func priorityLabel(_ value: Double) -> String {
         switch value {
-        case ..<0.3: return "Low"
-        case ..<0.6: return "Medium"
-        case ..<0.85: return "High"
-        default: return "Critical"
-        }
-    }
-    
-    private func difficultyLabel(_ value: Double) -> String {
-        switch value {
-        case ..<0.3: return "Easy"
-        case ..<0.6: return "Medium"
-        case ..<0.85: return "Hard"
-        default: return "Very Hard"
+        case ..<0.3: return "Lowest"
+        case ..<0.5: return "Low"
+        case ..<0.7: return "Medium"
+        case ..<0.9: return "High"
+        default: return "Urgent"
         }
     }
 }
@@ -931,6 +922,48 @@ private struct IOSInfoRow: View {
 }
 
 struct IOSTaskEditorView: View {
+    enum Priority: Int, CaseIterable, Identifiable {
+        case lowest = 1
+        case low = 2
+        case medium = 3
+        case high = 4
+        case urgent = 5
+        
+        var id: Int { rawValue }
+        
+        var label: String {
+            switch self {
+            case .lowest: return "Lowest"
+            case .low: return "Low"
+            case .medium: return "Medium"
+            case .high: return "High"
+            case .urgent: return "Urgent"
+            }
+        }
+        
+        // Convert to importance value (0...1) for planner algorithm
+        var importanceValue: Double {
+            switch self {
+            case .lowest: return 0.2
+            case .low: return 0.4
+            case .medium: return 0.6
+            case .high: return 0.8
+            case .urgent: return 1.0
+            }
+        }
+        
+        // Create from importance value
+        init(fromImportance importance: Double) {
+            switch importance {
+            case ..<0.3: self = .lowest
+            case ..<0.5: self = .low
+            case ..<0.7: self = .medium
+            case ..<0.9: self = .high
+            default: self = .urgent
+            }
+        }
+    }
+    
     struct TaskDraft {
         var title: String = ""
         var hasDueDate: Bool = true
@@ -938,7 +971,7 @@ struct IOSTaskEditorView: View {
         var estimatedMinutes: Int = 60
         var courseId: UUID? = nil
         var type: TaskType = .practiceHomework
-        var importance: Double = 0.6
+        var priority: Priority = .medium
         var difficulty: Double = 0.6
 
         init(task: AppTask? = nil, title: String? = nil, courseId: UUID? = nil, dueDate: Date? = nil, type: TaskType? = nil) {
@@ -949,7 +982,7 @@ struct IOSTaskEditorView: View {
                 self.estimatedMinutes = task.estimatedMinutes
                 self.courseId = task.courseId
                 self.type = task.type
-                self.importance = task.importance
+                self.priority = Priority(fromImportance: task.importance)
                 self.difficulty = task.difficulty
             } else {
                 if let title { self.title = title }
@@ -969,12 +1002,15 @@ struct IOSTaskEditorView: View {
                 minBlockMinutes: 15,
                 maxBlockMinutes: 120,
                 difficulty: difficulty,
-                importance: importance,
+                importance: priority.importanceValue,
                 type: type,
                 locked: false,
                 attachments: [],
                 isCompleted: existing?.isCompleted ?? false,
-                category: type
+                category: type,
+                gradeWeightPercent: existing?.gradeWeightPercent,
+                gradePossiblePoints: existing?.gradePossiblePoints,
+                gradeEarnedPoints: existing?.gradeEarnedPoints
             )
         }
     }
@@ -1022,17 +1058,21 @@ struct IOSTaskEditorView: View {
                 Section("Schedule") {
                     Toggle("Has Due Date", isOn: $draft.hasDueDate)
                     if draft.hasDueDate {
-                        DatePicker("Due", selection: $draft.dueDate, displayedComponents: .date)
+                        DatePicker("Due Date", selection: $draft.dueDate, displayedComponents: .date)
                     }
                     Stepper("\(timeEstimateLabel(draft.type)): \(draft.estimatedMinutes) min", value: $draft.estimatedMinutes, in: 15...360, step: 15)
                 }
 
                 Section("Priority") {
-                    Slider(value: $draft.importance, in: 0...1) {
-                        Text("Importance")
-                    }
-                    Slider(value: $draft.difficulty, in: 0...1) {
-                        Text("Difficulty")
+                    NavigationLink {
+                        PrioritySelectionView(selectedPriority: $draft.priority)
+                    } label: {
+                        HStack {
+                            Text("Priority")
+                            Spacer()
+                            Text(draft.priority.label)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
             }
@@ -1048,7 +1088,7 @@ struct IOSTaskEditorView: View {
                         onSave(draft)
                         dismiss()
                     }
-                    .disabled(draft.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .disabled(!isValid)
                 }
             }
             .onAppear {
@@ -1062,6 +1102,12 @@ struct IOSTaskEditorView: View {
         }
     }
     
+    private var isValid: Bool {
+        let titleValid = !draft.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        let dateValid = !draft.hasDueDate || draft.dueDate != nil
+        return titleValid && dateValid
+    }
+    
     private func timeEstimateLabel(_ type: TaskType) -> String {
         switch type {
         case .exam, .quiz:
@@ -1069,6 +1115,36 @@ struct IOSTaskEditorView: View {
         case .practiceHomework, .reading, .project, .review:
             return "Estimated Work Time"
         }
+    }
+}
+
+// MARK: - Priority Selection View
+
+private struct PrioritySelectionView: View {
+    @Binding var selectedPriority: IOSTaskEditorView.Priority
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        List {
+            ForEach(IOSTaskEditorView.Priority.allCases) { priority in
+                Button {
+                    selectedPriority = priority
+                    dismiss()
+                } label: {
+                    HStack {
+                        Text(priority.label)
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        if selectedPriority == priority {
+                            Image(systemName: "checkmark")
+                                .foregroundStyle(.accentColor)
+                        }
+                    }
+                }
+            }
+        }
+        .navigationTitle("Select Priority")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

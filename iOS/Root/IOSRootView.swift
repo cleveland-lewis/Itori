@@ -14,14 +14,21 @@ struct IOSRootView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     
     @State private var selectedTab: RootTab = .dashboard
+    @State private var columnVisibility: NavigationSplitViewVisibility = .automatic
     
     init() {
         _tabBarPrefs = StateObject(wrappedValue: TabBarPreferencesStore(settings: AppSettingsModel.shared))
     }
+    
+    private var layoutMetrics: LayoutMetrics {
+        LayoutMetrics(
+            compactMode: settings.compactModeStorage,
+            largeTapTargets: settings.largeTapTargetsStorage
+        )
+    }
 
     private var starredTabs: [RootTab] {
-        let starred = settings.starredTabs
-        var tabs = starred.isEmpty ? [.dashboard] : starred
+        var tabs = settings.starredTabs
         
         // Remove Practice tab on iPhone (compact width)
         if horizontalSizeClass == .compact {
@@ -29,41 +36,69 @@ struct IOSRootView: View {
         }
         
         // Ensure at least Dashboard is present
-        return tabs.isEmpty ? [.dashboard] : tabs
+        if tabs.isEmpty {
+            tabs = [.dashboard]
+        }
+        
+        // Validate current selection
+        if !tabs.contains(selectedTab) {
+            selectedTab = tabs.first ?? .dashboard
+        }
+        
+        return tabs
+    }
+    
+    private var isPad: Bool {
+        horizontalSizeClass == .regular
     }
 
     var body: some View {
         ZStack {
-            NavigationStack(path: $navigation.path) {
-                TabView(selection: $selectedTab) {
-                    ForEach(starredTabs, id: \.self) { tab in
-                        IOSAppShell {
-                            tabView(for: tab)
+            if isPad && settings.showSidebarByDefault {
+                // iPad with sidebar
+                NavigationSplitView(columnVisibility: $columnVisibility) {
+                    sidebarContent
+                } detail: {
+                    detailContent
+                }
+                .onAppear {
+                    columnVisibility = .all
+                }
+            } else {
+                // iPhone or iPad without sidebar
+                NavigationStack(path: $navigation.path) {
+                    TabView(selection: $selectedTab) {
+                        ForEach(starredTabs, id: \.self) { tab in
+                            IOSAppShell {
+                                tabView(for: tab)
+                            }
+                            .tag(tab)
+                            .tabItem {
+                                if let def = TabRegistry.definition(for: tab) {
+                                    Label(def.title, systemImage: def.icon)
+                                }
+                            }
                         }
-                        .tag(tab)
-                        .tabItem {
-                            if let def = TabRegistry.definition(for: tab) {
-                                Label(def.title, systemImage: def.icon)
+                    }
+                    .navigationDestination(for: IOSNavigationTarget.self) { destination in
+                        IOSAppShell(hideNavigationButtons: destination == .settings) {
+                            switch destination {
+                            case .page(let page):
+                                pageView(for: page)
+                            case .settings:
+                                settingsContent
                             }
                         }
                     }
                 }
-                .navigationDestination(for: IOSNavigationTarget.self) { destination in
-                    IOSAppShell(hideNavigationButtons: destination == .settings) {
-                        switch destination {
-                        case .page(let page):
-                            pageView(for: page)
-                        case .settings:
-                            settingsContent
-                        }
-                    }
-                }
+                .toolbarBackground(.hidden, for: .navigationBar)
             }
-            .toolbarBackground(.hidden, for: .navigationBar)
-            .background(DesignSystem.Colors.appBackground)
-            .environmentObject(navigation)
-            .environmentObject(tabBarPrefs)
-
+        }
+        .background(DesignSystem.Colors.appBackground)
+        .environmentObject(navigation)
+        .environmentObject(tabBarPrefs)
+        .layoutMetrics(layoutMetrics)
+        .overlay(alignment: .top) {
             if let message = toastRouter.message {
                 toastView(message)
                     .transition(.move(edge: .top).combined(with: .opacity))
@@ -122,6 +157,54 @@ struct IOSRootView: View {
         .onChange(of: plannerCoordinator.requestedCourseId) { _, _ in
             openPlannerPage()
         }
+    }
+    
+    // MARK: - iPad Sidebar Navigation
+    
+    @ViewBuilder
+    private var sidebarContent: some View {
+        List(selection: $selectedTab) {
+            ForEach(starredTabs, id: \.self) { tab in
+                NavigationLink(value: tab) {
+                    if let def = TabRegistry.definition(for: tab) {
+                        Label(def.title, systemImage: def.icon)
+                    }
+                }
+            }
+            
+            Section("Other Pages") {
+                ForEach(nonStarredTabs, id: \.self) { tab in
+                    Button {
+                        selectedTab = tab
+                    } label: {
+                        if let def = TabRegistry.definition(for: tab) {
+                            Label(def.title, systemImage: def.icon)
+                        }
+                    }
+                }
+            }
+        }
+        .navigationTitle("Roots")
+        .listStyle(.sidebar)
+    }
+    
+    @ViewBuilder
+    private var detailContent: some View {
+        NavigationStack(path: $navigation.path) {
+            tabView(for: selectedTab)
+                .navigationDestination(for: IOSNavigationTarget.self) { destination in
+                    switch destination {
+                    case .page(let page):
+                        pageView(for: page)
+                    case .settings:
+                        settingsContent
+                    }
+                }
+        }
+    }
+    
+    private var nonStarredTabs: [RootTab] {
+        TabRegistry.allTabs.map { $0.id }.filter { !starredTabs.contains($0) }
     }
 
     private func toastView(_ message: String) -> some View {

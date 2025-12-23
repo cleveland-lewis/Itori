@@ -3,73 +3,150 @@ import SwiftUI
 
 struct InterfaceSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
-    @State private var selectedTabs: Set<RootTab> = []
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.layoutMetrics) private var layoutMetrics
+    
+    private var isPad: Bool {
+        horizontalSizeClass == .regular
+    }
     
     var body: some View {
         List {
+            // Tab Bar Pages Section
             Section {
                 ForEach(availableTabs, id: \.self) { tab in
+                    let isStarred = settings.starredTabs.contains(tab)
+                    let isRequired = TabRegistry.definition(for: tab)?.isSystemRequired ?? false
+                    let canToggleOff = isStarred && !isRequired
+                    let canToggleOn = !isStarred && settings.starredTabs.count < 5
+                    
                     Toggle(isOn: Binding(
-                        get: { selectedTabs.contains(tab) },
-                        set: { isSelected in
-                            if isSelected {
-                                if selectedTabs.count < 5 {
-                                    selectedTabs.insert(tab)
-                                }
-                            } else {
-                                selectedTabs.remove(tab)
-                            }
-                            saveSelection()
+                        get: { isStarred },
+                        set: { newValue in
+                            toggleTab(tab, enabled: newValue)
                         }
                     )) {
-                        Label(tab.title, systemImage: tab.systemImage)
+                        HStack(spacing: 12) {
+                            Image(systemName: tab.systemImage)
+                                .font(.system(size: 18))
+                                .frame(width: 28)
+                                .foregroundColor(isRequired ? .green : .primary)
+                            Text(tab.title)
+                            if isRequired {
+                                Spacer()
+                                Text("Required")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
                     }
-                    .disabled(!selectedTabs.contains(tab) && selectedTabs.count >= 5)
+                    .disabled((isStarred && isRequired) || (!isStarred && !canToggleOn))
+                    .listRowInsets(EdgeInsets(
+                        top: layoutMetrics.listRowVerticalPadding,
+                        leading: 16,
+                        bottom: layoutMetrics.listRowVerticalPadding,
+                        trailing: 16
+                    ))
                 }
             } header: {
-                Text(NSLocalizedString("settings.interface.starred_tabs.header", comment: "Starred Tabs"))
+                Text("Tab Bar Pages")
             } footer: {
-                Text(NSLocalizedString("settings.interface.starred_tabs.footer", comment: "Select up to 5 pages to show in the tab bar. All pages remain accessible via the menu."))
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Select up to 5 pages to show in the tab bar. All pages remain accessible via the menu.")
+                    if settings.starredTabs.count >= 5 {
+                        Text("Maximum of 5 tabs reached. Disable a tab to enable another.")
+                            .foregroundColor(.orange)
+                    }
+                }
             }
             
+            // Layout Section
             Section {
-                Toggle(isOn: $settings.showSidebarByDefaultStorage) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(NSLocalizedString("settings.interface.show_sidebar", comment: "Show Sidebar"))
-                        Text(NSLocalizedString("settings.interface.show_sidebar.detail", comment: "Always display the navigation sidebar on iPad"))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                if isPad {
+                    Toggle(isOn: $settings.showSidebarByDefaultStorage) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Show Sidebar")
+                            Text("Always display the navigation sidebar on iPad")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
+                    .listRowInsets(EdgeInsets(
+                        top: layoutMetrics.listRowVerticalPadding,
+                        leading: 16,
+                        bottom: layoutMetrics.listRowVerticalPadding,
+                        trailing: 16
+                    ))
                 }
                 
                 Toggle(isOn: $settings.compactModeStorage) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(NSLocalizedString("settings.interface.compact_mode", comment: "Compact Mode"))
-                        Text(NSLocalizedString("settings.interface.compact_mode.detail", comment: "Use denser layout with less spacing"))
+                        Text("Compact Mode")
+                        Text("Use denser layout with less spacing")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
                 }
+                .listRowInsets(EdgeInsets(
+                    top: layoutMetrics.listRowVerticalPadding,
+                    leading: 16,
+                    bottom: layoutMetrics.listRowVerticalPadding,
+                    trailing: 16
+                ))
+                
+                Toggle(isOn: $settings.largeTapTargetsStorage) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Large Tap Targets")
+                        Text("Increase button and control sizes for easier tapping")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .listRowInsets(EdgeInsets(
+                    top: layoutMetrics.listRowVerticalPadding,
+                    leading: 16,
+                    bottom: layoutMetrics.listRowVerticalPadding,
+                    trailing: 16
+                ))
             } header: {
-                Text(NSLocalizedString("settings.interface.layout.header", comment: "Layout"))
+                Text("Layout")
+            } footer: {
+                Text("Layout changes apply immediately to all screens.")
             }
         }
         .listStyle(.insetGrouped)
-        .navigationTitle(NSLocalizedString("settings.category.interface", comment: "Interface"))
+        .navigationTitle("Interface")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            selectedTabs = Set(settings.visibleTabs)
-        }
     }
     
     private var availableTabs: [RootTab] {
-        RootTab.allCases.filter { $0 != .settings }
+        TabRegistry.allTabs.map { $0.id }
     }
     
-    private func saveSelection() {
-        settings.visibleTabs = Array(selectedTabs).sorted { tab1, tab2 in
-            availableTabs.firstIndex(of: tab1) ?? 0 < availableTabs.firstIndex(of: tab2) ?? 0
+    private func toggleTab(_ tab: RootTab, enabled: Bool) {
+        guard let definition = TabRegistry.definition(for: tab) else { return }
+        
+        // Prevent disabling required tabs
+        if definition.isSystemRequired && !enabled {
+            return
         }
+        
+        var currentTabs = settings.starredTabs
+        
+        if enabled {
+            // Add tab (if not at limit)
+            if currentTabs.count < 5 && !currentTabs.contains(tab) {
+                currentTabs.append(tab)
+            }
+        } else {
+            // Remove tab (if not required)
+            if !definition.isSystemRequired {
+                currentTabs.removeAll { $0 == tab }
+            }
+        }
+        
+        settings.starredTabs = currentTabs
+        settings.save()
     }
 }
 

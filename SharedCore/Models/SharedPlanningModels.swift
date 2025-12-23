@@ -102,3 +102,58 @@ public struct Assignment: Identifiable, Codable, Hashable {
 public enum EventCategoryStub: String, Codable, CaseIterable {
     case homework, classSession, study, exam, meeting, other
 }
+
+// MARK: - Planner Integration
+
+extension Assignment {
+    /// Planner-specific computed properties for scheduling algorithm
+    public var plannerPriorityWeight: Double {
+        // Convert urgency to priority weight (0...1 scale)
+        switch urgency {
+        case .low: return 0.2
+        case .medium: return 0.6
+        case .high: return 0.8
+        case .critical: return 1.0
+        }
+    }
+    
+    public var plannerEstimatedMinutes: Int {
+        estimatedMinutes
+    }
+    
+    public var plannerDueDate: Date? {
+        dueDate
+    }
+    
+    public var plannerCourseId: UUID? {
+        courseId
+    }
+    
+    public var plannerCategory: AssignmentCategory {
+        category
+    }
+    
+    /// Difficulty estimation for planner (0...1 scale)
+    /// Based on category and estimated time
+    public var plannerDifficulty: Double {
+        let baseForCategory: Double = {
+            switch category {
+            case .exam: return 0.9
+            case .project: return 0.8
+            case .quiz: return 0.7
+            case .homework, .practiceHomework: return 0.6
+            case .reading: return 0.5
+            case .review: return 0.4
+            }
+        }()
+        
+        // Adjust by time estimate
+        let timeAdjustment: Double = {
+            if estimatedMinutes < 30 { return -0.1 }
+            if estimatedMinutes > 120 { return 0.1 }
+            return 0.0
+        }()
+        
+        return min(1.0, max(0.0, baseForCategory + timeAdjustment))
+    }
+}
