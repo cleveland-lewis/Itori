@@ -553,3 +553,70 @@
 "timer.label.tasks_for_activity" = "此活动的任务";
 "timer.label.no_linked_tasks" = "暂无关联任务。";
 "timer.help.edit_activities" = "您稍后可以从计时器页面编辑活动。";
+
+/* Dashboard Empty States */
+"dashboard.empty.calendar" = "连接您的日历以查看即将到来的活动。";
+"dashboard.empty.events" = "没有即将到来的活动。";
+"dashboard.empty.tasks" = "近期没有任务截止。";
+
+/* Common */
+"common.due" = "截止";
+"common.today" = "今天";
+"common.no_date" = "无截止日期";
+"common.no_course" = "无课程";
+"common.edit" = "编辑";
+"common.done" = "完成";
+"common.menu" = "菜单";
+
+/* Task Types */
+"task.type.homework" = "作业";
+"task.type.quiz" = "测验";
+"task.type.exam" = "考试";
+"task.type.reading" = "阅读";
+"task.type.review" = "复习";
+"task.type.project" = "项目";
+
+/* Planner */
+"planner.today" = "今天";
+"planner.generate" = "生成计划";
+"planner.how_it_works" = "工作原理";
+"planner.empty.title" = "没有作业";
+"planner.empty.subtitle" = "添加作业以查看它们的计划";
+"planner.help.line1" = "计划器使用您的作业截止日期来构建学习时段的时间表。";
+"planner.help.line2" = "生成计划以创建今天和接下来几天的时间块。";
+"planner.help.line3" = "没有截止日期的任务保留在未安排部分。";
+"planner.updated" = "更新于 %@";
+"planner.steps_count" = "%d/%d 步";
+"planner.minutes_total" = "共 %d 分钟";
+"planner.no_plan" = "尚无计划";
+"planner.progress" = "%d%%";
+"planner.allowed_hours" = "允许时间：%d:00–%d:00";
+
+/* Attributes */
+"attribute.importance" = "重要性";
+"attribute.difficulty" = "难度";
+
+/* Assignment Plans */
+"plans.title" = "作业计划";
+"plans.due_date" = "截止 %@";
+"plans.no_sessions" = "尚无会话。";
+
+/* Menu */
+"menu.starred_tabs" = "已加星标的标签";
+"menu.starred_tabs.footer" = "最多选择5个页面显示在标签栏中。所有页面始终可通过菜单访问。";
+"menu.pin_limit" = "您最多可以固定5个页面";
+
+/* Calendar Section */
+"calendar.section.school" = "学校日历";
+"calendar.all" = "所有日历";
+"calendar.selection.hint" = "整个应用中仅显示所选日历中的事件。";
+
+/* Grades */
+"grades.section.overall" = "总体状态";
+"grades.section.by_course" = "按课程";
+"grades.section.components" = "成绩组成";
+
+/* Quick Add */
+"quick_add.assignment" = "添加作业";
+"quick_add.grade" = "添加成绩";
+"quick_add.schedule" = "自动安排";

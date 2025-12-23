@@ -22,16 +22,10 @@ struct IOSAppShell<Content: View>: View {
     }
     
     var body: some View {
-        ZStack {
-            content
-                .safeAreaInset(edge: .top, spacing: 0) {
-                    topBar
-                }
-            
-            if showingHamburgerMenu {
-                hamburgerMenuOverlay
+        content
+            .safeAreaInset(edge: .top, spacing: 0) {
+                topBar
             }
-        }
         .onAppear {
             if tabBarPrefs == nil {
                 tabBarPrefs = TabBarPreferencesStore(settings: settings)
@@ -51,6 +45,10 @@ struct IOSAppShell<Content: View>: View {
                     .frame(width: 44, height: 44)
             }
             .accessibilityLabel("Open menu")
+            .popover(isPresented: $showingHamburgerMenu) {
+                hamburgerMenuContent
+                    .presentationBackground(.ultraThinMaterial)
+            }
             
             Spacer()
             
@@ -66,6 +64,7 @@ struct IOSAppShell<Content: View>: View {
             .accessibilityLabel("Quick add")
             .popover(isPresented: $showingQuickAddMenu) {
                 quickAddMenu
+                    .presentationBackground(.ultraThinMaterial)
             }
         }
         .padding(.horizontal, 16)
@@ -73,74 +72,40 @@ struct IOSAppShell<Content: View>: View {
         .background(.ultraThinMaterial)
     }
     
-    private var hamburgerMenuOverlay: some View {
-        ZStack(alignment: .topLeading) {
-            // Dismiss area
-            Color.black.opacity(0.3)
-                .ignoresSafeArea()
-                .onTapGesture {
+    private var hamburgerMenuContent: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Text("Menu")
+                    .font(.title2.weight(.bold))
+                Spacer()
+                Button {
                     showingHamburgerMenu = false
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title3)
+                        .foregroundColor(.secondary)
                 }
-            
-            // Menu content
-            VStack(alignment: .leading, spacing: 0) {
-                // Header
-                HStack {
-                    Text("Menu")
-                        .font(.title2.weight(.bold))
-                    Spacer()
-                    Button {
-                        showingHamburgerMenu = false
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title3)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                .padding()
-                
-                Divider()
-                
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 0) {
-                        // All pages section
-                        ForEach(allMenuPages, id: \.self) { page in
-                            Button {
-                                if let prefs = tabBarPrefs {
-                                    let starred = settings.starredTabs
-                                    navigation.open(page: page, starredTabs: starred)
-                                }
-                                showingHamburgerMenu = false
-                            } label: {
-                                HStack(spacing: 16) {
-                                    Image(systemName: page.systemImage)
-                                        .font(.system(size: 20))
-                                        .foregroundColor(.blue)
-                                        .frame(width: 28)
-                                    Text(menuTitle(for: page))
-                                        .foregroundColor(.primary)
-                                    Spacer()
-                                }
-                                .padding()
-                                .contentShape(Rectangle())
-                            }
-                            .buttonStyle(.plain)
-                            
-                            Divider()
-                                .padding(.leading, 60)
-                        }
-                        
-                        // Settings
+            }
+            .padding()
+
+            Divider()
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    ForEach(allMenuPages, id: \.self) { page in
                         Button {
-                            navigation.openSettings()
+                            if let prefs = tabBarPrefs {
+                                let starred = settings.starredTabs
+                                navigation.open(page: page, starredTabs: starred)
+                            }
                             showingHamburgerMenu = false
                         } label: {
                             HStack(spacing: 16) {
-                                Image(systemName: "gearshape")
+                                Image(systemName: page.systemImage)
                                     .font(.system(size: 20))
                                     .foregroundColor(.blue)
                                     .frame(width: 28)
-                                Text("Settings")
+                                Text(menuTitle(for: page))
                                     .foregroundColor(.primary)
                                 Spacer()
                             }
@@ -148,14 +113,37 @@ struct IOSAppShell<Content: View>: View {
                             .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
+
+                        Divider()
+                            .padding(.leading, 60)
                     }
+
+                    Button {
+                        navigation.openSettings()
+                        showingHamburgerMenu = false
+                    } label: {
+                        HStack(spacing: 16) {
+                            Image(systemName: "gearshape")
+                                .font(.system(size: 20))
+                                .foregroundColor(.blue)
+                                .frame(width: 28)
+                            Text("Settings")
+                                .foregroundColor(.primary)
+                            Spacer()
+                        }
+                        .padding()
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
                 }
             }
-            .frame(width: 280)
-            .background(.regularMaterial)
-            .transition(.move(edge: .leading))
         }
-        .animation(.easeOut(duration: 0.25), value: showingHamburgerMenu)
+        .frame(width: 280, height: 460, alignment: .topLeading)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Color(uiColor: .systemBackground).opacity(0.9))
+        )
+        .padding(8)
     }
     
     private var quickAddMenu: some View {

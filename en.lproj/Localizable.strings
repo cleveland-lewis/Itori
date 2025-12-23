@@ -553,3 +553,70 @@
 "timer.label.tasks_for_activity" = "Tasks for this Activity";
 "timer.label.no_linked_tasks" = "No linked tasks yet.";
 "timer.help.edit_activities" = "You can edit activities later from the Timer page.";
+
+/* Dashboard Empty States */
+"dashboard.empty.calendar" = "Connect your calendar to see upcoming events.";
+"dashboard.empty.events" = "No upcoming events.";
+"dashboard.empty.tasks" = "No tasks due soon.";
+
+/* Common */
+"common.due" = "Due";
+"common.today" = "Today";
+"common.no_date" = "No due date";
+"common.no_course" = "No Course";
+"common.edit" = "Edit";
+"common.done" = "Done";
+"common.menu" = "Menu";
+
+/* Task Types */
+"task.type.homework" = "Homework";
+"task.type.quiz" = "Quiz";
+"task.type.exam" = "Exam";
+"task.type.reading" = "Reading";
+"task.type.review" = "Review";
+"task.type.project" = "Project";
+
+/* Planner */
+"planner.today" = "Today";
+"planner.generate" = "Generate Plan";
+"planner.how_it_works" = "How it works";
+"planner.empty.title" = "No assignments";
+"planner.empty.subtitle" = "Add assignments to see their plans";
+"planner.help.line1" = "Planner uses your assignment due dates to build a schedule of study blocks.";
+"planner.help.line2" = "Generate Plan to create time blocks for today and the next few days.";
+"planner.help.line3" = "Tasks without a due date stay in the Unscheduled section.";
+"planner.updated" = "Updated %@";
+"planner.steps_count" = "%d/%d steps";
+"planner.minutes_total" = "%d min total";
+"planner.no_plan" = "No plan yet";
+"planner.progress" = "%d%%";
+"planner.allowed_hours" = "Allowed hours: %d:00–%d:00";
+
+/* Attributes */
+"attribute.importance" = "Importance";
+"attribute.difficulty" = "Difficulty";
+
+/* Assignment Plans */
+"plans.title" = "Assignment Plans";
+"plans.due_date" = "Due %@";
+"plans.no_sessions" = "No sessions yet.";
+
+/* Menu */
+"menu.starred_tabs" = "Starred Tabs";
+"menu.starred_tabs.footer" = "Select up to 5 pages to show in the tab bar. All pages remain accessible via the menu.";
+"menu.pin_limit" = "You can pin up to 5 pages";
+
+/* Calendar Section */
+"calendar.section.school" = "School Calendar";
+"calendar.all" = "All Calendars";
+"calendar.selection.hint" = "Only events from the selected calendar will be shown throughout the app.";
+
+/* Grades */
+"grades.section.overall" = "Overall Status";
+"grades.section.by_course" = "By Course";
+"grades.section.components" = "Grade Components";
+
+/* Quick Add */
+"quick_add.assignment" = "Add Assignment";
+"quick_add.grade" = "Add Grade";
+"quick_add.schedule" = "Auto Schedule";

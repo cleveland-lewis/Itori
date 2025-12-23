@@ -559,3 +559,70 @@
 "timer.label.tasks_for_activity" = "此活動的任務";
 "timer.label.no_linked_tasks" = "暫無關聯任務。";
 "timer.help.edit_activities" = "您稍後可以從計時器頁面編輯活動。";
+
+/* Dashboard Empty States */
+"dashboard.empty.calendar" = "連接您的行事曆以查看即將到來的活動。";
+"dashboard.empty.events" = "沒有即將到來的活動。";
+"dashboard.empty.tasks" = "近期沒有任務截止。";
+
+/* Common */
+"common.due" = "截止";
+"common.today" = "今天";
+"common.no_date" = "無截止日期";
+"common.no_course" = "無課程";
+"common.edit" = "編輯";
+"common.done" = "完成";
+"common.menu" = "選單";
+
+/* Task Types */
+"task.type.homework" = "作業";
+"task.type.quiz" = "測驗";
+"task.type.exam" = "考試";
+"task.type.reading" = "閱讀";
+"task.type.review" = "複習";
+"task.type.project" = "專案";
+
+/* Planner */
+"planner.today" = "今天";
+"planner.generate" = "生成計劃";
+"planner.how_it_works" = "工作原理";
+"planner.empty.title" = "沒有作業";
+"planner.empty.subtitle" = "添加作業以查看它們的計劃";
+"planner.help.line1" = "計劃器使用您的作業截止日期來構建學習時段的時間表。";
+"planner.help.line2" = "生成計劃以創建今天和接下來幾天的時間塊。";
+"planner.help.line3" = "沒有截止日期的任務保留在未安排部分。";
+"planner.updated" = "更新於 %@";
+"planner.steps_count" = "%d/%d 步";
+"planner.minutes_total" = "共 %d 分鐘";
+"planner.no_plan" = "尚無計劃";
+"planner.progress" = "%d%%";
+"planner.allowed_hours" = "允許時間：%d:00–%d:00";
+
+/* Attributes */
+"attribute.importance" = "重要性";
+"attribute.difficulty" = "難度";
+
+/* Assignment Plans */
+"plans.title" = "作業計劃";
+"plans.due_date" = "截止 %@";
+"plans.no_sessions" = "尚無會話。";
+
+/* Menu */
+"menu.starred_tabs" = "已加星標的標籤";
+"menu.starred_tabs.footer" = "最多選擇5個頁面顯示在標籤欄中。所有頁面始終可透過選單訪問。";
+"menu.pin_limit" = "您最多可以固定5個頁面";
+
+/* Calendar Section */
+"calendar.section.school" = "學校行事曆";
+"calendar.all" = "所有行事曆";
+"calendar.selection.hint" = "整個應用程式中僅顯示所選行事曆中的事件。";
+
+/* Grades */
+"grades.section.overall" = "總體狀態";
+"grades.section.by_course" = "按課程";
+"grades.section.components" = "成績組成";
+
+/* Quick Add */
+"quick_add.assignment" = "添加作業";
+"quick_add.grade" = "添加成績";
+"quick_add.schedule" = "自動安排";
