@@ -259,10 +259,32 @@ struct CalendarPageView: View {
             invalidateEventsCache()
             Task { await deviceCalendar.refreshEventsForVisibleRange() }
             updateMetrics()
+            calendarManager.selectedDate = newValue
         }
         .onChange(of: currentViewMode) { _, _ in 
             invalidateEventsCache()
             updateMetrics()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .addEvent)) { _ in
+            showingNewEventSheet = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .addEventRequested)) { _ in
+            showingNewEventSheet = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .previousDay)) { _ in
+            moveFocusedDate(by: .day, value: -1)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .nextDay)) { _ in
+            moveFocusedDate(by: .day, value: 1)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .previousWeek)) { _ in
+            moveFocusedDate(by: .weekOfYear, value: -1)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .nextWeek)) { _ in
+            moveFocusedDate(by: .weekOfYear, value: 1)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .goToToday)) { _ in
+            jumpToToday()
         }
         .onReceive(deviceCalendar.$events) { _ in
             invalidateEventsCache()
@@ -535,6 +557,13 @@ struct CalendarPageView: View {
         focusedDate = today
         selectedDate = today
         calendarManager.selectedDate = today
+    }
+
+    private func moveFocusedDate(by component: Calendar.Component, value: Int) {
+        guard let newDate = calendar.date(byAdding: component, value: value, to: focusedDate) else { return }
+        focusedDate = newDate
+        selectedDate = newDate
+        calendarManager.selectedDate = newDate
     }
 
     private var effectiveEvents: [CalendarEvent] {

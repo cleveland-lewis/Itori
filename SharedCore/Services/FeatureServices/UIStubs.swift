@@ -236,6 +236,7 @@ struct AddEventPopup: View {
     @State private var secondaryAlertMinutes: Int? = nil
     @State private var isSaving: Bool = false
     @State private var selectedCalendarID: String = ""
+    @FocusState private var isTitleFocused: Bool
 
     private var availableCalendars: [EKCalendar] {
         DeviceCalendarManager.shared.store.calendars(for: .event).filter { $0.allowsContentModifications }
@@ -268,6 +269,7 @@ struct AddEventPopup: View {
                         .font(.title3)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 12)
+                        .focused($isTitleFocused)
                         .onChange(of: title) { _, new in
                             if !userSelectedCategory {
                                 if let parsed = parseCategory(from: new) {
@@ -492,6 +494,7 @@ struct AddEventPopup: View {
         }
         .frame(width: 480, height: 560)
         .onAppear {
+            isTitleFocused = true
             // Initialize calendar selection to school calendar or default
             if let schoolCalendar = getSelectedSchoolCalendar() {
                 selectedCalendarID = schoolCalendar.calendarIdentifier
@@ -501,6 +504,11 @@ struct AddEventPopup: View {
                 selectedCalendarID = firstCalendar.calendarIdentifier
             }
         }
+        #if os(macOS)
+        .onExitCommand {
+            dismiss()
+        }
+        #endif
     }
 
     private func parseCategory(from title: String) -> EventCategory? {

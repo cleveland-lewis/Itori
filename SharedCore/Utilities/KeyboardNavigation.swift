@@ -81,6 +81,13 @@ public struct AppKeyboardCommands: Commands {
             }
             .keyboardShortcut("a", modifiers: [.command])
         }
+
+        CommandGroup(after: .textEditing) {
+            Button("Search...") {
+                NotificationCenter.default.post(name: .focusSearch, object: nil)
+            }
+            .keyboardShortcut("f", modifiers: [.command])
+        }
         
         CommandGroup(after: .sidebar) {
             Button("Focus Mode") {
@@ -131,7 +138,9 @@ public struct AppKeyboardCommands: Commands {
 
 extension Notification.Name {
     public static let addEvent = Notification.Name("app.keyboard.addEvent")
+    public static let addEventRequested = Notification.Name("app.keyboard.addEventRequested")
     public static let addCourse = Notification.Name("app.keyboard.addCourse")
+    public static let addCourseRequested = Notification.Name("app.keyboard.addCourseRequested")
     public static let addAssignment = Notification.Name("app.keyboard.addAssignment")
     public static let toggleFocusMode = Notification.Name("app.keyboard.toggleFocusMode")
     public static let previousDay = Notification.Name("app.keyboard.previousDay")
@@ -139,6 +148,7 @@ extension Notification.Name {
     public static let previousWeek = Notification.Name("app.keyboard.previousWeek")
     public static let nextWeek = Notification.Name("app.keyboard.nextWeek")
     public static let goToToday = Notification.Name("app.keyboard.goToToday")
+    public static let focusSearch = Notification.Name("app.keyboard.focusSearch")
     
     #if DEBUG
     public static let showAccessibilityDebug = Notification.Name("app.keyboard.showAccessibilityDebug")

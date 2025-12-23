@@ -150,6 +150,14 @@ struct CoursesPageView: View {
                     .environmentObject(coursesStore)
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .addCourse)) { _ in
+            editingCourse = nil
+            showNewCourseSheet = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .addCourseRequested)) { _ in
+            editingCourse = nil
+            showNewCourseSheet = true
+        }
         .onAppear {
             if selectedCourseId == nil {
                 selectedCourseId = filteredCourses.first?.id
@@ -377,6 +385,7 @@ struct CoursesSidebarView: View {
     @Binding var selectedCourse: UUID?
     @Binding var searchText: String
     var onNewCourse: () -> Void
+    @FocusState private var isSearchFocused: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -396,6 +405,7 @@ struct CoursesSidebarView: View {
                 .textFieldStyle(.roundedBorder)
                 .padding(.horizontal, 12)
                 .padding(.bottom, 8)
+                .focused($isSearchFocused)
 
             // Scrollable Course List
             ScrollView {
@@ -447,6 +457,9 @@ struct CoursesSidebarView: View {
         }
         .frame(maxHeight: .infinity)
         .glassCard(cornerRadius: 22)
+        .onReceive(NotificationCenter.default.publisher(for: .focusSearch)) { _ in
+            isSearchFocused = true
+        }
     }
 
     private var currentTerm: String {

@@ -229,6 +229,7 @@ struct AssignmentsPageView: View {
     @State private var searchText: String = ""
     @State private var showNewAssignmentSheet: Bool = false
     @State private var editingAssignment: Assignment? = nil
+    @FocusState private var isSearchFocused: Bool
     @State private var sortOption: AssignmentSortOption = .byDueDate
     @State private var filterStatus: AssignmentStatus? = nil
     @State private var filterCourse: String? = nil
@@ -272,6 +273,17 @@ struct AssignmentsPageView: View {
             AssignmentEditorSheet(assignment: editingAssignment) { newAssignment in
                 upsertAssignment(newAssignment)
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .addAssignment)) { _ in
+            editingAssignment = nil
+            showNewAssignmentSheet = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .addAssignmentRequested)) { _ in
+            editingAssignment = nil
+            showNewAssignmentSheet = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .focusSearch)) { _ in
+            isSearchFocused = true
         }
         .onChange(of: appModel.requestedAssignmentDueDate) { _, dueDate in
             guard let dueDate else { return }
@@ -411,6 +423,7 @@ struct AssignmentsPageView: View {
                 TextField("Search assignments", text: $searchText)
                     .textFieldStyle(.roundedBorder)
                     .frame(maxWidth: 360)
+                    .focused($isSearchFocused)
                 Spacer()
             }
 

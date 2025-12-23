@@ -124,6 +124,7 @@ struct RootsPopupContainer<Content: View, Footer: View>: View {
     var subtitle: String?
     @ViewBuilder var content: Content
     @ViewBuilder var footer: Footer
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         VStack(alignment: .leading, spacing: RootsSpacing.l) {
@@ -149,6 +150,11 @@ struct RootsPopupContainer<Content: View, Footer: View>: View {
                 .strokeBorder(Color.white.opacity(0.1), lineWidth: 1)
         )
         .popupTextAlignedLeft()
+        #if os(macOS)
+        .onExitCommand {
+            dismiss()
+        }
+        #endif
     }
 }
 
@@ -298,6 +304,7 @@ struct RootTabBarItem: View {
     let action: () -> Void
 
     @State private var isHovering: Bool = false
+    @FocusState private var isFocused: Bool
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -324,11 +331,18 @@ struct RootTabBarItem: View {
                 Capsule(style: .continuous)
                     .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(isSelected ? 0.3 : 0.16), lineWidth: 0.5)
             )
+            .overlay(
+                Capsule(style: .continuous)
+                    .stroke(Color.accentColor, lineWidth: 2)
+                    .opacity(isFocused ? 0.7 : 0)
+            )
             .foregroundStyle(isSelected ? Color.white : Color.primary)
             .scaleEffect(isHovering ? 1.03 : 1.0)
             .contentShape(Capsule(style: .continuous))
         }
         .buttonStyle(.plain)
+        .focusable(true)
+        .focused($isFocused)
         .accessibilityIdentifier(accessibilityID)
         .onHover { hovering in
             withAnimation(.easeOut(duration: 0.15)) { isHovering = hovering }

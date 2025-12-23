@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var settingsRotation: Double = 0
     @State private var isQuickActionsExpanded = false
     @Environment(\.colorScheme) private var colorScheme
+    @FocusState private var isSettingsFocused: Bool
 
     var body: some View {
         GeometryReader { proxy in
@@ -85,6 +86,30 @@ struct ContentView: View {
                 selectedTab = tab
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .addAssignment)) { _ in
+            guard selectedTab != .assignments else { return }
+            selectedTab = .assignments
+            appModel.selectedPage = .assignments
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                NotificationCenter.default.post(name: .addAssignmentRequested, object: nil)
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .addCourse)) { _ in
+            guard selectedTab != .courses else { return }
+            selectedTab = .courses
+            appModel.selectedPage = .courses
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                NotificationCenter.default.post(name: .addCourseRequested, object: nil)
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .addEvent)) { _ in
+            guard selectedTab != .calendar else { return }
+            selectedTab = .calendar
+            appModel.selectedPage = .calendar
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                NotificationCenter.default.post(name: .addEventRequested, object: nil)
+            }
+        }
         #if os(macOS)
         .onKeyDown { event in
             switch event.keyCode {
@@ -119,8 +144,15 @@ struct ContentView: View {
                     .foregroundStyle(.primary)
                     .frame(width: 36, height: 36)
                     .background(DesignSystem.Materials.hud.opacity(0.75), in: Circle())
+                    .overlay(
+                        Circle()
+                            .strokeBorder(Color.accentColor, lineWidth: 2)
+                            .opacity(isSettingsFocused ? 0.7 : 0)
+                    )
             }
             .buttonStyle(.plain)
+            .focusable(true)
+            .focused($isSettingsFocused)
             .rootsStandardInteraction()
             .accessibilityIdentifier("Header.Settings")
         }

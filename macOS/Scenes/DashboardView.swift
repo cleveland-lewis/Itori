@@ -117,6 +117,12 @@ struct DashboardView: View {
         .onChange(of: calendarManager.selectedCalendarID) { _, _ in
             syncEvents()
         }
+        .onReceive(NotificationCenter.default.publisher(for: .addEvent)) { _ in
+            showAddEventSheet = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .addEventRequested)) { _ in
+            showAddEventSheet = true
+        }
     }
 
 

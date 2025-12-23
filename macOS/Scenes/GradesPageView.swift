@@ -50,6 +50,7 @@ struct GradesPageView: View {
     @State private var showNewCourseSheet: Bool = false
     @State private var editingCourse: Course? = nil
     @State private var courseDeletedCancellable: AnyCancellable? = nil
+    @FocusState private var isSearchFocused: Bool
 
     private let cardCorner: CGFloat = 24
 
@@ -96,6 +97,9 @@ struct GradesPageView: View {
                 .environmentObject(assignmentsStore)
                 .environmentObject(coursesStore)
         }
+        .onReceive(NotificationCenter.default.publisher(for: .focusSearch)) { _ in
+            isSearchFocused = true
+        }
         .onAppear {
             refreshCourses()
             requestGPARecalc()
@@ -135,6 +139,7 @@ struct GradesPageView: View {
             TextField("Search courses", text: $searchText)
                 .textFieldStyle(.roundedBorder)
                 .frame(maxWidth: 260)
+                .focused($isSearchFocused)
 
             Button {
                 // stub export/share functionality

@@ -172,6 +172,7 @@ struct RootsApp: App {
         }
         .commands {
             AppCommands()
+            AppKeyboardCommands()
             SettingsCommands(showSettings: {
                 settingsCoordinator.show()
             })

@@ -55,6 +55,7 @@ struct TimerPageView: View {
     @State private var selectedCollection: String = "All"
     @State private var focusWindowController: NSWindowController? = nil
     @State private var focusWindowDelegate: FocusWindowDelegate? = nil
+    @FocusState private var isSearchFocused: Bool
 
     private let cardCorner: CGFloat = 24
     @State private var timerCancellable: AnyCancellable?
@@ -147,6 +148,9 @@ struct TimerPageView: View {
         }
         .onChange(of: settings.pomodoroIterations) { _, newValue in
             pomodoroSessions = newValue
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .focusSearch)) { _ in
+            isSearchFocused = true
         }
     }
 
@@ -325,6 +329,7 @@ struct TimerPageView: View {
 
             TextField("Search", text: $searchText)
                 .textFieldStyle(.roundedBorder)
+                .focused($isSearchFocused)
 
             ScrollView {
                 VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
