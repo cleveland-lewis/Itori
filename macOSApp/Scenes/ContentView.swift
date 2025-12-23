@@ -177,6 +177,10 @@ struct ContentView: View {
             }
         case .practice:
             PracticeTestPageView()
+        case .settings:
+            // Settings handled via separate window
+            Text("Settings")
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 

@@ -96,7 +96,8 @@ struct GeneralSettingsView: View {
                     }
                 }
                 .onChange(of: retentionPolicy) { _, newValue in
-                    settings.storageRetentionPolicy = newValue
+                    // FIXME: storageRetentionPolicy property doesn't exist in AppSettingsModel
+                    // settings.storageRetentionPolicy = newValue
                     settings.save()
                 }
 
@@ -134,7 +135,8 @@ struct GeneralSettingsView: View {
             userName = settings.userName ?? ""
             startOfWeek = StartOfWeek(rawValue: settings.startOfWeek ?? "Sunday") ?? .sunday
             defaultView = DefaultView(rawValue: settings.defaultView ?? "Dashboard") ?? .dashboard
-            retentionPolicy = settings.storageRetentionPolicy
+            // FIXME: storageRetentionPolicy property doesn't exist
+            // retentionPolicy = settings.storageRetentionPolicy
         }
         .alert("Retention Applied", isPresented: $showRetentionAlert) {
             Button("OK") { retentionResult = nil }

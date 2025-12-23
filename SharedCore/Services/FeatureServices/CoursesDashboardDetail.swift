@@ -235,7 +235,7 @@ struct CoursesDashboardDetail: View {
             VStack(spacing: DesignSystem.Layout.spacing.small) {
                 Image(systemName: icon)
                     .font(DesignSystem.Typography.body)
-                    .foregroundStyle(.accentColor)
+                    .foregroundStyle(Color.accentColor)
 
                 Text(title)
                     .font(DesignSystem.Typography.body)

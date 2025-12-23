@@ -1,6 +1,7 @@
 import Foundation
 import UserNotifications
 import Combine
+import EventKit
 
 #if os(macOS)
 import AppKit
@@ -159,7 +160,7 @@ public final class BadgeManager: ObservableObject {
         let now = Date()
         let windowEnd = now.addingTimeInterval(upcomingWindow)
         
-        guard let store = try? AssignmentsStore() else { return 0 }
+        let store = AssignmentsStore.shared
         
         return store.tasks.filter { task in
             guard !task.isCompleted, let due = task.due else { return false }
@@ -171,7 +172,7 @@ public final class BadgeManager: ObservableObject {
         let calendar = Calendar.current
         let now = Date()
         
-        guard let deviceCalendar = try? DeviceCalendarManager.shared else { return 0 }
+        let deviceCalendar = DeviceCalendarManager.shared
         
         return deviceCalendar.events.filter { event in
             calendar.isDate(event.startDate, inSameDayAs: now)
@@ -187,7 +188,7 @@ public final class BadgeManager: ObservableObject {
             return 0
         }
         
-        guard let deviceCalendar = try? DeviceCalendarManager.shared else { return 0 }
+        let deviceCalendar = DeviceCalendarManager.shared
         
         return deviceCalendar.events.filter { event in
             event.startDate >= weekStart && event.startDate < weekEnd
@@ -203,7 +204,7 @@ public final class BadgeManager: ObservableObject {
             return 0
         }
         
-        guard let store = try? AssignmentsStore() else { return 0 }
+        let store = AssignmentsStore.shared
         
         return store.tasks.filter { task in
             guard !task.isCompleted, let due = task.due else { return false }

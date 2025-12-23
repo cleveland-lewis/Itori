@@ -180,7 +180,7 @@ struct IntegrationCard: View {
             HStack(spacing: 12) {
                 Image(systemName: icon)
                     .font(.title2)
-                    .foregroundStyle(.accentColor)
+                    .foregroundStyle(Color.accentColor)
                     .frame(width: 32, height: 32)
                 
                 VStack(alignment: .leading, spacing: 2) {

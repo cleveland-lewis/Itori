@@ -582,10 +582,12 @@ struct TimerPageView: View {
         window.title = NSLocalizedString("timer.focus.window_title", comment: "Focus")
         window.isReleasedWhenClosed = false
         
-        let delegate = FocusWindowDelegate { [weak self] in
+        let delegate = FocusWindowDelegate {
             // Window closed - clear the controller reference to allow reopening
-            self?.focusWindowController = nil
-            self?.focusWindowDelegate = nil
+            // Note: Can't use [weak self] because TimerPageView is a struct
+            // The closure will be released when the delegate is deallocated
+            focusWindowController = nil
+            focusWindowDelegate = nil
         }
         window.delegate = delegate
         focusWindowDelegate = delegate
