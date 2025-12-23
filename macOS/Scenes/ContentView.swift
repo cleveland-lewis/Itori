@@ -11,6 +11,7 @@ struct ContentView: View {
     @EnvironmentObject private var appModel: AppModel
     @State private var selectedTab: RootTab = .dashboard
     @State private var settingsRotation: Double = 0
+    @State private var isQuickActionsExpanded = false
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -23,6 +24,7 @@ struct ContentView: View {
                     topBar
                         .padding(.horizontal, 24)
                         .padding(.top, 16)
+                        .zIndex(1)
 
                     currentPageView
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -33,22 +35,13 @@ struct ContentView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-                // LAYER 2: Floating quick actions menu
-                RootsFanOutMenu(items: [
-                    FanOutMenuItem(icon: "doc.badge.plus", label: "Add Assignment") {
-                        performQuickAction(.add_assignment)
-                    },
-                    FanOutMenuItem(icon: "calendar.badge.plus", label: "Add Event") {
-                        _Concurrency.Task { await CalendarManager.shared.quickAddEvent() }
-                    },
-                    FanOutMenuItem(icon: "graduationcap", label: "Add Course") {
-                        performQuickAction(.add_course)
-                    }
-                ])
-                .opacity(0.9)
-                .padding(.leading, 24)
-                .padding(.top, 16)
-                .zIndex(1)
+                if isQuickActionsExpanded {
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .ignoresSafeArea()
+                        .onTapGesture { collapseQuickActions() }
+                        .zIndex(0.5)
+                }
 
                 // Floating tab bar stays at bottom; keep above content
                 VStack {
@@ -108,18 +101,9 @@ struct ContentView: View {
 
     private var topBar: some View {
         HStack {
-            RootsFanOutMenu(items: [
-                FanOutMenuItem(icon: "doc.badge.plus", label: "Add Assignment") {
-                    performQuickAction(.add_assignment)
-                },
-                FanOutMenuItem(icon: "calendar.badge.plus", label: "Add Event") {
-                    // Integrate with calendar flow as needed
-                },
-                FanOutMenuItem(icon: "graduationcap", label: "Add Course") {
-                    performQuickAction(.add_course)
-                }
-            ])
-            .opacity(0.9)
+            QuickActionsLauncher(isExpanded: $isQuickActionsExpanded, actions: settings.quickActions) { action in
+                performQuickAction(action)
+            }
 
             Spacer()
 
@@ -141,6 +125,9 @@ struct ContentView: View {
             .accessibilityIdentifier("Header.Settings")
         }
         .contentTransition(.opacity)
+        .onExitCommand {
+            collapseQuickActions()
+        }
     }
 
     @ViewBuilder
@@ -191,6 +178,15 @@ struct ContentView: View {
         case .add_course:
             LOG_UI(.info, "QuickAction", "Add Course")
             break
+        case .add_task:
+            LOG_UI(.info, "QuickAction", "Add Task")
+            break
+        case .add_grade:
+            LOG_UI(.info, "QuickAction", "Add Grade")
+            break
+        case .auto_schedule:
+            LOG_UI(.info, "QuickAction", "Auto Schedule")
+            break
         case .quick_note:
             LOG_UI(.info, "QuickAction", "Quick Note")
             break
@@ -205,6 +201,12 @@ struct ContentView: View {
         selectedTab = tab
         if let page = AppPage(rawValue: tab.rawValue), appModel.selectedPage != page {
             appModel.selectedPage = page
+        }
+    }
+
+    private func collapseQuickActions() {
+        if isQuickActionsExpanded {
+            isQuickActionsExpanded = false
         }
     }
 

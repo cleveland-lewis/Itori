@@ -17,19 +17,23 @@ extension SettingsPane_Interface {
 struct QuickActionsEditorView: View {
     @EnvironmentObject private var settings: AppSettingsModel
     @State private var available = QuickAction.allCases
+    private let maxSelection = 6
 
     var body: some View {
         VStack {
             List {
                 ForEach(available, id: \.self) { action in
+                    let isSelected = settings.quickActions.contains(action)
+                    let isAtLimit = settings.quickActions.count >= maxSelection
                     HStack {
                         Image(systemName: action.systemImage)
                         Text(action.title)
                         Spacer()
-                        Toggle("", isOn: Binding(get: { settings.quickActions.contains(action) }, set: { new in
+                        Toggle("", isOn: Binding(get: { isSelected }, set: { new in
+                            guard new || isSelected else { return }
                             var cur = settings.quickActions
                             if new {
-                                if !cur.contains(action) { cur.append(action) }
+                                if !cur.contains(action), cur.count < maxSelection { cur.append(action) }
                             } else {
                                 cur.removeAll { $0 == action }
                             }
@@ -37,6 +41,7 @@ struct QuickActionsEditorView: View {
                             settings.save()
                         }))
                         .labelsHidden()
+                        .disabled(!isSelected && isAtLimit)
                     }
                 }
                 .onMove(perform: move)
@@ -45,7 +50,7 @@ struct QuickActionsEditorView: View {
 
             HStack {
                 Button("Restore Defaults") {
-                    settings.quickActions = [.add_assignment, .add_course, .quick_note]
+                    settings.quickActions = QuickAction.defaultSelection
                     settings.save()
                 }
                 .onChange(of: settings.quickActions) { _, _ in settings.save() }
@@ -54,6 +59,9 @@ struct QuickActionsEditorView: View {
                 }
                 Spacer()
             }
+            Text("Select up to \(maxSelection) actions.")
+                .font(DesignSystem.Typography.caption)
+                .foregroundColor(.secondary)
         }
     }
 

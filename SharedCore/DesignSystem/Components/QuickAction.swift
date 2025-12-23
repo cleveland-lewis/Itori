@@ -34,4 +34,11 @@ enum QuickAction: String, CaseIterable, Identifiable, Codable {
         case .open_new_note: return "square.and.pencil"
         }
     }
+
+    static let defaultSelection: [QuickAction] = [
+        .add_assignment,
+        .add_course,
+        .quick_note,
+        .add_grade
+    ]
 }

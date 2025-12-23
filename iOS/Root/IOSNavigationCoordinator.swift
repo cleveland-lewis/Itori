@@ -52,6 +52,7 @@ struct IOSNavigationChrome<TrailingContent: View>: ViewModifier {
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var plannerStore: PlannerStore
+    @State private var isQuickActionsExpanded = false
 
     let title: String
     let trailingContent: () -> TrailingContent
@@ -69,10 +70,18 @@ struct IOSNavigationChrome<TrailingContent: View>: ViewModifier {
                     pageMenu()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    quickActionsMenu()
+                    quickActionsLauncher()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     trailingContent()
+                }
+            }
+            .overlay {
+                if isQuickActionsExpanded {
+                    Color.clear
+                        .contentShape(Rectangle())
+                        .ignoresSafeArea()
+                        .onTapGesture { collapseQuickActions() }
                 }
             }
     }
@@ -118,17 +127,9 @@ struct IOSNavigationChrome<TrailingContent: View>: ViewModifier {
         .accessibilityLabel("Open menu")
     }
 
-    private func quickActionsMenu() -> some View {
-        Menu {
-            ForEach(quickActions, id: \.self) { action in
-                Button {
-                    handleQuickAction(action)
-                } label: {
-                    Label(action.title, systemImage: action.systemImage)
-                }
-            }
-        } label: {
-            Image(systemName: "plus")
+    private func quickActionsLauncher() -> some View {
+        QuickActionsLauncher(isExpanded: $isQuickActionsExpanded, actions: quickActions, expansionDirection: .leading) { action in
+            handleQuickAction(action)
         }
         .accessibilityLabel("Quick actions")
     }
@@ -174,7 +175,8 @@ struct IOSNavigationChrome<TrailingContent: View>: ViewModifier {
     }
 
     private var quickActions: [QuickAction] {
-        IOSNavigationChromeData.quickActions
+        let selection = settings.quickActions
+        return selection.isEmpty ? QuickAction.defaultSelection : selection
     }
 
     private func menuTitle(for page: AppPage) -> String {
@@ -197,6 +199,12 @@ struct IOSNavigationChrome<TrailingContent: View>: ViewModifier {
         let result = PlannerEngine.scheduleSessions(sessions, settings: settings, energyProfile: defaultEnergyProfile())
         plannerStore.persist(scheduled: result.scheduled, overflow: result.overflow)
         toastRouter.show("Schedule updated")
+    }
+
+    private func collapseQuickActions() {
+        if isQuickActionsExpanded {
+            isQuickActionsExpanded = false
+        }
     }
 
     private func assignmentsForPlanning() -> [Assignment] {
@@ -275,13 +283,6 @@ private enum IOSNavigationChromeData {
         .calendar,
         .timer,
         .practice
-    ]
-
-    static let quickActions: [QuickAction] = [
-        .add_assignment,
-        .add_task,
-        .add_course,
-        .add_grade
     ]
 }
 #endif

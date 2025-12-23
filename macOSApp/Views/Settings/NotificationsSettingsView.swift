@@ -4,6 +4,7 @@ import SwiftUI
 struct NotificationsSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     @StateObject private var notificationManager = NotificationManager.shared
+    @StateObject private var badgeManager = BadgeManager.shared
     
     var body: some View {
         ScrollView {
@@ -26,6 +27,10 @@ struct NotificationsSettingsView: View {
                     Divider()
                     
                     assignmentSection
+                    
+                    Divider()
+                    
+                    badgeSection
                     
                     Divider()
                     
@@ -198,6 +203,32 @@ struct NotificationsSettingsView: View {
             }
             
             Text("Receive a daily summary of your schedule and tasks")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.leading, 20)
+        }
+    }
+    
+    private var badgeSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("App Icon Badge")
+                .font(.headline)
+            
+            Picker("Badge shows:", selection: $badgeManager.badgeSource) {
+                ForEach(BadgeSource.allCases) { source in
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(source.displayName)
+                        Text(source.description)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .tag(source)
+                }
+            }
+            .pickerStyle(.menu)
+            .labelsHidden()
+            
+            Text("Choose what the app icon badge count represents")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding(.leading, 20)
