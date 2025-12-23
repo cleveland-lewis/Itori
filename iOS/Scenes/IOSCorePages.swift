@@ -594,6 +594,14 @@ struct IOSSettingsView: View {
     @State private var tabBarPrefs: TabBarPreferencesStore?
     @State private var availableCalendars: [EKCalendar] = []
     @Environment(\.colorScheme) var colorScheme
+    @AppStorage("timer.display.style") private var timerDisplayStyleRaw: String = TimerDisplayStyle.digital.rawValue
+
+    private var timerDisplayStyle: Binding<TimerDisplayStyle> {
+        Binding(
+            get: { TimerDisplayStyle(rawValue: timerDisplayStyleRaw) ?? .digital },
+            set: { timerDisplayStyleRaw = $0.rawValue }
+        )
+    }
 
     var body: some View {
         Form {
@@ -606,6 +614,16 @@ struct IOSSettingsView: View {
                 
                 Toggle(NSLocalizedString("settings.general.high_contrast", comment: "High contrast"), isOn: $settings.highContrastMode)
                     .accessibilityLabel(NSLocalizedString("settings.a11y.high_contrast", comment: "High contrast"))
+            }
+
+            Section(header: Text("Timer")) {
+                Picker("Display", selection: timerDisplayStyle) {
+                    ForEach(TimerDisplayStyle.allCases) { style in
+                        Text(style.label).tag(style)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .accessibilityLabel("Timer display")
             }
             
             Section(header: Text(NSLocalizedString("settings.section.workday", comment: "Workday section"))) {

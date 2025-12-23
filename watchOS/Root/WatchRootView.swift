@@ -8,6 +8,14 @@ import SwiftUI
 
 struct WatchRootView: View {
     @EnvironmentObject private var focusManager: FocusManager
+    @AppStorage("timer.display.style") private var timerDisplayStyleRaw: String = TimerDisplayStyle.digital.rawValue
+
+    private var timerDisplayStyle: Binding<TimerDisplayStyle> {
+        Binding(
+            get: { TimerDisplayStyle(rawValue: timerDisplayStyleRaw) ?? .digital },
+            set: { timerDisplayStyleRaw = $0.rawValue }
+        )
+    }
 
     var body: some View {
         ScrollView {
@@ -30,6 +38,23 @@ struct WatchRootView: View {
                 .buttonStyle(.borderedProminent)
 
                 summaryCard(title: "Time Studied", value: formattedStudyTime())
+
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.xsmall) {
+                    Text("Timer Display")
+                        .font(DesignSystem.Typography.subHeader)
+                    Picker("Display", selection: timerDisplayStyle) {
+                        ForEach(TimerDisplayStyle.allCases) { style in
+                            Text(style.label).tag(style)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
+                .padding(DesignSystem.Spacing.small)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(
+                    RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
+                        .fill(DesignSystem.Colors.cardBackground)
+                )
             }
             .padding(DesignSystem.Spacing.medium)
         }

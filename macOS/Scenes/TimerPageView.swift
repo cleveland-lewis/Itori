@@ -20,22 +20,6 @@ enum HistoryRange: String, CaseIterable, Identifiable {
     }
 }
 
-enum TimerDisplayStyle: String, CaseIterable, Identifiable {
-    case digital
-    case analog
-
-    var id: String { rawValue }
-
-    var label: String {
-        switch self {
-        case .digital:
-            return NSLocalizedString("timer.display.digital", comment: "")
-        case .analog:
-            return NSLocalizedString("timer.display.analog", comment: "")
-        }
-    }
-}
-
 // MARK: - Root View
 
 struct TimerPageView: View {
@@ -1113,16 +1097,24 @@ struct TimerCoreCard: View {
                                 .buttonStyle(.plain)
                             }
                             Divider()
-                            Button(action: {
-                                displayStyle = displayStyle == .digital ? .analog : .digital
-                                showingModeMenu = false
-                            }) {
-                                Text(displayStyle == .digital ? TimerDisplayStyle.analog.label : TimerDisplayStyle.digital.label)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            ForEach(TimerDisplayStyle.allCases, id: \.self) { style in
+                                Button(action: {
+                                    displayStyle = style
+                                    showingModeMenu = false
+                                }) {
+                                    HStack {
+                                        if displayStyle == style {
+                                            Image(systemName: "checkmark")
+                                                .foregroundColor(.accentColor)
+                                        }
+                                        Text(style.label)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                    }
                                     .padding(.horizontal, 12)
                                     .padding(.vertical, 6)
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
                         }
                         .padding(8)
                         .frame(minWidth: 150)

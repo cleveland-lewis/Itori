@@ -27,6 +27,22 @@ enum TimerMode: String, CaseIterable, Identifiable, Codable {
     }
 }
 
+enum TimerDisplayStyle: String, CaseIterable, Identifiable, Codable {
+    case digital
+    case analog
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .digital:
+            return "Digital"
+        case .analog:
+            return "Analog"
+        }
+    }
+}
+
 /// Represents an activity the user can time (e.g., study task, assignment, course work)
 struct TimerActivity: Identifiable, Hashable, Codable {
     let id: UUID
