@@ -9,6 +9,7 @@ struct ContentView: View {
     @EnvironmentObject var settingsCoordinator: SettingsCoordinator
     @EnvironmentObject var plannerCoordinator: PlannerCoordinator
     @EnvironmentObject private var appModel: AppModel
+    @EnvironmentObject private var modalRouter: AppModalRouter
     @State private var selectedTab: RootTab = .dashboard
     @State private var settingsRotation: Double = 0
     @State private var isQuickActionsExpanded = false
@@ -84,6 +85,29 @@ struct ContentView: View {
         .onReceive(appModel.$selectedPage) { page in
             if let tab = RootTab(rawValue: page.rawValue), selectedTab != tab {
                 selectedTab = tab
+            }
+        }
+        .onChange(of: modalRouter.route) { _, route in
+            guard let route else { return }
+            switch route {
+            case .planner:
+                selectedTab = .planner
+                appModel.selectedPage = .planner
+                modalRouter.clear()
+            case .addAssignment:
+                selectedTab = .assignments
+                appModel.selectedPage = .assignments
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    NotificationCenter.default.post(name: .addAssignmentRequested, object: nil)
+                    modalRouter.clear()
+                }
+            case .addGrade:
+                selectedTab = .grades
+                appModel.selectedPage = .grades
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    NotificationCenter.default.post(name: .addGradeRequested, object: nil)
+                    modalRouter.clear()
+                }
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .addAssignment)) { _ in
@@ -251,11 +275,10 @@ struct ContentView: View {
         }
         
         NotificationCenter.default.addObserver(forName: .addAssignmentRequested, object: nil, queue: .main) { _ in
-            performQuickAction(.add_assignment)
+            LOG_UI(.info, "ContextMenu", "Add Assignment requested")
         }
         
         NotificationCenter.default.addObserver(forName: .addGradeRequested, object: nil, queue: .main) { _ in
-            // TODO: Implement add grade flow
             LOG_UI(.info, "ContextMenu", "Add Grade requested")
         }
         

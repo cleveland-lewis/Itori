@@ -358,7 +358,7 @@ struct AssignmentsPageView: View {
             Button {
                 autoPlanSelectedAssignments()
             } label: {
-                Text("Plan Day")
+                Text(NSLocalizedString("assignments.button.plan_day", comment: ""))
                     .font(DesignSystem.Typography.body)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
@@ -372,14 +372,14 @@ struct AssignmentsPageView: View {
 
     private var filterPopover: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Filters")
+            Text(NSLocalizedString("assignments.button.filters", comment: ""))
                 .font(DesignSystem.Typography.subHeader)
             Divider()
             Picker("Status", selection: Binding(
                 get: { filterStatus },
                 set: { filterStatus = $0 }
             )) {
-                Text("Any").tag(AssignmentStatus?.none)
+                Text(NSLocalizedString("assignments.label.any", comment: "")).tag(AssignmentStatus?.none)
                 ForEach(AssignmentStatus.allCases) { status in
                     Text(status.label).tag(AssignmentStatus?.some(status))
                 }
@@ -390,7 +390,7 @@ struct AssignmentsPageView: View {
                 get: { filterCourse },
                 set: { filterCourse = $0 }
             )) {
-                Text("All courses").tag(String?.none)
+                Text(NSLocalizedString("assignments.label.all_courses", comment: "")).tag(String?.none)
                 ForEach(uniqueCourses, id: \.self) { course in
                     Text(course).tag(String?.some(course))
                 }
@@ -671,7 +671,7 @@ struct TodaySummaryCard: View {
 
         RootsCard(compact: true) {
             HStack {
-                Text("Today").rootsSectionHeader()
+                Text(NSLocalizedString("common.label.today", comment: "")).rootsSectionHeader()
                 Spacer()
             }
 
@@ -709,7 +709,7 @@ struct ByCourseSummaryCard: View {
             .map { CourseLoad(course: $0.key, count: $0.value.count) }
             .sorted { $0.count > $1.count }
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-            Text("By Course").rootsSectionHeader()
+            Text(NSLocalizedString("assignments.section.by_course", comment: "")).rootsSectionHeader()
 
             ForEach(grouped.prefix(4)) { item in
                 HStack {
@@ -747,7 +747,7 @@ struct LoadTimelineCard: View {
         let next7 = (0..<7).map { calendar.date(byAdding: .day, value: $0, to: today) ?? today }
 
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-            Text("Upcoming Load").rootsSectionHeader()
+            Text(NSLocalizedString("assignments.section.upcoming_load", comment: "")).rootsSectionHeader()
 
             HStack(alignment: .bottom, spacing: 12) {
                 ForEach(next7, id: \.self) { day in

@@ -20,6 +20,22 @@ enum HistoryRange: String, CaseIterable, Identifiable {
     }
 }
 
+enum TimerDisplayStyle: String, CaseIterable, Identifiable {
+    case digital
+    case analog
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .digital:
+            return NSLocalizedString("timer.display.digital", comment: "")
+        case .analog:
+            return NSLocalizedString("timer.display.analog", comment: "")
+        }
+    }
+}
+
 // MARK: - Root View
 
 struct TimerPageView: View {
@@ -27,6 +43,7 @@ struct TimerPageView: View {
     @EnvironmentObject private var settingsCoordinator: SettingsCoordinator
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var calendarManager: CalendarManager
+    @EnvironmentObject private var calendarRefresh: CalendarRefreshCoordinator
     @EnvironmentObject private var appModel: AppModel
 
     @State private var mode: LocalTimerMode = .pomodoro
@@ -56,6 +73,7 @@ struct TimerPageView: View {
     @State private var focusWindowController: NSWindowController? = nil
     @State private var focusWindowDelegate: FocusWindowDelegate? = nil
     @FocusState private var isSearchFocused: Bool
+    @AppStorage("timer.display.style") private var displayStyleRaw: String = TimerDisplayStyle.digital.rawValue
 
     private let cardCorner: CGFloat = 24
     @State private var timerCancellable: AnyCancellable?
@@ -63,6 +81,17 @@ struct TimerPageView: View {
     @State private var tickCancellable: AnyCancellable?
     private let maxSessionHistoryDays = 400
     private let maxSessionCount = 20000
+    private static let refreshDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter
+    }()
+
+    private var displayStyle: TimerDisplayStyle {
+        get { TimerDisplayStyle(rawValue: displayStyleRaw) ?? .digital }
+        set { displayStyleRaw = newValue.rawValue }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -152,6 +181,34 @@ struct TimerPageView: View {
         .onReceive(NotificationCenter.default.publisher(for: .focusSearch)) { _ in
             isSearchFocused = true
         }
+        .onKeyPress(.space) {
+            guard !isSearchFocused, !showActivityEditor else { return .ignored }
+            if isRunning {
+                pauseTimer()
+            } else {
+                startTimer()
+            }
+            return .handled
+        }
+        .alert(item: $calendarRefresh.error) { error in
+            switch error {
+            case .permissionDenied:
+                return Alert(
+                    title: Text(NSLocalizedString("calendar.refresh.failed", comment: "")),
+                    message: Text(error.localizedDescription),
+                    primaryButton: .default(Text(NSLocalizedString("calendar.refresh.open_settings", comment: ""))) {
+                        calendarManager.openCalendarPrivacySettings()
+                    },
+                    secondaryButton: .cancel(Text(NSLocalizedString("common.button.cancel", comment: "")))
+                )
+            case .schedulingFailed:
+                return Alert(
+                    title: Text(NSLocalizedString("calendar.refresh.failed", comment: "")),
+                    message: Text(error.localizedDescription),
+                    dismissButton: .default(Text(NSLocalizedString("common.button.ok", comment: "")))
+                )
+            }
+        }
     }
 
     // MARK: Top Bar
@@ -159,8 +216,31 @@ struct TimerPageView: View {
     private var topBar: some View {
         HStack(alignment: .center, spacing: 16) {
             Spacer()
-            // Top spacer only; time/date removed per request
+            calendarRefreshStatus
             Spacer()
+        }
+    }
+
+    private var calendarRefreshStatus: some View {
+        let text: String = {
+            if calendarRefresh.isRefreshing {
+                return NSLocalizedString("calendar.refresh.in_progress", comment: "")
+            }
+            guard let last = calendarRefresh.lastRefreshedAt else {
+                return NSLocalizedString("calendar.refresh.last.never", comment: "")
+            }
+            let formatted = Self.refreshDateFormatter.string(from: last)
+            return String(format: NSLocalizedString("calendar.refresh.last", comment: ""), formatted)
+        }()
+
+        return HStack(spacing: 8) {
+            if calendarRefresh.isRefreshing {
+                ProgressView()
+                    .controlSize(.small)
+            }
+            Text(text)
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -256,7 +336,7 @@ struct TimerPageView: View {
     private var currentActivityPill: some View {
         HStack(spacing: DesignSystem.Layout.spacing.small) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Current Activity")
+                Text(NSLocalizedString("common.label.current_activity", comment: ""))
                     .font(.footnote)
                     .foregroundColor(.secondary)
                 if let activity = currentActivity {
@@ -269,7 +349,7 @@ struct TimerPageView: View {
                             .foregroundColor(.secondary)
                     }
                 } else {
-                    Text("No activity selected")
+                    Text(NSLocalizedString("common.label.no_activity", comment: ""))
                         .font(DesignSystem.Typography.body)
                         .foregroundColor(.secondary)
                 }
@@ -277,7 +357,7 @@ struct TimerPageView: View {
 
             Spacer(minLength: 8)
 
-            Button("Change") {
+            Button(NSLocalizedString("common.button.change", comment: "")) {
                 // focus left list; for now open editor
                 showActivityEditor = true
                 editingActivity = nil
@@ -320,7 +400,7 @@ struct TimerPageView: View {
     private var activitiesColumn: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Activities")
+                Text(NSLocalizedString("common.label.activities", comment: ""))
                     .font(DesignSystem.Typography.body)
                 Spacer()
             }
@@ -334,7 +414,7 @@ struct TimerPageView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                     if !pinnedActivities.isEmpty {
-                        Text("Pinned")
+                        Text(NSLocalizedString("common.label.pinned", comment: ""))
                             .font(DesignSystem.Typography.caption)
                             .foregroundColor(.secondary)
                         ForEach(pinnedActivities) { activity in
@@ -353,7 +433,7 @@ struct TimerPageView: View {
                         }
                     }
 
-                    Text("All Activities")
+                    Text(NSLocalizedString("common.label.all_activities", comment: ""))
                         .font(DesignSystem.Typography.caption)
                         .foregroundColor(.secondary)
                     ForEach(filteredActivities) { activity in
@@ -505,6 +585,10 @@ struct TimerPageView: View {
             isRunning: $isRunning,
             remainingSeconds: $remainingSeconds,
             elapsedSeconds: $elapsedSeconds,
+            displayStyle: Binding(
+                get: { displayStyle },
+                set: { displayStyle = $0 }
+            ),
             pomodoroSessions: settings.pomodoroIterations,
             completedPomodoroSessions: completedPomodoroSessions,
             isPomodorBreak: isPomodorBreak,
@@ -540,7 +624,7 @@ struct TimerPageView: View {
             if let activity = currentActivity {
                 if let tasks = activityTasks(activity.id), !tasks.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Tasks for this Activity")
+                        Text(NSLocalizedString("timer.label.tasks_for_activity", comment: ""))
                             .font(DesignSystem.Typography.caption)
                             .foregroundStyle(.secondary)
                         ForEach(tasks, id: \.id) { task in
@@ -577,7 +661,7 @@ struct TimerPageView: View {
                     minHeight: 120
                 )
             } else {
-                Text("Select an activity to view details.")
+                Text(NSLocalizedString("common.label.select_prompt", comment: ""))
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
             }
@@ -931,10 +1015,10 @@ struct TimerActivityRow: View {
 
             Menu {
                 Button(activity.isPinned ? "Unpin" : "Pin", action: onPinToggle)
-                Button("Edit", action: onEdit)
-                Button("Reset totals", action: onReset)
+                Button(NSLocalizedString("common.button.edit", comment: ""), action: onEdit)
+                Button(NSLocalizedString("common.button.reset_totals", comment: ""), action: onReset)
                 Divider()
-                Button("Delete", role: .destructive, action: onDelete)
+                Button(NSLocalizedString("common.button.delete", comment: ""), role: .destructive, action: onDelete)
             } label: {
                 Image(systemName: "ellipsis.circle")
             }
@@ -971,6 +1055,7 @@ struct TimerCoreCard: View {
     @Binding var isRunning: Bool
     @Binding var remainingSeconds: TimeInterval
     @Binding var elapsedSeconds: TimeInterval
+    @Binding var displayStyle: TimerDisplayStyle
     var pomodoroSessions: Int
     var completedPomodoroSessions: Int
     var isPomodorBreak: Bool
@@ -982,6 +1067,10 @@ struct TimerCoreCard: View {
     var onOpenFocus: () -> Void
     
     @State private var showingModeMenu = false
+
+    private var clockSeconds: TimeInterval {
+        mode == .stopwatch ? elapsedSeconds : remainingSeconds
+    }
 
     var body: some View {
         VStack(spacing: 16) {
@@ -1027,6 +1116,17 @@ struct TimerCoreCard: View {
                                 }
                                 .buttonStyle(.plain)
                             }
+                            Divider()
+                            Button(action: {
+                                displayStyle = displayStyle == .digital ? .analog : .digital
+                                showingModeMenu = false
+                            }) {
+                                Text(displayStyle == .digital ? TimerDisplayStyle.analog.label : TimerDisplayStyle.digital.label)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 6)
+                            }
+                            .buttonStyle(.plain)
                         }
                         .padding(8)
                         .frame(minWidth: 150)
@@ -1039,6 +1139,8 @@ struct TimerCoreCard: View {
                 FocusSessionView(
                     mode: mode,
                     timeText: timeDisplay,
+                    timerSeconds: clockSeconds,
+                    displayStyle: displayStyle,
                     pomodoroSessions: pomodoroSessions,
                     completedPomodoroSessions: completedPomodoroSessions,
                     isPomodorBreak: isPomodorBreak,
@@ -1049,6 +1151,8 @@ struct TimerCoreCard: View {
                 TimerSetupView(
                     mode: $mode,
                     timeText: timeDisplay,
+                    timerSeconds: clockSeconds,
+                    displayStyle: displayStyle,
                     pomodoroSessions: pomodoroSessions,
                     completedPomodoroSessions: completedPomodoroSessions,
                     isPomodorBreak: isPomodorBreak,
@@ -1104,6 +1208,8 @@ struct TimerCoreCard: View {
 private struct TimerSetupView: View {
     @Binding var mode: LocalTimerMode
     var timeText: String
+    var timerSeconds: TimeInterval
+    var displayStyle: TimerDisplayStyle
     var pomodoroSessions: Int
     var completedPomodoroSessions: Int
     var isPomodorBreak: Bool
@@ -1128,11 +1234,20 @@ private struct TimerSetupView: View {
                         .foregroundStyle(.primary)
                         .frame(height: 18)
                 }
-                
-                Text(timeText)
-                    .font(.system(.largeTitle, design: .monospaced).weight(.light))
-                    .monospacedDigit()
-                    .frame(height: 72)
+                if displayStyle == .analog {
+                    RootsAnalogClock(
+                        diameter: 200,
+                        showSecondHand: true,
+                        accentColor: .accentColor,
+                        timerSeconds: timerSeconds
+                    )
+                    .frame(height: 200)
+                } else {
+                    Text(timeText)
+                        .font(.system(.largeTitle, design: .monospaced).weight(.light))
+                        .monospacedDigit()
+                        .frame(height: 72)
+                }
             }
             .padding(.vertical, 12)
             
@@ -1155,7 +1270,7 @@ private struct TimerSetupView: View {
             .frame(height: 12)
             .padding(.bottom, 4)
 
-            Button("Start", action: onStart)
+            Button(NSLocalizedString("timer.action.start", comment: ""), action: onStart)
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
                 .padding(.top, 4)
@@ -1174,6 +1289,8 @@ private struct TimerSetupView: View {
 private struct FocusSessionView: View {
     var mode: LocalTimerMode
     var timeText: String
+    var timerSeconds: TimeInterval
+    var displayStyle: TimerDisplayStyle
     var pomodoroSessions: Int
     var completedPomodoroSessions: Int
     var isPomodorBreak: Bool
@@ -1195,11 +1312,20 @@ private struct FocusSessionView: View {
                         .foregroundStyle(.primary)
                         .frame(height: 18)
                 }
-                
-                Text(timeText)
-                    .font(.system(.largeTitle, design: .monospaced).weight(.light))
-                    .monospacedDigit()
-                    .frame(height: 72)
+                if displayStyle == .analog {
+                    RootsAnalogClock(
+                        diameter: 200,
+                        showSecondHand: true,
+                        accentColor: .accentColor,
+                        timerSeconds: timerSeconds
+                    )
+                    .frame(height: 200)
+                } else {
+                    Text(timeText)
+                        .font(.system(.largeTitle, design: .monospaced).weight(.light))
+                        .monospacedDigit()
+                        .frame(height: 72)
+                }
             }
             .padding(.vertical, 12)
             
@@ -1260,6 +1386,7 @@ private struct FocusWindowView: View {
     var elapsedSeconds: TimeInterval
     var isRunning: Bool
     var toggleTask: (AppTask) -> Void
+    @AppStorage("timer.display.style") private var displayStyleRaw: String = TimerDisplayStyle.digital.rawValue
     
     private var clockTime: TimeInterval {
         // Stopwatch shows elapsed time, others show remaining time
@@ -1274,14 +1401,24 @@ private struct FocusWindowView: View {
         }
     }
 
+    private var displayStyle: TimerDisplayStyle {
+        TimerDisplayStyle(rawValue: displayStyleRaw) ?? .digital
+    }
+
     var body: some View {
         VStack(spacing: 24) {
-            RootsAnalogClock(
-                diameter: 240, 
-                showSecondHand: true, 
-                accentColor: accentColor,
-                timerSeconds: clockTime
-            )
+            if displayStyle == .analog {
+                RootsAnalogClock(
+                    diameter: 240,
+                    showSecondHand: true,
+                    accentColor: accentColor,
+                    timerSeconds: clockTime
+                )
+            } else {
+                Text(timeText)
+                    .font(.system(.largeTitle, design: .monospaced).weight(.light))
+                    .monospacedDigit()
+            }
 
             VStack(spacing: 8) {
                 if mode == .pomodoro {
@@ -1291,9 +1428,11 @@ private struct FocusWindowView: View {
                         .textCase(.uppercase)
                 }
                 
-                Text(timeText)
-                    .font(.system(.title, design: .monospaced).weight(.light))
-                    .monospacedDigit()
+                if displayStyle == .analog {
+                    Text(timeText)
+                        .font(.system(.title, design: .monospaced).weight(.light))
+                        .monospacedDigit()
+                }
                     
                 if mode == .pomodoro {
                     HStack(spacing: 8) {
@@ -1337,7 +1476,7 @@ private struct FocusWindowView: View {
                     }
 
                     if tasks.isEmpty {
-                        Text("No linked tasks yet.")
+                        Text(NSLocalizedString("timer.label.no_linked_tasks", comment: ""))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     } else {
@@ -1367,7 +1506,7 @@ private struct FocusWindowView: View {
                     }
                 }
             } else {
-                Text("No activity selected.")
+                Text(NSLocalizedString("common.label.no_activity", comment: ""))
                     .font(.body)
                     .foregroundStyle(.secondary)
             }
@@ -1613,10 +1752,10 @@ struct ActivityEditorSheet: View {
 
     private var footerBar: some View {
         HStack {
-            Text("You can edit activities later from the Timer page.")
+            Text(NSLocalizedString("timer.help.edit_activities", comment: ""))
                 .rootsCaption()
             Spacer()
-            Button("Cancel") { dismiss() }
+            Button(NSLocalizedString("common.button.cancel", comment: "")) { dismiss() }
             Button(isNew ? "Create" : "Save") {
                 let new = LocalTimerActivity(
                     id: activity?.id ?? UUID(),

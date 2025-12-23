@@ -366,9 +366,9 @@ struct CoursesPageView: View {
             Image(systemName: "books.vertical")
                 .font(DesignSystem.Typography.body)
                 .foregroundStyle(.secondary)
-            Text("Select or create a course")
+            Text(NSLocalizedString("courses.empty.select", comment: ""))
                 .font(DesignSystem.Typography.subHeader)
-            Text("Your course overview will appear here.")
+            Text(NSLocalizedString("courses.empty.overview", comment: ""))
                 .font(DesignSystem.Typography.caption)
                 .foregroundStyle(.secondary)
         }
@@ -391,7 +391,7 @@ struct CoursesSidebarView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Header Section
             VStack(alignment: .leading, spacing: 4) {
-                Text("Courses")
+                Text(NSLocalizedString("courses.label.courses", comment: ""))
                     .font(DesignSystem.Typography.body)
                 Text(currentTerm)
                     .font(DesignSystem.Typography.caption)
@@ -567,7 +567,7 @@ struct CoursesPageDetailView: View {
 
                 VStack(alignment: .trailing, spacing: 6) {
                     GradeRing(gradeInfo: course.gradeInfo)
-                    Button("Edit") { onEdit() }
+                    Button(NSLocalizedString("common.button.edit", comment: "")) { onEdit() }
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
@@ -601,7 +601,7 @@ struct CoursesPageDetailView: View {
 
             if course.meetingTimes.isEmpty {
                 VStack(alignment: .leading, spacing: RootsSpacing.s) {
-                    Text("No meetings added yet.")
+                    Text(NSLocalizedString("courses.empty.no_meetings", comment: ""))
                         .rootsBodySecondary()
 
                 }
@@ -658,7 +658,7 @@ struct CoursesPageDetailView: View {
                     .padding(.top, 6)
             } else {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("No syllabus added yet.")
+                    Text(NSLocalizedString("courses.empty.no_syllabus", comment: ""))
                         .font(DesignSystem.Typography.caption)
                         .foregroundStyle(.secondary)
                     Text("You’ll eventually be able to import this from a syllabus parser.")

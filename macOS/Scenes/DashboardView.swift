@@ -195,7 +195,7 @@ struct DashboardView: View {
                         Text(String(localized: "dashboard.calendar.access_denied"))
                             .rootsBody()
                         Spacer()
-                        Button("Open Settings") {
+                        Button(NSLocalizedString("common.button.open_settings", comment: "")) {
                             calendarManager.openSystemPrivacySettings()
                         }
                         .buttonStyle(RootsLiquidButtonStyle())
@@ -225,7 +225,7 @@ struct DashboardView: View {
                         energyButton("High", level: .high)
                         energyButton("Medium", level: .medium)
                         energyButton("Low", level: .low)
-                        plannerButton("Open Planner")
+                        plannerButton(NSLocalizedString("common.button.open_planner", comment: ""))
                     }
                     .frame(maxWidth: .infinity)
                 }

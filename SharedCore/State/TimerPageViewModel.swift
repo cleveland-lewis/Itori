@@ -139,8 +139,9 @@ final class TimerPageViewModel: ObservableObject {
 
         LOG_UI(.info, "Timer", "Started session \(session.id) for activity=\(String(describing: session.activityID)) mode=\(currentMode.rawValue)")
         
-        // Play timer start feedback
+        // Play timer start feedback (audio + haptic)
         Task { @MainActor in
+            AudioFeedbackService.shared.playTimerStart()
             Feedback.shared.timerStart()
         }
         
@@ -153,6 +154,13 @@ final class TimerPageViewModel: ObservableObject {
         s.state = .paused
         currentSession = s
         LOG_UI(.info, "Timer", "Paused session \(s.id)")
+        
+        // Play pause feedback (audio + haptic)
+        Task { @MainActor in
+            AudioFeedbackService.shared.playTimerPause()
+            Feedback.shared.timerStop()
+        }
+        
         cancelCompletionNotification()
         persistState()
     }
@@ -163,6 +171,13 @@ final class TimerPageViewModel: ObservableObject {
         s.state = .running
         currentSession = s
         LOG_UI(.info, "Timer", "Resumed session \(s.id)")
+        
+        // Play resume feedback (same as start)
+        Task { @MainActor in
+            AudioFeedbackService.shared.playTimerStart()
+            Feedback.shared.timerStart()
+        }
+        
         scheduleCompletionNotification()
         persistState()
     }
@@ -180,8 +195,9 @@ final class TimerPageViewModel: ObservableObject {
             isOnBreak.toggle()
         }
         
-        // Play feedback based on completion state
+        // Play end feedback (audio + haptic)
         Task { @MainActor in
+            AudioFeedbackService.shared.playTimerEnd()
             if completed {
                 Feedback.shared.timerStop()  // Success haptic
             } else {

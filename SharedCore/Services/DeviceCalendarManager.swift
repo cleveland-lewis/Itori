@@ -43,6 +43,17 @@ final class DeviceCalendarManager: ObservableObject {
         }
     }
 
+    func refreshEvents(from start: Date, to end: Date, reason: String) async {
+        let predicate = store.predicateForEvents(withStart: start, end: end, calendars: nil)
+        let fetched = store.events(matching: predicate)
+
+        await MainActor.run {
+            self.events = fetched
+            self.lastRefreshAt = Date()
+            self.lastRefreshReason = reason
+        }
+    }
+
     func requestFullAccessIfNeeded() async -> Bool {
         let status = EKEventStore.authorizationStatus(for: .event)
 

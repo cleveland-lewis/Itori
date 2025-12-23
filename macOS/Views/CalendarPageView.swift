@@ -1239,7 +1239,7 @@ private struct CalendarSidebarView: View {
                         Image(systemName: "calendar.badge.exclamationmark")
                             .font(.title2)
                             .foregroundStyle(.tertiary)
-                        Text("No events")
+                        Text(NSLocalizedString("calendar.label.no_events", comment: ""))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -1672,7 +1672,7 @@ private struct EventEditSheet: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 8) {
-                Text("Details")
+                Text(NSLocalizedString("common.label.details", comment: ""))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
                     .textCase(.uppercase)
@@ -1734,14 +1734,14 @@ private struct EventEditSheet: View {
                 .padding(.top, 4)
 
             HStack {
-                Button("Cancel") { 
+                Button(NSLocalizedString("common.button.cancel", comment: "")) { 
                     dismiss() 
                 }
                 .keyboardShortcut(.cancelAction)
                 
                 Spacer()
                 
-                Button("Save") {
+                Button(NSLocalizedString("common.button.save", comment: "")) {
                     let updated = EditableEvent(
                         title: title.isEmpty ? item.title : title,
                         category: category,
@@ -2174,12 +2174,12 @@ private struct NewEventPlaceholder: View {
                 .font(.title2.weight(.semibold))
             Text(date.formatted(date: .long, time: .omitted))
                 .foregroundStyle(.secondary)
-            Text("Event creation flow goes here.")
+            Text(NSLocalizedString("calendar.message.event_creation", comment: ""))
                 .foregroundStyle(.secondary)
             Spacer()
             HStack {
                 Spacer()
-                Button("Close") { onDismiss() }
+                Button(NSLocalizedString("common.button.close", comment: "")) { onDismiss() }
                     .keyboardShortcut(.cancelAction)
             }
         }

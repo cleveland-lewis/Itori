@@ -1846,14 +1846,14 @@ private struct EventEditSheet: View {
                 .padding(.top, 4)
 
             HStack {
-                Button("Cancel") { 
+                Button(NSLocalizedString("common.button.cancel", comment: "")) { 
                     dismiss() 
                 }
                 .keyboardShortcut(.cancelAction)
                 
                 Spacer()
                 
-                Button("Save") {
+                Button(NSLocalizedString("common.button.save", comment: "")) {
                     let updated = EditableEvent(
                         title: title.isEmpty ? item.title : title,
                         category: category,
@@ -2339,12 +2339,12 @@ private struct NewEventPlaceholder: View {
                 .font(.title2.weight(.semibold))
             Text(date.formatted(date: .long, time: .omitted))
                 .foregroundStyle(.secondary)
-            Text("Event creation flow goes here.")
+            Text(NSLocalizedString("calendar.message.event_creation", comment: ""))
                 .foregroundStyle(.secondary)
             Spacer()
             HStack {
                 Spacer()
-                Button("Close") { onDismiss() }
+                Button(NSLocalizedString("common.button.close", comment: "")) { onDismiss() }
                     .keyboardShortcut(.cancelAction)
             }
         }

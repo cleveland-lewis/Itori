@@ -36,7 +36,7 @@ struct PracticeTestPageView: View {
             Button("Cancel", role: .cancel) {
                 selectedScheduledTest = nil
             }
-            Button("Start Now") {
+            Button(NSLocalizedString("common.button.start_now", comment: "")) {
                 if let test = selectedScheduledTest {
                     startScheduledTest(test)
                 }
@@ -79,9 +79,9 @@ struct PracticeTestPageView: View {
     private var headerView: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Practice Tests")
+                Text(NSLocalizedString("practice.label.title", comment: ""))
                     .font(.largeTitle.bold())
-                Text("Test your knowledge and track progress")
+                Text(NSLocalizedString("practice.label.subtitle", comment: ""))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -108,10 +108,10 @@ struct PracticeTestPageView: View {
                 .font(.system(size: 64))
                 .foregroundStyle(.secondary)
             
-            Text("No Practice Tests Yet")
+            Text(NSLocalizedString("practice.empty.title", comment: ""))
                 .font(.title2.bold())
             
-            Text("Create your first practice test to start learning")
+            Text(NSLocalizedString("practice.empty.message", comment: ""))
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -176,7 +176,7 @@ struct PracticeTestPageView: View {
     
     private var testHistoryView: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Recent Tests")
+            Text(NSLocalizedString("practice.label.recent_tests", comment: ""))
                 .font(.headline)
             
             ForEach(practiceStore.tests.sorted { $0.createdAt > $1.createdAt }) { test in
@@ -271,7 +271,7 @@ struct PracticeTestPageView: View {
             ProgressView()
                 .scaleEffect(1.5)
             
-            Text("Generating Practice Test")
+            Text(NSLocalizedString("practice.message.generating", comment: ""))
                 .font(.title2.bold())
             
             Text("Creating \(test.questionCount) questions for \(test.courseName)")

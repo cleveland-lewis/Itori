@@ -24,6 +24,8 @@ final class AutoScheduler {
         let unscheduledTasks: [AutoScheduleTask]
     }
 
+    private static let autoScheduleTagPrefix = "[RootsAutoSchedule:"
+
     private struct TimeSlot {
         var startDate: Date
         var duration: TimeInterval // seconds
@@ -109,7 +111,7 @@ final class AutoScheduler {
         event.title = task.title
         event.startDate = start
         event.endDate = start.addingTimeInterval(TimeInterval(durationMinutes * 60))
-        event.notes = "Auto-scheduled study block"
+        event.notes = "Auto-scheduled study block\n\(autoScheduleTagPrefix)\(task.id.uuidString)]"
         return event
     }
 

@@ -1,8 +1,8 @@
 /* 
- * Localizable.strings (Traditional Chinese)
+ * Localizable.strings (Simplified Chinese)
  * Roots
  *
- * Chinese (Traditional) localization strings for the Roots app
+ * Chinese (Simplified) localization strings for the Roots app
  */
 
 /* Common */
@@ -10,8 +10,6 @@
 /* Navigation */
 
 /* Timer/Focus */
-"timer.display.digital" = "數位";
-"timer.display.analog" = "類比";
 
 /* Assignments */
 
@@ -134,11 +132,11 @@
 "assignments.detail.select_prompt" = "Select an assignment to see details.";
 "assignments.detail.empty_title" = "Select an assignment";
 "assignments.detail.empty_subtitle" = "Details, plan steps, and actions will appear here.";
-"assignments.selection.copy_suffix" = " (copy)";
 "assignments.selection.cut" = "Cut";
 "assignments.selection.copy" = "Copy";
 "assignments.selection.duplicate" = "Duplicate";
 "assignments.selection.paste" = "Paste";
+"assignments.selection.copy_suffix" = " (copy)";
 "assignments.editor.section.task" = "Task";
 "assignments.editor.section.timing" = "Timing";
 "assignments.editor.section.status" = "Status";

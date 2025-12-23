@@ -57,6 +57,8 @@
 "timer.mode.countdown" = "Countdown";
 "timer.mode.pomodoro" = "Pomodoro";
 "timer.mode.stopwatch_description" = "Stopwatch counts up while running.";
+"timer.display.digital" = "Digital";
+"timer.display.analog" = "Analog";
 
 /* Timer Debug */
 "timer.debug.label" = "Debug";
@@ -449,3 +451,78 @@
 "courses.meeting.weight" = "%d%%";
 
 /* Notifications */
+
+/* Common UI Elements */
+"common.button.change" = "Change";
+"common.button.edit" = "Edit";
+"common.button.delete" = "Delete";
+"common.button.cancel" = "Cancel";
+"common.button.save" = "Save";
+"common.button.close" = "Close";
+"common.button.reset" = "Reset";
+"common.button.open_settings" = "Open Settings";
+"common.button.open_planner" = "Open Planner";
+"common.button.start_now" = "Start Now";
+"common.button.reset_totals" = "Reset totals";
+
+/* Common Labels */
+"common.label.today" = "Today";
+"common.label.details" = "Details";
+"common.label.loading" = "Loading…";
+"common.label.no_activity" = "No activity selected";
+"common.label.current_activity" = "Current Activity";
+"common.label.activities" = "Activities";
+"common.label.all_activities" = "All Activities";
+"common.label.pinned" = "Pinned";
+"common.label.select_prompt" = "Select an activity to view details.";
+
+/* Assignments Page */
+"assignments.button.plan_day" = "Plan Day";
+"assignments.button.filters" = "Filters";
+"assignments.label.any" = "Any";
+"assignments.label.all_courses" = "All courses";
+"assignments.section.by_course" = "By Course";
+"assignments.section.upcoming_load" = "Upcoming Load";
+
+/* Calendar Page */
+"calendar.label.no_events" = "No events";
+"calendar.message.event_creation" = "Event creation flow goes here.";
+
+/* Courses Page */
+"courses.empty.select" = "Select or create a course";
+"courses.empty.overview" = "Your course overview will appear here.";
+"courses.label.courses" = "Courses";
+"courses.empty.no_meetings" = "No meetings added yet.";
+"courses.empty.no_syllabus" = "No syllabus added yet.";
+"courses.message.syllabus_parser" = "You'll eventually be able to import this from a syllabus parser.";
+
+/* Grades Page */
+"grades.label.grades" = "Grades";
+"grades.label.courses" = "Courses";
+"grades.column.course" = "Course";
+"grades.column.grade" = "Grade";
+"grades.column.credits" = "Credits";
+"grades.label.overall_status" = "Overall Status";
+"grades.label.no_grade" = "No grade yet";
+
+/* Planner Page */
+"planner.message.loading" = "Loading sessions…";
+"planner.empty.no_sessions" = "No sessions for this day yet.";
+"planner.message.run_plan_day" = "Run Plan Day to schedule tasks or add a task manually.";
+"planner.message.caught_up" = "You're caught up.";
+"planner.message.overdue_info" = "Anything overdue will appear here so the planner can prioritize it.";
+
+/* Practice Test Page */
+"practice.label.title" = "Practice Tests";
+"practice.label.subtitle" = "Test your knowledge and track progress";
+"practice.empty.title" = "No Practice Tests Yet";
+"practice.empty.message" = "Create your first practice test to start learning";
+"practice.label.recent_tests" = "Recent Tests";
+"practice.message.generating" = "Generating Practice Test";
+"practice.message.creating" = "Creating %d questions for %@";
+"practice.prompt.start_now" = "Would you like to start '%@' now? This will create a new test attempt.";
+
+/* Timer Additional */
+"timer.label.tasks_for_activity" = "Tasks for this Activity";
+"timer.label.no_linked_tasks" = "No linked tasks yet.";
+"timer.help.edit_activities" = "You can edit activities later from the Timer page.";

@@ -29,6 +29,8 @@ struct RootsApp: App {
     @StateObject private var preferences = AppPreferences()
     @StateObject private var parsingStore = SyllabusParsingStore.shared
     @StateObject private var eventsCountStore = EventsCountStore()
+    @StateObject private var modalRouter = AppModalRouter.shared
+    @StateObject private var calendarRefresh = CalendarRefreshCoordinator.shared
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -88,6 +90,8 @@ struct RootsApp: App {
                 .environmentObject(plannerStore)
                 .environmentObject(plannerCoordinator)
                 .environmentObject(parsingStore)
+                .environmentObject(modalRouter)
+                .environmentObject(calendarRefresh)
                 .detectReduceMotion()
                 .onAppear {
                     LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")

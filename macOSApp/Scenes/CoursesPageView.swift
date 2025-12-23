@@ -381,7 +381,7 @@ struct CoursesSidebarView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Header Section
             VStack(alignment: .leading, spacing: 4) {
-                Text("Courses")
+                Text(NSLocalizedString("courses.label.courses", comment: ""))
                     .font(DesignSystem.Typography.body)
                 Text(currentTerm)
                     .font(DesignSystem.Typography.caption)
@@ -553,7 +553,7 @@ struct CoursesPageDetailView: View {
 
                 VStack(alignment: .trailing, spacing: 6) {
                     GradeRing(gradeInfo: course.gradeInfo)
-                    Button("Edit") { onEdit() }
+                    Button(NSLocalizedString("common.button.edit", comment: "")) { onEdit() }
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)

@@ -278,14 +278,14 @@ struct AssignmentsPageView: View {
 
     private var filterPopover: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("assignments.action.filters")
+            Text(String(localized: "assignments.action.filters"))
                 .font(DesignSystem.Typography.subHeader)
             Divider()
             Picker(String(localized: "assignments.filter.status"), selection: Binding(
                 get: { filterStatus },
                 set: { filterStatus = $0 }
             )) {
-                Text("assignments.filter.any").tag(AssignmentStatus?.none)
+                Text(String(localized: "assignments.filter.any")).tag(AssignmentStatus?.none)
                 ForEach(AssignmentStatus.allCases) { status in
                     Text(status.label).tag(AssignmentStatus?.some(status))
                 }
@@ -296,7 +296,7 @@ struct AssignmentsPageView: View {
                 get: { filterCourse },
                 set: { filterCourse = $0 }
             )) {
-                Text("assignments.filter.all_courses").tag(String?.none)
+                Text(String(localized: "assignments.filter.all_courses")).tag(String?.none)
                 ForEach(uniqueCourses, id: \.self) { course in
                     Text(course).tag(String?.some(course))
                 }
@@ -577,7 +577,7 @@ struct TodaySummaryCard: View {
 
         RootsCard(compact: true) {
             HStack {
-                Text("assignments.section.today").rootsSectionHeader()
+                Text(String(localized: "assignments.section.today")).rootsSectionHeader()
                 Spacer()
             }
 
@@ -620,7 +620,7 @@ struct ByCourseSummaryCard: View {
             .map { CourseLoad(course: $0.key, count: $0.value.count) }
             .sorted { $0.count > $1.count }
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-            Text("assignments.section.by_course").rootsSectionHeader()
+            Text(String(localized: "assignments.section.by_course")).rootsSectionHeader()
 
             ForEach(grouped.prefix(4)) { item in
                 HStack {
@@ -658,7 +658,7 @@ struct LoadTimelineCard: View {
         let next7 = (0..<7).map { calendar.date(byAdding: .day, value: $0, to: today) ?? today }
 
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-            Text("assignments.section.upcoming_load").rootsSectionHeader()
+            Text(String(localized: "assignments.section.upcoming_load")).rootsSectionHeader()
 
             HStack(alignment: .bottom, spacing: 12) {
                 ForEach(next7, id: \.self) { day in
@@ -726,10 +726,10 @@ struct UpcomingCountCard: View {
 
         RootsCard(compact: true) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("assignments.section.upcoming").rootsSectionHeader()
+                Text(String(localized: "assignments.section.upcoming")).rootsSectionHeader()
                 Text("\(upcoming)")
                     .font(.title.bold())
-                Text("assignments.stats.assignments_due")
+                Text(String(localized: "assignments.stats.assignments_due"))
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }
@@ -752,10 +752,10 @@ struct MissedCountCard: View {
 
         RootsCard(compact: true) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("assignments.section.missed").rootsSectionHeader()
+                Text(String(localized: "assignments.section.missed")).rootsSectionHeader()
                 Text("\(missed)")
                     .font(.title.bold())
-                Text("assignments.stats.overdue_assignments")
+                Text(String(localized: "assignments.stats.overdue_assignments"))
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }
@@ -992,7 +992,7 @@ struct AssignmentDetailPanel: View {
 
     private func gradeImpact(for assignment: Assignment) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("assignments.detail.grade_impact")
+            Text(String(localized: "assignments.detail.grade_impact"))
                 .font(DesignSystem.Typography.subHeader)
             if let weight = assignment.weightPercent {
                 Text(String.localizedStringWithFormat(
@@ -1005,7 +1005,7 @@ struct AssignmentDetailPanel: View {
                 ProgressView(value: min(max(weight / 100, 0), 1))
                     .progressViewStyle(.linear)
             } else {
-                Text("assignments.detail.no_weight")
+                Text(String(localized: "assignments.detail.no_weight"))
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }
@@ -1015,7 +1015,7 @@ struct AssignmentDetailPanel: View {
 
     private func planSection(for assignment: Assignment) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("assignments.detail.plan")
+            Text(String(localized: "assignments.detail.plan"))
                 .font(DesignSystem.Typography.subHeader)
             ForEach(assignment.plan) { step in
                 HStack {
@@ -1048,10 +1048,10 @@ struct AssignmentDetailPanel: View {
 
     private func actionsSection(for assignment: Assignment) -> some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-            Text("assignments.detail.actions").rootsSectionHeader()
+            Text(String(localized: "assignments.detail.actions")).rootsSectionHeader()
             HStack(spacing: RootsSpacing.s) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("assignments.detail.state")
+                    Text(String(localized: "assignments.detail.state"))
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                     Button(String(localized: "assignments.detail.mark_completed")) {
@@ -1072,7 +1072,7 @@ struct AssignmentDetailPanel: View {
                     .controlSize(.small)
                 }
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("assignments.detail.planning")
+                    Text(String(localized: "assignments.detail.planning"))
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                     Button(String(localized: "assignments.detail.planner")) {
@@ -1083,7 +1083,7 @@ struct AssignmentDetailPanel: View {
                     .accessibilityLabel(String(localized: "assignments.detail.planner_accessibility"))
                 }
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("assignments.detail.execution")
+                    Text(String(localized: "assignments.detail.execution"))
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                     Button(String(localized: "assignments.detail.timer")) {
@@ -1131,7 +1131,7 @@ struct AssignmentDetailPanel: View {
                 onDelete(assignment)
                 self.assignment = nil
             } label: {
-                Text("assignments.detail.delete")
+                Text(String(localized: "assignments.detail.delete"))
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
@@ -1207,7 +1207,7 @@ struct AssignmentEditorSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: RootsSpacing.l) {
                 VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                    Text("assignments.editor.section.task").rootsSectionHeader()
+                    Text(String(localized: "assignments.editor.section.task")).rootsSectionHeader()
                     RootsFormRow(label: String(localized: "assignments.editor.field.title")) {
                         TextField(String(localized: "assignments.editor.field.title"), text: $title)
                             .textFieldStyle(.roundedBorder)
@@ -1224,7 +1224,7 @@ struct AssignmentEditorSheet: View {
                 }
 
                     VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                        Text("assignments.editor.section.timing").rootsSectionHeader()
+                        Text(String(localized: "assignments.editor.section.timing")).rootsSectionHeader()
                         RootsFormRow(label: String(localized: "assignments.editor.field.due_date")) {
                             DatePicker("", selection: $dueDate)
                                 .labelsHidden()
@@ -1271,7 +1271,7 @@ struct AssignmentEditorSheet: View {
                     }
 
                     VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                        Text("assignments.editor.section.status").rootsSectionHeader()
+                        Text(String(localized: "assignments.editor.section.status")).rootsSectionHeader()
                         RootsFormRow(label: String(localized: "assignments.editor.field.status")) {
                             Picker("", selection: $status) {
                                 ForEach(AssignmentStatus.allCases) { s in
@@ -1283,7 +1283,7 @@ struct AssignmentEditorSheet: View {
                     }
 
                     VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                        Text("assignments.editor.field.notes").rootsSectionHeader()
+                        Text(String(localized: "assignments.editor.field.notes")).rootsSectionHeader()
                         TextEditor(text: $notes)
                             .textEditorStyle(.plain)
                             .scrollContentBackground(.hidden)
@@ -1352,7 +1352,7 @@ struct AssignmentEditorSheet: View {
         return RootsFormRow(label: String(localized: "assignments.editor.field.course")) {
             if activeCourses.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("assignments.editor.course.empty")
+                    Text(String(localized: "assignments.editor.course.empty"))
                         .foregroundStyle(.secondary)
                     Button(String(localized: "assignments.editor.course.add")) {
                         // TODO: open Settings → Courses
@@ -1374,7 +1374,7 @@ struct AssignmentEditorSheet: View {
             }
         } helper: {
             if selectedCourseId == nil {
-                Text("assignments.editor.course.helper")
+                Text(String(localized: "assignments.editor.course.helper"))
                     .rootsCaption()
                     .foregroundStyle(.red)
             }

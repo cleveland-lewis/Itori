@@ -124,13 +124,16 @@ struct GradesPageView: View {
         .onReceive(gradesStore.$grades) { _ in
             refreshCourses()
         }
+        .onReceive(NotificationCenter.default.publisher(for: .addGradeRequested)) { _ in
+            showAddGradeSheet = true
+        }
     }
 
     // MARK: Header
 
     private var header: some View {
         HStack(alignment: .center, spacing: 12) {
-            Text("Grades")
+            Text(NSLocalizedString("grades.label.grades", comment: ""))
                 .font(.title2.weight(.semibold))
 
             Spacer()
@@ -223,13 +226,13 @@ struct GradesPageView: View {
     private var courseListCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Courses")
+                Text(NSLocalizedString("grades.label.courses", comment: ""))
                     .font(.subheadline.weight(.semibold))
                 Spacer()
                 Picker("Sort", selection: .constant(0)) {
-                    Text("Course").tag(0)
-                    Text("Grade").tag(1)
-                    Text("Credits").tag(2)
+                    Text(NSLocalizedString("grades.column.course", comment: "")).tag(0)
+                    Text(NSLocalizedString("grades.column.grade", comment: "")).tag(1)
+                    Text(NSLocalizedString("grades.column.credits", comment: "")).tag(2)
                 }
                 .pickerStyle(.menu)
             }
@@ -507,7 +510,7 @@ struct OverallStatusCard: View {
         let overallPercent = weightedOverallPercent
         let gpa = gpaValue(overallPercent: overallPercent)
         VStack(alignment: .leading, spacing: 10) {
-            Text("Overall Status")
+            Text(NSLocalizedString("grades.label.overall_status", comment: ""))
                 .font(.subheadline.weight(.semibold))
 
             Text("GPA \(String(format: "%.2f", gpa)) / \(String(format: "%.1f", gpaScale))")
@@ -591,7 +594,7 @@ struct CourseGradeRow: View {
                         if let pct = course.currentPercentage {
                             Text("\(String(format: "%.1f", pct))%")
                         } else {
-                            Text("No grade yet")
+                            Text(NSLocalizedString("grades.label.no_grade", comment: ""))
                         }
                         if let letter = course.letterGrade { Text("· \(letter)") }
                         Text("· \(course.creditHours) credits")

@@ -18,6 +18,7 @@ final class FocusManager: ObservableObject {
     
     private var timerCancellable: AnyCancellable?
     @Published var settings: AppSettingsModel = AppSettingsModel.shared
+    private let audioService = AudioFeedbackService.shared
     
     init() {
         pomodoroSessions = settings.pomodoroIterations
@@ -29,10 +30,18 @@ final class FocusManager: ObservableObject {
         if activeSession == nil, let activity = activities.first(where: { $0.id == selectedActivityID }) {
             activeSession = LocalTimerSession(id: UUID(), activityID: activity.id, mode: mode, startDate: Date(), endDate: nil, duration: 0)
         }
+        
+        // Play pleasant start sound
+        audioService.playTimerStart()
+        Feedback.shared.timerStart()
     }
 
     func pauseTimer() {
         isRunning = false
+        
+        // Play slightly downtone pause sound
+        audioService.playTimerPause()
+        Feedback.shared.timerStop()
     }
 
     func resetTimer() {
@@ -44,7 +53,12 @@ final class FocusManager: ObservableObject {
     }
     
     func endTimerSession() {
-        pauseTimer()
+        isRunning = false
+        
+        // Play flat end tone
+        audioService.playTimerEnd()
+        Feedback.shared.timerStop()
+        
         if var session = activeSession {
             session.endDate = Date()
             let elapsed = Date().timeIntervalSince(session.startDate)

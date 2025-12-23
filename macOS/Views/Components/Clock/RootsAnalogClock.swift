@@ -14,11 +14,35 @@ struct RootsAnalogClock: View {
     var body: some View {
         if let timerSeconds = timerSeconds {
             // Timer mode: display timer/stopwatch time (defaults to 12:00:00 when 0)
-            let (hours, minutes, seconds) = timeComponents(from: timerSeconds)
+            let components = timeComponents(from: timerSeconds)
             ZStack {
-                face
-                ticks
-                hands(hours: hours, minutes: minutes, seconds: seconds)
+                StopwatchBezel(diameter: diameter, accentColor: accentColor)
+                StopwatchTicks(diameter: diameter)
+                StopwatchNumerals(diameter: diameter)
+                StopwatchSubDial(
+                    diameter: diameter * 0.32,
+                    value: components.minutes / 60.0,
+                    maxValue: 60,
+                    numerals: [15, 30, 45, 60],
+                    accentColor: accentColor
+                )
+                .offset(y: radius * 0.28)
+                StopwatchSubDial(
+                    diameter: diameter * 0.26,
+                    value: components.hours / 12.0,
+                    maxValue: 12,
+                    numerals: [3, 6, 9, 12],
+                    accentColor: accentColor
+                )
+                .offset(y: -radius * 0.16)
+                StopwatchHands(
+                    radius: radius,
+                    hours: components.hours,
+                    minutes: components.minutes,
+                    seconds: components.seconds,
+                    showSecondHand: showSecondHand,
+                    accentColor: accentColor
+                )
             }
             .frame(width: diameter, height: diameter)
         } else {
@@ -31,9 +55,33 @@ struct RootsAnalogClock: View {
                 let hours = Double(components.hour ?? 0 % 12) + minutes / 60
 
                 ZStack {
-                    face
-                    ticks
-                    hands(hours: hours, minutes: minutes, seconds: seconds)
+                    StopwatchBezel(diameter: diameter, accentColor: accentColor)
+                    StopwatchTicks(diameter: diameter)
+                    StopwatchNumerals(diameter: diameter)
+                    StopwatchSubDial(
+                        diameter: diameter * 0.32,
+                        value: minutes / 60.0,
+                        maxValue: 60,
+                        numerals: [15, 30, 45, 60],
+                        accentColor: accentColor
+                    )
+                    .offset(y: radius * 0.28)
+                    StopwatchSubDial(
+                        diameter: diameter * 0.26,
+                        value: hours / 12.0,
+                        maxValue: 12,
+                        numerals: [3, 6, 9, 12],
+                        accentColor: accentColor
+                    )
+                    .offset(y: -radius * 0.16)
+                    StopwatchHands(
+                        radius: radius,
+                        hours: hours,
+                        minutes: minutes,
+                        seconds: seconds,
+                        showSecondHand: showSecondHand,
+                        accentColor: accentColor
+                    )
                 }
                 .frame(width: diameter, height: diameter)
             }
@@ -61,55 +109,143 @@ struct RootsAnalogClock: View {
         
         return (hours: hours, minutes: minutes, seconds: seconds)
     }
+}
 
-    private var face: some View {
+struct StopwatchBezel: View {
+    let diameter: CGFloat
+    let accentColor: Color
+
+    var body: some View {
         ZStack {
             Circle()
                 .fill(.clear)
                 .overlay(
-                    Circle().stroke(Color.secondary.opacity(0.15), lineWidth: 1)
+                    Circle().stroke(Color.primary.opacity(0.28), lineWidth: 2)
                 )
+            Circle()
+                .stroke(Color.primary.opacity(0.12), lineWidth: 1)
+                .frame(width: diameter * 0.88, height: diameter * 0.88)
+            Circle()
+                .stroke(accentColor.opacity(0.18), lineWidth: 1)
+                .frame(width: diameter * 0.68, height: diameter * 0.68)
+        }
+        .drawingGroup()
+    }
+}
 
-            ForEach(1..<4) { idx in
+struct StopwatchTicks: View {
+    let diameter: CGFloat
+
+    private var radius: CGFloat { diameter / 2 }
+
+    var body: some View {
+        ZStack {
+            ForEach(0..<60) { idx in
+                let isMajor = idx % 5 == 0
+                Capsule(style: .continuous)
+                    .fill(Color.primary.opacity(isMajor ? 0.75 : 0.45))
+                    .frame(width: isMajor ? 3.5 : 2, height: isMajor ? 14 : 8)
+                    .offset(y: -radius + (isMajor ? 16 : 14))
+                    .rotationEffect(.degrees(Double(idx) * 6))
+            }
+        }
+        .drawingGroup()
+    }
+}
+
+struct StopwatchNumerals: View {
+    let diameter: CGFloat
+
+    private var radius: CGFloat { diameter / 2 }
+
+    var body: some View {
+        let fontSize = diameter * 0.07
+        ZStack {
+            ForEach(1...12, id: \.self) { idx in
+                let value = idx * 5
+                let angle = Double(value) / 60.0 * 360.0 - 90.0
+                Text("\(value)")
+                    .font(.system(size: fontSize, weight: .semibold, design: .rounded))
+                    .foregroundStyle(Color.primary.opacity(0.7))
+                    .frame(width: fontSize * 2.2, height: fontSize * 1.6, alignment: .center)
+                    .position(
+                        x: radius + cos(angle * .pi / 180) * radius * 0.76,
+                        y: radius + sin(angle * .pi / 180) * radius * 0.76
+                    )
+            }
+        }
+        .drawingGroup()
+    }
+}
+
+struct StopwatchSubDial: View {
+    let diameter: CGFloat
+    let value: Double
+    let maxValue: Int
+    let numerals: [Int]
+    let accentColor: Color
+
+    private var radius: CGFloat { diameter / 2 }
+
+    var body: some View {
+        ZStack {
+            ZStack {
                 Circle()
-                    .stroke(idx == 2 ? accentColor : Color.secondary.opacity(0.12), lineWidth: 1)
-                    .frame(width: diameter * (1 - CGFloat(idx) * 0.15), height: diameter * (1 - CGFloat(idx) * 0.15))
+                    .stroke(Color.primary.opacity(0.18), lineWidth: 1)
+                ForEach(0..<60) { idx in
+                    let isMajor = idx % 5 == 0
+                    Capsule(style: .continuous)
+                        .fill(Color.primary.opacity(isMajor ? 0.6 : 0.35))
+                        .frame(width: isMajor ? 2.5 : 1.5, height: isMajor ? 8 : 5)
+                        .offset(y: -radius + (isMajor ? 8 : 7))
+                        .rotationEffect(.degrees(Double(idx) * 6))
+                }
+
+                ForEach(numerals, id: \.self) { numeral in
+                    let mapped = numeral == maxValue ? 0 : numeral
+                    let angle = Double(mapped) / Double(maxValue) * 360.0 - 90.0
+                    Text("\(numeral)")
+                        .font(.system(size: diameter * 0.12, weight: .semibold, design: .rounded))
+                        .foregroundStyle(Color.primary.opacity(0.65))
+                        .frame(width: diameter * 0.28, height: diameter * 0.2, alignment: .center)
+                        .position(
+                            x: radius + cos(angle * .pi / 180) * radius * 0.72,
+                            y: radius + sin(angle * .pi / 180) * radius * 0.72
+                        )
+                }
             }
+            .drawingGroup()
+
+            Capsule(style: .continuous)
+                .fill(Color.primary.opacity(0.9))
+                .frame(width: 2, height: radius * 0.7)
+                .offset(y: -radius * 0.35)
+                .rotationEffect(.degrees(value * 360))
+
+            Circle()
+                .fill(accentColor.opacity(0.4))
+                .frame(width: 5, height: 5)
         }
+        .frame(width: diameter, height: diameter)
     }
+}
 
-    private var ticks: some View {
+struct StopwatchHands: View {
+    let radius: CGFloat
+    let hours: Double
+    let minutes: Double
+    let seconds: Double
+    let showSecondHand: Bool
+    let accentColor: Color
+
+    var body: some View {
         ZStack {
-            // Cardinal ticks
-            ForEach([0, 90, 180, 270], id: \.self) { angle in
-                Capsule(style: .continuous)
-                    .fill(Color.primary.opacity(0.65))
-                    .frame(width: 6, height: 18)
-                    .offset(y: -radius + 14)
-                    .rotationEffect(.degrees(Double(angle)))
-            }
-
-            // Subtle hour ticks
-            ForEach(0..<12) { idx in
-                Capsule(style: .continuous)
-                    .fill(Color.secondary.opacity(0.4))
-                    .frame(width: 3, height: 10)
-                    .offset(y: -radius + 12)
-                    .rotationEffect(.degrees(Double(idx) * 30))
-            }
-        }
-    }
-
-    private func hands(hours: Double, minutes: Double, seconds: Double) -> some View {
-        ZStack {
-            // Hour hand
             Capsule(style: .continuous)
                 .fill(Color.primary)
                 .frame(width: 8, height: radius * 0.5)
                 .offset(y: -radius * 0.25)
                 .rotationEffect(.degrees((hours / 12) * 360))
 
-            // Minute hand
             Capsule(style: .continuous)
                 .fill(Color.primary.opacity(0.9))
                 .frame(width: 6, height: radius * 0.7)

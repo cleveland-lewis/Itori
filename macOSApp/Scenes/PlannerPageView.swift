@@ -610,7 +610,7 @@ private extension PlannerPageView {
     private var plannerLoadingState: some View {
         HStack(spacing: 8) {
             ProgressView()
-            Text("Loading sessions…")
+            Text(NSLocalizedString("planner.message.loading", comment: ""))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -620,9 +620,9 @@ private extension PlannerPageView {
 
     private var plannerEmptyState: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("No sessions for this day yet.")
+            Text(NSLocalizedString("planner.empty.no_sessions", comment: ""))
                 .font(.subheadline.weight(.semibold))
-            Text("Run Plan Day to schedule tasks or add a task manually.")
+            Text(NSLocalizedString("planner.message.run_plan_day", comment: ""))
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
