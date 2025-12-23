@@ -57,7 +57,6 @@ private struct TapPassthroughView: NSViewRepresentable {
         view.wantsLayer = true
         view.layer?.backgroundColor = NSColor.clear.cgColor
         let recognizer = NSClickGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap))
-        recognizer.cancelsTouchesInView = false
         view.addGestureRecognizer(recognizer)
         return view
     }
