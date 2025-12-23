@@ -105,11 +105,11 @@ struct PlanGraphSchedulerIntegration {
                 let prerequisites = graph.getPrerequisites(for: dependent.id)
                 let allPrerequisitesComplete = prerequisites.allSatisfy { $0.isCompleted }
                 
-                if allPrerequisitesComplete {
-                    newlyUnblocked.append(dependent.assignmentId)
+                if allPrerequisitesComplete, let assignmentId = dependent.assignmentId {
+                    newlyUnblocked.append(assignmentId)
                     
                     LOG_SCHEDULER(.info, "AutoUnblock", "Task unblocked", metadata: [
-                        "taskId": dependent.assignmentId.uuidString,
+                        "taskId": assignmentId.uuidString,
                         "taskTitle": dependent.title,
                         "unlockedBy": completedTaskId.uuidString
                     ])
@@ -179,11 +179,9 @@ struct PlanGraphSchedulerIntegration {
         
         let removedCount = result.blocks.count - validBlocks.count
         
-        var updatedResult = result
-        updatedResult.blocks = validBlocks
-        
+        var updatedLog = result.log
         if removedCount > 0 {
-            updatedResult.log.append("Removed \(removedCount) invalid blocks due to dependency changes")
+            updatedLog.append("Removed \(removedCount) invalid blocks due to dependency changes")
             
             LOG_SCHEDULER(.info, "BlockValidation", "Removed invalid blocks", metadata: [
                 "removed": "\(removedCount)",
@@ -191,7 +189,11 @@ struct PlanGraphSchedulerIntegration {
             ])
         }
         
-        return updatedResult
+        return ScheduleResult(
+            blocks: validBlocks,
+            unscheduledTasks: result.unscheduledTasks,
+            log: updatedLog
+        )
     }
     
     // MARK: - Blocked Reason Tracking
@@ -307,7 +309,7 @@ extension AIScheduler {
         ])
         
         // Generate schedule with only schedulable tasks
-        var result = generateSchedule(
+        let preliminaryResult = generateSchedule(
             tasks: schedulableTasks,
             fixedEvents: fixedEvents,
             constraints: constraints,
@@ -319,19 +321,25 @@ extension AIScheduler {
             !task.isCompleted && !schedulableTasks.contains(where: { $0.id == task.id })
         }
         
-        result.unscheduledTasks.append(contentsOf: blockedTasks)
+        var allUnscheduled = preliminaryResult.unscheduledTasks
+        allUnscheduled.append(contentsOf: blockedTasks)
         
         // Add log entries for blocked tasks
+        var updatedLog = preliminaryResult.log
         for blockedTask in blockedTasks {
             if let reason = PlanGraphSchedulerIntegration.getBlockedReason(
                 for: blockedTask.id,
                 planStore: planStore
             ) {
-                result.log.append("Excluded '\(blockedTask.title)': \(reason)")
+                updatedLog.append("Excluded '\(blockedTask.title)': \(reason)")
             }
         }
         
-        return result
+        return ScheduleResult(
+            blocks: preliminaryResult.blocks,
+            unscheduledTasks: allUnscheduled,
+            log: updatedLog
+        )
     }
 }
 

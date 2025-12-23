@@ -74,11 +74,11 @@ class LocalModelProvider_macOS: AIProvider {
         
         // Use LLM backend for inference
         let response: LLMResponse
-        if options.schema != nil {
+        if options.strictJSON {
             // JSON mode requested
             let jsonString = try await llmService.backend.generateJSON(
                 prompt: fullPrompt,
-                schema: options.schema
+                schema: nil
             )
             response = LLMResponse(
                 text: jsonString,
@@ -199,11 +199,11 @@ class LocalModelProvider_iOS: AIProvider {
         
         // Use LLM backend for inference
         let response: LLMResponse
-        if options.schema != nil {
+        if options.strictJSON {
             // JSON mode requested
             let jsonString = try await llmService.backend.generateJSON(
                 prompt: fullPrompt,
-                schema: options.schema
+                schema: nil
             )
             response = LLMResponse(
                 text: jsonString,
