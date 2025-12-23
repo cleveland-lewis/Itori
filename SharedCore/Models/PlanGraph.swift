@@ -84,15 +84,13 @@ public struct PlanGraph: Codable, Equatable, Sendable {
         }
         
         // Check for duplicate edges
-        let edgeTuples = edges.map { ($0.fromNodeId, $0.toNodeId) }
-        let uniqueEdges = Set(edgeTuples)
-        if edgeTuples.count != uniqueEdges.count {
-            let duplicates = edges.filter { edge in
-                edges.filter { $0.fromNodeId == edge.fromNodeId && $0.toNodeId == edge.toNodeId }.count > 1
+        var seenEdges = Set<String>()
+        for edge in edges {
+            let key = "\(edge.fromNodeId.uuidString)-\(edge.toNodeId.uuidString)"
+            if seenEdges.contains(key) {
+                errors.append(.duplicateEdge(edge))
             }
-            for duplicate in Set(duplicates) {
-                errors.append(.duplicateEdge(duplicate))
-            }
+            seenEdges.insert(key)
         }
         
         // Check for cycles

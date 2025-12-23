@@ -356,7 +356,7 @@ struct CalendarPageView: View {
                     if calendar.isDateInToday(event.startDate) && event.startDate.timeIntervalSinceNow < 0 && event.endDate.timeIntervalSinceNow > 0 {
                         Text(String(localized: "calendar.now"))
                             .font(.caption.weight(.semibold))
-                            .foregroundStyle(.accentColor)
+                            .foregroundStyle(Color.accentColor)
                     } else if isAllDay(event: event) {
                         Text(String(localized: "calendar.all_day"))
                             .font(.caption.weight(.medium))
@@ -372,7 +372,7 @@ struct CalendarPageView: View {
                 // Category color indicator (outline SF Symbol)
                 Image(systemName: categoryIcon(for: event.category))
                     .font(.system(size: 16))
-                    .foregroundStyle(.accentColor)
+                    .foregroundStyle(Color.accentColor)
                     .frame(width: 20)
                 
                 // Event details

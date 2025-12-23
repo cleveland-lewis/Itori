@@ -82,7 +82,7 @@ struct GradesAnalyticsView: View {
     private var whatIfBanner: some View {
         HStack(spacing: 12) {
             Image(systemName: "wand.and.stars")
-                .foregroundStyle(.accentColor)
+                .foregroundStyle(Color.accentColor)
                 .symbolRenderingMode(.hierarchical)
             
             VStack(alignment: .leading, spacing: 2) {
@@ -252,7 +252,7 @@ struct GradesAnalyticsView: View {
                     x: .value("Week", item.week),
                     y: .value("GPA", item.gpa)
                 )
-                .foregroundStyle(.accentColor)
+                .foregroundStyle(Color.accentColor)
                 .interpolationMethod(.catmullRom)
                 
                 AreaMark(
@@ -323,7 +323,7 @@ struct GradesAnalyticsView: View {
                     x: .value("Course", item.courseCode),
                     y: .value("Grade", item.percentage)
                 )
-                .foregroundStyle(.accentColor)
+                .foregroundStyle(Color.accentColor)
                 .cornerRadius(8)
             }
             .chartYScale(domain: 0...100)

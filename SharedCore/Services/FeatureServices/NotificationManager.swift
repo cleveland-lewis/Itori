@@ -288,19 +288,20 @@ final class NotificationManager: ObservableObject {
         
         // Yesterday's accomplishments
         if AppSettingsModel.shared.dailyOverviewIncludeYesterdayCompleted {
-            let yesterdayCompleted = AssignmentsStore.shared.tasks.filter { task in
-                guard task.isCompleted, let completedDate = task.completedDate else { return false }
-                return completedDate >= yesterday && completedDate < today
-            }
+            // TODO: AppTask doesn't have completedDate property yet
+            // let yesterdayCompleted = AssignmentsStore.shared.tasks.filter { task in
+            //     guard task.isCompleted, let completedDate = task.completedDate else { return false }
+            //     return completedDate >= yesterday && completedDate < today
+            // }
             
-            if !yesterdayCompleted.isEmpty {
-                if yesterdayCompleted.count <= 2 {
-                    let titles = yesterdayCompleted.map { $0.title }.joined(separator: ", ")
-                    bodyParts.append("Yesterday: Completed \(titles)")
-                } else {
-                    bodyParts.append("Yesterday: Completed \(yesterdayCompleted.count) tasks")
-                }
-            }
+            // if !yesterdayCompleted.isEmpty {
+            //     if yesterdayCompleted.count <= 2 {
+            //         let titles = yesterdayCompleted.map { $0.title }.joined(separator: ", ")
+            //         bodyParts.append("Yesterday: Completed \(titles)")
+            //     } else {
+            //         bodyParts.append("Yesterday: Completed \(yesterdayCompleted.count) tasks")
+            //     }
+            // }
         }
         
         // Yesterday's study time from FocusManager/timer sessions

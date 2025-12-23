@@ -51,7 +51,8 @@ enum StorageRetentionManager {
             guard isExpired else { continue }
             recordDeletion(type: .course, date: primaryDate)
             coursesStore.deleteCourse(course)
-            coursesStore.deleteCourseAssets(courseId: course.id)
+            // TODO: CoursesStore doesn't have deleteCourseAssets method
+            // coursesStore.deleteCourseAssets(courseId: course.id)
         }
 
         // Semesters

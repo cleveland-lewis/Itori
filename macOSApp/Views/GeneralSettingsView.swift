@@ -89,6 +89,8 @@ struct GeneralSettingsView: View {
                 ), displayedComponents: .hourAndMinute)
             }
 
+            // TODO: StorageRetentionPolicy feature not yet in AppSettingsModel
+            /*
             Section("Storage") {
                 Picker("Retention Policy", selection: $retentionPolicy) {
                     ForEach(StorageRetentionPolicy.allCases) { policy in
@@ -116,6 +118,7 @@ struct GeneralSettingsView: View {
                 .buttonStyle(.bordered)
                 .disabled(retentionPolicy == .never)
             }
+            */
 
             Section("Danger Zone") {
                 Button(role: .destructive) {
@@ -134,7 +137,7 @@ struct GeneralSettingsView: View {
             userName = settings.userName ?? ""
             startOfWeek = StartOfWeek(rawValue: settings.startOfWeek ?? "Sunday") ?? .sunday
             defaultView = DefaultView(rawValue: settings.defaultView ?? "Dashboard") ?? .dashboard
-            retentionPolicy = settings.storageRetentionPolicy
+            // retentionPolicy = settings.storageRetentionPolicy
         }
         .alert("Retention Applied", isPresented: $showRetentionAlert) {
             Button("OK") { retentionResult = nil }
