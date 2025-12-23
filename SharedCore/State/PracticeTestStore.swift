@@ -164,6 +164,38 @@ class PracticeTestStore {
         saveTests()
         updateSummary()
     }
+
+    func updateTest(_ test: PracticeTest) {
+        guard let index = tests.firstIndex(where: { $0.id == test.id }) else { return }
+        tests[index] = test
+        if currentTest?.id == test.id {
+            currentTest = test
+        }
+        saveTests()
+        updateSummary()
+    }
+
+    func reassignCourse(from sourceId: UUID, to targetId: UUID) {
+        var updatedTests: [PracticeTest] = []
+        updatedTests.reserveCapacity(tests.count)
+        for test in tests {
+            if test.courseId == sourceId {
+                var updated = test
+                updated.courseId = targetId
+                updatedTests.append(updated)
+            } else {
+                updatedTests.append(test)
+            }
+        }
+        tests = updatedTests
+        if let current = currentTest, current.courseId == sourceId {
+            var updated = current
+            updated.courseId = targetId
+            currentTest = updated
+        }
+        saveTests()
+        updateSummary()
+    }
     
     func clearCurrentTest() {
         currentTest = nil

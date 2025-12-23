@@ -7,6 +7,9 @@ import Foundation
 
 extension Course: StorageListable {
     public var displayTitle: String {
+        if notes == CoursesStore.unassignedMarker {
+            return "Unassigned"
+        }
         if !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return title
         }
@@ -43,6 +46,9 @@ extension Course: StorageListable {
 
 extension Semester: StorageListable {
     public var displayTitle: String {
+        if notes == CoursesStore.unassignedMarker {
+            return "Unassigned"
+        }
         // Compute from term and year
         let termName = semesterTerm.rawValue
         return "\(termName) \(academicYear ?? "")"

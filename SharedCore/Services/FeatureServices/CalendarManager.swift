@@ -353,7 +353,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         await refreshAll()
     }
 
-    // Update an existing event by identifier
+    // Update an existing event by identifier with optimistic UI updates
     func updateEvent(identifier: String,
                      title: String,
                      startDate: Date,
@@ -388,43 +388,56 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         }
         guard item.calendar.allowsContentModifications else { throw CalendarUpdateError.readOnlyCalendar }
 
-        item.title = title
-        item.startDate = startDate
-        item.endDate = endDate
-        item.isAllDay = isAllDay
-        item.location = location
-        item.notes = encodeNotesWithCategory(userNotes: notes ?? "", category: category)
-        
-        // Handle URL
-        if let urlString = url, !urlString.isEmpty, let validURL = URL(string: urlString) {
-            item.url = validURL
-        } else {
-            item.url = nil
-        }
-        
-        // Handle alarms
-        var alarms: [EKAlarm] = []
-        if let primary = primaryAlert?.alarm {
-            alarms.append(primary)
-        }
-        if let secondary = secondaryAlert?.alarm {
-            alarms.append(secondary)
-        }
-        item.alarms = alarms.isEmpty ? nil : alarms
-        
-        // Note: EKEvent doesn't have a travelTime property in EventKit API
-        // Travel time functionality would need to be handled differently
-        
-        // Handle recurrence
-        item.recurrenceRules = recurrence.rule.map { [$0] }
+        // Apply optimistic update immediately
+        await OptimisticEventStore.shared.applyOptimisticUpdate(
+            eventIdentifier: identifier,
+            updateBlock: { optimisticEvent in
+                optimisticEvent.title = title
+                optimisticEvent.startDate = startDate
+                optimisticEvent.endDate = endDate
+                optimisticEvent.isAllDay = isAllDay
+                optimisticEvent.location = location
+                optimisticEvent.notes = notes
+                optimisticEvent.url = url
+                optimisticEvent.category = category
+            },
+            eventKitCommit: {
+                // Commit to EventKit (this may fail, which optimistic store will handle)
+                item.title = title
+                item.startDate = startDate
+                item.endDate = endDate
+                item.isAllDay = isAllDay
+                item.location = location
+                item.notes = self.encodeNotesWithCategory(userNotes: notes ?? "", category: category)
+                
+                // Handle URL
+                if let urlString = url, !urlString.isEmpty, let validURL = URL(string: urlString) {
+                    item.url = validURL
+                } else {
+                    item.url = nil
+                }
+                
+                // Handle alarms
+                var alarms: [EKAlarm] = []
+                if let primary = primaryAlert?.alarm {
+                    alarms.append(primary)
+                }
+                if let secondary = secondaryAlert?.alarm {
+                    alarms.append(secondary)
+                }
+                item.alarms = alarms.isEmpty ? nil : alarms
+                
+                // Handle recurrence
+                item.recurrenceRules = recurrence.rule.map { [$0] }
 
-        let effectiveSpan: EKSpan = {
-            guard !(item.recurrenceRules?.isEmpty ?? true) else { return .thisEvent }
-            return span
-        }()
-        
-        try DeviceCalendarManager.shared.store.save(item, span: effectiveSpan, commit: true)
-        await DeviceCalendarManager.shared.refreshEventsForVisibleRange(reason: "updateEvent")
+                let effectiveSpan: EKSpan = {
+                    guard !(item.recurrenceRules?.isEmpty ?? true) else { return .thisEvent }
+                    return span
+                }()
+                
+                try DeviceCalendarManager.shared.store.save(item, span: effectiveSpan, commit: true)
+            }
+        )
     }
 
     // Delete an event or reminder by identifier
@@ -435,6 +448,52 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
             try DeviceCalendarManager.shared.store.remove(event, span: .thisEvent, commit: true)
         }
         await refreshAll()
+    }
+    
+    // MARK: - Delete with proper confirmation flow
+    
+    /// Delete an event with the specified span (for recurring events)
+    /// - Parameters:
+    ///   - identifier: Event identifier
+    ///   - span: Delete span (.thisEvent, .futureEvents)
+    /// - Note: For "All Events", pass .thisEvent and handle the series root
+    func deleteEvent(identifier: String, span: EKSpan) async throws {
+        enum DeleteError: LocalizedError {
+            case eventNotFound
+            case readOnlyCalendar
+            case unauthorized
+            
+            var errorDescription: String? {
+                switch self {
+                case .eventNotFound: return "Event not found"
+                case .readOnlyCalendar: return "Cannot delete from read-only calendar"
+                case .unauthorized: return "Calendar access not authorized"
+                }
+            }
+        }
+        
+        guard DeviceCalendarManager.shared.isAuthorized else {
+            throw DeleteError.unauthorized
+        }
+        
+        guard let event = DeviceCalendarManager.shared.store.event(withIdentifier: identifier) else {
+            throw DeleteError.eventNotFound
+        }
+        
+        guard event.calendar.allowsContentModifications else {
+            throw DeleteError.readOnlyCalendar
+        }
+        
+        try DeviceCalendarManager.shared.store.remove(event, span: span, commit: true)
+        await refreshAll()
+    }
+    
+    /// Check if an event is recurring
+    func isRecurringEvent(identifier: String) -> Bool {
+        guard let event = DeviceCalendarManager.shared.store.event(withIdentifier: identifier) else {
+            return false
+        }
+        return event.hasRecurrenceRules
     }
 
     @objc private func storeChanged() {

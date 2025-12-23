@@ -106,13 +106,15 @@ struct PlanGraphSchedulerIntegration {
                 let allPrerequisitesComplete = prerequisites.allSatisfy { $0.isCompleted }
                 
                 if allPrerequisitesComplete {
-                    newlyUnblocked.append(dependent.assignmentId)
-                    
-                    LOG_SCHEDULER(.info, "AutoUnblock", "Task unblocked", metadata: [
-                        "taskId": dependent.assignmentId.uuidString,
-                        "taskTitle": dependent.title,
-                        "unlockedBy": completedTaskId.uuidString
-                    ])
+                    if let assignmentId = dependent.assignmentId {
+                        newlyUnblocked.append(assignmentId)
+                        
+                        LOG_SCHEDULER(.info, "AutoUnblock", "Task unblocked", metadata: [
+                            "taskId": assignmentId.uuidString,
+                            "taskTitle": dependent.title,
+                            "unlockedBy": completedTaskId.uuidString
+                        ])
+                    }
                 }
             }
         }

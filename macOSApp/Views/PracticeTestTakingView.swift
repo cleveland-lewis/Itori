@@ -261,8 +261,8 @@ struct PracticeTestTakingView: View {
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(userAnswers[question.id] == option ? Color.blue.opacity(0.1) : Color.clear)
-                            .stroke(userAnswers[question.id] == option ? Color.blue : Color.gray.opacity(0.3), lineWidth: 2)
+                            .fill(userAnswers[question.id] == option ? DesignSystem.Colors.accent.opacity(0.1) : Color.clear)
+                            .stroke(userAnswers[question.id] == option ? DesignSystem.Colors.accent : Color.gray.opacity(0.3), lineWidth: 2)
                     )
                 }
                 .buttonStyle(.plain)

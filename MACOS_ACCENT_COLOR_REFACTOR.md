@@ -1,10 +1,13 @@
 # macOS Accent Color Centralization Refactor
 
 ## Date
-December 22, 2025
+December 22-23, 2025
 
 ## Summary
 Centralized all generic accent colors through `DesignSystem.Colors.accent` while preserving semantic colors for data-driven UI elements.
+
+## Latest Update (December 23, 2025)
+Completed final sweep to replace remaining hard-coded blue colors in macOS views with centralized accent color system.
 
 ## Files Created/Modified
 
@@ -362,6 +365,40 @@ Button("Action") { }
 5. **Semantic Preservation**: Data-driven colors remain meaningful and unchanged
 6. **Dark Mode Ready**: Accent color automatically adapts to light/dark appearance
 
+## Recent Changes (December 23, 2025)
+
+### Files Updated
+1. **macOSApp/Scenes/DashboardView.swift** (Line 163)
+   - Changed fallback color: `Color.blue` → `DesignSystem.Colors.accent`
+
+2. **macOSApp/Scenes/GradesPageView.swift** (Line 392)
+   - Changed fallback color: `Color.blue` → `DesignSystem.Colors.accent`
+
+3. **macOSApp/Scenes/TimerPageView.swift** (Line 265)
+   - Changed activity indicator: `Color.blue` → `DesignSystem.Colors.accent`
+
+4. **macOSApp/Scenes/TimerPageView_Simple.swift** (Line 256)
+   - Changed activity indicator: `Color.blue` → `DesignSystem.Colors.accent`
+
+5. **macOSApp/Scenes/TaskDependencyEditorView.swift** (Lines 134, 212)
+   - Changed info banner: `Color.blue.opacity(0.1)` → `DesignSystem.Colors.accent.opacity(0.1)`
+   - Kept `Color.orange` for blocked step warnings (semantic)
+
+6. **macOSApp/Views/PracticeTestTakingView.swift** (Lines 264-265)
+   - Changed selected answer highlighting: `Color.blue` → `DesignSystem.Colors.accent`
+
+7. **macOSApp/Views/IntegrationsSettingsView.swift** (Line 243)
+   - Documented `Color.orange` as semantic warning color (intentionally not changed)
+
+### Semantic Colors Preserved
+The following colors were **intentionally NOT changed**:
+- ✅ `Color.orange` for warnings/blocked states (TaskDependencyEditorView, IntegrationsSettingsView)
+- ✅ `Color.red` for destructive actions
+- ✅ Course colors from hex data
+- ✅ Event category colors
+- ✅ Assignment urgency colors
+- ✅ Status indicators
+
 ## Future Enhancements (Not Implemented)
 
 1. **Color Schemes**: Pre-defined accent + semantic color combinations
@@ -369,3 +406,9 @@ Button("Action") { }
 3. **Per-Theme Accents**: Different accent colors per material theme
 4. **Gradient Accents**: Support for gradient accent colors
 5. **Dynamic Accents**: Time-of-day adaptive accent colors
+
+## Completion Status
+✅ All generic accent colors centralized (December 23, 2025)  
+✅ Semantic colors preserved  
+✅ Documentation updated  
+✅ Ready for testing

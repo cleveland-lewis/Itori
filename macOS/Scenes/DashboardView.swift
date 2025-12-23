@@ -291,10 +291,13 @@ struct DashboardView: View {
             VStack(alignment: .leading, spacing: RootsSpacing.m) {
                 // Main content: Two-column grid layout (Clock | Calendar)
                 let clockSize: CGFloat = 160
-                HStack(alignment: .center, spacing: DesignSystem.Layout.spacing.large) {
+                HStack(alignment: .dashboardWidgetCenter, spacing: DesignSystem.Layout.spacing.large) {
                     // Column 1: Clock
                     RootsAnalogClock(diameter: clockSize, showSecondHand: true, accentColor: settings.activeAccentColor)
                         .frame(width: clockSize, height: clockSize)
+                        .alignmentGuide(.dashboardWidgetCenter) { dimensions in
+                            dimensions[VerticalAlignment.center]
+                        }
                     
                     // Column 2: Calendar (integrated, no nested card)
                     DashboardCalendarGrid(selectedDate: $selectedDate, events: events)
@@ -405,6 +408,16 @@ struct DashboardView: View {
     private enum EnergyLevel {
         case high, medium, low
     }
+}
+
+private extension VerticalAlignment {
+    private enum DashboardWidgetCenterAlignment: AlignmentID {
+        static func defaultValue(in dimensions: ViewDimensions) -> CGFloat {
+            dimensions[.center]
+        }
+    }
+
+    static let dashboardWidgetCenter = VerticalAlignment(DashboardWidgetCenterAlignment.self)
 }
 
 struct DashboardTileBody: View {
@@ -554,13 +567,21 @@ private struct DashboardCalendarGrid: View {
     var events: [DashboardEvent]
     private let calendar = Calendar.current
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 4), count: 7)
+    private let headerSpacing = DesignSystem.Layout.spacing.small
+    @State private var headerHeight: CGFloat = 0
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+        VStack(alignment: .leading, spacing: headerSpacing) {
             // Month/year header
             Text(monthHeader(for: selectedDate))
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(.secondary)
+                .background(
+                    GeometryReader { proxy in
+                        Color.clear
+                            .preference(key: DashboardCalendarHeaderHeightKey.self, value: proxy.size.height)
+                    }
+                )
             
             // Calendar grid - no nested card background
             LazyVGrid(columns: columns, spacing: 4) {
@@ -585,6 +606,13 @@ private struct DashboardCalendarGrid: View {
                     .buttonStyle(.plain)
                 }
             }
+        }
+        .onPreferenceChange(DashboardCalendarHeaderHeightKey.self) { newValue in
+            headerHeight = newValue
+        }
+        .alignmentGuide(.dashboardWidgetCenter) { dimensions in
+            let headerOffset = (headerHeight / 2) + (headerSpacing / 2)
+            return dimensions[VerticalAlignment.center] + headerOffset
         }
     }
     
@@ -643,6 +671,13 @@ private struct DashboardCalendarGrid: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "LLLL yyyy"
         return formatter.string(from: date)
+    }
+
+    private struct DashboardCalendarHeaderHeightKey: PreferenceKey {
+        static var defaultValue: CGFloat = 0
+        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+            value = nextValue()
+        }
     }
 }
 

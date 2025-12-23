@@ -42,19 +42,18 @@ public enum StorageRetentionPolicy: String, CaseIterable, Identifiable, Codable 
     }
 
     public func isExpired(primaryDate: Date, semesterEnd: Date?, now: Date = Date()) -> Bool {
+        let endDate = semesterEnd ?? primaryDate
         switch self {
         case .never:
             return false
         case .semester30Days:
-            let endDate = semesterEnd ?? primaryDate
             return now >= Calendar.current.date(byAdding: .day, value: 30, to: endDate) ?? now
         case .semester90Days:
-            let endDate = semesterEnd ?? primaryDate
             return now >= Calendar.current.date(byAdding: .day, value: 90, to: endDate) ?? now
         case .oneYear:
-            return now >= Calendar.current.date(byAdding: .year, value: 1, to: primaryDate) ?? now
+            return now >= Calendar.current.date(byAdding: .year, value: 1, to: endDate) ?? now
         case .twoYears:
-            return now >= Calendar.current.date(byAdding: .year, value: 2, to: primaryDate) ?? now
+            return now >= Calendar.current.date(byAdding: .year, value: 2, to: endDate) ?? now
         }
     }
 }

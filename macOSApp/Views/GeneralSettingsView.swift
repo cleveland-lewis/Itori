@@ -6,6 +6,9 @@ struct GeneralSettingsView: View {
     @EnvironmentObject var timerManager: TimerManager
     @EnvironmentObject var assignmentsStore: AssignmentsStore
     @EnvironmentObject var coursesStore: CoursesStore
+    @EnvironmentObject var gradesStore: GradesStore
+    @EnvironmentObject var focusManager: FocusManager
+    @EnvironmentObject var calendarManager: DeviceCalendarManager
 
     @State private var userName: String = ""
     @State private var showResetSheet = false
@@ -15,6 +18,7 @@ struct GeneralSettingsView: View {
     @State private var retentionPolicy: StorageRetentionPolicy = .never
     @State private var showRetentionAlert = false
     @State private var retentionResult: StorageRetentionManager.Result?
+    @State private var retentionPreview: [StorageEntityType: Int] = [:]
     @State private var practiceStore = PracticeTestStore()
 
     enum StartOfWeek: String, CaseIterable, Identifiable {
@@ -69,6 +73,13 @@ struct GeneralSettingsView: View {
                 }
             }
 
+            Section("Feedback") {
+                Toggle("Enable Sounds", isOn: Binding(
+                    get: { FeedbackCoordinator.shared.soundEnabled },
+                    set: { FeedbackCoordinator.shared.soundEnabled = $0 }
+                ))
+            }
+
             Section("Display") {
                 Toggle("24-Hour Time", isOn: $settings.use24HourTime)
                     .onChange(of: settings.use24HourTime) { _, _ in settings.save() }
@@ -98,23 +109,68 @@ struct GeneralSettingsView: View {
                 .onChange(of: retentionPolicy) { _, newValue in
                     settings.storageRetentionPolicy = newValue
                     settings.save()
+                    refreshRetentionPreview()
                 }
 
                 Text(retentionPolicy.detail)
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
+                if retentionPolicy == .never {
+                    Text("Warning: keeping all detail may impact storage and performance over time.")
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                } else {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Estimated items to remove")
+                            .font(.caption.weight(.semibold))
+                        if retentionPreview.isEmpty {
+                            Text("No items eligible for removal.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        } else {
+                            ForEach(retentionPreview.sorted(by: { $0.key.rawValue < $1.key.rawValue }), id: \.key) { entry in
+                                Text("\(entry.key.displayTypeName): \(entry.value)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+
                 Button("Apply Retention Now") {
-                    retentionResult = StorageRetentionManager.apply(
-                        policy: retentionPolicy,
-                        coursesStore: coursesStore,
-                        assignmentsStore: assignmentsStore,
-                        practiceStore: practiceStore
-                    )
-                    showRetentionAlert = true
+                    Task { @MainActor in
+                        retentionResult = await StorageRetentionManager.apply(
+                            policy: retentionPolicy,
+                            coursesStore: coursesStore,
+                            assignmentsStore: assignmentsStore,
+                            practiceStore: practiceStore,
+                            gradesStore: gradesStore,
+                            focusManager: focusManager,
+                            calendarManager: calendarManager,
+                            aggregateStore: .shared
+                        )
+                        settings.lastRetentionRunAt = Date()
+                        settings.lastRetentionSummary = retentionSummary(from: retentionResult)
+                        settings.save()
+                        showRetentionAlert = true
+                    }
                 }
                 .buttonStyle(.bordered)
                 .disabled(retentionPolicy == .never)
+
+                if let lastRun = settings.lastRetentionRunAt {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Last cleanup: \(lastRun.formatted(date: .abbreviated, time: .shortened))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        if let summary = settings.lastRetentionSummary {
+                            Text(summary)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
             }
 
             Section("Danger Zone") {
@@ -135,6 +191,7 @@ struct GeneralSettingsView: View {
             startOfWeek = StartOfWeek(rawValue: settings.startOfWeek ?? "Sunday") ?? .sunday
             defaultView = DefaultView(rawValue: settings.defaultView ?? "Dashboard") ?? .dashboard
             retentionPolicy = settings.storageRetentionPolicy
+            refreshRetentionPreview()
         }
         .alert("Retention Applied", isPresented: $showRetentionAlert) {
             Button("OK") { retentionResult = nil }
@@ -203,6 +260,24 @@ struct GeneralSettingsView: View {
     private func generateResetCode() -> String {
         let chars = Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
         return String((0..<12).compactMap { _ in chars.randomElement() })
+    }
+
+    private func refreshRetentionPreview() {
+        retentionPreview = StorageRetentionManager.estimate(
+            policy: retentionPolicy,
+            coursesStore: coursesStore,
+            assignmentsStore: assignmentsStore,
+            practiceStore: practiceStore
+        )
+    }
+
+    private func retentionSummary(from result: StorageRetentionManager.Result?) -> String {
+        guard let result else { return "No items deleted." }
+        if result.deletedByType.isEmpty { return "No items deleted." }
+        return result.deletedByType
+            .sorted { $0.key.rawValue < $1.key.rawValue }
+            .map { "\($0.key.displayTypeName): \($0.value)" }
+            .joined(separator: ", ")
     }
 
     private func performReset() {

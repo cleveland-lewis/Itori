@@ -159,8 +159,8 @@ struct DashboardView: View {
         if let hex = hex, let hexColor = Color(hex: hex) {
             return hexColor
         }
-        // Fallback to blue only if no hex provided
-        return Color.blue
+        // Fallback to accent color only if no hex provided
+        return DesignSystem.Colors.accent
     }
 
     private var todayCard: some View {

@@ -635,6 +635,18 @@ struct IOSSettingsView: View {
                 .accessibilityLabel(NSLocalizedString("settings.a11y.workday_end", comment: "Workday end"))
             }
             
+            Section(header: Text("Feedback")) {
+                Toggle("Enable Sounds", isOn: Binding(
+                    get: { FeedbackCoordinator.shared.soundEnabled },
+                    set: { FeedbackCoordinator.shared.soundEnabled = $0 }
+                ))
+                
+                Toggle("Enable Haptics", isOn: Binding(
+                    get: { FeedbackCoordinator.shared.hapticsEnabled },
+                    set: { FeedbackCoordinator.shared.hapticsEnabled = $0 }
+                ))
+            }
+            
             Section(NSLocalizedString("settings.section.tab_bar_pages", comment: "Tab bar section")) {
                 if let tabPrefs = tabBarPrefs {
                     ForEach(TabRegistry.allTabs) { tabDef in

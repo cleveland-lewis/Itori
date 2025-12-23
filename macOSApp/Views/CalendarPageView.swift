@@ -111,7 +111,8 @@ struct CalendarPageView: View {
 
     // Computed property to filter events based on settings
     private var filteredEvents: [EKEvent] {
-        let allEvents = deviceCalendar.events
+        // Use displayEvents which includes optimistic updates
+        let allEvents = deviceCalendar.displayEvents
         guard settings.showOnlySchoolCalendar else { return allEvents }
         guard !calendarManager.selectedCalendarID.isEmpty else { return allEvents }
         return allEvents.filter { $0.calendar.calendarIdentifier == calendarManager.selectedCalendarID }
@@ -1319,18 +1320,68 @@ private struct EventDetailView: View {
     let item: CalendarEvent
     @Binding var isPresented: Bool
     @EnvironmentObject private var calendarManager: CalendarManager
+    @StateObject private var optimisticStore = OptimisticEventStore.shared
     @State private var showDeleteConfirm = false
+    @State private var showRecurrenceScopeSheet = false
+    @State private var selectedDeleteSpan: EKSpan = .thisEvent
     @State private var showEdit = false
     @State private var errorMessage: String?
     @State private var showError = false
+    
+    private var hasPendingUpdate: Bool {
+        guard let id = item.ekIdentifier else { return false }
+        return optimisticStore.hasPendingUpdate(for: id)
+    }
+    
+    private var hasFailedUpdate: Bool {
+        guard let id = item.ekIdentifier else { return false }
+        return optimisticStore.hasFailedUpdate(for: id)
+    }
+    
+    private var hasConflict: Bool {
+        guard let id = item.ekIdentifier else { return false }
+        return optimisticStore.hasConflict(for: id)
+    }
+    
+    private var conflictDetails: EventConflict? {
+        guard let id = item.ekIdentifier else { return nil }
+        return optimisticStore.conflict(for: id)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            // Header
+            // Header with pending/failed indicators
             HStack {
-                Text(item.title)
-                    .font(.title2.weight(.bold))
-                    .foregroundStyle(.primary)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(item.title)
+                        .font(.title2.weight(.bold))
+                        .foregroundStyle(.primary)
+                    
+                    if hasPendingUpdate {
+                        Label("Saving…", systemImage: "arrow.triangle.2.circlepath")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else if hasConflict {
+                        Label("Conflict detected", systemImage: "exclamationmark.triangle.fill")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    } else if hasFailedUpdate {
+                        HStack(spacing: 6) {
+                            Label("Save failed", systemImage: "exclamationmark.triangle.fill")
+                                .font(.caption)
+                                .foregroundStyle(.red)
+                            Button("Retry") {
+                                guard let id = item.ekIdentifier else { return }
+                                _Concurrency.Task {
+                                    await optimisticStore.retryFailedUpdate(for: id)
+                                }
+                            }
+                            .buttonStyle(.plain)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.red)
+                        }
+                    }
+                }
 
                 Spacer()
 
@@ -1346,6 +1397,41 @@ private struct EventDetailView: View {
             }
 
             Divider()
+            
+            // Conflict banner
+            if hasConflict, let conflict = conflictDetails {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                        Text(conflict.userFacingMessage)
+                            .font(.callout)
+                            .foregroundStyle(.primary)
+                    }
+                    .padding(12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(.orange.opacity(0.1))
+                    .cornerRadius(8)
+                    
+                    HStack {
+                        Text("Using updated version from EventKit")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        
+                        Spacer()
+                        
+                        Button("Dismiss") {
+                            if let id = item.ekIdentifier {
+                                optimisticStore.clearConflict(for: id)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.orange)
+                    }
+                }
+                .padding(.bottom, 8)
+            }
 
             // Date and time
             VStack(alignment: .leading, spacing: 12) {
@@ -1472,23 +1558,65 @@ private struct EventDetailView: View {
                     .disabled(!item.canEdit)
                     Spacer()
                     Button(role: .destructive) {
-                        showDeleteConfirm = true
+                        // Check if recurring event
+                        guard let identifier = item.ekIdentifier else { return }
+                        if calendarManager.isRecurringEvent(identifier: identifier) {
+                            // Step 1: Ask for scope (This/Future/All)
+                            showRecurrenceScopeSheet = true
+                        } else {
+                            // Non-recurring: go straight to confirmation
+                            showDeleteConfirm = true
+                        }
                     } label: {
                         Label("Delete", systemImage: "trash")
                     }
                     .buttonStyle(.plain)
                     .foregroundStyle(.red)
                 }
-                .confirmationDialog("Delete this item?", isPresented: $showDeleteConfirm, titleVisibility: .visible) {
+                .confirmationDialog("Delete Event?", isPresented: $showDeleteConfirm, titleVisibility: .visible) {
                     Button("Delete", role: .destructive) {
+                        guard let identifier = item.ekIdentifier else { return }
                         _Concurrency.Task {
-                            try? await calendarManager.deleteCalendarItem(identifier: identifier, isReminder: item.isReminder)
-                            isPresented = false
+                            do {
+                                if item.isReminder {
+                                    try await calendarManager.deleteCalendarItem(identifier: identifier, isReminder: true)
+                                } else {
+                                    try await calendarManager.deleteEvent(identifier: identifier, span: selectedDeleteSpan)
+                                }
+                                isPresented = false
+                            } catch {
+                                errorMessage = error.localizedDescription
+                                showError = true
+                            }
                         }
                     }
                     Button("Cancel", role: .cancel) { }
                 } message: {
-                    Text("This will remove the item from your \(item.isReminder ? "Reminders" : "Calendar").")
+                    Text("This will permanently remove this event from your Calendar.")
+                }
+                .confirmationDialog("Delete Recurring Event", isPresented: $showRecurrenceScopeSheet, titleVisibility: .visible) {
+                    Button("This Event") {
+                        selectedDeleteSpan = .thisEvent
+                        showDeleteConfirm = true
+                    }
+                    Button("Future Events") {
+                        selectedDeleteSpan = .futureEvents
+                        showDeleteConfirm = true
+                    }
+                    Button("All Events", role: .destructive) {
+                        selectedDeleteSpan = .thisEvent
+                        // Note: For "All Events" we use .thisEvent on the master event
+                        // EventKit will handle series deletion
+                        showDeleteConfirm = true
+                    }
+                    Button("Cancel", role: .cancel) { }
+                } message: {
+                    Text("This is a repeating event. Which occurrences do you want to delete?")
+                }
+                .alert("Error", isPresented: $showError, presenting: errorMessage) { _ in
+                    Button("OK", role: .cancel) { }
+                } message: { message in
+                    Text(message)
                 }
             }
         }
@@ -1920,7 +2048,8 @@ struct CalendarView: View {
 
     // Computed property to filter events based on settings
     private var filteredEvents: [EKEvent] {
-        let allEvents = deviceCalendar.events
+        // Use displayEvents which includes optimistic updates
+        let allEvents = deviceCalendar.displayEvents
         guard settings.showOnlySchoolCalendar else { return allEvents }
         guard !calendarManager.selectedCalendarID.isEmpty else { return allEvents }
         return allEvents.filter { $0.calendar.calendarIdentifier == calendarManager.selectedCalendarID }

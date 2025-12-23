@@ -131,7 +131,7 @@ struct TaskDependencyEditorView: View {
             .controlSize(.small)
         }
         .padding(DesignSystem.Layout.padding.card)
-        .background(Color.blue.opacity(0.1))
+        .background(DesignSystem.Colors.accent.opacity(0.1))
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Corners.medium, style: .continuous))
         .padding(.horizontal, DesignSystem.Layout.padding.window)
     }
@@ -209,6 +209,7 @@ struct TaskDependencyEditorView: View {
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Corners.small, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Corners.small, style: .continuous)
+                // Semantic warning color for blocked steps
                 .strokeBorder(plan.isStepBlocked(step) ? Color.orange.opacity(0.5) : Color.clear, lineWidth: 2)
         )
     }

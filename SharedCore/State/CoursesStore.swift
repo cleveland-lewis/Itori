@@ -7,6 +7,9 @@ final class CoursesStore: ObservableObject {
     static weak var shared: CoursesStore?
     // Publishes course deleted events
     fileprivate let courseDeleted = PassthroughSubject<UUID, Never>()
+    static let unassignedSemesterId = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+    static let unassignedCourseId = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
+    static let unassignedMarker = "System:Unassigned"
 
     @Published private(set) var semesters: [Semester] = []
     @Published private(set) var courses: [Course] = []
@@ -178,6 +181,89 @@ final class CoursesStore: ObservableObject {
         }
         persist()
         recalcGPA(tasks: AssignmentsStore.shared.tasks)
+    }
+
+    func deleteCourseAssets(courseId: UUID) {
+        outlineNodes.removeAll { $0.courseId == courseId }
+        courseFiles.removeAll { $0.courseId == courseId }
+        persist()
+    }
+
+    func ensureUnassignedSemester() -> Semester {
+        if let existing = semesters.first(where: { $0.id == Self.unassignedSemesterId }) {
+            return existing
+        }
+        let now = Date()
+        let semester = Semester(
+            id: Self.unassignedSemesterId,
+            startDate: now,
+            endDate: now,
+            isCurrent: false,
+            educationLevel: .college,
+            semesterTerm: .fall,
+            gradProgram: nil,
+            isArchived: true,
+            deletedAt: nil,
+            academicYear: "Unassigned",
+            notes: Self.unassignedMarker
+        )
+        semesters.append(semester)
+        persist()
+        return semester
+    }
+
+    func ensureUnassignedCourse() -> Course {
+        if let existing = courses.first(where: { $0.id == Self.unassignedCourseId }) {
+            return existing
+        }
+        let semester = ensureUnassignedSemester()
+        let course = Course(
+            id: Self.unassignedCourseId,
+            title: "Unassigned",
+            code: "UNASSIGNED",
+            semesterId: semester.id,
+            colorHex: nil,
+            isArchived: true,
+            courseType: .regular,
+            instructor: nil,
+            location: nil,
+            credits: nil,
+            creditType: .credits,
+            meetingTimes: nil,
+            syllabus: nil,
+            notes: Self.unassignedMarker,
+            attachments: []
+        )
+        courses.append(course)
+        persist()
+        return course
+    }
+
+    func reassignCourses(fromSemesterId: UUID, toSemesterId: UUID) {
+        for index in courses.indices where courses[index].semesterId == fromSemesterId {
+            courses[index].semesterId = toSemesterId
+        }
+        persist()
+    }
+
+    func reassignCourseAssets(fromCourseId: UUID, toCourseId: UUID) {
+        for index in outlineNodes.indices where outlineNodes[index].courseId == fromCourseId {
+            outlineNodes[index].courseId = toCourseId
+            outlineNodes[index].updatedAt = Date()
+        }
+        for index in courseFiles.indices where courseFiles[index].courseId == fromCourseId {
+            courseFiles[index].courseId = toCourseId
+            courseFiles[index].updatedAt = Date()
+        }
+        persist()
+    }
+
+    func detachOutlineNodeChildren(nodeId: UUID) {
+        for index in outlineNodes.indices where outlineNodes[index].parentId == nodeId {
+            outlineNodes[index].parentId = nil
+            outlineNodes[index].updatedAt = Date()
+        }
+        persist()
     }
 
     var activeSemesters: [Semester] {
