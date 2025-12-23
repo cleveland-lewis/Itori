@@ -24,30 +24,30 @@ public enum BadgeSource: String, Codable, CaseIterable, Identifiable {
     public var displayName: String {
         switch self {
         case .off:
-            return String(localized: "Off")
+            return "Off".localized
         case .upcomingAssignments:
-            return String(localized: "Upcoming Assignments (24h)")
+            return "Upcoming Assignments (24h)".localized
         case .eventsToday:
-            return String(localized: "Events Today")
+            return "Events Today".localized
         case .eventsThisWeek:
-            return String(localized: "Events This Week")
+            return "Events This Week".localized
         case .assignmentsThisWeek:
-            return String(localized: "Assignments This Week")
+            return "Assignments This Week".localized
         }
     }
     
     public var description: String {
         switch self {
         case .off:
-            return String(localized: "No badge count")
+            return "No badge count".localized
         case .upcomingAssignments:
-            return String(localized: "Count assignments due in the next 24 hours")
+            return "Count assignments due in the next 24 hours".localized
         case .eventsToday:
-            return String(localized: "Count events scheduled for today")
+            return "Count events scheduled for today".localized
         case .eventsThisWeek:
-            return String(localized: "Count events scheduled this week")
+            return "Count events scheduled this week".localized
         case .assignmentsThisWeek:
-            return String(localized: "Count assignments due this week")
+            return "Count assignments due this week".localized
         }
     }
 }

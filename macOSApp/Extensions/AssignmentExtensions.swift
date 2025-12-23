@@ -6,10 +6,10 @@ import SwiftUI
 extension AssignmentUrgency {
     var label: String {
         switch self {
-        case .low: return String(localized: "assignments.urgency.low")
-        case .medium: return String(localized: "assignments.urgency.medium")
-        case .high: return String(localized: "assignments.urgency.high")
-        case .critical: return String(localized: "assignments.urgency.critical")
+        case .low: return "assignments.urgency.low".localized
+        case .medium: return "assignments.urgency.medium".localized
+        case .high: return "assignments.urgency.high".localized
+        case .critical: return "assignments.urgency.critical".localized
         }
     }
 
@@ -26,12 +26,12 @@ extension AssignmentUrgency {
 extension AssignmentCategory {
     var localizedName: String {
         switch self {
-        case .project: return String(localized: "assignments.category.project")
-        case .exam: return String(localized: "assignments.category.exam")
-        case .quiz: return String(localized: "assignments.category.quiz")
-        case .homework, .practiceHomework: return String(localized: "assignments.category.homework")
-        case .reading: return String(localized: "assignments.category.reading")
-        case .review: return String(localized: "assignments.category.review")
+        case .project: return "assignments.category.project".localized
+        case .exam: return "assignments.category.exam".localized
+        case .quiz: return "assignments.category.quiz".localized
+        case .homework, .practiceHomework: return "assignments.category.homework".localized
+        case .reading: return "assignments.category.reading".localized
+        case .review: return "assignments.category.review".localized
         }
     }
 }
@@ -39,10 +39,10 @@ extension AssignmentCategory {
 extension AssignmentStatus {
     var label: String {
         switch self {
-        case .notStarted: return String(localized: "assignments.status.not_started")
-        case .inProgress: return String(localized: "assignments.status.in_progress")
-        case .completed: return String(localized: "assignments.status.completed")
-        case .archived: return String(localized: "assignments.status.archived")
+        case .notStarted: return "assignments.status.not_started".localized
+        case .inProgress: return "assignments.status.in_progress".localized
+        case .completed: return "assignments.status.completed".localized
+        case .archived: return "assignments.status.archived".localized
         }
     }
 }

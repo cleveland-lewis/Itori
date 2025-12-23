@@ -55,38 +55,38 @@ extension Assignment {
         case .project:
             let chunk = max(60, minutes / 4)
             return [
-                PlanStepStub(title: String(localized: "assignments.plan.research_gather"), expectedMinutes: chunk),
-                PlanStepStub(title: String(localized: "assignments.plan.outline_plan"), expectedMinutes: chunk),
-                PlanStepStub(title: String(localized: "assignments.plan.draft"), expectedMinutes: chunk),
-                PlanStepStub(title: String(localized: "assignments.plan.polish_submit"), expectedMinutes: chunk)
+                PlanStepStub(title: "assignments.plan.research_gather".localized, expectedMinutes: chunk),
+                PlanStepStub(title: "assignments.plan.outline_plan".localized, expectedMinutes: chunk),
+                PlanStepStub(title: "assignments.plan.draft".localized, expectedMinutes: chunk),
+                PlanStepStub(title: "assignments.plan.polish_submit".localized, expectedMinutes: chunk)
             ]
         case .exam:
             let chunk = max(60, minutes / 3)
             return [
-                PlanStepStub(title: String(localized: "assignments.plan.review_notes"), expectedMinutes: chunk),
-                PlanStepStub(title: String(localized: "assignments.plan.practice_problems"), expectedMinutes: chunk),
-                PlanStepStub(title: String(localized: "assignments.plan.mock_test"), expectedMinutes: chunk)
+                PlanStepStub(title: "assignments.plan.review_notes".localized, expectedMinutes: chunk),
+                PlanStepStub(title: "assignments.plan.practice_problems".localized, expectedMinutes: chunk),
+                PlanStepStub(title: "assignments.plan.mock_test".localized, expectedMinutes: chunk)
             ]
         case .quiz:
             let chunk = max(45, minutes / 2)
             return [
-                PlanStepStub(title: String(localized: "assignments.plan.skim_outline"), expectedMinutes: chunk),
-                PlanStepStub(title: String(localized: "assignments.plan.practice_set"), expectedMinutes: chunk)
+                PlanStepStub(title: "assignments.plan.skim_outline".localized, expectedMinutes: chunk),
+                PlanStepStub(title: "assignments.plan.practice_set".localized, expectedMinutes: chunk)
             ]
         case .homework, .practiceHomework:
             let chunk = max(45, minutes)
             return [
-                PlanStepStub(title: String(localized: "assignments.plan.solve_set"), expectedMinutes: chunk)
+                PlanStepStub(title: "assignments.plan.solve_set".localized, expectedMinutes: chunk)
             ]
         case .reading:
             return [
-                PlanStepStub(title: String(localized: "assignments.plan.read_annotate"), expectedMinutes: max(30, minutes / 2)),
-                PlanStepStub(title: String(localized: "assignments.plan.summarize"), expectedMinutes: max(20, minutes / 2))
+                PlanStepStub(title: "assignments.plan.read_annotate".localized, expectedMinutes: max(30, minutes / 2)),
+                PlanStepStub(title: "assignments.plan.summarize".localized, expectedMinutes: max(20, minutes / 2))
             ]
         case .review:
             return [
-                PlanStepStub(title: String(localized: "assignments.plan.review_key_points"), expectedMinutes: max(30, minutes / 2)),
-                PlanStepStub(title: String(localized: "assignments.plan.flashcards_drill"), expectedMinutes: max(20, minutes / 2))
+                PlanStepStub(title: "assignments.plan.review_key_points".localized, expectedMinutes: max(30, minutes / 2)),
+                PlanStepStub(title: "assignments.plan.flashcards_drill".localized, expectedMinutes: max(20, minutes / 2))
             ]
         }
     }
@@ -108,9 +108,9 @@ enum AssignmentSegment: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .upcoming: return String(localized: "assignments.segment.upcoming")
-        case .all: return String(localized: "assignments.segment.all")
-        case .completed: return String(localized: "assignments.segment.completed")
+        case .upcoming: return "assignments.segment.upcoming".localized
+        case .all: return "assignments.segment.all".localized
+        case .completed: return "assignments.segment.completed".localized
         }
     }
 }
@@ -121,9 +121,9 @@ enum AssignmentSortOption: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .byDueDate: return String(localized: "assignments.sort.due_date")
-        case .byCourse: return String(localized: "assignments.sort.course")
-        case .byUrgency: return String(localized: "assignments.sort.urgency")
+        case .byDueDate: return "assignments.sort.due_date".localized
+        case .byCourse: return "assignments.sort.course".localized
+        case .byUrgency: return "assignments.sort.urgency".localized
         }
     }
 }
@@ -216,7 +216,7 @@ struct AssignmentsPageView: View {
 
     private var topControls: some View {
         HStack(spacing: RootsSpacing.m) {
-            Picker(String(localized: "assignments.segment.label"), selection: $selectedSegment.animation(DesignSystem.Motion.standardSpring)) {
+            Picker("assignments.segment.label".localized, selection: $selectedSegment.animation(DesignSystem.Motion.standardSpring)) {
                 ForEach(AssignmentSegment.allCases) { seg in
                     Text(seg.label).tag(seg)
                 }
@@ -224,11 +224,11 @@ struct AssignmentsPageView: View {
             .pickerStyle(.segmented)
             .frame(maxWidth: 360)
 
-            TextField(String(localized: "assignments.search.placeholder"), text: $searchText)
+            TextField("assignments.search.placeholder".localized, text: $searchText)
                 .textFieldStyle(.roundedBorder)
                 .frame(maxWidth: 320)
 
-            Picker(String(localized: "assignments.sort.label"), selection: $sortOption) {
+            Picker("assignments.sort.label".localized, selection: $sortOption) {
                 ForEach(AssignmentSortOption.allCases) { opt in
                     Text(opt.label).tag(opt)
                 }
@@ -261,12 +261,12 @@ struct AssignmentsPageView: View {
                     .background(Circle().fill(Color.accentColor.opacity(0.18)))
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(String(localized: "assignments.action.new"))
+            .accessibilityLabel("assignments.action.new".localized)
 
             Button {
                 autoPlanSelectedAssignments()
             } label: {
-                Label(String(localized: "assignments.action.plan_day"), systemImage: "calendar.badge.clock")
+                Label("assignments.action.plan_day".localized, systemImage: "calendar.badge.clock")
                     .font(DesignSystem.Typography.body)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
@@ -278,25 +278,25 @@ struct AssignmentsPageView: View {
 
     private var filterPopover: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(String(localized: "assignments.action.filters"))
+            Text("assignments.action.filters".localized)
                 .font(DesignSystem.Typography.subHeader)
             Divider()
-            Picker(String(localized: "assignments.filter.status"), selection: Binding(
+            Picker("assignments.filter.status".localized, selection: Binding(
                 get: { filterStatus },
                 set: { filterStatus = $0 }
             )) {
-                Text(String(localized: "assignments.filter.any")).tag(AssignmentStatus?.none)
+                Text("assignments.filter.any".localized).tag(AssignmentStatus?.none)
                 ForEach(AssignmentStatus.allCases) { status in
                     Text(status.label).tag(AssignmentStatus?.some(status))
                 }
             }
             .pickerStyle(.menu)
 
-            Picker(String(localized: "assignments.sort.course"), selection: Binding(
+            Picker("assignments.sort.course".localized, selection: Binding(
                 get: { filterCourse },
                 set: { filterCourse = $0 }
             )) {
-                Text(String(localized: "assignments.filter.all_courses")).tag(String?.none)
+                Text("assignments.filter.all_courses".localized).tag(String?.none)
                 ForEach(uniqueCourses, id: \.self) { course in
                     Text(course).tag(String?.some(course))
                 }
@@ -443,20 +443,20 @@ struct AssignmentsPageView: View {
     private var activeFiltersLabel: String {
         var parts: [String] = []
         parts.append(String.localizedStringWithFormat(
-            String(localized: "assignments.filter.segment_label"),
+            "assignments.filter.segment_label".localized,
             selectedSegment.label
         ))
         parts.append(String.localizedStringWithFormat(
-            String(localized: "assignments.filter.sort_label"),
+            "assignments.filter.sort_label".localized,
             sortOption.label
         ))
         parts.append(String.localizedStringWithFormat(
-            String(localized: "assignments.filter.status_label"),
-            filterStatus?.label ?? String(localized: "assignments.filter.any")
+            "assignments.filter.status_label".localized,
+            filterStatus?.label ?? "assignments.filter.any".localized
         ))
         parts.append(String.localizedStringWithFormat(
-            String(localized: "assignments.filter.course_label"),
-            filterCourse ?? String(localized: "assignments.filter.any")
+            "assignments.filter.course_label".localized,
+            filterCourse ?? "assignments.filter.any".localized
         ))
         return parts.joined(separator: " · ")
     }
@@ -577,12 +577,12 @@ struct TodaySummaryCard: View {
 
         RootsCard(compact: true) {
             HStack {
-                Text(String(localized: "assignments.section.today")).rootsSectionHeader()
+                Text("assignments.section.today".localized).rootsSectionHeader()
                 Spacer()
             }
 
             Text(String.localizedStringWithFormat(
-                String(localized: "assignments.stats.due_planned_remaining"),
+                "assignments.stats.due_planned_remaining".localized,
                 dueToday.count,
                 planned.count,
                 remaining.count
@@ -616,11 +616,11 @@ struct ByCourseSummaryCard: View {
     }
 
     var body: some View {
-        let grouped = Dictionary(grouping: assignments.filter { ($0.status ?? .notStarted) != .archived }) { $0.courseCode ?? String(localized: "assignments.course.unknown") }
+        let grouped = Dictionary(grouping: assignments.filter { ($0.status ?? .notStarted) != .archived }) { $0.courseCode ?? "assignments.course.unknown".localized }
             .map { CourseLoad(course: $0.key, count: $0.value.count) }
             .sorted { $0.count > $1.count }
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-            Text(String(localized: "assignments.section.by_course")).rootsSectionHeader()
+            Text("assignments.section.by_course".localized).rootsSectionHeader()
 
             ForEach(grouped.prefix(4)) { item in
                 HStack {
@@ -658,7 +658,7 @@ struct LoadTimelineCard: View {
         let next7 = (0..<7).map { calendar.date(byAdding: .day, value: $0, to: today) ?? today }
 
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-            Text(String(localized: "assignments.section.upcoming_load")).rootsSectionHeader()
+            Text("assignments.section.upcoming_load".localized).rootsSectionHeader()
 
             HStack(alignment: .bottom, spacing: 12) {
                 ForEach(next7, id: \.self) { day in
@@ -726,10 +726,10 @@ struct UpcomingCountCard: View {
 
         RootsCard(compact: true) {
             VStack(alignment: .leading, spacing: 6) {
-                Text(String(localized: "assignments.section.upcoming")).rootsSectionHeader()
+                Text("assignments.section.upcoming".localized).rootsSectionHeader()
                 Text("\(upcoming)")
                     .font(.title.bold())
-                Text(String(localized: "assignments.stats.assignments_due"))
+                Text("assignments.stats.assignments_due".localized)
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }
@@ -752,10 +752,10 @@ struct MissedCountCard: View {
 
         RootsCard(compact: true) {
             VStack(alignment: .leading, spacing: 6) {
-                Text(String(localized: "assignments.section.missed")).rootsSectionHeader()
+                Text("assignments.section.missed".localized).rootsSectionHeader()
                 Text("\(missed)")
                     .font(.title.bold())
-                Text(String(localized: "assignments.stats.overdue_assignments"))
+                Text("assignments.stats.overdue_assignments".localized)
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }
@@ -799,16 +799,16 @@ struct AssignmentsPageRow: View {
                     HStack(spacing: 8) {
                         Text(assignment.courseCode ?? "")
                         Text(String.localizedStringWithFormat(
-                            String(localized: "assignments.row.category_label"),
+                            "assignments.row.category_label".localized,
                             assignment.category.localizedName
                         ))
                         Text(String.localizedStringWithFormat(
-                            String(localized: "assignments.row.estimated_minutes"),
+                            "assignments.row.estimated_minutes".localized,
                             assignment.estimatedMinutes
                         ))
                         Text("·")
                         Text(String.localizedStringWithFormat(
-                            String(localized: "assignments.row.due"),
+                            "assignments.row.due".localized,
                             dueFormatter.string(from: assignment.dueDate)
                         ))
                             .font(.caption.weight(.semibold))
@@ -823,7 +823,7 @@ struct AssignmentsPageRow: View {
                             .clipShape(Capsule())
                         if let weight = assignment.weightPercent {
                             Text(String.localizedStringWithFormat(
-                                String(localized: "assignments.row.weight_percent"),
+                                "assignments.row.weight_percent".localized,
                                 Int(weight)
                             ))
                         }
@@ -933,9 +933,9 @@ struct AssignmentDetailPanel: View {
                 Text(assignment.title)
                     .font(.title3.weight(.semibold))
                 Text(String.localizedStringWithFormat(
-                    String(localized: "assignments.detail.course_line"),
-                    assignment.courseCode ?? String(localized: "assignments.course.unknown"),
-                    assignment.courseName ?? String(localized: "assignments.course.unknown")
+                    "assignments.detail.course_line".localized,
+                    assignment.courseCode ?? "assignments.course.unknown".localized,
+                    assignment.courseName ?? "assignments.course.unknown".localized
                 ))
                     .font(DesignSystem.Typography.caption)
                     .foregroundColor(.secondary)
@@ -960,7 +960,7 @@ struct AssignmentDetailPanel: View {
     private func dueSection(for assignment: Assignment) -> some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             Text(String.localizedStringWithFormat(
-                String(localized: "assignments.detail.due"),
+                "assignments.detail.due".localized,
                 fullDateFormatter.string(from: assignment.dueDate)
             ))
                 .font(DesignSystem.Typography.subHeader)
@@ -970,13 +970,13 @@ struct AssignmentDetailPanel: View {
 
             HStack(spacing: DesignSystem.Layout.spacing.small) {
                 Label(String.localizedStringWithFormat(
-                    String(localized: "assignments.detail.estimated_time"),
+                    "assignments.detail.estimated_time".localized,
                     assignment.estimatedMinutes
                 ), systemImage: "timer")
                     .font(DesignSystem.Typography.caption)
                     .padding(DesignSystem.Layout.spacing.small)
                     .background(Capsule().fill(Color(nsColor: NSColor.alternatingContentBackgroundColors[0])))
-                Toggle(String(localized: "assignments.detail.lock_due"), isOn: Binding(
+                Toggle("assignments.detail.lock_due".localized, isOn: Binding(
                     get: { assignment.isLockedToDueDate },
                     set: { newValue in
                         var updated = assignment
@@ -992,11 +992,11 @@ struct AssignmentDetailPanel: View {
 
     private func gradeImpact(for assignment: Assignment) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(String(localized: "assignments.detail.grade_impact"))
+            Text("assignments.detail.grade_impact".localized)
                 .font(DesignSystem.Typography.subHeader)
             if let weight = assignment.weightPercent {
                 Text(String.localizedStringWithFormat(
-                    String(localized: "assignments.detail.worth_percent"),
+                    "assignments.detail.worth_percent".localized,
                     Int(weight),
                     assignment.category.localizedName
                 ))
@@ -1005,7 +1005,7 @@ struct AssignmentDetailPanel: View {
                 ProgressView(value: min(max(weight / 100, 0), 1))
                     .progressViewStyle(.linear)
             } else {
-                Text(String(localized: "assignments.detail.no_weight"))
+                Text("assignments.detail.no_weight".localized)
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }
@@ -1015,7 +1015,7 @@ struct AssignmentDetailPanel: View {
 
     private func planSection(for assignment: Assignment) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(String(localized: "assignments.detail.plan"))
+            Text("assignments.detail.plan".localized)
                 .font(DesignSystem.Typography.subHeader)
             ForEach(assignment.plan) { step in
                 HStack {
@@ -1023,7 +1023,7 @@ struct AssignmentDetailPanel: View {
                         Text(step.title)
                             .font(DesignSystem.Typography.body)
                         Text(String.localizedStringWithFormat(
-                            String(localized: "assignments.detail.minutes_short"),
+                            "assignments.detail.minutes_short".localized,
                             step.expectedMinutes
                         ))
                             .font(DesignSystem.Typography.caption)
@@ -1031,7 +1031,7 @@ struct AssignmentDetailPanel: View {
                     }
                     Spacer()
                     Text(String.localizedStringWithFormat(
-                        String(localized: "assignments.detail.minutes_estimate"),
+                        "assignments.detail.minutes_estimate".localized,
                         step.expectedMinutes
                     ))
                         .font(DesignSystem.Typography.caption.weight(.semibold))
@@ -1048,13 +1048,13 @@ struct AssignmentDetailPanel: View {
 
     private func actionsSection(for assignment: Assignment) -> some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-            Text(String(localized: "assignments.detail.actions")).rootsSectionHeader()
+            Text("assignments.detail.actions".localized).rootsSectionHeader()
             HStack(spacing: RootsSpacing.s) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(String(localized: "assignments.detail.state"))
+                    Text("assignments.detail.state".localized)
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
-                    Button(String(localized: "assignments.detail.mark_completed")) {
+                    Button("assignments.detail.mark_completed".localized) {
                         var updated = assignment
                         let wasCompleted = updated.status == .completed
                         updated.status = .completed
@@ -1072,26 +1072,26 @@ struct AssignmentDetailPanel: View {
                     .controlSize(.small)
                 }
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(String(localized: "assignments.detail.planning"))
+                    Text("assignments.detail.planning".localized)
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
-                    Button(String(localized: "assignments.detail.planner")) {
+                    Button("assignments.detail.planner".localized) {
                         // TODO: navigate to Planner with this assignment
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.small)
-                    .accessibilityLabel(String(localized: "assignments.detail.planner_accessibility"))
+                    .accessibilityLabel("assignments.detail.planner_accessibility".localized)
                 }
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(String(localized: "assignments.detail.execution"))
+                    Text("assignments.detail.execution".localized)
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
-                    Button(String(localized: "assignments.detail.timer")) {
+                    Button("assignments.detail.timer".localized) {
                         // TODO: open Timer with this assignment
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.small)
-                    .accessibilityLabel(String(localized: "assignments.detail.timer_accessibility"))
+                    .accessibilityLabel("assignments.detail.timer_accessibility".localized)
                 }
             }
         }
@@ -1100,7 +1100,7 @@ struct AssignmentDetailPanel: View {
     private func footerActions(for assignment: Assignment) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Button(String(localized: "assignments.detail.mark_completed_full")) {
+                Button("assignments.detail.mark_completed_full".localized) {
                     var updated = assignment
                     let wasCompleted = updated.status == .completed
                     updated.status = .completed
@@ -1115,7 +1115,7 @@ struct AssignmentDetailPanel: View {
                     }
                 }
 
-                Button(String(localized: "assignments.detail.archive")) {
+                Button("assignments.detail.archive".localized) {
                     var updated = assignment
                     updated.status = .archived
                     onUpdate(updated)
@@ -1131,7 +1131,7 @@ struct AssignmentDetailPanel: View {
                 onDelete(assignment)
                 self.assignment = nil
             } label: {
-                Text(String(localized: "assignments.detail.delete"))
+                Text("assignments.detail.delete".localized)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
@@ -1144,9 +1144,9 @@ struct AssignmentDetailPanel: View {
             Image(systemName: "tray.full")
                 .font(DesignSystem.Typography.display)
                 .foregroundColor(.secondary)
-            Text(String(localized: "assignments.detail.empty_title"))
+            Text("assignments.detail.empty_title".localized)
                 .font(.headline.weight(.semibold))
-            Text(String(localized: "assignments.detail.empty_subtitle"))
+            Text("assignments.detail.empty_subtitle".localized)
                 .font(.footnote)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -1159,16 +1159,16 @@ struct AssignmentDetailPanel: View {
         let components = Calendar.current.dateComponents([.day, .hour], from: now, to: date)
         if let day = components.day, day > 0 {
             return String.localizedStringWithFormat(
-                String(localized: "assignments.detail.due_in_days"),
+                "assignments.detail.due_in_days".localized,
                 day
             )
         } else if let hour = components.hour, hour > 0 {
             return String.localizedStringWithFormat(
-                String(localized: "assignments.detail.due_in_hours"),
+                "assignments.detail.due_in_hours".localized,
                 hour
             )
         } else {
-            return String(localized: "assignments.detail.due_soon")
+            return "assignments.detail.due_soon".localized
         }
     }
 
@@ -1201,20 +1201,20 @@ struct AssignmentEditorSheet: View {
 
     var body: some View {
         RootsPopupContainer(
-            title: assignment == nil ? String(localized: "assignments.editor.title.new") : String(localized: "assignments.editor.title.edit"),
-            subtitle: String(localized: "assignments.editor.subtitle")
+            title: assignment == nil ? "assignments.editor.title.new".localized : "assignments.editor.title.edit".localized,
+            subtitle: "assignments.editor.subtitle".localized
         ) {
             ScrollView {
                 VStack(alignment: .leading, spacing: RootsSpacing.l) {
                 VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                    Text(String(localized: "assignments.editor.section.task")).rootsSectionHeader()
-                    RootsFormRow(label: String(localized: "assignments.editor.field.title")) {
-                        TextField(String(localized: "assignments.editor.field.title"), text: $title)
+                    Text("assignments.editor.section.task".localized).rootsSectionHeader()
+                    RootsFormRow(label: "assignments.editor.field.title".localized) {
+                        TextField("assignments.editor.field.title".localized, text: $title)
                             .textFieldStyle(.roundedBorder)
                     }
                     coursePickerRow
-                    RootsFormRow(label: String(localized: "assignments.editor.field.category")) {
-                        Picker(String(localized: "assignments.editor.field.category"), selection: $category) {
+                    RootsFormRow(label: "assignments.editor.field.category".localized) {
+                        Picker("assignments.editor.field.category".localized, selection: $category) {
                             ForEach(AssignmentCategory.allCases) { cat in
                                 Text(cat.localizedName).tag(cat)
                             }
@@ -1224,15 +1224,15 @@ struct AssignmentEditorSheet: View {
                 }
 
                     VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                        Text(String(localized: "assignments.editor.section.timing")).rootsSectionHeader()
-                        RootsFormRow(label: String(localized: "assignments.editor.field.due_date")) {
+                        Text("assignments.editor.section.timing".localized).rootsSectionHeader()
+                        RootsFormRow(label: "assignments.editor.field.due_date".localized) {
                             DatePicker("", selection: $dueDate)
                                 .labelsHidden()
                         }
-                        RootsFormRow(label: String(localized: "assignments.editor.field.estimated")) {
+                        RootsFormRow(label: "assignments.editor.field.estimated".localized) {
                             Stepper(value: $estimatedMinutes, in: 15...240, step: 15) {
                                 Text(String.localizedStringWithFormat(
-                                    String(localized: "assignments.editor.field.estimated_minutes"),
+                                    "assignments.editor.field.estimated_minutes".localized,
                                     estimatedMinutes
                                 ))
                                     .rootsBody()
@@ -1243,7 +1243,7 @@ struct AssignmentEditorSheet: View {
                             let sessionLen = suggestedSessionLength(profile.sessionBias)
                             let sessions = max(profile.minSessions, Int(round(Double(profile.baseMinutes) / Double(sessionLen))))
                             Text(String.localizedStringWithFormat(
-                                String(localized: "assignments.editor.field.typical_sessions"),
+                                "assignments.editor.field.typical_sessions".localized,
                                 sessions,
                                 sessionLen,
                                 profile.spreadDaysBeforeDue,
@@ -1252,7 +1252,7 @@ struct AssignmentEditorSheet: View {
                                 .rootsCaption()
                                 .foregroundColor(.secondary)
                         }
-                        RootsFormRow(label: String(localized: "assignments.editor.field.urgency")) {
+                        RootsFormRow(label: "assignments.editor.field.urgency".localized) {
                             Picker("", selection: $urgency) {
                                 ForEach(AssignmentUrgency.allCases) { u in
                                     Text(u.label).tag(u)
@@ -1260,19 +1260,19 @@ struct AssignmentEditorSheet: View {
                             }
                             .pickerStyle(.menu)
                         }
-                        RootsFormRow(label: String(localized: "assignments.editor.field.weight")) {
-                            TextField(String(localized: "assignments.editor.field.weight_placeholder"), text: $weightText)
+                        RootsFormRow(label: "assignments.editor.field.weight".localized) {
+                            TextField("assignments.editor.field.weight_placeholder".localized, text: $weightText)
                                 .textFieldStyle(.roundedBorder)
                         }
-                        RootsFormRow(label: String(localized: "assignments.editor.field.lock")) {
-                            Toggle(String(localized: "assignments.detail.lock_due"), isOn: $isLocked)
+                        RootsFormRow(label: "assignments.editor.field.lock".localized) {
+                            Toggle("assignments.detail.lock_due".localized, isOn: $isLocked)
                                 .toggleStyle(.switch)
                         }
                     }
 
                     VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                        Text(String(localized: "assignments.editor.section.status")).rootsSectionHeader()
-                        RootsFormRow(label: String(localized: "assignments.editor.field.status")) {
+                        Text("assignments.editor.section.status".localized).rootsSectionHeader()
+                        RootsFormRow(label: "assignments.editor.field.status".localized) {
                             Picker("", selection: $status) {
                                 ForEach(AssignmentStatus.allCases) { s in
                                     Text(s.label).tag(s)
@@ -1283,7 +1283,7 @@ struct AssignmentEditorSheet: View {
                     }
 
                     VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                        Text(String(localized: "assignments.editor.field.notes")).rootsSectionHeader()
+                        Text("assignments.editor.field.notes".localized).rootsSectionHeader()
                         TextEditor(text: $notes)
                             .textEditorStyle(.plain)
                             .scrollContentBackground(.hidden)
@@ -1300,8 +1300,8 @@ struct AssignmentEditorSheet: View {
         } footer: {
             HStack {
                 Spacer()
-                Button(String(localized: "assignments.editor.action.cancel")) { dismiss() }
-                Button(String(localized: "assignments.editor.action.save")) {
+                Button("assignments.editor.action.cancel".localized) { dismiss() }
+                Button("assignments.editor.action.save".localized) {
                     let weight = Double(weightText)
                     let course = coursesStore.courses.first(where: { $0.id == selectedCourseId })
                     let newAssignment = Assignment(
@@ -1349,21 +1349,21 @@ struct AssignmentEditorSheet: View {
 
     private var coursePickerRow: some View {
         let activeCourses = currentSemesterCourses
-        return RootsFormRow(label: String(localized: "assignments.editor.field.course")) {
+        return RootsFormRow(label: "assignments.editor.field.course".localized) {
             if activeCourses.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(String(localized: "assignments.editor.course.empty"))
+                    Text("assignments.editor.course.empty".localized)
                         .foregroundStyle(.secondary)
-                    Button(String(localized: "assignments.editor.course.add")) {
+                    Button("assignments.editor.course.add".localized) {
                         // TODO: open Settings → Courses
                     }
                     .buttonStyle(.link)
                 }
             } else {
-                Picker(String(localized: "assignments.editor.field.course"), selection: $selectedCourseId) {
+                Picker("assignments.editor.field.course".localized, selection: $selectedCourseId) {
                     ForEach(activeCourses) { course in
                         Text(String.localizedStringWithFormat(
-                            String(localized: "assignments.editor.course.option"),
+                            "assignments.editor.course.option".localized,
                             course.code,
                             course.title
                         ))
@@ -1374,7 +1374,7 @@ struct AssignmentEditorSheet: View {
             }
         } helper: {
             if selectedCourseId == nil {
-                Text(String(localized: "assignments.editor.course.helper"))
+                Text("assignments.editor.course.helper".localized)
                     .rootsCaption()
                     .foregroundStyle(.red)
             }
@@ -1462,13 +1462,13 @@ private extension AssignmentsPageView {
 
     var selectionMenu: some View {
         HStack(spacing: 10) {
-            Button(String(localized: "assignments.selection.cut")) { cutSelection() }
+            Button("assignments.selection.cut".localized) { cutSelection() }
                 .disabled(selectedIDs.isEmpty)
-            Button(String(localized: "assignments.selection.copy")) { copySelection() }
+            Button("assignments.selection.copy".localized) { copySelection() }
                 .disabled(selectedIDs.isEmpty)
-            Button(String(localized: "assignments.selection.duplicate")) { duplicateSelection() }
+            Button("assignments.selection.duplicate".localized) { duplicateSelection() }
                 .disabled(selectedIDs.isEmpty)
-            Button(String(localized: "assignments.selection.paste")) { pasteClipboard() }
+            Button("assignments.selection.paste".localized) { pasteClipboard() }
                 .disabled(clipboard.isEmpty)
         }
         .font(.caption.weight(.semibold))
@@ -1502,7 +1502,7 @@ private extension AssignmentsPageView {
             Assignment(
                 id: UUID(),
                 courseId: item.courseId,
-                title: item.title + String(localized: "assignments.selection.copy_suffix"),
+                title: item.title + "assignments.selection.copy_suffix".localized,
                 dueDate: item.dueDate,
                 estimatedMinutes: item.estimatedMinutes,
                 weightPercent: item.weightPercent,

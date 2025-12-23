@@ -6,22 +6,22 @@ struct PlannerSettingsView: View {
 
     var body: some View {
         Form {
-            Section(String(localized: "planner.settings.section.title")) {
-                Toggle(String(localized: "planner.settings.enable_ai"), isOn: Binding(
+            Section("planner.settings.section.title".localized) {
+                Toggle("planner.settings.enable_ai".localized, isOn: Binding(
                     get: { settings.enableAIPlanner },
                     set: { newValue in settings.enableAIPlanner = newValue; settings.save() }
                 ))
                 .toggleStyle(.switch)
                 .onChange(of: settings.enableAIPlanner) { _, _ in settings.save() }
 
-                Picker(String(localized: "planner.settings.horizon"), selection: Binding(
+                Picker("planner.settings.horizon".localized, selection: Binding(
                     get: { settings.plannerHorizon },
                     set: { newValue in settings.plannerHorizon = newValue; settings.save() }
                 )) {
-                    Text(String(localized: "planner.settings.horizon.one_week")).tag("1w")
-                    Text(String(localized: "planner.settings.horizon.two_weeks")).tag("2w")
-                    Text(String(localized: "planner.settings.horizon.one_month")).tag("1m")
-                    Text(String(localized: "planner.settings.horizon.two_months")).tag("2m")
+                    Text("planner.settings.horizon.one_week".localized).tag("1w")
+                    Text("planner.settings.horizon.two_weeks".localized).tag("2w")
+                    Text("planner.settings.horizon.one_month".localized).tag("1m")
+                    Text("planner.settings.horizon.two_months".localized).tag("2m")
                 }
                 .pickerStyle(.segmented)
             }
