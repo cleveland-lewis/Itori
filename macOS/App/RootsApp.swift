@@ -123,9 +123,11 @@ struct RootsApp: App {
                 }
                 // Reverse sync: when saved AppSettingsModel values change (from other settings UI), update AppPreferences
                 .onReceive(appSettings.objectWillChange) { _ in
-                    preferences.highContrast = appSettings.highContrastMode
-                    preferences.reduceTransparency = appSettings.increaseTransparency
-                    preferences.glassIntensity = appSettings.glassIntensity
+                    Task { @MainActor in
+                        preferences.highContrast = appSettings.highContrastMode
+                        preferences.reduceTransparency = appSettings.increaseTransparency
+                        preferences.glassIntensity = appSettings.glassIntensity
+                    }
                 }
                 .accentColor(preferences.currentAccentColor)
                 .buttonStyle(.glassBlueProminent)

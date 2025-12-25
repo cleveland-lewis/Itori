@@ -163,9 +163,11 @@ struct RootsApp: App {
                         appSettings.save()
                     }
                     .onReceive(appSettings.objectWillChange) { _ in
-                        preferences.highContrast = appSettings.highContrastMode
-                        preferences.reduceTransparency = appSettings.increaseTransparency
-                        preferences.glassIntensity = appSettings.glassIntensity
+                        Task { @MainActor in
+                            preferences.highContrast = appSettings.highContrastMode
+                            preferences.reduceTransparency = appSettings.increaseTransparency
+                            preferences.glassIntensity = appSettings.glassIntensity
+                        }
                     }
                     .accentColor(appAccentColor)
                     .buttonStyle(.glassBlueProminent)
