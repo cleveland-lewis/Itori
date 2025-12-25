@@ -52,8 +52,7 @@ public struct TabRegistry {
         TabDefinition(id: .calendar, icon: "calendar", title: "Calendar", defaultEnabled: false),
         TabDefinition(id: .flashcards, icon: "rectangle.stack", title: "Flashcards", defaultEnabled: false),
         TabDefinition(id: .practice, icon: "list.clipboard", title: "Practice", defaultEnabled: false),
-        // CRITICAL: Settings must always be last and system-required
-        TabDefinition(id: .settings, icon: "gearshape", title: "Settings", defaultEnabled: true, isSystemRequired: true)
+        TabDefinition(id: .settings, icon: "gearshape", title: "Settings", defaultEnabled: false, isSystemRequired: false)
     ]
     
     /// Quick lookup by tab ID

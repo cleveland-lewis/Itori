@@ -66,8 +66,20 @@ struct RootsIOSApp: App {
                 .environmentObject(filterState)
                 .onAppear {
                     preferences.highContrast = appSettings.highContrastMode
-                    preferences.reduceTransparency = appSettings.increaseTransparency
+                    preferences.reduceTransparency = appSettings.increaseTransparency || !appSettings.enableGlassEffects
                     preferences.glassIntensity = appSettings.glassIntensity
+                }
+                .onChange(of: appSettings.highContrastMode) { _, newValue in
+                    preferences.highContrast = newValue
+                }
+                .onChange(of: appSettings.increaseTransparency) { _, newValue in
+                    preferences.reduceTransparency = newValue || !appSettings.enableGlassEffects
+                }
+                .onChange(of: appSettings.enableGlassEffects) { _, newValue in
+                    preferences.reduceTransparency = appSettings.increaseTransparency || !newValue
+                }
+                .onChange(of: appSettings.glassIntensity) { _, newValue in
+                    preferences.glassIntensity = newValue
                 }
         }
     }

@@ -35,6 +35,10 @@ struct NotificationsSettingsView: View {
                     Divider()
                     
                     dailyOverviewSection
+                    
+                    Divider()
+                    
+                    motivationalSection
                 }
                 
                 Spacer()
@@ -66,6 +70,9 @@ struct NotificationsSettingsView: View {
                 .onChange(of: settings.notificationsEnabled) { _, newValue in
                     if newValue && !notificationManager.isAuthorized {
                         notificationManager.requestAuthorization()
+                    } else if !newValue {
+                        // Cancel all notifications when disabled
+                        notificationManager.cancelAllScheduledNotifications()
                     }
                     settings.save()
                 }
@@ -144,8 +151,13 @@ struct NotificationsSettingsView: View {
             
             Toggle("Assignment Reminders", isOn: $settings.assignmentRemindersEnabled)
                 .toggleStyle(.switch)
-                .onChange(of: settings.assignmentRemindersEnabled) { _, _ in
+                .onChange(of: settings.assignmentRemindersEnabled) { _, newValue in
                     settings.save()
+                    if newValue {
+                        notificationManager.scheduleAllAssignmentReminders()
+                    } else {
+                        notificationManager.cancelAllAssignmentReminders()
+                    }
                 }
             
             if settings.assignmentRemindersEnabled {
@@ -166,6 +178,9 @@ struct NotificationsSettingsView: View {
                     .padding(.leading, 20)
                     .onChange(of: settings.assignmentLeadTime) { _, _ in
                         settings.save()
+                        // Reschedule all assignment reminders with new lead time
+                        notificationManager.cancelAllAssignmentReminders()
+                        notificationManager.scheduleAllAssignmentReminders()
                     }
                 }
             }
@@ -255,8 +270,24 @@ struct NotificationsSettingsView: View {
                 .padding(.leading, 20)
         }
     }
+    
+    private var motivationalSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Motivational Messages")
+                .font(.headline)
             
-            Text("Receive a daily summary of your schedule and tasks")
+            Toggle("Motivational Messages", isOn: $settings.affirmationsEnabled)
+                .toggleStyle(.switch)
+                .onChange(of: settings.affirmationsEnabled) { _, newValue in
+                    settings.save()
+                    if newValue {
+                        notificationManager.scheduleMotivationalMessages()
+                    } else {
+                        notificationManager.cancelMotivationalMessages()
+                    }
+                }
+            
+            Text("Receive encouraging notifications throughout the day")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding(.leading, 20)

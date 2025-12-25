@@ -1,5 +1,6 @@
 #if os(iOS)
 import SwiftUI
+import Combine
 
 struct AppearanceSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
@@ -19,7 +20,11 @@ struct AppearanceSettingsView: View {
             Section {
                 Picker(selection: Binding(
                     get: { interfaceStyle },
-                    set: { interfaceStyle = $0 }
+                    set: { newValue in
+                        settings.objectWillChange.send()
+                        interfaceStyle = newValue
+                        settings.save()
+                    }
                 )) {
                     ForEach([InterfaceStyle.system, .light, .dark], id: \.self) { style in
                         Text(styleLabel(style)).tag(style)
@@ -33,7 +38,14 @@ struct AppearanceSettingsView: View {
             }
             
             Section {
-                Toggle(isOn: $settings.enableGlassEffectsStorage) {
+                Toggle(isOn: Binding(
+                    get: { settings.enableGlassEffectsStorage },
+                    set: { newValue in
+                        settings.objectWillChange.send()
+                        settings.enableGlassEffectsStorage = newValue
+                        settings.save()
+                    }
+                )) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(NSLocalizedString("settings.appearance.glass_effects", comment: "Glass Effects"))
                         Text(NSLocalizedString("settings.appearance.glass_effects.detail", comment: "Use translucent backgrounds and blur"))
@@ -57,7 +69,11 @@ struct AppearanceSettingsView: View {
             Section {
                 Picker(selection: Binding(
                     get: { CardRadius(rawValue: settings.cardRadiusRaw) ?? .medium },
-                    set: { settings.cardRadiusRaw = $0.rawValue }
+                    set: { newValue in
+                        settings.objectWillChange.send()
+                        settings.cardRadiusRaw = newValue.rawValue
+                        settings.save()
+                    }
                 )) {
                     ForEach(CardRadius.allCases, id: \.self) { radius in
                         Text(radius.label).tag(radius)
@@ -72,6 +88,9 @@ struct AppearanceSettingsView: View {
         .listStyle(.insetGrouped)
         .navigationTitle(NSLocalizedString("settings.category.appearance", comment: "Appearance"))
         .navigationBarTitleDisplayMode(.inline)
+        .onChange(of: settings.showAnimationsStorage) { _, _ in
+            settings.objectWillChange.send()
+        }
     }
     
     private func styleLabel(_ style: InterfaceStyle) -> String {

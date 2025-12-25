@@ -91,11 +91,12 @@ struct WiggleOnHoverModifier: ViewModifier {
 
 struct RootsGlassBackgroundModifier: ViewModifier {
     @EnvironmentObject private var preferences: AppPreferences
+    @EnvironmentObject private var settings: AppSettingsModel
     var cornerRadius: CGFloat = 20
 
     func body(content: Content) -> some View {
         // If reduceTransparency is set, use a solid background (less transparency). Otherwise use material.
-        if preferences.reduceTransparency {
+        if preferences.reduceTransparency || !settings.enableGlassEffects {
             let background: AnyShapeStyle = AnyShapeStyle(Color(nsColor: NSColor.windowBackgroundColor))
             return content
                 .background(

@@ -10,20 +10,33 @@ enum RootsGlassStyle {
 
 struct GlassCardModifier: ViewModifier {
     @EnvironmentObject private var preferences: AppPreferences
+    @EnvironmentObject private var settings: AppSettingsModel
     @Environment(\.colorScheme) private var colorScheme
     
     var cornerRadius: CGFloat
     
+    private var resolvedCornerRadius: CGFloat {
+        let baseRadius = RootsGlassStyle.cardCornerRadius
+        let preferredRadius = CGFloat(settings.cardCornerRadius)
+        guard baseRadius > 0 else { return cornerRadius }
+        let scale = preferredRadius / baseRadius
+        return max(2, cornerRadius * scale)
+    }
+    
     func body(content: Content) -> some View {
-        let policy = MaterialPolicy(preferences: preferences)
+        let policy = MaterialPolicy(
+            reduceTransparency: preferences.reduceTransparency || !settings.enableGlassEffects,
+            increaseContrast: preferences.highContrast,
+            differentiateWithoutColor: false
+        )
         
         content
             .background(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                RoundedRectangle(cornerRadius: resolvedCornerRadius, style: .continuous)
                     .fill(policy.cardMaterial(colorScheme: colorScheme))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                RoundedRectangle(cornerRadius: resolvedCornerRadius, style: .continuous)
                     .stroke(Color.primary.opacity(policy.borderOpacity), lineWidth: policy.borderWidth)
             )
             .shadow(color: RootsGlassStyle.cardShadow, radius: 8, x: 0, y: 4)
@@ -44,12 +57,17 @@ extension View {
 
 struct GlassChromeModifier: ViewModifier {
     @EnvironmentObject private var preferences: AppPreferences
+    @EnvironmentObject private var settings: AppSettingsModel
     @Environment(\.colorScheme) private var colorScheme
     
     var cornerRadius: CGFloat
     
     func body(content: Content) -> some View {
-        let policy = MaterialPolicy(preferences: preferences)
+        let policy = MaterialPolicy(
+            reduceTransparency: preferences.reduceTransparency || !settings.enableGlassEffects,
+            increaseContrast: preferences.highContrast,
+            differentiateWithoutColor: false
+        )
         
         content
             .background(

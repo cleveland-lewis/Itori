@@ -25,8 +25,11 @@ final class TimerPageViewModel: ObservableObject {
     @Published var sessionRemaining: TimeInterval = 0
     @Published var focusDuration: TimeInterval = 25 * 60
     @Published var breakDuration: TimeInterval = 5 * 60
+    @Published var longBreakDuration: TimeInterval = 15 * 60
     @Published var timerDuration: TimeInterval = 30 * 60
     @Published var isOnBreak: Bool = false
+    @Published var pomodoroCompletedCycles: Int = 0
+    @Published var pomodoroMaxCycles: Int = 4
 
     private var timerCancellable: AnyCancellable?
     private var clockCancellable: AnyCancellable?
@@ -128,7 +131,13 @@ final class TimerPageViewModel: ObservableObject {
         let planned: TimeInterval?
         switch currentMode {
         case .pomodoro:
-            planned = isOnBreak ? breakDuration : focusDuration
+            if isOnBreak {
+                // Determine if this is a long break or short break
+                let isLongBreak = pomodoroCompletedCycles >= pomodoroMaxCycles
+                planned = isLongBreak ? longBreakDuration : breakDuration
+            } else {
+                planned = focusDuration
+            }
         case .timer:
             planned = plannedDuration ?? timerDuration
         case .stopwatch:
@@ -196,6 +205,19 @@ final class TimerPageViewModel: ObservableObject {
         sessionElapsed = 0
         sessionRemaining = 0
         if s.mode == .pomodoro && completed {
+            if !isOnBreak {
+                // Completed a focus session, increment cycle count
+                pomodoroCompletedCycles += 1
+                // Check if we should reset after long break
+                if pomodoroCompletedCycles > pomodoroMaxCycles {
+                    pomodoroCompletedCycles = 0
+                }
+            } else {
+                // Completed a break session, check if it was a long break to reset cycles
+                if pomodoroCompletedCycles >= pomodoroMaxCycles {
+                    pomodoroCompletedCycles = 0
+                }
+            }
             isOnBreak.toggle()
         }
         
@@ -350,7 +372,10 @@ final class TimerPageViewModel: ObservableObject {
         var isOnBreak: Bool
         var focusDuration: TimeInterval
         var breakDuration: TimeInterval
+        var longBreakDuration: TimeInterval?
         var timerDuration: TimeInterval
+        var pomodoroCompletedCycles: Int?
+        var pomodoroMaxCycles: Int?
     }
 
     private var stateURL: URL {
@@ -373,7 +398,10 @@ final class TimerPageViewModel: ObservableObject {
                 self.isOnBreak = decoded.isOnBreak
                 self.focusDuration = decoded.focusDuration
                 self.breakDuration = decoded.breakDuration
+                self.longBreakDuration = decoded.longBreakDuration ?? 15 * 60
                 self.timerDuration = decoded.timerDuration
+                self.pomodoroCompletedCycles = decoded.pomodoroCompletedCycles ?? 0
+                self.pomodoroMaxCycles = decoded.pomodoroMaxCycles ?? 4
                 if !sessionsToMigrate.isEmpty {
                     self.migrateSessions(sessionsToMigrate)
                 }
@@ -392,7 +420,10 @@ final class TimerPageViewModel: ObservableObject {
             isOnBreak: isOnBreak,
             focusDuration: focusDuration,
             breakDuration: breakDuration,
-            timerDuration: timerDuration
+            longBreakDuration: longBreakDuration,
+            timerDuration: timerDuration,
+            pomodoroCompletedCycles: pomodoroCompletedCycles,
+            pomodoroMaxCycles: pomodoroMaxCycles
         )
         let url = stateURL
         persistenceQueue.async {

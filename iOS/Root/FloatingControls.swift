@@ -90,13 +90,13 @@ struct FloatingControls: View {
 
     private var allMenuPages: [AppPage] {
         [
-            .dashboard,
-            .calendar,
-            .planner,
-            .assignments,
-            .courses,
+            .practice,
             .timer,
-            .practice
+            .courses,
+            .assignments,
+            .planner,
+            .calendar,
+            .dashboard
         ]
     }
 

@@ -398,7 +398,9 @@ struct IOSTimerPageView: View {
     private func syncSettingsFromApp() {
         viewModel.focusDuration = TimeInterval(settings.pomodoroFocusMinutes * 60)
         viewModel.breakDuration = TimeInterval(settings.pomodoroShortBreakMinutes * 60)
+        viewModel.longBreakDuration = TimeInterval(settings.pomodoroLongBreakMinutes * 60)
         viewModel.timerDuration = TimeInterval(settings.timerDurationMinutes * 60)
+        viewModel.pomodoroMaxCycles = settings.pomodoroIterations
     }
 
 #if DEBUG
@@ -477,6 +479,7 @@ private struct TimerSettingsSync: ViewModifier {
             .onChange(of: settings.pomodoroFocusMinutes) { _, _ in syncSettingsFromApp() }
             .onChange(of: settings.pomodoroShortBreakMinutes) { _, _ in syncSettingsFromApp() }
             .onChange(of: settings.pomodoroLongBreakMinutes) { _, _ in syncSettingsFromApp() }
+            .onChange(of: settings.pomodoroIterations) { _, _ in syncSettingsFromApp() }
             .onChange(of: settings.timerDurationMinutes) { _, _ in syncSettingsFromApp() }
             .onChange(of: settings.timerAlertsEnabled) { _, _ in syncSettingsFromApp() }
             .onChange(of: settings.pomodoroAlertsEnabled) { _, _ in syncSettingsFromApp() }

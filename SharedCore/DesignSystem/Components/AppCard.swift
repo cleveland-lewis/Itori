@@ -7,7 +7,6 @@ struct AppCard<Content: View>: View {
     let icon: Image?
     let iconBounceTrigger: Bool
     let content: Content
-    private let cardCornerRadius: CGFloat = 24
     private let cardPadding: CGFloat = 24
     // Unified card height guidance used on dashboard
     private let unifiedCardMinHeight: CGFloat = 180
@@ -39,7 +38,7 @@ struct AppCard<Content: View>: View {
         }
         .padding(cardPadding)
         .frame(minHeight: unifiedCardMinHeight)
-        .glassCard(cornerRadius: cardCornerRadius)
+        .glassCard(cornerRadius: CGFloat(settings.cardCornerRadius))
         .contentTransition(.opacity)
         .modifier(PopupAlignmentModifier(isPopup: isPopup))
     }

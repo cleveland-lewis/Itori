@@ -51,6 +51,20 @@ struct IOSRootView: View {
     private var isPad: Bool {
         horizontalSizeClass == .regular
     }
+    
+    private var preferredColorScheme: ColorScheme? {
+        switch settings.interfaceStyle {
+        case .system:
+            return nil
+        case .light:
+            return .light
+        case .dark:
+            return .dark
+        case .auto:
+            let hour = Calendar.current.component(.hour, from: Date())
+            return (hour >= 19 || hour < 7) ? .dark : .light
+        }
+    }
 
     var body: some View {
         ZStack {
@@ -98,6 +112,12 @@ struct IOSRootView: View {
         .environmentObject(navigation)
         .environmentObject(tabBarPrefs)
         .layoutMetrics(layoutMetrics)
+        .preferredColorScheme(preferredColorScheme)
+        .transaction { transaction in
+            if !settings.showAnimations {
+                transaction.disablesAnimations = true
+            }
+        }
         .overlay(alignment: .top) {
             if let message = toastRouter.message {
                 toastView(message)
