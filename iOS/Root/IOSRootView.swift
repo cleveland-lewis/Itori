@@ -94,6 +94,7 @@ struct IOSRootView: View {
                             }
                         }
                     }
+                    .tabViewMinimizeBehavior(.onScrollDown)
                     .navigationDestination(for: IOSNavigationTarget.self) { destination in
                         IOSAppShell(hideNavigationButtons: destination == .settings) {
                             switch destination {

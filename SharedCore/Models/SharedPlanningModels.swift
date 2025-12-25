@@ -27,6 +27,28 @@ public enum AssignmentUrgency: String, Codable, CaseIterable, Hashable, Identifi
     case low, medium, high, critical
     
     public var id: String { rawValue }
+    
+    // Default implementation for non-macOS platforms
+    // macOS uses localized versions from macOSApp/Extensions/AssignmentExtensions.swift
+    #if !os(macOS)
+    public var color: Color {
+        switch self {
+        case .low: return .green
+        case .medium: return .yellow
+        case .high: return .orange
+        case .critical: return .red
+        }
+    }
+    
+    public var label: String {
+        switch self {
+        case .low: return "Low"
+        case .medium: return "Medium"
+        case .high: return "High"
+        case .critical: return "Critical"
+        }
+    }
+    #endif
 }
 
 public enum AssignmentStatus: String, Codable, CaseIterable, Sendable, Identifiable {
@@ -36,6 +58,19 @@ public enum AssignmentStatus: String, Codable, CaseIterable, Sendable, Identifia
     case archived
     
     public var id: String { rawValue }
+    
+    // Default implementation for non-macOS platforms
+    // macOS uses localized versions from macOSApp/Extensions/AssignmentExtensions.swift
+    #if !os(macOS)
+    public var label: String {
+        switch self {
+        case .notStarted: return "Not Started"
+        case .inProgress: return "In Progress"
+        case .completed: return "Completed"
+        case .archived: return "Archived"
+        }
+    }
+    #endif
 }
 
 public struct PlanStepStub: Codable, Hashable, Identifiable {

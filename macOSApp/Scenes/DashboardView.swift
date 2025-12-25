@@ -274,10 +274,7 @@ struct DashboardView: View {
     @ObservedObject private var tracker = StudyHoursTracker.shared
     
     private var studyHoursCard: some View {
-        DashboardCard(
-            title: cardTitle("Study Hours"),
-            backgroundColor: Color(nsColor: .controlBackgroundColor).opacity(0.8)
-        ) {
+        RootsCard(title: cardTitle("Study Hours"), icon: "clock.fill") {
             VStack(alignment: .leading, spacing: 12) {
                 studyHourRow(
                     label: "Today",
@@ -297,8 +294,10 @@ struct DashboardView: View {
                     icon: "calendar"
                 )
             }
+            .padding(DesignSystem.Layout.padding.card)
+            .background(Color(nsColor: .controlBackgroundColor).opacity(0.8))
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         }
-        .help("Study time tracked from completed sessions")
     }
     
     private func studyHourRow(label: String, value: String, icon: String) -> some View {
@@ -923,3 +922,4 @@ struct StaticMonthCalendarView: View {
     }
 }
 #endif
+
