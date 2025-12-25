@@ -87,6 +87,11 @@ struct RootsIOSApp: App {
                     AnimationPolicy.shared.updateFromAppSettings()
                 }
         }
+        WindowGroup("Assignment Detail") {
+            AssignmentSceneContent()
+                .environmentObject(AssignmentsStore.shared)
+                .environmentObject(coursesStore)
+        }
     }
 }
 #endif

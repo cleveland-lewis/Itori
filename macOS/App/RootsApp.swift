@@ -150,6 +150,11 @@ struct RootsApp: App {
                     LOG_LIFECYCLE(.info, "AppStartup", "Startup tasks complete")
                 }
         }
+        WindowGroup("Assignment Detail") {
+            AssignmentSceneContent()
+                .environmentObject(AssignmentsStore.shared)
+                .environmentObject(coursesStore)
+        }
         .onChange(of: scenePhase) { _, newPhase in
             handleScenePhaseChange(newPhase)
         }

@@ -382,6 +382,13 @@ struct IOSAssignmentsView: View {
                     .onTapGesture {
                         selectedTask = task
                     }
+                    .contextMenu {
+                        Button {
+                            SceneActivationHelper.openAssignmentWindow(for: task.id)
+                        } label: {
+                            Label("Open in New Window", systemImage: "doc.on.doc")
+                        }
+                    }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button("timer.context.go_to_planner".localized) {
                             openPlanner(for: task)
