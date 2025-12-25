@@ -16,6 +16,7 @@ struct IOSPlannerView: View {
     @State private var editingBlock: StoredScheduledSession? = nil
     @State private var showingBlockEditor = false
     @State private var focusPulse = false
+    @State private var plannerDropTarget = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var isPad: Bool { horizontalSizeClass == .regular }
@@ -206,6 +207,17 @@ struct IOSPlannerView: View {
                 }
             }
         }
+        .padding()
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(Color.accentColor.opacity(plannerDropTarget ? 0.5 : 0), lineWidth: 2)
+        )
+        .onDrop(of: [DragDropType.assignment.identifier], isTargeted: $plannerDropTarget) { providers in
+            plannerDropTarget = false
+            return AssignmentDragPayload.load(from: providers) { payload in
+                handlePlannerAssignmentDrop(payload)
+            }
+        }
     }
 
     private var scheduledToday: [StoredScheduledSession] {
@@ -217,6 +229,12 @@ struct IOSPlannerView: View {
 
     private var tasksMissingDates: [AppTask] {
         filteredTasks.filter { !$0.isCompleted && $0.due == nil }
+    }
+
+    private func handlePlannerAssignmentDrop(_ payload: AssignmentDragPayload) {
+        selectedDate = payload.dueDate ?? Date()
+        plannerCoordinator.openPlanner(for: payload.dueDate ?? Date(), courseId: payload.courseId)
+        toastRouter.show("Planner opened for \(payload.title)")
     }
 
     private func generatePlan() {
@@ -379,6 +397,9 @@ struct IOSAssignmentsView: View {
                         Spacer()
                     }
                     .contentShape(Rectangle())
+                    .onDrag {
+                        task.itemProvider()
+                    }
                     .onTapGesture {
                         selectedTask = task
                     }
@@ -505,9 +526,11 @@ struct IOSAssignmentsView: View {
 
 struct IOSCoursesView: View {
     @EnvironmentObject private var coursesStore: CoursesStore
+    @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var filterState: IOSFilterState
     @State private var showingCourseEditor = false
     @State private var showingSemesterEditor = false
+    @State private var dropTargetCourseId: UUID? = nil
 
     var body: some View {
         List {
@@ -535,17 +558,32 @@ struct IOSCoursesView: View {
                 }
             } else {
                 Section("Active Courses") {
-                ForEach(filteredCourses) { course in
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(course.code.isEmpty ? course.title : course.code)
-                            .font(.body.weight(.medium))
-                        if !course.code.isEmpty {
-                            Text(course.title)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                    ForEach(filteredCourses) { course in
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(course.code.isEmpty ? course.title : course.code)
+                                .font(.body.weight(.medium))
+                            if !course.code.isEmpty {
+                                Text(course.title)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(.vertical, 8)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .fill(Color.primary.opacity(dropTargetCourseId == course.id ? 0.08 : 0))
+                        )
+                        .onDrop(of: [DragDropType.assignment.identifier], isTargeted: Binding(
+                            get: { dropTargetCourseId == course.id },
+                            set: { isTargeting in
+                                dropTargetCourseId = isTargeting ? course.id : nil
+                            }
+                        )) { providers in
+                            dropTargetCourseId = nil
+                            return handleAssignmentDrop(providers, into: course)
                         }
                     }
-                }
                 }
             }
         }
@@ -597,6 +635,15 @@ struct IOSCoursesView: View {
             return base.filter { $0.id == courseId }
         }
         return base
+    }
+
+    private func handleAssignmentDrop(_ providers: [NSItemProvider], into course: Course) -> Bool {
+        return AssignmentDragPayload.load(from: providers) { payload in
+            guard let idx = assignmentsStore.tasks.firstIndex(where: { $0.id == payload.id }) else { return }
+            var updated = assignmentsStore.tasks[idx]
+            updated.courseId = course.id
+            assignmentsStore.updateTask(updated)
+        }
     }
 }
 
