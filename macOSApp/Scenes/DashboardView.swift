@@ -61,6 +61,14 @@ struct DashboardView: View {
                         .frame(maxWidth: .infinity, alignment: .top)
                         .animateEntry(isLoaded: isLoaded, index: 5)
                         .frame(minHeight: 160)
+                    
+                    // Study hours card (Phase D)
+                    if settings.trackStudyHours {
+                        studyHoursCard
+                            .frame(maxWidth: .infinity, alignment: .top)
+                            .animateEntry(isLoaded: isLoaded, index: 6)
+                            .frame(minHeight: 160)
+                    }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .top)
@@ -259,6 +267,52 @@ struct DashboardView: View {
             .padding(.vertical, 8)
         }
         .buttonStyle(.borderedProminent)
+    }
+    
+    // MARK: - Study Hours Card (Phase D)
+    
+    @ObservedObject private var tracker = StudyHoursTracker.shared
+    
+    private var studyHoursCard: some View {
+        DashboardCard(
+            title: cardTitle("Study Hours"),
+            backgroundColor: Color(nsColor: .controlBackgroundColor).opacity(0.8)
+        ) {
+            VStack(alignment: .leading, spacing: 12) {
+                studyHourRow(
+                    label: "Today",
+                    value: StudyHoursTotals.formatMinutes(tracker.totals.todayMinutes),
+                    icon: "sun.max.fill"
+                )
+                
+                studyHourRow(
+                    label: "This Week",
+                    value: StudyHoursTotals.formatMinutes(tracker.totals.weekMinutes),
+                    icon: "calendar.badge.clock"
+                )
+                
+                studyHourRow(
+                    label: "This Month",
+                    value: StudyHoursTotals.formatMinutes(tracker.totals.monthMinutes),
+                    icon: "calendar"
+                )
+            }
+        }
+        .help("Study time tracked from completed sessions")
+    }
+    
+    private func studyHourRow(label: String, value: String, icon: String) -> some View {
+        HStack {
+            Image(systemName: icon)
+                .foregroundColor(.accentColor)
+                .frame(width: 20)
+            Text(label)
+                .font(.subheadline)
+            Spacer()
+            Text(value)
+                .font(.subheadline.weight(.semibold))
+                .foregroundColor(.accentColor)
+        }
     }
 
     private var eventsCard: some View {

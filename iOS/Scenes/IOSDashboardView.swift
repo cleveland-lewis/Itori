@@ -128,6 +128,49 @@ struct IOSDashboardView: View {
                 .fill(DesignSystem.Materials.hud)
         )
     }
+    
+    // MARK: - Study Hours Card (Phase D)
+    
+    @ObservedObject private var tracker = StudyHoursTracker.shared
+    
+    private var studyHoursCard: some View {
+        RootsCard(
+            title: NSLocalizedString("ios.dashboard.study_hours.title", value: "Study Hours", comment: "Study hours card title"),
+            subtitle: NSLocalizedString("ios.dashboard.study_hours.subtitle", value: "Your progress", comment: "Study hours card subtitle"),
+            icon: "clock.fill"
+        ) {
+            VStack(spacing: 16) {
+                HStack(spacing: 20) {
+                    studyHoursStat(
+                        label: NSLocalizedString("ios.dashboard.study_hours.today", value: "Today", comment: "Today label"),
+                        value: StudyHoursTotals.formatMinutes(tracker.totals.todayMinutes)
+                    )
+                    
+                    studyHoursStat(
+                        label: NSLocalizedString("ios.dashboard.study_hours.week", value: "This Week", comment: "This week label"),
+                        value: StudyHoursTotals.formatMinutes(tracker.totals.weekMinutes)
+                    )
+                    
+                    studyHoursStat(
+                        label: NSLocalizedString("ios.dashboard.study_hours.month", value: "This Month", comment: "This month label"),
+                        value: StudyHoursTotals.formatMinutes(tracker.totals.monthMinutes)
+                    )
+                }
+            }
+        }
+    }
+    
+    private func studyHoursStat(label: String, value: String) -> some View {
+        VStack(spacing: 4) {
+            Text(value)
+                .font(.title2.weight(.bold))
+                .foregroundColor(.accentColor)
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+    }
 
     private var upcomingEventsCard: some View {
         RootsCard(title: NSLocalizedString("ios.dashboard.upcoming.title", comment: "Upcoming"), subtitle: NSLocalizedString("ios.dashboard.upcoming.subtitle", comment: "From your calendar"), icon: "calendar") {

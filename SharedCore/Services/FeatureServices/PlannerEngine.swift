@@ -472,7 +472,7 @@ enum PlannerEngine {
             
             // Fallback to deterministic if AI returns empty/invalid
             if result.scheduled.isEmpty && !sessions.isEmpty {
-                LOG_UI(.warning, "PlannerEngine", "AI scheduling returned empty, falling back to deterministic")
+                LOG_UI(.warn, "PlannerEngine", "AI scheduling returned empty, falling back to deterministic")
                 result = scheduleSessions(sessions, settings: settings, energyProfile: energyProfile)
             }
         } else {

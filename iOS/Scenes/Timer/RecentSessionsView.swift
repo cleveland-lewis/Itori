@@ -101,32 +101,37 @@ private struct SessionRow: View {
     let onDelete: () -> Void
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            VStack(alignment: .leading, spacing: 6) {
-                HStack(spacing: 8) {
-                    Image(systemName: session.mode.systemImage)
-                        .foregroundColor(.accentColor)
-                    Text(session.mode.displayName)
-                        .font(.headline)
-                    Spacer()
-                    Text(durationString)
-                        .font(.subheadline.monospacedDigit())
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(spacing: 8) {
+                        Image(systemName: session.mode.systemImage)
+                            .foregroundColor(.accentColor)
+                        Text(session.mode.displayName)
+                            .font(.headline)
+                        Spacer()
+                        Text(durationString)
+                            .font(.subheadline.monospacedDigit())
+                            .foregroundColor(.secondary)
+                    }
+                    Text(activityName)
+                        .font(.subheadline)
                         .foregroundColor(.secondary)
+                    if let startedAt = session.startedAt {
+                        Text(timeFormatter.string(from: startedAt))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
-                Text(activityName)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                if let startedAt = session.startedAt {
-                    Text(timeFormatter.string(from: startedAt))
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-            }
-            VStack(spacing: 8) {
+                
                 Button(action: onEdit) {
                     Image(systemName: "ellipsis")
                 }
                 .buttonStyle(.borderless)
+            }
+            
+            HStack {
+                Spacer()
                 Button(action: onDelete) {
                     Image(systemName: "trash")
                         .foregroundColor(.red)
