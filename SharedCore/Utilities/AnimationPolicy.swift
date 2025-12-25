@@ -29,13 +29,25 @@ public final class AnimationPolicy: ObservableObject {
         }
     }
     
-    /// Update the reduce motion status from system preferences
+    /// Update the reduce motion status from system and app preferences
     private func updateReduceMotionStatus() {
+        let systemReduceMotion: Bool
         #if os(macOS)
-        isReduceMotionEnabled = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+        systemReduceMotion = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
         #else
-        isReduceMotionEnabled = UIAccessibility.isReduceMotionEnabled
+        systemReduceMotion = UIAccessibility.isReduceMotionEnabled
         #endif
+        
+        // Check app's custom preference as well
+        let appReduceMotion = UserDefaults.standard.bool(forKey: "roots.settings.reduceMotion")
+        
+        // Enable reduce motion if either system OR app preference is enabled
+        isReduceMotionEnabled = systemReduceMotion || appReduceMotion
+    }
+    
+    /// Manually trigger update (call when app settings change)
+    public func updateFromAppSettings() {
+        updateReduceMotionStatus()
     }
     
     // MARK: - Animation Contexts

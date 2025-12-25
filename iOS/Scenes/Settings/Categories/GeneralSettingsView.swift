@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 #if os(iOS)
 
 struct GeneralSettingsView: View {
@@ -7,7 +8,7 @@ struct GeneralSettingsView: View {
     var body: some View {
         List {
             Section {
-                Toggle(isOn: $settings.use24HourTimeStorage) {
+                Toggle(isOn: binding(for: \.use24HourTimeStorage)) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(NSLocalizedString("settings.general.use_24h", comment: "Use 24-Hour Time"))
                         Text(NSLocalizedString("settings.general.use_24h.detail", comment: "Display times in 24-hour format"))
@@ -21,7 +22,7 @@ struct GeneralSettingsView: View {
                 HStack {
                     Text(NSLocalizedString("settings.general.workday_start", comment: "Workday Start"))
                     Spacer()
-                    Picker("", selection: $settings.workdayStartHourStorage) {
+                    Picker("", selection: binding(for: \.workdayStartHourStorage)) {
                         ForEach(0..<24) { hour in
                             Text(formatHour(hour)).tag(hour)
                         }
@@ -32,7 +33,7 @@ struct GeneralSettingsView: View {
                 HStack {
                     Text(NSLocalizedString("settings.general.workday_end", comment: "Workday End"))
                     Spacer()
-                    Picker("", selection: $settings.workdayEndHourStorage) {
+                    Picker("", selection: binding(for: \.workdayEndHourStorage)) {
                         ForEach(0..<24) { hour in
                             Text(formatHour(hour)).tag(hour)
                         }
@@ -46,7 +47,7 @@ struct GeneralSettingsView: View {
             }
             
             Section {
-                Toggle(isOn: $settings.showEnergyPanelStorage) {
+                Toggle(isOn: binding(for: \.showEnergyPanelStorage)) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(NSLocalizedString("settings.general.show_energy", comment: "Show Energy Panel"))
                         Text(NSLocalizedString("settings.general.show_energy.detail", comment: "Display energy levels in dashboard and planner"))
@@ -55,7 +56,7 @@ struct GeneralSettingsView: View {
                     }
                 }
                 
-                Toggle(isOn: $settings.highContrastModeStorage) {
+                Toggle(isOn: binding(for: \.highContrastModeStorage)) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(NSLocalizedString("settings.general.high_contrast", comment: "High Contrast"))
                         Text(NSLocalizedString("settings.general.high_contrast.detail", comment: "Increase visual contrast for better readability"))
@@ -73,13 +74,24 @@ struct GeneralSettingsView: View {
     }
     
     private func formatHour(_ hour: Int) -> String {
-        if settings.use24HourTimeStorage {
+        if settings.use24HourTime {
             return String(format: "%02d:00", hour)
         } else {
             let displayHour = hour == 0 ? 12 : (hour > 12 ? hour - 12 : hour)
             let period = hour < 12 ? NSLocalizedString("time.am", comment: "AM") : NSLocalizedString("time.pm", comment: "PM")
             return "\(displayHour):00 \(period)"
         }
+    }
+
+    private func binding<Value>(for keyPath: ReferenceWritableKeyPath<AppSettingsModel, Value>) -> Binding<Value> {
+        Binding(
+            get: { settings[keyPath: keyPath] },
+            set: { newValue in
+                settings.objectWillChange.send()
+                settings[keyPath: keyPath] = newValue
+                settings.save()
+            }
+        )
     }
 }
 

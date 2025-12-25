@@ -68,6 +68,7 @@ struct RootsIOSApp: App {
                     preferences.highContrast = appSettings.highContrastMode
                     preferences.reduceTransparency = appSettings.increaseTransparency || !appSettings.enableGlassEffects
                     preferences.glassIntensity = appSettings.glassIntensity
+                    preferences.reduceMotion = appSettings.reduceMotion
                 }
                 .onChange(of: appSettings.highContrastMode) { _, newValue in
                     preferences.highContrast = newValue
@@ -80,6 +81,10 @@ struct RootsIOSApp: App {
                 }
                 .onChange(of: appSettings.glassIntensity) { _, newValue in
                     preferences.glassIntensity = newValue
+                }
+                .onChange(of: appSettings.reduceMotion) { _, newValue in
+                    preferences.reduceMotion = newValue
+                    AnimationPolicy.shared.updateFromAppSettings()
                 }
         }
     }
