@@ -60,6 +60,26 @@ struct StoredScheduledSession: Identifiable, Codable, Hashable {
         isLocked = try container.decodeIfPresent(Bool.self, forKey: .isLocked) ?? false
         isUserEdited = try container.decodeIfPresent(Bool.self, forKey: .isUserEdited) ?? false
     }
+    
+    // MARK: - UI Helpers
+    
+    /// System icon name for consistent rendering across platforms
+    var iconName: String {
+        switch type {
+        case .breakTime:
+            // Determine if short or long break based on duration
+            return estimatedMinutes >= 15 ? "moon.fill" : "cup.and.saucer.fill"
+        case .study, .task:
+            return isUserEdited ? "pencil.and.outline" : "calendar.badge.clock"
+        case .event:
+            return "calendar"
+        }
+    }
+    
+    /// Whether this session is a break
+    var isBreak: Bool {
+        type == .breakTime
+    }
 }
 
 struct StoredOverflowSession: Identifiable, Codable, Hashable {

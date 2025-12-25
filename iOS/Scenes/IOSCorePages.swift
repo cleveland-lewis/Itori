@@ -1298,10 +1298,11 @@ private struct IOSPlannerBlockRow: View {
 
     var body: some View {
         IOSInfoRow(
-            title: session.title,
+            title: session.displayTitle,
             subtitle: "\(timeRange(start: session.start, end: session.end)) · \(session.estimatedMinutes) min",
-            systemImage: session.isUserEdited ? "pencil.and.outline" : "calendar.badge.clock"
+            systemImage: session.iconName
         )
+        .opacity(session.isBreak ? 0.7 : 1.0)
         .offset(y: dragOffset.height)
         .gesture(
             DragGesture(minimumDistance: 6)
@@ -1322,6 +1323,7 @@ private struct IOSPlannerBlockRow: View {
         .onTapGesture {
             onEdit()
         }
+        .accessibilityLabel("\(session.displayTitle), \(timeRange(start: session.start, end: session.end))")
     }
 
     private func snappedMinutes(for deltaHeight: CGFloat) -> Int {

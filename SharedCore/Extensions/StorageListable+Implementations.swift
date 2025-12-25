@@ -303,6 +303,15 @@ extension GradeEntry: StorageListable {
 
 extension StoredScheduledSession: StorageListable {
     public var displayTitle: String {
+        // Handle breaks with localized titles
+        if type == .breakTime {
+            let breakType = estimatedMinutes >= 15 ? 
+                NSLocalizedString("planner.break.long", value: "Long Break", comment: "Long break session title") :
+                NSLocalizedString("planner.break.short", value: "Short Break", comment: "Short break session title")
+            return breakType
+        }
+        
+        // Handle regular sessions
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed.isEmpty ? "Planner Block" : trimmed
     }
