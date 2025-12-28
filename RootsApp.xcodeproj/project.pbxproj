@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1A58B1622EF58EAC0077C827 /* Notification+Names.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A58B1612EF58EAB0077C827 /* Notification+Names.swift */; };
 		1A6947212EF0891800072BDF /* roots.icon in Resources */ = {isa = PBXBuildFile; fileRef = 1A6947202EF0891800072BDF /* roots.icon */; };
+		1A6D52F92EFF01350063F4A7 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1A6D52F82EFF01350063F4A7 /* Info.plist */; };
 		1AC769912EFB2AE600DE0B3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8B5C0B2F7A123400000001 /* Assets.xcassets */; };
 		7C8B5C0C2F7A123400000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8B5C0B2F7A123400000001 /* Assets.xcassets */; };
 		B0A1C0012F7A000100000001 /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = B0A1C1012F7A000100000001 /* en.lproj */; };
@@ -37,6 +38,7 @@
 /* Begin PBXFileReference section */
 		1A58B1612EF58EAB0077C827 /* Notification+Names.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Names.swift"; sourceTree = "<group>"; };
 		1A6947202EF0891800072BDF /* roots.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = roots.icon; sourceTree = "<group>"; };
+		1A6D52F82EFF01350063F4A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1AD7D4342EDD328800D403F3 /* Roots.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Roots.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AD7D4432EDD328A00D403F3 /* RootsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RootsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AD7D44D2EDD328A00D403F3 /* RootsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RootsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -136,6 +138,7 @@
 				1A6947202EF0891800072BDF /* roots.icon */,
 				1A58B1612EF58EAB0077C827 /* Notification+Names.swift */,
 				1A58C8A92EF5D2760077C827 /* Recovered References */,
+				1A6D52F82EFF01350063F4A7 /* Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -302,6 +305,7 @@
 				7C8B5C0C2F7A123400000001 /* Assets.xcassets in Resources */,
 				B0A1C0012F7A000100000001 /* en.lproj in Resources */,
 				B0A1C0012F7A000100000002 /* zh-Hans.lproj in Resources */,
+				1A6D52F92EFF01350063F4A7 /* Info.plist in Resources */,
 				B0A1C0012F7A000100000003 /* zh-Hant.lproj in Resources */,
 				1A6947212EF0891800072BDF /* roots.icon in Resources */,
 			);
@@ -574,7 +578,7 @@
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Roots needs full calendar access to display and manage your schedule across courses and tasks.";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Roots needs access to your calendar to show and schedule classes and events.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Roots uses Face ID to securely authenticate you when required features request identity verification.";
-				INFOPLIST_KEY_NSFocusStatusUsageDescription = "";
+				INFOPLIST_KEY_NSFocusStatusUsageDescription = "Roots uses your Focus status to pause alerts and adjust notifications during study sessions.";
 				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Roots needs full reminders access to sync and manage your tasks safely across devices.";
 				INFOPLIST_KEY_NSRemindersUsageDescription = "Roots needs access to your reminders to show tasks alongside your assignments.";
 				INFOPLIST_KEY_NSUserNotificationUsageDescription = "Roots uses notifications to alert you when timers or scheduled tasks are finished.";
@@ -582,6 +586,7 @@
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIApplicationSupportsMultipleScenes = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
@@ -590,6 +595,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UTExportedTypeDeclarations = "{\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Roots Assignment\";\n    UTTypeIdentifier = \"com.roots.assignment\";\n} {\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Roots Course\";\n    UTTypeIdentifier = \"com.roots.course\";\n} {\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Roots Session\";\n    UTTypeIdentifier = \"com.roots.session\";\n}";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -656,7 +662,7 @@
 				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Roots needs full calendar access to display and manage your schedule across courses and tasks.";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Roots needs access to your calendar to show and schedule classes and events.";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "Roots uses Face ID to securely authenticate you when required features request identity verification.";
-				INFOPLIST_KEY_NSFocusStatusUsageDescription = "";
+				INFOPLIST_KEY_NSFocusStatusUsageDescription = "Roots uses your Focus status to pause alerts and adjust notifications during study sessions.";
 				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Roots needs full reminders access to sync and manage your tasks safely across devices.";
 				INFOPLIST_KEY_NSRemindersUsageDescription = "Roots needs access to your reminders to show tasks alongside your assignments.";
 				INFOPLIST_KEY_NSUserNotificationUsageDescription = "Roots uses notifications to alert you when timers or scheduled tasks are finished.";
@@ -664,6 +670,7 @@
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIApplicationSupportsMultipleScenes = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
@@ -672,6 +679,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UTExportedTypeDeclarations = "{\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Roots Assignment\";\n    UTTypeIdentifier = \"com.roots.assignment\";\n} {\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Roots Course\";\n    UTTypeIdentifier = \"com.roots.course\";\n} {\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Roots Session\";\n    UTTypeIdentifier = \"com.roots.session\";\n}";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";

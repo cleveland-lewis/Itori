@@ -67,39 +67,40 @@ struct PlannerView: View {
                 .pickerStyle(.segmented)
                 .frame(maxWidth: 360)
 
-                // Scheduler tuning UI
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
-                    HStack {
-                        Text("planner.scheduler.min_block".localized)
-                        Spacer()
-                        Stepper("\(minBlockMinutes) \("planner.scheduler.minutes_short".localized)", value: $minBlockMinutes, in: 15...60, step: 5)
-                            .labelsHidden()
-                    }
-                    HStack {
-                        Text("planner.scheduler.max_block".localized)
-                        Spacer()
-                        Stepper("\(maxBlockMinutes) \("planner.scheduler.minutes_short".localized)", value: $maxBlockMinutes, in: 30...240, step: 5)
-                            .labelsHidden()
-                    }
-                    HStack {
-                        Text("planner.scheduler.horizon_days".localized)
-                        Spacer()
-                        Stepper("\(horizonDays)", value: $horizonDays, in: 1...30)
-                            .labelsHidden()
-                    }
+                GroupBox("planner.scheduler.title".localized) {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+                        HStack {
+                            Text("planner.scheduler.min_block".localized)
+                            Spacer()
+                            Stepper("\(minBlockMinutes) \("planner.scheduler.minutes_short".localized)", value: $minBlockMinutes, in: 15...60, step: 5)
+                                .labelsHidden()
+                        }
+                        HStack {
+                            Text("planner.scheduler.max_block".localized)
+                            Spacer()
+                            Stepper("\(maxBlockMinutes) \("planner.scheduler.minutes_short".localized)", value: $maxBlockMinutes, in: 30...240, step: 5)
+                                .labelsHidden()
+                        }
+                        HStack {
+                            Text("planner.scheduler.horizon_days".localized)
+                            Spacer()
+                            Stepper("\(horizonDays)", value: $horizonDays, in: 1...30)
+                                .labelsHidden()
+                        }
 
-                    HStack {
-                        Text("planner.scheduler.weights".localized)
-                        Spacer()
-                        VStack(alignment: .trailing) {
-                            HStack { Text("planner.scheduler.weight.urgency".localized); Slider(value: $weightUrgency, in: 0...1) }
-                            HStack { Text("planner.scheduler.weight.importance".localized); Slider(value: $weightImportance, in: 0...1) }
-                            HStack { Text("planner.scheduler.weight.difficulty".localized); Slider(value: $weightDifficulty, in: 0...1) }
-                            HStack { Text("planner.scheduler.weight.size".localized); Slider(value: $weightSize, in: 0...1) }
+                        HStack(alignment: .top) {
+                            Text("planner.scheduler.weights".localized)
+                            Spacer()
+                            VStack(alignment: .trailing) {
+                                HStack { Text("planner.scheduler.weight.urgency".localized); Slider(value: $weightUrgency, in: 0...1) }
+                                HStack { Text("planner.scheduler.weight.importance".localized); Slider(value: $weightImportance, in: 0...1) }
+                                HStack { Text("planner.scheduler.weight.difficulty".localized); Slider(value: $weightDifficulty, in: 0...1) }
+                                HStack { Text("planner.scheduler.weight.size".localized); Slider(value: $weightSize, in: 0...1) }
+                            }
                         }
                     }
+                    .controlSize(.small)
                 }
-                .padding(.vertical, DesignSystem.Spacing.small)
 
                 // Sections
                 LazyVStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
@@ -192,6 +193,13 @@ struct PlannerView: View {
                 }
             }
             .padding(DesignSystem.Spacing.large)
+        }
+        .contextMenu {
+            Button {
+                SceneActivationHelper.openPlannerWindow(for: Date())
+            } label: {
+                Label("Open in New Window", systemImage: "doc.on.doc")
+            }
         }
         .onAppear {
             _Concurrency.Task { await calendarManager.requestAccess() }

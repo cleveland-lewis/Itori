@@ -339,7 +339,7 @@ struct PracticeTestPageView: View {
     
     private func startScheduledTest(_ scheduledTest: ScheduledPracticeTest) {
         // Record the attempt
-        let attempt = scheduledTestsStore.startTest(scheduledTest: scheduledTest)
+        _ = scheduledTestsStore.startTest(scheduledTest: scheduledTest)
         
         // Create a practice test request based on scheduled test info
         // In a real implementation, you might have a mapping or store additional metadata

@@ -211,7 +211,7 @@ private struct MonthDayCell: View {
         if hovering {
             return Color(nsColor: .controlBackgroundColor).opacity(0.12)
         }
-        return DesignSystem.Materials.surface
+        return DesignSystem.Colors.cardBackground
     }
     
     private var borderColor: Color {

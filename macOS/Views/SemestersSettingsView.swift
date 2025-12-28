@@ -85,6 +85,7 @@ struct SemestersSettingsView: View {
             }
         }
         .formStyle(.grouped)
+        .navigationTitle("Semesters")
         .sheet(item: $editingSemester) { semester in
             SemesterEditorView(semesterToEdit: semester)
                 .environmentObject(coursesStore)

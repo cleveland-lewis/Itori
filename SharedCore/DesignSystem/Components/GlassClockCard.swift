@@ -7,6 +7,16 @@ struct GlassClockCard<Content: View>: View {
     var content: () -> Content
     
     var body: some View {
+        #if os(macOS)
+        content()
+            .padding(DesignSystem.Layout.padding.card)
+            .background(DesignSystem.Colors.cardBackground, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                    .allowsHitTesting(false)
+            )
+        #else
         content()
             .padding(DesignSystem.Layout.padding.card)
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
@@ -32,5 +42,6 @@ struct GlassClockCard<Content: View>: View {
             )
             .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.35 : 0.18), radius: 22, x: 0, y: 14)
             .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.18 : 0.10), radius: 10, x: 0, y: 6)
+        #endif
     }
 }

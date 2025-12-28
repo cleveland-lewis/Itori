@@ -1,6 +1,7 @@
 #if os(iOS)
 import SwiftUI
 import EventKit
+import UIKit
 
 struct IOSPlannerView: View {
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
@@ -146,6 +147,15 @@ struct IOSPlannerView: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Color(uiColor: .secondarySystemBackground))
         )
+        .contextMenu {
+            if isPad {
+                Button {
+                    SceneActivationHelper.openPlannerWindow(for: selectedDate)
+                } label: {
+                    Label("Open in New Window", systemImage: "doc.on.doc")
+                }
+            }
+        }
     }
 
     private var scheduleSection: some View {
@@ -212,11 +222,10 @@ struct IOSPlannerView: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .stroke(Color.accentColor.opacity(plannerDropTarget ? 0.5 : 0), lineWidth: 2)
         )
-        .onDrop(of: [DragDropType.assignment.identifier], isTargeted: $plannerDropTarget) { providers in
-            plannerDropTarget = false
-            return AssignmentDragPayload.load(from: providers) { payload in
-                handlePlannerAssignmentDrop(payload)
-            }
+        .dropDestination(for: TransferableAssignment.self, isTargeted: $plannerDropTarget) { assignments, _ in
+            guard let payload = assignments.first else { return false }
+            handlePlannerAssignmentDrop(payload)
+            return true
         }
     }
 
@@ -231,9 +240,9 @@ struct IOSPlannerView: View {
         filteredTasks.filter { !$0.isCompleted && $0.due == nil }
     }
 
-    private func handlePlannerAssignmentDrop(_ payload: AssignmentDragPayload) {
-        selectedDate = payload.dueDate ?? Date()
-        plannerCoordinator.openPlanner(for: payload.dueDate ?? Date(), courseId: payload.courseId)
+    private func handlePlannerAssignmentDrop(_ payload: TransferableAssignment) {
+        let scheduledDate = DragDropHandler.scheduleAssignment(payload, plannerCoordinator: plannerCoordinator)
+        selectedDate = scheduledDate
         toastRouter.show("Planner opened for \(payload.title)")
     }
 
@@ -353,9 +362,14 @@ struct IOSAssignmentsView: View {
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var filterState: IOSFilterState
     @EnvironmentObject private var plannerCoordinator: PlannerCoordinator
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var showingEditor = false
     @State private var selectedTask: AppTask? = nil
     @State private var editingTask: AppTask? = nil
+
+    private var supportsMultiWindow: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad && horizontalSizeClass == .regular
+    }
 
     var body: some View {
         List {
@@ -397,17 +411,17 @@ struct IOSAssignmentsView: View {
                         Spacer()
                     }
                     .contentShape(Rectangle())
-                    .onDrag {
-                        task.itemProvider()
-                    }
+                    .draggable(TransferableAssignment(from: task))
                     .onTapGesture {
                         selectedTask = task
                     }
                     .contextMenu {
-                        Button {
-                            SceneActivationHelper.openAssignmentWindow(for: task.id)
-                        } label: {
-                            Label("Open in New Window", systemImage: "doc.on.doc")
+                        if supportsMultiWindow {
+                            Button {
+                                SceneActivationHelper.openAssignmentWindow(for: task)
+                            } label: {
+                                Label("Open in New Window", systemImage: "doc.on.doc")
+                            }
                         }
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
@@ -528,9 +542,14 @@ struct IOSCoursesView: View {
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var filterState: IOSFilterState
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var showingCourseEditor = false
     @State private var showingSemesterEditor = false
     @State private var dropTargetCourseId: UUID? = nil
+
+    private var supportsMultiWindow: Bool {
+        UIDevice.current.userInterfaceIdiom == .pad && horizontalSizeClass == .regular
+    }
 
     var body: some View {
         List {
@@ -574,14 +593,23 @@ struct IOSCoursesView: View {
                             RoundedRectangle(cornerRadius: 12, style: .continuous)
                                 .fill(Color.primary.opacity(dropTargetCourseId == course.id ? 0.08 : 0))
                         )
-                        .onDrop(of: [DragDropType.assignment.identifier], isTargeted: Binding(
+                        .contextMenu {
+                            if supportsMultiWindow {
+                                Button {
+                                    SceneActivationHelper.openCourseWindow(for: course)
+                                } label: {
+                                    Label("Open in New Window", systemImage: "doc.on.doc")
+                                }
+                            }
+                        }
+                        .dropDestination(for: TransferableAssignment.self, isTargeted: Binding(
                             get: { dropTargetCourseId == course.id },
                             set: { isTargeting in
                                 dropTargetCourseId = isTargeting ? course.id : nil
                             }
-                        )) { providers in
+                        )) { assignments, _ in
                             dropTargetCourseId = nil
-                            return handleAssignmentDrop(providers, into: course)
+                            return handleAssignmentDrop(assignments.first, into: course)
                         }
                     }
                 }
@@ -637,13 +665,9 @@ struct IOSCoursesView: View {
         return base
     }
 
-    private func handleAssignmentDrop(_ providers: [NSItemProvider], into course: Course) -> Bool {
-        return AssignmentDragPayload.load(from: providers) { payload in
-            guard let idx = assignmentsStore.tasks.firstIndex(where: { $0.id == payload.id }) else { return }
-            var updated = assignmentsStore.tasks[idx]
-            updated.courseId = course.id
-            assignmentsStore.updateTask(updated)
-        }
+    private func handleAssignmentDrop(_ payload: TransferableAssignment?, into course: Course) -> Bool {
+        guard let payload else { return false }
+        return DragDropHandler.reassignAssignment(payload, to: course.id, assignmentsStore: assignmentsStore)
     }
 }
 

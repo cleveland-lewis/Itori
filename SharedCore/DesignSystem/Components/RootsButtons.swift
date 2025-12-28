@@ -33,12 +33,17 @@ public struct RootsLiquidButtonStyle: ButtonStyle {
                 .foregroundColor(.primary)
                 .padding(.vertical, vPad)
                 .padding(.horizontal, hPad)
-                .background(
-                    highContrast
-                        ? AnyShapeStyle(Color.primary.opacity(0.08))
-                        : AnyShapeStyle(DesignSystem.Materials.hud),
-                    in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                )
+                .background {
+                    #if os(macOS)
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .fill(AnyShapeStyle(DesignSystem.Colors.sidebarBackground))
+                    #else
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .fill(highContrast
+                            ? AnyShapeStyle(Color.primary.opacity(0.08))
+                            : AnyShapeStyle(DesignSystem.Materials.hud))
+                    #endif
+                }
                 .overlay(
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         .fill(Color.primary.opacity(isHovering ? 0.1 : 0))
@@ -48,7 +53,9 @@ public struct RootsLiquidButtonStyle: ButtonStyle {
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         .stroke(Color.primary.opacity(0.03))
                 )
+                #if !os(macOS)
                 .shadow(color: Color.black.opacity(isHovering ? 0.06 : 0.03), radius: isHovering ? 10 : 6, x: 0, y: 4)
+                #endif
                 .scaleEffect(reducedMotion ? 1.0 : (configuration.isPressed ? 0.92 : 1.0))
                 .animation(reducedMotion ? .none : DesignSystem.Motion.interactiveSpring, value: configuration.isPressed)
                 .animation(reducedMotion ? .none : DesignSystem.Motion.interactiveSpring, value: isHovering)
@@ -114,21 +121,33 @@ public struct RootsAccentToggleStyle: ToggleStyle {
                     // Prominent glassy accent
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         .fill(Color.accentColor.opacity(0.90))
+                        #if os(macOS)
+                        .background(DesignSystem.Colors.sidebarBackground)
+                        #else
                         .background(DesignSystem.Materials.hud)
+                        #endif
                         .overlay(
                             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                                 .fill(Color.accentColor.opacity(0.12))
                                 .blur(radius: 6)
                         )
+                        #if !os(macOS)
                         .shadow(color: Color.accentColor.opacity(0.25), radius: 12, x: 0, y: 6)
+                        #endif
                 } else {
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        #if os(macOS)
+                        .fill(DesignSystem.Colors.sidebarBackground)
+                        #else
                         .fill(DesignSystem.Materials.hud)
+                        #endif
                         .overlay(
                             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                                 .stroke(Color.primary.opacity(0.03))
                         )
+                        #if !os(macOS)
                         .shadow(color: Color.black.opacity(0.03), radius: 6, x: 0, y: 4)
+                        #endif
                 }
             }
         }

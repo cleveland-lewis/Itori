@@ -33,7 +33,7 @@ struct GeneralSettingsView: View {
     @State private var defaultView: DefaultView = .dashboard
 
     var body: some View {
-        List {
+        Form {
             Section("Personal") {
                 TextField("Name", text: $userName)
                     .textFieldStyle(.roundedBorder)
@@ -96,7 +96,8 @@ struct GeneralSettingsView: View {
                 }
             }
         }
-        .listStyle(.sidebar)
+        .formStyle(.grouped)
+        .navigationTitle("General")
         .onAppear {
             // Load current values
             userName = settings.userName ?? ""
@@ -151,9 +152,8 @@ struct GeneralSettingsView: View {
             .frame(minWidth: 440, maxWidth: 520)
             .background(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(.regularMaterial)
+                    .fill(DesignSystem.Colors.cardBackground)
             )
-            .shadow(color: Color.black.opacity(0.12), radius: 22, x: 0, y: 12)
             .padding()
         }
     }

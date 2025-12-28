@@ -21,6 +21,12 @@ struct RootsHeaderButton: View {
                 .frame(width: size, height: size)
         }
         .buttonStyle(PlainButtonStyle())
+        #if os(macOS)
+        .contentShape(Circle())
+        .onHover { hover in
+            isHovering = hover
+        }
+        #else
         .background(
             Circle()
                 .fill(DesignSystem.Materials.hud)
@@ -34,5 +40,6 @@ struct RootsHeaderButton: View {
         .onHover { hover in
             withAnimation(DesignSystem.Motion.interactiveSpring) { isHovering = hover }
         }
+        #endif
     }
 }

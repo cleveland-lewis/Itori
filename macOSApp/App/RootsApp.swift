@@ -139,9 +139,6 @@ struct RootsApp: App {
                     }
                     .onAppear {
                         LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")
-                        preferences.highContrast = appSettings.highContrastMode
-                        preferences.reduceTransparency = appSettings.increaseTransparency
-                        preferences.glassIntensity = appSettings.glassIntensity
 
                         resetCancellable = AppModel.shared.resetPublisher
                             .receive(on: DispatchQueue.main)
@@ -153,21 +150,6 @@ struct RootsApp: App {
                                 GradesStore.shared.resetAll()
                                 LOG_LIFECYCLE(.info, "AppReset", "Global app reset complete")
                             }
-                    }
-                    .onChange(of: preferences.highContrast) { _, newValue in
-                        appSettings.highContrastMode = newValue
-                        appSettings.save()
-                    }
-                    .onChange(of: preferences.reduceTransparency) { _, newValue in
-                        appSettings.increaseTransparency = newValue
-                        appSettings.save()
-                    }
-                    .onReceive(appSettings.objectWillChange) { _ in
-                        Task { @MainActor in
-                            preferences.highContrast = appSettings.highContrastMode
-                            preferences.reduceTransparency = appSettings.increaseTransparency
-                            preferences.glassIntensity = appSettings.glassIntensity
-                        }
                     }
                     .accentColor(appAccentColor)
                     .buttonStyle(.glassBlueProminent)
@@ -193,6 +175,32 @@ struct RootsApp: App {
         .handlesExternalEvents(matching: Set<String>())
         .onChange(of: scenePhase) { _, newPhase in
             handleScenePhaseChange(newPhase)
+        }
+#if !DISABLE_SWIFTDATA
+        .modelContainer(sharedModelContainer)
+#endif
+        WindowGroup(id: WindowIdentifier.assignmentDetail.rawValue) {
+            AssignmentSceneContent()
+                .environmentObject(AssignmentsStore.shared)
+                .environmentObject(coursesStore)
+        }
+        WindowGroup(id: WindowIdentifier.courseDetail.rawValue) {
+            CourseSceneContent()
+                .environmentObject(AssignmentsStore.shared)
+                .environmentObject(coursesStore)
+        }
+        WindowGroup(id: WindowIdentifier.plannerDay.rawValue) {
+            PlannerSceneContent()
+                .environmentObject(plannerStore)
+        }
+        WindowGroup(id: WindowIdentifier.timerSession.rawValue) {
+            TimerPageView()
+                .environmentObject(appSettings)
+                .environmentObject(settingsCoordinator)
+                .environmentObject(AssignmentsStore.shared)
+                .environmentObject(calendarManager)
+                .environmentObject(calendarRefresh)
+                .environmentObject(appModel)
         }
 #if !DISABLE_SWIFTDATA
         .modelContainer(sharedModelContainer)

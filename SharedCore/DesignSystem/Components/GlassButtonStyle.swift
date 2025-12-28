@@ -12,8 +12,16 @@ struct GlassButtonStyle: ButtonStyle {
         @Environment(\.colorScheme) private var colorScheme
 
         var body: some View {
+            #if os(macOS)
+            configuration.label
+                .padding(6)
+                .contentShape(Circle())
+                .onHover { hovering in
+                    if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                }
+            #else
             let policy = MaterialPolicy(preferences: preferences)
-            
+
             configuration.label
                 .padding(DesignSystem.Layout.padding.card)
                 .frame(width: 48, height: 48)
@@ -23,10 +31,11 @@ struct GlassButtonStyle: ButtonStyle {
                 .shadow(color: DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.12), radius: 16, x: 0, y: 8)
                 .symbolEffect(.bounce)
                 .onHover { hovering in
-                        #if canImport(AppKit)
-                        if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
-                        #endif
-                    }
+                    #if canImport(AppKit)
+                    if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                    #endif
+                }
+            #endif
         }
     }
 }

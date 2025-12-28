@@ -42,24 +42,18 @@ struct DeveloperSettingsView: View {
                         Text("Active Subsystems")
                             .font(.headline)
                         
-                        ScrollView {
-                            VStack(alignment: .leading, spacing: 4) {
-                                ForEach(LogSubsystem.allCases, id: \.self) { subsystem in
-                                    HStack {
-                                        Image(systemName: "circle.fill")
-                                            .font(.system(size: 6))
-                                            .foregroundColor(.green)
-                                        Text(subsystem.rawValue)
-                                            .font(.caption)
-                                            .monospaced()
-                                    }
-                                }
+                        List(LogSubsystem.allCases, id: \.self) { subsystem in
+                            HStack {
+                                Image(systemName: "circle.fill")
+                                    .font(.system(size: 6))
+                                    .foregroundColor(.green)
+                                Text(subsystem.rawValue)
+                                    .font(.caption)
+                                    .monospaced()
                             }
-                            .padding(8)
                         }
+                        .listStyle(.inset)
                         .frame(maxHeight: 200)
-                        .background(Color(nsColor: .controlBackgroundColor))
-                        .cornerRadius(6)
                     }
                 } header: {
                     Text("Available Subsystems")
@@ -91,33 +85,27 @@ struct DeveloperSettingsView: View {
                         }
                         
                         if !diagnostics.recentEvents.isEmpty {
-                            ScrollView {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    ForEach(diagnostics.recentEvents.suffix(50).reversed(), id: \.timestamp) { event in
-                                        HStack(alignment: .top, spacing: 4) {
-                                            Text(event.severity.rawValue)
-                                                .font(.caption2)
-                                                .monospaced()
-                                                .foregroundColor(colorForSeverity(event.severity))
-                                                .frame(width: 50, alignment: .leading)
-                                            
-                                            Text("[\(event.subsystem.rawValue)]")
-                                                .font(.caption2)
-                                                .monospaced()
-                                                .foregroundColor(.secondary)
-                                                .frame(width: 100, alignment: .leading)
-                                            
-                                            Text(event.message)
-                                                .font(.caption2)
-                                                .lineLimit(2)
-                                        }
-                                    }
+                            List(diagnostics.recentEvents.suffix(50).reversed(), id: \.timestamp) { event in
+                                HStack(alignment: .top, spacing: 4) {
+                                    Text(event.severity.rawValue)
+                                        .font(.caption2)
+                                        .monospaced()
+                                        .foregroundColor(colorForSeverity(event.severity))
+                                        .frame(width: 50, alignment: .leading)
+                                    
+                                    Text("[\(event.subsystem.rawValue)]")
+                                        .font(.caption2)
+                                        .monospaced()
+                                        .foregroundColor(.secondary)
+                                        .frame(width: 100, alignment: .leading)
+                                    
+                                    Text(event.message)
+                                        .font(.caption2)
+                                        .lineLimit(2)
                                 }
-                                .padding(8)
                             }
+                            .listStyle(.inset)
                             .frame(maxHeight: 300)
-                            .background(Color(nsColor: .controlBackgroundColor))
-                            .cornerRadius(6)
                         }
                     }
                 } header: {

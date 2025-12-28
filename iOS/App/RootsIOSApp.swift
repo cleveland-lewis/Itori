@@ -87,10 +87,23 @@ struct RootsIOSApp: App {
                     AnimationPolicy.shared.updateFromAppSettings()
                 }
         }
-        WindowGroup("Assignment Detail") {
+        WindowGroup(id: WindowIdentifier.assignmentDetail.rawValue) {
             AssignmentSceneContent()
                 .environmentObject(AssignmentsStore.shared)
                 .environmentObject(coursesStore)
+        }
+        WindowGroup(id: WindowIdentifier.courseDetail.rawValue) {
+            CourseSceneContent()
+                .environmentObject(AssignmentsStore.shared)
+                .environmentObject(coursesStore)
+        }
+        WindowGroup(id: WindowIdentifier.plannerDay.rawValue) {
+            PlannerSceneContent()
+                .environmentObject(plannerStore)
+        }
+        WindowGroup(id: WindowIdentifier.timerSession.rawValue) {
+            IOSTimerPageView()
+                .environmentObject(appSettings)
         }
     }
 }

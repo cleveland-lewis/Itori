@@ -51,6 +51,7 @@ struct SettingsRootView: View {
                 Label(pane.label, systemImage: pane.systemImageName)
                     .tag(pane)
             }
+            .listStyle(.sidebar)
             .navigationTitle("Settings")
             .navigationSplitViewColumnWidth(min: 180, ideal: 200, max: 250)
         } detail: {
@@ -87,10 +88,10 @@ struct SettingsRootView: View {
                 }
             }
             .id(selectedPane)
+            .navigationTitle(selectedPane.label)
             .frame(minWidth: 400, minHeight: 400)
         }
         .navigationSplitViewStyle(.balanced)
-        .hideSplitViewDivider()
         .frame(minWidth: 600, minHeight: 400)
     }
 }

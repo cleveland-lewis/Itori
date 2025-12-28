@@ -124,6 +124,13 @@ struct CourseCard: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .buttonStyle(.plain)
+        .contextMenu {
+            Button {
+                SceneActivationHelper.openCourseWindow(for: course)
+            } label: {
+                Label("Open in New Window", systemImage: "doc.on.doc")
+            }
+        }
     }
 }
 #endif

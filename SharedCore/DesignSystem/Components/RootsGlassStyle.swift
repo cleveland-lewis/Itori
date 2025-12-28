@@ -4,8 +4,13 @@ enum RootsGlassStyle {
     static var cardCornerRadius: CGFloat { 16 }
     static var chromeCornerRadius: CGFloat { 12 }
 
+    #if os(macOS)
+    static var cardShadow: Color { Color.clear }
+    static var chromeShadow: Color { Color.clear }
+    #else
     static var cardShadow: Color { Color.black.opacity(0.18) }
     static var chromeShadow: Color { Color.black.opacity(0.12) }
+    #endif
 }
 
 struct GlassCardModifier: ViewModifier {
@@ -24,12 +29,23 @@ struct GlassCardModifier: ViewModifier {
     }
     
     func body(content: Content) -> some View {
+        #if os(macOS)
+        content
+            .background(
+                RoundedRectangle(cornerRadius: resolvedCornerRadius, style: .continuous)
+                    .fill(DesignSystem.Colors.cardBackground)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: resolvedCornerRadius, style: .continuous)
+                    .stroke(Color(nsColor: .separatorColor).opacity(0.6), lineWidth: 1)
+            )
+        #else
         let policy = MaterialPolicy(
             reduceTransparency: preferences.reduceTransparency || !settings.enableGlassEffects,
             increaseContrast: preferences.highContrast,
             differentiateWithoutColor: false
         )
-        
+
         content
             .background(
                 RoundedRectangle(cornerRadius: resolvedCornerRadius, style: .continuous)
@@ -40,6 +56,7 @@ struct GlassCardModifier: ViewModifier {
                     .stroke(Color.primary.opacity(policy.borderOpacity), lineWidth: policy.borderWidth)
             )
             .shadow(color: RootsGlassStyle.cardShadow, radius: 8, x: 0, y: 4)
+        #endif
     }
 }
 
@@ -63,17 +80,25 @@ struct GlassChromeModifier: ViewModifier {
     var cornerRadius: CGFloat
     
     func body(content: Content) -> some View {
+        #if os(macOS)
+        content
+            .background(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(DesignSystem.Colors.sidebarBackground)
+            )
+        #else
         let policy = MaterialPolicy(
             reduceTransparency: preferences.reduceTransparency || !settings.enableGlassEffects,
             increaseContrast: preferences.highContrast,
             differentiateWithoutColor: false
         )
-        
+
         content
             .background(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .fill(policy.hudMaterial(colorScheme: colorScheme))
             )
             .shadow(color: RootsGlassStyle.chromeShadow, radius: 6, x: 0, y: 2)
+        #endif
     }
 }

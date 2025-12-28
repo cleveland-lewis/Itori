@@ -32,7 +32,7 @@ struct AssignmentSceneContent: View {
                 )
                 .navigationTitle(task.title)
                 .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
+                    ToolbarItem(placement: .cancellationAction) {
                         Button("Close") {
                             dismiss()
                         }
@@ -42,10 +42,13 @@ struct AssignmentSceneContent: View {
                 placeholder
             }
         }
-        .onContinueUserActivity(SceneActivationHelper.assignmentActivityType) { activity in
-            if let incomingId = activity.userInfo?[SceneActivationHelper.assignmentIdKey] as? String {
-                assignmentIdString = incomingId
+        .onContinueUserActivity(SceneActivationHelper.windowActivityType) { activity in
+            guard let state = SceneActivationHelper.decodeWindowState(from: activity),
+                  state.windowId == WindowIdentifier.assignmentDetail.rawValue,
+                  let incomingId = state.entityId else {
+                return
             }
+            assignmentIdString = incomingId
         }
     }
 

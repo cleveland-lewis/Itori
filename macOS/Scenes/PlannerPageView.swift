@@ -132,7 +132,7 @@ struct OverdueTaskRow: View {
             .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(DesignSystem.Materials.card)
+                    .fill(DesignSystem.Colors.cardBackground)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
@@ -672,28 +672,28 @@ private extension PlannerPageView {
                     .foregroundColor(.secondary)
                     .padding(.vertical, 12)
             } else {
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: DesignSystem.Layout.spacing.small) {
-                        ForEach(unscheduledTasks) { task in
-                            PlannerTaskRow(task: task) {
-                                editingTask = task
-                                editingTaskDraft = PlannerTaskDraft(
-                                    id: task.id,
-                                    title: task.title,
-                                    courseId: task.courseId,
-                                    courseCode: task.course,
-                                    assignmentID: nil,
-                                    dueDate: task.dueDate,
-                                    estimatedMinutes: task.estimatedMinutes,
-                                    lockToDueDate: task.isLockedToDueDate,
-                                    priority: .normal
-                                )
-                                showTaskSheet = true
-                            }
+                List {
+                    ForEach(unscheduledTasks) { task in
+                        PlannerTaskRow(task: task) {
+                            editingTask = task
+                            editingTaskDraft = PlannerTaskDraft(
+                                id: task.id,
+                                title: task.title,
+                                courseId: task.courseId,
+                                courseCode: task.course,
+                                assignmentID: nil,
+                                dueDate: task.dueDate,
+                                estimatedMinutes: task.estimatedMinutes,
+                                lockToDueDate: task.isLockedToDueDate,
+                                priority: .normal
+                            )
+                            showTaskSheet = true
                         }
+                        .listRowBackground(DesignSystem.Colors.cardBackground)
                     }
-                    .padding(.vertical, 4)
                 }
+                .listStyle(.inset)
+                .scrollContentBackground(.hidden)
             }
         }
         .padding(DesignSystem.Layout.padding.card)
@@ -727,44 +727,44 @@ private extension PlannerPageView {
                 .padding(.vertical, 8)
             } else {
                 let items = overdueTasks
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: DesignSystem.Layout.spacing.small) {
-                        ForEach(items.prefix(10)) { item in
-                            OverdueTaskRow(item: item,
-                                           onTap: {
-                                               if item.isScheduled {
-                                                   // TODO: scroll/focus timeline
-                                               } else {
-                                                   editingTaskDraft = PlannerTaskDraft(
-                                                       id: item.id,
-                                                       title: item.title,
-                                                       courseId: item.courseId,
-                                                       courseCode: item.course,
-                                                       assignmentID: nil,
-                                                       dueDate: item.dueDate,
-                                                       estimatedMinutes: 60,
-                                                       lockToDueDate: false,
-                                                       priority: .normal
-                                                   )
-                                                   showTaskSheet = true
-                                               }
-                                           },
-                                           onComplete: {
-                                               withAnimation(DesignSystem.Motion.fluidSpring) {
-                                                   markCompleted(item)
-                                               }
-                                           })
-                        }
+                List {
+                    ForEach(items.prefix(10)) { item in
+                        OverdueTaskRow(item: item,
+                                       onTap: {
+                                           if item.isScheduled {
+                                               // TODO: scroll/focus timeline
+                                           } else {
+                                               editingTaskDraft = PlannerTaskDraft(
+                                                   id: item.id,
+                                                   title: item.title,
+                                                   courseId: item.courseId,
+                                                   courseCode: item.course,
+                                                   assignmentID: nil,
+                                                   dueDate: item.dueDate,
+                                                   estimatedMinutes: 60,
+                                                   lockToDueDate: false,
+                                                   priority: .normal
+                                               )
+                                               showTaskSheet = true
+                                           }
+                                       },
+                                       onComplete: {
+                                           withAnimation(DesignSystem.Motion.fluidSpring) {
+                                               markCompleted(item)
+                                           }
+                                       })
+                        .listRowBackground(DesignSystem.Colors.cardBackground)
                     }
-                    .padding(.vertical, 4)
                 }
+                .listStyle(.inset)
+                .scrollContentBackground(.hidden)
                 .frame(maxHeight: 320)
             }
         }
         .padding(DesignSystem.Layout.padding.card)
         .background(
             RoundedRectangle(cornerRadius: cardCornerRadius, style: .continuous)
-                .fill(.thinMaterial)
+                .fill(DesignSystem.Colors.cardBackground)
         )
         .overlay(
             RoundedRectangle(cornerRadius: cardCornerRadius, style: .continuous)

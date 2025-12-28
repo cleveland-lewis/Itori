@@ -382,7 +382,16 @@ public struct FocusDebugOverlay: View {
                 .foregroundStyle(.tertiary)
         }
         .padding(8)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+        .background {
+            #if os(macOS)
+            DesignSystem.Colors.cardBackground
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            #else
+            Color.clear
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            #endif
+        }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
         .padding()
         .allowsHitTesting(false)

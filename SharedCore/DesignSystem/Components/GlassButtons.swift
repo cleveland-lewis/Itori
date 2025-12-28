@@ -10,6 +10,11 @@ struct GlassAccentIconButton: View {
         Button(action: action) {
             Image(systemName: systemName)
                 .font(DesignSystem.Typography.body)
+                #if os(macOS)
+                .foregroundColor(.primary)
+                .frame(width: 28, height: 28)
+                .contentShape(Circle())
+                #else
                 .foregroundColor(.white)
                 .frame(width: 44, height: 44)
                 .background(
@@ -22,6 +27,7 @@ struct GlassAccentIconButton: View {
                 )
                 .shadow(color: Color.accentColor.opacity(0.12), radius: 8, y: 4)
                 .contentShape(Circle())
+                #endif
         }
         .buttonStyle(.plain)
         .onHover { hovering in
@@ -43,6 +49,11 @@ struct GlassSecondaryIconButton: View {
         Button(action: action) {
             Image(systemName: systemName)
                 .font(DesignSystem.Typography.body)
+                #if os(macOS)
+                .foregroundColor(.primary)
+                .frame(width: 28, height: 28)
+                .contentShape(Circle())
+                #else
                 .foregroundColor(.primary)
                 .frame(width: 44, height: 44)
                 .background(
@@ -55,6 +66,7 @@ struct GlassSecondaryIconButton: View {
                 )
                 .shadow(color: Color.primary.opacity(0.06), radius: 8, y: 4)
                 .contentShape(Circle())
+                #endif
         }
         .buttonStyle(.plain)
         .onHover { hovering in

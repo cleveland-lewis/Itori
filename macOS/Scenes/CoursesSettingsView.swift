@@ -67,6 +67,7 @@ struct CoursesSettingsView: View {
             }
         }
         .formStyle(.grouped)
+        .navigationTitle("Courses")
         .sheet(item: $editingCourse) { course in
             CourseEditView(course: course, coursesStore: coursesStore)
         }

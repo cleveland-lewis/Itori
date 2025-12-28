@@ -23,3 +23,7 @@ struct FocusDeepLink {
     var mode: LocalTimerMode?
     var activityId: UUID?
 }
+
+extension Notification.Name {
+    static let selectCalendarEvent = Notification.Name("roots.calendar.selectEvent")
+}

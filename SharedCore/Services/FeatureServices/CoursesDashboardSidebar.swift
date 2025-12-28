@@ -40,23 +40,14 @@ struct CoursesDashboardSidebar: View {
             Divider()
 
             // Course List
-            ScrollView {
-                VStack(spacing: DesignSystem.Layout.spacing.small) {
-                    ForEach(filteredCourses) { course in
-                        CourseListRow(
-                            course: course,
-                            isSelected: selectedCourse?.id == course.id
-                        )
-                        .onTapGesture {
-                            withAnimation(.easeInOut(duration: 0.2)) {
-                                selectedCourse = course
-                            }
-                        }
-                    }
+            List(selection: $selectedCourse) {
+                ForEach(filteredCourses) { course in
+                    CourseListRow(course: course)
+                        .tag(course)
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 12)
             }
+            .listStyle(.inset)
+            .scrollContentBackground(.hidden)
 
             Divider()
 
@@ -66,7 +57,11 @@ struct CoursesDashboardSidebar: View {
                 .padding(.vertical, 12)
         }
         .frame(width: 300)
+        #if os(macOS)
+        .background(DesignSystem.Colors.sidebarBackground)
+        #else
         .background(DesignSystem.Materials.sidebar)
+        #endif
     }
 
     private var sidebarHeader: some View {
@@ -148,8 +143,6 @@ struct CoursesDashboardSidebar: View {
 
 struct CourseListRow: View {
     let course: CourseDashboard
-    let isSelected: Bool
-
     var body: some View {
         HStack(spacing: 12) {
             // Color Indicator
@@ -189,18 +182,8 @@ struct CourseListRow: View {
                 .frame(width: 32, height: 24)
                 .background(gradeColor.opacity(0.9), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 12)
+        .padding(.vertical, 8)
         .frame(minHeight: 60, alignment: .center)
-        .background(
-            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                .fill(isSelected ? Color.accentColor.opacity(0.15) : Color(nsColor: .controlBackgroundColor).opacity(0.3))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                .strokeBorder(isSelected ? Color.accentColor.opacity(0.5) : Color.clear, lineWidth: 1.5)
-        )
-        .contentShape(Rectangle())
     }
 
     private var gradeColor: Color {

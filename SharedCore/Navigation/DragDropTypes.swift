@@ -7,6 +7,8 @@
 
 import Foundation
 import UniformTypeIdentifiers
+import CoreTransferable
+import SwiftUI
 
 /// Custom UTIs for Roots entities
 extension UTType {
@@ -18,10 +20,13 @@ extension UTType {
     
     /// Planner session drag type: com.roots.session
     static let rootsSession = UTType(exportedAs: "com.roots.session")
+
+    /// Calendar event drag type: com.roots.calendar.event
+    static let rootsCalendarEvent = UTType(exportedAs: "com.roots.calendar.event")
 }
 
 /// Transferable assignment representation for drag & drop
-struct TransferableAssignment: Codable {
+nonisolated struct TransferableAssignment: Codable, Sendable {
     let id: String
     let title: String
     let courseId: String?
@@ -50,8 +55,8 @@ struct TransferableAssignment: Codable {
     }
 }
 
-/// Transferable course representation for drag & drop
-struct TransferableCourse: Codable {
+    /// Transferable course representation for drag & drop
+nonisolated struct TransferableCourse: Codable, Sendable {
     let id: String
     let title: String
     let code: String
@@ -60,6 +65,24 @@ struct TransferableCourse: Codable {
     /// Export as plain text
     var plainTextRepresentation: String {
         return code.isEmpty ? title : "\(code) - \(title)"
+    }
+}
+
+extension TransferableAssignment: Transferable {
+    static var transferRepresentation: some TransferRepresentation {
+        CodableRepresentation(contentType: .rootsAssignment)
+        DataRepresentation(exportedContentType: .plainText) { payload in
+            Data(payload.plainTextRepresentation.utf8)
+        }
+    }
+}
+
+extension TransferableCourse: Transferable {
+    static var transferRepresentation: some TransferRepresentation {
+        CodableRepresentation(contentType: .rootsCourse)
+        DataRepresentation(exportedContentType: .plainText) { payload in
+            Data(payload.plainTextRepresentation.utf8)
+        }
     }
 }
 

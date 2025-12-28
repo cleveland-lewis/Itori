@@ -12,65 +12,20 @@ struct ContentView: View {
     @EnvironmentObject private var modalRouter: AppModalRouter
     @State private var selectedTab: RootTab = .dashboard
     @State private var settingsRotation: Double = 0
-    @State private var isQuickActionsExpanded = false
     @Environment(\.colorScheme) private var colorScheme
     @FocusState private var isSettingsFocused: Bool
 
     var body: some View {
-        GeometryReader { proxy in
-            ZStack(alignment: .topLeading) {
-                Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
-
-                // LAYER 1: Main content
-                VStack(spacing: 0) {
-                    topBar
-                        .padding(.horizontal, 24)
-                        .padding(.top, 16)
-                        .zIndex(1)
-
-                    currentPageView
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                        .padding(.horizontal, 24)
-                        .padding(.top, 12)
-                        // Keep content flowing behind the floating tab bar; only respect safe area.
-                        .padding(.bottom, proxy.safeAreaInsets.bottom + 8)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                QuickActionsDismissLayer(isExpanded: isQuickActionsExpanded) {
-                    collapseQuickActions()
-                }
-                .zIndex(0.5)
-
-                // Floating tab bar stays at bottom; keep above content
-                VStack {
-                    Spacer()
-                    RootsFloatingTabBar(
-                        items: RootTab.allCases,
-                        selected: $selectedTab,
-                        mode: settings.tabBarMode,
-                        onSelect: handleTabSelection
-                    )
-                    .frame(height: 72)
-                    .frame(maxWidth: 640)
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, proxy.safeAreaInsets.bottom == 0 ? 16 : proxy.safeAreaInsets.bottom)
-                    .frame(maxWidth: .infinity)
-                }
-                .zIndex(1)
-            }
+        NavigationSplitView {
+            sidebar
+        } detail: {
+            currentPageView
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
         .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
         .globalContextMenu()
         .onAppear {
             setupNotificationObservers()
-            DispatchQueue.main.async {
-                if let win = NSApp.keyWindow ?? NSApp.windows.first {
-                    win.title = ""
-                    win.titleVisibility = .hidden
-                    win.titlebarAppearsTransparent = true
-                }
-            }
             if let initialTab = RootTab(rawValue: appModel.selectedPage.rawValue) {
                 selectedTab = initialTab
             }
@@ -145,42 +100,53 @@ struct ContentView: View {
         #endif
     }
 
-    private var topBar: some View {
-        HStack {
-            QuickActionsLauncher(isExpanded: $isQuickActionsExpanded, actions: settings.quickActions) { action in
-                performQuickAction(action)
-            }
-
-            Spacer()
-
-            Button(action: {
-                withAnimation(.easeInOut(duration: DesignSystem.Motion.deliberate)) {
-                    settingsRotation += 360
+    private var sidebar: some View {
+        let tabs = settings.tabOrder.filter { settings.effectiveVisibleTabs.contains($0) }
+        return List(selection: selectionBinding) {
+            Section("Navigation") {
+                ForEach(tabs) { tab in
+                    Label(tab.title, systemImage: tab.systemImage)
+                        .tag(tab)
                 }
-                settingsCoordinator.show()
-            }) {
-                Image(systemName: "gearshape")
-                    .font(DesignSystem.Typography.body)
-                    .rotationEffect(.degrees(settingsRotation))
-                    .foregroundStyle(.primary)
-                    .frame(width: 36, height: 36)
-                    .background(DesignSystem.Materials.hud.opacity(0.75), in: Circle())
-                    .overlay(
-                        Circle()
-                            .strokeBorder(Color.accentColor, lineWidth: 2)
-                            .opacity(isSettingsFocused ? 0.7 : 0)
-                    )
             }
-            .buttonStyle(.plain)
-            .focusable(true)
-            .focused($isSettingsFocused)
-            .rootsStandardInteraction()
-            .accessibilityIdentifier("Header.Settings")
         }
-        .contentTransition(.opacity)
-        .onExitCommand {
-            collapseQuickActions()
+        .navigationTitle("Roots")
+        .toolbar {
+            ToolbarItemGroup {
+                Menu {
+                    ForEach(settings.quickActions) { action in
+                        Button(action.title) {
+                            performQuickAction(action)
+                        }
+                    }
+                } label: {
+                    Label("Quick Actions", systemImage: "wand.and.stars")
+                }
+
+                Button(action: {
+                    withAnimation(.easeInOut(duration: DesignSystem.Motion.deliberate)) {
+                        settingsRotation += 360
+                    }
+                    settingsCoordinator.show()
+                }) {
+                    Image(systemName: "gearshape")
+                        .rotationEffect(.degrees(settingsRotation))
+                }
+                .focusable(true)
+                .focused($isSettingsFocused)
+                .accessibilityIdentifier("Header.Settings")
+            }
         }
+    }
+
+    private var selectionBinding: Binding<RootTab?> {
+        Binding(
+            get: { selectedTab },
+            set: { newValue in
+                guard let tab = newValue else { return }
+                handleTabSelection(tab)
+            }
+        )
     }
 
     @ViewBuilder
@@ -254,12 +220,6 @@ struct ContentView: View {
         selectedTab = tab
         if let page = AppPage(rawValue: tab.rawValue), appModel.selectedPage != page {
             appModel.selectedPage = page
-        }
-    }
-
-    private func collapseQuickActions() {
-        if isQuickActionsExpanded {
-            isQuickActionsExpanded = false
         }
     }
 

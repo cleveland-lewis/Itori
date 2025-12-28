@@ -185,13 +185,6 @@ struct AssignmentsPageView: View {
     @State private var filterStatus: AssignmentStatus? = nil
     @State private var filterCourse: String? = nil
     @State private var showFilterPopover: Bool = false
-    // Drag selection state
-    @State private var selectionStart: CGPoint?
-    @State private var selectionRect: CGRect?
-    @State private var selectionMenuLocation: CGPoint?
-    @State private var selectedIDs: Set<UUID> = []
-    @State private var assignmentFrames: [UUID: CGRect] = [:]
-    @State private var clipboard: [Assignment] = []
 
     private let cardCorner: CGFloat = 24
 
@@ -208,9 +201,6 @@ struct AssignmentsPageView: View {
                         .frame(width: columnWidth)
 
                     assignmentListCard
-                        .coordinateSpace(name: "assignmentsArea")
-                        .gesture(dragSelectionGesture())
-                        .overlay(selectionOverlay)
 
                     detailPanel
                         .frame(width: columnWidth + 60)
@@ -282,10 +272,9 @@ struct AssignmentsPageView: View {
                 Button {
                     showFilterPopover.toggle()
                 } label: {
-                    Image(systemName: "line.3.horizontal.decrease.circle")
-                        .font(.title3)
+                    Label("Filters", systemImage: "line.3.horizontal.decrease.circle")
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.bordered)
                 .popover(isPresented: $showFilterPopover, arrowEdge: .top) {
                     filterPopover
                         .padding(DesignSystem.Layout.padding.card)
@@ -301,10 +290,8 @@ struct AssignmentsPageView: View {
                     .font(DesignSystem.Typography.body)
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
-                    .background(Color(nsColor: NSColor.alternatingContentBackgroundColors[0]).opacity(0.18))
-                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.bordered)
 
             Button {
                 autoPlanSelectedAssignments()
@@ -322,31 +309,31 @@ struct AssignmentsPageView: View {
     }
 
     private var filterPopover: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(NSLocalizedString("assignments.button.filters", comment: ""))
-                .font(DesignSystem.Typography.subHeader)
-            Divider()
-            Picker("Status", selection: Binding(
-                get: { filterStatus },
-                set: { filterStatus = $0 }
-            )) {
-                Text(NSLocalizedString("assignments.label.any", comment: "")).tag(AssignmentStatus?.none)
-                ForEach(AssignmentStatus.allCases) { status in
-                    Text(status.label).tag(AssignmentStatus?.some(status))
+        GroupBox(NSLocalizedString("assignments.button.filters", comment: "")) {
+            VStack(alignment: .leading, spacing: 12) {
+                Picker("Status", selection: Binding(
+                    get: { filterStatus },
+                    set: { filterStatus = $0 }
+                )) {
+                    Text(NSLocalizedString("assignments.label.any", comment: "")).tag(AssignmentStatus?.none)
+                    ForEach(AssignmentStatus.allCases) { status in
+                        Text(status.label).tag(AssignmentStatus?.some(status))
+                    }
                 }
-            }
-            .pickerStyle(.menu)
+                .pickerStyle(.menu)
 
-            Picker("Course", selection: Binding(
-                get: { filterCourse },
-                set: { filterCourse = $0 }
-            )) {
-                Text(NSLocalizedString("assignments.label.all_courses", comment: "")).tag(String?.none)
-                ForEach(uniqueCourses, id: \.self) { course in
-                    Text(course).tag(String?.some(course))
+                Picker("Course", selection: Binding(
+                    get: { filterCourse },
+                    set: { filterCourse = $0 }
+                )) {
+                    Text(NSLocalizedString("assignments.label.all_courses", comment: "")).tag(String?.none)
+                    ForEach(uniqueCourses, id: \.self) { course in
+                        Text(course).tag(String?.some(course))
+                    }
                 }
+                .pickerStyle(.menu)
             }
-            .pickerStyle(.menu)
+            .controlSize(.small)
         }
     }
 
@@ -378,36 +365,30 @@ struct AssignmentsPageView: View {
                 Spacer()
             }
 
-            ScrollView {
-                VStack(spacing: DesignSystem.Layout.spacing.small) {
-                    ForEach(filteredAndSortedAssignments) { assignment in
-                        AssignmentsPageRow(
-                            assignment: assignment,
-                            isSelected: assignment.id == selectedAssignment?.id || selectedIDs.contains(assignment.id),
-                            onToggleComplete: { toggleCompletion(for: assignment) },
-                            onSelect: { selectedAssignment = assignment },
-                            leadingAction: settings.assignmentSwipeLeading,
-                            trailingAction: settings.assignmentSwipeTrailing,
-                            onPerformAction: { performSwipeAction($0, assignment: assignment) }
-                        )
-                        .background(
-                            GeometryReader { geo in
-                                Color.clear
-                                    .preference(key: AssignmentFramePreference.self, value: [assignment.id: geo.frame(in: .named("assignmentsArea"))])
-                            }
-                        )
-                    }
+            List(selection: $selectedAssignment) {
+                ForEach(filteredAndSortedAssignments) { assignment in
+                    AssignmentsPageRow(
+                        assignment: assignment,
+                        onToggleComplete: { toggleCompletion(for: assignment) },
+                        onSelect: { selectedAssignment = assignment },
+                        leadingAction: settings.assignmentSwipeLeading,
+                        trailingAction: settings.assignmentSwipeTrailing,
+                        onPerformAction: { performSwipeAction($0, assignment: assignment) }
+                    )
+                    .tag(assignment)
+                    .listRowBackground(DesignSystem.Colors.cardBackground)
                 }
-                .padding(.vertical, 4)
             }
+            .listStyle(.inset)
+            .scrollContentBackground(.hidden)
         }
         .padding(DesignSystem.Layout.padding.card)
         .background(
             RoundedRectangle(cornerRadius: DesignSystem.Corners.card, style: .continuous)
-                .fill(Color(nsColor: NSColor.alternatingContentBackgroundColors[0]).opacity(0.85))
+                .fill(DesignSystem.Colors.cardBackground)
                 .overlay(
                     RoundedRectangle(cornerRadius: DesignSystem.Corners.card, style: .continuous)
-                        .stroke(Color(nsColor: .separatorColor).opacity(0.2), lineWidth: 1)
+                        .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
                 )
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -806,7 +787,6 @@ struct MissedCountCard: View {
 
 struct AssignmentsPageRow: View {
     var assignment: Assignment
-    var isSelected: Bool
     var onToggleComplete: () -> Void
     var onSelect: () -> Void
     var leadingAction: AssignmentSwipeAction
@@ -844,11 +824,6 @@ struct AssignmentsPageRow: View {
                             .foregroundStyle(.primary)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 2)
-                            .background(Color(nsColor: .controlBackgroundColor).opacity(0.95))
-                            .overlay(
-                                Capsule()
-                                    .stroke(Color.accentColor.opacity(0.5), lineWidth: 1)
-                            )
                             .clipShape(Capsule())
                         if let weight = assignment.weightPercent {
                             Text("· \(Int(weight))%")
@@ -865,14 +840,6 @@ struct AssignmentsPageRow: View {
             }
             .padding(.horizontal, 10)
             .frame(height: DesignSystem.Layout.rowHeight.medium)
-            .background(
-                RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
-                    .fill(isSelected ? Color(nsColor: NSColor.unemphasizedSelectedContentBackgroundColor).opacity(0.14) : Color(nsColor: NSColor.alternatingContentBackgroundColors[0]).opacity(0.9))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
-                    .stroke(Color(nsColor: .separatorColor).opacity(0.35), lineWidth: 1)
-            )
         }
         .buttonStyle(.plain)
         .swipeActions(edge: .leading, allowsFullSwipe: true) {
@@ -909,11 +876,7 @@ struct AssignmentsPageRow: View {
             .padding(.vertical, 4)
             .background(
                 Capsule()
-                    .fill(Color(nsColor: .controlBackgroundColor))
-            )
-            .overlay(
-                Capsule()
-                    .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                    .fill(DesignSystem.Colors.cardBackground)
             )
     }
 
@@ -965,9 +928,7 @@ struct AssignmentDetailPanel: View {
                 .font(.caption.weight(.semibold))
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
-                .background(
-                    Capsule().fill(Color(nsColor: .controlBackgroundColor))
-                )
+                .background(Capsule().fill(DesignSystem.Colors.cardBackground))
             Button {
                 onEdit(assignment)
             } label: {
@@ -989,7 +950,7 @@ struct AssignmentDetailPanel: View {
                 Label("Est. Time: \(assignment.estimatedMinutes) min", systemImage: "timer")
                     .font(DesignSystem.Typography.caption)
                     .padding(DesignSystem.Layout.spacing.small)
-                    .background(Capsule().fill(Color(nsColor: NSColor.alternatingContentBackgroundColors[0])))
+                    .background(Capsule().fill(DesignSystem.Colors.cardBackground))
                 Toggle("Lock work to due date", isOn: Binding(
                     get: { assignment.isLockedToDueDate },
                     set: { newValue in
@@ -1044,7 +1005,7 @@ struct AssignmentDetailPanel: View {
                 .padding(8)
                 .background(
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(Color(nsColor: NSColor.alternatingContentBackgroundColors[0]))
+                        .fill(DesignSystem.Colors.cardBackground)
                 )
             }
         }
@@ -1370,150 +1331,4 @@ private extension AssignmentsPageView {
     static var sampleAssignments: [Assignment] { [] }
 }
 
-// MARK: - Drag Selection (Assignments)
-
-private extension AssignmentsPageView {
-    func dragSelectionGesture() -> some Gesture {
-        DragGesture(minimumDistance: 8, coordinateSpace: .named("assignmentsArea"))
-            .onChanged { value in
-                if selectionStart == nil { selectionStart = value.startLocation }
-                if let start = selectionStart {
-                    selectionRect = rect(from: start, to: value.location)
-                    selectionMenuLocation = nil
-                }
-            }
-            .onEnded { value in
-                guard let start = selectionStart else { selectionRect = nil; return }
-                let finalRect = rect(from: start, to: value.location)
-                let hits = assignmentFrames.compactMap { id, frame in
-                    finalRect.intersects(frame) ? id : nil
-                }
-                selectedIDs = Set(hits)
-                selectionMenuLocation = hits.isEmpty ? nil : value.location
-                selectionStart = nil
-                selectionRect = nil
-            }
-    }
-
-    var selectionOverlay: some View {
-        GeometryReader { _ in
-            ZStack(alignment: .topLeading) {
-                if let rect = selectionRect {
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .stroke(Color.accentColor.opacity(0.6), lineWidth: 1.2)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                .fill(Color.accentColor.opacity(0.12))
-                        )
-                        .frame(width: rect.width, height: rect.height)
-                        .position(x: rect.midX, y: rect.midY)
-                        .allowsHitTesting(false)
-                }
-                if let menuPoint = selectionMenuLocation, !selectedIDs.isEmpty {
-                    selectionMenu
-                        .position(menuPoint)
-                        .transition(DesignSystem.Motion.scaleTransition)
-                }
-            }
-            .onPreferenceChange(AssignmentFramePreference.self) { frames in
-                assignmentFrames = frames
-            }
-        }
-    }
-
-    var selectionMenu: some View {
-        HStack(spacing: 10) {
-            Button("Cut") { cutSelection() }
-                .disabled(selectedIDs.isEmpty)
-            Button("Copy") { copySelection() }
-                .disabled(selectedIDs.isEmpty)
-            Button("Duplicate") { duplicateSelection() }
-                .disabled(selectedIDs.isEmpty)
-            Button("Paste") { pasteClipboard() }
-                .disabled(clipboard.isEmpty)
-        }
-        .font(.caption.weight(.semibold))
-        .padding(.horizontal, 12)
-        .padding(.vertical, 8)
-        .background(.regularMaterial, in: Capsule())
-        .shadow(color: Color.black.opacity(0.12), radius: 10, x: 0, y: 6)
-    }
-
-    func rect(from start: CGPoint, to end: CGPoint) -> CGRect {
-        CGRect(x: min(start.x, end.x),
-               y: min(start.y, end.y),
-               width: abs(end.x - start.x),
-               height: abs(end.y - start.y))
-    }
-
-    func copySelection() {
-        clipboard = assignments.filter { selectedIDs.contains($0.id) }
-    }
-
-    func cutSelection() {
-        copySelection()
-        assignments.removeAll { selectedIDs.contains($0.id) }
-        selectedIDs.removeAll()
-        selectionMenuLocation = nil
-    }
-
-    func duplicateSelection() {
-        let toDuplicate = assignments.filter { selectedIDs.contains($0.id) }
-        let copies = toDuplicate.map { item in
-            Assignment(
-                id: UUID(),
-                courseId: item.courseId,
-                title: item.title + " (copy)",
-                courseCode: item.courseCode,
-                courseName: item.courseName,
-                category: item.category,
-                dueDate: item.dueDate,
-                estimatedMinutes: item.estimatedMinutes,
-                status: item.status,
-                urgency: item.urgency,
-                weightPercent: item.weightPercent,
-                isLockedToDueDate: item.isLockedToDueDate,
-                notes: item.notes,
-                plan: item.plan
-            )
-        }
-        assignments.append(contentsOf: copies)
-        selectedIDs.removeAll()
-        selectionMenuLocation = nil
-    }
-
-    func pasteClipboard() {
-        guard !clipboard.isEmpty else { return }
-        let pasted = clipboard.map { item in
-            Assignment(
-                id: UUID(),
-                courseId: item.courseId,
-                title: item.title,
-                courseCode: item.courseCode,
-                courseName: item.courseName,
-                category: item.category,
-                dueDate: item.dueDate,
-                estimatedMinutes: item.estimatedMinutes,
-                status: item.status,
-                urgency: item.urgency,
-                weightPercent: item.weightPercent,
-                isLockedToDueDate: item.isLockedToDueDate,
-                notes: item.notes,
-                plan: item.plan
-            )
-        }
-        assignments.append(contentsOf: pasted)
-        selectedIDs.removeAll()
-        selectionMenuLocation = nil
-    }
-}
-
-// MARK: - Preferences
-
-private struct AssignmentFramePreference: PreferenceKey {
-    static var defaultValue: [UUID: CGRect] = [:]
-    static func reduce(value: inout [UUID: CGRect], nextValue: () -> [UUID: CGRect]) {
-        value.merge(nextValue(), uniquingKeysWith: { $1 })
-    }
-}
 #endif

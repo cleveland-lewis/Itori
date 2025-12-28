@@ -56,7 +56,13 @@ struct QuickActionsLauncher: View {
             icon: "plus",
             iconColor: Color.secondary,
             size: buttonSize,
-            backgroundMaterial: DesignSystem.Materials.hud,
+            backgroundMaterial: {
+                #if os(macOS)
+                return .regularMaterial
+                #else
+                return DesignSystem.Materials.hud
+                #endif
+            }(),
             backgroundOpacity: 1,
             showsBorder: false,
             iconRotation: .degrees(isExpanded && !reduceMotion ? 90 : 0),
@@ -76,7 +82,15 @@ struct QuickActionsLauncher: View {
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(Color.accentColor)
                 .frame(width: buttonSize, height: buttonSize)
-                .background(DesignSystem.Materials.hud, in: Circle())
+                .background {
+                    #if os(macOS)
+                    DesignSystem.Colors.sidebarBackground
+                        .clipShape(Circle())
+                    #else
+                    DesignSystem.Materials.hud
+                        .clipShape(Circle())
+                    #endif
+                }
                 .overlay(
                     Circle()
                         .strokeBorder(Color.secondary.opacity(0.25), lineWidth: 1)

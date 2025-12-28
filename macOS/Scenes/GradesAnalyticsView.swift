@@ -122,69 +122,28 @@ struct GradesAnalyticsView: View {
     // MARK: - Filter Controls
     
     private var filterControls: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Filters")
-                .font(.headline)
-            
+        GroupBox("Filters") {
             HStack(spacing: 12) {
-                // Course Filter
-                Menu {
-                    Button("All Courses") {
-                        selectedCourseId = nil
-                    }
-                    
-                    Divider()
-                    
+                Picker("Course", selection: $selectedCourseId) {
+                    Text("All Courses").tag(Optional<UUID>.none)
                     ForEach(coursesStore.courses) { course in
-                        Button(course.code) {
-                            selectedCourseId = course.id
-                        }
+                        Text(course.code).tag(Optional(course.id))
                     }
-                } label: {
-                    HStack {
-                        Image(systemName: "book")
-                        Text(selectedCourseId == nil ? "All Courses" : coursesStore.courses.first(where: { $0.id == selectedCourseId })?.code ?? "Course")
-                        Image(systemName: "chevron.down")
-                            .font(.caption)
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(Color.secondary.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
-                .buttonStyle(.plain)
-                
-                // Date Range Filter
-                Menu {
+                .pickerStyle(.menu)
+
+                Picker("Date Range", selection: $selectedDateRange) {
                     ForEach(DateRangeFilter.allCases, id: \.self) { range in
-                        Button(range.label) {
-                            selectedDateRange = range
-                        }
+                        Text(range.label).tag(range)
                     }
-                } label: {
-                    HStack {
-                        Image(systemName: "calendar")
-                        Text(selectedDateRange.label)
-                        Image(systemName: "chevron.down")
-                            .font(.caption)
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(Color.secondary.opacity(0.1))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
-                .buttonStyle(.plain)
-                
-                // Weighted Toggle
-                Toggle(isOn: $showWeightedGPA) {
-                    Label("Weighted", systemImage: "scalemass")
-                }
-                .toggleStyle(.button)
-                .controlSize(.regular)
-                
+                .pickerStyle(.menu)
+
+                Toggle("Weighted", isOn: $showWeightedGPA)
+                    .toggleStyle(.switch)
+
                 Spacer()
-                
-                // What-If Mode Toggle
+
                 Button {
                     whatIfMode.toggle()
                     if whatIfMode {
@@ -195,8 +154,7 @@ struct GradesAnalyticsView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(whatIfMode ? settings.activeAccentColor : .secondary)
-                
-                // Risk Breakdown Toggle
+
                 Button {
                     showRiskBreakdown.toggle()
                 } label: {
@@ -204,14 +162,9 @@ struct GradesAnalyticsView: View {
                 }
                 .buttonStyle(.bordered)
             }
+            .controlSize(.regular)
+            .padding(.vertical, 4)
         }
-        .padding()
-        .background(DesignSystem.Materials.card)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.white.opacity(0.05), lineWidth: 1)
-        )
     }
     
     // MARK: - Charts Section
@@ -496,7 +449,7 @@ struct GradesAnalyticsView: View {
             }
         }
         .padding()
-        .background(DesignSystem.Materials.card)
+        .background(DesignSystem.Colors.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)

@@ -193,6 +193,13 @@ struct PlannerView: View {
             }
             .padding(DesignSystem.Spacing.large)
         }
+        .contextMenu {
+            Button {
+                SceneActivationHelper.openPlannerWindow(for: Date())
+            } label: {
+                Label("Open in New Window", systemImage: "doc.on.doc")
+            }
+        }
         .onAppear {
             _Concurrency.Task { await calendarManager.requestAccess() }
         }

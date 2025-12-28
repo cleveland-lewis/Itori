@@ -164,6 +164,7 @@ struct ProfilesSettingsView: View {
             }
         }
         .formStyle(.grouped)
+        .navigationTitle("Profiles")
         .onAppear {
             loadCurrentValues()
         }

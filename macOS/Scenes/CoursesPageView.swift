@@ -407,19 +407,16 @@ struct CoursesSidebarView: View {
                 .padding(.bottom, 8)
                 .focused($isSearchFocused)
 
-            // Scrollable Course List
-            ScrollView {
-                VStack(spacing: DesignSystem.Layout.spacing.small) {
-                    ForEach(courses) { course in
-                        CourseSidebarRow(course: course, isSelected: selectedCourse == course.id) {
-                            selectedCourse = course.id
-                        }
-                    }
+            // Course List
+            List(selection: $selectedCourse) {
+                ForEach(courses) { course in
+                    CourseSidebarRow(course: course)
+                        .tag(course.id)
                 }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
             }
-            .frame(maxHeight: .infinity) // Allow scroll to expand
+            .listStyle(.inset)
+            .scrollContentBackground(.hidden)
+            .frame(maxHeight: .infinity)
 
             // Bottom Action Buttons (Pinned)
             VStack(spacing: 0) {
@@ -434,7 +431,6 @@ struct CoursesSidebarView: View {
                             .font(DesignSystem.Typography.body)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 10)
-                            .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
                     }
                     .buttonStyle(.plain)
                     .frame(maxWidth: .infinity)
@@ -446,7 +442,6 @@ struct CoursesSidebarView: View {
                             .font(DesignSystem.Typography.body)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 10)
-                            .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
                     }
                     .buttonStyle(.plain)
                     .frame(maxWidth: .infinity)
@@ -456,7 +451,7 @@ struct CoursesSidebarView: View {
             }
         }
         .frame(maxHeight: .infinity)
-        .glassCard(cornerRadius: 22)
+        .rootsCardBackground(radius: 22)
         .onReceive(NotificationCenter.default.publisher(for: .focusSearch)) { _ in
             isSearchFocused = true
         }
@@ -469,56 +464,32 @@ struct CoursesSidebarView: View {
 
 struct CourseSidebarRow: View {
     var course: CoursePageCourse
-    var isSelected: Bool
-    var onTap: () -> Void
 
     var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: DesignSystem.Layout.spacing.small) {
-                Circle()
-                    .fill(course.colorTag.color.opacity(0.9))
-                    .frame(width: 12, height: 12)
+        HStack(spacing: DesignSystem.Layout.spacing.small) {
+            Circle()
+                .fill(course.colorTag.color.opacity(0.9))
+                .frame(width: 12, height: 12)
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(course.code)
-                        .rootsBody()
-                        .lineLimit(1)
-                    Text(course.title)
-                        .rootsCaption()
-                        .foregroundColor(RootsColor.textSecondary)
-                        .lineLimit(1)
-                    Text(course.instructor)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                }
-
-                Spacer()
-
-                GradeChip(gradeInfo: course.gradeInfo)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(course.code)
+                    .rootsBody()
+                    .lineLimit(1)
+                Text(course.title)
+                    .rootsCaption()
+                    .foregroundColor(RootsColor.textSecondary)
+                    .lineLimit(1)
+                Text(course.instructor)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
-            .background(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(
-                        isSelected
-                        ? Color.accentColor.opacity(0.14)
-                        : Color(nsColor: .controlBackgroundColor).opacity(0.12)
-                    )
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(
-                        isSelected
-                        ? Color.accentColor.opacity(0.35)
-                        : Color(nsColor: .separatorColor).opacity(0.18),
-                        lineWidth: isSelected ? 1.5 : 1
-                    )
-            )
+
+            Spacer()
+
+            GradeChip(gradeInfo: course.gradeInfo)
         }
-        .buttonStyle(.plain)
-        .contentShape(Rectangle())
+        .padding(.vertical, 8)
         .accessibilityLabel("\(course.code), \(course.title)")
     }
 }
@@ -568,11 +539,7 @@ struct CoursesPageDetailView: View {
                     GradeRing(gradeInfo: course.gradeInfo)
                     Button(NSLocalizedString("common.button.edit", comment: "")) { onEdit() }
                         .font(.caption.weight(.semibold))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(Color.white.opacity(0.06))
-                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
-                        .buttonStyle(.plain)
+                        .buttonStyle(.bordered)
                 }
             }
 
@@ -588,7 +555,7 @@ struct CoursesPageDetailView: View {
         .padding(18)
         .background(
             RoundedRectangle(cornerRadius: cardCorner, style: .continuous)
-                .fill(.thinMaterial)
+                .fill(DesignSystem.Colors.cardBackground)
         )
         .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
         .overlay(cardStroke)
@@ -624,7 +591,7 @@ struct CoursesPageDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: cardCorner, style: .continuous)
-                .fill(.thinMaterial)
+                .fill(DesignSystem.Colors.cardBackground)
         )
         .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
         .overlay(cardStroke)
@@ -670,7 +637,7 @@ struct CoursesPageDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: cardCorner, style: .continuous)
-                .fill(.thinMaterial)
+                .fill(DesignSystem.Colors.cardBackground)
         )
         .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
         .overlay(cardStroke)

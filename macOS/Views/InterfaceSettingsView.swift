@@ -58,6 +58,7 @@ struct InterfaceSettingsView: View {
 
                         Slider(value: $glassIntensity, in: 0...1)
                             .onChange(of: glassIntensity) { _, newValue in
+                                preferences.glassIntensity = newValue
                                 settings.glassIntensity = newValue
                                 settings.save()
                             }
@@ -83,12 +84,18 @@ struct InterfaceSettingsView: View {
             }
 
             Section("Layout") {
-                Picker("Tab Style", selection: $settings.tabBarMode) {
+                Picker("Tab Style", selection: Binding(
+                    get: { preferences.tabBarMode },
+                    set: { newValue in
+                        preferences.tabBarModeRaw = newValue.rawValue
+                        settings.tabBarMode = newValue
+                        settings.save()
+                    }
+                )) {
                     Text("Icons").tag(TabBarMode.iconsOnly)
                     Text("Text").tag(TabBarMode.textOnly)
                     Text("Icons & Text").tag(TabBarMode.iconsAndText)
                 }
-                .onChange(of: settings.tabBarMode) { _, _ in settings.save() }
 
                 Toggle("Sidebar", isOn: $settings.showSidebarByDefault)
                     .onChange(of: settings.showSidebarByDefault) { _, _ in settings.save() }
@@ -123,6 +130,7 @@ struct InterfaceSettingsView: View {
             }
         }
         .formStyle(.grouped)
+        .navigationTitle("Interface")
         .onAppear {
             // Load current values
             glassIntensity = preferences.glassIntensity

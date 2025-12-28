@@ -12,7 +12,7 @@ struct CurrentActivityView: View {
             content
         }
         .padding(DesignSystem.Layout.padding.card)
-        .background(DesignSystem.Materials.card)
+        .background(DesignSystem.Colors.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 

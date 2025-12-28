@@ -103,7 +103,7 @@ struct PracticeTestTakingView: View {
             }
         }
         .padding()
-        .background(.ultraThinMaterial)
+        .background(DesignSystem.Colors.cardBackground)
     }
     
     // MARK: - Question List Sidebar
@@ -118,7 +118,7 @@ struct PracticeTestTakingView: View {
             .padding(12)
         }
         .frame(width: 200)
-        .background(.ultraThinMaterial)
+        .background(DesignSystem.Colors.cardBackground)
     }
     
     private func questionNavButton(index: Int, question: PracticeQuestion) -> some View {

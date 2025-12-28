@@ -26,56 +26,45 @@ struct DashboardView: View {
     @State private var showAddTaskSheet = false
 
     // Layout tokens
-    private let rowSpacing: CGFloat = 24
-    private let columnSpacing: CGFloat = 24
-    private let bottomDockClearancePadding: CGFloat = 120
+    private let cardSpacing: CGFloat = DesignSystem.Spacing.large
+    private let contentPadding: CGFloat = DesignSystem.Spacing.large
+    private let bottomDockClearancePadding: CGFloat = 100
 
     var body: some View {
-        // Dashboard scrollable container
+        // HIG-compliant adaptive dashboard grid
         ScrollView(.vertical, showsIndicators: true) {
-            VStack(spacing: rowSpacing) {
-                // Row spacing + padding
-                HStack(alignment: .top, spacing: columnSpacing) {
-                    todayCard
-                        .frame(maxWidth: .infinity, alignment: .top)
-                        .animateEntry(isLoaded: isLoaded, index: 0)
+            LazyVGrid(
+                columns: [
+                    GridItem(.adaptive(minimum: 300, maximum: 600), spacing: cardSpacing)
+                ],
+                spacing: cardSpacing
+            ) {
+                todayCard
+                    .animateEntry(isLoaded: isLoaded, index: 0)
 
-                    clockAndCalendarCard
-                        .frame(maxWidth: .infinity, alignment: .top)
-                        .animateEntry(isLoaded: isLoaded, index: 3)
-                        .frame(minHeight: 160)
-                }
+                clockAndCalendarCard
+                    .animateEntry(isLoaded: isLoaded, index: 1)
 
-                HStack(alignment: .top, spacing: columnSpacing) {
-                    eventsCard
-                        .frame(maxWidth: .infinity, alignment: .top)
-                        .animateEntry(isLoaded: isLoaded, index: 1)
+                eventsCard
+                    .animateEntry(isLoaded: isLoaded, index: 2)
 
-                    assignmentsCard
-                        .frame(maxWidth: .infinity, alignment: .top)
+                assignmentsCard
+                    .animateEntry(isLoaded: isLoaded, index: 3)
+
+                if settings.showEnergyPanel {
+                    energyCard
                         .animateEntry(isLoaded: isLoaded, index: 4)
                 }
-
-                HStack(alignment: .top, spacing: columnSpacing) {
-                    energyCard
-                        .frame(maxWidth: .infinity, alignment: .top)
+                
+                if settings.trackStudyHours {
+                    studyHoursCard
                         .animateEntry(isLoaded: isLoaded, index: 5)
-                        .frame(minHeight: 160)
-                    
-                    // Study hours card (Phase D)
-                    if settings.trackStudyHours {
-                        studyHoursCard
-                            .frame(maxWidth: .infinity, alignment: .top)
-                            .animateEntry(isLoaded: isLoaded, index: 6)
-                            .frame(minHeight: 160)
-                    }
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .top)
-            .padding(.horizontal, DesignSystem.Layout.padding.window)
-            .padding(.top, DesignSystem.Layout.spacing.medium)
+            .padding(contentPadding)
             .padding(.bottom, bottomDockClearancePadding)
         }
+        .background(Color(nsColor: .windowBackgroundColor))
         .sheet(isPresented: $showAddAssignmentSheet) {
             AddAssignmentView(initialType: .practiceHomework) { task in
                 assignmentsStore.addTask(task)
@@ -172,204 +161,497 @@ struct DashboardView: View {
     }
 
     private var todayCard: some View {
-        RootsCard(
-            title: cardTitle("Today Overview"),
-            icon: "sun.max"
+        DashboardCard(
+            title: "Today",
+            systemImage: "sun.max.fill",
+            isLoading: !isLoaded
         ) {
-            VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                let eventStatus = calendarManager.eventAuthorizationStatus
-                switch eventStatus {
-                case .notDetermined:
-                    HStack {
-                        Text("dashboard.calendar.connect".localized)
-                            .rootsBody()
-                        Spacer()
-                        Button("Connect Apple Calendar", action: {
-                            print("🔘 [Dashboard] Connect button tapped")
-                            _Concurrency.Task {
-                                await calendarManager.requestAccess()
-                            }
-                        })
-                        .buttonStyle(RootsLiquidButtonStyle())
-                    }
-                case .denied, .restricted:
-                    HStack {
-                        Text("dashboard.calendar.access_denied".localized)
-                            .rootsBody()
-                        Spacer()
-                        Button("Open Settings") {
-                            calendarManager.openSystemPrivacySettings()
-                        }
-                        .buttonStyle(RootsLiquidButtonStyle())
-                    }
-                default:
-                    dashboardTodayStats
+            let eventStatus = calendarManager.eventAuthorizationStatus
+            
+            if eventStatus == .notDetermined {
+                calendarPermissionPrompt
+            } else if eventStatus == .denied || eventStatus == .restricted {
+                calendarAccessDeniedView
+            } else {
+                dashboardTodayStats
+            }
+        } footer: {
+            HStack(spacing: DesignSystem.Spacing.small) {
+                Button {
+                    showAddAssignmentSheet = true
+                } label: {
+                    Label("Add Assignment", systemImage: "doc.badge.plus")
+                        .frame(maxWidth: .infinity)
                 }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+                
+                Button {
+                    showAddEventSheet = true
+                } label: {
+                    Label("Add Event", systemImage: "calendar.badge.plus")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
             }
         }
-        .onTapGesture {
-            todayBounce.toggle()
-            print("[Dashboard] card tapped: todayOverview")
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Today overview")
+    }
+    
+    private var calendarPermissionPrompt: some View {
+        VStack(spacing: DesignSystem.Spacing.medium) {
+            Image(systemName: "calendar.badge.exclamationmark")
+                .font(.system(size: 32))
+                .foregroundStyle(.secondary)
+            
+            Text("Connect your calendar to see events")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            
+            Button("Connect Calendar") {
+                Task {
+                    await calendarManager.requestAccess()
+                }
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.small)
         }
-        .help("Today Overview")
-        .accessibilityIdentifier("DashboardHeader")
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, DesignSystem.Spacing.small)
+    }
+    
+    private var calendarAccessDeniedView: some View {
+        VStack(spacing: DesignSystem.Spacing.medium) {
+            Image(systemName: "exclamationmark.triangle")
+                .font(.system(size: 32))
+                .foregroundStyle(.orange)
+            
+            Text("Calendar access denied")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            
+            Button("Open Settings") {
+                calendarManager.openSystemPrivacySettings()
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.small)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, DesignSystem.Spacing.small)
     }
 
     private var energyCard: some View {
-        Group {
-            if settings.showEnergyPanel {
-                RootsCard(
-                    title: cardTitle("Energy"),
-                    icon: "bolt.heart.fill"
-                ) {
-                    let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
-                    LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
-                        energyButton("High", level: .high)
-                        energyButton("Medium", level: .medium)
-                        energyButton("Low", level: .low)
-                        plannerButton("Open Planner")
-                    }
-                    .frame(maxWidth: .infinity)
+        DashboardCard(
+            title: "Energy & Focus",
+            systemImage: "bolt.heart.fill",
+            isLoading: !isLoaded
+        ) {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
+                Text("Optimize your study schedule by setting your current energy level")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                
+                HStack(spacing: DesignSystem.Spacing.small) {
+                    energyButton("High", level: .high, icon: "bolt.fill", color: .green)
+                    energyButton("Medium", level: .medium, icon: "bolt", color: .orange)
+                    energyButton("Low", level: .low, icon: "bolt.slash", color: .red)
                 }
-                .onTapGesture {
-                    energyBounce.toggle()
-                    print("[Dashboard] card tapped: energyFocus")
-                }
-                .help("Energy & Focus")
             }
+        } footer: {
+            Button {
+                appModel.selectedPage = .planner
+            } label: {
+                HStack {
+                    Text("Open Planner")
+                    Spacer()
+                    Image(systemName: "arrow.right")
+                }
+                .font(.subheadline)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.secondary)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Energy and focus settings")
     }
 
     @ViewBuilder
-    private func energyButton(_ title: String, level: EnergyLevel) -> some View {
+    private func energyButton(_ title: String, level: EnergyLevel, icon: String, color: Color) -> some View {
         Button {
             setEnergy(level)
         } label: {
-            Text(title)
-                .font(.headline)
-                .frame(maxWidth: .infinity, minHeight: 56)
-                .padding(.vertical, 8)
-        }
-        .buttonStyle(.borderedProminent)
-    }
-
-    @ViewBuilder
-    private func plannerButton(_ title: String) -> some View {
-        Button {
-            appModel.selectedPage = .planner
-        } label: {
-            HStack {
-                Image(systemName: "list.bullet.rectangle")
+            VStack(spacing: DesignSystem.Spacing.xsmall) {
+                Image(systemName: icon)
+                    .font(.title2)
+                    .foregroundStyle(color)
                 Text(title)
+                    .font(.caption)
             }
-            .font(.headline)
-            .frame(maxWidth: .infinity, minHeight: 56)
-            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, DesignSystem.Spacing.medium)
         }
-        .buttonStyle(.borderedProminent)
+        .buttonStyle(.bordered)
+        .help("Set energy level to \(title.lowercased())")
     }
     
-    // MARK: - Study Hours Card (Phase D)
+    // MARK: - Study Hours Card
     
     @ObservedObject private var tracker = StudyHoursTracker.shared
     
     private var studyHoursCard: some View {
-        RootsCard(title: cardTitle("Study Hours"), icon: "clock.fill") {
-            VStack(alignment: .leading, spacing: 12) {
-                studyHourRow(
+        DashboardCard(
+            title: "Study Hours",
+            systemImage: "clock.fill",
+            isLoading: !isLoaded
+        ) {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+                DashboardStatRow(
                     label: "Today",
                     value: StudyHoursTotals.formatMinutes(tracker.totals.todayMinutes),
-                    icon: "sun.max.fill"
+                    icon: "sun.max.fill",
+                    valueColor: .blue
                 )
                 
-                studyHourRow(
+                DashboardStatRow(
                     label: "This Week",
                     value: StudyHoursTotals.formatMinutes(tracker.totals.weekMinutes),
-                    icon: "calendar.badge.clock"
+                    icon: "calendar.badge.clock",
+                    valueColor: .blue
                 )
                 
-                studyHourRow(
+                DashboardStatRow(
                     label: "This Month",
                     value: StudyHoursTotals.formatMinutes(tracker.totals.monthMinutes),
-                    icon: "calendar"
+                    icon: "calendar",
+                    valueColor: .blue
                 )
             }
-            .padding(DesignSystem.Layout.padding.card)
-            .background(Color(nsColor: .controlBackgroundColor).opacity(0.8))
-            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        }
-    }
-    
-    private func studyHourRow(label: String, value: String, icon: String) -> some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundColor(.accentColor)
-                .frame(width: 20)
-            Text(label)
+        } footer: {
+            Button {
+                appModel.selectedPage = .timer
+            } label: {
+                HStack {
+                    Text("View Details")
+                    Spacer()
+                    Image(systemName: "arrow.right")
+                }
                 .font(.subheadline)
-            Spacer()
-            Text(value)
-                .font(.subheadline.weight(.semibold))
-                .foregroundColor(.accentColor)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.secondary)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Study hours summary")
     }
 
     private var eventsCard: some View {
-        RootsCard {
-            VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                Text("dashboard.events.title".localized).rootsSectionHeader()
-                DashboardEventsColumn(events: events)
+        DashboardCard(
+            title: "Upcoming Events",
+            systemImage: "calendar",
+            isLoading: !isLoaded
+        ) {
+            if events.isEmpty {
+                DashboardEmptyState(
+                    title: "No Events",
+                    systemImage: "calendar.badge.plus",
+                    description: "Add events to see them here",
+                    action: { showAddEventSheet = true },
+                    actionTitle: "Add Event"
+                )
+            } else {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+                    ForEach(events.prefix(5), id: \.id) { event in
+                        eventRow(event)
+                    }
+                }
+            }
+        } header: {
+            Button {
+                showAddEventSheet = true
+            } label: {
+                Image(systemName: "plus")
+            }
+            .buttonStyle(.plain)
+            .font(.headline)
+            .help("Add event")
+        } footer: {
+            if events.count > 5 {
+                Button {
+                    appModel.selectedPage = .calendar
+                } label: {
+                    HStack {
+                        Text("View All Events (\(events.count))")
+                        Spacer()
+                        Image(systemName: "arrow.right")
+                    }
+                    .font(.subheadline)
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.secondary)
+            }
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Upcoming events")
+    }
+    
+    private func eventRow(_ event: DashboardEvent) -> some View {
+        HStack(spacing: DesignSystem.Spacing.medium) {
+            Circle()
+                .fill(.blue)
+                .frame(width: 8, height: 8)
+            
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xsmall) {
+                Text(event.title)
+                    .font(.subheadline)
+                    .lineLimit(1)
+                
+                HStack(spacing: DesignSystem.Spacing.xsmall) {
+                    Text(event.time)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    
+                    if let location = event.location {
+                        Text("·")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                        Text(location)
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .lineLimit(1)
+                    }
+                }
+            }
+            
+            Spacer()
+        }
+        .padding(.vertical, 4)
+        .padding(.horizontal, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 6)
+                .fill(Color(nsColor: .controlBackgroundColor).opacity(0))
+        )
+        .contentShape(Rectangle())
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.15)) {
+                // Hover effect handled by system
+            }
+        }
+        .contextMenu {
+            Button {
+                // View event details
+                appModel.selectedPage = .calendar
+            } label: {
+                Label("View Details", systemImage: "eye")
+            }
+            
+            Divider()
+            
+            Button {
+                // Edit event
+                showAddEventSheet = true
+            } label: {
+                Label("Edit Event", systemImage: "pencil")
+            }
+            
+            Button(role: .destructive) {
+                // Delete event
+                if let index = events.firstIndex(where: { $0.id == event.id }) {
+                    events.remove(at: index)
+                }
+            } label: {
+                Label("Delete Event", systemImage: "trash")
             }
         }
     }
 
     private var assignmentsCard: some View {
-        RootsCard {
-            VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                Text("dashboard.assignments.title".localized).rootsSectionHeader()
-                DashboardTasksColumn(tasks: $tasks)
-                Spacer()
+        DashboardCard(
+            title: "Assignments",
+            systemImage: "doc.text.fill",
+            isLoading: !isLoaded
+        ) {
+            if tasks.isEmpty {
+                DashboardEmptyState(
+                    title: "No Assignments",
+                    systemImage: "doc.badge.plus",
+                    description: "Create your first assignment",
+                    action: { showAddAssignmentSheet = true },
+                    actionTitle: "Add Assignment"
+                )
+            } else {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+                    ForEach(tasks.prefix(5), id: \.id) { task in
+                        assignmentRow(task)
+                    }
+                }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+        } header: {
+            Button {
+                showAddAssignmentSheet = true
+            } label: {
+                Image(systemName: "plus")
+            }
+            .buttonStyle(.plain)
+            .font(.headline)
+            .help("Add assignment")
+        } footer: {
+            if tasks.count > 5 {
+                Button {
+                    appModel.selectedPage = .assignments
+                } label: {
+                    HStack {
+                        Text("View All Assignments (\(tasks.count))")
+                        Spacer()
+                        Image(systemName: "arrow.right")
+                    }
+                    .font(.subheadline)
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.secondary)
+            }
         }
-        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Assignments list")
+    }
+    
+    private func assignmentRow(_ task: DashboardTask) -> some View {
+        HStack(spacing: DesignSystem.Spacing.medium) {
+            Image(systemName: task.isDone ? "checkmark.circle.fill" : "circle")
+                .font(.system(size: 16))
+                .foregroundStyle(task.isDone ? .green : .secondary)
+            
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xsmall) {
+                Text(task.title)
+                    .font(.subheadline)
+                    .lineLimit(1)
+                    .strikethrough(task.isDone)
+                
+                if let course = task.course {
+                    Text(course)
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            
+            Spacer()
+        }
+        .padding(.vertical, DesignSystem.Spacing.xsmall)
+        .padding(.horizontal, DesignSystem.Spacing.small)
+        .background(
+            RoundedRectangle(cornerRadius: 6)
+                .fill(Color(nsColor: .controlBackgroundColor).opacity(0))
+        )
+        .contentShape(Rectangle())
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.15)) {
+                // Hover effect handled by system
+            }
+        }
+        .contextMenu {
+            if !task.isDone {
+                Button {
+                    // Mark as complete
+                    if let index = tasks.firstIndex(where: { $0.id == task.id }) {
+                        tasks[index].isDone = true
+                    }
+                } label: {
+                    Label("Mark Complete", systemImage: "checkmark.circle")
+                }
+                
+                Divider()
+            }
+            
+            Button {
+                // View assignment details
+                appModel.selectedPage = .assignments
+            } label: {
+                Label("View Details", systemImage: "eye")
+            }
+            
+            Button {
+                // Edit assignment
+                showAddAssignmentSheet = true
+            } label: {
+                Label("Edit Assignment", systemImage: "pencil")
+            }
+            
+            Divider()
+            
+            Button(role: .destructive) {
+                // Delete assignment
+                if let index = tasks.firstIndex(where: { $0.id == task.id }) {
+                    tasks.remove(at: index)
+                }
+            } label: {
+                Label("Delete Assignment", systemImage: "trash")
+            }
+        }
+        .onTapGesture {
+            // Quick complete on click
+            if let index = tasks.firstIndex(where: { $0.id == task.id }) {
+                withAnimation(.spring(response: 0.3)) {
+                    tasks[index].isDone.toggle()
+                }
+            }
+        }
     }
 
     private var clockAndCalendarCard: some View {
-        return RootsCard {
-            VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                // Main content: Two-column grid layout (Clock | Calendar)
-                let clockSize: CGFloat = 160
-                HStack(alignment: .center, spacing: DesignSystem.Layout.spacing.large) {
-                    // Column 1: Clock
-                    RootsAnalogClock(
-                        style: .clock,
-                        diameter: clockSize,
-                        showSecondHand: true,
-                        accentColor: .accentColor
-                    )
-                        .frame(width: clockSize, height: clockSize)
+        DashboardCard(
+            title: "Time",
+            systemImage: "clock.fill",
+            isLoading: !isLoaded
+        ) {
+            HStack(alignment: .top, spacing: DesignSystem.Spacing.large) {
+                // Analog clock
+                VStack(spacing: DesignSystem.Spacing.small) {
+                    NativeAnalogClock(diameter: 120, showDigitalTime: false)
+                        .frame(width: 120, height: 120)
                     
-                    // Column 2: Calendar (integrated, no nested card)
-                    DashboardCalendarGrid(selectedDate: $selectedDate, events: events)
-                        .frame(maxWidth: .infinity)
+                    Text(Date(), style: .time)
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.secondary)
                 }
-                .padding(.vertical, DesignSystem.Layout.spacing.medium)
+                
+                // Mini calendar
+                DashboardCalendarGrid(
+                    selectedDate: $selectedDate,
+                    events: events
+                )
+                .frame(maxWidth: .infinity)
             }
-            .padding(DesignSystem.Layout.padding.card)
+        } footer: {
+            Button {
+                appModel.selectedPage = .calendar
+            } label: {
+                HStack {
+                    Text("Open Calendar")
+                    Spacer()
+                    Image(systemName: "arrow.right")
+                }
+                .font(.subheadline)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.secondary)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Current time and calendar")
     }
 
 
 
     private func quickActionButton(_ title: String, systemImage: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: 6) {
+            HStack(spacing: DesignSystem.Spacing.xsmall) {
                 Image(systemName: systemImage)
                 Text(title)
             }
             .font(.subheadline)
-            .padding(.horizontal, 10)
+            .padding(.horizontal, DesignSystem.Spacing.small)
             .frame(minHeight: 34)
         }
         .buttonStyle(.borderedProminent)
@@ -393,13 +675,30 @@ struct DashboardView: View {
     private var dashboardTodayStats: some View {
         let eventsTodayCount = todaysCalendarEvents().count
         let dueToday = tasksDueToday().count
-
-        return DashboardTileBody(
-            rows: [
-                ("Events Today", "\(eventsTodayCount)"),
-                ("Items Due Today", "\(dueToday)")
-            ]
-        )
+        
+        return VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
+            if eventsTodayCount == 0 && dueToday == 0 {
+                DashboardEmptyState(
+                    title: "All Clear",
+                    systemImage: "checkmark.circle.fill",
+                    description: "Nothing scheduled for today"
+                )
+            } else {
+                DashboardStatRow(
+                    label: "Events Today",
+                    value: "\(eventsTodayCount)",
+                    icon: "calendar",
+                    valueColor: eventsTodayCount > 0 ? .blue : .secondary
+                )
+                
+                DashboardStatRow(
+                    label: "Tasks Due",
+                    value: "\(dueToday)",
+                    icon: "checkmark.circle",
+                    valueColor: dueToday > 0 ? .orange : .secondary
+                )
+            }
+        }
     }
 
     private func syncTasks() {
@@ -467,7 +766,7 @@ struct DashboardTileBody: View {
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.xsmall) {
                     Text(row.0)
                         .rootsBodySecondary()
                     Text(row.1)
@@ -508,10 +807,10 @@ private struct DashboardCalendarColumn: View {
     @Binding var selectedDate: Date
     var events: [DashboardEvent]
     private let calendar = Calendar.current
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: 6), count: 7)
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: DesignSystem.Spacing.xsmall), count: 7)
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
             Text("dashboard.calendar.header".localized).rootsSectionHeader()
             Text(monthHeader(for: selectedDate)).rootsBodySecondary()
 
@@ -537,7 +836,7 @@ private struct DashboardCalendarColumn: View {
                     .buttonStyle(.plain)
                 }
             }
-            .padding(12)
+            .padding(DesignSystem.Spacing.medium)
             .rootsCardBackground(radius: 20)
         }
         .padding(DesignSystem.Layout.padding.card)
@@ -607,7 +906,7 @@ private struct DashboardCalendarGrid: View {
     @Binding var selectedDate: Date
     var events: [DashboardEvent]
     private let calendar = Calendar.current
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: 4), count: 7)
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: DesignSystem.Spacing.xsmall), count: 7)
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
@@ -617,7 +916,7 @@ private struct DashboardCalendarGrid: View {
                 .foregroundStyle(.secondary)
             
             // Calendar grid - no nested card background
-            LazyVGrid(columns: columns, spacing: 4) {
+            LazyVGrid(columns: columns, spacing: DesignSystem.Spacing.xsmall) {
                 ForEach(dayItems) { item in
                     let day = item.date
                     let isInMonth = calendar.isDate(day, equalTo: selectedDate, toGranularity: .month)
@@ -704,7 +1003,7 @@ private struct DashboardTasksColumn: View {
     @Binding var tasks: [DashboardTask]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
             Text("dashboard.assignments.due_today".localized)
                 .rootsSectionHeader()
 
@@ -713,7 +1012,7 @@ private struct DashboardTasksColumn: View {
                     .rootsBodySecondary()
             } else {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 14) {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
                         ForEach(tasks.indices, id: \.self) { index in
                             TaskRow(task: $tasks[index],
                                     showConnectorAbove: index != 0,
@@ -733,7 +1032,7 @@ private struct DashboardEventsColumn: View {
     var events: [DashboardEvent]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
             Text("dashboard.events.upcoming".localized)
                 .rootsSectionHeader()
 
@@ -742,10 +1041,10 @@ private struct DashboardEventsColumn: View {
                     .rootsBodySecondary()
             } else {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
                         ForEach(events) { event in
                             HStack(alignment: .top, spacing: DesignSystem.Layout.spacing.small) {
-                                VStack(alignment: .leading, spacing: 2) {
+                                VStack(alignment: .leading, spacing: DesignSystem.Spacing.xsmall) {
                                     Text(event.title)
                                         .font(DesignSystem.Typography.body)
                                     Text(event.time)
@@ -757,11 +1056,11 @@ private struct DashboardEventsColumn: View {
                                 }
                                 Spacer()
                             }
-                            .padding(10)
+                            .padding(DesignSystem.Spacing.small)
                             .rootsCardBackground(radius: 18)
                         }
                     }
-                    .padding(.vertical, 4)
+                    .padding(.vertical, DesignSystem.Spacing.xsmall)
                 }
             }
         }
@@ -782,7 +1081,7 @@ private struct TaskRow: View {
     var showConnectorBelow: Bool
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
+        HStack(alignment: .top, spacing: DesignSystem.Spacing.medium) {
             ZStack {
                 VStack {
                     if showConnectorAbove {
@@ -821,7 +1120,7 @@ private struct TaskRow: View {
             }
             .frame(width: 24)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.xsmall) {
                 Text(task.title)
                     .font(DesignSystem.Typography.body)
                     .strikethrough(task.isDone, color: .secondary)
@@ -834,7 +1133,7 @@ private struct TaskRow: View {
 
             Spacer()
         }
-        .padding(10)
+        .padding(DesignSystem.Spacing.small)
         .rootsCardBackground(radius: 18)
     }
 }
@@ -845,7 +1144,7 @@ struct StaticMonthCalendarView: View {
     let currentDate: Date
     var events: [DashboardEvent] = []
     private let calendar = Calendar.current
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: 6), count: 7)
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: DesignSystem.Spacing.xsmall), count: 7)
 
     var body: some View {
         VStack(spacing: DesignSystem.Layout.spacing.small) {
@@ -871,7 +1170,7 @@ struct StaticMonthCalendarView: View {
         let firstWeekdayIndex = calendar.firstWeekday - 1 // Calendar is 1-based
         let ordered = Array(symbols[firstWeekdayIndex..<symbols.count] + symbols[0..<firstWeekdayIndex])
 
-        return HStack(spacing: 6) {
+        return HStack(spacing: DesignSystem.Spacing.xsmall) {
             ForEach(ordered, id: \.self) { symbol in
                 Text(symbol.uppercased())
                     .font(.caption2.weight(.semibold))
@@ -886,7 +1185,7 @@ struct StaticMonthCalendarView: View {
         return Text("\(day)")
             .font(.caption.weight(.semibold))
             .frame(maxWidth: .infinity, minHeight: 32)
-            .padding(6)
+            .padding(DesignSystem.Spacing.xsmall)
             .background(
                 Circle()
                     .fill(isToday ? Color.accentColor.opacity(0.85) : Color.clear)

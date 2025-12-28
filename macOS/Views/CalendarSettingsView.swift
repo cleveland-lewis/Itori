@@ -12,7 +12,7 @@ struct CalendarSettingsView: View {
     }
 
     var body: some View {
-        List {
+        Form {
             Section("Calendar Sync") {
                 Toggle("Enable Calendar Sync", isOn: Binding(
                     get: { isAuthorized },
@@ -121,7 +121,8 @@ struct CalendarSettingsView: View {
                 }
             }
         }
-        .listStyle(.sidebar)
+        .formStyle(.grouped)
+        .navigationTitle("Calendar")
         .alert("Disable Calendar Sync", isPresented: $showingRevokeAlert) {
             Button("Open System Settings") {
                 calendarManager.openSystemPrivacySettings()

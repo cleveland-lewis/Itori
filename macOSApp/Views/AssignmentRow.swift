@@ -20,7 +20,13 @@ struct AssignmentRow: View {
                 .font(DesignSystem.Typography.caption)
         }
         .padding(.vertical, DesignSystem.Spacing.small)
+        .draggable(TransferableAssignment(from: task))
         .contextMenu {
+            Button {
+                SceneActivationHelper.openAssignmentWindow(for: task)
+            } label: {
+                Label("Open in New Window", systemImage: "doc.on.doc")
+            }
             Button("Edit") {
                 // TODO: wire edit
             }

@@ -21,8 +21,13 @@ struct CircleIconButton: View {
                 .frame(width: size, height: size)
                 .background(
                     Circle()
+                        #if os(macOS)
+                        .fill(DesignSystem.Colors.sidebarBackground)
+                        .opacity(backgroundOpacity)
+                        #else
                         .fill(backgroundMaterial)
                         .opacity(backgroundOpacity)
+                        #endif
                 )
                 .overlay {
                     if showsBorder {

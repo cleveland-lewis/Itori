@@ -35,12 +35,22 @@ struct CoursesDashboardFloatingNav: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
-        .background(DesignSystem.Materials.hud, in: Capsule())
+        .background {
+            #if os(macOS)
+            DesignSystem.Colors.sidebarBackground
+                .clipShape(Capsule())
+            #else
+            DesignSystem.Materials.hud
+                .clipShape(Capsule())
+            #endif
+        }
         .overlay(
             Capsule()
                 .strokeBorder(Color(nsColor: .separatorColor).opacity(0.3), lineWidth: 1)
         )
+        #if !os(macOS)
         .shadow(color: Color.black.opacity(0.1), radius: 20, x: 0, y: 10)
+        #endif
     }
 
     private func tabButton(for tab: DashboardTab) -> some View {

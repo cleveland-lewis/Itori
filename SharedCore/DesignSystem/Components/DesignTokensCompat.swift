@@ -78,21 +78,38 @@ extension View {
     }
 
     func rootsCardBackground(radius: CGFloat = RootsRadius.card) -> some View {
+        #if os(macOS)
+        background(
+            RoundedRectangle(cornerRadius: radius, style: .continuous)
+                .fill(DesignSystem.Colors.cardBackground)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+        .modifier(NeutralLineOverlay(radius: radius, opacity: 0.6))
+        #else
         background(
             RoundedRectangle(cornerRadius: radius, style: .continuous)
                 .fill(DesignSystem.Materials.card)
         )
         .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
         .modifier(NeutralLineOverlay(radius: radius, opacity: 0.12))
+        #endif
     }
 
     func rootsGlassBackground(opacity: Double = 0.2, radius: CGFloat = RootsRadius.card) -> some View {
+        #if os(macOS)
+        background(
+            RoundedRectangle(cornerRadius: radius, style: .continuous)
+                .fill(DesignSystem.Colors.cardBackground)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+        #else
         background(
             RoundedRectangle(cornerRadius: radius, style: .continuous)
                 .fill(DesignSystem.Materials.card)
                 .opacity(opacity)
         )
         .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+        #endif
     }
 
     func rootsFloatingShadow() -> some View {

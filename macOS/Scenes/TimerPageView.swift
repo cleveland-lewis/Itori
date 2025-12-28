@@ -156,7 +156,10 @@ struct TimerPageView: View {
         .onChange(of: sessions) { _, _ in
             persistSessions()
         }
-        .onChange(of: selectedActivityID) { _, _ in
+        .onChange(of: selectedActivityID) { _, newValue in
+            if let activityID = newValue {
+                loadNotes(for: activityID)
+            }
             syncTimerWithAssignment()
         }
         .onChange(of: settings.pomodoroIterations) { _, newValue in
@@ -395,17 +398,12 @@ struct TimerPageView: View {
                 .textFieldStyle(.roundedBorder)
                 .focused($isSearchFocused)
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                    if !pinnedActivities.isEmpty {
-                        Text(NSLocalizedString("common.label.pinned", comment: ""))
-                            .font(DesignSystem.Typography.caption)
-                            .foregroundColor(.secondary)
+            List(selection: $selectedActivityID) {
+                if !pinnedActivities.isEmpty {
+                    Section(NSLocalizedString("common.label.pinned", comment: "")) {
                         ForEach(pinnedActivities) { activity in
                             TimerActivityRow(
                                 activity: activity,
-                                isSelected: activity.id == selectedActivityID,
-                                onSelect: { selectedActivityID = activity.id },
                                 onEdit: {
                                     editingActivity = activity
                                     showActivityEditor = true
@@ -414,20 +412,15 @@ struct TimerPageView: View {
                                 onReset: { resetActivity(activity) },
                                 onDelete: { deleteActivity(activity) }
                             )
+                            .tag(activity.id)
                         }
                     }
+                }
 
-                    Text(NSLocalizedString("common.label.all_activities", comment: ""))
-                        .font(DesignSystem.Typography.caption)
-                        .foregroundColor(.secondary)
+                Section(NSLocalizedString("common.label.all_activities", comment: "")) {
                     ForEach(filteredActivities) { activity in
                         TimerActivityRow(
                             activity: activity,
-                            isSelected: activity.id == selectedActivityID,
-                            onSelect: {
-                                selectedActivityID = activity.id
-                                loadNotes(for: activity.id)
-                            },
                             onEdit: {
                                 editingActivity = activity
                                 showActivityEditor = true
@@ -436,10 +429,11 @@ struct TimerPageView: View {
                             onReset: { resetActivity(activity) },
                             onDelete: { deleteActivity(activity) }
                         )
+                        .tag(activity.id)
                     }
                 }
-                .padding(.vertical, 4)
             }
+            .listStyle(.inset)
 
             Button {
                 editingActivity = nil
@@ -456,28 +450,12 @@ struct TimerPageView: View {
     }
 
     private var collectionsRow: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: DesignSystem.Layout.spacing.small) {
-                ForEach(collections, id: \.self) { collection in
-                    let isSelected = selectedCollection == collection
-                    Button(action: { selectedCollection = collection }) {
-                        Text(collection)
-                            .font(.caption.weight(.semibold))
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 6)
-                            .background(
-                                Capsule()
-                                    .fill(isSelected ? Color.accentColor.opacity(0.2) : Color(nsColor: .controlBackgroundColor))
-                            )
-                            .overlay(
-                                Capsule()
-                                    .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
-                            )
-                    }
-                    .buttonStyle(.plain)
-                }
+        Picker("Category", selection: $selectedCollection) {
+            ForEach(collections, id: \.self) { collection in
+                Text(collection).tag(collection)
             }
         }
+        .pickerStyle(.menu)
     }
 
     // Memoized to avoid recomputing on every render
@@ -628,7 +606,7 @@ struct TimerPageView: View {
                                 }
                             }
                             .padding(8)
-                            .background(DesignSystem.Materials.surface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            .background(DesignSystem.Colors.cardBackground, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                         }
                     }
                 }
@@ -961,8 +939,6 @@ struct TimerPageView: View {
 
 struct TimerActivityRow: View {
     var activity: LocalTimerActivity
-    var isSelected: Bool
-    var onSelect: () -> Void
     var onEdit: () -> Void
     var onPinToggle: () -> Void
     var onReset: () -> Void
@@ -1005,17 +981,6 @@ struct TimerActivityRow: View {
             .menuStyle(.borderlessButton)
             .menuIndicator(.hidden)
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 8)
-        .background(
-            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                .fill(isSelected ? Color(nsColor: .controlAccentColor).opacity(0.12) : Color(nsColor: .controlBackgroundColor))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
-        )
-        .onTapGesture { onSelect() }
     }
 
     private func timeString(_ seconds: TimeInterval) -> String {
@@ -1446,7 +1411,7 @@ private struct FocusWindowView: View {
         }
         .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(DesignSystem.Materials.card)
+        .background(DesignSystem.Colors.cardBackground)
     }
 
     private var activityCard: some View {

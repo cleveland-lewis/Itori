@@ -11,7 +11,7 @@ struct RemindersSettingsView: View {
     }
 
     var body: some View {
-        List {
+        Form {
             Section("Reminders Sync") {
                 Toggle("Enable Reminders Sync", isOn: Binding(
                     get: { isAuthorized },
@@ -68,7 +68,8 @@ struct RemindersSettingsView: View {
                 }
             }
         }
-        .listStyle(.sidebar)
+        .formStyle(.grouped)
+        .navigationTitle("Reminders")
         .alert("Disable Reminders Sync", isPresented: $showingRevokeAlert) {
             Button("Open System Settings") {
                 calendarManager.openSystemPrivacySettings()

@@ -25,6 +25,9 @@ struct GlassIconButtonLabel: View {
             .font(DesignSystem.Typography.body)
             .foregroundStyle(Color.primary)
             .frame(width: 40, height: 40)
+            #if os(macOS)
+            .contentShape(Circle())
+            #else
             .background(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
                     .fill(DesignSystem.Materials.hud)
@@ -35,6 +38,7 @@ struct GlassIconButtonLabel: View {
             )
             .shadow(color: Color.primary.opacity(0.12), radius: 12, y: 6)
             .contentShape(Circle())
+            #endif
             .accessibilityLabel(accessibilityLabel ?? systemName)
             .accessibilityAddTraits(.isButton)
     }

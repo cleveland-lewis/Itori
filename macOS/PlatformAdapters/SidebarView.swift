@@ -93,8 +93,10 @@ private struct SidebarTooltipModifier: ViewModifier {
                         .foregroundStyle(.secondary)
                         .padding(.horizontal, DesignSystem.Layout.spacing.small)
                         .padding(.vertical, DesignSystem.Layout.spacing.small)
-                        .background(DesignSystem.Materials.hud, in: Capsule())
+                        .background(DesignSystem.Colors.sidebarBackground, in: Capsule())
+                        #if !os(macOS)
                         .shadow(radius: 4, y: 2)
+                        #endif
                         .offset(y: -40)
                         .transition(DesignSystem.Motion.scaleTransition)
                 }

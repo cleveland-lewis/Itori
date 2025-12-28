@@ -5,8 +5,25 @@ struct LegacyGlassProminentButtonStyle: ButtonStyle {
     @EnvironmentObject private var preferences: AppPreferences
     
     func makeBody(configuration: Configuration) -> some View {
+        #if os(macOS)
+        configuration.label
+            .padding(.vertical, 6)
+            .padding(.horizontal, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(Color(nsColor: .controlBackgroundColor))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+            )
+            .opacity(configuration.isPressed ? 0.9 : 1.0)
+            .onHover { hovering in
+                if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+            }
+        #else
         let policy = MaterialPolicy(preferences: preferences)
-        
+
         configuration.label
             .padding(.vertical, 6)
             .padding(.horizontal, 10)
@@ -22,5 +39,6 @@ struct LegacyGlassProminentButtonStyle: ButtonStyle {
                 if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
                 #endif
             }
+        #endif
     }
 }

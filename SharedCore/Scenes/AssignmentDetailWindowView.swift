@@ -55,7 +55,11 @@ struct AssignmentDetailWindowView: View {
                 }
             }
         }
+        #if os(iOS)
         .listStyle(.insetGrouped)
+        #else
+        .listStyle(.automatic)
+        #endif
     }
 
     private var courseLabel: String? {

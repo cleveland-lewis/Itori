@@ -1,0 +1,4534 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 http://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd">
+  <file original="SharedCore/DesignSystem/Localizable.xcstrings" source-language="en" target-language="zh-Hans" datatype="plaintext">
+    <header>
+      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="26.2" build-num="17C52"/>
+    </header>
+    <body>
+      <trans-unit id="" xml:space="preserve">
+        <source/>
+        <note/>
+      </trans-unit>
+      <trans-unit id=" " xml:space="preserve">
+        <source> </source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%.1f Credits" xml:space="preserve">
+        <source>%.1f Credits</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%@" xml:space="preserve">
+        <source>%@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%@ running" xml:space="preserve">
+        <source>%@ running</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%@ · %@" xml:space="preserve">
+        <source>%1$@ · %2$@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%@ – %@" xml:space="preserve">
+        <source>%1$@ – %2$@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%@%%" xml:space="preserve">
+        <source>%@%%</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%@, %@" xml:space="preserve">
+        <source>%1$@, %2$@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld" xml:space="preserve">
+        <source>%lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld %@" xml:space="preserve">
+        <source>%1$lld %2$@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld assignment(s) imported successfully." xml:space="preserve">
+        <source>%lld assignment(s) imported successfully.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld credits" xml:space="preserve">
+        <source>%lld credits</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld min" xml:space="preserve">
+        <source>%lld min</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld min total" xml:space="preserve">
+        <source>%lld min total</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld minutes · %@" xml:space="preserve">
+        <source>%1$lld minutes · %2$@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld of %lld approved" xml:space="preserve">
+        <source>%1$lld of %2$lld approved</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld of %lld completed" xml:space="preserve">
+        <source>%1$lld of %2$lld completed</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld questions" xml:space="preserve">
+        <source>%lld questions</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld%%" xml:space="preserve">
+        <source>%lld%%</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld/%lld" xml:space="preserve">
+        <source>%1$lld/%2$lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld/%lld steps" xml:space="preserve">
+        <source>%1$lld/%2$lld steps</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lld: %@" xml:space="preserve">
+        <source>%1$lld: %2$@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="%lldm" xml:space="preserve">
+        <source>%lldm</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="(%lld)" xml:space="preserve">
+        <source>(%lld)</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="+%lld more" xml:space="preserve">
+        <source>+%lld more</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="0" xml:space="preserve">
+        <source>0</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="1. Click the button below to open System Settings." xml:space="preserve">
+        <source>1. Click the button below to open System Settings.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="2. Find 'Roots' in the list." xml:space="preserve">
+        <source>2. Find 'Roots' in the list.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="3. Toggle the switch to ON." xml:space="preserve">
+        <source>3. Toggle the switch to ON.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="4. Return here to sync." xml:space="preserve">
+        <source>4. Return here to sync.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="12-hour" xml:space="preserve">
+        <source>12-hour</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="24-hour" xml:space="preserve">
+        <source>24-hour</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="50pct" xml:space="preserve">
+        <source>50pct</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="75pct" xml:space="preserve">
+        <source>75pct</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="&gt;" xml:space="preserve">
+        <source>&gt;</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="API Endpoint" xml:space="preserve">
+        <source>API Endpoint</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="API Key" xml:space="preserve">
+        <source>API Key</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="API endpoint URL" xml:space="preserve">
+        <source>API endpoint URL</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="ARCHIVED" xml:space="preserve">
+        <source>ARCHIVED</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="ATTACHMENTS" xml:space="preserve">
+        <source>ATTACHMENTS</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Academic" xml:space="preserve">
+        <source>Academic</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Academic Year" xml:space="preserve">
+        <source>Academic Year</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Accent" xml:space="preserve">
+        <source>Accent</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Accent color" xml:space="preserve">
+        <source>Accent color</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Access Denied" xml:space="preserve">
+        <source>Access Denied</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Accessibility Debug Tools" xml:space="preserve">
+        <source>Accessibility Debug Tools</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Accessibility Debug..." xml:space="preserve">
+        <source>Accessibility Debug...</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Account management will arrive in a future update." xml:space="preserve">
+        <source>Account management will arrive in a future update.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Accounts" xml:space="preserve">
+        <source>Accounts</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Active Courses" xml:space="preserve">
+        <source>Active Courses</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Active Semesters" xml:space="preserve">
+        <source>Active Semesters</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Active Subsystems" xml:space="preserve">
+        <source>Active Subsystems</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Activities" xml:space="preserve">
+        <source>Activities</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Activities: %lld" xml:space="preserve">
+        <source>Activities: %lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Activity:" xml:space="preserve">
+        <source>Activity:</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add" xml:space="preserve">
+        <source>Add</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add Assignment" xml:space="preserve">
+        <source>Add Assignment</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add Assignment..." xml:space="preserve">
+        <source>Add Assignment...</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add Attachment" xml:space="preserve">
+        <source>Add Attachment</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add Collection" xml:space="preserve">
+        <source>Add Collection</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add Component" xml:space="preserve">
+        <source>Add Component</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add Course" xml:space="preserve">
+        <source>Add Course</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add Course..." xml:space="preserve">
+        <source>Add Course...</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add Custom Action" xml:space="preserve">
+        <source>Add Custom Action</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add Event..." xml:space="preserve">
+        <source>Add Event...</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add Grade" xml:space="preserve">
+        <source>Add Grade</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add Grade for %@" xml:space="preserve">
+        <source>Add Grade for %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add Parsed Assignments" xml:space="preserve">
+        <source>Add Parsed Assignments</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add Semester" xml:space="preserve">
+        <source>Add Semester</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add Your First Course" xml:space="preserve">
+        <source>Add Your First Course</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add to Calendar" xml:space="preserve">
+        <source>Add to Calendar</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Add topic" xml:space="preserve">
+        <source>Add topic</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Additional Information" xml:space="preserve">
+        <source>Additional Information</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Advanced" xml:space="preserve">
+        <source>Advanced</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Advanced tool to detect main thread blocks, long operations, and memory issues." xml:space="preserve">
+        <source>Advanced tool to detect main thread blocks, long operations, and memory issues.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="All" xml:space="preserve">
+        <source>All</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="All Activities" xml:space="preserve">
+        <source>All Activities</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="All Courses" xml:space="preserve">
+        <source>All Courses</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="All Day" xml:space="preserve">
+        <source>All Day</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="All subsystems are actively logging when Developer Mode is enabled." xml:space="preserve">
+        <source>All subsystems are actively logging when Developer Mode is enabled.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="All systems look healthy." xml:space="preserve">
+        <source>All systems look healthy.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="All-day" xml:space="preserve">
+        <source>All-day</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Always hidden" xml:space="preserve">
+        <source>Always hidden</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Always visible" xml:space="preserve">
+        <source>Always visible</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Analytics" xml:space="preserve">
+        <source>Analytics</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Animation softness" xml:space="preserve">
+        <source>Animation softness</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Animation:" xml:space="preserve">
+        <source>Animation:</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Answered" xml:space="preserve">
+        <source>Answered</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Anything overdue will appear here so the planner can prioritize it." xml:space="preserve">
+        <source>Anything overdue will appear here so the planner can prioritize it.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Appearance" xml:space="preserve">
+        <source>Appearance</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Appleseed Hall 203" xml:space="preserve">
+        <source>Appleseed Hall 203</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Apply changes to this event or future events?" xml:space="preserve">
+        <source>Apply changes to this event or future events?</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Approve items to import them into your assignments" xml:space="preserve">
+        <source>Approve items to import them into your assignments</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Archive" xml:space="preserve">
+        <source>Archive</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Archived (placeholder)" xml:space="preserve">
+        <source>Archived (placeholder)</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Archived Courses" xml:space="preserve">
+        <source>Archived Courses</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Archived Semesters" xml:space="preserve">
+        <source>Archived Semesters</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Are you sure you want to submit? You cannot change your answers after submission." xml:space="preserve">
+        <source>Are you sure you want to submit? You cannot change your answers after submission.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Assignment" xml:space="preserve">
+        <source>Assignment</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Assignment Completion Chart" xml:space="preserve">
+        <source>Assignment Completion Chart</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Assignment detail will appear here." xml:space="preserve">
+        <source>Assignment detail will appear here.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Assignments" xml:space="preserve">
+        <source>Assignments</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Assignments Due Today" xml:space="preserve">
+        <source>Assignments Due Today</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Assignments left today:" xml:space="preserve">
+        <source>Assignments left today:</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Authorized" xml:space="preserve">
+        <source>Authorized</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Auto-Schedule Breaks" xml:space="preserve">
+        <source>Auto-Schedule Breaks</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Auto-collapse" xml:space="preserve">
+        <source>Auto-collapse</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Auto-scroll" xml:space="preserve">
+        <source>Auto-scroll</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Available Subsystems" xml:space="preserve">
+        <source>Available Subsystems</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Back" xml:space="preserve">
+        <source>Back</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Back to Tests" xml:space="preserve">
+        <source>Back to Tests</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Backend Type" xml:space="preserve">
+        <source>Backend Type</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Basic Information" xml:space="preserve">
+        <source>Basic Information</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Biology 101" xml:space="preserve">
+        <source>Biology 101</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Blocked" xml:space="preserve">
+        <source>Blocked</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Blocks: %lld" xml:space="preserve">
+        <source>Blocks: %lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Body example" xml:space="preserve">
+        <source>Body example</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Break" xml:space="preserve">
+        <source>Break</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Break Duration" xml:space="preserve">
+        <source>Break Duration</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Brief written responses" xml:space="preserve">
+        <source>Brief written responses</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="By Course" xml:space="preserve">
+        <source>By Course</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="CURRENT" xml:space="preserve">
+        <source>CURRENT</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Calendar" xml:space="preserve">
+        <source>Calendar</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Calendar Header" xml:space="preserve">
+        <source>Calendar Header</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Calendar Performance" xml:space="preserve">
+        <source>Calendar Performance</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Calendar locked to school calendar" xml:space="preserve">
+        <source>Calendar locked to school calendar</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Cancel" xml:space="preserve">
+        <source>Cancel</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Caption example" xml:space="preserve">
+        <source>Caption example</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Card radius" xml:space="preserve">
+        <source>Card radius</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Categories" xml:space="preserve">
+        <source>Categories</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Category" xml:space="preserve">
+        <source>Category</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Category Chart" xml:space="preserve">
+        <source>Category Chart</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Choose Activity" xml:space="preserve">
+        <source>Choose Activity</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Choose a course from the sidebar to view details" xml:space="preserve">
+        <source>Choose a course from the sidebar to view details</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Choose how Roots reacts to system appearance changes." xml:space="preserve">
+        <source>Choose how Roots reacts to system appearance changes.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Choose which pages appear in the floating tab bar and reorder them." xml:space="preserve">
+        <source>Choose which pages appear in the floating tab bar and reorder them.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Clear" xml:space="preserve">
+        <source>Clear</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Clear Dependencies" xml:space="preserve">
+        <source>Clear Dependencies</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Clear Event Buffer" xml:space="preserve">
+        <source>Clear Event Buffer</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Clock" xml:space="preserve">
+        <source>Clock</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Clock face with hour numerals" xml:space="preserve">
+        <source>Clock face with hour numerals</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Clock format" xml:space="preserve">
+        <source>Clock format</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Close" xml:space="preserve">
+        <source>Close</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Cognitive Preferences" xml:space="preserve">
+        <source>Cognitive Preferences</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Collapse" xml:space="preserve">
+        <source>Collapse</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Collapse legend" xml:space="preserve">
+        <source>Collapse legend</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Collapse quick actions" xml:space="preserve">
+        <source>Collapse quick actions</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Collection" xml:space="preserve">
+        <source>Collection</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Color" xml:space="preserve">
+        <source>Color</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Colors" xml:space="preserve">
+        <source>Colors</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Common MLX models:" xml:space="preserve">
+        <source>Common MLX models:</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Common Ollama models:" xml:space="preserve">
+        <source>Common Ollama models:</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Compact Density" xml:space="preserve">
+        <source>Compact Density</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Completed" xml:space="preserve">
+        <source>Completed</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Components" xml:space="preserve">
+        <source>Components</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Configure the quick actions shown under the + button in the top-left of the app." xml:space="preserve">
+        <source>Configure the quick actions shown under the + button in the top-left of the app.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Configure your practice test parameters" xml:space="preserve">
+        <source>Configure your practice test parameters</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Connect Apple Calendar" xml:space="preserve">
+        <source>Connect Apple Calendar</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Connected" xml:space="preserve">
+        <source>Connected</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Controls randomness: 0 = deterministic, 2 = very random" xml:space="preserve">
+        <source>Controls randomness: 0 = deterministic, 2 = very random</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Corners &amp; Spacing" xml:space="preserve">
+        <source>Corners &amp; Spacing</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Correct" xml:space="preserve">
+        <source>Correct</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Correct Answer" xml:space="preserve">
+        <source>Correct Answer</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Count" xml:space="preserve">
+        <source>Count</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Course" xml:space="preserve">
+        <source>Course</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Course Code" xml:space="preserve">
+        <source>Course Code</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Course Color" xml:space="preserve">
+        <source>Course Color</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Course Details" xml:space="preserve">
+        <source>Course Details</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Course Materials" xml:space="preserve">
+        <source>Course Materials</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Course Materials &amp; Syllabus" xml:space="preserve">
+        <source>Course Materials &amp; Syllabus</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Course Outline" xml:space="preserve">
+        <source>Course Outline</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Course Overview" xml:space="preserve">
+        <source>Course Overview</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Course Performance Chart" xml:space="preserve">
+        <source>Course Performance Chart</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Course Title" xml:space="preserve">
+        <source>Course Title</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Course Type" xml:space="preserve">
+        <source>Course Type</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Course: %@" xml:space="preserve">
+        <source>Course: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Courses" xml:space="preserve">
+        <source>Courses</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Courses in this semester" xml:space="preserve">
+        <source>Courses in this semester</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Courses: %lld" xml:space="preserve">
+        <source>Courses: %lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Create" xml:space="preserve">
+        <source>Create</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Create First Node" xml:space="preserve">
+        <source>Create First Node</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Create Flashcard Deck" xml:space="preserve">
+        <source>Create Flashcard Deck</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Create Practice Test" xml:space="preserve">
+        <source>Create Practice Test</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Create Your First Semester" xml:space="preserve">
+        <source>Create Your First Semester</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Create a plan for this assignment to manage task dependencies" xml:space="preserve">
+        <source>Create a plan for this assignment to manage task dependencies</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Create an assignment plan to enable task dependencies" xml:space="preserve">
+        <source>Create an assignment plan to enable task dependencies</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Create modules, units, sections, chapters, and lessons to organize your course content." xml:space="preserve">
+        <source>Create modules, units, sections, chapters, and lessons to organize your course content.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Creating %lld questions for %@" xml:space="preserve">
+        <source>Creating %1$lld questions for %2$@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Credits" xml:space="preserve">
+        <source>Credits</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Credits &amp; Schedule" xml:space="preserve">
+        <source>Credits &amp; Schedule</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Cumulative: %.2f" xml:space="preserve">
+        <source>Cumulative: %.2f</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Current" xml:space="preserve">
+        <source>Current</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Current Activity" xml:space="preserve">
+        <source>Current Activity</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Current Grade" xml:space="preserve">
+        <source>Current Grade</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Current System Settings" xml:space="preserve">
+        <source>Current System Settings</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Current semester" xml:space="preserve">
+        <source>Current semester</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Current: %.2f" xml:space="preserve">
+        <source>Current: %.2f</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Current: %@" xml:space="preserve">
+        <source>Current: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Current: %@%%" xml:space="preserve">
+        <source>Current: %@%%</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Current: —" xml:space="preserve">
+        <source>Current: —</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Custom accent tint" xml:space="preserve">
+        <source>Custom accent tint</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Custom colors override the built-in palette." xml:space="preserve">
+        <source>Custom colors override the built-in palette.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Customize your study preferences based on your peak productivity times." xml:space="preserve">
+        <source>Customize your study preferences based on your peak productivity times.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="DETAILS" xml:space="preserve">
+        <source>DETAILS</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Dark glass strength" xml:space="preserve">
+        <source>Dark glass strength</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Data &amp; Sync Logging" xml:space="preserve">
+        <source>Data &amp; Sync Logging</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Date" xml:space="preserve">
+        <source>Date</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Date &amp; Time" xml:space="preserve">
+        <source>Date &amp; Time</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Day: %@" xml:space="preserve">
+        <source>Day: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Debug Logging" xml:space="preserve">
+        <source>Debug Logging</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Debugger Activated" xml:space="preserve">
+        <source>Debugger Activated</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Default Energy Level" xml:space="preserve">
+        <source>Default Energy Level</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Default Focus Duration" xml:space="preserve">
+        <source>Default Focus Duration</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Delete" xml:space="preserve">
+        <source>Delete</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Delete Assignment" xml:space="preserve">
+        <source>Delete Assignment</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Delete Immediately" xml:space="preserve">
+        <source>Delete Immediately</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Delete Semester" xml:space="preserve">
+        <source>Delete Semester</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Delete Semester?" xml:space="preserve">
+        <source>Delete Semester?</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Delete this item?" xml:space="preserve">
+        <source>Delete this item?</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Dependency Cycle Detected" xml:space="preserve">
+        <source>Dependency Cycle Detected</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Depends on previous task" xml:space="preserve">
+        <source>Depends on previous task</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Deselect All" xml:space="preserve">
+        <source>Deselect All</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Design" xml:space="preserve">
+        <source>Design</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Design System Preview" xml:space="preserve">
+        <source>Design System Preview</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Design Tokens" xml:space="preserve">
+        <source>Design Tokens</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Design debug" xml:space="preserve">
+        <source>Design debug</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Detailed explanations with examples" xml:space="preserve">
+        <source>Detailed explanations with examples</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Details" xml:space="preserve">
+        <source>Details</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Developer" xml:space="preserve">
+        <source>Developer</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Developer Mode" xml:space="preserve">
+        <source>Developer Mode</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Differentiate Without Color" xml:space="preserve">
+        <source>Differentiate Without Color</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Difficulty" xml:space="preserve">
+        <source>Difficulty</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Disable Reminders Sync" xml:space="preserve">
+        <source>Disable Reminders Sync</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Discard Changes" xml:space="preserve">
+        <source>Discard Changes</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Discard changes?" xml:space="preserve">
+        <source>Discard changes?</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Done" xml:space="preserve">
+        <source>Done</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Dr. Smith" xml:space="preserve">
+        <source>Dr. Smith</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Due %@" xml:space="preserve">
+        <source>Due %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Due Date" xml:space="preserve">
+        <source>Due Date</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Due This Week" xml:space="preserve">
+        <source>Due This Week</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Due Time (optional)" xml:space="preserve">
+        <source>Due Time (optional)</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Due Today" xml:space="preserve">
+        <source>Due Today</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Duration" xml:space="preserve">
+        <source>Duration</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Duration: %lld min" xml:space="preserve">
+        <source>Duration: %lld min</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Edit" xml:space="preserve">
+        <source>Edit</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Edit Activity" xml:space="preserve">
+        <source>Edit Activity</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Edit Course" xml:space="preserve">
+        <source>Edit Course</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Edit Courses" xml:space="preserve">
+        <source>Edit Courses</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Edit Outline" xml:space="preserve">
+        <source>Edit Outline</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Edit Parsed Assignment" xml:space="preserve">
+        <source>Edit Parsed Assignment</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Edit Semester" xml:space="preserve">
+        <source>Edit Semester</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Edit Target" xml:space="preserve">
+        <source>Edit Target</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Edit Target for %@" xml:space="preserve">
+        <source>Edit Target for %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Edit target" xml:space="preserve">
+        <source>Edit target</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Editable text. Supports bold and italic formatting." xml:space="preserve">
+        <source>Editable text. Supports bold and italic formatting.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Education Level" xml:space="preserve">
+        <source>Education Level</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Email" xml:space="preserve">
+        <source>Email</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Emoji" xml:space="preserve">
+        <source>Emoji</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Enable Deep Work Mode" xml:space="preserve">
+        <source>Enable Deep Work Mode</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Enable Flashcards" xml:space="preserve">
+        <source>Enable Flashcards</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Enable Main Thread Debugger" xml:space="preserve">
+        <source>Enable Main Thread Debugger</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Enable Reminders Sync" xml:space="preserve">
+        <source>Enable Reminders Sync</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Enable Study Coach" xml:space="preserve">
+        <source>Enable Study Coach</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Enable custom accent color" xml:space="preserve">
+        <source>Enable custom accent color</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Enable flashcards in Settings → Flashcards to study decks." xml:space="preserve">
+        <source>Enable flashcards in Settings → Flashcards to study decks.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Enable iCloud sync" xml:space="preserve">
+        <source>Enable iCloud sync</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Enable the debugger to track main thread blocks, long operations, and performance issues." xml:space="preserve">
+        <source>Enable the debugger to track main thread blocks, long operations, and performance issues.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Enable verbose logging" xml:space="preserve">
+        <source>Enable verbose logging</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Enabled" xml:space="preserve">
+        <source>Enabled</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="End" xml:space="preserve">
+        <source>End</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="End date" xml:space="preserve">
+        <source>End date</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Ends" xml:space="preserve">
+        <source>Ends</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Energy" xml:space="preserve">
+        <source>Energy</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Energy &amp; Focus" xml:space="preserve">
+        <source>Energy &amp; Focus</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Enforce Task Order" xml:space="preserve">
+        <source>Enforce Task Order</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Error" xml:space="preserve">
+        <source>Error</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Event Buffer (Last 50)" xml:space="preserve">
+        <source>Event Buffer (Last 50)</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Events (%lld)" xml:space="preserve">
+        <source>Events (%lld)</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Events: %lld" xml:space="preserve">
+        <source>Events: %lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Every %lld" xml:space="preserve">
+        <source>Every %lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Exam Title" xml:space="preserve">
+        <source>Exam Title</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Exams" xml:space="preserve">
+        <source>Exams</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Expand" xml:space="preserve">
+        <source>Expand</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Expand legend" xml:space="preserve">
+        <source>Expand legend</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Expand quick actions" xml:space="preserve">
+        <source>Expand quick actions</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Expected average on remaining work" xml:space="preserve">
+        <source>Expected average on remaining work</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Explanation" xml:space="preserve">
+        <source>Explanation</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Fall 2025" xml:space="preserve">
+        <source>Fall 2025</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Filter" xml:space="preserve">
+        <source>Filter</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Filters" xml:space="preserve">
+        <source>Filters</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Fine-tune which subsystems emit debug logs. Errors and warnings are always logged." xml:space="preserve">
+        <source>Fine-tune which subsystems emit debug logs. Errors and warnings are always logged.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="First frame: %@  |  Data ready: %@  |  Full ready: %@  |  Events: %lld" xml:space="preserve">
+        <source>First frame: %1$@  |  Data ready: %2$@  |  Full ready: %3$@  |  Events: %4$lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Flashcards" xml:space="preserve">
+        <source>Flashcards</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Flashcards are turned off" xml:space="preserve">
+        <source>Flashcards are turned off</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Focus" xml:space="preserve">
+        <source>Focus</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Focus Debugger" xml:space="preserve">
+        <source>Focus Debugger</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Focus Mode" xml:space="preserve">
+        <source>Focus Mode</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="From: %@" xml:space="preserve">
+        <source>From: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Full animations" xml:space="preserve">
+        <source>Full animations</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="GPA" xml:space="preserve">
+        <source>GPA</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="GPA %@ / %@" xml:space="preserve">
+        <source>GPA %1$@ / %2$@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="GPA Overview" xml:space="preserve">
+        <source>GPA Overview</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="GPA Scale: %@" xml:space="preserve">
+        <source>GPA Scale: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="GPA Trend Chart" xml:space="preserve">
+        <source>GPA Trend Chart</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="General" xml:space="preserve">
+        <source>General</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Generate Plan" xml:space="preserve">
+        <source>Generate Plan</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Generate Practice Test" xml:space="preserve">
+        <source>Generate Practice Test</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Generate Study Guide" xml:space="preserve">
+        <source>Generate Study Guide</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Generate Test" xml:space="preserve">
+        <source>Generate Test</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Generation Failed" xml:space="preserve">
+        <source>Generation Failed</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Generation Parameters" xml:space="preserve">
+        <source>Generation Parameters</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Geometry &amp; Motion" xml:space="preserve">
+        <source>Geometry &amp; Motion</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Glass" xml:space="preserve">
+        <source>Glass</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Glass Accents" xml:space="preserve">
+        <source>Glass Accents</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Go Back" xml:space="preserve">
+        <source>Go Back</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Go to Courses" xml:space="preserve">
+        <source>Go to Courses</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Go to Grades" xml:space="preserve">
+        <source>Go to Grades</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Go to Semesters" xml:space="preserve">
+        <source>Go to Semesters</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Go to current week" xml:space="preserve">
+        <source>Go to current week</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Grade" xml:space="preserve">
+        <source>Grade</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Grade Analytics" xml:space="preserve">
+        <source>Grade Analytics</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Grade Components" xml:space="preserve">
+        <source>Grade Components</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Grade Components – %@" xml:space="preserve">
+        <source>Grade Components – %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Grade Distribution Chart" xml:space="preserve">
+        <source>Grade Distribution Chart</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Grid for %@" xml:space="preserve">
+        <source>Grid for %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Health Check" xml:space="preserve">
+        <source>Health Check</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="High Contrast Mode" xml:space="preserve">
+        <source>High Contrast Mode</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Higher values make transitions feel gentler." xml:space="preserve">
+        <source>Higher values make transitions feel gentler.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Highest: %@ %lld%%" xml:space="preserve">
+        <source>Highest: %1$@ %2$lld%%</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="History Chart" xml:space="preserve">
+        <source>History Chart</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="History: %lld items" xml:space="preserve">
+        <source>History: %lld items</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Hour" xml:space="preserve">
+        <source>Hour</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Hover Effects" xml:space="preserve">
+        <source>Hover Effects</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="How Dependencies Work" xml:space="preserve">
+        <source>How Dependencies Work</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Hypothetical grades won't be saved" xml:space="preserve">
+        <source>Hypothetical grades won't be saved</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Icons" xml:space="preserve">
+        <source>Icons</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Icons &amp; Text" xml:space="preserve">
+        <source>Icons &amp; Text</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="If you score %lld%% on remaining work, your projected final grade is %@%%." xml:space="preserve">
+        <source>If you score %1$lld%% on remaining work, your projected final grade is %2$@%%.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Import Successful" xml:space="preserve">
+        <source>Import Successful</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Import Syllabus" xml:space="preserve">
+        <source>Import Syllabus</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Incorrect" xml:space="preserve">
+        <source>Incorrect</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Increase Contrast" xml:space="preserve">
+        <source>Increase Contrast</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Instructor" xml:space="preserve">
+        <source>Instructor</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Instructor Notes" xml:space="preserve">
+        <source>Instructor Notes</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Integrations" xml:space="preserve">
+        <source>Integrations</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Interaction" xml:space="preserve">
+        <source>Interaction</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Interface" xml:space="preserve">
+        <source>Interface</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Interface style" xml:space="preserve">
+        <source>Interface style</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Keep your profile, backups, and school-wide settings in their respective sections. Roots will link here when account syncing is available." xml:space="preserve">
+        <source>Keep your profile, backups, and school-wide settings in their respective sections. Roots will link here when account syncing is available.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="LLM Backend" xml:space="preserve">
+        <source>LLM Backend</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Label" xml:space="preserve">
+        <source>Label</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Last 500 events" xml:space="preserve">
+        <source>Last 500 events</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Last refresh: %@" xml:space="preserve">
+        <source>Last refresh: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Layout" xml:space="preserve">
+        <source>Layout</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Letter" xml:space="preserve">
+        <source>Letter</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Level" xml:space="preserve">
+        <source>Level</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Light glass strength" xml:space="preserve">
+        <source>Light glass strength</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Links" xml:space="preserve">
+        <source>Links</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Live Preview" xml:space="preserve">
+        <source>Live Preview</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Loading calendar…" xml:space="preserve">
+        <source>Loading calendar…</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Loading course analytics…" xml:space="preserve">
+        <source>Loading course analytics…</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Location" xml:space="preserve">
+        <source>Location</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Location: %@" xml:space="preserve">
+        <source>Location: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Lock to date" xml:space="preserve">
+        <source>Lock to date</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Logs" xml:space="preserve">
+        <source>Logs</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." xml:space="preserve">
+        <source>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Lowest: %@ %lld%%" xml:space="preserve">
+        <source>Lowest: %1$@ %2$lld%%</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="MLX Configuration" xml:space="preserve">
+        <source>MLX Configuration</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="MLX models are loaded from the Hugging Face hub or local cache" xml:space="preserve">
+        <source>MLX models are loaded from the Hugging Face hub or local cache</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Main Thread Debugger" xml:space="preserve">
+        <source>Main Thread Debugger</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Main Thread Debugger Disabled" xml:space="preserve">
+        <source>Main Thread Debugger Disabled</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Manage all your courses, semesters, and academic settings from the Courses page." xml:space="preserve">
+        <source>Manage all your courses, semesters, and academic settings from the Courses page.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Manage app capabilities that require permissions or connect to external services." xml:space="preserve">
+        <source>Manage app capabilities that require permissions or connect to external services.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Manage your academic semesters. The current semester is used for new courses and appears in the main interface." xml:space="preserve">
+        <source>Manage your academic semesters. The current semester is used for new courses and appears in the main interface.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Manage your current courses. Archived courses are hidden from the main interface but remain accessible." xml:space="preserve">
+        <source>Manage your current courses. Archived courses are hidden from the main interface but remain accessible.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Manage…" xml:space="preserve">
+        <source>Manage…</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Mark as Complete" xml:space="preserve">
+        <source>Mark as Complete</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Mark as Incomplete" xml:space="preserve">
+        <source>Mark as Incomplete</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Mark as deleted" xml:space="preserve">
+        <source>Mark as deleted</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Mark as extended" xml:space="preserve">
+        <source>Mark as extended</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Mark as kept" xml:space="preserve">
+        <source>Mark as kept</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Mark as rescheduled" xml:space="preserve">
+        <source>Mark as rescheduled</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Mark as shortened" xml:space="preserve">
+        <source>Mark as shortened</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Material" xml:space="preserve">
+        <source>Material</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Material preview" xml:space="preserve">
+        <source>Material preview</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Materials" xml:space="preserve">
+        <source>Materials</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Max Tokens: %lld" xml:space="preserve">
+        <source>Max Tokens: %lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Maximum number of tokens to generate" xml:space="preserve">
+        <source>Maximum number of tokens to generate</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Meeting Times (e.g., MWF 9:00-10:00)" xml:space="preserve">
+        <source>Meeting Times (e.g., MWF 9:00-10:00)</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Meetings" xml:space="preserve">
+        <source>Meetings</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Message" xml:space="preserve">
+        <source>Message</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Minutes" xml:space="preserve">
+        <source>Minutes</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Mock backend - no configuration needed" xml:space="preserve">
+        <source>Mock backend - no configuration needed</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Model Configuration" xml:space="preserve">
+        <source>Model Configuration</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Model Name" xml:space="preserve">
+        <source>Model Name</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Model Path (optional)" xml:space="preserve">
+        <source>Model Path (optional)</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Module %lld" xml:space="preserve">
+        <source>Module %lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Modules" xml:space="preserve">
+        <source>Modules</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Multiple Choice" xml:space="preserve">
+        <source>Multiple Choice</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="NOTES" xml:space="preserve">
+        <source>NOTES</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Name" xml:space="preserve">
+        <source>Name</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Navigation" xml:space="preserve">
+        <source>Navigation</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="New" xml:space="preserve">
+        <source>New</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="New Activity" xml:space="preserve">
+        <source>New Activity</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="New Course" xml:space="preserve">
+        <source>New Course</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="New Event" xml:space="preserve">
+        <source>New Event</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="New Exam…" xml:space="preserve">
+        <source>New Exam…</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="New Homework…" xml:space="preserve">
+        <source>New Homework…</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="New Practice Test" xml:space="preserve">
+        <source>New Practice Test</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="New Semester" xml:space="preserve">
+        <source>New Semester</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="New Test" xml:space="preserve">
+        <source>New Test</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Next" xml:space="preserve">
+        <source>Next</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Next Day" xml:space="preserve">
+        <source>Next Day</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Next Week" xml:space="preserve">
+        <source>Next Week</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Next week" xml:space="preserve">
+        <source>Next week</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No Active Semester" xml:space="preserve">
+        <source>No Active Semester</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No Outline Yet" xml:space="preserve">
+        <source>No Outline Yet</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No Parsed Assignments" xml:space="preserve">
+        <source>No Parsed Assignments</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No Plan Found" xml:space="preserve">
+        <source>No Plan Found</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No Tasks in Plan" xml:space="preserve">
+        <source>No Tasks in Plan</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No active courses" xml:space="preserve">
+        <source>No active courses</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No activity selected" xml:space="preserve">
+        <source>No activity selected</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No analytics yet." xml:space="preserve">
+        <source>No analytics yet.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No assignments available yet." xml:space="preserve">
+        <source>No assignments available yet.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No assignments due today." xml:space="preserve">
+        <source>No assignments due today.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No assignments linked to this course yet." xml:space="preserve">
+        <source>No assignments linked to this course yet.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No assignments recorded for this course." xml:space="preserve">
+        <source>No assignments recorded for this course.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No courses available. Please add a course first." xml:space="preserve">
+        <source>No courses available. Please add a course first.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No data yet" xml:space="preserve">
+        <source>No data yet</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No events" xml:space="preserve">
+        <source>No events</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No exams linked to this course yet." xml:space="preserve">
+        <source>No exams linked to this course yet.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No grade" xml:space="preserve">
+        <source>No grade</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No grade yet" xml:space="preserve">
+        <source>No grade yet</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No module files yet." xml:space="preserve">
+        <source>No module files yet.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No notes available" xml:space="preserve">
+        <source>No notes available</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No plan yet" xml:space="preserve">
+        <source>No plan yet</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No planner blocks on %@." xml:space="preserve">
+        <source>No planner blocks on %@.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No practice quizzes yet." xml:space="preserve">
+        <source>No practice quizzes yet.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No questions available" xml:space="preserve">
+        <source>No questions available</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No recently deleted semesters." xml:space="preserve">
+        <source>No recently deleted semesters.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No scheduled meetings" xml:space="preserve">
+        <source>No scheduled meetings</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No scheduled tests" xml:space="preserve">
+        <source>No scheduled tests</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No semesters" xml:space="preserve">
+        <source>No semesters</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No semesters defined" xml:space="preserve">
+        <source>No semesters defined</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No semesters yet. Add one to begin organizing your courses." xml:space="preserve">
+        <source>No semesters yet. Add one to begin organizing your courses.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No study tracked today" xml:space="preserve">
+        <source>No study tracked today</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No tests scheduled this week." xml:space="preserve">
+        <source>No tests scheduled this week.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No upcoming deadlines" xml:space="preserve">
+        <source>No upcoming deadlines</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="No upcoming deadlines." xml:space="preserve">
+        <source>No upcoming deadlines.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="None" xml:space="preserve">
+        <source>None</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Not Connected" xml:space="preserve">
+        <source>Not Connected</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Not answered" xml:space="preserve">
+        <source>Not answered</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Not set" xml:space="preserve">
+        <source>Not set</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Note" xml:space="preserve">
+        <source>Note</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Note: These simulations are for preview only and don't affect actual system behavior" xml:space="preserve">
+        <source>Note: These simulations are for preview only and don't affect actual system behavior</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Notes" xml:space="preserve">
+        <source>Notes</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Number of Questions" xml:space="preserve">
+        <source>Number of Questions</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="OK" xml:space="preserve">
+        <source>OK</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Observer: not registered" xml:space="preserve">
+        <source>Observer: not registered</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Observer: registered" xml:space="preserve">
+        <source>Observer: registered</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Off" xml:space="preserve">
+        <source>Off</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Ollama Configuration" xml:space="preserve">
+        <source>Ollama Configuration</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Ollama Host" xml:space="preserve">
+        <source>Ollama Host</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Ollama server address" xml:space="preserve">
+        <source>Ollama server address</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="On" xml:space="preserve">
+        <source>On</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Only reminders from this list will appear in Roots." xml:space="preserve">
+        <source>Only reminders from this list will appear in Roots.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Open Calendar Settings" xml:space="preserve">
+        <source>Open Calendar Settings</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Open Reminders Settings" xml:space="preserve">
+        <source>Open Reminders Settings</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Open Settings" xml:space="preserve">
+        <source>Open Settings</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Open System Settings" xml:space="preserve">
+        <source>Open System Settings</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Open System Settings…" xml:space="preserve">
+        <source>Open System Settings…</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Open a course in a new window to see details here." xml:space="preserve">
+        <source>Open a course in a new window to see details here.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Open in New Window" xml:space="preserve">
+        <source>Open in New Window</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="OpenAI-Compatible API Configuration" xml:space="preserve">
+        <source>OpenAI-Compatible API Configuration</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Overall Score" xml:space="preserve">
+        <source>Overall Score</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Overall Status" xml:space="preserve">
+        <source>Overall Status</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Overdue" xml:space="preserve">
+        <source>Overdue</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Overdue, due %@" xml:space="preserve">
+        <source>Overdue, due %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Parse a syllabus file to see assignments here" xml:space="preserve">
+        <source>Parse a syllabus file to see assignments here</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Pause" xml:space="preserve">
+        <source>Pause</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Paused" xml:space="preserve">
+        <source>Paused</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Percentage" xml:space="preserve">
+        <source>Percentage</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Performance Debugging" xml:space="preserve">
+        <source>Performance Debugging</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Performance Warnings" xml:space="preserve">
+        <source>Performance Warnings</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Permission denied. Please enable in System Settings to use this feature." xml:space="preserve">
+        <source>Permission denied. Please enable in System Settings to use this feature.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Pinned" xml:space="preserve">
+        <source>Pinned</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Planner • %@" xml:space="preserve">
+        <source>Planner • %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Please create a semester first in the Semesters section." xml:space="preserve">
+        <source>Please create a semester first in the Semesters section.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Points" xml:space="preserve">
+        <source>Points</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Practice Quizzes" xml:space="preserve">
+        <source>Practice Quizzes</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Practice Test Results" xml:space="preserve">
+        <source>Practice Test Results</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Prefer Evening Study Sessions" xml:space="preserve">
+        <source>Prefer Evening Study Sessions</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Prefer Morning Study Sessions" xml:space="preserve">
+        <source>Prefer Morning Study Sessions</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Preferences…" xml:space="preserve">
+        <source>Preferences…</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Preparing events…" xml:space="preserve">
+        <source>Preparing events…</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Previous" xml:space="preserve">
+        <source>Previous</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Previous Day" xml:space="preserve">
+        <source>Previous Day</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Previous Week" xml:space="preserve">
+        <source>Previous Week</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Previous week" xml:space="preserve">
+        <source>Previous week</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Previous: %@" xml:space="preserve">
+        <source>Previous: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Primary Alert" xml:space="preserve">
+        <source>Primary Alert</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Privacy &amp; Safety" xml:space="preserve">
+        <source>Privacy &amp; Safety</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Productivity Tracking" xml:space="preserve">
+        <source>Productivity Tracking</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Provide a detailed explanation with specific examples" xml:space="preserve">
+        <source>Provide a detailed explanation with specific examples</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Q%lld" xml:space="preserve">
+        <source>Q%lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Question %lld" xml:space="preserve">
+        <source>Question %lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Question %lld of %lld" xml:space="preserve">
+        <source>Question %1$lld of %2$lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Question Count" xml:space="preserve">
+        <source>Question Count</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Question Types" xml:space="preserve">
+        <source>Question Types</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Quick Actions" xml:space="preserve">
+        <source>Quick Actions</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Range: %@" xml:space="preserve">
+        <source>Range: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Re-learn" xml:space="preserve">
+        <source>Re-learn</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Recent" xml:space="preserve">
+        <source>Recent</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Recent Events: %lld" xml:space="preserve">
+        <source>Recent Events: %lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Recently Deleted" xml:space="preserve">
+        <source>Recently Deleted</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Recover" xml:space="preserve">
+        <source>Recover</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Reduce Motion" xml:space="preserve">
+        <source>Reduce Motion</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Reduce Transparency" xml:space="preserve">
+        <source>Reduce Transparency</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Reduced/Disabled" xml:space="preserve">
+        <source>Reduced/Disabled</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Reminders Sync" xml:space="preserve">
+        <source>Reminders Sync</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Rename" xml:space="preserve">
+        <source>Rename</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Repeat" xml:space="preserve">
+        <source>Repeat</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Request timeout in seconds" xml:space="preserve">
+        <source>Request timeout in seconds</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Reset" xml:space="preserve">
+        <source>Reset</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Reset demo data" xml:space="preserve">
+        <source>Reset demo data</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Reset to Defaults" xml:space="preserve">
+        <source>Reset to Defaults</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Restore Defaults" xml:space="preserve">
+        <source>Restore Defaults</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Retry" xml:space="preserve">
+        <source>Retry</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Review Parsed Assignments" xml:space="preserve">
+        <source>Review Parsed Assignments</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Review Questions" xml:space="preserve">
+        <source>Review Questions</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Risk Analysis" xml:space="preserve">
+        <source>Risk Analysis</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Run Health Check" xml:space="preserve">
+        <source>Run Health Check</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Running" xml:space="preserve">
+        <source>Running</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Runs a quick self-diagnostic across data, permissions, and local files." xml:space="preserve">
+        <source>Runs a quick self-diagnostic across data, permissions, and local files.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="SELECTED DATE" xml:space="preserve">
+        <source>SELECTED DATE</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Sample Card" xml:space="preserve">
+        <source>Sample Card</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Save" xml:space="preserve">
+        <source>Save</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Save Configuration" xml:space="preserve">
+        <source>Save Configuration</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Save Sample Grade" xml:space="preserve">
+        <source>Save Sample Grade</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Save Semester" xml:space="preserve">
+        <source>Save Semester</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Save and Close" xml:space="preserve">
+        <source>Save and Close</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Schedule Result" xml:space="preserve">
+        <source>Schedule Result</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Scheduled Tests" xml:space="preserve">
+        <source>Scheduled Tests</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Scheduler &amp; Planner Logging" xml:space="preserve">
+        <source>Scheduler &amp; Planner Logging</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="School List" xml:space="preserve">
+        <source>School List</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Search" xml:space="preserve">
+        <source>Search</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Search Settings" xml:space="preserve">
+        <source>Search Settings</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Search courses" xml:space="preserve">
+        <source>Search courses</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Search courses..." xml:space="preserve">
+        <source>Search courses...</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Search..." xml:space="preserve">
+        <source>Search...</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Secondary Alert" xml:space="preserve">
+        <source>Secondary Alert</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Secondary Button" xml:space="preserve">
+        <source>Secondary Button</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Select All" xml:space="preserve">
+        <source>Select All</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Select Course" xml:space="preserve">
+        <source>Select Course</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Select a Course" xml:space="preserve">
+        <source>Select a Course</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Select a List" xml:space="preserve">
+        <source>Select a List</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Select a course" xml:space="preserve">
+        <source>Select a course</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Select a question to review" xml:space="preserve">
+        <source>Select a question to review</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Select an event to view details" xml:space="preserve">
+        <source>Select an event to view details</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Select at least one question type" xml:space="preserve">
+        <source>Select at least one question type</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Select course" xml:space="preserve">
+        <source>Select course</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Select from 4 options" xml:space="preserve">
+        <source>Select from 4 options</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Select up to %lld actions." xml:space="preserve">
+        <source>Select up to %lld actions.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Selected" xml:space="preserve">
+        <source>Selected</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Selected material" xml:space="preserve">
+        <source>Selected material</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Selected: %@" xml:space="preserve">
+        <source>Selected: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Selected: %@ • %@ today" xml:space="preserve">
+        <source>Selected: %1$@ • %2$@ today</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Semester" xml:space="preserve">
+        <source>Semester</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Set Custom Model Path" xml:space="preserve">
+        <source>Set Custom Model Path</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Set as Current Semester" xml:space="preserve">
+        <source>Set as Current Semester</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Set as current semester" xml:space="preserve">
+        <source>Set as current semester</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Settings" xml:space="preserve">
+        <source>Settings</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Share or export grades" xml:space="preserve">
+        <source>Share or export grades</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Short Answer" xml:space="preserve">
+        <source>Short Answer</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Show Energy Panel" xml:space="preserve">
+        <source>Show Energy Panel</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Show Productivity Insights" xml:space="preserve">
+        <source>Show Productivity Insights</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Shows GPA progression over recent weeks" xml:space="preserve">
+        <source>Shows GPA progression over recent weeks</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Shows count of assignments by letter grade" xml:space="preserve">
+        <source>Shows count of assignments by letter grade</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Shows current grade percentage for each course" xml:space="preserve">
+        <source>Shows current grade percentage for each course</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Shows ratio of completed to pending assignments" xml:space="preserve">
+        <source>Shows ratio of completed to pending assignments</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Sidebar" xml:space="preserve">
+        <source>Sidebar</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Simulate Accessibility Features" xml:space="preserve">
+        <source>Simulate Accessibility Features</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Smart Notifications" xml:space="preserve">
+        <source>Smart Notifications</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Sort" xml:space="preserve">
+        <source>Sort</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Source: %@" xml:space="preserve">
+        <source>Source: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Specify topics to focus on, or leave blank for general practice" xml:space="preserve">
+        <source>Specify topics to focus on, or leave blank for general practice</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Stack Trace" xml:space="preserve">
+        <source>Stack Trace</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Standard (A-F)" xml:space="preserve">
+        <source>Standard (A-F)</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Standard Button" xml:space="preserve">
+        <source>Standard Button</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Start" xml:space="preserve">
+        <source>Start</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Start Scheduled Test" xml:space="preserve">
+        <source>Start Scheduled Test</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Start date" xml:space="preserve">
+        <source>Start date</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Starts" xml:space="preserve">
+        <source>Starts</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Status" xml:space="preserve">
+        <source>Status</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Status:" xml:space="preserve">
+        <source>Status:</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Stopwatch face with second numerals" xml:space="preserve">
+        <source>Stopwatch face with second numerals</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Study" xml:space="preserve">
+        <source>Study</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Study Category" xml:space="preserve">
+        <source>Study Category</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Study Coach" xml:space="preserve">
+        <source>Study Coach</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Study Materials" xml:space="preserve">
+        <source>Study Materials</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Study Session Defaults" xml:space="preserve">
+        <source>Study Session Defaults</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Study Summary" xml:space="preserve">
+        <source>Study Summary</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Study time today:" xml:space="preserve">
+        <source>Study time today:</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Sub-dial hand" xml:space="preserve">
+        <source>Sub-dial hand</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Submit" xml:space="preserve">
+        <source>Submit</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Submit Practice Test?" xml:space="preserve">
+        <source>Submit Practice Test?</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Submit Test" xml:space="preserve">
+        <source>Submit Test</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Subsystem Toggles" xml:space="preserve">
+        <source>Subsystem Toggles</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Swipe Leading" xml:space="preserve">
+        <source>Swipe Leading</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Swipe Trailing" xml:space="preserve">
+        <source>Swipe Trailing</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Syllabus Breakdown" xml:space="preserve">
+        <source>Syllabus Breakdown</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Syllabus URL or Notes" xml:space="preserve">
+        <source>Syllabus URL or Notes</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Syncs your settings and academic data across devices using iCloud." xml:space="preserve">
+        <source>Syncs your settings and academic data across devices using iCloud.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="TIMING" xml:space="preserve">
+        <source>TIMING</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="TODO: By course" xml:space="preserve">
+        <source>TODO: By course</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="TODO: Grade components" xml:space="preserve">
+        <source>TODO: Grade components</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="TODO: Overall status" xml:space="preserve">
+        <source>TODO: Overall status</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="TODO: Today's tasks" xml:space="preserve">
+        <source>TODO: Today's tasks</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="TODO: Trends &amp; Analytics" xml:space="preserve">
+        <source>TODO: Trends &amp; Analytics</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="TODO: Unscheduled tasks" xml:space="preserve">
+        <source>TODO: Unscheduled tasks</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="TODO: Week tasks" xml:space="preserve">
+        <source>TODO: Week tasks</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Tab Bar Pages" xml:space="preserve">
+        <source>Tab Bar Pages</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Tab Style" xml:space="preserve">
+        <source>Tab Style</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Target" xml:space="preserve">
+        <source>Target</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Target %" xml:space="preserve">
+        <source>Target %</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Target %lld%%" xml:space="preserve">
+        <source>Target %lld%%</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Targets help scenario calculations and visual indicators. This does not affect official grades." xml:space="preserve">
+        <source>Targets help scenario calculations and visual indicators. This does not affect official grades.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Task Dependencies" xml:space="preserve">
+        <source>Task Dependencies</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Task Order" xml:space="preserve">
+        <source>Task Order</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Task Order Enforced" xml:space="preserve">
+        <source>Task Order Enforced</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Tasks must be completed in sequence. Drag to reorder." xml:space="preserve">
+        <source>Tasks must be completed in sequence. Drag to reorder.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Temperature: %.2f" xml:space="preserve">
+        <source>Temperature: %.2f</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Term" xml:space="preserve">
+        <source>Term</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Test Connection" xml:space="preserve">
+        <source>Test Connection</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Test Enable" xml:space="preserve">
+        <source>Test Enable</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Test and preview accessibility features without changing system settings" xml:space="preserve">
+        <source>Test and preview accessibility features without changing system settings</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Testing: TextEditor with custom Binding (CRITICAL)" xml:space="preserve">
+        <source>Testing: TextEditor with custom Binding (CRITICAL)</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Text" xml:space="preserve">
+        <source>Text</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="The Study Coach helps you maintain focus and suggests optimal study patterns based on your energy levels." xml:space="preserve">
+        <source>The Study Coach helps you maintain focus and suggests optimal study patterns based on your energy levels.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="The name of the model to use" xml:space="preserve">
+        <source>The name of the model to use</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="These settings determine your default study session configuration. You can adjust them for individual sessions." xml:space="preserve">
+        <source>These settings determine your default study session configuration. You can adjust them for individual sessions.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="This Event Only" xml:space="preserve">
+        <source>This Event Only</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="This Week" xml:space="preserve">
+        <source>This Week</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="This and Future Events" xml:space="preserve">
+        <source>This and Future Events</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="This calendar is read-only; changes cannot be saved." xml:space="preserve">
+        <source>This calendar is read-only; changes cannot be saved.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="This card demonstrates material effects" xml:space="preserve">
+        <source>This card demonstrates material effects</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="This will move the semester to Recently Deleted. You can recover it within 30 days." xml:space="preserve">
+        <source>This will move the semester to Recently Deleted. You can recover it within 30 days.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="This will remove the item from your %@." xml:space="preserve">
+        <source>This will remove the item from your %@.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Thread" xml:space="preserve">
+        <source>Thread</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Time" xml:space="preserve">
+        <source>Time</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Time &amp; Effort" xml:space="preserve">
+        <source>Time &amp; Effort</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Timeout: %llds" xml:space="preserve">
+        <source>Timeout: %llds</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Title" xml:space="preserve">
+        <source>Title</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Title / body / caption" xml:space="preserve">
+        <source>Title / body / caption</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="To disconnect Roots from your Reminders, please revoke access in System Settings &gt; Privacy &amp; Security &gt; Reminders." xml:space="preserve">
+        <source>To disconnect Roots from your Reminders, please revoke access in System Settings &gt; Privacy &amp; Security &gt; Reminders.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Today" xml:space="preserve">
+        <source>Today</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Today Overview" xml:space="preserve">
+        <source>Today Overview</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Today's Plan" xml:space="preserve">
+        <source>Today's Plan</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Today: %@" xml:space="preserve">
+        <source>Today: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Topics (Optional)" xml:space="preserve">
+        <source>Topics (Optional)</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Total: %lldm" xml:space="preserve">
+        <source>Total: %lldm</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Track Study Hours" xml:space="preserve">
+        <source>Track Study Hours</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Track UI freezes and performance issues" xml:space="preserve">
+        <source>Track UI freezes and performance issues</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Travel Time" xml:space="preserve">
+        <source>Travel Time</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Travel time: %@" xml:space="preserve">
+        <source>Travel time: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Trending down" xml:space="preserve">
+        <source>Trending down</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Trending up" xml:space="preserve">
+        <source>Trending up</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Trends &amp; Analytics" xml:space="preserve">
+        <source>Trends &amp; Analytics</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Turn flashcards on or off across the app. Disabling hides related UI and study flows." xml:space="preserve">
+        <source>Turn flashcards on or off across the app. Disabling hides related UI and study flows.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Type" xml:space="preserve">
+        <source>Type</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Typography" xml:space="preserve">
+        <source>Typography</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="UI Logging" xml:space="preserve">
+        <source>UI Logging</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="URL" xml:space="preserve">
+        <source>URL</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Unarchive" xml:space="preserve">
+        <source>Unarchive</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Unauthorized" xml:space="preserve">
+        <source>Unauthorized</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Unset as Current Semester" xml:space="preserve">
+        <source>Unset as Current Semester</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Upcoming" xml:space="preserve">
+        <source>Upcoming</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Upcoming Deadlines" xml:space="preserve">
+        <source>Upcoming Deadlines</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Updated: %@" xml:space="preserve">
+        <source>Updated: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Upload Syllabus / Practice Test" xml:space="preserve">
+        <source>Upload Syllabus / Practice Test</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Urgency" xml:space="preserve">
+        <source>Urgency</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Use 24-hour time" xml:space="preserve">
+        <source>Use 24-hour time</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Use the Courses page to add, edit, and organize your academic schedule." xml:space="preserve">
+        <source>Use the Courses page to add, edit, and organize your academic schedule.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Use “Open in New Window” from the Assignments list to create a dedicated window." xml:space="preserve">
+        <source>Use “Open in New Window” from the Assignments list to create a dedicated window.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Use “Open in New Window” from the Courses list to inspect a course without losing your place." xml:space="preserve">
+        <source>Use “Open in New Window” from the Courses list to inspect a course without losing your place.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="View" xml:space="preserve">
+        <source>View</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="View recent log events. Full logs are available in Console.app filtered by subsystem 'com.roots.app'." xml:space="preserve">
+        <source>View recent log events. Full logs are available in Console.app filtered by subsystem 'com.roots.app'.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Visualize your academic performance" xml:space="preserve">
+        <source>Visualize your academic performance</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="VoiceOver Active" xml:space="preserve">
+        <source>VoiceOver Active</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Week" xml:space="preserve">
+        <source>Week</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Week: %@" xml:space="preserve">
+        <source>Week: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Weekly Summary Notifications" xml:space="preserve">
+        <source>Weekly Summary Notifications</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Weight %" xml:space="preserve">
+        <source>Weight %</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Weight: %lld%%" xml:space="preserve">
+        <source>Weight: %lld%%</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Weighted" xml:space="preserve">
+        <source>Weighted</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Weighted %@%% • %lld courses" xml:space="preserve">
+        <source>Weighted %1$@%% • %2$lld courses</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="We’ll show assignment progress and study time once this course has data." xml:space="preserve">
+        <source>We’ll show assignment progress and study time once this course has data.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="What-If Mode" xml:space="preserve">
+        <source>What-If Mode</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="What-If Mode Active" xml:space="preserve">
+        <source>What-If Mode Active</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="What-If Scenario" xml:space="preserve">
+        <source>What-If Scenario</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="When enabled, tasks must be completed in order" xml:space="preserve">
+        <source>When enabled, tasks must be completed in order</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="When enabled, the app emits structured debug logging to the Xcode console. This helps with debugging, triage, and understanding app behavior at runtime." xml:space="preserve">
+        <source>When enabled, the app emits structured debug logging to the Xcode console. This helps with debugging, triage, and understanding app behavior at runtime.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Work" xml:space="preserve">
+        <source>Work</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Workday" xml:space="preserve">
+        <source>Workday</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Works with OpenAI, Azure OpenAI, LM Studio, and other compatible APIs" xml:space="preserve">
+        <source>Works with OpenAI, Azure OpenAI, LM Studio, and other compatible APIs</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Worth %lld%% of grade" xml:space="preserve">
+        <source>Worth %lld%% of grade</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Would you like to start '%@' now? This will create a new test attempt." xml:space="preserve">
+        <source>Would you like to start '%@' now? This will create a new test attempt.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Year" xml:space="preserve">
+        <source>Year</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Year: %.2f" xml:space="preserve">
+        <source>Year: %.2f</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Year: %@" xml:space="preserve">
+        <source>Year: %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Year: %lld" xml:space="preserve">
+        <source>Year: %lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="You have answered %lld out of %lld questions. Unanswered questions will be marked incorrect." xml:space="preserve">
+        <source>You have answered %1$lld out of %2$lld questions. Unanswered questions will be marked incorrect.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="You have unsaved changes. Save before closing to avoid losing them." xml:space="preserve">
+        <source>You have unsaved changes. Save before closing to avoid losing them.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="You have unsaved edits. Save before closing to avoid losing them." xml:space="preserve">
+        <source>You have unsaved edits. Save before closing to avoid losing them.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Your API key" xml:space="preserve">
+        <source>Your API key</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Your Answer" xml:space="preserve">
+        <source>Your Answer</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Your answer:" xml:space="preserve">
+        <source>Your answer:</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="Your explanation:" xml:space="preserve">
+        <source>Your explanation:</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="You’ll eventually be able to import this from a syllabus parser." xml:space="preserve">
+        <source>You’ll eventually be able to import this from a syllabus parser.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="You’re caught up." xml:space="preserve">
+        <source>You’re caught up.</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="[%@]" xml:space="preserve">
+        <source>[%@]</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="alarm.break" xml:space="preserve">
+        <source>alarm.break</source>
+        <note>Break</note>
+      </trans-unit>
+      <trans-unit id="alarm.pause" xml:space="preserve">
+        <source>alarm.pause</source>
+        <note>Pause</note>
+      </trans-unit>
+      <trans-unit id="alarm.paused" xml:space="preserve">
+        <source>alarm.paused</source>
+        <note>Paused</note>
+      </trans-unit>
+      <trans-unit id="alarm.resume" xml:space="preserve">
+        <source>alarm.resume</source>
+        <note>Resume</note>
+      </trans-unit>
+      <trans-unit id="alarm.stop" xml:space="preserve">
+        <source>alarm.stop</source>
+        <note>Stop</note>
+      </trans-unit>
+      <trans-unit id="alarm.work" xml:space="preserve">
+        <source>alarm.work</source>
+        <note>Work</note>
+      </trans-unit>
+      <trans-unit id="calendar.message.event_creation" xml:space="preserve">
+        <source>calendar.message.event_creation</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="calendar.refresh.permission_denied" xml:space="preserve">
+        <source>calendar.refresh.permission_denied</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="calendar.refresh.scheduling_failed" xml:space="preserve">
+        <source>calendar.refresh.scheduling_failed</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="common.button.cancel" xml:space="preserve">
+        <source>common.button.cancel</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="common.button.close" xml:space="preserve">
+        <source>common.button.close</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="common.button.edit" xml:space="preserve">
+        <source>common.button.edit</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="common.button.save" xml:space="preserve">
+        <source>common.button.save</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="common.button.start_now" xml:space="preserve">
+        <source>common.button.start_now</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="common.cancel" xml:space="preserve">
+        <source>common.cancel</source>
+        <note>Cancel</note>
+      </trans-unit>
+      <trans-unit id="common.done" xml:space="preserve">
+        <source>common.done</source>
+        <note>Done</note>
+      </trans-unit>
+      <trans-unit id="courses.empty.no_meetings" xml:space="preserve">
+        <source>courses.empty.no_meetings</source>
+        <note>No meetings</note>
+      </trans-unit>
+      <trans-unit id="courses.empty.no_syllabus" xml:space="preserve">
+        <source>courses.empty.no_syllabus</source>
+        <note>No syllabus</note>
+      </trans-unit>
+      <trans-unit id="courses.empty.overview" xml:space="preserve">
+        <source>courses.empty.overview</source>
+        <note>Overview</note>
+      </trans-unit>
+      <trans-unit id="courses.empty.select" xml:space="preserve">
+        <source>courses.empty.select</source>
+        <note>Select course</note>
+      </trans-unit>
+      <trans-unit id="courses.grade.percentage" xml:space="preserve">
+        <source>courses.grade.percentage</source>
+        <note>Percentage</note>
+      </trans-unit>
+      <trans-unit id="courses.info.edit_later" xml:space="preserve">
+        <source>courses.info.edit_later</source>
+        <note>Edit later</note>
+      </trans-unit>
+      <trans-unit id="courses.label.courses" xml:space="preserve">
+        <source>courses.label.courses</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="courses.section.course" xml:space="preserve">
+        <source>courses.section.course</source>
+        <note>Course</note>
+      </trans-unit>
+      <trans-unit id="courses.section.details" xml:space="preserve">
+        <source>courses.section.details</source>
+        <note>Details</note>
+      </trans-unit>
+      <trans-unit id="dashboard.empty.calendar" xml:space="preserve">
+        <source>dashboard.empty.calendar</source>
+        <note>Connect calendar</note>
+      </trans-unit>
+      <trans-unit id="e.g. BIO 101" xml:space="preserve">
+        <source>e.g. BIO 101</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="grades.column.course" xml:space="preserve">
+        <source>grades.column.course</source>
+        <note>Course</note>
+      </trans-unit>
+      <trans-unit id="grades.column.credits" xml:space="preserve">
+        <source>grades.column.credits</source>
+        <note>Credits</note>
+      </trans-unit>
+      <trans-unit id="grades.column.grade" xml:space="preserve">
+        <source>grades.column.grade</source>
+        <note>Grade</note>
+      </trans-unit>
+      <trans-unit id="grades.display.no_grade" xml:space="preserve">
+        <source>grades.display.no_grade</source>
+        <note>No grade</note>
+      </trans-unit>
+      <trans-unit id="grades.empty.select_course" xml:space="preserve">
+        <source>grades.empty.select_course</source>
+        <note>Select course</note>
+      </trans-unit>
+      <trans-unit id="grades.section.courses" xml:space="preserve">
+        <source>grades.section.courses</source>
+        <note>Courses</note>
+      </trans-unit>
+      <trans-unit id="grades.section.grades" xml:space="preserve">
+        <source>grades.section.grades</source>
+        <note>Grades</note>
+      </trans-unit>
+      <trans-unit id="grades.section.overall_status" xml:space="preserve">
+        <source>grades.section.overall_status</source>
+        <note>Overall status</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.due_soon.no_tasks" xml:space="preserve">
+        <source>ios.dashboard.due_soon.no_tasks</source>
+        <note>No tasks</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.due_soon.subtitle" xml:space="preserve">
+        <source>ios.dashboard.due_soon.subtitle</source>
+        <note>Next 7 days</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.due_soon.title" xml:space="preserve">
+        <source>ios.dashboard.due_soon.title</source>
+        <note>Due Soon</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.afternoon.1" xml:space="preserve">
+        <source>ios.dashboard.greeting.afternoon.1</source>
+        <note>Good afternoon</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.afternoon.2" xml:space="preserve">
+        <source>ios.dashboard.greeting.afternoon.2</source>
+        <note>Afternoon</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.afternoon.3" xml:space="preserve">
+        <source>ios.dashboard.greeting.afternoon.3</source>
+        <note>Keep it up</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.afternoon.4" xml:space="preserve">
+        <source>ios.dashboard.greeting.afternoon.4</source>
+        <note>Stay focused</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.afternoon.5" xml:space="preserve">
+        <source>ios.dashboard.greeting.afternoon.5</source>
+        <note>Making progress</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.default" xml:space="preserve">
+        <source>ios.dashboard.greeting.default</source>
+        <note>Hello</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.evening.1" xml:space="preserve">
+        <source>ios.dashboard.greeting.evening.1</source>
+        <note>Good evening</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.evening.2" xml:space="preserve">
+        <source>ios.dashboard.greeting.evening.2</source>
+        <note>Evening</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.evening.3" xml:space="preserve">
+        <source>ios.dashboard.greeting.evening.3</source>
+        <note>Wrapping up</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.evening.4" xml:space="preserve">
+        <source>ios.dashboard.greeting.evening.4</source>
+        <note>Almost there</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.evening.5" xml:space="preserve">
+        <source>ios.dashboard.greeting.evening.5</source>
+        <note>Finish strong</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.morning.1" xml:space="preserve">
+        <source>ios.dashboard.greeting.morning.1</source>
+        <note>Good morning</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.morning.2" xml:space="preserve">
+        <source>ios.dashboard.greeting.morning.2</source>
+        <note>Rise and shine</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.morning.3" xml:space="preserve">
+        <source>ios.dashboard.greeting.morning.3</source>
+        <note>Morning</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.morning.4" xml:space="preserve">
+        <source>ios.dashboard.greeting.morning.4</source>
+        <note>Start strong today</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.morning.5" xml:space="preserve">
+        <source>ios.dashboard.greeting.morning.5</source>
+        <note>Welcome back</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.night.1" xml:space="preserve">
+        <source>ios.dashboard.greeting.night.1</source>
+        <note>Hello</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.night.2" xml:space="preserve">
+        <source>ios.dashboard.greeting.night.2</source>
+        <note>Welcome back</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.night.3" xml:space="preserve">
+        <source>ios.dashboard.greeting.night.3</source>
+        <note>Still working</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.greeting.night.4" xml:space="preserve">
+        <source>ios.dashboard.greeting.night.4</source>
+        <note>Burning the midnight oil</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.stats.courses" xml:space="preserve">
+        <source>ios.dashboard.stats.courses</source>
+        <note>Courses</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.stats.due_soon" xml:space="preserve">
+        <source>ios.dashboard.stats.due_soon</source>
+        <note>Due Soon</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.stats.next_7_days" xml:space="preserve">
+        <source>ios.dashboard.stats.next_7_days</source>
+        <note>Next 7 Days</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.study_hours.month" xml:space="preserve">
+        <source>This Month</source>
+        <note>This month label</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.study_hours.subtitle" xml:space="preserve">
+        <source>Your progress</source>
+        <note>Study hours card subtitle</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.study_hours.title" xml:space="preserve">
+        <source>Study Hours</source>
+        <note>Study hours card title</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.study_hours.today" xml:space="preserve">
+        <source>Today</source>
+        <note>Today label</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.study_hours.week" xml:space="preserve">
+        <source>This Week</source>
+        <note>This week label</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.title" xml:space="preserve">
+        <source>ios.dashboard.title</source>
+        <note>Dashboard</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.today" xml:space="preserve">
+        <source>ios.dashboard.today</source>
+        <note>Jump to today</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.upcoming.no_events" xml:space="preserve">
+        <source>ios.dashboard.upcoming.no_events</source>
+        <note>No events</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.upcoming.subtitle" xml:space="preserve">
+        <source>ios.dashboard.upcoming.subtitle</source>
+        <note>From your calendar</note>
+      </trans-unit>
+      <trans-unit id="ios.dashboard.upcoming.title" xml:space="preserve">
+        <source>ios.dashboard.upcoming.title</source>
+        <note>Upcoming</note>
+      </trans-unit>
+      <trans-unit id="ios.flashcards.coming_soon" xml:space="preserve">
+        <source>ios.flashcards.coming_soon</source>
+        <note>Flashcard decks and study sessions coming soon</note>
+      </trans-unit>
+      <trans-unit id="ios.flashcards.title" xml:space="preserve">
+        <source>ios.flashcards.title</source>
+        <note>Flashcards</note>
+      </trans-unit>
+      <trans-unit id="ios.menu.add_assignment" xml:space="preserve">
+        <source>ios.menu.add_assignment</source>
+        <note>Add Assignment</note>
+      </trans-unit>
+      <trans-unit id="ios.menu.add_grade" xml:space="preserve">
+        <source>ios.menu.add_grade</source>
+        <note>Add Grade</note>
+      </trans-unit>
+      <trans-unit id="ios.menu.auto_schedule" xml:space="preserve">
+        <source>ios.menu.auto_schedule</source>
+        <note>Auto Schedule</note>
+      </trans-unit>
+      <trans-unit id="ios.menu.hamburger" xml:space="preserve">
+        <source>ios.menu.hamburger</source>
+        <note>Open menu</note>
+      </trans-unit>
+      <trans-unit id="ios.menu.quick_add" xml:space="preserve">
+        <source>ios.menu.quick_add</source>
+        <note>Quick add</note>
+      </trans-unit>
+      <trans-unit id="ios.menu.settings" xml:space="preserve">
+        <source>ios.menu.settings</source>
+        <note>Settings</note>
+      </trans-unit>
+      <trans-unit id="ios.menu.tasks" xml:space="preserve">
+        <source>ios.menu.tasks</source>
+        <note>Tasks</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.done" xml:space="preserve">
+        <source>ios.planner.done</source>
+        <note>Done</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.due_format" xml:space="preserve">
+        <source>ios.planner.due_format</source>
+        <note>Due date</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.edit" xml:space="preserve">
+        <source>ios.planner.edit</source>
+        <note>Edit</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.generate_plan" xml:space="preserve">
+        <source>ios.planner.generate_plan</source>
+        <note>Generate plan</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.generate_plan_button" xml:space="preserve">
+        <source>ios.planner.generate_plan_button</source>
+        <note>Generate Plan</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.how_it_works" xml:space="preserve">
+        <source>ios.planner.how_it_works</source>
+        <note>How it works</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.overflow.empty" xml:space="preserve">
+        <source>ios.planner.overflow.empty</source>
+        <note>All sessions placed</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.overflow.empty_subtitle" xml:space="preserve">
+        <source>ios.planner.overflow.empty_subtitle</source>
+        <note>Nothing waiting in overflow.</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.overflow.subtitle" xml:space="preserve">
+        <source>ios.planner.overflow.subtitle</source>
+        <note>Not scheduled yet</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.overflow.title" xml:space="preserve">
+        <source>ios.planner.overflow.title</source>
+        <note>Overflow</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.schedule.empty" xml:space="preserve">
+        <source>ios.planner.schedule.empty</source>
+        <note>No blocks scheduled</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.schedule.empty_subtitle" xml:space="preserve">
+        <source>ios.planner.schedule.empty_subtitle</source>
+        <note>Generate a plan to fill today.</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.schedule.subtitle" xml:space="preserve">
+        <source>ios.planner.schedule.subtitle</source>
+        <note>Time blocks</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.schedule.title" xml:space="preserve">
+        <source>ios.planner.schedule.title</source>
+        <note>Schedule</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.title" xml:space="preserve">
+        <source>ios.planner.title</source>
+        <note>Planner</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.toast.block_updated" xml:space="preserve">
+        <source>ios.planner.toast.block_updated</source>
+        <note>Block updated</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.toast.time_conflict" xml:space="preserve">
+        <source>ios.planner.toast.time_conflict</source>
+        <note>Time conflict</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.today" xml:space="preserve">
+        <source>ios.planner.today</source>
+        <note>Today</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.unscheduled.add_due_date" xml:space="preserve">
+        <source>ios.planner.unscheduled.add_due_date</source>
+        <note>Add a due date</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.unscheduled.empty" xml:space="preserve">
+        <source>ios.planner.unscheduled.empty</source>
+        <note>All tasks have dates</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.unscheduled.empty_subtitle" xml:space="preserve">
+        <source>ios.planner.unscheduled.empty_subtitle</source>
+        <note>Add due dates to keep planning accurate.</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.unscheduled.subtitle" xml:space="preserve">
+        <source>ios.planner.unscheduled.subtitle</source>
+        <note>Needs attention</note>
+      </trans-unit>
+      <trans-unit id="ios.planner.unscheduled.title" xml:space="preserve">
+        <source>ios.planner.unscheduled.title</source>
+        <note>Unscheduled</note>
+      </trans-unit>
+      <trans-unit id="ios.settings.title" xml:space="preserve">
+        <source>ios.settings.title</source>
+        <note>Settings</note>
+      </trans-unit>
+      <trans-unit id="ios.timer.break" xml:space="preserve">
+        <source>ios.timer.break</source>
+        <note>Break</note>
+      </trans-unit>
+      <trans-unit id="ios.timer.focus" xml:space="preserve">
+        <source>ios.timer.focus</source>
+        <note>Focus</note>
+      </trans-unit>
+      <trans-unit id="ios.timer.mode" xml:space="preserve">
+        <source>ios.timer.mode</source>
+        <note>Mode</note>
+      </trans-unit>
+      <trans-unit id="ios.timer.pause" xml:space="preserve">
+        <source>ios.timer.pause</source>
+        <note>Pause</note>
+      </trans-unit>
+      <trans-unit id="ios.timer.resume" xml:space="preserve">
+        <source>ios.timer.resume</source>
+        <note>Resume</note>
+      </trans-unit>
+      <trans-unit id="ios.timer.skip" xml:space="preserve">
+        <source>ios.timer.skip</source>
+        <note>Skip</note>
+      </trans-unit>
+      <trans-unit id="ios.timer.start" xml:space="preserve">
+        <source>ios.timer.start</source>
+        <note>Start</note>
+      </trans-unit>
+      <trans-unit id="ios.timer.stop" xml:space="preserve">
+        <source>ios.timer.stop</source>
+        <note>Stop</note>
+      </trans-unit>
+      <trans-unit id="ios.timer.title" xml:space="preserve">
+        <source>ios.timer.title</source>
+        <note>Timer</note>
+      </trans-unit>
+      <trans-unit id="ios.toast.assignment_added" xml:space="preserve">
+        <source>ios.toast.assignment_added</source>
+        <note>Assignment added</note>
+      </trans-unit>
+      <trans-unit id="ios.toast.course_added" xml:space="preserve">
+        <source>ios.toast.course_added</source>
+        <note>Course added</note>
+      </trans-unit>
+      <trans-unit id="ios.toast.grade_added" xml:space="preserve">
+        <source>ios.toast.grade_added</source>
+        <note>Grade added</note>
+      </trans-unit>
+      <trans-unit id="ios.toast.no_tasks_schedule" xml:space="preserve">
+        <source>ios.toast.no_tasks_schedule</source>
+        <note>No tasks to schedule</note>
+      </trans-unit>
+      <trans-unit id="ios.toast.schedule_updated" xml:space="preserve">
+        <source>ios.toast.schedule_updated</source>
+        <note>Schedule updated</note>
+      </trans-unit>
+      <trans-unit id="name@university.edu" xml:space="preserve">
+        <source>name@university.edu</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="notification.assignment.body" xml:space="preserve">
+        <source>notification.assignment.body</source>
+        <note>%@ is due soon</note>
+      </trans-unit>
+      <trans-unit id="notification.assignment.title" xml:space="preserve">
+        <source>notification.assignment.title</source>
+        <note>Assignment Due Soon</note>
+      </trans-unit>
+      <trans-unit id="notification.daily_overview.default" xml:space="preserve">
+        <source>notification.daily_overview.default</source>
+        <note>Open Roots to see today's plan</note>
+      </trans-unit>
+      <trans-unit id="notification.daily_overview.motivation" xml:space="preserve">
+        <source>notification.daily_overview.motivation</source>
+        <note>You've got this!</note>
+      </trans-unit>
+      <trans-unit id="notification.daily_overview.task_singular" xml:space="preserve">
+        <source>notification.daily_overview.task_singular</source>
+        <note>1 task</note>
+      </trans-unit>
+      <trans-unit id="notification.daily_overview.tasks_plural" xml:space="preserve">
+        <source>notification.daily_overview.tasks_plural</source>
+        <note>%d tasks</note>
+      </trans-unit>
+      <trans-unit id="notification.daily_overview.title" xml:space="preserve">
+        <source>notification.daily_overview.title</source>
+        <note>Good Morning!</note>
+      </trans-unit>
+      <trans-unit id="notification.motivation.message_1" xml:space="preserve">
+        <source>notification.motivation.message_1</source>
+        <note>Keep up the great work!</note>
+      </trans-unit>
+      <trans-unit id="notification.motivation.message_2" xml:space="preserve">
+        <source>notification.motivation.message_2</source>
+        <note>You're making progress!</note>
+      </trans-unit>
+      <trans-unit id="notification.motivation.message_3" xml:space="preserve">
+        <source>notification.motivation.message_3</source>
+        <note>Stay focused on your goals!</note>
+      </trans-unit>
+      <trans-unit id="notification.motivation.message_4" xml:space="preserve">
+        <source>notification.motivation.message_4</source>
+        <note>Every small step counts!</note>
+      </trans-unit>
+      <trans-unit id="notification.motivation.message_5" xml:space="preserve">
+        <source>notification.motivation.message_5</source>
+        <note>Believe in yourself!</note>
+      </trans-unit>
+      <trans-unit id="notification.motivation.message_6" xml:space="preserve">
+        <source>notification.motivation.message_6</source>
+        <note>You're doing amazing!</note>
+      </trans-unit>
+      <trans-unit id="notification.motivation.title" xml:space="preserve">
+        <source>notification.motivation.title</source>
+        <note>Stay Motivated</note>
+      </trans-unit>
+      <trans-unit id="planner.action.new_task" xml:space="preserve">
+        <source>planner.action.new_task</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.action.plan_day" xml:space="preserve">
+        <source>planner.action.plan_day</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.action.planning" xml:space="preserve">
+        <source>planner.action.planning</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.break.long" xml:space="preserve">
+        <source>Long Break</source>
+        <note>Long break session title</note>
+      </trans-unit>
+      <trans-unit id="planner.break.short" xml:space="preserve">
+        <source>Short Break</source>
+        <note>Short break session title</note>
+      </trans-unit>
+      <trans-unit id="planner.course.default" xml:space="preserve">
+        <source>planner.course.default</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.due.days_ago" xml:space="preserve">
+        <source>planner.due.days_ago</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.due.one_day_ago" xml:space="preserve">
+        <source>planner.due.one_day_ago</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.due.today" xml:space="preserve">
+        <source>planner.due.today</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.empty.no_sessions" xml:space="preserve">
+        <source>planner.empty.no_sessions</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.message.loading" xml:space="preserve">
+        <source>planner.message.loading</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.message.run_plan_day" xml:space="preserve">
+        <source>planner.message.run_plan_day</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.overdue.days" xml:space="preserve">
+        <source>planner.overdue.days</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.overdue.one_day" xml:space="preserve">
+        <source>planner.overdue.one_day</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.overdue.title" xml:space="preserve">
+        <source>planner.overdue.title</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.overdue.today" xml:space="preserve">
+        <source>planner.overdue.today</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task.due" xml:space="preserve">
+        <source>planner.task.due</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task.minutes_short" xml:space="preserve">
+        <source>planner.task.minutes_short</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.action.cancel" xml:space="preserve">
+        <source>planner.task_sheet.action.cancel</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.action.create" xml:space="preserve">
+        <source>planner.task_sheet.action.create</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.action.save" xml:space="preserve">
+        <source>planner.task_sheet.action.save</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.edit_title" xml:space="preserve">
+        <source>planner.task_sheet.edit_title</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.field.assignment" xml:space="preserve">
+        <source>planner.task_sheet.field.assignment</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.field.assignment_linked" xml:space="preserve">
+        <source>planner.task_sheet.field.assignment_linked</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.field.assignment_placeholder" xml:space="preserve">
+        <source>planner.task_sheet.field.assignment_placeholder</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.field.course" xml:space="preserve">
+        <source>planner.task_sheet.field.course</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.field.course_none" xml:space="preserve">
+        <source>planner.task_sheet.field.course_none</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.field.due_date" xml:space="preserve">
+        <source>planner.task_sheet.field.due_date</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.field.focus_estimate" xml:space="preserve">
+        <source>planner.task_sheet.field.focus_estimate</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.field.lock_due_date" xml:space="preserve">
+        <source>planner.task_sheet.field.lock_due_date</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.field.lock_due_date_help" xml:space="preserve">
+        <source>planner.task_sheet.field.lock_due_date_help</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.field.minutes" xml:space="preserve">
+        <source>planner.task_sheet.field.minutes</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.field.priority" xml:space="preserve">
+        <source>planner.task_sheet.field.priority</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.field.title" xml:space="preserve">
+        <source>planner.task_sheet.field.title</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.new_title" xml:space="preserve">
+        <source>planner.task_sheet.new_title</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.section.course" xml:space="preserve">
+        <source>planner.task_sheet.section.course</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.section.task" xml:space="preserve">
+        <source>planner.task_sheet.section.task</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.section.timing" xml:space="preserve">
+        <source>planner.task_sheet.section.timing</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.task_sheet.subtitle" xml:space="preserve">
+        <source>planner.task_sheet.subtitle</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.timeline.free" xml:space="preserve">
+        <source>planner.timeline.free</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.timeline.overflow" xml:space="preserve">
+        <source>planner.timeline.overflow</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.timeline.title" xml:space="preserve">
+        <source>planner.timeline.title</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.unscheduled.empty" xml:space="preserve">
+        <source>planner.unscheduled.empty</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="planner.unscheduled.title" xml:space="preserve">
+        <source>planner.unscheduled.title</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="practice.empty.message" xml:space="preserve">
+        <source>practice.empty.message</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="practice.empty.title" xml:space="preserve">
+        <source>practice.empty.title</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="practice.label.recent_tests" xml:space="preserve">
+        <source>practice.label.recent_tests</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="practice.label.subtitle" xml:space="preserve">
+        <source>practice.label.subtitle</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="practice.label.title" xml:space="preserve">
+        <source>practice.label.title</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="practice.message.generating" xml:space="preserve">
+        <source>practice.message.generating</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="settings.accessibility.guidance.header" xml:space="preserve">
+        <source>settings.accessibility.guidance.header</source>
+        <note>Guidance</note>
+      </trans-unit>
+      <trans-unit id="settings.accessibility.haptics" xml:space="preserve">
+        <source>settings.accessibility.haptics</source>
+        <note>Haptic Feedback</note>
+      </trans-unit>
+      <trans-unit id="settings.accessibility.haptics.detail" xml:space="preserve">
+        <source>settings.accessibility.haptics.detail</source>
+        <note>Feel tactile responses for actions</note>
+      </trans-unit>
+      <trans-unit id="settings.accessibility.high_contrast" xml:space="preserve">
+        <source>settings.accessibility.high_contrast</source>
+        <note>Increase Contrast</note>
+      </trans-unit>
+      <trans-unit id="settings.accessibility.high_contrast.detail" xml:space="preserve">
+        <source>settings.accessibility.high_contrast.detail</source>
+        <note>Make colors and borders more distinct</note>
+      </trans-unit>
+      <trans-unit id="settings.accessibility.increase_transparency" xml:space="preserve">
+        <source>settings.accessibility.increase_transparency</source>
+        <note>Increase Transparency</note>
+      </trans-unit>
+      <trans-unit id="settings.accessibility.increase_transparency.detail" xml:space="preserve">
+        <source>settings.accessibility.increase_transparency.detail</source>
+        <note>Reduce blur and transparency effects</note>
+      </trans-unit>
+      <trans-unit id="settings.accessibility.interaction.header" xml:space="preserve">
+        <source>settings.accessibility.interaction.header</source>
+        <note>Interaction</note>
+      </trans-unit>
+      <trans-unit id="settings.accessibility.reduce_motion" xml:space="preserve">
+        <source>settings.accessibility.reduce_motion</source>
+        <note>Reduce Motion</note>
+      </trans-unit>
+      <trans-unit id="settings.accessibility.reduce_motion.detail" xml:space="preserve">
+        <source>settings.accessibility.reduce_motion.detail</source>
+        <note>Minimize animations and transitions</note>
+      </trans-unit>
+      <trans-unit id="settings.accessibility.tooltips" xml:space="preserve">
+        <source>settings.accessibility.tooltips</source>
+        <note>Show Tooltips</note>
+      </trans-unit>
+      <trans-unit id="settings.accessibility.tooltips.detail" xml:space="preserve">
+        <source>settings.accessibility.tooltips.detail</source>
+        <note>Display helpful hints for interface elements</note>
+      </trans-unit>
+      <trans-unit id="settings.accessibility.visual.header" xml:space="preserve">
+        <source>settings.accessibility.visual.header</source>
+        <note>Visual</note>
+      </trans-unit>
+      <trans-unit id="settings.appearance.animations" xml:space="preserve">
+        <source>settings.appearance.animations</source>
+        <note>Show Animations</note>
+      </trans-unit>
+      <trans-unit id="settings.appearance.animations.detail" xml:space="preserve">
+        <source>settings.appearance.animations.detail</source>
+        <note>Enable smooth transitions and effects</note>
+      </trans-unit>
+      <trans-unit id="settings.appearance.card_radius" xml:space="preserve">
+        <source>settings.appearance.card_radius</source>
+        <note>Card Corner Radius</note>
+      </trans-unit>
+      <trans-unit id="settings.appearance.effects.header" xml:space="preserve">
+        <source>settings.appearance.effects.header</source>
+        <note>Effects</note>
+      </trans-unit>
+      <trans-unit id="settings.appearance.glass_effects" xml:space="preserve">
+        <source>settings.appearance.glass_effects</source>
+        <note>Glass Effects</note>
+      </trans-unit>
+      <trans-unit id="settings.appearance.glass_effects.detail" xml:space="preserve">
+        <source>settings.appearance.glass_effects.detail</source>
+        <note>Use translucent backgrounds and blur</note>
+      </trans-unit>
+      <trans-unit id="settings.appearance.style.header" xml:space="preserve">
+        <source>settings.appearance.style.header</source>
+        <note>Style</note>
+      </trans-unit>
+      <trans-unit id="settings.appearance.theme" xml:space="preserve">
+        <source>settings.appearance.theme</source>
+        <note>Theme</note>
+      </trans-unit>
+      <trans-unit id="settings.appearance.theme.auto" xml:space="preserve">
+        <source>settings.appearance.theme.auto</source>
+        <note>Auto</note>
+      </trans-unit>
+      <trans-unit id="settings.appearance.theme.dark" xml:space="preserve">
+        <source>settings.appearance.theme.dark</source>
+        <note>Dark</note>
+      </trans-unit>
+      <trans-unit id="settings.appearance.theme.header" xml:space="preserve">
+        <source>settings.appearance.theme.header</source>
+        <note>Appearance</note>
+      </trans-unit>
+      <trans-unit id="settings.appearance.theme.light" xml:space="preserve">
+        <source>settings.appearance.theme.light</source>
+        <note>Light</note>
+      </trans-unit>
+      <trans-unit id="settings.appearance.theme.system" xml:space="preserve">
+        <source>settings.appearance.theme.system</source>
+        <note>System</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.lock_picker" xml:space="preserve">
+        <source>settings.calendar.lock_picker</source>
+        <note>Lock Calendar Picker to School</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.lock_picker.disabled" xml:space="preserve">
+        <source>settings.calendar.lock_picker.disabled</source>
+        <note>Users can choose which calendar to save new events to</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.lock_picker.enabled" xml:space="preserve">
+        <source>settings.calendar.lock_picker.enabled</source>
+        <note>New events will always be saved to the school calendar</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.not_authorized.message" xml:space="preserve">
+        <source>settings.calendar.not_authorized.message</source>
+        <note>Grant calendar access to sync events with your schedule</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.not_authorized.title" xml:space="preserve">
+        <source>settings.calendar.not_authorized.title</source>
+        <note>Calendar Access Required</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.picker_lock.header" xml:space="preserve">
+        <source>settings.calendar.picker_lock.header</source>
+        <note>Event Creation</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.range.1_month" xml:space="preserve">
+        <source>settings.calendar.range.1_month</source>
+        <note>1 Month</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.range.1_week" xml:space="preserve">
+        <source>settings.calendar.range.1_week</source>
+        <note>1 Week</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.range.2_months" xml:space="preserve">
+        <source>settings.calendar.range.2_months</source>
+        <note>2 Months</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.range.2_weeks" xml:space="preserve">
+        <source>settings.calendar.range.2_weeks</source>
+        <note>2 Weeks</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.refresh_range" xml:space="preserve">
+        <source>settings.calendar.refresh_range</source>
+        <note>Refresh Range</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.request_access" xml:space="preserve">
+        <source>settings.calendar.request_access</source>
+        <note>Request Access</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.revoke_access" xml:space="preserve">
+        <source>settings.calendar.revoke_access</source>
+        <note>Revoke Calendar Access</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.revoke_access.confirm.button" xml:space="preserve">
+        <source>settings.calendar.revoke_access.confirm.button</source>
+        <note>Revoke Access</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.revoke_access.confirm.message" xml:space="preserve">
+        <source>settings.calendar.revoke_access.confirm.message</source>
+        <note>This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings &gt; Roots &gt; Calendars.</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.revoke_access.confirm.title" xml:space="preserve">
+        <source>settings.calendar.revoke_access.confirm.title</source>
+        <note>Revoke Calendar Access?</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.revoke_access.footer" xml:space="preserve">
+        <source>settings.calendar.revoke_access.footer</source>
+        <note>Remove calendar access and clear all synced events. You'll need to manually revoke permission in iOS Settings.</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.scheduling.footer" xml:space="preserve">
+        <source>settings.calendar.scheduling.footer</source>
+        <note>How far ahead to scan for events when refreshing</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.scheduling.header" xml:space="preserve">
+        <source>settings.calendar.scheduling.header</source>
+        <note>Scheduling</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.school_calendar.footer" xml:space="preserve">
+        <source>settings.calendar.school_calendar.footer</source>
+        <note>Select the calendar to use for event tracking and scheduling</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.school_calendar.header" xml:space="preserve">
+        <source>settings.calendar.school_calendar.header</source>
+        <note>School Calendar</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.school_calendar.label" xml:space="preserve">
+        <source>settings.calendar.school_calendar.label</source>
+        <note>School Calendar</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.select_calendar" xml:space="preserve">
+        <source>settings.calendar.select_calendar</source>
+        <note>Select a Calendar</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.show_only_school" xml:space="preserve">
+        <source>settings.calendar.show_only_school</source>
+        <note>Show Only School Calendar</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.show_only_school.disabled" xml:space="preserve">
+        <source>settings.calendar.show_only_school.disabled</source>
+        <note>Calendar UI will show events from all calendars</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.show_only_school.enabled" xml:space="preserve">
+        <source>settings.calendar.show_only_school.enabled</source>
+        <note>Calendar UI will only show events from your school calendar</note>
+      </trans-unit>
+      <trans-unit id="settings.calendar.view_filter.header" xml:space="preserve">
+        <source>settings.calendar.view_filter.header</source>
+        <note>Calendar View</note>
+      </trans-unit>
+      <trans-unit id="settings.category.accessibility" xml:space="preserve">
+        <source>settings.category.accessibility</source>
+        <note>Accessibility</note>
+      </trans-unit>
+      <trans-unit id="settings.category.appearance" xml:space="preserve">
+        <source>settings.category.appearance</source>
+        <note>Appearance</note>
+      </trans-unit>
+      <trans-unit id="settings.category.calendar" xml:space="preserve">
+        <source>settings.category.calendar</source>
+        <note>Calendar</note>
+      </trans-unit>
+      <trans-unit id="settings.category.courses_planner" xml:space="preserve">
+        <source>settings.category.courses_planner</source>
+        <note>Courses &amp; Planner</note>
+      </trans-unit>
+      <trans-unit id="settings.category.general" xml:space="preserve">
+        <source>settings.category.general</source>
+        <note>General</note>
+      </trans-unit>
+      <trans-unit id="settings.category.interface" xml:space="preserve">
+        <source>settings.category.interface</source>
+        <note>Interface</note>
+      </trans-unit>
+      <trans-unit id="settings.category.notifications" xml:space="preserve">
+        <source>settings.category.notifications</source>
+        <note>Notifications</note>
+      </trans-unit>
+      <trans-unit id="settings.category.privacy" xml:space="preserve">
+        <source>settings.category.privacy</source>
+        <note>Privacy</note>
+      </trans-unit>
+      <trans-unit id="settings.category.storage" xml:space="preserve">
+        <source>settings.category.storage</source>
+        <note>Storage</note>
+      </trans-unit>
+      <trans-unit id="settings.category.timer" xml:space="preserve">
+        <source>settings.category.timer</source>
+        <note>Timer</note>
+      </trans-unit>
+      <trans-unit id="settings.courses.display" xml:space="preserve">
+        <source>settings.courses.display</source>
+        <note>Course Display</note>
+      </trans-unit>
+      <trans-unit id="settings.courses.display.both" xml:space="preserve">
+        <source>settings.courses.display.both</source>
+        <note>Both</note>
+      </trans-unit>
+      <trans-unit id="settings.courses.display.code" xml:space="preserve">
+        <source>settings.courses.display.code</source>
+        <note>Code</note>
+      </trans-unit>
+      <trans-unit id="settings.courses.display.footer" xml:space="preserve">
+        <source>settings.courses.display.footer</source>
+        <note>How to display course information throughout the app</note>
+      </trans-unit>
+      <trans-unit id="settings.courses.display.header" xml:space="preserve">
+        <source>settings.courses.display.header</source>
+        <note>Courses</note>
+      </trans-unit>
+      <trans-unit id="settings.courses.display.name" xml:space="preserve">
+        <source>settings.courses.display.name</source>
+        <note>Name</note>
+      </trans-unit>
+      <trans-unit id="settings.general.display.header" xml:space="preserve">
+        <source>settings.general.display.header</source>
+        <note>Display</note>
+      </trans-unit>
+      <trans-unit id="settings.general.high_contrast" xml:space="preserve">
+        <source>settings.general.high_contrast</source>
+        <note>High Contrast</note>
+      </trans-unit>
+      <trans-unit id="settings.general.high_contrast.detail" xml:space="preserve">
+        <source>settings.general.high_contrast.detail</source>
+        <note>Increase visual contrast for better readability</note>
+      </trans-unit>
+      <trans-unit id="settings.general.show_energy" xml:space="preserve">
+        <source>settings.general.show_energy</source>
+        <note>Show Energy Panel</note>
+      </trans-unit>
+      <trans-unit id="settings.general.show_energy.detail" xml:space="preserve">
+        <source>settings.general.show_energy.detail</source>
+        <note>Display energy levels in dashboard and planner</note>
+      </trans-unit>
+      <trans-unit id="settings.general.use_24h" xml:space="preserve">
+        <source>settings.general.use_24h</source>
+        <note>Use 24-Hour Time</note>
+      </trans-unit>
+      <trans-unit id="settings.general.use_24h.detail" xml:space="preserve">
+        <source>settings.general.use_24h.detail</source>
+        <note>Display times in 24-hour format</note>
+      </trans-unit>
+      <trans-unit id="settings.general.workday.footer" xml:space="preserve">
+        <source>settings.general.workday.footer</source>
+        <note>Affects planner scheduling and energy tracking</note>
+      </trans-unit>
+      <trans-unit id="settings.general.workday.header" xml:space="preserve">
+        <source>settings.general.workday.header</source>
+        <note>Workday Hours</note>
+      </trans-unit>
+      <trans-unit id="settings.general.workday_end" xml:space="preserve">
+        <source>settings.general.workday_end</source>
+        <note>Workday End</note>
+      </trans-unit>
+      <trans-unit id="settings.general.workday_start" xml:space="preserve">
+        <source>settings.general.workday_start</source>
+        <note>Workday Start</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.affirmations" xml:space="preserve">
+        <source>settings.notifications.affirmations</source>
+        <note>Motivational Messages</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.affirmations.detail" xml:space="preserve">
+        <source>settings.notifications.affirmations.detail</source>
+        <note>Receive encouraging notifications</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.assignments" xml:space="preserve">
+        <source>settings.notifications.assignments</source>
+        <note>Assignment Reminders</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.assignments.detail" xml:space="preserve">
+        <source>settings.notifications.assignments.detail</source>
+        <note>Remind me before assignments are due</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.daily_overview" xml:space="preserve">
+        <source>settings.notifications.daily_overview</source>
+        <note>Daily Overview</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.daily_overview.detail" xml:space="preserve">
+        <source>settings.notifications.daily_overview.detail</source>
+        <note>Morning summary of today's schedule</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.debug.header" xml:space="preserve">
+        <source>settings.notifications.debug.header</source>
+        <note>Debug</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.debug.print" xml:space="preserve">
+        <source>settings.notifications.debug.print</source>
+        <note>Print Pending Notifications</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.debug.test" xml:space="preserve">
+        <source>settings.notifications.debug.test</source>
+        <note>Send Test Notification (5s)</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.disabled.message" xml:space="preserve">
+        <source>settings.notifications.disabled.message</source>
+        <note>Enable notifications in iOS Settings to receive reminders and alerts</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.disabled.title" xml:space="preserve">
+        <source>settings.notifications.disabled.title</source>
+        <note>Notifications Disabled</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.enable" xml:space="preserve">
+        <source>settings.notifications.enable</source>
+        <note>Enable Notifications</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.enable.detail" xml:space="preserve">
+        <source>settings.notifications.enable.detail</source>
+        <note>Receive reminders and alerts</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.general.header" xml:space="preserve">
+        <source>settings.notifications.general.header</source>
+        <note>General</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.lead_time" xml:space="preserve">
+        <source>settings.notifications.lead_time</source>
+        <note>Reminder Lead Time</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.lead_time.1_day" xml:space="preserve">
+        <source>settings.notifications.lead_time.1_day</source>
+        <note>1 day</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.lead_time.1_hour" xml:space="preserve">
+        <source>settings.notifications.lead_time.1_hour</source>
+        <note>1 hour</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.lead_time.2_days" xml:space="preserve">
+        <source>settings.notifications.lead_time.2_days</source>
+        <note>2 days</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.lead_time.2_hours" xml:space="preserve">
+        <source>settings.notifications.lead_time.2_hours</source>
+        <note>2 hours</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.lead_time.6_hours" xml:space="preserve">
+        <source>settings.notifications.lead_time.6_hours</source>
+        <note>6 hours</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.lead_time.12_hours" xml:space="preserve">
+        <source>settings.notifications.lead_time.12_hours</source>
+        <note>12 hours</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.lead_time.15_min" xml:space="preserve">
+        <source>settings.notifications.lead_time.15_min</source>
+        <note>15 minutes</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.lead_time.30_min" xml:space="preserve">
+        <source>settings.notifications.lead_time.30_min</source>
+        <note>30 minutes</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.motivation.header" xml:space="preserve">
+        <source>settings.notifications.motivation.header</source>
+        <note>Motivation</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.open_settings" xml:space="preserve">
+        <source>settings.notifications.open_settings</source>
+        <note>Open Settings</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.overview_time" xml:space="preserve">
+        <source>settings.notifications.overview_time</source>
+        <note>Overview Time</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.permission.denied.message" xml:space="preserve">
+        <source>settings.notifications.permission.denied.message</source>
+        <note>Please enable notifications in Settings to use this feature</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.permission.denied.title" xml:space="preserve">
+        <source>settings.notifications.permission.denied.title</source>
+        <note>Notifications Disabled</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.permission.open_settings" xml:space="preserve">
+        <source>settings.notifications.permission.open_settings</source>
+        <note>Open Settings</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.reminders.header" xml:space="preserve">
+        <source>settings.notifications.reminders.header</source>
+        <note>Reminders</note>
+      </trans-unit>
+      <trans-unit id="settings.notifications.summaries.header" xml:space="preserve">
+        <source>settings.notifications.summaries.header</source>
+        <note>Summaries</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.ai" xml:space="preserve">
+        <source>settings.planner.ai</source>
+        <note>AI-Powered Planning</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.ai.detail" xml:space="preserve">
+        <source>settings.planner.ai.detail</source>
+        <note>Use intelligent suggestions for task scheduling</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.auto_breaks" xml:space="preserve">
+        <source>settings.planner.auto_breaks</source>
+        <note>Auto-Schedule Breaks</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.auto_breaks.detail" xml:space="preserve">
+        <source>settings.planner.auto_breaks.detail</source>
+        <note>Automatically add break periods between study sessions</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.energy_tracking" xml:space="preserve">
+        <source>settings.planner.energy_tracking</source>
+        <note>Energy Tracking</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.energy_tracking.detail" xml:space="preserve">
+        <source>settings.planner.energy_tracking.detail</source>
+        <note>Track and optimize based on your energy levels</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.horizon" xml:space="preserve">
+        <source>settings.planner.horizon</source>
+        <note>Planning Horizon</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.horizon.1_month" xml:space="preserve">
+        <source>settings.planner.horizon.1_month</source>
+        <note>1 Month</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.horizon.1_week" xml:space="preserve">
+        <source>settings.planner.horizon.1_week</source>
+        <note>1 Week</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.horizon.2_weeks" xml:space="preserve">
+        <source>settings.planner.horizon.2_weeks</source>
+        <note>2 Weeks</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.intelligence.header" xml:space="preserve">
+        <source>settings.planner.intelligence.header</source>
+        <note>Intelligence</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.scheduling.footer" xml:space="preserve">
+        <source>settings.planner.scheduling.footer</source>
+        <note>How far ahead to schedule tasks and study sessions</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.scheduling.header" xml:space="preserve">
+        <source>settings.planner.scheduling.header</source>
+        <note>Scheduling</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.track_hours" xml:space="preserve">
+        <source>settings.planner.track_hours</source>
+        <note>Track Study Hours</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.track_hours.detail" xml:space="preserve">
+        <source>settings.planner.track_hours.detail</source>
+        <note>Monitor total time spent studying</note>
+      </trans-unit>
+      <trans-unit id="settings.planner.tracking.header" xml:space="preserve">
+        <source>settings.planner.tracking.header</source>
+        <note>Tracking</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.clear_logs" xml:space="preserve">
+        <source>settings.privacy.clear_logs</source>
+        <note>Clear Debug Logs</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.clear_logs.confirm.action" xml:space="preserve">
+        <source>settings.privacy.clear_logs.confirm.action</source>
+        <note>Clear Logs</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.clear_logs.confirm.message" xml:space="preserve">
+        <source>settings.privacy.clear_logs.confirm.message</source>
+        <note>This will clear all debug logs and analytics data stored on your device.</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.clear_logs.confirm.title" xml:space="preserve">
+        <source>settings.privacy.clear_logs.confirm.title</source>
+        <note>Clear Debug Logs?</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.data.header" xml:space="preserve">
+        <source>settings.privacy.data.header</source>
+        <note>Data Storage</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.diagnostics.header" xml:space="preserve">
+        <source>settings.privacy.diagnostics.header</source>
+        <note>Diagnostics</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.icloud_sync" xml:space="preserve">
+        <source>settings.privacy.icloud_sync</source>
+        <note>iCloud Sync</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.icloud_sync.detail" xml:space="preserve">
+        <source>settings.privacy.icloud_sync.detail</source>
+        <note>Sync data across your devices using iCloud</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.icloud_sync.footer" xml:space="preserve">
+        <source>settings.privacy.icloud_sync.footer</source>
+        <note>Your data will be synced across all devices signed in to your iCloud account. Data is encrypted in transit and at rest.</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.local_only" xml:space="preserve">
+        <source>settings.privacy.local_only</source>
+        <note>Local-Only Mode</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.local_only.detail" xml:space="preserve">
+        <source>settings.privacy.local_only.detail</source>
+        <note>All data stays on this device</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.local_only.footer" xml:space="preserve">
+        <source>settings.privacy.local_only.footer</source>
+        <note>All your data stays on this device. No cloud sync or external services are used.</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.permissions" xml:space="preserve">
+        <source>settings.privacy.permissions</source>
+        <note>Manage Permissions</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.permissions.footer" xml:space="preserve">
+        <source>settings.privacy.permissions.footer</source>
+        <note>Open iOS Settings to manage calendar, notifications, and other permissions</note>
+      </trans-unit>
+      <trans-unit id="settings.privacy.permissions.header" xml:space="preserve">
+        <source>settings.privacy.permissions.header</source>
+        <note>Permissions</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.backup.footer" xml:space="preserve">
+        <source>settings.storage.backup.footer</source>
+        <note>Export your data as a backup file</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.backup.header" xml:space="preserve">
+        <source>settings.storage.backup.header</source>
+        <note>Backup</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.clear_cache" xml:space="preserve">
+        <source>settings.storage.clear_cache</source>
+        <note>Clear Cache</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.clear_cache.confirm.action" xml:space="preserve">
+        <source>settings.storage.clear_cache.confirm.action</source>
+        <note>Clear Cache</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.clear_cache.confirm.message" xml:space="preserve">
+        <source>settings.storage.clear_cache.confirm.message</source>
+        <note>This will clear temporary files and cached data. Your tasks, courses, and settings will not be affected.</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.clear_cache.confirm.title" xml:space="preserve">
+        <source>settings.storage.clear_cache.confirm.title</source>
+        <note>Clear Cache?</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.export" xml:space="preserve">
+        <source>settings.storage.export</source>
+        <note>Export Data</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.export.button" xml:space="preserve">
+        <source>settings.storage.export.button</source>
+        <note>Export Now</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.export.error.message" xml:space="preserve">
+        <source>settings.storage.export.error.message</source>
+        <note>Unable to create the export file right now.</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.export.error.title" xml:space="preserve">
+        <source>settings.storage.export.error.title</source>
+        <note>Export Failed</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.export.message" xml:space="preserve">
+        <source>settings.storage.export.message</source>
+        <note>Your data will be exported as a JSON file that you can save or share.</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.export.title" xml:space="preserve">
+        <source>settings.storage.export.title</source>
+        <note>Export Data</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.info.header" xml:space="preserve">
+        <source>settings.storage.info.header</source>
+        <note>Storage</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.location" xml:space="preserve">
+        <source>settings.storage.location</source>
+        <note>Location</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.location.local" xml:space="preserve">
+        <source>settings.storage.location.local</source>
+        <note>Local</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.maintenance.footer" xml:space="preserve">
+        <source>settings.storage.maintenance.footer</source>
+        <note>Clearing cache can free up storage space and may improve performance</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.maintenance.header" xml:space="preserve">
+        <source>settings.storage.maintenance.header</source>
+        <note>Maintenance</note>
+      </trans-unit>
+      <trans-unit id="settings.storage.used" xml:space="preserve">
+        <source>settings.storage.used</source>
+        <note>Storage Used</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.alarmkit" xml:space="preserve">
+        <source>settings.timer.alarmkit</source>
+        <note>AlarmKit Timers</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.alarmkit.detail" xml:space="preserve">
+        <source>settings.timer.alarmkit.detail</source>
+        <note>Use iOS AlarmKit for loud system alarms</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.alerts" xml:space="preserve">
+        <source>settings.timer.alerts</source>
+        <note>Timer Alerts</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.alerts.detail" xml:space="preserve">
+        <source>settings.timer.alerts.detail</source>
+        <note>Show notification when timer completes</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.alerts.footer" xml:space="preserve">
+        <source>settings.timer.alerts.footer</source>
+        <note>AlarmKit provides system-level alarms that work even when the app is closed.</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.alerts.header" xml:space="preserve">
+        <source>settings.timer.alerts.header</source>
+        <note>Alerts</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.display" xml:space="preserve">
+        <source>settings.timer.display</source>
+        <note>Timer display</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.focus_duration" xml:space="preserve">
+        <source>settings.timer.focus_duration</source>
+        <note>Focus Duration</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.iterations" xml:space="preserve">
+        <source>settings.timer.iterations</source>
+        <note>Pomodoro Cycles</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.long_break" xml:space="preserve">
+        <source>settings.timer.long_break</source>
+        <note>Long Break</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.pomodoro.header" xml:space="preserve">
+        <source>settings.timer.pomodoro.header</source>
+        <note>Pomodoro Settings</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.pomodoro_alerts" xml:space="preserve">
+        <source>settings.timer.pomodoro_alerts</source>
+        <note>Pomodoro Alerts</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.pomodoro_alerts.detail" xml:space="preserve">
+        <source>settings.timer.pomodoro_alerts.detail</source>
+        <note>Alert at each pomodoro phase change</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.short_break" xml:space="preserve">
+        <source>settings.timer.short_break</source>
+        <note>Short Break</note>
+      </trans-unit>
+      <trans-unit id="settings.timer.timer_duration" xml:space="preserve">
+        <source>settings.timer.timer_duration</source>
+        <note>Timer Duration</note>
+      </trans-unit>
+      <trans-unit id="time.am" xml:space="preserve">
+        <source>time.am</source>
+        <note>AM</note>
+      </trans-unit>
+      <trans-unit id="time.minutes" xml:space="preserve">
+        <source>time.minutes</source>
+        <note>min</note>
+      </trans-unit>
+      <trans-unit id="time.pm" xml:space="preserve">
+        <source>time.pm</source>
+        <note>PM</note>
+      </trans-unit>
+      <trans-unit id="timer.action.start" xml:space="preserve">
+        <source>timer.action.start</source>
+        <note>Start</note>
+      </trans-unit>
+      <trans-unit id="timer.context.add_assignment" xml:space="preserve">
+        <source>timer.context.add_assignment</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="timer.context.add_grade" xml:space="preserve">
+        <source>timer.context.add_grade</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="timer.context.end_clock" xml:space="preserve">
+        <source>timer.context.end_clock</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="timer.context.go_to_planner" xml:space="preserve">
+        <source>timer.context.go_to_planner</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="timer.context.refresh_calendar" xml:space="preserve">
+        <source>timer.context.refresh_calendar</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="timer.context.start_clock" xml:space="preserve">
+        <source>timer.context.start_clock</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="timer.context.stop_clock" xml:space="preserve">
+        <source>timer.context.stop_clock</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="timer.debug.label" xml:space="preserve">
+        <source>timer.debug.label</source>
+        <note>Debug</note>
+      </trans-unit>
+      <trans-unit id="timer.display.analog" xml:space="preserve">
+        <source>timer.display.analog</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="timer.display.digital" xml:space="preserve">
+        <source>timer.display.digital</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="timer.focus.message" xml:space="preserve">
+        <source>timer.focus.message</source>
+        <note>Focus message</note>
+      </trans-unit>
+      <trans-unit id="timer.focus.no_linked_tasks" xml:space="preserve">
+        <source>timer.focus.no_linked_tasks</source>
+        <note>No activity
+No tasks</note>
+      </trans-unit>
+      <trans-unit id="timer.focus.window_title" xml:space="preserve">
+        <source>timer.focus.window_title</source>
+        <note>Focus</note>
+      </trans-unit>
+      <trans-unit id="timer.label.activities" xml:space="preserve">
+        <source>timer.label.activities</source>
+        <note>Activities</note>
+      </trans-unit>
+      <trans-unit id="timer.label.activity" xml:space="preserve">
+        <source>timer.label.activity</source>
+        <note>Activity</note>
+      </trans-unit>
+      <trans-unit id="timer.label.all_activities" xml:space="preserve">
+        <source>timer.label.all_activities</source>
+        <note>All activities</note>
+      </trans-unit>
+      <trans-unit id="timer.label.current_activity" xml:space="preserve">
+        <source>timer.label.current_activity</source>
+        <note>Current activity</note>
+      </trans-unit>
+      <trans-unit id="timer.label.no_activity" xml:space="preserve">
+        <source>timer.label.no_activity</source>
+        <note>No activity</note>
+      </trans-unit>
+      <trans-unit id="timer.label.no_activity_short" xml:space="preserve">
+        <source>timer.label.no_activity_short</source>
+        <note>No activity</note>
+      </trans-unit>
+      <trans-unit id="timer.label.none" xml:space="preserve">
+        <source>timer.label.none</source>
+        <note>None</note>
+      </trans-unit>
+      <trans-unit id="timer.label.notes" xml:space="preserve">
+        <source>timer.label.notes</source>
+        <note>Notes</note>
+      </trans-unit>
+      <trans-unit id="timer.label.pinned" xml:space="preserve">
+        <source>timer.label.pinned</source>
+        <note>Pinned</note>
+      </trans-unit>
+      <trans-unit id="timer.label.search" xml:space="preserve">
+        <source>timer.label.search</source>
+        <note>Search</note>
+      </trans-unit>
+      <trans-unit id="timer.stats.study_summary" xml:space="preserve">
+        <source>timer.stats.study_summary</source>
+        <note>Study summary</note>
+      </trans-unit>
+      <trans-unit id="·" xml:space="preserve">
+        <source>·</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="· %@" xml:space="preserve">
+        <source>· %@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="· %@ %@" xml:space="preserve">
+        <source>· %1$@ %2$@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="· %lld credits" xml:space="preserve">
+        <source>· %lld credits</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="· Target: %lld%%" xml:space="preserve">
+        <source>· Target: %lld%%</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="· ~%lld %@" xml:space="preserve">
+        <source>· ~%1$lld %2$@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="—" xml:space="preserve">
+        <source>—</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="•" xml:space="preserve">
+        <source>•</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="• %lld %@" xml:space="preserve">
+        <source>• %1$lld %2$@</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="● %lld" xml:space="preserve">
+        <source>● %lld</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="🔧 Phase 6.7: TextEditor with custom Binding ADDED" xml:space="preserve">
+        <source>🔧 Phase 6.7: TextEditor with custom Binding ADDED</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="🚧 Timer Page - Phase 6.7" xml:space="preserve">
+        <source>🚧 Timer Page - Phase 6.7</source>
+        <note/>
+      </trans-unit>
+      <trans-unit id="🧪 Phase 5.7: FULL TimerCoreCard with FIXED circles" xml:space="preserve">
+        <source>🧪 Phase 5.7: FULL TimerCoreCard with FIXED circles</source>
+        <note/>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="SharedCore/DesignSystem/Roots-InfoPlist.xcstrings" source-language="en" target-language="zh-Hans" datatype="plaintext">
+    <header>
+      <tool tool-id="com.apple.dt.xcode" tool-name="Xcode" tool-version="26.2" build-num="17C52"/>
+    </header>
+    <body>
+      <trans-unit id="CFBundleDisplayName" xml:space="preserve">
+        <source>Roots</source>
+        <note>Bundle display name</note>
+      </trans-unit>
+      <trans-unit id="CFBundleName" xml:space="preserve">
+        <source>Roots</source>
+        <note>Bundle name</note>
+      </trans-unit>
+      <trans-unit id="NSCalendarsFullAccessUsageDescription" xml:space="preserve">
+        <source>Roots needs full calendar access to display and manage your schedule across courses and tasks.</source>
+        <note>Privacy - Calendars Full Access Usage Description</note>
+      </trans-unit>
+      <trans-unit id="NSCalendarsUsageDescription" xml:space="preserve">
+        <source>Roots needs access to your calendar to show and schedule classes and events.</source>
+        <note>Privacy - Calendars Usage Description</note>
+      </trans-unit>
+      <trans-unit id="NSFaceIDUsageDescription" xml:space="preserve">
+        <source>Roots uses Face ID to securely authenticate you when required features request identity verification.</source>
+        <note>Privacy - Face ID Usage Description</note>
+      </trans-unit>
+      <trans-unit id="NSFocusStatusUsageDescription" xml:space="preserve">
+        <source>Roots uses your Focus status to pause alerts and adjust notifications during study sessions.</source>
+        <note>Privacy - Focus Status Usage Description</note>
+      </trans-unit>
+      <trans-unit id="NSRemindersFullAccessUsageDescription" xml:space="preserve">
+        <source>Roots needs full reminders access to sync and manage your tasks safely across devices.</source>
+        <note>Privacy - Reminders Full Access Usage Description</note>
+      </trans-unit>
+      <trans-unit id="NSRemindersUsageDescription" xml:space="preserve">
+        <source>Roots needs access to your reminders to show tasks alongside your assignments.</source>
+        <note>Privacy - Reminders Usage Description</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

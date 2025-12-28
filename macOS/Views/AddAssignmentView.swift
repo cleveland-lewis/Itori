@@ -47,7 +47,7 @@ struct AddAssignmentView: View {
                             .textFieldStyle(.plain)
                             .padding(.vertical, 10)
                             .padding(.horizontal, 12)
-                            .background(DesignSystem.Materials.card, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .background(DesignSystem.Colors.cardBackground, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
 
                         HStack(spacing: 12) {
                             coursePicker

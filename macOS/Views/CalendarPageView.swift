@@ -83,6 +83,26 @@ public struct CalendarEvent: Identifiable, Hashable {
     }
 }
 
+struct TransferableCalendarEvent: Codable, Transferable, Sendable {
+    let id: UUID
+    let title: String
+    let startDate: Date
+    let endDate: Date
+    let ekIdentifier: String?
+
+    init(from event: CalendarEvent) {
+        id = event.id
+        title = event.title
+        startDate = event.startDate
+        endDate = event.endDate
+        ekIdentifier = event.ekIdentifier
+    }
+
+    static var transferRepresentation: some TransferRepresentation {
+        CodableRepresentation(contentType: .rootsCalendarEvent)
+    }
+}
+
 struct CalendarPageView: View {
     @EnvironmentObject var settings: AppSettingsModel
 
@@ -102,6 +122,7 @@ struct CalendarPageView: View {
     private let calendar = Calendar.current
 
     @State private var searchText: String = ""
+    @FocusState private var isSearchFocused: Bool
     
     // Performance: Cache filtered events to avoid repeated filtering in body
     @State private var cachedFilteredEvents: [EKEvent] = []
@@ -142,20 +163,51 @@ struct CalendarPageView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            calendarToolbar
+        NavigationSplitView {
+            calendarSidebar
+                .frame(minWidth: 220, idealWidth: 240)
+        } content: {
+            calendarContent
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color(nsColor: .windowBackgroundColor))
+        } detail: {
+            eventSidebarView
+                .frame(minWidth: 220, idealWidth: 260)
+        }
+        .navigationSplitViewStyle(.balanced)
+        .searchable(text: $searchText, placement: .toolbar)
+        .searchFocused($isSearchFocused)
+        .toolbar {
+            ToolbarItemGroup(placement: .navigation) {
+                Button { shift(by: -1) } label: {
+                    Image(systemName: "chevron.left")
+                }
+                Button { shift(by: 1) } label: {
+                    Image(systemName: "chevron.right")
+                }
+            }
 
-            Divider()
+            ToolbarItem(placement: .principal) {
+                Picker("View", selection: $currentViewMode) {
+                    ForEach(CalendarViewMode.allCases) { mode in
+                        Text(mode.title).tag(mode)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .frame(width: 240)
+            }
 
-            HStack(spacing: 0) {
-                calendarSidebar
-                    .frame(width: 240)
-
-                Divider()
-
-                calendarContent
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color(nsColor: .windowBackgroundColor))
+            ToolbarItemGroup(placement: .primaryAction) {
+                Button { jumpToToday() } label: {
+                    Text("calendar.today".localized)
+                }
+                .keyboardShortcut("t", modifiers: [.command])
+                Button {
+                    showingNewEventSheet = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+                .keyboardShortcut("n", modifiers: [.command])
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -186,6 +238,21 @@ struct CalendarPageView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: .addEventRequested)) { _ in
             showingNewEventSheet = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .selectCalendarEvent)) { notification in
+            let date = notification.userInfo?["date"] as? Date
+            let ekIdentifier = notification.userInfo?["ekIdentifier"] as? String
+            if let date {
+                focusedDate = date
+                selectedDate = date
+                calendarManager.selectedDate = date
+            }
+            if let ekIdentifier, let match = effectiveEvents.first(where: { $0.ekIdentifier == ekIdentifier }) {
+                selectedEvent = match
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .focusSearch)) { _ in
+            isSearchFocused = true
         }
         .onReceive(NotificationCenter.default.publisher(for: .previousDay)) { _ in
             moveFocusedDate(by: .day, value: -1)
@@ -222,62 +289,6 @@ struct CalendarPageView: View {
             EventDetailView(item: event, isPresented: Binding(get: { selectedEvent != nil }, set: { if !$0 { selectedEvent = nil } }))
                 .transition(.move(edge: .bottom).combined(with: .opacity))
         })
-    }
-
-    private var calendarToolbar: some View {
-        HStack(spacing: 12) {
-            Button {
-                showingNewEventSheet = true
-            } label: {
-                Image(systemName: "plus")
-                    .font(.subheadline.weight(.semibold))
-                    .frame(width: 28, height: 28)
-                    .background(DesignSystem.Materials.hud.opacity(0.7), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
-            }
-            .buttonStyle(.plain)
-            .rootsStandardInteraction()
-
-            Picker("View", selection: $currentViewMode) {
-                ForEach(CalendarViewMode.allCases) { mode in
-                    Text(mode.title).tag(mode)
-                }
-            }
-            .pickerStyle(.segmented)
-            .frame(width: 240)
-            .tint(settings.activeAccentColor)
-
-            Button { jumpToToday() } label: {
-                Text("calendar.today".localized)
-                    .font(.subheadline.weight(.semibold))
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 4)
-            }
-            .buttonStyle(.borderless)
-            .rootsStandardInteraction()
-
-            HStack(spacing: 4) {
-                Button { shift(by: -1) } label: {
-                    Image(systemName: "chevron.left")
-                }
-                .buttonStyle(.borderless)
-                .rootsStandardInteraction()
-
-                Button { shift(by: 1) } label: {
-                    Image(systemName: "chevron.right")
-                }
-                .buttonStyle(.borderless)
-                .rootsStandardInteraction()
-            }
-
-            Spacer()
-
-            TextField("calendar.search".localized, text: $searchText)
-                .textFieldStyle(.roundedBorder)
-                .frame(width: 220)
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
-        .background(DesignSystem.Materials.hud)
     }
 
     private var calendarSidebar: some View {
@@ -332,7 +343,7 @@ struct CalendarPageView: View {
                 .padding(.horizontal, 8)
                 .padding(.bottom, 12)
         }
-        .background(DesignSystem.Materials.card)
+        .background(DesignSystem.Colors.cardBackground)
     }
 
     @ViewBuilder
@@ -344,6 +355,7 @@ struct CalendarPageView: View {
             CalendarMonthGridView(
                 focusedDate: $focusedDate,
                 events: searchedEvents,
+                selectedEvent: $selectedEvent,
                 onSelectDate: { date in
                     focusedDate = date
                     selectedDate = date
@@ -360,13 +372,18 @@ struct CalendarPageView: View {
             CalendarWeekTimelineView(
                 focusedDate: $focusedDate,
                 events: searchedEvents,
-                onSelectEvent: { selectedEvent = $0 }
+                selectedEvent: $selectedEvent,
+                onSelectEvent: { selectedEvent = $0 },
+                onResizeEvent: resizeEvent,
+                onMoveEvent: updateEventStart
             )
         case .day:
             CalendarDaySplitView(
                 date: $focusedDate,
                 events: searchedEvents,
-                selectedEvent: $selectedEvent
+                selectedEvent: $selectedEvent,
+                onResizeEvent: resizeEvent,
+                onMoveEvent: updateEventStart
             )
         }
     }
@@ -409,7 +426,7 @@ struct CalendarPageView: View {
             eventListView
         }
         .frame(maxHeight: .infinity, alignment: .top)
-        .background(DesignSystem.Materials.card)
+        .background(DesignSystem.Colors.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
     }
     
@@ -492,7 +509,7 @@ struct CalendarPageView: View {
             .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(DesignSystem.Materials.hud.opacity(0.5))
+                    .fill(DesignSystem.Colors.sidebarBackground.opacity(0.5))
             )
             .contentShape(Rectangle())
         }
@@ -675,6 +692,82 @@ struct CalendarPageView: View {
         }
     }
 
+    private func updateEventDates(_ payload: TransferableCalendarEvent, to date: Date) {
+        let duration = payload.endDate.timeIntervalSince(payload.startDate)
+        let time = calendar.dateComponents([.hour, .minute, .second], from: payload.startDate)
+        let dayStart = calendar.startOfDay(for: date)
+        let newStart = calendar.date(bySettingHour: time.hour ?? 0,
+                                     minute: time.minute ?? 0,
+                                     second: time.second ?? 0,
+                                     of: dayStart) ?? dayStart
+        let newEnd = newStart.addingTimeInterval(duration)
+
+        updateEventDates(id: payload.id, ekIdentifier: payload.ekIdentifier, newStart: newStart, newEnd: newEnd)
+    }
+
+    private func updateEventStart(_ payload: TransferableCalendarEvent, to newStart: Date) {
+        let duration = payload.endDate.timeIntervalSince(payload.startDate)
+        let newEnd = newStart.addingTimeInterval(duration)
+        updateEventDates(id: payload.id, ekIdentifier: payload.ekIdentifier, newStart: newStart, newEnd: newEnd)
+    }
+
+    private func updateEventDates(id: UUID, ekIdentifier: String?, newStart: Date, newEnd: Date) {
+        if let ekId = ekIdentifier, let ekEvent = eventStore.event(withIdentifier: ekId) {
+            ekEvent.startDate = newStart
+            ekEvent.endDate = newEnd
+            do {
+                try eventStore.save(ekEvent, span: .thisEvent)
+            } catch {
+                print("⚠️ Failed to update event: \(error.localizedDescription)")
+            }
+        }
+
+        syncedEvents = syncedEvents.map { event in
+            guard event.id == id else { return event }
+            var updated = event
+            updated.startDate = newStart
+            updated.endDate = newEnd
+            return updated
+        }
+
+        events = events.map { event in
+            guard event.id == id else { return event }
+            var updated = event
+            updated.startDate = newStart
+            updated.endDate = newEnd
+            return updated
+        }
+
+        invalidateEventsCache()
+        Task { await deviceCalendar.refreshEventsForVisibleRange() }
+    }
+
+    private func resizeEvent(_ event: CalendarEvent, deltaMinutes: Int, isStart: Bool) {
+        let snappedMinutes = snapMinutes(deltaMinutes)
+        let minimumDuration: TimeInterval = 30 * 60
+        var newStart = event.startDate
+        var newEnd = event.endDate
+
+        if isStart {
+            newStart = calendar.date(byAdding: .minute, value: snappedMinutes, to: event.startDate) ?? event.startDate
+            if newEnd.timeIntervalSince(newStart) < minimumDuration {
+                newStart = newEnd.addingTimeInterval(-minimumDuration)
+            }
+        } else {
+            newEnd = calendar.date(byAdding: .minute, value: snappedMinutes, to: event.endDate) ?? event.endDate
+            if newEnd.timeIntervalSince(newStart) < minimumDuration {
+                newEnd = newStart.addingTimeInterval(minimumDuration)
+            }
+        }
+
+        updateEventDates(id: event.id, ekIdentifier: event.ekIdentifier, newStart: newStart, newEnd: newEnd)
+    }
+
+    private func snapMinutes(_ minutes: Int) -> Int {
+        let interval = 30
+        return Int((Double(minutes) / Double(interval)).rounded()) * interval
+    }
+
     private func formattedTimeRange(start: Date, end: Date) -> String {
         let use24 = AppSettingsModel.shared.use24HourTime
         let formatter = LocaleFormatters.timeFormatter(use24Hour: use24)
@@ -821,7 +914,7 @@ private struct MiniMonthNavigator: View {
                                 .foregroundStyle(isSelected ? Color.white : Color.primary)
                                 .background(
                                     Circle()
-                                        .fill(isSelected ? Color.accentColor : (isToday ? Color.accentColor.opacity(0.2) : Color.clear))
+                                        .fill(isSelected ? Color.accentColor.opacity(0.18) : (isToday ? Color.accentColor.opacity(0.12) : Color.clear))
                                 )
                         }
                         .buttonStyle(.plain)
@@ -859,6 +952,7 @@ private struct MiniMonthNavigator: View {
 private struct CalendarMonthGridView: View {
     @Binding var focusedDate: Date
     let events: [CalendarEvent]
+    @Binding var selectedEvent: CalendarEvent?
     let onSelectDate: (Date) -> Void
     let onSelectEvent: (CalendarEvent) -> Void
     private let calendar = Calendar.current
@@ -877,6 +971,7 @@ private struct CalendarMonthGridView: View {
                         isSelected: calendar.isDate(day, inSameDayAs: focusedDate),
                         isToday: calendar.isDateInToday(day),
                         events: eventsForDay(day),
+                        selectedEvent: selectedEvent,
                         onSelect: {
                             focusedDate = day
                             onSelectDate(day)
@@ -884,6 +979,12 @@ private struct CalendarMonthGridView: View {
                         onSelectEvent: onSelectEvent
                     )
                     .frame(height: rowHeight)
+                    .background(CalendarWeekendShade(date: day))
+                    .dropDestination(for: TransferableCalendarEvent.self) { items, _ in
+                        guard let payload = items.first else { return false }
+                        updateEventDates(payload, to: day)
+                        return true
+                    }
                     .overlay(
                         Rectangle()
                             .fill(Color(nsColor: .separatorColor).opacity(0.2))
@@ -938,12 +1039,26 @@ private struct CalendarMonthGridView: View {
     }
 }
 
+private struct CalendarWeekendShade: View {
+    let date: Date
+    private let calendar = Calendar.current
+
+    var body: some View {
+        if calendar.isDateInWeekend(date) {
+            Color(nsColor: .controlBackgroundColor).opacity(0.25)
+        } else {
+            Color.clear
+        }
+    }
+}
+
 private struct MonthGridCell: View {
     let date: Date
     let isInMonth: Bool
     let isSelected: Bool
     let isToday: Bool
     let events: [CalendarEvent]
+    let selectedEvent: CalendarEvent?
     let onSelect: () -> Void
     let onSelectEvent: (CalendarEvent) -> Void
     private let calendar = Calendar.current
@@ -959,7 +1074,7 @@ private struct MonthGridCell: View {
                         .padding(4)
                         .background(
                             Circle()
-                                .fill(isToday ? Color.accentColor : Color.clear)
+                                .fill(isToday ? Color.accentColor.opacity(0.18) : Color.clear)
                         )
                 }
 
@@ -972,7 +1087,21 @@ private struct MonthGridCell: View {
                             .font(.caption2)
                             .lineLimit(1)
                     }
+                    .padding(.horizontal, 2)
+                    .padding(.vertical, 1)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            .fill(event.id == selectedEvent?.id ? event.category.color.opacity(0.2) : Color.clear)
+                    )
                     .onTapGesture { onSelectEvent(event) }
+                    .contextMenu {
+                        Button("Show Details") { onSelectEvent(event) }
+                        Button("Copy Title") {
+                            NSPasteboard.general.clearContents()
+                            NSPasteboard.general.setString(event.title, forType: .string)
+                        }
+                    }
+                    .draggable(TransferableCalendarEvent(from: event))
                 }
 
                 if events.count > 3 {
@@ -989,8 +1118,9 @@ private struct MonthGridCell: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(
                 RoundedRectangle(cornerRadius: 6, style: .continuous)
-                    .fill(isSelected ? Color.accentColor.opacity(0.15) : Color.clear)
+                    .fill(isSelected ? Color.accentColor.opacity(0.12) : Color.clear)
             )
+            .opacity(isInMonth ? 1.0 : 0.6)
         }
         .buttonStyle(.plain)
     }
@@ -1047,7 +1177,7 @@ private struct YearMonthCard: View {
                             .frame(maxWidth: .infinity, minHeight: 14)
                             .background(
                                 Circle()
-                                    .fill(isSelected ? Color.accentColor : (isToday ? Color.accentColor.opacity(0.2) : Color.clear))
+                                    .fill(isSelected ? Color.accentColor.opacity(0.18) : (isToday ? Color.accentColor.opacity(0.12) : Color.clear))
                             )
                             .onTapGesture { selectedDate = date }
                     } else {
@@ -1057,7 +1187,7 @@ private struct YearMonthCard: View {
             }
         }
         .padding(10)
-        .background(DesignSystem.Materials.card)
+        .background(DesignSystem.Colors.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 
@@ -1087,10 +1217,14 @@ private struct YearMonthCard: View {
 private struct CalendarWeekTimelineView: View {
     @Binding var focusedDate: Date
     let events: [CalendarEvent]
+    @Binding var selectedEvent: CalendarEvent?
     let onSelectEvent: (CalendarEvent) -> Void
+    let onResizeEvent: (CalendarEvent, Int, Bool) -> Void
+    let onMoveEvent: (TransferableCalendarEvent, Date) -> Void
     private let calendar = Calendar.current
     private let hourHeight: CGFloat = 52
     private let dayHeaderHeight: CGFloat = 28
+    @State private var resizing: ResizeState?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -1099,14 +1233,16 @@ private struct CalendarWeekTimelineView: View {
 
             Divider()
 
-            AllDayRow(days: weekDays, events: allDayEvents, onSelectEvent: onSelectEvent)
+            AllDayRow(days: weekDays, events: allDayEvents, selectedEvent: $selectedEvent, onSelectEvent: onSelectEvent)
                 .padding(.bottom, 4)
 
             ScrollView {
                 ZStack(alignment: .topLeading) {
+                    weekendShading
                     timeGrid
                     eventBlocks
                     nowLine
+                    dropTarget
                 }
             }
         }
@@ -1144,20 +1280,88 @@ private struct CalendarWeekTimelineView: View {
             let columnWidth = (proxy.size.width - 52) / 7
             ForEach(events.filter { !isAllDayEvent($0) }) { event in
                 if let dayIndex = weekDays.firstIndex(where: { calendar.isDate($0, inSameDayAs: event.startDate) }) {
-                    let startOffset = minutesFromStart(event.startDate) * hourHeight / 60
-                    let duration = max(event.endDate.timeIntervalSince(event.startDate) / 60, 30)
+                    let adjusted = resizedEvent(event)
+                    let startOffset = minutesFromStart(adjusted.start) * hourHeight / 60
+                    let duration = max(adjusted.end.timeIntervalSince(adjusted.start) / 60, 30)
                     let height = CGFloat(duration) * hourHeight / 60
 
-                    CalendarEventBlock(event: event)
+                    CalendarEventBlock(event: event, isSelected: selectedEvent?.id == event.id)
                         .frame(width: columnWidth - 8, height: height)
                         .position(
                             x: 52 + columnWidth * CGFloat(dayIndex) + (columnWidth / 2),
                             y: startOffset + height / 2
                         )
+                        .overlay(alignment: .topTrailing) {
+                            if let resizing, resizing.eventId == event.id {
+                                ResizeTimeBadge(text: resizeLabel(for: event, state: resizing))
+                                    .offset(x: -6, y: 6)
+                            }
+                        }
                         .onTapGesture { onSelectEvent(event) }
+                        .draggable(TransferableCalendarEvent(from: event))
+                        .contextMenu {
+                            Button("Show Details") { onSelectEvent(event) }
+                            Button("Copy Title") {
+                                NSPasteboard.general.clearContents()
+                                NSPasteboard.general.setString(event.title, forType: .string)
+                            }
+                        }
+                        .overlay(alignment: .top) {
+                            ResizeHandle()
+                                .frame(height: 6)
+                                .gesture(resizeGesture(event: event, isStart: true))
+                        }
+                        .overlay(alignment: .bottom) {
+                            ResizeHandle()
+                                .frame(height: 6)
+                                .gesture(resizeGesture(event: event, isStart: false))
+                        }
                 }
             }
         }
+    }
+
+    private func resizeGesture(event: CalendarEvent, isStart: Bool) -> some Gesture {
+        DragGesture(minimumDistance: 4)
+            .onChanged { value in
+                let deltaMinutes = snapMinutes(Int((value.translation.height / hourHeight) * 60))
+                resizing = ResizeState(eventId: event.id, isStart: isStart, deltaMinutes: deltaMinutes)
+            }
+            .onEnded { value in
+                let deltaMinutes = snapMinutes(Int((value.translation.height / hourHeight) * 60))
+                onResizeEvent(event, deltaMinutes, isStart)
+                resizing = nil
+            }
+    }
+
+    private func resizedEvent(_ event: CalendarEvent) -> (start: Date, end: Date) {
+        guard let resizing, resizing.eventId == event.id else {
+            return (event.startDate, event.endDate)
+        }
+        let minimumDuration: TimeInterval = 30 * 60
+        if resizing.isStart {
+            let newStart = calendar.date(byAdding: .minute, value: resizing.deltaMinutes, to: event.startDate) ?? event.startDate
+            let cappedStart = event.endDate.timeIntervalSince(newStart) < minimumDuration
+                ? event.endDate.addingTimeInterval(-minimumDuration)
+                : newStart
+            return (cappedStart, event.endDate)
+        }
+        let newEnd = calendar.date(byAdding: .minute, value: resizing.deltaMinutes, to: event.endDate) ?? event.endDate
+        let cappedEnd = newEnd.timeIntervalSince(event.startDate) < minimumDuration
+            ? event.startDate.addingTimeInterval(minimumDuration)
+            : newEnd
+        return (event.startDate, cappedEnd)
+    }
+
+    private func snapMinutes(_ minutes: Int) -> Int {
+        let interval = 30
+        return Int((Double(minutes) / Double(interval)).rounded()) * interval
+    }
+
+    private struct ResizeState {
+        let eventId: UUID
+        let isStart: Bool
+        let deltaMinutes: Int
     }
 
     private var nowLine: some View {
@@ -1179,6 +1383,25 @@ private struct CalendarWeekTimelineView: View {
                         .foregroundStyle(Color.red)
                         .offset(x: 40, y: y - 8)
                 )
+            }
+        }
+    }
+
+    private var weekendShading: some View {
+        GeometryReader { proxy in
+            let columnWidth = (proxy.size.width - 52) / 7
+            ZStack(alignment: .topLeading) {
+                ForEach(weekDays.indices, id: \.self) { index in
+                    if calendar.isDateInWeekend(weekDays[index]) {
+                        Rectangle()
+                            .fill(Color(nsColor: .controlBackgroundColor).opacity(0.2))
+                            .frame(width: columnWidth, height: proxy.size.height)
+                            .position(
+                                x: 52 + columnWidth * CGFloat(index) + (columnWidth / 2),
+                                y: proxy.size.height / 2
+                            )
+                    }
+                }
             }
         }
     }
@@ -1215,11 +1438,11 @@ private struct WeekHeaderRow: View {
                             .foregroundStyle(.secondary)
                         Text("\(calendar.component(.day, from: day))")
                             .font(.caption.weight(.semibold))
-                            .foregroundStyle(isToday ? .white : .primary)
+                            .foregroundStyle(.primary)
                             .padding(6)
                             .background(
                                 Circle()
-                                    .fill(isToday ? Color.accentColor : (isSelected ? Color.accentColor.opacity(0.15) : Color.clear))
+                                    .fill(isToday ? Color.accentColor.opacity(0.18) : (isSelected ? Color.accentColor.opacity(0.12) : Color.clear))
                             )
                     }
                     .frame(maxWidth: .infinity)
@@ -1234,6 +1457,7 @@ private struct WeekHeaderRow: View {
 private struct AllDayRow: View {
     let days: [Date]
     let events: [CalendarEvent]
+    @Binding var selectedEvent: CalendarEvent?
     let onSelectEvent: (CalendarEvent) -> Void
     private let calendar = Calendar.current
 
@@ -1255,9 +1479,21 @@ private struct AllDayRow: View {
                             .padding(.vertical, 2)
                             .background(
                                 RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                    .fill(event.category.color.opacity(0.2))
+                                    .fill(event.id == selectedEvent?.id ? event.category.color.opacity(0.35) : event.category.color.opacity(0.2))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                    .stroke(event.category.color.opacity(0.4), lineWidth: 1)
                             )
                             .onTapGesture { onSelectEvent(event) }
+                            .contextMenu {
+                                Button("Show Details") { onSelectEvent(event) }
+                                Button("Copy Title") {
+                                    NSPasteboard.general.clearContents()
+                                    NSPasteboard.general.setString(event.title, forType: .string)
+                                }
+                            }
+                            .draggable(TransferableCalendarEvent(from: event))
                     }
                     if eventsForDay(day).count > 2 {
                         Text(String(format: "calendar.more_events".localized, eventsForDay(day).count - 2))
@@ -1265,8 +1501,13 @@ private struct AllDayRow: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                .frame(maxWidth: .infinity, minHeight: 40, alignment: .topLeading)
-                .padding(.horizontal, 4)
+                    .frame(maxWidth: .infinity, minHeight: 40, alignment: .topLeading)
+                    .padding(.horizontal, 4)
+                    .dropDestination(for: TransferableCalendarEvent.self) { items, _ in
+                        guard let payload = items.first else { return false }
+                        updateEventDates(payload, to: day)
+                        return true
+                    }
             }
         }
         .padding(.top, 4)
@@ -1281,6 +1522,7 @@ private struct AllDayRow: View {
 
 private struct CalendarEventBlock: View {
     let event: CalendarEvent
+    var isSelected: Bool = false
 
     var body: some View {
         HStack(spacing: 6) {
@@ -1300,8 +1542,40 @@ private struct CalendarEventBlock: View {
         .padding(6)
         .background(
             RoundedRectangle(cornerRadius: 6, style: .continuous)
-                .fill(event.category.color.opacity(0.15))
+                .fill(isSelected ? event.category.color.opacity(0.25) : event.category.color.opacity(0.15))
         )
+        .overlay(
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                .stroke(isSelected ? event.category.color.opacity(0.8) : event.category.color.opacity(0.25), lineWidth: isSelected ? 1.5 : 1)
+        )
+    }
+}
+
+private struct ResizeHandle: View {
+    var body: some View {
+        Rectangle()
+            .fill(Color.clear)
+            .contentShape(Rectangle())
+            .cursor(.resizeUpDown)
+    }
+}
+
+private struct ResizeTimeBadge: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .font(.caption2.weight(.semibold))
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .fill(Color(nsColor: .windowBackgroundColor).opacity(0.9))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    .stroke(Color(nsColor: .separatorColor).opacity(0.6), lineWidth: 1)
+            )
     }
 }
 
@@ -1309,11 +1583,13 @@ private struct CalendarDaySplitView: View {
     @Binding var date: Date
     let events: [CalendarEvent]
     @Binding var selectedEvent: CalendarEvent?
+    let onResizeEvent: (CalendarEvent, Int, Bool) -> Void
+    let onMoveEvent: (TransferableCalendarEvent, Date) -> Void
     private let calendar = Calendar.current
 
     var body: some View {
         HStack(spacing: 0) {
-            CalendarDayTimelineView(date: date, events: events) { event in
+            CalendarDayTimelineView(date: date, events: events, selectedEvent: $selectedEvent, onResizeEvent: onResizeEvent, onMoveEvent: onMoveEvent) { event in
                 selectedEvent = event
             }
             Divider()
@@ -1326,9 +1602,13 @@ private struct CalendarDaySplitView: View {
 private struct CalendarDayTimelineView: View {
     let date: Date
     let events: [CalendarEvent]
+    @Binding var selectedEvent: CalendarEvent?
+    let onResizeEvent: (CalendarEvent, Int, Bool) -> Void
+    let onMoveEvent: (TransferableCalendarEvent, Date) -> Void
     let onSelectEvent: (CalendarEvent) -> Void
     private let calendar = Calendar.current
     private let hourHeight: CGFloat = 52
+    @State private var resizing: ResizeState?
 
     var body: some View {
         ScrollView {
@@ -1336,6 +1616,7 @@ private struct CalendarDayTimelineView: View {
                 timeGrid
                 eventBlocks
                 nowLine
+                dropTarget
             }
         }
     }
@@ -1368,14 +1649,122 @@ private struct CalendarDayTimelineView: View {
         GeometryReader { proxy in
             let contentWidth = proxy.size.width - 52
             ForEach(dayEvents) { event in
-                let startOffset = minutesFromStart(event.startDate) * hourHeight / 60
-                let duration = max(event.endDate.timeIntervalSince(event.startDate) / 60, 30)
+                let adjusted = resizedEvent(event)
+                let startOffset = minutesFromStart(adjusted.start) * hourHeight / 60
+                let duration = max(adjusted.end.timeIntervalSince(adjusted.start) / 60, 30)
                 let height = CGFloat(duration) * hourHeight / 60
-                CalendarEventBlock(event: event)
+                CalendarEventBlock(event: event, isSelected: selectedEvent?.id == event.id)
                     .frame(width: contentWidth - 12, height: height)
                     .position(x: 52 + (contentWidth / 2), y: startOffset + height / 2)
+                    .overlay(alignment: .topTrailing) {
+                        if let resizing, resizing.eventId == event.id {
+                            ResizeTimeBadge(text: resizeLabel(for: event, state: resizing))
+                                .offset(x: -6, y: 6)
+                        }
+                    }
                     .onTapGesture { onSelectEvent(event) }
+                    .draggable(TransferableCalendarEvent(from: event))
+                    .contextMenu {
+                        Button("Show Details") { onSelectEvent(event) }
+                        Button("Copy Title") {
+                            NSPasteboard.general.clearContents()
+                            NSPasteboard.general.setString(event.title, forType: .string)
+                        }
+                    }
+                    .overlay(alignment: .top) {
+                        ResizeHandle()
+                            .frame(height: 6)
+                            .gesture(resizeGesture(event: event, isStart: true))
+                    }
+                    .overlay(alignment: .bottom) {
+                        ResizeHandle()
+                            .frame(height: 6)
+                            .gesture(resizeGesture(event: event, isStart: false))
+                    }
             }
+        }
+    }
+
+    private func resizeGesture(event: CalendarEvent, isStart: Bool) -> some Gesture {
+        DragGesture(minimumDistance: 4)
+            .onChanged { value in
+                let deltaMinutes = snapMinutes(Int((value.translation.height / hourHeight) * 60))
+                resizing = ResizeState(eventId: event.id, isStart: isStart, deltaMinutes: deltaMinutes)
+            }
+            .onEnded { value in
+                let deltaMinutes = snapMinutes(Int((value.translation.height / hourHeight) * 60))
+                onResizeEvent(event, deltaMinutes, isStart)
+                resizing = nil
+            }
+    }
+
+    private func resizedEvent(_ event: CalendarEvent) -> (start: Date, end: Date) {
+        guard let resizing, resizing.eventId == event.id else {
+            return (event.startDate, event.endDate)
+        }
+        let minimumDuration: TimeInterval = 30 * 60
+        if resizing.isStart {
+            let newStart = calendar.date(byAdding: .minute, value: resizing.deltaMinutes, to: event.startDate) ?? event.startDate
+            let cappedStart = event.endDate.timeIntervalSince(newStart) < minimumDuration
+                ? event.endDate.addingTimeInterval(-minimumDuration)
+                : newStart
+            return (cappedStart, event.endDate)
+        }
+        let newEnd = calendar.date(byAdding: .minute, value: resizing.deltaMinutes, to: event.endDate) ?? event.endDate
+        let cappedEnd = newEnd.timeIntervalSince(event.startDate) < minimumDuration
+            ? event.startDate.addingTimeInterval(minimumDuration)
+            : newEnd
+        return (event.startDate, cappedEnd)
+    }
+
+    private func snapMinutes(_ minutes: Int) -> Int {
+        let interval = 30
+        return Int((Double(minutes) / Double(interval)).rounded()) * interval
+    }
+
+    private func resizeLabel(for event: CalendarEvent, state: ResizeState) -> String {
+        let adjusted = resizedEvent(event)
+        let formatter = LocaleFormatters.timeFormatter(use24Hour: AppSettingsModel.shared.use24HourTime)
+        let start = formatter.string(from: adjusted.start)
+        let end = formatter.string(from: adjusted.end)
+        return state.isStart ? "\(start) –" : "– \(end)"
+    }
+
+    private struct ResizeState {
+        let eventId: UUID
+        let isStart: Bool
+        let deltaMinutes: Int
+    }
+
+    private var dropTarget: some View {
+        GeometryReader { proxy in
+            Color.clear
+                .contentShape(Rectangle())
+                .dropDestination(for: TransferableCalendarEvent.self) { items, location in
+                    guard let payload = items.first else { return false }
+                    let minutes = snapMinutes(Int((location.y / hourHeight) * 60))
+                    let newStart = calendar.date(byAdding: .minute, value: minutes, to: calendar.startOfDay(for: date)) ?? date
+                    onMoveEvent(payload, newStart)
+                    return true
+                }
+        }
+    }
+
+    private var dropTarget: some View {
+        GeometryReader { proxy in
+            Color.clear
+                .contentShape(Rectangle())
+                .dropDestination(for: TransferableCalendarEvent.self) { items, location in
+                    guard let payload = items.first else { return false }
+                    let columnWidth = (proxy.size.width - 52) / 7
+                    let rawX = max(location.x - 52, 0)
+                    let dayIndex = min(6, max(0, Int(rawX / columnWidth)))
+                    let minutes = snapMinutes(Int((location.y / hourHeight) * 60))
+                    let dayDate = weekDays[dayIndex]
+                    let newStart = calendar.date(byAdding: .minute, value: minutes, to: calendar.startOfDay(for: dayDate)) ?? dayDate
+                    onMoveEvent(payload, newStart)
+                    return true
+                }
         }
     }
 
@@ -1450,7 +1839,7 @@ private struct CalendarDayDetailPanel: View {
             Spacer()
         }
         .padding(12)
-        .background(DesignSystem.Materials.card)
+        .background(DesignSystem.Colors.cardBackground)
     }
 }
 
@@ -1657,6 +2046,14 @@ private struct MonthCalendarView: View {
                                             )
                                         }
                                         .buttonStyle(.plain)
+                                        .draggable(TransferableCalendarEvent(from: event))
+                                        .contextMenu {
+                                            Button("Show Details") { onSelectEvent(event) }
+                                            Button("Copy Title") {
+                                                NSPasteboard.general.clearContents()
+                                                NSPasteboard.general.setString(event.title, forType: .string)
+                                            }
+                                        }
                                     }
                                     if dayEvents.count > 3 {
                                         Text(String(format: "calendar.more_events".localized, dayEvents.count - 3))
@@ -1670,8 +2067,13 @@ private struct MonthCalendarView: View {
                         .frame(maxWidth: 180)
                         .background(
                             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusSmall, style: .continuous)
-                                .fill(isSelected ? DesignSystem.Materials.surfaceHover : DesignSystem.Materials.surface)
+                                .fill(isSelected ? DesignSystem.Colors.cardBackground : DesignSystem.Colors.cardBackground)
                         )
+                        .dropDestination(for: TransferableCalendarEvent.self) { items, _ in
+                            guard let payload = items.first else { return false }
+                            updateEventDates(payload, to: day.date)
+                            return true
+                        }
                     }
                 }
                 .focused($isGridFocused)
@@ -1909,7 +2311,7 @@ private struct WeekCalendarView: View {
                 .frame(width: 38, height: 38)
                 .background(
                     Circle()
-                        .fill(isToday ? Color.accentColor.opacity(0.9) : Color(nsColor: .controlBackgroundColor).opacity(0.08))
+                        .fill(isToday ? Color.accentColor.opacity(0.18) : Color(nsColor: .controlBackgroundColor).opacity(0.08))
                 )
                 .foregroundColor(isToday ? .white : .primary.opacity(0.8))
         }
@@ -1978,7 +2380,7 @@ private struct CalendarSidebarView: View {
                 }
             }
         }
-        .background(DesignSystem.Materials.popup, in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+        .background(DesignSystem.Colors.cardBackground, in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                 .strokeBorder(Color(nsColor: .separatorColor).opacity(0.5), lineWidth: 1)
@@ -1993,7 +2395,7 @@ private struct EventRow: View {
     var body: some View {
         HStack(alignment: .top, spacing: DesignSystem.Layout.spacing.small) {
             Circle()
-                .fill(Color.accentColor)
+                .fill(Color.accentColor.opacity(0.6))
                 .frame(width: 6, height: 6)
                 .padding(.top, 6)
 
@@ -2271,7 +2673,7 @@ private struct EventChipsRow: View {
                         ForEach(events) { event in
                             HStack(spacing: DesignSystem.Layout.spacing.small) {
                                 Circle()
-                                    .fill(Color.accentColor.opacity(0.9))
+                                    .fill(Color.accentColor.opacity(0.18))
                                     .frame(width: 8, height: 8)
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(event.title)
@@ -2653,9 +3055,9 @@ private struct DayHeaderCard: View {
                 .frame(width: 38, height: 38)
                 .background(
                     Circle()
-                        .fill(day.isSelected ? Color.accentColor : Color.clear)
+                        .fill(day.isSelected ? Color.accentColor.opacity(0.18) : Color.clear)
                         .background(
-                            Circle().fill(DesignSystem.Materials.hud)
+                            Circle().fill(DesignSystem.Colors.sidebarBackground)
                         )
                 )
                 .foregroundColor(day.isSelected ? .white : .primary.opacity(0.8))
@@ -2687,7 +3089,7 @@ private struct MonthDayCell: View {
                 .background(
                     ZStack {
                         RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .fill(DesignSystem.Materials.hud)
+                            .fill(DesignSystem.Colors.sidebarBackground)
                         
                         RoundedRectangle(cornerRadius: 6, style: .continuous)
                             .fill(backgroundFill)
@@ -2713,19 +3115,19 @@ private struct MonthDayCell: View {
     private var textColor: Color {
         if day.isSelected { return .white }
         if !day.isInCurrentMonth { return .secondary.opacity(0.5) }
-        if day.isToday { return .accentColor }
+        if day.isToday { return .accentColor.opacity(0.18) }
         return .primary
     }
 
     private var backgroundFill: Color {
-        if day.isSelected { return .accentColor }
+        if day.isSelected { return .accentColor.opacity(0.18) }
         if day.isToday { return .accentColor.opacity(0.12) }
         return .clear
     }
 
     private var outlineColor: Color {
-        if day.isSelected { return Color.accentColor.opacity(0.3) }
-        if day.isToday { return Color.accentColor.opacity(0.4) }
+        if day.isSelected { return Color.accentColor.opacity(0.18) }
+        if day.isToday { return Color.accentColor.opacity(0.12) }
         return .clear
     }
     
@@ -2734,7 +3136,7 @@ private struct MonthDayCell: View {
     }
     
     private var shadowColor: Color {
-        if day.isSelected { return Color.accentColor.opacity(0.4) }
+        if day.isSelected { return Color.accentColor.opacity(0.18) }
         return .clear
     }
     

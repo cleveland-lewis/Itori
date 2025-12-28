@@ -150,10 +150,8 @@ struct GradesPageView: View {
                 Image(systemName: "square.and.arrow.up")
                     .font(.body)
                     .frame(width: 32, height: 32)
-                    .background(.thinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.bordered)
             .help("Share or export grades")
         }
     }
@@ -237,34 +235,44 @@ struct GradesPageView: View {
                 .pickerStyle(.menu)
             }
 
-            ScrollView {
-                VStack(spacing: 10) {
-                    ForEach(filteredCourses) { course in
-                        CourseGradeRow(
-                            course: course,
-                            isSelected: course.id == selectedCourseDetail?.course.id,
-                            isScenarioHighlight: false,
-                            onSelect: {
-                                withAnimation(DesignSystem.Motion.standardSpring) {
-                                    selectedCourseDetail = courseDetails.first(where: { $0.course.id == course.id })
-                                }
-                            },
-                            onEditTarget: {
-                                courseToEditTarget = course
-                                showEditTargetSheet = true
-                            },
-                            onEditCourse: {
-                                // find full Course model and present editor
-                                if let full = coursesStore.courses.first(where: { $0.id == course.id }) {
-                                    editingCourse = full
-                                    showNewCourseSheet = true
-                                }
-                            }
-                        )
+            List(selection: Binding(
+                get: { selectedCourseDetail?.course.id },
+                set: { newValue in
+                    guard let id = newValue else { return }
+                    if let course = courseDetails.first(where: { $0.course.id == id }) {
+                        withAnimation(DesignSystem.Motion.standardSpring) {
+                            selectedCourseDetail = course
+                        }
                     }
                 }
-                .padding(.vertical, 4)
+            )) {
+                ForEach(filteredCourses) { course in
+                    CourseGradeRow(
+                        course: course,
+                        isScenarioHighlight: false,
+                        onSelect: {
+                            withAnimation(DesignSystem.Motion.standardSpring) {
+                                selectedCourseDetail = courseDetails.first(where: { $0.course.id == course.id })
+                            }
+                        },
+                        onEditTarget: {
+                            courseToEditTarget = course
+                            showEditTargetSheet = true
+                        },
+                        onEditCourse: {
+                            // find full Course model and present editor
+                            if let full = coursesStore.courses.first(where: { $0.id == course.id }) {
+                                editingCourse = full
+                                showNewCourseSheet = true
+                            }
+                        }
+                    )
+                    .tag(course.id)
+                    .listRowBackground(DesignSystem.Colors.cardBackground)
+                }
             }
+            .listStyle(.inset)
+            .scrollContentBackground(.hidden)
         }
         .padding(16)
         .background(cardBackground)
@@ -490,7 +498,8 @@ struct GradesPageView: View {
     }
 
     private var cardBackground: some View {
-        RoundedRectangle(cornerRadius: cardCorner, style: .continuous).fill(.thinMaterial)
+        RoundedRectangle(cornerRadius: cardCorner, style: .continuous)
+            .fill(DesignSystem.Colors.cardBackground)
     }
 
     private var cardStroke: some View {
@@ -540,7 +549,7 @@ struct OverallStatusCard: View {
         .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(.thinMaterial)
+                .fill(DesignSystem.Colors.cardBackground)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
@@ -569,7 +578,6 @@ struct OverallStatusCard: View {
 
 struct CourseGradeRow: View {
     var course: GradeCourseSummary
-    var isSelected: Bool
     var isScenarioHighlight: Bool
     var onSelect: () -> Void
     var onEditTarget: () -> Void
@@ -578,57 +586,43 @@ struct CourseGradeRow: View {
     private var ringColor: Color { course.colorTag }
 
     var body: some View {
-        Button(action: onSelect) {
-            HStack(spacing: 12) {
-                Rectangle()
-                    .fill(ringColor)
-                    .frame(width: 4)
-                    .cornerRadius(2)
+        HStack(spacing: 12) {
+            Rectangle()
+                .fill(ringColor)
+                .frame(width: 4)
+                .cornerRadius(2)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("\(course.courseCode) · \(course.courseTitle)")
-                        .font(.caption.weight(.semibold))
-                        .foregroundColor(.primary)
-                        .lineLimit(1)
-                    HStack(spacing: 6) {
-                        if let pct = course.currentPercentage {
-                            Text("\(String(format: "%.1f", pct))%")
-                        } else {
-                            Text(NSLocalizedString("grades.label.no_grade", comment: ""))
-                        }
-                        if let letter = course.letterGrade { Text("· \(letter)") }
-                        Text("· \(course.creditHours) credits")
-                    }
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("\(course.courseCode) · \(course.courseTitle)")
+                    .font(.caption.weight(.semibold))
+                    .foregroundColor(.primary)
                     .lineLimit(1)
-                }
-
-                Spacer()
-
-                VStack(alignment: .trailing, spacing: 6) {
-                    ring
-                    if let target = course.targetPercentage {
-                        Text("Target \(Int(target))%")
-                            .font(.caption2.weight(.semibold))
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(Capsule().fill(Color(nsColor: .controlBackgroundColor)))
+                HStack(spacing: 6) {
+                    if let pct = course.currentPercentage {
+                        Text("\(String(format: "%.1f", pct))%")
+                    } else {
+                        Text(NSLocalizedString("grades.label.no_grade", comment: ""))
                     }
+                    if let letter = course.letterGrade { Text("· \(letter)") }
+                    Text("· \(course.creditHours) credits")
+                }
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .lineLimit(1)
+            }
+
+            Spacer()
+
+            VStack(alignment: .trailing, spacing: 6) {
+                ring
+                if let target = course.targetPercentage {
+                    Text("Target \(Int(target))%")
+                        .font(.caption2.weight(.semibold))
                 }
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
-            .background(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(isSelected ? Color(nsColor: .controlAccentColor).opacity(0.12) : Color(nsColor: .controlBackgroundColor))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(isScenarioHighlight ? Color.accentColor : Color(nsColor: .separatorColor), lineWidth: 1)
-            )
         }
-        .buttonStyle(.plain)
+        .padding(.vertical, 8)
+        .contentShape(Rectangle())
         .contextMenu {
             Button("Edit Target") { onEditTarget() }
             if let onEditCourse = onEditCourse {

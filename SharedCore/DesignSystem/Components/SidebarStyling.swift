@@ -1,6 +1,15 @@
 import SwiftUI
 
 func makeSidebarBackground(colorScheme: ColorScheme) -> AnyView {
+    #if os(macOS)
+    let bg = Color.clear
+        .background(DesignSystem.Colors.sidebarBackground)
+        .overlay(
+            Rectangle()
+                .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(colorScheme == .dark ? 0.16 : 0.12), lineWidth: 0.4)
+        )
+        .background(DesignSystem.Colors.sidebarBackground)
+    #else
     let bg = Color.clear
         .background(DesignSystem.Materials.sidebar)
         .overlay(
@@ -8,6 +17,7 @@ func makeSidebarBackground(colorScheme: ColorScheme) -> AnyView {
                 .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(colorScheme == .dark ? 0.16 : 0.12), lineWidth: 0.4)
         )
         .background(DesignSystem.Colors.sidebarBackground)
+    #endif
     return AnyView(bg)
 }
 

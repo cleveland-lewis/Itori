@@ -1,0 +1,102 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Bundle display name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Roots"
+          }
+        }
+      }
+    },
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Roots"
+          }
+        }
+      }
+    },
+    "NSCalendarsFullAccessUsageDescription" : {
+      "comment" : "Privacy - Calendars Full Access Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Roots needs full calendar access to display and manage your schedule across courses and tasks."
+          }
+        }
+      }
+    },
+    "NSCalendarsUsageDescription" : {
+      "comment" : "Privacy - Calendars Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Roots needs access to your calendar to show and schedule classes and events."
+          }
+        }
+      }
+    },
+    "NSFaceIDUsageDescription" : {
+      "comment" : "Privacy - Face ID Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Roots uses Face ID to securely authenticate you when required features request identity verification."
+          }
+        }
+      }
+    },
+    "NSFocusStatusUsageDescription" : {
+      "comment" : "Privacy - Focus Status Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Roots uses your Focus status to pause alerts and adjust notifications during study sessions."
+          }
+        }
+      }
+    },
+    "NSRemindersFullAccessUsageDescription" : {
+      "comment" : "Privacy - Reminders Full Access Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Roots needs full reminders access to sync and manage your tasks safely across devices."
+          }
+        }
+      }
+    },
+    "NSRemindersUsageDescription" : {
+      "comment" : "Privacy - Reminders Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Roots needs access to your reminders to show tasks alongside your assignments."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.1"
+}

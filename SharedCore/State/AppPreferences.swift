@@ -95,6 +95,14 @@ struct RootsGlassBackgroundModifier: ViewModifier {
     var cornerRadius: CGFloat = 20
 
     func body(content: Content) -> some View {
+        #if os(macOS)
+        let background: AnyShapeStyle = AnyShapeStyle(Color(nsColor: NSColor.windowBackgroundColor))
+        return content
+            .background(
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(background)
+            )
+        #else
         // If reduceTransparency is set, use a solid background (less transparency). Otherwise use material.
         if preferences.reduceTransparency || !settings.enableGlassEffects {
             let background: AnyShapeStyle = AnyShapeStyle(Color(nsColor: NSColor.windowBackgroundColor))
@@ -115,6 +123,7 @@ struct RootsGlassBackgroundModifier: ViewModifier {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .fill(background)
             )
+        #endif
     }
 }
 

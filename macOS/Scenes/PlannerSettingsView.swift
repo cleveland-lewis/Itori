@@ -27,6 +27,7 @@ struct PlannerSettingsView: View {
             }
         }
         .formStyle(.grouped)
+        .navigationTitle("Planner")
     }
 }
 #endif

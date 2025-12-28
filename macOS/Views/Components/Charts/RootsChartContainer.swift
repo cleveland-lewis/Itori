@@ -43,7 +43,7 @@ struct RootsChartContainer<Content: View>: View {
                 .padding(12)
         }
         .background(RoundedRectangle(cornerRadius: DesignSystem.Corners.medium, style: .continuous)
-                        .fill(DesignSystem.Materials.card))
+                        .fill(DesignSystem.Colors.cardBackground))
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Corners.medium, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Corners.medium, style: .continuous)

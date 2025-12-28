@@ -61,7 +61,7 @@ struct PracticeTestGeneratorView: View {
             .buttonStyle(.plain)
         }
         .padding()
-        .background(.ultraThinMaterial)
+        .background(DesignSystem.Colors.cardBackground)
     }
     
     // MARK: - Course Selection
@@ -249,7 +249,7 @@ struct PracticeTestGeneratorView: View {
             .keyboardShortcut(.defaultAction)
         }
         .padding()
-        .background(.ultraThinMaterial)
+        .background(DesignSystem.Colors.cardBackground)
     }
     
     private var canGenerate: Bool {

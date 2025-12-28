@@ -25,7 +25,7 @@ struct DayEventsSidebar: View {
             content
         }
         .padding() // match calendar card padding so rounded backgrounds align
-        .background(DesignSystem.Materials.card)
+        .background(DesignSystem.Colors.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
         .shadow(color: Color.black.opacity(0.06), radius: 8, y: 4)
     }

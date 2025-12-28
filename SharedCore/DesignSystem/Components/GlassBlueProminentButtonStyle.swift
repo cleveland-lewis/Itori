@@ -5,8 +5,23 @@ struct GlassBlueProminentButtonStyle: ButtonStyle {
     @Environment(\.colorScheme) private var colorScheme
 
     func makeBody(configuration: Configuration) -> some View {
+        #if os(macOS)
+        configuration.label
+            .font(DesignSystem.Typography.subHeader)
+            .foregroundStyle(.white)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .background(
+                RoundedRectangle(cornerRadius: DesignSystem.Cards.cardCornerRadius, style: .continuous)
+                    .fill(Color.accentColor)
+            )
+            .opacity(configuration.isPressed ? 0.9 : 1.0)
+            .onHover { hovering in
+                if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+            }
+        #else
         let policy = MaterialPolicy(preferences: preferences)
-        
+
         configuration.label
             .font(DesignSystem.Typography.subHeader)
             .foregroundStyle(.white)
@@ -39,6 +54,7 @@ struct GlassBlueProminentButtonStyle: ButtonStyle {
                 if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
                 #endif
             }
+        #endif
     }
 }
 

@@ -99,7 +99,7 @@ struct PracticeTestPageView: View {
             }
         }
         .padding()
-        .background(.ultraThinMaterial)
+        .background(DesignSystem.Colors.cardBackground)
     }
     
     private var emptyStateView: some View {
@@ -170,7 +170,7 @@ struct PracticeTestPageView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(.ultraThinMaterial)
+        .background(DesignSystem.Colors.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
     
@@ -228,7 +228,7 @@ struct PracticeTestPageView: View {
                     .foregroundStyle(.tertiary)
             }
             .padding()
-            .background(.ultraThinMaterial)
+            .background(DesignSystem.Colors.cardBackground)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(.plain)
@@ -339,7 +339,7 @@ struct PracticeTestPageView: View {
     
     private func startScheduledTest(_ scheduledTest: ScheduledPracticeTest) {
         // Record the attempt
-        let attempt = scheduledTestsStore.startTest(scheduledTest: scheduledTest)
+        _ = scheduledTestsStore.startTest(scheduledTest: scheduledTest)
         
         // Create a practice test request based on scheduled test info
         Task {

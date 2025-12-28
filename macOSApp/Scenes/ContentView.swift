@@ -173,21 +173,7 @@ struct ContentView: View {
         case .timer:
             TimerPageView()
         case .flashcards:
-            if settings.enableFlashcards {
-                FlashcardDashboard()
-            } else {
-                VStack(spacing: 12) {
-                    Image(systemName: "rectangle.stack.badge.person.crop")
-                        .font(.title)
-                        .foregroundStyle(.secondary)
-                    Text("Flashcards are turned off")
-                        .font(DesignSystem.Typography.subHeader)
-                    Text("Enable flashcards in Settings → Flashcards to study decks.")
-                        .font(DesignSystem.Typography.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
+            FlashcardsView()
         case .practice:
             PracticeTestPageView()
         case .settings:

@@ -95,10 +95,6 @@ struct RootsApp: App {
                 .detectReduceMotion()
                 .onAppear {
                     LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")
-                    // Sync stored AppSettingsModel -> AppPreferences on launch
-                    preferences.highContrast = appSettings.highContrastMode
-                    preferences.reduceTransparency = appSettings.increaseTransparency
-                    preferences.glassIntensity = appSettings.glassIntensity
 
                     // Subscribe to app reset requests from AppModel
                     resetCancellable = AppModel.shared.resetPublisher
@@ -112,22 +108,6 @@ struct RootsApp: App {
                             GradesStore.shared.resetAll()
                             LOG_LIFECYCLE(.info, "AppReset", "Global app reset complete")
                         }
-                }
-                .onChange(of: preferences.highContrast) { _, newValue in
-                    appSettings.highContrastMode = newValue
-                    appSettings.save()
-                }
-                .onChange(of: preferences.reduceTransparency) { _, newValue in
-                    appSettings.increaseTransparency = newValue
-                    appSettings.save()
-                }
-                // Reverse sync: when saved AppSettingsModel values change (from other settings UI), update AppPreferences
-                .onReceive(appSettings.objectWillChange) { _ in
-                    Task { @MainActor in
-                        preferences.highContrast = appSettings.highContrastMode
-                        preferences.reduceTransparency = appSettings.increaseTransparency
-                        preferences.glassIntensity = appSettings.glassIntensity
-                    }
                 }
                 .accentColor(preferences.currentAccentColor)
                 .buttonStyle(.glassBlueProminent)
