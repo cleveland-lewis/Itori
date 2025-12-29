@@ -50,6 +50,7 @@ struct AppTask: Codable, Equatable, Hashable {
     let title: String
     let courseId: UUID?
     let due: Date?
+    let dueTimeMinutes: Int?
     let estimatedMinutes: Int
     let minBlockMinutes: Int
     let maxBlockMinutes: Int
@@ -64,11 +65,12 @@ struct AppTask: Codable, Equatable, Hashable {
     var gradePossiblePoints: Double?
     var gradeEarnedPoints: Double?
 
-    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil, category: TaskType? = nil) {
+    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil, category: TaskType? = nil, dueTimeMinutes: Int? = nil) {
         self.id = id
         self.title = title
         self.courseId = courseId
-        self.due = due
+        self.due = due.map { Calendar.current.startOfDay(for: $0) }
+        self.dueTimeMinutes = dueTimeMinutes
         self.estimatedMinutes = estimatedMinutes
         self.minBlockMinutes = minBlockMinutes
         self.maxBlockMinutes = maxBlockMinutes
@@ -89,6 +91,7 @@ struct AppTask: Codable, Equatable, Hashable {
         case title
         case courseId
         case due
+        case dueTimeMinutes
         case estimatedMinutes
         case minBlockMinutes
         case maxBlockMinutes
@@ -110,7 +113,22 @@ struct AppTask: Codable, Equatable, Hashable {
         id = try container.decode(UUID.self, forKey: .id)
         title = try container.decode(String.self, forKey: .title)
         courseId = try container.decodeIfPresent(UUID.self, forKey: .courseId)
-        due = try container.decodeIfPresent(Date.self, forKey: .due)
+        let decodedDue = try container.decodeIfPresent(Date.self, forKey: .due)
+        let decodedDueTimeMinutes = try container.decodeIfPresent(Int.self, forKey: .dueTimeMinutes)
+        if let decodedDue {
+            let day = Calendar.current.startOfDay(for: decodedDue)
+            due = day
+            if let decodedDueTimeMinutes {
+                dueTimeMinutes = decodedDueTimeMinutes
+            } else {
+                let components = Calendar.current.dateComponents([.hour, .minute], from: decodedDue)
+                let minutes = (components.hour ?? 0) * 60 + (components.minute ?? 0)
+                dueTimeMinutes = minutes == 0 ? nil : minutes
+            }
+        } else {
+            due = nil
+            dueTimeMinutes = nil
+        }
         estimatedMinutes = try container.decodeIfPresent(Int.self, forKey: .estimatedMinutes) ?? 60
         minBlockMinutes = try container.decodeIfPresent(Int.self, forKey: .minBlockMinutes) ?? 20
         maxBlockMinutes = try container.decodeIfPresent(Int.self, forKey: .maxBlockMinutes) ?? 180
@@ -132,6 +150,7 @@ struct AppTask: Codable, Equatable, Hashable {
         try container.encode(title, forKey: .title)
         try container.encodeIfPresent(courseId, forKey: .courseId)
         try container.encodeIfPresent(due, forKey: .due)
+        try container.encodeIfPresent(dueTimeMinutes, forKey: .dueTimeMinutes)
         try container.encode(estimatedMinutes, forKey: .estimatedMinutes)
         try container.encode(minBlockMinutes, forKey: .minBlockMinutes)
         try container.encode(maxBlockMinutes, forKey: .maxBlockMinutes)
@@ -165,8 +184,26 @@ struct AppTask: Codable, Equatable, Hashable {
             gradeWeightPercent: gradeWeightPercent,
             gradePossiblePoints: gradePossiblePoints,
             gradeEarnedPoints: gradeEarnedPoints,
-            category: category
+            category: category,
+            dueTimeMinutes: dueTimeMinutes
         )
+    }
+}
+
+extension AppTask {
+    var effectiveDueDateTime: Date? {
+        guard let due else { return nil }
+        if let dueTimeMinutes {
+            return Calendar.current.date(byAdding: .minute, value: dueTimeMinutes, to: due)
+        }
+        var components = Calendar.current.dateComponents([.year, .month, .day], from: due)
+        components.hour = 23
+        components.minute = 59
+        return Calendar.current.date(from: components)
+    }
+    
+    var hasExplicitDueTime: Bool {
+        dueTimeMinutes != nil
     }
 }
 

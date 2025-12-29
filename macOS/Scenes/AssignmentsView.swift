@@ -111,7 +111,7 @@ struct AssignmentsView: View {
                     // Overdue
                     Section(header: Text("Overdue").font(DesignSystem.Typography.body)) {
                         let tasks = assignmentsStore.tasks.filter { t in
-                            if let d = t.due { return d < Date() }
+                            if let d = t.effectiveDueDateTime { return d < Date() }
                             return false
                         }
                         if tasks.isEmpty {

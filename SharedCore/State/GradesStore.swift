@@ -59,7 +59,7 @@ final class GradesStore: ObservableObject {
             let data = try JSONEncoder().encode(grades)
             try data.write(to: storageURL, options: [.atomic])
         } catch {
-            print("Failed to save grades: \(error)")
+            DebugLogger.log("Failed to save grades: \(error)")
         }
     }
 
@@ -70,7 +70,7 @@ final class GradesStore: ObservableObject {
             let decoded = try JSONDecoder().decode([GradeEntry].self, from: data)
             grades = decoded
         } catch {
-            print("Failed to load grades: \(error)")
+            DebugLogger.log("Failed to load grades: \(error)")
         }
     }
 }

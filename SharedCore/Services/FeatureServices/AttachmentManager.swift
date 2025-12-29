@@ -29,7 +29,7 @@ class AttachmentManager {
             do {
                 try fileManager.createDirectory(at: attachmentsDirectory, withIntermediateDirectories: true)
             } catch {
-                print("Error creating attachments directory: \(error)")
+                DebugLogger.log("Error creating attachments directory: \(error)")
             }
         }
     }
@@ -75,7 +75,7 @@ class AttachmentManager {
             guard let url = attachment.localURL else { return }
             try fileManager.removeItem(at: url)
         } catch {
-            print("Error deleting attachment file: \(error)")
+            DebugLogger.log("Error deleting attachment file: \(error)")
         }
     }
 
@@ -105,7 +105,7 @@ class AttachmentManager {
         NSWorkspace.shared.open(url)
         #else
         // For iOS, you'd use a document interaction controller or QuickLook
-        print("Opening files is primarily supported on macOS")
+        DebugLogger.log("Opening files is primarily supported on macOS")
         #endif
     }
 

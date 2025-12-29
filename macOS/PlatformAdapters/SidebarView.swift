@@ -10,7 +10,7 @@ struct SidebarView: View {
     var body: some View {
         let selectionBinding = Binding<RootTab?>(
             get: { selectedTab },
-            set: { if let v = $0 { selectedTab = v; print("[Sidebar] selected tab: \(selectedTab)") } }
+            set: { if let v = $0 { selectedTab = v; DebugLogger.log("[Sidebar] selected tab: \(selectedTab)") } }
         )
 
         List(selection: selectionBinding) {
@@ -66,7 +66,7 @@ private struct SidebarItemRow: View {
         .contentShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
         .onHover { hovering in
             isHovered = hovering
-            if hovering { print("[Sidebar] hover over \(tab)") }
+            if hovering { DebugLogger.log("[Sidebar] hover over \(tab)") }
         }
         .animation(DesignSystem.Motion.interactiveSpring, value: isHovered)
         .animation(DesignSystem.Motion.interactiveSpring, value: selectedTab)

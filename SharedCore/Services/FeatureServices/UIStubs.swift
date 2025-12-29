@@ -498,7 +498,7 @@ struct AddEventPopup: View {
                 // refresh device events
                 await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
             } catch {
-                print("Failed to save event: \(error)")
+                DebugLogger.log("Failed to save event: \(error)")
             }
             isSaving = false
             dismiss()

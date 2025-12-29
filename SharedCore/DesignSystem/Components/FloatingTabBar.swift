@@ -93,7 +93,7 @@ struct FloatingTabBar: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             bounceTab = nil
         }
-        print("[TabBar] selected = \(tab.logKey)")
+        DebugLogger.log("[TabBar] selected = \(tab.logKey)")
     }
 }
 

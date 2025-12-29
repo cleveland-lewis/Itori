@@ -115,7 +115,6 @@ struct CalendarPageView: View {
     @State private var selectedEvent: CalendarEvent?
     @State private var metrics: CalendarStats = .empty
     @State private var showingNewEventSheet = false
-    @State private var events: [CalendarEvent] = []
     @State private var syncedEvents: [CalendarEvent] = []
     private var eventStore: EKEventStore { DeviceCalendarManager.shared.store }
 
@@ -158,7 +157,7 @@ struct CalendarPageView: View {
         
         let duration = (CFAbsoluteTimeGetCurrent() - startTime) * 1000
         if duration > 16 { // Log if filtering takes more than one frame
-            print("⚠️ Calendar filter took \(String(format: "%.2f", duration))ms")
+            DebugLogger.log("⚠️ Calendar filter took \(String(format: "%.2f", duration))ms")
         }
     }
 
@@ -221,7 +220,7 @@ struct CalendarPageView: View {
             updateFilteredEventsCache()
             updateMetrics()
             let duration = (CFAbsoluteTimeGetCurrent() - startTime) * 1000
-            print("📊 Calendar onAppear took \(String(format: "%.2f", duration))ms")
+            DebugLogger.log("📊 Calendar onAppear took \(String(format: "%.2f", duration))ms")
         }
         .onChange(of: focusedDate) { _, newValue in
             invalidateEventsCache()
@@ -615,7 +614,7 @@ struct CalendarPageView: View {
     }
 
     private var effectiveEvents: [CalendarEvent] {
-        syncedEvents.isEmpty ? events : syncedEvents
+        syncedEvents
     }
 
     private func requestAccessAndSync() {
@@ -644,7 +643,7 @@ struct CalendarPageView: View {
         }()
 
         if !(hasEventAccess || hasReminderAccess) {
-            print("📅 [CalendarPageView] syncEvents called without permissions")
+            DebugLogger.log("📅 [CalendarPageView] syncEvents called without permissions")
             return
         }
 
@@ -718,19 +717,11 @@ struct CalendarPageView: View {
             do {
                 try eventStore.save(ekEvent, span: .thisEvent)
             } catch {
-                print("⚠️ Failed to update event: \(error.localizedDescription)")
+                DebugLogger.log("⚠️ Failed to update event: \(error.localizedDescription)")
             }
         }
 
         syncedEvents = syncedEvents.map { event in
-            guard event.id == id else { return event }
-            var updated = event
-            updated.startDate = newStart
-            updated.endDate = newEnd
-            return updated
-        }
-
-        events = events.map { event in
             guard event.id == id else { return event }
             var updated = event
             updated.startDate = newStart
@@ -842,7 +833,7 @@ struct CalendarPageView: View {
             await MainActor.run {
                 self.metrics = calculatedMetrics
                 if duration > 16 {
-                    print("⚠️ Calendar metrics calculation took \(String(format: "%.2f", duration))ms")
+                    DebugLogger.log("⚠️ Calendar metrics calculation took \(String(format: "%.2f", duration))ms")
                 }
             }
         }

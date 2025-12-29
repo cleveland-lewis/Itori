@@ -33,8 +33,8 @@ public enum AIIntegrationEnforcement {
     /// Reports unauthorized integration attempts
     public static func reportViolation(_ message: String, file: String = #file, line: Int = #line) {
         #if DEBUG
-        print("⚠️ AI Integration Violation at \(file):\(line)")
-        print("   \(message)")
+        DebugLogger.log("⚠️ AI Integration Violation at \(file):\(line)")
+        DebugLogger.log("   \(message)")
         assertionFailure(message)
         #endif
     }

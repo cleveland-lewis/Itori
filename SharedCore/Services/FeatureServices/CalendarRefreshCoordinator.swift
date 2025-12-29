@@ -78,7 +78,7 @@ final class CalendarRefreshCoordinator: ObservableObject {
                 id: task.id,
                 title: task.title,
                 estimatedDurationMinutes: max(30, task.estimatedMinutes),
-                dueDate: task.due ?? endDate,
+                dueDate: task.effectiveDueDateTime ?? task.due ?? endDate,
                 priority: Int(task.importance * 10)
             )
         }

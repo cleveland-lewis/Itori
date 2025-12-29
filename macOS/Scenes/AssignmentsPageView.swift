@@ -414,8 +414,8 @@ struct AssignmentsPageView: View {
             switch selectedSegment {
             case .upcoming:
                 return assignment.status != .completed &&
-                assignment.dueDate >= tomorrow &&
-                assignment.dueDate <= upcomingEnd
+                assignment.effectiveDueDateTime >= tomorrow &&
+                assignment.effectiveDueDateTime <= upcomingEnd
             case .all:
                 return assignment.status != .archived
             case .completed:
@@ -445,7 +445,7 @@ struct AssignmentsPageView: View {
         // Sort
         switch sortOption {
         case .byDueDate:
-            result = result.sorted { $0.dueDate < $1.dueDate }
+            result = result.sorted { $0.effectiveDueDateTime < $1.effectiveDueDateTime }
         case .byCourse:
             result = result.sorted { ($0.courseCode ?? "") < ($1.courseCode ?? "") }
         case .byUrgency:
@@ -557,7 +557,7 @@ struct AssignmentsPageView: View {
             let suggestedLen = suggestedSessionLength(profile.sessionBias)
             let computedSessions = max(profile.minSessions, Int(round(Double(totalMinutes) / Double(suggestedLen))))
             let days = max(1, profile.spreadDaysBeforeDue)
-            print("Auto-plan for '\(assignment.title)': Typical: \(computedSessions) × \(suggestedLen) min across \(days) days (category: \(assignment.category.localizedName))")
+            DebugLogger.log("Auto-plan for '\(assignment.title)': Typical: \(computedSessions) × \(suggestedLen) min across \(days) days (category: \(assignment.category.localizedName))")
 
             // TODO: integrate with Planner engine to actually schedule SuggestedBlocks
         }
@@ -577,6 +577,9 @@ struct AssignmentsPageView: View {
             ensurePlan(AssignmentConverter.toAssignment(task, coursesStore: coursesStore))
         }
         assignments = converted
+        if AppSettingsModel.shared.devModeDataLogging {
+            DebugLogger.log("✅ AssignmentsPageView sync: \(assignments.count) assignments from store")
+        }
         if let selected = selectedAssignment,
            let refreshed = assignments.first(where: { $0.id == selected.id }) {
             selectedAssignment = refreshed
@@ -586,9 +589,9 @@ struct AssignmentsPageView: View {
     private func focusAssignment(closestTo dueDate: Date) {
         let sorted = assignments
             .filter { $0.status != .archived }
-            .sorted { $0.dueDate < $1.dueDate }
+            .sorted { $0.effectiveDueDateTime < $1.effectiveDueDateTime }
         guard !sorted.isEmpty else { return }
-        if let match = sorted.first(where: { $0.dueDate >= dueDate }) {
+        if let match = sorted.first(where: { $0.effectiveDueDateTime >= dueDate }) {
             selectedAssignment = match
         } else {
             selectedAssignment = sorted.first
@@ -754,7 +757,7 @@ struct UpcomingCountCard: View {
         let today = cal.startOfDay(for: Date())
         let upcoming = assignments.filter { task in
             guard task.status != .archived else { return false }
-            let due = task.dueDate
+            let due = task.effectiveDueDateTime
             return due >= today
         }.count
 
@@ -780,7 +783,7 @@ struct MissedCountCard: View {
         let today = cal.startOfDay(for: Date())
         let missed = assignments.filter { task in
             guard task.status != .archived else { return false }
-            let due = task.dueDate
+            let due = task.effectiveDueDateTime
             return due < today && task.status != .completed
         }.count
 
@@ -844,7 +847,7 @@ struct AssignmentsPageRow: View {
                         Text("·")
                         Text(String.localizedStringWithFormat(
                             "assignments.row.due".localized,
-                            dueFormatter.string(from: assignment.dueDate)
+                            formattedDueDisplay(for: assignment)
                         ))
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.primary)
@@ -892,7 +895,7 @@ struct AssignmentsPageRow: View {
         }
         .contextMenu {
             Button("timer.context.go_to_planner".localized) {
-                plannerCoordinator.openPlanner(for: assignment.dueDate, courseId: assignment.courseId)
+                plannerCoordinator.openPlanner(for: assignment.effectiveDueDateTime, courseId: assignment.courseId)
             }
         }
     }
@@ -931,10 +934,11 @@ struct AssignmentsPageRow: View {
             )
     }
 
-    private var dueFormatter: DateFormatter {
+    private func formattedDueDisplay(for assignment: Assignment) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "E, MMM d"
-        return formatter
+        formatter.dateFormat = assignment.hasExplicitDueTime ? "E, MMM d · h:mm a" : "E, MMM d"
+        let date = assignment.hasExplicitDueTime ? assignment.effectiveDueDateTime : assignment.dueDate
+        return formatter.string(from: date)
     }
 }
 
@@ -969,32 +973,33 @@ struct AssignmentDetailPanel: View {
     }
 
     private func header(for assignment: Assignment) -> some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .center, spacing: 12) {
                 Text(assignment.title)
                     .font(.title3.weight(.semibold))
-                Text(String.localizedStringWithFormat(
-                    "assignments.detail.course_line".localized,
-                    assignment.courseCode ?? "assignments.course.unknown".localized,
-                    assignment.courseName ?? "assignments.course.unknown".localized
-                ))
-                    .font(DesignSystem.Typography.caption)
-                    .foregroundColor(.secondary)
+                Spacer()
+                Text((assignment.status ?? .notStarted).label)
+                    .font(.caption.weight(.semibold))
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(
+                        Capsule().fill(Color(nsColor: .controlBackgroundColor))
+                    )
+                Button {
+                    onEdit(assignment)
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                }
+                .frame(width: 44, height: 44)
+                .buttonStyle(.plain)
             }
-            Spacer()
-            Text((assignment.status ?? .notStarted).label)
-                .font(.caption.weight(.semibold))
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-                .background(
-                    Capsule().fill(Color(nsColor: .controlBackgroundColor))
-                )
-            Button {
-                onEdit(assignment)
-            } label: {
-                Image(systemName: "ellipsis.circle")
-            }
-            .buttonStyle(.plain)
+            Text(String.localizedStringWithFormat(
+                "assignments.detail.course_line".localized,
+                assignment.courseCode ?? "assignments.course.unknown".localized,
+                assignment.courseName ?? "assignments.course.unknown".localized
+            ))
+                .font(DesignSystem.Typography.caption)
+                .foregroundColor(.secondary)
         }
     }
 
@@ -1002,10 +1007,10 @@ struct AssignmentDetailPanel: View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
             Text(String.localizedStringWithFormat(
                 "assignments.detail.due".localized,
-                fullDateFormatter.string(from: assignment.dueDate)
+                formattedDueDisplay(for: assignment)
             ))
                 .font(DesignSystem.Typography.subHeader)
-            Text(countdownText(for: assignment.dueDate))
+            Text(countdownText(for: assignment.effectiveDueDateTime))
                 .font(.footnote)
                 .foregroundColor(.secondary)
 
@@ -1117,7 +1122,7 @@ struct AssignmentDetailPanel: View {
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                     Button("assignments.detail.planner".localized) {
-                        plannerCoordinator.openPlanner(for: assignment.dueDate, courseId: assignment.courseId)
+                        plannerCoordinator.openPlanner(for: assignment.effectiveDueDateTime, courseId: assignment.courseId)
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.small)
@@ -1213,10 +1218,11 @@ struct AssignmentDetailPanel: View {
         }
     }
 
-    private var fullDateFormatter: DateFormatter {
+    private func formattedDueDisplay(for assignment: Assignment) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, MMM d · h:mm a"
-        return formatter
+        formatter.dateFormat = assignment.hasExplicitDueTime ? "EEEE, MMM d · h:mm a" : "EEEE, MMM d"
+        let date = assignment.hasExplicitDueTime ? assignment.effectiveDueDateTime : assignment.dueDate
+        return formatter.string(from: date)
     }
 }
 
@@ -1233,6 +1239,8 @@ struct AssignmentEditorSheet: View {
     @State private var selectedCourseId: UUID? = nil
     @State private var category: AssignmentCategory = .homework
     @State private var dueDate: Date = Date()
+    @State private var dueTimeMinutes: Int? = nil
+    @State private var hasSpecificDueTime = false
     @State private var estimatedMinutes: Int? = nil
     @State private var estimatedMinutesWasEdited = false
     @State private var lastEstimateSignature: EstimateSignature? = nil
@@ -1276,8 +1284,28 @@ struct AssignmentEditorSheet: View {
                     VStack(alignment: .leading, spacing: RootsSpacing.m) {
                         Text("assignments.editor.section.timing".localized).rootsSectionHeader()
                         RootsFormRow(label: "assignments.editor.field.due_date".localized) {
-                            DatePicker("", selection: $dueDate)
+                            DatePicker("", selection: $dueDate, displayedComponents: .date)
                                 .labelsHidden()
+                        } helper: {
+                            if !hasSpecificDueTime {
+                                Text("No time set - assumed due at 11:59 PM unless you set a time.")
+                                    .rootsCaption()
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        RootsFormRow(label: "Due Time") {
+                            Toggle("Set specific time", isOn: $hasSpecificDueTime)
+                                .toggleStyle(.switch)
+                        }
+                        if hasSpecificDueTime {
+                            RootsFormRow(label: "Due Time") {
+                                DatePicker(
+                                    "",
+                                    selection: dueTimeBinding,
+                                    displayedComponents: .hourAndMinute
+                                )
+                                .labelsHidden()
+                            }
                         }
                         RootsFormRow(label: "assignments.editor.field.estimated".localized) {
                             Stepper(value: estimatedMinutesBinding, in: 15...240, step: 15) {
@@ -1360,6 +1388,7 @@ struct AssignmentEditorSheet: View {
                         courseId: course?.id,
                         title: title,
                         dueDate: dueDate,
+                        dueTimeMinutes: hasSpecificDueTime ? dueTimeMinutes : nil,
                         estimatedMinutes: resolvedMinutes,
                         weightPercent: weight,
                         category: category,
@@ -1385,6 +1414,8 @@ struct AssignmentEditorSheet: View {
                 selectedCourseId = assignment.courseId
                 category = assignment.category
                 dueDate = assignment.dueDate
+                dueTimeMinutes = assignment.dueTimeMinutes
+                hasSpecificDueTime = assignment.dueTimeMinutes != nil
                 estimatedMinutes = assignment.estimatedMinutes
                 urgency = assignment.urgency
                 if let weight = assignment.weightPercent {
@@ -1394,6 +1425,7 @@ struct AssignmentEditorSheet: View {
                 notes = assignment.notes ?? "" as String
                 status = assignment.status ?? .notStarted
             } else {
+                hasSpecificDueTime = false
                 requestDurationEstimateIfNeeded()
             }
         }
@@ -1402,6 +1434,15 @@ struct AssignmentEditorSheet: View {
         }
         .onChange(of: dueDate) { _ in
             requestDurationEstimateIfNeeded()
+        }
+        .onChange(of: hasSpecificDueTime) { newValue in
+            if newValue {
+                if dueTimeMinutes == nil {
+                    dueTimeMinutes = 23 * 60 + 59
+                }
+            } else {
+                dueTimeMinutes = nil
+            }
         }
         .frame(minWidth: RootsWindowSizing.minPopupWidth, minHeight: RootsWindowSizing.minPopupHeight)
     }
@@ -1412,6 +1453,21 @@ struct AssignmentEditorSheet: View {
             set: { newValue in
                 estimatedMinutes = newValue
                 estimatedMinutesWasEdited = true
+            }
+        )
+    }
+
+    private var dueTimeBinding: Binding<Date> {
+        Binding(
+            get: {
+                let base = dueDate
+                let minutes = dueTimeMinutes ?? (23 * 60 + 59)
+                return Calendar.current.date(byAdding: .minute, value: minutes, to: Calendar.current.startOfDay(for: base)) ?? base
+            },
+            set: { newValue in
+                let components = Calendar.current.dateComponents([.hour, .minute], from: newValue)
+                let minutes = (components.hour ?? 0) * 60 + (components.minute ?? 0)
+                dueTimeMinutes = minutes
             }
         )
     }

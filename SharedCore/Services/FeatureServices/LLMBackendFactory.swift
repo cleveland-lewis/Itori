@@ -29,7 +29,7 @@ class LLMBackendFactory {
         let ollamaConfig = LLMBackendConfig.ollamaDefault
         let ollama = OllamaBackend(config: ollamaConfig)
         if await ollama.isAvailable {
-            print("[LLM] Detected Ollama backend")
+            DebugLogger.log("[LLM] Detected Ollama backend")
             return ollama
         }
         
@@ -38,13 +38,13 @@ class LLMBackendFactory {
         let mlxConfig = LLMBackendConfig.mlxDefault
         let mlx = MLXBackend(config: mlxConfig)
         if await mlx.isAvailable {
-            print("[LLM] Detected MLX backend")
+            DebugLogger.log("[LLM] Detected MLX backend")
             return mlx
         }
         #endif
         
         // Fall back to mock
-        print("[LLM] No real backend detected, using mock")
+        DebugLogger.log("[LLM] No real backend detected, using mock")
         return MockLLMBackend()
     }
     

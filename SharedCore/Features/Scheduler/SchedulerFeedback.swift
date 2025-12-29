@@ -44,7 +44,7 @@ final class SchedulerFeedbackStore {
             decoder.dateDecodingStrategy = .iso8601
             feedback = try decoder.decode([BlockFeedback].self, from: data)
         } catch {
-            print("Failed to load feedback: \(error)")
+            DebugLogger.log("Failed to load feedback: \(error)")
             feedback = []
         }
     }
@@ -58,7 +58,7 @@ final class SchedulerFeedbackStore {
             let data = try encoder.encode(feedback)
             try data.write(to: url, options: [.atomic, .completeFileProtection])
         } catch {
-            print("Failed to save feedback: \(error)")
+            DebugLogger.log("Failed to save feedback: \(error)")
         }
     }
 

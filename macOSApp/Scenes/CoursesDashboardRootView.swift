@@ -22,10 +22,10 @@ struct CoursesDashboardRootView: View {
                     selectedCourse: $selectedCourse,
                     semesters: semesters,
                     onNewCourse: {
-                        print("New Course tapped")
+                        DebugLogger.log("New Course tapped")
                     },
                     onEditCourses: {
-                        print("Edit Courses tapped")
+                        DebugLogger.log("Edit Courses tapped")
                     }
                 )
 

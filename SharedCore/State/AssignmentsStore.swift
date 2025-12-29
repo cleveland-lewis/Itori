@@ -19,11 +19,11 @@ final class AssignmentsStore: ObservableObject {
 
     @Published var tasks: [AppTask] = [] {
         didSet {
-            print("🔄 tasks didSet triggered: \(tasks.count) tasks, isLoadingFromDisk: \(isLoadingFromDisk)")
+            debugLog("🔄 tasks didSet triggered: \(tasks.count) tasks, isLoadingFromDisk: \(isLoadingFromDisk)")
             
             // Don't save while loading from disk to prevent data loss
             guard !isLoadingFromDisk else {
-                print("⏭️ Skipping save - loading from disk")
+                debugLog("⏭️ Skipping save - loading from disk")
                 return
             }
             
@@ -51,8 +51,10 @@ final class AssignmentsStore: ObservableObject {
         guard AppSettingsModel.shared.enableICloudSync else {
             return nil
         }
-        guard let ubiquityURL = FileManager.default.url(forUbiquityContainerIdentifier: nil) else {
-            print("⚠️ iCloud container not available")
+        // Explicitly use the container identifier from entitlements
+        let containerIdentifier = "iCloud.com.cwlewisiii.Roots"
+        guard let ubiquityURL = FileManager.default.url(forUbiquityContainerIdentifier: containerIdentifier) else {
+            // iCloud not configured - this is expected in development or if user hasn't enabled iCloud
             return nil
         }
         let documentsURL = ubiquityURL.appendingPathComponent("Documents")
@@ -73,9 +75,9 @@ final class AssignmentsStore: ObservableObject {
 
     // No sample data - provided methods to add/remove tasks programmatically
     func addTask(_ task: AppTask) {
-        print("➕ addTask called: \(task.title)")
+        debugLog("➕ addTask called: \(task.title)")
         tasks.append(task)
-        print("✅ Task added. Total tasks: \(tasks.count)")
+        debugLog("✅ Task added. Total tasks: \(tasks.count)")
         updateAppBadge()
         saveCache()
         _Concurrency.Task { await CalendarManager.shared.syncPlannerTaskToCalendar(task) }
@@ -118,6 +120,7 @@ final class AssignmentsStore: ObservableObject {
             courseId: task.courseId,
             title: task.title,
             dueDate: due,
+            dueTimeMinutes: task.dueTimeMinutes,
             estimatedMinutes: task.estimatedMinutes,
             weightPercent: task.gradeWeightPercent,
             category: assignmentCategory,
@@ -159,6 +162,7 @@ final class AssignmentsStore: ObservableObject {
             guard let idx = tasks.firstIndex(where: { $0.id == task.id }) else { return false }
             let old = tasks[idx]
             return old.due != task.due ||
+                   old.dueTimeMinutes != task.dueTimeMinutes ||
                    old.estimatedMinutes != task.estimatedMinutes ||
                    old.category != task.category ||
                    old.importance != task.importance
@@ -236,15 +240,15 @@ final class AssignmentsStore: ObservableObject {
 
     private func saveCache() {
         guard let url = cacheURL else {
-            print("❌ saveCache: No cache URL available")
+            debugLog("❌ saveCache: No cache URL available")
             return
         }
         do {
             let data = try JSONEncoder().encode(tasks)
             try data.write(to: url, options: .atomic)
-            print("💾 saveCache: Saved \(tasks.count) tasks to \(url.lastPathComponent)")
+            debugLog("💾 saveCache: Saved \(tasks.count) tasks to \(url.path)")
         } catch {
-            print("Failed to save tasks cache: \(error)")
+            debugLog("Failed to save tasks cache: \(error)")
         }
     }
 
@@ -260,17 +264,17 @@ final class AssignmentsStore: ObservableObject {
             // Migration validation: verify all tasks have category field populated
             let tasksNeedingMigration = tasks.filter { $0.category != $0.type }
             if !tasksNeedingMigration.isEmpty {
-                print("⚠️ Migration Notice: \(tasksNeedingMigration.count) tasks have different category/type values")
+                debugLog("⚠️ Migration Notice: \(tasksNeedingMigration.count) tasks have different category/type values")
             }
             
             // Verify no data loss
-            print("✅ Migration Complete: Loaded \(tasks.count) tasks successfully")
+            debugLog("✅ Migration Complete: Loaded \(tasks.count) tasks from \(url.path)")
             
             // Schedule notifications for all loaded incomplete tasks
             scheduleNotificationsForLoadedTasks()
         } catch {
             isLoadingFromDisk = false
-            print("❌ Failed to load tasks cache: \(error)")
+            debugLog("❌ Failed to load tasks cache: \(error)")
             
             // Attempt rollback-safe recovery
             attemptRollbackRecovery(from: url)
@@ -284,10 +288,10 @@ final class AssignmentsStore: ObservableObject {
         do {
             if FileManager.default.fileExists(atPath: url.path) {
                 try FileManager.default.copyItem(at: url, to: backupURL)
-                print("📦 Backup created at: \(backupURL.path)")
+                debugLog("📦 Backup created at: \(backupURL.path)")
             }
         } catch {
-            print("⚠️ Could not create backup: \(error)")
+            debugLog("⚠️ Could not create backup: \(error)")
         }
     }
     
@@ -325,7 +329,7 @@ final class AssignmentsStore: ObservableObject {
             
             // When coming back online, sync pending changes
             if !wasOnline && (self?.isOnline ?? false) {
-                print("📡 Network restored - syncing pending changes")
+                DebugLogger.log("📡 Network restored - syncing pending changes")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                     self?.syncPendingChanges()
                 }
@@ -337,20 +341,20 @@ final class AssignmentsStore: ObservableObject {
     private func trackPendingChanges() {
         // Store snapshot of current state for later sync
         pendingSyncQueue = tasks
-        print("📝 Tracked \(tasks.count) tasks for pending sync")
+        debugLog("📝 Tracked \(tasks.count) tasks for pending sync")
     }
     
     private func syncPendingChanges() {
         guard isSyncEnabled, isOnline, !pendingSyncQueue.isEmpty else { return }
         
-        print("🔄 Syncing \(pendingSyncQueue.count) pending changes to iCloud")
+        debugLog("🔄 Syncing \(pendingSyncQueue.count) pending changes to iCloud")
         saveToiCloud()
         pendingSyncQueue.removeAll()
     }
     
     private func loadFromiCloudIfEnabled() {
         guard isSyncEnabled else {
-            print("ℹ️ iCloud sync disabled - using local cache only")
+            debugLog("ℹ️ iCloud sync disabled - using local cache only")
             return
         }
         loadFromiCloud()
@@ -359,7 +363,7 @@ final class AssignmentsStore: ObservableObject {
     private func saveToiCloud() {
         guard let url = iCloudURL else { return }
         guard isSyncEnabled else {
-            print("ℹ️ iCloud sync disabled - skipping upload")
+            debugLog("ℹ️ iCloud sync disabled - skipping upload")
             return
         }
         
@@ -368,16 +372,16 @@ final class AssignmentsStore: ObservableObject {
             do {
                 let data = try JSONEncoder().encode(self.tasks)
                 try data.write(to: url, options: .atomic)
-                print("✅ Saved \(self.tasks.count) tasks to iCloud")
+                self.debugLog("✅ Saved \(self.tasks.count) tasks to iCloud at \(url.path)")
             } catch {
-                print("❌ Failed to save to iCloud: \(error)")
+                self.debugLog("❌ Failed to save to iCloud: \(error)")
             }
         }
     }
     
     private func loadFromiCloud() {
         guard let url = iCloudURL, FileManager.default.fileExists(atPath: url.path) else {
-            print("ℹ️ No iCloud data found, using local cache")
+            // No iCloud data - using local cache (this is normal)
             return
         }
         
@@ -391,12 +395,12 @@ final class AssignmentsStore: ObservableObject {
                 handleConflicts(cloudTasks: decoded)
             } else {
                 mergeWithiCloudData(decoded)
-                print("✅ Loaded \(decoded.count) tasks from iCloud")
+                debugLog("✅ Loaded \(decoded.count) tasks from iCloud at \(url.path)")
             }
             isLoadingFromDisk = false
         } catch {
             isLoadingFromDisk = false
-            print("❌ Failed to load from iCloud: \(error)")
+            debugLog("❌ Failed to load from iCloud: \(error)")
         }
     }
     
@@ -426,7 +430,7 @@ final class AssignmentsStore: ObservableObject {
     
     private func handleConflicts(cloudTasks: [AppTask]) {
         guard let conflictsFolder = conflictsFolderURL else {
-            print("⚠️ Cannot create conflicts folder - force merging")
+            debugLog("⚠️ Cannot create conflicts folder - force merging")
             mergeWithiCloudData(cloudTasks)
             return
         }
@@ -438,9 +442,9 @@ final class AssignmentsStore: ObservableObject {
         do {
             let localData = try JSONEncoder().encode(tasks)
             try localData.write(to: localURL)
-            print("💾 Saved local version to: \(localURL.lastPathComponent)")
+            debugLog("💾 Saved local version to: \(localURL.lastPathComponent)")
         } catch {
-            print("❌ Failed to save local conflict file: \(error)")
+            debugLog("❌ Failed to save local conflict file: \(error)")
         }
         
         // Save cloud version
@@ -448,9 +452,9 @@ final class AssignmentsStore: ObservableObject {
         do {
             let cloudData = try JSONEncoder().encode(cloudTasks)
             try cloudData.write(to: cloudURL)
-            print("☁️ Saved cloud version to: \(cloudURL.lastPathComponent)")
+            debugLog("☁️ Saved cloud version to: \(cloudURL.lastPathComponent)")
         } catch {
-            print("❌ Failed to save cloud conflict file: \(error)")
+            debugLog("❌ Failed to save cloud conflict file: \(error)")
         }
         
         // Post notification for user to resolve
@@ -468,10 +472,10 @@ final class AssignmentsStore: ObservableObject {
         }
         
         // For now, use cloud as default (can be changed by user later)
-        print("⚠️ SYNC CONFLICT DETECTED - Using cloud version as default")
-        print("   Local: \(tasks.count) tasks")
-        print("   Cloud: \(cloudTasks.count) tasks")
-        print("   Conflict files saved for manual resolution")
+        debugLog("⚠️ SYNC CONFLICT DETECTED - Using cloud version as default")
+        debugLog("   Local: \(tasks.count) tasks")
+        debugLog("   Cloud: \(cloudTasks.count) tasks")
+        debugLog("   Conflict files saved for manual resolution")
         
         mergeWithiCloudData(cloudTasks)
     }
@@ -515,6 +519,8 @@ final class AssignmentsStore: ObservableObject {
                 // Check if file was modified recently (within last minute)
                 if let modDate = modificationDate,
                    Date().timeIntervalSince(modDate) < 60 {
+                    let age = Int(Date().timeIntervalSince(modDate))
+                    self.debugLog("☁️ iCloud file updated recently (\(age)s ago) at \(modDate) - reloading \(url.path)")
                     DispatchQueue.main.async {
                         self.loadFromiCloud()
                     }
@@ -537,10 +543,10 @@ final class AssignmentsStore: ObservableObject {
             let data: Data
             if useLocal {
                 data = try Data(contentsOf: localURL)
-                print("🔧 User chose LOCAL version")
+                debugLog("🔧 User chose LOCAL version")
             } else {
                 data = try Data(contentsOf: cloudURL)
-                print("🔧 User chose CLOUD version")
+                debugLog("🔧 User chose CLOUD version")
             }
             
             let resolvedTasks = try JSONDecoder().decode([AppTask].self, from: data)
@@ -555,9 +561,9 @@ final class AssignmentsStore: ObservableObject {
             try? FileManager.default.removeItem(at: localURL)
             try? FileManager.default.removeItem(at: cloudURL)
             
-            print("✅ Conflict resolved - \(resolvedTasks.count) tasks loaded")
+            debugLog("✅ Conflict resolved - \(resolvedTasks.count) tasks loaded")
         } catch {
-            print("❌ Failed to resolve conflict: \(error)")
+            debugLog("❌ Failed to resolve conflict: \(error)")
         }
     }
     
@@ -601,9 +607,14 @@ final class AssignmentsStore: ObservableObject {
             try? FileManager.default.removeItem(at: localURL)
             try? FileManager.default.removeItem(at: cloudURL)
             
-            print("✅ Conflicts merged - \(tasks.count) total tasks")
+            debugLog("✅ Conflicts merged - \(tasks.count) total tasks")
         } catch {
-            print("❌ Failed to merge conflicts: \(error)")
+            debugLog("❌ Failed to merge conflicts: \(error)")
         }
+    }
+
+    private func debugLog(_ message: String) {
+        guard AppSettingsModel.shared.devModeDataLogging else { return }
+        DebugLogger.log(message)
     }
 }

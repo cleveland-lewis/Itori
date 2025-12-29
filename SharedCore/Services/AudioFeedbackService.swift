@@ -23,7 +23,7 @@ final class AudioFeedbackService {
             try session.setCategory(.ambient, mode: .default)
             try session.setActive(true)
         } catch {
-            print("Failed to configure audio session: \(error)")
+            DebugLogger.log("Failed to configure audio session: \(error)")
         }
         #endif
     }
@@ -103,7 +103,7 @@ final class AudioFeedbackService {
             }
             player.play()
         } catch {
-            print("Failed to play audio: \(error)")
+            DebugLogger.log("Failed to play audio: \(error)")
         }
     }
     
@@ -232,7 +232,7 @@ final class AudioFeedbackService {
             }
             player.play()
         } catch {
-            print("Failed to play audio: \(error)")
+            DebugLogger.log("Failed to play audio: \(error)")
         }
     }
     

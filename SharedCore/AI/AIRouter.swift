@@ -266,9 +266,9 @@ public final class AIRouter: ObservableObject {
         }
         
         #if DEBUG
-        print("🤖 AI Router: \(provider) - \(task.displayName) (\(latencyMs)ms) - \(success ? "✅" : "❌")")
+        DebugLogger.log("🤖 AI Router: \(provider) - \(task.displayName) (\(latencyMs)ms) - \(success ? "✅" : "❌")")
         if let error = errorMessage {
-            print("   Error: \(error)")
+            DebugLogger.log("   Error: \(error)")
         }
         #endif
     }

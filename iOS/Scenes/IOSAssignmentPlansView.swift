@@ -36,7 +36,7 @@ struct AssignmentPlanCard: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(assignment.title)
                     .font(.headline)
-                Text("Due \(formattedDate(assignment.dueDate))")
+                Text("Due \(formatDueDisplay(for: assignment))")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -121,6 +121,14 @@ struct AssignmentPlanCard: View {
     
     private func formattedDate(_ date: Date) -> String {
         LocaleFormatters.mediumDate.string(from: date)
+    }
+
+    private func formatDueDisplay(for assignment: Assignment) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = assignment.hasExplicitDueTime ? .short : .none
+        let date = assignment.hasExplicitDueTime ? assignment.effectiveDueDateTime : assignment.dueDate
+        return formatter.string(from: date)
     }
 }
 
@@ -328,7 +336,7 @@ struct IOSAssignmentPlansView: View {
         }
         
         return filtered.compactMap { convertTaskToAssignment($0) }
-            .sorted { $0.dueDate < $1.dueDate }
+            .sorted { $0.effectiveDueDateTime < $1.effectiveDueDateTime }
     }
     
     private func convertTaskToAssignment(_ task: AppTask) -> Assignment? {
@@ -349,6 +357,7 @@ struct IOSAssignmentPlansView: View {
             courseId: task.courseId,
             title: task.title,
             dueDate: due,
+            dueTimeMinutes: task.dueTimeMinutes,
             estimatedMinutes: task.estimatedMinutes,
             weightPercent: task.gradeWeightPercent,
             category: assignmentCategory,

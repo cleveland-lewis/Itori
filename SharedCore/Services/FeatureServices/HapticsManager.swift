@@ -32,7 +32,7 @@ final class HapticsManager {
             try engine?.start()
         } catch {
             #if DEBUG
-            print("Haptics engine failed to start: \(error)")
+            DebugLogger.log("Haptics engine failed to start: \(error)")
             #endif
             engine = nil
             supportsHaptics = false
@@ -76,7 +76,7 @@ final class HapticsManager {
             try player.start(atTime: 0)
         } catch {
             #if DEBUG
-            print("Failed to play warning haptic: \(error)")
+            DebugLogger.log("Failed to play warning haptic: \(error)")
             #endif
             NSHapticFeedbackManager.defaultPerformer.perform(.levelChange, performanceTime: .now)
         }
@@ -97,7 +97,7 @@ final class HapticsManager {
             try player.start(atTime: 0)
         } catch {
             #if DEBUG
-            print("Failed to play error haptic: \(error)")
+            DebugLogger.log("Failed to play error haptic: \(error)")
             #endif
             NSHapticFeedbackManager.defaultPerformer.perform(.levelChange, performanceTime: .now)
         }

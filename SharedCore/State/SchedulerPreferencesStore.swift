@@ -26,7 +26,7 @@ final class SchedulerPreferencesStore {
             decoder.dateDecodingStrategy = .iso8601
             preferences = try decoder.decode(SchedulerPreferences.self, from: data)
         } catch {
-            print("Failed to load prefs: \(error)")
+            DebugLogger.log("Failed to load prefs: \(error)")
             preferences = SchedulerPreferences.default()
         }
     }
@@ -39,7 +39,7 @@ final class SchedulerPreferencesStore {
             let data = try encoder.encode(preferences)
             try data.write(to: url, options: [.atomic, .completeFileProtection])
         } catch {
-            print("Failed to save prefs: \(error)")
+            DebugLogger.log("Failed to save prefs: \(error)")
         }
     }
 }

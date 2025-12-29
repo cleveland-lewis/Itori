@@ -208,7 +208,7 @@ struct GradesPageView: View {
                 Button {
                     gradeAnalyticsWindowOpen = true
                     // Placeholder: open analytics window
-                    print("Analytics tapped")
+                    DebugLogger.log("Analytics tapped")
                 } label: {
                     Label("Analytics", systemImage: "chart.bar.xaxis")
                         .font(.caption.weight(.semibold))

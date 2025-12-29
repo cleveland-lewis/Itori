@@ -557,7 +557,7 @@ struct AssignmentsPageView: View {
             let suggestedLen = suggestedSessionLength(profile.sessionBias)
             let computedSessions = max(profile.minSessions, Int(round(Double(totalMinutes) / Double(suggestedLen))))
             let days = max(1, profile.spreadDaysBeforeDue)
-            print("Auto-plan for '\(assignment.title)': Typical: \(computedSessions) × \(suggestedLen) min across \(days) days (category: \(assignment.category.localizedName))")
+            DebugLogger.log("Auto-plan for '\(assignment.title)': Typical: \(computedSessions) × \(suggestedLen) min across \(days) days (category: \(assignment.category.localizedName))")
 
             // TODO: integrate with Planner engine to actually schedule SuggestedBlocks
         }
@@ -577,6 +577,9 @@ struct AssignmentsPageView: View {
             ensurePlan(AssignmentConverter.toAssignment(task, coursesStore: coursesStore))
         }
         assignments = converted
+        if AppSettingsModel.shared.devModeDataLogging {
+            DebugLogger.log("✅ AssignmentsPageView sync: \(assignments.count) assignments from store")
+        }
         if let selected = selectedAssignment,
            let refreshed = assignments.first(where: { $0.id == selected.id }) {
             selectedAssignment = refreshed

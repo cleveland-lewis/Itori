@@ -172,7 +172,7 @@ final class SyllabusParsingStore: ObservableObject {
             self.parsingJobs = decoded.parsingJobs
             self.parsedAssignments = decoded.parsedAssignments
         } catch {
-            print("Failed to load syllabus parsing data: \(error)")
+            DebugLogger.log("Failed to load syllabus parsing data: \(error)")
         }
     }
     
@@ -185,7 +185,7 @@ final class SyllabusParsingStore: ObservableObject {
             let data = try JSONEncoder().encode(snapshot)
             try data.write(to: storageURL, options: [.atomic, .completeFileProtection])
         } catch {
-            print("Failed to persist syllabus parsing data: \(error)")
+            DebugLogger.log("Failed to persist syllabus parsing data: \(error)")
         }
     }
 }

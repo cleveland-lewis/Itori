@@ -294,13 +294,13 @@ class AlgorithmicTestGenerator {
     
     private func logInfo(_ category: String, _ message: String) {
         if enableDevLogs {
-            print("[\(category)] INFO: \(message)")
+            DebugLogger.log("[\(category)] INFO: \(message)")
         }
     }
     
     private func logError(_ category: String, _ message: String) {
         if enableDevLogs {
-            print("[\(category)] ERROR: \(message)")
+            DebugLogger.log("[\(category)] ERROR: \(message)")
         }
     }
 }

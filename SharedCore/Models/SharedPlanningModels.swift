@@ -90,6 +90,7 @@ public struct Assignment: Identifiable, Codable, Hashable {
     public var courseId: UUID?
     public var title: String
     public var dueDate: Date
+    public var dueTimeMinutes: Int?
     public var estimatedMinutes: Int
     public var weightPercent: Double?
     public var category: AssignmentCategory
@@ -108,6 +109,7 @@ public struct Assignment: Identifiable, Codable, Hashable {
         courseId: UUID? = nil,
         title: String = "",
         dueDate: Date = Date(),
+        dueTimeMinutes: Int? = nil,
         estimatedMinutes: Int = 60,
         weightPercent: Double? = nil,
         category: AssignmentCategory = .homework,
@@ -122,7 +124,8 @@ public struct Assignment: Identifiable, Codable, Hashable {
         self.id = id
         self.courseId = courseId
         self.title = title
-        self.dueDate = dueDate
+        self.dueDate = Calendar.current.startOfDay(for: dueDate)
+        self.dueTimeMinutes = dueTimeMinutes
         self.estimatedMinutes = estimatedMinutes
         self.weightPercent = weightPercent
         self.category = category
@@ -133,6 +136,70 @@ public struct Assignment: Identifiable, Codable, Hashable {
         self.courseCode = courseCode
         self.courseName = courseName
         self.notes = notes
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case courseId
+        case title
+        case dueDate
+        case dueTimeMinutes
+        case estimatedMinutes
+        case weightPercent
+        case category
+        case urgency
+        case isLockedToDueDate
+        case plan
+        case status
+        case courseCode
+        case courseName
+        case notes
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        courseId = try container.decodeIfPresent(UUID.self, forKey: .courseId)
+        title = try container.decode(String.self, forKey: .title)
+        let decodedDue = try container.decode(Date.self, forKey: .dueDate)
+        let decodedDueTimeMinutes = try container.decodeIfPresent(Int.self, forKey: .dueTimeMinutes)
+        dueDate = Calendar.current.startOfDay(for: decodedDue)
+        if let decodedDueTimeMinutes {
+            dueTimeMinutes = decodedDueTimeMinutes
+        } else {
+            let components = Calendar.current.dateComponents([.hour, .minute], from: decodedDue)
+            let minutes = (components.hour ?? 0) * 60 + (components.minute ?? 0)
+            dueTimeMinutes = minutes == 0 ? nil : minutes
+        }
+        estimatedMinutes = try container.decode(Int.self, forKey: .estimatedMinutes)
+        weightPercent = try container.decodeIfPresent(Double.self, forKey: .weightPercent)
+        category = try container.decode(AssignmentCategory.self, forKey: .category)
+        urgency = try container.decode(AssignmentUrgency.self, forKey: .urgency)
+        isLockedToDueDate = try container.decode(Bool.self, forKey: .isLockedToDueDate)
+        plan = try container.decodeIfPresent([PlanStepStub].self, forKey: .plan) ?? []
+        status = try container.decodeIfPresent(AssignmentStatus.self, forKey: .status)
+        courseCode = try container.decodeIfPresent(String.self, forKey: .courseCode)
+        courseName = try container.decodeIfPresent(String.self, forKey: .courseName)
+        notes = try container.decodeIfPresent(String.self, forKey: .notes)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encodeIfPresent(courseId, forKey: .courseId)
+        try container.encode(title, forKey: .title)
+        try container.encode(dueDate, forKey: .dueDate)
+        try container.encodeIfPresent(dueTimeMinutes, forKey: .dueTimeMinutes)
+        try container.encode(estimatedMinutes, forKey: .estimatedMinutes)
+        try container.encodeIfPresent(weightPercent, forKey: .weightPercent)
+        try container.encode(category, forKey: .category)
+        try container.encode(urgency, forKey: .urgency)
+        try container.encode(isLockedToDueDate, forKey: .isLockedToDueDate)
+        try container.encode(plan, forKey: .plan)
+        try container.encodeIfPresent(status, forKey: .status)
+        try container.encodeIfPresent(courseCode, forKey: .courseCode)
+        try container.encodeIfPresent(courseName, forKey: .courseName)
+        try container.encodeIfPresent(notes, forKey: .notes)
     }
 }
 
@@ -160,7 +227,7 @@ extension Assignment {
     }
     
     public var plannerDueDate: Date? {
-        dueDate
+        effectiveDueDateTime
     }
     
     public var plannerCourseId: UUID? {
@@ -193,5 +260,21 @@ extension Assignment {
         }()
         
         return min(1.0, max(0.0, baseForCategory + timeAdjustment))
+    }
+}
+
+extension Assignment {
+    public var effectiveDueDateTime: Date {
+        if let dueTimeMinutes {
+            return Calendar.current.date(byAdding: .minute, value: dueTimeMinutes, to: dueDate) ?? dueDate
+        }
+        var components = Calendar.current.dateComponents([.year, .month, .day], from: dueDate)
+        components.hour = 23
+        components.minute = 59
+        return Calendar.current.date(from: components) ?? dueDate
+    }
+    
+    public var hasExplicitDueTime: Bool {
+        dueTimeMinutes != nil
     }
 }

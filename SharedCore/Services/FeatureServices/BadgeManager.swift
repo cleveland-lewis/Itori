@@ -222,7 +222,7 @@ public final class BadgeManager: ObservableObject {
         #elseif os(iOS)
         UNUserNotificationCenter.current().setBadgeCount(count) { error in
             if let error {
-                print("Failed to set badge count: \(error.localizedDescription)")
+                DebugLogger.log("Failed to set badge count: \(error.localizedDescription)")
             }
         }
         #endif

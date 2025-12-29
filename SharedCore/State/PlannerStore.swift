@@ -290,7 +290,7 @@ final class PlannerStore: ObservableObject {
             let data = try JSONEncoder().encode(payload)
             try data.write(to: storageURL, options: [.atomic])
         } catch {
-            print("Failed to save planner sessions: \(error)")
+            DebugLogger.log("Failed to save planner sessions: \(error)")
         }
     }
 
@@ -302,7 +302,7 @@ final class PlannerStore: ObservableObject {
             scheduled = payload.scheduled
             overflow = payload.overflow
         } catch {
-            print("Failed to load planner sessions: \(error)")
+            DebugLogger.log("Failed to load planner sessions: \(error)")
         }
     }
 

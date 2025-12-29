@@ -190,7 +190,7 @@ final class Diagnostics: ObservableObject {
             assertionFailure("\(severity.rawValue): \(msg)")
         } else if severity == .error {
             // Don't crash on errors - just print to console
-            print("⚠️ ERROR: \(msg)")
+            DebugLogger.log("⚠️ ERROR: \(msg)")
         }
         #endif
     }

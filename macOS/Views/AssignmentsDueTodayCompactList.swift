@@ -47,8 +47,8 @@ struct AssignmentsDueTodayCompactList: View {
                                     Text("Course: \(cid.uuidString.prefix(6))")
                                         .font(.caption2)
                                         .foregroundColor(.secondary)
-                                } else if let due = task.due {
-                                    Text(due, style: .time)
+                                } else if task.due != nil {
+                                    Text(formattedDueDisplay(for: task))
                                         .font(.caption2)
                                         .foregroundColor(.secondary)
                                 }
@@ -64,6 +64,15 @@ struct AssignmentsDueTodayCompactList: View {
         }
         .padding(DesignSystem.Layout.padding.card)
         .glassCard(cornerRadius: 16)
+    }
+
+    private func formattedDueDisplay(for task: AppTask) -> String {
+        guard let due = task.due else { return "" }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = task.hasExplicitDueTime ? .short : .none
+        let date = task.hasExplicitDueTime ? (task.effectiveDueDateTime ?? due) : due
+        return formatter.string(from: date)
     }
 }
 #endif

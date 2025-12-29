@@ -126,7 +126,7 @@ final class DeepLinkRouter {
             settingsCoordinator.show(selecting: section ?? .general)
             return true
         case .invalid(let reason):
-            print("DeepLink invalid: \(reason)")
+            DebugLogger.log("DeepLink invalid: \(reason)")
             return false
         }
     }

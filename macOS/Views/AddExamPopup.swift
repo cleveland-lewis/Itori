@@ -47,7 +47,7 @@ struct AddExamPopup: View {
                         case .success(let url):
                             uploadedURLs.append(url)
                         case .failure(let err):
-                            print("import failed: \(err)")
+                            DebugLogger.log("import failed: \(err)")
                         }
                     }
 

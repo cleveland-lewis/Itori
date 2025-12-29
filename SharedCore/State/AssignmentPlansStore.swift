@@ -311,7 +311,7 @@ final class AssignmentPlansStore: ObservableObject {
             let data = try JSONEncoder().encode(payload)
             try data.write(to: storageURL, options: [.atomic])
         } catch {
-            print("Failed to save assignment plans: \(error)")
+            DebugLogger.log("Failed to save assignment plans: \(error)")
         }
     }
     
@@ -324,7 +324,7 @@ final class AssignmentPlansStore: ObservableObject {
             
             self.plans = Dictionary(uniqueKeysWithValues: payload.plans.map { ($0.assignmentId, $0) })
         } catch {
-            print("Failed to load assignment plans: \(error)")
+            DebugLogger.log("Failed to load assignment plans: \(error)")
         }
     }
     

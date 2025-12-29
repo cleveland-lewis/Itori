@@ -14,12 +14,12 @@ struct LocalizationManager {
         // If localization failed, it returns the key itself
         if localized == key {
             #if DEBUG
-            print("⚠️ LOCALIZATION MISSING in main bundle: \(key)")
+            DebugLogger.log("⚠️ LOCALIZATION MISSING in main bundle: \(key)")
             // Check if the .strings file exists
             if let stringsPath = Bundle.main.path(forResource: "Localizable", ofType: "strings") {
-                print("   Localizable.strings found at: \(stringsPath)")
+                DebugLogger.log("   Localizable.strings found at: \(stringsPath)")
             } else {
-                print("   Localizable.strings NOT FOUND in main bundle")
+                DebugLogger.log("   Localizable.strings NOT FOUND in main bundle")
             }
             #endif
             
@@ -87,31 +87,31 @@ struct LocalizationValidator {
     static func validateNoKeysVisible(in text: String) {
         if LocalizationManager.isLocalizationKey(text) {
             assertionFailure("🚨 LOCALIZATION KEY VISIBLE IN UI: \(text)")
-            print("🚨 RELEASE BLOCKER: Localization key visible: \(text)")
+            DebugLogger.log("🚨 RELEASE BLOCKER: Localization key visible: \(text)")
         }
     }
     
     /// Check all strings in Localizable.strings are valid
     static func auditLocalizationFiles() {
         guard let enPath = Bundle.main.path(forResource: "Localizable", ofType: "strings", inDirectory: nil, forLocalization: "en") else {
-            print("⚠️ English localization file not found")
+            DebugLogger.log("⚠️ English localization file not found")
             return
         }
         
         guard let dict = NSDictionary(contentsOfFile: enPath) as? [String: String] else {
-            print("⚠️ Could not parse localization file")
+            DebugLogger.log("⚠️ Could not parse localization file")
             return
         }
         
-        print("✅ Localization audit: \(dict.count) keys in English")
+        DebugLogger.log("✅ Localization audit: \(dict.count) keys in English")
         
         // Check for keys that look like they might be displayed directly
         for (key, value) in dict {
             if value == key {
-                print("⚠️ Key has no translation: \(key)")
+                DebugLogger.log("⚠️ Key has no translation: \(key)")
             }
             if value.isEmpty {
-                print("⚠️ Empty translation for key: \(key)")
+                DebugLogger.log("⚠️ Empty translation for key: \(key)")
             }
         }
     }

@@ -280,7 +280,7 @@ final class NotificationManager: ObservableObject {
         
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("Error scheduling daily overview: \(error.localizedDescription)")
+                DebugLogger.log("Error scheduling daily overview: \(error.localizedDescription)")
             }
         }
     }
@@ -439,12 +439,12 @@ final class NotificationManager: ObservableObject {
     #if DEBUG
     func printPendingNotifications() {
         UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
-            print("📬 Pending Notifications: \(requests.count)")
+            DebugLogger.log("📬 Pending Notifications: \(requests.count)")
             for request in requests {
-                print("  • \(request.identifier)")
+                DebugLogger.log("  • \(request.identifier)")
                 if let trigger = request.trigger as? UNCalendarNotificationTrigger,
                    let nextTrigger = trigger.nextTriggerDate() {
-                    print("    Next: \(nextTrigger)")
+                    DebugLogger.log("    Next: \(nextTrigger)")
                 }
             }
         }
@@ -461,9 +461,9 @@ final class NotificationManager: ObservableObject {
         
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
-                print("❌ Test notification failed: \(error)")
+                DebugLogger.log("❌ Test notification failed: \(error)")
             } else {
-                print("✅ Test notification scheduled for 5 seconds")
+                DebugLogger.log("✅ Test notification scheduled for 5 seconds")
             }
         }
     }

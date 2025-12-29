@@ -143,7 +143,7 @@ struct CalendarPageView: View {
         
         let duration = (CFAbsoluteTimeGetCurrent() - startTime) * 1000
         if duration > 16 { // Log if filtering takes more than one frame
-            print("⚠️ Calendar filter took \(String(format: "%.2f", duration))ms")
+            DebugLogger.log("⚠️ Calendar filter took \(String(format: "%.2f", duration))ms")
         }
     }
 
@@ -698,7 +698,7 @@ struct CalendarPageView: View {
         }()
 
         if !(hasEventAccess || hasReminderAccess) {
-            print("📅 [CalendarPageView] fetchEventsAsync called without permissions")
+            DebugLogger.log("📅 [CalendarPageView] fetchEventsAsync called without permissions")
             completion([], [])
             return
         }
@@ -856,7 +856,7 @@ struct CalendarPageView: View {
             await MainActor.run {
                 self.metrics = calculatedMetrics
                 if duration > 16 {
-                    print("⚠️ Calendar metrics calculation took \(String(format: "%.2f", duration))ms")
+                    DebugLogger.log("⚠️ Calendar metrics calculation took \(String(format: "%.2f", duration))ms")
                 }
             }
         }

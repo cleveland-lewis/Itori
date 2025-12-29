@@ -228,8 +228,8 @@ struct IOSDashboardView: View {
                                             .font(.caption)
                                             .foregroundStyle(.secondary)
                                     }
-                                    if let due = task.due {
-                                        Text("Due \(formattedShortDate(due))")
+                                    if task.due != nil {
+                                        Text("Due \(formatDueDisplay(for: task))")
                                             .font(.caption2)
                                             .foregroundStyle(.secondary)
                                     }
@@ -365,10 +365,10 @@ struct IOSDashboardView: View {
         return assignmentsStore.tasks
             .filter { !$0.isCompleted }
             .compactMap { task -> AppTask? in
-                guard let due = task.due else { return nil }
+                guard let due = task.effectiveDueDateTime else { return nil }
                 return (due >= now && due <= end) ? task : nil
             }
-            .sorted { ($0.due ?? Date.distantFuture) < ($1.due ?? Date.distantFuture) }
+            .sorted { ($0.effectiveDueDateTime ?? Date.distantFuture) < ($1.effectiveDueDateTime ?? Date.distantFuture) }
     }
 
     private var weekDays: [Date] {
@@ -391,11 +391,13 @@ struct IOSDashboardView: View {
         return "\(formatter.string(from: event.startDate))-\(formatter.string(from: event.endDate))"
     }
 
-    private func formattedShortDate(_ date: Date) -> String {
+    private func formatDueDisplay(for task: AppTask) -> String {
+        guard let due = task.due else { return "" }
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter.string(from: date)
+        formatter.timeStyle = task.hasExplicitDueTime ? .short : .none
+        let dateText = formatter.string(from: task.hasExplicitDueTime ? (task.effectiveDueDateTime ?? due) : due)
+        return dateText
     }
 
     private func courseName(for id: UUID?) -> String? {

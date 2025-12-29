@@ -123,7 +123,7 @@ public final class StudyHoursTracker: ObservableObject {
             let data = try Data(contentsOf: url)
             return try JSONDecoder().decode(StudyHoursTotals.self, from: data)
         } catch {
-            print("Failed to load study hours totals: \(error)")
+            DebugLogger.log("Failed to load study hours totals: \(error)")
             return StudyHoursTotals()
         }
     }
@@ -148,7 +148,7 @@ public final class StudyHoursTracker: ObservableObject {
             let array = try JSONDecoder().decode([UUID].self, from: data)
             return Set(array)
         } catch {
-            print("Failed to load completed session IDs: \(error)")
+            DebugLogger.log("Failed to load completed session IDs: \(error)")
             return []
         }
     }

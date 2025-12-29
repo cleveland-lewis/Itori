@@ -25,8 +25,8 @@ struct AssignmentDetailWindowView: View {
                     DetailRow(label: "Course", value: courseLabel)
                 }
                 DetailRow(label: "Type", value: typeLabel(task.type))
-                if let due = task.due {
-                    DetailRow(label: "Due Date", value: formattedDate(due))
+                if task.due != nil {
+                    DetailRow(label: "Due Date", value: formatDueDisplay(for: task))
                 } else {
                     DetailRow(label: "Due Date", value: "Not Set", isSecondary: true)
                 }
@@ -72,10 +72,12 @@ struct AssignmentDetailWindowView: View {
         }
     }
 
-    private func formattedDate(_ date: Date) -> String {
+    private func formatDueDisplay(for task: AppTask) -> String {
+        guard let due = task.due else { return "" }
         let formatter = DateFormatter()
         formatter.dateStyle = .long
-        formatter.timeStyle = .none
+        formatter.timeStyle = task.hasExplicitDueTime ? .short : .none
+        let date = task.hasExplicitDueTime ? (task.effectiveDueDateTime ?? due) : due
         return formatter.string(from: date)
     }
 

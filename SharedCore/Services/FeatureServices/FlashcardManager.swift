@@ -82,7 +82,7 @@ final class FlashcardManager: ObservableObject {
             let data = try JSONEncoder().encode(decks)
             try data.write(to: storageURL, options: [.atomic, .completeFileProtection])
         } catch {
-            print("[FlashcardManager] Failed to save flashcards: \(error)")
+            DebugLogger.log("[FlashcardManager] Failed to save flashcards: \(error)")
         }
     }
 
@@ -96,7 +96,7 @@ final class FlashcardManager: ObservableObject {
             let data = try Data(contentsOf: storageURL)
             decks = try JSONDecoder().decode([FlashcardDeck].self, from: data)
         } catch {
-            print("[FlashcardManager] Failed to load flashcards: \(error)")
+            DebugLogger.log("[FlashcardManager] Failed to load flashcards: \(error)")
             decks = []
         }
     }

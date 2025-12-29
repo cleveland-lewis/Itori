@@ -304,7 +304,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         do {
             try DeviceCalendarManager.shared.store.save(event, span: .thisEvent)
         } catch {
-            print("📅 [CalendarManager] Failed to save event: \(error)")
+            DebugLogger.log("📅 [CalendarManager] Failed to save event: \(error)")
         }
     }
 
@@ -635,7 +635,7 @@ extension CalendarManager {
             try store.save(event, span: .thisEvent, commit: true)
             await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
         } catch {
-            print("Failed to add quick event: \(error)")
+            DebugLogger.log("Failed to add quick event: \(error)")
         }
     }
 

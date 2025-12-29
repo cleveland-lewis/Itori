@@ -113,7 +113,7 @@ struct TimerPageView: View {
             }
         }
         .onAppear {
-            print("[TimerPageView] onAppear START")
+            DebugLogger.log("[TimerPageView] onAppear START")
             
             // Start the tick timer
             startTickTimer()
@@ -124,19 +124,19 @@ struct TimerPageView: View {
             if remainingSeconds == 0 {
                 remainingSeconds = TimeInterval(settings.pomodoroFocusMinutes * 60)
             }
-            print("[TimerPageView] setupTimerNotificationObservers START")
+            DebugLogger.log("[TimerPageView] setupTimerNotificationObservers START")
             setupTimerNotificationObservers()
-            print("[TimerPageView] setupTimerNotificationObservers END")
+            DebugLogger.log("[TimerPageView] setupTimerNotificationObservers END")
             if !loadedSessions {
-                print("[TimerPageView] loadSessions START")
+                DebugLogger.log("[TimerPageView] loadSessions START")
                 loadSessions()
                 loadedSessions = true
-                print("[TimerPageView] loadSessions END")
+                DebugLogger.log("[TimerPageView] loadSessions END")
             }
-            print("[TimerPageView] syncTimerWithAssignment START")
+            DebugLogger.log("[TimerPageView] syncTimerWithAssignment START")
             syncTimerWithAssignment()
-            print("[TimerPageView] syncTimerWithAssignment END")
-            print("[TimerPageView] onAppear END")
+            DebugLogger.log("[TimerPageView] syncTimerWithAssignment END")
+            DebugLogger.log("[TimerPageView] onAppear END")
         }
         .onChange(of: activities) { updateCachedValues() }
         .onChange(of: searchText) { updateCachedValues() }
@@ -269,7 +269,7 @@ struct TimerPageView: View {
                 let data = try JSONEncoder().encode(snapshot)
                 try data.write(to: url, options: .atomic)
             } catch {
-                print("Failed to persist timer sessions: \(error)")
+                DebugLogger.log("Failed to persist timer sessions: \(error)")
             }
         }
     }
@@ -308,7 +308,7 @@ struct TimerPageView: View {
                         let data = try JSONEncoder().encode(trimmed)
                         try data.write(to: url, options: .atomic)
                     } catch {
-                        print("Failed to compact timer sessions: \(error)")
+                        DebugLogger.log("Failed to compact timer sessions: \(error)")
                     }
                 }
                 

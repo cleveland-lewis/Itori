@@ -256,7 +256,7 @@ class PracticeTestStore {
             let data = try JSONEncoder().encode(tests)
             UserDefaults.standard.set(data, forKey: storageKey)
         } catch {
-            print("Failed to save practice tests: \(error)")
+            DebugLogger.log("Failed to save practice tests: \(error)")
         }
     }
     
@@ -267,7 +267,7 @@ class PracticeTestStore {
             tests = try JSONDecoder().decode([PracticeTest].self, from: data)
             updateSummary()
         } catch {
-            print("Failed to load practice tests: \(error)")
+            DebugLogger.log("Failed to load practice tests: \(error)")
             tests = []
         }
     }

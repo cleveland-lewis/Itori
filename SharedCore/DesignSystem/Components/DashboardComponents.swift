@@ -482,7 +482,7 @@ struct DashboardCalendarEvent: Identifiable {
                     .foregroundStyle(.secondary)
             } header: {
                 Button {
-                    print("Add tapped")
+                    DebugLogger.log("Add tapped")
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -508,7 +508,7 @@ struct DashboardCalendarEvent: Identifiable {
                     title: "No Events",
                     systemImage: "calendar.badge.exclamationmark",
                     description: "Add your first event to get started",
-                    action: { print("Add event") },
+                    action: { DebugLogger.log("Add event") },
                     actionTitle: "Add Event"
                 )
             }

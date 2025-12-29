@@ -53,16 +53,16 @@ struct MainThreadDebuggerView: View {
             HStack {
                 Toggle("Enable Main Thread Debugger", isOn: Binding(
                     get: { 
-                        print("🔍 Toggle GET called - debugger.isEnabled = \(debugger.isEnabled)")
+                        DebugLogger.log("🔍 Toggle GET called - debugger.isEnabled = \(debugger.isEnabled)")
                         return debugger.isEnabled 
                     },
                     set: { newValue in
-                        print("🔍 Toggle SET called with newValue = \(newValue)")
-                        print("🔍 About to call debugger.toggle()...")
+                        DebugLogger.log("🔍 Toggle SET called with newValue = \(newValue)")
+                        DebugLogger.log("🔍 About to call debugger.toggle()...")
                         debugger.toggle()
-                        print("🔍 debugger.toggle() completed")
+                        DebugLogger.log("🔍 debugger.toggle() completed")
                         if newValue {
-                            print("🔍 Showing activation toast")
+                            DebugLogger.log("🔍 Showing activation toast")
                             showActivationToast = true
                             // Auto-dismiss after 2 seconds
                             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -79,7 +79,7 @@ struct MainThreadDebuggerView: View {
                 HStack(spacing: 12) {
                     // TEST BUTTON - to verify enable() works
                     Button("Test Enable") {
-                        print("🔍 TEST BUTTON clicked - manually calling enable()")
+                        DebugLogger.log("🔍 TEST BUTTON clicked - manually calling enable()")
                         MainThreadDebugger.shared.enable()
                     }
                     .buttonStyle(.borderedProminent)

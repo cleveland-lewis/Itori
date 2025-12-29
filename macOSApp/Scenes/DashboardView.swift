@@ -46,36 +46,40 @@ struct DashboardView: View {
                     .padding(.top, contentPadding)
                     .padding(.bottom, cardSpacing)
                 
-                // ROW 2: ANALYTICS (1 hero + 2 secondary)
+                // ROW 2: ANALYTICS
                 HStack(alignment: .top, spacing: cardSpacing) {
-                    // HERO ANALYTICS (60% width)
                     workloadCard
                         .animateEntry(isLoaded: isLoaded, index: 1)
                         .frame(maxWidth: .infinity)
                     
-                    // SECONDARY ANALYTICS (40% width)
-                    VStack(spacing: cardSpacing) {
-                        studyHoursCard
-                            .animateEntry(isLoaded: isLoaded, index: 2)
-                        
-                        energyCard
-                            .animateEntry(isLoaded: isLoaded, index: 3)
-                    }
-                    .frame(maxWidth: .infinity)
+                    studyHoursCard
+                        .animateEntry(isLoaded: isLoaded, index: 2)
+                        .frame(maxWidth: .infinity)
                 }
                 .padding(.horizontal, contentPadding)
                 .padding(.bottom, cardSpacing)
                 
-                // ROW 3: OPERATIONS (lists + utilities)
+                // ROW 3: STATUS + UPCOMING
                 HStack(alignment: .top, spacing: cardSpacing) {
-                    // OPERATIONS LIST (60% width)
+                    energyCard
+                        .animateEntry(isLoaded: isLoaded, index: 3)
+                        .frame(maxWidth: .infinity)
+                    
                     assignmentsCard
                         .animateEntry(isLoaded: isLoaded, index: 4)
                         .frame(maxWidth: .infinity)
-                    
-                    // UTILITIES (40% width)
-                    clockAndCalendarCard
+                }
+                .padding(.horizontal, contentPadding)
+                .padding(.bottom, cardSpacing)
+                
+                // ROW 4: TIME + CALENDAR (wide)
+                HStack(alignment: .top, spacing: cardSpacing) {
+                    timeCard
                         .animateEntry(isLoaded: isLoaded, index: 5)
+                        .frame(maxWidth: .infinity)
+                    
+                    calendarCard
+                        .animateEntry(isLoaded: isLoaded, index: 6)
                         .frame(maxWidth: .infinity)
                 }
                 .padding(.horizontal, contentPadding)
@@ -227,6 +231,24 @@ struct DashboardView: View {
         let status: String
         let count: Int
         let color: Color
+    }
+
+    private struct AssignmentLegendRow: Identifiable {
+        let id = UUID()
+        let label: String
+        let count: Int
+        let color: Color
+        let percentText: String?
+    }
+
+    private struct UpcomingAssignmentItem: Identifiable {
+        let id: UUID
+        let title: String
+        let courseTitle: String
+        let courseCode: String?
+        let dueDate: Date?
+        let hasExplicitDueTime: Bool
+        let courseColor: Color
     }
 
     // ROW 1: STATUS STRIP (no card chrome - this is a HUD)
@@ -579,18 +601,24 @@ struct DashboardView: View {
             title: "Upcoming Assignments",
             isLoading: !isLoaded
         ) {
-            if tasks.isEmpty {
-                DashboardEmptyState(
-                    title: "No Assignments",
-                    systemImage: "doc.badge.plus",
-                    description: "Create your first assignment",
-                    action: { showAddAssignmentSheet = true },
-                    actionTitle: "Add Assignment"
-                )
+            let items = upcomingAssignmentItems(limit: 6)
+            if items.isEmpty {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("No upcoming assignments")
+                        .font(.subheadline.weight(.semibold))
+                    Text("Add an assignment to see it here.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Button("Add Assignment") {
+                        showAddAssignmentSheet = true
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.small)
+                }
             } else {
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
-                    ForEach(tasks.prefix(5), id: \.id) { task in
-                        assignmentRow(task)
+                VStack(alignment: .leading, spacing: 12) {
+                    ForEach(items) { item in
+                        upcomingAssignmentRow(item)
                     }
                 }
             }
@@ -604,12 +632,13 @@ struct DashboardView: View {
             .font(.headline)
             .help("Add assignment")
         } footer: {
-            if tasks.count > 5 {
+            let total = upcomingAssignmentItems(limit: nil).count
+            if total > 6 {
                 Button {
                     appModel.selectedPage = .assignments
                 } label: {
                     HStack {
-                        Text("View All Assignments (\(tasks.count))")
+                        Text("View All")
                         Spacer()
                         Image(systemName: "arrow.right")
                     }
@@ -718,25 +747,49 @@ struct DashboardView: View {
         let items = assignmentStatusItems()
         let total = items.reduce(0) { $0 + $1.count }
 
-        return Chart(items) { item in
-            SectorMark(
-                angle: .value("Count", item.count),
-                innerRadius: .ratio(0.618),
-                angularInset: 2.0
-            )
-            .foregroundStyle(item.color.opacity(0.85))
-            .cornerRadius(4)
-        }
-        .chartLegend(.hidden)
-        .frame(height: 180)
-        .overlay {
-            VStack(spacing: 4) {
-                Text("\(total)")
-                    .font(.title.bold())
-                    .foregroundStyle(.primary)
-                Text("Total")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+        return HStack(alignment: .center, spacing: DesignSystem.Spacing.large) {
+            ZStack {
+                Chart(items) { item in
+                    SectorMark(
+                        angle: .value("Count", item.count),
+                        innerRadius: .ratio(0.618),
+                        angularInset: 2.0
+                    )
+                    .foregroundStyle(item.color.opacity(0.85))
+                    .cornerRadius(4)
+                }
+                .chartLegend(.hidden)
+
+                VStack(spacing: 4) {
+                    Text("\(total)")
+                        .font(.title.bold())
+                        .foregroundStyle(.primary)
+                    Text("Total")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(width: 150, height: 150)
+
+            VStack(alignment: .leading, spacing: 10) {
+                ForEach(assignmentStatusLegend(total: total)) { item in
+                    HStack(spacing: 8) {
+                        Circle()
+                            .fill(item.color)
+                            .frame(width: 8, height: 8)
+                        Text(item.label)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text("\(item.count)")
+                            .font(.caption.weight(.semibold))
+                        if let percent = item.percentText {
+                            Text(percent)
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                }
             }
         }
     }
@@ -786,6 +839,106 @@ struct DashboardView: View {
         ]
     }
 
+    private func assignmentStatusLegend(total: Int) -> [AssignmentLegendRow] {
+        let items = assignmentStatusItems()
+        return items.map { item in
+            let percentText: String?
+            if total > 0 {
+                let percent = Int((Double(item.count) / Double(total)) * 100)
+                percentText = "\(percent)%"
+            } else {
+                percentText = nil
+            }
+            return AssignmentLegendRow(
+                label: item.status,
+                count: item.count,
+                color: item.color,
+                percentText: percentText
+            )
+        }
+    }
+
+    private func upcomingAssignments() -> [AppTask] {
+        let now = Date()
+        return assignmentsStore.tasks
+            .filter { !$0.isCompleted }
+            .compactMap { task -> AppTask? in
+                guard let due = task.effectiveDueDateTime else { return nil }
+                return due >= now ? task : nil
+            }
+            .sorted { lhs, rhs in
+                let leftDue = lhs.effectiveDueDateTime ?? Date.distantFuture
+                let rightDue = rhs.effectiveDueDateTime ?? Date.distantFuture
+                if leftDue != rightDue {
+                    return leftDue < rightDue
+                }
+                let leftCourse = courseTitle(for: lhs.courseId)
+                let rightCourse = courseTitle(for: rhs.courseId)
+                if leftCourse != rightCourse {
+                    return leftCourse < rightCourse
+                }
+                return lhs.title < rhs.title
+            }
+    }
+
+    private func upcomingAssignmentItems(limit: Int?) -> [UpcomingAssignmentItem] {
+        let tasks = upcomingAssignments()
+        let sliced = limit.map { Array(tasks.prefix($0)) } ?? tasks
+        return sliced.map { task in
+            let course = coursesStore.activeCourses.first(where: { $0.id == task.courseId })
+            return UpcomingAssignmentItem(
+                id: task.id,
+                title: task.title,
+                courseTitle: course?.title ?? "Unassigned",
+                courseCode: course?.code,
+                dueDate: task.effectiveDueDateTime,
+                hasExplicitDueTime: task.hasExplicitDueTime,
+                courseColor: gradeColor(for: course?.colorHex)
+            )
+        }
+    }
+
+    private func upcomingAssignmentRow(_ item: UpcomingAssignmentItem) -> some View {
+        HStack(spacing: DesignSystem.Spacing.medium) {
+            Circle()
+                .fill(item.courseColor)
+                .frame(width: 8, height: 8)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(item.title)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                Text(item.courseCode?.isEmpty == false ? item.courseCode! : item.courseTitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            if let dueDate = item.dueDate {
+                let formatter = DateFormatter()
+                formatter.dateStyle = .abbreviated
+                formatter.timeStyle = item.hasExplicitDueTime ? .short : .none
+                Text(formatter.string(from: dueDate))
+                    .font(.caption.weight(.semibold))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(
+                        Capsule()
+                            .fill(Color(nsColor: .controlBackgroundColor))
+                    )
+            }
+        }
+    }
+
+    private func courseTitle(for courseId: UUID?) -> String {
+        guard let courseId,
+              let course = coursesStore.activeCourses.first(where: { $0.id == courseId }) else {
+            return ""
+        }
+        return course.title
+    }
+
     private func refreshStudyTrend() {
         let days = studyTrendRange.days
         let calendar = Calendar.current
@@ -806,6 +959,11 @@ struct DashboardView: View {
             }
         } catch {
             LOG_DATA(.error, "Dashboard", "Failed to load timer sessions: \(error.localizedDescription)")
+        }
+
+        if totalsByDay.values.allSatisfy({ $0 <= 0 }) {
+            studyTrend = []
+            return
         }
 
         var points: [StudyTrendPoint] = []
@@ -906,29 +1064,34 @@ struct DashboardView: View {
         }
     }
 
-    private var clockAndCalendarCard: some View {
+    private var timeCard: some View {
         DashboardCard(
             title: "Time",
             isLoading: !isLoaded
         ) {
-            HStack(alignment: .top, spacing: DesignSystem.Spacing.large) {
-                // Analog clock
-                VStack(spacing: DesignSystem.Spacing.small) {
-                    NativeAnalogClock(diameter: 120, showDigitalTime: false)
-                        .frame(width: 120, height: 120)
-                    
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
+                NativeAnalogClock(diameter: 140, showDigitalTime: false)
+                    .frame(width: 140, height: 140)
+
+                VStack(alignment: .leading, spacing: 4) {
                     Text(Date(), style: .time)
-                        .font(.caption.monospacedDigit())
+                        .font(.title3.weight(.semibold))
+                    Text(Date(), style: .date)
+                        .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                
-                // Mini calendar
-                DashboardCalendarGrid(
-                    selectedDate: $selectedDate,
-                    events: events
-                )
-                .frame(maxWidth: .infinity)
             }
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Current time")
+    }
+
+    private var calendarCard: some View {
+        DashboardCard(
+            title: "Calendar",
+            isLoading: !isLoaded
+        ) {
+            DashboardCalendarGrid(selectedDate: $selectedDate, events: events)
         } footer: {
             Button {
                 appModel.selectedPage = .calendar
@@ -944,7 +1107,7 @@ struct DashboardView: View {
             .foregroundStyle(.secondary)
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Current time and calendar")
+        .accessibilityLabel("Calendar overview")
     }
 
 

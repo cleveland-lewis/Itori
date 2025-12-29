@@ -46,11 +46,11 @@ final class MainThreadDebugger: ObservableObject {
     
     func enable() {
         guard !isEnabled else { 
-            print("🐜 [MainThreadDebugger] Already enabled - ignoring duplicate enable call")
+            DebugLogger.log("🐜 [MainThreadDebugger] Already enabled - ignoring duplicate enable call")
             return 
         }
         
-        print("🐜 [MainThreadDebugger] enable() called - activating debugger...")
+        DebugLogger.log("🐜 [MainThreadDebugger] enable() called - activating debugger...")
         
         isEnabled = true
         events.removeAll()
@@ -58,11 +58,11 @@ final class MainThreadDebugger: ObservableObject {
         log(.info, "Main Thread Debugger enabled")
         
         let timestamp = formatTimestamp(Date())
-        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        print("🐜 [MainThreadDebugger] ENABLED at \(timestamp)")
-        print("🐜 All events will be logged to console with full details")
-        print("🐜 Monitoring started: checking main thread every 100ms")
-        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        DebugLogger.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        DebugLogger.log("🐜 [MainThreadDebugger] ENABLED at \(timestamp)")
+        DebugLogger.log("🐜 All events will be logged to console with full details")
+        DebugLogger.log("🐜 Monitoring started: checking main thread every 100ms")
+        DebugLogger.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     }
     
     func disable() {
@@ -76,13 +76,13 @@ final class MainThreadDebugger: ObservableObject {
         stopMonitoring()
         log(.info, "Main Thread Debugger disabled")
         
-        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-        print("🐜 [MainThreadDebugger] DISABLED at \(timestamp)")
-        print("🐜 Session Summary:")
-        print("🐜   - Total Events: \(totalEvents)")
-        print("🐜   - Main Thread Blocks: \(totalBlocks)")
-        print("🐜   - Memory Peak: \(String(format: "%.1f", performanceMetrics.memoryUsageMB))MB")
-        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        DebugLogger.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        DebugLogger.log("🐜 [MainThreadDebugger] DISABLED at \(timestamp)")
+        DebugLogger.log("🐜 Session Summary:")
+        DebugLogger.log("🐜   - Total Events: \(totalEvents)")
+        DebugLogger.log("🐜   - Main Thread Blocks: \(totalBlocks)")
+        DebugLogger.log("🐜   - Memory Peak: \(String(format: "%.1f", performanceMetrics.memoryUsageMB))MB")
+        DebugLogger.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     }
     
     private func formatTimestamp(_ date: Date) -> String {
@@ -92,12 +92,12 @@ final class MainThreadDebugger: ObservableObject {
     }
     
     func toggle() {
-        print("🐜 [MainThreadDebugger] toggle() called - current state: \(isEnabled ? "ON" : "OFF")")
+        DebugLogger.log("🐜 [MainThreadDebugger] toggle() called - current state: \(isEnabled ? "ON" : "OFF")")
         if isEnabled {
-            print("🐜 [MainThreadDebugger] Disabling...")
+            DebugLogger.log("🐜 [MainThreadDebugger] Disabling...")
             disable()
         } else {
-            print("🐜 [MainThreadDebugger] Enabling...")
+            DebugLogger.log("🐜 [MainThreadDebugger] Enabling...")
             enable()
         }
     }
@@ -158,7 +158,7 @@ final class MainThreadDebugger: ObservableObject {
         let timeStr = formatTimestamp(now)
         let memStr = String(format: "%.1f", performanceMetrics.memoryUsageMB)
         let blocksStr = performanceMetrics.totalMainThreadBlocks
-        print("🟢 [\(timeStr)] [MainThreadDebugger] STATUS: Memory: \(memStr)MB | Blocks: \(blocksStr) | Active Tasks: \(performanceMetrics.activeTasks)")
+        DebugLogger.log("🟢 [\(timeStr)] [MainThreadDebugger] STATUS: Memory: \(memStr)MB | Blocks: \(blocksStr) | Active Tasks: \(performanceMetrics.activeTasks)")
     }
     
     private var lastStatusLog: Date?
@@ -211,10 +211,10 @@ final class MainThreadDebugger: ObservableObject {
         
         // Console logging when debugger enabled
         let timeStr = formatTimestamp(timestamp)
-        print("🔴 [\(timeStr)] [MainThreadDebugger] MAIN THREAD BLOCKED: \(String(format: "%.2f", duration * 1000))ms")
-        print("🔴 [MainThreadDebugger] Stack trace:")
+        DebugLogger.log("🔴 [\(timeStr)] [MainThreadDebugger] MAIN THREAD BLOCKED: \(String(format: "%.2f", duration * 1000))ms")
+        DebugLogger.log("🔴 [MainThreadDebugger] Stack trace:")
         for (index, frame) in stackTrace.enumerated() {
-            print("🔴   \(index): \(frame)")
+            DebugLogger.log("🔴   \(index): \(frame)")
         }
     }
     
@@ -237,9 +237,9 @@ final class MainThreadDebugger: ObservableObject {
         
         // Console logging when debugger enabled
         let timeStr = formatTimestamp(timestamp)
-        print("🟡 [\(timeStr)] [MainThreadDebugger] LONG OPERATION: \(name) took \(String(format: "%.2f", duration * 1000))ms")
+        DebugLogger.log("🟡 [\(timeStr)] [MainThreadDebugger] LONG OPERATION: \(name) took \(String(format: "%.2f", duration * 1000))ms")
         if !stackTrace.isEmpty {
-            print("🟡 [MainThreadDebugger] Top of stack: \(stackTrace[0])")
+            DebugLogger.log("🟡 [MainThreadDebugger] Top of stack: \(stackTrace[0])")
         }
     }
     
@@ -260,7 +260,7 @@ final class MainThreadDebugger: ObservableObject {
         
         // Console logging when debugger enabled
         let timeStr = formatTimestamp(timestamp)
-        print("📦 [\(timeStr)] [MainThreadDebugger] TASK CREATED: \(name) (Active: \(performanceMetrics.activeTasks))")
+        DebugLogger.log("📦 [\(timeStr)] [MainThreadDebugger] TASK CREATED: \(name) (Active: \(performanceMetrics.activeTasks))")
     }
     
     func recordTaskCompletion(name: String, duration: TimeInterval) {
@@ -280,7 +280,7 @@ final class MainThreadDebugger: ObservableObject {
         
         // Console logging when debugger enabled
         let timeStr = formatTimestamp(timestamp)
-        print("✅ [\(timeStr)] [MainThreadDebugger] TASK COMPLETED: \(name) in \(String(format: "%.2f", duration * 1000))ms (Active: \(performanceMetrics.activeTasks))")
+        DebugLogger.log("✅ [\(timeStr)] [MainThreadDebugger] TASK COMPLETED: \(name) in \(String(format: "%.2f", duration * 1000))ms (Active: \(performanceMetrics.activeTasks))")
     }
     
     func recordWarning(message: String) {
@@ -302,9 +302,9 @@ final class MainThreadDebugger: ObservableObject {
         
         // Console logging when debugger enabled
         let timeStr = formatTimestamp(timestamp)
-        print("⚠️  [\(timeStr)] [MainThreadDebugger] WARNING: \(message)")
+        DebugLogger.log("⚠️  [\(timeStr)] [MainThreadDebugger] WARNING: \(message)")
         if !stackTrace.isEmpty {
-            print("⚠️  [MainThreadDebugger] Location: \(stackTrace[0])")
+            DebugLogger.log("⚠️  [MainThreadDebugger] Location: \(stackTrace[0])")
         }
     }
     
@@ -327,14 +327,14 @@ final class MainThreadDebugger: ObservableObject {
         // Console logging when debugger enabled with FULL details
         let timeStr = formatTimestamp(timestamp)
         let threadDetails = threadInfo()
-        print("ℹ️  [\(timeStr)] [MainThreadDebugger] \(message)")
-        print("ℹ️  Thread: \(threadDetails)")
-        print("ℹ️  Call stack:")
+        DebugLogger.log("ℹ️  [\(timeStr)] [MainThreadDebugger] \(message)")
+        DebugLogger.log("ℹ️  Thread: \(threadDetails)")
+        DebugLogger.log("ℹ️  Call stack:")
         for (index, frame) in stack.enumerated() {
-            print("ℹ️    [\(index)] \(frame)")
+            DebugLogger.log("ℹ️    [\(index)] \(frame)")
         }
-        print("ℹ️  Memory: \(String(format: "%.1f", performanceMetrics.memoryUsageMB))MB | Active Tasks: \(performanceMetrics.activeTasks)")
-        print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        DebugLogger.log("ℹ️  Memory: \(String(format: "%.1f", performanceMetrics.memoryUsageMB))MB | Active Tasks: \(performanceMetrics.activeTasks)")
+        DebugLogger.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
     }
     
     private func addEvent(_ event: DebugEvent) {

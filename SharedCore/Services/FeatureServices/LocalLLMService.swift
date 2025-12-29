@@ -64,7 +64,7 @@ class LocalLLMService {
         isAvailable = await backend.isAvailable
         
         if !isAvailable {
-            print("[LocalLLMService] Backend \(config.type.rawValue) not available, falling back to mock")
+            DebugLogger.log("[LocalLLMService] Backend \(config.type.rawValue) not available, falling back to mock")
             backend = MockLLMBackend()
             config = backend.config
             isAvailable = true

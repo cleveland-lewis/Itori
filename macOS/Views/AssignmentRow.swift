@@ -10,8 +10,7 @@ struct AssignmentRow: View {
                 Text(task.title)
                     .font(DesignSystem.Typography.body)
                 if let due = task.due {
-                    // Use app-wide time formatting via shared settings
-                    Text(AppSettingsModel.shared.formattedTime(due))
+                    Text(formattedDueDisplay(for: task, fallbackDate: due))
                         .font(DesignSystem.Typography.caption)
                 }
             }
@@ -34,5 +33,13 @@ struct AssignmentRow: View {
                 AssignmentsStore.shared.removeTask(id: task.id)
             }
         }
+    }
+
+    private func formattedDueDisplay(for task: AppTask, fallbackDate: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = task.hasExplicitDueTime ? .short : .none
+        let date = task.hasExplicitDueTime ? (task.effectiveDueDateTime ?? fallbackDate) : fallbackDate
+        return formatter.string(from: date)
     }
 }#endif

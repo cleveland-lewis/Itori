@@ -174,7 +174,7 @@ public final class TabBarPreferencesStore: ObservableObject {
         if definition.isSystemRequired && !visible {
             #if DEBUG
             assertionFailure("⚠️ Attempted to disable system-required tab: \(tab.rawValue). Ignoring.")
-            print("⚠️ GUARD: Cannot disable \(tab.rawValue) - it is system-required.")
+            DebugLogger.log("⚠️ GUARD: Cannot disable \(tab.rawValue) - it is system-required.")
             #endif
             // Silently ignore - do not modify visibility
             return
@@ -245,7 +245,7 @@ public final class TabBarPreferencesStore: ObservableObject {
             selectedTab = validTabs.first ?? TabRegistry.fallbackTab
             
             #if DEBUG
-            print("ℹ️ Current selection invalid. Reset to \(selectedTab.rawValue).")
+            DebugLogger.log("ℹ️ Current selection invalid. Reset to \(selectedTab.rawValue).")
             #endif
         }
     }

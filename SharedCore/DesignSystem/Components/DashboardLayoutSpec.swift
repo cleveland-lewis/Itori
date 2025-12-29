@@ -3,10 +3,11 @@ import SwiftUI
 enum DashboardSlot: CaseIterable {
     case today
     case upcoming
+    case energy
     case assignments
     case studyHours
     case time
-    case energy
+    case calendar
 }
 
 struct SlotSpec {
@@ -49,11 +50,12 @@ enum ColumnMode: Int {
 enum DashboardLayoutSpec {
     static let spec: [DashboardSlot: SlotSpec] = [
         .today: SlotSpec(columns: (wide: 2, medium: 2, narrow: 1), minHeightCompact: 110, minHeightFull: 260),
-        .time: SlotSpec(columns: (wide: 1, medium: 1, narrow: 1), minHeightCompact: 110, minHeightFull: 220),
         .upcoming: SlotSpec(columns: (wide: 2, medium: 2, narrow: 1), minHeightCompact: 110, minHeightFull: 240),
-        .assignments: SlotSpec(columns: (wide: 2, medium: 2, narrow: 1), minHeightCompact: 110, minHeightFull: 240),
         .energy: SlotSpec(columns: (wide: 2, medium: 2, narrow: 1), minHeightCompact: 110, minHeightFull: 220),
-        .studyHours: SlotSpec(columns: (wide: 1, medium: 1, narrow: 1), minHeightCompact: 110, minHeightFull: 220)
+        .assignments: SlotSpec(columns: (wide: 2, medium: 2, narrow: 1), minHeightCompact: 110, minHeightFull: 240),
+        .studyHours: SlotSpec(columns: (wide: 4, medium: 2, narrow: 1), minHeightCompact: 110, minHeightFull: 220),
+        .time: SlotSpec(columns: (wide: 2, medium: 2, narrow: 1), minHeightCompact: 110, minHeightFull: 220),
+        .calendar: SlotSpec(columns: (wide: 2, medium: 2, narrow: 1), minHeightCompact: 110, minHeightFull: 260)
     ]
 
     static func span(for slot: DashboardSlot, mode: ColumnMode) -> Int {

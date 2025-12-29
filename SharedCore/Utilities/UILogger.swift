@@ -7,6 +7,6 @@ enum UILogCategory: String {
 struct UILogger {
     static func log(_ category: UILogCategory, _ message: String) {
         let timestamp = ISO8601DateFormatter().string(from: Date())
-        print("[UI][\(category.rawValue)] \(timestamp) - \(message)")
+        DebugLogger.log("[UI][\(category.rawValue)] \(timestamp) - \(message)")
     }
 }

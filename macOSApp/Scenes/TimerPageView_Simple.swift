@@ -65,15 +65,15 @@ struct TimerPageView_Simple: View {
     
     // Minimal timer functions for testing
     private func startTickTimer() {
-        print("⏱️  startTickTimer() called - creating Timer publisher")
+        DebugLogger.log("⏱️  startTickTimer() called - creating Timer publisher")
         stopTickTimer()
         
         tickCancellable = Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
             .sink { _ in
-                print("⏱️  Timer tick")
+                DebugLogger.log("⏱️  Timer tick")
             }
-        print("⏱️  Timer started successfully")
+        DebugLogger.log("⏱️  Timer started successfully")
     }
     
     private func stopTickTimer() {
@@ -83,18 +83,18 @@ struct TimerPageView_Simple: View {
     
     // Phase 6.7: Save notes function
     private func saveNotes(_ notes: String, for activityID: UUID) {
-        print("💾 Saving notes for activity \(activityID): \(notes.prefix(20))...")
+        DebugLogger.log("💾 Saving notes for activity \(activityID): \(notes.prefix(20))...")
         // In real implementation, this would save to disk
     }
     
     // Minimal implementations for testing
     private func loadSessions() {
-        print("💾 loadSessions() - would load from disk asynchronously")
+        DebugLogger.log("💾 loadSessions() - would load from disk asynchronously")
         // Intentionally empty - just testing if calling it causes freeze
     }
     
     private func syncTimerWithAssignment() {
-        print("🔄 syncTimerWithAssignment() - checking if assignment exists")
+        DebugLogger.log("🔄 syncTimerWithAssignment() - checking if assignment exists")
         // Intentionally minimal - just checking call doesn't freeze
     }
     
@@ -458,23 +458,23 @@ struct TimerPageView_Simple: View {
     }
     
     private func startTimer() {
-        print("▶️ Start timer")
+        DebugLogger.log("▶️ Start timer")
     }
     
     private func pauseTimer() {
-        print("⏸️ Pause timer")
+        DebugLogger.log("⏸️ Pause timer")
     }
     
     private func resetTimer() {
-        print("🔄 Reset timer")
+        DebugLogger.log("🔄 Reset timer")
     }
     
     private func completeCurrentBlock() {
-        print("⏭️ Skip to next")
+        DebugLogger.log("⏭️ Skip to next")
     }
     
     private func openFocusWindow() {
-        print("🎯 Open focus window")
+        DebugLogger.log("🎯 Open focus window")
     }
     
     private var bottomSummary: some View {
@@ -522,71 +522,71 @@ struct TimerPageView_Simple: View {
             }
         }
         .onAppear {
-            print("✅✅✅ PHASE 4.5 - Testing debugMainThread() call ✅✅✅")
+            DebugLogger.log("✅✅✅ PHASE 4.5 - Testing debugMainThread() call ✅✅✅")
             
             // THIS IS THE CRITICAL TEST - debugMainThread was called at START of onAppear
-            print("🔧 Calling debugMainThread('[TimerPageView] onAppear START')")
+            DebugLogger.log("🔧 Calling debugMainThread('[TimerPageView] onAppear START')")
             debugMainThread("[TimerPageView] onAppear START")
             
             // Operation 0: Start tick timer
-            print("🔧 Step 0: startTickTimer()")
+            DebugLogger.log("🔧 Step 0: startTickTimer()")
             startTickTimer()
             
             // Operation 1: Update cached values
-            print("🔧 Step 1: updateCachedValues()")
+            DebugLogger.log("🔧 Step 1: updateCachedValues()")
             updateCachedValues()
             
             // Operation 2: Initialize pomodoro settings
-            print("🔧 Step 2: pomodoroSessions = settings.pomodoroIterations")
+            DebugLogger.log("🔧 Step 2: pomodoroSessions = settings.pomodoroIterations")
             pomodoroSessions = settings.pomodoroIterations
             
             // Operation 3: Initialize timer duration
-            print("🔧 Step 3: Initialize remainingSeconds if 0")
+            DebugLogger.log("🔧 Step 3: Initialize remainingSeconds if 0")
             if remainingSeconds == 0 {
                 remainingSeconds = TimeInterval(settings.pomodoroFocusMinutes * 60)
             }
             
             // Operation 4: Load sessions (if needed)
-            print("🔧 Step 4: Check loadedSessions flag")
+            DebugLogger.log("🔧 Step 4: Check loadedSessions flag")
             if !loadedSessions {
-                print("🔧   Calling loadSessions()")
+                DebugLogger.log("🔧   Calling loadSessions()")
                 loadSessions()
                 loadedSessions = true
             }
             
             // Operation 5: Sync with assignment
-            print("🔧 Step 5: syncTimerWithAssignment()")
+            DebugLogger.log("🔧 Step 5: syncTimerWithAssignment()")
             syncTimerWithAssignment()
             
-            print("🔧 Calling debugMainThread('[TimerPageView] onAppear COMPLETE')")
+            DebugLogger.log("🔧 Calling debugMainThread('[TimerPageView] onAppear COMPLETE')")
             debugMainThread("[TimerPageView] onAppear COMPLETE")
             
-            print("✅ All onAppear operations completed")
-            print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+            DebugLogger.log("✅ All onAppear operations completed")
+            DebugLogger.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
         }
         // Phase 4.3: Add onChange modifiers one by one
         .onChange(of: activities) { _, _ in 
-            print("🔄 onChange(activities) triggered")
+            DebugLogger.log("🔄 onChange(activities) triggered")
             updateCachedValues() 
         }
         .onChange(of: searchText) { _, _ in 
-            print("🔄 onChange(searchText) triggered")
+            DebugLogger.log("🔄 onChange(searchText) triggered")
             updateCachedValues() 
         }
         .onChange(of: sessions) { _, _ in
-            print("🔄 onChange(sessions) triggered - would persist")
+            DebugLogger.log("🔄 onChange(sessions) triggered - would persist")
             // persistSessions() - commented out for testing
         }
         .onChange(of: selectedActivityID) { _, _ in
-            print("🔄 onChange(selectedActivityID) triggered")
+            DebugLogger.log("🔄 onChange(selectedActivityID) triggered")
             // syncTimerWithAssignment() - commented out for testing
         }
         .onChange(of: settings.pomodoroIterations) { _, newValue in
-            print("🔄 onChange(pomodoroIterations) triggered: \(newValue)")
+            DebugLogger.log("🔄 onChange(pomodoroIterations) triggered: \(newValue)")
             pomodoroSessions = newValue
         }
         .onDisappear {
-            print("👋 Timer view disappeared")
+            DebugLogger.log("👋 Timer view disappeared")
         }
     }
 }

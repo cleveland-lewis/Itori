@@ -248,7 +248,7 @@ struct CourseDetailView: View {
             let attachment = Attachment(name: url.lastPathComponent, localURL: destURL, tag: .syllabus)
             draftCourse.attachments.append(attachment)
         } catch {
-            print("Failed to import syllabus: \(error)")
+            DebugLogger.log("Failed to import syllabus: \(error)")
         }
     }
 

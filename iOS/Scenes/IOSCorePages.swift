@@ -408,7 +408,7 @@ struct IOSAssignmentsView: View {
                             Text(task.title)
                                 .font(.body.weight(.medium))
                             if let due = task.due {
-                                Text("Due \(formattedDate(due))")
+                                Text("Due \(formatDueDisplay(for: task))")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             } else {
@@ -491,12 +491,12 @@ struct IOSAssignmentsView: View {
     }
 
     private func openPlanner(for task: AppTask) {
-        plannerCoordinator.openPlanner(for: task.due ?? Date(), courseId: task.courseId)
+        plannerCoordinator.openPlanner(for: task.effectiveDueDateTime ?? task.due ?? Date(), courseId: task.courseId)
     }
 
     private var sortedTasks: [AppTask] {
         filteredTasks.sorted { lhs, rhs in
-            switch (lhs.due, rhs.due) {
+            switch (lhs.effectiveDueDateTime, rhs.effectiveDueDateTime) {
             case (nil, nil): return lhs.title < rhs.title
             case (nil, _): return false
             case (_, nil): return true
@@ -544,6 +544,15 @@ struct IOSAssignmentsView: View {
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
         return formatter.string(from: date)
+    }
+
+    private func formatDueDisplay(for task: AppTask) -> String {
+        guard let due = task.due else { return "" }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = task.hasExplicitDueTime ? .short : .none
+        let dateText = formatter.string(from: task.hasExplicitDueTime ? (task.effectiveDueDateTime ?? due) : due)
+        return dateText
     }
 }
 
@@ -796,8 +805,8 @@ struct IOSTaskDetailView: View {
                     
                     DetailRow(label: "Type", value: typeLabel(task.type))
                     
-                    if let due = task.due {
-                        DetailRow(label: "Due Date", value: formattedDate(due))
+                    if task.due != nil {
+                        DetailRow(label: "Due Date", value: formatDueDisplay(for: task))
                     } else {
                         DetailRow(label: "Due Date", value: "Not set", isSecondary: true)
                     }
@@ -859,11 +868,13 @@ struct IOSTaskDetailView: View {
         }
     }
     
-    private func formattedDate(_ date: Date) -> String {
+    private func formatDueDisplay(for task: AppTask) -> String {
+        guard let due = task.due else { return "" }
         let formatter = DateFormatter()
         formatter.dateStyle = .long
-        formatter.timeStyle = .none
-        return formatter.string(from: date)
+        formatter.timeStyle = task.hasExplicitDueTime ? .short : .none
+        let dateText = formatter.string(from: task.hasExplicitDueTime ? (task.effectiveDueDateTime ?? due) : due)
+        return dateText
     }
     
     private func typeLabel(_ type: TaskType) -> String {
@@ -1052,6 +1063,8 @@ struct IOSTaskEditorView: View {
         var title: String = ""
         var hasDueDate: Bool = true
         var dueDate: Date = Date()
+        var dueTimeMinutes: Int? = nil
+        var hasSpecificDueTime: Bool = false
         var estimatedMinutes: Int? = nil
         var courseId: UUID? = nil
         var type: TaskType = .homework
@@ -1063,6 +1076,8 @@ struct IOSTaskEditorView: View {
                 self.title = task.title
                 self.hasDueDate = task.due != nil
                 self.dueDate = task.due ?? Date()
+                self.dueTimeMinutes = task.dueTimeMinutes
+                self.hasSpecificDueTime = task.dueTimeMinutes != nil
                 self.estimatedMinutes = task.estimatedMinutes
                 self.courseId = task.courseId
                 self.type = task.type
@@ -1083,6 +1098,7 @@ struct IOSTaskEditorView: View {
                 title: title,
                 courseId: courseId,
                 due: hasDueDate ? dueDate : nil,
+                dueTimeMinutes: hasSpecificDueTime ? dueTimeMinutes : nil,
                 estimatedMinutes: resolvedMinutes,
                 minBlockMinutes: 15,
                 maxBlockMinutes: 120,
@@ -1153,6 +1169,14 @@ struct IOSTaskEditorView: View {
                     Toggle("Has Due Date", isOn: $draft.hasDueDate)
                     if draft.hasDueDate {
                         DatePicker("Due Date", selection: $draft.dueDate, displayedComponents: .date)
+                        Toggle("Set specific time", isOn: $draft.hasSpecificDueTime)
+                        if draft.hasSpecificDueTime {
+                            DatePicker("Due Time", selection: dueTimeBinding, displayedComponents: .hourAndMinute)
+                        } else {
+                            Text("No time set - assumed due at 11:59 PM unless you set a time.")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                     Stepper(
                         "\(timeEstimateLabel(draft.type)): \(estimatedMinutesBinding.wrappedValue) min",
@@ -1207,6 +1231,19 @@ struct IOSTaskEditorView: View {
             }
             .onChange(of: draft.hasDueDate) { _ in
                 requestDurationEstimateIfNeeded()
+                if !draft.hasDueDate {
+                    draft.hasSpecificDueTime = false
+                    draft.dueTimeMinutes = nil
+                }
+            }
+            .onChange(of: draft.hasSpecificDueTime) { newValue in
+                if newValue {
+                    if draft.dueTimeMinutes == nil {
+                        draft.dueTimeMinutes = 23 * 60 + 59
+                    }
+                } else {
+                    draft.dueTimeMinutes = nil
+                }
             }
         }
     }
@@ -1223,6 +1260,21 @@ struct IOSTaskEditorView: View {
             set: { newValue in
                 draft.estimatedMinutes = newValue
                 estimatedMinutesWasEdited = true
+            }
+        )
+    }
+
+    private var dueTimeBinding: Binding<Date> {
+        Binding(
+            get: {
+                let base = draft.dueDate
+                let minutes = draft.dueTimeMinutes ?? (23 * 60 + 59)
+                return Calendar.current.date(byAdding: .minute, value: minutes, to: Calendar.current.startOfDay(for: base)) ?? base
+            },
+            set: { newValue in
+                let components = Calendar.current.dateComponents([.hour, .minute], from: newValue)
+                let minutes = (components.hour ?? 0) * 60 + (components.minute ?? 0)
+                draft.dueTimeMinutes = minutes
             }
         )
     }
