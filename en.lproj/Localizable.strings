@@ -64,6 +64,13 @@
 "timer.debug.label" = "Debug";
 
 /* Assignments */
+/* Categories */
+"assignments.category.homework" = "Homework";
+"assignments.category.reading" = "Reading";
+"assignments.category.exam" = "Exam";
+"assignments.category.quiz" = "Quiz";
+"assignments.category.review" = "Review";
+"assignments.category.project" = "Project";
 
 /* Segments */
 "assignments.segment.today" = "Today";

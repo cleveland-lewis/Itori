@@ -1,5 +1,7 @@
 #if os(macOS)
 import SwiftUI
+import Charts
+import CoreData
 import EventKit
 import Foundation
 import Combine
@@ -24,6 +26,9 @@ struct DashboardView: View {
     @State private var showAddGradeSheet = false
     @State private var showAddEventSheet = false
     @State private var showAddTaskSheet = false
+    @ObservedObject private var studyHoursTracker = StudyHoursTracker.shared
+    @State private var studyTrendRange: StudyTrendRange = .seven
+    @State private var studyTrend: [StudyTrendPoint] = []
 
     // Layout tokens
     private let cardSpacing: CGFloat = DesignSystem.Spacing.large
@@ -31,38 +36,51 @@ struct DashboardView: View {
     private let bottomDockClearancePadding: CGFloat = 100
 
     var body: some View {
-        // HIG-compliant adaptive dashboard grid
+        // Fixed hierarchy grid - no ad-hoc cards
         ScrollView(.vertical, showsIndicators: true) {
-            LazyVGrid(
-                columns: [
-                    GridItem(.adaptive(minimum: 300, maximum: 600), spacing: cardSpacing)
-                ],
-                spacing: cardSpacing
-            ) {
-                todayCard
+            VStack(spacing: 0) {
+                // ROW 1: STATUS STRIP (no card chrome)
+                statusStrip
                     .animateEntry(isLoaded: isLoaded, index: 0)
-
-                clockAndCalendarCard
-                    .animateEntry(isLoaded: isLoaded, index: 1)
-
-                eventsCard
-                    .animateEntry(isLoaded: isLoaded, index: 2)
-
-                assignmentsCard
-                    .animateEntry(isLoaded: isLoaded, index: 3)
-
-                if settings.showEnergyPanel {
-                    energyCard
-                        .animateEntry(isLoaded: isLoaded, index: 4)
-                }
+                    .padding(.horizontal, contentPadding)
+                    .padding(.top, contentPadding)
+                    .padding(.bottom, cardSpacing)
                 
-                if settings.trackStudyHours {
-                    studyHoursCard
-                        .animateEntry(isLoaded: isLoaded, index: 5)
+                // ROW 2: ANALYTICS (1 hero + 2 secondary)
+                HStack(alignment: .top, spacing: cardSpacing) {
+                    // HERO ANALYTICS (60% width)
+                    workloadCard
+                        .animateEntry(isLoaded: isLoaded, index: 1)
+                        .frame(maxWidth: .infinity)
+                    
+                    // SECONDARY ANALYTICS (40% width)
+                    VStack(spacing: cardSpacing) {
+                        studyHoursCard
+                            .animateEntry(isLoaded: isLoaded, index: 2)
+                        
+                        energyCard
+                            .animateEntry(isLoaded: isLoaded, index: 3)
+                    }
+                    .frame(maxWidth: .infinity)
                 }
+                .padding(.horizontal, contentPadding)
+                .padding(.bottom, cardSpacing)
+                
+                // ROW 3: OPERATIONS (lists + utilities)
+                HStack(alignment: .top, spacing: cardSpacing) {
+                    // OPERATIONS LIST (60% width)
+                    assignmentsCard
+                        .animateEntry(isLoaded: isLoaded, index: 4)
+                        .frame(maxWidth: .infinity)
+                    
+                    // UTILITIES (40% width)
+                    clockAndCalendarCard
+                        .animateEntry(isLoaded: isLoaded, index: 5)
+                        .frame(maxWidth: .infinity)
+                }
+                .padding(.horizontal, contentPadding)
+                .padding(.bottom, bottomDockClearancePadding)
             }
-            .padding(contentPadding)
-            .padding(.bottom, bottomDockClearancePadding)
         }
         .background(Color(nsColor: .windowBackgroundColor))
         .sheet(isPresented: $showAddAssignmentSheet) {
@@ -94,6 +112,7 @@ struct DashboardView: View {
             LOG_UI(.info, "Navigation", "Displayed DashboardView")
             syncTasks()
             syncEvents()
+            refreshStudyTrend()
 
             // subscribe to course deletions
             CoursesStore.courseDeletedPublisher
@@ -107,6 +126,9 @@ struct DashboardView: View {
         .background(DesignSystem.Colors.appBackground)
         .onReceive(assignmentsStore.$tasks) { _ in
             syncTasks()
+        }
+        .onReceive(studyHoursTracker.$totals) { _ in
+            refreshStudyTrend()
         }
         .onReceive(deviceCalendar.$events) { _ in
             syncEvents()
@@ -160,44 +182,223 @@ struct DashboardView: View {
         return Color.blue
     }
 
-    private var todayCard: some View {
+    private enum StudyTrendRange: String, CaseIterable, Identifiable {
+        case seven = "7D"
+        case fourteen = "14D"
+        case thirty = "30D"
+
+        var id: String { rawValue }
+        var days: Int {
+            switch self {
+            case .seven: return 7
+            case .fourteen: return 14
+            case .thirty: return 30
+            }
+        }
+    }
+
+    private struct DaySummary {
+        let headline: String
+        let energy: String
+        let secondary: String
+    }
+    
+    private struct DailyLoad: Identifiable {
+        let id = UUID()
+        let day: Date
+        let totals: [AssignmentCategory: Int] // minutes per category
+    }
+    
+    private struct WorkloadBucket: Identifiable {
+        let id = UUID()
+        let day: Date
+        let category: TaskType
+        let minutes: Double
+    }
+
+    private struct StudyTrendPoint: Identifiable {
+        let id = UUID()
+        let day: Date
+        let minutes: Double
+    }
+
+    private struct AssignmentStatusItem: Identifiable {
+        let id = UUID()
+        let status: String
+        let count: Int
+        let color: Color
+    }
+
+    // ROW 1: STATUS STRIP (no card chrome - this is a HUD)
+    private var statusStrip: some View {
+        HStack(spacing: 24) {
+            // Primary headline
+            Text(statusHeadline)
+                .font(.system(size: 28, weight: .semibold))
+            
+            Spacer()
+            
+            // Energy indicator (placeholder - can be enhanced later)
+            Text(energyLevel)
+                .font(.headline)
+                .foregroundStyle(.secondary)
+            
+            // Secondary info
+            Text(statusSecondary)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.horizontal, 24)
+        .padding(.vertical, 16)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Status overview")
+    }
+    
+    private var statusHeadline: String {
+        let dueCount = tasksDueToday().count
+        let plannedCount = assignmentsStore.tasks.filter { !$0.isCompleted && AssignmentPlansStore.shared.plan(for: $0.id) != nil }.count
+        let scheduledMinutes = tasksDueToday().reduce(0) { $0 + $1.estimatedMinutes }
+        
+        return "Today: \(dueCount) due · \(plannedCount) planned · \(scheduledMinutes) min scheduled"
+    }
+    
+    private var energyLevel: String {
+        // Placeholder - can be enhanced with actual energy tracking
+        let hour = Calendar.current.component(.hour, from: Date())
+        if hour < 12 {
+            return "High Energy"
+        } else if hour < 18 {
+            return "Medium Energy"
+        } else {
+            return "Low Energy"
+        }
+    }
+    
+    private var statusSecondary: String {
+        // Placeholder for semester progress or streak
+        let totalAssignments = assignmentsStore.tasks.count
+        let completedAssignments = assignmentsStore.tasks.filter { $0.isCompleted }.count
+        if totalAssignments > 0 {
+            let percentage = (Double(completedAssignments) / Double(totalAssignments)) * 100
+            return "Progress: \(Int(percentage))%"
+        }
+        return "No assignments yet"
+    }
+
+    private var statusStripCard: some View {
         DashboardCard(
-            title: "Today",
-            systemImage: "sun.max.fill",
+            title: "Today's Overview",
             isLoading: !isLoaded
         ) {
-            let eventStatus = calendarManager.eventAuthorizationStatus
-            
-            if eventStatus == .notDetermined {
-                calendarPermissionPrompt
-            } else if eventStatus == .denied || eventStatus == .restricted {
-                calendarAccessDeniedView
-            } else {
-                dashboardTodayStats
-            }
-        } footer: {
-            HStack(spacing: DesignSystem.Spacing.small) {
-                Button {
-                    showAddAssignmentSheet = true
-                } label: {
-                    Label("Add Assignment", systemImage: "doc.badge.plus")
-                        .frame(maxWidth: .infinity)
+            HStack(spacing: 32) {
+                // Due Today
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.orange)
+                        Text("Due Today")
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(.secondary)
+                    }
+                    Text("\(tasksDueToday().count)")
+                        .font(.system(size: 32, weight: .bold))
+                        .contentTransition(.numericText())
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.small)
                 
-                Button {
-                    showAddEventSheet = true
-                } label: {
-                    Label("Add Event", systemImage: "calendar.badge.plus")
-                        .frame(maxWidth: .infinity)
+                Divider()
+                
+                // Events Today
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "calendar")
+                            .foregroundStyle(.blue)
+                        Text("Events Today")
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(.secondary)
+                    }
+                    Text("\(todaysCalendarEvents().count)")
+                        .font(.system(size: 32, weight: .bold))
+                        .contentTransition(.numericText())
                 }
-                .buttonStyle(.bordered)
-                .controlSize(.small)
+                
+                Divider()
+                
+                // Total Assignments
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "doc.text.fill")
+                            .foregroundStyle(.purple)
+                        Text("Active Assignments")
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(.secondary)
+                    }
+                    Text("\(assignmentsStore.tasks.filter { !$0.isCompleted }.count)")
+                        .font(.system(size: 32, weight: .bold))
+                        .contentTransition(.numericText())
+                }
+                
+                Spacer()
+            }
+            .padding(.vertical, 8)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Status overview")
+    }
+
+    private var todayCard: some View {
+        DashboardCard(
+            title: "Status",
+            isLoading: !isLoaded
+        ) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Today / Focus")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+
+                let dueToday = tasksDueToday().count
+                Text("\(dueToday)")
+                    .font(.system(size: 40, weight: .bold))
+                Text(dueToday == 1 ? "Task due today" : "Tasks due today")
+                    .font(.title3.weight(.semibold))
+
+                let eventsTodayCount = todaysCalendarEvents().count
+                Text(eventsTodayCount == 0 ? "No events scheduled" : "\(eventsTodayCount) events scheduled")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                Button("Open Assignments") {
+                    appModel.selectedPage = .assignments
+                }
+                .buttonStyle(.plain)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .padding(.top, 4)
             }
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Today overview")
+    }
+
+    private var workloadCard: some View {
+        DashboardCard(
+            title: "Weekly Workload",
+            isLoading: !isLoaded
+        ) {
+            weeklyWorkloadChart
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Weekly workload forecast")
+    }
+
+    private var studyHoursCard: some View {
+        DashboardCard(
+            title: "Study Time Trend",
+            isLoading: !isLoaded
+        ) {
+            studyTrendChart
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Study time trend")
     }
     
     private var calendarPermissionPrompt: some View {
@@ -245,113 +446,18 @@ struct DashboardView: View {
 
     private var energyCard: some View {
         DashboardCard(
-            title: "Energy & Focus",
-            systemImage: "bolt.heart.fill",
+            title: "Assignment Status",
             isLoading: !isLoaded
         ) {
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
-                Text("Optimize your study schedule by setting your current energy level")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-                
-                HStack(spacing: DesignSystem.Spacing.small) {
-                    energyButton("High", level: .high, icon: "bolt.fill", color: .green)
-                    energyButton("Medium", level: .medium, icon: "bolt", color: .orange)
-                    energyButton("Low", level: .low, icon: "bolt.slash", color: .red)
-                }
-            }
-        } footer: {
-            Button {
-                appModel.selectedPage = .planner
-            } label: {
-                HStack {
-                    Text("Open Planner")
-                    Spacer()
-                    Image(systemName: "arrow.right")
-                }
-                .font(.subheadline)
-            }
-            .buttonStyle(.plain)
-            .foregroundStyle(.secondary)
+            assignmentStatusChart
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Energy and focus settings")
-    }
-
-    @ViewBuilder
-    private func energyButton(_ title: String, level: EnergyLevel, icon: String, color: Color) -> some View {
-        Button {
-            setEnergy(level)
-        } label: {
-            VStack(spacing: DesignSystem.Spacing.xsmall) {
-                Image(systemName: icon)
-                    .font(.title2)
-                    .foregroundStyle(color)
-                Text(title)
-                    .font(.caption)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, DesignSystem.Spacing.medium)
-        }
-        .buttonStyle(.bordered)
-        .help("Set energy level to \(title.lowercased())")
-    }
-    
-    // MARK: - Study Hours Card
-    
-    @ObservedObject private var tracker = StudyHoursTracker.shared
-    
-    private var studyHoursCard: some View {
-        DashboardCard(
-            title: "Study Hours",
-            systemImage: "clock.fill",
-            isLoading: !isLoaded
-        ) {
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
-                DashboardStatRow(
-                    label: "Today",
-                    value: StudyHoursTotals.formatMinutes(tracker.totals.todayMinutes),
-                    icon: "sun.max.fill",
-                    valueColor: .blue
-                )
-                
-                DashboardStatRow(
-                    label: "This Week",
-                    value: StudyHoursTotals.formatMinutes(tracker.totals.weekMinutes),
-                    icon: "calendar.badge.clock",
-                    valueColor: .blue
-                )
-                
-                DashboardStatRow(
-                    label: "This Month",
-                    value: StudyHoursTotals.formatMinutes(tracker.totals.monthMinutes),
-                    icon: "calendar",
-                    valueColor: .blue
-                )
-            }
-        } footer: {
-            Button {
-                appModel.selectedPage = .timer
-            } label: {
-                HStack {
-                    Text("View Details")
-                    Spacer()
-                    Image(systemName: "arrow.right")
-                }
-                .font(.subheadline)
-            }
-            .buttonStyle(.plain)
-            .foregroundStyle(.secondary)
-        }
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("Study hours summary")
+        .accessibilityLabel("Assignment status breakdown")
     }
 
     private var eventsCard: some View {
         DashboardCard(
             title: "Upcoming Events",
-            systemImage: "calendar",
             isLoading: !isLoaded
         ) {
             if events.isEmpty {
@@ -470,8 +576,7 @@ struct DashboardView: View {
 
     private var assignmentsCard: some View {
         DashboardCard(
-            title: "Assignments",
-            systemImage: "doc.text.fill",
+            title: "Upcoming Assignments",
             isLoading: !isLoaded
         ) {
             if tasks.isEmpty {
@@ -517,26 +622,227 @@ struct DashboardView: View {
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Assignments list")
     }
+
+    private var weeklyWorkloadChart: some View {
+        let buckets = weeklyWorkloadBuckets()
+        return Chart(buckets) { item in
+            BarMark(
+                x: .value("Day", item.day, unit: .day),
+                y: .value("Minutes", item.minutes)
+            )
+            .foregroundStyle(by: .value("Category", item.category.rawValue))
+            .cornerRadius(6)
+        }
+        .chartForegroundStyleScale(
+            domain: TaskType.allCases.map { $0.rawValue },
+            range: TaskType.allCases.map { mutedCategoryColor($0) }
+        )
+        .chartYAxis {
+            AxisMarks(position: .leading)
+        }
+        .chartXAxis {
+            AxisMarks(values: .stride(by: .day)) { value in
+                AxisValueLabel(format: .dateTime.weekday(.abbreviated))
+            }
+        }
+        .chartLegend(position: .bottom, spacing: 8)
+        .frame(height: 200)
+    }
+    
+    private func mutedCategoryColor(_ category: TaskType) -> Color {
+        switch category {
+        case .reading: return .blue.opacity(0.5)
+        case .homework: return .green.opacity(0.5)
+        case .exam: return .red.opacity(0.5)
+        case .quiz: return .orange.opacity(0.5)
+        case .review: return .purple.opacity(0.4)
+        case .project: return .teal.opacity(0.5)
+        }
+    }
+
+    private var studyTrendChart: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Picker("Range", selection: $studyTrendRange) {
+                    ForEach(StudyTrendRange.allCases) { range in
+                        Text(range.rawValue).tag(range)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .frame(maxWidth: 180)
+                Spacer()
+            }
+
+            Chart(studyTrend) { point in
+                LineMark(
+                    x: .value("Day", point.day),
+                    y: .value("Minutes", point.minutes)
+                )
+                .foregroundStyle(settings.activeAccentColor)
+                .interpolationMethod(.catmullRom)
+
+                AreaMark(
+                    x: .value("Day", point.day),
+                    y: .value("Minutes", point.minutes)
+                )
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [
+                            settings.activeAccentColor.opacity(0.3),
+                            settings.activeAccentColor.opacity(0.0)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+            }
+            .chartYAxis {
+                AxisMarks(position: .leading) { _ in
+                    AxisGridLine()
+                    AxisValueLabel()
+                }
+            }
+            .chartXAxis {
+                AxisMarks(values: .stride(by: .day)) { value in
+                    AxisValueLabel(format: .dateTime.month().day())
+                }
+            }
+            .frame(height: 180)
+        }
+        .onChange(of: studyTrendRange) { _, _ in
+            refreshStudyTrend()
+        }
+    }
+
+    private var assignmentStatusChart: some View {
+        let items = assignmentStatusItems()
+        let total = items.reduce(0) { $0 + $1.count }
+
+        return Chart(items) { item in
+            SectorMark(
+                angle: .value("Count", item.count),
+                innerRadius: .ratio(0.618),
+                angularInset: 2.0
+            )
+            .foregroundStyle(item.color.opacity(0.85))
+            .cornerRadius(4)
+        }
+        .chartLegend(.hidden)
+        .frame(height: 180)
+        .overlay {
+            VStack(spacing: 4) {
+                Text("\(total)")
+                    .font(.title.bold())
+                    .foregroundStyle(.primary)
+                Text("Total")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private func weeklyWorkloadBuckets() -> [WorkloadBucket] {
+        let calendar = Calendar.current
+        let start = calendar.startOfDay(for: Date())
+        let end = calendar.date(byAdding: .day, value: 6, to: start) ?? start
+
+        let upcoming = assignmentsStore.tasks.filter { task in
+            guard let due = task.due else { return false }
+            return due >= start && due <= end && !task.isCompleted
+        }
+
+        var buckets: [WorkloadBucket] = []
+        for dayOffset in 0..<7 {
+            guard let day = calendar.date(byAdding: .day, value: dayOffset, to: start) else { continue }
+            let dayTasks = upcoming.filter { task in
+                guard let due = task.due else { return false }
+                return calendar.isDate(due, inSameDayAs: day)
+            }
+            let grouped = Dictionary(grouping: dayTasks, by: { $0.category })
+            for (category, tasks) in grouped {
+                let minutes = tasks.reduce(0.0) { $0 + Double($1.estimatedMinutes) }
+                if minutes > 0 {
+                    buckets.append(WorkloadBucket(day: day, category: category, minutes: minutes))
+                }
+            }
+        }
+        return buckets
+    }
+
+    private func assignmentStatusItems() -> [AssignmentStatusItem] {
+        let plans = AssignmentPlansStore.shared
+        let completed = assignmentsStore.tasks.filter { $0.isCompleted }.count
+        let inProgress = assignmentsStore.tasks.filter { task in
+            !task.isCompleted && plans.plan(for: task.id) != nil
+        }.count
+        let notStarted = assignmentsStore.tasks.filter { task in
+            !task.isCompleted && plans.plan(for: task.id) == nil
+        }.count
+
+        return [
+            AssignmentStatusItem(status: "Not Started", count: notStarted, color: .gray),
+            AssignmentStatusItem(status: "In Progress", count: inProgress, color: .blue),
+            AssignmentStatusItem(status: "Completed", count: completed, color: .green)
+        ]
+    }
+
+    private func refreshStudyTrend() {
+        let days = studyTrendRange.days
+        let calendar = Calendar.current
+        let start = calendar.startOfDay(for: Date().addingTimeInterval(TimeInterval(-(days - 1) * 24 * 60 * 60)))
+
+        let request = NSFetchRequest<NSManagedObject>(entityName: "TimerSession")
+        request.predicate = NSPredicate(format: "startedAt >= %@", start as NSDate)
+        request.sortDescriptors = [NSSortDescriptor(key: "startedAt", ascending: true)]
+
+        var totalsByDay: [Date: Double] = [:]
+        do {
+            let results = try PersistenceController.shared.viewContext.fetch(request)
+            for session in results {
+                let startedAt = session.value(forKey: "startedAt") as? Date ?? start
+                let durationSeconds = session.value(forKey: "durationSeconds") as? Double ?? 0
+                let day = calendar.startOfDay(for: startedAt)
+                totalsByDay[day, default: 0] += durationSeconds / 60.0
+            }
+        } catch {
+            LOG_DATA(.error, "Dashboard", "Failed to load timer sessions: \(error.localizedDescription)")
+        }
+
+        var points: [StudyTrendPoint] = []
+        for offset in 0..<days {
+            guard let day = calendar.date(byAdding: .day, value: offset, to: start) else { continue }
+            let minutes = totalsByDay[calendar.startOfDay(for: day), default: 0]
+            points.append(StudyTrendPoint(day: day, minutes: minutes))
+        }
+        studyTrend = points
+    }
+
+    private func categoryColor(_ category: TaskType) -> Color {
+        switch category {
+        case .reading: return .blue.opacity(0.7)
+        case .homework: return .green.opacity(0.7)
+        case .exam: return .red.opacity(0.7)
+        case .quiz: return .orange.opacity(0.7)
+        case .review: return .purple.opacity(0.6)
+        case .project: return .teal.opacity(0.7)
+        }
+    }
     
     private func assignmentRow(_ task: DashboardTask) -> some View {
         HStack(spacing: DesignSystem.Spacing.medium) {
-            Image(systemName: task.isDone ? "checkmark.circle.fill" : "circle")
-                .font(.system(size: 16))
-                .foregroundStyle(task.isDone ? .green : .secondary)
-            
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.xsmall) {
                 Text(task.title)
                     .font(.subheadline)
                     .lineLimit(1)
                     .strikethrough(task.isDone)
-                
+
                 if let course = task.course {
                     Text(course)
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }
             }
-            
+
             Spacer()
         }
         .padding(.vertical, DesignSystem.Spacing.xsmall)
@@ -603,7 +909,6 @@ struct DashboardView: View {
     private var clockAndCalendarCard: some View {
         DashboardCard(
             title: "Time",
-            systemImage: "clock.fill",
             isLoading: !isLoaded
         ) {
             HStack(alignment: .top, spacing: DesignSystem.Spacing.large) {
@@ -1221,4 +1526,3 @@ struct StaticMonthCalendarView: View {
     }
 }
 #endif
-

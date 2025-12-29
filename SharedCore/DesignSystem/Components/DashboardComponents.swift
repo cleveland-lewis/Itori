@@ -18,13 +18,10 @@ struct DashboardCompactState {
     let action: () -> Void
 }
 
-/// Native macOS dashboard card following Apple's Human Interface Guidelines
-/// - Uses system materials and semantic colors
-/// - Adaptive layout with proper spacing
-/// - Built-in empty and loading states
+/// Unified dashboard card - enforces consistent styling
+/// Hero cards get more grid space, not different style
 struct DashboardCard<Content: View, HeaderContent: View, FooterContent: View>: View {
     let title: String
-    let systemImage: String
     @ViewBuilder let content: () -> Content
     @ViewBuilder let header: () -> HeaderContent
     @ViewBuilder let footer: () -> FooterContent
@@ -35,7 +32,6 @@ struct DashboardCard<Content: View, HeaderContent: View, FooterContent: View>: V
     
     init(
         title: String,
-        systemImage: String,
         isLoading: Bool = false,
         mode: DashboardCardMode = .full,
         compactState: DashboardCompactState? = nil,
@@ -44,7 +40,6 @@ struct DashboardCard<Content: View, HeaderContent: View, FooterContent: View>: V
         @ViewBuilder footer: @escaping () -> FooterContent = { EmptyView() }
     ) {
         self.title = title
-        self.systemImage = systemImage
         self.isLoading = isLoading
         self.mode = mode
         self.compactState = compactState
@@ -54,13 +49,11 @@ struct DashboardCard<Content: View, HeaderContent: View, FooterContent: View>: V
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: mode == .compactEmpty ? 8 : 12) {
-            HStack(spacing: 8) {
-                Label(title, systemImage: systemImage)
+        VStack(alignment: .leading, spacing: Space.cardContentSpacing) {
+            HStack {
+                Text(title)
                     .font(.headline)
-                    .foregroundStyle(.primary)
-                    .lineLimit(2)
-                    .truncationMode(.tail)
+                    .foregroundStyle(.secondary)
                 
                 Spacer()
                 
@@ -68,7 +61,6 @@ struct DashboardCard<Content: View, HeaderContent: View, FooterContent: View>: V
                     header()
                 }
             }
-            .frame(minHeight: 22, alignment: .leading)
             
             if isLoading {
                 loadingState
@@ -79,23 +71,12 @@ struct DashboardCard<Content: View, HeaderContent: View, FooterContent: View>: V
             }
             
             if mode == .full, !(footer() is EmptyView) {
-                Divider()
-                    .padding(.top, 4)
                 footer()
             }
-            
-            if mode == .full {
-                Spacer(minLength: 0)
-            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding(mode == .compactEmpty ? 12 : 16)
-        .background(.regularMaterial)
-        .clipShape(.rect(cornerRadius: 10))
-        .overlay {
-            RoundedRectangle(cornerRadius: 10)
-                .strokeBorder(.separator.opacity(0.5), lineWidth: 0.5)
-        }
+        .padding(Space.cardPadding)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: Space.cardCornerRadius))
         .animation(.easeInOut(duration: 0.25), value: mode)
         .animation(.easeInOut(duration: 0.25), value: isLoading)
     }
@@ -116,13 +97,15 @@ struct DashboardCard<Content: View, HeaderContent: View, FooterContent: View>: V
 extension DashboardCard where HeaderContent == EmptyView, FooterContent == EmptyView {
     init(
         title: String,
-        systemImage: String,
         isLoading: Bool = false,
+        mode: DashboardCardMode = .full,
+        compactState: DashboardCompactState? = nil,
         @ViewBuilder content: @escaping () -> Content
     ) {
         self.title = title
-        self.systemImage = systemImage
         self.isLoading = isLoading
+        self.mode = mode
+        self.compactState = compactState
         self.content = content
         self.header = { EmptyView() }
         self.footer = { EmptyView() }
@@ -161,31 +144,35 @@ struct DashboardEmptyState: View {
     var actionTitle: String? = nil
     
     var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: systemImage)
-                .font(.system(size: 40))
-                .foregroundStyle(.tertiary)
-            
+        VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.headline)
+                .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.secondary)
-            
+
             if !description.isEmpty {
                 Text(description)
-                    .font(.subheadline)
+                    .font(.caption)
                     .foregroundStyle(.tertiary)
-                    .multilineTextAlignment(.center)
             }
-            
+
+            VStack(alignment: .leading, spacing: 6) {
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(.tertiary.opacity(0.35))
+                    .frame(height: 6)
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(.tertiary.opacity(0.25))
+                    .frame(width: 140, height: 6)
+            }
+
             if let action, let actionTitle {
                 Button(actionTitle, action: action)
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.small)
-                    .padding(.top, 4)
+                    .buttonStyle(.plain)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 2)
             }
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 20)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -200,10 +187,19 @@ struct DashboardCompactEmptyState: View {
             Text(state.description)
                 .font(.caption)
                 .foregroundStyle(.tertiary)
+            VStack(alignment: .leading, spacing: 6) {
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(.tertiary.opacity(0.35))
+                    .frame(height: 6)
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(.tertiary.opacity(0.25))
+                    .frame(width: 120, height: 6)
+            }
             Button(state.actionTitle, action: state.action)
-                .buttonStyle(.borderedProminent)
-                .controlSize(.small)
-                .padding(.top, 4)
+                .buttonStyle(.plain)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .padding(.top, 2)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -277,13 +273,209 @@ extension View {
     }
 }
 
+// MARK: - Row 3: Operational Cards
+
+/// Compact list of upcoming assignments (max 5)
+struct UpcomingAssignmentsCard: View {
+    let assignments: [Assignment]
+    let courseTitles: [UUID: String]
+    let onSelect: (Assignment) -> Void
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            if assignments.isEmpty {
+                Text("No upcoming assignments")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 8)
+            } else {
+                ForEach(Array(assignments.prefix(5))) { assignment in
+                    Button(action: { onSelect(assignment) }) {
+                        AssignmentRowCompact(
+                            assignment: assignment,
+                            courseTitle: assignment.courseId.flatMap { courseTitles[$0] }
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    
+                    if assignment.id != assignments.prefix(5).last?.id {
+                        Divider()
+                            .padding(.leading, 0)
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct AssignmentRowCompact: View {
+    let assignment: Assignment
+    let courseTitle: String?
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(assignment.title)
+                    .font(.subheadline)
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+                
+                HStack(spacing: 8) {
+                    if let course = courseTitle {
+                        Text(course)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    Text("•")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                    
+                    Text(assignment.dueDate, style: .relative)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            
+            Spacer()
+            
+            if assignment.estimatedMinutes > 0 {
+                Text("\(assignment.estimatedMinutes)m")
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .padding(.vertical, 8)
+        .contentShape(Rectangle())
+    }
+}
+
+/// Mini calendar or next event display
+struct CalendarTimeCard: View {
+    let nextEvent: DashboardCalendarEvent?
+    let onOpenCalendar: () -> Void
+    
+    var body: some View {
+        Button(action: onOpenCalendar) {
+            VStack(alignment: .leading, spacing: 8) {
+                if let event = nextEvent {
+                    HStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(event.title)
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                                .lineLimit(1)
+                            
+                            Text(event.startDate, style: .time)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                } else {
+                    HStack {
+                        Text("No upcoming events")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+            }
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+/// Energy selector or planner action
+struct EnergyActionsCard: View {
+    @Binding var energyLevel: EnergyLevel
+    let onOpenPlanner: () -> Void
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Energy Level")
+                .font(.caption.weight(.medium))
+                .foregroundStyle(.secondary)
+            
+            HStack(spacing: 8) {
+                ForEach(EnergyLevel.allCases, id: \.self) { level in
+                    Button(action: { energyLevel = level }) {
+                        Text(level.label)
+                            .font(.subheadline)
+                            .foregroundStyle(energyLevel == level ? .white : .primary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .background(energyLevel == level ? level.color : Color.secondary.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            
+            Divider()
+                .padding(.vertical, 4)
+            
+            Button(action: onOpenPlanner) {
+                HStack {
+                    Label("Open Planner", systemImage: "calendar.badge.plus")
+                        .font(.subheadline)
+                    Spacer()
+                    Image(systemName: "arrow.right")
+                        .font(.caption)
+                }
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.primary)
+        }
+    }
+}
+
+enum EnergyLevel: String, CaseIterable {
+    case low
+    case medium
+    case high
+    
+    var label: String {
+        switch self {
+        case .low: return "Low"
+        case .medium: return "Med"
+        case .high: return "High"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .low: return .orange
+        case .medium: return .blue
+        case .high: return .green
+        }
+    }
+}
+
+struct DashboardCalendarEvent: Identifiable {
+    let id: UUID
+    let title: String
+    let startDate: Date
+}
+
 // MARK: - Preview
 
 #Preview("Dashboard Components") {
     ScrollView {
         VStack(spacing: 20) {
             // Basic card
-            DashboardCard(title: "Overview", systemImage: "chart.bar") {
+            DashboardCard(title: "Overview") {
                 VStack(alignment: .leading, spacing: 8) {
                     DashboardStatRow(label: "Events", value: "5", icon: "calendar")
                     DashboardStatRow(label: "Tasks", value: "12", icon: "checkmark.circle")
@@ -292,8 +484,7 @@ extension View {
             
             // Card with footer actions
             DashboardCard(
-                title: "Assignments",
-                systemImage: "doc.text"
+                title: "Assignments"
             ) {
                 Text("3 assignments due today")
                     .font(.body)
@@ -316,12 +507,12 @@ extension View {
             }
             
             // Loading state
-            DashboardCard(title: "Loading", systemImage: "clock", isLoading: true) {
+            DashboardCard(title: "Loading", isLoading: true) {
                 EmptyView()
             }
             
             // Empty state
-            DashboardCard(title: "Events", systemImage: "calendar") {
+            DashboardCard(title: "Events") {
                 DashboardEmptyState(
                     title: "No Events",
                     systemImage: "calendar.badge.exclamationmark",

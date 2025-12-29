@@ -19,7 +19,7 @@ struct FlashcardsView: View {
     }
     
     private var currentSemesterCourses: [Course] {
-        let existingDeckCourseIds = Set(manager.decks.compactMap { $0.courseId })
+        let existingDeckCourseIds = Set(manager.decks.compactMap { $0.courseID })
         return coursesStore.currentSemesterCourses.filter { course in
             !existingDeckCourseIds.contains(course.id)
         }

@@ -1,14 +1,43 @@
 import Foundation
 import Combine
+import Network
 
 final class AssignmentsStore: ObservableObject {
     static let shared = AssignmentsStore()
+    private var iCloudMonitor: Timer?
+    private var pathMonitor: NWPathMonitor?
+    private var isOnline: Bool = true
+    private var pendingSyncQueue: [AppTask] = []
+    private var isLoadingFromDisk: Bool = false
+    
     private init() {
+        setupNetworkMonitoring()
         loadCache()
+        loadFromiCloudIfEnabled()
+        setupiCloudMonitoring()
     }
 
     @Published var tasks: [AppTask] = [] {
-        didSet { updateAppBadge() }
+        didSet {
+            print("🔄 tasks didSet triggered: \(tasks.count) tasks, isLoadingFromDisk: \(isLoadingFromDisk)")
+            
+            // Don't save while loading from disk to prevent data loss
+            guard !isLoadingFromDisk else {
+                print("⏭️ Skipping save - loading from disk")
+                return
+            }
+            
+            updateAppBadge()
+            saveCache()  // Always save locally first
+            
+            // Queue for iCloud sync if online and enabled
+            if isOnline && isSyncEnabled {
+                saveToiCloud()
+            } else {
+                // Track pending changes for later sync
+                trackPendingChanges()
+            }
+        }
     }
 
     private var cacheURL: URL? = {
@@ -17,10 +46,36 @@ final class AssignmentsStore: ObservableObject {
         try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         return folder.appendingPathComponent("tasks_cache.json")
     }()
+    
+    private var iCloudURL: URL? = {
+        guard AppSettingsModel.shared.enableICloudSync else {
+            return nil
+        }
+        guard let ubiquityURL = FileManager.default.url(forUbiquityContainerIdentifier: nil) else {
+            print("⚠️ iCloud container not available")
+            return nil
+        }
+        let documentsURL = ubiquityURL.appendingPathComponent("Documents")
+        try? FileManager.default.createDirectory(at: documentsURL, withIntermediateDirectories: true)
+        return documentsURL.appendingPathComponent("tasks_icloud.json")
+    }()
+    
+    private var conflictsFolderURL: URL? = {
+        guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return nil }
+        let folder = dir.appendingPathComponent("RootsAssignments/Conflicts", isDirectory: true)
+        try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        return folder
+    }()
+    
+    private var isSyncEnabled: Bool {
+        AppSettingsModel.shared.enableICloudSync
+    }
 
     // No sample data - provided methods to add/remove tasks programmatically
     func addTask(_ task: AppTask) {
+        print("➕ addTask called: \(task.title)")
         tasks.append(task)
+        print("✅ Task added. Total tasks: \(tasks.count)")
         updateAppBadge()
         saveCache()
         _Concurrency.Task { await CalendarManager.shared.syncPlannerTaskToCalendar(task) }
@@ -180,10 +235,14 @@ final class AssignmentsStore: ObservableObject {
     }
 
     private func saveCache() {
-        guard let url = cacheURL else { return }
+        guard let url = cacheURL else {
+            print("❌ saveCache: No cache URL available")
+            return
+        }
         do {
             let data = try JSONEncoder().encode(tasks)
             try data.write(to: url, options: .atomic)
+            print("💾 saveCache: Saved \(tasks.count) tasks to \(url.lastPathComponent)")
         } catch {
             print("Failed to save tasks cache: \(error)")
         }
@@ -192,9 +251,11 @@ final class AssignmentsStore: ObservableObject {
     private func loadCache() {
         guard let url = cacheURL, FileManager.default.fileExists(atPath: url.path) else { return }
         do {
+            isLoadingFromDisk = true
             let data = try Data(contentsOf: url)
             let decoded = try JSONDecoder().decode([AppTask].self, from: data)
             tasks = decoded
+            isLoadingFromDisk = false
             
             // Migration validation: verify all tasks have category field populated
             let tasksNeedingMigration = tasks.filter { $0.category != $0.type }
@@ -208,6 +269,7 @@ final class AssignmentsStore: ObservableObject {
             // Schedule notifications for all loaded incomplete tasks
             scheduleNotificationsForLoadedTasks()
         } catch {
+            isLoadingFromDisk = false
             print("❌ Failed to load tasks cache: \(error)")
             
             // Attempt rollback-safe recovery
@@ -250,6 +312,298 @@ final class AssignmentsStore: ObservableObject {
         // Schedule notifications for all incomplete tasks on app launch
         for task in tasks where !task.isCompleted {
             NotificationManager.shared.scheduleAssignmentDue(task)
+        }
+    }
+    
+    // MARK: - iCloud Sync
+    
+    private func setupNetworkMonitoring() {
+        pathMonitor = NWPathMonitor()
+        pathMonitor?.pathUpdateHandler = { [weak self] path in
+            let wasOnline = self?.isOnline ?? false
+            self?.isOnline = path.status == .satisfied
+            
+            // When coming back online, sync pending changes
+            if !wasOnline && (self?.isOnline ?? false) {
+                print("📡 Network restored - syncing pending changes")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    self?.syncPendingChanges()
+                }
+            }
+        }
+        pathMonitor?.start(queue: DispatchQueue.global(qos: .utility))
+    }
+    
+    private func trackPendingChanges() {
+        // Store snapshot of current state for later sync
+        pendingSyncQueue = tasks
+        print("📝 Tracked \(tasks.count) tasks for pending sync")
+    }
+    
+    private func syncPendingChanges() {
+        guard isSyncEnabled, isOnline, !pendingSyncQueue.isEmpty else { return }
+        
+        print("🔄 Syncing \(pendingSyncQueue.count) pending changes to iCloud")
+        saveToiCloud()
+        pendingSyncQueue.removeAll()
+    }
+    
+    private func loadFromiCloudIfEnabled() {
+        guard isSyncEnabled else {
+            print("ℹ️ iCloud sync disabled - using local cache only")
+            return
+        }
+        loadFromiCloud()
+    }
+    
+    private func saveToiCloud() {
+        guard let url = iCloudURL else { return }
+        guard isSyncEnabled else {
+            print("ℹ️ iCloud sync disabled - skipping upload")
+            return
+        }
+        
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let self = self else { return }
+            do {
+                let data = try JSONEncoder().encode(self.tasks)
+                try data.write(to: url, options: .atomic)
+                print("✅ Saved \(self.tasks.count) tasks to iCloud")
+            } catch {
+                print("❌ Failed to save to iCloud: \(error)")
+            }
+        }
+    }
+    
+    private func loadFromiCloud() {
+        guard let url = iCloudURL, FileManager.default.fileExists(atPath: url.path) else {
+            print("ℹ️ No iCloud data found, using local cache")
+            return
+        }
+        
+        do {
+            isLoadingFromDisk = true
+            let data = try Data(contentsOf: url)
+            let decoded = try JSONDecoder().decode([AppTask].self, from: data)
+            
+            // Check for conflicts before merging
+            if hasConflicts(cloudTasks: decoded) {
+                handleConflicts(cloudTasks: decoded)
+            } else {
+                mergeWithiCloudData(decoded)
+                print("✅ Loaded \(decoded.count) tasks from iCloud")
+            }
+            isLoadingFromDisk = false
+        } catch {
+            isLoadingFromDisk = false
+            print("❌ Failed to load from iCloud: \(error)")
+        }
+    }
+    
+    private func hasConflicts(cloudTasks: [AppTask]) -> Bool {
+        // Check if there are significant conflicts
+        let localDict = Dictionary(uniqueKeysWithValues: tasks.map { ($0.id, $0) })
+        let cloudDict = Dictionary(uniqueKeysWithValues: cloudTasks.map { ($0.id, $0) })
+        
+        var conflictCount = 0
+        
+        // Check for tasks that exist in both but differ
+        for (id, cloudTask) in cloudDict {
+            if let localTask = localDict[id] {
+                // Simple conflict detection: check if key fields differ
+                if localTask.title != cloudTask.title ||
+                   localTask.due != cloudTask.due ||
+                   localTask.isCompleted != cloudTask.isCompleted {
+                    conflictCount += 1
+                }
+            }
+        }
+        
+        // If more than 5 conflicts or more than 20% of tasks conflict, flag it
+        let threshold = max(5, tasks.count / 5)
+        return conflictCount > threshold
+    }
+    
+    private func handleConflicts(cloudTasks: [AppTask]) {
+        guard let conflictsFolder = conflictsFolderURL else {
+            print("⚠️ Cannot create conflicts folder - force merging")
+            mergeWithiCloudData(cloudTasks)
+            return
+        }
+        
+        let timestamp = Date().timeIntervalSince1970
+        
+        // Save local version
+        let localURL = conflictsFolder.appendingPathComponent("local_\(timestamp).json")
+        do {
+            let localData = try JSONEncoder().encode(tasks)
+            try localData.write(to: localURL)
+            print("💾 Saved local version to: \(localURL.lastPathComponent)")
+        } catch {
+            print("❌ Failed to save local conflict file: \(error)")
+        }
+        
+        // Save cloud version
+        let cloudURL = conflictsFolder.appendingPathComponent("cloud_\(timestamp).json")
+        do {
+            let cloudData = try JSONEncoder().encode(cloudTasks)
+            try cloudData.write(to: cloudURL)
+            print("☁️ Saved cloud version to: \(cloudURL.lastPathComponent)")
+        } catch {
+            print("❌ Failed to save cloud conflict file: \(error)")
+        }
+        
+        // Post notification for user to resolve
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(
+                name: NSNotification.Name("AssignmentsSyncConflict"),
+                object: nil,
+                userInfo: [
+                    "localURL": localURL,
+                    "cloudURL": cloudURL,
+                    "localCount": self.tasks.count,
+                    "cloudCount": cloudTasks.count
+                ]
+            )
+        }
+        
+        // For now, use cloud as default (can be changed by user later)
+        print("⚠️ SYNC CONFLICT DETECTED - Using cloud version as default")
+        print("   Local: \(tasks.count) tasks")
+        print("   Cloud: \(cloudTasks.count) tasks")
+        print("   Conflict files saved for manual resolution")
+        
+        mergeWithiCloudData(cloudTasks)
+    }
+    
+    private func mergeWithiCloudData(_ iCloudTasks: [AppTask]) {
+        // Create a dictionary of local tasks by ID
+        var localTasksDict = Dictionary(uniqueKeysWithValues: tasks.map { ($0.id, $0) })
+        
+        // Update/add iCloud tasks (iCloud is source of truth)
+        for iCloudTask in iCloudTasks {
+            localTasksDict[iCloudTask.id] = iCloudTask
+        }
+        
+        // Convert back to array
+        tasks = Array(localTasksDict.values)
+        
+        // Save merged data locally
+        saveCache()
+    }
+    
+    private func setupiCloudMonitoring() {
+        guard isSyncEnabled else { return }
+        
+        // Monitor for iCloud file changes every 30 seconds
+        iCloudMonitor = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in
+            self?.checkForCloudUpdates()
+        }
+    }
+    
+    private func checkForCloudUpdates() {
+        guard isSyncEnabled, isOnline, let url = iCloudURL else { return }
+        
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let self = self,
+                  FileManager.default.fileExists(atPath: url.path) else { return }
+            
+            do {
+                let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+                let modificationDate = attributes[.modificationDate] as? Date
+                
+                // Check if file was modified recently (within last minute)
+                if let modDate = modificationDate,
+                   Date().timeIntervalSince(modDate) < 60 {
+                    DispatchQueue.main.async {
+                        self.loadFromiCloud()
+                    }
+                }
+            } catch {
+                // Silently ignore - file might be temporarily unavailable
+            }
+        }
+    }
+    
+    deinit {
+        iCloudMonitor?.invalidate()
+        pathMonitor?.cancel()
+    }
+    
+    // MARK: - Public API for Conflict Resolution
+    
+    func resolveConflict(useLocal: Bool, localURL: URL, cloudURL: URL) {
+        do {
+            let data: Data
+            if useLocal {
+                data = try Data(contentsOf: localURL)
+                print("🔧 User chose LOCAL version")
+            } else {
+                data = try Data(contentsOf: cloudURL)
+                print("🔧 User chose CLOUD version")
+            }
+            
+            let resolvedTasks = try JSONDecoder().decode([AppTask].self, from: data)
+            tasks = resolvedTasks
+            
+            // Upload chosen version to iCloud
+            if isSyncEnabled {
+                saveToiCloud()
+            }
+            
+            // Clean up conflict files
+            try? FileManager.default.removeItem(at: localURL)
+            try? FileManager.default.removeItem(at: cloudURL)
+            
+            print("✅ Conflict resolved - \(resolvedTasks.count) tasks loaded")
+        } catch {
+            print("❌ Failed to resolve conflict: \(error)")
+        }
+    }
+    
+    func mergeConflicts(localURL: URL, cloudURL: URL) {
+        do {
+            let localData = try Data(contentsOf: localURL)
+            let cloudData = try Data(contentsOf: cloudURL)
+            
+            let localTasks = try JSONDecoder().decode([AppTask].self, from: localData)
+            let cloudTasks = try JSONDecoder().decode([AppTask].self, from: cloudData)
+            
+            // Merge: Use most recent modification for each task
+            var mergedDict: [UUID: AppTask] = [:]
+            
+            // Add all local tasks
+            for task in localTasks {
+                mergedDict[task.id] = task
+            }
+            
+            // Add/update with cloud tasks (keeping unique IDs from both)
+            for cloudTask in cloudTasks {
+                if let localTask = mergedDict[cloudTask.id] {
+                    // If both exist, take the "most complete" one (not completed < completed)
+                    if cloudTask.isCompleted && !localTask.isCompleted {
+                        mergedDict[cloudTask.id] = cloudTask
+                    }
+                    // Keep local if both completed or both not completed
+                } else {
+                    mergedDict[cloudTask.id] = cloudTask
+                }
+            }
+            
+            tasks = Array(mergedDict.values)
+            
+            // Upload merged version
+            if isSyncEnabled {
+                saveToiCloud()
+            }
+            
+            // Clean up
+            try? FileManager.default.removeItem(at: localURL)
+            try? FileManager.default.removeItem(at: cloudURL)
+            
+            print("✅ Conflicts merged - \(tasks.count) total tasks")
+        } catch {
+            print("❌ Failed to merge conflicts: \(error)")
         }
     }
 }

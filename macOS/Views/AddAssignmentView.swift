@@ -216,6 +216,12 @@ struct AddAssignmentView: View {
         }
         .animation(DesignSystem.Motion.interactiveSpring, value: showingAddCourse)
         .frame(minWidth: 420)
+        .onAppear {
+            preselectCourseIfNeeded()
+        }
+        .onChange(of: coursesStore.currentSemesterCourses) { _, _ in
+            preselectCourseIfNeeded()
+        }
         .interactiveDismissDisabled(hasUnsavedChanges)
         .confirmationDialog(
             "Discard changes?",

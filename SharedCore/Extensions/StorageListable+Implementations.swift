@@ -187,6 +187,9 @@ extension Attachment: StorageListable {
 
 // MARK: - CalendarEvent
 
+// Note: CalendarEvent conformance temporarily disabled due to type ambiguity
+// TODO: Re-enable when CalendarEvent type resolution is clarified
+/*
 extension CalendarEvent: StorageListable {
     public var displayTitle: String {
         if !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -226,6 +229,7 @@ extension CalendarEvent: StorageListable {
         return components.joined(separator: " ")
     }
 }
+*/
 
 // MARK: - AppTask (Assignments)
 
