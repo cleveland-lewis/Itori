@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct DeckDetailView: View {
@@ -188,7 +189,7 @@ struct DeckDetailView: View {
     
     private var emptyCardsView: some View {
         VStack(spacing: 16) {
-            Image(systemName: "square.stack.badge.plus")
+            Image(systemName: "square.stack.3d.up.badge.a")
                 .font(.system(size: 48))
                 .foregroundStyle(.tertiary)
             
@@ -397,3 +398,4 @@ struct FlashcardRowView: View {
         Flashcard(frontText: "Question 2", backText: "Answer 2", difficulty: .easy, dueDate: Date())
     ]))
 }
+#endif

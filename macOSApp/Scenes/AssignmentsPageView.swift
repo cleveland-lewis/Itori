@@ -29,7 +29,7 @@ extension AssignmentCategory {
             return .init(baseMinutes: 180, minSessions: 3, spreadDaysBeforeDue: 5, sessionBias: .mediumBlocks)
         case .quiz:
             return .init(baseMinutes: 60, minSessions: 2, spreadDaysBeforeDue: 2, sessionBias: .shortBursts)
-        case .homework, .practiceHomework:
+        case .homework, .homework:
             return .init(baseMinutes: 60, minSessions: 1, spreadDaysBeforeDue: 2, sessionBias: .mediumBlocks)
         case .reading:
             return .init(baseMinutes: 45, minSessions: 1, spreadDaysBeforeDue: 1, sessionBias: .shortBursts)
@@ -70,7 +70,7 @@ extension Assignment {
                 PlanStepStub(title: "assignments.plan.skim_outline".localized, expectedMinutes: chunk),
                 PlanStepStub(title: "assignments.plan.practice_set".localized, expectedMinutes: chunk)
             ]
-        case .homework, .practiceHomework:
+        case .homework, .homework:
             let chunk = max(45, minutes)
             return [
                 PlanStepStub(title: "assignments.plan.solve_set".localized, expectedMinutes: chunk)
@@ -322,27 +322,46 @@ struct AssignmentsPageView: View {
 
     private var assignmentListCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            ScrollView {
-                VStack(spacing: DesignSystem.Layout.spacing.small) {
-                    ForEach(filteredAndSortedAssignments) { assignment in
-                        AssignmentsPageRow(
-                            assignment: assignment,
-                            isSelected: assignment.id == selectedAssignment?.id || selectedIDs.contains(assignment.id),
-                            onToggleComplete: { toggleCompletion(for: assignment) },
-                            onSelect: { selectedAssignment = assignment },
-                            leadingAction: settings.assignmentSwipeLeading,
-                            trailingAction: settings.assignmentSwipeTrailing,
-                            onPerformAction: { performSwipeAction($0, assignment: assignment) }
-                        )
-                        .background(
-                            GeometryReader { geo in
-                                Color.clear
-                                    .preference(key: AssignmentFramePreference.self, value: [assignment.id: geo.frame(in: .named("assignmentsArea"))])
-                            }
-                        )
-                    }
+            if filteredAndSortedAssignments.isEmpty {
+                // Empty state
+                VStack(spacing: 16) {
+                    Image(systemName: "tray")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.secondary)
+                    
+                    Text("No Assignments")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(.primary)
+                    
+                    Text("Create your first assignment to get started")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
-                .padding(.vertical, 4)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding()
+            } else {
+                ScrollView {
+                    VStack(spacing: DesignSystem.Layout.spacing.small) {
+                        ForEach(filteredAndSortedAssignments) { assignment in
+                            AssignmentsPageRow(
+                                assignment: assignment,
+                                isSelected: assignment.id == selectedAssignment?.id || selectedIDs.contains(assignment.id),
+                                onToggleComplete: { toggleCompletion(for: assignment) },
+                                onSelect: { selectedAssignment = assignment },
+                                leadingAction: settings.assignmentSwipeLeading,
+                                trailingAction: settings.assignmentSwipeTrailing,
+                                onPerformAction: { performSwipeAction($0, assignment: assignment) }
+                            )
+                            .background(
+                                GeometryReader { geo in
+                                    Color.clear
+                                        .preference(key: AssignmentFramePreference.self, value: [assignment.id: geo.frame(in: .named("assignmentsArea"))])
+                                }
+                            )
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
             }
         }
         .padding(DesignSystem.Layout.padding.card)
@@ -1194,7 +1213,7 @@ struct AssignmentEditorSheet: View {
 
     @State private var title: String = ""
     @State private var selectedCourseId: UUID? = nil
-    @State private var category: AssignmentCategory = .practiceHomework
+    @State private var category: AssignmentCategory = .homework
     @State private var dueDate: Date = Date()
     @State private var estimatedMinutes: Int = 60
     @State private var urgency: AssignmentUrgency = .medium

@@ -5,7 +5,7 @@ extension TaskType {
     /// Localized display name - NEVER use rawValue for UI
     var localizedName: String {
         switch self {
-        case .practiceHomework:
+        case .homework:
             return "task.type.homework".localized
         case .quiz:
             return "task.type.quiz".localized

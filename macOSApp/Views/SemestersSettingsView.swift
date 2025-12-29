@@ -88,10 +88,12 @@ struct SemestersSettingsView: View {
         .sheet(item: $editingSemester) { semester in
             SemesterEditorView(semesterToEdit: semester)
                 .environmentObject(coursesStore)
+                .frame(width: 500, height: 650)
         }
         .sheet(isPresented: $showingAddSemester) {
             SemesterEditorView(semesterToEdit: nil)
                 .environmentObject(coursesStore)
+                .frame(width: 500, height: 650)
         }
     }
 }

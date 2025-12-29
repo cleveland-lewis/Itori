@@ -7,80 +7,22 @@
 import SwiftUI
 
 struct WatchRootView: View {
-    @EnvironmentObject private var focusManager: FocusManager
-    @AppStorage("timer.display.style") private var timerDisplayStyleRaw: String = TimerDisplayStyle.digital.rawValue
-
-    private var timerDisplayStyle: Binding<TimerDisplayStyle> {
-        Binding(
-            get: { TimerDisplayStyle(rawValue: timerDisplayStyleRaw) ?? .digital },
-            set: { timerDisplayStyleRaw = $0.rawValue }
-        )
-    }
-
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
-                Text("Today")
-                    .font(DesignSystem.Typography.header)
-
-                summaryCard(title: "Next Event", value: "Open on iPhone to sync")
-                summaryCard(title: "Next Task", value: "Open on iPhone to sync")
-
-                Button {
-                    focusManager.startTimer()
-                } label: {
-                    HStack(spacing: DesignSystem.Spacing.small) {
-                        Image(systemName: "timer")
-                        Text("Start Focus")
-                    }
-                    .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-
-                summaryCard(title: "Time Studied", value: formattedStudyTime())
-
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.xsmall) {
-                    Text("Timer Display")
-                        .font(DesignSystem.Typography.subHeader)
-                    Picker("Display", selection: timerDisplayStyle) {
-                        ForEach(TimerDisplayStyle.allCases) { style in
-                            Text(style.label).tag(style)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                }
-                .padding(DesignSystem.Spacing.small)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(
-                    RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                        .fill(DesignSystem.Colors.cardBackground)
-                )
-            }
-            .padding(DesignSystem.Spacing.medium)
+        VStack(spacing: 20) {
+            Text("Roots")
+                .font(.largeTitle)
+                .foregroundColor(.blue)
+            
+            Text("Watch App")
+                .font(.headline)
+            
+            Text("If you see this, the app is working!")
+                .font(.caption)
+                .multilineTextAlignment(.center)
+                .foregroundColor(.gray)
         }
-        .background(DesignSystem.Colors.appBackground)
-    }
-
-    private func summaryCard(title: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.xsmall) {
-            Text(title)
-                .font(DesignSystem.Typography.subHeader)
-            Text(value)
-                .font(DesignSystem.Typography.body)
-                .foregroundStyle(.secondary)
-        }
-        .padding(DesignSystem.Spacing.small)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                .fill(DesignSystem.Colors.cardBackground)
-        )
-    }
-
-    private func formattedStudyTime() -> String {
-        let totalSeconds = focusManager.activities.reduce(0) { $0 + $1.todayTrackedSeconds }
-        let minutes = Int(totalSeconds / 60)
-        return "\(minutes)m today"
+        .padding()
     }
 }
+
 #endif

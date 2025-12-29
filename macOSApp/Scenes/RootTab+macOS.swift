@@ -12,9 +12,8 @@ public extension RootTab {
         case .courses:      return "Courses"
         case .grades:       return "Grades"
         case .timer:        return "Timer"
-        case .flashcards:        return "Flashcards"
+        case .flashcards:   return "Flashcards"
         case .practice:     return "Practice"
-        case .settings:     return "Settings"  // Not typically used on macOS
         }
     }
 
@@ -27,9 +26,8 @@ public extension RootTab {
         case .courses:      return "book.closed"
         case .grades:       return "number.circle"
         case .timer:        return "timer"
-        case .flashcards:        return "rectangle.stack"
+        case .flashcards:   return "rectangle.stack"
         case .practice:     return "list.clipboard"
-        case .settings:     return "gearshape"
         }
     }
 

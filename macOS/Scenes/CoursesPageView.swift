@@ -72,7 +72,7 @@ struct CoursesPageView: View {
     @EnvironmentObject private var parsingStore: SyllabusParsingStore
 
     @State private var showingAddTaskSheet = false
-    @State private var addTaskType: TaskType = .practiceHomework
+    @State private var addTaskType: TaskType = .homework
     @State private var addTaskCourseId: UUID? = nil
     @State private var showingGradeSheet = false
     @State private var gradePercentInput: Double = 90
@@ -194,7 +194,7 @@ struct CoursesPageView: View {
                         showNewCourseSheet = true
                     },
                     onAddAssignment: {
-                        beginAddTask(for: course, type: .practiceHomework)
+                        beginAddTask(for: course, type: .homework)
                     },
                     onAddExam: {
                         beginAddTask(for: course, type: .exam)
@@ -254,7 +254,14 @@ struct CoursesPageView: View {
 
     private func vm(from course: Course) -> CoursePageCourse {
         let semesterName = coursesStore.semesters.first(where: { $0.id == course.semesterId })?.name ?? "Current Term"
-        let colorTag = ColorTag.fromHex(course.colorHex) ?? .blue
+        let colorTag: ColorTag = {
+            if let hex = course.colorHex, let tag = ColorTag.fromHex(hex) {
+                return tag
+            }
+            let allColors = ColorTag.allCases
+            let index = abs(course.id.hashValue) % allColors.count
+            return allColors[index]
+        }()
         let gradeEntry = gradesStore.grade(for: course.id)
         let gradeInfo = CourseGradeInfo(currentPercentage: gradeEntry?.percent, targetPercentage: nil, letterGrade: gradeEntry?.letter)
         return CoursePageCourse(

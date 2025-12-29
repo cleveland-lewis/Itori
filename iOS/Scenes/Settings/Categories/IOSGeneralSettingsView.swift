@@ -2,11 +2,27 @@ import SwiftUI
 import Combine
 #if os(iOS)
 
-struct GeneralSettingsView: View {
+struct IOSGeneralSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     
     var body: some View {
         List {
+            Section {
+                Toggle(isOn: binding(for: \.isSchoolModeStorage)) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(settings.isSchoolMode ? "School Mode" : "Self-Study Mode")
+                            .font(.body.weight(.medium))
+                        Text(settings.isSchoolMode 
+                             ? "Organize studies with courses, semesters, and assignments" 
+                             : "Study independently without course structure")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            } header: {
+                Text("Study Mode")
+            }
+            
             Section {
                 Toggle(isOn: binding(for: \.use24HourTimeStorage)) {
                     VStack(alignment: .leading, spacing: 4) {
@@ -97,7 +113,7 @@ struct GeneralSettingsView: View {
 
 #Preview {
     NavigationStack {
-        GeneralSettingsView()
+        IOSGeneralSettingsView()
             .environmentObject(AppSettingsModel.shared)
     }
 }

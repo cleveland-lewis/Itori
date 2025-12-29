@@ -3,6 +3,94 @@ import SwiftUI
 import AppKit
 import Combine
 
+// MARK: - System Settings Style View
+
+struct SystemStyleSettingsView: View {
+    @State private var selectedCategory: SettingsToolbarIdentifier = .general
+    @EnvironmentObject var settings: AppSettingsModel
+    @EnvironmentObject var coursesStore: CoursesStore
+    
+    var body: some View {
+        NavigationSplitView(sidebar: {
+            settingsSidebar
+        }, detail: {
+            settingsDetail
+        })
+        .navigationSplitViewStyle(.balanced)
+        .frame(minWidth: 800, idealWidth: 900, minHeight: 600, idealHeight: 700)
+    }
+    
+    private var settingsSidebar: some View {
+        List(selection: $selectedCategory) {
+            ForEach(SettingsToolbarIdentifier.allCases) { category in
+                NavigationLink(value: category) {
+                    Label {
+                        Text(category.label)
+                            .font(.body)
+                    } icon: {
+                        Image(systemName: category.systemImageName)
+                            .font(.body)
+                            .foregroundStyle(.blue)
+                            .frame(width: 20)
+                    }
+                }
+                .tag(category)
+            }
+        }
+        .listStyle(.sidebar)
+        .navigationTitle("Settings")
+        .frame(minWidth: 200, idealWidth: 220)
+    }
+    
+    private var settingsDetail: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Image(systemName: selectedCategory.systemImageName)
+                    .foregroundStyle(.secondary)
+                Text(selectedCategory.label)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                Spacer()
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
+            .background(Color(nsColor: .controlBackgroundColor))
+            
+            Divider()
+            
+            ScrollView {
+                contentForCategory(selectedCategory)
+                    .padding(20)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    
+    @ViewBuilder
+    private func contentForCategory(_ category: SettingsToolbarIdentifier) -> some View {
+        switch category {
+        case .general: GeneralSettingsView()
+        case .calendar: CalendarSettingsView()
+        case .reminders: RemindersSettingsView()
+        case .planner: PlannerSettingsView()
+        case .courses: CoursesSettingsView()
+        case .semesters: SemestersSettingsView()
+        case .interface: InterfaceSettingsView()
+        case .profiles: ProfilesSettingsView()
+        case .timer: TimerSettingsView()
+        case .flashcards: FlashcardSettingsView()
+        case .integrations: IntegrationsSettingsView()
+        case .notifications: NotificationsSettingsView()
+        case .privacy: PrivacySettingsView()
+        case .storage: StorageSettingsView()
+        case .developer: DeveloperSettingsView()
+        }
+    }
+}
+
+// MARK: - Settings Window Controller
+
 final class SettingsWindowController: NSWindowController {
     static let lastPaneKey = "roots.settings.lastSelectedPane"
     private let appSettings: AppSettingsModel
@@ -38,46 +126,25 @@ final class SettingsWindowController: NSWindowController {
         ))
         let window = NSWindow(contentViewController: hostingController)
         window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
-        window.setContentSize(NSSize(width: RootsWindowSizing.minSettingsWidth, height: RootsWindowSizing.minSettingsHeight))
-        window.minSize = NSSize(width: RootsWindowSizing.minSettingsWidth, height: RootsWindowSizing.minSettingsHeight)
-        RootsWindowSizing.applyMinimumSize(to: window, role: .settings)
-        window.title = initialPane.windowTitle
+        window.setContentSize(NSSize(width: 900, height: 700))
+        window.minSize = NSSize(width: 800, height: 600)
+        window.title = "Settings"
         window.titleVisibility = .visible
-        window.titlebarAppearsTransparent = true
+        window.titlebarAppearsTransparent = false
         window.isReleasedWhenClosed = false
-        window.isMovableByWindowBackground = true
-        window.toolbarStyle = .unifiedCompact
+        window.isMovableByWindowBackground = false
         window.collectionBehavior = [.transient]
         window.center()
 
-        // Create toolbar; set delegate after super.init
-        let toolbar = NSToolbar(identifier: "roots.settings.toolbar")
-        toolbar.allowsUserCustomization = false
-        toolbar.autosavesConfiguration = false
-        toolbar.displayMode = .iconAndLabel
-        window.toolbar = toolbar
-
         // Call super before any use of self
         super.init(window: window)
-
-        // Now that self exists, set toolbar delegate to self
-        toolbar.delegate = self
-
-        DispatchQueue.main.async { [weak self] in
-            self?.window?.toolbar?.selectedItemIdentifier = initialPane.toolbarItemIdentifier
-            self?.updateTitle(for: initialPane)
-        }
 
         // Set up selection sink observing coordinator
         selectionCancellable = coordinator.$selectedSection
             .receive(on: DispatchQueue.main)
             .sink { [weak self] pane in
                 guard let self else { return }
-                DispatchQueue.main.async {
-                    self.window?.toolbar?.selectedItemIdentifier = pane.toolbarItemIdentifier
-                    self.updateTitle(for: pane)
-                    self.persistPane(pane)
-                }
+                self.persistPane(pane)
             }
     }
 
@@ -88,7 +155,7 @@ final class SettingsWindowController: NSWindowController {
         coordinator: SettingsCoordinator
     ) -> AnyView {
         AnyView(
-            SettingsRootView(selection: selection)
+            SystemStyleSettingsView()
                 .environmentObject(AssignmentsStore.shared)
                 .environmentObject(appSettings)
                 .environmentObject(coursesStore)
@@ -115,45 +182,8 @@ final class SettingsWindowController: NSWindowController {
         NSApp.activate(ignoringOtherApps: true)
     }
 
-    private func updateTitle(for pane: SettingsToolbarIdentifier) {
-        window?.title = pane.windowTitle
-    }
-
     private func persistPane(_ pane: SettingsToolbarIdentifier) {
         UserDefaults.standard.set(pane.rawValue, forKey: Self.lastPaneKey)
-    }
-}
-
-// MARK: - Toolbar delegate
-
-extension SettingsWindowController: NSToolbarDelegate {
-    func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        SettingsToolbarIdentifier.allCases.map { $0.toolbarItemIdentifier }
-    }
-
-    func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        toolbarAllowedItemIdentifiers(toolbar)
-    }
-
-    func toolbarSelectableItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        toolbarAllowedItemIdentifiers(toolbar)
-    }
-
-    func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
-        guard let pane = SettingsToolbarIdentifier.allCases.first(where: { $0.toolbarItemIdentifier == itemIdentifier }) else { return nil }
-        let item = NSToolbarItem(itemIdentifier: itemIdentifier)
-        item.label = pane.label
-        item.image = NSImage(systemSymbolName: pane.systemImageName, accessibilityDescription: pane.label)
-        item.target = self
-        item.action = #selector(selectPane(_:))
-        return item
-    }
-
-    @objc private func selectPane(_ sender: NSToolbarItem) {
-        guard let pane = SettingsToolbarIdentifier.allCases.first(where: { $0.toolbarItemIdentifier == sender.itemIdentifier }) else { return }
-        DispatchQueue.main.async {
-            self.coordinator.selectedSection = pane
-        }
     }
 }
 #endif

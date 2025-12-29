@@ -2,7 +2,7 @@ import SwiftUI
 #if os(iOS)
 import EventKit
 
-struct CalendarSettingsView: View {
+struct IOSCalendarSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     @StateObject private var deviceCalendar = DeviceCalendarManager.shared
     @State private var showRevokeConfirmation = false
@@ -200,7 +200,7 @@ struct CalendarSettingsView: View {
 
 #Preview {
     NavigationStack {
-        CalendarSettingsView()
+        IOSCalendarSettingsView()
             .environmentObject(AppSettingsModel.shared)
     }
 }

@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct StudySessionView: View {
@@ -276,3 +277,4 @@ struct StudySessionView: View {
         ]
     ))
 }
+#endif

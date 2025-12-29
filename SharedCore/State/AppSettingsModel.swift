@@ -365,7 +365,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     var devModeDataLoggingStorage: Bool = false
     var devModeSchedulerLoggingStorage: Bool = false
     var devModePerformanceStorage: Bool = false
-    var enableICloudSyncStorage: Bool = false
+    var enableICloudSyncStorage: Bool = true
 
     // Layout preferences (iOS/iPad)
     @AppStorage("roots.settings.compactMode") var compactModeStorage: Bool = false
@@ -390,6 +390,10 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage("roots.settings.userName") var userNameStorage: String = ""
     @AppStorage("roots.settings.startOfWeek") var startOfWeekStorage: String = "Sunday"
     @AppStorage("roots.settings.defaultView") var defaultViewStorage: String = "Dashboard"
+    @AppStorage("roots.settings.isSchoolMode") var isSchoolModeStorage: Bool = true  // true = School Mode, false = Self-Study Mode
+
+    // Learning Data
+    @AppStorage("roots.learning.categoryDurations") var categoryDurationsData: Data = Data()
 
     // Interface Settings
     @AppStorage("roots.settings.reduceMotion") var reduceMotionStorage: Bool = false
@@ -404,6 +408,14 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage("roots.settings.defaultFocusDuration") var defaultFocusDurationStorage: Int = 25
     @AppStorage("roots.settings.defaultBreakDuration") var defaultBreakDurationStorage: Int = 5
     @AppStorage("roots.settings.defaultEnergyLevel") var defaultEnergyLevelStorage: String = "Medium"
+    @AppStorage("roots.settings.energySelectionConfirmed") var energySelectionConfirmedStorage: Bool = false
+    @AppStorage("roots.settings.energySelectionResetDateTimestamp") private var energySelectionResetDateTimestamp: Double = Date.distantPast.timeIntervalSince1970
+    
+    var energySelectionResetDate: Date {
+        get { Date(timeIntervalSince1970: energySelectionResetDateTimestamp) }
+        set { energySelectionResetDateTimestamp = newValue.timeIntervalSince1970 }
+    }
+    
     @AppStorage("roots.settings.enableStudyCoach") var enableStudyCoachStorage: Bool = true
     @AppStorage("roots.settings.smartNotifications") var smartNotificationsStorage: Bool = true
     @AppStorage("roots.settings.autoScheduleBreaks") var autoScheduleBreaksStorage: Bool = true
@@ -708,20 +720,11 @@ final class AppSettingsModel: ObservableObject, Codable {
     var starredTabs: [RootTab] {
         get {
             let tabs = starredTabsRaw.compactMap { RootTab(rawValue: $0) }
-            // Ensure Settings is always included
-            var result = tabs
-            if !result.contains(.settings) {
-                result.append(.settings)
-            }
             // Limit to 5
-            return Array(result.prefix(5))
+            return Array(tabs.prefix(5))
         }
         set {
             var tabs = newValue
-            // Ensure Settings is always included
-            if !tabs.contains(.settings) {
-                tabs.append(.settings)
-            }
             // Limit to 5
             tabs = Array(tabs.prefix(5))
             starredTabsRaw = tabs.map { $0.rawValue }
@@ -909,6 +912,40 @@ final class AppSettingsModel: ObservableObject, Codable {
         set { defaultViewStorage = newValue }
     }
 
+    var isSchoolMode: Bool {
+        get { isSchoolModeStorage }
+        set { isSchoolModeStorage = newValue }
+    }
+    
+    // Learning Data
+    var categoryLearningData: [String: CategoryLearningData] {
+        get {
+            guard let decoded = try? JSONDecoder().decode(
+                [String: CategoryLearningData].self,
+                from: categoryDurationsData
+            ) else { return [:] }
+            return decoded
+        }
+        set {
+            if let encoded = try? JSONEncoder().encode(newValue) {
+                categoryDurationsData = encoded
+            }
+        }
+    }
+    
+    func recordTaskCompletion(courseId: UUID, category: AssignmentCategory, actualMinutes: Int) {
+        let key = DurationEstimator.learningKey(courseId: courseId, category: category)
+        var data = categoryLearningData
+        var learning = data[key] ?? CategoryLearningData(
+            courseId: courseId,
+            category: category
+        )
+        
+        learning.record(actualMinutes: actualMinutes)
+        data[key] = learning
+        categoryLearningData = data
+    }
+
     // Interface Settings
     var reduceMotion: Bool {
         get { reduceMotionStorage }
@@ -960,6 +997,12 @@ final class AppSettingsModel: ObservableObject, Codable {
         get { defaultEnergyLevelStorage }
         set { defaultEnergyLevelStorage = newValue }
     }
+
+    var energySelectionConfirmed: Bool {
+        get { energySelectionConfirmedStorage }
+        set { energySelectionConfirmedStorage = newValue }
+    }
+
 
     var enableStudyCoach: Bool {
         get { enableStudyCoachStorage }
@@ -1216,7 +1259,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         devModeDataLoggingStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeDataLoggingStorage) ?? false
         devModeSchedulerLoggingStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeSchedulerLoggingStorage) ?? false
         devModePerformanceStorage = try container.decodeIfPresent(Bool.self, forKey: .devModePerformanceStorage) ?? false
-        enableICloudSyncStorage = try container.decodeIfPresent(Bool.self, forKey: .enableICloudSyncStorage) ?? false
+        enableICloudSyncStorage = try container.decodeIfPresent(Bool.self, forKey: .enableICloudSyncStorage) ?? true
         enableFlashcardsStorage = try container.decodeIfPresent(Bool.self, forKey: .enableFlashcardsStorage) ?? true
         assignmentSwipeLeadingRaw = try container.decodeIfPresent(String.self, forKey: .assignmentSwipeLeadingRaw) ?? AssignmentSwipeAction.complete.rawValue
         assignmentSwipeTrailingRaw = try container.decodeIfPresent(String.self, forKey: .assignmentSwipeTrailingRaw) ?? AssignmentSwipeAction.delete.rawValue

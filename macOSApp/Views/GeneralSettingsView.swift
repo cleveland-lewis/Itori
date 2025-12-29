@@ -34,6 +34,17 @@ struct GeneralSettingsView: View {
 
     var body: some View {
         Form {
+            Section("Study Mode") {
+                Toggle(settings.isSchoolMode ? "School Mode" : "Self-Study Mode", isOn: $settings.isSchoolMode)
+                    .onChange(of: settings.isSchoolMode) { _, _ in settings.save() }
+                
+                Text(settings.isSchoolMode 
+                     ? "Organize studies with courses, semesters, and assignments" 
+                     : "Study independently without course structure")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
             Section("Personal") {
                 TextField("Name", text: $userName)
                     .textFieldStyle(.roundedBorder)

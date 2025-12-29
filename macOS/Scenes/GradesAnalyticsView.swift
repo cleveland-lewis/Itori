@@ -332,13 +332,25 @@ struct GradesAnalyticsView: View {
     }
     
     private func generateGPATrendData() -> [GPATrendItem] {
-        // Generate sample data - in real implementation, this would come from GradeCalculator
-        let weeks = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5", "Week 6", "Week 7", "Week 8"]
-        return weeks.enumerated().map { index, week in
-            let baseGPA = 3.0
-            let variation = Double.random(in: -0.3...0.5)
-            return GPATrendItem(week: week, gpa: min(4.0, max(0, baseGPA + variation + Double(index) * 0.05)))
+        let calendar = Calendar.current
+        let endDate = Date()
+        let endWeekStart = calendar.dateInterval(of: .weekOfYear, for: endDate)?.start ?? endDate
+        let defaultStart = calendar.date(byAdding: .weekOfYear, value: -7, to: endWeekStart) ?? endWeekStart
+        let rangeStart = dateRangeBounds()?.start ?? defaultStart
+        let startDate = max(rangeStart, defaultStart)
+
+        var items: [GPATrendItem] = []
+        for index in 0..<8 {
+            guard let weekStart = calendar.date(byAdding: .weekOfYear, value: index, to: startDate) else { continue }
+            if weekStart > endDate { break }
+            let weekEnd = calendar.date(byAdding: .day, value: 6, to: weekStart) ?? weekStart
+            let tasks = tasksForTrend(upTo: min(weekEnd, endDate))
+            let courses = filteredCourses()
+            let gpa = gpaValue(courses: courses, tasks: tasks, weighted: showWeightedGPA)
+            items.append(GPATrendItem(week: "Week \(index + 1)", gpa: gpa))
         }
+
+        return items
     }
     
     private struct GradeDistributionItem: Identifiable {
@@ -348,8 +360,7 @@ struct GradesAnalyticsView: View {
     }
     
     private func generateGradeDistributionData() -> [GradeDistributionItem] {
-        // Calculate actual grade distribution from assignments
-        let tasks = assignmentsStore.tasks.filter { $0.isCompleted && $0.gradeEarnedPoints != nil }
+        let tasks = filteredTasks().filter { $0.isCompleted && $0.gradeEarnedPoints != nil }
         var gradeCounts: [String: Int] = ["A": 0, "B": 0, "C": 0, "D": 0, "F": 0]
         
         for task in tasks {
@@ -377,12 +388,10 @@ struct GradesAnalyticsView: View {
     }
     
     private func generateCoursePerformanceData() -> [CoursePerformanceItem] {
-        // Calculate current grade for each course
-        return coursesStore.courses.compactMap { course in
-            if let percentage = GradeCalculator.calculateCourseGrade(courseID: course.id, tasks: assignmentsStore.tasks) {
-                return CoursePerformanceItem(courseCode: course.code, percentage: percentage)
-            }
-            return nil
+        let tasks = filteredTasks()
+        return filteredCourses().compactMap { course in
+            guard let percentage = coursePercent(for: course.id, tasks: tasks, weighted: showWeightedGPA) else { return nil }
+            return CoursePerformanceItem(courseCode: course.code, percentage: percentage)
         }
     }
     
@@ -394,8 +403,9 @@ struct GradesAnalyticsView: View {
     }
     
     private func generateAssignmentCompletionData() -> [AssignmentCompletionItem] {
-        let completed = assignmentsStore.tasks.filter { $0.isCompleted }.count
-        let pending = assignmentsStore.tasks.filter { !$0.isCompleted }.count
+        let tasks = filteredTasks()
+        let completed = tasks.filter { $0.isCompleted }.count
+        let pending = tasks.filter { !$0.isCompleted }.count
         
         return [
             AssignmentCompletionItem(status: "Completed", count: completed, color: .green),
@@ -493,8 +503,9 @@ struct GradesAnalyticsView: View {
     }
     
     private func getCoursesAtRisk(threshold: Double, max: Double? = nil) -> [Course] {
-        return coursesStore.courses.filter { course in
-            if let grade = GradeCalculator.calculateCourseGrade(courseID: course.id, tasks: assignmentsStore.tasks) {
+        let tasks = filteredTasks()
+        return filteredCourses().filter { course in
+            if let grade = coursePercent(for: course.id, tasks: tasks, weighted: showWeightedGPA) {
                 if let max = max {
                     return grade < threshold && grade >= max
                 } else {
@@ -521,6 +532,119 @@ struct GradesAnalyticsView: View {
         case "D": return .orange
         case "F": return .red
         default: return .gray
+        }
+    }
+
+    private func filteredCourses() -> [Course] {
+        if let selectedCourseId = selectedCourseId {
+            return coursesStore.courses.filter { $0.id == selectedCourseId }
+        }
+        return coursesStore.courses
+    }
+
+    private func filteredTasks() -> [AppTask] {
+        let tasks = assignmentsStore.tasks
+        let courseFiltered = selectedCourseId == nil ? tasks : tasks.filter { $0.courseId == selectedCourseId }
+        guard let bounds = dateRangeBounds() else {
+            return courseFiltered
+        }
+        return courseFiltered.filter { task in
+            guard let due = task.due else { return false }
+            return due >= bounds.start && due <= bounds.end
+        }
+    }
+
+    private func tasksForTrend(upTo endDate: Date) -> [AppTask] {
+        let tasks = assignmentsStore.tasks
+        let courseFiltered = selectedCourseId == nil ? tasks : tasks.filter { $0.courseId == selectedCourseId }
+        let startDate = dateRangeBounds()?.start
+        return courseFiltered.filter { task in
+            guard let due = task.due else { return false }
+            if let startDate = startDate, due < startDate { return false }
+            return due <= endDate
+        }
+    }
+
+    private func dateRangeBounds() -> (start: Date, end: Date)? {
+        let calendar = Calendar.current
+        let now = Date()
+        switch selectedDateRange {
+        case .allTime:
+            return nil
+        case .thisMonth:
+            let start = calendar.dateInterval(of: .month, for: now)?.start ?? now
+            return (start: start, end: now)
+        case .thisQuarter:
+            let month = calendar.component(.month, from: now)
+            let quarterStartMonth = ((month - 1) / 3) * 3 + 1
+            var components = calendar.dateComponents([.year, .month], from: now)
+            components.month = quarterStartMonth
+            let start = calendar.date(from: components) ?? now
+            return (start: start, end: now)
+        case .thisSemester:
+            let month = calendar.component(.month, from: now)
+            let semesterStartMonth = month <= 6 ? 1 : 7
+            var components = calendar.dateComponents([.year, .month], from: now)
+            components.month = semesterStartMonth
+            let start = calendar.date(from: components) ?? now
+            return (start: start, end: now)
+        }
+    }
+
+    private func coursePercent(for courseId: UUID, tasks: [AppTask], weighted: Bool) -> Double? {
+        if weighted {
+            return GradeCalculator.calculateCourseGrade(courseID: courseId, tasks: tasks)
+        }
+        let graded = tasks.filter { task in
+            task.courseId == courseId &&
+            task.isCompleted &&
+            task.gradeEarnedPoints != nil &&
+            task.gradePossiblePoints ?? 0 > 0
+        }
+        guard !graded.isEmpty else { return nil }
+        let total = graded.reduce(0.0) { partial, task in
+            let earned = task.gradeEarnedPoints ?? 0
+            let possible = task.gradePossiblePoints ?? 0
+            guard possible > 0 else { return partial }
+            return partial + (earned / possible) * 100
+        }
+        return total / Double(graded.count)
+    }
+
+    private func gpaValue(courses: [Course], tasks: [AppTask], weighted: Bool) -> Double {
+        if weighted {
+            return GradeCalculator.calculateGPA(courses: courses, tasks: tasks)
+        }
+
+        var total: Double = 0
+        var creditSum: Double = 0
+
+        for course in courses {
+            guard let percent = coursePercent(for: course.id, tasks: tasks, weighted: false) else { continue }
+            let gpaValue = mapPercentToGPA(percent)
+            let credits = course.credits ?? 1
+            total += gpaValue * credits
+            creditSum += credits
+        }
+
+        guard creditSum > 0 else { return 0 }
+        return total / creditSum
+    }
+
+    private func mapPercentToGPA(_ percent: Double) -> Double {
+        switch percent {
+        case 93...: return 4.0
+        case 90..<93: return 3.7
+        case 87..<90: return 3.3
+        case 83..<87: return 3.0
+        case 80..<83: return 2.7
+        case 77..<80: return 2.3
+        case 73..<77: return 2.0
+        case 70..<73: return 1.7
+        case 67..<70: return 1.3
+        case 63..<67: return 1.0
+        case 60..<63: return 0.7
+        default: return 0.0
         }
     }
 }

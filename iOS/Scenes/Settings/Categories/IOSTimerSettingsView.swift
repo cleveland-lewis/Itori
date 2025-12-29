@@ -1,7 +1,7 @@
 import SwiftUI
 #if os(iOS)
 
-struct TimerSettingsView: View {
+struct IOSTimerSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     @AppStorage("timer.display.style") private var timerDisplayStyleRaw: String = TimerDisplayStyle.digital.rawValue
     
@@ -131,7 +131,7 @@ struct TimerSettingsView: View {
 
 #Preview {
     NavigationStack {
-        TimerSettingsView()
+        IOSTimerSettingsView()
             .environmentObject(AppSettingsModel.shared)
     }
 }

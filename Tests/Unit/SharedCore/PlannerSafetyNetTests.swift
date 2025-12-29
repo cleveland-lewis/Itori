@@ -35,7 +35,7 @@ final class PlannerSafetyNetTests: XCTestCase {
             title: "Homework 1",
             courseCode: "",
             courseName: "",
-            category: .practiceHomework,
+            category: .homework,
             dueDate: due,
             estimatedMinutes: 60,
             status: .notStarted,

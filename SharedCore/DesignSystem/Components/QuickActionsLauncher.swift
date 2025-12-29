@@ -82,19 +82,14 @@ struct QuickActionsLauncher: View {
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(Color.accentColor)
                 .frame(width: buttonSize, height: buttonSize)
+                #if os(macOS)
                 .background {
-                    #if os(macOS)
                     DesignSystem.Colors.sidebarBackground
-                        .clipShape(Circle())
-                    #else
-                    DesignSystem.Materials.hud
-                        .clipShape(Circle())
-                    #endif
                 }
-                .overlay(
-                    Circle()
-                        .strokeBorder(Color.secondary.opacity(0.25), lineWidth: 1)
-                )
+                #else
+                .background(DesignSystem.Materials.hud)
+                #endif
+                .clipShape(Circle())
                 .overlay(
                     Circle()
                         .strokeBorder(Color.accentColor, lineWidth: 2)

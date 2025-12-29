@@ -51,8 +51,7 @@ public struct TabRegistry {
         TabDefinition(id: .grades, icon: "number.circle", title: "Grades", defaultEnabled: false),
         TabDefinition(id: .calendar, icon: "calendar", title: "Calendar", defaultEnabled: false),
         TabDefinition(id: .flashcards, icon: "rectangle.stack", title: "Flashcards", defaultEnabled: false),
-        TabDefinition(id: .practice, icon: "list.clipboard", title: "Practice", defaultEnabled: false),
-        TabDefinition(id: .settings, icon: "gearshape", title: "Settings", defaultEnabled: false, isSystemRequired: false)
+        TabDefinition(id: .practice, icon: "list.clipboard", title: "Practice", defaultEnabled: false)
     ]
     
     /// Quick lookup by tab ID

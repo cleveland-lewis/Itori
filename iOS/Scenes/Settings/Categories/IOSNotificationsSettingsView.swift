@@ -2,7 +2,7 @@ import SwiftUI
 #if os(iOS)
 import UserNotifications
 
-struct NotificationsSettingsView: View {
+struct IOSNotificationsSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     @StateObject private var notificationManager = NotificationManager.shared
     @State private var authorizationStatus: UNAuthorizationStatus = .notDetermined
@@ -280,7 +280,7 @@ struct NotificationsSettingsView: View {
 
 #Preview {
     NavigationStack {
-        NotificationsSettingsView()
+        IOSNotificationsSettingsView()
             .environmentObject(AppSettingsModel.shared)
     }
 }

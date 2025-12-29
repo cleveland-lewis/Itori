@@ -3,15 +3,20 @@ import SwiftUI
 
 enum SettingsCategory: String, CaseIterable, Identifiable {
     case general
-    case accessibility
-    case interface
-    case appearance
-    case timer
     case calendar
+    case reminders
+    case planner
+    case courses
+    case semesters
+    case interface
+    case profiles
+    case timer
+    case flashcards
+    case integrations
+    case notifications
     case privacy
     case storage
-    case coursesPlanner
-    case notifications
+    case developer
     
     var id: String { rawValue }
     
@@ -19,49 +24,54 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
         switch self {
         case .general:
             return NSLocalizedString("settings.category.general", comment: "General")
-        case .accessibility:
-            return NSLocalizedString("settings.category.accessibility", comment: "Accessibility")
-        case .interface:
-            return NSLocalizedString("settings.category.interface", comment: "Interface")
-        case .appearance:
-            return NSLocalizedString("settings.category.appearance", comment: "Appearance")
-        case .timer:
-            return NSLocalizedString("settings.category.timer", comment: "Timer")
         case .calendar:
             return NSLocalizedString("settings.category.calendar", comment: "Calendar")
+        case .reminders:
+            return NSLocalizedString("settings.category.reminders", comment: "Reminders")
+        case .planner:
+            return NSLocalizedString("settings.category.planner", comment: "Planner")
+        case .courses:
+            return NSLocalizedString("settings.category.courses", comment: "Courses")
+        case .semesters:
+            return NSLocalizedString("settings.category.semesters", comment: "Semesters")
+        case .interface:
+            return NSLocalizedString("settings.category.interface", comment: "Interface")
+        case .profiles:
+            return NSLocalizedString("settings.category.profiles", comment: "Profiles")
+        case .timer:
+            return NSLocalizedString("settings.category.timer", comment: "Timer")
+        case .flashcards:
+            return NSLocalizedString("settings.category.flashcards", comment: "Flashcards")
+        case .integrations:
+            return NSLocalizedString("settings.category.integrations", comment: "Integrations")
+        case .notifications:
+            return NSLocalizedString("settings.category.notifications", comment: "Notifications")
         case .privacy:
             return NSLocalizedString("settings.category.privacy", comment: "Privacy")
         case .storage:
             return NSLocalizedString("settings.category.storage", comment: "Storage")
-        case .coursesPlanner:
-            return NSLocalizedString("settings.category.courses_planner", comment: "Courses & Planner")
-        case .notifications:
-            return NSLocalizedString("settings.category.notifications", comment: "Notifications")
+        case .developer:
+            return NSLocalizedString("settings.category.developer", comment: "Developer")
         }
     }
     
     var systemImage: String {
         switch self {
-        case .general:
-            return "gearshape"
-        case .accessibility:
-            return "accessibility"
-        case .interface:
-            return "sidebar.left"
-        case .appearance:
-            return "paintbrush"
-        case .timer:
-            return "timer"
-        case .calendar:
-            return "calendar"
-        case .privacy:
-            return "hand.raised"
-        case .storage:
-            return "internaldrive"
-        case .coursesPlanner:
-            return "book.and.wrench"
-        case .notifications:
-            return "bell.badge"
+        case .general: return "gearshape"
+        case .calendar: return "calendar"
+        case .reminders: return "list.bullet.rectangle"
+        case .planner: return "pencil.and.list.clipboard"
+        case .courses: return "books.vertical"
+        case .semesters: return "graduationcap"
+        case .interface: return "sidebar.left"
+        case .profiles: return "person.crop.circle"
+        case .timer: return "timer"
+        case .flashcards: return "rectangle.stack.badge.person.crop"
+        case .integrations: return "arrow.triangle.2.circlepath.circle"
+        case .notifications: return "bell.badge"
+        case .privacy: return "lock.shield"
+        case .storage: return "externaldrive"
+        case .developer: return "hammer.fill"
         }
     }
     
@@ -69,25 +79,35 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
     func destinationView() -> some View {
         switch self {
         case .general:
-            GeneralSettingsView()
-        case .accessibility:
-            AccessibilitySettingsView()
-        case .interface:
-            InterfaceSettingsView()
-        case .appearance:
-            AppearanceSettingsView()
-        case .timer:
-            TimerSettingsView()
+            IOSGeneralSettingsView()
         case .calendar:
-            CalendarSettingsView()
-        case .privacy:
-            PrivacySettingsView()
-        case .storage:
-            StorageSettingsView()
-        case .coursesPlanner:
-            CoursesPlannerSettingsView()
+            IOSCalendarSettingsView()
+        case .reminders:
+            IOSRemindersSettingsView()
+        case .planner:
+            IOSPlannerSettingsView()
+        case .courses:
+            IOSCoursesSettingsView()
+        case .semesters:
+            IOSSemestersSettingsView()
+        case .interface:
+            IOSInterfaceSettingsView()
+        case .profiles:
+            IOSProfilesSettingsView()
+        case .timer:
+            IOSTimerSettingsView()
+        case .flashcards:
+            IOSFlashcardsSettingsView()
+        case .integrations:
+            IOSIntegrationsSettingsView()
         case .notifications:
-            NotificationsSettingsView()
+            IOSNotificationsSettingsView()
+        case .privacy:
+            IOSPrivacySettingsView()
+        case .storage:
+            IOSStorageSettingsView()
+        case .developer:
+            IOSDeveloperSettingsView()
         }
     }
 }

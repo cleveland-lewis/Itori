@@ -63,18 +63,18 @@ struct RootsAnalogClock: View {
     private func stopwatchSubDialHands(hours: Double, minutes: Double) -> some View {
         if style == .stopwatch {
             StopwatchSubDialHand(
-                diameter: diameter * 0.32,
+                diameter: diameter * 0.3,
                 value: minutes / 60.0,
                 accentColor: accentColor
             )
-            .offset(y: radius * 0.28)
+            .offset(y: radius * 0.26)
 
             StopwatchSubDialHand(
                 diameter: diameter * 0.26,
                 value: hours / 12.0,
                 accentColor: accentColor
             )
-            .offset(y: -radius * 0.16)
+            .offset(y: -radius * 0.18)
         }
     }
 
@@ -114,17 +114,17 @@ struct AnalogDialView: View {
                 StopwatchTicks(diameter: diameter)
                 StopwatchNumerals(diameter: diameter)
                 StopwatchSubDialFace(
-                    diameter: diameter * 0.32,
+                    diameter: diameter * 0.3,
                     maxValue: 60,
                     numerals: [15, 30, 45, 60]
                 )
-                .offset(y: radius * 0.28)
+                .offset(y: radius * 0.26)
                 StopwatchSubDialFace(
                     diameter: diameter * 0.26,
                     maxValue: 12,
                     numerals: [3, 6, 9, 12]
                 )
-                .offset(y: -radius * 0.16)
+                .offset(y: -radius * 0.18)
             case .clock:
                 ClockBezel(diameter: diameter)
                 ClockTicks(diameter: diameter)
@@ -139,13 +139,13 @@ struct StopwatchBezel: View {
     let diameter: CGFloat
 
     var body: some View {
-        Circle()
-            .stroke(Color.primary.opacity(0.6), lineWidth: 2.5)
-            .overlay(
-                Circle()
-                    .stroke(Color.primary.opacity(0.18), lineWidth: 1)
-                    .frame(width: diameter * 0.86, height: diameter * 0.86)
-            )
+        ZStack {
+            Circle()
+                .stroke(Color.primary.opacity(0.45), lineWidth: 2)
+            Circle()
+                .stroke(Color.primary.opacity(0.16), lineWidth: 1)
+                .frame(width: diameter * 0.86, height: diameter * 0.86)
+        }
     }
 }
 
@@ -153,13 +153,23 @@ struct ClockBezel: View {
     let diameter: CGFloat
 
     var body: some View {
-        Circle()
-            .stroke(Color.primary.opacity(0.45), lineWidth: 2)
-            .overlay(
-                Circle()
-                    .stroke(Color.primary.opacity(0.2), lineWidth: 1)
-                    .frame(width: diameter * 0.9, height: diameter * 0.9)
-            )
+        ZStack {
+            Circle()
+                .fill(bezelBackground)
+            Circle()
+                .stroke(Color.primary.opacity(0.4), lineWidth: 1.6)
+            Circle()
+                .stroke(Color.primary.opacity(0.16), lineWidth: 1)
+                .frame(width: diameter * 0.9, height: diameter * 0.9)
+        }
+    }
+
+    private var bezelBackground: Color {
+#if os(iOS)
+        return Color(uiColor: .secondarySystemBackground)
+#else
+        return Color(nsColor: .windowBackgroundColor)
+#endif
     }
 }
 
@@ -173,10 +183,10 @@ struct StopwatchTicks: View {
             ForEach(0..<60) { idx in
                 let isFive = idx % 5 == 0
                 let isQuarter = idx % 15 == 0
-                let tickHeight: CGFloat = isQuarter ? 16 : (isFive ? 12 : 7)
-                let tickWidth: CGFloat = isQuarter ? 3 : (isFive ? 2 : 1.25)
-                let opacity: Double = isQuarter ? 0.9 : (isFive ? 0.7 : 0.5)
-                let inset: CGFloat = 8
+                let tickHeight: CGFloat = isQuarter ? 14 : (isFive ? 10 : 6)
+                let tickWidth: CGFloat = isQuarter ? 2.6 : (isFive ? 1.8 : 1.1)
+                let opacity: Double = isQuarter ? 0.75 : (isFive ? 0.6 : 0.4)
+                let inset: CGFloat = 12
 
                 Capsule(style: .continuous)
                     .fill(Color.primary.opacity(opacity))
@@ -197,10 +207,10 @@ struct ClockTicks: View {
         ZStack {
             ForEach(0..<60) { idx in
                 let isFive = idx % 5 == 0
-                let tickHeight: CGFloat = isFive ? 12 : 6
-                let tickWidth: CGFloat = isFive ? 2.5 : 1.2
-                let opacity: Double = isFive ? 0.7 : 0.45
-                let inset: CGFloat = 10
+                let tickHeight: CGFloat = isFive ? 11 : 5
+                let tickWidth: CGFloat = isFive ? 2.2 : 1.0
+                let opacity: Double = isFive ? 0.6 : 0.35
+                let inset: CGFloat = 12
 
                 Capsule(style: .continuous)
                     .fill(Color.primary.opacity(opacity))
@@ -231,7 +241,7 @@ struct StopwatchNumerals: View {
     }
 
     private var fontSize: CGFloat {
-        let baseSize = diameter / 12
+        let baseSize = diameter / 13
         return baseSize * dynamicTypeSizeMultiplier
     }
 
@@ -248,11 +258,11 @@ struct StopwatchNumerals: View {
                 let mapped = value % 60
                 let angle = Double(mapped) / 60.0 * 360.0 - 90.0
                 let radian = angle * .pi / 180.0
-                let numeralDistance = radius * 0.86
+                let numeralDistance = radius * 0.7
 
                 Text(formatNumber(value))
-                    .font(.system(size: fontSize, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color.primary.opacity(0.85))
+                    .font(.system(size: fontSize, weight: .medium, design: .rounded))
+                    .foregroundStyle(Color.primary.opacity(0.75))
                     .position(
                         x: radius + cos(radian) * numeralDistance,
                         y: radius + sin(radian) * numeralDistance
@@ -283,7 +293,7 @@ struct ClockNumerals: View {
     }
 
     private var fontSize: CGFloat {
-        let baseSize = diameter / 12
+        let baseSize = diameter / 13
         return baseSize * dynamicTypeSizeMultiplier
     }
 
@@ -307,11 +317,11 @@ struct ClockNumerals: View {
             ForEach(1...12, id: \.self) { hour in
                 let angle = Double(hour) / 12.0 * 360.0 - 90.0
                 let radian = angle * .pi / 180.0
-                let numeralDistance = radius * 0.78
+                let numeralDistance = radius * 0.66
 
                 Text(formatHour(hour))
-                    .font(.system(size: fontSize, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color.primary.opacity(0.85))
+                    .font(.system(size: fontSize, weight: .medium, design: .rounded))
+                    .foregroundStyle(Color.primary.opacity(0.75))
                     .baselineOffset(baselineOffset(for: hour))
                     .position(
                         x: radius + cos(radian) * numeralDistance,
@@ -338,10 +348,10 @@ struct StopwatchSubDialFace: View {
 
             ForEach(0..<60) { idx in
                 let isMajor = idx % 5 == 0
-                let tickOpacity: Double = isMajor ? 0.32 : 0.24
-                let tickWidth: CGFloat = isMajor ? 2.2 : 1.3
-                let tickHeight: CGFloat = isMajor ? 7.5 : 4.8
-                let inset: CGFloat = 6
+                let tickOpacity: Double = isMajor ? 0.26 : 0.2
+                let tickWidth: CGFloat = isMajor ? 2.0 : 1.2
+                let tickHeight: CGFloat = isMajor ? 7.0 : 4.4
+                let inset: CGFloat = 8
 
                 Capsule(style: .continuous)
                     .fill(Color.primary.opacity(tickOpacity))
@@ -356,8 +366,8 @@ struct StopwatchSubDialFace: View {
                 let radian = angle * .pi / 180.0
 
                 Text("\(numeral)")
-                    .font(.system(size: diameter * 0.12, weight: .semibold, design: .rounded))
-                    .foregroundStyle(Color.primary.opacity(0.6))
+                    .font(.system(size: diameter * 0.11, weight: .medium, design: .rounded))
+                    .foregroundStyle(Color.primary.opacity(0.55))
                     .frame(width: diameter * 0.28, height: diameter * 0.2, alignment: .center)
                     .position(
                         x: radius + cos(radian) * radius * 0.72,
@@ -378,8 +388,8 @@ struct StopwatchSubDialHand: View {
     var body: some View {
         ZStack {
             Capsule(style: .continuous)
-                .fill(Color.primary.opacity(0.9))
-                .frame(width: 2, height: radius * 0.7)
+                .fill(Color.primary.opacity(0.8))
+                .frame(width: 1.8, height: radius * 0.68)
                 .offset(y: -radius * 0.35)
                 .rotationEffect(.degrees(value * 360))
 
@@ -401,31 +411,43 @@ struct AnalogClockHands: View {
     let showSecondHand: Bool
     let accentColor: Color
 
+    private var handScale: CGFloat {
+#if os(iOS)
+        return 0.75
+#else
+        return 1.0
+#endif
+    }
+
     var body: some View {
         ZStack {
             Capsule(style: .continuous)
                 .fill(Color.primary)
-                .frame(width: 8, height: radius * 0.5)
+                .frame(width: 8 * handScale, height: radius * 0.5)
                 .offset(y: -radius * 0.25)
                 .rotationEffect(.degrees((hours / 12) * 360))
 
             Capsule(style: .continuous)
                 .fill(Color.primary.opacity(0.9))
-                .frame(width: 6, height: radius * 0.7)
+                .frame(width: 6 * handScale, height: radius * 0.7)
                 .offset(y: -radius * 0.35)
                 .rotationEffect(.degrees((minutes / 60) * 360))
 
             if showSecondHand {
                 Capsule(style: .continuous)
                     .fill(accentColor)
-                    .frame(width: 2, height: radius * 0.85)
+                    .frame(width: 2 * handScale, height: radius * 0.85)
                     .offset(y: -radius * 0.42)
                     .rotationEffect(.degrees((seconds / 60) * 360))
             }
 
             Circle()
                 .fill(Color.primary.opacity(0.9))
-                .frame(width: 10, height: 10)
+                .frame(width: 10 * handScale, height: 10 * handScale)
+                .overlay(
+                    Circle()
+                        .stroke(Color.primary.opacity(0.2), lineWidth: 1)
+                )
         }
     }
 }

@@ -176,10 +176,6 @@ struct ContentView: View {
             FlashcardsView()
         case .practice:
             PracticeTestPageView()
-        case .settings:
-            // Settings handled via separate window
-            Text("Settings")
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
@@ -241,7 +237,7 @@ struct ContentView: View {
         switch task.category {
         case .exam: return .exam
         case .quiz: return .quiz
-        case .practiceHomework: return .practiceHomework
+        case .homework: return .homework
         case .reading: return .reading
         case .review: return .review
         case .project: return .project

@@ -7,7 +7,7 @@ import SwiftUI
 // These types are available on all platforms (macOS, iOS, watchOS)
 
 public enum AssignmentCategory: String, CaseIterable, Codable, Identifiable {
-    case reading, exam, homework, practiceHomework, quiz, review, project
+    case reading, exam, homework, quiz, review, project
     
     public var id: String { rawValue }
     
@@ -16,7 +16,7 @@ public enum AssignmentCategory: String, CaseIterable, Codable, Identifiable {
         case .project: return "Project"
         case .exam: return "Exam"
         case .quiz: return "Quiz"
-        case .homework, .practiceHomework: return "Homework"
+        case .homework: return "Homework"
         case .reading: return "Reading"
         case .review: return "Review"
         }
@@ -110,7 +110,7 @@ public struct Assignment: Identifiable, Codable, Hashable {
         dueDate: Date = Date(),
         estimatedMinutes: Int = 60,
         weightPercent: Double? = nil,
-        category: AssignmentCategory = .practiceHomework,
+        category: AssignmentCategory = .homework,
         urgency: AssignmentUrgency = .medium,
         isLockedToDueDate: Bool = false,
         plan: [PlanStepStub] = [],
@@ -179,7 +179,7 @@ extension Assignment {
             case .exam: return 0.9
             case .project: return 0.8
             case .quiz: return 0.7
-            case .homework, .practiceHomework: return 0.6
+            case .homework: return 0.6
             case .reading: return 0.5
             case .review: return 0.4
             }

@@ -1,235 +1,225 @@
-# Assignment Editor - Complete Implementation
+# Assignment Editor Improvements - IMPLEMENTATION STATUS
 
-## Summary
-Fixed the "New Assignment" sheet to ensure all controls persist correctly, are wired to the model, and work with the Planner algorithm.
+## ✅ Completed Components
 
-## Changes Made
+### 1. Duration Estimation System (90% Complete)
+**File:** `SharedCore/Services/FeatureServices/DurationEstimator.swift`
 
-### 1. Replaced Priority Slider with Discrete Selector ✅
+✅ **Implemented:**
+- `DurationEstimator` struct with smart estimation logic
+- `CategoryLearningData` struct for EWMA tracking
+- Base duration estimates by category
+- Course-type multipliers
+- Decomposition hint text generation
+- Learning key generation
 
-**File: iOS/Scenes/IOSCorePages.swift**
+✅ **Category Base Estimates:**
+- Reading: 45 min (5min steps)
+- Homework: 75 min (10min steps)
+- Review: 60 min (15min steps)
+- Project: 120 min (15min steps)
+- Exam: 180 min (15min steps)
+- Quiz: 30 min (5min steps)
 
-- **Removed**: Dual sliders for "Importance" and "Difficulty"
-- **Added**: Single discrete Priority selector with 5 levels:
-  1. Lowest (importance: 0.2)
-  2. Low (importance: 0.4)
-  3. Medium (importance: 0.6) - default
-  4. High (importance: 0.8)
-  5. Urgent (importance: 1.0)
+✅ **Course Type Multipliers:**
+- Regular: 1.0 (baseline)
+- Honors/AP/IB: 1.2x all categories
+- Seminar: Reading 1.4x, Projects 1.2x, Homework 0.9x
+- Lab: Projects 1.2x, Homework 1.1x, Reading 0.9x
 
-**Implementation**:
+✅ **Decomposition Hints:**
+- Reading: "1 × 45m same day"
+- Homework: "2 × 75m over 2 days"
+- Review: "3 × 20m spaced (today +2d +5d)"
+- Project: "4 × 30m across weeks"
+- Exam: "5 × 36m spaced, last within 24h"
+
+### 2. TaskType Extensions (100% Complete)
+**File:** `SharedCore/Features/Scheduler/AIScheduler.swift`
+
+✅ Added to TaskType enum:
+- `baseEstimateMinutes` property
+- `stepSize` property
+- `asAssignmentCategory` converter
+
+### 3. UI Layout Improvements (90% Complete)
+**File:** `macOSApp/Views/AddAssignmentView.swift`
+
+✅ **Implemented:**
+- Right-aligned controls throughout
+- "Lock" with subtitle "Lock work to due date" in gray
+- Improved spacing and visual hierarchy
+- Decomposition hint text display
+- Dynamic step sizes based on category
+
+✅ **New Layout:**
+```
+Due Date                    [DatePicker]
+Estimated              [60 min] [Stepper]
+Typically: 2 × 60m over 2 days
+
+         Lock              [Toggle]
+Lock work to due date
+```
+
+### 4. Smart Estimation Logic (100% Complete)
+✅ Category changes update estimate automatically
+✅ Course selection updates with multiplier
+✅ Respects learned data when available
+
+## ⚠️ Remaining Work (10%)
+
+### Storage Integration
+**File:** `SharedCore/State/AppSettingsModel.swift`
+
+The storage property needs manual verification:
 ```swift
-enum Priority: Int, CaseIterable, Identifiable {
-    case lowest = 1
-    case low = 2
-    case medium = 3
-    case high = 4
-    case urgent = 5
+@AppStorage("roots.learning.categoryDurations") var categoryDurationsData: Data = Data()
+
+var categoryLearningData: [String: CategoryLearningData] {
+    get {
+        guard let decoded = try? JSONDecoder().decode(
+            [String: CategoryLearningData].self,
+            from: categoryDurationsData
+        ) else { return [:] }
+        return decoded
+    }
+    set {
+        if let encoded = try? JSONEncoder().encode(newValue) {
+            categoryDurationsData = encoded
+        }
+    }
+}
+
+func recordTaskCompletion(courseId: UUID, category: AssignmentCategory, actualMinutes: Int) {
+    let key = DurationEstimator.learningKey(courseId: courseId, category: category)
+    var data = categoryLearningData
+    var learning = data[key] ?? CategoryLearningData(
+        courseId: courseId,
+        category: category
+    )
     
-    var importanceValue: Double { ... }
-    init(fromImportance importance: Double) { ... }
+    learning.record(actualMinutes: actualMinutes)
+    data[key] = learning
+    categoryLearningData = data
 }
 ```
 
-**UI**: NavigationLink to a selection list with checkmark for current selection (iOS Settings style)
-
-### 2. Fixed Field Persistence ✅
-
-**All fields now persist correctly:**
-
-| Field | Type | Model Property | Status |
-|-------|------|----------------|--------|
-| Title | String | `title` | ✅ Persists |
-| Type | TaskType enum | `type` & `category` | ✅ Persists (both fields) |
-| Course | UUID? | `courseId` | ✅ Persists |
-| Has Due Date | Bool | _(computed from `due`)_ | ✅ Persists |
-| Due Date | Date? | `due` | ✅ Persists |
-| Estimated Time | Int | `estimatedMinutes` | ✅ Persists |
-| Priority | Priority enum | `importance` | ✅ Persists (converted to 0-1 scale) |
-| Grade Info | Double? | `gradeWeightPercent`, `gradePossiblePoints`, `gradeEarnedPoints` | ✅ Preserved on edit |
-
-**Key Fix**: TaskDraft.makeTask() now:
-- Converts Priority → importance (0...1)
-- Preserves existing grade data when editing
-- Sets both `type` and `category` fields (required for migration)
-
-### 3. Wired to Planner Algorithm ✅
-
-**File: SharedCore/Models/SharedPlanningModels.swift**
-
-Added planner integration extension to Assignment:
-
+### Integration Point - Task Completion
+When a task is marked complete with timer data, call:
 ```swift
-extension Assignment {
-    public var plannerPriorityWeight: Double { ... }
-    public var plannerEstimatedMinutes: Int { ... }
-    public var plannerDueDate: Date? { ... }
-    public var plannerCourseId: UUID? { ... }
-    public var plannerCategory: AssignmentCategory { ... }
-    public var plannerDifficulty: Double { ... }
-}
+AppSettingsModel.shared.recordTaskCompletion(
+    courseId: task.courseId,
+    category: task.category,
+    actualMinutes: timerMinutes
+)
 ```
 
-**Benefits**:
-- Planner reads from single source of truth (Assignment model)
-- Priority directly affects scheduling weight
-- Estimated minutes used for session duration
-- Due date drives urgency calculation
-- Category affects difficulty estimation
+### Sync macOS/Views Version
+Copy updated `macOSApp/Views/AddAssignmentView.swift` to `macOS/Views/AddAssignmentView.swift`
 
-### 4. Validation & Save State ✅
+## 🎯 How It Works
 
-**Save button enabled only when:**
-- Title is not empty (after trimming whitespace)
-- If "Has Due Date" is ON, due date is valid
+### User Creates Assignment
+1. Selects category (e.g., "Homework")
+2. Estimate auto-fills to 75 min
+3. Selects course
+4. If course is Honors, estimate increases to 90 min (75 × 1.2)
+5. Hint shows: "Typically: 2 × 90m over 2 days"
 
-**Validation code:**
-```swift
-private var isValid: Bool {
-    let titleValid = !draft.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-    let dateValid = !draft.hasDueDate || draft.dueDate != nil
-    return titleValid && dateValid
-}
-```
+### After 3+ Completions
+User completes 3 homework assignments in "Math 101":
+- Assignment 1: Took 65 min
+- Assignment 2: Took 70 min
+- Assignment 3: Took 75 min
 
-### 5. Updated Detail View ✅
+EWMA average: ~70 min
 
-**File: iOS/Scenes/IOSCorePages.swift - IOSTaskDetailView**
+Next homework for Math 101 defaults to **70 min** (learned value)
 
-- Removed separate "Importance" and "Difficulty" rows
-- Shows single "Priority" row with human-readable label
-- Priority labels match the editor (Lowest, Low, Medium, High, Urgent)
+### Course Type Intelligence
+**Regular Course:**
+- Homework estimate: 75 min
 
-### 6. Round-Trip Verification ✅
+**AP Course:**
+- Homework estimate: 90 min (75 × 1.2)
 
-**Data flow tested:**
-1. Create assignment → Save → Assignment persisted to AssignmentsStore
-2. AssignmentsStore notifies planner
-3. Planner generates plan using Assignment model
-4. Edit assignment → All values preserved
-5. Assignment detail view → Shows correct priority
+**Seminar:**
+- Reading: 63 min (45 × 1.4)
+- Homework: 68 min (75 × 0.9)
 
-## How to Test
+## 📊 Benefits
 
-### Manual Test Checklist
+### 1. Smarter Defaults
+✅ Category-appropriate estimates
+✅ Course-type awareness
+✅ Gets smarter over time
 
-1. **Create New Assignment**
-   - Open app → Tap + button → "Add Assignment"
-   - Fill in Title: "Test Assignment"
-   - Select Type: "Homework"
-   - Select Course: Any course
-   - Toggle "Has Due Date" ON
-   - Set Due Date: Tomorrow
-   - Set Estimated Time: 90 minutes
-   - Tap Priority → Select "High"
-   - Tap Save
+### 2. Better User Guidance
+✅ Clear decomposition hints
+✅ Realistic expectations
+✅ Helpful without being prescriptive
 
-2. **Verify Persistence**
-   - Go to Assignments page
-   - Find "Test Assignment"
-   - Tap to view details
-   - Verify: Priority shows "High"
-   - Verify: Estimated time shows "90 minutes"
+### 3. Non-Invasive
+✅ Doesn't lock behavior
+✅ User can override anytime
+✅ Category is a hint, not a constraint
 
-3. **Verify Edit Round-Trip**
-   - From detail view → Tap "Edit"
-   - Verify: All fields show correct values
-   - Change Priority to "Urgent"
-   - Change Estimated Time to 120 minutes
-   - Tap Save
-   - Reopen assignment
-   - Verify: Changes persisted
+## 🔧 Testing
 
-4. **Verify Planner Integration**
-   - Go to Planner page
-   - Tap "Generate Plan" (sparkles button)
-   - Verify: "Test Assignment" appears in schedule
-   - Verify: High-priority assignments scheduled appropriately
+### Basic Flow
+1. Create new assignment
+2. Select "Homework" → See 75 min estimate
+3. See hint: "Typically: 2 × 75m over 2 days"
+4. Change to "Reading" → See 45 min, hint changes
+5. Select Honors course → See estimate increase
 
-5. **Verify Validation**
-   - Create new assignment
-   - Leave Title empty → Verify Save button disabled
-   - Enter Title → Verify Save button enabled
-   - Toggle "Has Due Date" OFF → Verify Save button enabled
-   - Toggle "Has Due Date" ON → Verify Save button enabled
+### Learning Flow
+1. Complete 3+ tasks in same course+category
+2. Create new task in that course+category
+3. Verify estimate uses learned average
+4. Complete more tasks
+5. Verify EWMA adapts smoothly
 
-### Unit Test Verification
+## 📝 Design Principles
 
-Run these tests if they exist:
-```bash
-xcodebuild test -project RootsApp.xcodeproj -scheme RootsiOS -destination 'platform=iOS Simulator,name=iPhone 16 Pro'
-```
+### Category = Estimation Hint
+❌ **Don't:** Force specific plan structures
+❌ **Don't:** Lock behavior based on category
+❌ **Don't:** Change data model
 
-Expected: All assignment-related tests pass
+✅ **Do:** Provide smart defaults
+✅ **Do:** Show helpful guidance
+✅ **Do:** Learn from patterns
+
+### User Always Has Control
+- Can override any estimate
+- Can ignore suggestions
+- Can work however they prefer
+
+## 🚀 Next Steps
+
+1. Verify `categoryDurationsData` property in AppSettingsModel
+2. Add completion recording integration
+3. Test with various course types
+4. Monitor EWMA behavior
+5. Gather user feedback
 
 ## Files Modified
 
-1. **iOS/Scenes/IOSCorePages.swift**
-   - Added `IOSTaskEditorView.Priority` enum
-   - Updated `TaskDraft` struct
-   - Replaced sliders with NavigationLink priority selector
-   - Added `PrioritySelectionView` component
-   - Updated `IOSTaskDetailView` to show priority
-   - Improved validation logic
+### Created
+- ✅ `SharedCore/Services/FeatureServices/DurationEstimator.swift`
 
-2. **SharedCore/Models/SharedPlanningModels.swift**
-   - Added `Assignment` extension with planner integration properties
-   - Provides clean API for scheduler algorithm
+### Modified
+- ✅ `SharedCore/Features/Scheduler/AIScheduler.swift` (TaskType extensions)
+- ✅ `macOSApp/Views/AddAssignmentView.swift` (UI improvements)
+- ⚠️ `SharedCore/State/AppSettingsModel.swift` (needs verification)
 
-## Acceptance Criteria
+### Needs Sync
+- ⚠️ `macOS/Views/AddAssignmentView.swift`
 
-- [✅] Title, Type, Course, Has Due Date, Due Date, Estimated Work Time, Priority all persist
-- [✅] Reopening created assignment shows same values
-- [✅] Priority is discrete selector (not slider) with 5 levels
-- [✅] Planner algorithm accesses: due date, estimated minutes, priority
-- [✅] No localization keys appear in UI (all human-readable English)
-- [✅] Save button enables/disables correctly
-- [✅] Grade information preserved on edit
-- [✅] Both `type` and `category` fields set (migration safe)
+## Summary
 
-## Architecture Notes
+The duration estimation system is **90% complete** and provides intelligent, adaptive estimates based on category, course type, and learning data. The UI improvements make the assignment editor more professional with right-aligned controls and helpful guidance text.
 
-### Priority → Importance Mapping
-
-The UI presents 5 discrete priority levels, internally mapped to the 0-1 importance scale:
-
-| Priority | Importance | Use Case |
-|----------|------------|----------|
-| Lowest | 0.2 | Optional/extra credit |
-| Low | 0.4 | Low-stakes homework |
-| Medium | 0.6 | Regular assignments |
-| High | 0.8 | Major assignments/quizzes |
-| Urgent | 1.0 | Exams/critical deadlines |
-
-### Planner Integration
-
-The planner now reads assignments via computed properties:
-- `plannerPriorityWeight` - Direct urgency mapping
-- `plannerEstimatedMinutes` - Session duration
-- `plannerDueDate` - Scheduling deadline
-- `plannerDifficulty` - Auto-calculated from category + time
-
-This keeps planner logic decoupled from UI concerns.
-
-## Known Limitations
-
-1. **Difficulty**: Currently auto-calculated by planner, not user-editable. This is intentional - most users don't understand the distinction between priority and difficulty.
-
-2. **Grade Fields**: Grade information (weight, points) is not editable in this view. Use the "Add Grade" flow for grade entry.
-
-3. **Attachments**: Not yet supported in iOS editor (placeholder exists in model).
-
-## Next Steps (Future Enhancements)
-
-1. Add inline time picker (hours + minutes) instead of stepper
-2. Support recurring assignments
-3. Add attachment support
-4. Add notes field
-5. Show estimated completion date based on planner schedule
-6. Add "Lock to due date" toggle
-
----
-
-**Status**: ✅ Complete and ready for testing
-**Platform**: iOS/iPadOS only
-**Last Updated**: 2025-12-23
+The system respects the key principle: **Category affects estimation, not enforcement.**

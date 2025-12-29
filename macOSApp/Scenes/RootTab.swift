@@ -11,7 +11,6 @@ public enum RootTab: String, CaseIterable, Identifiable {
     case timer
     case flashcards
     case practice
-    case settings
 
     public var id: String { rawValue }
 }

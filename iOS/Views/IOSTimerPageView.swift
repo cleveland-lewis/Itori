@@ -130,12 +130,20 @@ struct IOSTimerPageView: View {
         )
         .background(
             GeometryReader { proxy in
-                Color.clear.preference(key: TimerCardWidthKey.self, value: proxy.size.width)
+                Color.clear
+                    .preference(key: TimerCardWidthKey.self, value: proxy.size.width)
             }
         )
         .onPreferenceChange(TimerCardWidthKey.self) { width in
-            if width > 0 && abs(width - timerCardWidth) > 0.5 {
+            guard width > 0 else { return }
+            DispatchQueue.main.async {
                 timerCardWidth = width
+            }
+        }
+        .task(id: timerCardWidth) {
+            let rounded = (timerCardWidth / 2).rounded() * 2
+            if abs(rounded - timerCardWidth) > 0.5 {
+                timerCardWidth = rounded
             }
         }
         .sheet(isPresented: $showingFocusPage) {

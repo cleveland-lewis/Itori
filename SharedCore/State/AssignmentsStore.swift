@@ -52,7 +52,7 @@ final class AssignmentsStore: ObservableObject {
         switch task.category {
         case .exam: assignmentCategory = .exam
         case .quiz: assignmentCategory = .quiz
-        case .practiceHomework: assignmentCategory = .practiceHomework
+        case .homework: assignmentCategory = .homework
         case .reading: assignmentCategory = .reading
         case .review: assignmentCategory = .review
         case .project: assignmentCategory = .project

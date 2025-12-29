@@ -67,11 +67,11 @@ struct DesignSystem {
 
         static var cardBackground: Color {
             #if os(macOS)
-            return Color(nsColor: .textBackgroundColor)
+            return Color(nsColor: .controlBackgroundColor)
             #elseif os(watchOS)
             return Color.black.opacity(0.8)
             #else
-            return Color(uiColor: .systemBackground)
+            return Color(uiColor: .secondarySystemBackground)
             #endif
         }
 

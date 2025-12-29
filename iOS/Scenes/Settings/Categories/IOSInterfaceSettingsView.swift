@@ -1,7 +1,7 @@
 import SwiftUI
 #if os(iOS)
 
-struct InterfaceSettingsView: View {
+struct IOSInterfaceSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.layoutMetrics) private var layoutMetrics
@@ -161,7 +161,7 @@ struct InterfaceSettingsView: View {
 
 #Preview {
     NavigationStack {
-        InterfaceSettingsView()
+        IOSInterfaceSettingsView()
             .environmentObject(AppSettingsModel.shared)
     }
 }

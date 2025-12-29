@@ -29,6 +29,16 @@ final class DeviceCalendarManager: ObservableObject {
     }
 
     func refreshEventsForVisibleRange(reason: String = "rangeRefresh") async {
+        // Check authorization before attempting to fetch
+        guard isAuthorized else {
+            await MainActor.run {
+                self.events = []
+                self.lastRefreshAt = Date()
+                self.lastRefreshReason = "\(reason) - unauthorized"
+            }
+            return
+        }
+        
         let cal = Calendar.current
         let start = cal.date(byAdding: .day, value: -30, to: .now)!
         let end   = cal.date(byAdding: .day, value:  90, to: .now)!
@@ -54,6 +64,16 @@ final class DeviceCalendarManager: ObservableObject {
     }
 
     func refreshEvents(from start: Date, to end: Date, reason: String) async {
+        // Check authorization before attempting to fetch
+        guard isAuthorized else {
+            await MainActor.run {
+                self.events = []
+                self.lastRefreshAt = Date()
+                self.lastRefreshReason = "\(reason) - unauthorized"
+            }
+            return
+        }
+        
         // Filter by selected school calendar if one is set
         let calendarsToFetch: [EKCalendar]?
         let calendarID = AppSettingsModel.shared.selectedSchoolCalendarID
@@ -102,6 +122,14 @@ final class DeviceCalendarManager: ObservableObject {
     }
 
     func refreshEventsForVisibleRange() async {
+        // Check authorization before attempting to fetch
+        guard isAuthorized else {
+            await MainActor.run {
+                self.events = []
+            }
+            return
+        }
+        
         let cal = Calendar.current
         let start = cal.date(byAdding: .day, value: -30, to: .now)!
         let end   = cal.date(byAdding: .day, value:  90, to: .now)!
@@ -137,6 +165,7 @@ final class DeviceCalendarManager: ObservableObject {
     
     /// Get all available calendars from the event store
     func getAvailableCalendars() -> [EKCalendar] {
+        guard isAuthorized else { return [] }
         return store.calendars(for: .event)
     }
     

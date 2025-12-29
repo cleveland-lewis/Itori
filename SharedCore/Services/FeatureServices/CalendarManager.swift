@@ -143,6 +143,12 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
 
     @MainActor
     func refreshSources() {
+        guard DeviceCalendarManager.shared.isAuthorized else {
+            self.availableCalendars = []
+            self.availableReminderLists = []
+            return
+        }
+        
         self.availableCalendars = store.calendars(for: .event)
         self.availableReminderLists = store.calendars(for: .reminder)
 
@@ -238,7 +244,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     }
 
     private func taskTitle(for task: AppTask) -> String {
-        if task.type == .practiceHomework {
+        if task.type == .homework {
             return "Homework: \(task.title)"
         }
         return task.title

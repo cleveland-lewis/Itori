@@ -67,116 +67,88 @@ struct IOSRootView: View {
     }
 
     var body: some View {
+        bodyContent
+            .background(DesignSystem.Colors.appBackground)
+            .environmentObject(navigation)
+            .environmentObject(tabBarPrefs)
+            .layoutMetrics(layoutMetrics)
+            .preferredColorScheme(preferredColorScheme)
+            .transaction { transaction in
+                if !settings.showAnimations {
+                    transaction.disablesAnimations = true
+                }
+            }
+            .overlay(alignment: .top) {
+                toastOverlay
+            }
+            .sheet(item: $sheetRouter.activeSheet) { sheet in
+                sheetContent(for: sheet)
+            }
+            .onChange(of: plannerCoordinator.requestedDate) { _, date in
+                guard date != nil else { return }
+                openPlannerPage()
+                plannerCoordinator.requestedDate = nil
+            }
+            .onChange(of: plannerCoordinator.requestedCourseId) { _, _ in
+                openPlannerPage()
+            }
+    }
+    
+    private var bodyContent: some View {
         ZStack {
             if isPad && settings.showSidebarByDefault {
-                // iPad with sidebar
-                NavigationSplitView(columnVisibility: $columnVisibility) {
-                    sidebarContent
-                } detail: {
-                    detailContent
-                }
-                .onAppear {
-                    columnVisibility = .all
-                }
+                ipadWithSidebarView
             } else {
-                // iPhone or iPad without sidebar
-                NavigationStack(path: $navigation.path) {
-                    TabView(selection: $selectedTab) {
-                        ForEach(starredTabs, id: \.self) { tab in
-                            IOSAppShell {
-                                tabView(for: tab)
-                            }
-                            .tag(tab)
-                            .tabItem {
-                                if let def = TabRegistry.definition(for: tab) {
-                                    Label(def.title, systemImage: def.icon)
-                                }
-                            }
-                        }
-                    }
-                    .tabViewMinimizeBehavior(.onScrollDown)
-                    .navigationDestination(for: IOSNavigationTarget.self) { destination in
-                        IOSAppShell(hideNavigationButtons: destination == .settings) {
-                            switch destination {
-                            case .page(let page):
-                                pageView(for: page)
-                            case .settings:
-                                settingsContent
-                            }
-                        }
-                    }
-                }
-                .toolbarBackground(.hidden, for: .navigationBar)
+                standardNavigationView
             }
         }
         .background(DesignSystem.Colors.appBackground)
-        .environmentObject(navigation)
-        .environmentObject(tabBarPrefs)
-        .layoutMetrics(layoutMetrics)
-        .preferredColorScheme(preferredColorScheme)
-        .transaction { transaction in
-            if !settings.showAnimations {
-                transaction.disablesAnimations = true
-            }
+    }
+    
+    private var ipadWithSidebarView: some View {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
+            sidebarContent
+        } detail: {
+            detailContent
         }
-        .overlay(alignment: .top) {
-            if let message = toastRouter.message {
-                toastView(message)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-                    .animation(.easeOut(duration: 0.2), value: toastRouter.message)
-            }
+        .onAppear {
+            columnVisibility = .all
         }
-        .sheet(item: $sheetRouter.activeSheet) { sheet in
-            switch sheet {
-            case .addAssignment(let defaults):
-                IOSTaskEditorView(
-                    task: nil,
-                    courses: coursesStore.activeCourses,
-                    defaults: .init(
-                        title: defaults.title,
-                        courseId: defaults.courseId,
-                        dueDate: defaults.dueDate,
-                        type: defaults.type
-                    ),
-                    itemLabel: defaults.itemLabel,
-                    onSave: { draft in
-                        let task = draft.makeTask(existing: nil)
-                        assignmentsStore.addTask(task)
-                        toastRouter.show(String(format: NSLocalizedString("ios.toast.assignment_added", comment: "Assignment added"), defaults.itemLabel))
+    }
+    
+    private var standardNavigationView: some View {
+        NavigationStack(path: $navigation.path) {
+            TabView(selection: $selectedTab) {
+                ForEach(starredTabs, id: \.self) { tab in
+                    IOSAppShell {
+                        tabView(for: tab)
                     }
-                )
-            case .addCourse(let defaults):
-                IOSCourseEditorView(
-                    semesters: coursesStore.activeSemesters,
-                    currentSemesterId: defaults.semesterId ?? coursesStore.currentSemesterId,
-                    defaults: .init(title: defaults.title, code: defaults.code, semesterId: defaults.semesterId),
-                    onSave: { draft in
-                        guard let semester = coursesStore.activeSemesters.first(where: { $0.id == draft.semesterId }) else { return }
-                        coursesStore.addCourse(title: draft.title, code: draft.code, to: semester)
-                        toastRouter.show(NSLocalizedString("ios.toast.course_added", comment: "Course added"))
-                    }
-                )
-            case .addGrade:
-                AddGradeSheet(
-                    assignments: assignmentsStore.tasks,
-                    courses: gradeCourseSummaries(),
-                    onSave: { updatedTask in
-                        assignmentsStore.updateTask(updatedTask)
-                        if let courseId = updatedTask.courseId {
-                            gradesStore.upsert(courseId: courseId, percent: updatedTask.gradeWeightPercent, letter: nil)
+                    .tag(tab)
+                    .tabItem {
+                        if let def = TabRegistry.definition(for: tab) {
+                            Label(def.title, systemImage: def.icon)
                         }
-                        toastRouter.show(NSLocalizedString("ios.toast.grade_added", comment: "Grade added"))
                     }
-                )
+                }
+            }
+            .navigationDestination(for: IOSNavigationTarget.self) { destination in
+                IOSAppShell(hideNavigationButtons: false) {
+                    switch destination {
+                    case .page(let page):
+                        pageView(for: page)
+                    }
+                }
             }
         }
-        .onChange(of: plannerCoordinator.requestedDate) { _, date in
-            guard date != nil else { return }
-            openPlannerPage()
-            plannerCoordinator.requestedDate = nil
-        }
-        .onChange(of: plannerCoordinator.requestedCourseId) { _, _ in
-            openPlannerPage()
+        .toolbarBackground(.hidden, for: .navigationBar)
+    }
+    
+    @ViewBuilder
+    private var toastOverlay: some View {
+        if let message = toastRouter.message {
+            toastView(message)
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .animation(.easeOut(duration: 0.2), value: toastRouter.message)
         }
     }
     
@@ -220,8 +192,6 @@ struct IOSRootView: View {
                     switch destination {
                     case .page(let page):
                         pageView(for: page)
-                    case .settings:
-                        settingsContent
                     }
                 }
         }
@@ -282,8 +252,6 @@ struct IOSRootView: View {
             IOSFlashcardsView()
         case .practice:
             IOSPracticeView()
-        case .settings:
-            SettingsRootView()
         default:
             IOSPlaceholderView(title: tab.title, subtitle: "This page is not available on iOS yet.")
         }
@@ -313,7 +281,7 @@ struct IOSRootView: View {
         }
     }
     
-    private var settingsContent: some View {
+        private var settingsContent: some View {
         List {
             ForEach(SettingsCategory.allCases) { category in
                 NavigationLink(destination: category.destinationView()) {
@@ -330,6 +298,52 @@ struct IOSRootView: View {
         .listStyle(.insetGrouped)
         .navigationTitle(NSLocalizedString("ios.settings.title", comment: "Settings"))
         .navigationBarTitleDisplayMode(.large)
+    }
+    
+    @ViewBuilder
+    private func sheetContent(for sheet: IOSSheetRouter.SheetKind) -> some View {
+        switch sheet {
+        case .addAssignment(let defaults):
+            IOSTaskEditorView(
+                task: nil,
+                courses: coursesStore.activeCourses,
+                defaults: .init(
+                    title: defaults.title,
+                    courseId: defaults.courseId,
+                    dueDate: defaults.dueDate,
+                    type: defaults.type
+                ),
+                itemLabel: defaults.itemLabel,
+                onSave: { draft in
+                    let task = draft.makeTask(existing: nil)
+                    assignmentsStore.addTask(task)
+                    toastRouter.show(String(format: NSLocalizedString("ios.toast.assignment_added", comment: "Assignment added"), defaults.itemLabel))
+                }
+            )
+        case .addCourse(let defaults):
+            IOSCourseEditorView(
+                semesters: coursesStore.activeSemesters,
+                currentSemesterId: defaults.semesterId ?? coursesStore.currentSemesterId,
+                defaults: .init(title: defaults.title, code: defaults.code, semesterId: defaults.semesterId),
+                onSave: { draft in
+                    guard let semester = coursesStore.activeSemesters.first(where: { $0.id == draft.semesterId }) else { return }
+                    coursesStore.addCourse(title: draft.title, code: draft.code, to: semester)
+                    toastRouter.show(NSLocalizedString("ios.toast.course_added", comment: "Course added"))
+                }
+            )
+        case .addGrade:
+            AddGradeSheet(
+                assignments: assignmentsStore.tasks,
+                courses: gradeCourseSummaries(),
+                onSave: { updatedTask in
+                    assignmentsStore.updateTask(updatedTask)
+                    if let courseId = updatedTask.courseId {
+                        gradesStore.upsert(courseId: courseId, percent: updatedTask.gradeWeightPercent, letter: nil)
+                    }
+                    toastRouter.show(NSLocalizedString("ios.toast.grade_added", comment: "Grade added"))
+                }
+            )
+        }
     }
 }
 #endif

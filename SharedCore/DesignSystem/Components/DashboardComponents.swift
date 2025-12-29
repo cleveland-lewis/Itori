@@ -1,5 +1,23 @@
 import SwiftUI
 
+enum DashboardCardMode: Equatable {
+    case full
+    case compactEmpty
+}
+
+struct EmptyStatePolicy {
+    static func mode(hasData: Bool) -> DashboardCardMode {
+        hasData ? .full : .compactEmpty
+    }
+}
+
+struct DashboardCompactState {
+    let title: String
+    let description: String
+    let actionTitle: String
+    let action: () -> Void
+}
+
 /// Native macOS dashboard card following Apple's Human Interface Guidelines
 /// - Uses system materials and semantic colors
 /// - Adaptive layout with proper spacing
@@ -12,11 +30,15 @@ struct DashboardCard<Content: View, HeaderContent: View, FooterContent: View>: V
     @ViewBuilder let footer: () -> FooterContent
     
     var isLoading: Bool = false
+    var mode: DashboardCardMode = .full
+    var compactState: DashboardCompactState? = nil
     
     init(
         title: String,
         systemImage: String,
         isLoading: Bool = false,
+        mode: DashboardCardMode = .full,
+        compactState: DashboardCompactState? = nil,
         @ViewBuilder content: @escaping () -> Content,
         @ViewBuilder header: @escaping () -> HeaderContent = { EmptyView() },
         @ViewBuilder footer: @escaping () -> FooterContent = { EmptyView() }
@@ -24,45 +46,58 @@ struct DashboardCard<Content: View, HeaderContent: View, FooterContent: View>: V
         self.title = title
         self.systemImage = systemImage
         self.isLoading = isLoading
+        self.mode = mode
+        self.compactState = compactState
         self.content = content
         self.header = header
         self.footer = footer
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // Header with optional custom content
-            HStack {
+        VStack(alignment: .leading, spacing: mode == .compactEmpty ? 8 : 12) {
+            HStack(spacing: 8) {
                 Label(title, systemImage: systemImage)
                     .font(.headline)
                     .foregroundStyle(.primary)
+                    .lineLimit(2)
+                    .truncationMode(.tail)
                 
                 Spacer()
                 
-                header()
+                if mode == .full {
+                    header()
+                }
             }
+            .frame(minHeight: 22, alignment: .leading)
             
-            // Main content
             if isLoading {
                 loadingState
+            } else if mode == .compactEmpty, let compactState {
+                DashboardCompactEmptyState(state: compactState)
             } else {
                 content()
             }
             
-            // Footer with optional actions
-            if !(footer() is EmptyView) {
+            if mode == .full, !(footer() is EmptyView) {
                 Divider()
                     .padding(.top, 4)
                 footer()
             }
+            
+            if mode == .full {
+                Spacer(minLength: 0)
+            }
         }
-        .padding(16)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .padding(mode == .compactEmpty ? 12 : 16)
         .background(.regularMaterial)
         .clipShape(.rect(cornerRadius: 10))
         .overlay {
             RoundedRectangle(cornerRadius: 10)
                 .strokeBorder(.separator.opacity(0.5), lineWidth: 0.5)
         }
+        .animation(.easeInOut(duration: 0.25), value: mode)
+        .animation(.easeInOut(duration: 0.25), value: isLoading)
     }
     
     private var loadingState: some View {
@@ -151,6 +186,26 @@ struct DashboardEmptyState: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 20)
+    }
+}
+
+struct DashboardCompactEmptyState: View {
+    let state: DashboardCompactState
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(state.title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+            Text(state.description)
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+            Button(state.actionTitle, action: state.action)
+                .buttonStyle(.borderedProminent)
+                .controlSize(.small)
+                .padding(.top, 4)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

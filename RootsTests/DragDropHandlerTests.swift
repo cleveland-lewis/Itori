@@ -21,7 +21,7 @@ final class DragDropHandlerTests: XCTestCase {
             maxBlockMinutes: 45,
             difficulty: 0.4,
             importance: 0.5,
-            type: .practiceHomework,
+            type: .homework,
             locked: false
         )
         store.tasks = [assignment]

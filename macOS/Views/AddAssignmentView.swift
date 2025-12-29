@@ -4,6 +4,7 @@ import SwiftUI
 struct AddAssignmentView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var coursesStore: CoursesStore
+    @EnvironmentObject private var settings: AppSettingsModel
 
     @State private var title: String = ""
     @State private var due: Date = Date()
@@ -35,6 +36,18 @@ struct AddAssignmentView: View {
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
         return !trimmed.isEmpty || selectedCourseId != nil || !attachments.isEmpty || !notes.isEmpty || due.timeIntervalSince1970 != 0
     }
+    
+    private var currentStepSize: Int {
+        type.stepSize
+    }
+    
+    private var decompositionHintText: String {
+        DurationEstimator.decompositionHint(
+            category: type.asAssignmentCategory,
+            estimatedMinutes: estimatedMinutes,
+            dueDate: due
+        )
+    }
 
     var body: some View {
         ZStack {
@@ -47,7 +60,7 @@ struct AddAssignmentView: View {
                             .textFieldStyle(.plain)
                             .padding(.vertical, 10)
                             .padding(.horizontal, 12)
-                            .background(DesignSystem.Colors.cardBackground, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            .background(DesignSystem.Materials.card, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
 
                         HStack(spacing: 12) {
                             coursePicker
@@ -63,16 +76,43 @@ struct AddAssignmentView: View {
 
                         RootsCard(compact: true) {
                             VStack(alignment: .leading, spacing: 12) {
-                                DatePicker("Due Date", selection: $due, displayedComponents: [.date, .hourAndMinute])
-                                    .datePickerStyle(.field)
-
-                                HStack(spacing: 12) {
-                                    Stepper(value: $estimatedMinutes, in: 15...240, step: 15) {
-                                        Text("Duration: \(estimatedMinutes) min")
-                                    }
+                                HStack {
+                                    Text("Due Date")
                                     Spacer()
-                                    Toggle("Lock to date", isOn: $lockToDueDate)
-                                        .toggleStyle(.switch)
+                                    DatePicker("", selection: $due, displayedComponents: [.date, .hourAndMinute])
+                                        .datePickerStyle(.field)
+                                        .labelsHidden()
+                                }
+
+                                VStack(alignment: .leading, spacing: 4) {
+                                    HStack {
+                                        Text("Estimated")
+                                        
+                                        Spacer()
+                                        
+                                        Stepper(value: $estimatedMinutes, in: 15...240, step: currentStepSize) {
+                                            Text("\(estimatedMinutes) min")
+                                        }
+                                    }
+                                    
+                                    Text(decompositionHintText)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                
+                                HStack {
+                                    VStack(alignment: .trailing, spacing: 2) {
+                                        Text("Lock")
+                                            .font(.body)
+                                        Text("Lock work to due date")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Toggle("", isOn: $lockToDueDate)
+                                        .labelsHidden()
                                 }
                             }
                         }
@@ -116,7 +156,15 @@ struct AddAssignmentView: View {
                     }
 
                     // Notes
-                    NotesEditor(title: "Notes", text: $notes, minHeight: 140)
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("NOTES")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                        TextEditor(text: $notes)
+                        .frame(minHeight: 140)
+                        .padding(10)
+                        .background(DesignSystem.Materials.card, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    }
 
                     // Attachments
                     VStack(alignment: .leading, spacing: 8) {
@@ -235,7 +283,7 @@ struct AddAssignmentView: View {
         case .project: return "Project"
         case .exam: return "Exam"
         case .quiz: return "Quiz"
-        case .practiceHomework: return "Homework"
+        case .homework: return "Homework"
         case .reading: return "Reading"
         case .review: return "Review"
         }

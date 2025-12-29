@@ -6,7 +6,7 @@ typealias SemesterTerm = SemesterType
 
 struct SemesterEditorView: View {
     @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var dataManager: DataManager
+    @EnvironmentObject var coursesStore: CoursesStore
 
     // The semester being edited (nil if creating new)
     var semesterToEdit: Semester?
@@ -239,7 +239,7 @@ struct SemesterEditorView: View {
             updated.educationLevel = level
             updated.startDate = startDate
             updated.endDate = endDate
-            dataManager.updateSemester(updated)
+            coursesStore.updateSemester(updated)
         } else {
             let newSemester = Semester(
                 id: UUID(),
@@ -254,13 +254,13 @@ struct SemesterEditorView: View {
                 academicYear: nil,
                 notes: nil
             )
-            dataManager.addSemester(newSemester)
+            coursesStore.addSemester(newSemester)
         }
         dismiss()
     }
 
     private func deleteSemester(id: UUID) {
-        dataManager.deleteSemester(id)
+        coursesStore.deleteSemester(id)
         dismiss()
     }
 }

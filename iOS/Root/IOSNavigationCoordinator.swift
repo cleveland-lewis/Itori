@@ -4,7 +4,6 @@ import Combine
 
 enum IOSNavigationTarget: Hashable {
     case page(AppPage)
-    case settings
 }
 
 final class IOSNavigationCoordinator: ObservableObject {
@@ -18,10 +17,6 @@ final class IOSNavigationCoordinator: ObservableObject {
             // Tab not starred, push as navigation destination
             path.append(IOSNavigationTarget.page(page))
         }
-    }
-
-    func openSettings() {
-        path.append(IOSNavigationTarget.settings)
     }
 }
 

@@ -52,7 +52,7 @@ enum AssignmentPlanEngine {
                 settings: settings
             )
             
-        case .practiceHomework, .homework:
+        case .homework, .homework:
             return generateHomeworkSteps(
                 assignmentId: assignment.id,
                 title: assignment.title,

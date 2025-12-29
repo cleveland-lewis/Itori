@@ -222,11 +222,11 @@ struct IOSPlannerView: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .stroke(Color.accentColor.opacity(plannerDropTarget ? 0.5 : 0), lineWidth: 2)
         )
-        .dropDestination(for: TransferableAssignment.self, isTargeted: $plannerDropTarget) { assignments, _ in
+        .dropDestination(for: TransferableAssignment.self, action: { assignments, _ in
             guard let payload = assignments.first else { return false }
             handlePlannerAssignmentDrop(payload)
             return true
-        }
+        }, isTargeted: { plannerDropTarget = $0 })
     }
 
     private var scheduledToday: [StoredScheduledSession] {
@@ -279,7 +279,7 @@ struct IOSPlannerView: View {
         switch task.category {
         case .exam: return .exam
         case .quiz: return .quiz
-        case .practiceHomework: return .practiceHomework
+        case .homework: return .homework
         case .reading: return .reading
         case .review: return .review
         case .project: return .project
@@ -602,15 +602,12 @@ struct IOSCoursesView: View {
                                 }
                             }
                         }
-                        .dropDestination(for: TransferableAssignment.self, isTargeted: Binding(
-                            get: { dropTargetCourseId == course.id },
-                            set: { isTargeting in
-                                dropTargetCourseId = isTargeting ? course.id : nil
-                            }
-                        )) { assignments, _ in
+                        .dropDestination(for: TransferableAssignment.self, action: { assignments, _ in
                             dropTargetCourseId = nil
                             return handleAssignmentDrop(assignments.first, into: course)
-                        }
+                        }, isTargeted: { isTargeting in
+                            dropTargetCourseId = isTargeting ? course.id : nil
+                        })
                     }
                 }
             }
@@ -862,7 +859,7 @@ struct IOSTaskDetailView: View {
     
     private func typeLabel(_ type: TaskType) -> String {
         switch type {
-        case .practiceHomework: return "Homework"
+        case .homework: return "Homework"
         case .quiz: return "Quiz"
         case .exam: return "Exam"
         case .reading: return "Reading"
@@ -875,7 +872,7 @@ struct IOSTaskDetailView: View {
         switch type {
         case .exam, .quiz:
             return "Estimated Study Time"
-        case .practiceHomework, .reading, .project, .review:
+        case .homework, .reading, .project, .review:
             return "Estimated Work Time"
         }
     }
@@ -1048,7 +1045,7 @@ struct IOSTaskEditorView: View {
         var dueDate: Date = Date()
         var estimatedMinutes: Int = 60
         var courseId: UUID? = nil
-        var type: TaskType = .practiceHomework
+        var type: TaskType = .homework
         var priority: Priority = .medium
         var difficulty: Double = 0.6
 
@@ -1117,7 +1114,7 @@ struct IOSTaskEditorView: View {
                 Section("Basics") {
                     TextField("Title", text: $draft.title)
                     Picker("Type", selection: $draft.type) {
-                        Text("Homework").tag(TaskType.practiceHomework)
+                        Text("Homework").tag(TaskType.homework)
                         Text("Quiz").tag(TaskType.quiz)
                         Text("Exam").tag(TaskType.exam)
                         Text("Reading").tag(TaskType.reading)
@@ -1190,7 +1187,7 @@ struct IOSTaskEditorView: View {
         switch type {
         case .exam, .quiz:
             return "Estimated Study Time"
-        case .practiceHomework, .reading, .project, .review:
+        case .homework, .reading, .project, .review:
             return "Estimated Work Time"
         }
     }

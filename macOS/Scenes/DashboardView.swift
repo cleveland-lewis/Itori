@@ -12,6 +12,7 @@ struct DashboardView: View {
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var gradesStore: GradesStore
     @EnvironmentObject private var appModel: AppModel
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var isLoaded = false
     @State private var cancellables: Set<AnyCancellable> = []
     @State private var todayBounce = false
@@ -24,42 +25,55 @@ struct DashboardView: View {
     @State private var showAddGradeSheet = false
     @State private var showAddEventSheet = false
     @State private var showAddTaskSheet = false
+    @ObservedObject private var studyHoursTracker = StudyHoursTracker.shared
+    @State private var columnMode: ColumnMode = .four
+    @State private var todayCardWidth: CGFloat = 0
+    @State private var eventsCardWidth: CGFloat = 0
+    @State private var assignmentsCardWidth: CGFloat = 0
+#if DEBUG
+    @State private var debugLayoutState: DashboardDebugState = .live
+    @State private var debugLogSizes = false
+    @State private var debugSizes: [DashboardSlot: CGSize] = [:]
+#endif
 
     // Layout tokens
-    private let rowSpacing: CGFloat = 24
-    private let columnSpacing: CGFloat = 24
+    private let rowSpacing: CGFloat = 20
+    private let columnSpacing: CGFloat = 20
     private let bottomDockClearancePadding: CGFloat = 120
-    private let cardMinWidth: CGFloat = 360
+    private let widthThresholdOneToTwo: CGFloat = 700
+    private let widthThresholdTwoToFour: CGFloat = 1100
+    private let hysteresisBuffer: CGFloat = 60
 
     var body: some View {
-        // Dashboard scrollable container
         GeometryReader { proxy in
             ScrollView(.vertical, showsIndicators: true) {
-                if proxy.size.width < 900 {
-                    VStack(spacing: rowSpacing) {
-                        ForEach(Array(availableCards.enumerated()), id: \.element.id) { index, card in
-                            card.view
-                                .frame(maxWidth: .infinity, minHeight: card.minHeight, alignment: .topLeading)
-                                .animateEntry(isLoaded: isLoaded, index: index)
-                        }
-                    }
-                } else {
-                    LazyVGrid(columns: gridColumns, alignment: .leading, spacing: rowSpacing) {
-                        ForEach(Array(availableCards.enumerated()), id: \.element.id) { index, card in
-                            card.view
-                                .frame(maxWidth: .infinity, minHeight: card.minHeight, alignment: .topLeading)
-                                .animateEntry(isLoaded: isLoaded, index: index)
-                        }
-                    }
+                let mode = columnMode
+                VStack(spacing: rowSpacing) {
+#if DEBUG
+                    debugControls
+#endif
+                    dashboardGrid(mode: mode)
                 }
-                .frame(maxWidth: .infinity, alignment: .topLeading)
-                .padding(.horizontal, DesignSystem.Layout.padding.window)
-                .padding(.top, DesignSystem.Layout.spacing.medium)
-                .padding(.bottom, bottomDockClearancePadding)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                    .padding(.horizontal, DesignSystem.Layout.padding.window)
+                    .padding(.top, DesignSystem.Layout.spacing.medium)
+                    .padding(.bottom, bottomDockClearancePadding)
+            }
+            .onAppear {
+                columnMode = resolvedColumnMode(for: proxy.size.width)
+#if DEBUG
+                DashboardLayoutSpec.validate(for: columnMode)
+#endif
+            }
+            .onChange(of: proxy.size.width) { _, newValue in
+                columnMode = resolvedColumnMode(for: newValue)
+#if DEBUG
+                DashboardLayoutSpec.validate(for: columnMode)
+#endif
             }
         }
         .sheet(isPresented: $showAddAssignmentSheet) {
-            AddAssignmentView(initialType: .practiceHomework) { task in
+            AddAssignmentView(initialType: .homework) { task in
                 assignmentsStore.addTask(task)
             }
             .environmentObject(coursesStore)
@@ -87,6 +101,7 @@ struct DashboardView: View {
             LOG_UI(.info, "Navigation", "Displayed DashboardView")
             syncTasks()
             syncEvents()
+            ensureEnergyReset(now: Date())
 
             // subscribe to course deletions
             CoursesStore.courseDeletedPublisher
@@ -113,6 +128,10 @@ struct DashboardView: View {
         .onReceive(NotificationCenter.default.publisher(for: .addEventRequested)) { _ in
             showAddEventSheet = true
         }
+        .onReceive(energyResetTimer) { now in
+            ensureEnergyReset(now: now)
+        }
+        .animation(.easeInOut(duration: 0.25), value: columnMode)
     }
 
 
@@ -159,36 +178,225 @@ struct DashboardView: View {
         !gradesStore.grades.isEmpty || coursesStore.currentGPA > 0
     }
 
-    private var gridColumns: [GridItem] {
-        [
-            GridItem(.flexible(minimum: cardMinWidth), spacing: columnSpacing),
-            GridItem(.flexible(minimum: cardMinWidth), spacing: columnSpacing)
-        ]
+    private var nextEvent: DashboardEvent? {
+        let now = Date()
+        return events
+            .filter { $0.date >= now }
+            .sorted { $0.date < $1.date }
+            .first
     }
 
-    private var availableCards: [DashboardCard] {
-        var cards: [DashboardCard] = [
-            DashboardCard(id: "today", view: AnyView(todayCard), minHeight: 220),
-            DashboardCard(id: "clock", view: AnyView(clockAndCalendarCard), minHeight: 220)
-        ]
+    private var todayMode: DashboardCardMode {
+        accessibilitySafe(modeOverride(defaultMode: EmptyStatePolicy.mode(hasData: hasEvents || hasTasks)))
+    }
 
-        if hasEvents {
-            cards.append(DashboardCard(id: "events", view: AnyView(eventsCard), minHeight: 240))
+    private var eventsMode: DashboardCardMode {
+        let hasData = deviceCalendar.isAuthorized && hasEvents
+        return accessibilitySafe(modeOverride(defaultMode: EmptyStatePolicy.mode(hasData: hasData)))
+    }
+
+    private var assignmentsMode: DashboardCardMode {
+        accessibilitySafe(modeOverride(defaultMode: EmptyStatePolicy.mode(hasData: hasTasks)))
+    }
+
+    private var energyMode: DashboardCardMode {
+        let shouldCompact = !settings.showEnergyPanel || settings.energySelectionConfirmed
+        let mode = shouldCompact ? DashboardCardMode.compactEmpty : .full
+        return accessibilitySafe(modeOverride(defaultMode: mode))
+    }
+
+    private var studyHoursMode: DashboardCardMode {
+        accessibilitySafe(modeOverride(defaultMode: EmptyStatePolicy.mode(hasData: settings.trackStudyHours && hasStudyHoursData)))
+    }
+
+    private var hasStudyHoursData: Bool {
+        let totals = studyHoursTracker.totals
+        return totals.todayMinutes > 0 || totals.weekMinutes > 0 || totals.monthMinutes > 0
+    }
+
+    private var todayTimelineItems: [DashboardTimelineItem] {
+        let limit = todayTimelineLimit
+        let upcomingEvents = events
+            .filter { $0.date >= Date() }
+            .prefix(limit)
+            .map {
+                DashboardTimelineItem(
+                    title: $0.title,
+                    subtitle: $0.time,
+                    detail: $0.location,
+                    time: $0.date
+                )
+            }
+
+        let upcomingTasks = tasks
+            .filter { !$0.isDone }
+            .prefix(limit)
+            .map {
+                DashboardTimelineItem(
+                    title: $0.title,
+                    subtitle: "Due today",
+                    detail: $0.course,
+                    time: Date()
+                )
+            }
+
+        return Array((upcomingEvents + upcomingTasks).prefix(limit))
+    }
+
+    private var todayTimelineLimit: Int {
+        todayCardWidth >= 560 ? 3 : 2
+    }
+
+    private var eventsTimelineLimit: Int {
+        eventsCardWidth >= 560 ? 4 : 3
+    }
+
+    private var assignmentsTimelineLimit: Int {
+        assignmentsCardWidth >= 560 ? 4 : 3
+    }
+
+    private var todayCompactState: DashboardCompactState {
+        let eventStatus = calendarManager.eventAuthorizationStatus
+        switch eventStatus {
+        case .notDetermined:
+            return DashboardCompactState(
+                title: "Connect Calendar",
+                description: "Connect Apple Calendar to surface today's schedule.",
+                actionTitle: "Connect"
+            ) {
+                _Concurrency.Task {
+                    await calendarManager.requestAccess()
+                }
+            }
+        case .denied, .restricted:
+            return DashboardCompactState(
+                title: "Calendar Access Needed",
+                description: "Enable Calendar access to show today's overview.",
+                actionTitle: "Open Settings"
+            ) {
+                calendarManager.openSystemPrivacySettings()
+            }
+        default:
+            return DashboardCompactState(
+                title: "Nothing Yet",
+                description: "Add your first task or event to populate Today.",
+                actionTitle: "Add Task"
+            ) {
+                showAddTaskSheet = true
+            }
         }
-        if hasTasks {
-            cards.append(DashboardCard(id: "assignments", view: AnyView(assignmentsCard), minHeight: 240))
+    }
+
+    private var eventsCompactState: DashboardCompactState {
+        if deviceCalendar.isAuthorized {
+            return DashboardCompactState(
+                title: "No Upcoming Events",
+                description: "Add an event to see it here.",
+                actionTitle: "Add Event"
+            ) {
+                showAddEventSheet = true
+            }
         }
-        if !hasEvents && !hasTasks, let fallback = upNextCard {
-            cards.append(DashboardCard(id: "upNext", view: AnyView(fallback), minHeight: 200))
+        return DashboardCompactState(
+            title: "Calendar Not Connected",
+            description: "Connect Apple Calendar to see events.",
+            actionTitle: "Connect"
+        ) {
+            _Concurrency.Task {
+                await calendarManager.requestAccess()
+            }
         }
-        if hasGrades {
-            cards.append(DashboardCard(id: "grades", view: AnyView(gradesCard), minHeight: 180))
+    }
+
+    private var assignmentsCompactState: DashboardCompactState {
+        DashboardCompactState(
+            title: "No Assignments Due",
+            description: "Create an assignment to track deadlines.",
+            actionTitle: "Add Assignment"
+        ) {
+            showAddAssignmentSheet = true
         }
-        if settings.showEnergyPanel {
-            cards.append(DashboardCard(id: "energy", view: AnyView(energyCard), minHeight: 180))
+    }
+
+    private var energyCompactState: DashboardCompactState {
+        if !settings.showEnergyPanel {
+            return DashboardCompactState(
+                title: "Energy Panel Off",
+                description: "Enable energy tracking to quick-plan focus.",
+                actionTitle: "Enable"
+            ) {
+                settings.showEnergyPanel = true
+            }
         }
 
-        return cards
+        return DashboardCompactState(
+            title: "Current Energy: \(settings.defaultEnergyLevel)",
+            description: "This level guides planner prioritization.",
+            actionTitle: "Change"
+        ) {
+            settings.energySelectionConfirmed = false
+        }
+    }
+
+    private var studyHoursCompactState: DashboardCompactState {
+        DashboardCompactState(
+            title: "Study Hours Off",
+            description: "Turn on tracking to see your totals.",
+            actionTitle: "Enable"
+        ) {
+            settings.trackStudyHours = true
+        }
+    }
+
+    @ViewBuilder
+    private func dashboardGrid(mode: ColumnMode) -> some View {
+        Grid(horizontalSpacing: columnSpacing, verticalSpacing: rowSpacing) {
+            ForEach(Array(DashboardLayoutSpec.rows(for: mode).enumerated()), id: \.offset) { _, row in
+                GridRow {
+                    ForEach(row, id: \.self) { slot in
+                        dashboardSlot(slot: slot)
+                            .gridCellColumns(DashboardLayoutSpec.span(for: slot, mode: mode))
+                    }
+                    let remaining = mode.rawValue - rowSpanWidth(row, mode: mode)
+                    if remaining > 0 {
+                        dashboardSpacer
+                            .gridCellColumns(remaining)
+                    }
+                }
+            }
+        }
+        .overlay {
+#if DEBUG
+            Color.clear.onPreferenceChange(DashboardCardSizeKey.self) { sizes in
+                if sizes != debugSizes {
+                    debugSizes = sizes
+                    validateDebugSizes(sizes: sizes, mode: columnMode)
+                    if debugLogSizes {
+                        for (slot, size) in sizes {
+                            print("Dashboard size \(slot): \(size)")
+                        }
+                    }
+                }
+            }
+#endif
+        }
+    }
+
+    private func dashboardSlot(slot: DashboardSlot) -> some View {
+        render(slot: slot)
+            .frame(
+                maxWidth: .infinity,
+                minHeight: DashboardLayoutSpec.minHeight(for: slot, mode: modeFor(slot: slot)),
+                maxHeight: .infinity,
+                alignment: .topLeading
+            )
+            .background(slotSizeReporter(slot: slot))
+            .animation(.easeInOut(duration: 0.25), value: modeFor(slot: slot))
+    }
+
+    private var dashboardSpacer: some View {
+        Color.clear
+            .frame(maxWidth: .infinity, minHeight: 1)
     }
 
     private var upNextCard: some View? {
@@ -267,42 +475,55 @@ struct DashboardView: View {
         return Color.blue
     }
 
+    private func relativeTimeString(to date: Date, from now: Date) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .short
+        return formatter.localizedString(for: date, relativeTo: now)
+    }
+
     private var todayCard: some View {
-        RootsCard(
-            title: cardTitle("Today Overview"),
-            icon: "sun.max"
+        DashboardCard(
+            title: "Today",
+            systemImage: "sun.max",
+            isLoading: debugIsLoading,
+            mode: todayMode,
+            compactState: debugCompactState(defaultState: todayCompactState)
         ) {
-            VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                let eventStatus = calendarManager.eventAuthorizationStatus
-                switch eventStatus {
-                case .notDetermined:
-                    HStack {
-                        Text("dashboard.calendar.connect".localized)
-                            .rootsBody()
-                        Spacer()
-                        Button("Connect Apple Calendar", action: {
-                            print("🔘 [Dashboard] Connect button tapped")
-                            _Concurrency.Task {
-                                await calendarManager.requestAccess()
+            TimelineView(.animation(minimumInterval: 1.0, paused: false)) { context in
+                VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                    let eventStatus = calendarManager.eventAuthorizationStatus
+                    switch eventStatus {
+                    case .notDetermined:
+                        HStack {
+                            Text("dashboard.calendar.connect".localized)
+                                .rootsBody()
+                            Spacer()
+                            Button("Connect Apple Calendar") {
+                                print("🔘 [Dashboard] Connect button tapped")
+                                _Concurrency.Task {
+                                    await calendarManager.requestAccess()
+                                }
                             }
-                        })
-                        .buttonStyle(RootsLiquidButtonStyle())
-                    }
-                case .denied, .restricted:
-                    HStack {
-                        Text("dashboard.calendar.access_denied".localized)
-                            .rootsBody()
-                        Spacer()
-                        Button(NSLocalizedString("common.button.open_settings", comment: "")) {
-                            calendarManager.openSystemPrivacySettings()
+                            .buttonStyle(RootsLiquidButtonStyle())
                         }
-                        .buttonStyle(RootsLiquidButtonStyle())
+                    case .denied, .restricted:
+                        HStack {
+                            Text("dashboard.calendar.access_denied".localized)
+                                .rootsBody()
+                            Spacer()
+                            Button(NSLocalizedString("common.button.open_settings", comment: "")) {
+                                calendarManager.openSystemPrivacySettings()
+                            }
+                            .buttonStyle(RootsLiquidButtonStyle())
+                        }
+                    default:
+                        dashboardTodayStats
+                        TodayMiniTimeline(items: todayTimelineItems, now: context.date)
                     }
-                default:
-                    dashboardTodayStats
                 }
             }
         }
+        .background(todayCardWidthReader)
         .onTapGesture {
             todayBounce.toggle()
             print("[Dashboard] card tapped: todayOverview")
@@ -312,41 +533,44 @@ struct DashboardView: View {
     }
 
     private var energyCard: some View {
-        Group {
-            if settings.showEnergyPanel {
-                RootsCard(
-                    title: cardTitle("Energy"),
-                    icon: "bolt.heart.fill"
-                ) {
-                    let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
-                    LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
-                        energyButton("High", level: .high)
-                        energyButton("Medium", level: .medium)
-                        energyButton("Low", level: .low)
-                        plannerButton(NSLocalizedString("common.button.open_planner", comment: ""))
-                    }
-                    .frame(maxWidth: .infinity)
-                }
-                .onTapGesture {
-                    energyBounce.toggle()
-                    print("[Dashboard] card tapped: energyFocus")
-                }
-                .help("Energy & Focus")
+        DashboardCard(
+            title: "Energy & Focus",
+            systemImage: "bolt.heart.fill",
+            isLoading: debugIsLoading,
+            mode: energyMode,
+            compactState: debugCompactState(defaultState: energyCompactState)
+        ) {
+            let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
+            LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
+                energyButton("High", level: .high)
+                energyButton("Medium", level: .medium)
+                energyButton("Low", level: .low)
+                plannerButton(NSLocalizedString("common.button.open_planner", comment: ""))
             }
+            .frame(maxWidth: .infinity)
         }
+        .onTapGesture {
+            energyBounce.toggle()
+            print("[Dashboard] card tapped: energyFocus")
+        }
+        .help("Energy & Focus")
     }
 
     @ViewBuilder
     private func energyButton(_ title: String, level: EnergyLevel) -> some View {
+        let isSelected = settings.defaultEnergyLevel == title
         Button {
             setEnergy(level)
+            settings.defaultEnergyLevel = title
+            settings.energySelectionConfirmed = true
         } label: {
             Text(title)
                 .font(.headline)
                 .frame(maxWidth: .infinity, minHeight: 56)
                 .padding(.vertical, 8)
         }
-        .buttonStyle(.borderedProminent)
+        .buttonStyle(isSelected ? .borderedProminent : .bordered)
+        .tint(isSelected ? settings.activeAccentColor : .secondary)
         .accessibilityLabel("Set energy level to \(title)")
         .accessibilityHint("Updates your current energy level")
     }
@@ -370,24 +594,38 @@ struct DashboardView: View {
     }
 
     private var eventsCard: some View {
-        RootsCard {
+        DashboardCard(
+            title: "Upcoming Events",
+            systemImage: "calendar",
+            isLoading: debugIsLoading,
+            mode: eventsMode,
+            compactState: debugCompactState(defaultState: eventsCompactState)
+        ) {
             VStack(alignment: .leading, spacing: RootsSpacing.m) {
                 Text("dashboard.events.title".localized).rootsSectionHeader()
-                DashboardEventsColumn(events: events)
+                DashboardEventsColumn(events: events, maxItems: eventsTimelineLimit)
             }
         }
+        .background(eventsCardWidthReader)
     }
 
     private var assignmentsCard: some View {
-        RootsCard {
+        DashboardCard(
+            title: "Assignments",
+            systemImage: "checkmark.circle",
+            isLoading: debugIsLoading,
+            mode: assignmentsMode,
+            compactState: debugCompactState(defaultState: assignmentsCompactState)
+        ) {
             VStack(alignment: .leading, spacing: RootsSpacing.m) {
                 Text("dashboard.assignments.title".localized).rootsSectionHeader()
-                DashboardTasksColumn(tasks: $tasks)
+                DashboardTasksColumn(tasks: $tasks, maxItems: assignmentsTimelineLimit)
                 Spacer()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(maxWidth: .infinity)
+        .background(assignmentsCardWidthReader)
     }
 
     private var gradesCard: some View {
@@ -404,28 +642,82 @@ struct DashboardView: View {
         }
     }
 
-    private var clockAndCalendarCard: some View {
-        return RootsCard {
-            VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                // Main content: Two-column grid layout (Clock | Calendar)
-                let clockSize: CGFloat = 160
-                HStack(alignment: .center, spacing: DesignSystem.Layout.spacing.large) {
-                    // Column 1: Clock
-                    RootsAnalogClock(
-                        style: .clock,
-                        diameter: clockSize,
-                        showSecondHand: true,
-                        accentColor: settings.activeAccentColor
-                    )
+    private var timeCard: some View {
+        DashboardCard(
+            title: "Time",
+            systemImage: "clock",
+            isLoading: debugIsLoading,
+            mode: modeOverride(defaultMode: .full),
+            compactState: debugCompactState(defaultState: timeCompactState)
+        ) {
+            TimelineView(.animation(minimumInterval: 1.0, paused: false)) { context in
+                VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                    let clockSize: CGFloat = 140
+                    HStack(alignment: .center, spacing: DesignSystem.Layout.spacing.large) {
+                        RootsAnalogClock(
+                            style: .clock,
+                            diameter: clockSize,
+                            showSecondHand: true,
+                            accentColor: settings.activeAccentColor
+                        )
                         .frame(width: clockSize, height: clockSize)
-                    
-                    // Column 2: Calendar (integrated, no nested card)
-                    DashboardCalendarGrid(selectedDate: $selectedDate, events: events)
-                        .frame(maxWidth: .infinity)
+                        
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(context.date, style: .time)
+                                .font(.title2.weight(.semibold))
+                            Text(context.date, style: .date)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                            if let nextEvent {
+                                Text("Next up \(relativeTimeString(to: nextEvent.date, from: context.date))")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                    .padding(.vertical, DesignSystem.Layout.spacing.small)
                 }
-                .padding(.vertical, DesignSystem.Layout.spacing.medium)
             }
-            .padding(DesignSystem.Layout.padding.card)
+        }
+    }
+
+    private var studyHoursCard: some View {
+        DashboardCard(
+            title: "Study Hours",
+            systemImage: "clock.fill",
+            isLoading: debugIsLoading,
+            mode: studyHoursMode,
+            compactState: debugCompactState(defaultState: studyHoursCompactState)
+        ) {
+            let totals = studyHoursTracker.totals
+            HStack(spacing: 20) {
+                studyHoursStat(label: "Today", value: StudyHoursTotals.formatMinutes(totals.todayMinutes))
+                studyHoursStat(label: "This Week", value: StudyHoursTotals.formatMinutes(totals.weekMinutes))
+                studyHoursStat(label: "This Month", value: StudyHoursTotals.formatMinutes(totals.monthMinutes))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private func studyHoursStat(label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(value)
+                .font(.title2.weight(.bold))
+                .foregroundColor(settings.activeAccentColor)
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var timeCompactState: DashboardCompactState {
+        DashboardCompactState(
+            title: "Clock Ready",
+            description: "Your local time and date are available.",
+            actionTitle: "Open Calendar"
+        ) {
+            appModel.selectedPage = .calendar
         }
     }
 
@@ -473,8 +765,11 @@ struct DashboardView: View {
 
     private func syncTasks() {
         let dueTodayTasks = tasksDueToday()
-        tasks = dueTodayTasks.map { appTask in
+        let mapped = dueTodayTasks.map { appTask in
             DashboardTask(title: appTask.title, course: appTask.courseId?.uuidString, isDone: appTask.isCompleted)
+        }
+        withAnimation(DesignSystem.Motion.standardSpring) {
+            tasks = mapped
         }
     }
 
@@ -489,7 +784,9 @@ struct DashboardView: View {
                 ekIdentifier: event.eventIdentifier
             )
         }
-        events = mapped.sorted { $0.date < $1.date }
+        withAnimation(DesignSystem.Motion.standardSpring) {
+            events = mapped.sorted { $0.date < $1.date }
+        }
     }
 
     private func todaysCalendarEvents() -> [EKEvent] {
@@ -557,9 +854,262 @@ struct DashboardView: View {
         SchedulerPreferencesStore.shared.updateEnergyProfile(base)
     }
 
+    private var energyResetTimer: Publishers.Autoconnect<Timer.TimerPublisher> {
+        Timer.publish(every: 900, on: .main, in: .common).autoconnect()
+    }
+
+    private func ensureEnergyReset(now: Date) {
+        let calendar = Calendar.current
+        let dayStart = calendar.startOfDay(for: now)
+        let resetTimeToday = calendar.date(byAdding: .hour, value: 4, to: dayStart) ?? dayStart
+        let mostRecentReset = now >= resetTimeToday
+            ? resetTimeToday
+            : (calendar.date(byAdding: .day, value: -1, to: resetTimeToday) ?? resetTimeToday)
+
+        if settings.energySelectionResetDate < mostRecentReset {
+            settings.energySelectionConfirmed = false
+            settings.energySelectionResetDate = now
+        }
+    }
+
     private enum EnergyLevel {
         case high, medium, low
     }
+}
+#if DEBUG
+private enum DashboardDebugState: String, CaseIterable, Identifiable {
+    case live
+    case compact
+    case full
+    case loading
+    case error
+
+    var id: String { rawValue }
+}
+
+private struct DashboardCardSizeKey: PreferenceKey {
+    static var defaultValue: [DashboardSlot: CGSize] = [:]
+    static func reduce(value: inout [DashboardSlot: CGSize], nextValue: () -> [DashboardSlot: CGSize]) {
+        value.merge(nextValue(), uniquingKeysWith: { $1 })
+    }
+}
+
+private struct TodayCardWidthKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
+    }
+}
+
+private struct EventsCardWidthKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
+    }
+}
+
+private struct AssignmentsCardWidthKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
+    }
+}
+#endif
+
+private extension DashboardView {
+    var debugIsLoading: Bool {
+#if DEBUG
+        return debugLayoutState == .loading
+#else
+        return false
+#endif
+    }
+
+    func debugCompactState(defaultState: DashboardCompactState) -> DashboardCompactState {
+#if DEBUG
+        if debugLayoutState == .error {
+            return DashboardCompactState(
+                title: "Data Unavailable",
+                description: "An error occurred while loading this card.",
+                actionTitle: "Retry",
+                action: {}
+            )
+        }
+        return defaultState
+#else
+        return defaultState
+#endif
+    }
+
+    func modeFor(slot: DashboardSlot) -> DashboardCardMode {
+        switch slot {
+        case .today:
+            return todayMode
+        case .time:
+            return .full
+        case .upcoming:
+            return eventsMode
+        case .assignments:
+            return assignmentsMode
+        case .energy:
+            return energyMode
+        case .studyHours:
+            return studyHoursMode
+        }
+    }
+
+    @ViewBuilder
+    func render(slot: DashboardSlot) -> some View {
+        switch slot {
+        case .today:
+            todayCard
+        case .time:
+            timeCard
+        case .upcoming:
+            eventsCard
+        case .assignments:
+            assignmentsCard
+        case .energy:
+            energyCard
+        case .studyHours:
+            studyHoursCard
+        }
+    }
+
+    func rowSpanWidth(_ row: [DashboardSlot], mode: ColumnMode) -> Int {
+        row.reduce(0) { $0 + DashboardLayoutSpec.span(for: $1, mode: mode) }
+    }
+
+    @ViewBuilder
+    func slotSizeReporter(slot: DashboardSlot) -> some View {
+#if DEBUG
+        GeometryReader { proxy in
+            Color.clear.preference(key: DashboardCardSizeKey.self, value: [slot: proxy.size])
+        }
+#else
+        EmptyView()
+#endif
+    }
+
+    @ViewBuilder
+    var todayCardWidthReader: some View {
+        GeometryReader { proxy in
+            Color.clear.preference(key: TodayCardWidthKey.self, value: proxy.size.width)
+        }
+        .onPreferenceChange(TodayCardWidthKey.self) { width in
+            if width > 0, abs(width - todayCardWidth) > 1 {
+                todayCardWidth = width
+            }
+        }
+    }
+
+    @ViewBuilder
+    var eventsCardWidthReader: some View {
+        GeometryReader { proxy in
+            Color.clear.preference(key: EventsCardWidthKey.self, value: proxy.size.width)
+        }
+        .onPreferenceChange(EventsCardWidthKey.self) { width in
+            if width > 0, abs(width - eventsCardWidth) > 1 {
+                eventsCardWidth = width
+            }
+        }
+    }
+
+    @ViewBuilder
+    var assignmentsCardWidthReader: some View {
+        GeometryReader { proxy in
+            Color.clear.preference(key: AssignmentsCardWidthKey.self, value: proxy.size.width)
+        }
+        .onPreferenceChange(AssignmentsCardWidthKey.self) { width in
+            if width > 0, abs(width - assignmentsCardWidth) > 1 {
+                assignmentsCardWidth = width
+            }
+        }
+    }
+
+    func modeOverride(defaultMode: DashboardCardMode) -> DashboardCardMode {
+#if DEBUG
+        switch debugLayoutState {
+        case .live:
+            return defaultMode
+        case .compact:
+            return .compactEmpty
+        case .full, .loading, .error:
+            return .full
+        }
+#else
+        return defaultMode
+#endif
+    }
+
+    func accessibilitySafe(_ mode: DashboardCardMode) -> DashboardCardMode {
+        dynamicTypeSize.isAccessibilitySize ? .full : mode
+    }
+
+    func resolvedColumnMode(for width: CGFloat) -> ColumnMode {
+        switch columnMode {
+        case .one:
+            if width >= widthThresholdOneToTwo {
+                return .two
+            }
+            return .one
+        case .two:
+            if width >= widthThresholdTwoToFour {
+                return .four
+            }
+            if width < (widthThresholdOneToTwo - hysteresisBuffer) {
+                return .one
+            }
+            return .two
+        case .four:
+            if width < (widthThresholdOneToTwo - hysteresisBuffer) {
+                return .one
+            }
+            if width < (widthThresholdTwoToFour - hysteresisBuffer) {
+                return .two
+            }
+            return .four
+        }
+    }
+
+#if DEBUG
+    func validateDebugSizes(sizes: [DashboardSlot: CGSize], mode: ColumnMode) {
+        for (slot, size) in sizes {
+            let minHeight = DashboardLayoutSpec.minHeight(for: slot, mode: modeFor(slot: slot))
+            assert(size.height + 1.0 >= minHeight, "Dashboard card height too small for \(slot).")
+        }
+
+        let rows = DashboardLayoutSpec.rows(for: mode)
+        for row in rows {
+            let heights = row.compactMap { sizes[$0]?.height }
+            guard let maxHeight = heights.max(), let minHeight = heights.min() else { continue }
+            assert(maxHeight - minHeight <= 1.0, "Dashboard row height mismatch.")
+        }
+    }
+#endif
+
+#if DEBUG
+    var debugControls: some View {
+        DashboardCard(
+            title: "Dashboard Debug",
+            systemImage: "ladybug",
+            mode: .full
+        ) {
+            VStack(alignment: .leading, spacing: 8) {
+                Picker("Layout State", selection: $debugLayoutState) {
+                    ForEach(DashboardDebugState.allCases) { state in
+                        Text(state.rawValue.capitalized).tag(state)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                Toggle("Log card sizes", isOn: $debugLogSizes)
+                    .toggleStyle(.switch)
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+#endif
 }
 
 struct DashboardTileBody: View {
@@ -580,24 +1130,6 @@ struct DashboardTileBody: View {
     }
 }
 
-private struct DashboardCard: Identifiable {
-    let id: String
-    let view: AnyView
-    let minHeight: CGFloat
-
-    init(id: String, view: AnyView, minHeight: CGFloat = 0) {
-        self.id = id
-        self.view = view
-        self.minHeight = minHeight
-    }
-}
-
-private extension View {
-    func animateEntry(isLoaded: Bool, index: Int) -> some View {
-        self.staggeredEntry(isLoaded: isLoaded, index: index)
-    }
-}
-
 // MARK: - Models for dashboard layout
 
 struct DashboardTask: Identifiable {
@@ -605,6 +1137,37 @@ struct DashboardTask: Identifiable {
     var title: String
     var course: String?
     var isDone: Bool
+}
+
+private struct TodayMiniTimeline: View {
+    let items: [DashboardTimelineItem]
+    let now: Date
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            if items.isEmpty {
+                Text("All clear for now.")
+                    .rootsBodySecondary()
+            } else {
+                ForEach(items) { item in
+                    DashboardTimelineRow(
+                        title: item.title,
+                        subtitle: item.subtitle,
+                        detail: item.detail,
+                        isActive: item.time <= now.addingTimeInterval(3600)
+                    )
+                }
+            }
+        }
+    }
+}
+
+private struct DashboardTimelineItem: Identifiable {
+    let id = UUID()
+    let title: String
+    let subtitle: String
+    let detail: String?
+    let time: Date
 }
 
 struct DashboardEvent: Identifiable {
@@ -816,6 +1379,7 @@ private struct DashboardCalendarGrid: View {
 
 private struct DashboardTasksColumn: View {
     @Binding var tasks: [DashboardTask]
+    let maxItems: Int
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -827,15 +1391,19 @@ private struct DashboardTasksColumn: View {
                     .rootsBodySecondary()
             } else {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: 14) {
-                        ForEach(tasks.indices, id: \.self) { index in
+                    LazyVStack(alignment: .leading, spacing: 14) {
+                        let visibleCount = min(tasks.count, maxItems)
+                        ForEach(0..<visibleCount, id: \.self) { index in
                             TaskRow(task: $tasks[index],
                                     showConnectorAbove: index != 0,
-                                    showConnectorBelow: index != tasks.count - 1)
+                                    showConnectorBelow: index != visibleCount - 1)
+                                .transition(.move(edge: .leading).combined(with: .opacity))
                         }
                     }
                     .padding(.vertical, 4)
                 }
+                .frame(maxHeight: .infinity)
+                .animation(DesignSystem.Motion.standardSpring, value: tasks.count)
             }
         }
         .padding(DesignSystem.Layout.padding.card)
@@ -845,6 +1413,7 @@ private struct DashboardTasksColumn: View {
 
 private struct DashboardEventsColumn: View {
     var events: [DashboardEvent]
+    let maxItems: Int
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -855,27 +1424,22 @@ private struct DashboardEventsColumn: View {
                 Text("dashboard.events.empty".localized)
                     .rootsBodySecondary()
             } else {
-                List {
-                    ForEach(events) { event in
-                        HStack(alignment: .top, spacing: DesignSystem.Layout.spacing.small) {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(event.title)
-                                    .font(DesignSystem.Typography.body)
-                                Text(event.time)
-                                    .rootsBodySecondary()
-                                if let location = event.location {
-                                    Text(location)
-                                        .rootsCaption()
-                                }
-                            }
-                            Spacer()
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 12) {
+                        ForEach(events.prefix(maxItems)) { event in
+                            DashboardTimelineRow(
+                                title: event.title,
+                                subtitle: event.time,
+                                detail: event.location,
+                                isActive: event.date <= Date().addingTimeInterval(3600)
+                            )
+                            .transition(.move(edge: .trailing).combined(with: .opacity))
                         }
-                        .padding(.vertical, 6)
-                        .listRowBackground(DesignSystem.Colors.cardBackground)
                     }
+                    .padding(.vertical, 4)
                 }
-                .listStyle(.inset)
-                .scrollContentBackground(.hidden)
+                .frame(maxHeight: .infinity)
+                .animation(DesignSystem.Motion.standardSpring, value: events.count)
             }
         }
         .padding(DesignSystem.Layout.padding.card)
@@ -893,6 +1457,7 @@ private struct TaskRow: View {
     @Binding var task: DashboardTask
     var showConnectorAbove: Bool
     var showConnectorBelow: Bool
+    @State private var isHovered = false
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -937,8 +1502,75 @@ private struct TaskRow: View {
             Spacer()
         }
         .padding(.vertical, 6)
+        .padding(.horizontal, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(DesignSystem.Materials.hud)
+                .opacity(isHovered ? 0.45 : 0.0)
+        )
+        .onHover { hover in
+            withAnimation(DesignSystem.Motion.interactiveSpring) {
+                isHovered = hover
+            }
+        }
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(task.title)\(task.course.map { ", \($0)" } ?? ""), \(task.isDone ? "Completed" : "Not completed")")
+    }
+}
+
+private struct DashboardTimelineRow: View {
+    let title: String
+    let subtitle: String
+    let detail: String?
+    let isActive: Bool
+    @State private var isHovered = false
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            VStack(spacing: 6) {
+                Circle()
+                    .fill(isActive ? DesignSystem.Colors.accent : Color.secondary.opacity(0.4))
+                    .frame(width: 8, height: 8)
+                Rectangle()
+                    .fill(Color.secondary.opacity(0.25))
+                    .frame(width: 2)
+                    .frame(maxHeight: .infinity)
+            }
+            .frame(width: 12)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(DesignSystem.Typography.body)
+                Text(subtitle)
+                    .rootsBodySecondary()
+                if let detail {
+                    Text(detail)
+                        .rootsCaption()
+                }
+            }
+
+            Spacer()
+        }
+        .padding(.vertical, 6)
+        .padding(.horizontal, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                .fill(DesignSystem.Materials.hud)
+                .opacity(isHovered ? 0.45 : 0.0)
+        )
+        .contentShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .onHover { hover in
+            withAnimation(DesignSystem.Motion.interactiveSpring) {
+                isHovered = hover
+            }
+        }
+        .overlay(alignment: .leading) {
+            if isActive {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(DesignSystem.Colors.accent.opacity(0.16))
+                    .frame(width: 6)
+            }
+        }
     }
 }
 

@@ -10,7 +10,7 @@ enum TaskType: String, Hashable, CaseIterable, Codable {
     case project
     case exam
     case quiz
-    case practiceHomework
+    case homework
     case reading
     case review
 
@@ -18,14 +18,14 @@ enum TaskType: String, Hashable, CaseIterable, Codable {
         let container = try decoder.singleValueContainer()
         let raw = try container.decode(String.self)
         switch raw {
-        case "homework", "problemSet": self = .practiceHomework
+        case "homework", "problemSet", "practiceHomework": self = .homework
         case "examPrep": self = .exam
         case "meeting": self = .project
         default:
             if let val = TaskType(rawValue: raw) {
                 self = val
             } else {
-                self = .practiceHomework
+                self = .homework
             }
         }
     }
@@ -82,6 +82,69 @@ struct AppTask: Codable, Equatable, Hashable {
         self.gradeWeightPercent = gradeWeightPercent
         self.gradePossiblePoints = gradePossiblePoints
         self.gradeEarnedPoints = gradeEarnedPoints
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case courseId
+        case due
+        case estimatedMinutes
+        case minBlockMinutes
+        case maxBlockMinutes
+        case difficulty
+        case importance
+        case type
+        case category
+        case locked
+        case attachments
+        case isCompleted
+        case gradeWeightPercent
+        case gradePossiblePoints
+        case gradeEarnedPoints
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        id = try container.decode(UUID.self, forKey: .id)
+        title = try container.decode(String.self, forKey: .title)
+        courseId = try container.decodeIfPresent(UUID.self, forKey: .courseId)
+        due = try container.decodeIfPresent(Date.self, forKey: .due)
+        estimatedMinutes = try container.decodeIfPresent(Int.self, forKey: .estimatedMinutes) ?? 60
+        minBlockMinutes = try container.decodeIfPresent(Int.self, forKey: .minBlockMinutes) ?? 20
+        maxBlockMinutes = try container.decodeIfPresent(Int.self, forKey: .maxBlockMinutes) ?? 180
+        difficulty = try container.decodeIfPresent(Double.self, forKey: .difficulty) ?? 0.5
+        importance = try container.decodeIfPresent(Double.self, forKey: .importance) ?? 0.5
+        type = try container.decodeIfPresent(TaskType.self, forKey: .type) ?? .homework
+        category = try container.decodeIfPresent(TaskType.self, forKey: .category) ?? type
+        locked = try container.decodeIfPresent(Bool.self, forKey: .locked) ?? false
+        attachments = try container.decodeIfPresent([Attachment].self, forKey: .attachments) ?? []
+        isCompleted = try container.decodeIfPresent(Bool.self, forKey: .isCompleted) ?? false
+        gradeWeightPercent = try container.decodeIfPresent(Double.self, forKey: .gradeWeightPercent)
+        gradePossiblePoints = try container.decodeIfPresent(Double.self, forKey: .gradePossiblePoints)
+        gradeEarnedPoints = try container.decodeIfPresent(Double.self, forKey: .gradeEarnedPoints)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(title, forKey: .title)
+        try container.encodeIfPresent(courseId, forKey: .courseId)
+        try container.encodeIfPresent(due, forKey: .due)
+        try container.encode(estimatedMinutes, forKey: .estimatedMinutes)
+        try container.encode(minBlockMinutes, forKey: .minBlockMinutes)
+        try container.encode(maxBlockMinutes, forKey: .maxBlockMinutes)
+        try container.encode(difficulty, forKey: .difficulty)
+        try container.encode(importance, forKey: .importance)
+        try container.encode(type, forKey: .type)
+        try container.encode(category, forKey: .category)
+        try container.encode(locked, forKey: .locked)
+        try container.encode(attachments, forKey: .attachments)
+        try container.encode(isCompleted, forKey: .isCompleted)
+        try container.encodeIfPresent(gradeWeightPercent, forKey: .gradeWeightPercent)
+        try container.encodeIfPresent(gradePossiblePoints, forKey: .gradePossiblePoints)
+        try container.encodeIfPresent(gradeEarnedPoints, forKey: .gradeEarnedPoints)
     }
 
     func withCourseId(_ newCourseId: UUID?) -> AppTask {
@@ -537,5 +600,41 @@ struct AIScheduler {
 
     private static func clamp<T: Comparable>(_ v: T, _ lo: T, _ hi: T) -> T {
         return min(max(v, lo), hi)
+    }
+}
+
+// MARK: - TaskType Extensions for Duration Estimation
+extension TaskType {
+    /// Base estimate in minutes for first session
+    var baseEstimateMinutes: Int {
+        switch self {
+        case .reading: return 45
+        case .homework: return 75
+        case .review: return 60
+        case .project: return 120
+        case .exam: return 180
+        case .quiz: return 30
+        }
+    }
+    
+    /// Step size for duration picker
+    var stepSize: Int {
+        switch self {
+        case .reading, .review, .quiz: return 5
+        case .homework: return 10
+        case .project, .exam: return 15
+        }
+    }
+    
+    /// Convert to AssignmentCategory for compatibility
+    var asAssignmentCategory: AssignmentCategory {
+        switch self {
+        case .project: return .project
+        case .exam: return .exam
+        case .quiz: return .quiz
+        case .homework: return .homework
+        case .reading: return .reading
+        case .review: return .review
+        }
     }
 }

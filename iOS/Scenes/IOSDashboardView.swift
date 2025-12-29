@@ -21,7 +21,7 @@ struct IOSDashboardView: View {
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 18) {
+            VStack(spacing: 16) {
                 heroHeader
                 quickStatsRow
                 
@@ -30,7 +30,6 @@ struct IOSDashboardView: View {
                     studyHoursCard
                 }
                 
-                weekStrip
                 upcomingEventsCard
                 dueTasksCard
             }
@@ -157,6 +156,7 @@ struct IOSDashboardView: View {
                     )
                 }
             }
+            .frame(minHeight: 80)
         }
     }
     
@@ -174,64 +174,73 @@ struct IOSDashboardView: View {
 
     private var upcomingEventsCard: some View {
         RootsCard(title: NSLocalizedString("ios.dashboard.upcoming.title", comment: "Upcoming"), subtitle: NSLocalizedString("ios.dashboard.upcoming.subtitle", comment: "From your calendar"), icon: "calendar") {
-            if !deviceCalendar.isAuthorized {
-                Text(NSLocalizedString("dashboard.empty.calendar", comment: "Connect calendar"))
-                    .rootsBodySecondary()
-            } else if upcomingEvents.isEmpty {
-                Text(NSLocalizedString("ios.dashboard.upcoming.no_events", comment: "No events"))
-                    .rootsBodySecondary()
-            } else {
-                VStack(alignment: .leading, spacing: 12) {
-                    ForEach(upcomingEvents.prefix(4), id: \.eventIdentifier) { event in
-                        HStack(alignment: .top, spacing: 12) {
-                            RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                .fill(Color.accentColor.opacity(0.7))
-                                .frame(width: 6)
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(event.title)
-                                    .font(.body.weight(.medium))
-                                Text(eventTimeRange(event))
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+            Group {
+                if !deviceCalendar.isAuthorized {
+                    Text(NSLocalizedString("dashboard.empty.calendar", comment: "Connect calendar"))
+                        .rootsBodySecondary()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                } else if upcomingEvents.isEmpty {
+                    Text(NSLocalizedString("ios.dashboard.upcoming.no_events", comment: "No events"))
+                        .rootsBodySecondary()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(upcomingEvents.prefix(4), id: \.eventIdentifier) { event in
+                            HStack(alignment: .top, spacing: 12) {
+                                RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                    .fill(Color.accentColor.opacity(0.7))
+                                    .frame(width: 6)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(event.title)
+                                        .font(.body.weight(.medium))
+                                    Text(eventTimeRange(event))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
                             }
-                            Spacer()
                         }
                     }
                 }
             }
+            .frame(minHeight: 120)
         }
     }
 
     private var dueTasksCard: some View {
         RootsCard(title: NSLocalizedString("ios.dashboard.due_soon.title", comment: "Due Soon"), subtitle: NSLocalizedString("ios.dashboard.due_soon.subtitle", comment: "Next 7 days"), icon: "checkmark.circle") {
-            if dueSoonTasks.isEmpty {
-                Text(NSLocalizedString("ios.dashboard.due_soon.no_tasks", comment: "No tasks"))
-                    .rootsBodySecondary()
-            } else {
-                VStack(spacing: 12) {
-                    ForEach(dueSoonTasks.prefix(5), id: \.id) { task in
-                        HStack(alignment: .top, spacing: 12) {
-                            Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
-                                .foregroundStyle(task.isCompleted ? Color.accentColor : Color.secondary)
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(task.title)
-                                    .font(.body.weight(.medium))
-                                if let course = courseName(for: task.courseId) {
-                                    Text(course)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+            Group {
+                if dueSoonTasks.isEmpty {
+                    Text(NSLocalizedString("ios.dashboard.due_soon.no_tasks", comment: "No tasks"))
+                        .rootsBodySecondary()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                } else {
+                    VStack(spacing: 12) {
+                        ForEach(dueSoonTasks.prefix(5), id: \.id) { task in
+                            HStack(alignment: .top, spacing: 12) {
+                                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                                    .foregroundStyle(task.isCompleted ? Color.accentColor : Color.secondary)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(task.title)
+                                        .font(.body.weight(.medium))
+                                    if let course = courseName(for: task.courseId) {
+                                        Text(course)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    if let due = task.due {
+                                        Text("Due \(formattedShortDate(due))")
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                    }
                                 }
-                                if let due = task.due {
-                                    Text("Due \(formattedShortDate(due))")
-                                        .font(.caption2)
-                                        .foregroundStyle(.secondary)
-                                }
+                                Spacer()
                             }
-                            Spacer()
                         }
                     }
                 }
             }
+            .frame(minHeight: 120)
         }
     }
 

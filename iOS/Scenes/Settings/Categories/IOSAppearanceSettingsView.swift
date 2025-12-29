@@ -2,7 +2,7 @@
 import SwiftUI
 import Combine
 
-struct AppearanceSettingsView: View {
+struct IOSAppearanceSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     @Environment(\.colorScheme) private var colorScheme
     
@@ -112,7 +112,7 @@ struct AppearanceSettingsView: View {
 
 #Preview {
     NavigationStack {
-        AppearanceSettingsView()
+        IOSAppearanceSettingsView()
             .environmentObject(AppSettingsModel.shared)
     }
 }

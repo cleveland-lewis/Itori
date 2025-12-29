@@ -1,7 +1,7 @@
 import SwiftUI
 #if os(iOS)
 
-struct PrivacySettingsView: View {
+struct IOSPrivacySettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     @State private var showingClearConfirmation = false
     
@@ -16,8 +16,12 @@ struct PrivacySettingsView: View {
                             .foregroundColor(.secondary)
                     }
                 }
-                .onChange(of: settings.enableICloudSync) { _, _ in
+                .onChange(of: settings.enableICloudSync) { _, newValue in
                     settings.save()
+                    NotificationCenter.default.post(
+                        name: .iCloudSyncSettingChanged,
+                        object: newValue
+                    )
                 }
                 
                 if !settings.enableICloudSync {
@@ -36,8 +40,8 @@ struct PrivacySettingsView: View {
             } header: {
                 Text(NSLocalizedString("settings.privacy.data.header", comment: "Data Storage"))
             } footer: {
-                if settings.enableICloudSync {
-                    Text(NSLocalizedString("settings.privacy.icloud_sync.footer", comment: "Your data will be synced across all devices signed in to your iCloud account. Data is encrypted in transit and at rest."))
+                if PersistenceController.shared.isCloudKitEnabled {
+                    Text("iCloud is connected and protected by native iCloud protections")
                 } else {
                     Text(NSLocalizedString("settings.privacy.local_only.footer", comment: "All your data stays on this device. No cloud sync or external services are used."))
                 }
@@ -106,7 +110,7 @@ struct PrivacySettingsView: View {
 
 #Preview {
     NavigationStack {
-        PrivacySettingsView()
+        IOSPrivacySettingsView()
             .environmentObject(AppSettingsModel.shared)
     }
 }

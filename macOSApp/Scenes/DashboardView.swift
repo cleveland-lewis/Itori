@@ -66,7 +66,7 @@ struct DashboardView: View {
         }
         .background(Color(nsColor: .windowBackgroundColor))
         .sheet(isPresented: $showAddAssignmentSheet) {
-            AddAssignmentView(initialType: .practiceHomework) { task in
+            AddAssignmentView(initialType: .homework) { task in
                 assignmentsStore.addTask(task)
             }
             .environmentObject(coursesStore)

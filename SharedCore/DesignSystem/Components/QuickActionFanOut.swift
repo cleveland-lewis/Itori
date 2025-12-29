@@ -39,15 +39,14 @@ private struct MiniActionButton: View {
             }
             .padding(.vertical, 6)
             .padding(.horizontal, 10)
+            #if os(macOS)
             .background {
-                #if os(macOS)
                 DesignSystem.Colors.sidebarBackground
-                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
-                #else
-                DesignSystem.Materials.hud
-                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
-                #endif
             }
+            #else
+            .background(DesignSystem.Materials.hud)
+            #endif
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
         }
         .buttonStyle(PlainButtonStyle())
         .scaleEffect(hovering ? 1.02 : 1.0)

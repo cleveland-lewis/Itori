@@ -59,7 +59,7 @@ final class LocalizationValidationTests: XCTestCase {
     
     func testTaskTypeNeverShowsRawValue() {
         // Ensure TaskType never shows rawValue in UI
-        let types: [TaskType] = [.practiceHomework, .quiz, .exam, .reading, .review, .project]
+        let types: [TaskType] = [.homework, .quiz, .exam, .reading, .review, .project]
         
         for type in types {
             let name = type.localizedName

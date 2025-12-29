@@ -1,7 +1,7 @@
 import SwiftUI
 #if os(iOS)
 
-struct CoursesPlannerSettingsView: View {
+struct IOSCoursesPlannerSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     
     var body: some View {
@@ -110,7 +110,7 @@ enum PlannerHorizon: String {
 
 #Preview {
     NavigationStack {
-        CoursesPlannerSettingsView()
+        IOSCoursesPlannerSettingsView()
             .environmentObject(AppSettingsModel.shared)
     }
 }

@@ -3,7 +3,7 @@ import SwiftUI
 
 import UIKit
 
-struct StorageSettingsView: View {
+struct IOSStorageSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     @State private var storageSize: String = "Calculating..."
     @State private var storageLocation: String = ""
@@ -270,7 +270,7 @@ extension FileManager {
 
 #Preview {
     NavigationStack {
-        StorageSettingsView()
+        IOSStorageSettingsView()
             .environmentObject(AppSettingsModel.shared)
     }
 }

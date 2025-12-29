@@ -72,7 +72,7 @@ struct CoursesPageView: View {
     @EnvironmentObject private var parsingStore: SyllabusParsingStore
 
     @State private var showingAddTaskSheet = false
-    @State private var addTaskType: TaskType = .practiceHomework
+    @State private var addTaskType: TaskType = .homework
     @State private var addTaskCourseId: UUID? = nil
     @State private var showingGradeSheet = false
     @State private var gradePercentInput: Double = 90
@@ -185,7 +185,7 @@ struct CoursesPageView: View {
                         showNewCourseSheet = true
                     },
                     onAddAssignment: {
-                        beginAddTask(for: course, type: .practiceHomework)
+                        beginAddTask(for: course, type: .homework)
                     },
                     onAddExam: {
                         beginAddTask(for: course, type: .exam)
@@ -219,7 +219,7 @@ struct CoursesPageView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: RootsRadius.card, style: .continuous)
-                .fill(RootsColor.subtleFill)
+                .fill(Color(nsColor: .controlBackgroundColor))
         )
     }
 
@@ -245,7 +245,14 @@ struct CoursesPageView: View {
 
     private func vm(from course: Course) -> CoursePageCourse {
         let semesterName = coursesStore.semesters.first(where: { $0.id == course.semesterId })?.name ?? "Current Term"
-        let colorTag = ColorTag.fromHex(course.colorHex) ?? .blue
+        let colorTag: ColorTag = {
+            if let hex = course.colorHex, let tag = ColorTag.fromHex(hex) {
+                return tag
+            }
+            let allColors = ColorTag.allCases
+            let index = abs(course.id.hashValue) % allColors.count
+            return allColors[index]
+        }()
         let gradeEntry = gradesStore.grade(for: course.id)
         let gradeInfo = CourseGradeInfo(currentPercentage: gradeEntry?.percent, targetPercentage: nil, letterGrade: gradeEntry?.letter)
         return CoursePageCourse(
@@ -556,7 +563,7 @@ struct CoursesPageDetailView: View {
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
-                        .background(Color.white.opacity(0.06))
+                        .background(Color(nsColor: .controlBackgroundColor).opacity(0.5))
                         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
                         .buttonStyle(.plain)
                 }
@@ -572,12 +579,7 @@ struct CoursesPageDetailView: View {
             .foregroundStyle(.secondary)
         }
         .padding(18)
-        .background(
-            RoundedRectangle(cornerRadius: cardCorner, style: .continuous)
-                .fill(.thinMaterial)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
-        .overlay(cardStroke)
+        .rootsCardBackground(radius: cardCorner)
     }
 
     private var meetingsCard: some View {
@@ -608,12 +610,7 @@ struct CoursesPageDetailView: View {
         }
         .padding(RootsSpacing.l)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: cardCorner, style: .continuous)
-                .fill(.thinMaterial)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
-        .overlay(cardStroke)
+        .rootsCardBackground(radius: cardCorner)
     }
 
     private var syllabusCard: some View {
@@ -654,12 +651,7 @@ struct CoursesPageDetailView: View {
         }
         .padding(DesignSystem.Layout.padding.card)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: cardCorner, style: .continuous)
-                .fill(.thinMaterial)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
-        .overlay(cardStroke)
+        .rootsCardBackground(radius: cardCorner)
     }
 
     private func quickActionTile(title: String, subtitle: String, systemImage: String, action: @escaping () -> Void) -> some View {
@@ -696,15 +688,6 @@ struct CoursesPageDetailView: View {
     private func sectionHeader(_ title: String) -> some View {
         Text(title)
             .font(DesignSystem.Typography.body)
-    }
-
-    private var cardBackground: some ShapeStyle {
-        Color(nsColor: .controlBackgroundColor)
-    }
-
-    private var cardStroke: some View {
-        RoundedRectangle(cornerRadius: cardCorner, style: .continuous)
-            .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
     }
 
     private func weekdayName(_ weekday: Int) -> String {
@@ -806,7 +789,7 @@ struct GradeChip: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
-        .background(Color(nsColor: .controlBackgroundColor).opacity(0.08))
+        .background(Color(nsColor: .controlBackgroundColor))
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
     }
 }

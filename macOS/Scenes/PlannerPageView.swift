@@ -407,7 +407,7 @@ private extension PlannerPageView {
             case .exam: return .exam
             case .quiz: return .quiz
             case .project: return .project
-            case .practiceHomework: return .practiceHomework
+            case .homework: return .homework
             case .reading: return .reading
             case .review: return .review
             }

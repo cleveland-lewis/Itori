@@ -77,12 +77,14 @@ struct SettingsRootView: View {
                     TimerSettingsView()
                 case .flashcards:
                     FlashcardSettingsView()
+                case .integrations:
+                    IntegrationsSettingsView()
                 case .notifications:
                     NotificationsSettingsView()
-                case .ai:
-                    AISettingsView()
                 case .privacy:
                     PrivacySettingsView()
+                case .storage:
+                    StorageSettingsView()
                 case .developer:
                     DeveloperSettingsView()
                 }

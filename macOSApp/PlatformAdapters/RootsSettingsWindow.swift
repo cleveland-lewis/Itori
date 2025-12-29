@@ -29,16 +29,62 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     }
 }
 
-// MARK: - Compatibility wrapper for RootsApp
+// MARK: - Comprehensive Settings Root View
 
-/// Compatibility wrapper to match expected interface in RootsApp.swift
 struct SettingsRootView: View {
     @Binding var selection: SettingsToolbarIdentifier
+    @EnvironmentObject var settings: AppSettingsModel
+    @EnvironmentObject var coursesStore: CoursesStore
     
     var body: some View {
-        RootsSettingsWindow()
+        contentView
+            .frame(minWidth: 700, minHeight: 500)
+            .navigationTitle(selection.label)
+    }
+    
+    @ViewBuilder
+    private var contentView: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                switch selection {
+                case .general:
+                    GeneralSettingsView()
+                case .calendar:
+                    CalendarSettingsView()
+                case .reminders:
+                    RemindersSettingsView()
+                case .planner:
+                    PlannerSettingsView()
+                case .courses:
+                    CoursesSettingsView()
+                case .semesters:
+                    SemestersSettingsView()
+                case .interface:
+                    InterfaceSettingsView()
+                case .profiles:
+                    ProfilesSettingsView()
+                case .timer:
+                    TimerSettingsView()
+                case .flashcards:
+                    FlashcardSettingsView()
+                case .integrations:
+                    IntegrationsSettingsView()
+                case .notifications:
+                    NotificationsSettingsView()
+                case .privacy:
+                    PrivacySettingsView()
+                case .storage:
+                    StorageSettingsView()
+                case .developer:
+                    DeveloperSettingsView()
+                }
+            }
+            .padding(20)
+        }
     }
 }
+
+// MARK: - RootsSettingsWindow (Legacy Simple View - Deprecated)
 
 struct RootsSettingsWindow: View {
     @EnvironmentObject var settings: AppSettingsModel

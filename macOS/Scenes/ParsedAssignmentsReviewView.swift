@@ -218,7 +218,7 @@ struct ParsedAssignmentsReviewView: View {
     }
     
     private func taskTypeFromInferred(_ inferredType: String?) -> TaskType {
-        guard let type = inferredType?.lowercased() else { return .practiceHomework }
+        guard let type = inferredType?.lowercased() else { return .homework }
         
         if type.contains("exam") || type.contains("test") {
             return .exam
@@ -232,7 +232,7 @@ struct ParsedAssignmentsReviewView: View {
             return .review
         }
         
-        return .practiceHomework
+        return .homework
     }
 }
 

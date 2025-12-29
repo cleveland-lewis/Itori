@@ -81,7 +81,7 @@ struct AssignmentDetailWindowView: View {
 
     private func typeLabel(_ type: TaskType) -> String {
         switch type {
-        case .practiceHomework: return "Homework"
+        case .homework: return "Homework"
         case .quiz: return "Quiz"
         case .exam: return "Exam"
         case .reading: return "Reading"
@@ -94,7 +94,7 @@ struct AssignmentDetailWindowView: View {
         switch type {
         case .exam, .quiz:
             return "Estimated Study Time"
-        case .practiceHomework, .reading, .project, .review:
+        case .homework, .reading, .project, .review:
             return "Estimated Work Time"
         }
     }

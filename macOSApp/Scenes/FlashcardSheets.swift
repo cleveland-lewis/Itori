@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 // MARK: - Add Card Sheet
@@ -415,3 +416,4 @@ struct ExportSheet: View {
         Flashcard(frontText: "Q2", backText: "A2", difficulty: .easy, dueDate: Date())
     ]))
 }
+#endif

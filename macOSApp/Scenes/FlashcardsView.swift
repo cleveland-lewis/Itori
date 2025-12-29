@@ -1,3 +1,4 @@
+#if os(macOS)
 import SwiftUI
 
 struct FlashcardsView: View {
@@ -18,7 +19,10 @@ struct FlashcardsView: View {
     }
     
     private var currentSemesterCourses: [Course] {
-        coursesStore.currentSemesterCourses
+        let existingDeckCourseIds = Set(manager.decks.compactMap { $0.courseId })
+        return coursesStore.currentSemesterCourses.filter { course in
+            !existingDeckCourseIds.contains(course.id)
+        }
     }
     
     var body: some View {
@@ -385,3 +389,4 @@ struct AddDeckSheet: View {
 #Preview {
     FlashcardsView()
 }
+#endif

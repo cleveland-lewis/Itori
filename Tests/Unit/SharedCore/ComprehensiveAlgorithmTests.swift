@@ -35,7 +35,7 @@ struct ComprehensiveAlgorithmTests {
     
     @Test func testAssignmentPlanEngine_AllCategories() async throws {
         let dueDate = Date().addingTimeInterval(7 * 24 * 60 * 60)
-        let categories: [AssignmentCategory] = [.exam, .quiz, .practiceHomework, .reading, .review, .project]
+        let categories: [AssignmentCategory] = [.exam, .quiz, .homework, .reading, .review, .project]
         
         for category in categories {
             let assignment = Assignment(
@@ -101,7 +101,7 @@ struct ComprehensiveAlgorithmTests {
             sessionCount: 1,
             title: "Normal",
             dueDate: today.addingTimeInterval(7 * 24 * 60 * 60),
-            category: .practiceHomework,
+            category: .homework,
             importance: .medium,
             difficulty: .medium,
             estimatedMinutes: 60,
@@ -463,7 +463,7 @@ struct ComprehensiveAlgorithmTests {
             title: "Quick Task",
             dueDate: Date().addingTimeInterval(24 * 60 * 60),
             estimatedMinutes: 5,
-            category: .practiceHomework,
+            category: .homework,
             urgency: .low,
             plan: []
         )
@@ -480,7 +480,7 @@ struct ComprehensiveAlgorithmTests {
             title: "Zero Task",
             dueDate: Date().addingTimeInterval(24 * 60 * 60),
             estimatedMinutes: 0,
-            category: .practiceHomework,
+            category: .homework,
             urgency: .low,
             plan: []
         )
@@ -556,7 +556,7 @@ struct ComprehensiveAlgorithmTests {
             title: "Overdue Task",
             dueDate: Date().addingTimeInterval(-24 * 60 * 60),
             estimatedMinutes: 60,
-            category: .practiceHomework,
+            category: .homework,
             urgency: .critical,
             plan: []
         )
@@ -590,7 +590,7 @@ struct ComprehensiveAlgorithmTests {
             title: "Immediate Task",
             dueDate: now,
             estimatedMinutes: 30,
-            category: .practiceHomework,
+            category: .homework,
             urgency: .critical,
             plan: []
         )
@@ -612,7 +612,7 @@ struct ComprehensiveAlgorithmTests {
                 title: "Task \(i)",
                 dueDate: tomorrow,
                 estimatedMinutes: 60,
-                category: .practiceHomework,
+                category: .homework,
                 urgency: .high,
                 plan: []
             )

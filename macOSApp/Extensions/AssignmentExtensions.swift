@@ -29,7 +29,7 @@ extension AssignmentCategory {
         case .project: return "assignments.category.project".localized
         case .exam: return "assignments.category.exam".localized
         case .quiz: return "assignments.category.quiz".localized
-        case .homework, .practiceHomework: return "assignments.category.homework".localized
+        case .homework, .homework: return "assignments.category.homework".localized
         case .reading: return "assignments.category.reading".localized
         case .review: return "assignments.category.review".localized
         }

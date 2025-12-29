@@ -1,7 +1,7 @@
 import SwiftUI
 #if os(iOS)
 
-struct AccessibilitySettingsView: View {
+struct IOSAccessibilitySettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     
     var body: some View {
@@ -21,8 +21,8 @@ struct AccessibilitySettingsView: View {
                 
                 Toggle(isOn: $settings.increaseTransparencyStorage) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(NSLocalizedString("settings.accessibility.increase_transparency", comment: "Increase Transparency"))
-                        Text(NSLocalizedString("settings.accessibility.increase_transparency.detail", comment: "Reduce blur and transparency effects"))
+                        Text(NSLocalizedString("settings.accessibility.reduce_transparency", comment: "Reduce Transparency"))
+                        Text(NSLocalizedString("settings.accessibility.reduce_transparency.detail", comment: "Reduce blur and transparency effects"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -86,7 +86,7 @@ struct AccessibilitySettingsView: View {
 
 #Preview {
     NavigationStack {
-        AccessibilitySettingsView()
+        IOSAccessibilitySettingsView()
             .environmentObject(AppSettingsModel.shared)
     }
 }

@@ -894,7 +894,8 @@
 /* Accessibility Settings */
 "settings.accessibility.reduce_motion" = "Reduce Motion";
 "settings.accessibility.reduce_motion.detail" = "Minimize animations and transitions";
-"settings.accessibility.increase_transparency" = "Increase Transparency";
+"settings.accessibility.reduce_transparency" = "Reduce Transparency";
+"settings.accessibility.reduce_transparency.detail" = "Reduce blur and transparency effects";
 "settings.accessibility.increase_transparency.detail" = "Reduce blur and transparency effects";
 "settings.accessibility.high_contrast" = "Increase Contrast";
 "settings.accessibility.high_contrast.detail" = "Make colors and borders more distinct";

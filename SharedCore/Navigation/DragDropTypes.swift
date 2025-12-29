@@ -68,6 +68,7 @@ nonisolated struct TransferableCourse: Codable, Sendable {
     }
 }
 
+@MainActor
 extension TransferableAssignment: Transferable {
     static var transferRepresentation: some TransferRepresentation {
         CodableRepresentation(contentType: .rootsAssignment)
@@ -77,6 +78,7 @@ extension TransferableAssignment: Transferable {
     }
 }
 
+@MainActor
 extension TransferableCourse: Transferable {
     static var transferRepresentation: some TransferRepresentation {
         CodableRepresentation(contentType: .rootsCourse)

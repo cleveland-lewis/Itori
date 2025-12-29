@@ -25,7 +25,7 @@ final class DragDropTypesTests: XCTestCase {
             maxBlockMinutes: 60,
             difficulty: 0.7,
             importance: 0.8,
-            type: .practiceHomework,
+            type: .homework,
             locked: false
         )
         

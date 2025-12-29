@@ -37,14 +37,6 @@ struct FloatingControls: View {
                     Label(menuTitle(for: page), systemImage: page.systemImage)
                 }
             }
-
-            Divider()
-
-            Button {
-                navigation.openSettings()
-            } label: {
-                Label(NSLocalizedString("ios.menu.settings", comment: "Settings"), systemImage: "gearshape")
-            }
         } label: {
             Image(systemName: "line.3.horizontal")
                 .font(.system(size: buttonSize * 0.4, weight: .medium))
@@ -54,6 +46,7 @@ struct FloatingControls: View {
                 .shadow(color: .black.opacity(0.15), radius: 6, y: 3)
                 .contentShape(Rectangle().size(width: buttonSize + 8, height: buttonSize + 8))
         }
+        .buttonStyle(.plain)
         .accessibilityLabel(NSLocalizedString("ios.menu.hamburger", comment: "Open menu"))
     }
 
@@ -85,6 +78,7 @@ struct FloatingControls: View {
                 .shadow(color: .black.opacity(0.15), radius: 6, y: 3)
                 .contentShape(Rectangle().size(width: buttonSize + 8, height: buttonSize + 8))
         }
+        .buttonStyle(.plain)
         .accessibilityLabel(NSLocalizedString("ios.menu.quick_add", comment: "Quick add"))
     }
 
@@ -116,7 +110,7 @@ struct FloatingControls: View {
                 courseId: filterState.selectedCourseId,
                 dueDate: Date(),
                 title: "",
-                type: .practiceHomework,
+                type: .homework,
                 itemLabel: "Assignment"
             )
             sheetRouter.activeSheet = .addAssignment(defaults)
@@ -184,7 +178,7 @@ struct FloatingControls: View {
         switch task.category {
         case .exam: return .exam
         case .quiz: return .quiz
-        case .practiceHomework: return .practiceHomework
+        case .homework: return .homework
         case .reading: return .reading
         case .review: return .review
         case .project: return .project

@@ -35,15 +35,15 @@ struct CoursesDashboardFloatingNav: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
+        #if os(macOS)
         .background {
-            #if os(macOS)
             DesignSystem.Colors.sidebarBackground
-                .clipShape(Capsule())
-            #else
-            DesignSystem.Materials.hud
-                .clipShape(Capsule())
-            #endif
         }
+        .clipShape(Capsule())
+        #else
+        .background(DesignSystem.Materials.hud)
+        .clipShape(Capsule())
+        #endif
         .overlay(
             Capsule()
                 .strokeBorder(Color(nsColor: .separatorColor).opacity(0.3), lineWidth: 1)
