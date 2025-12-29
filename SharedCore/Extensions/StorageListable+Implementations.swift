@@ -315,9 +315,21 @@ extension StoredScheduledSession: StorageListable {
             return breakType
         }
         
-        // Handle regular sessions
-        let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? "Planner Block" : trimmed
+        let baseTitle: String = {
+            if let assignmentId,
+               let task = AssignmentsStore.shared.tasks.first(where: { $0.id == assignmentId }) {
+                return task.title
+            }
+            let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+            return trimmed.isEmpty ? "Planner Block" : trimmed
+        }()
+
+        guard let count = sessionCount, count > 0 else { return baseTitle }
+        guard let index = sessionIndex else { return baseTitle }
+        if count == 1 {
+            return "\(baseTitle) - Study Session"
+        }
+        return "\(baseTitle) - Study Session \(index)/\(count)"
     }
 
     public var entityType: StorageEntityType { .plannerBlock }

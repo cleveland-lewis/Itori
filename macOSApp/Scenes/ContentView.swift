@@ -127,27 +127,35 @@ struct ContentView: View {
     }
 
     private var topBar: some View {
-        HStack {
-            QuickActionsLauncher(isExpanded: $isQuickActionsExpanded, actions: settings.quickActions) { action in
-                performQuickAction(action)
-            }
-
-            Spacer()
-
-            CircleIconButton(
-                icon: "gearshape",
-                iconColor: Color.secondary,
-                size: QuickActionsLauncher.launcherDiameter,
-                backgroundMaterial: DesignSystem.Materials.hud,
-                backgroundOpacity: 0.75,
-                iconRotation: .degrees(settingsRotation)
-            ) {
-                withAnimation(.easeInOut(duration: DesignSystem.Motion.deliberate)) {
-                    settingsRotation += 360
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                QuickActionsLauncher(isExpanded: $isQuickActionsExpanded, actions: settings.quickActions) { action in
+                    performQuickAction(action)
                 }
-                settingsCoordinator.show()
+
+                Spacer()
+
+                CircleIconButton(
+                    icon: "gearshape",
+                    iconColor: Color.secondary,
+                    size: QuickActionsLauncher.launcherDiameter,
+                    backgroundMaterial: DesignSystem.Materials.hud,
+                    backgroundOpacity: 0.75,
+                    iconRotation: .degrees(settingsRotation)
+                ) {
+                    withAnimation(.easeInOut(duration: DesignSystem.Motion.deliberate)) {
+                        settingsRotation += 360
+                    }
+                    settingsCoordinator.show()
+                }
+                .accessibilityIdentifier("Header.Settings")
             }
-            .accessibilityIdentifier("Header.Settings")
+            
+            // Page title below quick add button
+            Text(selectedTab.title)
+                .font(.largeTitle.weight(.bold))
+                .foregroundStyle(.primary)
+                .padding(.leading, 4)
         }
         .contentTransition(.opacity)
         .onExitCommand {

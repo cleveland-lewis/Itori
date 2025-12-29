@@ -24,6 +24,26 @@ struct PlannedBlock: Identifiable {
     var status: PlannerBlockStatus
     var source: String
     var isOmodoroLinked: Bool
+    var sessionIndex: Int?
+    var sessionCount: Int?
+
+    var displayTitle: String {
+        let baseTitle: String = {
+            if let taskId,
+               let task = AssignmentsStore.shared.tasks.first(where: { $0.id == taskId }) {
+                return task.title
+            }
+            let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+            return trimmed.isEmpty ? "Planner Block" : trimmed
+        }()
+
+        guard let count = sessionCount, count > 0 else { return baseTitle }
+        guard let index = sessionIndex else { return baseTitle }
+        if count == 1 {
+            return "\(baseTitle) - Study Session"
+        }
+        return "\(baseTitle) - Study Session \(index)/\(count)"
+    }
 }
 
 struct PlannerTask: Identifiable {
@@ -460,7 +480,9 @@ private extension PlannerPageView {
                 isLocked: scheduled.session.isLockedToDueDate,
                 status: .upcoming,
                 source: "Auto-plan",
-                isOmodoroLinked: false
+                isOmodoroLinked: false,
+                sessionIndex: scheduled.session.sessionIndex,
+                sessionCount: scheduled.session.sessionCount
             )
         }
 
@@ -505,7 +527,9 @@ private extension PlannerPageView {
                 isLocked: stored.isLockedToDueDate,
                 status: .upcoming,
                 source: "Auto-plan",
-                isOmodoroLinked: false
+                isOmodoroLinked: false,
+                sessionIndex: stored.sessionIndex,
+                sessionCount: stored.sessionCount
             )
         }
         plannedBlocks = dayBlocks
@@ -955,7 +979,7 @@ struct PlannerBlockRow: View {
                 .frame(width: 4, height: 32)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(block.title)
+                Text(block.displayTitle)
                     .font(.body.weight(.semibold))
                     .lineLimit(1)
 
