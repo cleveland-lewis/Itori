@@ -916,10 +916,7 @@ struct DashboardView: View {
             Spacer()
 
             if let dueDate = item.dueDate {
-                let formatter = DateFormatter()
-                formatter.dateStyle = .abbreviated
-                formatter.timeStyle = item.hasExplicitDueTime ? .short : .none
-                Text(formatter.string(from: dueDate))
+                Text(formattedDueDate(dueDate, hasExplicitTime: item.hasExplicitDueTime))
                     .font(.caption.weight(.semibold))
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
@@ -1207,6 +1204,13 @@ struct DashboardView: View {
                 return cal.isDateInToday(due)
             }
             .sorted { ($0.due ?? Date.distantFuture) < ($1.due ?? Date.distantFuture) }
+    }
+    
+    private func formattedDueDate(_ date: Date, hasExplicitTime: Bool) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = hasExplicitTime ? .short : .none
+        return formatter.string(from: date)
     }
 
     private func setEnergy(_ level: EnergyLevel) {

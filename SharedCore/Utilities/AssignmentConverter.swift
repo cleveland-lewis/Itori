@@ -13,7 +13,6 @@ struct AssignmentConverter {
             title: assignment.title,
             courseId: assignment.courseId,
             due: assignment.dueDate,
-            dueTimeMinutes: assignment.dueTimeMinutes,
             estimatedMinutes: assignment.estimatedMinutes,
             minBlockMinutes: 20,
             maxBlockMinutes: min(assignment.estimatedMinutes, 180),
@@ -26,7 +25,8 @@ struct AssignmentConverter {
             gradeWeightPercent: assignment.weightPercent,
             gradePossiblePoints: nil,
             gradeEarnedPoints: nil,
-            category: taskType
+            category: taskType,
+            dueTimeMinutes: assignment.dueTimeMinutes
         )
     }
     
