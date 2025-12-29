@@ -105,11 +105,7 @@ struct RootsSettingsWindow: View {
             let sidebarWidth = min(max(180, size.width * (sidebarExpanded ? 0.20 : 0.14)), 220)
 
             ZStack {
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(DesignSystem.Materials.card)
-                    .opacity(0.20)
-                    .shadow(radius: 24, y: 10)
-                    .ignoresSafeArea()
+                // Removed blue-tinted background overlay
 
                 VStack(spacing: 0) {
                     // Empty top spacer to align content under traffic lights

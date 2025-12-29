@@ -194,6 +194,7 @@ struct AssignmentsPageView: View {
             appModel.requestedAssignmentDueDate = nil
         }
         .onAppear {
+            syncAssignmentsFromStore()
             // subscribe to course deletions
             courseDeletedCancellable = CoursesStore.courseDeletedPublisher
                 .receive(on: DispatchQueue.main)
@@ -206,6 +207,9 @@ struct AssignmentsPageView: View {
                         selectedAssignment = nil
                     }
                 }
+        }
+        .onChange(of: assignmentsStore.tasks) { _, _ in
+            syncAssignmentsFromStore()
         }
     }
 
@@ -478,11 +482,13 @@ struct AssignmentsPageView: View {
     }
 
     private func toggleCompletion(for assignment: Assignment) {
-        guard let idx = assignments.firstIndex(where: { $0.id == assignment.id }) else { return }
-        let wasCompleted = assignments[idx].status == .completed
-        assignments[idx].status = wasCompleted ? .notStarted : .completed
-        if selectedAssignment?.id == assignment.id {
-            selectedAssignment = assignments[idx]
+        guard let idx = assignmentsStore.tasks.firstIndex(where: { $0.id == assignment.id }) else { return }
+        var task = assignmentsStore.tasks[idx]
+        let wasCompleted = task.isCompleted
+        task.isCompleted.toggle()
+        assignmentsStore.updateTask(task)
+        if let updated = assignments.first(where: { $0.id == assignment.id }) {
+            selectedAssignment = updated
         }
         
         // Play feedback when marking as completed (not when uncompleting)
@@ -508,16 +514,17 @@ struct AssignmentsPageView: View {
     }
 
     private func upsertAssignment(_ assignment: Assignment) {
-        if let idx = assignments.firstIndex(where: { $0.id == assignment.id }) {
-            assignments[idx] = ensurePlan(assignment)
+        let task = AssignmentConverter.toAppTask(assignment)
+        if assignmentsStore.tasks.contains(where: { $0.id == assignment.id }) {
+            assignmentsStore.updateTask(task)
         } else {
-            assignments.append(ensurePlan(assignment))
+            assignmentsStore.addTask(task)
         }
         selectedAssignment = ensurePlan(assignment)
     }
 
     private func deleteAssignment(_ assignment: Assignment) {
-        assignments.removeAll { $0.id == assignment.id }
+        assignmentsStore.removeTask(id: assignment.id)
         if selectedAssignment?.id == assignment.id {
             selectedAssignment = nil
         }
@@ -563,6 +570,17 @@ struct AssignmentsPageView: View {
             return updated
         }
         return assignment
+    }
+
+    private func syncAssignmentsFromStore() {
+        let converted = assignmentsStore.tasks.map { task in
+            ensurePlan(AssignmentConverter.toAssignment(task, coursesStore: coursesStore))
+        }
+        assignments = converted
+        if let selected = selectedAssignment,
+           let refreshed = assignments.first(where: { $0.id == selected.id }) {
+            selectedAssignment = refreshed
+        }
     }
 
     private func focusAssignment(closestTo dueDate: Date) {
