@@ -60,7 +60,7 @@ public struct AICapabilities {
 // MARK: - AI Result
 
 /// Result from an AI generation request
-public struct AIResult {
+public struct AIProviderResult {
     public let text: String
     public let provider: String
     public let latencyMs: Int
@@ -98,7 +98,7 @@ public protocol AIProvider {
         task: AITaskKind,
         schema: [String: Any]?,
         temperature: Double
-    ) async throws -> AIResult
+    ) async throws -> AIProviderResult
     
     /// Check if provider is available/ready
     func isAvailable() async -> Bool

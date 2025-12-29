@@ -22,6 +22,7 @@ struct RootsIOSApp: App {
     @StateObject private var appModel = AppModel()
     @StateObject private var calendarManager = CalendarManager.shared
     @StateObject private var deviceCalendar = DeviceCalendarManager.shared
+    @StateObject private var calendarRefresh = CalendarRefreshCoordinator.shared
     @StateObject private var timerManager = TimerManager()
     @StateObject private var focusManager = FocusManager()
     @StateObject private var preferences = AppPreferences()
@@ -61,6 +62,7 @@ struct RootsIOSApp: App {
                 .environmentObject(plannerCoordinator)
                 .environmentObject(assignmentPlansStore)
                 .environmentObject(parsingStore)
+                .environmentObject(calendarRefresh)
                 .environmentObject(sheetRouter)
                 .environmentObject(toastRouter)
                 .environmentObject(filterState)

@@ -1,15 +1,21 @@
 import Foundation
 
-/// Apple Intelligence Provider (Stub - awaiting SDK)
+#if canImport(FoundationModels)
+import FoundationModels
+#endif
+
+/// Apple Intelligence Provider (Foundation Models)
 ///
-/// This is a placeholder implementation for Apple Intelligence / Foundation Models.
-/// Will be implemented when Apple's AI SDK becomes available.
+/// Deployment targets (from project settings):
+/// - iOS: 26.1
+/// - macOS: 14.0
+/// Availability is gated by runtime OS version + framework availability.
 public final class AppleIntelligenceProvider: AIProvider {
     public let name = "Apple Intelligence"
-    
+
     public var capabilities: AICapabilities {
         AICapabilities(
-            isOffline: true,  // On-device
+            isOffline: true,
             supportsTools: true,
             supportsSchema: true,
             maxContextLength: 8192,
@@ -23,47 +29,78 @@ public final class AppleIntelligenceProvider: AIProvider {
             estimatedLatency: 0.5
         )
     }
-    
+
     public init() {}
-    
+
+    public struct Availability {
+        let available: Bool
+        let reason: String
+    }
+
+    public static func availability() -> Availability {
+        #if canImport(FoundationModels)
+        if #available(iOS 18.0, macOS 15.0, *) {
+            #if os(iOS) || os(macOS)
+            if AppleFoundationClient.isAvailable() {
+                return Availability(available: true, reason: "Apple Foundation Models available")
+            }
+            return Availability(available: false, reason: "Apple Intelligence not available on this device")
+            #else
+            return Availability(available: false, reason: "Unsupported OS for Apple Intelligence")
+            #endif
+        }
+        return Availability(available: false, reason: "Requires iOS 18+ / macOS 15+")
+        #else
+        return Availability(available: false, reason: "FoundationModels framework not available in this SDK")
+        #endif
+    }
+
     public func generate(
         prompt: String,
         task: AITaskKind,
         schema: [String: Any]?,
         temperature: Double
-    ) async throws -> AIResult {
-        // TODO: Implement Apple Intelligence SDK integration when available
-        
-        #if DEBUG
-        // Stub implementation for development
+    ) async throws -> AIProviderResult {
+        let availability = Self.availability()
+        guard availability.available else {
+            throw AIError.providerUnavailable("Apple Intelligence unavailable: \(availability.reason)")
+        }
+
         let startTime = Date()
-        
-        // Simulate processing time
-        try await Task.sleep(nanoseconds: 500_000_000) // 0.5s
-        
-        let latency = Int(Date().timeIntervalSince(startTime) * 1000)
-        
-        return AIResult(
-            text: "[Apple Intelligence stub response for '\(task.displayName)']",
-            provider: name,
-            latencyMs: latency,
-            tokenCount: 50,
-            cached: false,
-            structuredData: schema != nil ? ["stub": true] : nil
-        )
-        #else
-        throw AIError.providerUnavailable("Apple Intelligence SDK not yet available")
+
+        #if canImport(FoundationModels)
+        if #available(iOS 18.0, macOS 15.0, *) {
+            let responseText = try await AppleFoundationClient.generate(prompt: prompt, temperature: temperature)
+            let latency = Int(Date().timeIntervalSince(startTime) * 1000)
+            return AIProviderResult(
+                text: responseText,
+                provider: name,
+                latencyMs: latency,
+                tokenCount: nil,
+                cached: false,
+                structuredData: schema != nil ? ["provider": "apple"] : nil
+            )
+        }
         #endif
+
+        throw AIError.providerUnavailable("Apple Intelligence unavailable: \(availability.reason)")
     }
-    
+
     public func isAvailable() async -> Bool {
-        #if DEBUG
-        // Available in debug for testing
-        return true
-        #else
-        // Check if Apple Intelligence is enabled and available
-        // TODO: Implement actual availability check when SDK available
-        return false
-        #endif
+        Self.availability().available
     }
 }
+
+#if canImport(FoundationModels)
+@available(iOS 18.0, macOS 15.0, *)
+private enum AppleFoundationClient {
+    static func isAvailable() -> Bool {
+        // SystemLanguageModel API not available in current SDK
+        return false
+    }
+
+    static func generate(prompt: String, temperature: Double) async throws -> String {
+        throw AIError.providerUnavailable("AppleIntelligence")
+    }
+}
+#endif

@@ -11,6 +11,7 @@ struct IOSPlannerView: View {
     @EnvironmentObject private var toastRouter: IOSToastRouter
     @EnvironmentObject private var settings: AppSettingsModel
     @EnvironmentObject private var plannerCoordinator: PlannerCoordinator
+    @EnvironmentObject private var calendarCoordinator: CalendarRefreshCoordinator
     @State private var selectedDate = Date()
     @State private var showingPlanHelp = false
     @State private var isEditing = false
@@ -27,6 +28,14 @@ struct IOSPlannerView: View {
             ScrollViewReader { proxy in
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 18) {
+                        if let pending = calendarCoordinator.pendingScheduleSuggestion {
+                            PendingScheduleSuggestionStrip(
+                                pending: pending,
+                                onApply: { calendarCoordinator.applyPendingScheduleSuggestion() },
+                                onApplyNonConflicting: { calendarCoordinator.applyPendingScheduleSuggestionNonConflicting() },
+                                onDismiss: { calendarCoordinator.discardPendingScheduleSuggestion() }
+                            )
+                        }
                         planHeader
                             .id(PlannerScrollTarget.header)
                         IOSFilterHeaderView(
@@ -1043,7 +1052,7 @@ struct IOSTaskEditorView: View {
         var title: String = ""
         var hasDueDate: Bool = true
         var dueDate: Date = Date()
-        var estimatedMinutes: Int = 60
+        var estimatedMinutes: Int? = nil
         var courseId: UUID? = nil
         var type: TaskType = .homework
         var priority: Priority = .medium
@@ -1068,12 +1077,13 @@ struct IOSTaskEditorView: View {
         }
 
         func makeTask(existing: AppTask?) -> AppTask {
+            let resolvedMinutes = estimatedMinutes ?? 60
             AppTask(
                 id: existing?.id ?? UUID(),
                 title: title,
                 courseId: courseId,
                 due: hasDueDate ? dueDate : nil,
-                estimatedMinutes: estimatedMinutes,
+                estimatedMinutes: resolvedMinutes,
                 minBlockMinutes: 15,
                 maxBlockMinutes: 120,
                 difficulty: difficulty,
@@ -1092,6 +1102,9 @@ struct IOSTaskEditorView: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var draft: TaskDraft
+    @State private var estimatedMinutesWasEdited = false
+    @State private var lastEstimateSignature: EstimateSignature? = nil
+    @State private var estimateTask: Task<Void, Never>? = nil
 
     let task: AppTask?
     let courses: [Course]
@@ -1106,6 +1119,12 @@ struct IOSTaskEditorView: View {
         self.itemLabel = itemLabel
         self.onSave = onSave
         _draft = State(initialValue: TaskDraft(task: task))
+    }
+    
+    private struct EstimateSignature: Equatable {
+        let category: TaskType
+        let dueDate: Date?
+        let courseId: UUID?
     }
 
     var body: some View {
@@ -1135,7 +1154,12 @@ struct IOSTaskEditorView: View {
                     if draft.hasDueDate {
                         DatePicker("Due Date", selection: $draft.dueDate, displayedComponents: .date)
                     }
-                    Stepper("\(timeEstimateLabel(draft.type)): \(draft.estimatedMinutes) min", value: $draft.estimatedMinutes, in: 15...360, step: 15)
+                    Stepper(
+                        "\(timeEstimateLabel(draft.type)): \(estimatedMinutesBinding.wrappedValue) min",
+                        value: estimatedMinutesBinding,
+                        in: 15...360,
+                        step: 15
+                    )
                 }
 
                 Section("Priority") {
@@ -1172,7 +1196,17 @@ struct IOSTaskEditorView: View {
                     draft.courseId = defaults.courseId
                     draft.dueDate = defaults.dueDate
                     draft.type = defaults.type
+                    requestDurationEstimateIfNeeded()
                 }
+            }
+            .onChange(of: draft.type) { _ in
+                requestDurationEstimateIfNeeded()
+            }
+            .onChange(of: draft.dueDate) { _ in
+                requestDurationEstimateIfNeeded()
+            }
+            .onChange(of: draft.hasDueDate) { _ in
+                requestDurationEstimateIfNeeded()
             }
         }
     }
@@ -1181,6 +1215,71 @@ struct IOSTaskEditorView: View {
         let titleValid = !draft.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         let dateValid = !draft.hasDueDate || true  // dueDate always has value
         return titleValid && dateValid
+    }
+    
+    private var estimatedMinutesBinding: Binding<Int> {
+        Binding(
+            get: { draft.estimatedMinutes ?? 60 },
+            set: { newValue in
+                draft.estimatedMinutes = newValue
+                estimatedMinutesWasEdited = true
+            }
+        )
+    }
+    
+    private func requestDurationEstimateIfNeeded() {
+        let signature = EstimateSignature(
+            category: draft.type,
+            dueDate: draft.hasDueDate ? draft.dueDate : nil,
+            courseId: draft.courseId
+        )
+        
+        guard signature != lastEstimateSignature else { return }
+        lastEstimateSignature = signature
+        
+        let isCreating = task == nil
+        if estimatedMinutesWasEdited { return }
+        if isCreating, draft.estimatedMinutes != nil { return }
+        
+        let course = courses.first(where: { $0.id == draft.courseId })
+        let courseType = course?.courseType.rawValue
+        let credits = course?.credits.map { Int($0) }
+
+        if isCreating, draft.estimatedMinutes == nil,
+           let cached = EstimationService.shared.nextDefaultEstimate(
+            category: draft.type.rawValue,
+            courseType: courseType,
+            credits: credits
+           ) {
+            draft.estimatedMinutes = cached
+        }
+        
+        estimateTask?.cancel()
+        estimateTask = Task { @MainActor in
+            let estimate = await EstimationService.shared.estimateTaskDuration(
+                category: draft.type.rawValue,
+                courseType: courseType,
+                credits: credits,
+                dueDate: draft.hasDueDate ? draft.dueDate : nil,
+                historicalData: []
+            )
+            
+            guard !estimatedMinutesWasEdited else {
+                EstimationService.shared.storeNextDefaultEstimate(
+                    category: draft.type.rawValue,
+                    courseType: courseType,
+                    credits: credits,
+                    estimatedMinutes: estimate.estimatedMinutes
+                )
+                return
+            }
+            
+            if isCreating, draft.estimatedMinutes != nil {
+                return
+            }
+            
+            draft.estimatedMinutes = estimate.estimatedMinutes
+        }
     }
     
     private func timeEstimateLabel(_ type: TaskType) -> String {
@@ -1413,6 +1512,8 @@ private struct IOSPlannerBlockRow: View {
         return StoredScheduledSession(
             id: session.id,
             assignmentId: session.assignmentId,
+            sessionIndex: session.sessionIndex,
+            sessionCount: session.sessionCount,
             title: session.title,
             dueDate: session.dueDate,
             estimatedMinutes: session.estimatedMinutes,
@@ -1422,7 +1523,12 @@ private struct IOSPlannerBlockRow: View {
             end: end,
             type: session.type,
             isLocked: session.isLocked,
-            isUserEdited: true
+            isUserEdited: true,
+            userEditedAt: Date(),
+            aiInputHash: session.aiInputHash,
+            aiComputedAt: session.aiComputedAt,
+            aiConfidence: session.aiConfidence,
+            aiProvenance: session.aiProvenance
         )
     }
 
@@ -1483,6 +1589,8 @@ private struct IOSBlockEditorView: View {
                         let updated = StoredScheduledSession(
                             id: block.id,
                             assignmentId: block.assignmentId,
+                            sessionIndex: block.sessionIndex,
+                            sessionCount: block.sessionCount,
                             title: title,
                             dueDate: block.dueDate,
                             estimatedMinutes: durationMinutes,
@@ -1492,7 +1600,12 @@ private struct IOSBlockEditorView: View {
                             end: end,
                             type: block.type,
                             isLocked: isLocked,
-                            isUserEdited: true
+                            isUserEdited: true,
+                            userEditedAt: Date(),
+                            aiInputHash: block.aiInputHash,
+                            aiComputedAt: block.aiComputedAt,
+                            aiConfidence: block.aiConfidence,
+                            aiProvenance: block.aiProvenance
                         )
                         onSave(updated)
                         dismiss()

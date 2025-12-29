@@ -61,7 +61,7 @@ public final class BYOProvider: AIProvider {
         task: AITaskKind,
         schema: [String: Any]?,
         temperature: Double
-    ) async throws -> AIResult {
+    ) async throws -> AIProviderResult {
         let startTime = Date()
         
         // TODO: Implement actual API calls to BYO providers
@@ -71,7 +71,7 @@ public final class BYOProvider: AIProvider {
         
         let latency = Int(Date().timeIntervalSince(startTime) * 1000)
         
-        return AIResult(
+        return AIProviderResult(
             text: "[BYO \(type.displayName) response for '\(task.displayName)']",
             provider: name,
             latencyMs: latency,

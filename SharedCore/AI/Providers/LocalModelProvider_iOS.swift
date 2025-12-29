@@ -1,4 +1,5 @@
 import Foundation
+import CoreML
 
 #if os(iOS) || os(iPadOS)
 
@@ -24,7 +25,7 @@ public final class LocalModelProvider_iOS: AIProvider {
         )
     }
     
-    private var isModelLoaded = false
+    private var model: MLModel?
     
     public init() {}
     
@@ -33,48 +34,68 @@ public final class LocalModelProvider_iOS: AIProvider {
         task: AITaskKind,
         schema: [String: Any]?,
         temperature: Double
-    ) async throws -> AIResult {
-        // Check if model is downloaded
-        guard await LocalModelManager.shared.isModelDownloaded(.iOSLite) else {
-            throw AIError.modelNotDownloaded
+    ) async throws -> AIProviderResult {
+        guard let modelURL = await modelURL() else {
+            LOG_AI(.info, "LocalModel", "No CoreML model available for iOS")
+            throw AIError.providerUnavailable("Local CoreML model not available")
         }
-        
-        // Load model if needed
-        if !isModelLoaded {
-            try await loadModel()
+
+        if model == nil {
+            try loadModel(from: modelURL)
         }
-        
+
+        guard let model else {
+            throw AIError.providerUnavailable("Local CoreML model failed to load")
+        }
+
         let startTime = Date()
-        
-        // TODO: Implement actual CoreML inference optimized for ANE
-        // For now, return stub response
-        #if DEBUG
-        try await Task.sleep(nanoseconds: 2_000_000_000) // 2.0s
-        
+        let outputText = try runInference(prompt: prompt, model: model)
         let latency = Int(Date().timeIntervalSince(startTime) * 1000)
-        
-        return AIResult(
-            text: "[Local iOS model response for '\(task.displayName)']",
+
+        return AIProviderResult(
+            text: outputText,
             provider: name,
             latencyMs: latency,
             tokenCount: nil,
             cached: false,
             structuredData: schema != nil ? ["local": true, "platform": "iOS"] : nil
         )
-        #else
-        throw AIError.generationFailed("Local inference not yet implemented")
-        #endif
     }
     
     public func isAvailable() async -> Bool {
-        return await LocalModelManager.shared.isModelDownloaded(.iOSLite)
+        if await modelURL() == nil {
+            LOG_AI(.info, "LocalModel", "iOS model not found in Application Support")
+            return false
+        }
+        return true
     }
     
-    private func loadModel() async throws {
-        // TODO: Load CoreML model optimized for ANE
-        // let modelURL = try await LocalModelManager.shared.getModelURL(.iOSLite)
-        // Load model here
-        isModelLoaded = true
+    private func modelURL() async -> URL? {
+        await MainActor.run {
+            try? LocalModelManager.shared.getModelURL(.iOSLite)
+        }
+    }
+
+    private func loadModel(from url: URL) throws {
+        model = try MLModel(contentsOf: url)
+    }
+
+    private func runInference(prompt: String, model: MLModel) throws -> String {
+        let inputName = model.modelDescription.inputDescriptionsByName
+            .first(where: { $0.value.type == .string })?.key
+        let outputName = model.modelDescription.outputDescriptionsByName
+            .first(where: { $0.value.type == .string })?.key
+
+        guard let inputName, let outputName else {
+            throw AIError.generationFailed("Model input/output schema unsupported for text inference")
+        }
+
+        let input = try MLDictionaryFeatureProvider(dictionary: [inputName: prompt])
+        let output = try model.prediction(from: input)
+        if let text = output.featureValue(for: outputName)?.stringValue {
+            return text
+        }
+        throw AIError.generationFailed("Model returned empty response")
     }
 }
 

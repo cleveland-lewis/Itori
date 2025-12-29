@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 // TimerMode is defined in SharedCore/Models/TimerModels.swift
 
@@ -6,6 +7,22 @@ public enum EnergyLevel: String, Codable, CaseIterable {
     case low
     case medium
     case high
+    
+    public var label: String {
+        switch self {
+        case .low: return "Low"
+        case .medium: return "Med"
+        case .high: return "High"
+        }
+    }
+    
+    public var color: Color {
+        switch self {
+        case .low: return .orange
+        case .medium: return .blue
+        case .high: return .green
+        }
+    }
 }
 
 public struct ActiveTimerSummary: Codable {

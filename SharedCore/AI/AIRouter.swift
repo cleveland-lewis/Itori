@@ -99,7 +99,7 @@ public final class AIRouter: ObservableObject {
         task: AITaskKind,
         schema: [String: Any]? = nil,
         requireOffline: Bool = false
-    ) async throws -> AIResult {
+    ) async throws -> AIProviderResult {
         isProcessing = true
         defer { isProcessing = false }
         
@@ -183,17 +183,26 @@ public final class AIRouter: ObservableObject {
            apple.capabilities.supportedTasks.contains(task) {
             return apple
         }
-        
-        // 2. Try BYO (if configured and not offline-only)
+
+        let appleAvailability = AppleIntelligenceProvider.availability()
+        LOG_AI(.info, "AIRouter", "Apple Intelligence unavailable", metadata: ["reason": appleAvailability.reason])
+
+        // 2. Try local (offline, platform-specific)
+        if let local = try? await selectLocalProvider(),
+           local.capabilities.supportedTasks.contains(task) {
+            return local
+        }
+
+        // 3. Try BYO (if configured and not offline-only)
         if !requireOffline,
            let byo = providers["byo"],
            await byo.isAvailable(),
            byo.capabilities.supportedTasks.contains(task) {
             return byo
         }
-        
-        // 3. Fallback to local
-        return try await selectLocalProvider()
+
+        // 4. Final fallback
+        throw AIError.providerUnavailable("No available AI provider")
     }
     
     /// Select platform-appropriate local provider

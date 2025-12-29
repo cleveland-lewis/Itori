@@ -1215,12 +1215,21 @@ struct AssignmentEditorSheet: View {
     @State private var selectedCourseId: UUID? = nil
     @State private var category: AssignmentCategory = .homework
     @State private var dueDate: Date = Date()
-    @State private var estimatedMinutes: Int = 60
+    @State private var estimatedMinutes: Int? = nil
+    @State private var estimatedMinutesWasEdited = false
+    @State private var lastEstimateSignature: EstimateSignature? = nil
+    @State private var estimateTask: Task<Void, Never>? = nil
     @State private var urgency: AssignmentUrgency = .medium
     @State private var weightText: String = ""
     @State private var isLocked: Bool = false
     @State private var notes: String = ""
     @State private var status: AssignmentStatus = .notStarted
+
+    private struct EstimateSignature: Equatable {
+        let category: AssignmentCategory
+        let dueDate: Date?
+        let courseId: UUID?
+    }
 
     var body: some View {
         RootsPopupContainer(
@@ -1253,10 +1262,10 @@ struct AssignmentEditorSheet: View {
                                 .labelsHidden()
                         }
                         RootsFormRow(label: "assignments.editor.field.estimated".localized) {
-                            Stepper(value: $estimatedMinutes, in: 15...240, step: 15) {
+                            Stepper(value: estimatedMinutesBinding, in: 15...240, step: 15) {
                                 Text(String.localizedStringWithFormat(
                                     "assignments.editor.field.estimated_minutes".localized,
-                                    estimatedMinutes
+                                    estimatedMinutesBinding.wrappedValue
                                 ))
                                     .rootsBody()
                             }
@@ -1327,12 +1336,13 @@ struct AssignmentEditorSheet: View {
                 Button("assignments.editor.action.save".localized) {
                     let weight = Double(weightText)
                     let course = coursesStore.courses.first(where: { $0.id == selectedCourseId })
+                    let resolvedMinutes = estimatedMinutes ?? 60
                     let newAssignment = Assignment(
                         id: assignment?.id ?? UUID(),
                         courseId: course?.id,
                         title: title,
                         dueDate: dueDate,
-                        estimatedMinutes: estimatedMinutes,
+                        estimatedMinutes: resolvedMinutes,
                         weightPercent: weight,
                         category: category,
                         urgency: urgency,
@@ -1365,9 +1375,82 @@ struct AssignmentEditorSheet: View {
                 isLocked = assignment.isLockedToDueDate
                 notes = assignment.notes ?? "" as String
                 status = assignment.status ?? .notStarted
+            } else {
+                requestDurationEstimateIfNeeded()
             }
         }
+        .onChange(of: category) { _ in
+            requestDurationEstimateIfNeeded()
+        }
+        .onChange(of: dueDate) { _ in
+            requestDurationEstimateIfNeeded()
+        }
         .frame(minWidth: RootsWindowSizing.minPopupWidth, minHeight: RootsWindowSizing.minPopupHeight)
+    }
+
+    private var estimatedMinutesBinding: Binding<Int> {
+        Binding(
+            get: { estimatedMinutes ?? 60 },
+            set: { newValue in
+                estimatedMinutes = newValue
+                estimatedMinutesWasEdited = true
+            }
+        )
+    }
+
+    private func requestDurationEstimateIfNeeded() {
+        let signature = EstimateSignature(
+            category: category,
+            dueDate: dueDate,
+            courseId: selectedCourseId
+        )
+
+        guard signature != lastEstimateSignature else { return }
+        lastEstimateSignature = signature
+
+        let isCreating = assignment == nil
+        if estimatedMinutesWasEdited { return }
+        if isCreating, estimatedMinutes != nil { return }
+
+        let course = coursesStore.courses.first(where: { $0.id == selectedCourseId })
+        let courseType = course?.courseType.rawValue
+        let credits = course?.credits.map { Int($0) }
+
+        if isCreating, estimatedMinutes == nil,
+           let cached = EstimationService.shared.nextDefaultEstimate(
+            category: category.rawValue,
+            courseType: courseType,
+            credits: credits
+           ) {
+            estimatedMinutes = cached
+        }
+
+        estimateTask?.cancel()
+        estimateTask = Task { @MainActor in
+            let estimate = await EstimationService.shared.estimateTaskDuration(
+                category: category.rawValue,
+                courseType: courseType,
+                credits: credits,
+                dueDate: dueDate,
+                historicalData: []
+            )
+
+            guard !estimatedMinutesWasEdited else {
+                EstimationService.shared.storeNextDefaultEstimate(
+                    category: category.rawValue,
+                    courseType: courseType,
+                    credits: credits,
+                    estimatedMinutes: estimate.estimatedMinutes
+                )
+                return
+            }
+
+            if isCreating, estimatedMinutes != nil {
+                return
+            }
+
+            estimatedMinutes = estimate.estimatedMinutes
+        }
     }
 
     private var coursePickerRow: some View {

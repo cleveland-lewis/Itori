@@ -4,6 +4,8 @@ import Combine
 struct StoredScheduledSession: Identifiable, Codable, Hashable {
     let id: UUID
     let assignmentId: UUID?
+    let sessionIndex: Int?
+    let sessionCount: Int?
     let title: String
     let dueDate: Date
     let estimatedMinutes: Int
@@ -14,9 +16,16 @@ struct StoredScheduledSession: Identifiable, Codable, Hashable {
     let type: ScheduleBlockType
     let isLocked: Bool
     let isUserEdited: Bool
+    let userEditedAt: Date?
+    let aiInputHash: String?
+    let aiComputedAt: Date?
+    let aiConfidence: Double?
+    let aiProvenance: String?
 
     init(id: UUID,
          assignmentId: UUID?,
+         sessionIndex: Int?,
+         sessionCount: Int?,
          title: String,
          dueDate: Date,
          estimatedMinutes: Int,
@@ -26,9 +35,16 @@ struct StoredScheduledSession: Identifiable, Codable, Hashable {
          end: Date,
          type: ScheduleBlockType = .task,
          isLocked: Bool = false,
-         isUserEdited: Bool = false) {
+         isUserEdited: Bool = false,
+         userEditedAt: Date? = nil,
+         aiInputHash: String? = nil,
+         aiComputedAt: Date? = nil,
+         aiConfidence: Double? = nil,
+         aiProvenance: String? = nil) {
         self.id = id
         self.assignmentId = assignmentId
+        self.sessionIndex = sessionIndex
+        self.sessionCount = sessionCount
         self.title = title
         self.dueDate = dueDate
         self.estimatedMinutes = estimatedMinutes
@@ -39,16 +55,25 @@ struct StoredScheduledSession: Identifiable, Codable, Hashable {
         self.type = type
         self.isLocked = isLocked
         self.isUserEdited = isUserEdited
+        self.userEditedAt = userEditedAt
+        self.aiInputHash = aiInputHash
+        self.aiComputedAt = aiComputedAt
+        self.aiConfidence = aiConfidence
+        self.aiProvenance = aiProvenance
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, assignmentId, title, dueDate, estimatedMinutes, isLockedToDueDate, category, start, end, type, isLocked, isUserEdited
+        case id, assignmentId, sessionIndex, sessionCount, title, dueDate, estimatedMinutes
+        case isLockedToDueDate, category, start, end, type, isLocked, isUserEdited, userEditedAt
+        case aiInputHash, aiComputedAt, aiConfidence, aiProvenance
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
         assignmentId = try container.decodeIfPresent(UUID.self, forKey: .assignmentId)
+        sessionIndex = try container.decodeIfPresent(Int.self, forKey: .sessionIndex)
+        sessionCount = try container.decodeIfPresent(Int.self, forKey: .sessionCount)
         title = try container.decode(String.self, forKey: .title)
         dueDate = try container.decode(Date.self, forKey: .dueDate)
         estimatedMinutes = try container.decode(Int.self, forKey: .estimatedMinutes)
@@ -59,6 +84,11 @@ struct StoredScheduledSession: Identifiable, Codable, Hashable {
         type = try container.decodeIfPresent(ScheduleBlockType.self, forKey: .type) ?? .task
         isLocked = try container.decodeIfPresent(Bool.self, forKey: .isLocked) ?? false
         isUserEdited = try container.decodeIfPresent(Bool.self, forKey: .isUserEdited) ?? false
+        userEditedAt = try container.decodeIfPresent(Date.self, forKey: .userEditedAt)
+        aiInputHash = try container.decodeIfPresent(String.self, forKey: .aiInputHash)
+        aiComputedAt = try container.decodeIfPresent(Date.self, forKey: .aiComputedAt)
+        aiConfidence = try container.decodeIfPresent(Double.self, forKey: .aiConfidence)
+        aiProvenance = try container.decodeIfPresent(String.self, forKey: .aiProvenance)
     }
     
     // MARK: - UI Helpers
@@ -85,11 +115,17 @@ struct StoredScheduledSession: Identifiable, Codable, Hashable {
 struct StoredOverflowSession: Identifiable, Codable, Hashable {
     let id: UUID
     let assignmentId: UUID?
+    let sessionIndex: Int?
+    let sessionCount: Int?
     let title: String
     let dueDate: Date
     let estimatedMinutes: Int
     let isLockedToDueDate: Bool
     let category: AssignmentCategory?
+    let aiInputHash: String?
+    let aiComputedAt: Date?
+    let aiConfidence: Double?
+    let aiProvenance: String?
 }
 
 enum ScheduleBlockType: String, Codable, CaseIterable {
@@ -119,14 +155,19 @@ final class PlannerStore: ObservableObject {
         isLoading = false
     }
 
-    func persist(scheduled: [ScheduledSession], overflow: [PlannerSession]) {
+    func persist(scheduled: [ScheduledSession], overflow: [PlannerSession], metadata: AIScheduleMetadata? = nil) {
         let preserved = Dictionary(grouping: self.scheduled.filter { $0.isUserEdited }, by: {
             PlannerSessionKey(assignmentId: $0.assignmentId, title: $0.title)
+        })
+        let existingByIndex = Dictionary(grouping: self.scheduled, by: {
+            PlannerSessionIndexKey(assignmentId: $0.assignmentId, sessionIndex: $0.sessionIndex)
         })
         self.scheduled = scheduled.map {
             var mapped = StoredScheduledSession(
                 id: $0.id,
                 assignmentId: $0.session.assignmentId,
+                sessionIndex: $0.session.sessionIndex,
+                sessionCount: $0.session.sessionCount,
                 title: $0.session.title,
                 dueDate: $0.session.dueDate,
                 estimatedMinutes: $0.session.estimatedMinutes,
@@ -136,12 +177,19 @@ final class PlannerStore: ObservableObject {
                 end: $0.end,
                 type: .task,
                 isLocked: $0.session.isLockedToDueDate,
-                isUserEdited: false
+                isUserEdited: false,
+                userEditedAt: nil,
+                aiInputHash: metadata?.inputHash,
+                aiComputedAt: metadata?.computedAt,
+                aiConfidence: metadata?.confidence,
+                aiProvenance: metadata?.provenance
             )
             if let match = preserved[PlannerSessionKey(assignmentId: mapped.assignmentId, title: mapped.title)]?.first {
                 mapped = StoredScheduledSession(
                     id: mapped.id,
                     assignmentId: mapped.assignmentId,
+                    sessionIndex: mapped.sessionIndex,
+                    sessionCount: mapped.sessionCount,
                     title: mapped.title,
                     dueDate: mapped.dueDate,
                     estimatedMinutes: mapped.estimatedMinutes,
@@ -151,8 +199,24 @@ final class PlannerStore: ObservableObject {
                     end: match.end,
                     type: match.type,
                     isLocked: match.isLocked,
-                    isUserEdited: true
+                    isUserEdited: true,
+                    userEditedAt: match.userEditedAt,
+                    aiInputHash: match.aiInputHash,
+                    aiComputedAt: match.aiComputedAt,
+                    aiConfidence: match.aiConfidence,
+                    aiProvenance: match.aiProvenance
                 )
+                return mapped
+            }
+
+            if let meta = metadata,
+               let existing = existingByIndex[PlannerSessionIndexKey(assignmentId: mapped.assignmentId, sessionIndex: mapped.sessionIndex)]?.first {
+                if let editAt = existing.userEditedAt, editAt >= meta.computedAt {
+                    return existing
+                }
+                if let existingComputed = existing.aiComputedAt, existingComputed > meta.computedAt {
+                    return existing
+                }
             }
             return mapped
         }
@@ -160,11 +224,17 @@ final class PlannerStore: ObservableObject {
             StoredOverflowSession(
                 id: $0.id,
                 assignmentId: $0.assignmentId,
+                sessionIndex: $0.sessionIndex,
+                sessionCount: $0.sessionCount,
                 title: $0.title,
                 dueDate: $0.dueDate,
                 estimatedMinutes: $0.estimatedMinutes,
                 isLockedToDueDate: $0.isLockedToDueDate,
-                category: $0.category
+                category: $0.category,
+                aiInputHash: metadata?.inputHash,
+                aiComputedAt: metadata?.computedAt,
+                aiConfidence: metadata?.confidence,
+                aiProvenance: metadata?.provenance
             )
         }
         save()
@@ -175,9 +245,36 @@ final class PlannerStore: ObservableObject {
         let title: String
     }
 
+    private struct PlannerSessionIndexKey: Hashable {
+        let assignmentId: UUID?
+        let sessionIndex: Int?
+    }
+
     func updateScheduledSession(_ updated: StoredScheduledSession) {
         guard let idx = scheduled.firstIndex(where: { $0.id == updated.id }) else { return }
-        scheduled[idx] = updated
+        let editTime = updated.isUserEdited ? (updated.userEditedAt ?? Date()) : updated.userEditedAt
+        let merged = StoredScheduledSession(
+            id: updated.id,
+            assignmentId: updated.assignmentId,
+            sessionIndex: updated.sessionIndex,
+            sessionCount: updated.sessionCount,
+            title: updated.title,
+            dueDate: updated.dueDate,
+            estimatedMinutes: updated.estimatedMinutes,
+            isLockedToDueDate: updated.isLockedToDueDate,
+            category: updated.category,
+            start: updated.start,
+            end: updated.end,
+            type: updated.type,
+            isLocked: updated.isLocked,
+            isUserEdited: updated.isUserEdited,
+            userEditedAt: editTime,
+            aiInputHash: updated.aiInputHash,
+            aiComputedAt: updated.aiComputedAt,
+            aiConfidence: updated.aiConfidence,
+            aiProvenance: updated.aiProvenance
+        )
+        scheduled[idx] = merged
         save()
     }
 
@@ -213,4 +310,11 @@ final class PlannerStore: ObservableObject {
         var scheduled: [StoredScheduledSession]
         var overflow: [StoredOverflowSession]
     }
+}
+
+struct AIScheduleMetadata: Hashable {
+    let inputHash: String
+    let computedAt: Date
+    let confidence: Double
+    let provenance: String
 }

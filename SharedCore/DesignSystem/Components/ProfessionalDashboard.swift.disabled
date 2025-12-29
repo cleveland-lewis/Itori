@@ -1,5 +1,46 @@
 import SwiftUI
 import Charts
+import Foundation
+
+// MARK: - Dashboard Card Component
+
+struct DashboardCard<Content: View>: View {
+    let title: String
+    var mode: DashboardCardMode = .full
+    var compactState: DashboardCompactState? = nil
+    @ViewBuilder let content: Content
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: Space.cardContentSpacing) {
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(.secondary)
+            
+            if mode == .compactEmpty, let compact = compactState {
+                VStack(spacing: Space.sm) {
+                    Text(compact.title)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    
+                    Text(compact.description)
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                    
+                    Button(compact.actionTitle, action: compact.action)
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.small)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, Space.md)
+            } else {
+                content
+            }
+        }
+        .padding(Space.cardPadding)
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: Space.cardCornerRadius))
+    }
+}
 
 // MARK: - Professional Dashboard Layout
 // Fixed 3-row grid: Status Strip → Analytics → Operations
@@ -82,6 +123,7 @@ struct ProfessionalDashboard: View {
 
 // MARK: - Row 1: Status Strip
 
+
 struct DaySummary {
     let headline: String
     let energy: EnergyLevel
@@ -126,6 +168,21 @@ struct DailyLoad: Identifiable {
     let id = UUID()
     let day: Weekday
     let totals: [AssignmentCategory: Int] // minutes
+}
+
+// AssignmentCategory is defined in SharedPlanningModels.swift
+// Adding color extension here for dashboard use
+extension AssignmentCategory {
+    var color: Color {
+        switch self {
+        case .reading: return .blue
+        case .homework: return .purple
+        case .exam: return .red
+        case .quiz: return .orange
+        case .review: return .green
+        case .project: return .pink
+        }
+    }
 }
 
 enum Weekday: String, CaseIterable {
@@ -339,6 +396,15 @@ struct DashboardCalendarEvent {
     let startTime: Date
 }
 
+struct DashboardAssignment: Identifiable {
+    let id: UUID
+    let title: String
+    let courseName: String
+    let dueDate: Date
+    let estimatedMinutes: Int
+    let category: AssignmentCategory
+}
+
 // MARK: - Dashboard View Model
 
 @MainActor
@@ -348,7 +414,7 @@ class DashboardViewModel: ObservableObject {
     @Published var studyTrend: [StudyDay]
     @Published var trendPeriod: TrendPeriod
     @Published var assignmentBreakdown: AssignmentBreakdown
-    @Published var upcomingAssignments: [Assignment]
+    @Published var upcomingAssignments: [DashboardAssignment]
     @Published var nextEvent: DashboardCalendarEvent?
     @Published var energyLevel: EnergyLevel
     
@@ -392,7 +458,7 @@ class DashboardViewModel: ObservableObject {
         print("Add assignment")
     }
     
-    func selectAssignment(_ assignment: Assignment) {
+    func selectAssignment(_ assignment: DashboardAssignment) {
         print("Select assignment: \(assignment.title)")
     }
     
@@ -402,6 +468,124 @@ class DashboardViewModel: ObservableObject {
     
     func openPlanner() {
         print("Open planner")
+    }
+}
+
+// MARK: - Operational Card Views
+
+struct UpcomingAssignmentsCard: View {
+    let assignments: [DashboardAssignment]
+    let onSelect: (DashboardAssignment) -> Void
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: Space.sm) {
+            ForEach(assignments.prefix(5)) { assignment in
+                Button {
+                    onSelect(assignment)
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(assignment.title)
+                                .font(.body)
+                                .foregroundStyle(.primary)
+                            
+                            HStack(spacing: 8) {
+                                Text(assignment.courseName)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                
+                                Text("·")
+                                    .foregroundStyle(.tertiary)
+                                
+                                Text(assignment.dueDate, style: .date)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                
+                                Text("·")
+                                    .foregroundStyle(.tertiary)
+                                
+                                Text("\(assignment.estimatedMinutes)m")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        
+                        Spacer()
+                    }
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+}
+
+struct CalendarTimeCard: View {
+    let nextEvent: DashboardCalendarEvent?
+    let onOpenCalendar: () -> Void
+    
+    var body: some View {
+        Button {
+            onOpenCalendar()
+        } label: {
+            if let event = nextEvent {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(event.title)
+                        .font(.headline)
+                    
+                    Text(event.startTime, style: .time)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                Text("No upcoming events")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct EnergyActionsCard: View {
+    @Binding var energyLevel: EnergyLevel
+    let onOpenPlanner: () -> Void
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: Space.md) {
+            // Energy Selector
+            HStack(spacing: Space.sm) {
+                Text("Energy")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                
+                Spacer()
+                
+                ForEach(EnergyLevel.allCases) { level in
+                    Button {
+                        energyLevel = level
+                    } label: {
+                        Text(level.emoji)
+                            .font(.body)
+                            .opacity(energyLevel == level ? 1.0 : 0.4)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            
+            Divider()
+            
+            // Open Planner Button
+            Button {
+                onOpenPlanner()
+            } label: {
+                HStack {
+                    Image(systemName: "calendar")
+                    Text("Open Planner")
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+        }
     }
 }
 

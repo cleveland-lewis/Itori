@@ -57,6 +57,10 @@ struct AISettingsView: View {
                 Text(modeDescription)
                     .font(.caption)
                     .foregroundStyle(.secondary)
+
+                Text("Auto mode precedence (batch ports):\n1. Apple Intelligence\n2. Local CoreML\n3. BYO\n4. Error (no provider)\nScheduling ports use deterministic fallback first, with provider refinement only if unchanged.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
             .opacity(settings.aiEnabled ? 1.0 : 0.5)
             
@@ -105,12 +109,13 @@ struct AISettingsView: View {
                                 ? "Llama 3 8B (4-bit)" 
                                 : "Llama 3.2 3B"
                             Text("Model: \(modelName)")
-                            Text("Size: \(LocalModelProvider_macOS.modelConfig.displaySize)")
+                            Text("Size: \(AIEngine.localModelInfo().size)")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             #elseif os(iOS) || os(visionOS)
-                            Text("iOS Model: \(LocalModelProvider_iOS.modelConfig.modelName)")
-                            Text("Size: \(LocalModelProvider_iOS.modelConfig.displaySize)")
+                            let info = AIEngine.localModelInfo()
+                            Text("iOS Model: \(info.name)")
+                            Text("Size: \(info.size)")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             #endif
@@ -265,7 +270,7 @@ struct AISettingsView: View {
     
     private func checkProviderAvailability() {
         // Check Apple Intelligence availability once
-        isAppleIntelligenceAvailable = AppleFoundationModelsProvider.isAvailable()
+        isAppleIntelligenceAvailable = AIEngine.appleAvailability().available
         
         // Build list of available providers
         var providers: [String] = []

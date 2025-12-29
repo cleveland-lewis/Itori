@@ -1,0 +1,189 @@
+import Foundation
+import CoreData
+import Combine
+
+/// Integration A: Duration defaults (fallback-first, provider refinement)
+/// This integration provides instant duration estimates using fallback heuristics,
+/// with optional provider refinement that never overwrites user edits.
+@MainActor
+public final class DurationDefaultsIntegration: ObservableObject {
+    private let engine: AIEngine
+    private let context: NSManagedObjectContext
+    
+    @Published public private(set) var lastEstimate: DefaultDurationEstimate?
+    @Published public private(set) var isRefining = false
+    
+    public init(engine: AIEngine, context: NSManagedObjectContext) {
+        self.engine = engine
+        self.context = context
+    }
+    
+    /// Get immediate duration estimate (fallback-first, never blocks)
+    public func estimateForAssignment(
+        category: AssignmentCategory,
+        courseType: DurationCourseType?,
+        description: String,
+        existingUserValue: Int?
+    ) async -> DefaultDurationEstimate {
+        // If user has already edited, respect it
+        if let userValue = existingUserValue, userValue > 0 {
+            return DurationEstimate(
+                estimatedMinutes: userValue,
+                minMinutes: userValue,
+                maxMinutes: userValue,
+                confidence: 1.0,
+                reasonCodes: ["userEdited"],
+                source: .userProvided,
+                computedAt: Date()
+            )
+        }
+        
+        // FALLBACK-FIRST: Instant heuristic estimate
+        let fallbackEstimate = await getFallbackEstimate(
+            category: category,
+            courseType: courseType
+        )
+        
+        lastEstimate = fallbackEstimate
+        
+        // Provider refinement runs in background, only applies if field still untouched
+        Task.detached { [weak self] in
+            await self?.refineEstimateInBackground(
+                category: category,
+                courseType: courseType,
+                description: description,
+                fallbackEstimate: fallbackEstimate
+            )
+        }
+        
+        return fallbackEstimate
+    }
+    
+    // MARK: - Private
+    
+    private func getFallbackEstimate(
+        category: AssignmentCategory,
+        courseType: DurationCourseType?
+    ) async -> DefaultDurationEstimate {
+        let baseMinutes: Int = {
+            switch category {
+            case .homework: return 60
+            case .reading: return 45
+            case .project: return 180
+            case .exam: return 120
+            case .essay: return 240
+            case .lab: return 90
+            case .presentation: return 120
+            case .other: return 60
+            }
+        }()
+        
+        let multiplier: Double = {
+            guard let type = courseType else { return 1.0 }
+            switch type {
+            case .lecture: return 1.0
+            case .seminar: return 0.8
+            case .lab: return 1.2
+            case .studio: return 1.5
+            case .independent: return 1.3
+            }
+        }()
+        
+        let adjusted = Int(Double(baseMinutes) * multiplier)
+        let variance = Int(Double(adjusted) * 0.3)
+        
+        return DurationEstimate(
+            estimatedMinutes: adjusted,
+            minMinutes: max(15, adjusted - variance),
+            maxMinutes: adjusted + variance,
+            confidence: 0.7,
+            reasonCodes: ["fallbackHeuristic", "category=\(category.rawValue)"],
+            source: .fallback,
+            computedAt: Date()
+        )
+    }
+    
+    private func refineEstimateInBackground(
+        category: AssignmentCategory,
+        courseType: DurationCourseType?,
+        description: String,
+        fallbackEstimate: DefaultDurationEstimate
+    ) async {
+        guard !description.isEmpty else { return }
+        
+        await MainActor.run {
+            isRefining = true
+        }
+        
+        defer {
+            Task { @MainActor in
+                isRefining = false
+            }
+        }
+        
+        // Provider call with 200ms budget
+        let input = DurationEstimationInput(
+            category: category,
+            courseType: courseType,
+            description: description,
+            historicalData: []
+        )
+        
+        do {
+            let result = try await engine.request(
+                port: EstimateTaskDurationPort(),
+                input: input,
+                context: AIContext(
+                    timeBudget: 0.2,
+                    privacyMode: .standard,
+                    userID: "default"
+                )
+            )
+            
+            // Only update if confidence improved significantly
+            if result.confidence > fallbackEstimate.confidence + 0.1 {
+                await MainActor.run {
+                    lastEstimate = DurationEstimate(
+                        estimatedMinutes: result.estimatedMinutes,
+                        minMinutes: result.minMinutes,
+                        maxMinutes: result.maxMinutes,
+                        confidence: result.confidence,
+                        reasonCodes: result.reasonCodes + ["providerRefined"],
+                        source: .provider,
+                        computedAt: Date()
+                    )
+                }
+            }
+        } catch {
+            // Silent failure - fallback estimate already provided
+            print("Provider refinement failed (expected): \(error)")
+        }
+    }
+}
+
+// MARK: - Supporting Types
+
+public struct DefaultDurationEstimate {
+    public let estimatedMinutes: Int
+    public let minMinutes: Int
+    public let maxMinutes: Int
+    public let confidence: Double
+    public let reasonCodes: [String]
+    public let source: EstimateSource
+    public let computedAt: Date
+    
+    public enum EstimateSource {
+        case userProvided
+        case fallback
+        case provider
+        case historical
+    }
+}
+
+public enum DurationCourseType: String, Codable {
+    case lecture
+    case seminar
+    case lab
+    case studio
+    case independent
+}

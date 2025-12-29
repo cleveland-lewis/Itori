@@ -209,6 +209,7 @@ struct PlannerPageView: View {
     @EnvironmentObject var assignmentsStore: AssignmentsStore
     @EnvironmentObject var plannerCoordinator: PlannerCoordinator
     @EnvironmentObject var coursesStore: CoursesStore
+    @EnvironmentObject var calendarCoordinator: CalendarRefreshCoordinator
     @StateObject private var dayProgress = DayProgressModel()
 
     @State private var filterCancellable: AnyCancellable? = nil
@@ -244,6 +245,14 @@ struct PlannerPageView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
+                    if let pending = calendarCoordinator.pendingScheduleSuggestion {
+                        PendingScheduleSuggestionStrip(
+                            pending: pending,
+                            onApply: { calendarCoordinator.applyPendingScheduleSuggestion() },
+                            onApplyNonConflicting: { calendarCoordinator.applyPendingScheduleSuggestionNonConflicting() },
+                            onDismiss: { calendarCoordinator.discardPendingScheduleSuggestion() }
+                        )
+                    }
                     headerBar
                         .padding(.top, DesignSystem.Layout.spacing.small)
 

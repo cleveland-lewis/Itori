@@ -1,6 +1,5 @@
 import Foundation
 import EventKit
-
 /// Lightweight task model for auto-scheduling.
 struct AutoScheduleTask: Identifiable {
     let id: UUID
@@ -19,11 +18,6 @@ struct AutoScheduleTask: Identifiable {
 }
 
 final class AutoScheduler {
-    struct ScheduleResult {
-        let proposedEvents: [EKEvent]
-        let unscheduledTasks: [AutoScheduleTask]
-    }
-
     private static let autoScheduleTagPrefix = "[RootsAutoSchedule:"
 
     private struct TimeSlot {
@@ -41,8 +35,8 @@ final class AutoScheduler {
         workDayStart: Int = 9,
         workDayEnd: Int = 17,
         maxStudyMinutesPerDay: Int = 360
-    ) -> ScheduleResult {
-        var proposedEvents: [EKEvent] = []
+    ) -> ScheduleDiff {
+        var proposedBlocks: [ProposedBlock] = []
         let remainingTasks = tasks.sorted {
             if $0.priority != $1.priority { return $0.priority > $1.priority }
             return $0.dueDate < $1.dueDate
@@ -56,7 +50,6 @@ final class AutoScheduler {
             endHour: workDayEnd
         )
 
-        var unscheduled: [AutoScheduleTask] = []
         var minutesScheduledPerDay: [Date: Int] = [:] // key = start of day
         let calendar = Calendar.current
         let minBlockMinutes = 60
@@ -80,9 +73,14 @@ final class AutoScheduler {
                 // Enforce contiguity preference: require a minimum block
                 if chunk < minBlockMinutes { continue }
 
-                // Create event for this chunk
-                let event = createEvent(for: task, start: slot.startDate, durationMinutes: chunk)
-                proposedEvents.append(event)
+                // Create proposed block for this chunk
+                let block = createBlock(
+                    for: task,
+                    start: slot.startDate,
+                    durationMinutes: chunk,
+                    chunkIndex: scheduledChunks
+                )
+                proposedBlocks.append(block)
                 scheduledChunks += 1
 
                 // Consume slot
@@ -95,24 +93,34 @@ final class AutoScheduler {
                 minutesNeeded -= chunk
             }
 
-            if minutesNeeded > 0 || scheduledChunks == 0 {
-                unscheduled.append(task)
-            }
         }
 
-        return ScheduleResult(proposedEvents: proposedEvents, unscheduledTasks: unscheduled)
+        return ScheduleDiff(
+            addedBlocks: proposedBlocks,
+            movedBlocks: [],
+            resizedBlocks: [],
+            conflicts: [],
+            reason: "autoSchedule",
+            confidence: AIConfidence(0.6)
+        )
     }
 
     // MARK: - Helpers
 
-    private static func createEvent(for task: AutoScheduleTask, start: Date, durationMinutes: Int) -> EKEvent {
-        let store = DeviceCalendarManager.shared.store
-        let event = EKEvent(eventStore: store)
-        event.title = task.title
-        event.startDate = start
-        event.endDate = start.addingTimeInterval(TimeInterval(durationMinutes * 60))
-        event.notes = "Auto-scheduled study block\n\(autoScheduleTagPrefix)\(task.id.uuidString)]"
-        return event
+    private static func createBlock(
+        for task: AutoScheduleTask,
+        start: Date,
+        durationMinutes: Int,
+        chunkIndex: Int
+    ) -> ProposedBlock {
+        let tag = "\(autoScheduleTagPrefix)\(task.id.uuidString)-\(chunkIndex)]"
+        return ProposedBlock(
+            tempID: tag,
+            title: task.title,
+            startDate: start,
+            duration: TimeInterval(durationMinutes * 60),
+            reason: "Auto-scheduled study block"
+        )
     }
 
     /// Compute free slots within the work window minus existing events.

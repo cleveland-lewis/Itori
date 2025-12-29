@@ -1,0 +1,433 @@
+import Foundation
+
+// MARK: - Assignment Creation Port
+
+/// Port for converting extracted academic entities into Assignment objects
+protocol AssignmentCreationPort {
+    func createAssignments(
+        from extraction: AcademicExtractionResult,
+        course: Course?,
+        options: AssignmentCreationOptions
+    ) async throws -> AssignmentCreationResult
+}
+
+// MARK: - Models
+
+struct AssignmentCreationOptions {
+    let autoApprove: Bool
+    let mergeSimilar: Bool
+    let respectExisting: Bool
+    let defaultEstimates: Bool
+    
+    static let `default` = AssignmentCreationOptions(
+        autoApprove: false,
+        mergeSimilar: true,
+        respectExisting: true,
+        defaultEstimates: true
+    )
+}
+
+struct AssignmentCreationResult {
+    let created: [Assignment]
+    let conflicts: [AssignmentConflict]
+    let skipped: [ExtractedAssignment]
+    let suggestions: [AssignmentSuggestion]
+}
+
+struct AssignmentConflict {
+    let extracted: ExtractedAssignment
+    let existing: Assignment
+    let conflictType: ConflictType
+    
+    enum ConflictType {
+        case duplicateTitle
+        case sameDueDate
+        case overlappingContent
+    }
+}
+
+struct AssignmentSuggestion {
+    let extracted: ExtractedAssignment
+    let suggestedTitle: String?
+    let suggestedDueDate: Date?
+    let suggestedDuration: Int?
+    let reason: String
+}
+
+enum AssignmentCreationError: Error, LocalizedError {
+    case noCourseProvided
+    case invalidExtractionData
+    case creationFailed(String)
+    
+    var errorDescription: String? {
+        switch self {
+        case .noCourseProvided:
+            return "No course provided for assignment creation"
+        case .invalidExtractionData:
+            return "Extraction data is invalid or incomplete"
+        case .creationFailed(let reason):
+            return "Assignment creation failed: \(reason)"
+        }
+    }
+}
+
+// MARK: - Assignment Creation Service
+
+@MainActor
+class AssignmentCreationService: AssignmentCreationPort {
+    
+    private let assignmentsStore: AssignmentsStore
+    private let durationEstimator: AssignmentDurationEstimator
+    private let estimationService: EstimationService
+    
+    init(assignmentsStore: AssignmentsStore, estimationService: EstimationService = .shared) {
+        self.assignmentsStore = assignmentsStore
+        self.durationEstimator = AssignmentDurationEstimator()
+        self.estimationService = estimationService
+    }
+    
+    func createAssignments(
+        from extraction: AcademicExtractionResult,
+        course: Course?,
+        options: AssignmentCreationOptions
+    ) async throws -> AssignmentCreationResult {
+        
+        guard let course = course else {
+            throw AssignmentCreationError.noCourseProvided
+        }
+        
+        var created: [Assignment] = []
+        var conflicts: [AssignmentConflict] = []
+        var skipped: [ExtractedAssignment] = []
+        var suggestions: [AssignmentSuggestion] = []
+        
+        // Get existing assignments for conflict detection
+        let existingAssignments = assignmentsStore.assignments
+        
+        for extracted in extraction.assignments {
+            // Check confidence threshold
+            guard extracted.confidence > 0.3 else {
+                skipped.append(extracted)
+                continue
+            }
+            
+            // Check for conflicts if respectExisting is enabled
+            if options.respectExisting {
+                if let conflict = detectConflict(extracted: extracted, existing: existingAssignments) {
+                    conflicts.append(conflict)
+                    continue
+                }
+            }
+            
+            // Create assignment with smart defaults
+            do {
+                let assignment = try createAssignment(
+                    from: extracted,
+                    course: course,
+                    options: options
+                )
+                
+                // Auto-approve or add as suggestion
+                if options.autoApprove || extracted.confidence > 0.7 {
+                    created.append(assignment)
+                } else {
+                    suggestions.append(createSuggestion(from: extracted, assignment: assignment))
+                }
+            } catch {
+                skipped.append(extracted)
+            }
+        }
+        
+        return AssignmentCreationResult(
+            created: created,
+            conflicts: conflicts,
+            skipped: skipped,
+            suggestions: suggestions
+        )
+    }
+    
+    // MARK: - Private Methods
+    
+    private func detectConflict(
+        extracted: ExtractedAssignment,
+        existing: [Assignment]
+    ) -> AssignmentConflict? {
+        
+        for assignment in existing {
+            // Check for duplicate title
+            if assignment.title.lowercased() == extracted.title.lowercased() {
+                return AssignmentConflict(
+                    extracted: extracted,
+                    existing: assignment,
+                    conflictType: .duplicateTitle
+                )
+            }
+            
+            // Check for same due date and similar content
+            if let extractedDue = extracted.dueDate,
+               let existingDue = assignment.dueDate,
+               Calendar.current.isDate(extractedDue, inSameDayAs: existingDue) {
+                
+                if titleSimilarity(extracted.title, assignment.title) > 0.7 {
+                    return AssignmentConflict(
+                        extracted: extracted,
+                        existing: assignment,
+                        conflictType: .sameDueDate
+                    )
+                }
+            }
+        }
+        
+        return nil
+    }
+    
+    private func createAssignment(
+        from extracted: ExtractedAssignment,
+        course: Course,
+        options: AssignmentCreationOptions
+    ) throws -> Assignment {
+        
+        // Determine category with fallback
+        let category = extracted.category ?? .homework
+        
+        // Calculate estimated duration using new estimation service
+        let duration: Int
+        if options.defaultEstimates {
+            // Use new estimation service with historical data
+            let estimate = await estimationService.estimateTaskDuration(
+                category: category.rawValue,
+                courseType: course.courseType.rawValue,
+                credits: course.credits,
+                dueDate: extracted.dueDate,
+                historicalData: []
+            )
+            duration = estimate.estimatedMinutes
+        } else {
+            duration = extracted.estimatedDuration ?? 60
+        }
+        
+        // Parse weight if available
+        let weight: Double? = {
+            guard let weightStr = extracted.weight else { return nil }
+            let numericStr = weightStr.replacingOccurrences(of: "[^0-9.]", with: "", options: .regularExpression)
+            return Double(numericStr)
+        }()
+        
+        // Determine urgency based on due date
+        let urgency: Assignment.Urgency = {
+            guard let dueDate = extracted.dueDate else { return .medium }
+            let daysUntilDue = Calendar.current.dateComponents([.day], from: Date(), to: dueDate).day ?? 0
+            
+            if daysUntilDue <= 2 { return .high }
+            if daysUntilDue <= 7 { return .medium }
+            return .low
+        }()
+        
+        return Assignment(
+            id: UUID(),
+            title: extracted.title,
+            course: course.id,
+            category: category,
+            dueDate: extracted.dueDate,
+            estimatedDuration: duration,
+            actualDuration: nil,
+            status: .notStarted,
+            urgency: urgency,
+            lock: extracted.dueDate != nil,
+            weight: weight,
+            notes: extracted.description,
+            createdAt: Date(),
+            lastModified: Date()
+        )
+    }
+    
+    private func createSuggestion(
+        from extracted: ExtractedAssignment,
+        assignment: Assignment
+    ) -> AssignmentSuggestion {
+        
+        var reasons: [String] = []
+        
+        if extracted.confidence < 0.7 {
+            reasons.append("Low confidence (\(Int(extracted.confidence * 100))%)")
+        }
+        
+        if extracted.dueDate == nil {
+            reasons.append("No due date found")
+        }
+        
+        if extracted.category == nil {
+            reasons.append("Category unclear")
+        }
+        
+        return AssignmentSuggestion(
+            extracted: extracted,
+            suggestedTitle: assignment.title,
+            suggestedDueDate: assignment.dueDate,
+            suggestedDuration: assignment.estimatedDuration,
+            reason: reasons.joined(separator: ", ")
+        )
+    }
+    
+    private func titleSimilarity(_ a: String, _ b: String) -> Double {
+        let aWords = Set(a.lowercased().components(separatedBy: .whitespaces))
+        let bWords = Set(b.lowercased().components(separatedBy: .whitespaces))
+        
+        let intersection = aWords.intersection(bWords)
+        let union = aWords.union(bWords)
+        
+        guard !union.isEmpty else { return 0 }
+        return Double(intersection.count) / Double(union.count)
+    }
+}
+
+// MARK: - Duration Estimator
+
+class AssignmentDurationEstimator {
+    
+    private let baseDefaults: [AssignmentCategory: Int] = [
+        .reading: 45,
+        .homework: 75,
+        .review: 60,
+        .project: 120,
+        .exam: 180,
+        .quiz: 30
+    ]
+    
+    private let courseTypeMultipliers: [CourseType: [AssignmentCategory: Double]] = [
+        .regular: [:], // 1.0 for all
+        .honors: [:], // 1.2 for all
+        .ap: [:], // 1.2 for all
+        .ib: [:], // 1.2 for all
+        .seminar: [
+            .reading: 1.4,
+            .review: 1.2,
+            .homework: 0.9,
+            .project: 1.2,
+            .exam: 1.0
+        ],
+        .lab: [
+            .homework: 1.1,
+            .project: 1.2,
+            .reading: 0.9,
+            .review: 1.0,
+            .exam: 1.0
+        ],
+        .independent: [
+            .project: 1.4,
+            .reading: 1.2,
+            .review: 1.2,
+            .homework: 1.0,
+            .exam: 0.8
+        ],
+        .clinical: [:], // 0.8 for all
+        .practicum: [:] // 0.8 for all
+    ]
+    
+    private let stepSizes: [AssignmentCategory: Int] = [
+        .reading: 5,
+        .review: 5,
+        .homework: 10,
+        .project: 15,
+        .exam: 15,
+        .quiz: 5
+    ]
+    
+    func estimate(for category: AssignmentCategory, courseType: CourseType) -> Int {
+        let base = baseDefaults[category] ?? 60
+        
+        // Get course type multiplier
+        let multiplier: Double = {
+            // Default multipliers for course types without specific category overrides
+            switch courseType {
+            case .honors, .ap, .ib:
+                return 1.2
+            case .clinical, .practicum:
+                return 0.8
+            default:
+                break
+            }
+            
+            // Check for specific category multiplier
+            if let categoryMultipliers = courseTypeMultipliers[courseType],
+               let mult = categoryMultipliers[category] {
+                return mult
+            }
+            
+            return 1.0
+        }()
+        
+        let estimated = Double(base) * multiplier
+        let stepSize = stepSizes[category] ?? 10
+        
+        // Round to nearest step size
+        let rounded = (estimated / Double(stepSize)).rounded() * Double(stepSize)
+        
+        return Int(rounded)
+    }
+    
+    func stepSize(for category: AssignmentCategory) -> Int {
+        stepSizes[category] ?? 10
+    }
+}
+
+// MARK: - Decomposition Heuristics
+
+struct DecompositionHeuristic {
+    let category: AssignmentCategory
+    let sessions: Int
+    let daySpread: Int
+    let description: String
+    
+    static func heuristic(for category: AssignmentCategory, estimatedMinutes: Int) -> DecompositionHeuristic {
+        switch category {
+        case .reading:
+            return DecompositionHeuristic(
+                category: category,
+                sessions: 1,
+                daySpread: 0,
+                description: "1 × \(estimatedMinutes)m same day"
+            )
+            
+        case .homework:
+            return DecompositionHeuristic(
+                category: category,
+                sessions: 2,
+                daySpread: 2,
+                description: "2 × \(estimatedMinutes)m over 2 days"
+            )
+            
+        case .review:
+            return DecompositionHeuristic(
+                category: category,
+                sessions: 3,
+                daySpread: 7,
+                description: "3 × \(estimatedMinutes)m spaced (today, +2d, +5d)"
+            )
+            
+        case .project:
+            return DecompositionHeuristic(
+                category: category,
+                sessions: 4,
+                daySpread: 14,
+                description: "4 × \(estimatedMinutes)m across weeks"
+            )
+            
+        case .exam:
+            return DecompositionHeuristic(
+                category: category,
+                sessions: 5,
+                daySpread: 10,
+                description: "5 × \(estimatedMinutes)m spaced, last within 24h"
+            )
+            
+        case .quiz:
+            return DecompositionHeuristic(
+                category: category,
+                sessions: 1,
+                daySpread: 0,
+                description: "1 × \(estimatedMinutes)m same day"
+            )
+        }
+    }
+}

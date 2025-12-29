@@ -408,60 +408,51 @@ struct EnergyActionsCard: View {
                 .font(.caption.weight(.medium))
                 .foregroundStyle(.secondary)
             
-            HStack(spacing: 8) {
-                ForEach(EnergyLevel.allCases, id: \.self) { level in
-                    Button(action: { energyLevel = level }) {
-                        Text(level.label)
-                            .font(.subheadline)
-                            .foregroundStyle(energyLevel == level ? .white : .primary)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 8)
-                            .background(energyLevel == level ? level.color : Color.secondary.opacity(0.1))
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
+            energySelector
             
             Divider()
                 .padding(.vertical, 4)
             
-            Button(action: onOpenPlanner) {
-                HStack {
-                    Label("Open Planner", systemImage: "calendar.badge.plus")
-                        .font(.subheadline)
-                    Spacer()
-                    Image(systemName: "arrow.right")
-                        .font(.caption)
-                }
-            }
-            .buttonStyle(.plain)
-            .foregroundStyle(.primary)
+            plannerButton
         }
+    }
+    
+    private var energySelector: some View {
+        HStack(spacing: 8) {
+            ForEach(EnergyLevel.allCases, id: \.self) { level in
+                energyButton(for: level)
+            }
+        }
+    }
+    
+    private func energyButton(for level: EnergyLevel) -> some View {
+        Button(action: { energyLevel = level }) {
+            Text(level.label)
+                .font(.subheadline)
+                .foregroundStyle(energyLevel == level ? .white : .primary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+                .background(energyLevel == level ? level.color : Color.secondary.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+        }
+        .buttonStyle(.plain)
+    }
+    
+    private var plannerButton: some View {
+        Button(action: onOpenPlanner) {
+            HStack {
+                Label("Open Planner", systemImage: "calendar.badge.plus")
+                    .font(.subheadline)
+                Spacer()
+                Image(systemName: "arrow.right")
+                    .font(.caption)
+            }
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(.primary)
     }
 }
 
-enum EnergyLevel: String, CaseIterable {
-    case low
-    case medium
-    case high
-    
-    var label: String {
-        switch self {
-        case .low: return "Low"
-        case .medium: return "Med"
-        case .high: return "High"
-        }
-    }
-    
-    var color: Color {
-        switch self {
-        case .low: return .orange
-        case .medium: return .blue
-        case .high: return .green
-        }
-    }
-}
 
 struct DashboardCalendarEvent: Identifiable {
     let id: UUID

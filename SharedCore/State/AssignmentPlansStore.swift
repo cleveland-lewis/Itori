@@ -71,32 +71,157 @@ final class AssignmentPlansStore: ObservableObject {
     // MARK: - AI Scheduler Integration
     
     private func scheduleAssignmentSessions(for assignment: Assignment) {
-        // Convert assignment to PlannerEngine format and trigger scheduling
-        let plannerSession = PlannerSession(
-            id: UUID(),
-            assignmentId: assignment.id,
-            sessionIndex: 1,
-            sessionCount: 1,
-            title: assignment.title,
-            dueDate: assignment.dueDate,
-            category: assignment.category,
-            importance: assignment.urgency,
-            difficulty: assignment.urgency,
-            estimatedMinutes: assignment.estimatedMinutes,
-            isLockedToDueDate: assignment.isLockedToDueDate,
-            scheduleIndex: 0
+        Task { @MainActor in
+            let settings = StudyPlanSettings()
+            
+            // Use fallback planner directly (AI scheduling ports disabled due to Sendable requirements)
+            let fallbackSessions = PlannerEngine.generateSessions(for: assignment, settings: settings)
+            
+            let energyProfile = defaultEnergyProfile()
+            let result = PlannerEngine.scheduleSessions(fallbackSessions, settings: settings, energyProfile: energyProfile)
+            let scheduled = result.scheduled
+            let finalOverflow = result.overflow
+
+            let metadata = AIScheduleMetadata(
+                inputHash: UUID().uuidString,
+                computedAt: Date(),
+                confidence: 0.8,
+                provenance: "fallback_heuristic"
+            )
+            logPlanDiff(for: assignment.id, scheduled: scheduled)
+            PlannerStore.shared.persist(scheduled: scheduled, overflow: finalOverflow, metadata: metadata)
+        }
+    }
+
+    /* Disabled - AI scheduling ports not available due to Sendable requirements
+    private func plannerSessions(from proposals: [GenerateStudyPlanPort.SessionProposal]) -> [PlannerSession] {
+        proposals.map {
+            PlannerSession(
+                assignmentId: $0.assignmentId,
+                sessionIndex: $0.sessionIndex,
+                sessionCount: $0.sessionCount,
+                title: $0.title,
+                dueDate: $0.dueDate,
+                category: $0.category,
+                importance: $0.urgency,
+                difficulty: $0.urgency,
+                estimatedMinutes: $0.estimatedMinutes,
+                isLockedToDueDate: $0.isLockedToDueDate,
+                scheduleIndex: 0
+            )
+        }
+    }
+
+    private func plannerSessionLookup(
+        from proposals: [GenerateStudyPlanPort.SessionProposal]
+    ) -> [SessionLookupKey: PlannerSession] {
+        let sessions = plannerSessions(from: proposals)
+        return Dictionary(uniqueKeysWithValues: sessions.map { (SessionLookupKey(session: $0), $0) })
+    }
+
+    private func scheduledSessions(
+        from blocks: [SchedulePlacementPort.ScheduledBlock],
+        lookup: [SessionLookupKey: PlannerSession]
+    ) -> [ScheduledSession] {
+        blocks.compactMap { block in
+            let key = SessionLookupKey(assignmentId: block.assignmentId, sessionIndex: block.sessionIndex)
+            guard let session = lookup[key] else { return nil }
+            return ScheduledSession(id: UUID(), session: session, start: block.start, end: block.end)
+        }
+    }
+
+    private func sessionProposal(from session: PlannerSession) -> GenerateStudyPlanPort.SessionProposal {
+        GenerateStudyPlanPort.SessionProposal(
+            assignmentId: session.assignmentId,
+            title: session.title,
+            dueDate: session.dueDate,
+            category: session.category,
+            urgency: session.importance,
+            estimatedMinutes: session.estimatedMinutes,
+            isLockedToDueDate: session.isLockedToDueDate,
+            sessionIndex: session.sessionIndex,
+            sessionCount: session.sessionCount
         )
-        
-        // Generate all sessions for this assignment
-        let settings = StudyPlanSettings()
-        let sessions = PlannerEngine.generateSessions(for: assignment, settings: settings)
-        
-        // Schedule them using the planner engine
-        let energyProfile = defaultEnergyProfile()
-        let result = PlannerEngine.scheduleSessions(sessions, settings: settings, energyProfile: energyProfile)
-        
-        // Persist to planner store
-        PlannerStore.shared.persist(scheduled: result.scheduled, overflow: result.overflow)
+    }
+
+    private func metadata<T: Encodable>(
+        from result: AIResult<T>?,
+        fallbackInput: Encodable
+    ) -> AIScheduleMetadata {
+        if let result {
+            return AIScheduleMetadata(
+                inputHash: result.metadata.inputHash,
+                computedAt: result.metadata.computedAt,
+                confidence: result.confidence.value,
+                provenance: result.provenance.primaryProvider.rawValue
+            )
+        }
+        let inputHash = (try? encodedHash(for: fallbackInput)) ?? UUID().uuidString
+        return AIScheduleMetadata(
+            inputHash: inputHash,
+            computedAt: Date(),
+            confidence: 0.5,
+            provenance: AIProviderID.fallbackHeuristic.rawValue
+        )
+    }
+
+    private func mergeMetadata(_ primary: AIScheduleMetadata, _ secondary: AIScheduleMetadata) -> AIScheduleMetadata {
+        let combinedHash = "\(primary.inputHash)|\(secondary.inputHash)".data(using: .utf8)?.sha256Hash() ?? primary.inputHash
+        let confidence = min(primary.confidence, secondary.confidence)
+        let computedAt = max(primary.computedAt, secondary.computedAt)
+        let provenance = "mixed:\(primary.provenance),\(secondary.provenance)"
+        return AIScheduleMetadata(
+            inputHash: combinedHash,
+            computedAt: computedAt,
+            confidence: confidence,
+            provenance: provenance
+        )
+    }
+    */ // End of disabled AI scheduling helper functions
+
+    private func encodedHash(for input: Encodable) throws -> String {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        let data = try encoder.encode(AnyEncodable(input))
+        return data.sha256Hash()
+    }
+
+    private struct AnyEncodable: Encodable {
+        private let encodeFunc: (Encoder) throws -> Void
+        init(_ value: Encodable) {
+            self.encodeFunc = value.encode(to:)
+        }
+        func encode(to encoder: Encoder) throws {
+            try encodeFunc(encoder)
+        }
+    }
+
+    private struct SessionLookupKey: Hashable {
+        let assignmentId: UUID
+        let sessionIndex: Int
+
+        init(assignmentId: UUID, sessionIndex: Int) {
+            self.assignmentId = assignmentId
+            self.sessionIndex = sessionIndex
+        }
+
+        init(session: PlannerSession) {
+            self.assignmentId = session.assignmentId
+            self.sessionIndex = session.sessionIndex
+        }
+    }
+
+    private func logPlanDiff(for assignmentId: UUID, scheduled: [ScheduledSession]) {
+        let existing = PlannerStore.shared.scheduled.filter { $0.assignmentId == assignmentId }
+        let existingIds = Set(existing.map { $0.id })
+        let newIds = Set(scheduled.map { $0.id })
+        let added = newIds.subtracting(existingIds).count
+        let removed = existingIds.subtracting(newIds).count
+        LOG_AI(.info, "PlannerDiff", "Plan proposal generated", metadata: [
+            "assignmentId": assignmentId.uuidString,
+            "added": "\(added)",
+            "removed": "\(removed)"
+        ])
     }
     
     private func defaultEnergyProfile() -> [Int: Double] {

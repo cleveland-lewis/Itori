@@ -2,22 +2,50 @@ import Foundation
 
 // MARK: - Study Plan Settings
 
-struct StudyPlanSettings {
-    var examDefaultTotalMinutes: Int = 240
-    var examDefaultSessionMinutes: Int = 60
-    var examStartDaysBeforeDue: Int = 5
+public struct StudyPlanSettings: Codable, Sendable {
+    public var examDefaultTotalMinutes: Int = 240
+    public var examDefaultSessionMinutes: Int = 60
+    public var examStartDaysBeforeDue: Int = 5
 
-    var quizDefaultTotalMinutes: Int = 90
-    var quizDefaultSessionMinutes: Int = 60
-    var quizStartDaysBeforeDue: Int = 3
+    public var quizDefaultTotalMinutes: Int = 90
+    public var quizDefaultSessionMinutes: Int = 60
+    public var quizStartDaysBeforeDue: Int = 3
 
-    var homeworkSingleSessionThreshold: Int = 60
-    var readingSingleSessionThreshold: Int = 60
-    var longHomeworkSplitSessionMinutes: Int = 45
-    var longReadingSplitSessionMinutes: Int = 30
+    public var homeworkSingleSessionThreshold: Int = 60
+    public var readingSingleSessionThreshold: Int = 60
+    public var longHomeworkSplitSessionMinutes: Int = 45
+    public var longReadingSplitSessionMinutes: Int = 30
 
-    var projectSessionMinutes: Int = 75
-    var projectMinSessions: Int = 3
+    public var projectSessionMinutes: Int = 75
+    public var projectMinSessions: Int = 3
+    
+    public init(
+        examDefaultTotalMinutes: Int = 240,
+        examDefaultSessionMinutes: Int = 60,
+        examStartDaysBeforeDue: Int = 5,
+        quizDefaultTotalMinutes: Int = 90,
+        quizDefaultSessionMinutes: Int = 60,
+        quizStartDaysBeforeDue: Int = 3,
+        homeworkSingleSessionThreshold: Int = 60,
+        readingSingleSessionThreshold: Int = 60,
+        longHomeworkSplitSessionMinutes: Int = 45,
+        longReadingSplitSessionMinutes: Int = 30,
+        projectSessionMinutes: Int = 75,
+        projectMinSessions: Int = 3
+    ) {
+        self.examDefaultTotalMinutes = examDefaultTotalMinutes
+        self.examDefaultSessionMinutes = examDefaultSessionMinutes
+        self.examStartDaysBeforeDue = examStartDaysBeforeDue
+        self.quizDefaultTotalMinutes = quizDefaultTotalMinutes
+        self.quizDefaultSessionMinutes = quizDefaultSessionMinutes
+        self.quizStartDaysBeforeDue = quizStartDaysBeforeDue
+        self.homeworkSingleSessionThreshold = homeworkSingleSessionThreshold
+        self.readingSingleSessionThreshold = readingSingleSessionThreshold
+        self.longHomeworkSplitSessionMinutes = longHomeworkSplitSessionMinutes
+        self.longReadingSplitSessionMinutes = longReadingSplitSessionMinutes
+        self.projectSessionMinutes = projectSessionMinutes
+        self.projectMinSessions = projectMinSessions
+    }
 }
 
 // MARK: - Planner Session Model
