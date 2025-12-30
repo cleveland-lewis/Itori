@@ -269,14 +269,14 @@
 "planner.task_sheet.field.focus_estimate" = "專注時間估計";
 "planner.task_sheet.field.minutes" = "分鐘";
 "planner.task_sheet.field.lock_due_date" = "鎖定到確切的截止日期";
-"planner.task_sheet.field.lock_due_date_help" = "鎖定後，AI 規劃器僅在截止日期安排此時間段。";
+"planner.task_sheet.field.lock_due_date_help" = "鎖定後，LLM 規劃器僅在截止日期安排此時間段。";
 "planner.task_sheet.action.cancel" = "取消";
 "planner.task_sheet.action.create" = "建立";
 "planner.task_sheet.action.save" = "儲存";
 
 /* Settings */
 "planner.settings.section.title" = "規劃器";
-"planner.settings.enable_ai" = "啟用 AI 規劃器";
+"planner.settings.enable_ai" = "啟用 LLM 規劃器";
 "planner.settings.horizon" = "排程前瞻";
 "planner.settings.horizon.one_week" = "1 週";
 "planner.settings.horizon.two_weeks" = "2 週";

@@ -310,6 +310,19 @@ final class PlannerStore: ObservableObject {
         save()
     }
 
+    func resetAll() {
+        scheduled.removeAll()
+        overflow.removeAll()
+        try? FileManager.default.removeItem(at: storageURL)
+        if let url = iCloudURL {
+            try? FileManager.default.removeItem(at: url)
+        }
+        if let conflictsURL = iCloudConflictsURL {
+            try? FileManager.default.removeItem(at: conflictsURL)
+        }
+        save()
+    }
+
     private func save() {
         // ALWAYS save locally first (offline-first principle)
         let payload = Persisted(scheduled: scheduled, overflow: overflow)
@@ -354,6 +367,10 @@ final class PlannerStore: ObservableObject {
     private func loadFromiCloud() {
         // Only attempt if explicitly enabled by user
         guard isSyncEnabled else { return }
+        guard !AppSettingsModel.shared.suppressICloudRestore else {
+            DebugLogger.log("ℹ️ iCloud restore suppressed after reset")
+            return
+        }
         
         // Silently fail if iCloud unavailable (offline-first)
         guard let url = iCloudURL else {

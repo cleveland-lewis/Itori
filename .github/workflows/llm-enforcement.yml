@@ -1,0 +1,236 @@
+name: LLM Enforcement Invariant
+
+# CRITICAL: This workflow enforces the LLM kill-switch invariant
+# See: Docs/Architecture/LLM_ENFORCEMENT_INVARIANT.md
+#
+# Invariant: IF enableLLMAssistance == false THEN providerAttemptCountTotal MUST == 0
+#
+# This test suite is BUILD-BLOCKING. No PR can merge if these tests fail.
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'SharedCore/AIEngine/**'
+      - 'SharedCore/AI/**'
+      - 'Tests/LLMToggleEnforcementTests.swift'
+      - 'SharedCore/State/AppSettingsModel.swift'
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'SharedCore/AIEngine/**'
+      - 'SharedCore/AI/**'
+      - 'Tests/LLMToggleEnforcementTests.swift'
+      - 'SharedCore/State/AppSettingsModel.swift'
+  workflow_dispatch:
+
+jobs:
+  test-llm-enforcement:
+    name: Verify LLM Kill-Switch Invariant
+    runs-on: macos-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+      
+      - name: Show Xcode version
+        run: xcodebuild -version
+      
+      - name: Run LLM Enforcement Tests
+        run: |
+          echo "═══════════════════════════════════════════════════════════════"
+          echo "RUNNING CRITICAL LLM ENFORCEMENT TESTS"
+          echo "═══════════════════════════════════════════════════════════════"
+          echo ""
+          echo "These tests verify the system invariant:"
+          echo "  IF enableLLMAssistance == false"
+          echo "  THEN providerAttemptCountTotal MUST == 0"
+          echo ""
+          echo "If these tests fail, the LLM kill-switch is broken."
+          echo "DO NOT MERGE until fixed."
+          echo ""
+          echo "See: Docs/Architecture/LLM_ENFORCEMENT_INVARIANT.md"
+          echo "═══════════════════════════════════════════════════════════════"
+          echo ""
+          
+          xcodebuild test \
+            -scheme Roots \
+            -destination 'platform=macOS' \
+            -only-testing:RootsTests/LLMToggleDisablesProviderAttemptsTests \
+            | tee llm_enforcement_test_output.log \
+            | xcpretty --color --simple
+          
+          # Check exit code
+          TEST_RESULT=${PIPESTATUS[0]}
+          
+          if [ $TEST_RESULT -ne 0 ]; then
+            echo ""
+            echo "═══════════════════════════════════════════════════════════════"
+            echo "❌ CRITICAL FAILURE: LLM ENFORCEMENT INVARIANT VIOLATED"
+            echo "═══════════════════════════════════════════════════════════════"
+            echo ""
+            echo "The LLM kill-switch is not properly enforcing the invariant."
+            echo ""
+            echo "This means:"
+            echo "  - Users who disable LLM may still have provider calls"
+            echo "  - Privacy guarantees are broken"
+            echo "  - Regulatory compliance is at risk"
+            echo ""
+            echo "Action Required:"
+            echo "  1. Review test failures in llm_enforcement_test_output.log"
+            echo "  2. Check AIEngine._executeWithGuards (SharedCore/AIEngine/Core/AIEngine.swift)"
+            echo "  3. Verify toggle check happens BEFORE provider selection"
+            echo "  4. Fix the bug and re-run tests"
+            echo "  5. DO NOT MERGE until all tests pass"
+            echo ""
+            echo "See: Docs/Architecture/LLM_ENFORCEMENT_INVARIANT.md"
+            echo "═══════════════════════════════════════════════════════════════"
+            exit 1
+          fi
+          
+          echo ""
+          echo "═══════════════════════════════════════════════════════════════"
+          echo "✅ SUCCESS: LLM ENFORCEMENT INVARIANT VERIFIED"
+          echo "═══════════════════════════════════════════════════════════════"
+          echo ""
+          echo "All tests passed. The LLM kill-switch is working correctly:"
+          echo "  - Toggle OFF → 0 provider attempts"
+          echo "  - Suppression count increases"
+          echo "  - Fallback-only execution"
+          echo "  - Audit log correct"
+          echo ""
+          echo "The privacy guarantee is intact."
+          echo "═══════════════════════════════════════════════════════════════"
+      
+      - name: Upload Test Logs (if failed)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: llm-enforcement-test-logs
+          path: llm_enforcement_test_output.log
+          retention-days: 30
+      
+      - name: Verify No Provider Imports Outside AIEngine
+        run: |
+          echo "Checking for unauthorized provider imports..."
+          
+          # Check that only AIEngine imports provider implementations
+          UNAUTHORIZED_IMPORTS=$(grep -r "import.*Provider" \
+            --include="*.swift" \
+            --exclude-dir="AIEngine" \
+            --exclude-dir="Tests" \
+            --exclude-dir="AI" \
+            SharedCore/ iOS/ macOS/ macOSApp/ || true)
+          
+          if [ -n "$UNAUTHORIZED_IMPORTS" ]; then
+            echo "❌ ARCHITECTURAL VIOLATION: Unauthorized provider imports found!"
+            echo ""
+            echo "Only AIEngine may import provider implementations."
+            echo "This prevents bypassing the kill-switch."
+            echo ""
+            echo "Violations:"
+            echo "$UNAUTHORIZED_IMPORTS"
+            echo ""
+            echo "See: Docs/Architecture/LLM_ENFORCEMENT_INVARIANT.md"
+            exit 1
+          fi
+          
+          echo "✅ No unauthorized provider imports found"
+      
+      - name: Comment on PR (if failed)
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ❌ LLM Enforcement Tests Failed
+            
+            The **critical LLM kill-switch invariant** is violated in this PR.
+            
+            ### What this means:
+            - Users who disable "Enable LLM Assistance" may still have provider calls
+            - Privacy guarantees are broken
+            - This is a **blocking issue** — do not merge
+            
+            ### Invariant:
+            \`\`\`
+            IF enableLLMAssistance == false
+            THEN providerAttemptCountTotal MUST == 0
+            \`\`\`
+            
+            ### Action Required:
+            1. Review test failures in the workflow logs
+            2. Check \`AIEngine._executeWithGuards\` (lines ~67-117)
+            3. Verify toggle check happens BEFORE provider selection
+            4. Fix the bug and push changes
+            5. Re-run this workflow
+            
+            ### Documentation:
+            - [LLM Enforcement Invariant](../blob/main/Docs/Architecture/LLM_ENFORCEMENT_INVARIANT.md)
+            - [Test Suite](../blob/main/Tests/LLMToggleEnforcementTests.swift)
+            
+            This is a **build-blocking** failure. All tests must pass before merge.`
+            })
+
+  # Additional job: Static analysis for enforcement
+  static-analysis:
+    name: Static Analysis - Kill-Switch
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Check for direct provider calls
+        run: |
+          echo "Checking for direct provider.execute() calls outside AIEngine..."
+          
+          # Find any direct provider.execute() calls outside AIEngine
+          VIOLATIONS=$(grep -rn "provider\.execute\|provider\s*\.\s*execute" \
+            --include="*.swift" \
+            --exclude="AIEngine.swift" \
+            --exclude="*Tests.swift" \
+            SharedCore/ iOS/ macOS/ macOSApp/ || true)
+          
+          if [ -n "$VIOLATIONS" ]; then
+            echo "⚠️ Potential architectural violation found!"
+            echo ""
+            echo "Direct provider.execute() calls outside AIEngine:"
+            echo "$VIOLATIONS"
+            echo ""
+            echo "Review these calls to ensure they respect the kill-switch."
+            # Note: This is a warning, not a failure (replay/debug code may legitimately call execute)
+          else
+            echo "✅ No suspicious provider calls found"
+          fi
+      
+      - name: Verify invariant comment exists
+        run: |
+          echo "Verifying CRITICAL SYSTEM INVARIANT comment exists..."
+          
+          if ! grep -q "CRITICAL SYSTEM INVARIANT" SharedCore/AIEngine/Core/AIEngine.swift; then
+            echo "❌ CRITICAL INVARIANT comment missing in AIEngine.swift!"
+            echo "The enforcement point must be clearly documented."
+            exit 1
+          fi
+          
+          echo "✅ Invariant comment found"
+      
+      - name: Check for toggle checks
+        run: |
+          echo "Verifying enableLLMAssistance check exists..."
+          
+          if ! grep -q "enableLLMAssistance" SharedCore/AIEngine/Core/AIEngine.swift; then
+            echo "❌ enableLLMAssistance check not found in AIEngine!"
+            echo "Kill-switch may be missing!"
+            exit 1
+          fi
+          
+          echo "✅ Kill-switch check present"

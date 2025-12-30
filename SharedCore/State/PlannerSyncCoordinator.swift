@@ -13,9 +13,9 @@ final class PlannerSyncCoordinator: ObservableObject {
     private init() {}
 
     func start(
-        assignmentsStore: AssignmentsStore = .shared,
-        plannerStore: PlannerStore = .shared,
-        settings: AppSettingsModel = .shared
+        assignmentsStore: AssignmentsStore,
+        plannerStore: PlannerStore,
+        settings: AppSettingsModel
     ) {
         guard cancellables.isEmpty else { return }
 
@@ -43,7 +43,12 @@ final class PlannerSyncCoordinator: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func requestRecompute(assignmentsStore: AssignmentsStore = .shared, plannerStore: PlannerStore = .shared) {
+    func reset() {
+        lastScheduleHash = nil
+        lastCompletionHash = nil
+    }
+
+    func requestRecompute(assignmentsStore: AssignmentsStore, plannerStore: PlannerStore, settings: AppSettingsModel) {
         let dtos = assignmentsStore.tasks.map { task in
             PlannerTaskDTO(
                 id: task.id,
@@ -58,7 +63,7 @@ final class PlannerSyncCoordinator: ObservableObject {
                 isCompleted: task.isCompleted
             )
         }
-        recomputePlanner(dtos: dtos, plannerStore: plannerStore, settings: .shared, force: true)
+        recomputePlanner(dtos: dtos, plannerStore: plannerStore, settings: settings, force: true)
     }
 
     private func recomputePlanner(

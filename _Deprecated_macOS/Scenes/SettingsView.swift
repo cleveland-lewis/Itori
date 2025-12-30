@@ -1,0 +1,126 @@
+#if os(macOS)
+import SwiftUI
+
+struct SettingsView: View {
+    @Environment(\.colorScheme) var colorScheme
+    @EnvironmentObject var settings: AppSettingsModel
+    @EnvironmentObject var coursesStore: CoursesStore
+    @EnvironmentObject var assignmentsStore: AssignmentsStore
+    // design tokens
+    @State private var selectedMaterial: DesignMaterial = .regular
+    @State private var diagnosticReport: DiagnosticReport? = nil
+    @State private var showingHealthCheck = false
+
+    var body: some View {
+        NavigationView {
+            List {
+                Section(header: Text(NSLocalizedString("settings.section.general", comment: "General"))) {
+                    Toggle("Use 24-hour time", isOn: $settings.use24HourTime)
+                    Toggle("High Contrast Mode", isOn: $settings.highContrastMode)
+                }
+
+                Section(header: Text(NSLocalizedString("settings.section.academic", comment: "Academic"))) {
+                    // Note: Courses & Semesters management now handled via SettingsRootView
+                    // NavigationLink(destination: CoursesSettingsView().environmentObject(coursesStore)) {
+                    //     Label("Courses & Semesters", systemImage: "book.closed")
+                    // }
+                }
+
+                Section(header: Text(NSLocalizedString("settings.section.workday", comment: "Workday"))) {
+                    DatePicker("Start", selection: Binding(
+                        get: { settings.date(from: settings.defaultWorkdayStart) },
+                        set: { settings.defaultWorkdayStart = settings.components(from: $0) }
+                    ), displayedComponents: [.hourAndMinute])
+                    DatePicker("End", selection: Binding(
+                        get: { settings.date(from: settings.defaultWorkdayEnd) },
+                        set: { settings.defaultWorkdayEnd = settings.components(from: $0) }
+                    ), displayedComponents: [.hourAndMinute])
+                }
+
+                Section(header: Text(NSLocalizedString("settings.section.advanced", comment: "Advanced"))) {
+                    NavigationLink(destination: DebugSettingsView(selectedMaterial: $selectedMaterial)) {
+                        Label("Developer", systemImage: "hammer")
+                    }
+                }
+
+                Section(header: Text(NSLocalizedString("settings.section.design", comment: "Design"))) {
+                    Picker("Material", selection: $selectedMaterial) {
+                        ForEach(DesignSystem.materials, id: \.id) { token in
+                            Text(token.name).tag(token as DesignMaterial)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
+
+                Section {
+                    Button {
+                        diagnosticReport = AppDebugger.shared.runFullDiagnostic(
+                            dataManager: coursesStore,
+                            calendarManager: CalendarManager.shared,
+                            assignmentsStore: assignmentsStore
+                        )
+                        showingHealthCheck = true
+                    } label: {
+                        Label("Run Health Check", systemImage: "stethoscope")
+                    }
+                } footer: {
+                    Text(NSLocalizedString("settings.advanced.diagnostics_description", comment: "Diagnostics"))
+                }
+            }
+            #if os(iOS)
+            #if os(iOS)
+            .listStyle(.insetGrouped)
+#else
+            .listStyle(.plain)
+#endif
+#else
+            .listStyle(.plain)
+#endif
+            .navigationTitle("Settings")
+            .onChange(of: settings.use24HourTime) { _, _ in settings.save() }
+            .onChange(of: settings.highContrastMode) { _, _ in settings.save() }
+            .onChange(of: settings.defaultWorkdayStart) { _, _ in settings.save() }
+            .onChange(of: settings.defaultWorkdayEnd) { _, _ in settings.save() }
+        }
+        .background(DesignSystem.Colors.appBackground)
+        .alert("Health Check", isPresented: $showingHealthCheck, presenting: diagnosticReport) { _ in
+            Button("OK", role: .cancel) { }
+        } message: { report in
+            if report.issues.isEmpty {
+                Text(NSLocalizedString("settings.advanced.all_healthy", comment: "All healthy"))
+            } else {
+                Text(report.formattedSummary)
+            }
+        }
+    }
+}
+
+private struct DebugSettingsView: View {
+    @Binding var selectedMaterial: DesignMaterial
+
+    var body: some View {
+        Form {
+            Toggle("Enable verbose logging", isOn: .constant(false))
+            Button("Reset demo data") { }
+
+            Section(header: Text(NSLocalizedString("settings.section.design_debug", comment: "Design debug"))) {
+                HStack {
+                    Text(NSLocalizedString("settings.advanced.selected_material", comment: "Selected material"))
+                    Spacer()
+                    Text(selectedMaterial.name)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .navigationTitle("Developer")
+    }
+}
+
+#if !DISABLE_PREVIEWS
+#if !DISABLE_PREVIEWS
+#Preview {
+    SettingsView()
+}
+#endif
+#endif
+#endif

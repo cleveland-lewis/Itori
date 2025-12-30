@@ -51,6 +51,7 @@ final class GradesStore: ObservableObject {
 
     func resetAll() {
         grades.removeAll()
+        try? FileManager.default.removeItem(at: storageURL)
         save()
     }
 

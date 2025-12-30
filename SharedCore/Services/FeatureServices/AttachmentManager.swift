@@ -14,7 +14,9 @@ class AttachmentManager {
     /// The directory where attachments are stored
     private var attachmentsDirectory: URL {
         guard let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            fatalError("Could not find documents directory")
+            LOG_UI(.error, "AttachmentManager", "CRITICAL: Could not find documents directory - using temp")
+            // Fallback to temp directory
+            return fileManager.temporaryDirectory.appendingPathComponent("RootsAttachments", isDirectory: true)
         }
         return documentsURL.appendingPathComponent("Attachments", isDirectory: true)
     }

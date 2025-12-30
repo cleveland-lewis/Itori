@@ -76,6 +76,13 @@ final class SyllabusParsingStore: ObservableObject {
         parsedAssignments[index].importedTaskId = taskId
         persist()
     }
+
+    func resetAll() {
+        parsingJobs.removeAll()
+        parsedAssignments.removeAll()
+        try? FileManager.default.removeItem(at: storageURL)
+        persist()
+    }
     
     func updateParsedAssignment(_ assignment: ParsedAssignment) {
         guard let index = parsedAssignments.firstIndex(where: { $0.id == assignment.id }) else { return }

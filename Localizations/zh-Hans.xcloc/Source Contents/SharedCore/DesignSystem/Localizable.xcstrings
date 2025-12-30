@@ -2042,7 +2042,7 @@
     "Open System Settings…" : {
 
     },
-    "OpenAI-Compatible API Configuration" : {
+    "OpenAI-Compatible LLM API Configuration" : {
 
     },
     "Overall Score" : {
@@ -2855,7 +2855,7 @@
       "comment" : "Summaries"
     },
     "settings.planner.ai" : {
-      "comment" : "AI-Powered Planning"
+      "comment" : "LLM-Assisted Planning"
     },
     "settings.planner.ai.detail" : {
       "comment" : "Use intelligent suggestions for task scheduling"
@@ -3533,7 +3533,7 @@
     "Workday" : {
 
     },
-    "Works with OpenAI, Azure OpenAI, LM Studio, and other compatible APIs" : {
+    "Works with OpenAI, Azure OpenAI, LM Studio, and other compatible LLM APIs" : {
 
     },
     "Worth %lld%% of grade" : {

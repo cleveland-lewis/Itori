@@ -3,12 +3,14 @@ import Foundation
 import SwiftUI
 
 final class ScheduledTestsStore: ObservableObject {
+    static let shared = ScheduledTestsStore()
     @Published var scheduledTests: [ScheduledPracticeTest] = []
     @Published var attempts: [TestAttempt] = []
     @Published var currentWeek: Date = Date()
     
     private let testsStorageKey = "scheduled_practice_tests_v1"
     private let attemptsStorageKey = "test_attempts_v1"
+    private let sampleDataDisabledKey = "scheduled_practice_tests_sample_data_disabled"
     
     init() {
         loadData()
@@ -119,7 +121,8 @@ final class ScheduledTestsStore: ObservableObject {
         }
         
         // Add some sample data if empty (for demo purposes)
-        if scheduledTests.isEmpty {
+        let sampleDataDisabled = UserDefaults.standard.bool(forKey: sampleDataDisabledKey)
+        if scheduledTests.isEmpty && !sampleDataDisabled {
             addSampleData()
         }
     }
@@ -134,6 +137,15 @@ final class ScheduledTestsStore: ObservableObject {
         if let encoded = try? JSONEncoder().encode(attempts) {
             UserDefaults.standard.set(encoded, forKey: attemptsStorageKey)
         }
+    }
+
+    func resetAll() {
+        scheduledTests.removeAll()
+        attempts.removeAll()
+        UserDefaults.standard.removeObject(forKey: testsStorageKey)
+        UserDefaults.standard.removeObject(forKey: attemptsStorageKey)
+        UserDefaults.standard.set(true, forKey: sampleDataDisabledKey)
+        saveData()
     }
     
     // MARK: - Sample Data

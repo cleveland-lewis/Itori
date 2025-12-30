@@ -44,6 +44,69 @@ public struct LayoutMetrics {
     }
 }
 
+// MARK: - Global App Layout Contract
+
+/// Canonical layout spacing enforced across all platforms.
+/// Single source of truth for top content insets and header clearance.
+public struct AppLayout {
+    /// Top inset for overlay controls (Quick Add, Settings button)
+    public let overlayTopInset: CGFloat
+    
+    /// Trailing inset for overlay controls
+    public let overlayTrailingInset: CGFloat
+    
+    /// Height of the pinned page header
+    public let headerHeight: CGFloat
+    
+    /// Spacing below header before content begins
+    public let headerBottomSpacing: CGFloat
+    
+    /// Total top content inset (where page content should begin)
+    public var topContentInset: CGFloat {
+        overlayTopInset + headerHeight + headerBottomSpacing
+    }
+    
+    #if os(macOS)
+    public static let macOS = AppLayout(
+        overlayTopInset: 16,
+        overlayTrailingInset: 24,
+        headerHeight: 56,
+        headerBottomSpacing: 12
+    )
+    #endif
+    
+    #if os(iOS)
+    public static let iOS = AppLayout(
+        overlayTopInset: 10,
+        overlayTrailingInset: 16,
+        headerHeight: 52,
+        headerBottomSpacing: 12
+    )
+    #endif
+}
+
+private struct AppLayoutKey: EnvironmentKey {
+    #if os(macOS)
+    static let defaultValue = AppLayout.macOS
+    #elseif os(iOS)
+    static let defaultValue = AppLayout.iOS
+    #else
+    static let defaultValue = AppLayout(
+        overlayTopInset: 16,
+        overlayTrailingInset: 24,
+        headerHeight: 56,
+        headerBottomSpacing: 12
+    )
+    #endif
+}
+
+extension EnvironmentValues {
+    public var appLayout: AppLayout {
+        get { self[AppLayoutKey.self] }
+        set { self[AppLayoutKey.self] = newValue }
+    }
+}
+
 // MARK: - Environment Key
 
 private struct LayoutMetricsKey: EnvironmentKey {

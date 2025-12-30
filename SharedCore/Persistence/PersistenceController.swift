@@ -17,9 +17,24 @@ final class PersistenceController {
     init(inMemory: Bool = false) {
         container = NSPersistentCloudKitContainer(name: "Roots")
 
-        guard let description = container.persistentStoreDescriptions.first else {
-            fatalError("Missing persistent store description")
+        var description = container.persistentStoreDescriptions.first
+        if description == nil {
+            LOG_DATA(.error, "Persistence", "CRITICAL: Missing persistent store description - using default")
+            let fallbackDescription = NSPersistentStoreDescription()
+            fallbackDescription.type = NSSQLiteStoreType
+            container.persistentStoreDescriptions = [fallbackDescription]
+            description = container.persistentStoreDescriptions.first
+            if description == nil {
+                LOG_DATA(.error, "Persistence", "CRITICAL: Could not create fallback description")
+                let memoryDescription = NSPersistentStoreDescription()
+                memoryDescription.url = URL(fileURLWithPath: "/dev/null")
+                memoryDescription.type = NSInMemoryStoreType
+                container.persistentStoreDescriptions = [memoryDescription]
+                description = container.persistentStoreDescriptions.first
+            }
         }
+        
+        guard let description else { return }
 
         if inMemory {
             description.url = URL(fileURLWithPath: "/dev/null")
@@ -55,7 +70,21 @@ final class PersistenceController {
                 // Create new container without CloudKit
                 let newContainer = NSPersistentCloudKitContainer(name: "Roots")
                 guard let newDescription = newContainer.persistentStoreDescriptions.first else {
-                    fatalError("Missing persistent store description on retry")
+                    LOG_DATA(.error, "Persistence", "CRITICAL: Missing description on retry - using fallback")
+                    // Use in-memory as last resort
+                    let fallbackDesc = NSPersistentStoreDescription()
+                    fallbackDesc.url = URL(fileURLWithPath: "/dev/null")
+                    fallbackDesc.type = NSInMemoryStoreType
+                    newContainer.persistentStoreDescriptions = [fallbackDesc]
+                    var finalError: Error?
+                    newContainer.loadPersistentStores { _, error in
+                        finalError = error
+                    }
+                    if finalError != nil {
+                        LOG_DATA(.error, "Persistence", "CRITICAL: In-memory store also failed")
+                    }
+                    container = newContainer
+                    return
                 }
                 
                 newDescription.cloudKitContainerOptions = nil
@@ -85,7 +114,25 @@ final class PersistenceController {
             
             let memoryContainer = NSPersistentCloudKitContainer(name: "Roots")
             guard let memoryDescription = memoryContainer.persistentStoreDescriptions.first else {
-                fatalError("Missing persistent store description for memory store")
+                LOG_DATA(.error, "Persistence", "CRITICAL: Cannot create memory store description")
+                // Absolute last resort - create minimal container
+                let minimalDesc = NSPersistentStoreDescription()
+                minimalDesc.url = URL(fileURLWithPath: "/dev/null")
+                minimalDesc.type = NSInMemoryStoreType
+                memoryContainer.persistentStoreDescriptions = [minimalDesc]
+                var minimalError: Error?
+                memoryContainer.loadPersistentStores { _, error in
+                    minimalError = error
+                }
+                if let err = minimalError {
+                    LOG_DATA(.error, "Persistence", "CRITICAL: Minimal store failed: \(err.localizedDescription)")
+                }
+                container = memoryContainer
+                viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+                viewContext.automaticallyMergesChangesFromParent = true
+                observeCloudKitToggle()
+                notifyCloudKitStatus(reason: initialCloudKitReason())
+                return
             }
             
             memoryDescription.url = URL(fileURLWithPath: "/dev/null")
@@ -93,7 +140,8 @@ final class PersistenceController {
             
             memoryContainer.loadPersistentStores { _, error in
                 if let error = error {
-                    fatalError("In-memory store load failed: \(error.localizedDescription)")
+                    LOG_DATA(.error, "Persistence", "CRITICAL: In-memory store load failed: \(error.localizedDescription)")
+                    // Continue anyway - app will be degraded but won't crash
                 }
             }
             
@@ -245,6 +293,56 @@ final class PersistenceController {
             try context.save()
         } catch {
             LOG_DATA(.error, "Persistence", "Failed to save context: \(error.localizedDescription)")
+        }
+    }
+
+    func resetPersistentStore() {
+        guard let description = container.persistentStoreDescriptions.first,
+              let storeURL = description.url else {
+            LOG_DATA(.error, "Persistence", "Reset failed: missing store URL")
+            return
+        }
+
+        do {
+            if viewContext.hasChanges {
+                try viewContext.save()
+            }
+
+            let coordinator = container.persistentStoreCoordinator
+            for store in coordinator.persistentStores {
+                try coordinator.remove(store)
+            }
+
+            try coordinator.destroyPersistentStore(
+                at: storeURL,
+                ofType: NSSQLiteStoreType,
+                options: description.options
+            )
+
+            let iCloudEnabled = AppSettingsModel.shared.enableICloudSync
+            if iCloudEnabled {
+                description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
+                    containerIdentifier: cloudKitContainerIdentifier
+                )
+            } else {
+                description.cloudKitContainerOptions = nil
+            }
+
+            try coordinator.addPersistentStore(
+                ofType: NSSQLiteStoreType,
+                configurationName: nil,
+                at: storeURL,
+                options: description.options
+            )
+
+            viewContext.reset()
+            viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+            viewContext.automaticallyMergesChangesFromParent = true
+
+            isCloudKitEnabled = iCloudEnabled
+            notifyCloudKitStatus(reason: iCloudEnabled ? "Connected" : "Disabled by user")
+        } catch {
+            LOG_DATA(.error, "Persistence", "Reset failed: \(error.localizedDescription)")
         }
     }
 

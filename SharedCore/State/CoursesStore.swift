@@ -90,6 +90,8 @@ final class CoursesStore: ObservableObject {
     func resetAll() {
         semesters.removeAll()
         courses.removeAll()
+        outlineNodes.removeAll()
+        courseFiles.removeAll()
         currentSemesterId = nil
         try? FileManager.default.removeItem(at: storageURL)
         try? FileManager.default.removeItem(at: cacheURL)

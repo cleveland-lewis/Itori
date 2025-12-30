@@ -11,9 +11,19 @@ xcuserdata/
 
 ## Compatibility with Xcode 3 and earlier (ignoring not required starting Xcode 4)
 build/
+Build/
 DerivedData/
 DerivedDataBuild/
 DerivedDataLocal/
+.derivedData/
+**/DerivedData/
+**/DerivedData/**
+**/DerivedDataBuild/
+**/DerivedDataBuild/**
+**/DerivedDataLocal/
+**/DerivedDataLocal/**
+**/Build/
+**/Build/**
 *.moved-aside
 *.pbxuser
 !default.pbxuser
@@ -26,11 +36,25 @@ DerivedDataLocal/
 
 ## Obj-C/Swift specific
 *.hmap
-
-## App packaging
 *.ipa
 *.dSYM.zip
 *.dSYM
+*.xcresult
+*.xcbuild
+*.xcindex
+
+## App packaging
+*.app
+*.appex
+*.framework
+*.xctestrun
+*.swiftmodule
+*.swiftinterface
+*.swiftdoc
+*.profraw
+*.profdata
+*.o
+*.d
 
 ## Playgrounds
 timeline.xctimeline
@@ -95,6 +119,22 @@ iOSInjectionProject/
 # Xcode build logs
 *.log
 xcodebuild*.log
+
+# Xcode user state
+*.xcuserstate
+*.xccache
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+xcuserdata/
+**/xcuserdata/
+**/*.xcuserdatad/
+**/*.xcuserdatad/**
+
+# Backup files (never commit)
+*.backup
+*.bak
+*.bak*
+project.pbxproj.backup
 
 # macOS
 .DS_Store

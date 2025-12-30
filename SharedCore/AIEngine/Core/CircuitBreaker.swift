@@ -207,4 +207,12 @@ class ProviderReliability {
         }
         return states
     }
+
+    func resetAll() {
+        lock.lock()
+        defer { lock.unlock() }
+        for breaker in circuitBreakers.values {
+            breaker.reset()
+        }
+    }
 }

@@ -270,14 +270,14 @@
 "planner.task_sheet.field.focus_estimate" = "Focus estimate";
 "planner.task_sheet.field.minutes" = "min";
 "planner.task_sheet.field.lock_due_date" = "Lock to exact due date";
-"planner.task_sheet.field.lock_due_date_help" = "When locked, the AI planner schedules this block only on the due date.";
+"planner.task_sheet.field.lock_due_date_help" = "When locked, the LLM planner schedules this block only on the due date.";
 "planner.task_sheet.action.cancel" = "Cancel";
 "planner.task_sheet.action.create" = "Create";
 "planner.task_sheet.action.save" = "Save";
 
 /* Settings */
 "planner.settings.section.title" = "Planner";
-"planner.settings.enable_ai" = "Enable AI Planner";
+"planner.settings.enable_ai" = "Enable LLM Planner";
 "planner.settings.horizon" = "Scheduling Lookahead";
 "planner.settings.horizon.one_week" = "1 Week";
 "planner.settings.horizon.two_weeks" = "2 Weeks";
@@ -1014,7 +1014,7 @@
 "settings.planner.horizon.1_month" = "1 Month";
 "settings.planner.scheduling.header" = "Scheduling";
 "settings.planner.scheduling.footer" = "How far ahead to schedule tasks and study sessions";
-"settings.planner.ai" = "AI-Powered Planning";
+"settings.planner.ai" = "LLM-Assisted Planning";
 "settings.planner.ai.detail" = "Use intelligent suggestions for task scheduling";
 "settings.planner.auto_breaks" = "Auto-Schedule Breaks";
 "settings.planner.auto_breaks.detail" = "Automatically add break periods between study sessions";

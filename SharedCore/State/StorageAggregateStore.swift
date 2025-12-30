@@ -30,6 +30,12 @@ final class StorageAggregateStore: ObservableObject {
         persist()
     }
 
+    func resetAll() {
+        buckets.removeAll()
+        try? FileManager.default.removeItem(at: storageURL)
+        persist()
+    }
+
     private func monthKey(for date: Date) -> String {
         let comps = Calendar.current.dateComponents([.year, .month], from: date)
         let year = comps.year ?? 0

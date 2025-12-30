@@ -11,9 +11,9 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
         // Scan all Swift files in feature directories
         let featurePaths = [
             "Shared/Features",
-            "iOS/Features",
-            "macOS/Features",
-            "macOSApp/Features"
+            "Platforms/iOS/Features",
+            "Platforms/macOS/Features",
+            "Platforms/watchOS/Features"
         ]
         
         var violations: [String] = []
@@ -83,9 +83,9 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
     func testNoDirectFallbackCallsInFeatures() throws {
         let featurePaths = [
             "Shared/Features",
-            "iOS/Features",
-            "macOS/Features",
-            "macOSApp/Features"
+            "Platforms/iOS/Features",
+            "Platforms/macOS/Features",
+            "Platforms/watchOS/Features"
         ]
         
         var violations: [String] = []
@@ -120,9 +120,9 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
     func testNoAICallsFromViews() throws {
         let viewPaths = [
             "Shared/Views",
-            "iOS/Views",
-            "macOS/Views",
-            "macOSApp/Scenes"
+            "Platforms/iOS/Views",
+            "Platforms/macOS/Views",
+            "Platforms/macOS/Scenes"
         ]
         
         var violations: [String] = []
@@ -163,9 +163,9 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
         let rootPaths = [
             "SharedCore",
             "Shared",
-            "iOS",
-            "macOS",
-            "macOSApp"
+            "Platforms/iOS",
+            "Platforms/macOS",
+            "Platforms/watchOS"
         ]
 
         let forbiddenTokens = [

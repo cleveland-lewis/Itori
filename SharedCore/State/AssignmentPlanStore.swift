@@ -106,6 +106,14 @@ final class AssignmentPlanStore: ObservableObject {
             plan.steps.contains { $0.isOverdue }
         }
     }
+
+    func resetAll() {
+        plans.removeAll()
+        if let url = cacheURL {
+            try? FileManager.default.removeItem(at: url)
+        }
+        saveCache()
+    }
     
     // MARK: - Dependency Management
     

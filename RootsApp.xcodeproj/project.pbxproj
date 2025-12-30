@@ -45,19 +45,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		0C39BF544BB34BC69FE56ED2 /* watchOS */ = {
+		0C39BF544BB34BC69FE56ED2 /* Platforms/watchOS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = watchOS;
+			path = Platforms/watchOS;
 			sourceTree = "<group>";
 		};
-		1AD7D4462EDD328A00D403F3 /* RootsTests */ = {
+		1AD7D4462EDD328A00D403F3 /* Tests/Unit/RootsTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = RootsTests;
+			path = Tests/Unit/RootsTests;
 			sourceTree = "<group>";
 		};
-		1AD7D4502EDD328A00D403F3 /* RootsUITests */ = {
+		1AD7D4502EDD328A00D403F3 /* Tests/RootsUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = RootsUITests;
+			path = Tests/RootsUITests;
 			sourceTree = "<group>";
 		};
 		1AD7D46B2EDD328800D403F3 /* SharedCore */ = {
@@ -65,14 +65,14 @@
 			path = SharedCore;
 			sourceTree = "<group>";
 		};
-		1AD7D46C2EDD328800D403F3 /* macOSApp */ = {
+		1AD7D46C2EDD328800D403F3 /* Platforms/macOS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = macOSApp;
+			path = Platforms/macOS;
 			sourceTree = "<group>";
 		};
-		1AD7D4702EDD328800D403F3 /* iOS */ = {
+		1AD7D4702EDD328800D403F3 /* Platforms/iOS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = iOS;
+			path = Platforms/iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -112,7 +112,7 @@
 		1A58C8A92EF5D2760077C827 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
-				1AD7D4702EDD328800D403F3 /* iOS */,
+				1AD7D4702EDD328800D403F3 /* Platforms/iOS */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -125,10 +125,10 @@
 				B0A1C1012F7A000100000003 /* zh-Hant.lproj */,
 				1A6947202EF0891800072BDF /* roots.icon */,
 				1AD7D46B2EDD328800D403F3 /* SharedCore */,
-				1AD7D46C2EDD328800D403F3 /* macOSApp */,
-				0C39BF544BB34BC69FE56ED2 /* watchOS */,
-				1AD7D4462EDD328A00D403F3 /* RootsTests */,
-				1AD7D4502EDD328A00D403F3 /* RootsUITests */,
+				1AD7D46C2EDD328800D403F3 /* Platforms/macOS */,
+				0C39BF544BB34BC69FE56ED2 /* Platforms/watchOS */,
+				1AD7D4462EDD328A00D403F3 /* Tests/Unit/RootsTests */,
+				1AD7D4502EDD328A00D403F3 /* Tests/RootsUITests */,
 				1AD7D4352EDD328800D403F3 /* Products */,
 				1A58B1612EF58EAB0077C827 /* Notification+Names.swift */,
 				1A58C8A92EF5D2760077C827 /* Recovered References */,
@@ -163,8 +163,8 @@
 			);
 			fileSystemSynchronizedGroups = (
 				1AD7D46B2EDD328800D403F3 /* SharedCore */,
-				1AD7D46C2EDD328800D403F3 /* macOSApp */,
-				1AD7D4702EDD328800D403F3 /* iOS */,
+				1AD7D46C2EDD328800D403F3 /* Platforms/macOS */,
+				1AD7D4702EDD328800D403F3 /* Platforms/iOS */,
 			);
 			name = Roots;
 			packageProductDependencies = (
@@ -187,7 +187,7 @@
 				1AD7D4452EDD328A00D403F3 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				1AD7D4462EDD328A00D403F3 /* RootsTests */,
+				1AD7D4462EDD328A00D403F3 /* Tests/Unit/RootsTests */,
 			);
 			name = RootsTests;
 			packageProductDependencies = (
@@ -210,7 +210,7 @@
 				1AD7D44F2EDD328A00D403F3 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				1AD7D4502EDD328A00D403F3 /* RootsUITests */,
+				1AD7D4502EDD328A00D403F3 /* Tests/RootsUITests */,
 			);
 			name = RootsUITests;
 			packageProductDependencies = (

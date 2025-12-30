@@ -6,12 +6,32 @@
 import Foundation
 import OSLog
 
+/// Event type for LLM provider attempt tracking
+public enum AIAuditEventType: String, Codable, Sendable {
+    case providerAttempt = "provider_attempt"
+    case suppressed = "suppressed"
+    case fallbackOnly = "fallback_only"
+    case execution = "execution"
+}
+
+/// Reason codes for suppression/fallback
+public enum AISuppressionReason: String, Codable, Sendable {
+    case llmDisabled = "llm_disabled"
+    case timeout = "timeout"
+    case breakerOpen = "breaker_open"
+    case rateLimited = "rate_limited"
+    case noProviderAvailable = "no_provider_available"
+    case killSwitchActive = "kill_switch_active"
+}
+
 /// Audit log entry - contains hashes, not raw data
 public struct AIAuditEntry: Codable, Sendable {
     public let timestamp: Date
     public let requestID: UUID
     public let portID: String
-    public let providerID: String
+    public let providerID: String?
+    public let eventType: AIAuditEventType
+    public let reasonCode: AISuppressionReason?
     public let fallbackUsed: Bool
     public let latencyMs: Int
     public let success: Bool
@@ -25,7 +45,9 @@ public struct AIAuditEntry: Codable, Sendable {
         timestamp: Date,
         requestID: UUID,
         portID: String,
-        providerID: String,
+        providerID: String?,
+        eventType: AIAuditEventType = .execution,
+        reasonCode: AISuppressionReason? = nil,
         fallbackUsed: Bool,
         latencyMs: Int,
         success: Bool,
@@ -39,6 +61,8 @@ public struct AIAuditEntry: Codable, Sendable {
         self.requestID = requestID
         self.portID = portID
         self.providerID = providerID
+        self.eventType = eventType
+        self.reasonCode = reasonCode
         self.fallbackUsed = fallbackUsed
         self.latencyMs = latencyMs
         self.success = success
@@ -86,7 +110,8 @@ public actor AIAuditLog {
         }
         
         // Log to system
-        logger.info("AI Request: port=\(entry.portID) provider=\(entry.providerID) latency=\(entry.latencyMs)ms success=\(entry.success) fallback=\(entry.fallbackUsed)")
+        let providerStr = entry.providerID ?? "none"
+        logger.info("AI Request: port=\(entry.portID) provider=\(providerStr) latency=\(entry.latencyMs)ms success=\(entry.success) fallback=\(entry.fallbackUsed)")
         
         // Async write to disk
         await persistEntries()

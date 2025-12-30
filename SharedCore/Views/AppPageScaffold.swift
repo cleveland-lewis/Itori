@@ -3,14 +3,14 @@ import SwiftUI
 #if os(macOS)
 struct AppPageScaffold<Content: View>: View {
     @EnvironmentObject private var settings: AppSettingsModel
+    @Environment(\.appLayout) private var appLayout
+    
     let title: String
     let quickActions: [QuickAction]
     let onQuickAction: (QuickAction) -> Void
     let onSettings: () -> Void
     let content: Content
 
-    private let overlayTopInset: CGFloat = 16
-    private let overlayTrailingInset: CGFloat = 24
     private let buttonSpacing: CGFloat = 10
     private let collapseWidth: CGFloat = 720
     @State private var measuredHeaderHeight: CGFloat = 56
@@ -33,10 +33,10 @@ struct AppPageScaffold<Content: View>: View {
         GeometryReader { proxy in
             let isCompact = proxy.size.width < collapseWidth
             let overlayInsets = EdgeInsets(
-                top: overlayTopInset + measuredHeaderHeight,
+                top: appLayout.overlayTopInset + measuredHeaderHeight,
                 leading: 0,
                 bottom: 0,
-                trailing: overlayTrailingInset + (isCompact ? 44 : (44 + buttonSpacing + 44))
+                trailing: appLayout.overlayTrailingInset + (isCompact ? 44 : (44 + buttonSpacing + 44))
             )
 
             ZStack(alignment: .topLeading) {
@@ -63,8 +63,8 @@ struct AppPageScaffold<Content: View>: View {
                 .fixedSize(horizontal: false, vertical: true)
             Spacer()
         }
-        .padding(.top, overlayTopInset)
-        .padding(.horizontal, overlayTrailingInset)
+        .padding(.top, appLayout.overlayTopInset)
+        .padding(.horizontal, appLayout.overlayTrailingInset)
         .background(HeightReporter())
         .onPreferenceChange(HeaderHeightKey.self) { height in
             if height > 0, measuredHeaderHeight != height {
@@ -84,8 +84,8 @@ struct AppPageScaffold<Content: View>: View {
                 settingsButton
             }
         }
-        .padding(.top, overlayTopInset)
-        .padding(.trailing, overlayTrailingInset)
+        .padding(.top, appLayout.overlayTopInset)
+        .padding(.trailing, appLayout.overlayTrailingInset)
         .frame(maxWidth: .infinity, alignment: .topTrailing)
     }
 

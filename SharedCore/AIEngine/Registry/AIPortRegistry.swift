@@ -55,6 +55,17 @@ public final class AIPortRegistry: Sendable {
             )
         }
 
+        if !AppSettingsModel.shared.enableLLMAssistance {
+            let fallbackAvailable = fallback.canFallback(for: port)
+            return .init(
+                port: port,
+                isAvailable: fallbackAvailable,
+                bestProvider: nil,
+                fallbackAvailable: fallbackAvailable,
+                reasonCodes: ["llmDisabled"]
+            )
+        }
+
         let viable = providers.filter {
             $0.isAvailable() &&
             $0.supports(port: port) &&

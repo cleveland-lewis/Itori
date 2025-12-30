@@ -231,6 +231,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         case cardRadiusRaw, animationSoftnessStorage, typographyModeRaw
         case devModeEnabledStorage, devModeUILoggingStorage, devModeDataLoggingStorage, devModeSchedulerLoggingStorage, devModePerformanceStorage
         case enableICloudSyncStorage
+        case suppressICloudRestoreStorage
         case enableSpotlightIndexingStorage
         case enableRaycastIntegrationStorage
         case enableAIPlannerStorage
@@ -272,6 +273,14 @@ final class AppSettingsModel: ObservableObject, Codable {
         case compactModeStorage
         case largeTapTargetsStorage
         case showSidebarByDefaultStorage
+        case reduceMotionStorage
+        case increaseContrastStorage
+        case reduceTransparencyStorage
+        case glassIntensityStorage
+        case accentColorNameStorage
+        case showAnimationsStorage
+        case enableHapticsStorage
+        case showTooltipsStorage
     }
 
 
@@ -368,6 +377,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     var devModeSchedulerLoggingStorage: Bool = false
     var devModePerformanceStorage: Bool = false
     var enableICloudSyncStorage: Bool = true
+    @AppStorage("roots.settings.suppressICloudRestore") var suppressICloudRestoreStorage: Bool = false
     var enableSpotlightIndexingStorage: Bool = false
     var enableRaycastIntegrationStorage: Bool = false
 
@@ -401,6 +411,8 @@ final class AppSettingsModel: ObservableObject, Codable {
     // Interface Settings
     @AppStorage("roots.settings.reduceMotion") var reduceMotionStorage: Bool = false
     @AppStorage("roots.settings.increaseTransparency") var increaseTransparencyStorage: Bool = false
+    @AppStorage("roots.settings.increaseContrast") var increaseContrastStorage: Bool = false
+    @AppStorage("roots.settings.reduceTransparency") var reduceTransparencyStorage: Bool = false
     @AppStorage("roots.settings.glassIntensity") var glassIntensityStorage: Double = 0.5
     @AppStorage("roots.settings.accentColorName") var accentColorNameStorage: String = "Blue"
     @AppStorage("roots.settings.showAnimations") var showAnimationsStorage: Bool = true
@@ -707,7 +719,18 @@ final class AppSettingsModel: ObservableObject, Codable {
 
     var enableICloudSync: Bool {
         get { enableICloudSyncStorage }
-        set { enableICloudSyncStorage = newValue }
+        set {
+            let wasEnabled = enableICloudSyncStorage
+            enableICloudSyncStorage = newValue
+            if newValue && !wasEnabled && suppressICloudRestoreStorage {
+                suppressICloudRestoreStorage = false
+            }
+        }
+    }
+
+    var suppressICloudRestore: Bool {
+        get { suppressICloudRestoreStorage }
+        set { suppressICloudRestoreStorage = newValue }
     }
     
     var enableSpotlightIndexing: Bool {
@@ -972,6 +995,16 @@ final class AppSettingsModel: ObservableObject, Codable {
         set { reduceMotionStorage = newValue }
     }
 
+    var increaseContrast: Bool {
+        get { increaseContrastStorage }
+        set { increaseContrastStorage = newValue }
+    }
+
+    var reduceTransparency: Bool {
+        get { reduceTransparencyStorage }
+        set { reduceTransparencyStorage = newValue }
+    }
+
     var increaseTransparency: Bool {
         get { increaseTransparencyStorage }
         set { increaseTransparencyStorage = newValue }
@@ -1100,6 +1133,11 @@ final class AppSettingsModel: ObservableObject, Codable {
         get { aiEnabledStorage }
         set { aiEnabledStorage = newValue }
     }
+
+    var enableLLMAssistance: Bool {
+        get { aiEnabledStorage }
+        set { aiEnabledStorage = newValue }
+    }
     
     var onboardingState: OnboardingState {
         get {
@@ -1221,6 +1259,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(devModeSchedulerLoggingStorage, forKey: .devModeSchedulerLoggingStorage)
         try container.encode(devModePerformanceStorage, forKey: .devModePerformanceStorage)
         try container.encode(enableICloudSyncStorage, forKey: .enableICloudSyncStorage)
+        try container.encode(suppressICloudRestoreStorage, forKey: .suppressICloudRestoreStorage)
         try container.encode(enableAIPlannerStorage, forKey: .enableAIPlannerStorage)
         try container.encode(plannerHorizonStorage, forKey: .plannerHorizonStorage)
         try container.encode(enableFlashcardsStorage, forKey: .enableFlashcardsStorage)
@@ -1253,6 +1292,14 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(compactModeStorage, forKey: .compactModeStorage)
         try container.encode(largeTapTargetsStorage, forKey: .largeTapTargetsStorage)
         try container.encode(showSidebarByDefaultStorage, forKey: .showSidebarByDefaultStorage)
+        try container.encode(reduceMotionStorage, forKey: .reduceMotionStorage)
+        try container.encode(increaseContrastStorage, forKey: .increaseContrastStorage)
+        try container.encode(reduceTransparencyStorage, forKey: .reduceTransparencyStorage)
+        try container.encode(glassIntensityStorage, forKey: .glassIntensityStorage)
+        try container.encode(accentColorNameStorage, forKey: .accentColorNameStorage)
+        try container.encode(showAnimationsStorage, forKey: .showAnimationsStorage)
+        try container.encode(enableHapticsStorage, forKey: .enableHapticsStorage)
+        try container.encode(showTooltipsStorage, forKey: .showTooltipsStorage)
     }
 
     required init(from decoder: Decoder) throws {
@@ -1282,6 +1329,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         devModeSchedulerLoggingStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeSchedulerLoggingStorage) ?? false
         devModePerformanceStorage = try container.decodeIfPresent(Bool.self, forKey: .devModePerformanceStorage) ?? false
         enableICloudSyncStorage = try container.decodeIfPresent(Bool.self, forKey: .enableICloudSyncStorage) ?? true
+        suppressICloudRestoreStorage = try container.decodeIfPresent(Bool.self, forKey: .suppressICloudRestoreStorage) ?? false
         enableFlashcardsStorage = try container.decodeIfPresent(Bool.self, forKey: .enableFlashcardsStorage) ?? true
         assignmentSwipeLeadingRaw = try container.decodeIfPresent(String.self, forKey: .assignmentSwipeLeadingRaw) ?? AssignmentSwipeAction.complete.rawValue
         assignmentSwipeTrailingRaw = try container.decodeIfPresent(String.self, forKey: .assignmentSwipeTrailingRaw) ?? AssignmentSwipeAction.delete.rawValue
@@ -1318,6 +1366,14 @@ final class AppSettingsModel: ObservableObject, Codable {
         compactModeStorage = try container.decodeIfPresent(Bool.self, forKey: .compactModeStorage) ?? false
         largeTapTargetsStorage = try container.decodeIfPresent(Bool.self, forKey: .largeTapTargetsStorage) ?? false
         showSidebarByDefaultStorage = try container.decodeIfPresent(Bool.self, forKey: .showSidebarByDefaultStorage) ?? true
+        reduceMotionStorage = try container.decodeIfPresent(Bool.self, forKey: .reduceMotionStorage) ?? false
+        increaseContrastStorage = try container.decodeIfPresent(Bool.self, forKey: .increaseContrastStorage) ?? false
+        reduceTransparencyStorage = try container.decodeIfPresent(Bool.self, forKey: .reduceTransparencyStorage) ?? false
+        glassIntensityStorage = try container.decodeIfPresent(Double.self, forKey: .glassIntensityStorage) ?? 0.5
+        accentColorNameStorage = try container.decodeIfPresent(String.self, forKey: .accentColorNameStorage) ?? "Blue"
+        showAnimationsStorage = try container.decodeIfPresent(Bool.self, forKey: .showAnimationsStorage) ?? true
+        enableHapticsStorage = try container.decodeIfPresent(Bool.self, forKey: .enableHapticsStorage) ?? true
+        showTooltipsStorage = try container.decodeIfPresent(Bool.self, forKey: .showTooltipsStorage) ?? true
     }
 
     func resetUserDefaults() {
@@ -1325,5 +1381,115 @@ final class AppSettingsModel: ObservableObject, Codable {
             UserDefaults.standard.removePersistentDomain(forName: bundle)
         }
         UserDefaults.standard.synchronize()
+    }
+
+    func resetToDefaults(preservingICloudSuppression: Bool, preservingICloudSyncSetting: Bool = false) {
+        let keepSuppression = preservingICloudSuppression ? suppressICloudRestoreStorage : false
+        let keepICloudSync = preservingICloudSyncSetting ? enableICloudSyncStorage : nil
+        resetUserDefaults()
+        let fresh = AppSettingsModel()
+
+        accentColorRaw = fresh.accentColorRaw
+        customAccentEnabledStorage = fresh.customAccentEnabledStorage
+        customAccentRed = fresh.customAccentRed
+        customAccentGreen = fresh.customAccentGreen
+        customAccentBlue = fresh.customAccentBlue
+        customAccentAlpha = fresh.customAccentAlpha
+        interfaceStyleRaw = fresh.interfaceStyleRaw
+        glassLightStrength = fresh.glassLightStrength
+        glassDarkStrength = fresh.glassDarkStrength
+        sidebarBehaviorRaw = fresh.sidebarBehaviorRaw
+        wiggleOnHoverStorage = fresh.wiggleOnHoverStorage
+        tabBarModeRaw = fresh.tabBarModeRaw
+        visibleTabsRaw = fresh.visibleTabsRaw
+        tabOrderRaw = fresh.tabOrderRaw
+        quickActionsRaw = fresh.quickActionsRaw
+        enableGlassEffectsStorage = fresh.enableGlassEffectsStorage
+        cardRadiusRaw = fresh.cardRadiusRaw
+        animationSoftnessStorage = fresh.animationSoftnessStorage
+        typographyModeRaw = fresh.typographyModeRaw
+        devModeEnabledStorage = fresh.devModeEnabledStorage
+        devModeUILoggingStorage = fresh.devModeUILoggingStorage
+        devModeDataLoggingStorage = fresh.devModeDataLoggingStorage
+        devModeSchedulerLoggingStorage = fresh.devModeSchedulerLoggingStorage
+        devModePerformanceStorage = fresh.devModePerformanceStorage
+        if let keepICloudSync {
+            enableICloudSyncStorage = keepICloudSync
+        } else {
+            enableICloudSyncStorage = fresh.enableICloudSyncStorage
+        }
+        suppressICloudRestoreStorage = keepSuppression
+        enableSpotlightIndexingStorage = fresh.enableSpotlightIndexingStorage
+        enableRaycastIntegrationStorage = fresh.enableRaycastIntegrationStorage
+        enableAIPlannerStorage = fresh.enableAIPlannerStorage
+        plannerHorizonStorage = fresh.plannerHorizonStorage
+        enableFlashcardsStorage = fresh.enableFlashcardsStorage
+        assignmentSwipeLeadingRaw = fresh.assignmentSwipeLeadingRaw
+        assignmentSwipeTrailingRaw = fresh.assignmentSwipeTrailingRaw
+        pomodoroFocusStorage = fresh.pomodoroFocusStorage
+        pomodoroShortBreakStorage = fresh.pomodoroShortBreakStorage
+        pomodoroLongBreakStorage = fresh.pomodoroLongBreakStorage
+        pomodoroIterationsStorage = fresh.pomodoroIterationsStorage
+        timerDurationStorage = fresh.timerDurationStorage
+        longBreakCadenceStorage = fresh.longBreakCadenceStorage
+        notificationsEnabledStorage = fresh.notificationsEnabledStorage
+        assignmentRemindersEnabledStorage = fresh.assignmentRemindersEnabledStorage
+        dailyOverviewEnabledStorage = fresh.dailyOverviewEnabledStorage
+        affirmationsEnabledStorage = fresh.affirmationsEnabledStorage
+        timerAlertsEnabledStorage = fresh.timerAlertsEnabledStorage
+        pomodoroAlertsEnabledStorage = fresh.pomodoroAlertsEnabledStorage
+        alarmKitTimersEnabledStorage = fresh.alarmKitTimersEnabledStorage
+        assignmentLeadTimeStorage = fresh.assignmentLeadTimeStorage
+        dailyOverviewTimeStorage = fresh.dailyOverviewTimeStorage
+        dailyOverviewIncludeTasksStorage = fresh.dailyOverviewIncludeTasksStorage
+        dailyOverviewIncludeEventsStorage = fresh.dailyOverviewIncludeEventsStorage
+        dailyOverviewIncludeYesterdayCompletedStorage = fresh.dailyOverviewIncludeYesterdayCompletedStorage
+        dailyOverviewIncludeYesterdayStudyTimeStorage = fresh.dailyOverviewIncludeYesterdayStudyTimeStorage
+        dailyOverviewIncludeMotivationStorage = fresh.dailyOverviewIncludeMotivationStorage
+        showOnlySchoolCalendarStorage = fresh.showOnlySchoolCalendarStorage
+        lockCalendarPickerToSchoolStorage = fresh.lockCalendarPickerToSchoolStorage
+        selectedSchoolCalendarID = fresh.selectedSchoolCalendarID
+        starredTabsString = fresh.starredTabsString
+        compactModeStorage = fresh.compactModeStorage
+        largeTapTargetsStorage = fresh.largeTapTargetsStorage
+        showSidebarByDefaultStorage = fresh.showSidebarByDefaultStorage
+        reduceMotionStorage = fresh.reduceMotionStorage
+        increaseContrastStorage = fresh.increaseContrastStorage
+        reduceTransparencyStorage = fresh.reduceTransparencyStorage
+        increaseTransparencyStorage = fresh.increaseTransparencyStorage
+        glassIntensityStorage = fresh.glassIntensityStorage
+        accentColorNameStorage = fresh.accentColorNameStorage
+        showAnimationsStorage = fresh.showAnimationsStorage
+        enableHapticsStorage = fresh.enableHapticsStorage
+        showTooltipsStorage = fresh.showTooltipsStorage
+        defaultFocusDurationStorage = fresh.defaultFocusDurationStorage
+        defaultBreakDurationStorage = fresh.defaultBreakDurationStorage
+        defaultEnergyLevelStorage = fresh.defaultEnergyLevelStorage
+        energySelectionConfirmedStorage = fresh.energySelectionConfirmedStorage
+        enableStudyCoachStorage = fresh.enableStudyCoachStorage
+        smartNotificationsStorage = fresh.smartNotificationsStorage
+        autoScheduleBreaksStorage = fresh.autoScheduleBreaksStorage
+        trackStudyHoursStorage = fresh.trackStudyHoursStorage
+        showProductivityInsightsStorage = fresh.showProductivityInsightsStorage
+        weeklySummaryNotificationsStorage = fresh.weeklySummaryNotificationsStorage
+        preferMorningSessionsStorage = fresh.preferMorningSessionsStorage
+        preferEveningSessionsStorage = fresh.preferEveningSessionsStorage
+        enableDeepWorkModeStorage = fresh.enableDeepWorkModeStorage
+        use24HourTimeStorage = fresh.use24HourTimeStorage
+        workdayStartHourStorage = fresh.workdayStartHourStorage
+        workdayStartMinuteStorage = fresh.workdayStartMinuteStorage
+        workdayEndHourStorage = fresh.workdayEndHourStorage
+        workdayEndMinuteStorage = fresh.workdayEndMinuteStorage
+        showEnergyPanelStorage = fresh.showEnergyPanelStorage
+        highContrastModeStorage = fresh.highContrastModeStorage
+        startOfWeekStorage = fresh.startOfWeekStorage
+        defaultViewStorage = fresh.defaultViewStorage
+        isSchoolModeStorage = fresh.isSchoolModeStorage
+        aiEnabledStorage = fresh.aiEnabledStorage
+        loadLowThresholdStorage = fresh.loadLowThresholdStorage
+        loadMediumThresholdStorage = fresh.loadMediumThresholdStorage
+        loadHighThresholdStorage = fresh.loadHighThresholdStorage
+        categoryEffortProfilesStorage = fresh.categoryEffortProfilesStorage
+        save()
     }
 }

@@ -67,6 +67,13 @@ final class AssignmentPlansStore: ObservableObject {
         generatePlans(for: assignments, force: true)
         lastRefreshDate = Date()
     }
+
+    func resetAll() {
+        plans.removeAll()
+        lastRefreshDate = nil
+        try? FileManager.default.removeItem(at: storageURL)
+        save()
+    }
     
     // MARK: - AI Scheduler Integration
     

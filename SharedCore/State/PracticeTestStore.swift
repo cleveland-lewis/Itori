@@ -3,6 +3,7 @@ import Foundation
 import SwiftUI
 
 final class PracticeTestStore: ObservableObject {
+    static let shared = PracticeTestStore()
     @Published var tests: [PracticeTest] = []
     @Published var currentTest: PracticeTest?
     @Published var isGenerating: Bool = false
@@ -269,5 +270,13 @@ final class PracticeTestStore: ObservableObject {
             DebugLogger.log("Failed to load practice tests: \(error)")
             tests = []
         }
+    }
+
+    func resetAll() {
+        tests.removeAll()
+        currentTest = nil
+        summary = PracticeTestSummary()
+        UserDefaults.standard.removeObject(forKey: storageKey)
+        saveTests()
     }
 }

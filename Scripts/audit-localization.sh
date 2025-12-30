@@ -8,7 +8,7 @@ echo ""
 
 # Find all hardcoded Text() strings that should be localized
 echo "1️⃣ Hardcoded Text() strings:"
-grep -rn "Text(\"" iOS/ macOSApp/ macOS/ SharedCore/ --include="*.swift" \
+grep -rn "Text(\"" Platforms/iOS/ Platforms/macOS/ _Deprecated_macOS/ SharedCore/ --include="*.swift" \
   | grep -v "NSLocalizedString" \
   | grep -v "comment:" \
   | grep -v "Text(verbatim:" \
@@ -18,7 +18,7 @@ echo ""
 
 # Find potential localization keys being displayed
 echo "2️⃣ Potential raw keys (contains dots and underscores):"
-grep -rn "Text\|Label\|\.navigationTitle" iOS/ macOSApp/ macOS/ SharedCore/ --include="*.swift" \
+grep -rn "Text\|Label\|\.navigationTitle" Platforms/iOS/ Platforms/macOS/ _Deprecated_macOS/ SharedCore/ --include="*.swift" \
   | grep -E "\w+\.\w+\.\w+" \
   | grep -v "NSLocalizedString" \
   | grep -v "//" \
@@ -27,14 +27,14 @@ echo ""
 
 # Find NSLocalizedString usage without fallback
 echo "3️⃣ NSLocalizedString without comments:"
-grep -rn "NSLocalizedString(" iOS/ macOSApp/ macOS/ SharedCore/ --include="*.swift" \
+grep -rn "NSLocalizedString(" Platforms/iOS/ Platforms/macOS/ _Deprecated_macOS/ SharedCore/ --include="*.swift" \
   | grep -v "comment:" \
   | wc -l
 echo ""
 
 # Check for enum rawValue being used for UI
 echo "4️⃣ Enum .rawValue usage (potential UI text):"
-grep -rn "\.rawValue" iOS/ macOSApp/ macOS/ SharedCore/ --include="*.swift" \
+grep -rn "\.rawValue" Platforms/iOS/ Platforms/macOS/ _Deprecated_macOS/ SharedCore/ --include="*.swift" \
   | grep -E "Text\(.*\.rawValue\)|Label.*\.rawValue" \
   | wc -l
 echo ""
@@ -51,7 +51,7 @@ echo ""
 
 # Find accessibility labels that might not be localized
 echo "6️⃣ Accessibility labels to check:"
-grep -rn "accessibilityLabel\|accessibilityHint" iOS/ macOSApp/ macOS/ --include="*.swift" \
+grep -rn "accessibilityLabel\|accessibilityHint" Platforms/iOS/ Platforms/macOS/ _Deprecated_macOS/ --include="*.swift" \
   | grep -v "NSLocalizedString" \
   | grep -v "localized" \
   | wc -l

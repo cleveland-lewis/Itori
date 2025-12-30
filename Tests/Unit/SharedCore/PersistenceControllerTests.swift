@@ -37,4 +37,20 @@ final class PersistenceControllerTests: XCTestCase {
         XCTAssertNotNil(secondUpdatedAt)
         XCTAssertNotEqual(firstUpdatedAt, secondUpdatedAt)
     }
+
+    func testResetPersistentStoreClearsData() throws {
+        let controller = PersistenceController(inMemory: true)
+        let context = controller.viewContext
+
+        let course = NSEntityDescription.insertNewObject(forEntityName: "Course", into: context)
+        course.setValue(UUID(), forKey: "id")
+        course.setValue("Reset Test Course", forKey: "title")
+        controller.save(context: context)
+
+        controller.resetPersistentStore()
+
+        let request = NSFetchRequest<NSManagedObject>(entityName: "Course")
+        let results = try context.fetch(request)
+        XCTAssertEqual(results.count, 0)
+    }
 }

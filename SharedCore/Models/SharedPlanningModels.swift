@@ -29,7 +29,7 @@ public enum AssignmentUrgency: String, Codable, CaseIterable, Hashable, Identifi
     public var id: String { rawValue }
     
     // Default implementation for non-macOS platforms
-    // macOS uses localized versions from macOSApp/Extensions/AssignmentExtensions.swift
+    // macOS uses localized versions from Platforms/macOS/Extensions/AssignmentExtensions.swift
     #if !os(macOS)
     public var color: Color {
         switch self {
@@ -60,7 +60,7 @@ public enum AssignmentStatus: String, Codable, CaseIterable, Sendable, Identifia
     public var id: String { rawValue }
     
     // Default implementation for non-macOS platforms
-    // macOS uses localized versions from macOSApp/Extensions/AssignmentExtensions.swift
+    // macOS uses localized versions from Platforms/macOS/Extensions/AssignmentExtensions.swift
     #if !os(macOS)
     public var label: String {
         switch self {

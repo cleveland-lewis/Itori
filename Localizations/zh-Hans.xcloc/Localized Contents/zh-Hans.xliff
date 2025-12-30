@@ -1901,8 +1901,8 @@
         <source>Open in New Window</source>
         <note/>
       </trans-unit>
-      <trans-unit id="OpenAI-Compatible API Configuration" xml:space="preserve">
-        <source>OpenAI-Compatible API Configuration</source>
+      <trans-unit id="OpenAI-Compatible LLM API Configuration" xml:space="preserve">
+        <source>OpenAI-Compatible LLM API Configuration</source>
         <note/>
       </trans-unit>
       <trans-unit id="Overall Score" xml:space="preserve">
@@ -2825,8 +2825,8 @@
         <source>Workday</source>
         <note/>
       </trans-unit>
-      <trans-unit id="Works with OpenAI, Azure OpenAI, LM Studio, and other compatible APIs" xml:space="preserve">
-        <source>Works with OpenAI, Azure OpenAI, LM Studio, and other compatible APIs</source>
+      <trans-unit id="Works with OpenAI, Azure OpenAI, LM Studio, and other compatible LLM APIs" xml:space="preserve">
+        <source>Works with OpenAI, Azure OpenAI, LM Studio, and other compatible LLM APIs</source>
         <note/>
       </trans-unit>
       <trans-unit id="Worth %lld%% of grade" xml:space="preserve">
@@ -4071,7 +4071,7 @@
       </trans-unit>
       <trans-unit id="settings.planner.ai" xml:space="preserve">
         <source>settings.planner.ai</source>
-        <note>AI-Powered Planning</note>
+        <note>LLM-Assisted Planning</note>
       </trans-unit>
       <trans-unit id="settings.planner.ai.detail" xml:space="preserve">
         <source>settings.planner.ai.detail</source>

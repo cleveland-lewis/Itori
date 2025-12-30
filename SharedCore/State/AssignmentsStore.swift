@@ -218,8 +218,18 @@ final class AssignmentsStore: ObservableObject {
 
     func resetAll() {
         tasks.removeAll()
+        pendingSyncQueue.removeAll()
         updateAppBadge()
         if let url = cacheURL, FileManager.default.fileExists(atPath: url.path) {
+            try? FileManager.default.removeItem(at: url)
+        }
+        if let url = iCloudURL, FileManager.default.fileExists(atPath: url.path) {
+            try? FileManager.default.removeItem(at: url)
+        }
+        if let url = iCloudConflictsURL, FileManager.default.fileExists(atPath: url.path) {
+            try? FileManager.default.removeItem(at: url)
+        }
+        if let url = conflictsFolderURL, FileManager.default.fileExists(atPath: url.path) {
             try? FileManager.default.removeItem(at: url)
         }
         saveCache()
@@ -372,6 +382,10 @@ final class AssignmentsStore: ObservableObject {
     private func loadFromiCloudIfEnabled() {
         guard isSyncEnabled else {
             debugLog("ℹ️ iCloud sync disabled - using local cache only")
+            return
+        }
+        guard !AppSettingsModel.shared.suppressICloudRestore else {
+            debugLog("ℹ️ iCloud restore suppressed after reset")
             return
         }
         loadFromiCloud()
@@ -533,7 +547,7 @@ final class AssignmentsStore: ObservableObject {
     }
     
     private func setupiCloudMonitoring() {
-        guard isSyncEnabled else { return }
+        guard isSyncEnabled, !AppSettingsModel.shared.suppressICloudRestore else { return }
         
         // Monitor for iCloud file changes every 30 seconds
         iCloudMonitor = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in
@@ -542,7 +556,7 @@ final class AssignmentsStore: ObservableObject {
     }
     
     private func checkForCloudUpdates() {
-        guard isSyncEnabled, isOnline, let url = iCloudURL else { return }
+        guard isSyncEnabled, isOnline, !AppSettingsModel.shared.suppressICloudRestore, let url = iCloudURL else { return }
         
         DispatchQueue.global(qos: .utility).async { [weak self] in
             guard let self = self,

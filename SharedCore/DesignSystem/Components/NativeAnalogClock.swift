@@ -193,6 +193,7 @@ struct DashboardClockCard: View {
     }
 }
 
+#if !DISABLE_PREVIEWS
 #Preview("Native Analog Clock") {
     VStack(spacing: 40) {
         NativeAnalogClock(diameter: 200, showDigitalTime: true)
@@ -203,3 +204,4 @@ struct DashboardClockCard: View {
     .padding(40)
     .background(Color(nsColor: .windowBackgroundColor))
 }
+#endif

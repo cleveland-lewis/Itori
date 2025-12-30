@@ -58,6 +58,14 @@ final class SchedulerPreferencesStore {
         }
     }
 
+    func resetAll() {
+        preferences = SchedulerPreferences.default()
+        if let url = fileURL {
+            try? FileManager.default.removeItem(at: url)
+        }
+        save()
+    }
+
     private func energyDelta(for level: String) -> Double {
         switch level.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
         case "high":

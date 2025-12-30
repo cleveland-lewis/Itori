@@ -1,0 +1,309 @@
+//
+//  RootsApp.swift
+//  Roots (macOS)
+//
+
+#if os(macOS)
+import SwiftUI
+#if !DISABLE_SWIFTDATA
+import SwiftData
+#endif
+import AppKit
+
+class AppDelegate: NSObject, NSApplicationDelegate {
+    override init() {
+        super.init()
+        UserDefaults.standard.set(false, forKey: "NSQuitAlwaysKeepsWindows")
+        UserDefaults.standard.set(false, forKey: "ApplePersistenceIgnoreState")
+    }
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        DispatchQueue.main.async {
+            let windows = NSApplication.shared.windows.filter { window in
+                window.className.contains("SwiftUI") || window.title.isEmpty == false
+            }
+            if windows.count > 1 {
+                for window in windows.dropFirst() {
+                    LOG_LIFECYCLE(.warn, "WindowManagement", "Closing duplicate window: \(window.title)")
+                    window.close()
+                }
+            }
+        }
+    }
+
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool { false }
+
+    func application(_ app: NSApplication, didDecodeRestorableState coder: NSCoder) {
+        // noop
+    }
+
+    func application(_ application: NSApplication, willEncodeRestorableState coder: NSCoder) {
+        // noop
+    }
+}
+
+@main
+struct RootsApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+
+    private let appAccentColor: Color = .blue
+
+    @StateObject private var coursesStore: CoursesStore
+    @StateObject private var appSettings = AppSettingsModel.shared
+    @StateObject private var settingsCoordinator: SettingsCoordinator
+    @StateObject private var gradesStore = GradesStore.shared
+    @StateObject private var plannerStore = PlannerStore.shared
+    @StateObject private var plannerCoordinator = PlannerCoordinator.shared
+    @StateObject private var appModel = AppModel.shared
+    @StateObject private var calendarManager = CalendarManager.shared
+    @StateObject private var deviceCalendar = DeviceCalendarManager.shared
+    @StateObject private var timerManager = TimerManager()
+    @StateObject private var focusManager = FocusManager()
+    @StateObject private var preferences = AppPreferences()
+    @StateObject private var parsingStore = SyllabusParsingStore.shared
+    @StateObject private var eventsCountStore = EventsCountStore()
+    @StateObject private var modalRouter = AppModalRouter.shared
+    @StateObject private var calendarRefresh = CalendarRefreshCoordinator.shared
+
+    @Environment(\.scenePhase) private var scenePhase
+
+    private var menuBarManager: MenuBarManager
+
+    init() {
+        LOG_LIFECYCLE(.info, "AppInit", "RootsApp initializing")
+        ResetCoordinator.shared.start(appModel: AppModel.shared)
+        let store = CoursesStore()
+        _coursesStore = StateObject(wrappedValue: store)
+        let settings = AppSettingsModel.shared
+        _appSettings = StateObject(wrappedValue: settings)
+        _settingsCoordinator = StateObject(wrappedValue: SettingsCoordinator(appSettings: settings, coursesStore: store))
+        let assignments = AssignmentsStore.shared
+        let timer = TimerManager()
+        _timerManager = StateObject(wrappedValue: timer)
+        let focus = FocusManager()
+        _focusManager = StateObject(wrappedValue: focus)
+        menuBarManager = MenuBarManager(focusManager: focus, assignmentsStore: assignments, settings: settings)
+        LOG_LIFECYCLE(.info, "AppInit", "RootsApp initialization complete")
+    }
+
+#if !DISABLE_SWIFTDATA
+    var sharedModelContainer: ModelContainer = {
+        let schema = Schema([
+            Item.self,
+            AssignmentPlan.self,
+            PlanStep.self,
+        ])
+        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+
+        do {
+            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+        } catch {
+            LOG_CORE(.error, "ModelContainer", "CRITICAL: Could not create ModelContainer: \(error.localizedDescription)")
+            // Fallback to in-memory container
+            LOG_CORE(.info, "ModelContainer", "Using in-memory ModelContainer as fallback")
+            let memoryConfig = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+            do {
+                return try ModelContainer(for: schema, configurations: [memoryConfig])
+            } catch {
+                LOG_CORE(.error, "ModelContainer", "CRITICAL: In-memory ModelContainer also failed: \(error.localizedDescription)")
+                // Last resort - minimal container
+                let minimalSchema = Schema([Item.self])
+                let minimalConfig = ModelConfiguration(schema: minimalSchema, isStoredInMemoryOnly: true)
+                do {
+                    return try ModelContainer(for: minimalSchema, configurations: [minimalConfig])
+                } catch {
+                    LOG_CORE(.error, "ModelContainer", "CRITICAL: Minimal container failed - app will be degraded")
+                    // Return empty container - app will have limited functionality
+                    return try! ModelContainer(for: minimalSchema, configurations: [minimalConfig])
+                }
+            }
+        }
+    }()
+#endif
+
+    var body: some Scene {
+        WindowGroup(id: "main") {
+            applyUITestOverrides(
+                to: ContentView()
+                    .environmentObject(AssignmentsStore.shared)
+                    .environmentObject(coursesStore)
+                    .environmentObject(appSettings)
+                    .environmentObject(appModel)
+                    .environmentObject(settingsCoordinator)
+                    .environmentObject(eventsCountStore)
+                    .environmentObject(calendarManager)
+                    .environmentObject(DeviceCalendarManager.shared)
+                    .environmentObject(timerManager)
+                    .environmentObject(focusManager)
+                    .environmentObject(FlashcardManager.shared)
+                    .environmentObject(preferences)
+                    .environmentObject(gradesStore)
+                    .environmentObject(plannerStore)
+                    .environmentObject(plannerCoordinator)
+                    .environmentObject(parsingStore)
+                    .environmentObject(modalRouter)
+                    .environmentObject(calendarRefresh)
+                    .detectReduceMotion()
+                    .onOpenURL { url in
+                        _ = DeepLinkRouter.shared.handle(
+                            url: url,
+                            appModel: appModel,
+                            plannerCoordinator: plannerCoordinator,
+                            calendarManager: calendarManager,
+                            settingsCoordinator: settingsCoordinator
+                        )
+                    }
+                    .onAppear {
+                        LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")
+                    }
+                    .accentColor(appAccentColor)
+                    .buttonStyle(.glassBlueProminent)
+                    .controlSize(.regular)
+                    .buttonBorderShape(.automatic)
+                    .tint(appAccentColor)
+                    .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
+                    .task {
+                        LOG_LIFECYCLE(.info, "AppStartup", "Running startup tasks")
+                        SchedulerAdaptationManager.shared.runAdaptiveSchedulerUpdateIfNeeded()
+                        PlannerSyncCoordinator.shared.start(
+                            assignmentsStore: .shared,
+                            plannerStore: .shared,
+                            settings: .shared
+                        )
+                        await calendarManager.checkPermissionsOnStartup()
+                        // TODO: Re-enable planner sync when function is available
+                        // await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
+                        timerManager.checkNotificationPermissions()
+                        
+                        NotificationManager.shared.updateSmartNotificationSchedules()
+                        LOG_LIFECYCLE(.info, "AppStartup", "Startup tasks complete")
+                    }
+            )
+        }
+        .handlesExternalEvents(matching: Set<String>())
+        .onChange(of: scenePhase) { _, newPhase in
+            handleScenePhaseChange(newPhase)
+        }
+#if !DISABLE_SWIFTDATA
+        .modelContainer(sharedModelContainer)
+#endif
+        WindowGroup(id: WindowIdentifier.assignmentDetail.rawValue) {
+            AssignmentSceneContent()
+                .environmentObject(AssignmentsStore.shared)
+                .environmentObject(coursesStore)
+        }
+        WindowGroup(id: WindowIdentifier.courseDetail.rawValue) {
+            CourseSceneContent()
+                .environmentObject(AssignmentsStore.shared)
+                .environmentObject(coursesStore)
+        }
+        WindowGroup(id: WindowIdentifier.plannerDay.rawValue) {
+            PlannerSceneContent()
+                .environmentObject(plannerStore)
+        }
+        WindowGroup(id: WindowIdentifier.timerSession.rawValue) {
+            TimerPageView()
+                .environmentObject(appSettings)
+                .environmentObject(settingsCoordinator)
+                .environmentObject(AssignmentsStore.shared)
+                .environmentObject(calendarManager)
+                .environmentObject(calendarRefresh)
+                .environmentObject(appModel)
+        }
+#if !DISABLE_SWIFTDATA
+        .modelContainer(sharedModelContainer)
+#endif
+        Settings {
+            applyUITestOverrides(
+                to: SettingsRootView(selection: $settingsCoordinator.selectedSection)
+                    .environmentObject(AssignmentsStore.shared)
+                    .environmentObject(coursesStore)
+                    .environmentObject(appSettings)
+                    .environmentObject(appModel)
+                    .environmentObject(settingsCoordinator)
+                    .environmentObject(eventsCountStore)
+                    .environmentObject(calendarManager)
+                    .environmentObject(timerManager)
+                    .environmentObject(focusManager)
+                    .environmentObject(FlashcardManager.shared)
+                    .environmentObject(preferences)
+                    .environmentObject(gradesStore)
+                    .environmentObject(plannerStore)
+                    .environmentObject(parsingStore)
+            )
+        }
+        .commands {
+            AppCommands()
+            SettingsCommands(showSettings: {
+                settingsCoordinator.show()
+            })
+        }
+    }
+
+    private var uiTestColorSchemeOverride: ColorScheme? {
+        guard let raw = ProcessInfo.processInfo.environment["UITEST_COLOR_SCHEME"] else { return nil }
+        return raw.lowercased() == "dark" ? .dark : .light
+    }
+
+    private var uiTestSizeCategoryOverride: ContentSizeCategory? {
+        guard let raw = ProcessInfo.processInfo.environment["UITEST_CONTENT_SIZE"] else { return nil }
+        return sizeCategory(for: raw)
+    }
+
+    private var shouldDisableAnimationsForUITests: Bool {
+        ProcessInfo.processInfo.environment["UITEST_DISABLE_ANIMATIONS"] == "1"
+    }
+
+    @ViewBuilder
+    private func applyUITestOverrides<Content: View>(to content: Content) -> some View {
+        let colored = content.preferredColorScheme(uiTestColorSchemeOverride)
+        if let sizeCategory = uiTestSizeCategoryOverride {
+            colored
+                .environment(\.sizeCategory, sizeCategory)
+                .transaction { txn in
+                    if shouldDisableAnimationsForUITests { txn.animation = nil }
+                }
+        } else {
+            colored
+                .transaction { txn in
+                    if shouldDisableAnimationsForUITests { txn.animation = nil }
+                }
+        }
+    }
+
+    private func sizeCategory(for raw: String) -> ContentSizeCategory? {
+        // Map common UIKit-style identifiers used in UI tests to SwiftUI categories.
+        switch raw {
+        case "UICTContentSizeCategoryXS": return .extraSmall
+        case "UICTContentSizeCategoryS": return .small
+        case "UICTContentSizeCategoryM": return .medium
+        case "UICTContentSizeCategoryL": return .large
+        case "UICTContentSizeCategoryXL": return .extraLarge
+        case "UICTContentSizeCategoryXXL": return .extraExtraLarge
+        case "UICTContentSizeCategoryXXXL": return .extraExtraExtraLarge
+        case "UICTContentSizeCategoryAccessibilityM": return .accessibilityMedium
+        case "UICTContentSizeCategoryAccessibilityL": return .accessibilityLarge
+        case "UICTContentSizeCategoryAccessibilityXL": return .accessibilityExtraLarge
+        case "UICTContentSizeCategoryAccessibilityXXL": return .accessibilityExtraExtraLarge
+        case "UICTContentSizeCategoryAccessibilityXXXL": return .accessibilityExtraExtraExtraLarge
+        default: return nil
+        }
+    }
+
+    private func handleScenePhaseChange(_ phase: ScenePhase) {
+        LOG_LIFECYCLE(.info, "ScenePhase", "Scene phase changed to: \(phase)")
+        if phase == .background || phase == .inactive {
+            LOG_LIFECYCLE(.info, "ScenePhase", "App entering background, saving settings")
+            appSettings.save()
+        } else if phase == .active {
+            LOG_LIFECYCLE(.info, "ScenePhase", "App became active, refreshing calendar")
+            _Concurrency.Task {
+                await calendarManager.checkPermissionsOnStartup()
+                // TODO: Re-enable planner sync when function is available
+                // await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
+            }
+            NotificationManager.shared.clearBadge()
+        }
+    }
+}
+#endif

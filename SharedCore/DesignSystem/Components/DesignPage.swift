@@ -34,7 +34,9 @@ struct DesignPage: View {
 }
 
 #if !DISABLE_PREVIEWS
+#if !DISABLE_PREVIEWS
 #Preview {
     DesignPage()
 }
+#endif
 #endif

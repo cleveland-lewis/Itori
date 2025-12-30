@@ -2,11 +2,66 @@ import Foundation
 
 /// Health monitoring and observability for the AI Engine
 /// Dev-only panel for diagnosing port behavior without exposing "AI" to users
-struct AIHealthMonitor {
+public struct AIHealthMonitor {
+    
+    // MARK: - LLM Provider Attempt Tracking (Dev-Only Kill-Switch Enforcement)
+    
+    /// Comprehensive counters for LLM provider attempts vs fallback-only execution
+    public struct LLMProviderCounters: Codable {
+        var providerAttemptCountTotal: Int = 0
+        var providerAttemptCountByProvider: [String: Int] = [:]
+        var providerAttemptCountByPort: [String: Int] = [:]
+        var suppressedByLLMToggleCount: Int = 0
+        var fallbackOnlyCount: Int = 0
+        var lastAttemptTimestamp: Date?
+        var lastSuppressionReason: String?
+        var lastSuppressionTimestamp: Date?
+        
+        mutating func recordProviderAttempt(portId: String, providerId: String) {
+            providerAttemptCountTotal += 1
+            providerAttemptCountByProvider[providerId, default: 0] += 1
+            providerAttemptCountByPort[portId, default: 0] += 1
+            lastAttemptTimestamp = Date()
+        }
+        
+        mutating func recordSuppression(reason: String) {
+            suppressedByLLMToggleCount += 1
+            lastSuppressionReason = reason
+            lastSuppressionTimestamp = Date()
+        }
+        
+        mutating func recordFallbackOnly() {
+            fallbackOnlyCount += 1
+        }
+        
+        mutating func reset() {
+            providerAttemptCountTotal = 0
+            providerAttemptCountByProvider.removeAll()
+            providerAttemptCountByPort.removeAll()
+            suppressedByLLMToggleCount = 0
+            fallbackOnlyCount = 0
+            lastAttemptTimestamp = nil
+            lastSuppressionReason = nil
+            lastSuppressionTimestamp = nil
+        }
+        
+        func exportJSON() -> String {
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            encoder.dateEncodingStrategy = .iso8601
+            
+            guard let data = try? encoder.encode(self),
+                  let json = String(data: data, encoding: .utf8) else {
+                return "{\"error\": \"Failed to encode LLM counters\"}"
+            }
+            
+            return json
+        }
+    }
     
     // MARK: - Per-Port Metrics
     
-    struct PortMetrics: Codable {
+    public struct PortMetrics: Codable {
         let portName: String
         var bestProvider: String?
         var fallbackAvailable: Bool
@@ -128,6 +183,7 @@ struct AIHealthMonitor {
     // MARK: - Monitor State
     
     private var portMetrics: [String: PortMetrics] = [:]
+    private var llmCounters = LLMProviderCounters()
     private let lock = NSLock()
     private var suppressionDecisions: [String: SuppressionDecision] = [:]
     
@@ -199,6 +255,43 @@ struct AIHealthMonitor {
         lock.lock()
         defer { lock.unlock() }
         return portMetrics
+    }
+    
+    // MARK: - LLM Provider Attempt Tracking
+    
+    /// Record a provider attempt (increment counters)
+    mutating func recordLLMProviderAttempt(portId: String, providerId: String) {
+        lock.lock()
+        defer { lock.unlock() }
+        llmCounters.recordProviderAttempt(portId: portId, providerId: providerId)
+    }
+    
+    /// Record suppression due to toggle being OFF
+    mutating func recordLLMSuppression(reason: String) {
+        lock.lock()
+        defer { lock.unlock() }
+        llmCounters.recordSuppression(reason: reason)
+    }
+    
+    /// Record fallback-only execution (no provider attempt)
+    mutating func recordFallbackOnly() {
+        lock.lock()
+        defer { lock.unlock() }
+        llmCounters.recordFallbackOnly()
+    }
+    
+    /// Get current LLM counters (for dev UI)
+    func getLLMCounters() -> LLMProviderCounters {
+        lock.lock()
+        defer { lock.unlock() }
+        return llmCounters
+    }
+    
+    /// Reset LLM counters (dev-only action)
+    mutating func resetLLMCounters() {
+        lock.lock()
+        defer { lock.unlock() }
+        llmCounters.reset()
     }
     
     mutating func getSuppressionDecision(for portName: String) -> SuppressionDecision? {
@@ -385,6 +478,63 @@ struct AIHealthMonitor {
         case .documentIngest, .academicEntityExtract, .assignmentCreation, .workloadForecast:
             return defaultLatencyBudgetMs
         }
+    }
+}
+
+// MARK: - Thread-Safe Wrapper for Actor-Compatible Access
+
+/// Thread-safe wrapper for AIHealthMonitor (since it's a struct with mutating methods)
+public actor AIHealthMonitorWrapper {
+    private var monitor = AIHealthMonitor()
+    
+    public init() {}
+    
+    public func recordLLMProviderAttempt(portId: String, providerId: String) {
+        monitor.recordLLMProviderAttempt(portId: portId, providerId: providerId)
+    }
+    
+    public func recordLLMSuppression(reason: String) {
+        monitor.recordLLMSuppression(reason: reason)
+    }
+    
+    public func recordFallbackOnly() {
+        monitor.recordFallbackOnly()
+    }
+    
+    public func getLLMCounters() -> AIHealthMonitor.LLMProviderCounters {
+        return monitor.getLLMCounters()
+    }
+    
+    public func resetLLMCounters() {
+        monitor.resetLLMCounters()
+    }
+    
+    public func recordPortRequest(
+        portName: String,
+        provider: String?,
+        latencyMs: Double,
+        success: Bool,
+        usedFallback: Bool,
+        reasonCodes: [String],
+        error: String? = nil
+    ) {
+        monitor.recordPortRequest(
+            portName: portName,
+            provider: provider,
+            latencyMs: latencyMs,
+            success: success,
+            usedFallback: usedFallback,
+            reasonCodes: reasonCodes,
+            error: error
+        )
+    }
+    
+    public func getMetrics(for portName: String) -> AIHealthMonitor.PortMetrics? {
+        return monitor.getMetrics(for: portName)
+    }
+    
+    public func getAllMetrics() -> [String: AIHealthMonitor.PortMetrics] {
+        return monitor.getAllMetrics()
     }
 }
 

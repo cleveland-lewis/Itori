@@ -1,11 +1,11 @@
 import Foundation
+import Combine
 
 /// Algorithm-owned test generator with deterministic gates and never-ship-invalid guarantee
-@Observable
-class AlgorithmicTestGenerator {
+final class AlgorithmicTestGenerator: ObservableObject {
     
-    var isGenerating: Bool = false
-    var stats: GenerationStats = GenerationStats()
+    @Published var isGenerating: Bool = false
+    @Published var stats: GenerationStats = GenerationStats()
     
     private let llmService: LocalLLMService
     private let maxAttemptsPerSlot: Int

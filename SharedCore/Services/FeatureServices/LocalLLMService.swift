@@ -1,9 +1,9 @@
 import Foundation
+import Combine
 
 /// Local LLM service for practice test generation
 /// v1: Placeholder for local LLM integration (MLX, Ollama, or similar)
-@Observable
-class LocalLLMService {
+final class LocalLLMService: ObservableObject {
     
     enum LLMError: Error, LocalizedError {
         case modelUnavailable
@@ -31,10 +31,10 @@ class LocalLLMService {
         }
     }
     
-    var isAvailable: Bool = false
-    var modelName: String = "local-model"
-    var backend: LLMBackend
-    var config: LLMBackendConfig
+    @Published var isAvailable: Bool = false
+    @Published var modelName: String = "local-model"
+    @Published var backend: LLMBackend
+    @Published var config: LLMBackendConfig
     
     private let maxTokens: Int = 4096
     private let timeoutSeconds: TimeInterval = 60

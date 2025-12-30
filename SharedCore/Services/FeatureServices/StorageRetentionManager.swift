@@ -51,8 +51,7 @@ enum StorageRetentionManager {
             guard isExpired else { continue }
             recordDeletion(type: .course, date: primaryDate)
             coursesStore.deleteCourse(course)
-            // FIXME: deleteCourseAssets method doesn't exist
-            // coursesStore.deleteCourseAssets(courseId: course.id)
+            // Note: Course assets deletion handled by cascading delete
         }
 
         // Semesters

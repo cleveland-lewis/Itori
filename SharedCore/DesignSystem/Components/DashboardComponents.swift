@@ -462,6 +462,7 @@ struct DashboardCalendarEvent: Identifiable {
 
 // MARK: - Preview
 
+#if !DISABLE_PREVIEWS
 #Preview("Dashboard Components") {
     ScrollView {
         VStack(spacing: 20) {
@@ -517,3 +518,4 @@ struct DashboardCalendarEvent: Identifiable {
     }
     .frame(width: 400, height: 800)
 }
+#endif

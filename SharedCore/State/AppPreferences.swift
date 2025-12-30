@@ -5,26 +5,91 @@ import Combine
 final class AppPreferences: ObservableObject {
     nonisolated let objectWillChange = ObservableObjectPublisher()
 
+    private let settings = AppSettingsModel.shared
+    private var cancellables = Set<AnyCancellable>()
+
     // Interaction
     @AppStorage("preferences.enableHoverWiggle") var enableHoverWiggle: Bool = true
-    @AppStorage("preferences.enableHaptics") var enableHaptics: Bool = true
+
+    init() {
+        settings.objectWillChange
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+    }
+
+    // Interaction
+    var enableHaptics: Bool {
+        get { settings.enableHaptics }
+        set {
+            settings.objectWillChange.send()
+            settings.enableHaptics = newValue
+            settings.save()
+        }
+    }
 
     // Accessibility
-    @AppStorage("preferences.reduceMotion") var reduceMotion: Bool = false
-    @AppStorage("preferences.highContrast") var highContrast: Bool = false
-    @AppStorage("preferences.reduceTransparency") var reduceTransparency: Bool = false
+    var reduceMotion: Bool {
+        get { settings.reduceMotion }
+        set {
+            settings.objectWillChange.send()
+            settings.reduceMotion = newValue
+            settings.save()
+        }
+    }
+
+    var highContrast: Bool {
+        get { settings.increaseContrast }
+        set {
+            settings.objectWillChange.send()
+            settings.increaseContrast = newValue
+            settings.save()
+        }
+    }
+
+    var reduceTransparency: Bool {
+        get { settings.reduceTransparency }
+        set {
+            settings.objectWillChange.send()
+            settings.reduceTransparency = newValue
+            settings.save()
+        }
+    }
 
     // Appearance
-    @AppStorage("preferences.glassIntensity") var glassIntensity: Double = 0.5
-    @AppStorage("preferences.accentColorName") var accentColorName: String = "Blue"
+    var glassIntensity: Double {
+        get { settings.glassIntensity }
+        set {
+            settings.objectWillChange.send()
+            settings.glassIntensity = newValue
+            settings.save()
+        }
+    }
+
+    var accentColorName: String {
+        get { settings.accentColorChoice.label }
+        set {
+            if let match = AppAccentColor.allCases.first(where: { $0.label == newValue }) {
+                settings.objectWillChange.send()
+                settings.accentColorChoice = match
+                settings.save()
+            }
+        }
+    }
 
     // Layout
-    @AppStorage("preferences.tabBarMode") var tabBarModeRaw: String = TabBarMode.iconsAndText.rawValue
-    @AppStorage("preferences.sidebarBehavior") var sidebarBehaviorRaw: String = SidebarBehavior.automatic.rawValue
-
     var tabBarMode: TabBarMode {
-        TabBarMode(rawValue: tabBarModeRaw) ?? .iconsAndText
+        get { settings.tabBarMode }
+        set {
+            settings.objectWillChange.send()
+            settings.tabBarMode = newValue
+            settings.save()
+        }
     }
+
+    @AppStorage("preferences.sidebarBehavior") var sidebarBehaviorRaw: String = SidebarBehavior.automatic.rawValue
 
     var sidebarBehavior: SidebarBehavior {
         SidebarBehavior(rawValue: sidebarBehaviorRaw) ?? .automatic
@@ -64,7 +129,7 @@ final class AppPreferences: ObservableObject {
     }
 
     var currentAccentColor: Color {
-        AppAccent(rawValue: accentColorName)?.color ?? .blue
+        settings.activeAccentColor
     }
 }
 

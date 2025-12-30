@@ -1,5 +1,4 @@
 import Foundation
-import SwiftUI // for Process availability on Apple platforms
 
 #if os(macOS)
 

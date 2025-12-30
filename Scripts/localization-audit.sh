@@ -24,14 +24,14 @@ echo ""
 # Find all Text("...") patterns
 echo "### Text(...) instances:"
 echo ""
-grep -rn 'Text("' --include="*.swift" macOSApp/ SharedCore/ iOSApp/ 2>/dev/null | \
+grep -rn 'Text("' --include="*.swift" Platforms/macOS/ SharedCore/ Platforms/iOS/ 2>/dev/null | \
   grep -v "NSLocalizedString" | \
   grep -v "//" | \
   head -200
 
 echo ""
 echo "Total Text() instances with potential hardcoded strings:"
-grep -r 'Text("' --include="*.swift" macOSApp/ SharedCore/ iOSApp/ 2>/dev/null | \
+grep -r 'Text("' --include="*.swift" Platforms/macOS/ SharedCore/ Platforms/iOS/ 2>/dev/null | \
   grep -v "NSLocalizedString" | \
   grep -v "//" | \
   wc -l
@@ -45,11 +45,11 @@ echo ""
 
 echo "### NSLocalizedString usage:"
 echo ""
-grep -rn "NSLocalizedString" --include="*.swift" macOSApp/ SharedCore/ iOSApp/ 2>/dev/null | head -50
+grep -rn "NSLocalizedString" --include="*.swift" Platforms/macOS/ SharedCore/ Platforms/iOS/ 2>/dev/null | head -50
 
 echo ""
 echo "Total NSLocalizedString instances:"
-grep -r "NSLocalizedString" --include="*.swift" macOSApp/ SharedCore/ iOSApp/ 2>/dev/null | wc -l
+grep -r "NSLocalizedString" --include="*.swift" Platforms/macOS/ SharedCore/ Platforms/iOS/ 2>/dev/null | wc -l
 
 echo ""
 echo ""
@@ -58,13 +58,13 @@ echo "## 3. LABEL() CALLS WITH HARDCODED STRINGS"
 echo "==========================================="
 echo ""
 
-grep -rn 'Label("' --include="*.swift" macOSApp/ SharedCore/ iOSApp/ 2>/dev/null | \
+grep -rn 'Label("' --include="*.swift" Platforms/macOS/ SharedCore/ Platforms/iOS/ 2>/dev/null | \
   grep -v "NSLocalizedString" | \
   head -100
 
 echo ""
 echo "Total Label() instances:"
-grep -r 'Label("' --include="*.swift" macOSApp/ SharedCore/ iOSApp/ 2>/dev/null | \
+grep -r 'Label("' --include="*.swift" Platforms/macOS/ SharedCore/ Platforms/iOS/ 2>/dev/null | \
   grep -v "NSLocalizedString" | \
   wc -l
 
@@ -75,13 +75,13 @@ echo "## 4. BUTTON() CALLS WITH HARDCODED STRINGS"
 echo "============================================"
 echo ""
 
-grep -rn 'Button("' --include="*.swift" macOSApp/ SharedCore/ iOSApp/ 2>/dev/null | \
+grep -rn 'Button("' --include="*.swift" Platforms/macOS/ SharedCore/ Platforms/iOS/ 2>/dev/null | \
   grep -v "NSLocalizedString" | \
   head -100
 
 echo ""
 echo "Total Button() instances:"
-grep -r 'Button("' --include="*.swift" macOSApp/ SharedCore/ iOSApp/ 2>/dev/null | \
+grep -r 'Button("' --include="*.swift" Platforms/macOS/ SharedCore/ Platforms/iOS/ 2>/dev/null | \
   grep -v "NSLocalizedString" | \
   wc -l
 
@@ -93,23 +93,23 @@ echo "========================================"
 echo ""
 
 echo "### Dashboard:"
-find macOSApp/Scenes -name "*Dashboard*" -type f 2>/dev/null
+find Platforms/macOS/Scenes -name "*Dashboard*" -type f 2>/dev/null
 echo ""
 
 echo "### Calendar:"
-find macOSApp/Scenes macOSApp/Views -name "*Calendar*" -type f 2>/dev/null
+find Platforms/macOS/Scenes Platforms/macOS/Views -name "*Calendar*" -type f 2>/dev/null
 echo ""
 
 echo "### Assignments:"
-find macOSApp/Scenes macOSApp/Views -name "*Assignment*" -type f 2>/dev/null
+find Platforms/macOS/Scenes Platforms/macOS/Views -name "*Assignment*" -type f 2>/dev/null
 echo ""
 
 echo "### Timer:"
-find macOSApp/Scenes macOSApp/Views -name "*Timer*" -type f 2>/dev/null
+find Platforms/macOS/Scenes Platforms/macOS/Views -name "*Timer*" -type f 2>/dev/null
 echo ""
 
 echo "### Settings:"
-find macOSApp/Scenes macOSApp/Views -name "*Settings*" -type f 2>/dev/null
+find Platforms/macOS/Scenes Platforms/macOS/Views -name "*Settings*" -type f 2>/dev/null
 echo ""
 
 echo ""
@@ -117,10 +117,10 @@ echo "## 6. SUMMARY"
 echo "============="
 echo ""
 
-TOTAL_TEXT=$(grep -r 'Text("' --include="*.swift" macOSApp/ SharedCore/ iOSApp/ 2>/dev/null | grep -v "NSLocalizedString" | grep -v "//" | wc -l)
-TOTAL_LOCALIZED=$(grep -r "NSLocalizedString" --include="*.swift" macOSApp/ SharedCore/ iOSApp/ 2>/dev/null | wc -l)
-TOTAL_LABEL=$(grep -r 'Label("' --include="*.swift" macOSApp/ SharedCore/ iOSApp/ 2>/dev/null | grep -v "NSLocalizedString" | wc -l)
-TOTAL_BUTTON=$(grep -r 'Button("' --include="*.swift" macOSApp/ SharedCore/ iOSApp/ 2>/dev/null | grep -v "NSLocalizedString" | wc -l)
+TOTAL_TEXT=$(grep -r 'Text("' --include="*.swift" Platforms/macOS/ SharedCore/ Platforms/iOS/ 2>/dev/null | grep -v "NSLocalizedString" | grep -v "//" | wc -l)
+TOTAL_LOCALIZED=$(grep -r "NSLocalizedString" --include="*.swift" Platforms/macOS/ SharedCore/ Platforms/iOS/ 2>/dev/null | wc -l)
+TOTAL_LABEL=$(grep -r 'Label("' --include="*.swift" Platforms/macOS/ SharedCore/ Platforms/iOS/ 2>/dev/null | grep -v "NSLocalizedString" | wc -l)
+TOTAL_BUTTON=$(grep -r 'Button("' --include="*.swift" Platforms/macOS/ SharedCore/ Platforms/iOS/ 2>/dev/null | grep -v "NSLocalizedString" | wc -l)
 
 echo "Hardcoded Text() calls:      $TOTAL_TEXT"
 echo "Already localized:           $TOTAL_LOCALIZED"

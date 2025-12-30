@@ -2,6 +2,10 @@ import Foundation
 
 public final class AIEngine: Sendable {
     public static let shared = AIEngine()
+    
+    // MARK: - LLM Provider Attempt Tracking (Dev-Only)
+    public static var healthMonitor = AIHealthMonitor()
+    public static let auditLog = AIAuditLog()
 
     private let registry: AIPortRegistry
     private let providers: [AIEngineProvider]
@@ -47,6 +51,13 @@ public final class AIEngine: Sendable {
         }
         return try await _executeWithGuards(portType: portType, input: input, context: context)
     }
+
+    public func resetProviderState() {
+        providerReliability.resetAll()
+        determinismLock.lock()
+        fallbackDeterminismCache.removeAll()
+        determinismLock.unlock()
+    }
     
     private enum ExecutionStrategy {
         case fallbackFirst  // For realtime ports
@@ -58,6 +69,72 @@ public final class AIEngine: Sendable {
         input: P.Input,
         context: AIRequestContext
     ) async throws -> AIResult<P.Output> {
+        /// ═══════════════════════════════════════════════════════════════════════════════
+        /// CRITICAL SYSTEM INVARIANT (Documented in Docs/Architecture/LLM_ENFORCEMENT_INVARIANT.md)
+        ///
+        /// IF enableLLMAssistance == false
+        /// THEN providerAttemptCountTotal MUST == 0
+        ///
+        /// This is the ONLY enforcement point. Any violation is a critical bug.
+        /// This kill-switch guarantees:
+        /// - No provider execute() calls
+        /// - No network requests to LLM services
+        /// - Only deterministic fallbacks may run
+        ///
+        /// Protected by:
+        /// - CI-blocking tests (Tests/LLMToggleEnforcementTests.swift)
+        /// - DEBUG-only canary assertion (below)
+        /// - Health monitor counters (HealthMonitor.swift)
+        /// - Audit log provenance (AIAuditLog.swift)
+        /// ═══════════════════════════════════════════════════════════════════════════════
+        
+        // CRITICAL: Single Kill-Switch Gate for LLM Toggle Enforcement
+        // If enableLLMAssistance is OFF, skip all provider logic and use fallback only
+        if !AppSettingsModel.shared.enableLLMAssistance {
+            let inputHash = try Self.computeInputHash(
+                for: input,
+                excludedKeys: P.inputHashExcludedKeys,
+                unorderedArrayKeys: P.unorderedArrayKeys
+            )
+
+            AIEngine.healthMonitor.recordLLMSuppression(reason: "llm_toggle_disabled")
+            AIEngine.auditLog.log(AIAuditEntry(
+                timestamp: Date(),
+                requestID: context.requestID,
+                portID: P.id.rawValue,
+                providerID: nil,
+                eventType: .suppressed,
+                reasonCode: .llmDisabled,
+                fallbackUsed: true,
+                latencyMs: 0,
+                success: true,
+                inputHash: inputHash
+            ))
+
+            // Execute fallback-only path (no provider selection, no network)
+            guard P.supportsDeterministicFallback && fallback.canFallback(for: P.id) else {
+                throw AIEngineError.policyDenied(reason: "llm_disabled_no_fallback:\(P.id.rawValue)")
+            }
+
+            AIEngine.healthMonitor.recordFallbackOnly()
+            var result = try await fallback.executeFallback(P.self, input: input, context: context)
+            result = result.withMetadata(
+                AIResultMetadata(
+                    inputHash: inputHash,
+                    computedAt: Date(),
+                    computedAtUptime: ProcessInfo.processInfo.systemUptime,
+                    featureStateVersion: context.featureStateVersion
+                )
+            )
+            result = enforceDeterministicFallback(
+                result: result,
+                port: P.id,
+                inputHash: inputHash,
+                portType: P.self
+            )
+            return result.addingReasonCodes(["llm_disabled", "fallback_only"])
+        }
+        
         guard capabilityPolicy.isPortEnabled(P.id) else {
             throw AIEngineError.policyDenied(reason: "portDisabled:\(P.id.rawValue)")
         }
@@ -249,6 +326,27 @@ public final class AIEngine: Sendable {
             throw AIEngineError.capabilityUnavailable(port: P.id)
         }
         
+        // CRITICAL: Record provider attempt (for LLM toggle enforcement tracking)
+        AIEngine.healthMonitor.recordLLMProviderAttempt(
+            portId: P.id.rawValue,
+            providerId: provider.id.rawValue
+        )
+        
+        // Log audit event for provider attempt
+        let requestID = UUID()
+        AIEngine.auditLog.log(AIAuditEntry(
+            timestamp: Date(),
+            requestID: requestID,
+            portID: P.id.rawValue,
+            providerID: provider.id.rawValue,
+            eventType: .providerAttempt,
+            reasonCode: nil,
+            fallbackUsed: false,
+            latencyMs: 0,
+            success: true,
+            inputHash: inputHash
+        ))
+        
         let finalInput = try applyRedaction(
             inputJSON: privacyRedacted,
             port: P.id,
@@ -261,6 +359,39 @@ public final class AIEngine: Sendable {
         let budget = timeBudget(for: P.id)
         let (outJSON, diag): (Data, AIDiagnostic)
         do {
+            #if DEBUG
+            // CANARY: Runtime invariant check (DEBUG-only)
+            // This should NEVER fire if _executeWithGuards properly enforces the kill-switch
+            if !AppSettingsModel.shared.enableLLMAssistance {
+                let counters = await AIEngine.healthMonitor.getLLMCounters()
+                assertionFailure("""
+                    ═══════════════════════════════════════════════════════════════
+                    CRITICAL INVARIANT VIOLATION DETECTED
+                    ═══════════════════════════════════════════════════════════════
+                    
+                    LLM toggle is OFF but provider.execute() is being called!
+                    
+                    This is a critical bug in AIEngine._executeWithGuards.
+                    The kill-switch gate failed to prevent provider execution.
+                    
+                    Current State:
+                    - enableLLMAssistance: false (SHOULD BLOCK PROVIDERS)
+                    - providerAttemptCountTotal: \(counters.providerAttemptCountTotal)
+                    - Provider: \(provider.id.rawValue)
+                    - Port: \(P.id.rawValue)
+                    
+                    Action Required:
+                    1. DO NOT SHIP THIS BUILD
+                    2. Review AIEngine._executeWithGuards (lines ~67-117)
+                    3. Verify toggle check happens BEFORE provider selection
+                    4. Run LLMToggleEnforcementTests to reproduce
+                    
+                    See: Docs/Architecture/LLM_ENFORCEMENT_INVARIANT.md
+                    ═══════════════════════════════════════════════════════════════
+                    """)
+            }
+            #endif
+            
             (outJSON, diag) = try await budget.execute {
                 try await provider.execute(port: P.id, inputJSON: finalInput, context: context)
             }
@@ -375,15 +506,33 @@ public final class AIEngine: Sendable {
 }
 
 extension AIEngine {
-    static var healthMonitor = AIHealthMonitor()
     static var replayStore = AIPortReplayStore.shared
 
-    func getHealthSnapshot() -> AIHealthMonitor.HealthSnapshot {
-        AIEngine.healthMonitor.captureSnapshot(engine: self)
-    }
+    // TODO: Update these methods to work with async AIHealthMonitorWrapper
+    // func getHealthSnapshot() -> AIHealthMonitor.HealthSnapshot {
+    //     AIEngine.healthMonitor.captureSnapshot(engine: self)
+    // }
 
-    func exportHealthReport() -> String {
-        getHealthSnapshot().exportJSON()
+    // func exportHealthReport() -> String {
+    //     getHealthSnapshot().exportJSON()
+    // }
+}
+
+private extension AIEngine {
+    // MARK: - Helper Methods for Kill-Switch Enforcement
+    static func computeInputHash<T: Encodable>(
+        for input: T,
+        excludedKeys: Set<String> = [],
+        unorderedArrayKeys: Set<String> = []
+    ) throws -> String {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        let rawInput = try encoder.encode(input)
+        return AIInputHasher.hash(
+            inputJSON: rawInput,
+            excludedKeys: excludedKeys,
+            unorderedArrayKeys: unorderedArrayKeys
+        )
     }
 }
 
@@ -410,6 +559,13 @@ extension AIEngine {
         if let provider = providers.first(where: { $0.isAvailable() && $0.supports(port: P.id) }) {
             providerID = provider.id
             do {
+                #if DEBUG
+                // CANARY: Debug replay path should also respect toggle
+                if !AppSettingsModel.shared.enableLLMAssistance {
+                    print("⚠️ WARNING: Replay mode called provider while toggle OFF (debug-only)")
+                }
+                #endif
+                
                 let (outJSON, _) = try await provider.execute(port: P.id, inputJSON: redactedInput, context: context)
                 providerOutputJSON = String(data: outJSON, encoding: .utf8)
             } catch {
@@ -446,6 +602,7 @@ extension AIEngine {
             timestamp: record.timestamp
         )
     }
+    
 }
 #endif
 

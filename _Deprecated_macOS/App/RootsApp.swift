@@ -1,0 +1,190 @@
+//
+//  RootsApp.swift
+//  Roots
+//
+//  Created by Cleveland Lewis III on 11/30/25.
+//
+
+import SwiftUI
+import _Concurrency
+import Combine
+#if !DISABLE_SWIFTDATA
+import SwiftData
+#endif
+
+@main
+struct RootsApp: App {
+
+    @StateObject private var coursesStore: CoursesStore
+    @StateObject private var appSettings = AppSettingsModel.shared
+    @StateObject private var settingsCoordinator: SettingsCoordinator
+    @StateObject private var gradesStore = GradesStore.shared
+    @StateObject private var plannerStore = PlannerStore.shared
+    @StateObject private var plannerCoordinator = PlannerCoordinator.shared
+    @StateObject private var appModel = AppModel()
+    @StateObject private var calendarManager = CalendarManager.shared
+    @StateObject private var deviceCalendar = DeviceCalendarManager.shared
+    @StateObject private var timerManager = TimerManager()
+    @StateObject private var focusManager = FocusManager()
+    @StateObject private var preferences = AppPreferences()
+    @StateObject private var parsingStore = SyllabusParsingStore.shared
+    @StateObject private var eventsCountStore = EventsCountStore()
+    @StateObject private var modalRouter = AppModalRouter.shared
+    @StateObject private var calendarRefresh = CalendarRefreshCoordinator.shared
+
+    @Environment(\.scenePhase) private var scenePhase
+
+    private var menuBarManager: MenuBarManager
+
+    init() {
+        LOG_LIFECYCLE(.info, "AppInit", "RootsApp initializing")
+        let store = CoursesStore()
+        _coursesStore = StateObject(wrappedValue: store)
+        let settings = AppSettingsModel.shared
+        _appSettings = StateObject(wrappedValue: settings)
+        _settingsCoordinator = StateObject(wrappedValue: SettingsCoordinator(appSettings: settings, coursesStore: store))
+        let assignments = AssignmentsStore.shared
+        let timer = TimerManager()
+        _timerManager = StateObject(wrappedValue: timer)
+        let focus = FocusManager()
+        _focusManager = StateObject(wrappedValue: focus)
+        menuBarManager = MenuBarManager(focusManager: focus, assignmentsStore: assignments, settings: settings)
+        LOG_LIFECYCLE(.info, "AppInit", "RootsApp initialization complete")
+    }
+
+#if !DISABLE_SWIFTDATA
+    var sharedModelContainer: ModelContainer = {
+        let schema = Schema([
+            Item.self,
+            AssignmentPlan.self,
+            PlanStep.self,
+        ])
+        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+
+        do {
+            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+        } catch {
+            fatalError("Could not create ModelContainer: \(error)")
+        }
+    }()
+#endif
+
+    @State private var resetCancellable: AnyCancellable? = nil
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environmentObject(AssignmentsStore.shared)
+                .environmentObject(coursesStore)
+                .environmentObject(appSettings)
+                .environmentObject(appModel)
+                .environmentObject(settingsCoordinator)
+                .environmentObject(eventsCountStore)
+                .environmentObject(calendarManager)
+                .environmentObject(DeviceCalendarManager.shared)
+                .environmentObject(timerManager)
+                .environmentObject(focusManager)
+                .environmentObject(FlashcardManager.shared)
+                .environmentObject(preferences)
+                .environmentObject(gradesStore)
+                .environmentObject(plannerStore)
+                .environmentObject(plannerCoordinator)
+                .environmentObject(parsingStore)
+                .environmentObject(modalRouter)
+                .environmentObject(calendarRefresh)
+                .detectReduceMotion()
+                .onAppear {
+                    LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")
+
+                    // Subscribe to app reset requests from AppModel
+                    resetCancellable = AppModel.shared.resetPublisher
+                        .receive(on: DispatchQueue.main)
+                        .sink { _ in
+                            LOG_LIFECYCLE(.warn, "AppReset", "Global app reset requested")
+                            // perform global resets
+                            AssignmentsStore.shared.resetAll()
+                            CoursesStore.shared?.resetAll()
+                            PlannerStore.shared.reset()
+                            GradesStore.shared.resetAll()
+                            LOG_LIFECYCLE(.info, "AppReset", "Global app reset complete")
+                        }
+                }
+                .accentColor(preferences.currentAccentColor)
+                .buttonStyle(.glassBlueProminent)
+                .controlSize(.regular)
+                .buttonBorderShape(.automatic)
+                .tint(preferences.currentAccentColor)
+                .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
+                .task {
+                    LOG_LIFECYCLE(.info, "AppStartup", "Running startup tasks")
+                    // Run adaptation on launch
+                    SchedulerAdaptationManager.shared.runAdaptiveSchedulerUpdateIfNeeded()
+                    PlannerSyncCoordinator.shared.start(
+                        assignmentsStore: .shared,
+                        plannerStore: .shared,
+                        settings: .shared
+                    )
+                    // Refresh and request permissions on launch
+                    await calendarManager.checkPermissionsOnStartup()
+                    await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
+                    timerManager.checkNotificationPermissions()
+                    
+                    // Schedule daily overview if enabled
+                    NotificationManager.shared.updateSmartNotificationSchedules()
+                    LOG_LIFECYCLE(.info, "AppStartup", "Startup tasks complete")
+                }
+        }
+        WindowGroup("Assignment Detail") {
+            AssignmentSceneContent()
+                .environmentObject(AssignmentsStore.shared)
+                .environmentObject(coursesStore)
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            handleScenePhaseChange(newPhase)
+        }
+#if !DISABLE_SWIFTDATA
+        .modelContainer(sharedModelContainer)
+#endif
+#if os(macOS)
+        Settings {
+            SettingsRootView(selection: $settingsCoordinator.selectedSection)
+                .environmentObject(AssignmentsStore.shared)
+                .environmentObject(coursesStore)
+                .environmentObject(appSettings)
+                .environmentObject(appModel)
+                .environmentObject(settingsCoordinator)
+                .environmentObject(eventsCountStore)
+                .environmentObject(calendarManager)
+                .environmentObject(timerManager)
+                .environmentObject(focusManager)
+                .environmentObject(FlashcardManager.shared)
+                .environmentObject(preferences)
+                .environmentObject(gradesStore)
+                .environmentObject(plannerStore)
+                .environmentObject(parsingStore)
+        }
+        .commands {
+            AppCommands()
+            AppKeyboardCommands()
+            SettingsCommands(showSettings: {
+                settingsCoordinator.show()
+            })
+        }
+#endif
+    }
+
+    private func handleScenePhaseChange(_ phase: ScenePhase) {
+        LOG_LIFECYCLE(.info, "ScenePhase", "Scene phase changed to: \(phase)")
+        if phase == .background || phase == .inactive {
+            LOG_LIFECYCLE(.info, "ScenePhase", "App entering background, saving settings")
+            appSettings.save()
+        } else if phase == .active {
+            LOG_LIFECYCLE(.info, "ScenePhase", "App became active, refreshing calendar")
+            _Concurrency.Task {
+                await calendarManager.checkPermissionsOnStartup()
+                await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
+            }
+            NotificationManager.shared.clearBadge()
+        }
+    }
+}
