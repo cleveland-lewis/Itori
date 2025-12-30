@@ -3,6 +3,7 @@ import SwiftUI
 import Combine
 import AppKit
 import UniformTypeIdentifiers
+import EventKit
 
 // MARK: - Models
 
@@ -54,6 +55,53 @@ struct PlannerTaskDraft {
     var estimatedMinutes: Int
     var lockToDueDate: Bool
     var priority: PlannerTaskPriority
+    var recurrenceEnabled: Bool
+    var recurrenceFrequency: RecurrenceRule.Frequency
+    var recurrenceInterval: Int
+    var recurrenceEndOption: RecurrenceEndOption
+    var recurrenceEndDate: Date
+    var recurrenceEndCount: Int
+    var skipWeekends: Bool
+    var skipHolidays: Bool
+    var holidaySource: RecurrenceRule.HolidaySource
+}
+
+enum RecurrenceEndOption: String, CaseIterable, Identifiable {
+    case never
+    case onDate
+    case afterOccurrences
+
+    var id: String { rawValue }
+}
+
+enum RecurrenceSelection: String, CaseIterable, Identifiable {
+    case none
+    case daily
+    case weekly
+    case monthly
+    case yearly
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .none: return "None"
+        case .daily: return "Daily"
+        case .weekly: return "Weekly"
+        case .monthly: return "Monthly"
+        case .yearly: return "Yearly"
+        }
+    }
+
+    var frequency: RecurrenceRule.Frequency {
+        switch self {
+        case .none: return .weekly
+        case .daily: return .daily
+        case .weekly: return .weekly
+        case .monthly: return .monthly
+        case .yearly: return .yearly
+        }
+    }
 }
 
 // Overdue task row view
@@ -668,6 +716,7 @@ private extension PlannerPageView {
                         ForEach(unscheduledTasks) { task in
                             PlannerTaskRow(task: task) {
                                 editingTask = task
+                                let recurrenceDefaults = recurrenceDefaults(from: recurrenceForTask(task.id))
                                 editingTaskDraft = PlannerTaskDraft(
                                     id: task.id,
                                     title: task.title,
@@ -677,7 +726,16 @@ private extension PlannerPageView {
                                     dueDate: task.dueDate,
                                     estimatedMinutes: task.estimatedMinutes,
                                     lockToDueDate: task.isLockedToDueDate,
-                                    priority: .normal
+                                    priority: .normal,
+                                    recurrenceEnabled: recurrenceDefaults.enabled,
+                                    recurrenceFrequency: recurrenceDefaults.frequency,
+                                    recurrenceInterval: recurrenceDefaults.interval,
+                                    recurrenceEndOption: recurrenceDefaults.endOption,
+                                    recurrenceEndDate: recurrenceDefaults.endDate,
+                                    recurrenceEndCount: recurrenceDefaults.endCount,
+                                    skipWeekends: recurrenceDefaults.skipWeekends,
+                                    skipHolidays: recurrenceDefaults.skipHolidays,
+                                    holidaySource: recurrenceDefaults.holidaySource
                                 )
                                 showTaskSheet = true
                             }
@@ -726,6 +784,7 @@ private extension PlannerPageView {
                                                if item.isScheduled {
                                                    // TODO: scroll/focus timeline
                                                } else {
+                                                   let recurrenceDefaults = recurrenceDefaults(from: recurrenceForTask(item.id))
                                                    editingTaskDraft = PlannerTaskDraft(
                                                        id: item.id,
                                                        title: item.title,
@@ -735,7 +794,16 @@ private extension PlannerPageView {
                                                        dueDate: item.dueDate,
                                                        estimatedMinutes: 60,
                                                        lockToDueDate: false,
-                                                       priority: .normal
+                                                       priority: .normal,
+                                                       recurrenceEnabled: recurrenceDefaults.enabled,
+                                                       recurrenceFrequency: recurrenceDefaults.frequency,
+                                                       recurrenceInterval: recurrenceDefaults.interval,
+                                                       recurrenceEndOption: recurrenceDefaults.endOption,
+                                                       recurrenceEndDate: recurrenceDefaults.endDate,
+                                                       recurrenceEndCount: recurrenceDefaults.endCount,
+                                                       skipWeekends: recurrenceDefaults.skipWeekends,
+                                                       skipHolidays: recurrenceDefaults.skipHolidays,
+                                                       holidaySource: recurrenceDefaults.holidaySource
                                                    )
                                                    showTaskSheet = true
                                                }
@@ -796,6 +864,7 @@ private extension PlannerPageView {
         let taskId = draft.assignmentID ?? draft.id ?? UUID()
         if let idx = assignmentsStore.tasks.firstIndex(where: { $0.id == taskId }) {
             let existing = assignmentsStore.tasks[idx]
+            let recurrenceRule = buildRecurrenceRule(from: draft)
             let updated = AppTask(
                 id: existing.id,
                 title: draft.title,
@@ -814,10 +883,12 @@ private extension PlannerPageView {
                 gradePossiblePoints: existing.gradePossiblePoints,
                 gradeEarnedPoints: existing.gradeEarnedPoints,
                 category: existing.category,
-                dueTimeMinutes: existing.dueTimeMinutes
+                dueTimeMinutes: existing.dueTimeMinutes,
+                recurrence: recurrenceRule
             )
             assignmentsStore.updateTask(updated)
         } else {
+            let recurrenceRule = buildRecurrenceRule(from: draft)
             let newTask = AppTask(
                 id: taskId,
                 title: draft.title,
@@ -829,7 +900,8 @@ private extension PlannerPageView {
                 difficulty: 0.5,
                 importance: 0.5,
                 type: .homework,
-                locked: draft.lockToDueDate
+                locked: draft.lockToDueDate,
+                recurrence: recurrenceRule
             )
             assignmentsStore.addTask(newTask)
         }
@@ -859,9 +931,81 @@ private extension PlannerPageView {
             dueDate: Date(),
             estimatedMinutes: 60,
             lockToDueDate: false,
-            priority: .normal
+            priority: .normal,
+            recurrenceEnabled: false,
+            recurrenceFrequency: .weekly,
+            recurrenceInterval: 1,
+            recurrenceEndOption: .never,
+            recurrenceEndDate: Date(),
+            recurrenceEndCount: 3,
+            skipWeekends: false,
+            skipHolidays: false,
+            holidaySource: .systemCalendar
         )
         showTaskSheet = true
+    }
+
+    func recurrenceForTask(_ id: UUID) -> RecurrenceRule? {
+        assignmentsStore.tasks.first(where: { $0.id == id })?.recurrence
+    }
+
+    func recurrenceDefaults(from rule: RecurrenceRule?) -> (enabled: Bool, frequency: RecurrenceRule.Frequency, interval: Int, endOption: RecurrenceEndOption, endDate: Date, endCount: Int, skipWeekends: Bool, skipHolidays: Bool, holidaySource: RecurrenceRule.HolidaySource) {
+        guard let rule else {
+            return (false, .weekly, 1, .never, Date(), 3, false, false, .systemCalendar)
+        }
+        let endOption: RecurrenceEndOption
+        let endDate: Date
+        let endCount: Int
+        switch rule.end {
+        case .never:
+            endOption = .never
+            endDate = Date()
+            endCount = 3
+        case .until(let date):
+            endOption = .onDate
+            endDate = date
+            endCount = 3
+        case .afterOccurrences(let count):
+            endOption = .afterOccurrences
+            endDate = Date()
+            endCount = max(1, count)
+        }
+        return (
+            true,
+            rule.frequency,
+            max(1, rule.interval),
+            endOption,
+            endDate,
+            endCount,
+            rule.skipPolicy.skipWeekends,
+            rule.skipPolicy.skipHolidays,
+            rule.skipPolicy.holidaySource
+        )
+    }
+
+    func buildRecurrenceRule(from draft: PlannerTaskDraft) -> RecurrenceRule? {
+        guard draft.recurrenceEnabled else { return nil }
+        let end: RecurrenceRule.End
+        switch draft.recurrenceEndOption {
+        case .never:
+            end = .never
+        case .onDate:
+            end = .until(draft.recurrenceEndDate)
+        case .afterOccurrences:
+            end = .afterOccurrences(max(1, draft.recurrenceEndCount))
+        }
+        let skipPolicy = RecurrenceRule.SkipPolicy(
+            skipWeekends: draft.skipWeekends,
+            skipHolidays: draft.skipHolidays,
+            holidaySource: draft.holidaySource,
+            adjustment: .forward
+        )
+        return RecurrenceRule(
+            frequency: draft.recurrenceFrequency,
+            interval: max(1, draft.recurrenceInterval),
+            end: end,
+            skipPolicy: skipPolicy
+        )
     }
 
     func runAIScheduler() {
@@ -1262,7 +1406,107 @@ struct NewTaskSheet: View {
                         .rootsCaption()
                 }
             }
+            RootsFormRow(label: "Repeat") {
+                Picker("", selection: recurrenceSelection) {
+                    ForEach(RecurrenceSelection.allCases) { option in
+                        Text(option.label).tag(option)
+                    }
+                }
+                .pickerStyle(.menu)
+                .labelsHidden()
+            }
+
+            if draft.recurrenceEnabled {
+                VStack(alignment: .leading, spacing: 8) {
+                    RootsFormRow(label: "Interval") {
+                        Stepper(value: $draft.recurrenceInterval, in: 1...30) {
+                            Text("Every \(draft.recurrenceInterval) \(recurrenceUnitLabel)")
+                        }
+                        .frame(maxWidth: 220, alignment: .leading)
+                    }
+                    RootsFormRow(label: "End") {
+                        Picker("", selection: $draft.recurrenceEndOption) {
+                            Text("Never").tag(RecurrenceEndOption.never)
+                            Text("On Date").tag(RecurrenceEndOption.onDate)
+                            Text("After").tag(RecurrenceEndOption.afterOccurrences)
+                        }
+                        .pickerStyle(.menu)
+                        .labelsHidden()
+                    }
+                    if draft.recurrenceEndOption == .onDate {
+                        RootsFormRow(label: "") {
+                            DatePicker("", selection: $draft.recurrenceEndDate, displayedComponents: .date)
+                                .labelsHidden()
+                        }
+                    } else if draft.recurrenceEndOption == .afterOccurrences {
+                        RootsFormRow(label: "") {
+                            Stepper(value: $draft.recurrenceEndCount, in: 1...99) {
+                                Text("\(draft.recurrenceEndCount) occurrences")
+                            }
+                        }
+                    }
+                    RootsFormRow(label: "Skip") {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Toggle("Skip weekends", isOn: $draft.skipWeekends)
+                            Toggle("Skip holidays", isOn: $draft.skipHolidays)
+                        }
+                    }
+                    if draft.skipHolidays {
+                        RootsFormRow(label: "Holidays") {
+                            Picker("", selection: $draft.holidaySource) {
+                                Text("System Calendar").tag(RecurrenceRule.HolidaySource.systemCalendar)
+                                Text("None").tag(RecurrenceRule.HolidaySource.none)
+                            }
+                            .pickerStyle(.menu)
+                            .labelsHidden()
+                        }
+                        if !holidaySourceAvailable && draft.holidaySource == .systemCalendar {
+                            Text("No holiday source configured.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    private var recurrenceSelection: Binding<RecurrenceSelection> {
+        Binding(
+            get: {
+                guard draft.recurrenceEnabled else { return .none }
+                switch draft.recurrenceFrequency {
+                case .daily: return .daily
+                case .weekly: return .weekly
+                case .monthly: return .monthly
+                case .yearly: return .yearly
+                }
+            },
+            set: { selection in
+                if selection == .none {
+                    draft.recurrenceEnabled = false
+                } else {
+                    draft.recurrenceEnabled = true
+                    draft.recurrenceFrequency = selection.frequency
+                }
+            }
+        )
+    }
+
+    private var recurrenceUnitLabel: String {
+        switch draft.recurrenceFrequency {
+        case .daily: return draft.recurrenceInterval == 1 ? "day" : "days"
+        case .weekly: return draft.recurrenceInterval == 1 ? "week" : "weeks"
+        case .monthly: return draft.recurrenceInterval == 1 ? "month" : "months"
+        case .yearly: return draft.recurrenceInterval == 1 ? "year" : "years"
+        }
+    }
+
+    private var holidaySourceAvailable: Bool {
+        guard CalendarAuthorizationManager.shared.isAuthorized else { return false }
+        let calendars = DeviceCalendarManager.shared.store.calendars(for: .event)
+        return calendars.contains { $0.type == .holiday || $0.title.lowercased().contains("holiday") }
     }
 
     private var footer: some View {

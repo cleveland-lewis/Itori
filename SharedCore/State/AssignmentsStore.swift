@@ -1,9 +1,12 @@
 import Foundation
 import Combine
 import Network
+import EventKit
 
 final class AssignmentsStore: ObservableObject {
     static let shared = AssignmentsStore()
+    static var holidayCheckerOverride: ((Date, RecurrenceRule.HolidaySource) -> Bool)?
+    static var holidaySourceAvailabilityOverride: ((RecurrenceRule.HolidaySource) -> Bool)?
     private var iCloudMonitor: Timer?
     private var pathMonitor: NWPathMonitor?
     private var isOnline: Bool = true
@@ -82,7 +85,8 @@ final class AssignmentsStore: ObservableObject {
     // No sample data - provided methods to add/remove tasks programmatically
     func addTask(_ task: AppTask) {
         debugLog("➕ addTask called: \(task.title)")
-        tasks.append(task)
+        let normalized = normalizeRecurringMetadata(task, existing: nil)
+        tasks.append(normalized)
         debugLog("✅ Task added. Total tasks: \(tasks.count)")
         updateAppBadge()
         saveCache()
@@ -94,11 +98,11 @@ final class AssignmentsStore: ObservableObject {
         }
         
         // Schedule notification for new task
-        scheduleNotificationIfNeeded(for: task)
+        scheduleNotificationIfNeeded(for: normalized)
         
         // Generate plan immediately for the new assignment
         Task { @MainActor in
-            generatePlanForNewTask(task)
+            generatePlanForNewTask(normalized)
         }
     }
     
@@ -161,32 +165,39 @@ final class AssignmentsStore: ObservableObject {
             guard let idx = tasks.firstIndex(where: { $0.id == task.id }) else { return false }
             return !tasks[idx].isCompleted
         }()
+        let existingTask = tasks.first(where: { $0.id == task.id })
+        let normalized = normalizeRecurringMetadata(task, existing: existingTask)
         
         // Check if key fields changed that require plan regeneration
         let needsPlanRegeneration: Bool = {
             guard let idx = tasks.firstIndex(where: { $0.id == task.id }) else { return false }
             let old = tasks[idx]
-            return old.due != task.due ||
-                   old.dueTimeMinutes != task.dueTimeMinutes ||
-                   old.estimatedMinutes != task.estimatedMinutes ||
-                   old.category != task.category ||
-                   old.importance != task.importance
+            return old.due != normalized.due ||
+                   old.dueTimeMinutes != normalized.dueTimeMinutes ||
+                   old.estimatedMinutes != normalized.estimatedMinutes ||
+                   old.category != normalized.category ||
+                   old.importance != normalized.importance
         }()
         
-        if let idx = tasks.firstIndex(where: { $0.id == task.id }) {
-            tasks[idx] = task
+        if let idx = tasks.firstIndex(where: { $0.id == normalized.id }) {
+            var updatedTasks = tasks
+            updatedTasks[idx] = normalized
+            if wasJustCompleted, let nextTask = nextRecurringTask(from: normalized, in: updatedTasks) {
+                updatedTasks.append(nextTask)
+            }
+            tasks = updatedTasks
         }
         updateAppBadge()
         saveCache()
         refreshGPA()
         
         // Reschedule notification for updated task
-        rescheduleNotificationIfNeeded(for: task)
+        rescheduleNotificationIfNeeded(for: normalized)
         
         // Regenerate plan if key fields changed
         if needsPlanRegeneration {
             Task { @MainActor in
-                generatePlanForNewTask(task)
+                generatePlanForNewTask(normalized)
             }
         }
         
@@ -196,6 +207,211 @@ final class AssignmentsStore: ObservableObject {
                 Feedback.shared.taskCompleted()
             }
         }
+    }
+
+    private func normalizeRecurringMetadata(_ task: AppTask, existing: AppTask?) -> AppTask {
+        guard let recurrence = task.recurrence else {
+            if task.recurrenceSeriesID == nil && task.recurrenceIndex == nil {
+                return task
+            }
+            return AppTask(
+                id: task.id,
+                title: task.title,
+                courseId: task.courseId,
+                due: task.due,
+                estimatedMinutes: task.estimatedMinutes,
+                minBlockMinutes: task.minBlockMinutes,
+                maxBlockMinutes: task.maxBlockMinutes,
+                difficulty: task.difficulty,
+                importance: task.importance,
+                type: task.type,
+                locked: task.locked,
+                attachments: task.attachments,
+                isCompleted: task.isCompleted,
+                gradeWeightPercent: task.gradeWeightPercent,
+                gradePossiblePoints: task.gradePossiblePoints,
+                gradeEarnedPoints: task.gradeEarnedPoints,
+                category: task.category,
+                dueTimeMinutes: task.dueTimeMinutes,
+                recurrence: nil,
+                recurrenceSeriesID: nil,
+                recurrenceIndex: nil
+            )
+        }
+
+        let seriesID = task.recurrenceSeriesID ?? existing?.recurrenceSeriesID ?? UUID()
+        let index = task.recurrenceIndex ?? existing?.recurrenceIndex ?? 0
+
+        return AppTask(
+            id: task.id,
+            title: task.title,
+            courseId: task.courseId,
+            due: task.due,
+            estimatedMinutes: task.estimatedMinutes,
+            minBlockMinutes: task.minBlockMinutes,
+            maxBlockMinutes: task.maxBlockMinutes,
+            difficulty: task.difficulty,
+            importance: task.importance,
+            type: task.type,
+            locked: task.locked,
+            attachments: task.attachments,
+            isCompleted: task.isCompleted,
+            gradeWeightPercent: task.gradeWeightPercent,
+            gradePossiblePoints: task.gradePossiblePoints,
+            gradeEarnedPoints: task.gradeEarnedPoints,
+            category: task.category,
+            dueTimeMinutes: task.dueTimeMinutes,
+            recurrence: recurrence,
+            recurrenceSeriesID: seriesID,
+            recurrenceIndex: index
+        )
+    }
+
+    private func nextRecurringTask(from task: AppTask, in existingTasks: [AppTask]) -> AppTask? {
+        guard let recurrence = task.recurrence else { return nil }
+        guard let due = task.due else {
+            debugLog("⚠️ Recurring task missing due date; skipping next occurrence generation.")
+            return nil
+        }
+        guard let seriesID = task.recurrenceSeriesID else {
+            debugLog("⚠️ Recurring task missing series ID; skipping next occurrence generation.")
+            return nil
+        }
+
+        let currentIndex = task.recurrenceIndex ?? 0
+        let nextIndex = currentIndex + 1
+
+        if !shouldGenerateNextOccurrence(for: recurrence, nextIndex: nextIndex, baseDate: due) {
+            return nil
+        }
+
+        if existingTasks.contains(where: { $0.recurrenceSeriesID == seriesID && $0.recurrenceIndex == nextIndex }) {
+            return nil
+        }
+
+        let (nextDueDate, nextDueTimeMinutes) = nextDueDate(for: task, rule: recurrence, baseDate: due)
+        guard let nextDueDate else { return nil }
+
+        if case .until(let endDate) = recurrence.end {
+            let calendar = Calendar.autoupdatingCurrent
+            let endDay = calendar.startOfDay(for: endDate)
+            if nextDueDate > endDay { return nil }
+        }
+
+        return AppTask(
+            id: UUID(),
+            title: task.title,
+            courseId: task.courseId,
+            due: nextDueDate,
+            estimatedMinutes: task.estimatedMinutes,
+            minBlockMinutes: task.minBlockMinutes,
+            maxBlockMinutes: task.maxBlockMinutes,
+            difficulty: task.difficulty,
+            importance: task.importance,
+            type: task.type,
+            locked: task.locked,
+            attachments: task.attachments,
+            isCompleted: false,
+            gradeWeightPercent: task.gradeWeightPercent,
+            gradePossiblePoints: task.gradePossiblePoints,
+            gradeEarnedPoints: task.gradeEarnedPoints,
+            category: task.category,
+            dueTimeMinutes: nextDueTimeMinutes,
+            recurrence: recurrence,
+            recurrenceSeriesID: seriesID,
+            recurrenceIndex: nextIndex
+        )
+    }
+
+    private func nextDueDate(for task: AppTask, rule: RecurrenceRule, baseDate: Date) -> (Date?, Int?) {
+        var calendar = Calendar.autoupdatingCurrent
+        calendar.timeZone = .autoupdatingCurrent
+
+        let hasTime = task.dueTimeMinutes != nil
+        let baseDateTime = baseDateTimeForTask(task, calendar: calendar)
+
+        let nextDateTime: Date?
+        switch rule.frequency {
+        case .daily:
+            nextDateTime = calendar.date(byAdding: .day, value: rule.interval, to: baseDateTime)
+        case .weekly:
+            nextDateTime = calendar.date(byAdding: .weekOfYear, value: rule.interval, to: baseDateTime)
+        case .monthly:
+            nextDateTime = calendar.date(byAdding: .month, value: rule.interval, to: baseDateTime)
+        case .yearly:
+            nextDateTime = calendar.date(byAdding: .year, value: rule.interval, to: baseDateTime)
+        }
+
+        guard let nextDateTime else { return (nil, nil) }
+        var nextDay = calendar.startOfDay(for: nextDateTime)
+        nextDay = adjustForwardIfNeeded(date: nextDay, rule: rule, calendar: calendar)
+        return (nextDay, hasTime ? task.dueTimeMinutes : nil)
+    }
+
+    private func baseDateTimeForTask(_ task: AppTask, calendar: Calendar) -> Date {
+        if let minutes = task.dueTimeMinutes, let due = task.due {
+            return calendar.date(byAdding: .minute, value: minutes, to: due) ?? due
+        }
+        return task.due ?? Date()
+    }
+
+    private func shouldGenerateNextOccurrence(for rule: RecurrenceRule, nextIndex: Int, baseDate: Date) -> Bool {
+        switch rule.end {
+        case .never:
+            return true
+        case .afterOccurrences(let count):
+            return nextIndex < max(0, count)
+        case .until(let endDate):
+            let calendar = Calendar.autoupdatingCurrent
+            let endDay = calendar.startOfDay(for: endDate)
+            return baseDate <= endDay
+        }
+    }
+
+    private func adjustForwardIfNeeded(date: Date, rule: RecurrenceRule, calendar: Calendar) -> Date {
+        guard rule.skipPolicy.skipWeekends || rule.skipPolicy.skipHolidays else { return date }
+        var current = date
+        var attempts = 0
+        while attempts < 370 {
+            let isWeekend = rule.skipPolicy.skipWeekends && calendar.isDateInWeekend(current)
+            let isHoliday = rule.skipPolicy.skipHolidays && isHoliday(current, source: rule.skipPolicy.holidaySource)
+            if !isWeekend && !isHoliday {
+                return current
+            }
+            guard let next = calendar.date(byAdding: .day, value: 1, to: current) else { break }
+            current = next
+            attempts += 1
+        }
+        return current
+    }
+
+    private func isHoliday(_ date: Date, source: RecurrenceRule.HolidaySource) -> Bool {
+        if let availability = AssignmentsStore.holidaySourceAvailabilityOverride, !availability(source) {
+            debugLog("ℹ️ Holiday skipping unavailable (override).")
+            return false
+        }
+        if let override = AssignmentsStore.holidayCheckerOverride {
+            return override(date, source)
+        }
+        guard source != .none else { return false }
+        guard CalendarAuthorizationManager.shared.isAuthorized else {
+            debugLog("ℹ️ Holiday skipping unavailable (calendar access denied).")
+            return false
+        }
+        let store = DeviceCalendarManager.shared.store
+        let calendars = store.calendars(for: .event).filter { calendar in
+            if calendar.type == .holiday { return true }
+            return calendar.title.lowercased().contains("holiday")
+        }
+        guard !calendars.isEmpty else {
+            debugLog("ℹ️ Holiday skipping unavailable (no holiday calendars found).")
+            return false
+        }
+        let start = Calendar.autoupdatingCurrent.startOfDay(for: date)
+        let end = Calendar.autoupdatingCurrent.date(byAdding: .day, value: 1, to: start) ?? date
+        let predicate = store.predicateForEvents(withStart: start, end: end, calendars: calendars)
+        let events = store.events(matching: predicate).filter { $0.isAllDay }
+        return !events.isEmpty
     }
 
     func reassignTasks(fromCourseId: UUID, toCourseId: UUID?) {

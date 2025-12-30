@@ -59,13 +59,16 @@ struct AppTask: Codable, Equatable, Hashable {
     let type: TaskType
     let category: TaskType     // First-class category field (aliased to type for now)
     let locked: Bool
+    let recurrence: RecurrenceRule?
+    let recurrenceSeriesID: UUID?
+    let recurrenceIndex: Int?
     let attachments: [Attachment]
     var isCompleted: Bool
     var gradeWeightPercent: Double?
     var gradePossiblePoints: Double?
     var gradeEarnedPoints: Double?
 
-    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil, category: TaskType? = nil, dueTimeMinutes: Int? = nil) {
+    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil, category: TaskType? = nil, dueTimeMinutes: Int? = nil, recurrence: RecurrenceRule? = nil, recurrenceSeriesID: UUID? = nil, recurrenceIndex: Int? = nil) {
         self.id = id
         self.title = title
         self.courseId = courseId
@@ -79,6 +82,9 @@ struct AppTask: Codable, Equatable, Hashable {
         self.type = type
         self.category = category ?? type  // Use provided category or default to type
         self.locked = locked
+        self.recurrence = recurrence
+        self.recurrenceSeriesID = recurrenceSeriesID
+        self.recurrenceIndex = recurrenceIndex
         self.attachments = attachments
         self.isCompleted = isCompleted
         self.gradeWeightPercent = gradeWeightPercent
@@ -100,6 +106,9 @@ struct AppTask: Codable, Equatable, Hashable {
         case type
         case category
         case locked
+        case recurrence
+        case recurrenceSeriesID
+        case recurrenceIndex
         case attachments
         case isCompleted
         case gradeWeightPercent
@@ -137,6 +146,9 @@ struct AppTask: Codable, Equatable, Hashable {
         type = try container.decodeIfPresent(TaskType.self, forKey: .type) ?? .homework
         category = try container.decodeIfPresent(TaskType.self, forKey: .category) ?? type
         locked = try container.decodeIfPresent(Bool.self, forKey: .locked) ?? false
+        recurrence = decodeRecurrenceRule(from: container)
+        recurrenceSeriesID = try container.decodeIfPresent(UUID.self, forKey: .recurrenceSeriesID)
+        recurrenceIndex = try container.decodeIfPresent(Int.self, forKey: .recurrenceIndex)
         attachments = try container.decodeIfPresent([Attachment].self, forKey: .attachments) ?? []
         isCompleted = try container.decodeIfPresent(Bool.self, forKey: .isCompleted) ?? false
         gradeWeightPercent = try container.decodeIfPresent(Double.self, forKey: .gradeWeightPercent)
@@ -159,6 +171,9 @@ struct AppTask: Codable, Equatable, Hashable {
         try container.encode(type, forKey: .type)
         try container.encode(category, forKey: .category)
         try container.encode(locked, forKey: .locked)
+        try container.encodeIfPresent(recurrence, forKey: .recurrence)
+        try container.encodeIfPresent(recurrenceSeriesID, forKey: .recurrenceSeriesID)
+        try container.encodeIfPresent(recurrenceIndex, forKey: .recurrenceIndex)
         try container.encode(attachments, forKey: .attachments)
         try container.encode(isCompleted, forKey: .isCompleted)
         try container.encodeIfPresent(gradeWeightPercent, forKey: .gradeWeightPercent)
@@ -185,9 +200,35 @@ struct AppTask: Codable, Equatable, Hashable {
             gradePossiblePoints: gradePossiblePoints,
             gradeEarnedPoints: gradeEarnedPoints,
             category: category,
-            dueTimeMinutes: dueTimeMinutes
+            dueTimeMinutes: dueTimeMinutes,
+            recurrence: recurrence,
+            recurrenceSeriesID: recurrenceSeriesID,
+            recurrenceIndex: recurrenceIndex
         )
     }
+}
+
+private func decodeRecurrenceRule(from container: KeyedDecodingContainer<AppTask.CodingKeys>) -> RecurrenceRule? {
+    if let rule = try? container.decodeIfPresent(RecurrenceRule.self, forKey: .recurrence) {
+        return rule
+    }
+    if let legacy = try? container.decodeIfPresent(String.self, forKey: .recurrence) {
+        switch legacy {
+        case "daily":
+            return RecurrenceRule.preset(.daily)
+        case "weekly":
+            return RecurrenceRule.preset(.weekly)
+        case "biweekly":
+            return RecurrenceRule(frequency: .weekly, interval: 2, end: .never, skipPolicy: .init())
+        case "monthly":
+            return RecurrenceRule.preset(.monthly)
+        case "yearly":
+            return RecurrenceRule.preset(.yearly)
+        default:
+            return nil
+        }
+    }
+    return nil
 }
 
 extension AppTask {

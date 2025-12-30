@@ -1,6 +1,7 @@
 #if os(iOS)
 import SwiftUI
 import EventKit
+import EventKit
 import UIKit
 
 struct IOSPlannerView: View {
@@ -1053,6 +1054,15 @@ struct IOSTaskEditorView: View {
         var type: TaskType = .homework
         var priority: Priority = .medium
         var difficulty: Double = 0.6
+        var recurrenceEnabled: Bool = false
+        var recurrenceFrequency: RecurrenceRule.Frequency = .weekly
+        var recurrenceInterval: Int = 1
+        var recurrenceEndOption: RecurrenceEndOption = .never
+        var recurrenceEndDate: Date = Date()
+        var recurrenceEndCount: Int = 3
+        var skipWeekends: Bool = false
+        var skipHolidays: Bool = false
+        var holidaySource: RecurrenceRule.HolidaySource = .systemCalendar
 
         init(task: AppTask? = nil, title: String? = nil, courseId: UUID? = nil, dueDate: Date? = nil, type: TaskType? = nil) {
             if let task {
@@ -1066,6 +1076,24 @@ struct IOSTaskEditorView: View {
                 self.type = task.type
                 self.priority = Priority(fromImportance: task.importance)
                 self.difficulty = task.difficulty
+                if let recurrence = task.recurrence {
+                    self.recurrenceEnabled = true
+                    self.recurrenceFrequency = recurrence.frequency
+                    self.recurrenceInterval = max(1, recurrence.interval)
+                    self.skipWeekends = recurrence.skipPolicy.skipWeekends
+                    self.skipHolidays = recurrence.skipPolicy.skipHolidays
+                    self.holidaySource = recurrence.skipPolicy.holidaySource
+                    switch recurrence.end {
+                    case .never:
+                        self.recurrenceEndOption = .never
+                    case .until(let date):
+                        self.recurrenceEndOption = .onDate
+                        self.recurrenceEndDate = date
+                    case .afterOccurrences(let count):
+                        self.recurrenceEndOption = .afterOccurrences
+                        self.recurrenceEndCount = max(1, count)
+                    }
+                }
             } else {
                 if let title { self.title = title }
                 if let courseId { self.courseId = courseId }
@@ -1076,6 +1104,7 @@ struct IOSTaskEditorView: View {
 
         func makeTask(existing: AppTask?) -> AppTask {
             let resolvedMinutes = estimatedMinutes ?? 60
+            let recurrenceRule = buildRecurrenceRule()
             AppTask(
                 id: existing?.id ?? UUID(),
                 title: title,
@@ -1094,8 +1123,72 @@ struct IOSTaskEditorView: View {
                 gradePossiblePoints: existing?.gradePossiblePoints,
                 gradeEarnedPoints: existing?.gradeEarnedPoints,
                 category: type,
-                dueTimeMinutes: hasSpecificDueTime ? dueTimeMinutes : nil
+                dueTimeMinutes: hasSpecificDueTime ? dueTimeMinutes : nil,
+                recurrence: recurrenceRule
             )
+        }
+
+        private func buildRecurrenceRule() -> RecurrenceRule? {
+            guard recurrenceEnabled, hasDueDate else { return nil }
+            let end: RecurrenceRule.End
+            switch recurrenceEndOption {
+            case .never:
+                end = .never
+            case .onDate:
+                end = .until(recurrenceEndDate)
+            case .afterOccurrences:
+                end = .afterOccurrences(max(1, recurrenceEndCount))
+            }
+            let skipPolicy = RecurrenceRule.SkipPolicy(
+                skipWeekends: skipWeekends,
+                skipHolidays: skipHolidays,
+                holidaySource: holidaySource,
+                adjustment: .forward
+            )
+            return RecurrenceRule(
+                frequency: recurrenceFrequency,
+                interval: max(1, recurrenceInterval),
+                end: end,
+                skipPolicy: skipPolicy
+            )
+        }
+    }
+
+    enum RecurrenceEndOption: String, CaseIterable, Identifiable {
+        case never
+        case onDate
+        case afterOccurrences
+
+        var id: String { rawValue }
+    }
+
+    enum RecurrenceSelection: String, CaseIterable, Identifiable {
+        case none
+        case daily
+        case weekly
+        case monthly
+        case yearly
+
+        var id: String { rawValue }
+
+        var label: String {
+            switch self {
+            case .none: return "None"
+            case .daily: return "Daily"
+            case .weekly: return "Weekly"
+            case .monthly: return "Monthly"
+            case .yearly: return "Yearly"
+            }
+        }
+
+        var frequency: RecurrenceRule.Frequency {
+            switch self {
+            case .none: return .weekly
+            case .daily: return .daily
+            case .weekly: return .weekly
+            case .monthly: return .monthly
+            case .yearly: return .yearly
+            }
         }
     }
 
@@ -1169,6 +1262,56 @@ struct IOSTaskEditorView: View {
                     )
                 }
 
+                Section("Repeat") {
+                    Picker("Repeat", selection: recurrenceSelection) {
+                        ForEach(RecurrenceSelection.allCases) { option in
+                            Text(option.label).tag(option)
+                        }
+                    }
+                    .disabled(!draft.hasDueDate)
+
+                    if !draft.hasDueDate {
+                        Text("Add a due date to enable recurrence.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if draft.recurrenceEnabled {
+                        Stepper(value: $draft.recurrenceInterval, in: 1...30) {
+                            Text("Every \(draft.recurrenceInterval) \(recurrenceUnitLabel)")
+                        }
+
+                        Picker("End", selection: $draft.recurrenceEndOption) {
+                            Text("Never").tag(RecurrenceEndOption.never)
+                            Text("On Date").tag(RecurrenceEndOption.onDate)
+                            Text("After").tag(RecurrenceEndOption.afterOccurrences)
+                        }
+
+                        if draft.recurrenceEndOption == .onDate {
+                            DatePicker("End Date", selection: $draft.recurrenceEndDate, displayedComponents: .date)
+                        } else if draft.recurrenceEndOption == .afterOccurrences {
+                            Stepper(value: $draft.recurrenceEndCount, in: 1...99) {
+                                Text("\(draft.recurrenceEndCount) occurrences")
+                            }
+                        }
+
+                        Toggle("Skip weekends", isOn: $draft.skipWeekends)
+                        Toggle("Skip holidays", isOn: $draft.skipHolidays)
+
+                        if draft.skipHolidays {
+                            Picker("Holiday Source", selection: $draft.holidaySource) {
+                                Text("System Calendar").tag(RecurrenceRule.HolidaySource.systemCalendar)
+                                Text("None").tag(RecurrenceRule.HolidaySource.none)
+                            }
+                            if !holidaySourceAvailable && draft.holidaySource == .systemCalendar {
+                                Text("No holiday source configured.")
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+
                 Section("Priority") {
                     NavigationLink {
                         PrioritySelectionView(selectedPriority: $draft.priority)
@@ -1217,6 +1360,7 @@ struct IOSTaskEditorView: View {
                 if !draft.hasDueDate {
                     draft.hasSpecificDueTime = false
                     draft.dueTimeMinutes = nil
+                    draft.recurrenceEnabled = false
                 }
             }
             .onChange(of: draft.hasSpecificDueTime) { newValue in
@@ -1260,6 +1404,43 @@ struct IOSTaskEditorView: View {
                 draft.dueTimeMinutes = minutes
             }
         )
+    }
+
+    private var recurrenceSelection: Binding<RecurrenceSelection> {
+        Binding(
+            get: {
+                guard draft.recurrenceEnabled else { return .none }
+                switch draft.recurrenceFrequency {
+                case .daily: return .daily
+                case .weekly: return .weekly
+                case .monthly: return .monthly
+                case .yearly: return .yearly
+                }
+            },
+            set: { selection in
+                if selection == .none {
+                    draft.recurrenceEnabled = false
+                } else {
+                    draft.recurrenceEnabled = true
+                    draft.recurrenceFrequency = selection.frequency
+                }
+            }
+        )
+    }
+
+    private var recurrenceUnitLabel: String {
+        switch draft.recurrenceFrequency {
+        case .daily: return draft.recurrenceInterval == 1 ? "day" : "days"
+        case .weekly: return draft.recurrenceInterval == 1 ? "week" : "weeks"
+        case .monthly: return draft.recurrenceInterval == 1 ? "month" : "months"
+        case .yearly: return draft.recurrenceInterval == 1 ? "year" : "years"
+        }
+    }
+
+    private var holidaySourceAvailable: Bool {
+        guard CalendarAuthorizationManager.shared.isAuthorized else { return false }
+        let calendars = DeviceCalendarManager.shared.store.calendars(for: .event)
+        return calendars.contains { $0.type == .holiday || $0.title.lowercased().contains("holiday") }
     }
     
     private func requestDurationEstimateIfNeeded() {
