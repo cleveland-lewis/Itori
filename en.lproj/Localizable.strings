@@ -1021,6 +1021,7 @@
 "settings.planner.intelligence.header" = "Intelligence";
 "settings.planner.energy_tracking" = "Energy Tracking";
 "settings.planner.energy_tracking.detail" = "Track and optimize based on your energy levels";
+"settings.planner.energy_tracking.warning" = "Turning off Energy Panel will make the planning algorithm default to medium energy for all days.";
 "settings.planner.track_hours" = "Track Study Hours";
 "settings.planner.track_hours.detail" = "Monitor total time spent studying";
 "settings.planner.tracking.header" = "Tracking";

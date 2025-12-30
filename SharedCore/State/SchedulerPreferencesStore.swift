@@ -20,10 +20,17 @@ final class SchedulerPreferencesStore {
 
     func energyProfileForPlanning(settings: AppSettingsModel = .shared) -> [Int: Double] {
         let base = preferences.learnedEnergyProfile
-        guard settings.energySelectionConfirmed else { return base }
-        let delta = energyDelta(for: settings.defaultEnergyLevel)
-        guard delta != 0 else { return base }
-        return base.mapValues { min(1.0, max(0.0, $0 + delta)) }
+        guard settings.showEnergyPanel else {
+            return mediumEnergyProfile()
+        }
+        var adjusted = base
+        if settings.energySelectionConfirmed {
+            let delta = energyDelta(for: settings.defaultEnergyLevel)
+            if delta != 0 {
+                adjusted = adjusted.mapValues { min(1.0, max(0.0, $0 + delta)) }
+            }
+        }
+        return applySessionPreferences(to: adjusted, settings: settings)
     }
 
     func load() {
@@ -60,5 +67,28 @@ final class SchedulerPreferencesStore {
         default:
             return 0.0
         }
+    }
+
+    private func applySessionPreferences(to profile: [Int: Double], settings: AppSettingsModel) -> [Int: Double] {
+        var adjusted = profile
+        if settings.preferMorningSessions {
+            for hour in 7...11 {
+                adjusted[hour] = min(1.0, (adjusted[hour] ?? 0.5) + 0.15)
+            }
+        }
+        if settings.preferEveningSessions {
+            for hour in 18...22 {
+                adjusted[hour] = min(1.0, (adjusted[hour] ?? 0.5) + 0.15)
+            }
+        }
+        return adjusted
+    }
+
+    private func mediumEnergyProfile() -> [Int: Double] {
+        var profile: [Int: Double] = [:]
+        for hour in 0..<24 {
+            profile[hour] = 0.5
+        }
+        return profile
     }
 }

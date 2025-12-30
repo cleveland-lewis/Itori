@@ -14,6 +14,13 @@ struct PlannerSettingsView: View {
                 .toggleStyle(.switch)
                 .onChange(of: settings.enableAIPlanner) { _, _ in settings.save() }
 
+                Toggle("Show Energy Panel", isOn: $settings.showEnergyPanel)
+                    .toggleStyle(.switch)
+                    .onChange(of: settings.showEnergyPanel) { _, _ in settings.save() }
+                Text("settings.planner.energy_tracking.warning".localized)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
                 Picker("planner.settings.horizon".localized, selection: Binding(
                     get: { settings.plannerHorizon },
                     set: { newValue in settings.plannerHorizon = newValue; settings.save() }

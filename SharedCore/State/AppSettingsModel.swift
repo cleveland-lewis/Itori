@@ -231,6 +231,8 @@ final class AppSettingsModel: ObservableObject, Codable {
         case cardRadiusRaw, animationSoftnessStorage, typographyModeRaw
         case devModeEnabledStorage, devModeUILoggingStorage, devModeDataLoggingStorage, devModeSchedulerLoggingStorage, devModePerformanceStorage
         case enableICloudSyncStorage
+        case enableSpotlightIndexingStorage
+        case enableRaycastIntegrationStorage
         case enableAIPlannerStorage
         case plannerHorizonStorage
         case enableFlashcardsStorage
@@ -366,6 +368,8 @@ final class AppSettingsModel: ObservableObject, Codable {
     var devModeSchedulerLoggingStorage: Bool = false
     var devModePerformanceStorage: Bool = false
     var enableICloudSyncStorage: Bool = true
+    var enableSpotlightIndexingStorage: Bool = false
+    var enableRaycastIntegrationStorage: Bool = false
 
     // Layout preferences (iOS/iPad)
     @AppStorage("roots.settings.compactMode") var compactModeStorage: Bool = false
@@ -387,7 +391,6 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage("roots.settings.assignmentSwipeTrailing") var assignmentSwipeTrailingRaw: String = AssignmentSwipeAction.delete.rawValue
 
     // General Settings
-    @AppStorage("roots.settings.userName") var userNameStorage: String = ""
     @AppStorage("roots.settings.startOfWeek") var startOfWeekStorage: String = "Sunday"
     @AppStorage("roots.settings.defaultView") var defaultViewStorage: String = "Dashboard"
     @AppStorage("roots.settings.isSchoolMode") var isSchoolModeStorage: Bool = true  // true = School Mode, false = Self-Study Mode
@@ -600,7 +603,14 @@ final class AppSettingsModel: ObservableObject, Codable {
 
     var enableFlashcards: Bool {
         get { enableFlashcardsStorage }
-        set { enableFlashcardsStorage = newValue }
+        set {
+            enableFlashcardsStorage = newValue
+            if !newValue {
+                var tabs = starredTabsRaw
+                tabs.removeAll { $0 == RootTab.flashcards.rawValue }
+                starredTabsRaw = tabs
+            }
+        }
     }
 
     /// Derived convenience: visible tabs minus flashcards if disabled
@@ -699,6 +709,16 @@ final class AppSettingsModel: ObservableObject, Codable {
         get { enableICloudSyncStorage }
         set { enableICloudSyncStorage = newValue }
     }
+    
+    var enableSpotlightIndexing: Bool {
+        get { enableSpotlightIndexingStorage }
+        set { enableSpotlightIndexingStorage = newValue }
+    }
+    
+    var enableRaycastIntegration: Bool {
+        get { enableRaycastIntegrationStorage }
+        set { enableRaycastIntegrationStorage = newValue }
+    }
 
     // Layout settings (iOS/iPad)
     var compactMode: Bool {
@@ -719,12 +739,18 @@ final class AppSettingsModel: ObservableObject, Codable {
     // Starred tabs (iOS tab bar, max 5)
     var starredTabs: [RootTab] {
         get {
-            let tabs = starredTabsRaw.compactMap { RootTab(rawValue: $0) }
+            var tabs = starredTabsRaw.compactMap { RootTab(rawValue: $0) }
+            if !enableFlashcards {
+                tabs.removeAll { $0 == .flashcards }
+            }
             // Limit to 5
             return Array(tabs.prefix(5))
         }
         set {
             var tabs = newValue
+            if !enableFlashcards {
+                tabs.removeAll { $0 == .flashcards }
+            }
             // Limit to 5
             tabs = Array(tabs.prefix(5))
             starredTabsRaw = tabs.map { $0.rawValue }
@@ -894,12 +920,6 @@ final class AppSettingsModel: ObservableObject, Codable {
     var highContrastMode: Bool {
         get { highContrastModeStorage }
         set { highContrastModeStorage = newValue }
-    }
-
-    // General Settings
-    var userName: String {
-        get { userNameStorage }
-        set { userNameStorage = newValue }
     }
 
     var startOfWeek: String {

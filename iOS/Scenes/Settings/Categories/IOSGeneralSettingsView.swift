@@ -63,15 +63,6 @@ struct IOSGeneralSettingsView: View {
             }
             
             Section {
-                Toggle(isOn: binding(for: \.showEnergyPanelStorage)) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(NSLocalizedString("settings.general.show_energy", comment: "Show Energy Panel"))
-                        Text(NSLocalizedString("settings.general.show_energy.detail", comment: "Display energy levels in dashboard and planner"))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                
                 Toggle(isOn: binding(for: \.highContrastModeStorage)) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(NSLocalizedString("settings.general.high_contrast", comment: "High Contrast"))

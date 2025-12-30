@@ -21,6 +21,10 @@ struct IOSDashboardView: View {
     @AppStorage("dashboard.greeting.text") private var storedGreeting: String = ""
 
     private let calendar = Calendar.current
+    
+    private var shouldShowProductivityInsights: Bool {
+        settings.trackStudyHours && settings.showProductivityInsights
+    }
 
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -29,7 +33,7 @@ struct IOSDashboardView: View {
                 quickStatsRow
                 
                 // Study hours card (Phase D)
-                if settings.trackStudyHours {
+                if shouldShowProductivityInsights {
                     studyHoursCard
                 }
                 

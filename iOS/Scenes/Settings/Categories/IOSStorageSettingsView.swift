@@ -37,6 +37,32 @@ struct IOSStorageSettingsView: View {
             }
             
             Section {
+                Toggle(isOn: $settings.enableICloudSync) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(NSLocalizedString("settings.privacy.icloud_sync", comment: "iCloud Sync"))
+                        Text(NSLocalizedString("settings.privacy.icloud_sync.detail", comment: "Sync data across your devices using iCloud"))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .onChange(of: settings.enableICloudSync) { _, newValue in
+                    settings.save()
+                    NotificationCenter.default.post(
+                        name: .iCloudSyncSettingChanged,
+                        object: newValue
+                    )
+                }
+            } header: {
+                Text(NSLocalizedString("settings.privacy.data.header", comment: "Data Storage"))
+            } footer: {
+                if PersistenceController.shared.isCloudKitEnabled {
+                    Text("iCloud is connected and protected by native iCloud protections")
+                } else {
+                    Text(NSLocalizedString("settings.privacy.local_only.footer", comment: "All your data stays on this device. No cloud sync or external services are used."))
+                }
+            }
+            
+            Section {
                 Button {
                     showingClearCacheConfirmation = true
                 } label: {

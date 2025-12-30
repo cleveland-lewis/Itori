@@ -104,6 +104,7 @@ struct ProfilesSettingsView: View {
                 Toggle("Smart Notifications", isOn: $settings.smartNotifications)
                     .onChange(of: settings.smartNotifications) { _, _ in
                         settings.save()
+                        NotificationManager.shared.updateSmartNotificationSchedules()
                     }
 
                 Toggle("Auto-Schedule Breaks", isOn: $settings.autoScheduleBreaks)
@@ -132,6 +133,7 @@ struct ProfilesSettingsView: View {
                 Toggle("Weekly Summary Notifications", isOn: $settings.weeklySummaryNotifications)
                     .onChange(of: settings.weeklySummaryNotifications) { _, _ in
                         settings.save()
+                        NotificationManager.shared.updateSmartNotificationSchedules()
                     }
             } header: {
                 Text("Productivity Tracking")

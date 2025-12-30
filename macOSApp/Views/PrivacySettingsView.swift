@@ -95,16 +95,7 @@ struct PrivacySettingsView: View {
             }
             
             Section("Data Storage") {
-                Toggle("Enable iCloud Sync", isOn: $settings.enableICloudSync)
-                    .onChange(of: settings.enableICloudSync) { _, newValue in
-                        settings.save()
-                        NotificationCenter.default.post(
-                            name: .iCloudSyncSettingChanged,
-                            object: newValue
-                        )
-                    }
-                
-                Text("When enabled, your courses, assignments, and settings sync across your devices via iCloud.")
+                Text("Manage iCloud sync in Storage settings.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

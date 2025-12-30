@@ -525,8 +525,7 @@ private struct AccountsSettingsView: View {
             }
 
             SettingsGroup(title: "Sync", accent: accentColor) {
-                Toggle("Enable iCloud sync", isOn: $settings.devModeEnabled) // using available boolean as placeholder
-                Text("Syncs your settings and academic data across devices using iCloud.")
+                Text("Manage iCloud sync in Storage settings.")
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }

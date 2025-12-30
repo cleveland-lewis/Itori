@@ -18,6 +18,7 @@ struct SystemStyleSettingsView: View {
         })
         .navigationSplitViewStyle(.balanced)
         .frame(minWidth: 800, idealWidth: 900, minHeight: 600, idealHeight: 700)
+        .background(Color(nsColor: .windowBackgroundColor))
     }
     
     private var settingsSidebar: some View {
@@ -40,6 +41,7 @@ struct SystemStyleSettingsView: View {
         .listStyle(.sidebar)
         .navigationTitle("Settings")
         .frame(minWidth: 200, idealWidth: 220)
+        .background(Color(nsColor: .windowBackgroundColor))
     }
     
     private var settingsDetail: some View {
@@ -65,6 +67,7 @@ struct SystemStyleSettingsView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(nsColor: .windowBackgroundColor))
     }
     
     @ViewBuilder

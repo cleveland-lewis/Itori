@@ -257,6 +257,10 @@ final class NotificationManager: ObservableObject {
     // MARK: - Daily Overview
     
     func scheduleDailyOverview() {
+        guard AppSettingsModel.shared.smartNotifications else {
+            cancelDailyOverview()
+            return
+        }
         guard AppSettingsModel.shared.notificationsEnabled else {
             cancelDailyOverview()
             return
@@ -292,6 +296,10 @@ final class NotificationManager: ObservableObject {
     // MARK: - Motivational Messages
     
     func scheduleMotivationalMessages() {
+        guard AppSettingsModel.shared.smartNotifications else {
+            cancelMotivationalMessages()
+            return
+        }
         guard AppSettingsModel.shared.notificationsEnabled else {
             cancelMotivationalMessages()
             return
@@ -345,6 +353,62 @@ final class NotificationManager: ObservableObject {
     func cancelMotivationalMessages() {
         let identifiers = (0..<3).map { "motivation-\($0)" }
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
+    }
+
+    // MARK: - Weekly Summary
+
+    func scheduleWeeklySummary() {
+        guard AppSettingsModel.shared.smartNotifications else {
+            cancelWeeklySummary()
+            return
+        }
+        guard AppSettingsModel.shared.notificationsEnabled else {
+            cancelWeeklySummary()
+            return
+        }
+        guard AppSettingsModel.shared.weeklySummaryNotifications else {
+            cancelWeeklySummary()
+            return
+        }
+
+        cancelWeeklySummary()
+
+        let content = generateWeeklySummaryContent()
+        var components = DateComponents()
+        components.weekday = 2 // Monday
+        components.hour = 8
+        components.minute = 0
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+        let request = UNNotificationRequest(
+            identifier: "weekly-summary",
+            content: content,
+            trigger: trigger
+        )
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                LOG_UI(.error, "NotificationManager", "Failed to schedule weekly summary", metadata: ["error": error.localizedDescription])
+            }
+        }
+    }
+
+    func cancelWeeklySummary() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["weekly-summary"])
+    }
+
+    func updateSmartNotificationSchedules() {
+        if AppSettingsModel.shared.smartNotifications {
+            if AppSettingsModel.shared.dailyOverviewEnabled {
+                scheduleDailyOverview()
+            }
+            if AppSettingsModel.shared.weeklySummaryNotifications {
+                scheduleWeeklySummary()
+            }
+        } else {
+            cancelDailyOverview()
+            cancelMotivationalMessages()
+            cancelWeeklySummary()
+        }
     }
     
     func cancelAllScheduledNotifications() {
@@ -412,6 +476,21 @@ final class NotificationManager: ObservableObject {
             bodyParts.joined(separator: " • ")
         content.sound = .default
         
+        return content
+    }
+
+    private func generateWeeklySummaryContent() -> UNMutableNotificationContent {
+        let content = UNMutableNotificationContent()
+        content.title = NSLocalizedString("notification.weekly_summary.title", comment: "Weekly Summary")
+        content.categoryIdentifier = "roots.weeklySummary"
+
+        let weekMinutes = StudyHoursTracker.shared.totals.weekMinutes
+        let completedTasks = AssignmentsStore.shared.tasks.filter { $0.isCompleted }.count
+        let studyText = weekMinutes > 0 ? "Study time: \(StudyHoursTotals.formatMinutes(weekMinutes))" : "No study time logged"
+        let taskText = completedTasks == 0 ? "No tasks completed" : "Completed \(completedTasks) task\(completedTasks == 1 ? "" : "s")"
+
+        content.body = "\(studyText) • \(taskText)"
+        content.sound = .default
         return content
     }
     

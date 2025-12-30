@@ -35,6 +35,10 @@ struct DashboardView: View {
     private let cardSpacing: CGFloat = DesignSystem.Spacing.large
     private let contentPadding: CGFloat = DesignSystem.Spacing.large
     private let bottomDockClearancePadding: CGFloat = 100
+    
+    private var shouldShowProductivityInsights: Bool {
+        settings.trackStudyHours && settings.showProductivityInsights
+    }
 
     var body: some View {
         // Fixed hierarchy grid - no ad-hoc cards
@@ -52,10 +56,12 @@ struct DashboardView: View {
                     workloadCard
                         .animateEntry(isLoaded: isLoaded, index: 1)
                         .frame(maxWidth: .infinity)
-                    
-                    studyHoursCard
-                        .animateEntry(isLoaded: isLoaded, index: 2)
-                        .frame(maxWidth: .infinity)
+
+                    if shouldShowProductivityInsights {
+                        studyHoursCard
+                            .animateEntry(isLoaded: isLoaded, index: 2)
+                            .frame(maxWidth: .infinity)
+                    }
                 }
                 .padding(.horizontal, contentPadding)
                 .padding(.bottom, cardSpacing)
@@ -293,7 +299,7 @@ struct DashboardView: View {
     }
 
     private var shouldShowEnergyCard: Bool {
-        !settings.energySelectionConfirmed
+        settings.showEnergyPanel && !settings.energySelectionConfirmed
     }
     
     private var energyDisplayText: String {
@@ -757,8 +763,15 @@ struct DashboardView: View {
                 }
             }
             .chartXAxis {
-                AxisMarks(values: .stride(by: .day)) { value in
-                    AxisValueLabel(format: .dateTime.month().day())
+                if studyTrendRange == .thirty {
+                    let weeklyMarks = weeklySundayMarks()
+                    AxisMarks(values: weeklyMarks) { _ in
+                        AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                    }
+                } else {
+                    AxisMarks { _ in
+                        AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                    }
                 }
             }
             .frame(height: 180)
@@ -766,6 +779,24 @@ struct DashboardView: View {
         .onChange(of: studyTrendRange) { _, _ in
             refreshStudyTrend()
         }
+    }
+
+    private func weeklySundayMarks() -> [Date] {
+        guard let first = studyTrend.first?.day, let last = studyTrend.last?.day else { return [] }
+        var calendar = Calendar.current
+        calendar.firstWeekday = 1
+        let start = calendar.startOfDay(for: first)
+        let end = calendar.startOfDay(for: last)
+        let weekday = calendar.component(.weekday, from: start)
+        let daysToSunday = (7 + (1 - weekday)) % 7
+        guard var current = calendar.date(byAdding: .day, value: daysToSunday, to: start) else { return [] }
+        var marks: [Date] = []
+        while current <= end {
+            marks.append(current)
+            guard let next = calendar.date(byAdding: .day, value: 7, to: current) else { break }
+            current = next
+        }
+        return marks
     }
 
     private func weeklyWorkloadBuckets() -> [WorkloadBucket] {
@@ -1269,6 +1300,8 @@ struct DashboardView: View {
         } label: {
             Text(title)
                 .font(.headline)
+                .lineLimit(1)
+                .fixedSize()
                 .frame(maxWidth: .infinity, minHeight: 44)
                 .padding(.vertical, 6)
         }

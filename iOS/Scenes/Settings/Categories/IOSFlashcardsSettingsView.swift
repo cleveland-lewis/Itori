@@ -8,7 +8,7 @@ struct IOSFlashcardsSettingsView: View {
     var body: some View {
         List {
             Section {
-                Toggle(isOn: binding(for: \.enableFlashcardsStorage)) {
+                Toggle(isOn: binding(for: \.enableFlashcards)) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Enable Flashcards")
                         Text("Turn flashcard system on or off")

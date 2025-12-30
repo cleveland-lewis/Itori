@@ -54,6 +54,9 @@ struct IOSCoursesPlannerSettingsView: View {
                             .foregroundColor(.secondary)
                     }
                 }
+                Text(NSLocalizedString("settings.planner.energy_tracking.warning", comment: "Energy panel off warning"))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
                 
                 Toggle(isOn: $settings.trackStudyHoursStorage) {
                     VStack(alignment: .leading, spacing: 4) {

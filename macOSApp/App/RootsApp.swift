@@ -164,10 +164,7 @@ struct RootsApp: App {
                         await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
                         timerManager.checkNotificationPermissions()
                         
-                        if appSettings.dailyOverviewEnabled {
-                            LOG_NOTIFICATIONS(.info, "DailyOverview", "Scheduling daily overview notification")
-                            NotificationManager.shared.scheduleDailyOverview()
-                        }
+                        NotificationManager.shared.updateSmartNotificationSchedules()
                         LOG_LIFECYCLE(.info, "AppStartup", "Startup tasks complete")
                     }
             )

@@ -510,7 +510,7 @@ enum PlannerEngine {
         
         // Apply break insertion if enabled (Phase C)
         if AppSettingsModel.shared.autoScheduleBreaks {
-            result = insertBreaks(into: result, energyProfile: energyProfile)
+            result = insertBreaks(into: result, energyProfile: energyProfile, deepWorkEnabled: AppSettingsModel.shared.enableDeepWorkMode)
         }
         
         return result
@@ -546,14 +546,15 @@ enum PlannerEngine {
         let calendar = Calendar.current
         let horizonEnd = calendar.date(byAdding: .day, value: 14, to: now) ?? now
         
+        let deepWorkEnabled = AppSettingsModel.shared.enableDeepWorkMode
         let constraints = Constraints(
             horizonStart: now,
             horizonEnd: horizonEnd,
             dayStartHour: 9,
             dayEndHour: 21,
             maxStudyMinutesPerDay: 480,
-            maxStudyMinutesPerBlock: 120,
-            minGapBetweenBlocksMinutes: 5,
+            maxStudyMinutesPerBlock: deepWorkEnabled ? 180 : 120,
+            minGapBetweenBlocksMinutes: deepWorkEnabled ? 10 : 5,
             doNotScheduleWindows: [],
             energyProfile: energyProfile
         )
@@ -594,13 +595,17 @@ enum PlannerEngine {
     /// Insert breaks between study sessions
     private static func insertBreaks(
         into result: (scheduled: [ScheduledSession], overflow: [PlannerSession]),
-        energyProfile: [Int: Double]
+        energyProfile: [Int: Double],
+        deepWorkEnabled: Bool
     ) -> (scheduled: [ScheduledSession], overflow: [PlannerSession]) {
         let calendar = Calendar.current
         var scheduledWithBreaks: [ScheduledSession] = []
         let sortedSessions = result.scheduled.sorted { $0.start < $1.start }
         
         var studySessionCount = 0
+        let breakInterval = deepWorkEnabled ? 6 : longBreakInterval
+        let shortBreak = deepWorkEnabled ? 5 : shortBreakMinutes
+        let longBreak = deepWorkEnabled ? 15 : longBreakMinutes
         
         for (index, session) in sortedSessions.enumerated() {
             // Add the study session
@@ -618,8 +623,8 @@ enum PlannerEngine {
             let gapMinutes = Int(nextSession.start.timeIntervalSince(session.end) / 60)
             
             // Determine break type
-            let isLongBreak = (studySessionCount % longBreakInterval == 0)
-            let breakMinutes = isLongBreak ? longBreakMinutes : shortBreakMinutes
+            let isLongBreak = (studySessionCount % breakInterval == 0)
+            let breakMinutes = isLongBreak ? longBreak : shortBreak
             
             // Check if we have enough space for the break
             guard gapMinutes >= breakMinutes else { continue }

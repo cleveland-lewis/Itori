@@ -840,8 +840,15 @@ struct DashboardView: View {
                 }
             }
             .chartXAxis {
-                AxisMarks(values: .stride(by: .day)) { value in
-                    AxisValueLabel(format: .dateTime.month().day())
+                if studyTrendRange == .thirty {
+                    let weeklyMarks = weeklySundayMarks()
+                    AxisMarks(values: weeklyMarks.isEmpty ? .stride(by: .day, count: 7) : weeklyMarks) { _ in
+                        AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                    }
+                } else {
+                    AxisMarks(values: .stride(by: .day)) { _ in
+                        AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                    }
                 }
             }
             .frame(height: 180)
@@ -849,6 +856,24 @@ struct DashboardView: View {
         .onChange(of: studyTrendRange) { _, _ in
             refreshStudyTrend()
         }
+    }
+
+    private func weeklySundayMarks() -> [Date] {
+        guard let first = studyTrend.first?.day, let last = studyTrend.last?.day else { return [] }
+        var calendar = Calendar.current
+        calendar.firstWeekday = 1
+        let start = calendar.startOfDay(for: first)
+        let end = calendar.startOfDay(for: last)
+        let weekday = calendar.component(.weekday, from: start)
+        let daysToSunday = (7 + (1 - weekday)) % 7
+        guard var current = calendar.date(byAdding: .day, value: daysToSunday, to: start) else { return [] }
+        var marks: [Date] = []
+        while current <= end {
+            marks.append(current)
+            guard let next = calendar.date(byAdding: .day, value: 7, to: current) else { break }
+            current = next
+        }
+        return marks
     }
 
     private func weeklyWorkloadBuckets() -> [WorkloadBucket] {
@@ -1267,8 +1292,11 @@ private extension DashboardView {
 
     var visibleSlots: [DashboardSlot] {
         var slots = DashboardSlot.allCases
-        if settings.energySelectionConfirmed {
+        if settings.energySelectionConfirmed || !settings.showEnergyPanel {
             slots.removeAll { $0 == .energy }
+        }
+        if !settings.trackStudyHours || !settings.showProductivityInsights {
+            slots.removeAll { $0 == .studyHours }
         }
         return slots
     }

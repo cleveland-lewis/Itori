@@ -16,7 +16,6 @@ struct SettingsView: View {
             List {
                 Section(header: Text(NSLocalizedString("settings.section.general", comment: "General"))) {
                     Toggle("Use 24-hour time", isOn: $settings.use24HourTime)
-                    Toggle("Show Energy Panel", isOn: $settings.showEnergyPanel)
                     Toggle("High Contrast Mode", isOn: $settings.highContrastMode)
                 }
 
@@ -79,7 +78,6 @@ struct SettingsView: View {
 #endif
             .navigationTitle("Settings")
             .onChange(of: settings.use24HourTime) { _, _ in settings.save() }
-            .onChange(of: settings.showEnergyPanel) { _, _ in settings.save() }
             .onChange(of: settings.highContrastMode) { _, _ in settings.save() }
             .onChange(of: settings.defaultWorkdayStart) { _, _ in settings.save() }
             .onChange(of: settings.defaultWorkdayEnd) { _, _ in settings.save() }

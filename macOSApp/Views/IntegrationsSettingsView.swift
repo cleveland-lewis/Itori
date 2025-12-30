@@ -58,11 +58,13 @@ struct IntegrationsSettingsView: View {
                     title: "Spotlight & Search",
                     icon: "magnifyingglass",
                     description: "Index courses, assignments, and notes for system-wide search",
-                    status: .notRequested, // Placeholder - will implement in future
-                    isEnabled: .constant(false),
+                    status: .notRequested,
+                    isEnabled: Binding(
+                        get: { settings.enableSpotlightIndexing },
+                        set: { settings.enableSpotlightIndexing = $0; settings.save() }
+                    ),
                     showOpenSettings: false
                 )
-                .opacity(0.6) // Indicate not yet implemented
             }
             
             // Raycast Integration
@@ -71,27 +73,15 @@ struct IntegrationsSettingsView: View {
                     title: "Raycast",
                     icon: "command.square",
                     description: "Quick actions and search integration with Raycast",
-                    status: .notRequested, // Placeholder - will implement in future
-                    isEnabled: .constant(false),
-                    showOpenSettings: false
-                )
-                .opacity(0.6) // Indicate not yet implemented
-            }
-            
-            // iCloud Sync Integration
-            Section {
-                IntegrationCard(
-                    title: "iCloud Sync",
-                    icon: "icloud",
-                    description: "Sync your data across all your devices using iCloud",
-                    status: settings.enableICloudSync ? .granted : .notRequested,
+                    status: .notRequested,
                     isEnabled: Binding(
-                        get: { settings.enableICloudSync },
-                        set: { settings.enableICloudSync = $0; settings.save() }
+                        get: { settings.enableRaycastIntegration },
+                        set: { settings.enableRaycastIntegration = $0; settings.save() }
                     ),
                     showOpenSettings: false
                 )
             }
+            
         }
         .formStyle(.grouped)
         .navigationTitle("Integrations")

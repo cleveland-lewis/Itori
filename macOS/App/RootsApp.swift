@@ -125,10 +125,7 @@ struct RootsApp: App {
                     timerManager.checkNotificationPermissions()
                     
                     // Schedule daily overview if enabled
-                    if appSettings.dailyOverviewEnabled {
-                        LOG_NOTIFICATIONS(.info, "DailyOverview", "Scheduling daily overview notification")
-                        NotificationManager.shared.scheduleDailyOverview()
-                    }
+                    NotificationManager.shared.updateSmartNotificationSchedules()
                     LOG_LIFECYCLE(.info, "AppStartup", "Startup tasks complete")
                 }
         }

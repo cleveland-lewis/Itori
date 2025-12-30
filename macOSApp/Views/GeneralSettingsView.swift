@@ -7,7 +7,6 @@ struct GeneralSettingsView: View {
     @EnvironmentObject var assignmentsStore: AssignmentsStore
     @EnvironmentObject var coursesStore: CoursesStore
 
-    @State private var userName: String = ""
     @State private var showResetSheet = false
     @State private var resetCode: String = ""
     @State private var resetInput: String = ""
@@ -45,15 +44,6 @@ struct GeneralSettingsView: View {
                     .foregroundStyle(.secondary)
             }
             
-            Section("Personal") {
-                TextField("Name", text: $userName)
-                    .textFieldStyle(.roundedBorder)
-                    .onChange(of: userName) { _, newValue in
-                        settings.userName = newValue
-                        settings.save()
-                    }
-            }
-
             Section("Preferences") {
                 Picker("Start of Week", selection: $startOfWeek) {
                     ForEach(StartOfWeek.allCases) { day in
@@ -79,9 +69,6 @@ struct GeneralSettingsView: View {
             Section("Display") {
                 Toggle("24-Hour Time", isOn: $settings.use24HourTime)
                     .onChange(of: settings.use24HourTime) { _, _ in settings.save() }
-
-                Toggle("Energy Panel", isOn: $settings.showEnergyPanel)
-                    .onChange(of: settings.showEnergyPanel) { _, _ in settings.save() }
             }
 
             Section("Workday") {
@@ -110,8 +97,6 @@ struct GeneralSettingsView: View {
         .formStyle(.grouped)
         .navigationTitle("General")
         .onAppear {
-            // Load current values
-            userName = settings.userName ?? ""
             startOfWeek = StartOfWeek(rawValue: settings.startOfWeek ?? "Sunday") ?? .sunday
             defaultView = DefaultView(rawValue: settings.defaultView ?? "Dashboard") ?? .dashboard
         }
@@ -132,11 +117,16 @@ struct GeneralSettingsView: View {
                     HStack {
                         Text(resetCode)
                             .font(.system(.title3, design: .monospaced).weight(.bold))
+                            .foregroundColor(.primary)
                             .padding(.horizontal, 14)
                             .padding(.vertical, 8)
                             .background(
                                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                                    .fill(Color(nsColor: .controlBackgroundColor))
+                                    .fill(Color.red.opacity(0.15))
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                    .strokeBorder(Color.red.opacity(0.5), lineWidth: 1)
                             )
                         Spacer()
                     }
@@ -184,7 +174,6 @@ struct GeneralSettingsView: View {
         settings.save()
         timerManager.stop()
         // Reset local UI state
-        userName = ""
         startOfWeek = .sunday
         defaultView = .dashboard
         resetInput = ""

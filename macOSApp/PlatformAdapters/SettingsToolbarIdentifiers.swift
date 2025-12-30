@@ -29,7 +29,7 @@ enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
         case .courses: return "Courses"
         case .semesters: return "Semesters"
         case .interface: return "Interface"
-        case .profiles: return "Profiles"
+        case .profiles: return "Profile"
         case .timer: return "Timer"
         case .flashcards: return "Flashcards"
         case .integrations: return "Integrations"

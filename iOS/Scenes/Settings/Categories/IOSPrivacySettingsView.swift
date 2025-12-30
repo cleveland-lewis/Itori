@@ -8,43 +8,14 @@ struct IOSPrivacySettingsView: View {
     var body: some View {
         List {
             Section {
-                Toggle(isOn: $settings.enableICloudSync) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(NSLocalizedString("settings.privacy.icloud_sync", comment: "iCloud Sync"))
-                        Text(NSLocalizedString("settings.privacy.icloud_sync.detail", comment: "Sync data across your devices using iCloud"))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                .onChange(of: settings.enableICloudSync) { _, newValue in
-                    settings.save()
-                    NotificationCenter.default.post(
-                        name: .iCloudSyncSettingChanged,
-                        object: newValue
-                    )
-                }
-                
-                if !settings.enableICloudSync {
-                    HStack {
-                        Image(systemName: "checkmark.shield")
-                            .foregroundColor(.green)
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(NSLocalizedString("settings.privacy.local_only", comment: "Local-Only Mode"))
-                                .font(.subheadline)
-                            Text(NSLocalizedString("settings.privacy.local_only.detail", comment: "All data stays on this device"))
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                }
+                Text(NSLocalizedString("settings.privacy.local_only.footer", comment: "All your data stays on this device. No cloud sync or external services are used."))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                Text("Manage iCloud sync in Storage settings.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             } header: {
                 Text(NSLocalizedString("settings.privacy.data.header", comment: "Data Storage"))
-            } footer: {
-                if PersistenceController.shared.isCloudKitEnabled {
-                    Text("iCloud is connected and protected by native iCloud protections")
-                } else {
-                    Text(NSLocalizedString("settings.privacy.local_only.footer", comment: "All your data stays on this device. No cloud sync or external services are used."))
-                }
             }
             
             Section {

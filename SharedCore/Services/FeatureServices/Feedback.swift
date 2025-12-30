@@ -113,9 +113,35 @@ class Feedback {
             return url
         }
         
-        // Fall back to system sound for now
-        // In production, you would bundle actual sound files
+        // Fall back to system sounds
+        #if os(macOS)
+        // Use macOS system sounds as fallback
+        let systemSoundsPath = "/System/Library/Sounds"
+        let fallbackSound: String
+        
+        switch name {
+        case "task_complete", "success":
+            fallbackSound = "Glass.aiff"
+        case "task_created":
+            fallbackSound = "Tink.aiff"
+        case "timer_start":
+            fallbackSound = "Tink.aiff"
+        case "timer_stop":
+            fallbackSound = "Pop.aiff"
+        case "warning":
+            fallbackSound = "Basso.aiff"
+        case "error":
+            fallbackSound = "Sosumi.aiff"
+        case "selection":
+            fallbackSound = "Tink.aiff"
+        default:
+            fallbackSound = "Tink.aiff"
+        }
+        
+        return URL(fileURLWithPath: "\(systemSoundsPath)/\(fallbackSound)")
+        #else
         return nil
+        #endif
     }
     
     private func preloadSounds() async {
