@@ -350,7 +350,7 @@ struct DashboardView: View {
 
     private var energyPicker: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Energy Level")
+            Text(NSLocalizedString("dashboard.energy_level", comment: ""))
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
             HStack(spacing: 8) {
@@ -372,7 +372,7 @@ struct DashboardView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundStyle(.orange)
-                        Text("Due Today")
+                        Text(NSLocalizedString("dashboard.due_today", comment: ""))
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(.secondary)
                     }
@@ -388,7 +388,7 @@ struct DashboardView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "calendar")
                             .foregroundStyle(.blue)
-                        Text("Events Today")
+                        Text(NSLocalizedString("dashboard.events_today", comment: ""))
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(.secondary)
                     }
@@ -404,7 +404,7 @@ struct DashboardView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "doc.text.fill")
                             .foregroundStyle(.purple)
-                        Text("Active Assignments")
+                        Text(NSLocalizedString("dashboard.active_assignments", comment: ""))
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(.secondary)
                     }
@@ -427,7 +427,7 @@ struct DashboardView: View {
             isLoading: !isLoaded
         ) {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Today / Focus")
+                Text(NSLocalizedString("dashboard.today_focus", comment: ""))
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
 
@@ -491,7 +491,7 @@ struct DashboardView: View {
                 .font(.system(size: 32))
                 .foregroundStyle(.secondary)
             
-            Text("Connect your calendar to see events")
+            Text(NSLocalizedString("dashboard.calendar.connect_message", comment: ""))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -514,7 +514,7 @@ struct DashboardView: View {
                 .font(.system(size: 32))
                 .foregroundStyle(.orange)
             
-            Text("Calendar access denied")
+            Text(NSLocalizedString("dashboard.calendar.access_denied_message", comment: ""))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             
@@ -534,7 +534,7 @@ struct DashboardView: View {
             isLoading: !isLoaded
         ) {
             VStack(alignment: .leading, spacing: 12) {
-                Text("How's your energy today?")
+                Text(NSLocalizedString("dashboard.energy.prompt", comment: ""))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
 
@@ -585,7 +585,7 @@ struct DashboardView: View {
                     appModel.selectedPage = .calendar
                 } label: {
                     HStack {
-                        Text("View All Events (\(events.count))")
+                        Text(String(format: NSLocalizedString("dashboard.calendar.view_all_events", comment: ""), events.count))
                         Spacer()
                         Image(systemName: "arrow.right")
                     }
@@ -677,9 +677,9 @@ struct DashboardView: View {
             let items = upcomingAssignmentItems(limit: 6)
             if items.isEmpty {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("No upcoming assignments")
+                    Text(NSLocalizedString("dashboard.assignments.no_upcoming", comment: ""))
                         .font(.subheadline.weight(.semibold))
-                    Text("Add an assignment to see it here.")
+                    Text(NSLocalizedString("dashboard.assignments.add_prompt", comment: ""))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Button("Add Assignment") {
@@ -1075,7 +1075,7 @@ struct DashboardView: View {
         ) {
             let sessions = plannerSessionsToday
             if sessions.isEmpty {
-                Text("No planned tasks today")
+                Text(NSLocalizedString("dashboard.planner.no_tasks", comment: ""))
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.secondary)
             } else {
@@ -1100,7 +1100,7 @@ struct DashboardView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("—")
                         .font(.system(size: 36, weight: .bold))
-                    Text("No plan time available yet")
+                    Text(NSLocalizedString("dashboard.planner.no_plan_time", comment: ""))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -1108,10 +1108,10 @@ struct DashboardView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("\(snapshot.remainingPercent)%")
                         .font(.system(size: 36, weight: .bold))
-                    Text("\(snapshot.remainingMinutes) min remaining")
+                    Text(String(format: NSLocalizedString("dashboard.planner.remaining_minutes", comment: ""), snapshot.remainingMinutes))
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text("\(snapshot.completedMinutes) min completed")
+                    Text(String(format: NSLocalizedString("dashboard.planner.completed_minutes", comment: ""), snapshot.completedMinutes))
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                 }

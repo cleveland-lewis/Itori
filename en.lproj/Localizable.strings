@@ -1144,3 +1144,14 @@
 "dashboard.planner.remaining_minutes" = "%d min remaining";
 "dashboard.planner.completed_minutes" = "%d min completed";
 "dashboard.planner.remaining_percent" = "%d%%";
+
+/* Calendar - Debug/Performance */
+"calendar.performance.title" = "Calendar Performance";
+"calendar.performance.stats" = "First frame: %@  |  Data ready: %@  |  Full ready: %@  |  Events: %d";
+"calendar.debug.events_count" = "Events: %d";
+"calendar.debug.last_refresh" = "Last refresh: %@";
+"calendar.debug.last_refresh_never" = "Last refresh: never";
+
+/* Calendar - Delete Confirmation */
+"calendar.delete.calendar_item" = "Calendar";
+"calendar.delete.reminders_item" = "Reminders";

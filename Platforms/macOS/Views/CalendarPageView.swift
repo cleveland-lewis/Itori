@@ -175,9 +175,9 @@ struct CalendarPageView: View {
 
                 if settings.devModePerformance {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Calendar Performance")
+                        Text(NSLocalizedString("calendar.performance.title", comment: ""))
                             .font(.caption.weight(.semibold))
-                        Text("First frame: \(formattedMillis(firstFrameElapsed))  |  Data ready: \(formattedMillis(dataReadyElapsed))  |  Full ready: \(formattedMillis(fullDataReadyElapsed))  |  Events: \(loadedEventCount)")
+                        Text(String(format: NSLocalizedString("calendar.performance.stats", comment: ""), formattedMillis(firstFrameElapsed), formattedMillis(dataReadyElapsed), formattedMillis(fullDataReadyElapsed), loadedEventCount))
                             .font(.caption2.monospacedDigit())
                             .foregroundStyle(.secondary)
                     }
@@ -258,10 +258,7 @@ struct CalendarPageView: View {
             Button {
                 showingNewEventSheet = true
             } label: {
-                Image(systemName: "plus")
-                    .font(.subheadline.weight(.semibold))
-                    .frame(width: 36, height: 36)
-                    .background(DesignSystem.Materials.hud.opacity(0.75), in: Circle())
+                addEventButtonLabel()
             }
             .buttonStyle(.plain)
             .rootsStandardInteraction()
@@ -299,9 +296,12 @@ struct CalendarPageView: View {
     private var navigationControls: some View {
         HStack(spacing: 6) {
             Button { shift(by: -1) } label: {
-                Image(systemName: "chevron.left")
-                    .foregroundStyle(chevronLeftHover ? Color.accentColor : .primary)
-                    .scaleEffect(chevronLeftHover ? 1.06 : 1.0)
+                calendarButtonLabel(
+                    title: NSLocalizedString("common.button.previous", comment: ""),
+                    systemImage: "chevron.left"
+                )
+                .foregroundStyle(chevronLeftHover ? Color.accentColor : .primary)
+                .scaleEffect(chevronLeftHover ? 1.06 : 1.0)
             }
             .buttonStyle(.plain)
             .rootsStandardInteraction()
@@ -323,9 +323,12 @@ struct CalendarPageView: View {
             }
 
             Button { shift(by: 1) } label: {
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(chevronRightHover ? Color.accentColor : .primary)
-                    .scaleEffect(chevronRightHover ? 1.06 : 1.0)
+                calendarButtonLabel(
+                    title: NSLocalizedString("common.button.next", comment: ""),
+                    systemImage: "chevron.right"
+                )
+                .foregroundStyle(chevronRightHover ? Color.accentColor : .primary)
+                .scaleEffect(chevronRightHover ? 1.06 : 1.0)
             }
             .buttonStyle(.plain)
             .rootsStandardInteraction()
@@ -515,6 +518,48 @@ struct CalendarPageView: View {
         case .reading: return "book.pages"
         case .review: return "checkmark.circle"
         case .other: return "calendar"
+        }
+    }
+
+    @ViewBuilder
+    private func calendarButtonLabel(title: String, systemImage: String) -> some View {
+        switch settings.tabBarMode {
+        case .iconsOnly:
+            Image(systemName: systemImage)
+        case .textOnly:
+            Text(title)
+        case .iconsAndText:
+            HStack(spacing: DesignSystem.Spacing.xsmall) {
+                Image(systemName: systemImage)
+                Text(title)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func addEventButtonLabel() -> some View {
+        let title = NSLocalizedString("calendar.new_event", comment: "")
+        switch settings.tabBarMode {
+        case .iconsOnly:
+            Image(systemName: "plus")
+                .font(.subheadline.weight(.semibold))
+                .frame(width: 36, height: 36)
+                .background(DesignSystem.Materials.hud.opacity(0.75), in: Circle())
+        case .textOnly:
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 7)
+                .background(DesignSystem.Materials.hud.opacity(0.75), in: Capsule())
+        case .iconsAndText:
+            HStack(spacing: DesignSystem.Spacing.xsmall) {
+                Image(systemName: "plus")
+                Text(title)
+            }
+            .font(.subheadline.weight(.semibold))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 7)
+            .background(DesignSystem.Materials.hud.opacity(0.75), in: Capsule())
         }
     }
 
@@ -982,7 +1027,7 @@ private struct MonthCalendarSplitView: View {
                     Text(timeFormatter(event.startDate, event.endDate))
                         .font(DesignSystem.Typography.body)
                     if let location = event.location, !location.isEmpty {
-                        Text("Location: \(location)")
+                        Text(String(format: NSLocalizedString("calendar.location_label", comment: ""), location))
                             .font(DesignSystem.Typography.body)
                     }
                     if let notes = event.notes, !notes.isEmpty {
@@ -1075,7 +1120,7 @@ private struct MonthCalendarView: View {
                                         .buttonStyle(.plain)
                                     }
                                     if dayEvents.count > 3 {
-                                        Text("+\(dayEvents.count - 3) more")
+                                        Text(String(format: NSLocalizedString("calendar.more_events", comment: ""), dayEvents.count - 3))
                                             .font(DesignSystem.Typography.caption)
                                             .foregroundStyle(.secondary)
                                     }
@@ -1432,6 +1477,7 @@ private struct EventDetailView: View {
     let item: CalendarEvent
     @Binding var isPresented: Bool
     @EnvironmentObject private var calendarManager: CalendarManager
+    @EnvironmentObject private var settings: AppSettingsModel
     @State private var showDeleteConfirm = false
     @State private var showEdit = false
     @State private var errorMessage: String?
@@ -1450,10 +1496,7 @@ private struct EventDetailView: View {
                 Button {
                     isPresented = false
                 } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
-                        .symbolRenderingMode(.hierarchical)
+                    eventDetailCloseLabel()
                 }
                 .buttonStyle(.plain)
             }
@@ -1530,7 +1573,7 @@ private struct EventDetailView: View {
                             .foregroundStyle(.green)
                             .symbolRenderingMode(.hierarchical)
                             .frame(width: 24)
-                        Text("Travel time: \(CalendarManager.TravelTimeOption.from(interval: travelTime).rawValue)")
+                        Text(String(format: NSLocalizedString("calendar.travel_time", comment: ""), CalendarManager.TravelTimeOption.from(interval: travelTime).rawValue))
                             .font(.body)
                             .foregroundStyle(.primary)
                     }
@@ -1601,7 +1644,7 @@ private struct EventDetailView: View {
                     }
                     Button("Cancel", role: .cancel) { }
                 } message: {
-                    Text("This will remove the item from your \(item.isReminder ? "Reminders" : "Calendar").")
+                    Text(String(format: NSLocalizedString("calendar.delete_confirmation", comment: ""), item.isReminder ? NSLocalizedString("calendar.delete.reminders_item", comment: "") : NSLocalizedString("calendar.delete.calendar_item", comment: "")))
                 }
             }
         }
@@ -1665,6 +1708,30 @@ private struct EventDetailView: View {
         let f = DateFormatter()
         f.timeStyle = .short
         return "\(f.string(from: item.startDate)) – \(f.string(from: item.endDate))"
+    }
+
+    @ViewBuilder
+    private func eventDetailCloseLabel() -> some View {
+        let title = NSLocalizedString("common.button.close", comment: "")
+        switch settings.tabBarMode {
+        case .iconsOnly:
+            Image(systemName: "xmark.circle.fill")
+                .font(.title3)
+                .foregroundStyle(.secondary)
+                .symbolRenderingMode(.hierarchical)
+        case .textOnly:
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+        case .iconsAndText:
+            HStack(spacing: DesignSystem.Spacing.xsmall) {
+                Image(systemName: "xmark.circle.fill")
+                    .symbolRenderingMode(.hierarchical)
+                Text(title)
+            }
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(.secondary)
+        }
     }
 }
 
@@ -2165,14 +2232,14 @@ struct CalendarView: View {
                             .padding(6)
                             .background(RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.45)))
 
-                        Text("Events: \(DeviceCalendarManager.shared.events.count)")
+                        Text(String(format: NSLocalizedString("calendar.debug.events_count", comment: ""), DeviceCalendarManager.shared.events.count))
                             .font(.caption2)
                             .foregroundColor(.white)
                             .padding(6)
                             .background(RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.45)))
                     }
 
-                    Text("Last refresh: \(DeviceCalendarManager.shared.lastRefreshAt.map { Self.debugDateFormatter.string(from: $0) } ?? "never")")
+                    Text(DeviceCalendarManager.shared.lastRefreshAt.map { String(format: NSLocalizedString("calendar.debug.last_refresh", comment: ""), Self.debugDateFormatter.string(from: $0)) } ?? NSLocalizedString("calendar.debug.last_refresh_never", comment: ""))
                         .font(.caption2)
                         .foregroundColor(.white.opacity(0.85))
                         .padding(6)
