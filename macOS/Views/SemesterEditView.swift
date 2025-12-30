@@ -77,7 +77,7 @@ struct SemesterEditorView: View {
                 .foregroundStyle(.secondary)
                 .padding(.vertical, 8)
                 .padding(.horizontal, 16)
-                .background(DesignSystem.Colors.cardBackground)
+                .background(DesignSystem.Materials.card)
                 .clipShape(Capsule())
         }
     }

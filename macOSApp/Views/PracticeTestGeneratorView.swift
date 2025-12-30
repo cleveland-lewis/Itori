@@ -5,7 +5,7 @@ struct PracticeTestGeneratorView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var appModel: AppModel
     @EnvironmentObject private var coursesStore: CoursesStore
-    @Bindable var store: PracticeTestStore
+    @ObservedObject var store: PracticeTestStore
     
     @State private var selectedCourse: Course?
     @State private var selectedTopics: [String] = []

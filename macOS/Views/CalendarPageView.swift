@@ -342,7 +342,7 @@ struct CalendarPageView: View {
                 .padding(.horizontal, 8)
                 .padding(.bottom, 12)
         }
-        .background(DesignSystem.Colors.cardBackground)
+        .background(DesignSystem.Materials.card)
     }
 
     @ViewBuilder
@@ -425,7 +425,7 @@ struct CalendarPageView: View {
             eventListView
         }
         .frame(maxHeight: .infinity, alignment: .top)
-        .background(DesignSystem.Colors.cardBackground)
+        .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
     }
     
@@ -1178,7 +1178,7 @@ private struct YearMonthCard: View {
             }
         }
         .padding(10)
-        .background(DesignSystem.Colors.cardBackground)
+        .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
     }
 
@@ -1830,7 +1830,7 @@ private struct CalendarDayDetailPanel: View {
             Spacer()
         }
         .padding(12)
-        .background(DesignSystem.Colors.cardBackground)
+        .background(DesignSystem.Materials.card)
     }
 }
 
@@ -2058,7 +2058,7 @@ private struct MonthCalendarView: View {
                         .frame(maxWidth: 180)
                         .background(
                             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusSmall, style: .continuous)
-                                .fill(isSelected ? DesignSystem.Colors.cardBackground : DesignSystem.Colors.cardBackground)
+                                .fill(isSelected ? DesignSystem.Materials.card : DesignSystem.Materials.card)
                         )
                         .dropDestination(for: TransferableCalendarEvent.self) { items, _ in
                             guard let payload = items.first else { return false }
@@ -2371,7 +2371,7 @@ private struct CalendarSidebarView: View {
                 }
             }
         }
-        .background(DesignSystem.Colors.cardBackground, in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+        .background(DesignSystem.Materials.card, in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                 .strokeBorder(Color(nsColor: .separatorColor).opacity(0.5), lineWidth: 1)

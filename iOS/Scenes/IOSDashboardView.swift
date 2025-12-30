@@ -6,12 +6,15 @@
 #if os(iOS)
 import SwiftUI
 import EventKit
+import Charts
 
 struct IOSDashboardView: View {
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var deviceCalendar: DeviceCalendarManager
     @EnvironmentObject private var settings: AppSettingsModel
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @ObservedObject private var plannerStore = PlannerStore.shared
 
     @State private var selectedDate = Date()
     @AppStorage("dashboard.greeting.dateKey") private var greetingDateKey: String = ""
@@ -31,7 +34,28 @@ struct IOSDashboardView: View {
                 }
                 
                 upcomingEventsCard
-                dueTasksCard
+
+                if isWideLayout {
+                    HStack(alignment: .top, spacing: 16) {
+                        assignmentStatusCard
+                        upcomingAssignmentsCard
+                    }
+                } else {
+                    assignmentStatusCard
+                    upcomingAssignmentsCard
+                }
+
+                if isWideLayout {
+                    HStack(alignment: .top, spacing: 16) {
+                        plannerTodayCard
+                        workRemainingCard
+                    }
+                    calendarCard
+                } else {
+                    plannerTodayCard
+                    workRemainingCard
+                    calendarCard
+                }
             }
             .padding(.horizontal, 20)
             .padding(.top, 12)
@@ -49,6 +73,10 @@ struct IOSDashboardView: View {
         .task {
             await deviceCalendar.bootstrapOnLaunch()
         }
+    }
+
+    private var isWideLayout: Bool {
+        horizontalSizeClass == .regular
     }
 
     private var heroHeader: some View {
@@ -207,40 +235,135 @@ struct IOSDashboardView: View {
         }
     }
 
-    private var dueTasksCard: some View {
-        RootsCard(title: NSLocalizedString("ios.dashboard.due_soon.title", comment: "Due Soon"), subtitle: NSLocalizedString("ios.dashboard.due_soon.subtitle", comment: "Next 7 days"), icon: "checkmark.circle") {
-            Group {
-                if dueSoonTasks.isEmpty {
-                    Text(NSLocalizedString("ios.dashboard.due_soon.no_tasks", comment: "No tasks"))
-                        .rootsBodySecondary()
-                        .frame(maxWidth: .infinity, alignment: .leading)
+    private var assignmentStatusCard: some View {
+        RootsCard(title: nil, subtitle: nil, icon: nil) {
+            VStack(alignment: .leading, spacing: 12) {
+                cardHeader(title: "Assignment Status")
+                assignmentStatusChart
+            }
+        }
+    }
+
+    private var upcomingAssignmentsCard: some View {
+        RootsCard(title: nil, subtitle: nil, icon: nil) {
+            let items = upcomingAssignmentItems(limit: 6)
+            VStack(alignment: .leading, spacing: 12) {
+                cardHeader(title: "Upcoming Assignments", trailing: AnyView(
+                    Button {
+                        // TODO: Hook into add assignment flow
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.headline)
+                    }
+                    .buttonStyle(.plain)
+                ))
+
+                if items.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("No upcoming assignments")
+                            .font(.subheadline.weight(.semibold))
+                        Text("Add an assignment to see it here.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Button("Add Assignment") {
+                            // TODO: Hook into add assignment flow
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.small)
+                    }
                 } else {
-                    VStack(spacing: 12) {
-                        ForEach(dueSoonTasks.prefix(5), id: \.id) { task in
-                            HStack(alignment: .top, spacing: 12) {
-                                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
-                                    .foregroundStyle(task.isCompleted ? Color.accentColor : Color.secondary)
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(task.title)
-                                        .font(.body.weight(.medium))
-                                    if let course = courseName(for: task.courseId) {
-                                        Text(course)
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                    if task.due != nil {
-                                        Text("Due \(formatDueDisplay(for: task))")
-                                            .font(.caption2)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
-                                Spacer()
+                    ForEach(items) { item in
+                        upcomingAssignmentRow(item)
+                    }
+                }
+
+                if upcomingAssignmentItems(limit: nil).count > 6 {
+                    HStack {
+                        Spacer()
+                        Button("View All") {
+                            // TODO: Hook into assignments navigation
+                        }
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+        }
+    }
+
+    private var plannerTodayCard: some View {
+        RootsCard(title: "Today", subtitle: "Planner", icon: "list.bullet.rectangle") {
+            let sessions = plannerSessionsToday
+            if sessions.isEmpty {
+                Text("No planned tasks today")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(sessions.prefix(4), id: \.id) { session in
+                        plannerSessionRow(session)
+                    }
+                }
+            }
+        }
+    }
+
+    private var workRemainingCard: some View {
+        RootsCard(title: "Remaining", subtitle: "Today", icon: "chart.bar.fill") {
+            let snapshot = remainingWorkSnapshot
+            if snapshot.plannedMinutes <= 0 {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("—")
+                        .font(.system(size: 32, weight: .bold))
+                    Text("No plan time available yet")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("\(snapshot.remainingPercent)%")
+                        .font(.system(size: 32, weight: .bold))
+                    Text("\(snapshot.remainingMinutes) min remaining")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text("\(snapshot.completedMinutes) min completed")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+    }
+
+    private var calendarCard: some View {
+        RootsCard(title: "Calendar", subtitle: "This week", icon: "calendar") {
+            VStack(alignment: .leading, spacing: 12) {
+                weekStrip
+                if eventsForSelectedDate.isEmpty {
+                    Text("No events on this day")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(eventsForSelectedDate.prefix(3), id: \.eventIdentifier) { event in
+                        HStack(spacing: 10) {
+                            Circle()
+                                .fill(Color.accentColor.opacity(0.7))
+                                .frame(width: 6, height: 6)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(event.title)
+                                    .font(.caption.weight(.semibold))
+                                Text(eventTimeRange(event))
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
                             }
+                            Spacer()
                         }
                     }
                 }
             }
-            .frame(minHeight: 120)
         }
     }
 
@@ -258,6 +381,17 @@ struct IOSDashboardView: View {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(DesignSystem.Materials.card)
         )
+    }
+
+    private func cardHeader(title: String, trailing: AnyView? = nil) -> some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text(title)
+                .rootsSectionHeader()
+            Spacer()
+            if let trailing {
+                trailing
+            }
+        }
     }
 
     private var backgroundView: some View {
@@ -371,6 +505,197 @@ struct IOSDashboardView: View {
             .sorted { ($0.effectiveDueDateTime ?? Date.distantFuture) < ($1.effectiveDueDateTime ?? Date.distantFuture) }
     }
 
+    private var upcomingAssignments: [AppTask] {
+        let now = Date()
+        return assignmentsStore.tasks
+            .filter { !$0.isCompleted }
+            .compactMap { task -> AppTask? in
+                guard let due = task.effectiveDueDateTime else { return nil }
+                return due >= now ? task : nil
+            }
+            .sorted { lhs, rhs in
+                let leftDue = lhs.effectiveDueDateTime ?? Date.distantFuture
+                let rightDue = rhs.effectiveDueDateTime ?? Date.distantFuture
+                if leftDue != rightDue {
+                    return leftDue < rightDue
+                }
+                let leftCourse = courseName(for: lhs.courseId) ?? ""
+                let rightCourse = courseName(for: rhs.courseId) ?? ""
+                if leftCourse != rightCourse {
+                    return leftCourse < rightCourse
+                }
+                return lhs.title < rhs.title
+            }
+    }
+
+    private struct AssignmentStatusItem: Identifiable {
+        let id = UUID()
+        let status: String
+        let count: Int
+        let color: Color
+    }
+
+    private struct AssignmentLegendRow: Identifiable {
+        let id = UUID()
+        let label: String
+        let count: Int
+        let color: Color
+        let percentText: String?
+    }
+
+    private struct UpcomingAssignmentItem: Identifiable {
+        let id: UUID
+        let title: String
+        let courseTitle: String
+        let courseCode: String?
+        let dueDate: Date?
+        let hasExplicitDueTime: Bool
+        let courseColor: Color
+    }
+
+    private func assignmentStatusItems() -> [AssignmentStatusItem] {
+        let plans = AssignmentPlansStore.shared
+        let completed = assignmentsStore.tasks.filter { $0.isCompleted }.count
+        let inProgress = assignmentsStore.tasks.filter { task in
+            !task.isCompleted && plans.plan(for: task.id) != nil
+        }.count
+        let notStarted = assignmentsStore.tasks.filter { task in
+            !task.isCompleted && plans.plan(for: task.id) == nil
+        }.count
+
+        return [
+            AssignmentStatusItem(status: "Not Started", count: notStarted, color: .orange),
+            AssignmentStatusItem(status: "In Progress", count: inProgress, color: .yellow),
+            AssignmentStatusItem(status: "Completed", count: completed, color: .green)
+        ]
+    }
+
+    private func assignmentStatusLegend(total: Int) -> [AssignmentLegendRow] {
+        assignmentStatusItems().map { item in
+            let percentText: String?
+            if total > 0 {
+                let percent = Int((Double(item.count) / Double(total)) * 100)
+                percentText = "\(percent)%"
+            } else {
+                percentText = nil
+            }
+            return AssignmentLegendRow(
+                label: item.status,
+                count: item.count,
+                color: item.color,
+                percentText: percentText
+            )
+        }
+    }
+
+    private var assignmentStatusChart: some View {
+        let items = assignmentStatusItems()
+        let total = items.reduce(0) { $0 + $1.count }
+
+        return HStack(alignment: .center, spacing: 16) {
+            ZStack {
+                Chart(items) { item in
+                    SectorMark(
+                        angle: .value("Count", item.count),
+                        innerRadius: .ratio(0.6),
+                        angularInset: 1.5
+                    )
+                    .foregroundStyle(item.color.opacity(0.85))
+                }
+                .chartLegend(.hidden)
+
+                VStack(spacing: 2) {
+                    Text("\(total)")
+                        .font(.headline.weight(.bold))
+                    Text("Total")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(width: 120, height: 120)
+
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(assignmentStatusLegend(total: total)) { item in
+                    HStack(spacing: 8) {
+                        Circle()
+                            .fill(item.color)
+                            .frame(width: 8, height: 8)
+                        Text(item.label)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text("\(item.count)")
+                            .font(.caption.weight(.semibold))
+                        if let percent = item.percentText {
+                            Text(percent)
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func upcomingAssignmentItems(limit: Int?) -> [UpcomingAssignmentItem] {
+        let tasks = upcomingAssignments
+        let sliced = limit.map { Array(tasks.prefix($0)) } ?? tasks
+        return sliced.map { task in
+            let course = coursesStore.courses.first(where: { $0.id == task.courseId })
+            return UpcomingAssignmentItem(
+                id: task.id,
+                title: task.title,
+                courseTitle: course?.title ?? "Unassigned",
+                courseCode: course?.code,
+                dueDate: task.effectiveDueDateTime,
+                hasExplicitDueTime: task.hasExplicitDueTime,
+                courseColor: courseColor(for: course?.colorHex)
+            )
+        }
+    }
+
+    private func upcomingAssignmentRow(_ item: UpcomingAssignmentItem) -> some View {
+        HStack(spacing: 10) {
+            Circle()
+                .fill(item.courseColor)
+                .frame(width: 8, height: 8)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.title)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                Text(item.courseCode?.isEmpty == false ? item.courseCode! : item.courseTitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            if let dueDate = item.dueDate {
+                Text(formattedDueDate(dueDate, hasExplicitTime: item.hasExplicitDueTime))
+                    .font(.caption.weight(.semibold))
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(
+                        Capsule()
+                            .fill(Color.secondary.opacity(0.12))
+                    )
+            }
+        }
+    }
+
+    private var eventsForSelectedDate: [EKEvent] {
+        filteredCalendarEvents.filter { calendar.isDate($0.startDate, inSameDayAs: selectedDate) }
+            .sorted { $0.startDate < $1.startDate }
+    }
+
+    private func courseColor(for hex: String?) -> Color {
+        if let hex, let color = Color(hex: hex) {
+            return color
+        }
+        return Color.accentColor
+    }
+
     private var weekDays: [Date] {
         guard let weekInterval = calendar.dateInterval(of: .weekOfYear, for: selectedDate) else { return [] }
         return (0..<7).compactMap { offset in
@@ -391,6 +716,87 @@ struct IOSDashboardView: View {
         return "\(formatter.string(from: event.startDate))-\(formatter.string(from: event.endDate))"
     }
 
+    private var plannerSessionsToday: [StoredScheduledSession] {
+        let cal = Calendar.current
+        return plannerStore.scheduled
+            .filter { cal.isDateInToday($0.start) }
+            .sorted {
+                if $0.start != $1.start {
+                    return $0.start < $1.start
+                }
+                return $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
+            }
+    }
+
+    private func plannerSessionRow(_ session: StoredScheduledSession) -> some View {
+        HStack(spacing: 8) {
+            Circle()
+                .fill(session.isUserEdited ? Color.orange : Color.accentColor)
+                .frame(width: 6, height: 6)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(session.title)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                Text(timeRangeText(for: session))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+        }
+    }
+
+    private func timeRangeText(for session: StoredScheduledSession) -> String {
+        let formatter = LocaleFormatters.shortTime
+        return "\(formatter.string(from: session.start)) – \(formatter.string(from: session.end))"
+    }
+
+    private struct RemainingWorkSnapshot {
+        let plannedMinutes: Int
+        let completedMinutes: Int
+        let remainingMinutes: Int
+        let remainingPercent: Int
+    }
+
+    private var remainingWorkSnapshot: RemainingWorkSnapshot {
+        let plannedMinutes = plannedMinutesForToday()
+        let studiedMinutes = tracker.totals.todayMinutes
+        guard plannedMinutes > 0 else {
+            return RemainingWorkSnapshot(
+                plannedMinutes: 0,
+                completedMinutes: 0,
+                remainingMinutes: 0,
+                remainingPercent: 0
+            )
+        }
+
+        let completed = min(studiedMinutes, plannedMinutes)
+        let remaining = max(plannedMinutes - studiedMinutes, 0)
+        let remainingPct = Int((1.0 - min(Double(studiedMinutes) / Double(plannedMinutes), 1.0)) * 100.0)
+        return RemainingWorkSnapshot(
+            plannedMinutes: plannedMinutes,
+            completedMinutes: completed,
+            remainingMinutes: remaining,
+            remainingPercent: remainingPct
+        )
+    }
+
+    private func plannedMinutesForToday() -> Int {
+        let sessions = plannerSessionsToday.filter { session in
+            session.type == .task || session.type == .study
+        }
+        let sessionMinutes = sessions.reduce(0) { $0 + max($1.estimatedMinutes, 0) }
+        if sessionMinutes > 0 {
+            return sessionMinutes
+        }
+        return assignmentsStore.tasks
+            .filter { !$0.isCompleted }
+            .filter { task in
+                guard let due = task.due else { return false }
+                return Calendar.current.isDateInToday(due)
+            }
+            .reduce(0) { $0 + max($1.estimatedMinutes, 0) }
+    }
+
     private func formatDueDisplay(for task: AppTask) -> String {
         guard let due = task.due else { return "" }
         let formatter = DateFormatter()
@@ -398,6 +804,13 @@ struct IOSDashboardView: View {
         formatter.timeStyle = task.hasExplicitDueTime ? .short : .none
         let dateText = formatter.string(from: task.hasExplicitDueTime ? (task.effectiveDueDateTime ?? due) : due)
         return dateText
+    }
+    
+    private func formattedDueDate(_ date: Date, hasExplicitTime: Bool) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = hasExplicitTime ? .short : .none
+        return formatter.string(from: date)
     }
 
     private func courseName(for id: UUID?) -> String? {

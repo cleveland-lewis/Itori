@@ -68,7 +68,7 @@ struct PracticeTestResultsView: View {
             .buttonStyle(.bordered)
         }
         .padding()
-        .background(DesignSystem.Colors.cardBackground)
+        .background(DesignSystem.Materials.card)
     }
     
     // MARK: - Results Sidebar
@@ -95,7 +95,7 @@ struct PracticeTestResultsView: View {
             .padding(16)
         }
         .frame(width: 280)
-        .background(DesignSystem.Colors.cardBackground)
+        .background(DesignSystem.Materials.card)
         .onAppear {
             if selectedQuestionId == nil {
                 selectedQuestionId = test.questions.first?.id
@@ -147,7 +147,7 @@ struct PracticeTestResultsView: View {
         .padding()
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(DesignSystem.Colors.cardBackground)
+                .fill(DesignSystem.Materials.card)
         )
     }
     
@@ -273,7 +273,7 @@ struct PracticeTestResultsView: View {
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(DesignSystem.Colors.cardBackground)
+                        .fill(DesignSystem.Materials.card)
                 )
                 
                 // User's answer

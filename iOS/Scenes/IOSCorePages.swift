@@ -1098,7 +1098,6 @@ struct IOSTaskEditorView: View {
                 title: title,
                 courseId: courseId,
                 due: hasDueDate ? dueDate : nil,
-                dueTimeMinutes: hasSpecificDueTime ? dueTimeMinutes : nil,
                 estimatedMinutes: resolvedMinutes,
                 minBlockMinutes: 15,
                 maxBlockMinutes: 120,
@@ -1111,7 +1110,8 @@ struct IOSTaskEditorView: View {
                 gradeWeightPercent: existing?.gradeWeightPercent,
                 gradePossiblePoints: existing?.gradePossiblePoints,
                 gradeEarnedPoints: existing?.gradeEarnedPoints,
-                category: type
+                category: type,
+                dueTimeMinutes: hasSpecificDueTime ? dueTimeMinutes : nil
             )
         }
     }

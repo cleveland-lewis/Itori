@@ -56,7 +56,7 @@ struct AssignmentsDueTodayCompactList: View {
                             Spacer()
                         }
                         .padding(8)
-                        .background(DesignSystem.Colors.cardBackground, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .background(DesignSystem.Materials.card, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                         .onTapGesture { onSelect(task) }
                     }
                 }

@@ -459,7 +459,7 @@ struct GradesAnalyticsView: View {
             }
         }
         .padding()
-        .background(DesignSystem.Colors.cardBackground)
+        .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)

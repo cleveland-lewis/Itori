@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - Scheduled Tests Section View
 
 struct ScheduledTestsSection: View {
-    @Bindable var store: ScheduledTestsStore
+    @ObservedObject var store: ScheduledTestsStore
     var onStartTest: (ScheduledPracticeTest) -> Void
     
     @State private var isExpanded = true

@@ -6,7 +6,8 @@ enum DashboardSlot: CaseIterable {
     case energy
     case assignments
     case studyHours
-    case time
+    case plannerToday
+    case workRemaining
     case calendar
 }
 
@@ -54,7 +55,8 @@ enum DashboardLayoutSpec {
         .energy: SlotSpec(columns: (wide: 2, medium: 2, narrow: 1), minHeightCompact: 110, minHeightFull: 220),
         .assignments: SlotSpec(columns: (wide: 2, medium: 2, narrow: 1), minHeightCompact: 110, minHeightFull: 240),
         .studyHours: SlotSpec(columns: (wide: 4, medium: 2, narrow: 1), minHeightCompact: 110, minHeightFull: 220),
-        .time: SlotSpec(columns: (wide: 2, medium: 2, narrow: 1), minHeightCompact: 110, minHeightFull: 220),
+        .plannerToday: SlotSpec(columns: (wide: 1, medium: 1, narrow: 1), minHeightCompact: 110, minHeightFull: 220),
+        .workRemaining: SlotSpec(columns: (wide: 1, medium: 1, narrow: 1), minHeightCompact: 110, minHeightFull: 220),
         .calendar: SlotSpec(columns: (wide: 2, medium: 2, narrow: 1), minHeightCompact: 110, minHeightFull: 260)
     ]
 
@@ -75,12 +77,16 @@ enum DashboardLayoutSpec {
     }
 
     static func rows(for mode: ColumnMode) -> [[DashboardSlot]] {
+        rows(for: mode, slots: DashboardSlot.allCases)
+    }
+
+    static func rows(for mode: ColumnMode, slots: [DashboardSlot]) -> [[DashboardSlot]] {
         let capacity = mode.rawValue
         var rows: [[DashboardSlot]] = []
         var currentRow: [DashboardSlot] = []
         var currentWidth = 0
 
-        for slot in DashboardSlot.allCases {
+        for slot in slots {
             let span = max(1, span(for: slot, mode: mode))
             if currentWidth + span > capacity {
                 rows.append(currentRow)

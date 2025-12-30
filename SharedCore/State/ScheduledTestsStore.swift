@@ -1,11 +1,11 @@
+import Combine
 import Foundation
 import SwiftUI
 
-@Observable
-class ScheduledTestsStore {
-    var scheduledTests: [ScheduledPracticeTest] = []
-    var attempts: [TestAttempt] = []
-    var currentWeek: Date = Date()
+final class ScheduledTestsStore: ObservableObject {
+    @Published var scheduledTests: [ScheduledPracticeTest] = []
+    @Published var attempts: [TestAttempt] = []
+    @Published var currentWeek: Date = Date()
     
     private let testsStorageKey = "scheduled_practice_tests_v1"
     private let attemptsStorageKey = "test_attempts_v1"

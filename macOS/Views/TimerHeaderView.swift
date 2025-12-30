@@ -28,7 +28,7 @@ struct TimerHeaderView: View {
             }
         }
         .padding(DesignSystem.Layout.padding.card)
-        .background(DesignSystem.Colors.cardBackground)
+        .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 }

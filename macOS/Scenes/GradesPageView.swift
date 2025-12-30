@@ -268,7 +268,7 @@ struct GradesPageView: View {
                         }
                     )
                     .tag(course.id)
-                    .listRowBackground(DesignSystem.Colors.cardBackground)
+                    .listRowBackground(DesignSystem.Materials.card)
                 }
             }
             .listStyle(.inset)
@@ -499,7 +499,7 @@ struct GradesPageView: View {
 
     private var cardBackground: some View {
         RoundedRectangle(cornerRadius: cardCorner, style: .continuous)
-            .fill(DesignSystem.Colors.cardBackground)
+            .fill(DesignSystem.Materials.card)
     }
 
     private var cardStroke: some View {
@@ -549,7 +549,7 @@ struct OverallStatusCard: View {
         .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(DesignSystem.Colors.cardBackground)
+                .fill(DesignSystem.Materials.card)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 24, style: .continuous)

@@ -99,7 +99,7 @@ struct PracticeTestPageView: View {
             }
         }
         .padding()
-        .background(DesignSystem.Colors.cardBackground)
+        .background(DesignSystem.Materials.card)
     }
     
     private var emptyStateView: some View {
@@ -170,7 +170,7 @@ struct PracticeTestPageView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(DesignSystem.Colors.cardBackground)
+        .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }
     
@@ -228,7 +228,7 @@ struct PracticeTestPageView: View {
                     .foregroundStyle(.tertiary)
             }
             .padding()
-            .background(DesignSystem.Colors.cardBackground)
+            .background(DesignSystem.Materials.card)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(.plain)

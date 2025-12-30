@@ -176,6 +176,8 @@ struct CoursesPageView: View {
             courses: filteredCourses,
             selectedCourse: $selectedCourseId,
             searchText: $searchText,
+            currentSemesterName: sidebarSemesterName,
+            totalCreditsText: sidebarCreditsText,
             onNewCourse: {
                 editingCourse = nil
                 showNewCourseSheet = true
@@ -381,6 +383,37 @@ struct CoursesPageView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
+
+    private var sidebarSemesterName: String {
+        if let selectedCourseId,
+           let course = coursesStore.courses.first(where: { $0.id == selectedCourseId }),
+           let semesterId = course.semesterId,
+           let semester = coursesStore.semesters.first(where: { $0.id == semesterId }) {
+            return semester.name
+        }
+        return coursesStore.currentSemester?.name ?? "Current Term"
+    }
+
+    private var sidebarCreditsText: String {
+        let semesterId: UUID? = {
+            if let selectedCourseId,
+               let course = coursesStore.courses.first(where: { $0.id == selectedCourseId }) {
+                return course.semesterId
+            }
+            return coursesStore.currentSemesterId
+        }()
+
+        let credits = coursesStore.courses
+            .filter { $0.semesterId == semesterId }
+            .compactMap { $0.credits }
+            .reduce(0.0, +)
+
+        if credits <= 0 {
+            return "—"
+        }
+
+        return "\(Int(credits.rounded()))"
+    }
 }
 
 // MARK: - Sidebar
@@ -391,6 +424,8 @@ struct CoursesSidebarView: View {
     var courses: [CoursePageCourse]
     @Binding var selectedCourse: UUID?
     @Binding var searchText: String
+    var currentSemesterName: String
+    var totalCreditsText: String
     var onNewCourse: () -> Void
     @FocusState private var isSearchFocused: Bool
 
@@ -398,9 +433,9 @@ struct CoursesSidebarView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Header Section
             VStack(alignment: .leading, spacing: 4) {
-                Text(NSLocalizedString("courses.label.courses", comment: ""))
+                Text("Courses List")
                     .font(DesignSystem.Typography.body)
-                Text(currentTerm)
+                Text(currentSemesterName)
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
             }
@@ -425,11 +460,10 @@ struct CoursesSidebarView: View {
             .scrollContentBackground(.hidden)
             .frame(maxHeight: .infinity)
 
-            // Bottom Action Buttons (Pinned)
-            VStack(spacing: 0) {
-                Divider()
-                    .padding(.vertical, 8)
-                
+            Divider()
+                .padding(.vertical, RootsSpacing.s)
+
+            VStack(alignment: .leading, spacing: RootsSpacing.s) {
                 HStack(spacing: RootsSpacing.s) {
                     Button {
                         onNewCourse()
@@ -454,18 +488,40 @@ struct CoursesSidebarView: View {
                     .frame(maxWidth: .infinity)
                 }
                 .padding(.horizontal, RootsSpacing.m)
-                .padding(.bottom, RootsSpacing.m)
+
+                VStack(spacing: RootsSpacing.s) {
+                    SidebarWidgetTile(label: "Current Semester", value: currentSemesterName)
+                    SidebarWidgetTile(label: "Total Credits", value: totalCreditsText)
+                }
+                .padding(.horizontal, RootsSpacing.m)
+                .padding(.bottom, RootsSpacing.l)
             }
         }
         .frame(maxHeight: .infinity)
-        .rootsCardBackground(radius: 22)
         .onReceive(NotificationCenter.default.publisher(for: .focusSearch)) { _ in
             isSearchFocused = true
         }
     }
+}
 
-    private var currentTerm: String {
-        courses.first?.semesterName ?? "Current Term"
+private struct SidebarWidgetTile: View {
+    let label: String
+    let value: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(DesignSystem.Typography.body.weight(.semibold))
+                .foregroundStyle(RootsColor.textPrimary)
+        }
+        .padding(.horizontal, RootsSpacing.m)
+        .padding(.vertical, RootsSpacing.s)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(DesignSystem.Materials.card)
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
     }
 }
 
@@ -562,7 +618,7 @@ struct CoursesPageDetailView: View {
         .padding(18)
         .background(
             RoundedRectangle(cornerRadius: cardCorner, style: .continuous)
-                .fill(DesignSystem.Colors.cardBackground)
+                .fill(DesignSystem.Materials.card)
         )
         .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
         .overlay(cardStroke)
@@ -598,7 +654,7 @@ struct CoursesPageDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: cardCorner, style: .continuous)
-                .fill(DesignSystem.Colors.cardBackground)
+                .fill(DesignSystem.Materials.card)
         )
         .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
         .overlay(cardStroke)
@@ -644,7 +700,7 @@ struct CoursesPageDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: cardCorner, style: .continuous)
-                .fill(DesignSystem.Colors.cardBackground)
+                .fill(DesignSystem.Materials.card)
         )
         .clipShape(RoundedRectangle(cornerRadius: cardCorner, style: .continuous))
         .overlay(cardStroke)

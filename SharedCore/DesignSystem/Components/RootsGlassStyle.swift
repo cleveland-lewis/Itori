@@ -33,7 +33,8 @@ struct GlassCardModifier: ViewModifier {
         content
             .background(
                 RoundedRectangle(cornerRadius: resolvedCornerRadius, style: .continuous)
-                    .fill(DesignSystem.Colors.cardBackground)
+                    .fill(DesignSystem.Materials.card)
+                    .opacity(DesignSystem.Materials.cardOpacity)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: resolvedCornerRadius, style: .continuous)

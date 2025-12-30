@@ -17,7 +17,6 @@ struct DashboardView: View {
     @State private var isLoaded = false
     @State private var cancellables: Set<AnyCancellable> = []
     @State private var todayBounce = false
-    @State private var energyBounce = false
     @State private var selectedDate: Date = Date()
     @State private var tasks: [DashboardTask] = []
     @State private var events: [DashboardEvent] = []
@@ -27,8 +26,10 @@ struct DashboardView: View {
     @State private var showAddEventSheet = false
     @State private var showAddTaskSheet = false
     @ObservedObject private var studyHoursTracker = StudyHoursTracker.shared
+    @ObservedObject private var plannerStore = PlannerStore.shared
     @State private var studyTrendRange: StudyTrendRange = .seven
     @State private var studyTrend: [StudyTrendPoint] = []
+    @State private var showEnergyPopover = false
 
     // Layout tokens
     private let cardSpacing: CGFloat = DesignSystem.Spacing.large
@@ -59,24 +60,33 @@ struct DashboardView: View {
                 .padding(.horizontal, contentPadding)
                 .padding(.bottom, cardSpacing)
                 
-                // ROW 3: STATUS + UPCOMING
+                // ROW 3: ENERGY + UPCOMING
                 HStack(alignment: .top, spacing: cardSpacing) {
-                    energyCard
-                        .animateEntry(isLoaded: isLoaded, index: 3)
-                        .frame(maxWidth: .infinity)
-                    
+                    if shouldShowEnergyCard {
+                        energyCard
+                            .animateEntry(isLoaded: isLoaded, index: 3)
+                            .frame(maxWidth: .infinity)
+                    }
+
                     assignmentsCard
-                        .animateEntry(isLoaded: isLoaded, index: 4)
+                        .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 4 : 3)
                         .frame(maxWidth: .infinity)
                 }
                 .padding(.horizontal, contentPadding)
                 .padding(.bottom, cardSpacing)
+                .animation(.easeInOut(duration: 0.25), value: shouldShowEnergyCard)
                 
-                // ROW 4: TIME + CALENDAR (wide)
+                // ROW 4: TODAY + REMAINING + CALENDAR (wide)
                 HStack(alignment: .top, spacing: cardSpacing) {
-                    timeCard
-                        .animateEntry(isLoaded: isLoaded, index: 5)
-                        .frame(maxWidth: .infinity)
+                    HStack(alignment: .top, spacing: cardSpacing) {
+                        plannerTodayCard
+                            .frame(maxWidth: .infinity)
+
+                        workRemainingCard
+                            .frame(maxWidth: .infinity)
+                    }
+                    .animateEntry(isLoaded: isLoaded, index: 5)
+                    .frame(maxWidth: .infinity)
                     
                     calendarCard
                         .animateEntry(isLoaded: isLoaded, index: 6)
@@ -117,6 +127,7 @@ struct DashboardView: View {
             syncTasks()
             syncEvents()
             refreshStudyTrend()
+            ensureEnergyReset(now: Date())
 
             // subscribe to course deletions
             CoursesStore.courseDeletedPublisher
@@ -139,6 +150,9 @@ struct DashboardView: View {
         }
         .onChange(of: calendarManager.selectedCalendarID) { _, _ in
             syncEvents()
+        }
+        .onReceive(energyResetTimer) { now in
+            ensureEnergyReset(now: now)
         }
     }
 
@@ -226,19 +240,8 @@ struct DashboardView: View {
         let minutes: Double
     }
 
-    private struct AssignmentStatusItem: Identifiable {
-        let id = UUID()
-        let status: String
-        let count: Int
-        let color: Color
-    }
-
-    private struct AssignmentLegendRow: Identifiable {
-        let id = UUID()
-        let label: String
-        let count: Int
-        let color: Color
-        let percentText: String?
+    private var hasStudyTrendData: Bool {
+        studyTrend.contains { $0.minutes > 0 }
     }
 
     private struct UpcomingAssignmentItem: Identifiable {
@@ -260,15 +263,20 @@ struct DashboardView: View {
             
             Spacer()
             
-            // Energy indicator (placeholder - can be enhanced later)
-            Text(energyLevel)
-                .font(.headline)
-                .foregroundStyle(.secondary)
-            
-            // Secondary info
-            Text(statusSecondary)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+            Button {
+                showEnergyPopover = true
+            } label: {
+                Text(energyDisplayText)
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+                    .padding(.vertical, 6)
+                    .padding(.horizontal, 10)
+            }
+            .buttonStyle(.plain)
+            .popover(isPresented: $showEnergyPopover) {
+                energyPicker
+                    .padding(12)
+            }
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 16)
@@ -283,28 +291,26 @@ struct DashboardView: View {
         
         return "Today: \(dueCount) due · \(plannedCount) planned · \(scheduledMinutes) min scheduled"
     }
-    
-    private var energyLevel: String {
-        // Placeholder - can be enhanced with actual energy tracking
-        let hour = Calendar.current.component(.hour, from: Date())
-        if hour < 12 {
-            return "High Energy"
-        } else if hour < 18 {
-            return "Medium Energy"
-        } else {
-            return "Low Energy"
-        }
+
+    private var shouldShowEnergyCard: Bool {
+        !settings.energySelectionConfirmed
     }
     
-    private var statusSecondary: String {
-        // Placeholder for semester progress or streak
-        let totalAssignments = assignmentsStore.tasks.count
-        let completedAssignments = assignmentsStore.tasks.filter { $0.isCompleted }.count
-        if totalAssignments > 0 {
-            let percentage = (Double(completedAssignments) / Double(totalAssignments)) * 100
-            return "Progress: \(Int(percentage))%"
+    private var energyDisplayText: String {
+        "Energy: \(settings.defaultEnergyLevel)"
+    }
+
+    private var energyPicker: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Energy Level")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
+            HStack(spacing: 8) {
+                energyButton("High", level: .high)
+                energyButton("Medium", level: .medium)
+                energyButton("Low", level: .low)
+            }
         }
-        return "No assignments yet"
     }
 
     private var statusStripCard: some View {
@@ -417,7 +423,15 @@ struct DashboardView: View {
             title: "Study Time Trend",
             isLoading: !isLoaded
         ) {
-            studyTrendChart
+            if hasStudyTrendData {
+                studyTrendChart
+            } else {
+                DashboardEmptyState(
+                    title: "No study data yet",
+                    systemImage: "clock",
+                    description: "Start a timer to see your trend."
+                )
+            }
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Study time trend")
@@ -468,13 +482,24 @@ struct DashboardView: View {
 
     private var energyCard: some View {
         DashboardCard(
-            title: "Assignment Status",
+            title: "Energy Check-in",
             isLoading: !isLoaded
         ) {
-            assignmentStatusChart
+            VStack(alignment: .leading, spacing: 12) {
+                Text("How's your energy today?")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                HStack(spacing: 10) {
+                    energyButton("High", level: .high)
+                    energyButton("Medium", level: .medium)
+                    energyButton("Low", level: .low)
+                }
+            }
         }
+        .transition(.move(edge: .top).combined(with: .opacity))
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Assignment status breakdown")
+        .accessibilityLabel("Energy check-in")
     }
 
     private var eventsCard: some View {
@@ -743,57 +768,6 @@ struct DashboardView: View {
         }
     }
 
-    private var assignmentStatusChart: some View {
-        let items = assignmentStatusItems()
-        let total = items.reduce(0) { $0 + $1.count }
-
-        return HStack(alignment: .center, spacing: DesignSystem.Spacing.large) {
-            ZStack {
-                Chart(items) { item in
-                    SectorMark(
-                        angle: .value("Count", item.count),
-                        innerRadius: .ratio(0.618),
-                        angularInset: 2.0
-                    )
-                    .foregroundStyle(item.color.opacity(0.85))
-                    .cornerRadius(4)
-                }
-                .chartLegend(.hidden)
-
-                VStack(spacing: 4) {
-                    Text("\(total)")
-                        .font(.title.bold())
-                        .foregroundStyle(.primary)
-                    Text("Total")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .frame(width: 150, height: 150)
-
-            VStack(alignment: .leading, spacing: 10) {
-                ForEach(assignmentStatusLegend(total: total)) { item in
-                    HStack(spacing: 8) {
-                        Circle()
-                            .fill(item.color)
-                            .frame(width: 8, height: 8)
-                        Text(item.label)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        Text("\(item.count)")
-                            .font(.caption.weight(.semibold))
-                        if let percent = item.percentText {
-                            Text(percent)
-                                .font(.caption2)
-                                .foregroundStyle(.tertiary)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private func weeklyWorkloadBuckets() -> [WorkloadBucket] {
         let calendar = Calendar.current
         let start = calendar.startOfDay(for: Date())
@@ -820,42 +794,6 @@ struct DashboardView: View {
             }
         }
         return buckets
-    }
-
-    private func assignmentStatusItems() -> [AssignmentStatusItem] {
-        let plans = AssignmentPlansStore.shared
-        let completed = assignmentsStore.tasks.filter { $0.isCompleted }.count
-        let inProgress = assignmentsStore.tasks.filter { task in
-            !task.isCompleted && plans.plan(for: task.id) != nil
-        }.count
-        let notStarted = assignmentsStore.tasks.filter { task in
-            !task.isCompleted && plans.plan(for: task.id) == nil
-        }.count
-
-        return [
-            AssignmentStatusItem(status: "Not Started", count: notStarted, color: .gray),
-            AssignmentStatusItem(status: "In Progress", count: inProgress, color: .blue),
-            AssignmentStatusItem(status: "Completed", count: completed, color: .green)
-        ]
-    }
-
-    private func assignmentStatusLegend(total: Int) -> [AssignmentLegendRow] {
-        let items = assignmentStatusItems()
-        return items.map { item in
-            let percentText: String?
-            if total > 0 {
-                let percent = Int((Double(item.count) / Double(total)) * 100)
-                percentText = "\(percent)%"
-            } else {
-                percentText = nil
-            }
-            return AssignmentLegendRow(
-                label: item.status,
-                count: item.count,
-                color: item.color,
-                percentText: percentText
-            )
-        }
     }
 
     private func upcomingAssignments() -> [AppTask] {
@@ -1061,26 +999,57 @@ struct DashboardView: View {
         }
     }
 
-    private var timeCard: some View {
+    private var plannerTodayCard: some View {
         DashboardCard(
-            title: "Time",
+            title: "Today",
             isLoading: !isLoaded
         ) {
-            VStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
-                NativeAnalogClock(diameter: 140, showDigitalTime: false)
-                    .frame(width: 140, height: 140)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(Date(), style: .time)
-                        .font(.title3.weight(.semibold))
-                    Text(Date(), style: .date)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+            let sessions = plannerSessionsToday
+            if sessions.isEmpty {
+                Text("No planned tasks today")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            } else {
+                VStack(alignment: .leading, spacing: 10) {
+                    ForEach(sessions.prefix(4), id: \.id) { session in
+                        plannerSessionRow(session)
+                    }
                 }
             }
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Current time")
+        .accessibilityLabel("Today's planner tasks")
+    }
+
+    private var workRemainingCard: some View {
+        DashboardCard(
+            title: "Remaining",
+            isLoading: !isLoaded
+        ) {
+            let snapshot = remainingWorkSnapshot
+            if snapshot.plannedMinutes <= 0 {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("—")
+                        .font(.system(size: 36, weight: .bold))
+                    Text("No plan time available yet")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("\(snapshot.remainingPercent)%")
+                        .font(.system(size: 36, weight: .bold))
+                    Text("\(snapshot.remainingMinutes) min remaining")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text("\(snapshot.completedMinutes) min completed")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Work remaining")
     }
 
     private var calendarCard: some View {
@@ -1205,12 +1174,108 @@ struct DashboardView: View {
             }
             .sorted { ($0.due ?? Date.distantFuture) < ($1.due ?? Date.distantFuture) }
     }
+
+    private var plannerSessionsToday: [StoredScheduledSession] {
+        let cal = Calendar.current
+        return plannerStore.scheduled
+            .filter { cal.isDateInToday($0.start) }
+            .sorted {
+                if $0.start != $1.start {
+                    return $0.start < $1.start
+                }
+                return $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
+            }
+    }
+
+    private func plannerSessionRow(_ session: StoredScheduledSession) -> some View {
+        HStack(spacing: 8) {
+            Circle()
+                .fill(session.isUserEdited ? Color.orange : Color.accentColor)
+                .frame(width: 6, height: 6)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(session.title)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                Text(timeRangeText(for: session))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+        }
+    }
+
+    private func timeRangeText(for session: StoredScheduledSession) -> String {
+        let formatter = LocaleFormatters.shortTime
+        return "\(formatter.string(from: session.start)) – \(formatter.string(from: session.end))"
+    }
+
+    private struct RemainingWorkSnapshot {
+        let plannedMinutes: Int
+        let completedMinutes: Int
+        let remainingMinutes: Int
+        let remainingPercent: Int
+    }
+
+    private var remainingWorkSnapshot: RemainingWorkSnapshot {
+        let plannedMinutes = plannedMinutesForToday()
+        let studiedMinutes = studyHoursTracker.totals.todayMinutes
+        guard plannedMinutes > 0 else {
+            return RemainingWorkSnapshot(
+                plannedMinutes: 0,
+                completedMinutes: 0,
+                remainingMinutes: 0,
+                remainingPercent: 0
+            )
+        }
+
+        let completed = min(studiedMinutes, plannedMinutes)
+        let remaining = max(plannedMinutes - studiedMinutes, 0)
+        let remainingPct = Int((1.0 - min(Double(studiedMinutes) / Double(plannedMinutes), 1.0)) * 100.0)
+        return RemainingWorkSnapshot(
+            plannedMinutes: plannedMinutes,
+            completedMinutes: completed,
+            remainingMinutes: remaining,
+            remainingPercent: remainingPct
+        )
+    }
+
+    private func plannedMinutesForToday() -> Int {
+        let sessions = plannerSessionsToday.filter { session in
+            session.type == .task || session.type == .study
+        }
+        let sessionMinutes = sessions.reduce(0) { $0 + max($1.estimatedMinutes, 0) }
+        if sessionMinutes > 0 {
+            return sessionMinutes
+        }
+        return tasksDueToday().reduce(0) { $0 + max($1.estimatedMinutes, 0) }
+    }
     
     private func formattedDueDate(_ date: Date, hasExplicitTime: Bool) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
         formatter.timeStyle = hasExplicitTime ? .short : .none
         return formatter.string(from: date)
+    }
+
+    @ViewBuilder
+    private func energyButton(_ title: String, level: EnergyLevel) -> some View {
+        let isSelected = settings.defaultEnergyLevel == title
+        Button {
+            setEnergy(level)
+            settings.defaultEnergyLevel = title
+            withAnimation(.easeInOut(duration: 0.25)) {
+                settings.energySelectionConfirmed = true
+            }
+        } label: {
+            Text(title)
+                .font(.headline)
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .padding(.vertical, 6)
+        }
+        .buttonStyle(.plain)
+        .background(isSelected ? settings.activeAccentColor.opacity(0.2) : Color.clear)
+        .cornerRadius(8)
+        .accessibilityLabel("Set energy level to \(title)")
     }
 
     private func setEnergy(_ level: EnergyLevel) {
@@ -1225,6 +1290,24 @@ struct DashboardView: View {
             base = current.mapValues { max(0.1, $0 - 0.2) }
         }
         SchedulerPreferencesStore.shared.updateEnergyProfile(base)
+    }
+
+    private var energyResetTimer: Publishers.Autoconnect<Timer.TimerPublisher> {
+        Timer.publish(every: 900, on: .main, in: .common).autoconnect()
+    }
+
+    private func ensureEnergyReset(now: Date) {
+        let calendar = Calendar.current
+        let dayStart = calendar.startOfDay(for: now)
+        let resetTimeToday = calendar.date(byAdding: .hour, value: 4, to: dayStart) ?? dayStart
+        let mostRecentReset = now >= resetTimeToday
+            ? resetTimeToday
+            : (calendar.date(byAdding: .day, value: -1, to: resetTimeToday) ?? resetTimeToday)
+
+        if settings.energySelectionResetDate < mostRecentReset {
+            settings.energySelectionConfirmed = false
+            settings.energySelectionResetDate = now
+        }
     }
 
     private enum EnergyLevel {

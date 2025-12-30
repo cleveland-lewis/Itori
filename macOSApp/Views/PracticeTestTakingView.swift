@@ -3,7 +3,7 @@ import SwiftUI
 
 struct PracticeTestTakingView: View {
     let test: PracticeTest
-    @Bindable var store: PracticeTestStore
+    @ObservedObject var store: PracticeTestStore
     
     @State private var currentQuestionIndex = 0
     @State private var userAnswers: [UUID: String] = [:]

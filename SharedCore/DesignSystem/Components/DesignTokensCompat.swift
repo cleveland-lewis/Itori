@@ -81,7 +81,8 @@ extension View {
         #if os(macOS)
         background(
             RoundedRectangle(cornerRadius: radius, style: .continuous)
-                .fill(DesignSystem.Colors.cardBackground)
+                .fill(DesignSystem.Materials.card)
+                .opacity(DesignSystem.Materials.cardOpacity)
         )
         .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
         .modifier(NeutralLineOverlay(radius: radius, opacity: 0.6))
@@ -89,6 +90,7 @@ extension View {
         background(
             RoundedRectangle(cornerRadius: radius, style: .continuous)
                 .fill(DesignSystem.Materials.card)
+                .opacity(DesignSystem.Materials.cardOpacity)
         )
         .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
         .modifier(NeutralLineOverlay(radius: radius, opacity: 0.12))
@@ -99,14 +101,15 @@ extension View {
         #if os(macOS)
         background(
             RoundedRectangle(cornerRadius: radius, style: .continuous)
-                .fill(DesignSystem.Colors.cardBackground)
+                .fill(DesignSystem.Materials.card)
+                .opacity(DesignSystem.Materials.cardOpacity)
         )
         .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
         #else
         background(
             RoundedRectangle(cornerRadius: radius, style: .continuous)
                 .fill(DesignSystem.Materials.card)
-                .opacity(opacity)
+                .opacity(opacity * DesignSystem.Materials.cardOpacity)
         )
         .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
         #endif

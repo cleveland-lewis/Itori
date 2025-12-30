@@ -1,14 +1,13 @@
+import Combine
 import Foundation
 import SwiftUI
 
-@Observable
-class PracticeTestStore {
-    
-    var tests: [PracticeTest] = []
-    var currentTest: PracticeTest?
-    var isGenerating: Bool = false
-    var summary: PracticeTestSummary = PracticeTestSummary()
-    var useAlgorithmicGenerator: Bool = true // Toggle for blueprint-first generation
+final class PracticeTestStore: ObservableObject {
+    @Published var tests: [PracticeTest] = []
+    @Published var currentTest: PracticeTest?
+    @Published var isGenerating: Bool = false
+    @Published var summary: PracticeTestSummary = PracticeTestSummary()
+    @Published var useAlgorithmicGenerator: Bool = true // Toggle for blueprint-first generation
     
     private let llmService: LocalLLMService
     private let algorithmicGenerator: AlgorithmicTestGenerator

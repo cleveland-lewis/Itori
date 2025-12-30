@@ -77,7 +77,7 @@ final class AssignmentPlansStore: ObservableObject {
             // Use fallback planner directly (AI scheduling ports disabled due to Sendable requirements)
             let fallbackSessions = PlannerEngine.generateSessions(for: assignment, settings: settings)
             
-            let energyProfile = defaultEnergyProfile()
+            let energyProfile = SchedulerPreferencesStore.shared.energyProfileForPlanning()
             let result = PlannerEngine.scheduleSessions(fallbackSessions, settings: settings, energyProfile: energyProfile)
             let scheduled = result.scheduled
             let finalOverflow = result.overflow
@@ -222,14 +222,6 @@ final class AssignmentPlansStore: ObservableObject {
             "added": "\(added)",
             "removed": "\(removed)"
         ])
-    }
-    
-    private func defaultEnergyProfile() -> [Int: Double] {
-        [
-            9: 0.55, 10: 0.65, 11: 0.7, 12: 0.6,
-            13: 0.5, 14: 0.55, 15: 0.65, 16: 0.7,
-            17: 0.6, 18: 0.5, 19: 0.45, 20: 0.4
-        ]
     }
     
     // MARK: - Plan Lifecycle

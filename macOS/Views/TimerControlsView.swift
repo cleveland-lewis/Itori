@@ -49,7 +49,7 @@ struct TimerControlsView: View {
                     Label(viewModel.isOnBreak ? "Break" : "Focus", systemImage: viewModel.isOnBreak ? "leaf" : "bolt.fill")
                         .font(.subheadline.weight(.semibold))
                         .padding(10)
-                        .background(DesignSystem.Colors.cardBackground)
+                        .background(DesignSystem.Materials.card)
                         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
                 }
             } else if currentMode == .timer {
@@ -57,7 +57,7 @@ struct TimerControlsView: View {
             }
         }
         .padding(DesignSystem.Layout.padding.card)
-        .background(DesignSystem.Colors.cardBackground)
+        .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
     
@@ -119,7 +119,7 @@ struct TimerControlsView: View {
             }
         }
         .padding(10)
-        .background(DesignSystem.Colors.cardBackground)
+        .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
         .opacity(isDisabled ? 0.5 : 1.0)
     }

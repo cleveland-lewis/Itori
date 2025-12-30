@@ -10,7 +10,7 @@ struct GlassClockCard<Content: View>: View {
         #if os(macOS)
         content()
             .padding(DesignSystem.Layout.padding.card)
-            .background(DesignSystem.Colors.cardBackground, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .background(DesignSystem.Materials.card, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .stroke(Color(nsColor: .separatorColor), lineWidth: 1)

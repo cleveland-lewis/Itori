@@ -606,7 +606,7 @@ struct TimerPageView: View {
                                 }
                             }
                             .padding(8)
-                            .background(DesignSystem.Colors.cardBackground, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            .background(DesignSystem.Materials.card, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                         }
                     }
                 }
@@ -1411,7 +1411,7 @@ private struct FocusWindowView: View {
         }
         .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(DesignSystem.Colors.cardBackground)
+        .background(DesignSystem.Materials.card)
     }
 
     private var activityCard: some View {

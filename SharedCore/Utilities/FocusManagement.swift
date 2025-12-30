@@ -384,8 +384,8 @@ public struct FocusDebugOverlay: View {
         .padding(8)
         .background {
             #if os(macOS)
-            DesignSystem.Colors.cardBackground
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+            RoundedRectangle(cornerRadius: 8)
+                .fill(DesignSystem.Materials.card)
             #else
             Color.clear
                 .background(.ultraThinMaterial)

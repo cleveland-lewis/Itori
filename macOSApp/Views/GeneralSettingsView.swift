@@ -163,7 +163,7 @@ struct GeneralSettingsView: View {
             .frame(minWidth: 440, maxWidth: 520)
             .background(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(DesignSystem.Colors.cardBackground)
+                    .fill(DesignSystem.Materials.card)
             )
             .padding()
         }

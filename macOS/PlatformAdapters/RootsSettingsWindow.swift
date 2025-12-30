@@ -47,7 +47,7 @@ struct RootsSettingsWindow: View {
 
             ZStack {
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(DesignSystem.Colors.cardBackground)
+                    .fill(DesignSystem.Materials.card)
                     .opacity(0.20)
                     .shadow(radius: 24, y: 10)
                     .ignoresSafeArea()

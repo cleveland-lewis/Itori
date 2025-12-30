@@ -458,7 +458,7 @@ private extension PlannerPageView {
         }
 
         let sessions = assignments.flatMap { PlannerEngine.generateSessions(for: $0, settings: studySettings) }
-        let energy = SchedulerPreferencesStore.shared.preferences.learnedEnergyProfile
+        let energy = SchedulerPreferencesStore.shared.energyProfileForPlanning()
         let scheduledResult = PlannerEngine.scheduleSessionsWithStrategy(sessions, settings: studySettings, energyProfile: energy)
         plannerStore.persist(scheduled: scheduledResult.scheduled, overflow: scheduledResult.overflow)
 

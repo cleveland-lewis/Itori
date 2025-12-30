@@ -18,6 +18,14 @@ final class SchedulerPreferencesStore {
         save()
     }
 
+    func energyProfileForPlanning(settings: AppSettingsModel = .shared) -> [Int: Double] {
+        let base = preferences.learnedEnergyProfile
+        guard settings.energySelectionConfirmed else { return base }
+        let delta = energyDelta(for: settings.defaultEnergyLevel)
+        guard delta != 0 else { return base }
+        return base.mapValues { min(1.0, max(0.0, $0 + delta)) }
+    }
+
     func load() {
         guard let url = fileURL, FileManager.default.fileExists(atPath: url.path) else { return }
         do {
@@ -40,6 +48,17 @@ final class SchedulerPreferencesStore {
             try data.write(to: url, options: [.atomic, .completeFileProtection])
         } catch {
             DebugLogger.log("Failed to save prefs: \(error)")
+        }
+    }
+
+    private func energyDelta(for level: String) -> Double {
+        switch level.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
+        case "high":
+            return 0.2
+        case "low":
+            return -0.2
+        default:
+            return 0.0
         }
     }
 }

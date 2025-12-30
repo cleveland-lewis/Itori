@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		1A58B1622EF58EAC0077C827 /* Notification+Names.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A58B1612EF58EAB0077C827 /* Notification+Names.swift */; };
 		1A6947212EF0891800072BDF /* roots.icon in Resources */ = {isa = PBXBuildFile; fileRef = 1A6947202EF0891800072BDF /* roots.icon */; };
-		1AC769912EFB2AE600DE0B3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8B5C0B2F7A123400000001 /* Assets.xcassets */; };
-		7C8B5C0C2F7A123400000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C8B5C0B2F7A123400000001 /* Assets.xcassets */; };
 		B0A1C0012F7A000100000001 /* en.lproj in Resources */ = {isa = PBXBuildFile; fileRef = B0A1C1012F7A000100000001 /* en.lproj */; };
 		B0A1C0012F7A000100000002 /* zh-Hans.lproj in Resources */ = {isa = PBXBuildFile; fileRef = B0A1C1012F7A000100000002 /* zh-Hans.lproj */; };
 		B0A1C0012F7A000100000003 /* zh-Hant.lproj in Resources */ = {isa = PBXBuildFile; fileRef = B0A1C1012F7A000100000003 /* zh-Hant.lproj */; };
@@ -40,7 +38,6 @@
 		1AD7D4342EDD328800D403F3 /* Roots.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Roots.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AD7D4432EDD328A00D403F3 /* RootsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RootsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AD7D44D2EDD328A00D403F3 /* RootsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RootsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		7C8B5C0B2F7A123400000001 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9BBB386A3C3046FCA7A3D6DB /* RootsWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RootsWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0A1C1012F7A000100000001 /* en.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = en.lproj; sourceTree = "<group>"; };
 		B0A1C1012F7A000100000002 /* zh-Hans.lproj */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "zh-Hans.lproj"; sourceTree = "<group>"; };
@@ -123,17 +120,16 @@
 		1AD7D42B2EDD328800D403F3 = {
 			isa = PBXGroup;
 			children = (
-				7C8B5C0B2F7A123400000001 /* Assets.xcassets */,
 				B0A1C1012F7A000100000001 /* en.lproj */,
 				B0A1C1012F7A000100000002 /* zh-Hans.lproj */,
 				B0A1C1012F7A000100000003 /* zh-Hant.lproj */,
+				1A6947202EF0891800072BDF /* roots.icon */,
 				1AD7D46B2EDD328800D403F3 /* SharedCore */,
 				1AD7D46C2EDD328800D403F3 /* macOSApp */,
 				0C39BF544BB34BC69FE56ED2 /* watchOS */,
 				1AD7D4462EDD328A00D403F3 /* RootsTests */,
 				1AD7D4502EDD328A00D403F3 /* RootsUITests */,
 				1AD7D4352EDD328800D403F3 /* Products */,
-				1A6947202EF0891800072BDF /* roots.icon */,
 				1A58B1612EF58EAB0077C827 /* Notification+Names.swift */,
 				1A58C8A92EF5D2760077C827 /* Recovered References */,
 			);
@@ -299,7 +295,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7C8B5C0C2F7A123400000001 /* Assets.xcassets in Resources */,
 				B0A1C0012F7A000100000001 /* en.lproj in Resources */,
 				B0A1C0012F7A000100000002 /* zh-Hans.lproj in Resources */,
 				B0A1C0012F7A000100000003 /* zh-Hant.lproj in Resources */,
@@ -325,7 +320,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1AC769912EFB2AE600DE0B3C /* Assets.xcassets in Resources */,
 				EE1142A41637459998E50931 /* roots.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

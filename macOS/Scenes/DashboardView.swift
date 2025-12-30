@@ -18,7 +18,6 @@ struct DashboardView: View {
     @State private var isLoaded = false
     @State private var cancellables: Set<AnyCancellable> = []
     @State private var todayBounce = false
-    @State private var energyBounce = false
     @State private var selectedDate: Date = Date()
     @State private var tasks: [DashboardTask] = []
     @State private var events: [DashboardEvent] = []
@@ -28,6 +27,7 @@ struct DashboardView: View {
     @State private var showAddEventSheet = false
     @State private var showAddTaskSheet = false
     @ObservedObject private var studyHoursTracker = StudyHoursTracker.shared
+    @ObservedObject private var plannerStore = PlannerStore.shared
     @State private var studyTrendRange: StudyTrendRange = .seven
     @State private var studyTrend: [StudyTrendPoint] = []
     @State private var columnMode: ColumnMode = .four
@@ -216,7 +216,7 @@ struct DashboardView: View {
     }
 
     private var energyMode: DashboardCardMode {
-        accessibilitySafe(modeOverride(defaultMode: EmptyStatePolicy.mode(hasData: hasAssignmentsData)))
+        accessibilitySafe(modeOverride(defaultMode: .full))
     }
 
     private var studyHoursMode: DashboardCardMode {
@@ -255,11 +255,11 @@ struct DashboardView: View {
 
     private var energyCompactState: DashboardCompactState {
         return DashboardCompactState(
-            title: "No Status Yet",
-            description: "Assignment progress shows here once you add tasks.",
-            actionTitle: "Add Assignment"
+            title: "Energy not set",
+            description: "Choose a level to personalize your schedule.",
+            actionTitle: "Set Energy"
         ) {
-            showAddAssignmentSheet = true
+            settings.energySelectionConfirmed = false
         }
     }
 
@@ -276,7 +276,7 @@ struct DashboardView: View {
     @ViewBuilder
     private func dashboardGrid(mode: ColumnMode) -> some View {
         Grid(horizontalSpacing: columnSpacing, verticalSpacing: rowSpacing) {
-            ForEach(Array(DashboardLayoutSpec.rows(for: mode).enumerated()), id: \.offset) { _, row in
+            ForEach(Array(DashboardLayoutSpec.rows(for: mode, slots: visibleSlots).enumerated()), id: \.offset) { _, row in
                 GridRow {
                     ForEach(row, id: \.self) { slot in
                         dashboardSlot(slot: slot)
@@ -305,6 +305,7 @@ struct DashboardView: View {
             }
 #endif
         }
+        .animation(.easeInOut(duration: 0.25), value: settings.energySelectionConfirmed)
     }
 
     private func dashboardSlot(slot: DashboardSlot) -> some View {
@@ -448,30 +449,14 @@ struct DashboardView: View {
         .accessibilityIdentifier("DashboardHeader")
     }
 
-    private var energyCard: some View {
-        DashboardCard(
-            title: "Assignment Status",
-            systemImage: "chart.pie",
-            isLoading: debugIsLoading,
-            mode: energyMode,
-            compactState: debugCompactState(defaultState: energyCompactState)
-        ) {
-            assignmentStatusChart
-        }
-        .onTapGesture {
-            energyBounce.toggle()
-            DebugLogger.log("[Dashboard] card tapped: assignmentStatus")
-        }
-        .help("Assignment Status")
-    }
-
     @ViewBuilder
-    private func energyButton(_ title: String, level: EnergyLevel) -> some View {
+    private func energyButton(_ title: String) -> some View {
         let isSelected = settings.defaultEnergyLevel == title
         Button {
-            setEnergy(level)
             settings.defaultEnergyLevel = title
-            settings.energySelectionConfirmed = true
+            withAnimation(.easeInOut(duration: 0.25)) {
+                settings.energySelectionConfirmed = true
+            }
         } label: {
             Text(title)
                 .font(.headline)
@@ -586,45 +571,6 @@ struct DashboardView: View {
         }
     }
 
-    private var timeCard: some View {
-        DashboardCard(
-            title: "Time",
-            systemImage: "clock",
-            isLoading: debugIsLoading,
-            mode: modeOverride(defaultMode: .full),
-            compactState: debugCompactState(defaultState: timeCompactState)
-        ) {
-            TimelineView(.animation(minimumInterval: 1.0, paused: false)) { context in
-                VStack(alignment: .leading, spacing: RootsSpacing.m) {
-                    let clockSize: CGFloat = 140
-                    HStack(alignment: .center, spacing: DesignSystem.Layout.spacing.large) {
-                        RootsAnalogClock(
-                            style: .clock,
-                            diameter: clockSize,
-                            showSecondHand: true,
-                            accentColor: settings.activeAccentColor
-                        )
-                        .frame(width: clockSize, height: clockSize)
-                        
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(context.date, style: .time)
-                                .font(.title2.weight(.semibold))
-                            Text(context.date, style: .date)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                            if let nextEvent {
-                                Text("Next up \(relativeTimeString(to: nextEvent.date, from: context.date))")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    }
-                    .padding(.vertical, DesignSystem.Layout.spacing.small)
-                }
-            }
-        }
-    }
-
     private var calendarCard: some View {
         DashboardCard(
             title: "Calendar",
@@ -657,21 +603,93 @@ struct DashboardView: View {
             mode: studyHoursMode,
             compactState: debugCompactState(defaultState: studyHoursCompactState)
         ) {
-            studyTrendChart
+            if hasStudyTrendData {
+                studyTrendChart
+            } else {
+                DashboardEmptyState(
+                    title: "No study data yet",
+                    systemImage: "clock",
+                    description: "Start a timer to see your trend."
+                )
+            }
         }
     }
 
-    private var timeCompactState: DashboardCompactState {
-        DashboardCompactState(
-            title: "Clock Ready",
-            description: "Your local time and date are available.",
-            actionTitle: "Open Calendar"
+    private var plannerTodayCard: some View {
+        DashboardCard(
+            title: "Today",
+            systemImage: "list.bullet.rectangle",
+            isLoading: debugIsLoading,
+            mode: .full
         ) {
-            appModel.selectedPage = .calendar
+            let sessions = plannerSessionsToday
+            if sessions.isEmpty {
+                Text("No planned tasks today")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            } else {
+                VStack(alignment: .leading, spacing: 10) {
+                    ForEach(sessions.prefix(4), id: \.id) { session in
+                        plannerSessionRow(session)
+                    }
+                }
+            }
         }
     }
 
+    private var workRemainingCard: some View {
+        DashboardCard(
+            title: "Remaining",
+            systemImage: "chart.bar.fill",
+            isLoading: debugIsLoading,
+            mode: .full
+        ) {
+            let snapshot = remainingWorkSnapshot
+            if snapshot.plannedMinutes <= 0 {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("—")
+                        .font(.system(size: 36, weight: .bold))
+                    Text("No plan time available yet")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("\(snapshot.remainingPercent)%")
+                        .font(.system(size: 36, weight: .bold))
+                    Text("\(snapshot.remainingMinutes) min remaining")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text("\(snapshot.completedMinutes) min completed")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+        }
+    }
 
+    private var energyCard: some View {
+        DashboardCard(
+            title: "Energy Check-in",
+            systemImage: "bolt.heart",
+            isLoading: debugIsLoading,
+            mode: energyMode,
+            compactState: debugCompactState(defaultState: energyCompactState)
+        ) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("How's your energy today?")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                HStack(spacing: 10) {
+                    energyButton("High")
+                    energyButton("Medium")
+                    energyButton("Low")
+                }
+            }
+        }
+        .transition(.move(edge: .top).combined(with: .opacity))
+    }
 
     private func quickActionButton(_ title: String, systemImage: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
@@ -727,21 +745,6 @@ struct DashboardView: View {
         let id = UUID()
         let day: Date
         let minutes: Double
-    }
-
-    private struct AssignmentStatusItem: Identifiable {
-        let id = UUID()
-        let status: String
-        let count: Int
-        let color: Color
-    }
-
-    private struct AssignmentLegendRow: Identifiable {
-        let id = UUID()
-        let label: String
-        let count: Int
-        let color: Color
-        let percentText: String?
     }
 
     private struct UpcomingAssignmentItem: Identifiable {
@@ -848,55 +851,6 @@ struct DashboardView: View {
         }
     }
 
-    private var assignmentStatusChart: some View {
-        let items = assignmentStatusItems()
-        let total = items.reduce(0) { $0 + $1.count }
-
-        return HStack(alignment: .center, spacing: DesignSystem.Layout.spacing.large) {
-            ZStack {
-                Chart(items) { item in
-                    SectorMark(
-                        angle: .value("Count", item.count),
-                        innerRadius: .ratio(0.6),
-                        angularInset: 1.5
-                    )
-                    .foregroundStyle(item.color)
-                }
-                .chartLegend(.hidden)
-
-                VStack(spacing: 4) {
-                    Text("\(total)")
-                        .font(.title2.bold())
-                    Text("Total")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .frame(width: 150, height: 150)
-
-            VStack(alignment: .leading, spacing: 10) {
-                ForEach(assignmentStatusLegend(total: total)) { item in
-                    HStack(spacing: 8) {
-                        Circle()
-                            .fill(item.color)
-                            .frame(width: 8, height: 8)
-                        Text(item.label)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        Text("\(item.count)")
-                            .font(.caption.weight(.semibold))
-                        if let percent = item.percentText {
-                            Text(percent)
-                                .font(.caption2)
-                                .foregroundStyle(.tertiary)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private func weeklyWorkloadBuckets() -> [WorkloadBucket] {
         let calendar = Calendar.current
         let start = calendar.startOfDay(for: Date())
@@ -923,23 +877,6 @@ struct DashboardView: View {
             }
         }
         return buckets
-    }
-
-    private func assignmentStatusItems() -> [AssignmentStatusItem] {
-        let plans = AssignmentPlansStore.shared
-        let completed = assignmentsStore.tasks.filter { $0.isCompleted }.count
-        let inProgress = assignmentsStore.tasks.filter { task in
-            !task.isCompleted && plans.plan(for: task.id) != nil
-        }.count
-        let notStarted = assignmentsStore.tasks.filter { task in
-            !task.isCompleted && plans.plan(for: task.id) == nil
-        }.count
-
-        return [
-            AssignmentStatusItem(status: "Not Started", count: notStarted, color: .orange),
-            AssignmentStatusItem(status: "In Progress", count: inProgress, color: .yellow),
-            AssignmentStatusItem(status: "Completed", count: completed, color: .green)
-        ]
     }
 
     private func refreshStudyTrend() {
@@ -1035,6 +972,81 @@ struct DashboardView: View {
             .sorted { ($0.effectiveDueDateTime ?? Date.distantFuture) < ($1.effectiveDueDateTime ?? Date.distantFuture) }
     }
 
+    private var plannerSessionsToday: [StoredScheduledSession] {
+        let cal = Calendar.current
+        return plannerStore.scheduled
+            .filter { cal.isDateInToday($0.start) }
+            .sorted {
+                if $0.start != $1.start {
+                    return $0.start < $1.start
+                }
+                return $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
+            }
+    }
+
+    private func plannerSessionRow(_ session: StoredScheduledSession) -> some View {
+        HStack(spacing: 8) {
+            Circle()
+                .fill(session.isUserEdited ? Color.orange : Color.accentColor)
+                .frame(width: 6, height: 6)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(session.title)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                Text(timeRangeText(for: session))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+        }
+    }
+
+    private func timeRangeText(for session: StoredScheduledSession) -> String {
+        let formatter = LocaleFormatters.shortTime
+        return "\(formatter.string(from: session.start)) – \(formatter.string(from: session.end))"
+    }
+
+    private struct RemainingWorkSnapshot {
+        let plannedMinutes: Int
+        let completedMinutes: Int
+        let remainingMinutes: Int
+        let remainingPercent: Int
+    }
+
+    private var remainingWorkSnapshot: RemainingWorkSnapshot {
+        let plannedMinutes = plannedMinutesForToday()
+        let studiedMinutes = Int(studyHoursTracker.totals.todayMinutes.rounded())
+        guard plannedMinutes > 0 else {
+            return RemainingWorkSnapshot(
+                plannedMinutes: 0,
+                completedMinutes: 0,
+                remainingMinutes: 0,
+                remainingPercent: 0
+            )
+        }
+
+        let completed = min(studiedMinutes, plannedMinutes)
+        let remaining = max(plannedMinutes - studiedMinutes, 0)
+        let remainingPct = Int((1.0 - min(Double(studiedMinutes) / Double(plannedMinutes), 1.0)) * 100.0)
+        return RemainingWorkSnapshot(
+            plannedMinutes: plannedMinutes,
+            completedMinutes: completed,
+            remainingMinutes: remaining,
+            remainingPercent: remainingPct
+        )
+    }
+
+    private func plannedMinutesForToday() -> Int {
+        let sessions = plannerSessionsToday.filter { session in
+            session.type == .task || session.type == .study
+        }
+        let sessionMinutes = sessions.reduce(0) { $0 + max($1.estimatedMinutes, 0) }
+        if sessionMinutes > 0 {
+            return sessionMinutes
+        }
+        return tasksDueToday().reduce(0) { $0 + max($1.estimatedMinutes, 0) }
+    }
+
     private func upcomingAssignments() -> [AppTask] {
         let now = Date()
         return assignmentsStore.tasks
@@ -1108,25 +1120,6 @@ struct DashboardView: View {
         }
     }
 
-    private func assignmentStatusLegend(total: Int) -> [AssignmentLegendRow] {
-        let items = assignmentStatusItems()
-        return items.map { item in
-            let percentText: String?
-            if total > 0 {
-                let percent = Int((Double(item.count) / Double(total)) * 100)
-                percentText = "\(percent)%"
-            } else {
-                percentText = nil
-            }
-            return AssignmentLegendRow(
-                label: item.status,
-                count: item.count,
-                color: item.color,
-                percentText: percentText
-            )
-        }
-    }
-
     private func courseTitle(for courseId: UUID?) -> String {
         guard let courseId,
               let course = coursesStore.activeCourses.first(where: { $0.id == courseId }) else {
@@ -1164,20 +1157,6 @@ struct DashboardView: View {
         return formatter.string(from: date)
     }
 
-    private func setEnergy(_ level: EnergyLevel) {
-        let current = SchedulerPreferencesStore.shared.preferences.learnedEnergyProfile
-        let base: [Int: Double]
-        switch level {
-        case .high:
-            base = current.mapValues { min(1.0, $0 + 0.2) }
-        case .medium:
-            base = current
-        case .low:
-            base = current.mapValues { max(0.1, $0 - 0.2) }
-        }
-        SchedulerPreferencesStore.shared.updateEnergyProfile(base)
-    }
-
     private var energyResetTimer: Publishers.Autoconnect<Timer.TimerPublisher> {
         Timer.publish(every: 900, on: .main, in: .common).autoconnect()
     }
@@ -1196,9 +1175,6 @@ struct DashboardView: View {
         }
     }
 
-    private enum EnergyLevel {
-        case high, medium, low
-    }
 }
 #if DEBUG
 private enum DashboardDebugState: String, CaseIterable, Identifiable {
@@ -1250,8 +1226,6 @@ private extension DashboardView {
         switch slot {
         case .today:
             return todayMode
-        case .time:
-            return .full
         case .calendar:
             return .full
         case .upcoming:
@@ -1260,6 +1234,10 @@ private extension DashboardView {
             return assignmentsMode
         case .energy:
             return energyMode
+        case .plannerToday:
+            return .full
+        case .workRemaining:
+            return .full
         case .studyHours:
             return studyHoursMode
         }
@@ -1270,8 +1248,6 @@ private extension DashboardView {
         switch slot {
         case .today:
             todayCard
-        case .time:
-            timeCard
         case .calendar:
             calendarCard
         case .upcoming:
@@ -1280,9 +1256,21 @@ private extension DashboardView {
             assignmentsCard
         case .energy:
             energyCard
+        case .plannerToday:
+            plannerTodayCard
+        case .workRemaining:
+            workRemainingCard
         case .studyHours:
             studyHoursCard
         }
+    }
+
+    var visibleSlots: [DashboardSlot] {
+        var slots = DashboardSlot.allCases
+        if settings.energySelectionConfirmed {
+            slots.removeAll { $0 == .energy }
+        }
+        return slots
     }
 
     func rowSpanWidth(_ row: [DashboardSlot], mode: ColumnMode) -> Int {
@@ -1352,7 +1340,7 @@ private extension DashboardView {
             assert(size.height + 1.0 >= minHeight, "Dashboard card height too small for \(slot).")
         }
 
-        let rows = DashboardLayoutSpec.rows(for: mode)
+        let rows = DashboardLayoutSpec.rows(for: mode, slots: visibleSlots)
         for row in rows {
             let heights = row.compactMap { sizes[$0]?.height }
             guard let maxHeight = heights.max(), let minHeight = heights.min() else { continue }
@@ -1716,7 +1704,7 @@ private struct DashboardEventsColumn: View {
             }
         }
         .padding(DesignSystem.Layout.padding.card)
-        .background(DesignSystem.Colors.cardBackground)
+        .background(DesignSystem.Materials.card)
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
 }

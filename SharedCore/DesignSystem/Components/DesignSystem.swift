@@ -67,11 +67,11 @@ struct DesignSystem {
 
         static var cardBackground: Color {
             #if os(macOS)
-            return Color(nsColor: .controlBackgroundColor)
+            return Color(nsColor: .controlBackgroundColor).opacity(0.92)
             #elseif os(watchOS)
-            return Color.black.opacity(0.8)
+            return Color.black.opacity(0.85)
             #else
-            return Color(uiColor: .secondarySystemBackground)
+            return Color(uiColor: .secondarySystemBackground).opacity(0.92)
             #endif
         }
 
@@ -177,6 +177,7 @@ struct DesignSystem {
         // Semantic materials aligned to Apple HIG guidance
         static let sidebar: Material = .bar
         static let card: Material = .regularMaterial
+        static let cardOpacity: Double = 0.88
         static let popup: Material = .thickMaterial
         static let hud: Material = .ultraThinMaterial
         // Surface materials used by smaller components

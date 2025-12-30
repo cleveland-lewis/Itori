@@ -152,7 +152,7 @@ struct OverdueTaskRow: View {
             .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(DesignSystem.Colors.cardBackground)
+                    .fill(DesignSystem.Materials.card)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
@@ -462,7 +462,7 @@ private extension PlannerPageView {
         }
 
         let sessions = assignments.flatMap { PlannerEngine.generateSessions(for: $0, settings: studySettings) }
-        let energy = SchedulerPreferencesStore.shared.preferences.learnedEnergyProfile
+        let energy = SchedulerPreferencesStore.shared.energyProfileForPlanning()
         let scheduledResult = PlannerEngine.scheduleSessions(sessions, settings: studySettings, energyProfile: energy)
         plannerStore.persist(scheduled: scheduledResult.scheduled, overflow: scheduledResult.overflow)
 
@@ -722,7 +722,7 @@ private extension PlannerPageView {
                             )
                             showTaskSheet = true
                         }
-                        .listRowBackground(DesignSystem.Colors.cardBackground)
+                        .listRowBackground(DesignSystem.Materials.card)
                     }
                 }
                 .listStyle(.inset)
@@ -786,7 +786,7 @@ private extension PlannerPageView {
                                                markCompleted(item)
                                            }
                                        })
-                        .listRowBackground(DesignSystem.Colors.cardBackground)
+                        .listRowBackground(DesignSystem.Materials.card)
                     }
                 }
                 .listStyle(.inset)
@@ -797,7 +797,7 @@ private extension PlannerPageView {
         .padding(DesignSystem.Layout.padding.card)
         .background(
             RoundedRectangle(cornerRadius: cardCornerRadius, style: .continuous)
-                .fill(DesignSystem.Colors.cardBackground)
+                .fill(DesignSystem.Materials.card)
         )
         .overlay(
             RoundedRectangle(cornerRadius: cardCornerRadius, style: .continuous)
