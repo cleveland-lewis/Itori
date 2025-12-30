@@ -12,6 +12,7 @@ final class PersistenceController {
     var viewContext: NSManagedObjectContext { container.viewContext }
     
     private(set) var isCloudKitEnabled = false
+    private(set) var lastCloudKitStatusMessage: String? = nil
 
     init(inMemory: Bool = false) {
         container = NSPersistentCloudKitContainer(name: "Roots")
@@ -103,6 +104,7 @@ final class PersistenceController {
         viewContext.automaticallyMergesChangesFromParent = true
         
         observeCloudKitToggle()
+        notifyCloudKitStatus(reason: initialCloudKitReason())
     }
     
     private func observeCloudKitToggle() {
@@ -120,14 +122,15 @@ final class PersistenceController {
         guard enabled != isCloudKitEnabled else { return }
         
         LOG_DATA(.info, "Persistence", "iCloud sync toggled to: \(enabled)")
-        isCloudKitEnabled = enabled
         
         if enabled {
             // Enable CloudKit sync by reinitializing the store with CloudKit options
             enableCloudKitSync()
         } else {
             // Disable CloudKit sync - data remains local
+            isCloudKitEnabled = false
             LOG_DATA(.info, "Persistence", "iCloud sync disabled. Data will remain local-only.")
+            notifyCloudKitStatus(reason: "Disabled by user")
         }
     }
     
@@ -163,9 +166,66 @@ final class PersistenceController {
             )
             
             LOG_DATA(.info, "Persistence", "iCloud sync enabled successfully")
+            isCloudKitEnabled = true
+            notifyCloudKitStatus(reason: "Connected")
         } catch {
             LOG_DATA(.error, "Persistence", "Failed to enable iCloud sync: \(error.localizedDescription)")
+            isCloudKitEnabled = false
+            let settings = AppSettingsModel.shared
+            settings.enableICloudSync = false
+            settings.save()
+            notifyCloudKitStatus(reason: error.localizedDescription)
         }
+    }
+
+    private func notifyCloudKitStatus(reason: String?) {
+        let friendly = friendlyCloudKitReason(reason: reason)
+        lastCloudKitStatusMessage = friendly
+        if AppSettingsModel.shared.devModeEnabled && AppSettingsModel.shared.devModeDataLogging {
+            LOG_DATA(.info, "Persistence", "iCloud sync status: \(isCloudKitEnabled) - \(friendly)")
+        }
+        NotificationCenter.default.post(
+            name: .iCloudSyncStatusChanged,
+            object: isCloudKitEnabled,
+            userInfo: ["reason": friendly]
+        )
+    }
+
+    private func initialCloudKitReason() -> String? {
+        if isCloudKitEnabled {
+            return "Connected"
+        }
+        if AppSettingsModel.shared.enableICloudSync {
+            return "Connecting…"
+        }
+        return "Disabled by user"
+    }
+
+    private func friendlyCloudKitReason(reason: String?) -> String {
+        if isCloudKitEnabled {
+            return "Connected to iCloud."
+        }
+        if !AppSettingsModel.shared.enableICloudSync {
+            return "Sync is off. Your data stays on this Mac."
+        }
+
+        let lowered = reason?.lowercased() ?? ""
+        if lowered.contains("not authenticated") || lowered.contains("not logged") || lowered.contains("account") {
+            return "Sign in to iCloud in System Settings to enable sync."
+        }
+        if lowered.contains("permission") || lowered.contains("denied") {
+            return "iCloud access is blocked. Check System Settings permissions."
+        }
+        if lowered.contains("network") || lowered.contains("offline") || lowered.contains("connection") {
+            return "No network connection. iCloud sync will retry automatically."
+        }
+        if lowered.contains("icloud") || lowered.contains("cloudkit") {
+            return "iCloud sync isn’t available right now. Please try again later."
+        }
+        if lowered.isEmpty || lowered == "connected" {
+            return "iCloud sync isn’t available right now."
+        }
+        return "iCloud sync error: \(reason ?? "Unknown issue")."
     }
 
     func newBackgroundContext() -> NSManagedObjectContext {
@@ -204,4 +264,5 @@ final class PersistenceController {
 
 extension Notification.Name {
     static let iCloudSyncSettingChanged = Notification.Name("iCloudSyncSettingChanged")
+    static let iCloudSyncStatusChanged = Notification.Name("iCloudSyncStatusChanged")
 }

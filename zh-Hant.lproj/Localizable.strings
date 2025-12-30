@@ -277,7 +277,6 @@
 /* Settings */
 "planner.settings.section.title" = "規劃器";
 "planner.settings.enable_ai" = "啟用 AI 規劃器";
-"settings.planner.energy_tracking.warning" = "關閉能量面板將使規劃演算法在所有日期預設為中等能量。";
 "planner.settings.horizon" = "排程前瞻";
 "planner.settings.horizon.one_week" = "1 週";
 "planner.settings.horizon.two_weeks" = "2 週";

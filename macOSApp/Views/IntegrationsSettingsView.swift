@@ -236,12 +236,12 @@ struct IntegrationCard: View {
         }
         .padding(16)
         .background(
-            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
-                .fill(Color(nsColor: .controlBackgroundColor))
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(.regularMaterial)
         )
         .overlay(
-            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
-                .strokeBorder(Color(nsColor: .separatorColor), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(Color(nsColor: .separatorColor).opacity(0.2), lineWidth: 0.5)
         )
     }
 }

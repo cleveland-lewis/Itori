@@ -1190,7 +1190,9 @@ final class AppSettingsModel: ObservableObject, Codable {
     }
 
     // Codable
-    init() {}
+    init() {
+        UserDefaults.standard.removeObject(forKey: "roots.settings.userName")
+    }
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)

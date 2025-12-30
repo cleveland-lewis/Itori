@@ -18,10 +18,7 @@ struct FlashcardSettingsView: View {
             .listRowBackground(Color.clear)
             
             Section("Flashcard Feature") {
-                Toggle("Enable Flashcards", isOn: $settings.enableFlashcards)
-                    .onChange(of: settings.enableFlashcards) { _, _ in
-                        settings.save()
-                    }
+                Toggle("Enable Flashcards", isOn: binding(for: \.enableFlashcards))
                 
                 Text("Enable or disable the flashcard study system")
                     .font(.caption)
@@ -35,6 +32,17 @@ struct FlashcardSettingsView: View {
         }
         .formStyle(.grouped)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+
+    private func binding<Value>(for keyPath: ReferenceWritableKeyPath<AppSettingsModel, Value>) -> Binding<Value> {
+        Binding(
+            get: { settings[keyPath: keyPath] },
+            set: { newValue in
+                settings.objectWillChange.send()
+                settings[keyPath: keyPath] = newValue
+                settings.save()
+            }
+        )
     }
 }
 

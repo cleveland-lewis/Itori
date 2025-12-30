@@ -3,6 +3,8 @@ import SwiftUI
 
 struct StorageSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
+    @State private var cloudKitEnabled = PersistenceController.shared.isCloudKitEnabled
+    @State private var cloudKitStatusMessage = PersistenceController.shared.lastCloudKitStatusMessage ?? "Disabled by user"
     
     var body: some View {
         Form {
@@ -27,19 +29,13 @@ struct StorageSettingsView: View {
                         )
                     }
                 
-                if PersistenceController.shared.isCloudKitEnabled {
-                    Text("iCloud is connected and protected by native iCloud protections")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else {
-                    Label {
-                        Text("iCloud sync is disabled. All data stays on this device only.")
-                    } icon: {
-                        Image(systemName: "checkmark.shield.fill")
-                            .foregroundStyle(.green)
-                    }
+                Text(cloudKitEnabled ? "iCloud is connected." : "iCloud sync is disabled.")
                     .font(.caption)
-                }
+                    .foregroundStyle(.secondary)
+
+                Text(cloudKitStatusMessage)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
             }
             
             Section("Storage Usage") {
@@ -65,6 +61,18 @@ struct StorageSettingsView: View {
         }
         .formStyle(.grouped)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .onReceive(NotificationCenter.default.publisher(for: .iCloudSyncStatusChanged)) { notification in
+            if let enabled = notification.object as? Bool {
+                cloudKitEnabled = enabled
+                if !enabled, settings.enableICloudSync {
+                    settings.enableICloudSync = false
+                    settings.save()
+                }
+                if let reason = notification.userInfo?["reason"] as? String, !reason.isEmpty {
+                    cloudKitStatusMessage = reason
+                }
+            }
+        }
     }
 }
 

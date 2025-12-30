@@ -17,7 +17,7 @@ struct PlannerSettingsView: View {
                 Toggle("Show Energy Panel", isOn: $settings.showEnergyPanel)
                     .toggleStyle(.switch)
                     .onChange(of: settings.showEnergyPanel) { _, _ in settings.save() }
-                Text("settings.planner.energy_tracking.warning".localized)
+                Text("Turning off Energy Panel will make the planning algorithm default to medium energy for all days.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
 

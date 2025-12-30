@@ -2,6 +2,7 @@
 import SwiftUI
 import Combine
 import AppKit
+import UniformTypeIdentifiers
 
 // MARK: - Models
 
@@ -231,6 +232,8 @@ struct PlannerPageView: View {
     // local simplified planner settings used during build
     @State private var plannerSettings = PlannerSettings()
     @State private var focusPulse = false
+    @State private var dropTargetHour: Int? = nil
+    @State private var rowHeights: [Int: CGFloat] = [:]
 
     private let cardCornerRadius: CGFloat = 26
     private let studySettings = StudyPlanSettings()
@@ -291,7 +294,9 @@ struct PlannerPageView: View {
                 NewTaskSheet(
                     draft: draft,
                     isNew: draft.id == nil,
-                    availableCourses: PlannerPageView.sampleCourses
+                    availableCourses: coursesStore.courses.map { course in
+                        CourseSummary(id: course.id, code: course.code, title: course.title)
+                    }
                 ) { updated in
                     applyDraft(updated)
                 }
@@ -620,16 +625,49 @@ private extension PlannerPageView {
                         )
                 } else {
                     ForEach(blocks) { block in
-                        PlannerBlockRow(block: block)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
-                                    .stroke(neutralLine.opacity(0.25), lineWidth: 1)
-                            )
+                        if block.isLocked {
+                            PlannerBlockRow(block: block)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
+                                        .stroke(neutralLine.opacity(0.25), lineWidth: 1)
+                                )
+                        } else {
+                            PlannerBlockRow(block: block)
+                                .onDrag {
+                                    NSItemProvider(object: block.id.uuidString as NSString)
+                                }
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
+                                        .stroke(neutralLine.opacity(0.25), lineWidth: 1)
+                                )
+                        }
                     }
                 }
             }
             .frame(maxWidth: .infinity)
         }
+        .onDrop(of: [UTType.text], delegate: PlannerBlockDropDelegate(
+            hourDate: hourDate,
+            hour: hour,
+            dropTargetHour: $dropTargetHour,
+            rowHeight: rowHeights[hour] ?? 60
+        ) { blockId, targetHour, minuteOffset in
+            moveBlock(id: blockId, to: targetHour, minuteOffset: minuteOffset)
+        })
+        .overlay(alignment: .top) {
+            if dropTargetHour == hour {
+                Rectangle()
+                    .fill(Color.accentColor.opacity(0.7))
+                    .frame(height: 2)
+            }
+        }
+        .background(
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear { rowHeights[hour] = proxy.size.height }
+                    .onChange(of: proxy.size.height) { _, newValue in rowHeights[hour] = newValue }
+            }
+        )
     }
 
     private var plannerLoadingState: some View {
@@ -851,7 +889,16 @@ private extension PlannerPageView {
     }
 
     func markCompleted(_ item: PlannerTask) {
-        // mark completed in unscheduledTasks or plannedBlocks
+        // Mark completed in the underlying AssignmentsStore
+        if let assignmentId = item.assignmentId {
+            if let taskIndex = assignmentsStore.tasks.firstIndex(where: { $0.id == assignmentId }) {
+                var updatedTask = assignmentsStore.tasks[taskIndex]
+                updatedTask.isCompleted = true
+                assignmentsStore.updateTask(updatedTask)
+            }
+        }
+        
+        // Also update local state for immediate UI feedback
         if let idx = unscheduledTasks.firstIndex(where: { $0.id == item.id }) {
             guard !unscheduledTasks[idx].isCompleted else { return }
             unscheduledTasks[idx].isCompleted = true
@@ -950,6 +997,95 @@ private extension PlannerPageView {
 
     static var sampleCourses: [CourseSummary] {
         []
+    }
+}
+
+private extension PlannerPageView {
+    @discardableResult
+    func moveBlock(id: UUID, to hourDate: Date, minuteOffset: Int) {
+        guard let idx = plannedBlocks.firstIndex(where: { $0.id == id }) else { return }
+        let block = plannedBlocks[idx]
+        guard !block.isLocked else { return }
+        let duration = block.end.timeIntervalSince(block.start)
+        let calendar = Calendar.current
+        let snappedMinutes = min(45, max(0, (minuteOffset / 15) * 15))
+        var newStart = calendar.date(
+            bySettingHour: calendar.component(.hour, from: hourDate),
+            minute: snappedMinutes % 60,
+            second: 0,
+            of: hourDate
+        ) ?? hourDate
+        if snappedMinutes >= 60 {
+            newStart = calendar.date(byAdding: .hour, value: 1, to: newStart) ?? newStart
+        }
+        let newEnd = newStart.addingTimeInterval(duration)
+
+        plannedBlocks[idx].start = newStart
+        plannedBlocks[idx].end = newEnd
+
+        if let stored = plannerStore.scheduled.first(where: { $0.id == id }) {
+            let updated = StoredScheduledSession(
+                id: stored.id,
+                assignmentId: stored.assignmentId,
+                sessionIndex: stored.sessionIndex,
+                sessionCount: stored.sessionCount,
+                title: stored.title,
+                dueDate: stored.dueDate,
+                estimatedMinutes: stored.estimatedMinutes,
+                isLockedToDueDate: stored.isLockedToDueDate,
+                category: stored.category,
+                start: newStart,
+                end: newEnd,
+                type: stored.type,
+                isLocked: stored.isLocked,
+                isUserEdited: true,
+                userEditedAt: Date(),
+                aiInputHash: stored.aiInputHash,
+                aiComputedAt: stored.aiComputedAt,
+                aiConfidence: stored.aiConfidence,
+                aiProvenance: stored.aiProvenance
+            )
+            plannerStore.updateScheduledSession(updated)
+        }
+    }
+}
+
+private struct PlannerBlockDropDelegate: DropDelegate {
+    let hourDate: Date
+    let hour: Int
+    @Binding var dropTargetHour: Int?
+    let rowHeight: CGFloat
+    let onDrop: (UUID, Date, Int) -> Void
+
+    func validateDrop(info: DropInfo) -> Bool {
+        dropTargetHour = hour
+        return true
+    }
+
+    func dropEntered(info: DropInfo) {
+        dropTargetHour = hour
+    }
+
+    func dropExited(info: DropInfo) {
+        if dropTargetHour == hour {
+            dropTargetHour = nil
+        }
+    }
+
+    func performDrop(info: DropInfo) -> Bool {
+        dropTargetHour = nil
+        guard let provider = info.itemProviders(for: [UTType.text]).first else { return false }
+        let clampedHeight = max(1, rowHeight)
+        let rawMinutes = Int((info.location.y / clampedHeight) * 60.0)
+        let snapped = Int((Double(rawMinutes) / 15.0).rounded()) * 15
+        provider.loadObject(ofClass: NSString.self) { object, _ in
+            guard let nsString = object as? NSString,
+                  let blockId = UUID(uuidString: nsString as String) else { return }
+            DispatchQueue.main.async {
+                onDrop(blockId, hourDate, snapped)
+            }
+        }
+        return true
     }
 }
 
