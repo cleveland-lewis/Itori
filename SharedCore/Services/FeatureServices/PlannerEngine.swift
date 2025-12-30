@@ -359,7 +359,8 @@ enum PlannerEngine {
         var overflow: [PlannerSession] = []
 
         // sort by schedule index
-        let today = Date()
+        let now = Date()
+        let today = now
         let scored = sessions.map { session -> PlannerSession in
             var s = session
             s.scheduleIndex = computeScheduleIndex(for: session, today: today)
@@ -376,11 +377,25 @@ enum PlannerEngine {
 
         // build per-day slot maps
         var daySlots: [Date: [Bool]] = [:] // false = free, true = occupied
+        var dayMinutes: [Date: Int] = [:]
         let calendar = Calendar.current
+        let todayStart = calendar.startOfDay(for: now)
+        let maxMinutesToday = dailyStudyLimitMinutes(for: AppSettingsModel.shared.defaultEnergyLevel)
 
         func slots(for day: Date) -> [Bool] {
             if let existing = daySlots[day] { return existing }
             let arr = Array(repeating: false, count: 24) // 09:00-21:00 -> 24 slots of 30m
+            if calendar.isDate(day, inSameDayAs: todayStart) {
+                let dayStart = calendar.date(bySettingHour: 9, minute: 0, second: 0, of: day) ?? day
+                let minutesSinceStart = Int(max(0, now.timeIntervalSince(dayStart)) / 60)
+                let slotsToBlock = min(arr.count, Int(ceil(Double(minutesSinceStart) / 30.0)))
+                if slotsToBlock > 0 {
+                    var blocked = arr
+                    for idx in 0..<slotsToBlock { blocked[idx] = true }
+                    daySlots[day] = blocked
+                    return blocked
+                }
+            }
             daySlots[day] = arr
             return arr
         }
@@ -437,6 +452,11 @@ enum PlannerEngine {
             var bestPlacement: (day: Date, slot: Int, score: Double)?
 
             for day in days {
+                if calendar.isDate(day, inSameDayAs: todayStart),
+                   maxMinutesToday > 0,
+                   (dayMinutes[day] ?? 0) + session.estimatedMinutes > maxMinutesToday {
+                    continue
+                }
                 let slotsForDay = slots(for: day)
                 let lastStart = max(0, slotsForDay.count - slotsNeeded)
                 for startIdx in 0...lastStart {
@@ -475,6 +495,9 @@ enum PlannerEngine {
                 daySlotsArr[idx] = true
             }
             daySlots[placement.day] = daySlotsArr
+            if calendar.isDate(placement.day, inSameDayAs: todayStart) {
+                dayMinutes[placement.day, default: 0] += session.estimatedMinutes
+            }
 
             let startComponents = DateComponents(hour: 9, minute: 0)
             let dayStart = calendar.date(bySettingHour: startComponents.hour!, minute: startComponents.minute!, second: 0, of: placement.day) ?? placement.day
@@ -486,6 +509,17 @@ enum PlannerEngine {
         }
 
         return (scheduled, overflow)
+    }
+
+    private static func dailyStudyLimitMinutes(for energyLevel: String) -> Int {
+        switch energyLevel.lowercased() {
+        case "low":
+            return 120
+        case "high":
+            return 360
+        default:
+            return 240
+        }
     }
     
     // MARK: - AI Scheduler Integration (Phase B)

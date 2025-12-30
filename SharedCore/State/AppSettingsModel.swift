@@ -449,6 +449,12 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage("roots.settings.timerDurationMinutes") var timerDurationStorage: Int = 30
     @AppStorage("roots.settings.longBreakCadence") var longBreakCadenceStorage: Int = 4
     
+    // Auto-reschedule settings
+    @AppStorage("roots.settings.enableAutoReschedule") var enableAutoReschedule: Bool = true
+    @AppStorage("roots.settings.autoRescheduleCheckInterval") var autoRescheduleCheckInterval: Int = 5 // minutes
+    @AppStorage("roots.settings.autoReschedulePushLowerPriority") var autoReschedulePushLowerPriority: Bool = true
+    @AppStorage("roots.settings.autoRescheduleMaxPushCount") var autoRescheduleMaxPushCount: Int = 2
+    
     // Notification settings
     @AppStorage("roots.settings.notificationsEnabled") var notificationsEnabledStorage: Bool = false
     @AppStorage("roots.settings.assignmentRemindersEnabled") var assignmentRemindersEnabledStorage: Bool = true

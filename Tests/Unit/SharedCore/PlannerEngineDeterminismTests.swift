@@ -362,6 +362,59 @@ struct PlannerEngineDeterminismTests {
             }
         }
     }
+
+    @Test func testEnergyLevelAdjustsTodayLoad() async throws {
+        let originalEnergy = AppSettingsModel.shared.defaultEnergyLevel
+        defer { AppSettingsModel.shared.defaultEnergyLevel = originalEnergy }
+
+        let today = Date()
+        let assignment = Assignment(
+            id: UUID(),
+            title: "Energy Load",
+            courseId: nil,
+            category: .homework,
+            dueDate: today,
+            estimatedMinutes: 600,
+            urgency: .high,
+            plan: [],
+            isLockedToDueDate: false
+        )
+        let sessions = PlannerEngine.generateSessions(for: assignment, settings: StudyPlanSettings())
+        let energyProfile = SchedulerPreferencesStore.shared.energyProfileForPlanning()
+
+        AppSettingsModel.shared.defaultEnergyLevel = "Low"
+        let lowResult = PlannerEngine.scheduleSessions(sessions, settings: StudyPlanSettings(), energyProfile: energyProfile)
+
+        AppSettingsModel.shared.defaultEnergyLevel = "High"
+        let highResult = PlannerEngine.scheduleSessions(sessions, settings: StudyPlanSettings(), energyProfile: energyProfile)
+
+        #expect(highResult.scheduled.count >= lowResult.scheduled.count)
+    }
+
+    @Test func testNoSchedulingBeforeNow() async throws {
+        let today = Date()
+        let assignment = Assignment(
+            id: UUID(),
+            title: "No Past Slots",
+            courseId: nil,
+            category: .reading,
+            dueDate: today,
+            estimatedMinutes: 60,
+            urgency: .high,
+            plan: [],
+            isLockedToDueDate: false
+        )
+        let sessions = PlannerEngine.generateSessions(for: assignment, settings: StudyPlanSettings())
+        let energyProfile = SchedulerPreferencesStore.shared.energyProfileForPlanning()
+        let result = PlannerEngine.scheduleSessions(sessions, settings: StudyPlanSettings(), energyProfile: energyProfile)
+
+        let now = Date()
+        for scheduled in result.scheduled {
+            if Calendar.current.isDate(scheduled.start, inSameDayAs: now) {
+                #expect(scheduled.start >= now)
+            }
+        }
+    }
     
     // MARK: - Overflow Tests
     

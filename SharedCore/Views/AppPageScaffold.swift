@@ -164,6 +164,11 @@ struct AppPageScaffold<Content: View>: View {
         settings.defaultEnergyLevel = level
         settings.energySelectionConfirmed = true
         settings.save()
+        PlannerSyncCoordinator.shared.requestRecompute(
+            assignmentsStore: AssignmentsStore.shared,
+            plannerStore: PlannerStore.shared,
+            settings: settings
+        )
     }
 
     private var settingsButton: some View {

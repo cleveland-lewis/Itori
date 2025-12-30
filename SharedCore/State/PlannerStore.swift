@@ -309,6 +309,18 @@ final class PlannerStore: ObservableObject {
         overflow.removeAll()
         save()
     }
+    
+    /// Add session to overflow (for auto-reschedule)
+    func addToOverflow(_ session: StoredOverflowSession) {
+        overflow.append(session)
+        save()
+    }
+    
+    /// Update multiple sessions atomically (for auto-reschedule)
+    func updateBulk(_ sessions: [StoredScheduledSession]) {
+        self.scheduled = sessions
+        save()
+    }
 
     func resetAll() {
         scheduled.removeAll()

@@ -43,63 +43,105 @@ struct DashboardView: View {
 
     var body: some View {
         // Fixed hierarchy grid - no ad-hoc cards
-        ScrollView(.vertical, showsIndicators: true) {
-            VStack(spacing: 0) {
-                // ROW 1: STATUS STRIP (no card chrome)
-                statusStrip
-                    .animateEntry(isLoaded: isLoaded, index: 0)
+        GeometryReader { proxy in
+            let isNarrow = proxy.size.width < 980
+            ScrollView(.vertical, showsIndicators: true) {
+                VStack(spacing: 0) {
+                    // ROW 1: STATUS STRIP (no card chrome)
+                    statusStrip
+                        .animateEntry(isLoaded: isLoaded, index: 0)
+                        .padding(.horizontal, contentPadding)
+                        .padding(.bottom, cardSpacing)
+
+                    // ROW 2: ANALYTICS
+                    Group {
+                        if isNarrow {
+                            VStack(spacing: cardSpacing) {
+                                workloadCard
+                                    .animateEntry(isLoaded: isLoaded, index: 1)
+                                if shouldShowProductivityInsights {
+                                    studyHoursCard
+                                        .animateEntry(isLoaded: isLoaded, index: 2)
+                                }
+                            }
+                        } else {
+                            HStack(alignment: .top, spacing: cardSpacing) {
+                                workloadCard
+                                    .animateEntry(isLoaded: isLoaded, index: 1)
+                                    .frame(maxWidth: .infinity)
+
+                                if shouldShowProductivityInsights {
+                                    studyHoursCard
+                                        .animateEntry(isLoaded: isLoaded, index: 2)
+                                        .frame(maxWidth: .infinity)
+                                }
+                            }
+                        }
+                    }
                     .padding(.horizontal, contentPadding)
                     .padding(.bottom, cardSpacing)
-                
-                // ROW 2: ANALYTICS
-                HStack(alignment: .top, spacing: cardSpacing) {
-                    workloadCard
-                        .animateEntry(isLoaded: isLoaded, index: 1)
-                        .frame(maxWidth: .infinity)
 
-                    if shouldShowProductivityInsights {
-                        studyHoursCard
-                            .animateEntry(isLoaded: isLoaded, index: 2)
-                            .frame(maxWidth: .infinity)
-                    }
-                }
-                .padding(.horizontal, contentPadding)
-                .padding(.bottom, cardSpacing)
-                
-                // ROW 3: ENERGY + UPCOMING
-                HStack(alignment: .top, spacing: cardSpacing) {
-                    if shouldShowEnergyCard {
-                        energyCard
-                            .animateEntry(isLoaded: isLoaded, index: 3)
-                            .frame(maxWidth: .infinity)
-                    }
+                    // ROW 3: ENERGY + UPCOMING
+                    Group {
+                        if isNarrow {
+                            VStack(spacing: cardSpacing) {
+                                if shouldShowEnergyCard {
+                                    energyCard
+                                        .animateEntry(isLoaded: isLoaded, index: 3)
+                                }
+                                assignmentsCard
+                                    .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 4 : 3)
+                            }
+                        } else {
+                            HStack(alignment: .top, spacing: cardSpacing) {
+                                if shouldShowEnergyCard {
+                                    energyCard
+                                        .animateEntry(isLoaded: isLoaded, index: 3)
+                                        .frame(maxWidth: .infinity)
+                                }
 
-                    assignmentsCard
-                        .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 4 : 3)
-                        .frame(maxWidth: .infinity)
-                }
-                .padding(.horizontal, contentPadding)
-                .padding(.bottom, cardSpacing)
-                .animation(.easeInOut(duration: 0.25), value: shouldShowEnergyCard)
-                
-                // ROW 4: TODAY + REMAINING + CALENDAR (wide)
-                HStack(alignment: .top, spacing: cardSpacing) {
-                    HStack(alignment: .top, spacing: cardSpacing) {
-                        plannerTodayCard
-                            .frame(maxWidth: .infinity)
-
-                        workRemainingCard
-                            .frame(maxWidth: .infinity)
+                                assignmentsCard
+                                    .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 4 : 3)
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
                     }
-                    .animateEntry(isLoaded: isLoaded, index: 5)
-                    .frame(maxWidth: .infinity)
-                    
-                    calendarCard
-                        .animateEntry(isLoaded: isLoaded, index: 6)
-                        .frame(maxWidth: .infinity)
+                    .padding(.horizontal, contentPadding)
+                    .padding(.bottom, cardSpacing)
+                    .animation(.easeInOut(duration: 0.25), value: shouldShowEnergyCard)
+
+                    // ROW 4: TODAY + REMAINING + CALENDAR (wide)
+                    Group {
+                        if isNarrow {
+                            VStack(spacing: cardSpacing) {
+                                plannerTodayCard
+                                    .animateEntry(isLoaded: isLoaded, index: 5)
+                                workRemainingCard
+                                    .animateEntry(isLoaded: isLoaded, index: 5)
+                                calendarCard
+                                    .animateEntry(isLoaded: isLoaded, index: 6)
+                            }
+                        } else {
+                            HStack(alignment: .top, spacing: cardSpacing) {
+                                HStack(alignment: .top, spacing: cardSpacing) {
+                                    plannerTodayCard
+                                        .frame(maxWidth: .infinity)
+
+                                    workRemainingCard
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .animateEntry(isLoaded: isLoaded, index: 5)
+                                .frame(maxWidth: .infinity)
+
+                                calendarCard
+                                    .animateEntry(isLoaded: isLoaded, index: 6)
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, contentPadding)
+                    .padding(.bottom, bottomDockClearancePadding)
                 }
-                .padding(.horizontal, contentPadding)
-                .padding(.bottom, bottomDockClearancePadding)
             }
         }
         .background(Color(nsColor: .windowBackgroundColor))
@@ -1341,6 +1383,11 @@ struct DashboardView: View {
             base = current.mapValues { max(0.1, $0 - 0.2) }
         }
         SchedulerPreferencesStore.shared.updateEnergyProfile(base)
+        PlannerSyncCoordinator.shared.requestRecompute(
+            assignmentsStore: assignmentsStore,
+            plannerStore: plannerStore,
+            settings: settings
+        )
     }
 
     private var energyResetTimer: Publishers.Autoconnect<Timer.TimerPublisher> {

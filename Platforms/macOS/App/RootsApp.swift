@@ -176,6 +176,10 @@ struct RootsApp: App {
                         timerManager.checkNotificationPermissions()
                         
                         NotificationManager.shared.updateSmartNotificationSchedules()
+                        
+                        // Start auto-reschedule monitoring
+                        MissedEventDetectionService.shared.startMonitoring()
+                        
                         LOG_LIFECYCLE(.info, "AppStartup", "Startup tasks complete")
                     }
             )

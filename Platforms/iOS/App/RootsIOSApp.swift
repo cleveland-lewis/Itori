@@ -76,6 +76,9 @@ struct RootsIOSApp: App {
                         plannerStore: .shared,
                         settings: .shared
                     )
+                    
+                    // Start auto-reschedule monitoring
+                    MissedEventDetectionService.shared.startMonitoring()
                 }
                 .onChange(of: appSettings.highContrastMode) { _, newValue in
                     preferences.highContrast = newValue
