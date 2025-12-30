@@ -775,7 +775,7 @@ private extension PlannerPageView {
 
             if overdueTasks.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("You’re caught up.")
+                    Text(NSLocalizedString("planner.overdue.caught_up", comment: ""))
                         .font(.subheadline.weight(.semibold))
                     Text(NSLocalizedString("planner.overdue.caught_up_description", comment: ""))
                         .font(.footnote)
@@ -1446,8 +1446,8 @@ struct NewTaskSheet: View {
                     RootsFormRow(label: "End") {
                         Picker("", selection: $draft.recurrenceEndOption) {
                             Text(NSLocalizedString("planner.recurrence.never", comment: "")).tag(RecurrenceEndOption.never)
-                            Text("On Date").tag(RecurrenceEndOption.onDate)
-                            Text("After").tag(RecurrenceEndOption.afterOccurrences)
+                            Text(NSLocalizedString("planner.recurrence.on_date", comment: "")).tag(RecurrenceEndOption.onDate)
+                            Text(NSLocalizedString("planner.recurrence.after", comment: "")).tag(RecurrenceEndOption.afterOccurrences)
                         }
                         .pickerStyle(.menu)
                         .labelsHidden()
@@ -1473,8 +1473,8 @@ struct NewTaskSheet: View {
                     if draft.skipHolidays {
                         RootsFormRow(label: "Holidays") {
                             Picker("", selection: $draft.holidaySource) {
-                                Text("System Calendar").tag(RecurrenceRule.HolidaySource.deviceCalendar)
-                                Text("None").tag(RecurrenceRule.HolidaySource.none)
+                                Text(NSLocalizedString("planner.recurrence.system_calendar", comment: "")).tag(RecurrenceRule.HolidaySource.deviceCalendar)
+                                Text(NSLocalizedString("planner.recurrence.none", comment: "")).tag(RecurrenceRule.HolidaySource.none)
                             }
                             .pickerStyle(.menu)
                             .labelsHidden()
