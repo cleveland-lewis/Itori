@@ -1097,3 +1097,22 @@
 "settings.privacy.icloud_sync.detail" = "Sync data across your devices using iCloud";
 "settings.privacy.icloud_sync.footer" = "Your data will be synced across all devices signed in to your iCloud account. Data is encrypted in transit and at rest.";
 "settings.privacy.local_only.footer" = "All your data stays on this device. No cloud sync or external services are used.";
+
+/* Planner - Overdue Section */
+"planner.overdue.caught_up" = "You're caught up.";
+"planner.overdue.caught_up_description" = "Anything overdue will appear here so the planner can prioritize it.";
+
+/* Planner - Recurrence */
+"planner.recurrence.every" = "Every %d %@";
+"planner.recurrence.never" = "Never";
+"planner.recurrence.on_date" = "On Date";
+"planner.recurrence.after" = "After";
+"planner.recurrence.occurrences" = "%d occurrences";
+"planner.recurrence.system_calendar" = "System Calendar";
+"planner.recurrence.none" = "None";
+"planner.recurrence.no_holiday_source" = "No holiday source configured.";
+
+/* Planner - Task Sheet */
+"planner.task_sheet.recurrence.skip_weekends" = "Skip Weekends";
+"planner.task_sheet.recurrence.skip_holidays" = "Skip Holidays";
+"planner.task_sheet.recurrence.holiday_source" = "Holiday Source";

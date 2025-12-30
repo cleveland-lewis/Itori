@@ -5,6 +5,8 @@ struct StorageSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     @State private var cloudKitEnabled = PersistenceController.shared.isCloudKitEnabled
     @State private var cloudKitStatusMessage = PersistenceController.shared.lastCloudKitStatusMessage ?? "Disabled by user"
+    @State private var statusLabel: String = "Disconnected"
+    @State private var syncTimeoutWorkItem: DispatchWorkItem?
     
     var body: some View {
         Form {
@@ -23,13 +25,15 @@ struct StorageSettingsView: View {
                 Toggle("Enable iCloud Sync", isOn: $settings.enableICloudSync)
                     .onChange(of: settings.enableICloudSync) { _, newValue in
                         settings.save()
+                        statusLabel = "Syncing"
+                        scheduleSyncTimeout()
                         NotificationCenter.default.post(
                             name: .iCloudSyncSettingChanged,
                             object: newValue
                         )
                     }
                 
-                Text(cloudKitEnabled ? "iCloud is connected." : "iCloud sync is disabled.")
+                Text("Status: \(statusLabel)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
@@ -68,11 +72,39 @@ struct StorageSettingsView: View {
                     settings.enableICloudSync = false
                     settings.save()
                 }
+                statusLabel = statusLabelFor(enabled: enabled, reason: notification.userInfo?["reason"] as? String)
                 if let reason = notification.userInfo?["reason"] as? String, !reason.isEmpty {
                     cloudKitStatusMessage = reason
                 }
+                syncTimeoutWorkItem?.cancel()
             }
         }
+        .onAppear {
+            statusLabel = statusLabelFor(enabled: cloudKitEnabled, reason: cloudKitStatusMessage)
+        }
+    }
+
+    private func scheduleSyncTimeout() {
+        syncTimeoutWorkItem?.cancel()
+        let workItem = DispatchWorkItem {
+            if statusLabel == "Syncing" {
+                statusLabel = "Taking longer than usual"
+            }
+        }
+        syncTimeoutWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8 * 60, execute: workItem)
+    }
+
+    private func statusLabelFor(enabled: Bool, reason: String?) -> String {
+        if enabled { return "Connected" }
+        let text = reason?.lowercased() ?? ""
+        if text.contains("error") || text.contains("failed") {
+            return "Error"
+        }
+        if text.contains("connecting") || text.contains("syncing") {
+            return "Syncing"
+        }
+        return "Disconnected"
     }
 }
 

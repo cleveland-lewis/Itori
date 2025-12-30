@@ -36,7 +36,8 @@ final class MissedEventDetectionService: ObservableObject {
     /// Start monitoring for missed sessions
     /// Should be called on app launch
     func startMonitoring() {
-        guard settings.enableAutoReschedule else {
+        guard AutoRescheduleGate.shouldAllow(reason: .startMonitoring, provenance: .automatic) else {
+            stopMonitoring()
             LOG_UI(.info, "MissedEventDetection", "Auto-reschedule disabled, not starting monitoring")
             return
         }
@@ -52,7 +53,7 @@ final class MissedEventDetectionService: ObservableObject {
             repeats: true
         ) { [weak self] _ in
             Task { @MainActor in
-                await self?.checkForMissedSessions()
+                await self?.runGateCheck(reason: .timerTick, provenance: .automatic)
             }
         }
         
@@ -65,7 +66,7 @@ final class MissedEventDetectionService: ObservableObject {
         
         // Perform initial check immediately
         Task {
-            await checkForMissedSessions()
+            await runGateCheck(reason: .startMonitoring, provenance: .automatic)
         }
     }
     
@@ -80,14 +81,22 @@ final class MissedEventDetectionService: ObservableObject {
     /// Manually trigger a check (for testing or manual refresh)
     func triggerCheck() {
         Task {
-            await checkForMissedSessions()
+            await runGateCheck(reason: .manualTrigger, provenance: .userTriggered)
         }
     }
     
     // MARK: - Detection Logic
+
+    private func runGateCheck(reason: AutoRescheduleGateReason, provenance: AutoRescheduleProvenance) async {
+        await AutoRescheduleGate.run(reason: reason, provenance: provenance) { [weak self] in
+            await self?.checkForMissedSessions()
+        }
+    }
     
     /// Check for sessions that have ended but weren't completed
     private func checkForMissedSessions() async {
+        AutoRescheduleGate.debugAssertEnabled(reason: "Missed session check executed while disabled")
+        
         lastCheckAt = Date()
         let now = Date()
         
@@ -114,6 +123,17 @@ final class MissedEventDetectionService: ObservableObject {
             // Check if session has valid assignment
             guard session.assignmentId != nil else { return false }
             
+            // IDEMPOTENCY: Don't reschedule if already marked as auto-rescheduled in this time window
+            // Check if provenance indicates it was recently rescheduled (within last check interval)
+            if let provenance = session.aiProvenance, provenance.contains("auto-reschedule"),
+               let computed = session.aiComputedAt {
+                let minutesSinceReschedule = now.timeIntervalSince(computed) / 60
+                // Skip if rescheduled within last 2x check interval to avoid duplicate operations
+                if minutesSinceReschedule < Double(settings.autoRescheduleCheckInterval * 2) {
+                    return false
+                }
+            }
+            
             return true
         }
         
@@ -122,6 +142,7 @@ final class MissedEventDetectionService: ObservableObject {
             return
         }
         
+        AutoRescheduleActivityCounter.shared.recordSessionsAnalyzed(missedSessions.count)
         missedSessionsDetected = missedSessions.count
         LOG_UI(.info, "MissedEventDetection", "Detected \(missedSessions.count) missed sessions", metadata: [
             "sessionIds": missedSessions.map { $0.id.uuidString }.joined(separator: ", ")

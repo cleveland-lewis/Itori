@@ -27,6 +27,16 @@ final class NotificationManager: ObservableObject {
 
     private init() {}
 
+    private static var lastRefreshNotificationAt: Date?
+    private static var lastRefreshStartAt: Date?
+    private static var lastRefreshEndAt: Date?
+
+    enum BackgroundRefreshStatus {
+        case started
+        case completed
+        case failed(reason: String)
+    }
+
     func requestAuthorization() {
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
@@ -92,6 +102,54 @@ final class NotificationManager: ObservableObject {
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 LOG_UI(.error, "NotificationManager", "Failed to schedule timer notification", metadata: ["error": error.localizedDescription])
+            }
+        }
+    }
+
+    func scheduleBackgroundRefreshNotification(status: BackgroundRefreshStatus) {
+        let now = Date()
+        let minInterval: TimeInterval = 120
+        if let last = Self.lastRefreshNotificationAt, now.timeIntervalSince(last) < minInterval {
+            return
+        }
+        switch status {
+        case .started:
+            if let lastStart = Self.lastRefreshStartAt, now.timeIntervalSince(lastStart) < minInterval {
+                return
+            }
+            Self.lastRefreshStartAt = now
+        case .completed, .failed:
+            if let lastEnd = Self.lastRefreshEndAt, now.timeIntervalSince(lastEnd) < minInterval {
+                return
+            }
+            Self.lastRefreshEndAt = now
+        }
+        Self.lastRefreshNotificationAt = now
+
+        let content = UNMutableNotificationContent()
+        content.sound = .default
+        content.interruptionLevel = .timeSensitive
+
+        switch status {
+        case .started:
+            content.title = "Roots Refresh Starting"
+            content.body = "Refreshing calendar and scheduling tasks."
+        case .completed:
+            content.title = "Roots Refresh Complete"
+            content.body = "Calendar and planner are up to date."
+        case .failed(let reason):
+            content.title = "Roots Refresh Failed"
+            content.body = reason
+        }
+
+        let request = UNNotificationRequest(
+            identifier: "roots.refresh.\(UUID().uuidString)",
+            content: content,
+            trigger: nil
+        )
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                LOG_UI(.error, "NotificationManager", "Failed to schedule refresh notification", metadata: ["error": error.localizedDescription])
             }
         }
     }
@@ -547,6 +605,33 @@ final class NotificationManager: ObservableObject {
         }
     }
     #endif
+    
+    // MARK: - General Local Notifications
+    
+    func scheduleLocalNotification(title: String, body: String, identifier: String) async {
+        guard AppSettingsModel.shared.notificationsEnabled else { return }
+        
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+        content.interruptionLevel = .timeSensitive
+        
+        let request = UNNotificationRequest(
+            identifier: identifier,
+            content: content,
+            trigger: nil // Immediate delivery
+        )
+        
+        do {
+            try await UNUserNotificationCenter.current().add(request)
+        } catch {
+            LOG_UI(.error, "NotificationManager", "Failed to schedule local notification", metadata: [
+                "error": error.localizedDescription,
+                "identifier": identifier
+            ])
+        }
+    }
     
     // MARK: - Utility
     

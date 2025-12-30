@@ -33,11 +33,12 @@ final class CalendarRefreshCoordinator: ObservableObject {
 
 
     func refresh() {
-        Task { await runRefresh() }
+        Task { _ = await runRefresh() }
     }
 
-    func runRefresh() async {
-        guard !isRefreshing else { return }
+    @discardableResult
+    func runRefresh() async -> CalendarRefreshError? {
+        guard !isRefreshing else { return nil }
         isRefreshing = true
         error = nil
 
@@ -50,7 +51,7 @@ final class CalendarRefreshCoordinator: ObservableObject {
             authManager.logDeniedOnce(context: "manualRefresh")
             error = .permissionDenied
             isRefreshing = false
-            return
+            return .permissionDenied
         }
 
         await calendarManager.refreshAuthStatus()
@@ -69,6 +70,7 @@ final class CalendarRefreshCoordinator: ObservableObject {
         }
 
         isRefreshing = false
+        return error
     }
 
     private func scheduleAssignments(from startDate: Date, to endDate: Date) async throws {

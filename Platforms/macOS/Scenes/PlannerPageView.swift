@@ -26,6 +26,8 @@ struct PlannedBlock: Identifiable {
     var status: PlannerBlockStatus
     var source: String
     var isOmodoroLinked: Bool
+    var isAutoRescheduled: Bool = false  // NEW: Track auto-reschedule status
+    var rescheduleStrategy: String? = nil // NEW: Track strategy used
 }
 
 struct PlannerTask: Identifiable {
@@ -309,6 +311,11 @@ struct PlannerPageView: View {
                 return nil
             }
             let courseCode = task?.courseId.flatMap { coursesById[$0]?.code }
+            
+            // Check if this session was auto-rescheduled
+            let isAutoRescheduled = stored.aiProvenance?.contains("auto-reschedule") ?? false
+            let rescheduleStrategy = stored.aiProvenance?.replacingOccurrences(of: "auto-reschedule-", with: "")
+            
             return PlannedBlock(
                 id: stored.id,
                 taskId: stored.assignmentId,
@@ -320,7 +327,9 @@ struct PlannerPageView: View {
                 isLocked: stored.isLocked,
                 status: isCompleted ? .completed : .upcoming,
                 source: stored.isUserEdited ? "Adjusted" : "Auto-plan",
-                isOmodoroLinked: false
+                isOmodoroLinked: false,
+                isAutoRescheduled: isAutoRescheduled,
+                rescheduleStrategy: isAutoRescheduled ? rescheduleStrategy : nil
             )
         }
     }
@@ -768,7 +777,7 @@ private extension PlannerPageView {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("You’re caught up.")
                         .font(.subheadline.weight(.semibold))
-                    Text("Anything overdue will appear here so the planner can prioritize it.")
+                    Text(NSLocalizedString("planner.overdue.caught_up_description", comment: ""))
                         .font(.footnote)
                         .foregroundColor(.secondary)
                 }
@@ -1198,9 +1207,19 @@ struct PlannerBlockRow: View {
                 .frame(width: 4, height: 32)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(block.title)
-                    .font(.body.weight(.semibold))
-                    .lineLimit(1)
+                HStack(spacing: 6) {
+                    Text(block.title)
+                        .font(.body.weight(.semibold))
+                        .lineLimit(1)
+                    
+                    // NEW: Reschedule indicator
+                    if block.isAutoRescheduled {
+                        Image(systemName: "clock.arrow.circlepath")
+                            .font(.caption.weight(.semibold))
+                            .foregroundColor(.orange)
+                            .help("Auto-rescheduled: \(block.rescheduleStrategy ?? "moved")")
+                    }
+                }
 
                 Text(metadataText)
                     .font(DesignSystem.Typography.caption)
@@ -1426,7 +1445,7 @@ struct NewTaskSheet: View {
                     }
                     RootsFormRow(label: "End") {
                         Picker("", selection: $draft.recurrenceEndOption) {
-                            Text("Never").tag(RecurrenceEndOption.never)
+                            Text(NSLocalizedString("planner.recurrence.never", comment: "")).tag(RecurrenceEndOption.never)
                             Text("On Date").tag(RecurrenceEndOption.onDate)
                             Text("After").tag(RecurrenceEndOption.afterOccurrences)
                         }
@@ -1461,7 +1480,7 @@ struct NewTaskSheet: View {
                             .labelsHidden()
                         }
                         if !holidaySourceAvailable && draft.holidaySource == .deviceCalendar {
-                            Text("No holiday source configured.")
+                            Text(NSLocalizedString("planner.recurrence.no_holiday_source", comment: ""))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .frame(maxWidth: .infinity, alignment: .leading)

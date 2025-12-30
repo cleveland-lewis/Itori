@@ -85,6 +85,72 @@ struct GeneralSettingsView: View {
                     set: { settings.defaultWorkdayEnd = settings.components(from: $0); settings.save() }
                 ), displayedComponents: .hourAndMinute)
             }
+            
+            Section("Auto-Reschedule") {
+                Toggle("Enable Auto-Reschedule", isOn: Binding(
+                    get: { settings.enableAutoReschedule },
+                    set: { newValue in
+                        settings.enableAutoReschedule = newValue
+                        settings.save()
+                        if newValue {
+                            MissedEventDetectionService.shared.startMonitoring()
+                        } else {
+                            MissedEventDetectionService.shared.stopMonitoring()
+                        }
+                    }
+                ))
+                .help("Automatically reschedule missed tasks to available time slots")
+                
+                if settings.enableAutoReschedule {
+                    HStack {
+                        Text("Check Interval")
+                        Spacer()
+                        Stepper(value: Binding(
+                            get: { settings.autoRescheduleCheckInterval },
+                            set: { newValue in
+                                settings.autoRescheduleCheckInterval = max(1, min(60, newValue))
+                                settings.save()
+                                if settings.enableAutoReschedule {
+                                    MissedEventDetectionService.shared.stopMonitoring()
+                                    MissedEventDetectionService.shared.startMonitoring()
+                                }
+                            }
+                        ), in: 1...60) {
+                            Text("\(settings.autoRescheduleCheckInterval) min")
+                                .frame(minWidth: 60, alignment: .trailing)
+                        }
+                    }
+                    
+                    Toggle("Allow Pushing Lower Priority Tasks", isOn: Binding(
+                        get: { settings.autoReschedulePushLowerPriority },
+                        set: { settings.autoReschedulePushLowerPriority = $0; settings.save() }
+                    ))
+                    .help("Move lower priority tasks to make room for high-priority missed tasks")
+                    
+                    if settings.autoReschedulePushLowerPriority {
+                        HStack {
+                            Text("Max Tasks to Push")
+                            Spacer()
+                            Stepper(value: Binding(
+                                get: { settings.autoRescheduleMaxPushCount },
+                                set: { newValue in
+                                    settings.autoRescheduleMaxPushCount = max(0, min(5, newValue))
+                                    settings.save()
+                                }
+                            ), in: 0...5) {
+                                Text("\(settings.autoRescheduleMaxPushCount)")
+                                    .frame(minWidth: 30, alignment: .trailing)
+                            }
+                        }
+                    }
+                }
+                
+                Text(settings.enableAutoReschedule 
+                     ? "Tasks you've manually edited or locked will never be moved automatically."
+                     : "When enabled, missed tasks are automatically rescheduled to keep your schedule current.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
 
             Section("Danger Zone") {
                 Button(role: .destructive) {

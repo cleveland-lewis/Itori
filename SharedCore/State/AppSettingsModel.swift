@@ -45,7 +45,11 @@ enum InterfaceStyle: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
+        #if os(macOS)
         case .system: return "Follow macOS"
+        #else
+        case .system: return "System"
+        #endif
         case .light: return "Light"
         case .dark: return "Dark"
         case .auto: return "Automatic at Night"
@@ -268,7 +272,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         case localBackendTypeRaw
         case localModelDownloadedMacOS
         case localModelDownloadediOS
-        case aiEnabledStorage
+        // aiEnabledStorage now uses @AppStorage, removed from Codable
         case onboardingStateData
         case compactModeStorage
         case largeTapTargetsStorage
@@ -518,12 +522,12 @@ final class AppSettingsModel: ObservableObject, Codable {
     }
     
     // AI Settings
+    @AppStorage("roots.settings.aiEnabled") var aiEnabledStorage: Bool = false  // Global AI kill switch - DISABLED BY DEFAULT per Issue #175.H
     var aiModeRaw: String = "auto"
     var byoProviderConfigData: Data? = nil
     var localBackendTypeRaw: String = "mlx"  // Default to MLX for macOS
     var localModelDownloadedMacOS: Bool = false
     var localModelDownloadediOS: Bool = false
-    var aiEnabledStorage: Bool = false  // Global AI kill switch - DISABLED BY DEFAULT per Issue #175.H
     
     // Onboarding state (Issue #208)
     var onboardingStateData: Data? = nil
@@ -1491,7 +1495,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         startOfWeekStorage = fresh.startOfWeekStorage
         defaultViewStorage = fresh.defaultViewStorage
         isSchoolModeStorage = fresh.isSchoolModeStorage
-        aiEnabledStorage = fresh.aiEnabledStorage
+        // aiEnabledStorage now uses @AppStorage, not part of Codable
         loadLowThresholdStorage = fresh.loadLowThresholdStorage
         loadMediumThresholdStorage = fresh.loadMediumThresholdStorage
         loadHighThresholdStorage = fresh.loadHighThresholdStorage

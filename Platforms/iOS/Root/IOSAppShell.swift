@@ -96,51 +96,53 @@ struct IOSAppShell<Content: View>: View {
 
     private var topRightControls: some View {
         HStack(spacing: 12) {
-            energyIndicator
             quickAddButton
             settingsButton
         }
     }
 
-    private var energyIndicator: some View {
-        Group {
-            if settings.showEnergyPanel && settings.energySelectionConfirmed {
-                Menu {
-                    Button("High") { setEnergy("High") }
-                    Button("Medium") { setEnergy("Medium") }
-                    Button("Low") { setEnergy("Low") }
-                } label: {
-                    Text("Energy: \(settings.defaultEnergyLevel)")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(.primary)
-                        .padding(.horizontal, 12)
-                        .frame(height: 36)
-                        .background(.ultraThinMaterial, in: Capsule())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Energy level")
-            }
-        }
-    }
-
     private var quickAddButton: some View {
         Menu {
-            Button {
-                handleQuickAction(.add_assignment)
-            } label: {
-                Label(NSLocalizedString("ios.menu.add_assignment", comment: "Add Assignment"), systemImage: "plus.square.on.square")
+            // Energy Section - Top
+            if settings.showEnergyPanel {
+                Section {
+                    Label("Energy: \(settings.defaultEnergyLevel)", systemImage: "bolt.circle")
+                        .foregroundStyle(.secondary)
+                    
+                    Menu("Change Energy") {
+                        Picker("Energy", selection: Binding(
+                            get: { settings.defaultEnergyLevel },
+                            set: { setEnergy($0) }
+                        )) {
+                            Text("High").tag("High")
+                            Text("Medium").tag("Medium")
+                            Text("Low").tag("Low")
+                        }
+                    }
+                }
+                
+                Divider()
             }
+            
+            // Quick Actions Section
+            Section {
+                Button {
+                    handleQuickAction(.add_assignment)
+                } label: {
+                    Label(NSLocalizedString("ios.menu.add_assignment", comment: "Add Assignment"), systemImage: "plus.square.on.square")
+                }
 
-            Button {
-                handleQuickAction(.add_grade)
-            } label: {
-                Label(NSLocalizedString("ios.menu.add_grade", comment: "Add Grade"), systemImage: "number.circle")
-            }
+                Button {
+                    handleQuickAction(.add_grade)
+                } label: {
+                    Label(NSLocalizedString("ios.menu.add_grade", comment: "Add Grade"), systemImage: "number.circle")
+                }
 
-            Button {
-                handleQuickAction(.auto_schedule)
-            } label: {
-                Label(NSLocalizedString("ios.menu.auto_schedule", comment: "Auto Schedule"), systemImage: "calendar.badge.clock")
+                Button {
+                    handleQuickAction(.auto_schedule)
+                } label: {
+                    Label(NSLocalizedString("ios.menu.auto_schedule", comment: "Auto Schedule"), systemImage: "calendar.badge.clock")
+                }
             }
         } label: {
             Image(systemName: "plus")

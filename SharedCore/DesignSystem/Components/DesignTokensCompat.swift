@@ -390,6 +390,9 @@ private struct HoverTooltipModifier: ViewModifier {
                     Text(title)
                         .font(.caption)
                         .foregroundStyle(.primary)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .fixedSize(horizontal: true, vertical: false)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
                         .background(

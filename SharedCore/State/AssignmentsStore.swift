@@ -12,12 +12,14 @@ final class AssignmentsStore: ObservableObject {
     private var isOnline: Bool = true
     private var pendingSyncQueue: [AppTask] = []
     private var isLoadingFromDisk: Bool = false
+    private var iCloudToggleObserver: NSObjectProtocol?
     
     private init() {
         setupNetworkMonitoring()
         loadCache()
         loadFromiCloudIfEnabled()
         setupiCloudMonitoring()
+        observeICloudToggle()
     }
 
     @Published var tasks: [AppTask] = [] {
@@ -774,6 +776,31 @@ final class AssignmentsStore: ObservableObject {
             self?.checkForCloudUpdates()
         }
     }
+
+    private func observeICloudToggle() {
+        iCloudToggleObserver = NotificationCenter.default.addObserver(
+            forName: .iCloudSyncSettingChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let self = self, let enabled = notification.object as? Bool else { return }
+            self.handleICloudToggle(enabled: enabled)
+        }
+    }
+
+    private func handleICloudToggle(enabled: Bool) {
+        if enabled {
+            loadFromiCloudIfEnabled()
+            setupiCloudMonitoring()
+            if let url = iCloudURL, !FileManager.default.fileExists(atPath: url.path) {
+                saveToiCloud()
+            }
+        } else {
+            iCloudMonitor?.invalidate()
+            iCloudMonitor = nil
+            pendingSyncQueue.removeAll()
+        }
+    }
     
     private func checkForCloudUpdates() {
         guard isSyncEnabled, isOnline, !AppSettingsModel.shared.suppressICloudRestore, let url = iCloudURL else { return }
@@ -804,6 +831,9 @@ final class AssignmentsStore: ObservableObject {
     deinit {
         iCloudMonitor?.invalidate()
         pathMonitor?.cancel()
+        if let observer = iCloudToggleObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
     
     // MARK: - Public API for Conflict Resolution

@@ -66,6 +66,17 @@ struct IOSInterfaceSettingsView: View {
             
             // Appearance Section
             Section {
+                // Appearance Style Picker
+                Picker("Appearance", selection: $settings.interfaceStyle) {
+                    ForEach(InterfaceStyle.allCases.filter { $0 != .auto }) { style in
+                        Text(style.label).tag(style)
+                    }
+                }
+                .onChange(of: settings.interfaceStyle) { _, _ in
+                    settings.save()
+                }
+                .prefsListRowInsets()
+                
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Material Intensity")
                     

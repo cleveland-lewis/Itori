@@ -46,6 +46,26 @@ struct DeveloperSettingsView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
+
+                #if DEBUG || DEVELOPER_MODE
+                Section {
+                    NavigationLink(destination: AutoRescheduleCounterView()) {
+                        HStack {
+                            Image(systemName: "shield.lefthalf.filled")
+                                .foregroundColor(.blue)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Auto-Reschedule Counters")
+                                    .font(.headline)
+                                Text("Verify invariant enforcement and suppressions")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                } header: {
+                    Text("Auto-Reschedule Debugging")
+                }
+                #endif
                 
                 Section {
                     VStack(alignment: .leading, spacing: 12) {

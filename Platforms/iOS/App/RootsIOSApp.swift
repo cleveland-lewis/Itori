@@ -27,6 +27,7 @@ struct RootsIOSApp: App {
     @StateObject private var preferences = AppPreferences()
     @StateObject private var parsingStore = SyllabusParsingStore.shared
     @StateObject private var eventsCountStore = EventsCountStore()
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         _ = PhoneWatchBridge.shared
@@ -79,6 +80,14 @@ struct RootsIOSApp: App {
                     
                     // Start auto-reschedule monitoring
                     MissedEventDetectionService.shared.startMonitoring()
+
+                    BackgroundRefreshManager.shared.register()
+                    BackgroundRefreshManager.shared.scheduleNext()
+                }
+                .onChange(of: scenePhase) { _, phase in
+                    if phase == .background {
+                        BackgroundRefreshManager.shared.scheduleNext()
+                    }
                 }
                 .onChange(of: appSettings.highContrastMode) { _, newValue in
                     preferences.highContrast = newValue

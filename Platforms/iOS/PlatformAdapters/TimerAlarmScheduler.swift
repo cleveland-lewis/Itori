@@ -4,6 +4,8 @@
 //
 
 #if os(iOS)
+// AlarmKit requires iOS 26.0+ (beta), disable for iOS 17.0 deployment
+#if false // Disabled until AlarmKit is publicly available
 import Foundation
 import SwiftUI
 
@@ -17,7 +19,7 @@ import AppIntents
 #endif
 #endif
 
-@available(iOS 26.0, *)
+@available(iOS 17.0, *)
 final class IOSTimerAlarmScheduler: TimerAlarmScheduling {
     private let settings = AppSettingsModel.shared
     private var scheduledIDs: [String: UUID] = [:]
@@ -142,4 +144,29 @@ private struct TimerAlarmMetadata: AlarmMetadata, Codable, Hashable, Sendable {
     var mode: String
 }
 #endif
+
+#else // AlarmKit disabled - provide stub implementation
+
+import Foundation
+
+/// Stub implementation when AlarmKit is not available
+@available(iOS 17.0, *)
+final class IOSTimerAlarmScheduler: TimerAlarmScheduling {
+    var isEnabled: Bool { false }
+    
+    func scheduleTimerEnd(id: String, fireIn seconds: TimeInterval, title: String, body: String) {
+        // No-op when AlarmKit unavailable
+    }
+    
+    func cancelTimer(id: String) {
+        // No-op when AlarmKit unavailable
+    }
+    
+    func requestAuthorizationIfNeeded() async -> Bool {
+        // No-op when AlarmKit unavailable
+        return false
+    }
+}
+
+#endif // false - AlarmKit disabled
 #endif

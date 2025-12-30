@@ -11,6 +11,8 @@ struct IOSStorageSettingsView: View {
     @State private var showingExportSheet = false
     @State private var isExporting = false
     @State private var exportError: String?
+    @State private var statusLabel: String = "Disconnected"
+    @State private var syncTimeoutWorkItem: DispatchWorkItem?
     
     var body: some View {
         List {
@@ -47,11 +49,16 @@ struct IOSStorageSettingsView: View {
                 }
                 .onChange(of: settings.enableICloudSync) { _, newValue in
                     settings.save()
+                    statusLabel = "Syncing"
+                    scheduleSyncTimeout()
                     NotificationCenter.default.post(
                         name: .iCloudSyncSettingChanged,
                         object: newValue
                     )
                 }
+                Text("Status: \(statusLabel)")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
             } header: {
                 Text(NSLocalizedString("settings.privacy.data.header", comment: "Data Storage"))
             } footer: {
@@ -109,6 +116,13 @@ struct IOSStorageSettingsView: View {
         .onAppear {
             calculateStorageSize()
             updateStorageLocation()
+            statusLabel = settings.enableICloudSync ? "Syncing" : "Disconnected"
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .iCloudSyncStatusChanged)) { notification in
+            let enabled = notification.object as? Bool ?? false
+            let reason = notification.userInfo?["reason"] as? String
+            statusLabel = statusLabelFor(enabled: enabled, reason: reason)
+            syncTimeoutWorkItem?.cancel()
         }
         .sheet(isPresented: $showingExportSheet) {
             exportView
@@ -121,6 +135,29 @@ struct IOSStorageSettingsView: View {
         } message: {
             Text(exportError ?? NSLocalizedString("settings.storage.export.error.message", comment: "Unable to create the export file right now."))
         }
+    }
+
+    private func statusLabelFor(enabled: Bool, reason: String?) -> String {
+        if enabled { return "Connected" }
+        let text = reason?.lowercased() ?? ""
+        if text.contains("error") || text.contains("failed") {
+            return "Error"
+        }
+        if text.contains("connecting") || text.contains("syncing") {
+            return "Syncing"
+        }
+        return "Disconnected"
+    }
+
+    private func scheduleSyncTimeout() {
+        syncTimeoutWorkItem?.cancel()
+        let workItem = DispatchWorkItem {
+            if statusLabel == "Syncing" {
+                statusLabel = "Taking longer than usual"
+            }
+        }
+        syncTimeoutWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 8 * 60, execute: workItem)
     }
     
     private var exportView: some View {

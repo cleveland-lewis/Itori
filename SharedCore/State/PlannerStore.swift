@@ -146,6 +146,7 @@ final class PlannerStore: ObservableObject {
     private let storageURL: URL
     private let iCloudURL: URL?
     private let iCloudConflictsURL: URL?
+    private var iCloudToggleObserver: NSObjectProtocol?
     
     private var isSyncEnabled: Bool {
         AppSettingsModel.shared.enableICloudSync
@@ -179,6 +180,8 @@ final class PlannerStore: ObservableObject {
         // Always load local (as fallback or primary)
         load()
         isLoading = false
+
+        observeICloudToggle()
     }
 
     func persist(scheduled: [ScheduledSession], overflow: [PlannerSession], metadata: AIScheduleMetadata? = nil) {
@@ -417,6 +420,29 @@ final class PlannerStore: ObservableObject {
             DebugLogger.log("⚠️ Failed to load from iCloud (using local): \(error.localizedDescription)")
         }
     }
+
+    private func observeICloudToggle() {
+        iCloudToggleObserver = NotificationCenter.default.addObserver(
+            forName: .iCloudSyncSettingChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] notification in
+            guard let self = self, let enabled = notification.object as? Bool else { return }
+            self.handleICloudToggle(enabled: enabled)
+        }
+    }
+
+    private func handleICloudToggle(enabled: Bool) {
+        if enabled {
+            loadFromiCloud()
+            if let url = iCloudURL, !FileManager.default.fileExists(atPath: url.path) {
+                let payload = Persisted(scheduled: scheduled, overflow: overflow)
+                if let data = try? JSONEncoder().encode(payload) {
+                    saveToiCloud(data: data)
+                }
+            }
+        }
+    }
     
     private func saveToiCloud(data: Data) {
         // Only attempt if explicitly enabled
@@ -465,6 +491,12 @@ final class PlannerStore: ObservableObject {
     private struct Persisted: Codable {
         var scheduled: [StoredScheduledSession]
         var overflow: [StoredOverflowSession]
+    }
+
+    deinit {
+        if let observer = iCloudToggleObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
 }
 

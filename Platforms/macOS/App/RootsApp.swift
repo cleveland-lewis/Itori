@@ -170,6 +170,8 @@ struct RootsApp: App {
                             plannerStore: .shared,
                             settings: .shared
                         )
+                        BackgroundRefreshManager.shared.register()
+                        BackgroundRefreshManager.shared.scheduleNext()
                         await calendarManager.checkPermissionsOnStartup()
                         // TODO: Re-enable planner sync when function is available
                         // await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
@@ -299,6 +301,7 @@ struct RootsApp: App {
         if phase == .background || phase == .inactive {
             LOG_LIFECYCLE(.info, "ScenePhase", "App entering background, saving settings")
             appSettings.save()
+            BackgroundRefreshManager.shared.scheduleNext()
         } else if phase == .active {
             LOG_LIFECYCLE(.info, "ScenePhase", "App became active, refreshing calendar")
             _Concurrency.Task {

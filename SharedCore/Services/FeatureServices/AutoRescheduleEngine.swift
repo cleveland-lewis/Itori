@@ -65,6 +65,13 @@ final class AutoRescheduleEngine: ObservableObject {
     
     /// Reschedule missed sessions using intelligent strategies
     func reschedule(_ missedSessions: [StoredScheduledSession]) async {
+        await AutoRescheduleGate.run(reason: .rescheduleEngine, provenance: .automatic) { [weak self] in
+            await self?.runReschedule(missedSessions)
+        }
+    }
+
+    private func runReschedule(_ missedSessions: [StoredScheduledSession]) async {
+        AutoRescheduleGate.debugAssertEnabled(reason: "Auto-reschedule engine executed while disabled")
         guard !isRescheduling else {
             LOG_UI(.warn, "AutoReschedule", "Already rescheduling, skipping")
             return
@@ -84,19 +91,48 @@ final class AutoRescheduleEngine: ObservableObject {
         }
         
         guard !operations.isEmpty else {
+            AutoRescheduleAuditLog.shared.record(
+                AutoRescheduleAuditEntry(
+                    id: UUID(),
+                    timestamp: Date(),
+                    reason: .rescheduleEngine,
+                    provenance: .automatic,
+                    status: .executed,
+                    detail: "No operations generated"
+                )
+            )
             LOG_UI(.info, "AutoReschedule", "No operations generated")
             return
         }
         
         // Apply all operations atomically
         await applyRescheduleOperations(operations)
+        AutoRescheduleActivityCounter.shared.recordSessionsMoved(operations.count)
         
         lastRescheduleAt = Date()
         rescheduleHistory.append(contentsOf: operations)
         saveHistory()
+        AutoRescheduleActivityCounter.shared.recordHistoryWritten(operations.count)
         
         // Notify user
         await notifyUserOfReschedule(operations)
+        AutoRescheduleActivityCounter.shared.recordNotificationScheduled()
+        
+        let sameDayCount = operations.filter { $0.strategy == .sameDaySlot }.count
+        let pushedCount = operations.filter { $0.strategy == .sameDayPushed }.count
+        let nextDayCount = operations.filter { $0.strategy == .nextDay }.count
+        let overflowCount = operations.filter { $0.strategy == .overflow }.count
+        let detail = "Applied \(operations.count) ops (sameDay=\(sameDayCount), pushed=\(pushedCount), nextDay=\(nextDayCount), overflow=\(overflowCount))"
+        AutoRescheduleAuditLog.shared.record(
+            AutoRescheduleAuditEntry(
+                id: UUID(),
+                timestamp: Date(),
+                reason: .rescheduleEngine,
+                provenance: .automatic,
+                status: .executed,
+                detail: detail
+            )
+        )
         
         LOG_UI(.info, "AutoReschedule", "Reschedule complete: \(operations.count) operations applied")
     }
@@ -105,6 +141,7 @@ final class AutoRescheduleEngine: ObservableObject {
     
     /// Analyze session and determine best rescheduling strategy
     private func rescheduleSession(_ session: StoredScheduledSession) async -> RescheduleOperation? {
+        AutoRescheduleGate.debugAssertEnabled(reason: "Reschedule strategy executed while disabled")
         let now = Date()
         let calendar = Calendar.current
         let todayEnd = calendar.date(bySettingHour: 21, minute: 0, second: 0, of: now) ?? now
@@ -301,6 +338,8 @@ final class AutoRescheduleEngine: ObservableObject {
     
     /// Apply all rescheduling operations atomically
     private func applyRescheduleOperations(_ operations: [RescheduleOperation]) async {
+        guard AutoRescheduleGate.isEnabled() else { return }
+        AutoRescheduleGate.debugAssertEnabled(reason: "Planner mutation executed while disabled")
         var updatedSessions = plannerStore.scheduled
         
         for operation in operations {
@@ -400,7 +439,15 @@ final class AutoRescheduleEngine: ObservableObject {
     
     /// Notify user of rescheduling
     private func notifyUserOfReschedule(_ operations: [RescheduleOperation]) async {
+        guard AutoRescheduleGate.isEnabled() else { return }
+        AutoRescheduleGate.debugAssertEnabled(reason: "Notification scheduled while disabled")
         guard !operations.isEmpty else { return }
+        
+        // Check if notifications are enabled
+        guard settings.notificationsEnabled || settings.smartNotifications else {
+            LOG_UI(.debug, "AutoReschedule", "Notifications disabled, skipping user notification")
+            return
+        }
         
         let sameDayCount = operations.filter { $0.strategy == .sameDaySlot || $0.strategy == .sameDayPushed }.count
         let nextDayCount = operations.filter { $0.strategy == .nextDay }.count
@@ -424,6 +471,11 @@ final class AutoRescheduleEngine: ObservableObject {
         )
     }
     
+    func clearHistory() {
+        rescheduleHistory.removeAll()
+        saveHistory()
+    }
+    
     // MARK: - Persistence
     
     private var historyURL: URL {
@@ -434,6 +486,8 @@ final class AutoRescheduleEngine: ObservableObject {
     }
     
     private func saveHistory() {
+        guard AutoRescheduleGate.isEnabled() else { return }
+        AutoRescheduleGate.debugAssertEnabled(reason: "History write while disabled")
         do {
             let data = try JSONEncoder().encode(rescheduleHistory)
             try data.write(to: historyURL)
