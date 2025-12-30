@@ -699,7 +699,7 @@ struct DashboardView: View {
             Button {
                 showAddAssignmentSheet = true
             } label: {
-                Image(systemName: "plus")
+                dashboardButtonLabel(title: "Add Assignment", systemImage: "plus")
             }
             .buttonStyle(.plain)
             .font(.headline)
@@ -710,12 +710,8 @@ struct DashboardView: View {
                 Button {
                     appModel.selectedPage = .assignments
                 } label: {
-                    HStack {
-                        Text("View All")
-                        Spacer()
-                        Image(systemName: "arrow.right")
-                    }
-                    .font(.subheadline)
+                    dashboardButtonLabel(title: "View All", systemImage: "arrow.right", trailingIcon: true)
+                        .font(.subheadline)
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.secondary)
@@ -1153,12 +1149,8 @@ struct DashboardView: View {
             Button {
                 appModel.selectedPage = .calendar
             } label: {
-                HStack {
-                    Text("Open Calendar")
-                    Spacer()
-                    Image(systemName: "arrow.right")
-                }
-                .font(.subheadline)
+                dashboardButtonLabel(title: "Open Calendar", systemImage: "arrow.right", trailingIcon: true)
+                    .font(.subheadline)
             }
             .buttonStyle(.plain)
             .foregroundStyle(.secondary)
@@ -1171,13 +1163,10 @@ struct DashboardView: View {
 
     private func quickActionButton(_ title: String, systemImage: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: DesignSystem.Spacing.xsmall) {
-                Image(systemName: systemImage)
-                Text(title)
-            }
-            .font(.subheadline)
-            .padding(.horizontal, DesignSystem.Spacing.small)
-            .frame(minHeight: 34)
+            dashboardButtonLabel(title: title, systemImage: systemImage)
+                .font(.subheadline)
+                .padding(.horizontal, DesignSystem.Spacing.small)
+                .frame(minHeight: 34)
         }
         .buttonStyle(.borderedProminent)
         .tint(.accentColor)
@@ -1369,6 +1358,29 @@ struct DashboardView: View {
         .background(isSelected ? settings.activeAccentColor.opacity(0.2) : Color.clear)
         .cornerRadius(8)
         .accessibilityLabel("Set energy level to \(title)")
+    }
+
+    private func dashboardButtonLabel(title: String, systemImage: String, trailingIcon: Bool = false) -> some View {
+        let mode = settings.tabBarMode
+        return Group {
+            switch mode {
+            case .iconsOnly:
+                Image(systemName: systemImage)
+            case .textOnly:
+                Text(title)
+            case .iconsAndText:
+                HStack(spacing: DesignSystem.Spacing.xsmall) {
+                    if !trailingIcon {
+                        Image(systemName: systemImage)
+                    }
+                    Text(title)
+                    if trailingIcon {
+                        Spacer(minLength: 0)
+                        Image(systemName: systemImage)
+                    }
+                }
+            }
+        }
     }
 
     private func setEnergy(_ level: EnergyLevel) {

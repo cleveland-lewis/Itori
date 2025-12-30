@@ -1116,3 +1116,31 @@
 "planner.task_sheet.recurrence.skip_weekends" = "Skip Weekends";
 "planner.task_sheet.recurrence.skip_holidays" = "Skip Holidays";
 "planner.task_sheet.recurrence.holiday_source" = "Holiday Source";
+
+/* Dashboard - Stats Cards */
+"dashboard.energy_level" = "Energy Level";
+"dashboard.due_today" = "Due Today";
+"dashboard.events_today" = "Events Today";
+"dashboard.active_assignments" = "Active Assignments";
+"dashboard.today_focus" = "Today / Focus";
+
+/* Dashboard - Calendar */
+"dashboard.calendar.connect_message" = "Connect your calendar to see events";
+"dashboard.calendar.access_denied_message" = "Calendar access denied";
+"dashboard.calendar.view_all_events" = "View All Events (%d)";
+"dashboard.calendar.open_calendar" = "Open Calendar";
+
+/* Dashboard - Energy */
+"dashboard.energy.prompt" = "How's your energy today?";
+
+/* Dashboard - Assignments */
+"dashboard.assignments.no_upcoming" = "No upcoming assignments";
+"dashboard.assignments.add_prompt" = "Add an assignment to see it here.";
+"dashboard.assignments.view_all" = "View All";
+
+/* Dashboard - Planner */
+"dashboard.planner.no_tasks" = "No planned tasks today";
+"dashboard.planner.no_plan_time" = "No plan time available yet";
+"dashboard.planner.remaining_minutes" = "%d min remaining";
+"dashboard.planner.completed_minutes" = "%d min completed";
+"dashboard.planner.remaining_percent" = "%d%%";
