@@ -49,7 +49,10 @@ final class StorageSafetyTests: XCTestCase {
             difficulty: 0.4,
             importance: 0.5,
             type: .reading,
-            locked: false
+            locked: false,
+            attachments: [],
+            isCompleted: false,
+            category: .reading
         )
         let reassignedTask = AppTask(
             id: UUID(),
@@ -62,7 +65,10 @@ final class StorageSafetyTests: XCTestCase {
             difficulty: 0.6,
             importance: 0.7,
             type: .project,
-            locked: false
+            locked: false,
+            attachments: [],
+            isCompleted: false,
+            category: .project
         )
         AssignmentsStore.shared.tasks = [keepTask, reassignedTask]
 
@@ -90,7 +96,10 @@ final class StorageSafetyTests: XCTestCase {
             difficulty: 0.4,
             importance: 0.5,
             type: .reading,
-            locked: false
+            locked: false,
+            attachments: [],
+            isCompleted: false,
+            category: .reading
         )
         AssignmentsStore.shared.tasks = [task]
 
@@ -120,6 +129,9 @@ final class StorageSafetyTests: XCTestCase {
             importance: 0.4,
             type: .reading,
             locked: false,
+            attachments: [],
+            isCompleted: false,
+            category: .reading,
             dueTimeMinutes: 9 * 60,
             recurrence: rule
         )
@@ -149,6 +161,9 @@ final class StorageSafetyTests: XCTestCase {
             importance: 0.5,
             type: .homework,
             locked: false,
+            attachments: [],
+            isCompleted: false,
+            category: .homework,
             recurrence: rule
         )
         AssignmentsStore.shared.tasks = [task]
@@ -313,7 +328,7 @@ final class StorageSafetyTests: XCTestCase {
             frequency: .daily,
             interval: 1,
             end: .never,
-            skipPolicy: .init(skipWeekends: false, skipHolidays: true, holidaySource: .systemCalendar, adjustment: .forward)
+            skipPolicy: .init(skipWeekends: false, skipHolidays: true, holidaySource: .deviceCalendar, adjustment: .forward)
         )
         let task = AppTask(
             id: UUID(),
@@ -353,7 +368,7 @@ final class StorageSafetyTests: XCTestCase {
             frequency: .daily,
             interval: 1,
             end: .never,
-            skipPolicy: .init(skipWeekends: false, skipHolidays: true, holidaySource: .systemCalendar, adjustment: .forward)
+            skipPolicy: .init(skipWeekends: false, skipHolidays: true, holidaySource: .deviceCalendar, adjustment: .forward)
         )
         let task = AppTask(
             id: UUID(),

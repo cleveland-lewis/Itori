@@ -940,7 +940,7 @@ private extension PlannerPageView {
             recurrenceEndCount: 3,
             skipWeekends: false,
             skipHolidays: false,
-            holidaySource: .systemCalendar
+            holidaySource: .deviceCalendar
         )
         showTaskSheet = true
     }
@@ -951,7 +951,7 @@ private extension PlannerPageView {
 
     func recurrenceDefaults(from rule: RecurrenceRule?) -> (enabled: Bool, frequency: RecurrenceRule.Frequency, interval: Int, endOption: RecurrenceEndOption, endDate: Date, endCount: Int, skipWeekends: Bool, skipHolidays: Bool, holidaySource: RecurrenceRule.HolidaySource) {
         guard let rule else {
-            return (false, .weekly, 1, .never, Date(), 3, false, false, .systemCalendar)
+            return (false, .weekly, 1, .never, Date(), 3, false, false, .deviceCalendar)
         }
         let endOption: RecurrenceEndOption
         let endDate: Date
@@ -1454,13 +1454,13 @@ struct NewTaskSheet: View {
                     if draft.skipHolidays {
                         RootsFormRow(label: "Holidays") {
                             Picker("", selection: $draft.holidaySource) {
-                                Text("System Calendar").tag(RecurrenceRule.HolidaySource.systemCalendar)
+                                Text("System Calendar").tag(RecurrenceRule.HolidaySource.deviceCalendar)
                                 Text("None").tag(RecurrenceRule.HolidaySource.none)
                             }
                             .pickerStyle(.menu)
                             .labelsHidden()
                         }
-                        if !holidaySourceAvailable && draft.holidaySource == .systemCalendar {
+                        if !holidaySourceAvailable && draft.holidaySource == .deviceCalendar {
                             Text("No holiday source configured.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
@@ -1506,7 +1506,7 @@ struct NewTaskSheet: View {
     private var holidaySourceAvailable: Bool {
         guard CalendarAuthorizationManager.shared.isAuthorized else { return false }
         let calendars = DeviceCalendarManager.shared.store.calendars(for: .event)
-        return calendars.contains { $0.type == .holiday || $0.title.lowercased().contains("holiday") }
+        return calendars.contains(where: { $0.title.lowercased().contains("holiday") })
     }
 
     private var footer: some View {

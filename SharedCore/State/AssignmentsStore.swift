@@ -394,13 +394,17 @@ final class AssignmentsStore: ObservableObject {
             return override(date, source)
         }
         guard source != .none else { return false }
+        guard source == .deviceCalendar else {
+            debugLog("ℹ️ Holiday skipping unavailable (unsupported source).")
+            return false
+        }
         guard CalendarAuthorizationManager.shared.isAuthorized else {
             debugLog("ℹ️ Holiday skipping unavailable (calendar access denied).")
             return false
         }
         let store = DeviceCalendarManager.shared.store
         let calendars = store.calendars(for: .event).filter { calendar in
-            if calendar.type == .holiday { return true }
+            // Check for holiday calendars (title-based since .holiday type may not be available)
             return calendar.title.lowercased().contains("holiday")
         }
         guard !calendars.isEmpty else {

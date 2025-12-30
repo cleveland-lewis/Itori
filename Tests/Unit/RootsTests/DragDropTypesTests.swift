@@ -26,7 +26,10 @@ final class DragDropTypesTests: XCTestCase {
             difficulty: 0.7,
             importance: 0.8,
             type: .homework,
-            locked: false
+            locked: false,
+            attachments: [],
+            isCompleted: false,
+            category: .homework
         )
         
         // When
@@ -58,7 +61,10 @@ final class DragDropTypesTests: XCTestCase {
             difficulty: 0.5,
             importance: 0.6,
             type: .project,
-            locked: false
+            locked: false,
+            attachments: [],
+            isCompleted: false,
+            category: .project
         )
         
         // When

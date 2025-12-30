@@ -22,7 +22,10 @@ final class DragDropHandlerTests: XCTestCase {
             difficulty: 0.4,
             importance: 0.5,
             type: .homework,
-            locked: false
+            locked: false,
+            attachments: [],
+            isCompleted: false,
+            category: .homework
         )
         store.tasks = [assignment]
         let payload = TransferableAssignment(from: assignment)
@@ -48,7 +51,10 @@ final class DragDropHandlerTests: XCTestCase {
             difficulty: 0.6,
             importance: 0.7,
             type: .project,
-            locked: false
+            locked: false,
+            attachments: [],
+            isCompleted: false,
+            category: .project
         )
         let payload = TransferableAssignment(from: assignment)
 

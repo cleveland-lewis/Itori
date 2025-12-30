@@ -2,44 +2,6 @@
 import SwiftUI
 import EventKit
 
-private enum RecurrenceEndOption: String, CaseIterable, Identifiable {
-    case never
-    case onDate
-    case afterOccurrences
-
-    var id: String { rawValue }
-}
-
-private enum RecurrenceSelection: String, CaseIterable, Identifiable {
-    case none
-    case daily
-    case weekly
-    case monthly
-    case yearly
-
-    var id: String { rawValue }
-
-    var label: String {
-        switch self {
-        case .none: return "None"
-        case .daily: return "Daily"
-        case .weekly: return "Weekly"
-        case .monthly: return "Monthly"
-        case .yearly: return "Yearly"
-        }
-    }
-
-    var frequency: RecurrenceRule.Frequency {
-        switch self {
-        case .none: return .weekly
-        case .daily: return .daily
-        case .weekly: return .weekly
-        case .monthly: return .monthly
-        case .yearly: return .yearly
-        }
-    }
-}
-
 struct AddAssignmentView: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var coursesStore: CoursesStore
@@ -66,7 +28,7 @@ struct AddAssignmentView: View {
     @State private var recurrenceEndCount: Int = 3
     @State private var skipWeekends: Bool = false
     @State private var skipHolidays: Bool = false
-    @State private var holidaySource: RecurrenceRule.HolidaySource = .systemCalendar
+    @State private var holidaySource: RecurrenceRule.HolidaySource = .deviceCalendar
 
     var onSave: (AppTask) -> Void
 
@@ -74,6 +36,44 @@ struct AddAssignmentView: View {
         self.onSave = onSave
         self._type = State(initialValue: initialType)
         self._selectedCourseId = State(initialValue: preselectedCourseId)
+    }
+
+    private enum RecurrenceEndOption: String, CaseIterable, Identifiable {
+        case never
+        case onDate
+        case afterOccurrences
+
+        var id: String { rawValue }
+    }
+
+    private enum RecurrenceSelection: String, CaseIterable, Identifiable {
+        case none
+        case daily
+        case weekly
+        case monthly
+        case yearly
+
+        var id: String { rawValue }
+
+        var label: String {
+            switch self {
+            case .none: return "None"
+            case .daily: return "Daily"
+            case .weekly: return "Weekly"
+            case .monthly: return "Monthly"
+            case .yearly: return "Yearly"
+            }
+        }
+
+        var frequency: RecurrenceRule.Frequency {
+            switch self {
+            case .none: return .weekly
+            case .daily: return .daily
+            case .weekly: return .weekly
+            case .monthly: return .monthly
+            case .yearly: return .yearly
+            }
+        }
     }
 
     private var isSaveDisabled: Bool {
@@ -201,12 +201,12 @@ struct AddAssignmentView: View {
 
                                         if skipHolidays {
                                             Picker("Holiday Source", selection: $holidaySource) {
-                                                Text("System Calendar").tag(RecurrenceRule.HolidaySource.systemCalendar)
+                                                Text("System Calendar").tag(RecurrenceRule.HolidaySource.deviceCalendar)
                                                 Text("None").tag(RecurrenceRule.HolidaySource.none)
                                             }
                                             .pickerStyle(.menu)
 
-                                            if !holidaySourceAvailable && holidaySource == .systemCalendar {
+                                            if !holidaySourceAvailable && holidaySource == .deviceCalendar {
                                                 Text("No holiday source configured.")
                                                     .font(.caption)
                                                     .foregroundStyle(.secondary)
@@ -435,7 +435,7 @@ struct AddAssignmentView: View {
     private var holidaySourceAvailable: Bool {
         guard CalendarAuthorizationManager.shared.isAuthorized else { return false }
         let calendars = DeviceCalendarManager.shared.store.calendars(for: .event)
-        return calendars.contains { $0.type == .holiday || $0.title.lowercased().contains("holiday") }
+        return calendars.contains(where: { $0.title.lowercased().contains("holiday") })
     }
 
     private func buildRecurrenceRule() -> RecurrenceRule? {

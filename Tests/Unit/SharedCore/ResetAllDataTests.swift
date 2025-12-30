@@ -16,7 +16,10 @@ final class ResetAllDataTests: XCTestCase {
             difficulty: 0.5,
             importance: 0.5,
             type: .homework,
-            locked: false
+            locked: false,
+            attachments: [],
+            isCompleted: false,
+            category: .homework
         )
 
         store.addTask(task)

@@ -92,7 +92,7 @@ struct AppTask: Codable, Equatable, Hashable {
         self.gradeEarnedPoints = gradeEarnedPoints
     }
 
-    private enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {
         case id
         case title
         case courseId
@@ -245,6 +245,37 @@ extension AppTask {
     
     var hasExplicitDueTime: Bool {
         dueTimeMinutes != nil
+    }
+    
+    /// Convenience initializer with safe defaults for common cases
+    /// Reduces initializer drift when model evolves
+    static func create(
+        id: UUID = UUID(),
+        title: String,
+        courseId: UUID? = nil,
+        due: Date? = nil,
+        estimatedMinutes: Int = 60,
+        type: TaskType = .homework,
+        difficulty: Double = 0.5,
+        importance: Double = 0.5,
+        locked: Bool = false
+    ) -> AppTask {
+        AppTask(
+            id: id,
+            title: title,
+            courseId: courseId,
+            due: due,
+            estimatedMinutes: estimatedMinutes,
+            minBlockMinutes: 20,
+            maxBlockMinutes: 120,
+            difficulty: difficulty,
+            importance: importance,
+            type: type,
+            locked: locked,
+            attachments: [],
+            isCompleted: false,
+            category: type
+        )
     }
 }
 

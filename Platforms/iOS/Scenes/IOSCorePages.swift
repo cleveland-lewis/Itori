@@ -1062,7 +1062,7 @@ struct IOSTaskEditorView: View {
         var recurrenceEndCount: Int = 3
         var skipWeekends: Bool = false
         var skipHolidays: Bool = false
-        var holidaySource: RecurrenceRule.HolidaySource = .systemCalendar
+        var holidaySource: RecurrenceRule.HolidaySource = .deviceCalendar
 
         init(task: AppTask? = nil, title: String? = nil, courseId: UUID? = nil, dueDate: Date? = nil, type: TaskType? = nil) {
             if let task {
@@ -1105,7 +1105,7 @@ struct IOSTaskEditorView: View {
         func makeTask(existing: AppTask?) -> AppTask {
             let resolvedMinutes = estimatedMinutes ?? 60
             let recurrenceRule = buildRecurrenceRule()
-            AppTask(
+            return AppTask(
                 id: existing?.id ?? UUID(),
                 title: title,
                 courseId: courseId,
@@ -1300,10 +1300,10 @@ struct IOSTaskEditorView: View {
 
                         if draft.skipHolidays {
                             Picker("Holiday Source", selection: $draft.holidaySource) {
-                                Text("System Calendar").tag(RecurrenceRule.HolidaySource.systemCalendar)
+                                Text("System Calendar").tag(RecurrenceRule.HolidaySource.deviceCalendar)
                                 Text("None").tag(RecurrenceRule.HolidaySource.none)
                             }
-                            if !holidaySourceAvailable && draft.holidaySource == .systemCalendar {
+                            if !holidaySourceAvailable && draft.holidaySource == .deviceCalendar {
                                 Text("No holiday source configured.")
                                     .font(.footnote)
                                     .foregroundStyle(.secondary)
@@ -1440,7 +1440,7 @@ struct IOSTaskEditorView: View {
     private var holidaySourceAvailable: Bool {
         guard CalendarAuthorizationManager.shared.isAuthorized else { return false }
         let calendars = DeviceCalendarManager.shared.store.calendars(for: .event)
-        return calendars.contains { $0.type == .holiday || $0.title.lowercased().contains("holiday") }
+        return calendars.contains(where: { $0.title.lowercased().contains("holiday") })
     }
     
     private func requestDurationEstimateIfNeeded() {
