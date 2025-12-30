@@ -160,8 +160,10 @@ struct RootsApp: App {
                     .task {
                         LOG_LIFECYCLE(.info, "AppStartup", "Running startup tasks")
                         SchedulerAdaptationManager.shared.runAdaptiveSchedulerUpdateIfNeeded()
+                        PlannerSyncCoordinator.shared.start()
                         await calendarManager.checkPermissionsOnStartup()
-                        await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
+                        // TODO: Re-enable planner sync when function is available
+                        // await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
                         timerManager.checkNotificationPermissions()
                         
                         NotificationManager.shared.updateSmartNotificationSchedules()
@@ -288,7 +290,8 @@ struct RootsApp: App {
             LOG_LIFECYCLE(.info, "ScenePhase", "App became active, refreshing calendar")
             _Concurrency.Task {
                 await calendarManager.checkPermissionsOnStartup()
-                await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
+                // TODO: Re-enable planner sync when function is available
+                // await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
             }
             NotificationManager.shared.clearBadge()
         }

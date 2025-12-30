@@ -14,7 +14,6 @@ struct ContentView: View {
     @EnvironmentObject private var modalRouter: AppModalRouter
     @State private var selectedTab: RootTab = .dashboard
     @State private var settingsRotation: Double = 0
-    @State private var isQuickActionsExpanded = false
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -23,11 +22,17 @@ struct ContentView: View {
                 Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
 
                 // LAYER 1: Main content
-                VStack(spacing: 0) {
-                    topBar
-                        .padding(.horizontal, 24)
-                        .padding(.top, 16)
-
+                AppPageScaffold(
+                    title: selectedTab.title,
+                    quickActions: settings.quickActions,
+                    onQuickAction: performQuickAction,
+                    onSettings: {
+                        withAnimation(.easeInOut(duration: DesignSystem.Motion.deliberate)) {
+                            settingsRotation += 360
+                        }
+                        settingsCoordinator.show()
+                    }
+                ) {
                     currentPageView
                         .accessibilityIdentifier("Page.\(selectedTab.rawValue)")
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -35,19 +40,16 @@ struct ContentView: View {
                         .padding(.top, 12)
                         // Keep content flowing behind the floating tab bar; only respect safe area.
                         .padding(.bottom, proxy.safeAreaInsets.bottom + 8)
+                        .contentSafeInsetsForOverlay()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                QuickActionsDismissLayer(isExpanded: isQuickActionsExpanded) {
-                    collapseQuickActions()
-                }
-                .zIndex(0.5)
 
                 // Floating tab bar stays at bottom; keep above content
                 VStack {
                     Spacer()
+                    let orderedTabs = settings.tabOrder.filter { settings.effectiveVisibleTabs.contains($0) }
                     RootsFloatingTabBar(
-                        items: RootTab.allCases,
+                        items: orderedTabs,
                         selected: $selectedTab,
                         mode: settings.tabBarMode,
                         onSelect: handleTabSelection
@@ -112,6 +114,11 @@ struct ContentView: View {
                 }
             }
         }
+        .onChange(of: settings.enableFlashcards) { _, enabled in
+            guard !enabled, selectedTab == .flashcards else { return }
+            selectedTab = .dashboard
+            appModel.selectedPage = .dashboard
+        }
         #if os(macOS)
         .onKeyDown { event in
             switch event.keyCode {
@@ -124,43 +131,6 @@ struct ContentView: View {
             }
         }
         #endif
-    }
-
-    private var topBar: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                QuickActionsLauncher(isExpanded: $isQuickActionsExpanded, actions: settings.quickActions) { action in
-                    performQuickAction(action)
-                }
-
-                Spacer()
-
-                CircleIconButton(
-                    icon: "gearshape",
-                    iconColor: Color.secondary,
-                    size: QuickActionsLauncher.launcherDiameter,
-                    backgroundMaterial: DesignSystem.Materials.hud,
-                    backgroundOpacity: 0.75,
-                    iconRotation: .degrees(settingsRotation)
-                ) {
-                    withAnimation(.easeInOut(duration: DesignSystem.Motion.deliberate)) {
-                        settingsRotation += 360
-                    }
-                    settingsCoordinator.show()
-                }
-                .accessibilityIdentifier("Header.Settings")
-            }
-            
-            // Page title below quick add button
-            Text(selectedTab.title)
-                .font(.largeTitle.weight(.bold))
-                .foregroundStyle(.primary)
-                .padding(.leading, 4)
-        }
-        .contentTransition(.opacity)
-        .onExitCommand {
-            collapseQuickActions()
-        }
     }
 
     @ViewBuilder
@@ -274,12 +244,6 @@ struct ContentView: View {
         selectedTab = tab
         if let page = AppPage(rawValue: tab.rawValue), appModel.selectedPage != page {
             appModel.selectedPage = page
-        }
-    }
-
-    private func collapseQuickActions() {
-        if isQuickActionsExpanded {
-            isQuickActionsExpanded = false
         }
     }
 

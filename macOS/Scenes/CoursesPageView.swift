@@ -449,20 +449,6 @@ struct CoursesSidebarView: View {
                 .padding(.bottom, 8)
                 .focused($isSearchFocused)
 
-            // Course List
-            List(selection: $selectedCourse) {
-                ForEach(courses) { course in
-                    CourseSidebarRow(course: course)
-                        .tag(course.id)
-                }
-            }
-            .listStyle(.inset)
-            .scrollContentBackground(.hidden)
-            .frame(maxHeight: .infinity)
-
-            Divider()
-                .padding(.vertical, RootsSpacing.s)
-
             VStack(alignment: .leading, spacing: RootsSpacing.s) {
                 HStack(spacing: RootsSpacing.s) {
                     Button {
@@ -494,8 +480,21 @@ struct CoursesSidebarView: View {
                     SidebarWidgetTile(label: "Total Credits", value: totalCreditsText)
                 }
                 .padding(.horizontal, RootsSpacing.m)
-                .padding(.bottom, RootsSpacing.l)
+                .padding(.bottom, RootsSpacing.s)
             }
+
+            Divider()
+                .padding(.vertical, RootsSpacing.s)
+
+            List(selection: $selectedCourse) {
+                ForEach(courses) { course in
+                    CourseSidebarRow(course: course)
+                        .tag(course.id)
+                }
+            }
+            .listStyle(.inset)
+            .scrollContentBackground(.hidden)
+            .frame(maxHeight: .infinity)
         }
         .frame(maxHeight: .infinity)
         .onReceive(NotificationCenter.default.publisher(for: .focusSearch)) { _ in

@@ -5,11 +5,22 @@ import EventKit
 struct IOSCalendarSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
     @StateObject private var deviceCalendar = DeviceCalendarManager.shared
+    @ObservedObject private var calendarAuth = CalendarAuthorizationManager.shared
     @State private var showRevokeConfirmation = false
     
     var body: some View {
         List {
-            if !deviceCalendar.isAuthorized {
+            if calendarAuth.isDenied {
+                Section {
+                    CalendarAccessBanner(
+                        title: "Calendar access is off",
+                        message: "Enable access to show events and allow scheduling.",
+                        actionTitle: "Open Settings",
+                        action: { calendarAuth.openSettings() }
+                    )
+                    .listRowBackground(Color.clear)
+                }
+            } else if calendarAuth.isNotDetermined {
                 Section {
                     VStack(spacing: 12) {
                         Image(systemName: "calendar.badge.exclamationmark")
@@ -26,7 +37,7 @@ struct IOSCalendarSettingsView: View {
                         
                         Button {
                             Task {
-                                await deviceCalendar.bootstrapOnLaunch()
+                                _ = await deviceCalendar.requestFullAccessIfNeeded()
                             }
                         } label: {
                             Text(NSLocalizedString("settings.calendar.request_access", comment: "Request Access"))

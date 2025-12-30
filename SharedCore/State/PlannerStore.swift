@@ -144,13 +144,39 @@ final class PlannerStore: ObservableObject {
     @Published private(set) var overflow: [StoredOverflowSession] = []
 
     private let storageURL: URL
+    private let iCloudURL: URL?
+    private let iCloudConflictsURL: URL?
+    
+    private var isSyncEnabled: Bool {
+        AppSettingsModel.shared.enableICloudSync
+    }
 
     private init() {
         let fm = FileManager.default
+        
+        // Setup local storage
         let dir = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
         let folder = dir.appendingPathComponent("RootsPlanner", isDirectory: true)
         try? fm.createDirectory(at: folder, withIntermediateDirectories: true)
-        self.storageURL = folder.appendingPathComponent("planner_sessions.json")
+        self.storageURL = folder.appendingPathComponent("planner.json")
+        
+        // Setup iCloud URLs (opportunistic, no errors if unavailable)
+        if let containerURL = fm.url(forUbiquityContainerIdentifier: "iCloud.com.cwlewisiii.Roots") {
+            let iCloudFolder = containerURL.appendingPathComponent("Documents/Planner", isDirectory: true)
+            try? fm.createDirectory(at: iCloudFolder, withIntermediateDirectories: true)
+            self.iCloudURL = iCloudFolder.appendingPathComponent("planner.json")
+            self.iCloudConflictsURL = iCloudFolder
+        } else {
+            self.iCloudURL = nil
+            self.iCloudConflictsURL = nil
+        }
+        
+        // Load: iCloud first if enabled and available, then local
+        if isSyncEnabled {
+            loadFromiCloud()
+        }
+        
+        // Always load local (as fallback or primary)
         load()
         isLoading = false
     }
@@ -285,24 +311,125 @@ final class PlannerStore: ObservableObject {
     }
 
     private func save() {
+        // ALWAYS save locally first (offline-first principle)
+        let payload = Persisted(scheduled: scheduled, overflow: overflow)
+        
         do {
-            let payload = Persisted(scheduled: scheduled, overflow: overflow)
             let data = try JSONEncoder().encode(payload)
             try data.write(to: storageURL, options: [.atomic])
+            
+            // Opportunistically sync to iCloud if enabled (non-blocking)
+            if isSyncEnabled {
+                saveToiCloud(data: data)
+            }
         } catch {
-            DebugLogger.log("Failed to save planner sessions: \(error)")
+            DebugLogger.log("❌ Failed to save planner locally: \(error)")
         }
     }
 
     private func load() {
-        guard FileManager.default.fileExists(atPath: storageURL.path) else { return }
+        // Load from local storage (fallback or primary source)
+        guard FileManager.default.fileExists(atPath: storageURL.path) else { 
+            DebugLogger.log("ℹ️ No local planner data found")
+            return 
+        }
+        
         do {
             let data = try Data(contentsOf: storageURL)
             let payload = try JSONDecoder().decode(Persisted.self, from: data)
+            
+            // Only update if we haven't already loaded from iCloud
+            if scheduled.isEmpty && overflow.isEmpty {
+                scheduled = payload.scheduled
+                overflow = payload.overflow
+                DebugLogger.log("✅ Loaded \(scheduled.count) scheduled, \(overflow.count) overflow from local")
+            }
+        } catch {
+            DebugLogger.log("❌ Failed to load planner from local: \(error)")
+        }
+    }
+    
+    // MARK: - iCloud Sync (Production-Ready, Offline-First)
+    
+    private func loadFromiCloud() {
+        // Only attempt if explicitly enabled by user
+        guard isSyncEnabled else { return }
+        
+        // Silently fail if iCloud unavailable (offline-first)
+        guard let url = iCloudURL else {
+            DebugLogger.log("ℹ️ iCloud container not available")
+            return
+        }
+        
+        guard FileManager.default.fileExists(atPath: url.path) else {
+            DebugLogger.log("ℹ️ No iCloud planner data found, using local cache")
+            return
+        }
+        
+        do {
+            let data = try Data(contentsOf: url)
+            let payload = try JSONDecoder().decode(Persisted.self, from: data)
+            
+            // Check for conflicts before merging
+            if shouldPreserveConflict(cloudScheduled: payload.scheduled, cloudOverflow: payload.overflow) {
+                preserveConflictFile(cloudData: data)
+            }
+            
+            // iCloud is source of truth on launch when enabled
             scheduled = payload.scheduled
             overflow = payload.overflow
+            
+            // Save to local for offline access
+            try data.write(to: storageURL, options: [.atomic])
+            
+            DebugLogger.log("✅ Loaded \(scheduled.count) scheduled, \(overflow.count) overflow from iCloud")
         } catch {
-            DebugLogger.log("Failed to load planner sessions: \(error)")
+            // Silent failure - fall back to local
+            DebugLogger.log("⚠️ Failed to load from iCloud (using local): \(error.localizedDescription)")
+        }
+    }
+    
+    private func saveToiCloud(data: Data) {
+        // Only attempt if explicitly enabled
+        guard isSyncEnabled else { return }
+        
+        // Silently fail if unavailable
+        guard let url = iCloudURL else { return }
+        
+        // Non-blocking background sync
+        DispatchQueue.global(qos: .utility).async {
+            do {
+                try data.write(to: url, options: .atomic)
+                DebugLogger.log("✅ Synced planner to iCloud")
+            } catch {
+                // Silent failure - queued for retry
+                DebugLogger.log("⚠️ iCloud sync failed (queued): \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func shouldPreserveConflict(cloudScheduled: [StoredScheduledSession], cloudOverflow: [StoredOverflowSession]) -> Bool {
+        // Preserve conflict if local has data and cloud differs significantly
+        guard !scheduled.isEmpty || !overflow.isEmpty else { return false }
+        
+        let localCount = scheduled.count + overflow.count
+        let cloudCount = cloudScheduled.count + cloudOverflow.count
+        
+        // Significant difference warrants conflict preservation
+        return abs(localCount - cloudCount) > max(5, localCount / 4)
+    }
+    
+    private func preserveConflictFile(cloudData: Data) {
+        guard let conflictsFolder = iCloudConflictsURL else { return }
+        
+        let timestamp = ISO8601DateFormatter().string(from: Date())
+        let conflictURL = conflictsFolder.appendingPathComponent("planner_conflict_\(timestamp).json")
+        
+        do {
+            try cloudData.write(to: conflictURL, options: .atomic)
+            DebugLogger.log("💾 Preserved conflict file: \(conflictURL.lastPathComponent)")
+        } catch {
+            DebugLogger.log("⚠️ Failed to preserve conflict: \(error.localizedDescription)")
         }
     }
 

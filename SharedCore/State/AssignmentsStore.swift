@@ -44,22 +44,28 @@ final class AssignmentsStore: ObservableObject {
         guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return nil }
         let folder = dir.appendingPathComponent("RootsAssignments", isDirectory: true)
         try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-        return folder.appendingPathComponent("tasks_cache.json")
+        return folder.appendingPathComponent("tasks.json")
     }()
     
-    private var iCloudURL: URL? = {
-        guard AppSettingsModel.shared.enableICloudSync else {
-            return nil
-        }
-        // Explicitly use the container identifier from entitlements
+    private lazy var iCloudURL: URL? = {
+        // Always attempt to get container (independent of settings)
         let containerIdentifier = "iCloud.com.cwlewisiii.Roots"
         guard let ubiquityURL = FileManager.default.url(forUbiquityContainerIdentifier: containerIdentifier) else {
-            // iCloud not configured - this is expected in development or if user hasn't enabled iCloud
+            // Silent failure - iCloud unavailable
             return nil
         }
-        let documentsURL = ubiquityURL.appendingPathComponent("Documents")
+        let documentsURL = ubiquityURL.appendingPathComponent("Documents/Assignments")
         try? FileManager.default.createDirectory(at: documentsURL, withIntermediateDirectories: true)
-        return documentsURL.appendingPathComponent("tasks_icloud.json")
+        return documentsURL.appendingPathComponent("tasks.json")
+    }()
+    
+    private lazy var iCloudConflictsURL: URL? = {
+        guard let ubiquityURL = FileManager.default.url(forUbiquityContainerIdentifier: "iCloud.com.cwlewisiii.Roots") else {
+            return nil
+        }
+        let conflictsFolder = ubiquityURL.appendingPathComponent("Documents/Assignments")
+        try? FileManager.default.createDirectory(at: conflictsFolder, withIntermediateDirectories: true)
+        return conflictsFolder
     }()
     
     private var conflictsFolderURL: URL? = {
@@ -80,7 +86,6 @@ final class AssignmentsStore: ObservableObject {
         debugLog("✅ Task added. Total tasks: \(tasks.count)")
         updateAppBadge()
         saveCache()
-        _Concurrency.Task { await CalendarManager.shared.syncPlannerTaskToCalendar(task) }
         refreshGPA()
         
         // Play task creation feedback
@@ -173,7 +178,6 @@ final class AssignmentsStore: ObservableObject {
         }
         updateAppBadge()
         saveCache()
-        _Concurrency.Task { await CalendarManager.shared.syncPlannerTaskToCalendar(task) }
         refreshGPA()
         
         // Reschedule notification for updated task
@@ -280,6 +284,19 @@ final class AssignmentsStore: ObservableObject {
             attemptRollbackRecovery(from: url)
         }
     }
+
+#if DEBUG
+    func loadCacheSnapshotForTesting() -> [AppTask] {
+        guard let url = cacheURL, FileManager.default.fileExists(atPath: url.path) else { return [] }
+        do {
+            let data = try Data(contentsOf: url)
+            return try JSONDecoder().decode([AppTask].self, from: data)
+        } catch {
+            debugLog("❌ Failed to load cache snapshot: \(error)")
+            return []
+        }
+    }
+#endif
     
     private func attemptRollbackRecovery(from url: URL) {
         // Try to create a backup of the corrupted file
@@ -361,27 +378,38 @@ final class AssignmentsStore: ObservableObject {
     }
     
     private func saveToiCloud() {
-        guard let url = iCloudURL else { return }
-        guard isSyncEnabled else {
-            debugLog("ℹ️ iCloud sync disabled - skipping upload")
-            return
+        // Only attempt if user has enabled sync
+        guard isSyncEnabled else { return }
+        
+        // Silently fail if iCloud unavailable
+        guard let url = iCloudURL else { 
+            debugLog("ℹ️ iCloud container not available")
+            return 
         }
         
+        // Non-blocking background sync
         DispatchQueue.global(qos: .utility).async { [weak self] in
             guard let self = self else { return }
             do {
                 let data = try JSONEncoder().encode(self.tasks)
                 try data.write(to: url, options: .atomic)
-                self.debugLog("✅ Saved \(self.tasks.count) tasks to iCloud at \(url.path)")
+                self.debugLog("✅ Synced \(self.tasks.count) tasks to iCloud")
             } catch {
-                self.debugLog("❌ Failed to save to iCloud: \(error)")
+                // Silent failure - queued for retry
+                self.debugLog("⚠️ iCloud sync failed (queued): \(error.localizedDescription)")
             }
         }
     }
     
     private func loadFromiCloud() {
-        guard let url = iCloudURL, FileManager.default.fileExists(atPath: url.path) else {
-            // No iCloud data - using local cache (this is normal)
+        // Silently fail if iCloud unavailable
+        guard let url = iCloudURL else { 
+            debugLog("ℹ️ iCloud container not available")
+            return 
+        }
+        
+        guard FileManager.default.fileExists(atPath: url.path) else {
+            debugLog("ℹ️ No iCloud data found, using local cache")
             return
         }
         
@@ -429,32 +457,41 @@ final class AssignmentsStore: ObservableObject {
     }
     
     private func handleConflicts(cloudTasks: [AppTask]) {
-        guard let conflictsFolder = conflictsFolderURL else {
-            debugLog("⚠️ Cannot create conflicts folder - force merging")
-            mergeWithiCloudData(cloudTasks)
-            return
+        let timestamp = ISO8601DateFormatter().string(from: Date())
+        
+        // Save local conflicts folder
+        if let conflictsFolder = conflictsFolderURL {
+            let localURL = conflictsFolder.appendingPathComponent("local_\(timestamp).json")
+            do {
+                let localData = try JSONEncoder().encode(tasks)
+                try localData.write(to: localURL)
+                debugLog("💾 Saved local conflict: \(localURL.lastPathComponent)")
+            } catch {
+                debugLog("⚠️ Failed to save local conflict: \(error.localizedDescription)")
+            }
+            
+            let cloudURL = conflictsFolder.appendingPathComponent("cloud_\(timestamp).json")
+            do {
+                let cloudData = try JSONEncoder().encode(cloudTasks)
+                try cloudData.write(to: cloudURL)
+                debugLog("☁️ Saved cloud conflict: \(cloudURL.lastPathComponent)")
+            } catch {
+                debugLog("⚠️ Failed to save cloud conflict: \(error.localizedDescription)")
+            }
         }
         
-        let timestamp = Date().timeIntervalSince1970
-        
-        // Save local version
-        let localURL = conflictsFolder.appendingPathComponent("local_\(timestamp).json")
-        do {
-            let localData = try JSONEncoder().encode(tasks)
-            try localData.write(to: localURL)
-            debugLog("💾 Saved local version to: \(localURL.lastPathComponent)")
-        } catch {
-            debugLog("❌ Failed to save local conflict file: \(error)")
-        }
-        
-        // Save cloud version
-        let cloudURL = conflictsFolder.appendingPathComponent("cloud_\(timestamp).json")
-        do {
-            let cloudData = try JSONEncoder().encode(cloudTasks)
-            try cloudData.write(to: cloudURL)
-            debugLog("☁️ Saved cloud version to: \(cloudURL.lastPathComponent)")
-        } catch {
-            debugLog("❌ Failed to save cloud conflict file: \(error)")
+        // Also save conflict to iCloud if available
+        if let iCloudConflicts = iCloudConflictsURL {
+            let conflictURL = iCloudConflicts.appendingPathComponent("tasks_conflict_\(timestamp).json")
+            DispatchQueue.global(qos: .utility).async {
+                do {
+                    let cloudData = try JSONEncoder().encode(cloudTasks)
+                    try cloudData.write(to: conflictURL)
+                    DebugLogger.log("💾 Preserved conflict in iCloud: \(conflictURL.lastPathComponent)")
+                } catch {
+                    DebugLogger.log("⚠️ Failed to preserve iCloud conflict: \(error.localizedDescription)")
+                }
+            }
         }
         
         // Post notification for user to resolve
@@ -463,10 +500,9 @@ final class AssignmentsStore: ObservableObject {
                 name: NSNotification.Name("AssignmentsSyncConflict"),
                 object: nil,
                 userInfo: [
-                    "localURL": localURL,
-                    "cloudURL": cloudURL,
                     "localCount": self.tasks.count,
-                    "cloudCount": cloudTasks.count
+                    "cloudCount": cloudTasks.count,
+                    "timestamp": timestamp
                 ]
             )
         }

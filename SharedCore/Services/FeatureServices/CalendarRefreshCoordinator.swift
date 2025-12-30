@@ -25,6 +25,7 @@ final class CalendarRefreshCoordinator: ObservableObject {
 
     private let calendarManager = CalendarManager.shared
     private let deviceCalendar = DeviceCalendarManager.shared
+    private let authManager = CalendarAuthorizationManager.shared
     private let settings = AppSettingsModel.shared
     private let assignmentsStore = AssignmentsStore.shared
 
@@ -40,8 +41,13 @@ final class CalendarRefreshCoordinator: ObservableObject {
         isRefreshing = true
         error = nil
 
-        let granted = await deviceCalendar.requestFullAccessIfNeeded()
-        guard granted else {
+        authManager.refreshStatus()
+        if authManager.isNotDetermined {
+            _ = await deviceCalendar.requestFullAccessIfNeeded()
+            authManager.refreshStatus()
+        }
+        guard authManager.isAuthorized else {
+            authManager.logDeniedOnce(context: "manualRefresh")
             error = .permissionDenied
             isRefreshing = false
             return
@@ -163,18 +169,28 @@ final class CalendarRefreshCoordinator: ObservableObject {
 
     private func applyPendingScheduleSuggestionInternal() async throws {
         guard let suggestion = pendingScheduleSuggestion else { return }
+        guard authManager.isAuthorized else {
+            authManager.logDeniedOnce(context: "applyScheduleDiff")
+            return
+        }
         guard let target = calendar(with: suggestion.targetCalendarID) else { return }
         try applyScheduleDiff(suggestion.diff, targetCalendar: target, within: suggestion.range)
+        await calendarManager.syncPlannerSessionsToCalendar(in: suggestion.range)
         pendingScheduleSuggestion = nil
         await deviceCalendar.refreshEvents(from: suggestion.range.lowerBound, to: suggestion.range.upperBound, reason: "autoScheduleApply")
     }
 
     private func applyPendingScheduleSuggestionNonConflictingInternal() async throws {
         guard let suggestion = pendingScheduleSuggestion else { return }
+        guard authManager.isAuthorized else {
+            authManager.logDeniedOnce(context: "applyScheduleDiffNonConflicting")
+            return
+        }
         guard let target = calendar(with: suggestion.targetCalendarID) else { return }
         let nonConflicting = suggestion.diff.nonConflictingChanges
         guard nonConflicting.changeCount > 0 else { return }
         try applyScheduleDiff(nonConflicting, targetCalendar: target, within: suggestion.range)
+        await calendarManager.syncPlannerSessionsToCalendar(in: suggestion.range)
         await deviceCalendar.refreshEvents(from: suggestion.range.lowerBound, to: suggestion.range.upperBound, reason: "autoScheduleApply")
 
         if suggestion.diff.conflicts.isEmpty {
@@ -203,6 +219,10 @@ final class CalendarRefreshCoordinator: ObservableObject {
     }
 
     private func targetCalendar() -> EKCalendar? {
+        guard authManager.isAuthorized else {
+            authManager.logDeniedOnce(context: "targetCalendar")
+            return nil
+        }
         if !calendarManager.selectedCalendarID.isEmpty,
            let selected = deviceCalendar.store.calendars(for: .event).first(where: { $0.calendarIdentifier == calendarManager.selectedCalendarID }) {
             return selected
@@ -211,7 +231,11 @@ final class CalendarRefreshCoordinator: ObservableObject {
     }
 
     private func calendar(with id: String) -> EKCalendar? {
-        deviceCalendar.store.calendars(for: .event).first(where: { $0.calendarIdentifier == id })
+        guard authManager.isAuthorized else {
+            authManager.logDeniedOnce(context: "calendarLookup")
+            return nil
+        }
+        return deviceCalendar.store.calendars(for: .event).first(where: { $0.calendarIdentifier == id })
     }
 
     func buildScheduleDiff(

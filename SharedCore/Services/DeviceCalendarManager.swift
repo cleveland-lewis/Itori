@@ -7,6 +7,7 @@ final class DeviceCalendarManager: ObservableObject {
     static let shared = DeviceCalendarManager()
 
     let store = EKEventStore()
+    private let authManager = CalendarAuthorizationManager.shared
 
     @Published private(set) var isAuthorized: Bool = false
     @Published private(set) var events: [EKEvent] = []
@@ -17,12 +18,24 @@ final class DeviceCalendarManager: ObservableObject {
 
     private var storeChangedObserver: Any?
 
-    private init() {}
+    private init() {
+        authManager.refreshStatus()
+        isAuthorized = authManager.isAuthorized
+        authManager.$eventStatus
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                self.isAuthorized = self.authManager.isAuthorized
+            }
+            .store(in: &cancellables)
+    }
+
+    private var cancellables: Set<AnyCancellable> = []
 
     func bootstrapOnLaunch() async {
-        let granted = await requestFullAccessIfNeeded()
-        await MainActor.run { self.isAuthorized = granted }
-        guard granted else { return }
+        authManager.refreshStatus()
+        await MainActor.run { self.isAuthorized = authManager.isAuthorized }
+        guard authManager.isAuthorized else { return }
 
         startObservingStoreChanges()
         await refreshEventsForVisibleRange(reason: "launch")
@@ -30,7 +43,8 @@ final class DeviceCalendarManager: ObservableObject {
 
     func refreshEventsForVisibleRange(reason: String = "rangeRefresh") async {
         // Check authorization before attempting to fetch
-        guard isAuthorized else {
+        guard authManager.isAuthorized else {
+            authManager.logDeniedOnce(context: reason)
             await MainActor.run {
                 self.events = []
                 self.lastRefreshAt = Date()
@@ -65,7 +79,8 @@ final class DeviceCalendarManager: ObservableObject {
 
     func refreshEvents(from start: Date, to end: Date, reason: String) async {
         // Check authorization before attempting to fetch
-        guard isAuthorized else {
+        guard authManager.isAuthorized else {
+            authManager.logDeniedOnce(context: reason)
             await MainActor.run {
                 self.events = []
                 self.lastRefreshAt = Date()
@@ -95,35 +110,15 @@ final class DeviceCalendarManager: ObservableObject {
     }
 
     func requestFullAccessIfNeeded() async -> Bool {
-        let status = EKEventStore.authorizationStatus(for: .event)
-
-        switch status {
-        case .fullAccess:
-            return true
-        case .writeOnly:
-            return true
-        case .notDetermined:
-            if #available(macOS 14.0, *) {
-                do {
-                    return try await store.requestFullAccessToEvents()
-                } catch {
-                    return false
-                }
-            } else {
-                return await withCheckedContinuation { cont in
-                    store.requestAccess(to: .event) { granted, _ in cont.resume(returning: granted) }
-                }
-            }
-        case .denied, .restricted:
-            return false
-        @unknown default:
-            return false
-        }
+        let granted = await authManager.requestAccess(using: store)
+        await MainActor.run { self.isAuthorized = granted }
+        return granted
     }
 
     func refreshEventsForVisibleRange() async {
         // Check authorization before attempting to fetch
-        guard isAuthorized else {
+        guard authManager.isAuthorized else {
+            authManager.logDeniedOnce(context: "rangeRefresh")
             await MainActor.run {
                 self.events = []
             }
@@ -157,6 +152,10 @@ final class DeviceCalendarManager: ObservableObject {
 
         storeChangedObserver = NotificationCenter.default.addObserver(forName: .EKEventStoreChanged, object: store, queue: .main) { [weak self] _ in
             guard let self = self else { return }
+            guard self.authManager.isAuthorized else {
+                self.authManager.logDeniedOnce(context: "storeChanged")
+                return
+            }
             Task { await self.refreshEventsForVisibleRange(reason: "storeChanged") }
         }
 

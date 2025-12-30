@@ -71,6 +71,7 @@ struct RootsIOSApp: App {
                     preferences.reduceTransparency = appSettings.increaseTransparency || !appSettings.enableGlassEffects
                     preferences.glassIntensity = appSettings.glassIntensity
                     preferences.reduceMotion = appSettings.reduceMotion
+                    PlannerSyncCoordinator.shared.start()
                 }
                 .onChange(of: appSettings.highContrastMode) { _, newValue in
                     preferences.highContrast = newValue

@@ -19,6 +19,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     static let shared = CalendarManager()
     private var deviceManager = DeviceCalendarManager.shared
     private var store: EKEventStore { deviceManager.store }
+    private let authManager = CalendarAuthorizationManager.shared
 
     // Persistent selection
     @AppStorage("selectedCalendarID") var selectedCalendarID: String = ""
@@ -39,8 +40,14 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     @Published var selectedDate: Date? = nil
 
     // Helpers used by AddEventPopup - forwarded
-    var writableCalendars: [EKCalendar] { deviceManager.store.calendars(for: .event).filter { $0.allowsContentModifications } }
-    var defaultCalendarForNewEvents: EKCalendar? { deviceManager.store.defaultCalendarForNewEvents }
+    var writableCalendars: [EKCalendar] {
+        guard authManager.isAuthorized else { return [] }
+        return deviceManager.store.calendars(for: .event).filter { $0.allowsContentModifications }
+    }
+    var defaultCalendarForNewEvents: EKCalendar? {
+        guard authManager.isAuthorized else { return nil }
+        return deviceManager.store.defaultCalendarForNewEvents
+    }
     func defaultCalendarForNewReminders() -> EKCalendar? { deviceManager.store.defaultCalendarForNewReminders() }
 
     // MARK: - Insights
@@ -81,7 +88,6 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     }
 
     private let cacheURL: URL?
-    private let lastPlanKey = "roots.lastDailyPlan"
 
     private init() {
         cacheURL = nil
@@ -99,17 +105,19 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     func refreshAuthStatus() async {
         // Forward to DeviceCalendarManager for authorization state
         await MainActor.run {
-            self.isAuthorized = DeviceCalendarManager.shared.isAuthorized
-            self.eventAuthorizationStatus = EKEventStore.authorizationStatus(for: .event)
+            authManager.refreshStatus()
+            self.isAuthorized = authManager.isAuthorized
+            self.eventAuthorizationStatus = authManager.eventStatus
             self.reminderAuthorizationStatus = EKEventStore.authorizationStatus(for: .reminder)
-            self.isCalendarAccessDenied = (self.eventAuthorizationStatus == .denied || self.eventAuthorizationStatus == .restricted)
+            self.isCalendarAccessDenied = authManager.isDenied
             self.isRemindersAccessDenied = (self.reminderAuthorizationStatus == .denied || self.reminderAuthorizationStatus == .restricted)
         }
         if self.isAuthorized {
             refreshSources()
             // DeviceCalendarManager owns fetching; UI should observe it directly.
             await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
-            await planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
+            // TODO: Re-enable planner sync when function is available
+            // await planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
         }
     }
 
@@ -166,8 +174,8 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         // Forward refresh to device manager; CalendarManager does not hold caches.
         guard DeviceCalendarManager.shared.isAuthorized else { return }
         await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
-        // Reminders handling remains in device manager; shim simply forwards.
-        await planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
+        // TODO: Re-enable planner sync when function is available
+        // await planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
     }
 
     func refreshMonthlyCache(for date: Date) {
@@ -180,127 +188,14 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         return event.calendar.calendarIdentifier == selectedCalendarID
     }
 
-    // MARK: - Daily planning
-
-    func planTodayIfNeeded(tasks: [AppTask]) async {
-        guard isAuthorized else { return }
-        let cal = Calendar.current
-        let today = cal.startOfDay(for: Date())
-        if let last = UserDefaults.standard.object(forKey: lastPlanKey) as? Date,
-           cal.isDate(last, inSameDayAs: today) {
-            return
-        }
-
-        let dueToday = tasks.filter { task in
-            guard !task.isCompleted, let due = task.due else { return false }
-            return cal.isDate(due, inSameDayAs: today)
-        }
-        guard !dueToday.isEmpty else {
-            UserDefaults.standard.set(today, forKey: lastPlanKey)
-            return
-        }
-
-        for task in dueToday {
-            await syncPlannerTaskToCalendar(task)
-        }
-
-        UserDefaults.standard.set(today, forKey: lastPlanKey)
-    }
-
     // MARK: - Planner sync into calendar
-
-    /// Map planner tasks to calendar events. Merges into existing "Homework" blocks when possible, otherwise creates a new event in the selected calendar within work hours.
-    func syncPlannerTaskToCalendar(_ task: AppTask, workDayStart: Int = 9, workDayEnd: Int = 17) async {
-        guard !selectedCalendarID.isEmpty else { return }
-        guard let targetCalendar = store.calendars(for: .event).first(where: { $0.calendarIdentifier == selectedCalendarID }) else { return }
-
-        let durationMinutes = task.estimatedMinutes > 0 ? task.estimatedMinutes : 45
-        let cal = Calendar.current
-        let taskDay = cal.startOfDay(for: task.due ?? Date())
-        guard let dayStart = cal.date(bySettingHour: workDayStart, minute: 0, second: 0, of: taskDay),
-              let dayEnd = cal.date(bySettingHour: workDayEnd, minute: 0, second: 0, of: taskDay) else { return }
-
-        let predicate = store.predicateForEvents(withStart: dayStart, end: dayEnd, calendars: [targetCalendar])
-        let dayEvents = store.events(matching: predicate).sorted { $0.startDate < $1.startDate }
-
-        let hwEvents = dayEvents.filter { $0.title.localizedCaseInsensitiveContains("homework") || $0.title.localizedCaseInsensitiveContains("practice") }
-
-        // Try to extend an existing homework/practice event if it fits without overlapping others and within work hours.
-        if let hw = hwEvents.first, let merged = extend(event: hw, byMinutes: durationMinutes, within: dayStart...dayEnd, avoiding: dayEvents) {
-            save(event: merged)
-            return
-        }
-
-        // Otherwise, place a new event in the first available gap.
-        if let slotStart = firstAvailableSlot(durationMinutes: durationMinutes, within: dayStart...dayEnd, avoiding: dayEvents) {
-            let newEvent = EKEvent(eventStore: store)
-            newEvent.calendar = targetCalendar
-            newEvent.title = taskTitle(for: task)
-            newEvent.startDate = slotStart
-            newEvent.endDate = slotStart.addingTimeInterval(Double(durationMinutes) * 60)
-            newEvent.notes = taskNotes(for: task)
-            save(event: newEvent)
-        }
-    }
-
-    private func taskTitle(for task: AppTask) -> String {
-        if task.type == .homework {
-            return "Homework: \(task.title)"
-        }
-        return task.title
-    }
-
-    private func taskNotes(for task: AppTask) -> String {
-        var parts: [String] = []
-        if let notes = task.attachments.first?.name {
-            parts.append("Attachment: \(notes)")
-        }
-        parts.append("[Planner] Auto-scheduled")
-        return parts.joined(separator: "\n")
-    }
-
-    private func extend(event: EKEvent, byMinutes minutes: Int, within window: ClosedRange<Date>, avoiding events: [EKEvent]) -> EKEvent? {
-        let proposedEnd = event.endDate.addingTimeInterval(Double(minutes) * 60)
-        guard proposedEnd <= window.upperBound else { return nil }
-
-        // Check overlap with other events
-        let overlaps = events.contains { other in
-            guard other.eventIdentifier != event.eventIdentifier else { return false }
-            return !(proposedEnd <= other.startDate || event.startDate >= other.endDate)
-        }
-        guard !overlaps else { return nil }
-
-        let updated = event.copy() as! EKEvent
-        updated.endDate = proposedEnd
-        var newNotes = updated.notes ?? ""
-        if !newNotes.contains("[Planner]") {
-            newNotes.append("\n[Planner] Extended for task")
-        }
-        updated.notes = newNotes.trimmingCharacters(in: .whitespacesAndNewlines)
-        return updated
-    }
-
-    private func firstAvailableSlot(durationMinutes: Int, within window: ClosedRange<Date>, avoiding events: [EKEvent]) -> Date? {
-        var cursor = window.lowerBound
-        let duration = TimeInterval(durationMinutes * 60)
-        let sorted = events.sorted { $0.startDate < $1.startDate }
-
-        for event in sorted {
-            if cursor.addingTimeInterval(duration) <= event.startDate {
-                return cursor
-            } else {
-                cursor = max(cursor, event.endDate)
-            }
-        }
-
-        if cursor.addingTimeInterval(duration) <= window.upperBound {
-            return cursor
-        }
-        return nil
-    }
 
     private func save(event: EKEvent) {
         // Forward to device manager
+        guard authManager.isAuthorized else {
+            authManager.logDeniedOnce(context: "saveEvent")
+            return
+        }
         do {
             try DeviceCalendarManager.shared.store.save(event, span: .thisEvent)
         } catch {
@@ -308,22 +203,83 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         }
     }
 
+    // MARK: - Planner block sessions
+
+    func syncPlannerSessionsToCalendar(in range: ClosedRange<Date>, gapMinutes: Int = 10) async {
+        guard authManager.isAuthorized else {
+            authManager.logDeniedOnce(context: "syncPlannerSessionsToCalendar")
+            return
+        }
+        guard !selectedCalendarID.isEmpty else { return }
+        guard let targetCalendar = store.calendars(for: .event).first(where: { $0.calendarIdentifier == selectedCalendarID }) else { return }
+
+        let calendar = Calendar.current
+        let sessions = PlannerStore.shared.scheduled
+            .filter { $0.type == .task || $0.type == .study }
+            .filter { $0.end > range.lowerBound && $0.start < range.upperBound }
+        let blocks = PlannerCalendarSync.buildBlocks(from: sessions, gapMinutes: gapMinutes, calendar: calendar, timeZone: calendar.timeZone)
+
+        let predicate = store.predicateForEvents(withStart: range.lowerBound, end: range.upperBound, calendars: [targetCalendar])
+        let existingEvents = store.events(matching: predicate).map { event in
+            PlannerCalendarEventSnapshot(
+                identifier: event.eventIdentifier,
+                title: event.title,
+                start: event.startDate,
+                end: event.endDate,
+                notes: event.notes
+            )
+        }
+
+        let plan = PlannerCalendarSync.syncPlan(blocks: blocks, existingEvents: existingEvents, range: range)
+        for upsert in plan.upserts {
+            let event: EKEvent
+            if let id = upsert.existingIdentifier, let existing = store.event(withIdentifier: id) {
+                event = existing
+            } else {
+                event = EKEvent(eventStore: store)
+                event.calendar = targetCalendar
+            }
+            event.title = upsert.block.title
+            event.startDate = upsert.block.start
+            event.endDate = upsert.block.end
+            event.notes = upsert.block.notes
+            save(event: event)
+        }
+
+        for identifier in plan.deletions {
+            guard let event = store.event(withIdentifier: identifier) else { continue }
+            remove(event: event)
+        }
+    }
+
+    private func remove(event: EKEvent) {
+        guard authManager.isAuthorized else {
+            authManager.logDeniedOnce(context: "removeEvent")
+            return
+        }
+        do {
+            try store.remove(event, span: .thisEvent, commit: true)
+        } catch {
+            DebugLogger.log("📅 [CalendarManager] Failed to remove event: \(error)")
+        }
+    }
+
     // MARK: - Request Access
     func requestAccess() async {
         // Forward to DeviceCalendarManager
-        await DeviceCalendarManager.shared.bootstrapOnLaunch()
+        _ = await DeviceCalendarManager.shared.requestFullAccessIfNeeded()
         await refreshAuthStatus()
     }
 
     func requestCalendarAccess() async {
         // Forward to device manager
-        await DeviceCalendarManager.shared.bootstrapOnLaunch()
+        _ = await DeviceCalendarManager.shared.requestFullAccessIfNeeded()
         await refreshAuthStatus()
     }
 
     func requestRemindersAccess() async {
         // Forward to device manager
-        await DeviceCalendarManager.shared.bootstrapOnLaunch()
+        _ = await DeviceCalendarManager.shared.requestFullAccessIfNeeded()
         await refreshAuthStatus()
     }
 
@@ -339,6 +295,10 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
                    recurrenceRule: EKRecurrenceRule? = nil,
                    calendar: EKCalendar?,
                    category: EventCategory? = nil) async throws {
+        guard authManager.isAuthorized else {
+            authManager.logDeniedOnce(context: "saveEvent")
+            return
+        }
         // Forward create to device manager
         guard let targetCalendar = calendar ?? DeviceCalendarManager.shared.store.defaultCalendarForNewEvents else { return }
         try await MainActor.run {

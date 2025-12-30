@@ -13,14 +13,26 @@ struct ContentView: View {
     @State private var selectedTab: RootTab = .dashboard
     @State private var settingsRotation: Double = 0
     @Environment(\.colorScheme) private var colorScheme
-    @FocusState private var isSettingsFocused: Bool
 
     var body: some View {
         NavigationSplitView {
             sidebar
         } detail: {
-            currentPageView
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            AppPageScaffold(
+                title: selectedTab.title,
+                quickActions: settings.quickActions,
+                onQuickAction: performQuickAction,
+                onSettings: {
+                    withAnimation(.easeInOut(duration: DesignSystem.Motion.deliberate)) {
+                        settingsRotation += 360
+                    }
+                    settingsCoordinator.show()
+                }
+            ) {
+                currentPageView
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .contentSafeInsetsForOverlay()
+            }
         }
         .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
         .globalContextMenu()
@@ -61,6 +73,11 @@ struct ContentView: View {
                     modalRouter.clear()
                 }
             }
+        }
+        .onChange(of: settings.enableFlashcards) { _, enabled in
+            guard !enabled, selectedTab == .flashcards else { return }
+            selectedTab = .dashboard
+            appModel.selectedPage = .dashboard
         }
         .onReceive(NotificationCenter.default.publisher(for: .addAssignment)) { _ in
             guard selectedTab != .assignments else { return }
@@ -111,32 +128,6 @@ struct ContentView: View {
             }
         }
         .navigationTitle("Roots")
-        .toolbar {
-            ToolbarItemGroup {
-                Menu {
-                    ForEach(settings.quickActions) { action in
-                        Button(action.title) {
-                            performQuickAction(action)
-                        }
-                    }
-                } label: {
-                    Label("Quick Actions", systemImage: "wand.and.stars")
-                }
-
-                Button(action: {
-                    withAnimation(.easeInOut(duration: DesignSystem.Motion.deliberate)) {
-                        settingsRotation += 360
-                    }
-                    settingsCoordinator.show()
-                }) {
-                    Image(systemName: "gearshape")
-                        .rotationEffect(.degrees(settingsRotation))
-                }
-                .focusable(true)
-                .focused($isSettingsFocused)
-                .accessibilityIdentifier("Header.Settings")
-            }
-        }
     }
 
     private var selectionBinding: Binding<RootTab?> {

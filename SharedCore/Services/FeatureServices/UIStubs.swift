@@ -220,7 +220,8 @@ struct AddEventPopup: View {
     @FocusState private var isTitleFocused: Bool
 
     private var availableCalendars: [EKCalendar] {
-        DeviceCalendarManager.shared.store.calendars(for: .event).filter { $0.allowsContentModifications }
+        guard CalendarAuthorizationManager.shared.isAuthorized else { return [] }
+        return DeviceCalendarManager.shared.store.calendars(for: .event).filter { $0.allowsContentModifications }
     }
 
     var body: some View {
@@ -517,6 +518,7 @@ struct AddEventPopup: View {
         }
         
         let store = DeviceCalendarManager.shared.store
+        guard CalendarAuthorizationManager.shared.isAuthorized else { return nil }
         let calendars = store.calendars(for: .event)
         
         guard let calendar = calendars.first(where: { $0.calendarIdentifier == selectedID }) else {

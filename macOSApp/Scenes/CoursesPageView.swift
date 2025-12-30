@@ -439,23 +439,6 @@ struct CoursesSidebarView: View {
                 .padding(.horizontal, 12)
                 .padding(.bottom, 8)
 
-            // Scrollable Course List
-            ScrollView {
-                VStack(spacing: DesignSystem.Layout.spacing.small) {
-                    ForEach(courses) { course in
-                        CourseSidebarRow(course: course, isSelected: selectedCourse == course.id) {
-                            selectedCourse = course.id
-                        }
-                    }
-                }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 6)
-            }
-            .frame(maxHeight: .infinity) // Allow scroll to expand
-
-            Divider()
-                .padding(.vertical, RootsSpacing.s)
-
             VStack(alignment: .leading, spacing: RootsSpacing.s) {
                 HStack(spacing: RootsSpacing.s) {
                     Button {
@@ -489,8 +472,25 @@ struct CoursesSidebarView: View {
                     SidebarWidgetTile(label: "Total Credits", value: totalCreditsText)
                 }
                 .padding(.horizontal, RootsSpacing.m)
-                .padding(.bottom, RootsSpacing.l)
+                .padding(.bottom, RootsSpacing.s)
             }
+
+            Divider()
+                .padding(.vertical, RootsSpacing.s)
+
+            // Scrollable Course List
+            ScrollView {
+                VStack(spacing: DesignSystem.Layout.spacing.small) {
+                    ForEach(courses) { course in
+                        CourseSidebarRow(course: course, isSelected: selectedCourse == course.id) {
+                            selectedCourse = course.id
+                        }
+                    }
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+            }
+            .frame(maxHeight: .infinity)
         }
         .frame(maxHeight: .infinity)
     }

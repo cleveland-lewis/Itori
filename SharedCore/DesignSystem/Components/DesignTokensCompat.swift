@@ -373,5 +373,68 @@ struct RootTabBarItem: View {
             #endif
         }
         .accessibilityLabel(title)
+        .hoverTooltip(title: title)
+    }
+}
+
+private struct HoverTooltipModifier: ViewModifier {
+    let title: String
+    @State private var isHovering = false
+    @State private var showTooltip = false
+    @State private var hoverWorkItem: DispatchWorkItem?
+
+    func body(content: Content) -> some View {
+        content
+            .overlay(alignment: .top) {
+                if showTooltip {
+                    Text(title)
+                        .font(.caption)
+                        .foregroundStyle(.primary)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(DesignSystem.Materials.hud)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .stroke(Color.primary.opacity(0.12), lineWidth: 0.5)
+                        )
+                        .offset(y: -36)
+                        .accessibilityHidden(true)
+                }
+            }
+            .onHover { hovering in
+                guard hoverTooltipEnabled else { return }
+                isHovering = hovering
+                hoverWorkItem?.cancel()
+                if hovering {
+                    let workItem = DispatchWorkItem {
+                        if isHovering {
+                            showTooltip = true
+                        }
+                    }
+                    hoverWorkItem = workItem
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: workItem)
+                } else {
+                    showTooltip = false
+                }
+            }
+    }
+
+    private var hoverTooltipEnabled: Bool {
+#if os(macOS)
+        true
+#elseif os(iOS)
+        UIDevice.current.userInterfaceIdiom == .pad
+#else
+        false
+#endif
+    }
+}
+
+private extension View {
+    func hoverTooltip(title: String) -> some View {
+        modifier(HoverTooltipModifier(title: title))
     }
 }

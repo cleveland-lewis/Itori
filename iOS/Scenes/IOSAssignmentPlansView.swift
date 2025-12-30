@@ -268,14 +268,7 @@ struct IOSAssignmentPlansView: View {
             }
             .padding(20)
         }
-        .modifier(IOSNavigationChrome(title: "Plans") {
-            Button {
-                regenerateAll()
-            } label: {
-                Image(systemName: "arrow.clockwise")
-            }
-            .accessibilityLabel("Regenerate all plans")
-        })
+        
         .onAppear {
             ensurePlansExist()
         }

@@ -38,11 +38,30 @@ struct PlannerView: View {
 
     @StateObject private var assignmentsStore = AssignmentsStore.shared
     @StateObject private var calendarManager = CalendarManager.shared
+    @ObservedObject private var calendarAuth = CalendarAuthorizationManager.shared
+    private let deviceCalendar = DeviceCalendarManager.shared
 
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
+                if calendarAuth.isDenied {
+                    CalendarAccessBanner(
+                        title: "Calendar access is off",
+                        message: "Enable access to show events and allow scheduling.",
+                        actionTitle: "Open Settings",
+                        action: { calendarAuth.openSettings() }
+                    )
+                } else if calendarAuth.isNotDetermined {
+                    CalendarAccessBanner(
+                        title: "Calendar access is off",
+                        message: "Enable access to show events and allow scheduling.",
+                        actionTitle: "Allow Access",
+                        action: {
+                            Task { _ = await deviceCalendar.requestFullAccessIfNeeded() }
+                        }
+                    )
+                }
                 // Header controls (title removed)
                 HStack {
                     Spacer()

@@ -94,17 +94,7 @@ struct IOSPlannerView: View {
             }
         }
         .background(DesignSystem.Colors.appBackground)
-        .modifier(IOSNavigationChrome(title: NSLocalizedString("ios.planner.title", comment: "Planner")) {
-            // Show button in toolbar on iPhone only
-            if !isPad {
-                Button {
-                    generatePlan()
-                } label: {
-                    Image(systemName: "sparkles")
-                }
-                .accessibilityLabel(NSLocalizedString("ios.planner.generate_plan", comment: "Generate plan"))
-            }
-        })
+        
         .sheet(isPresented: $showingPlanHelp) {
             IOSPlanHelpView()
         }
@@ -447,15 +437,7 @@ struct IOSAssignmentsView: View {
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
         .background(DesignSystem.Colors.appBackground)
-        .modifier(IOSNavigationChrome(title: "Tasks") {
-            Button {
-                editingTask = nil
-                showingEditor = true
-            } label: {
-                Image(systemName: "plus")
-            }
-            .accessibilityLabel("Add task")
-        })
+        
         .sheet(item: $selectedTask) { task in
             IOSTaskDetailView(
                 task: task,
@@ -633,14 +615,7 @@ struct IOSCoursesView: View {
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
         .background(DesignSystem.Colors.appBackground)
-        .modifier(IOSNavigationChrome(title: "Courses") {
-            Button {
-                showingCourseEditor = true
-            } label: {
-                Image(systemName: "plus")
-            }
-            .accessibilityLabel("Add course")
-        })
+        
         .sheet(isPresented: $showingCourseEditor) {
             IOSCourseEditorView(
                 semesters: coursesStore.activeSemesters,
@@ -688,16 +663,26 @@ struct IOSCoursesView: View {
 
 struct IOSCalendarView: View {
     @EnvironmentObject private var deviceCalendar: DeviceCalendarManager
+    @ObservedObject private var calendarAuth = CalendarAuthorizationManager.shared
 
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 16) {
-                if !deviceCalendar.isAuthorized {
-                    IOSInfoCard(
-                        title: "Connect Calendar",
-                        subtitle: "Access events on iOS",
-                        systemImage: "calendar.badge.exclamationmark",
-                        detail: "Enable calendar access to see your schedule."
+                if calendarAuth.isDenied {
+                    CalendarAccessBanner(
+                        title: "Calendar access is off",
+                        message: "Enable access to show events and allow scheduling.",
+                        actionTitle: "Open Settings",
+                        action: { calendarAuth.openSettings() }
+                    )
+                } else if calendarAuth.isNotDetermined {
+                    CalendarAccessBanner(
+                        title: "Calendar access is off",
+                        message: "Enable access to show events and allow scheduling.",
+                        actionTitle: "Allow Access",
+                        action: {
+                            Task { _ = await deviceCalendar.requestFullAccessIfNeeded() }
+                        }
                     )
                 } else if upcomingEvents.isEmpty {
                     IOSInfoCard(
@@ -720,7 +705,7 @@ struct IOSCalendarView: View {
             .padding(20)
         }
         .background(DesignSystem.Colors.appBackground)
-        .modifier(IOSNavigationChrome(title: "Calendar"))
+        
         .task {
             await deviceCalendar.bootstrapOnLaunch()
         }
@@ -759,7 +744,6 @@ struct IOSPracticeView: View {
             .padding(20)
         }
         .background(DesignSystem.Colors.appBackground)
-        .modifier(IOSNavigationChrome(title: "Practice"))
     }
 }
 
@@ -940,7 +924,6 @@ struct IOSPlaceholderView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(24)
-        .modifier(IOSNavigationChrome(title: title))
     }
 }
 

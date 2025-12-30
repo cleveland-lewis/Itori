@@ -27,6 +27,7 @@ struct DashboardView: View {
     @State private var showAddTaskSheet = false
     @ObservedObject private var studyHoursTracker = StudyHoursTracker.shared
     @ObservedObject private var plannerStore = PlannerStore.shared
+    @ObservedObject private var calendarAuth = CalendarAuthorizationManager.shared
     @State private var studyTrendRange: StudyTrendRange = .seven
     @State private var studyTrend: [StudyTrendPoint] = []
     @State private var showEnergyPopover = false
@@ -1088,7 +1089,25 @@ struct DashboardView: View {
             title: "Calendar",
             isLoading: !isLoaded
         ) {
-            DashboardCalendarGrid(selectedDate: $selectedDate, events: events)
+            if calendarAuth.isDenied {
+                CalendarAccessBanner(
+                    title: "Calendar access is off",
+                    message: "Enable access to show events and allow scheduling.",
+                    actionTitle: "Open Settings",
+                    action: { calendarAuth.openSettings() }
+                )
+            } else if calendarAuth.isNotDetermined {
+                CalendarAccessBanner(
+                    title: "Calendar access is off",
+                    message: "Enable access to show events and allow scheduling.",
+                    actionTitle: "Allow Access",
+                    action: {
+                        Task { _ = await DeviceCalendarManager.shared.requestFullAccessIfNeeded() }
+                    }
+                )
+            } else {
+                DashboardCalendarGrid(selectedDate: $selectedDate, events: events)
+            }
         } footer: {
             Button {
                 appModel.selectedPage = .calendar

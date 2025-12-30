@@ -71,4 +71,32 @@ final class StorageSafetyTests: XCTestCase {
         let untouched = AssignmentsStore.shared.tasks.first { $0.id == keepTask.id }
         XCTAssertEqual(untouched?.courseId, keepTask.courseId)
     }
+
+    @MainActor
+    func testTaskCompletionPersistsToDisk() {
+        let taskId = UUID()
+        let task = AppTask(
+            id: taskId,
+            title: "Persist Completion",
+            courseId: nil,
+            due: Date(),
+            estimatedMinutes: 30,
+            minBlockMinutes: 15,
+            maxBlockMinutes: 60,
+            difficulty: 0.4,
+            importance: 0.5,
+            type: .reading,
+            locked: false
+        )
+        AssignmentsStore.shared.tasks = [task]
+
+        var completed = task
+        completed.isCompleted = true
+        AssignmentsStore.shared.updateTask(completed)
+
+        let snapshot = AssignmentsStore.shared.loadCacheSnapshotForTesting()
+        let persisted = snapshot.first { $0.id == taskId }
+        XCTAssertNotNil(persisted)
+        XCTAssertEqual(persisted?.isCompleted, true)
+    }
 }

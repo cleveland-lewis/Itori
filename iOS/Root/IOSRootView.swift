@@ -120,7 +120,7 @@ struct IOSRootView: View {
         NavigationStack(path: $navigation.path) {
             TabView(selection: $selectedTab) {
                 ForEach(starredTabs, id: \.self) { tab in
-                    IOSAppShell {
+                    IOSAppShell(title: tab.title) {
                         tabView(for: tab)
                     }
                     .tag(tab)
@@ -132,7 +132,7 @@ struct IOSRootView: View {
                 }
             }
             .navigationDestination(for: IOSNavigationTarget.self) { destination in
-                IOSAppShell(hideNavigationButtons: false) {
+                IOSAppShell(title: destinationTitle(for: destination), hideNavigationButtons: false) {
                     switch destination {
                     case .page(let page):
                         pageView(for: page)
@@ -141,6 +141,11 @@ struct IOSRootView: View {
             }
         }
         .toolbarBackground(.hidden, for: .navigationBar)
+        .onChange(of: settings.enableFlashcards) { _, enabled in
+            guard !enabled, selectedTab == .flashcards else { return }
+            selectedTab = .dashboard
+            navigation.path = NavigationPath()
+        }
     }
     
     @ViewBuilder
@@ -278,6 +283,13 @@ struct IOSRootView: View {
             IOSPracticeView()
         default:
             IOSPlaceholderView(title: page.title, subtitle: "This view is coming soon.")
+        }
+    }
+
+    private func destinationTitle(for destination: IOSNavigationTarget) -> String {
+        switch destination {
+        case .page(let page):
+            return page.title
         }
     }
     

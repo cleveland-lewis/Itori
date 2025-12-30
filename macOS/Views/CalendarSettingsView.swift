@@ -5,6 +5,7 @@ import EventKit
 struct CalendarSettingsView: View {
     @EnvironmentObject var calendarManager: CalendarManager
     @EnvironmentObject var settings: AppSettingsModel
+    @ObservedObject private var calendarAuth = CalendarAuthorizationManager.shared
     @State private var showingRevokeAlert = false
 
     private var isAuthorized: Bool {
@@ -13,6 +14,28 @@ struct CalendarSettingsView: View {
 
     var body: some View {
         Form {
+            if calendarAuth.isDenied {
+                Section {
+                    CalendarAccessBanner(
+                        title: "Calendar access is off",
+                        message: "Enable access to show events and allow scheduling.",
+                        actionTitle: "Open Settings",
+                        action: { calendarAuth.openSettings() }
+                    )
+                }
+            } else if calendarAuth.isNotDetermined {
+                Section {
+                    CalendarAccessBanner(
+                        title: "Calendar access is off",
+                        message: "Enable access to show events and allow scheduling.",
+                        actionTitle: "Allow Access",
+                        action: {
+                            _Concurrency.Task { await calendarManager.requestAccess() }
+                        }
+                    )
+                }
+            }
+
             Section("Calendar Sync") {
                 Toggle("Enable Calendar Sync", isOn: Binding(
                     get: { isAuthorized },

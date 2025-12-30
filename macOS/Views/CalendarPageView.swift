@@ -109,6 +109,7 @@ struct CalendarPageView: View {
     @EnvironmentObject var eventsStore: EventsCountStore
     @EnvironmentObject var calendarManager: CalendarManager
     @EnvironmentObject var deviceCalendar: DeviceCalendarManager
+    @ObservedObject private var calendarAuth = CalendarAuthorizationManager.shared
     @State private var currentViewMode: CalendarViewMode = .month
     @State private var focusedDate: Date = Date()
     @State private var selectedDate: Date? = Date()
@@ -166,9 +167,28 @@ struct CalendarPageView: View {
             calendarSidebar
                 .frame(minWidth: 220, idealWidth: 240)
         } content: {
-            calendarContent
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(nsColor: .windowBackgroundColor))
+            VStack(spacing: 12) {
+                if calendarAuth.isDenied {
+                    CalendarAccessBanner(
+                        title: "Calendar access is off",
+                        message: "Enable access to show events and allow scheduling.",
+                        actionTitle: "Open Settings",
+                        action: { calendarAuth.openSettings() }
+                    )
+                } else if calendarAuth.isNotDetermined {
+                    CalendarAccessBanner(
+                        title: "Calendar access is off",
+                        message: "Enable access to show events and allow scheduling.",
+                        actionTitle: "Allow Access",
+                        action: { requestAccessAndSync() }
+                    )
+                }
+
+                calendarContent
+            }
+            .padding(.top, calendarAuth.isDenied || calendarAuth.isNotDetermined ? 12 : 0)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(nsColor: .windowBackgroundColor))
         } detail: {
             eventSidebarView
                 .frame(minWidth: 220, idealWidth: 260)
@@ -621,19 +641,18 @@ struct CalendarPageView: View {
         _Concurrency.Task {
             await calendarManager.requestAccess()
             // Only sync if access granted
-            syncEvents()
+            calendarAuth.refreshStatus()
+            if calendarAuth.isAuthorized {
+                syncEvents()
+            } else {
+                calendarAuth.logDeniedOnce(context: "CalendarPageView.requestAccess")
+            }
         }
     }
 
     private func syncEvents() {
         // Guard: don't attempt to read if not authorized
-        let hasEventAccess: Bool = {
-            if #available(macOS 14.0, *) {
-                return calendarManager.eventAuthorizationStatus == .fullAccess || calendarManager.eventAuthorizationStatus == .writeOnly
-            } else {
-                return calendarManager.eventAuthorizationStatus == .fullAccess || calendarManager.eventAuthorizationStatus == .writeOnly
-            }
-        }()
+        let hasEventAccess = calendarAuth.isAuthorized
         let hasReminderAccess: Bool = {
             if #available(macOS 14.0, *) {
                 return calendarManager.reminderAuthorizationStatus == .fullAccess || calendarManager.reminderAuthorizationStatus == .writeOnly
@@ -643,7 +662,7 @@ struct CalendarPageView: View {
         }()
 
         if !(hasEventAccess || hasReminderAccess) {
-            DebugLogger.log("📅 [CalendarPageView] syncEvents called without permissions")
+            calendarAuth.logDeniedOnce(context: "CalendarPageView.syncEvents")
             return
         }
 
@@ -654,17 +673,21 @@ struct CalendarPageView: View {
             return eventStore.calendars(for: .event).filter { $0.calendarIdentifier == selectedCalId }
         }()
 
-        let predicate = eventStore.predicateForEvents(withStart: window.start, end: window.end, calendars: targetCalendars)
-        let ekEvents = eventStore.events(matching: predicate)
-        let mapped = ekEvents.map { ek in
-            CalendarEvent(title: ek.title, startDate: ek.startDate, endDate: ek.endDate, location: nil, notes: ek.notes, url: ek.url, alarms: ek.alarms, travelTime: nil, ekIdentifier: ek.eventIdentifier, isReminder: false)
-        }
-        syncedEvents = mapped
-        updateMetrics()
-        // update precomputed counts
-        let dates = mapped.map { calendar.startOfDay(for: $0.startDate) }
-        _Concurrency.Task { @MainActor in
-            eventsStore.update(dates: dates)
+        if hasEventAccess {
+            let predicate = eventStore.predicateForEvents(withStart: window.start, end: window.end, calendars: targetCalendars)
+            let ekEvents = eventStore.events(matching: predicate)
+            let mapped = ekEvents.map { ek in
+                CalendarEvent(title: ek.title, startDate: ek.startDate, endDate: ek.endDate, location: nil, notes: ek.notes, url: ek.url, alarms: ek.alarms, travelTime: nil, ekIdentifier: ek.eventIdentifier, isReminder: false)
+            }
+            syncedEvents = mapped
+            updateMetrics()
+            // update precomputed counts
+            let dates = mapped.map { calendar.startOfDay(for: $0.startDate) }
+            _Concurrency.Task { @MainActor in
+                eventsStore.update(dates: dates)
+            }
+        } else {
+            syncedEvents = []
         }
         // Reminders (optional)
         let reminderCalendars: [EKCalendar]? = {
@@ -672,21 +695,23 @@ struct CalendarPageView: View {
             return eventStore.calendars(for: .reminder).filter { $0.calendarIdentifier == calendarManager.selectedReminderListID }
         }()
 
-        let reminderPredicate = eventStore.predicateForIncompleteReminders(withDueDateStarting: window.start, ending: window.end, calendars: reminderCalendars)
-        eventStore.fetchReminders(matching: reminderPredicate) { reminders in
-            guard let reminders else { return }
-            let mappedReminders = reminders.compactMap { reminder -> CalendarEvent? in
-                guard let dueDate = reminder.dueDateComponents?.date else { return nil }
-                return CalendarEvent(title: reminder.title, startDate: dueDate, endDate: dueDate, location: nil, notes: reminder.notes, url: nil, alarms: nil, travelTime: nil, ekIdentifier: reminder.calendarItemIdentifier, isReminder: true)
-            }
-            DispatchQueue.main.async {
-                self.syncedEvents.append(contentsOf: mappedReminders)
-                // update counts with reminders too
-                let dates = self.syncedEvents.map { calendar.startOfDay(for: $0.startDate) }
-                _Concurrency.Task { @MainActor in
-                    eventsStore.update(dates: dates)
+        if hasReminderAccess {
+            let reminderPredicate = eventStore.predicateForIncompleteReminders(withDueDateStarting: window.start, ending: window.end, calendars: reminderCalendars)
+            eventStore.fetchReminders(matching: reminderPredicate) { reminders in
+                guard let reminders else { return }
+                let mappedReminders = reminders.compactMap { reminder -> CalendarEvent? in
+                    guard let dueDate = reminder.dueDateComponents?.date else { return nil }
+                    return CalendarEvent(title: reminder.title, startDate: dueDate, endDate: dueDate, location: nil, notes: reminder.notes, url: nil, alarms: nil, travelTime: nil, ekIdentifier: reminder.calendarItemIdentifier, isReminder: true)
                 }
-                updateMetrics()
+                DispatchQueue.main.async {
+                    self.syncedEvents.append(contentsOf: mappedReminders)
+                    // update counts with reminders too
+                    let dates = self.syncedEvents.map { calendar.startOfDay(for: $0.startDate) }
+                    _Concurrency.Task { @MainActor in
+                        eventsStore.update(dates: dates)
+                    }
+                    updateMetrics()
+                }
             }
         }
     }

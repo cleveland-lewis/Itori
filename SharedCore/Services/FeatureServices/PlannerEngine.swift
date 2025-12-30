@@ -131,7 +131,8 @@ struct PlannerSession: Identifiable, Hashable {
          difficulty: AssignmentUrgency, 
          estimatedMinutes: Int, 
          isLockedToDueDate: Bool, 
-         scheduleIndex: Double = 0) {
+         scheduleIndex: Double = 0,
+         kind: PlannerSessionKind = .study) {
         self.id = id
         self.assignmentId = assignmentId
         self.sessionIndex = sessionIndex
@@ -144,7 +145,7 @@ struct PlannerSession: Identifiable, Hashable {
         self.estimatedMinutes = estimatedMinutes
         self.isLockedToDueDate = isLockedToDueDate
         self.scheduleIndex = scheduleIndex
-        self.kind = .study
+        self.kind = kind
     }
     
     /// Create a break session
@@ -174,36 +175,6 @@ struct PlannerSession: Identifiable, Hashable {
             scheduleIndex: 0,
             kind: kind
         )
-    }
-    
-    // MARK: - Private Init for Factory Methods
-    
-    private init(id: UUID,
-                 assignmentId: UUID,
-                 sessionIndex: Int,
-                 sessionCount: Int,
-                 title: String,
-                 dueDate: Date,
-                 category: AssignmentCategory,
-                 importance: AssignmentUrgency,
-                 difficulty: AssignmentUrgency,
-                 estimatedMinutes: Int,
-                 isLockedToDueDate: Bool,
-                 scheduleIndex: Double,
-                 kind: PlannerSessionKind) {
-        self.id = id
-        self.assignmentId = assignmentId
-        self.sessionIndex = sessionIndex
-        self.sessionCount = sessionCount
-        self.title = title
-        self.dueDate = dueDate
-        self.category = category
-        self.importance = importance
-        self.difficulty = difficulty
-        self.estimatedMinutes = estimatedMinutes
-        self.isLockedToDueDate = isLockedToDueDate
-        self.scheduleIndex = scheduleIndex
-        self.kind = kind
     }
 }
 
@@ -306,6 +277,48 @@ enum PlannerEngine {
             makeSession(title: assignment.title, index: 1, count: 1, minutes: totalMinutes)
         }
 
+        return sessions
+    }
+
+    static func generateSessions(for task: PlannerTaskDTO, settings: StudyPlanSettings) -> [PlannerSession] {
+        var sessions: [PlannerSession] = []
+        guard let dueDate = task.dueDate else { return [] }
+        let estimatedMinutes = max(15, task.estimatedMinutes)
+        let sessionCount: Int
+
+        switch task.category {
+        case .exam:
+            sessionCount = max(1, Int(ceil(Double(estimatedMinutes) / Double(settings.examDefaultSessionMinutes))))
+        case .project:
+            sessionCount = max(settings.projectMinSessions, Int(ceil(Double(estimatedMinutes) / Double(settings.projectSessionMinutes))))
+        case .reading:
+            sessionCount = estimatedMinutes > settings.readingSingleSessionThreshold ? max(2, Int(ceil(Double(estimatedMinutes) / Double(settings.longReadingSplitSessionMinutes)))) : 1
+        case .homework:
+            sessionCount = estimatedMinutes > settings.homeworkSingleSessionThreshold ? max(2, Int(ceil(Double(estimatedMinutes) / Double(settings.longHomeworkSplitSessionMinutes)))) : 1
+        case .quiz:
+            sessionCount = max(1, Int(ceil(Double(estimatedMinutes) / Double(settings.quizDefaultSessionMinutes))))
+        case .review:
+            sessionCount = max(1, Int(ceil(Double(estimatedMinutes) / Double(settings.quizDefaultSessionMinutes))))
+        }
+
+        let perSession = max(15, Int(ceil(Double(estimatedMinutes) / Double(sessionCount))))
+        for index in 0..<sessionCount {
+            let session = PlannerSession(
+                id: UUID(),
+                assignmentId: task.id,
+                sessionIndex: index,
+                sessionCount: sessionCount,
+                title: task.title,
+                dueDate: dueDate,
+                category: task.category,
+                importance: task.importance,
+                difficulty: task.difficulty,
+                estimatedMinutes: perSession,
+                isLockedToDueDate: task.isLockedToDueDate,
+                scheduleIndex: 0
+            )
+            sessions.append(session)
+        }
         return sessions
     }
 

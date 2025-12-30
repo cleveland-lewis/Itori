@@ -15,6 +15,7 @@ struct IOSDashboardView: View {
     @EnvironmentObject private var settings: AppSettingsModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @ObservedObject private var plannerStore = PlannerStore.shared
+    @ObservedObject private var calendarAuth = CalendarAuthorizationManager.shared
 
     @State private var selectedDate = Date()
     @AppStorage("dashboard.greeting.dateKey") private var greetingDateKey: String = ""
@@ -66,14 +67,7 @@ struct IOSDashboardView: View {
             .padding(.bottom, 36)
         }
         .background(DesignSystem.Colors.appBackground.ignoresSafeArea())
-        .modifier(IOSNavigationChrome(title: NSLocalizedString("ios.dashboard.title", comment: "Dashboard")) {
-            Button {
-                selectedDate = Date()
-            } label: {
-                Image(systemName: "dot.circle.and.hand.point.up.left.fill")
-            }
-            .accessibilityLabel(NSLocalizedString("ios.dashboard.today", comment: "Jump to today"))
-        })
+        
         .task {
             await deviceCalendar.bootstrapOnLaunch()
         }
@@ -207,10 +201,22 @@ struct IOSDashboardView: View {
     private var upcomingEventsCard: some View {
         RootsCard(title: NSLocalizedString("ios.dashboard.upcoming.title", comment: "Upcoming"), subtitle: NSLocalizedString("ios.dashboard.upcoming.subtitle", comment: "From your calendar"), icon: "calendar") {
             Group {
-                if !deviceCalendar.isAuthorized {
-                    Text(NSLocalizedString("dashboard.empty.calendar", comment: "Connect calendar"))
-                        .rootsBodySecondary()
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                if calendarAuth.isDenied {
+                    CalendarAccessBanner(
+                        title: "Calendar access is off",
+                        message: "Enable access to show events and allow scheduling.",
+                        actionTitle: "Open Settings",
+                        action: { calendarAuth.openSettings() }
+                    )
+                } else if calendarAuth.isNotDetermined {
+                    CalendarAccessBanner(
+                        title: "Calendar access is off",
+                        message: "Enable access to show events and allow scheduling.",
+                        actionTitle: "Allow Access",
+                        action: {
+                            Task { _ = await deviceCalendar.requestFullAccessIfNeeded() }
+                        }
+                    )
                 } else if upcomingEvents.isEmpty {
                     Text(NSLocalizedString("ios.dashboard.upcoming.no_events", comment: "No events"))
                         .rootsBodySecondary()

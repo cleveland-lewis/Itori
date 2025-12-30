@@ -11,6 +11,7 @@ struct GeneralSettingsView: View {
     @State private var resetCode: String = ""
     @State private var resetInput: String = ""
     @State private var isResetting = false
+    @State private var didCopyResetCode = false
 
     enum StartOfWeek: String, CaseIterable, Identifiable {
         case sunday = "Sunday"
@@ -85,7 +86,6 @@ struct GeneralSettingsView: View {
 
             Section("Danger Zone") {
                 Button(role: .destructive) {
-                    resetCode = generateResetCode()
                     resetInput = ""
                     showResetSheet = true
                 } label: {
@@ -128,6 +128,18 @@ struct GeneralSettingsView: View {
                                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                                     .strokeBorder(Color.red.opacity(0.5), lineWidth: 1)
                             )
+                        Button {
+                            Clipboard.copy(resetCode)
+                            didCopyResetCode = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                didCopyResetCode = false
+                            }
+                        } label: {
+                            Text(didCopyResetCode ? "Copied" : "Copy")
+                                .font(.caption.weight(.semibold))
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.small)
                         Spacer()
                     }
                     TextField("Enter code exactly", text: $resetInput)
@@ -146,7 +158,7 @@ struct GeneralSettingsView: View {
                     .buttonStyle(.borderedProminent)
                     .tint(.red)
                     .keyboardShortcut(.defaultAction)
-                    .disabled(resetInput != resetCode || isResetting)
+                    .disabled(!resetCodeMatches || isResetting)
                 }
             }
             .padding(26)
@@ -156,16 +168,23 @@ struct GeneralSettingsView: View {
                     .fill(DesignSystem.Materials.card)
             )
             .padding()
+            .onAppear {
+                if resetCode.isEmpty {
+                    resetCode = ConfirmationCode.generate()
+                }
+            }
+        }
+        .onChange(of: showResetSheet) { _, isPresented in
+            if !isPresented {
+                resetCode = ""
+                resetInput = ""
+                didCopyResetCode = false
+            }
         }
     }
 
-    private func generateResetCode() -> String {
-        let chars = Array("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-        return String((0..<12).compactMap { _ in chars.randomElement() })
-    }
-
     private func performReset() {
-        guard resetInput == resetCode else { return }
+        guard resetCodeMatches else { return }
         isResetting = true
         // Clear app state
         assignmentsStore.resetAll()
@@ -179,6 +198,10 @@ struct GeneralSettingsView: View {
         resetInput = ""
         showResetSheet = false
         isResetting = false
+    }
+
+    private var resetCodeMatches: Bool {
+        resetInput.trimmingCharacters(in: .whitespacesAndNewlines) == resetCode
     }
 }
 

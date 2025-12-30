@@ -40,7 +40,6 @@ struct IOSTimerPageView: View {
 
     var body: some View {
         mainScroll
-            .modifier(IOSNavigationChrome(title: NSLocalizedString("ios.timer.title", comment: "Timer")))
             .modifier(TimerSyncModifiers(viewModel: viewModel, settings: settings, syncLiveActivity: syncLiveActivity, syncSettingsFromApp: syncSettingsFromApp))
     }
 

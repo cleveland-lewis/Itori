@@ -233,12 +233,7 @@ struct PlannerPageView: View {
     @EnvironmentObject var calendarCoordinator: CalendarRefreshCoordinator
     @StateObject private var dayProgress = DayProgressModel()
 
-    @State private var filterCancellable: AnyCancellable? = nil
-    @State private var courseDeletedCancellable: AnyCancellable? = nil
-
     @State private var selectedDate: Date = Date()
-    @State private var plannedBlocks: [PlannedBlock] = []
-    @State private var unscheduledTasks: [PlannerTask] = []
     @State private var isRunningPlanner: Bool = false
     @State private var showTaskSheet: Bool = false
     @State private var editingTask: PlannerTask? = nil
@@ -250,6 +245,7 @@ struct PlannerPageView: View {
     @State private var plannerSettings = PlannerSettings()
     @State private var dropTargetHour: Int? = nil
     @State private var rowHeights: [Int: CGFloat] = [:]
+    @State private var dropTargetMinuteOffset: [Int: Int] = [:]
 
     private let cardCornerRadius: CGFloat = 26
     private let studySettings = StudyPlanSettings()
@@ -260,6 +256,77 @@ struct PlannerPageView: View {
 
     private var hasStoredSessionsForSelectedDay: Bool {
         plannerStore.scheduled.contains { Calendar.current.isDate($0.start, inSameDayAs: selectedDate) }
+    }
+
+    private var plannedBlocks: [PlannedBlock] {
+        let calendar = Calendar.current
+        let tasksById = Dictionary(uniqueKeysWithValues: assignmentsStore.tasks.map { ($0.id, $0) })
+        let coursesById = Dictionary(uniqueKeysWithValues: coursesStore.courses.map { ($0.id, $0) })
+        let filterId = plannerCoordinator.selectedCourseFilter
+        return plannerStore.scheduled.compactMap { stored in
+            guard calendar.isDate(stored.start, inSameDayAs: selectedDate) else { return nil }
+            let task = stored.assignmentId.flatMap { tasksById[$0] }
+            if let filterId, let courseId = task?.courseId, courseId != filterId {
+                return nil
+            } else if filterId != nil && task?.courseId == nil {
+                return nil
+            }
+            let isCompleted = task?.isCompleted ?? false
+            if isCompleted {
+                return nil
+            }
+            let courseCode = task?.courseId.flatMap { coursesById[$0]?.code }
+            return PlannedBlock(
+                id: stored.id,
+                taskId: stored.assignmentId,
+                courseId: task?.courseId,
+                title: stored.title,
+                course: courseCode,
+                start: stored.start,
+                end: stored.end,
+                isLocked: stored.isLocked,
+                status: isCompleted ? .completed : .upcoming,
+                source: stored.isUserEdited ? "Adjusted" : "Auto-plan",
+                isOmodoroLinked: false,
+                sessionIndex: stored.sessionIndex,
+                sessionCount: stored.sessionCount
+            )
+        }
+    }
+
+    private var unscheduledTasks: [PlannerTask] {
+        let tasksById = Dictionary(uniqueKeysWithValues: assignmentsStore.tasks.map { ($0.id, $0) })
+        let coursesById = Dictionary(uniqueKeysWithValues: coursesStore.courses.map { ($0.id, $0) })
+        let filterId = plannerCoordinator.selectedCourseFilter
+        return plannerStore.overflow.map { stored in
+            let task = stored.assignmentId.flatMap { tasksById[$0] }
+            if let filterId, let courseId = task?.courseId, courseId != filterId {
+                return nil
+            } else if filterId != nil && task?.courseId == nil {
+                return nil
+            }
+            let isCompleted = task?.isCompleted ?? false
+            if isCompleted {
+                return nil
+            }
+            let courseCode = task?.courseId.flatMap { coursesById[$0]?.code }
+            return PlannerTask(
+                id: stored.id,
+                courseId: task?.courseId,
+                assignmentId: stored.assignmentId,
+                title: stored.title,
+                course: courseCode,
+                dueDate: stored.dueDate,
+                estimatedMinutes: stored.estimatedMinutes,
+                isLockedToDueDate: stored.isLockedToDueDate,
+                isScheduled: false,
+                isCompleted: isCompleted,
+                importance: stored.category == .exam ? 0.8 : 0.5,
+                difficulty: stored.category == .project ? 0.7 : 0.5,
+                category: stored.category
+            )
+        }
+        .compactMap { $0 }
     }
 
     var body: some View {
@@ -308,42 +375,9 @@ struct PlannerPageView: View {
         }
         .onAppear {
             dayProgress.startUpdating()
-            hydrateFromStoredScheduleIfNeeded()
-            syncTodayTasksAndSchedule()
-
-            // subscribe to planner filter changes
-            filterCancellable = plannerCoordinator.$selectedCourseFilter
-                .receive(on: DispatchQueue.main)
-                .sink { courseId in
-                    if let cid = courseId {
-                        // filter existing views immediately
-                        plannedBlocks.removeAll { $0.courseId != nil && $0.courseId != cid }
-                        unscheduledTasks.removeAll { $0.courseId != nil && $0.courseId != cid }
-                    } else {
-                        // refresh to show all
-                        syncTodayTasksAndSchedule()
-                    }
-                }
-
-            // subscribe to course deletions
-            courseDeletedCancellable = CoursesStore.courseDeletedPublisher
-                .receive(on: DispatchQueue.main)
-                .sink { deletedId in
-                    plannedBlocks.removeAll { $0.courseId == deletedId }
-                    unscheduledTasks.removeAll { $0.courseId == deletedId }
-                    if plannerCoordinator.selectedCourseFilter == deletedId {
-                        plannerCoordinator.selectedCourseFilter = nil
-                    }
-                }
         }
         .onDisappear {
             dayProgress.stopUpdating()
-        }
-        .onChange(of: selectedDate) { _, _ in
-            syncTodayTasksAndSchedule()
-        }
-        .onReceive(assignmentsStore.$tasks) { _ in
-            syncTodayTasksAndSchedule()
         }
     }
 }
@@ -428,135 +462,6 @@ private extension PlannerPageView {
 // MARK: - Timeline Card
 
 private extension PlannerPageView {
-    func syncTodayTasksAndSchedule() {
-        // Generate sessions for all assignments, schedule across days, then filter for selected date.
-        func urgency(from importance: Double) -> AssignmentUrgency {
-            if importance >= 0.75 { return .high }
-            if importance >= 0.5 { return .medium }
-            return .low
-        }
-
-        func category(from type: TaskType) -> AssignmentCategory {
-            switch type {
-            case .exam: return .exam
-            case .quiz: return .quiz
-            case .project: return .project
-            case .homework: return .homework
-            case .reading: return .reading
-            case .review: return .review
-            }
-        }
-
-        let assignments = assignmentsStore.tasks.map { task in
-            Assignment(
-                id: task.id,
-                courseId: task.courseId,
-                title: task.title,
-                courseCode: "",
-                courseName: "",
-                category: category(from: task.type),
-                dueDate: task.due ?? Date(),
-                estimatedMinutes: max(30, task.estimatedMinutes),
-                status: task.isCompleted ? .completed : .notStarted,
-                urgency: urgency(from: task.importance),
-                weightPercent: nil,
-                isLockedToDueDate: task.locked,
-                notes: "",
-                plan: []
-            )
-        }
-
-        let sessions = assignments.flatMap { PlannerEngine.generateSessions(for: $0, settings: studySettings) }
-        let energy = SchedulerPreferencesStore.shared.energyProfileForPlanning()
-        let scheduledResult = PlannerEngine.scheduleSessions(sessions, settings: studySettings, energyProfile: energy)
-        plannerStore.persist(scheduled: scheduledResult.scheduled, overflow: scheduledResult.overflow)
-
-        let dayBlocks: [PlannedBlock] = scheduledResult.scheduled.compactMap { scheduled -> PlannedBlock? in
-            let start = scheduled.start
-            if !Calendar.current.isDate(start, inSameDayAs: selectedDate) { return nil }
-            return PlannedBlock(
-                id: scheduled.id,
-                taskId: scheduled.session.assignmentId,
-                courseId: nil,
-                title: scheduled.session.title,
-                course: nil,
-                start: scheduled.start,
-                end: scheduled.end,
-                isLocked: scheduled.session.isLockedToDueDate,
-                status: .upcoming,
-                source: "Auto-plan",
-                isOmodoroLinked: false,
-                sessionIndex: scheduled.session.sessionIndex,
-                sessionCount: scheduled.session.sessionCount
-            )
-        }
-
-        plannedBlocks = dayBlocks
-
-        let overflow = scheduledResult.overflow
-        unscheduledTasks = overflow.map { session in
-            PlannerTask(
-                id: session.id,
-                courseId: nil,
-                assignmentId: session.assignmentId,
-                title: session.title,
-                course: nil,
-                dueDate: session.dueDate,
-                estimatedMinutes: session.estimatedMinutes,
-                isLockedToDueDate: session.isLockedToDueDate,
-                isScheduled: false,
-                isCompleted: false,
-                importance: session.importance == .high ? 0.8 : 0.5,
-                difficulty: session.difficulty == .high ? 0.8 : 0.5,
-                category: session.category
-            )
-        }
-    }
-
-    private func hydrateFromStoredScheduleIfNeeded() {
-        if !plannedBlocks.isEmpty || plannerStore.scheduled.isEmpty {
-            return
-        }
-
-        let calendar = Calendar.current
-        let dayBlocks: [PlannedBlock] = plannerStore.scheduled.compactMap { stored -> PlannedBlock? in
-            if !calendar.isDate(stored.start, inSameDayAs: selectedDate) { return nil }
-            return PlannedBlock(
-                id: stored.id,
-                taskId: stored.assignmentId,
-                courseId: nil,
-                title: stored.title,
-                course: nil,
-                start: stored.start,
-                end: stored.end,
-                isLocked: stored.isLockedToDueDate,
-                status: .upcoming,
-                source: "Auto-plan",
-                isOmodoroLinked: false,
-                sessionIndex: stored.sessionIndex,
-                sessionCount: stored.sessionCount
-            )
-        }
-        plannedBlocks = dayBlocks
-        unscheduledTasks = plannerStore.overflow.map { stored in
-            PlannerTask(
-                id: stored.id,
-                courseId: nil,
-                assignmentId: stored.assignmentId,
-                title: stored.title,
-                course: nil,
-                dueDate: stored.dueDate,
-                estimatedMinutes: stored.estimatedMinutes,
-                isLockedToDueDate: stored.isLockedToDueDate,
-                isScheduled: false,
-                isCompleted: false,
-                importance: stored.category == .exam ? 0.8 : 0.5,
-                difficulty: stored.category == .project ? 0.7 : 0.5,
-                category: stored.category
-            )
-        }
-    }
-
     var timelineCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
@@ -640,15 +545,32 @@ private extension PlannerPageView {
             hourDate: hourDate,
             hour: hour,
             dropTargetHour: $dropTargetHour,
+            dropTargetMinuteOffset: $dropTargetMinuteOffset,
             rowHeight: rowHeights[hour] ?? 60
         ) { blockId, targetHour, minuteOffset in
             moveBlock(id: blockId, to: targetHour, minuteOffset: minuteOffset)
         })
         .overlay(alignment: .top) {
-            if dropTargetHour == hour {
-                Rectangle()
-                    .fill(Color.accentColor.opacity(0.7))
-                    .frame(height: 2)
+            GeometryReader { proxy in
+                if dropTargetHour == hour {
+                    let rowHeight = max(1, proxy.size.height)
+                    let minuteOffset = dropTargetMinuteOffset[hour] ?? 0
+                    let y = (CGFloat(minuteOffset) / 60.0) * rowHeight
+                    let label = previewTimeLabel(hourDate: hourDate, minuteOffset: minuteOffset)
+                    Rectangle()
+                        .fill(Color.accentColor.opacity(0.7))
+                        .frame(height: 2)
+                        .offset(y: y)
+                    Text(label)
+                        .font(.caption2.weight(.semibold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(
+                            Capsule().fill(Color.accentColor)
+                        )
+                        .offset(y: max(0, y - 12))
+                }
             }
         }
         .background(
@@ -849,7 +771,18 @@ private extension PlannerPageView {
 
     private func plannedTasksFromBlocks() -> [PlannerTask] {
         plannedBlocks.compactMap { block in
-            PlannerTask(id: block.id, title: block.title, course: block.course, dueDate: block.end, estimatedMinutes: Int(block.end.timeIntervalSince(block.start) / 60), isLockedToDueDate: block.isLocked, isScheduled: true, isCompleted: block.status == .completed)
+            PlannerTask(
+                id: block.id,
+                courseId: block.courseId,
+                assignmentId: block.taskId,
+                title: block.title,
+                course: block.course,
+                dueDate: block.end,
+                estimatedMinutes: Int(block.end.timeIntervalSince(block.start) / 60),
+                isLockedToDueDate: block.isLocked,
+                isScheduled: true,
+                isCompleted: block.status == .completed
+            )
         }
     }
 }
@@ -858,48 +791,44 @@ private extension PlannerPageView {
 
 private extension PlannerPageView {
     func applyDraft(_ draft: PlannerTaskDraft) {
-        // convert draft to PlannerTask for existing arrays
-        let task = PlannerTask(
-            id: draft.id ?? UUID(),
-            courseId: draft.courseId,
-            assignmentId: draft.assignmentID,
-            title: draft.title,
-            course: draft.courseCode,
-            dueDate: draft.dueDate,
-            estimatedMinutes: draft.estimatedMinutes,
-            isLockedToDueDate: draft.lockToDueDate,
-            isScheduled: false,
-            isCompleted: false
-        )
-        if let idx = unscheduledTasks.firstIndex(where: { $0.id == task.id }) {
-            unscheduledTasks[idx] = task
+        let taskId = draft.assignmentID ?? draft.id ?? UUID()
+        if let idx = assignmentsStore.tasks.firstIndex(where: { $0.id == taskId }) {
+            var updated = assignmentsStore.tasks[idx]
+            updated.title = draft.title
+            updated.courseId = draft.courseId
+            updated.due = draft.dueDate
+            updated.estimatedMinutes = draft.estimatedMinutes
+            updated.minBlockMinutes = min(updated.minBlockMinutes, draft.estimatedMinutes)
+            updated.maxBlockMinutes = max(updated.maxBlockMinutes, draft.estimatedMinutes)
+            updated.locked = draft.lockToDueDate
+            assignmentsStore.updateTask(updated)
         } else {
-            unscheduledTasks.append(task)
+            let newTask = AppTask(
+                id: taskId,
+                title: draft.title,
+                courseId: draft.courseId,
+                due: draft.dueDate,
+                estimatedMinutes: draft.estimatedMinutes,
+                minBlockMinutes: 15,
+                maxBlockMinutes: max(30, draft.estimatedMinutes),
+                difficulty: 0.5,
+                importance: 0.5,
+                type: .homework,
+                locked: draft.lockToDueDate
+            )
+            assignmentsStore.addTask(newTask)
         }
     }
 
     func markCompleted(_ item: PlannerTask) {
-        // mark completed in unscheduledTasks or plannedBlocks
-        if let idx = unscheduledTasks.firstIndex(where: { $0.id == item.id }) {
-            guard !unscheduledTasks[idx].isCompleted else { return }
-            unscheduledTasks[idx].isCompleted = true
-            unscheduledTasks.remove(at: idx)
-            
-            // Play completion feedback
-            Task { @MainActor in
-                Feedback.shared.play(.taskCompleted)
-            }
-            return
+        if let assignmentId = item.assignmentId,
+           let taskIndex = assignmentsStore.tasks.firstIndex(where: { $0.id == assignmentId }) {
+            var updatedTask = assignmentsStore.tasks[taskIndex]
+            updatedTask.isCompleted = true
+            assignmentsStore.updateTask(updatedTask)
         }
-        if let idx = plannedBlocks.firstIndex(where: { $0.id == item.id }) {
-            let wasCompleted = plannedBlocks[idx].status == .completed
-            plannedBlocks[idx].status = .completed
-            
-            if !wasCompleted {
-                Task { @MainActor in
-                    Feedback.shared.play(.taskCompleted)
-                }
-            }
+        Task { @MainActor in
+            Feedback.shared.play(.taskCompleted)
         }
     }
 
@@ -921,33 +850,8 @@ private extension PlannerPageView {
     func runAIScheduler() {
         guard !isRunningPlanner else { return }
         isRunningPlanner = true
-        let tasksToSchedule = unscheduledTasks
-        unscheduledTasks.removeAll()
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-            var currentStart = Calendar.current.date(bySettingHour: 19, minute: 0, second: 0, of: selectedDate) ?? selectedDate
-            var newBlocks: [PlannedBlock] = []
-
-            for task in tasksToSchedule {
-                let endDate = Calendar.current.date(byAdding: .minute, value: task.estimatedMinutes, to: currentStart) ?? currentStart
-                let block = PlannedBlock(
-                    id: UUID(),
-                    taskId: task.id,
-                    courseId: task.courseId,
-                    title: task.title,
-                    course: task.course,
-                    start: currentStart,
-                    end: endDate,
-                    isLocked: task.isLockedToDueDate,
-                    status: .upcoming,
-                    source: "Auto-scheduled",
-                    isOmodoroLinked: false
-                )
-                newBlocks.append(block)
-                currentStart = endDate
-            }
-
-            plannedBlocks.append(contentsOf: newBlocks)
+        PlannerSyncCoordinator.shared.requestRecompute()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             isRunningPlanner = false
         }
     }
@@ -975,15 +879,26 @@ private extension PlannerPageView {
     static var sampleCourses: [CourseSummary] {
         []
     }
+
+    private func previewTimeLabel(hourDate: Date, minuteOffset: Int) -> String {
+        let calendar = Calendar.current
+        let clampedMinutes = min(59, max(0, minuteOffset))
+        let date = calendar.date(
+            bySettingHour: calendar.component(.hour, from: hourDate),
+            minute: clampedMinutes,
+            second: 0,
+            of: hourDate
+        ) ?? hourDate
+        return settings.formattedTime(date)
+    }
 }
 
 private extension PlannerPageView {
     @discardableResult
     func moveBlock(id: UUID, to hourDate: Date, minuteOffset: Int) {
-        guard let idx = plannedBlocks.firstIndex(where: { $0.id == id }) else { return }
-        let block = plannedBlocks[idx]
-        guard !block.isLocked else { return }
-        let duration = block.end.timeIntervalSince(block.start)
+        guard let stored = plannerStore.scheduled.first(where: { $0.id == id }) else { return }
+        guard !stored.isLocked else { return }
+        let duration = stored.end.timeIntervalSince(stored.start)
         let calendar = Calendar.current
         let snappedMinutes = min(45, max(0, (minuteOffset / 15) * 15))
         var newStart = calendar.date(
@@ -997,33 +912,28 @@ private extension PlannerPageView {
         }
         let newEnd = newStart.addingTimeInterval(duration)
 
-        plannedBlocks[idx].start = newStart
-        plannedBlocks[idx].end = newEnd
-
-        if let stored = plannerStore.scheduled.first(where: { $0.id == id }) {
-            let updated = StoredScheduledSession(
-                id: stored.id,
-                assignmentId: stored.assignmentId,
-                sessionIndex: stored.sessionIndex,
-                sessionCount: stored.sessionCount,
-                title: stored.title,
-                dueDate: stored.dueDate,
-                estimatedMinutes: stored.estimatedMinutes,
-                isLockedToDueDate: stored.isLockedToDueDate,
-                category: stored.category,
-                start: newStart,
-                end: newEnd,
-                type: stored.type,
-                isLocked: stored.isLocked,
-                isUserEdited: true,
-                userEditedAt: Date(),
-                aiInputHash: stored.aiInputHash,
-                aiComputedAt: stored.aiComputedAt,
-                aiConfidence: stored.aiConfidence,
-                aiProvenance: stored.aiProvenance
-            )
-            plannerStore.updateScheduledSession(updated)
-        }
+        let updated = StoredScheduledSession(
+            id: stored.id,
+            assignmentId: stored.assignmentId,
+            sessionIndex: stored.sessionIndex,
+            sessionCount: stored.sessionCount,
+            title: stored.title,
+            dueDate: stored.dueDate,
+            estimatedMinutes: stored.estimatedMinutes,
+            isLockedToDueDate: stored.isLockedToDueDate,
+            category: stored.category,
+            start: newStart,
+            end: newEnd,
+            type: stored.type,
+            isLocked: stored.isLocked,
+            isUserEdited: true,
+            userEditedAt: Date(),
+            aiInputHash: stored.aiInputHash,
+            aiComputedAt: stored.aiComputedAt,
+            aiConfidence: stored.aiConfidence,
+            aiProvenance: stored.aiProvenance
+        )
+        plannerStore.updateScheduledSession(updated)
     }
 }
 
@@ -1031,30 +941,38 @@ private struct PlannerBlockDropDelegate: DropDelegate {
     let hourDate: Date
     let hour: Int
     @Binding var dropTargetHour: Int?
+    @Binding var dropTargetMinuteOffset: [Int: Int]
     let rowHeight: CGFloat
     let onDrop: (UUID, Date, Int) -> Void
 
     func validateDrop(info: DropInfo) -> Bool {
         dropTargetHour = hour
+        dropTargetMinuteOffset[hour] = snappedMinute(from: info.location.y)
         return true
     }
 
     func dropEntered(info: DropInfo) {
         dropTargetHour = hour
+        dropTargetMinuteOffset[hour] = snappedMinute(from: info.location.y)
+    }
+
+    func dropUpdated(info: DropInfo) -> DropProposal? {
+        dropTargetMinuteOffset[hour] = snappedMinute(from: info.location.y)
+        return DropProposal(operation: .move)
     }
 
     func dropExited(info: DropInfo) {
         if dropTargetHour == hour {
             dropTargetHour = nil
+            dropTargetMinuteOffset[hour] = nil
         }
     }
 
     func performDrop(info: DropInfo) -> Bool {
         dropTargetHour = nil
+        dropTargetMinuteOffset[hour] = nil
         guard let provider = info.itemProviders(for: [UTType.text]).first else { return false }
-        let clampedHeight = max(1, rowHeight)
-        let rawMinutes = Int((info.location.y / clampedHeight) * 60.0)
-        let snapped = Int((Double(rawMinutes) / 15.0).rounded()) * 15
+        let snapped = snappedMinute(from: info.location.y)
         provider.loadObject(ofClass: NSString.self) { object, _ in
             guard let idString = object as String?, let blockId = UUID(uuidString: idString) else { return }
             DispatchQueue.main.async {
@@ -1062,6 +980,12 @@ private struct PlannerBlockDropDelegate: DropDelegate {
             }
         }
         return true
+    }
+
+    private func snappedMinute(from y: CGFloat) -> Int {
+        let clampedHeight = max(1, rowHeight)
+        let rawMinutes = Int((y / clampedHeight) * 60.0)
+        return Int((Double(rawMinutes) / 15.0).rounded()) * 15
     }
 }
 

@@ -119,6 +119,7 @@ struct RootsApp: App {
                     LOG_LIFECYCLE(.info, "AppStartup", "Running startup tasks")
                     // Run adaptation on launch
                     SchedulerAdaptationManager.shared.runAdaptiveSchedulerUpdateIfNeeded()
+                    PlannerSyncCoordinator.shared.start()
                     // Refresh and request permissions on launch
                     await calendarManager.checkPermissionsOnStartup()
                     await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
