@@ -3,10 +3,19 @@ import SwiftUI
 
 struct AssignmentsView: View {
     enum Filter: String, CaseIterable, Identifiable {
-        case all = "All"
-        case dueSoon = "Due Soon"
-        case overdue = "Overdue"
+        case all
+        case dueSoon
+        case overdue
+        
         var id: String { rawValue }
+        
+        var displayName: String {
+            switch self {
+            case .all: return NSLocalizedString("assignments.filter.all", comment: "")
+            case .dueSoon: return NSLocalizedString("assignments.filter.due_soon", comment: "")
+            case .overdue: return NSLocalizedString("assignments.filter.overdue", comment: "")
+            }
+        }
     }
 
     @State private var filter: Filter = .all
@@ -25,13 +34,13 @@ struct AssignmentsView: View {
 
                     HStack(spacing: DesignSystem.Spacing.small) {
                         Button(action: { showingAddSheet = true }) {
-                            Label("Add Assignment", systemImage: "plus")
+                            Label(NSLocalizedString("assignments.action.add", comment: ""), systemImage: "plus")
                         }
                         .buttonStyle(.glassBlueProminent)
 
-                        Picker("Filter", selection: $filter) {
+                        Picker(NSLocalizedString("assignments.action.filter", comment: ""), selection: $filter) {
                             ForEach(Filter.allCases) { f in
-                                Text(f.rawValue).tag(f)
+                                Text(f.displayName).tag(f)
                             }
                         }
                         .pickerStyle(.menu)
@@ -40,14 +49,14 @@ struct AssignmentsView: View {
 
                 LazyVStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
                     // Due Today
-                    Section(header: Text("Due Today").font(DesignSystem.Typography.body)) {
+                    Section(header: Text(NSLocalizedString("assignments.section.due_today", comment: "")).font(DesignSystem.Typography.body)) {
                         let tasks = assignmentsStore.tasks.filter { $0.due != nil && Calendar.current.isDateInToday($0.due!) }
                         if tasks.isEmpty {
                             AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "doc.text")
                                         .imageScale(.large)
-                                    Text("Due Today")
+                                    Text(NSLocalizedString("assignments.section.due_today", comment: ""))
                                         .font(DesignSystem.Typography.title)
                                     Text(DesignSystem.emptyStateMessage)
                                         .font(DesignSystem.Typography.body)
@@ -62,7 +71,7 @@ struct AssignmentsView: View {
                     }
 
                     // Due This Week
-                    Section(header: Text("Due This Week").font(DesignSystem.Typography.body)) {
+                    Section(header: Text(NSLocalizedString("assignments.section.due_this_week", comment: "")).font(DesignSystem.Typography.body)) {
                         let tasks = assignmentsStore.tasks.filter { t in
                             if let d = t.due { return Calendar.current.isDate(d, equalTo: Date(), toGranularity: .weekOfYear) }
                             return false
@@ -72,7 +81,7 @@ struct AssignmentsView: View {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "calendar")
                                         .imageScale(.large)
-                                    Text("Due This Week")
+                                    Text(NSLocalizedString("assignments.section.due_this_week", comment: ""))
                                         .font(DesignSystem.Typography.title)
                                     Text(DesignSystem.emptyStateMessage)
                                         .font(DesignSystem.Typography.body)
@@ -87,14 +96,14 @@ struct AssignmentsView: View {
                     }
 
                     // Upcoming
-                    Section(header: Text("Upcoming").font(DesignSystem.Typography.body)) {
+                    Section(header: Text(NSLocalizedString("assignments.section.upcoming", comment: "")).font(DesignSystem.Typography.body)) {
                         let tasks = assignmentsStore.tasks.filter { $0.due == nil }
                         if tasks.isEmpty {
                             AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "clock")
                                         .imageScale(.large)
-                                    Text("Upcoming")
+                                    Text(NSLocalizedString("assignments.section.upcoming", comment: ""))
                                         .font(DesignSystem.Typography.title)
                                     Text(DesignSystem.emptyStateMessage)
                                         .font(DesignSystem.Typography.body)
@@ -109,7 +118,7 @@ struct AssignmentsView: View {
                     }
 
                     // Overdue
-                    Section(header: Text("Overdue").font(DesignSystem.Typography.body)) {
+                    Section(header: Text(NSLocalizedString("assignments.filter.overdue", comment: "")).font(DesignSystem.Typography.body)) {
                         let tasks = assignmentsStore.tasks.filter { t in
                             if let d = t.due { return d < Date() }
                             return false
@@ -119,7 +128,7 @@ struct AssignmentsView: View {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "clock.badge.exclamationmark")
                                         .imageScale(.large)
-                                    Text("Overdue")
+                                    Text(NSLocalizedString("assignments.filter.overdue", comment: ""))
                                         .font(DesignSystem.Typography.title)
                                     Text(DesignSystem.emptyStateMessage)
                                         .font(DesignSystem.Typography.body)

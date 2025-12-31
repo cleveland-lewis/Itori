@@ -28,45 +28,48 @@ struct IOSDashboardView: View {
     }
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 16) {
-                heroHeader
-                quickStatsRow
-                
-                // Study hours card (Phase D)
-                if shouldShowProductivityInsights {
-                    studyHoursCard
-                }
-                
-                upcomingEventsCard
+        GeometryReader { proxy in
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 16) {
+                    heroHeader
+                    quickStatsRow
+                    
+                    // Study hours card (Phase D)
+                    if shouldShowProductivityInsights {
+                        studyHoursCard
+                    }
+                    
+                    upcomingEventsCard
 
-                if isWideLayout {
-                    HStack(alignment: .top, spacing: 16) {
+                    if isWideLayout {
+                        HStack(alignment: .top, spacing: 16) {
+                            assignmentStatusCard
+                            upcomingAssignmentsCard
+                        }
+                    } else {
                         assignmentStatusCard
                         upcomingAssignmentsCard
                     }
-                } else {
-                    assignmentStatusCard
-                    upcomingAssignmentsCard
-                }
 
-                if isWideLayout {
-                    HStack(alignment: .top, spacing: 16) {
+                    if isWideLayout {
+                        HStack(alignment: .top, spacing: 16) {
+                            plannerTodayCard
+                            workRemainingCard
+                        }
+                        calendarCard
+                    } else {
                         plannerTodayCard
                         workRemainingCard
+                        calendarCard
                     }
-                    calendarCard
-                } else {
-                    plannerTodayCard
-                    workRemainingCard
-                    calendarCard
                 }
+                .frame(maxWidth: min(720, proxy.size.width - 32))
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 36)
             }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 36)
         }
         .background(DesignSystem.Colors.appBackground.ignoresSafeArea())
-        
         .task {
             await deviceCalendar.bootstrapOnLaunch()
         }

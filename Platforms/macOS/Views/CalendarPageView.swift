@@ -152,6 +152,9 @@ struct CalendarPageView: View {
             let verticalPadding = DesignSystem.Layout.padding.window
             let topToolbarHeight = DesignSystem.Layout.rowHeight.large + 12
             let topSectionSpacing: CGFloat = 16
+            let availableWidth = max(0, proxy.size.width - verticalPadding * 2)
+            let sidebarWidth = max(220, min(280, availableWidth * 0.28))
+            let gridPadding = max(8, min(16, availableWidth * 0.02))
             let loadingHeight: CGFloat = (isHydratingInitial || isHydratingFull) ? 24 : 0
             let perfHeight: CGFloat = settings.devModePerformance ? 40 : 0
             let topSectionsHeight = topToolbarHeight
@@ -188,7 +191,7 @@ struct CalendarPageView: View {
                 HStack(alignment: .top, spacing: 16) {
                     // Left sidebar showing events for selected date
                     eventSidebarView
-                        .frame(width: 280)
+                        .frame(width: sidebarWidth)
                         .frame(height: panelHeight, alignment: .top)
 
                     // Main calendar grid
@@ -196,7 +199,7 @@ struct CalendarPageView: View {
                         gridContent
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    .padding()
+                    .padding(gridPadding)
                     .background(DesignSystem.Materials.card)
                     .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
                     .overlay(
@@ -1080,6 +1083,9 @@ private struct MonthCalendarView: View {
                             isInCurrentMonth: day.isCurrentMonth
                         )
                         let dayEvents = events(for: day.date).sorted { $0.startDate < $1.startDate }
+                        let maxVisibleEvents = 2
+                        let hasMoreEvents = dayEvents.count > maxVisibleEvents
+                        
                         VStack(alignment: .leading, spacing: 6) {
                             Button {
                                 withAnimation(DesignSystem.Motion.snappyEase) {
@@ -1091,47 +1097,63 @@ private struct MonthCalendarView: View {
                             }
                             .buttonStyle(.plain)
 
-                            if !dayEvents.isEmpty {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    ForEach(dayEvents.prefix(3)) { event in
-                                        Button {
-                                            onSelectEvent(event)
-                                        } label: {
-                                            HStack(spacing: 6) {
-                                                Circle()
-                                                    .fill(event.category.color)
-                                                    .frame(width: 8, height: 8)
-                                                Text(event.category.rawValue)
-                                                    .font(DesignSystem.Typography.caption)
-                                                    .foregroundStyle(.secondary)
-                                                Text(event.title)
-                                                    .font(DesignSystem.Typography.caption)
-                                                    .foregroundStyle(.primary)
-                                                    .lineLimit(1)
-                                                Spacer(minLength: 0)
-                                            }
-                                            .padding(.horizontal, 6)
-                                            .padding(.vertical, 3)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                                    .fill(event.category.color.opacity(0.08))
-                                            )
+                            VStack(alignment: .leading, spacing: 4) {
+                                ForEach(dayEvents.prefix(maxVisibleEvents)) { event in
+                                    Button {
+                                        onSelectEvent(event)
+                                    } label: {
+                                        HStack(spacing: 6) {
+                                            Circle()
+                                                .fill(event.category.color)
+                                                .frame(width: 8, height: 8)
+                                            Text(event.category.rawValue)
+                                                .font(DesignSystem.Typography.caption)
+                                                .foregroundStyle(.secondary)
+                                            Text(event.title)
+                                                .font(DesignSystem.Typography.caption)
+                                                .foregroundStyle(.primary)
+                                                .lineLimit(1)
+                                            Spacer(minLength: 0)
                                         }
-                                        .buttonStyle(.plain)
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 3)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                                .fill(event.category.color.opacity(0.08))
+                                        )
                                     }
-                                    if dayEvents.count > 3 {
-                                        Text(String(format: NSLocalizedString("calendar.more_events", comment: ""), dayEvents.count - 3))
+                                    .buttonStyle(.plain)
+                                }
+                                
+                                if hasMoreEvents {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "ellipsis")
+                                            .font(DesignSystem.Typography.caption)
+                                            .foregroundStyle(.tertiary)
+                                        Text(String(format: NSLocalizedString("calendar.more_events", comment: ""), dayEvents.count - maxVisibleEvents))
                                             .font(DesignSystem.Typography.caption)
                                             .foregroundStyle(.secondary)
                                     }
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 3)
+                                } else {
+                                    ForEach(0..<(maxVisibleEvents - dayEvents.count), id: \.self) { _ in
+                                        Color.clear
+                                            .frame(height: 22)
+                                    }
                                 }
                             }
+                            .frame(height: CGFloat(maxVisibleEvents) * 26 + CGFloat(maxVisibleEvents - 1) * 4)
                         }
                         .padding(6)
-                        .frame(maxWidth: 180)
+                        .frame(maxWidth: 180, minHeight: 120)
                         .background(
                             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusSmall, style: .continuous)
                                 .fill(isSelected ? DesignSystem.Materials.surfaceHover : DesignSystem.Materials.surface)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusSmall, style: .continuous)
+                                        .strokeBorder(Color.primary.opacity(0.1), lineWidth: 1)
+                                )
                         )
                     }
                 }

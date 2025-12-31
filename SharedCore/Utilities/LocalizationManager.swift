@@ -4,6 +4,7 @@ import SwiftUI
 /// Localization utility that ensures keys never appear in UI
 /// Falls back to English text if key is missing
 struct LocalizationManager {
+    private static var cachedEnglishTable: [String: String]?
     
     /// Get localized string with guaranteed fallback
     /// Never returns the key itself - always returns human-readable text
@@ -13,9 +14,11 @@ struct LocalizationManager {
         
         // If localization failed, it returns the key itself
         if localized == key {
+            if let english = englishString(for: key) {
+                return english
+            }
             #if DEBUG
             DebugLogger.log("⚠️ LOCALIZATION MISSING in main bundle: \(key)")
-            // Check if the .strings file exists
             if let stringsPath = Bundle.main.path(forResource: "Localizable", ofType: "strings") {
                 DebugLogger.log("   Localizable.strings found at: \(stringsPath)")
             } else {
@@ -28,6 +31,18 @@ struct LocalizationManager {
         }
         
         return localized
+    }
+
+    private static func englishString(for key: String) -> String? {
+        if cachedEnglishTable == nil {
+            guard let path = Bundle.main.path(forResource: "Localizable", ofType: "strings", inDirectory: nil, forLocalization: "en"),
+                  let dict = NSDictionary(contentsOfFile: path) as? [String: String] else {
+                cachedEnglishTable = [:]
+                return nil
+            }
+            cachedEnglishTable = dict
+        }
+        return cachedEnglishTable?[key]
     }
     
     /// Generate English fallback from key structure

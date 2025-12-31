@@ -175,8 +175,9 @@ struct CalendarHeader: View {
     var onNext: () -> Void
     var onToday: () -> Void
     var onSearch: ((String) -> Void)?
-    
+
     @State private var searchText: String = ""
+    @EnvironmentObject private var settings: AppSettingsModel
     
     var body: some View {
         HStack(spacing: 16) {
@@ -194,8 +195,11 @@ struct CalendarHeader: View {
             // Navigation controls
             HStack(spacing: 8) {
                 Button(action: onPrevious) {
-                    Image(systemName: "chevron.left")
-                        .font(.body.weight(.medium))
+                    calendarHeaderButtonLabel(
+                        title: NSLocalizedString("common.button.previous", comment: ""),
+                        systemImage: "chevron.left"
+                    )
+                    .font(.body.weight(.medium))
                 }
                 .buttonStyle(.plain)
                 .rootsStandardInteraction()
@@ -207,11 +211,29 @@ struct CalendarHeader: View {
                 .buttonStyle(.bordered)
                 
                 Button(action: onNext) {
-                    Image(systemName: "chevron.right")
-                        .font(.body.weight(.medium))
+                    calendarHeaderButtonLabel(
+                        title: NSLocalizedString("common.button.next", comment: ""),
+                        systemImage: "chevron.right"
+                    )
+                    .font(.body.weight(.medium))
                 }
                 .buttonStyle(.plain)
                 .rootsStandardInteraction()
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func calendarHeaderButtonLabel(title: String, systemImage: String) -> some View {
+        switch settings.tabBarMode {
+        case .iconsOnly:
+            Image(systemName: systemImage)
+        case .textOnly:
+            Text(title)
+        case .iconsAndText:
+            HStack(spacing: DesignSystem.Spacing.xsmall) {
+                Image(systemName: systemImage)
+                Text(title)
             }
         }
     }

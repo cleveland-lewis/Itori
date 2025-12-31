@@ -13,7 +13,7 @@ struct RootsIconButton: View {
         RootsHeaderButton(icon: systemName, size: size) {
             action()
         }
-        .accessibilityLabel(accessibilityLabel ?? systemName)
+        .accessibilityLabelWithTooltip(accessibilityLabel ?? systemName)
     }
 }
 

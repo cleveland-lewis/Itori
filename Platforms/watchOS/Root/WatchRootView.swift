@@ -7,21 +7,35 @@
 import SwiftUI
 
 struct WatchRootView: View {
+    @StateObject private var syncManager = WatchSyncManager.shared
+    
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Roots")
-                .font(.largeTitle)
-                .foregroundColor(.blue)
+        TabView {
+            // Timer Tab
+            NavigationStack {
+                WatchTimerView()
+            }
+            .tabItem {
+                Label("Timer", systemImage: "timer")
+            }
             
-            Text("Watch App")
-                .font(.headline)
+            // Tasks Tab
+            NavigationStack {
+                WatchTasksView()
+            }
+            .tabItem {
+                Label("Tasks", systemImage: "checkmark.circle")
+            }
             
-            Text("If you see this, the app is working!")
-                .font(.caption)
-                .multilineTextAlignment(.center)
-                .foregroundColor(.gray)
+            // Settings Tab
+            NavigationStack {
+                WatchSettingsView()
+            }
+            .tabItem {
+                Label("Settings", systemImage: "gear")
+            }
         }
-        .padding()
+        .environmentObject(syncManager)
     }
 }
 

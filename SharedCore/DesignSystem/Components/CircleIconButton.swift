@@ -10,6 +10,7 @@ struct CircleIconButton: View {
     var borderColor: Color = Color.primary.opacity(0.06)
     var borderWidth: CGFloat = 1
     var iconRotation: Angle = .zero
+    var accessibilityLabel: String? = nil
     let action: () -> Void
 
     var body: some View {
@@ -40,5 +41,6 @@ struct CircleIconButton: View {
         .buttonStyle(.plain)
         .rootsStandardInteraction()
         .focusEffectDisabled(true)
+        .accessibilityLabelWithTooltip(accessibilityLabel ?? icon)
     }
 }

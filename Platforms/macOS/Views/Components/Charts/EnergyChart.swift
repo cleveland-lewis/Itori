@@ -91,7 +91,7 @@ struct EnergyChart: View {
                 }
             }
             .accessibilityElement(children: .contain)
-            .accessibilityLabel(Text(title))
+            .accessibilityLabelWithTooltip(title)
         }
         .padding()
     }

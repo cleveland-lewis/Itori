@@ -87,11 +87,11 @@ enum RecurrenceSelection: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .none: return "None"
-        case .daily: return "Daily"
-        case .weekly: return "Weekly"
-        case .monthly: return "Monthly"
-        case .yearly: return "Yearly"
+        case .none: return NSLocalizedString("planner.recurrence.type.none", comment: "")
+        case .daily: return NSLocalizedString("planner.recurrence.type.daily", comment: "")
+        case .weekly: return NSLocalizedString("planner.recurrence.type.weekly", comment: "")
+        case .monthly: return NSLocalizedString("planner.recurrence.type.monthly", comment: "")
+        case .yearly: return NSLocalizedString("planner.recurrence.type.yearly", comment: "")
         }
     }
 
@@ -194,7 +194,7 @@ struct OverdueTaskRow: View {
             )
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Overdue, due \(item.dueDate)")
+        .accessibilityLabelWithTooltip("Overdue, due \(item.dueDate)")
     }
 }
 
@@ -326,7 +326,7 @@ struct PlannerPageView: View {
                 end: stored.end,
                 isLocked: stored.isLocked,
                 status: isCompleted ? .completed : .upcoming,
-                source: stored.isUserEdited ? "Adjusted" : "Auto-plan",
+                source: stored.isUserEdited ? NSLocalizedString("planner.session.source.adjusted", comment: "") : NSLocalizedString("planner.session.source.auto_plan", comment: ""),
                 isOmodoroLinked: false,
                 isAutoRescheduled: isAutoRescheduled,
                 rescheduleStrategy: isAutoRescheduled ? rescheduleStrategy : nil
@@ -1425,7 +1425,7 @@ struct NewTaskSheet: View {
                         .rootsCaption()
                 }
             }
-            RootsFormRow(label: "Repeat") {
+            RootsFormRow(label: NSLocalizedString("planner.recurrence.form.repeat", comment: "")) {
                 Picker("", selection: recurrenceSelection) {
                     ForEach(RecurrenceSelection.allCases) { option in
                         Text(option.label).tag(option)
@@ -1437,13 +1437,13 @@ struct NewTaskSheet: View {
 
             if draft.recurrenceEnabled {
                 VStack(alignment: .leading, spacing: 8) {
-                    RootsFormRow(label: "Interval") {
+                    RootsFormRow(label: NSLocalizedString("planner.recurrence.form.interval", comment: "")) {
                         Stepper(value: $draft.recurrenceInterval, in: 1...30) {
                             Text("Every \(draft.recurrenceInterval) \(recurrenceUnitLabel)")
                         }
                         .frame(maxWidth: 220, alignment: .leading)
                     }
-                    RootsFormRow(label: "End") {
+                    RootsFormRow(label: NSLocalizedString("planner.recurrence.form.end", comment: "")) {
                         Picker("", selection: $draft.recurrenceEndOption) {
                             Text(NSLocalizedString("planner.recurrence.never", comment: "")).tag(RecurrenceEndOption.never)
                             Text(NSLocalizedString("planner.recurrence.on_date", comment: "")).tag(RecurrenceEndOption.onDate)
@@ -1464,14 +1464,14 @@ struct NewTaskSheet: View {
                             }
                         }
                     }
-                    RootsFormRow(label: "Skip") {
+                    RootsFormRow(label: NSLocalizedString("planner.recurrence.form.skip", comment: "")) {
                         VStack(alignment: .leading, spacing: 6) {
-                            Toggle("Skip weekends", isOn: $draft.skipWeekends)
-                            Toggle("Skip holidays", isOn: $draft.skipHolidays)
+                            Toggle(NSLocalizedString("planner.recurrence.form.skip_weekends", comment: ""), isOn: $draft.skipWeekends)
+                            Toggle(NSLocalizedString("planner.recurrence.form.skip_holidays", comment: ""), isOn: $draft.skipHolidays)
                         }
                     }
                     if draft.skipHolidays {
-                        RootsFormRow(label: "Holidays") {
+                        RootsFormRow(label: NSLocalizedString("planner.recurrence.form.holidays", comment: "")) {
                             Picker("", selection: $draft.holidaySource) {
                                 Text(NSLocalizedString("planner.recurrence.system_calendar", comment: "")).tag(RecurrenceRule.HolidaySource.deviceCalendar)
                                 Text(NSLocalizedString("planner.recurrence.none", comment: "")).tag(RecurrenceRule.HolidaySource.none)

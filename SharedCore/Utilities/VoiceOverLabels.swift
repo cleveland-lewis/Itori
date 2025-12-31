@@ -321,7 +321,7 @@ extension View {
     /// Apply VoiceOver labels from AccessibilityContent
     public func voiceOver(_ content: AccessibilityContent) -> some View {
         self
-            .accessibilityLabel(content.label)
+            .accessibilityLabelWithTooltip(content.label)
             .modifier(OptionalValueModifier(value: content.value))
             .modifier(OptionalHintModifier(hint: content.hint))
     }

@@ -73,7 +73,7 @@ struct GradesAnalyticsView: View {
                     .symbolRenderingMode(.hierarchical)
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("Close")
+            .accessibilityLabelWithTooltip("Close")
         }
     }
     
@@ -280,7 +280,7 @@ struct GradesAnalyticsView: View {
             }
             .frame(height: 200)
         }
-        .accessibilityLabel("GPA Trend Chart")
+        .accessibilityLabelWithTooltip("GPA Trend Chart")
         .accessibilityValue("Shows GPA progression over recent weeks")
     }
     
@@ -307,7 +307,7 @@ struct GradesAnalyticsView: View {
             }
             .frame(height: 200)
         }
-        .accessibilityLabel("Grade Distribution Chart")
+        .accessibilityLabelWithTooltip("Grade Distribution Chart")
         .accessibilityValue("Shows count of assignments by letter grade")
     }
     
@@ -335,7 +335,7 @@ struct GradesAnalyticsView: View {
             }
             .frame(height: 200)
         }
-        .accessibilityLabel("Course Performance Chart")
+        .accessibilityLabelWithTooltip("Course Performance Chart")
         .accessibilityValue("Shows current grade percentage for each course")
     }
     
@@ -366,7 +366,7 @@ struct GradesAnalyticsView: View {
                 }
             }
         }
-        .accessibilityLabel("Assignment Completion Chart")
+        .accessibilityLabelWithTooltip("Assignment Completion Chart")
         .accessibilityValue("Shows ratio of completed to pending assignments")
     }
     

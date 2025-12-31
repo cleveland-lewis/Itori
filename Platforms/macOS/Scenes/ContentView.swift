@@ -40,10 +40,10 @@ struct ContentView: View {
                 ) {
                     currentPageView
                         .accessibilityIdentifier("Page.\(selectedTab.rawValue)")
+                        .frame(maxWidth: RootsWindowSizing.maxMainContentWidth, maxHeight: .infinity, alignment: .top)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                        .padding(.horizontal, 24)
-                        // Keep content flowing behind the floating tab bar; only respect safe area.
-                        .padding(.bottom, proxy.safeAreaInsets.bottom + 8)
+                        .padding(.horizontal, 12)
+                        .padding(.bottom, 72 + 32 + proxy.safeAreaInsets.bottom)
                         .contentSafeInsetsForOverlay()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

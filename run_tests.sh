@@ -8,6 +8,10 @@ cd "$(dirname "$0")"
 
 echo "🧪 Running Roots Unit Tests..."
 echo ""
+
+echo "🔧 Running tooltip lint..."
+Scripts/lint_tooltips.sh
+echo ""
 echo "Build configuration: Debug"
 echo "Platform: macOS"
 echo "Scheme: RootsTests"

@@ -17,7 +17,7 @@ struct NativeAnalogClock: View {
             VStack(spacing: 12) {
                 clockFace(date: date)
                     .accessibilityElement(children: .combine)
-                    .accessibilityLabel(accessibilityTimeLabel(for: date))
+                    .accessibilityLabelWithTooltip(accessibilityTimeLabel(for: date))
                     .accessibilityAddTraits(.updatesFrequently)
 
                 if showDigitalTime {

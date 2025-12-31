@@ -300,6 +300,7 @@ struct IOSTimerPageView: View {
         case .completed: return "Completed"
         case .cancelled: return "Stopped"
         case .idle: return "Ready"
+        @unknown default: return "Ready"
         }
     }
 
@@ -307,7 +308,9 @@ struct IOSTimerPageView: View {
         switch viewModel.currentMode {
         case .stopwatch:
             return durationString(elapsed)
-        case .timer, .pomodoro:
+        case .timer, .pomodoro, .focus:
+            return durationString(remaining)
+        @unknown default:
             return durationString(remaining)
         }
     }

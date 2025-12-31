@@ -113,7 +113,8 @@ struct AppPageScaffold<Content: View>: View {
                 .background(.ultraThinMaterial, in: Circle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Quick add and settings")
+        .accessibilityLabelWithTooltip("Quick add and settings")
+        .conditionalHelp("Quick add and settings")
         .accessibilityHint("Opens quick actions and settings")
         .accessibilityIdentifier("Overlay.Overflow")
     }
@@ -134,7 +135,8 @@ struct AppPageScaffold<Content: View>: View {
                 .background(.ultraThinMaterial, in: Circle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Quick add")
+        .accessibilityLabelWithTooltip("Quick add")
+        .conditionalHelp("Quick add")
         .accessibilityHint("Opens quick add actions")
         .accessibilityIdentifier("Overlay.QuickAdd")
     }
@@ -155,7 +157,8 @@ struct AppPageScaffold<Content: View>: View {
                         .background(.ultraThinMaterial, in: Capsule())
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Energy level")
+                .accessibilityLabelWithTooltip("Energy level")
+                .conditionalHelp("Energy level")
             }
         }
     }
@@ -180,7 +183,8 @@ struct AppPageScaffold<Content: View>: View {
                 .background(.ultraThinMaterial, in: Circle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Settings")
+        .accessibilityLabelWithTooltip("Settings")
+        .conditionalHelp("Settings")
         .accessibilityHint("Opens settings")
         .accessibilityIdentifier("Overlay.Settings")
         .keyboardShortcut(",", modifiers: [.command])

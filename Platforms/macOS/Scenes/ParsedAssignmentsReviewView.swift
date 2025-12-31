@@ -44,13 +44,13 @@ struct ParsedAssignmentsReviewView: View {
                 }
             )
         }
-        .alert("Import Successful", isPresented: $showingImportConfirmation) {
-            Button("OK") {
+        .alert(NSLocalizedString("assignments.parse.import_success", comment: ""), isPresented: $showingImportConfirmation) {
+            Button(NSLocalizedString("assignments.action.ok", comment: "")) {
                 showingImportConfirmation = false
                 dismiss()
             }
         } message: {
-            Text("\(importSuccessCount) assignment(s) imported successfully.")
+            Text(String(format: NSLocalizedString("assignments.parse.import_count", comment: ""), importSuccessCount))
         }
     }
     
@@ -58,16 +58,16 @@ struct ParsedAssignmentsReviewView: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Review Parsed Assignments")
+                    Text(NSLocalizedString("assignments.parse.review_title", comment: ""))
                         .font(.title2.weight(.semibold))
-                    Text("Approve items to import them into your assignments")
+                    Text(NSLocalizedString("assignments.parse.review_subtitle", comment: ""))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
                 
                 Spacer()
                 
-                Button("Cancel") {
+                Button(NSLocalizedString("assignments.action.cancel", comment: "")) {
                     dismiss()
                 }
                 .buttonStyle(.plain)
@@ -85,9 +85,9 @@ struct ParsedAssignmentsReviewView: View {
                 .font(.largeTitle)
                 .imageScale(.large)
                 .foregroundStyle(.secondary)
-            Text("No Parsed Assignments")
+            Text(NSLocalizedString("assignments.empty.no_parsed", comment: ""))
                 .font(.title3.weight(.semibold))
-            Text("Parse a syllabus file to see assignments here")
+            Text(NSLocalizedString("assignments.empty.parse_syllabus", comment: ""))
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -126,18 +126,18 @@ struct ParsedAssignmentsReviewView: View {
                 
                 Spacer()
                 
-                Button("Select All") {
+                Button(NSLocalizedString("assignments.parse.select_all", comment: "")) {
                     approvedIds = Set(parsedItems.map { $0.id })
                 }
                 .buttonStyle(.plain)
                 
-                Button("Deselect All") {
+                Button(NSLocalizedString("assignments.parse.deselect_all", comment: "")) {
                     approvedIds.removeAll()
                 }
                 .buttonStyle(.plain)
                 .padding(.leading, 8)
                 
-                Button("Add Parsed Assignments") {
+                Button(NSLocalizedString("assignments.parse.add_parsed", comment: "")) {
                     importApprovedAssignments()
                 }
                 .buttonStyle(.borderedProminent)
@@ -171,7 +171,7 @@ struct ParsedAssignmentsReviewView: View {
     private func provenanceForItem(_ item: ParsedAssignment) -> String {
         guard let job = parsingStore.parsingJobs.first(where: { $0.id == item.jobId }),
               let file = coursesStore.courseFiles.first(where: { $0.id == job.fileId }) else {
-            return "Unknown source"
+            return NSLocalizedString("assignments.parse.unknown_source", comment: "")
         }
         return file.filename
     }
@@ -299,7 +299,7 @@ struct ParsedAssignmentRow: View {
             
             Spacer()
             
-            Button("Edit") {
+            Button(NSLocalizedString("assignments.action.edit", comment: "")) {
                 onEdit()
             }
             .buttonStyle(.plain)
@@ -349,29 +349,29 @@ struct ParsedAssignmentEditSheet: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Edit Parsed Assignment")
+            Text(NSLocalizedString("assignments.parse.edit_title", comment: ""))
                 .font(.title2.weight(.semibold))
             
             Form {
-                TextField("Title", text: $title)
+                TextField(NSLocalizedString("assignments.form.title", comment: ""), text: $title)
                 
-                DatePicker("Due Date", selection: $dueDate, displayedComponents: .date)
+                DatePicker(NSLocalizedString("assignments.form.due_date", comment: ""), selection: $dueDate, displayedComponents: .date)
                 
                 TextField("Due Time (optional)", text: $dueTime)
                 
-                TextField("Type", text: $inferredType)
+                TextField(NSLocalizedString("assignments.form.type", comment: ""), text: $inferredType)
             }
             .formStyle(.grouped)
             
             HStack {
-                Button("Cancel") {
+                Button(NSLocalizedString("assignments.action.cancel", comment: "")) {
                     onCancel()
                 }
                 .buttonStyle(.plain)
                 
                 Spacer()
                 
-                Button("Save") {
+                Button(NSLocalizedString("assignments.action.save", comment: "")) {
                     var updated = assignment
                     updated.title = title
                     updated.dueDate = dueDate

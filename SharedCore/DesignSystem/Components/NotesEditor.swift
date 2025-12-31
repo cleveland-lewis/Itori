@@ -35,7 +35,7 @@ public struct NotesEditor: View {
 
                 NotesTextView(text: $text, isFocused: $isFocused)
                     .frame(minHeight: minHeight)
-                    .accessibilityLabel("Notes")
+                    .accessibilityLabelWithTooltip("Notes")
                     .accessibilityHint("Editable text. Supports bold and italic formatting.")
             }
         }
@@ -196,4 +196,3 @@ private struct NotesTextView: UIViewRepresentable {
     }
 }
 #endif
-

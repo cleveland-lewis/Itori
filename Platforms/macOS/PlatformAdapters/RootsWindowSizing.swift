@@ -11,6 +11,7 @@ enum RootsWindowRole {
 enum RootsWindowSizing {
     static let minMainWidth: CGFloat = 1024
     static let minMainHeight: CGFloat = 720
+    static let maxMainContentWidth: CGFloat = 1080
 
     static let minSettingsWidth: CGFloat = 900
     static let minSettingsHeight: CGFloat = 600

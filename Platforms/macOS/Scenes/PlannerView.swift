@@ -239,7 +239,7 @@ private struct ScheduleResultView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
-            Text("Schedule Result")
+            Text(NSLocalizedString("planner.debug.schedule_result", comment: ""))
                 .font(DesignSystem.Typography.title)
 
             Text("Blocks: \(result.blocks.count)")
@@ -271,31 +271,31 @@ private struct ScheduleResultView: View {
                                 .font(DesignSystem.Typography.caption)
                         }
                         .contextMenu {
-                            Button("Mark as kept") {
+                            Button(NSLocalizedString("planner.debug.mark_kept", comment: "")) {
                                 if let task = AssignmentsStore.shared.tasks.first(where: { $0.id == b.taskId }) {
                                     let fb = BlockFeedback(blockId: b.id, taskId: task.id, courseId: task.courseId, type: task.type, start: b.start, end: b.end, completion: 1.0, action: .kept)
                                     SchedulerFeedbackStore.shared.append(fb)
                                 }
                             }
-                            Button("Mark as rescheduled") {
+                            Button(NSLocalizedString("planner.debug.mark_rescheduled", comment: "")) {
                                 if let task = AssignmentsStore.shared.tasks.first(where: { $0.id == b.taskId }) {
                                     let fb = BlockFeedback(blockId: b.id, taskId: task.id, courseId: task.courseId, type: task.type, start: b.start, end: b.end, completion: 0.6, action: .rescheduled)
                                     SchedulerFeedbackStore.shared.append(fb)
                                 }
                             }
-                            Button("Mark as deleted") {
+                            Button(NSLocalizedString("planner.debug.mark_deleted", comment: "")) {
                                 if let task = AssignmentsStore.shared.tasks.first(where: { $0.id == b.taskId }) {
                                     let fb = BlockFeedback(blockId: b.id, taskId: task.id, courseId: task.courseId, type: task.type, start: b.start, end: b.end, completion: 0.0, action: .deleted)
                                     SchedulerFeedbackStore.shared.append(fb)
                                 }
                             }
-                            Button("Mark as shortened") {
+                            Button(NSLocalizedString("planner.debug.mark_shortened", comment: "")) {
                                 if let task = AssignmentsStore.shared.tasks.first(where: { $0.id == b.taskId }) {
                                     let fb = BlockFeedback(blockId: b.id, taskId: task.id, courseId: task.courseId, type: task.type, start: b.start, end: b.end, completion: 0.4, action: .shortened)
                                     SchedulerFeedbackStore.shared.append(fb)
                                 }
                             }
-                            Button("Mark as extended") {
+                            Button(NSLocalizedString("planner.debug.mark_extended", comment: "")) {
                                 if let task = AssignmentsStore.shared.tasks.first(where: { $0.id == b.taskId }) {
                                     let fb = BlockFeedback(blockId: b.id, taskId: task.id, courseId: task.courseId, type: task.type, start: b.start, end: b.end, completion: 1.0, action: .extended)
                                     SchedulerFeedbackStore.shared.append(fb)
@@ -306,7 +306,7 @@ private struct ScheduleResultView: View {
                 }
             }
 
-            Text("Logs")
+            Text(NSLocalizedString("planner.debug.logs", comment: ""))
                 .font(DesignSystem.Typography.body)
             List {
                 ForEach(Array(result.log.enumerated()), id: \.offset) { idx, line in

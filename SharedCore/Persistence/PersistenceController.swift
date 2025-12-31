@@ -51,6 +51,8 @@ final class PersistenceController {
             description.cloudKitContainerOptions = nil
         }
         
+        description.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
+        description.setOption(true as NSNumber, forKey: NSInferMappingModelAutomaticallyOption)
         description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
         description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
 
@@ -88,6 +90,8 @@ final class PersistenceController {
                 }
                 
                 newDescription.cloudKitContainerOptions = nil
+                newDescription.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
+                newDescription.setOption(true as NSNumber, forKey: NSInferMappingModelAutomaticallyOption)
                 newDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
                 newDescription.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
                 
@@ -137,6 +141,8 @@ final class PersistenceController {
             
             memoryDescription.url = URL(fileURLWithPath: "/dev/null")
             memoryDescription.cloudKitContainerOptions = nil
+            memoryDescription.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
+            memoryDescription.setOption(true as NSNumber, forKey: NSInferMappingModelAutomaticallyOption)
             
             memoryContainer.loadPersistentStores { _, error in
                 if let error = error {
@@ -210,7 +216,7 @@ final class PersistenceController {
                 ofType: NSSQLiteStoreType,
                 configurationName: nil,
                 at: storeURL,
-                options: nil
+                options: description.options
             )
             
             LOG_DATA(.info, "Persistence", "iCloud sync enabled successfully")

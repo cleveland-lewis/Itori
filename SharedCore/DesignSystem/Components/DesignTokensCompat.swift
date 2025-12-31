@@ -372,7 +372,7 @@ struct RootTabBarItem: View {
             if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
             #endif
         }
-        .accessibilityLabel(title)
+        .accessibilityLabelWithTooltip(title)
         .hoverTooltip(title: title)
     }
 }

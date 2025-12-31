@@ -7,6 +7,7 @@ public enum TimerMode: String, CaseIterable, Identifiable, Codable {
     case pomodoro
     case timer
     case stopwatch
+    case focus
 
     public var id: String { rawValue }
 
@@ -15,6 +16,7 @@ public enum TimerMode: String, CaseIterable, Identifiable, Codable {
         case .pomodoro: return "Pomodoro"
         case .timer: return "Timer"
         case .stopwatch: return "Stopwatch"
+        case .focus: return "Focus"
         }
     }
 
@@ -23,6 +25,16 @@ public enum TimerMode: String, CaseIterable, Identifiable, Codable {
         case .pomodoro: return "hourglass"
         case .timer: return "timer"
         case .stopwatch: return "stopwatch"
+        case .focus: return "brain.head.profile"
+        }
+    }
+    
+    public var defaultDuration: Int? {
+        switch self {
+        case .pomodoro: return 25 * 60 // 25 minutes
+        case .timer: return 10 * 60 // 10 minutes
+        case .stopwatch: return nil // No duration
+        case .focus: return nil // Custom duration
         }
     }
 }

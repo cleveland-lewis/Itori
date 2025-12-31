@@ -143,6 +143,8 @@ struct TimerControlsView: View {
             return format(seconds: Int(viewModel.timerDuration))
         case .stopwatch:
             return "00:00"
+        case .focus:
+            return format(seconds: Int(viewModel.focusDuration))
         }
     }
 
@@ -154,6 +156,8 @@ struct TimerControlsView: View {
             return "Timer — Countdown"
         case .stopwatch:
             return "Stopwatch"
+        case .focus:
+            return "Focus Mode"
         }
     }
 

@@ -38,7 +38,7 @@ struct FlashcardsView: View {
         .sheet(isPresented: $showingAddDeck) {
             AddDeckSheet()
         }
-        .navigationTitle("Flashcards")
+        .navigationTitle(NSLocalizedString("flashcards.title", comment: "Flashcards"))
     }
     
     // MARK: - Sidebar
@@ -48,7 +48,7 @@ struct FlashcardsView: View {
             // Header with search
             VStack(spacing: 12) {
                 HStack {
-                    Text("Decks")
+                    Text(NSLocalizedString("flashcards.section.decks", comment: "Decks"))
                         .font(.title2.bold())
                     
                     Spacer()
@@ -59,12 +59,12 @@ struct FlashcardsView: View {
                         Image(systemName: "plus")
                     }
                     .buttonStyle(.borderless)
-                    .help("Create new deck")
+                    .help(NSLocalizedString("flashcards.action.create_deck", comment: "Create new deck"))
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
                 
-                TextField("Search decks", text: $searchText)
+                TextField(NSLocalizedString("flashcards.search.placeholder", comment: "Search decks"), text: $searchText)
                     .textFieldStyle(.roundedBorder)
                     .padding(.horizontal, 20)
             }
@@ -77,7 +77,7 @@ struct FlashcardsView: View {
                     // Current Semester Courses
                     if !currentSemesterCourses.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Current Semester")
+                            Text(NSLocalizedString("flashcards.section.current_semester", comment: "Current Semester"))
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(.secondary)
                                 .padding(.horizontal, 20)
@@ -99,7 +99,7 @@ struct FlashcardsView: View {
                     // Deck list
                     if !filteredDecks.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("All Decks")
+                            Text(NSLocalizedString("flashcards.section.all_decks", comment: "All Decks"))
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(.secondary)
                                 .padding(.horizontal, 20)
@@ -142,11 +142,11 @@ struct FlashcardsView: View {
                 .font(.system(size: 48))
                 .foregroundStyle(.tertiary)
             
-            Text(searchText.isEmpty ? "No Decks" : "No Results")
+            Text(searchText.isEmpty ? NSLocalizedString("flashcards.empty.no_decks", comment: "No Decks") : NSLocalizedString("flashcards.empty.no_results", comment: "No Results"))
                 .font(.headline)
             
             if searchText.isEmpty {
-                Text("Create your first flashcard deck to get started")
+                Text(NSLocalizedString("flashcards.empty.create_first", comment: "Create your first flashcard deck to get started"))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -154,7 +154,7 @@ struct FlashcardsView: View {
                 Button {
                     showingAddDeck = true
                 } label: {
-                    Label("New Deck", systemImage: "plus")
+                    Label(NSLocalizedString("flashcards.action.new_deck", comment: "New Deck"), systemImage: "plus")
                 }
                 .buttonStyle(.borderedProminent)
             }
@@ -169,10 +169,10 @@ struct FlashcardsView: View {
                 .font(.system(size: 64))
                 .foregroundStyle(.tertiary)
             
-            Text("Select a Deck")
+            Text(NSLocalizedString("flashcards.empty.select_deck", comment: "Select a Deck"))
                 .font(.title2.bold())
             
-            Text("Choose a deck from the sidebar to view cards and study")
+            Text(NSLocalizedString("flashcards.empty.choose_deck", comment: "Choose a deck from the sidebar to view cards and study"))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -231,7 +231,7 @@ struct CourseRowView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .help("Create flashcard deck for \(course.title)")
+        .help(String(format: NSLocalizedString("flashcards.deck.help_create", comment: "Create flashcard deck for %@"), course.title))
     }
     
     private var courseColor: Color {
@@ -292,7 +292,7 @@ struct DeckRowView: View {
                                 .foregroundStyle(.blue)
                         }
                         
-                        Text("\(deck.cards.count) cards")
+                        Text("\(deck.cards.count) \(NSLocalizedString("flashcards.deck.cards_count", comment: "%d cards"))")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -325,12 +325,12 @@ struct AddDeckSheet: View {
         VStack(spacing: 20) {
             // Header
             HStack {
-                Text("New Deck")
+                Text(NSLocalizedString("flashcards.add.title", comment: "New Deck"))
                     .font(.title2.bold())
                 
                 Spacer()
                 
-                Button("Cancel") {
+                Button(NSLocalizedString("flashcards.add.button_cancel", comment: "Cancel")) {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
@@ -343,12 +343,12 @@ struct AddDeckSheet: View {
             // Form
             Form {
                 Section {
-                    TextField("Deck Name", text: $title)
+                    TextField(NSLocalizedString("flashcards.add.name_field", comment: "Deck Name"), text: $title)
                         .textFieldStyle(.roundedBorder)
                 }
                 
-                Section("Link to Course (Optional)") {
-                    Text("Course selection coming soon")
+                Section(NSLocalizedString("flashcards.add.link_section", comment: "Link to Course (Optional)")) {
+                    Text(NSLocalizedString("flashcards.add.coming_soon", comment: "Course selection coming soon"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -362,12 +362,12 @@ struct AddDeckSheet: View {
             HStack {
                 Spacer()
                 
-                Button("Cancel") {
+                Button(NSLocalizedString("flashcards.add.button_cancel", comment: "Cancel")) {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
                 
-                Button("Create") {
+                Button(NSLocalizedString("flashcards.add.button_create", comment: "Create")) {
                     createDeck()
                 }
                 .buttonStyle(.borderedProminent)

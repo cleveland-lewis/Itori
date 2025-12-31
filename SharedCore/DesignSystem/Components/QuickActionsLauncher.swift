@@ -70,7 +70,7 @@ struct QuickActionsLauncher: View {
         )
         .focusable(true)
         .focused($focusedAction, equals: .launcher)
-        .accessibilityLabel(isExpanded ? "Collapse quick actions" : "Expand quick actions")
+        .accessibilityLabelWithTooltip(isExpanded ? "Collapse quick actions" : "Expand quick actions")
         .animation(reduceMotion ? nil : .spring(response: 0.28, dampingFraction: 0.82), value: isExpanded)
     }
 
@@ -100,7 +100,7 @@ struct QuickActionsLauncher: View {
         .focusable(true)
         .focused($focusedAction, equals: .action(action))
         .focusEffectDisabled(true)
-        .accessibilityLabel(action.title)
+        .accessibilityLabelWithTooltip(action.title)
     }
 
     private func toggleExpanded() {

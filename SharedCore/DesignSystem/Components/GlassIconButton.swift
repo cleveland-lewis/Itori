@@ -10,7 +10,7 @@ struct GlassIconButton: View {
         RootsHeaderButton(icon: systemName, size: 40) {
             action()
         }
-        .accessibilityLabel(accessibilityLabel ?? systemName)
+        .accessibilityLabelWithTooltip(accessibilityLabel ?? systemName)
     }
 }
 
@@ -39,7 +39,7 @@ struct GlassIconButtonLabel: View {
             .shadow(color: Color.primary.opacity(0.12), radius: 12, y: 6)
             .contentShape(Circle())
             #endif
-            .accessibilityLabel(accessibilityLabel ?? systemName)
+            .accessibilityLabelWithTooltip(accessibilityLabel ?? systemName)
             .accessibilityAddTraits(.isButton)
     }
 }

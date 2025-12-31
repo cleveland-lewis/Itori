@@ -311,7 +311,7 @@ struct StopwatchNumerals: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Stopwatch face with second numerals")
+        .accessibilityLabelWithTooltip("Stopwatch face with second numerals")
     }
 }
 
@@ -371,7 +371,7 @@ struct ClockNumerals: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Clock face with hour numerals")
+        .accessibilityLabelWithTooltip("Clock face with hour numerals")
     }
 }
 
@@ -468,7 +468,7 @@ struct StopwatchSubDialHand: View {
         }
         .frame(width: diameter, height: diameter)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Sub-dial hand")
+        .accessibilityLabelWithTooltip("Sub-dial hand")
     }
 }
 
@@ -492,8 +492,8 @@ struct AnalogClockHands: View {
                         endPoint: .bottom
                     )
                 )
-                .frame(width: 9, height: radius * 0.5)
-                .offset(y: -radius * 0.25)
+                .frame(width: 9, height: radius * 0.42)
+                .offset(y: -radius * 0.21)
                 .rotationEffect(.degrees((hours / 12) * 360))
                 .shadow(color: .black.opacity(0.25), radius: 2, y: 2)
 
@@ -506,8 +506,8 @@ struct AnalogClockHands: View {
                         endPoint: .bottom
                     )
                 )
-                .frame(width: 7, height: radius * 0.72)
-                .offset(y: -radius * 0.36)
+                .frame(width: 7, height: radius * 0.62)
+                .offset(y: -radius * 0.31)
                 .rotationEffect(.degrees((minutes / 60) * 360))
                 .shadow(color: .black.opacity(0.2), radius: 1.5, y: 1.5)
 
@@ -517,8 +517,8 @@ struct AnalogClockHands: View {
                     // Main hand
                     Capsule(style: .continuous)
                         .fill(accentColor)
-                        .frame(width: 2.5, height: radius * 0.88)
-                        .offset(y: -radius * 0.44)
+                        .frame(width: 2.5, height: radius * 0.72)
+                        .offset(y: -radius * 0.36)
                     
                     // Counterweight
                     Capsule(style: .continuous)

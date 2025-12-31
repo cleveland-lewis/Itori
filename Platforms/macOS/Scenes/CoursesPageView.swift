@@ -246,7 +246,7 @@ struct CoursesPageView: View {
     }
 
     private func vm(from course: Course) -> CoursePageCourse {
-        let semesterName = coursesStore.semesters.first(where: { $0.id == course.semesterId })?.name ?? "Current Term"
+        let semesterName = coursesStore.semesters.first(where: { $0.id == course.semesterId })?.name ?? NSLocalizedString("courses.default.current_term", comment: "")
         let colorTag: ColorTag = {
             if let hex = course.colorHex, let tag = ColorTag.fromHex(hex) {
                 return tag
@@ -261,8 +261,8 @@ struct CoursesPageView: View {
             id: course.id,
             code: course.code,
             title: course.title,
-            instructor: course.instructor ?? "Instructor",
-            location: course.location ?? "Location TBA",
+            instructor: course.instructor ?? NSLocalizedString("courses.default.instructor", comment: ""),
+            location: course.location ?? NSLocalizedString("courses.default.location_tba", comment: ""),
             credits: Int(course.credits ?? 3),
             colorTag: colorTag,
             semesterId: course.semesterId,
@@ -383,7 +383,7 @@ struct CoursesPageView: View {
                 return semester.name
             }
         }
-        return coursesStore.currentSemester?.name ?? "Current Term"
+        return coursesStore.currentSemester?.name ?? NSLocalizedString("courses.default.current_term", comment: "")
     }
 
     private var sidebarCreditsText: String {
@@ -424,7 +424,7 @@ struct CoursesSidebarView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Header Section
             VStack(alignment: .leading, spacing: 4) {
-                Text("Courses List")
+                Text(NSLocalizedString("courses.list.title", comment: ""))
                     .font(DesignSystem.Typography.body)
                 Text(currentSemesterName)
                     .font(DesignSystem.Typography.caption)
@@ -434,7 +434,7 @@ struct CoursesSidebarView: View {
             .padding(.top, 14)
             .padding(.bottom, 8)
 
-            TextField("Search courses", text: $searchText)
+            TextField(NSLocalizedString("courses.search.placeholder", comment: ""), text: $searchText)
                 .textFieldStyle(.roundedBorder)
                 .padding(.horizontal, 12)
                 .padding(.bottom, 8)
@@ -444,7 +444,7 @@ struct CoursesSidebarView: View {
                     Button {
                         onNewCourse()
                     } label: {
-                        Label("New Course", systemImage: "plus")
+                        Label(NSLocalizedString("courses.action.new_course", comment: ""), systemImage: "plus")
                             .font(DesignSystem.Typography.body)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 10)
@@ -456,7 +456,7 @@ struct CoursesSidebarView: View {
                     Button {
                         settingsCoordinator.show(selecting: .courses)
                     } label: {
-                        Label("Edit Courses", systemImage: "pencil")
+                        Label(NSLocalizedString("courses.action.edit_courses", comment: ""), systemImage: "pencil")
                             .font(DesignSystem.Typography.body)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 10)
@@ -468,8 +468,8 @@ struct CoursesSidebarView: View {
                 .padding(.horizontal, RootsSpacing.m)
 
                 VStack(spacing: RootsSpacing.s) {
-                    SidebarWidgetTile(label: "Current Semester", value: currentSemesterName)
-                    SidebarWidgetTile(label: "Total Credits", value: totalCreditsText)
+                    SidebarWidgetTile(label: NSLocalizedString("courses.widget.current_semester", comment: ""), value: currentSemesterName)
+                    SidebarWidgetTile(label: NSLocalizedString("courses.widget.total_credits", comment: ""), value: totalCreditsText)
                 }
                 .padding(.horizontal, RootsSpacing.m)
                 .padding(.bottom, RootsSpacing.s)
@@ -569,7 +569,7 @@ struct CourseSidebarRow: View {
         }
         .buttonStyle(.plain)
         .contentShape(Rectangle())
-        .accessibilityLabel("\(course.code), \(course.title)")
+        .accessibilityLabelWithTooltip("\(course.code), \(course.title)")
     }
 }
 
@@ -641,7 +641,7 @@ struct CoursesPageDetailView: View {
 
     private var meetingsCard: some View {
         VStack(alignment: .leading, spacing: RootsSpacing.m) {
-            sectionHeader("Meetings")
+            sectionHeader(NSLocalizedString("courses.section.meetings", comment: ""))
 
             if course.meetingTimes.isEmpty {
                 VStack(alignment: .leading, spacing: RootsSpacing.s) {
@@ -653,7 +653,7 @@ struct CoursesPageDetailView: View {
                 VStack(alignment: .leading, spacing: RootsSpacing.s) {
                     ForEach(course.meetingTimes) { meeting in
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("\(weekdayName(meeting.weekday)) · \(timeRange(for: meeting))")
+                            Text(String(format: NSLocalizedString("courses.meeting.day_time", comment: ""), weekdayName(meeting.weekday), timeRange(for: meeting)))
                                 .font(DesignSystem.Typography.body)
                             Text(meeting.type)
                                 .rootsCaption()
@@ -672,7 +672,7 @@ struct CoursesPageDetailView: View {
 
     private var syllabusCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            sectionHeader("Syllabus")
+            sectionHeader(NSLocalizedString("courses.section.syllabus", comment: ""))
             if let syllabus = course.syllabus {
                 VStack(spacing: DesignSystem.Layout.spacing.small) {
                     ForEach(syllabus.categories) { category in
@@ -681,7 +681,7 @@ struct CoursesPageDetailView: View {
                                 Text(category.name)
                                     .font(DesignSystem.Typography.body)
                                 Spacer()
-                                Text("\(Int(category.weight))%")
+                                Text(String(format: NSLocalizedString("courses.meeting.weight", comment: ""), Int(category.weight)))
                                     .font(.caption.weight(.semibold))
                             }
                             ProgressView(value: min(max(category.weight / 100, 0), 1))
@@ -700,7 +700,7 @@ struct CoursesPageDetailView: View {
                     Text(NSLocalizedString("courses.empty.no_syllabus", comment: "No syllabus"))
                         .font(DesignSystem.Typography.caption)
                         .foregroundStyle(.secondary)
-                    Text("You’ll eventually be able to import this from a syllabus parser.")
+                    Text(NSLocalizedString("courses.empty.syllabus_parser", comment: ""))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
@@ -831,7 +831,7 @@ struct GradeChip: View {
     var body: some View {
         HStack(spacing: 6) {
             if let current = gradeInfo.currentPercentage {
-                Text("\(Int(current))%")
+                Text(String(format: NSLocalizedString("courses.grade.percent_display", comment: ""), Int(current)))
                     .font(.caption.weight(.semibold))
                 if let letter = gradeInfo.letterGrade {
                     Text(letter)
@@ -839,7 +839,7 @@ struct GradeChip: View {
                         .foregroundStyle(.secondary)
                 }
             } else {
-                Text("No grade yet")
+                Text(NSLocalizedString("courses.grade.no_grade_yet", comment: ""))
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
             }
@@ -868,17 +868,17 @@ struct GradeRing: View {
                     .frame(width: 64, height: 64)
 
                 VStack(spacing: 2) {
-                    Text("\(Int(current))%")
+                    Text(String(format: NSLocalizedString("courses.grade.percent_display", comment: ""), Int(current)))
                         .font(DesignSystem.Typography.body)
-                    Text("Current")
+                    Text(NSLocalizedString("courses.grade.current", comment: ""))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
             } else {
                 VStack(spacing: 2) {
-                    Text("—")
+                    Text(NSLocalizedString("courses.grade.no_grade_dash", comment: ""))
                         .font(DesignSystem.Typography.body)
-                    Text("No grade")
+                    Text(NSLocalizedString("courses.grade.no_grade", comment: ""))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
@@ -941,8 +941,8 @@ struct CourseEditorSheet: View {
 
     var body: some View {
         RootsPopupContainer(
-            title: isNew ? "New Course" : "Edit Course",
-            subtitle: "Courses will sync with Planner, Assignments, and Grades."
+            title: isNew ? NSLocalizedString("courses.form.new_title", comment: "") : NSLocalizedString("courses.form.edit_title", comment: ""),
+            subtitle: NSLocalizedString("courses.form.subtitle", comment: "")
         ) {
             ScrollView {
                 VStack(alignment: .leading, spacing: RootsSpacing.l) {
@@ -966,32 +966,32 @@ struct CourseEditorSheet: View {
     private var courseSection: some View {
         VStack(alignment: .leading, spacing: RootsSpacing.m) {
             Text(NSLocalizedString("courses.section.course", comment: "Course")).rootsSectionHeader()
-            RootsFormRow(label: "Code") {
+            RootsFormRow(label: NSLocalizedString("courses.form.label.code", comment: "")) {
                 TextField("e.g. BIO 101", text: $code)
                     .frame(width: 120)
                     .textFieldStyle(.roundedBorder)
             }
-            .validationHint(isInvalid: code.trimmingCharacters(in: .whitespaces).isEmpty, text: "Course code is required.")
+            .validationHint(isInvalid: code.trimmingCharacters(in: .whitespaces).isEmpty, text: NSLocalizedString("courses.form.validation.code_required", comment: ""))
 
-            RootsFormRow(label: "Title") {
-                TextField("Biology 101", text: $title)
+            RootsFormRow(label: NSLocalizedString("courses.form.label.title", comment: "")) {
+                TextField(NSLocalizedString("courses.form.placeholder.title", comment: ""), text: $title)
                     .textFieldStyle(.roundedBorder)
             }
-            .validationHint(isInvalid: title.trimmingCharacters(in: .whitespaces).isEmpty, text: "Course title is required.")
+            .validationHint(isInvalid: title.trimmingCharacters(in: .whitespaces).isEmpty, text: NSLocalizedString("courses.form.validation.title_required", comment: ""))
 
-            RootsFormRow(label: "Instructor") {
-                TextField("Dr. Smith", text: $instructor)
+            RootsFormRow(label: NSLocalizedString("courses.form.label.instructor", comment: "")) {
+                TextField(NSLocalizedString("courses.form.placeholder.instructor", comment: ""), text: $instructor)
                     .textFieldStyle(.roundedBorder)
             }
 
-            RootsFormRow(label: "Email") {
+            RootsFormRow(label: NSLocalizedString("courses.form.label.email", comment: "")) {
                 TextField("name@university.edu", text: $instructorEmail)
                     .textFieldStyle(.roundedBorder)
                     .textContentType(.emailAddress)
             }
 
-            RootsFormRow(label: "Location") {
-                TextField("Appleseed Hall 203", text: $location)
+            RootsFormRow(label: NSLocalizedString("courses.form.label.location", comment: "")) {
+                TextField(NSLocalizedString("courses.form.placeholder.location", comment: ""), text: $location)
                     .textFieldStyle(.roundedBorder)
             }
         }
@@ -1000,20 +1000,20 @@ struct CourseEditorSheet: View {
     private var detailsSection: some View {
         VStack(alignment: .leading, spacing: RootsSpacing.m) {
             Text(NSLocalizedString("courses.section.details", comment: "Details")).rootsSectionHeader()
-            RootsFormRow(label: "Credits") {
+            RootsFormRow(label: NSLocalizedString("courses.form.label.credits", comment: "")) {
                 Stepper(value: $credits, in: 1...8) {
-                    Text("\(credits)")
+                    Text(String(format: NSLocalizedString("courses.info.credits_format", comment: ""), credits))
                 }
                 .frame(width: 120, alignment: .leading)
             }
 
-            RootsFormRow(label: "Semester") {
+            RootsFormRow(label: NSLocalizedString("courses.form.label.semester", comment: "")) {
                 SemesterPicker(selectedSemesterId: $semesterId)
                     .frame(maxWidth: 260)
                     .environmentObject(coursesStore)
             }
 
-            RootsFormRow(label: "Color") {
+            RootsFormRow(label: NSLocalizedString("courses.form.label.color", comment: "")) {
                 ColorTagPicker(selected: $colorTag)
             }
         }
@@ -1025,21 +1025,21 @@ struct CourseEditorSheet: View {
                 .font(.footnote)
                 .foregroundColor(.secondary)
             Spacer()
-            Button("Cancel") { dismiss() }
-            Button(isNew ? "Create" : "Save") {
+            Button(NSLocalizedString("courses.form.button.cancel", comment: "")) { dismiss() }
+            Button(isNew ? NSLocalizedString("courses.form.button.create", comment: "") : NSLocalizedString("courses.form.button.save", comment: "")) {
                 let resolvedSemesterName: String = {
                     if let id = semesterId, let match = coursesStore.semesters.first(where: { $0.id == id }) {
                         return match.name
                     }
-                    return semesterName.isEmpty ? "Current Term" : semesterName
+                    return semesterName.isEmpty ? NSLocalizedString("courses.default.current_term", comment: "") : semesterName
                 }()
 
                 let newCourse = CoursePageCourse(
                     id: course?.id ?? UUID(),
                     code: code,
                     title: title,
-                    instructor: instructor.isEmpty ? "TBD" : instructor,
-                    location: location.isEmpty ? "TBD" : location,
+                    instructor: instructor.isEmpty ? NSLocalizedString("courses.default.tbd", comment: "") : instructor,
+                    location: location.isEmpty ? NSLocalizedString("courses.default.tbd", comment: "") : location,
                     credits: credits,
                     colorTag: colorTag,
                     semesterId: semesterId,
@@ -1100,7 +1100,7 @@ private extension CoursesPageView {}
 private extension CoursesPageView {
     var gradeEntrySheet: some View {
         VStack(alignment: .leading, spacing: RootsSpacing.m) {
-            Text("Add Grade for \(currentSelection?.code ?? "Course")")
+            Text(String(format: NSLocalizedString("courses.grade.add_title", comment: ""), currentSelection?.code ?? NSLocalizedString("planner.course.default", comment: "")))
                 .font(.title3.weight(.semibold))
 
             VStack(alignment: .leading, spacing: RootsSpacing.s) {
@@ -1109,9 +1109,9 @@ private extension CoursesPageView {
                     .foregroundStyle(.secondary)
                 Slider(value: $gradePercentInput, in: 0...100, step: 1)
                 HStack {
-                    Text("\(Int(gradePercentInput))%")
+                    Text(String(format: NSLocalizedString("courses.grade.percent_display", comment: ""), Int(gradePercentInput)))
                     Spacer()
-                    TextField("Letter", text: $gradeLetterInput)
+                    TextField(NSLocalizedString("courses.grade.letter_placeholder", comment: ""), text: $gradeLetterInput)
                         .textFieldStyle(.roundedBorder)
                         .frame(width: 80)
                 }
@@ -1119,10 +1119,10 @@ private extension CoursesPageView {
 
             HStack {
                 Spacer()
-                Button("Cancel") {
+                Button(NSLocalizedString("courses.form.button.cancel", comment: "")) {
                     showingGradeSheet = false
                 }
-                Button("Save") {
+                Button(NSLocalizedString("courses.form.button.save", comment: "")) {
                     if let courseId = currentSelection?.id {
                         gradesStore.upsert(courseId: courseId, percent: gradePercentInput, letter: gradeLetterInput.isEmpty ? nil : gradeLetterInput)
                     }

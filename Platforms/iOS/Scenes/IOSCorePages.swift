@@ -933,23 +933,48 @@ private struct IOSInfoCard: View {
     let subtitle: String
     let systemImage: String
     let detail: String
+    @EnvironmentObject private var settings: AppSettingsModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 10) {
-                Image(systemName: systemImage)
-                    .foregroundStyle(Color.accentColor)
-                Text(title)
-                    .font(.headline)
+        Group {
+            switch settings.iconLabelMode {
+            case .iconsOnly:
+                VStack {
+                    Image(systemName: systemImage)
+                        .font(.title2)
+                        .foregroundStyle(Color.accentColor)
+                }
+                .frame(maxWidth: .infinity, minHeight: 88)
+                .accessibilityLabel(Text(title))
+            case .textOnly:
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(title)
+                        .font(.headline)
+                    Text(subtitle)
+                        .font(.subheadline.weight(.semibold))
+                    Text(detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            case .iconsAndText:
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack(spacing: 10) {
+                        Image(systemName: systemImage)
+                            .foregroundStyle(Color.accentColor)
+                        Text(title)
+                            .font(.headline)
+                    }
+                    Text(subtitle)
+                        .font(.subheadline.weight(.semibold))
+                    Text(detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            Text(subtitle)
-                .font(.subheadline.weight(.semibold))
-            Text(detail)
-                .font(.caption)
-                .foregroundStyle(.secondary)
         }
         .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Color(uiColor: .secondarySystemBackground))

@@ -34,7 +34,7 @@ struct PracticeTestTakingView: View {
                 if let question = currentQuestion {
                     questionView(question)
                 } else {
-                    Text("No questions available")
+                    Text(NSLocalizedString("practice.empty.no_results", comment: "No questions available"))
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             }
@@ -54,7 +54,7 @@ struct PracticeTestTakingView: View {
             Button {
                 store.clearCurrentTest()
             } label: {
-                Label("Back", systemImage: "chevron.left")
+                Label(NSLocalizedString("practice.action.back", comment: "Back"), systemImage: "chevron.left")
             }
             .buttonStyle(.plain)
             
@@ -83,21 +83,21 @@ struct PracticeTestTakingView: View {
                         .frame(width: 80)
                 }
                 
-                Button("Submit Test") {
+                Button(NSLocalizedString("practice.action.submit", comment: "Submit Test")) {
                     showingSubmitConfirmation = true
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(userAnswers.count < test.questions.count)
-                .alert("Submit Practice Test?", isPresented: $showingSubmitConfirmation) {
-                    Button("Cancel", role: .cancel) { }
-                    Button("Submit", role: .destructive) {
+                .alert(NSLocalizedString("practice.taking.submit_confirm.title", comment: "Submit Practice Test?"), isPresented: $showingSubmitConfirmation) {
+                    Button(NSLocalizedString("practice.taking.submit_confirm.cancel", comment: "Cancel"), role: .cancel) { }
+                    Button(NSLocalizedString("practice.taking.submit_confirm.submit", comment: "Submit"), role: .destructive) {
                         submitTest()
                     }
                 } message: {
                     if userAnswers.count < test.questions.count {
-                        Text("You have answered \(userAnswers.count) out of \(test.questions.count) questions. Unanswered questions will be marked incorrect.")
+                        Text(String(format: NSLocalizedString("practice.taking.submit_confirm.partial", comment: "You have answered %d out of %d questions. Unanswered questions will be marked incorrect."), userAnswers.count, test.questions.count))
                     } else {
-                        Text("Are you sure you want to submit? You cannot change your answers after submission.")
+                        Text(NSLocalizedString("practice.taking.submit_confirm.complete", comment: "Are you sure you want to submit? You cannot change your answers after submission."))
                     }
                 }
             }
@@ -140,11 +140,11 @@ struct PracticeTestTakingView: View {
                         .foregroundStyle(.secondary)
                     
                     if userAnswers[question.id] != nil {
-                        Text("Answered")
+                        Text(NSLocalizedString("practice.taking.status.answered", comment: "Answered"))
                             .font(.caption2.bold())
                             .foregroundStyle(.green)
                     } else {
-                        Text("Not answered")
+                        Text(NSLocalizedString("practice.taking.status.not_answered", comment: "Not answered"))
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
@@ -179,7 +179,7 @@ struct PracticeTestTakingView: View {
                 // Question header
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text("Question \(currentQuestionIndex + 1) of \(test.questions.count)")
+                        Text(String(format: NSLocalizedString("practice.taking.question_number", comment: "Question %d of %d"), currentQuestionIndex + 1, test.questions.count))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         
@@ -210,7 +210,7 @@ struct PracticeTestTakingView: View {
                         Button {
                             currentQuestionIndex -= 1
                         } label: {
-                            Label("Previous", systemImage: "chevron.left")
+                            Label(NSLocalizedString("practice.action.previous", comment: "Previous"), systemImage: "chevron.left")
                         }
                     }
                     
@@ -220,7 +220,7 @@ struct PracticeTestTakingView: View {
                         Button {
                             currentQuestionIndex += 1
                         } label: {
-                            Label("Next", systemImage: "chevron.right")
+                            Label(NSLocalizedString("practice.action.next", comment: "Next"), systemImage: "chevron.right")
                         }
                         .buttonStyle(.borderedProminent)
                     }
@@ -272,7 +272,7 @@ struct PracticeTestTakingView: View {
     
     private func shortAnswerInput(_ question: PracticeQuestion) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Your answer:")
+            Text(NSLocalizedString("practice.taking.answer.your_answer", comment: "Your answer:"))
                 .font(.subheadline.bold())
             
             TextEditor(text: Binding(
@@ -291,10 +291,10 @@ struct PracticeTestTakingView: View {
     
     private func explanationInput(_ question: PracticeQuestion) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Your explanation:")
+            Text(NSLocalizedString("practice.taking.answer.your_explanation", comment: "Your explanation:"))
                 .font(.subheadline.bold())
             
-            Text("Provide a detailed explanation with specific examples")
+            Text(NSLocalizedString("practice.taking.answer.explanation_help", comment: "Provide a detailed explanation with specific examples"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             

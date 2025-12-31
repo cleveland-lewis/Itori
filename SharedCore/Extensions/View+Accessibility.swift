@@ -14,4 +14,10 @@ extension View {
             }
         }
     }
+
+    /// Apply accessibility label plus matching tooltip text (macOS hover).
+    func accessibilityLabelWithTooltip(_ text: String, settings: AppSettingsModel = .shared) -> some View {
+        self.accessibilityLabel(text)
+            .conditionalHelp(text, settings: settings)
+    }
 }

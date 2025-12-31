@@ -262,7 +262,7 @@ struct AssignmentsPageView: View {
                     .background(Circle().fill(Color.accentColor.opacity(0.18)))
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("assignments.action.new".localized)
+            .accessibilityLabelWithTooltip("assignments.action.new".localized)
 
             Button {
                 autoPlanSelectedAssignments()
@@ -333,11 +333,11 @@ struct AssignmentsPageView: View {
                         .font(.system(size: 48))
                         .foregroundStyle(.secondary)
                     
-                    Text("No Assignments")
+                    Text(NSLocalizedString("assignments.empty.no_assignments", comment: ""))
                         .font(.title3.weight(.semibold))
                         .foregroundStyle(.primary)
                     
-                    Text("Create your first assignment to get started")
+                    Text(NSLocalizedString("assignments.empty.create_first", comment: ""))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -1124,7 +1124,7 @@ struct AssignmentDetailPanel: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.small)
-                    .accessibilityLabel("assignments.detail.planner_accessibility".localized)
+                    .accessibilityLabelWithTooltip("assignments.detail.planner_accessibility".localized)
                 }
                 VStack(alignment: .leading, spacing: 6) {
                     Text("assignments.detail.execution".localized)
@@ -1135,7 +1135,7 @@ struct AssignmentDetailPanel: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.small)
-                    .accessibilityLabel("assignments.detail.timer_accessibility".localized)
+                    .accessibilityLabelWithTooltip("assignments.detail.timer_accessibility".localized)
                 }
             }
         }

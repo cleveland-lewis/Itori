@@ -35,7 +35,7 @@ struct GlassAccentIconButton: View {
             if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
             #endif
         }
-        .accessibilityLabel(Text(accessibilityLabel))
+        .accessibilityLabelWithTooltip(accessibilityLabel)
     }
 }
 
@@ -74,6 +74,6 @@ struct GlassSecondaryIconButton: View {
             if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
             #endif
         }
-        .accessibilityLabel(Text(accessibilityLabel))
+        .accessibilityLabelWithTooltip(accessibilityLabel)
     }
 }

@@ -142,6 +142,8 @@ final class TimerPageViewModel: ObservableObject {
             planned = plannedDuration ?? timerDuration
         case .stopwatch:
             planned = nil
+        case .focus:
+            planned = focusDuration
         }
 
         let session = FocusSession(activityID: currentActivityID, mode: currentMode, plannedDuration: planned, startedAt: Date(), state: .running)
@@ -451,6 +453,9 @@ final class TimerPageViewModel: ObservableObject {
     }
 
     private func loadPersistedSessions() {
+        guard timerSessionEntity != nil else {
+            return
+        }
         let request = NSFetchRequest<NSManagedObject>(entityName: "TimerSession")
         request.sortDescriptors = [NSSortDescriptor(key: "startedAt", ascending: false)]
         do {
@@ -485,11 +490,14 @@ final class TimerPageViewModel: ObservableObject {
     }
 
     private func upsertSessionInStore(_ session: FocusSession) {
+        guard let entity = timerSessionEntity else {
+            return
+        }
         let request = NSFetchRequest<NSManagedObject>(entityName: "TimerSession")
         request.predicate = NSPredicate(format: "id == %@", session.id as CVarArg)
         do {
             let existing = try persistence.viewContext.fetch(request).first
-            let object = existing ?? NSManagedObject(entity: NSEntityDescription.entity(forEntityName: "TimerSession", in: persistence.viewContext)!, insertInto: persistence.viewContext)
+            let object = existing ?? NSManagedObject(entity: entity, insertInto: persistence.viewContext)
             object.setValue(session.id, forKey: "id")
             object.setValue(session.startedAt ?? Date(), forKey: "startedAt")
             object.setValue(session.endedAt, forKey: "endedAt")
@@ -506,6 +514,9 @@ final class TimerPageViewModel: ObservableObject {
     }
 
     private func deleteSessionsFromStore(ids: [UUID]) {
+        guard timerSessionEntity != nil else {
+            return
+        }
         let request = NSFetchRequest<NSManagedObject>(entityName: "TimerSession")
         request.predicate = NSPredicate(format: "id IN %@", ids)
         do {
@@ -526,6 +537,14 @@ final class TimerPageViewModel: ObservableObject {
         pastSessions.sort { (lhs, rhs) in
             (lhs.startedAt ?? .distantPast) > (rhs.startedAt ?? .distantPast)
         }
+    }
+
+    private var timerSessionEntity: NSEntityDescription? {
+        let entity = NSEntityDescription.entity(forEntityName: "TimerSession", in: persistence.viewContext)
+        if entity == nil {
+            LOG_DATA(.info, "Timer", "TimerSession entity not available - skipping persistence")
+        }
+        return entity
     }
 
     // MARK: - Placeholder data

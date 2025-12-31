@@ -375,11 +375,11 @@ final class AppSettingsModel: ObservableObject, Codable {
     var cardRadiusRaw: String = CardRadius.medium.rawValue
     var animationSoftnessStorage: Double = 0.42
     var typographyModeRaw: String = TypographyMode.system.rawValue
-    var devModeEnabledStorage: Bool = false
-    var devModeUILoggingStorage: Bool = false
-    var devModeDataLoggingStorage: Bool = false
-    var devModeSchedulerLoggingStorage: Bool = false
-    var devModePerformanceStorage: Bool = false
+    @AppStorage(Keys.devModeEnabled) var devModeEnabledStorage: Bool = false
+    @AppStorage(Keys.devModeUILogging) var devModeUILoggingStorage: Bool = false
+    @AppStorage(Keys.devModeDataLogging) var devModeDataLoggingStorage: Bool = false
+    @AppStorage(Keys.devModeSchedulerLogging) var devModeSchedulerLoggingStorage: Bool = false
+    @AppStorage(Keys.devModePerformance) var devModePerformanceStorage: Bool = false
     var enableICloudSyncStorage: Bool = true
     @AppStorage("roots.settings.suppressICloudRestore") var suppressICloudRestoreStorage: Bool = false
     var enableSpotlightIndexingStorage: Bool = false

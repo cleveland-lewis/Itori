@@ -33,7 +33,7 @@ struct RootsChartContainer<Content: View>: View {
                 if let trend = trend {
                     Image(systemName: trend == .up ? "arrow.up" : "arrow.down")
                         .foregroundColor(trend == .up ? .green : .red)
-                        .accessibilityLabel(trend == .up ? "Trending up" : "Trending down")
+                        .accessibilityLabelWithTooltip(trend == .up ? "Trending up" : "Trending down")
                 }
             }
             .padding([.horizontal, .top], 12)

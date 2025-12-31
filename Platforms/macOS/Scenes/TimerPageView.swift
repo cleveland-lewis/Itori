@@ -760,7 +760,7 @@ private struct FocusWindowView: View {
                         }
                         .id(pomodoroSessions)
                         .accessibilityElement(children: .ignore)
-                        .accessibilityLabel("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
+                        .accessibilityLabelWithTooltip("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
                     } else {
                         Text("\(mode.label) running")
                             .font(.caption)

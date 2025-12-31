@@ -52,6 +52,7 @@ struct DashboardView: View {
                         .animateEntry(isLoaded: isLoaded, index: 0)
                         .padding(.horizontal, contentPadding)
                         .padding(.bottom, cardSpacing)
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
                     // ROW 2: ANALYTICS
                     Group {
@@ -142,6 +143,7 @@ struct DashboardView: View {
                     .padding(.horizontal, contentPadding)
                     .padding(.bottom, bottomDockClearancePadding)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
         .background(Color(nsColor: .windowBackgroundColor))
@@ -329,7 +331,7 @@ struct DashboardView: View {
         .padding(.horizontal, 24)
         .padding(.vertical, 16)
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Status overview")
+        .accessibilityLabelWithTooltip("Status overview")
     }
     
     private var statusHeadline: String {
@@ -354,16 +356,16 @@ struct DashboardView: View {
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
             HStack(spacing: 8) {
-                energyButton("High", level: .high)
-                energyButton("Medium", level: .medium)
-                energyButton("Low", level: .low)
+                energyButton(NSLocalizedString("dashboard.energy.high", comment: ""), level: .high)
+                energyButton(NSLocalizedString("dashboard.energy.medium", comment: ""), level: .medium)
+                energyButton(NSLocalizedString("dashboard.energy.low", comment: ""), level: .low)
             }
         }
     }
 
     private var statusStripCard: some View {
         DashboardCard(
-            title: "Today's Overview",
+            title: NSLocalizedString("dashboard.section.todays_overview", comment: ""),
             isLoading: !isLoaded
         ) {
             HStack(spacing: 32) {
@@ -418,12 +420,12 @@ struct DashboardView: View {
             .padding(.vertical, 8)
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Status overview")
+        .accessibilityLabelWithTooltip("Status overview")
     }
 
     private var todayCard: some View {
         DashboardCard(
-            title: "Status",
+            title: NSLocalizedString("dashboard.section.status", comment: ""),
             isLoading: !isLoaded
         ) {
             VStack(alignment: .leading, spacing: 12) {
@@ -442,7 +444,7 @@ struct DashboardView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
-                Button("Open Assignments") {
+                Button(NSLocalizedString("dashboard.button.open_assignments", comment: "")) {
                     appModel.selectedPage = .assignments
                 }
                 .buttonStyle(.plain)
@@ -452,37 +454,37 @@ struct DashboardView: View {
             }
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Today overview")
+        .accessibilityLabelWithTooltip("Today overview")
     }
 
     private var workloadCard: some View {
         DashboardCard(
-            title: "Weekly Workload",
+            title: NSLocalizedString("dashboard.section.weekly_workload", comment: ""),
             isLoading: !isLoaded
         ) {
             weeklyWorkloadChart
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Weekly workload forecast")
+        .accessibilityLabelWithTooltip("Weekly workload forecast")
     }
 
     private var studyHoursCard: some View {
         DashboardCard(
-            title: "Study Time Trend",
+            title: NSLocalizedString("dashboard.section.study_time_trend", comment: ""),
             isLoading: !isLoaded
         ) {
             if hasStudyTrendData {
                 studyTrendChart
             } else {
                 DashboardEmptyState(
-                    title: "No study data yet",
+                    title: NSLocalizedString("dashboard.empty.no_study_data", comment: ""),
                     systemImage: "clock",
                     description: "Start a timer to see your trend."
                 )
             }
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Study time trend")
+        .accessibilityLabelWithTooltip("Study time trend")
     }
     
     private var calendarPermissionPrompt: some View {
@@ -496,7 +498,7 @@ struct DashboardView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
             
-            Button("Connect Calendar") {
+            Button(NSLocalizedString("dashboard.button.connect_calendar", comment: "")) {
                 Task {
                     await calendarManager.requestAccess()
                 }
@@ -518,7 +520,7 @@ struct DashboardView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             
-            Button("Open Settings") {
+            Button(NSLocalizedString("dashboard.button.open_settings", comment: "")) {
                 calendarManager.openSystemPrivacySettings()
             }
             .buttonStyle(.bordered)
@@ -530,7 +532,7 @@ struct DashboardView: View {
 
     private var energyCard: some View {
         DashboardCard(
-            title: "Energy Check-in",
+            title: NSLocalizedString("dashboard.section.energy_checkin", comment: ""),
             isLoading: !isLoaded
         ) {
             VStack(alignment: .leading, spacing: 12) {
@@ -539,25 +541,25 @@ struct DashboardView: View {
                     .foregroundStyle(.secondary)
 
                 HStack(spacing: 10) {
-                    energyButton("High", level: .high)
-                    energyButton("Medium", level: .medium)
-                    energyButton("Low", level: .low)
+                    energyButton(NSLocalizedString("dashboard.energy.high", comment: ""), level: .high)
+                    energyButton(NSLocalizedString("dashboard.energy.medium", comment: ""), level: .medium)
+                    energyButton(NSLocalizedString("dashboard.energy.low", comment: ""), level: .low)
                 }
             }
         }
         .transition(.move(edge: .top).combined(with: .opacity))
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Energy check-in")
+        .accessibilityLabelWithTooltip("Energy check-in")
     }
 
     private var eventsCard: some View {
         DashboardCard(
-            title: "Upcoming Events",
+            title: NSLocalizedString("dashboard.section.upcoming_events", comment: ""),
             isLoading: !isLoaded
         ) {
             if events.isEmpty {
                 DashboardEmptyState(
-                    title: "No Events",
+                    title: NSLocalizedString("dashboard.empty.no_events", comment: ""),
                     systemImage: "calendar.badge.plus",
                     description: "Add events to see them here",
                     action: { showAddEventSheet = true },
@@ -578,7 +580,7 @@ struct DashboardView: View {
             }
             .buttonStyle(.plain)
             .font(.headline)
-            .help("Add event")
+            .help(NSLocalizedString("dashboard.help.add_event", comment: ""))
         } footer: {
             if events.count > 5 {
                 Button {
@@ -596,7 +598,7 @@ struct DashboardView: View {
             }
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Upcoming events")
+        .accessibilityLabelWithTooltip("Upcoming events")
     }
     
     private func eventRow(_ event: DashboardEvent) -> some View {
@@ -671,7 +673,7 @@ struct DashboardView: View {
 
     private var assignmentsCard: some View {
         DashboardCard(
-            title: "Upcoming Assignments",
+            title: NSLocalizedString("dashboard.section.upcoming_assignments", comment: ""),
             isLoading: !isLoaded
         ) {
             let items = upcomingAssignmentItems(limit: 6)
@@ -682,7 +684,7 @@ struct DashboardView: View {
                     Text(NSLocalizedString("dashboard.assignments.add_prompt", comment: ""))
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Button("Add Assignment") {
+                    Button(NSLocalizedString("dashboard.button.add_assignment", comment: "")) {
                         showAddAssignmentSheet = true
                     }
                     .buttonStyle(.borderedProminent)
@@ -699,18 +701,18 @@ struct DashboardView: View {
             Button {
                 showAddAssignmentSheet = true
             } label: {
-                dashboardButtonLabel(title: "Add Assignment", systemImage: "plus")
+                dashboardButtonLabel(title: NSLocalizedString("dashboard.button.add_assignment", comment: ""), systemImage: "plus")
             }
             .buttonStyle(.plain)
             .font(.headline)
-            .help("Add assignment")
+            .help(NSLocalizedString("dashboard.help.add_assignment", comment: ""))
         } footer: {
             let total = upcomingAssignmentItems(limit: nil).count
             if total > 6 {
                 Button {
                     appModel.selectedPage = .assignments
                 } label: {
-                    dashboardButtonLabel(title: "View All", systemImage: "arrow.right", trailingIcon: true)
+                    dashboardButtonLabel(title: NSLocalizedString("dashboard.button.view_all", comment: ""), systemImage: "arrow.right", trailingIcon: true)
                         .font(.subheadline)
                 }
                 .buttonStyle(.plain)
@@ -718,7 +720,7 @@ struct DashboardView: View {
             }
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Assignments list")
+        .accessibilityLabelWithTooltip("Assignments list")
     }
 
     private var weeklyWorkloadChart: some View {
@@ -743,7 +745,7 @@ struct DashboardView: View {
                 AxisValueLabel(format: .dateTime.weekday(.abbreviated))
             }
         }
-        .chartLegend(position: .bottom, spacing: 8)
+        .chartLegend(position: .bottom, alignment: .center, spacing: 8)
         .frame(height: 200)
     }
     
@@ -801,14 +803,34 @@ struct DashboardView: View {
                 }
             }
             .chartXAxis {
-                if studyTrendRange == .thirty {
-                    let weeklyMarks = weeklySundayMarks()
-                    AxisMarks(values: weeklyMarks) { _ in
-                        AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                switch studyTrendRange {
+                case .seven:
+                    // Show every day
+                    AxisMarks(values: .stride(by: .day, count: 1)) { value in
+                        if let date = value.as(Date.self) {
+                            AxisValueLabel {
+                                Text(date, format: .dateTime.weekday(.abbreviated))
+                            }
+                        }
                     }
-                } else {
-                    AxisMarks { _ in
-                        AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                case .fourteen:
+                    // Show every other day
+                    AxisMarks(values: .stride(by: .day, count: 2)) { value in
+                        if let date = value.as(Date.self) {
+                            AxisValueLabel {
+                                Text(date, format: .dateTime.month(.abbreviated).day())
+                            }
+                        }
+                    }
+                case .thirty:
+                    // Show first of month + every Sunday
+                    let marks = monthlySundayMarks()
+                    AxisMarks(values: marks) { value in
+                        if let date = value.as(Date.self) {
+                            AxisValueLabel {
+                                Text(date, format: .dateTime.month(.abbreviated).day())
+                            }
+                        }
                     }
                 }
             }
@@ -819,22 +841,36 @@ struct DashboardView: View {
         }
     }
 
-    private func weeklySundayMarks() -> [Date] {
+    private func monthlySundayMarks() -> [Date] {
         guard let first = studyTrend.first?.day, let last = studyTrend.last?.day else { return [] }
         var calendar = Calendar.current
         calendar.firstWeekday = 1
         let start = calendar.startOfDay(for: first)
         let end = calendar.startOfDay(for: last)
+        
+        var marks: [Date] = []
+        
+        // Add first of month if it's in range
+        let components = calendar.dateComponents([.year, .month], from: start)
+        if let firstOfMonth = calendar.date(from: components), firstOfMonth >= start && firstOfMonth <= end {
+            marks.append(firstOfMonth)
+        }
+        
+        // Add all Sundays in range
         let weekday = calendar.component(.weekday, from: start)
         let daysToSunday = (7 + (1 - weekday)) % 7
-        guard var current = calendar.date(byAdding: .day, value: daysToSunday, to: start) else { return [] }
-        var marks: [Date] = []
+        guard var current = calendar.date(byAdding: .day, value: daysToSunday, to: start) else { return marks }
+        
         while current <= end {
-            marks.append(current)
+            // Don't duplicate if first of month is also a Sunday
+            if !marks.contains(where: { calendar.isDate($0, inSameDayAs: current) }) {
+                marks.append(current)
+            }
             guard let next = calendar.date(byAdding: .day, value: 7, to: current) else { break }
             current = next
         }
-        return marks
+        
+        return marks.sorted()
     }
 
     private func weeklyWorkloadBuckets() -> [WorkloadBucket] {
@@ -1070,7 +1106,7 @@ struct DashboardView: View {
 
     private var plannerTodayCard: some View {
         DashboardCard(
-            title: "Today",
+            title: NSLocalizedString("dashboard.section.today", comment: ""),
             isLoading: !isLoaded
         ) {
             let sessions = plannerSessionsToday
@@ -1087,12 +1123,12 @@ struct DashboardView: View {
             }
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Today's planner tasks")
+        .accessibilityLabelWithTooltip("Today's planner tasks")
     }
 
     private var workRemainingCard: some View {
         DashboardCard(
-            title: "Remaining",
+            title: NSLocalizedString("dashboard.section.remaining", comment: ""),
             isLoading: !isLoaded
         ) {
             let snapshot = remainingWorkSnapshot
@@ -1118,24 +1154,24 @@ struct DashboardView: View {
             }
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Work remaining")
+        .accessibilityLabelWithTooltip("Work remaining")
     }
 
     private var calendarCard: some View {
         DashboardCard(
-            title: "Calendar",
+            title: NSLocalizedString("dashboard.section.calendar", comment: ""),
             isLoading: !isLoaded
         ) {
             if calendarAuth.isDenied {
                 CalendarAccessBanner(
-                    title: "Calendar access is off",
+                    title: NSLocalizedString("dashboard.calendar.access_off", comment: ""),
                     message: "Enable access to show events and allow scheduling.",
                     actionTitle: "Open Settings",
                     action: { calendarAuth.openSettings() }
                 )
             } else if calendarAuth.isNotDetermined {
                 CalendarAccessBanner(
-                    title: "Calendar access is off",
+                    title: NSLocalizedString("dashboard.calendar.access_off", comment: ""),
                     message: "Enable access to show events and allow scheduling.",
                     actionTitle: "Allow Access",
                     action: {
@@ -1149,14 +1185,14 @@ struct DashboardView: View {
             Button {
                 appModel.selectedPage = .calendar
             } label: {
-                dashboardButtonLabel(title: "Open Calendar", systemImage: "arrow.right", trailingIcon: true)
+                dashboardButtonLabel(title: NSLocalizedString("dashboard.calendar.open_calendar", comment: ""), systemImage: "arrow.right", trailingIcon: true)
                     .font(.subheadline)
             }
             .buttonStyle(.plain)
             .foregroundStyle(.secondary)
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Calendar overview")
+        .accessibilityLabelWithTooltip("Calendar overview")
     }
 
 
@@ -1193,20 +1229,20 @@ struct DashboardView: View {
         return VStack(alignment: .leading, spacing: DesignSystem.Spacing.small) {
             if eventsTodayCount == 0 && dueToday == 0 {
                 DashboardEmptyState(
-                    title: "All Clear",
+                    title: NSLocalizedString("dashboard.empty.all_clear", comment: ""),
                     systemImage: "checkmark.circle.fill",
                     description: "Nothing scheduled for today"
                 )
             } else {
                 DashboardStatRow(
-                    label: "Events Today",
+                    label: NSLocalizedString("dashboard.label.events_today", comment: ""),
                     value: "\(eventsTodayCount)",
                     icon: "calendar",
                     valueColor: eventsTodayCount > 0 ? .blue : .secondary
                 )
                 
                 DashboardStatRow(
-                    label: "Tasks Due",
+                    label: NSLocalizedString("dashboard.label.tasks_due", comment: ""),
                     value: "\(dueToday)",
                     icon: "checkmark.circle",
                     valueColor: dueToday > 0 ? .orange : .secondary
@@ -1357,7 +1393,7 @@ struct DashboardView: View {
         .buttonStyle(.plain)
         .background(isSelected ? settings.activeAccentColor.opacity(0.2) : Color.clear)
         .cornerRadius(8)
-        .accessibilityLabel("Set energy level to \(title)")
+        .accessibilityLabelWithTooltip("Set energy level to \(title)")
     }
 
     private func dashboardButtonLabel(title: String, systemImage: String, trailingIcon: Bool = false) -> some View {

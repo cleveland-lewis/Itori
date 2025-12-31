@@ -43,14 +43,14 @@ struct PracticeTestResultsView: View {
             Button {
                 store.clearCurrentTest()
             } label: {
-                Label("Back to Tests", systemImage: "chevron.left")
+                Label(NSLocalizedString("practice.action.back_to_tests", comment: "Back to Tests"), systemImage: "chevron.left")
             }
             .buttonStyle(.plain)
             
             Spacer()
             
             VStack(spacing: 4) {
-                Text("Practice Test Results")
+                Text(NSLocalizedString("practice.results.title", comment: "Practice Test Results"))
                     .font(.headline)
                 
                 Text(test.courseName)
@@ -63,7 +63,7 @@ struct PracticeTestResultsView: View {
             Button {
                 retryTest()
             } label: {
-                Label("New Test", systemImage: "arrow.clockwise")
+                Label(NSLocalizedString("practice.action.new_test", comment: "New Test"), systemImage: "arrow.clockwise")
             }
             .buttonStyle(.bordered)
         }
@@ -83,7 +83,7 @@ struct PracticeTestResultsView: View {
                 
                 // Question list
                 VStack(spacing: 8) {
-                    Text("Review Questions")
+                    Text(NSLocalizedString("practice.results.review_questions", comment: "Review Questions"))
                         .font(.headline)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
@@ -111,7 +111,7 @@ struct PracticeTestResultsView: View {
                     .font(.system(size: 48, weight: .bold, design: .rounded))
                     .foregroundStyle(scoreColor)
                 
-                Text("Overall Score")
+                Text(NSLocalizedString("practice.results.overall_score", comment: "Overall Score"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -119,13 +119,13 @@ struct PracticeTestResultsView: View {
             // Correct/Total
             HStack(spacing: 20) {
                 statItem(
-                    label: "Correct",
+                    label: NSLocalizedString("practice.results.correct", comment: "Correct"),
                     value: "\(test.correctCount)",
                     color: .green
                 )
                 
                 statItem(
-                    label: "Incorrect",
+                    label: NSLocalizedString("practice.results.incorrect", comment: "Incorrect"),
                     value: "\(test.questions.count - test.correctCount)",
                     color: .red
                 )
@@ -177,10 +177,10 @@ struct PracticeTestResultsView: View {
     }
     
     private var performanceText: String {
-        if score >= 0.9 { return "Excellent!" }
-        if score >= 0.7 { return "Good Job!" }
-        if score >= 0.5 { return "Keep Practicing" }
-        return "Needs Improvement"
+        if score >= 0.9 { return NSLocalizedString("practice.results.performance.excellent", comment: "Excellent!") }
+        if score >= 0.7 { return NSLocalizedString("practice.results.performance.good", comment: "Good Job!") }
+        if score >= 0.5 { return NSLocalizedString("practice.results.performance.keep_practicing", comment: "Keep Practicing") }
+        return NSLocalizedString("practice.results.performance.needs_improvement", comment: "Needs Improvement")
     }
     
     private func questionResultButton(_ question: PracticeQuestion) -> some View {
@@ -194,7 +194,7 @@ struct PracticeTestResultsView: View {
                     .font(.title3)
                 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Q\(questionNumber(question))")
+                    Text(String(format: NSLocalizedString("practice.results.question_prefix", comment: "Q%d"), questionNumber(question)))
                         .font(.subheadline.bold())
                     
                     Text(question.format.rawValue)
@@ -226,7 +226,7 @@ struct PracticeTestResultsView: View {
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
             
-            Text("Select a question to review")
+            Text(NSLocalizedString("practice.empty.select_question", comment: "Select a question to review"))
                 .font(.headline)
                 .foregroundStyle(.secondary)
         }
@@ -239,7 +239,7 @@ struct PracticeTestResultsView: View {
                 // Question header
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text("Question \(questionNumber(question))")
+                        Text(String(format: NSLocalizedString("practice.results.question_number", comment: "Question %d"), questionNumber(question)))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         
@@ -257,7 +257,7 @@ struct PracticeTestResultsView: View {
                         // Correctness badge
                         HStack(spacing: 4) {
                             Image(systemName: questionIsCorrect(question) ? "checkmark.circle.fill" : "xmark.circle.fill")
-                            Text(questionIsCorrect(question) ? "Correct" : "Incorrect")
+                            Text(questionIsCorrect(question) ? NSLocalizedString("practice.results.status.correct", comment: "Correct") : NSLocalizedString("practice.results.status.incorrect", comment: "Incorrect"))
                         }
                         .font(.caption.bold())
                         .foregroundStyle(questionIsCorrect(question) ? .green : .red)
@@ -279,7 +279,7 @@ struct PracticeTestResultsView: View {
                 // User's answer
                 if let userAnswer = test.answers[question.id]?.userAnswer {
                     VStack(alignment: .leading, spacing: 12) {
-                        Label("Your Answer", systemImage: "person.fill")
+                        Label(NSLocalizedString("practice.results.your_answer", comment: "Your Answer"), systemImage: "person.fill")
                             .font(.headline)
                         
                         answerDisplay(question: question, answer: userAnswer, isUserAnswer: true)
@@ -294,7 +294,7 @@ struct PracticeTestResultsView: View {
                 // Correct answer
                 if !questionIsCorrect(question) {
                     VStack(alignment: .leading, spacing: 12) {
-                        Label("Correct Answer", systemImage: "checkmark.seal.fill")
+                        Label(NSLocalizedString("practice.results.correct_answer", comment: "Correct Answer"), systemImage: "checkmark.seal.fill")
                             .font(.headline)
                             .foregroundStyle(.green)
                         
@@ -309,7 +309,7 @@ struct PracticeTestResultsView: View {
                 
                 // Explanation
                 VStack(alignment: .leading, spacing: 12) {
-                    Label("Explanation", systemImage: "lightbulb.fill")
+                    Label(NSLocalizedString("practice.results.explanation", comment: "Explanation"), systemImage: "lightbulb.fill")
                         .font(.headline)
                         .foregroundStyle(.blue)
                     

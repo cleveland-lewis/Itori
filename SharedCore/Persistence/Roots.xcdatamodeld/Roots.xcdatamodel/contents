@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model name="Roots" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24553" systemVersion="24F74" minimumToolsVersion="Xcode 13.0" sourceLanguage="Swift">
+    <entity name="TimerSession" representedClassName="NSManagedObject" syncable="YES">
+        <attribute name="activityID" optional="YES" attributeType="UUID"/>
+        <attribute name="durationSeconds" optional="YES" attributeType="Double" defaultValueString="0"/>
+        <attribute name="endedAt" optional="YES" attributeType="Date"/>
+        <attribute name="id" optional="NO" attributeType="UUID"/>
+        <attribute name="mode" optional="YES" attributeType="String"/>
+        <attribute name="startedAt" optional="YES" attributeType="Date"/>
+    </entity>
+</model>

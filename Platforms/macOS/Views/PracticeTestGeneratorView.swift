@@ -42,9 +42,9 @@ struct PracticeTestGeneratorView: View {
     private var headerView: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Generate Practice Test")
+                Text(NSLocalizedString("practice.generator.title", comment: "Generate Practice Test"))
                     .font(.title2.bold())
-                Text("Configure your practice test parameters")
+                Text(NSLocalizedString("practice.generator.subtitle", comment: "Configure your practice test parameters"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -68,16 +68,16 @@ struct PracticeTestGeneratorView: View {
     
     private var courseSelectionSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Course", systemImage: "book.closed")
+            Label(NSLocalizedString("practice.generator.section.course", comment: "Course"), systemImage: "book.closed")
                 .font(.headline)
             
             if coursesStore.courses.isEmpty {
-                Text("No courses available. Please add a course first.")
+                Text(NSLocalizedString("practice.generator.course.no_courses", comment: "No courses available. Please add a course first."))
                     .foregroundStyle(.secondary)
                     .font(.caption)
             } else {
-                Picker("Select Course", selection: $selectedCourse) {
-                    Text("Select a course").tag(nil as Course?)
+                Picker(NSLocalizedString("practice.generator.course.select", comment: "Select Course"), selection: $selectedCourse) {
+                    Text(NSLocalizedString("practice.generator.course.select", comment: "Select a course")).tag(nil as Course?)
                     ForEach(coursesStore.courses) { course in
                         Text(course.code).tag(course as Course?)
                     }
@@ -91,10 +91,10 @@ struct PracticeTestGeneratorView: View {
     
     private var topicsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Topics (Optional)", systemImage: "tag")
+            Label(NSLocalizedString("practice.generator.section.topics", comment: "Topics (Optional)"), systemImage: "tag")
                 .font(.headline)
             
-            Text("Specify topics to focus on, or leave blank for general practice")
+            Text(NSLocalizedString("practice.generator.topics.help", comment: "Specify topics to focus on, or leave blank for general practice"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             
@@ -109,11 +109,11 @@ struct PracticeTestGeneratorView: View {
             }
             
             HStack {
-                TextField("Add topic", text: $customTopic)
+                TextField(NSLocalizedString("practice.generator.topics.add_field", comment: "Add topic"), text: $customTopic)
                     .textFieldStyle(.roundedBorder)
                     .onSubmit(addCustomTopic)
                 
-                Button("Add") {
+                Button(NSLocalizedString("practice.generator.topics.add_button", comment: "Add")) {
                     addCustomTopic()
                 }
                 .disabled(customTopic.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -151,15 +151,15 @@ struct PracticeTestGeneratorView: View {
     
     private var settingsSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Label("Settings", systemImage: "slider.horizontal.3")
+            Label(NSLocalizedString("practice.generator.section.settings", comment: "Settings"), systemImage: "slider.horizontal.3")
                 .font(.headline)
             
             // Difficulty
             VStack(alignment: .leading, spacing: 8) {
-                Text("Difficulty")
+                Text(NSLocalizedString("practice.generator.difficulty.label", comment: "Difficulty"))
                     .font(.subheadline.bold())
                 
-                Picker("Difficulty", selection: $difficulty) {
+                Picker(NSLocalizedString("practice.generator.difficulty.label", comment: "Difficulty"), selection: $difficulty) {
                     ForEach(PracticeTestDifficulty.allCases) { level in
                         Text(level.rawValue).tag(level)
                     }
@@ -170,14 +170,14 @@ struct PracticeTestGeneratorView: View {
             // Question Count
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    Text("Number of Questions")
+                    Text(NSLocalizedString("practice.generator.question_count.label", comment: "Number of Questions"))
                         .font(.subheadline.bold())
                     Spacer()
                     Text("\(questionCount)")
                         .foregroundStyle(.secondary)
                 }
                 
-                Picker("Question Count", selection: $questionCount) {
+                Picker(NSLocalizedString("practice.generator.question_count.label", comment: "Question Count"), selection: $questionCount) {
                     ForEach(questionCountOptions, id: \.self) { count in
                         Text("\(count)").tag(count)
                     }
@@ -191,18 +191,18 @@ struct PracticeTestGeneratorView: View {
     
     private var questionTypesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Question Types", systemImage: "list.bullet.circle")
+            Label(NSLocalizedString("practice.generator.section.question_types", comment: "Question Types"), systemImage: "list.bullet.circle")
                 .font(.headline)
             
-            Text("Select at least one question type")
+            Text(NSLocalizedString("practice.generator.types.help", comment: "Select at least one question type"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             
             Toggle(isOn: $includeMultipleChoice) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Multiple Choice")
+                    Text(NSLocalizedString("practice.generator.types.multiple_choice", comment: "Multiple Choice"))
                         .font(.subheadline)
-                    Text("Select from 4 options")
+                    Text(NSLocalizedString("practice.generator.types.multiple_choice_desc", comment: "Select from 4 options"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -210,9 +210,9 @@ struct PracticeTestGeneratorView: View {
             
             Toggle(isOn: $includeShortAnswer) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Short Answer")
+                    Text(NSLocalizedString("practice.generator.types.short_answer", comment: "Short Answer"))
                         .font(.subheadline)
-                    Text("Brief written responses")
+                    Text(NSLocalizedString("practice.generator.types.short_answer_desc", comment: "Brief written responses"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -220,9 +220,9 @@ struct PracticeTestGeneratorView: View {
             
             Toggle(isOn: $includeExplanation) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Explanation")
+                    Text(NSLocalizedString("practice.generator.types.explanation", comment: "Explanation"))
                         .font(.subheadline)
-                    Text("Detailed explanations with examples")
+                    Text(NSLocalizedString("practice.generator.types.explanation_desc", comment: "Detailed explanations with examples"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -234,14 +234,14 @@ struct PracticeTestGeneratorView: View {
     
     private var bottomBar: some View {
         HStack {
-            Button("Cancel") {
+            Button(NSLocalizedString("practice.action.cancel", comment: "Cancel")) {
                 dismiss()
             }
             .keyboardShortcut(.cancelAction)
             
             Spacer()
             
-            Button("Generate Test") {
+            Button(NSLocalizedString("practice.action.generate", comment: "Generate Test")) {
                 generateTest()
             }
             .buttonStyle(.borderedProminent)
