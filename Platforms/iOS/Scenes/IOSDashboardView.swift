@@ -13,6 +13,8 @@ struct IOSDashboardView: View {
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var deviceCalendar: DeviceCalendarManager
     @EnvironmentObject private var settings: AppSettingsModel
+    @EnvironmentObject private var sheetRouter: IOSSheetRouter
+    @EnvironmentObject private var navigation: IOSNavigationCoordinator
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @ObservedObject private var plannerStore = PlannerStore.shared
     @ObservedObject private var calendarAuth = CalendarAuthorizationManager.shared
@@ -262,7 +264,7 @@ struct IOSDashboardView: View {
             VStack(alignment: .leading, spacing: 12) {
                 cardHeader(title: "Upcoming Assignments", trailing: AnyView(
                     Button {
-                        // TODO: Hook into add assignment flow
+                        presentAddAssignment()
                     } label: {
                         Image(systemName: "plus")
                             .font(.headline)
@@ -278,7 +280,7 @@ struct IOSDashboardView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Button("Add Assignment") {
-                            // TODO: Hook into add assignment flow
+                            presentAddAssignment()
                         }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.small)
@@ -293,7 +295,7 @@ struct IOSDashboardView: View {
                     HStack {
                         Spacer()
                         Button("View All") {
-                            // TODO: Hook into assignments navigation
+                            openAssignments()
                         }
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
@@ -348,6 +350,21 @@ struct IOSDashboardView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
+    }
+
+    private func presentAddAssignment() {
+        let defaults = IOSSheetRouter.TaskDefaults(
+            courseId: nil,
+            dueDate: Date(),
+            title: "",
+            type: .homework,
+            itemLabel: NSLocalizedString("ios.item.assignment", value: "Assignment", comment: "Assignment")
+        )
+        sheetRouter.activeSheet = .addAssignment(defaults)
+    }
+
+    private func openAssignments() {
+        navigation.open(page: .assignments, starredTabs: settings.starredTabs)
     }
 
     private var calendarCard: some View {

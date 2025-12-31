@@ -61,7 +61,8 @@ struct GradesPageView: View {
 
                     adaptiveColumns(width: proxy.size.width)
                 }
-                .padding(16)
+                .padding(.horizontal, RootsSpacing.pagePadding)
+                .padding(.vertical, RootsSpacing.l)
             }
             .rootsSystemBackground()
         }

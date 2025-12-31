@@ -132,6 +132,7 @@ struct AssignmentsPageView: View {
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var appModel: AppModel
+    @EnvironmentObject private var settingsCoordinator: SettingsCoordinator
 
     @State private var assignments: [Assignment] = []
     @State private var courseDeletedCancellable: AnyCancellable? = nil
@@ -178,7 +179,8 @@ struct AssignmentsPageView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
-            .padding(RootsSpacing.l)
+            .padding(.horizontal, RootsSpacing.pagePadding)
+            .padding(.vertical, RootsSpacing.l)
             .rootsSystemBackground()
         }
         .tint(.blue)
@@ -559,7 +561,7 @@ struct AssignmentsPageView: View {
             let days = max(1, profile.spreadDaysBeforeDue)
             DebugLogger.log("Auto-plan for '\(assignment.title)': Typical: \(computedSessions) × \(suggestedLen) min across \(days) days (category: \(assignment.category.localizedName))")
 
-            // TODO: integrate with Planner engine to actually schedule SuggestedBlocks
+            AssignmentPlansStore.shared.generatePlan(for: assignment, force: true)
         }
     }
 
@@ -1131,7 +1133,7 @@ struct AssignmentDetailPanel: View {
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                     Button("assignments.detail.timer".localized) {
-                        // TODO: open Timer with this assignment
+                        appModel.selectedPage = .timer
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.small)
@@ -1399,7 +1401,7 @@ struct AssignmentEditorSheet: View {
                     Text("assignments.editor.course.empty".localized)
                         .foregroundStyle(.secondary)
                     Button("assignments.editor.course.add".localized) {
-                        // TODO: open Settings → Courses
+                        settingsCoordinator.show(selecting: .courses)
                     }
                     .buttonStyle(.link)
                 }

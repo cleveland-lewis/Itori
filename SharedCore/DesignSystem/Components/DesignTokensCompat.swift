@@ -18,6 +18,7 @@ enum RootsSpacing {
     static let l: CGFloat = 16
     static let xl: CGFloat = 24
     static let section: CGFloat = 40
+    static let pagePadding: CGFloat = 20  // Consistent horizontal page padding for macOS
 }
 
 // MARK: - Radius

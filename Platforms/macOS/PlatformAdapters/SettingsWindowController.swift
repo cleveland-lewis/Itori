@@ -176,8 +176,8 @@ final class SettingsWindowController: NSWindowController {
 
     @available(*, unavailable, message: "Use init(appSettings:coursesStore:coordinator:) instead")
     required init?(coder: NSCoder) {
-        // NSCoder init is never used - this class is created programmatically
-        fatalError("init(coder:) has not been implemented - use designated initializer")
+        assertionFailure("init(coder:) has not been implemented - use designated initializer")
+        return nil
     }
 
     func showSettings() {

@@ -109,8 +109,8 @@ struct CoursesPageView: View {
                             .frame(maxWidth: .infinity, alignment: .topLeading)
                             .layoutPriority(2)
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
+                    .padding(.horizontal, RootsSpacing.pagePadding)
+                    .padding(.vertical, RootsSpacing.l)
                 } else {
                     HStack(alignment: .top, spacing: RootsSpacing.l) {
                         sidebarView
@@ -121,8 +121,8 @@ struct CoursesPageView: View {
                             .frame(maxWidth: .infinity, alignment: .topLeading)
                             .layoutPriority(2)
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
+                    .padding(.horizontal, RootsSpacing.pagePadding)
+                    .padding(.vertical, RootsSpacing.l)
                 }
             }
         }

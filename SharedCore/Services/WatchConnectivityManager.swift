@@ -81,9 +81,12 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
     
     // MARK: - Transfer User Info
     
-    func transferUserInfo(_ userInfo: [String: Any]) -> WCSessionUserInfoTransfer {
+    func transferUserInfo(_ userInfo: [String: Any]) -> WCSessionUserInfoTransfer? {
         guard let session = session else {
-            fatalError("Session not available")
+            #if DEBUG
+            print("⚠️  WatchConnectivityManager: Session not available - user info not transferred")
+            #endif
+            return nil
         }
         
         let transfer = session.transferUserInfo(userInfo)

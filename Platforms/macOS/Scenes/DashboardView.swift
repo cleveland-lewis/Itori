@@ -34,7 +34,7 @@ struct DashboardView: View {
 
     // Layout tokens
     private let cardSpacing: CGFloat = DesignSystem.Spacing.large
-    private let contentPadding: CGFloat = DesignSystem.Spacing.large
+    private let contentPadding: CGFloat = RootsSpacing.pagePadding
     private let bottomDockClearancePadding: CGFloat = 100
     
     private var shouldShowProductivityInsights: Bool {

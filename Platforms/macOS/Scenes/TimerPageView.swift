@@ -637,8 +637,8 @@ struct TimerPageView: View {
                     // Add bottomSummary
                     bottomSummary
                 }
-                .padding(.horizontal, 32)
-                .padding(.vertical, 24)
+                .padding(.horizontal, RootsSpacing.pagePadding)
+                .padding(.vertical, RootsSpacing.l)
             }
         }
         .onAppear {

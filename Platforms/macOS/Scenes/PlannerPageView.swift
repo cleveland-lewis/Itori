@@ -394,7 +394,7 @@ struct PlannerPageView: View {
                                 .frame(minWidth: 280, idealWidth: 320, maxWidth: 360, alignment: .top)
                         }
                     }
-                    .padding(.horizontal, DesignSystem.Layout.padding.window)
+                    .padding(.horizontal, RootsSpacing.pagePadding)
                     .padding(.bottom, DesignSystem.Layout.spacing.large)
                 }
                 .onReceive(plannerCoordinator.$requestedDate) { date in
@@ -791,7 +791,7 @@ private extension PlannerPageView {
                             OverdueTaskRow(item: item,
                                            onTap: {
                                                if item.isScheduled {
-                                                   // TODO: scroll/focus timeline
+                                                   plannerCoordinator.openPlanner(for: selectedDate, courseId: item.courseId)
                                                } else {
                                                    let recurrenceDefaults = recurrenceDefaults(from: recurrenceForTask(item.id))
                                                    editingTaskDraft = PlannerTaskDraft(
