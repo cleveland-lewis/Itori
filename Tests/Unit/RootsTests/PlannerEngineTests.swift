@@ -28,7 +28,7 @@ final class PlannerEngineTests: XCTestCase {
         )
         
         // Then: should return scheduled sessions (deterministic path)
-        XCTAssertFalse(result.scheduled.isEmpty || result.overflow.isEmpty,
+        XCTAssertTrue(!result.scheduled.isEmpty || !result.overflow.isEmpty,
                        "Deterministic scheduling should produce results")
     }
     

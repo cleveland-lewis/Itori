@@ -9,7 +9,7 @@ struct AssignmentPlanEngineTests {
     
     @Test func testDeterministicPlanGeneration() async throws {
         let assignmentId = UUID(uuidString: "12345678-1234-1234-1234-123456789012")!
-        let dueDate = Calendar.current.date(from: DateComponents(year: 2025, month: 12, day: 31))!
+        let dueDate = Calendar.current.date(from: DateComponents(year: 2026, month: 6, day: 15))!
         
         let assignment = Assignment(
             id: assignmentId,
@@ -37,7 +37,7 @@ struct AssignmentPlanEngineTests {
     }
     
     @Test func testDeterministicExamPlan() async throws {
-        let dueDate = Calendar.current.date(from: DateComponents(year: 2025, month: 12, day: 25))!
+        let dueDate = Calendar.current.date(from: DateComponents(year: 2026, month: 6, day: 15))!
         let assignment = Assignment(
             id: UUID(),
             courseId: nil,

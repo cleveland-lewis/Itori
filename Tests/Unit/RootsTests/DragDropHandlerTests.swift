@@ -39,7 +39,7 @@ final class DragDropHandlerTests: XCTestCase {
 
     func testScheduleAssignmentOpensPlannerForDueDate() {
         let coordinator = PlannerCoordinator()
-        let dueDate = Date()
+        let dueDate = Calendar.current.date(from: DateComponents(year: 2026, month: 6, day: 15))!
         let assignment = AppTask(
             id: UUID(),
             title: "Group presentation",
@@ -61,6 +61,7 @@ final class DragDropHandlerTests: XCTestCase {
         let scheduledDate = DragDropHandler.scheduleAssignment(payload, plannerCoordinator: coordinator)
 
         XCTAssertEqual(scheduledDate, dueDate)
+        XCTAssertNotNil(coordinator.requestedDate)
         XCTAssertEqual(coordinator.requestedDate, dueDate)
     }
 }

@@ -64,7 +64,7 @@ struct LocalizationManager {
     /// Validate that a string is not a localization key
     static func isLocalizationKey(_ text: String) -> Bool {
         // Check for key-like patterns
-        let hasMultipleDots = text.components(separatedBy: ".").count > 2
+        let hasMultipleDots = text.components(separatedBy: ".").count >= 2
         let hasUnderscore = text.contains("_")
         let hasNoSpaces = !text.contains(" ")
         let isLowercase = text.lowercased() == text

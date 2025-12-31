@@ -355,13 +355,19 @@ final class PersistenceController {
     private func touchTimestamps(in context: NSManagedObjectContext) {
         let now = Date()
         for object in context.insertedObjects {
-            if object.value(forKey: "createdAt") == nil {
+            // Only set timestamps if the entity has these attributes
+            if object.entity.attributesByName["createdAt"] != nil,
+               object.value(forKey: "createdAt") == nil {
                 object.setValue(now, forKey: "createdAt")
             }
-            object.setValue(now, forKey: "updatedAt")
+            if object.entity.attributesByName["updatedAt"] != nil {
+                object.setValue(now, forKey: "updatedAt")
+            }
         }
         for object in context.updatedObjects {
-            object.setValue(now, forKey: "updatedAt")
+            if object.entity.attributesByName["updatedAt"] != nil {
+                object.setValue(now, forKey: "updatedAt")
+            }
         }
     }
 }

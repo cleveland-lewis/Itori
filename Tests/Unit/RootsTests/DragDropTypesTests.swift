@@ -39,7 +39,8 @@ final class DragDropTypesTests: XCTestCase {
         XCTAssertEqual(transferable.id, taskId.uuidString)
         XCTAssertEqual(transferable.title, "Math Homework")
         XCTAssertEqual(transferable.courseId, courseId.uuidString)
-        XCTAssertEqual(transferable.dueDate, dueDate)
+        // AppTask normalizes dates to start of day
+        XCTAssertEqual(transferable.dueDate, Calendar.current.startOfDay(for: dueDate))
         XCTAssertEqual(transferable.estimatedMinutes, 120)
     }
     
