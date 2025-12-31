@@ -79,8 +79,8 @@ public final class LocalModelManager: ObservableObject {
         downloadProgress[type] = 0.0
         
         do {
-            let url = modelURL(for: type)
-            let destination = localPath(for: type)
+            _ = modelURL(for: type)
+            _ = localPath(for: type)
             
             // TODO: Implement actual download with progress tracking
             // For now, simulate download
