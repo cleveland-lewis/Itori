@@ -54,25 +54,25 @@ struct MockDataFactory {
     func createHomeworkTask() -> AppTask {
         createTask(
             title: "Math Homework",
-            type: .homework,
-            estimatedMinutes: 90
+            estimatedMinutes: 90,
+            type: .homework
         )
     }
     
     func createQuizTask() -> AppTask {
         createTask(
             title: "Physics Quiz Prep",
-            type: .quiz,
-            estimatedMinutes: 45
+            estimatedMinutes: 45,
+            type: .quiz
         )
     }
     
     func createExamTask() -> AppTask {
         createTask(
             title: "History Exam Review",
-            type: .exam,
             estimatedMinutes: 180,
-            importance: 0.9
+            importance: 0.9,
+            type: .exam
         )
     }
     
@@ -85,7 +85,7 @@ struct MockDataFactory {
         semesterId: UUID? = nil,
         instructor: String = "Dr. Test",
         location: String = "Room 101",
-        colorTag: ColorTag = .blue,
+        colorHex: String? = nil,
         isArchived: Bool = false
     ) -> Course {
         Course(
@@ -93,10 +93,10 @@ struct MockDataFactory {
             title: title,
             code: code,
             semesterId: semesterId ?? UUID(),
+            colorHex: colorHex,
+            isArchived: isArchived,
             instructor: instructor,
-            location: location,
-            colorTag: colorTag,
-            isArchived: isArchived
+            location: location
         )
     }
     
@@ -104,21 +104,20 @@ struct MockDataFactory {
     
     func createSemester(
         id: UUID = UUID(),
-        term: SemesterTerm = .fall,
+        term: SemesterType = .fall,
         academicYear: String? = nil,
         startDate: Date? = nil,
         endDate: Date? = nil
     ) -> Semester {
-        let year = academicYear ?? "2024"
         let start = startDate ?? date(year: 2024, month: 9, day: 1)
         let end = endDate ?? date(year: 2024, month: 12, day: 20)
         
         return Semester(
             id: id,
-            semesterTerm: term,
-            academicYear: year,
             startDate: start,
-            endDate: end
+            endDate: end,
+            semesterTerm: term,
+            academicYear: academicYear
         )
     }
     
@@ -126,42 +125,19 @@ struct MockDataFactory {
     
     func createTimerSession(
         id: UUID = UUID(),
-        activityID: UUID? = nil,
-        mode: TimerMode = .pomodoro,
-        plannedDuration: TimeInterval? = 1500, // 25 minutes
-        startedAt: Date? = nil,
-        endedAt: Date? = nil,
-        state: FocusSession.State = .completed,
-        actualDuration: TimeInterval? = nil
-    ) -> FocusSession {
-        FocusSession(
+        activityID: UUID,
+        mode: LocalTimerMode = .pomodoro,
+        startDate: Date? = nil,
+        endDate: Date? = nil,
+        duration: TimeInterval = 1500 // 25 minutes
+    ) -> LocalTimerSession {
+        LocalTimerSession(
             id: id,
             activityID: activityID,
             mode: mode,
-            plannedDuration: plannedDuration,
-            startedAt: startedAt ?? Date(),
-            endedAt: endedAt,
-            state: state,
-            actualDuration: actualDuration
-        )
-    }
-    
-    // MARK: - Planner Block Creation
-    
-    func createPlannerBlock(
-        taskId: UUID,
-        startDate: Date? = nil,
-        durationMinutes: Int = 60,
-        dayIndex: Int = 0
-    ) -> PlannedBlock {
-        let start = startDate ?? Date()
-        return PlannedBlock(
-            id: UUID(),
-            taskId: taskId,
-            startDate: start,
-            endDate: start.addingTimeInterval(TimeInterval(durationMinutes * 60)),
-            dayIndex: dayIndex,
-            isLocked: false
+            startDate: startDate ?? Date(),
+            endDate: endDate,
+            duration: duration
         )
     }
     
@@ -173,7 +149,7 @@ struct MockDataFactory {
         startDate: Date? = nil,
         endDate: Date? = nil,
         isAllDay: Bool = false,
-        source: EventSource = .roots
+        source: EventSource = .calendar
     ) -> FixedEvent {
         let start = startDate ?? Date()
         let end = endDate ?? start.addingTimeInterval(3600) // 1 hour
@@ -181,9 +157,9 @@ struct MockDataFactory {
         return FixedEvent(
             id: id,
             title: title,
-            startDate: start,
-            endDate: end,
-            isAllDay: isAllDay,
+            start: start,
+            end: end,
+            isLocked: false,
             source: source
         )
     }
@@ -191,18 +167,15 @@ struct MockDataFactory {
     // MARK: - Recurrence Rule Creation
     
     func createRecurrenceRule(
-        frequency: RecurrenceFrequency = .weekly,
+        frequency: RecurrenceRule.Frequency = .weekly,
         interval: Int = 1,
-        daysOfWeek: [Weekday]? = nil,
-        endDate: Date? = nil,
-        occurrenceCount: Int? = nil
+        end: RecurrenceRule.End = .never
     ) -> RecurrenceRule {
         RecurrenceRule(
             frequency: frequency,
             interval: interval,
-            daysOfWeek: daysOfWeek,
-            endDate: endDate,
-            occurrenceCount: occurrenceCount
+            end: end,
+            skipPolicy: RecurrenceRule.SkipPolicy()
         )
     }
     
@@ -210,21 +183,17 @@ struct MockDataFactory {
     
     func createPracticeTest(
         id: UUID = UUID(),
-        courseId: UUID,
         title: String = "Practice Test",
-        topics: [String] = ["Topic 1", "Topic 2"],
-        questionCount: Int = 10,
-        status: PracticeTestStatus = .draft
-    ) -> PracticeTest {
-        PracticeTest(
+        subject: String = "Test Subject",
+        scheduledAt: Date? = nil,
+        difficulty: Int = 3
+    ) -> ScheduledPracticeTest {
+        ScheduledPracticeTest(
             id: id,
-            courseId: courseId,
             title: title,
-            topics: topics,
-            questions: [],
-            createdAt: Date(),
-            updatedAt: Date(),
-            status: status
+            subject: subject,
+            scheduledAt: scheduledAt ?? Date(),
+            difficulty: difficulty
         )
     }
     

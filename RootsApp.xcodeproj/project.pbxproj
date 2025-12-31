@@ -299,6 +299,21 @@
 				de,
 				nl,
 				Base,
+				ja,
+				it,
+				sv,
+				"pt-BR",
+				tr,
+				"zh-HK",
+				fi,
+				da,
+				hi,
+				ko,
+				ru,
+				es,
+				th,
+				uk,
+				pl,
 			);
 			mainGroup = 1AD7D42B2EDD328800D403F3;
 			minimizedProjectReferenceProxies = 1;

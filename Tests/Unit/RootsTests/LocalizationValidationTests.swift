@@ -75,7 +75,7 @@ final class LocalizationValidationTests: XCTestCase {
         let categories: [AssignmentCategory] = [.homework, .quiz, .exam, .reading, .review, .project]
         
         for category in categories {
-            let name = category.localizedName
+            let name = category.displayName
             XCTAssertFalse(LocalizationManager.isLocalizationKey(name),
                           "🚨 CRITICAL: AssignmentCategory localization looks like a key: '\(name)'")
             XCTAssertFalse(name.isEmpty, "Category name must not be empty")

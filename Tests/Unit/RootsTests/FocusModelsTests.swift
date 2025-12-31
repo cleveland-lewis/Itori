@@ -263,7 +263,7 @@ final class FocusModelsTests: BaseTestCase {
             category: "General",
             courseCode: nil,
             assignmentTitle: nil,
-            colorTag: .gray,
+            colorTag: .blue,
             isPinned: false,
             totalTrackedSeconds: 0,
             todayTrackedSeconds: 0
