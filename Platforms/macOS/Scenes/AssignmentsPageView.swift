@@ -951,6 +951,7 @@ struct AssignmentDetailPanel: View {
     var onEdit: (Assignment) -> Void
     var onDelete: (Assignment) -> Void
     @EnvironmentObject private var plannerCoordinator: PlannerCoordinator
+    @EnvironmentObject private var appModel: AppModel
 
     private let cardCorner: CGFloat = 24
 
@@ -1230,6 +1231,7 @@ struct AssignmentDetailPanel: View {
 struct AssignmentEditorSheet: View {
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var coursesStore: CoursesStore
+    @EnvironmentObject private var settingsCoordinator: SettingsCoordinator
 
     var assignment: Assignment?
     var onSave: (Assignment) -> Void

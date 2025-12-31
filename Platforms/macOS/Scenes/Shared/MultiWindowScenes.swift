@@ -30,7 +30,7 @@ struct CourseSceneContent: View {
             if let course = course {
                 List {
                     Section(header: Text("Course Details")) {
-                        infoRow(label: "Code", value: course.code.isEmpty ? "TBD" : course.code)
+                        infoRow(label: "Code", value: course.code.isEmpty ? "Not set" : course.code)
                         infoRow(label: "Title", value: course.title)
                         infoRow(label: "Semester", value: semester?.name ?? "Not set")
                         if let location = course.location, !location.isEmpty {
