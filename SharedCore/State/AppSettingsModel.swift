@@ -368,8 +368,8 @@ final class AppSettingsModel: ObservableObject, Codable {
     var sidebarBehaviorRaw: String = SidebarBehavior.automatic.rawValue
     var wiggleOnHoverStorage: Bool = true
     var tabBarModeRaw: String = TabBarMode.iconsAndText.rawValue
-    var visibleTabsRaw: String = "dashboard,calendar,planner,assignments,courses,grades,timer,decks"
-    var tabOrderRaw: String = "dashboard,calendar,planner,assignments,courses,grades,timer,decks"
+    var visibleTabsRaw: String = "dashboard,calendar,planner,assignments,courses,grades,timer,flashcards,practice"
+    var tabOrderRaw: String = "dashboard,calendar,planner,assignments,courses,grades,timer,flashcards,practice"
     var quickActionsRaw: String = "add_assignment,add_course,quick_note"
     var enableGlassEffectsStorage: Bool = true
     var cardRadiusRaw: String = CardRadius.medium.rawValue
@@ -1326,8 +1326,8 @@ final class AppSettingsModel: ObservableObject, Codable {
         sidebarBehaviorRaw = try container.decodeIfPresent(String.self, forKey: .sidebarBehaviorRaw) ?? SidebarBehavior.automatic.rawValue
         wiggleOnHoverStorage = try container.decodeIfPresent(Bool.self, forKey: .wiggleOnHoverStorage) ?? true
         tabBarModeRaw = try container.decodeIfPresent(String.self, forKey: .tabBarModeRaw) ?? TabBarMode.iconsAndText.rawValue
-        visibleTabsRaw = try container.decodeIfPresent(String.self, forKey: .visibleTabsRaw) ?? "dashboard,calendar,planner,assignments,courses,grades,timer,decks"
-        tabOrderRaw = try container.decodeIfPresent(String.self, forKey: .tabOrderRaw) ?? "dashboard,calendar,planner,assignments,courses,grades,timer,decks"
+        visibleTabsRaw = try container.decodeIfPresent(String.self, forKey: .visibleTabsRaw) ?? "dashboard,calendar,planner,assignments,courses,grades,timer,flashcards,practice"
+        tabOrderRaw = try container.decodeIfPresent(String.self, forKey: .tabOrderRaw) ?? "dashboard,calendar,planner,assignments,courses,grades,timer,flashcards,practice"
         quickActionsRaw = try container.decodeIfPresent(String.self, forKey: .quickActionsRaw) ?? "add_assignment,add_course,quick_note"
         enableGlassEffectsStorage = try container.decodeIfPresent(Bool.self, forKey: .enableGlassEffectsStorage) ?? true
         cardRadiusRaw = try container.decodeIfPresent(String.self, forKey: .cardRadiusRaw) ?? CardRadius.medium.rawValue
