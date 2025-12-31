@@ -222,7 +222,7 @@ final class StorageSafetyTests: XCTestCase {
     func testRecurrenceEndUntilDateIsInclusive() {
         let calendar = Calendar.current
         let baseDate = calendar.startOfDay(for: Date())
-        let endDate = calendar.date(byAdding: .day, value: 1, to: baseDate) ?? baseDate
+        let endDate = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: baseDate) ?? baseDate)
         let rule = RecurrenceRule(frequency: .daily, interval: 1, end: .until(endDate), skipPolicy: .init())
         let task = AppTask(
             id: UUID(),
