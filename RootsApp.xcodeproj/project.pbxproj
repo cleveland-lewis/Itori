@@ -45,6 +45,26 @@
 		9BBB386A3C3046FCA7A3D6DB /* RootsWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RootsWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1A9FC3972F05C23400832365 /* Exceptions for "SharedCore" folder in "Roots" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				DesignSystem/Localizable.xcstrings,
+			);
+			target = 1AD7D4332EDD328800D403F3 /* Roots */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		1A9FC3982F05C23400832365 /* Exceptions for "SharedCore" folder in "Compile Sources" phase from "Roots" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 1AD7D4302EDD328800D403F3 /* Sources */;
+			membershipExceptions = (
+				DesignSystem/Localizable.xcstrings,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0C39BF544BB34BC69FE56ED2 /* Platforms/watchOS */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -63,6 +83,10 @@
 		};
 		1AD7D46B2EDD328800D403F3 /* SharedCore */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				1A9FC3972F05C23400832365 /* Exceptions for "SharedCore" folder in "Roots" target */,
+				1A9FC3982F05C23400832365 /* Exceptions for "SharedCore" folder in "Compile Sources" phase from "Roots" target */,
+			);
 			path = SharedCore;
 			sourceTree = "<group>";
 		};
@@ -267,18 +291,13 @@
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				"zh-Hans",
-				"zh-Hant",
 				en,
 				Base,
-				es,
-				fr,
-				it,
-				ru,
-				de,
 				ar,
-				is,
-				nl,
+				"zh-Hans",
+				"zh-Hant",
+				fr,
+				de,
 			);
 			mainGroup = 1AD7D42B2EDD328800D403F3;
 			minimizedProjectReferenceProxies = 1;

@@ -4,7 +4,16 @@
     " ": {},
     "—": {},
     "·": {},
-    "· %@": {},
+    "· %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·%@"
+          }
+        }
+      }
+    },
     "· %@ %@": {
       "localizations": {
         "en": {
@@ -12,10 +21,25 @@
             "state": "new",
             "value": "· %1$@ %2$@"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· %1$@ %2$@"
+          }
         }
       }
     },
-    "· %@ credits": {},
+    "· %@ credits": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· %@ 学分"
+          }
+        }
+      }
+    },
     "· ~%@ %@": {
       "localizations": {
         "en": {
@@ -23,10 +47,25 @@
             "state": "new",
             "value": "· ~%1$@ %2$@"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· ~%1$@ %2$@"
+          }
         }
       }
     },
-    "· Target: %@%%": {},
+    "· Target: %@%%": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· 目标： ％@％％"
+          }
+        }
+      }
+    },
     "(%@-%@)": {
       "localizations": {
         "en": {
@@ -34,17 +73,47 @@
             "state": "new",
             "value": "(%1$@-%2$@)"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(%1$@-%2$@)"
+          }
         }
       }
     },
-    "(%@)": {},
-    "[%@]": {},
+    "(%@)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(%@)"
+          }
+        }
+      }
+    },
+    "[%@]": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "[%@]"
+          }
+        }
+      }
+    },
     "%@": {},
     "%@ – %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "new",
+            "value": "%1$@ – %2$@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
             "value": "%1$@ – %2$@"
           }
         }
@@ -57,6 +126,12 @@
             "state": "new",
             "value": "%1$@ · %2$@"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@·%2$@"
+          }
         }
       }
     },
@@ -65,6 +140,12 @@
         "en": {
           "stringUnit": {
             "state": "new",
+            "value": "%1$@ / %2$@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
             "value": "%1$@ / %2$@"
           }
         }
@@ -77,15 +158,75 @@
             "state": "new",
             "value": "%1$@ %2$@"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
         }
       }
     },
-    "%@ cards": {},
-    "%@ cards due": {},
-    "%@ min": {},
-    "%@ min completed": {},
-    "%@ min remaining": {},
-    "%@ min total": {},
+    "%@ cards": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 卡"
+          }
+        }
+      }
+    },
+    "%@ cards due": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 张卡到期"
+          }
+        }
+      }
+    },
+    "%@ min": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 分钟"
+          }
+        }
+      }
+    },
+    "%@ min completed": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 分钟已完成"
+          }
+        }
+      }
+    },
+    "%@ min remaining": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 剩余分钟数"
+          }
+        }
+      }
+    },
+    "%@ min total": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 最少总计"
+          }
+        }
+      }
+    },
     "%@ minutes · %@": {
       "localizations": {
         "en": {
@@ -93,10 +234,25 @@
             "state": "new",
             "value": "%1$@ minutes · %2$@"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ 分钟·%2$@"
+          }
         }
       }
     },
-    "%@ occurrences": {},
+    "%@ occurrences": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 出现次数"
+          }
+        }
+      }
+    },
     "%@ of %@ approved": {
       "localizations": {
         "en": {
@@ -104,17 +260,47 @@
             "state": "new",
             "value": "%1$@ of %2$@ approved"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%2$@ 中的 %1$@ 已获得批准"
+          }
         }
       }
     },
-    "%@ running": {},
-    "%@ studied": {},
+    "%@ running": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "％@ 跑步"
+          }
+        }
+      }
+    },
+    "%@ studied": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 已学习"
+          }
+        }
+      }
+    },
     "%@: %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "new",
             "value": "%1$@: %2$@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@：%2$@"
           }
         }
       }
@@ -124,6 +310,12 @@
         "en": {
           "stringUnit": {
             "state": "new",
+            "value": "%1$@/%2$@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
             "value": "%1$@/%2$@"
           }
         }
@@ -136,16 +328,66 @@
             "state": "new",
             "value": "%1$@/%2$@ steps"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@/%2$@步"
+          }
         }
       }
     },
-    "%@%%": {},
-    "%@h": {},
-    "%@h total": {},
-    "%@m": {},
+    "%@%%": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@%%"
+          }
+        }
+      }
+    },
+    "%@h": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@h"
+          }
+        }
+      }
+    },
+    "%@h total": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@h 总计"
+          }
+        }
+      }
+    },
+    "%@m": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@米"
+          }
+        }
+      }
+    },
     "•": {
       "comment": "A bullet point used in lists.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "•"
+          }
+        }
+      }
     },
     "• %@ %@": {
       "localizations": {
@@ -154,43 +396,258 @@
             "state": "new",
             "value": "• %1$@ %2$@"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "• %1$@ %2$@"
+          }
         }
       }
     },
-    "+ %@ more weeks": {},
-    "+%@ more": {},
-    ">": {},
-    "● %@": {},
-    "🔧 Phase 6.7: TextEditor with custom Binding ADDED": {},
-    "🧪 Phase 5.7: FULL TimerCoreCard with FIXED circles": {},
-    "🚧 Timer Page - Phase 6.7": {},
+    "+ %@ more weeks": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ %@ 还有几周"
+          }
+        }
+      }
+    },
+    "+%@ more": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%@更多"
+          }
+        }
+      }
+    },
+    ">": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ">"
+          }
+        }
+      }
+    },
+    "● %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "●%@"
+          }
+        }
+      }
+    },
+    "🔧 Phase 6.7: TextEditor with custom Binding ADDED": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🔧 阶段 6.7：添加了自定义绑定的 TextEditor"
+          }
+        }
+      }
+    },
+    "🧪 Phase 5.7: FULL TimerCoreCard with FIXED circles": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🧪 阶段 5.7：带有固定圆圈的完整 TimerCoreCard"
+          }
+        }
+      }
+    },
+    "🚧 Timer Page - Phase 6.7": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🚧 计时器页面 - 阶段 6.7"
+          }
+        }
+      }
+    },
     "1 day before": {
       "comment": "A time option for when to receive assignment reminders.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1天前"
+          }
+        }
+      }
     },
-    "1 hour before": {},
-    "1 Month": {},
-    "1 Week": {},
-    "1. Click the button below to open System Settings.": {},
-    "2 hours before": {},
-    "2 Months": {},
-    "2 Weeks": {},
-    "2. Find 'Roots' in the list.": {},
-    "3. Toggle the switch to ON.": {},
+    "1 hour before": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1小时前"
+          }
+        }
+      }
+    },
+    "1 Month": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1个月"
+          }
+        }
+      }
+    },
+    "1 Week": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1周"
+          }
+        }
+      }
+    },
+    "1. Click the button below to open System Settings.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. 单击下面的按钮打开系统设置。"
+          }
+        }
+      }
+    },
+    "2 hours before": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2小时前"
+          }
+        }
+      }
+    },
+    "2 Months": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2个月"
+          }
+        }
+      }
+    },
+    "2 Weeks": {
+      "comment": "2 Weeks",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 Semanas"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2周"
+          }
+        }
+      }
+    },
+    "2. Find 'Roots' in the list.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2. 在列表中找到“根”。"
+          }
+        }
+      }
+    },
+    "3. Toggle the switch to ON.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3. 将开关切换至“开”位置。"
+          }
+        }
+      }
+    },
     "4. Return here to sync.": {
       "comment": "A final piece of text in the permission help popup, instructing the user to return to the app to sync their data.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4. 返回此处进行同步。"
+          }
+        }
+      }
     },
-    "12-hour": {},
-    "15 minutes before": {},
-    "24-hour": {},
-    "30 minutes before": {},
+    "12-hour": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "12小时"
+          }
+        }
+      }
+    },
+    "15 minutes before": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "15分钟前"
+          }
+        }
+      }
+    },
+    "24-hour": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "24小时"
+          }
+        }
+      }
+    },
+    "30 minutes before": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30分钟前"
+          }
+        }
+      }
+    },
     "Academic": {
       "localizations": {
         "is": {
           "stringUnit": {
             "state": "translated",
             "value": "Námslegur"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学术的"
           }
         }
       }
@@ -202,6 +659,12 @@
             "state": "translated",
             "value": "Námsár"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学年"
+          }
         }
       }
     },
@@ -211,6 +674,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aðgangi hafnað"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "拒绝访问"
           }
         }
       }
@@ -222,6 +691,12 @@
             "state": "translated",
             "value": "Aðgengi"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无障碍"
+          }
         }
       }
     },
@@ -231,6 +706,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aðgengisvilluleitartól"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "辅助功能调试工具"
           }
         }
       }
@@ -242,6 +723,12 @@
             "state": "translated",
             "value": "Reikningastjórnun kemur í framtíðaruppfærslu."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "帐户管理将在未来的更新中实现。"
+          }
         }
       }
     },
@@ -251,6 +738,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reikningar"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "账户"
           }
         }
       }
@@ -262,6 +755,12 @@
             "state": "translated",
             "value": "Virkir áfangar"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "活跃课程"
+          }
         }
       }
     },
@@ -271,6 +770,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Virkt önn"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "活跃学期"
           }
         }
       }
@@ -282,6 +787,12 @@
             "state": "translated",
             "value": "Virkar annir"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "活跃学期"
+          }
         }
       }
     },
@@ -291,6 +802,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Virk undirkerfi"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "活动子系统"
           }
         }
       }
@@ -304,17 +821,47 @@
             "state": "translated",
             "value": "Athafnir"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "活动"
+          }
         }
       }
     },
-    "Activities: %@": {},
-    "Activity:": {},
+    "Activities: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "活动： ％@"
+          }
+        }
+      }
+    },
+    "Activity:": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "活动："
+          }
+        }
+      }
+    },
     "Add a due date to enable recurrence.": {
       "localizations": {
         "is": {
           "stringUnit": {
             "state": "translated",
             "value": "Bættu við skiladegi til að virkja endurtekningu."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加截止日期以启用重复。"
           }
         }
       }
@@ -325,6 +872,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bættu við verkefni til að sjá það hér."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加作业以在此处查看。"
           }
         }
       }
@@ -338,6 +891,12 @@
             "state": "translated",
             "value": "Bæta við verkefni"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加作业"
+          }
         }
       }
     },
@@ -347,6 +906,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bættu við verkefnum til að sjá áætlanir þeirra"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加作业以查看他们的计划"
           }
         }
       }
@@ -358,6 +923,12 @@
             "state": "translated",
             "value": "Bæta við spjaldi"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加卡"
+          }
         }
       }
     },
@@ -367,6 +938,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bæta við áfanga"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加课程"
           }
         }
       }
@@ -378,6 +955,12 @@
             "state": "translated",
             "value": "Bæta við einkunn"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加成绩"
+          }
         }
       }
     },
@@ -387,6 +970,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bæta við fundi"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加会话"
           }
         }
       }
@@ -398,6 +987,12 @@
             "state": "translated",
             "value": "Bæta við í dagatal"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加到日历"
+          }
         }
       }
     },
@@ -407,6 +1002,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bættu við fyrsta minnismiðanum til að byrja að læra"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加您的第一张抽认卡以开始学习"
           }
         }
       }
@@ -418,6 +1019,12 @@
             "state": "translated",
             "value": "Stilltu sjónræna styrkleika glers og efnisáhrifa"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "调整玻璃和材质效果的视觉强度"
+          }
         }
       }
     },
@@ -427,6 +1034,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ítarlegt"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "先进的"
           }
         }
       }
@@ -438,6 +1051,12 @@
             "state": "translated",
             "value": "Ítarlegt tól til að greina þráðastíflu, langar aðgerðir og minnismál."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用于检测主线程块、长操作和内存问题的高级工具。"
+          }
         }
       }
     },
@@ -447,6 +1066,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Eftir"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "后"
           }
         }
       }
@@ -465,6 +1090,12 @@
             "state": "translated",
             "value": "Descanso"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "休息"
+          }
         }
       }
     },
@@ -481,6 +1112,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pausar"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂停"
           }
         }
       }
@@ -499,6 +1136,12 @@
             "state": "translated",
             "value": "Pausado"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已暂停"
+          }
         }
       }
     },
@@ -515,6 +1158,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reanudar"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "恢复"
           }
         }
       }
@@ -533,6 +1182,12 @@
             "state": "translated",
             "value": "Detener"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止"
+          }
         }
       }
     },
@@ -550,6 +1205,12 @@
             "state": "translated",
             "value": "Trabajo"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "工作"
+          }
         }
       }
     },
@@ -559,6 +1220,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Allt"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部"
           }
         }
       }
@@ -570,6 +1237,12 @@
             "state": "translated",
             "value": "Allar athafnir"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有活动"
+          }
         }
       }
     },
@@ -580,10 +1253,25 @@
             "state": "translated",
             "value": "Öll spjöld eru uppfærð!"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有卡都是最新的！"
+          }
         }
       }
     },
-    "All caught up!": {},
+    "All caught up!": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "都追上了！"
+          }
+        }
+      }
+    },
     "All LLM features are disabled. Planning and parsing use deterministic algorithms only.": {
       "localizations": {
         "is": {
@@ -591,12 +1279,45 @@
             "state": "translated",
             "value": "Öll LLM virkni er óvirk. Áætlanagerð og þáttun nota eingöngu ákveðin reiknirit."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有 LLM 功能均被禁用。规划和解析仅使用确定性算法。"
+          }
         }
       }
     },
-    "All subsystems are actively logging when Developer Mode is enabled.": {},
-    "All systems look healthy.": {},
-    "All-day": {},
+    "All subsystems are actively logging when Developer Mode is enabled.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当开发者模式启用时，所有子系统都会主动记录日志。"
+          }
+        }
+      }
+    },
+    "All systems look healthy.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有系统看起来都很健康。"
+          }
+        }
+      }
+    },
+    "All-day": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全天"
+          }
+        }
+      }
+    },
     "Allowed hours: %@:00–%@:00": {
       "localizations": {
         "en": {
@@ -604,21 +1325,87 @@
             "state": "new",
             "value": "Allowed hours: %1$d:00–%2$d:00"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "允许的时间：%1$d:00–%2$d:00"
+          }
         }
       }
     },
-    "Always display the navigation sidebar on iPad": {},
-    "Always hidden": {},
-    "Always visible": {},
-    "Animation softness": {},
-    "Animation:": {},
-    "Animations: %@": {},
+    "Always display the navigation sidebar on iPad": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 iPad 上始终显示导航侧边栏"
+          }
+        }
+      }
+    },
+    "Always hidden": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "始终隐藏"
+          }
+        }
+      }
+    },
+    "Always visible": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "始终可见"
+          }
+        }
+      }
+    },
+    "Animation softness": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "动画柔软度"
+          }
+        }
+      }
+    },
+    "Animation:": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "动画片："
+          }
+        }
+      }
+    },
+    "Animations: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "动画：%@"
+          }
+        }
+      }
+    },
     "Answer": {
       "localizations": {
         "is": {
           "stringUnit": {
             "state": "translated",
             "value": "Svar"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回答"
           }
         }
       }
@@ -630,10 +1417,25 @@
             "state": "translated",
             "value": "Upplýsingar um forrit"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "应用程序信息"
+          }
         }
       }
     },
-    "App Version": {},
+    "App Version": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "应用程序版本"
+          }
+        }
+      }
+    },
     "Appearance": {
       "localizations": {
         "is": {
@@ -641,15 +1443,75 @@
             "state": "translated",
             "value": "Útlit"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "外观"
+          }
         }
       }
     },
-    "Apple Services": {},
-    "Archive settings coming soon": {},
-    "ARCHIVED": {},
-    "Archived Courses": {},
-    "Assignment detail will appear here.": {},
-    "Assignment Plans": {},
+    "Apple Services": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "苹果服务"
+          }
+        }
+      }
+    },
+    "Archive settings coming soon": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "存档设置即将推出"
+          }
+        }
+      }
+    },
+    "ARCHIVED": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "存档"
+          }
+        }
+      }
+    },
+    "Archived Courses": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "存档课程"
+          }
+        }
+      }
+    },
+    "Assignment detail will appear here.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "作业详细信息将显示在此处。"
+          }
+        }
+      }
+    },
+    "Assignment Plans": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分配计划"
+          }
+        }
+      }
+    },
     "Assignments": {
       "localizations": {
         "is": {
@@ -657,11 +1519,35 @@
             "state": "translated",
             "value": "Verkefni"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "作业"
+          }
         }
       }
     },
-    "Assignments Due Today": {},
-    "Assignments left today:": {},
+    "Assignments Due Today": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天到期的作业"
+          }
+        }
+      }
+    },
+    "Assignments left today:": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天剩下的作业："
+          }
+        }
+      }
+    },
     "assignments.action.add": {
       "localizations": {
         "en": {
@@ -757,6 +1643,12 @@
             "state": "new",
             "value": "New Assignment"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新任务"
+          }
         }
       }
     },
@@ -788,6 +1680,12 @@
           "stringUnit": {
             "state": "new",
             "value": "Plan Day"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "计划日"
           }
         }
       }
@@ -821,6 +1719,12 @@
             "state": "new",
             "value": "Choose an assignment to view details"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择作业以查看详细信息"
+          }
         }
       }
     },
@@ -830,6 +1734,12 @@
           "stringUnit": {
             "state": "new",
             "value": "Select an assignment"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择作业"
           }
         }
       }
@@ -1259,6 +2169,12 @@
             "state": "new",
             "value": "Search assignments"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜索作业"
+          }
         }
       }
     },
@@ -1268,6 +2184,12 @@
           "stringUnit": {
             "state": "new",
             "value": "By Course"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按课程分类"
           }
         }
       }
@@ -1323,6 +2245,12 @@
             "state": "new",
             "value": "Missed"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "错过了"
+          }
         }
       }
     },
@@ -1332,6 +2260,12 @@
           "stringUnit": {
             "state": "new",
             "value": "Today"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天"
           }
         }
       }
@@ -1383,6 +2317,12 @@
             "state": "new",
             "value": "Upcoming Load"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "即将到来的负载"
+          }
         }
       }
     },
@@ -1392,6 +2332,12 @@
           "stringUnit": {
             "state": "new",
             "value": "All"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部"
           }
         }
       }
@@ -1403,6 +2349,12 @@
             "state": "new",
             "value": "Completed"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完全的"
+          }
         }
       }
     },
@@ -1412,6 +2364,12 @@
           "stringUnit": {
             "state": "new",
             "value": "Assignments"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "作业"
           }
         }
       }
@@ -1423,6 +2381,12 @@
             "state": "new",
             "value": "Upcoming"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "即将推出"
+          }
         }
       }
     },
@@ -1432,6 +2396,12 @@
           "stringUnit": {
             "state": "new",
             "value": "Course"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程"
           }
         }
       }
@@ -1443,6 +2413,12 @@
             "state": "new",
             "value": "Due Date"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "到期日"
+          }
         }
       }
     },
@@ -1452,6 +2428,12 @@
           "stringUnit": {
             "state": "new",
             "value": "Sort"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "种类"
           }
         }
       }
@@ -1463,6 +2445,12 @@
             "state": "new",
             "value": "Urgency"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "紧迫性"
+          }
         }
       }
     },
@@ -1472,6 +2460,12 @@
           "stringUnit": {
             "state": "new",
             "value": "Assignments due"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "作业到期"
           }
         }
       }
@@ -1483,6 +2477,12 @@
             "state": "new",
             "value": "%d due · %d planned · %d remaining"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d 到期 · %d 计划 · 剩余 %d"
+          }
         }
       }
     },
@@ -1493,11 +2493,35 @@
             "state": "new",
             "value": "Overdue assignments"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "逾期作业"
+          }
         }
       }
     },
-    "ATTACHMENTS": {},
-    "Auto-collapse": {},
+    "ATTACHMENTS": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "附件"
+          }
+        }
+      }
+    },
+    "Auto-collapse": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自动折叠"
+          }
+        }
+      }
+    },
     "Auto-Reschedule": {
       "localizations": {
         "is": {
@@ -1505,20 +2529,97 @@
             "state": "translated",
             "value": "Sjálfvirk endurtímasetning"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自动重新安排"
+          }
         }
       }
     },
-    "Auto-Reschedule Counters": {},
-    "Auto-Reschedule Debugging": {},
-    "Auto-Reschedule Enabled:": {},
-    "Auto-Reschedule Invariant Counters": {},
-    "Available Subsystems": {},
-    "Blocks: %@": {},
+    "Auto-Reschedule Counters": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自动重新安排柜台"
+          }
+        }
+      }
+    },
+    "Auto-Reschedule Debugging": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自动重新安排调试"
+          }
+        }
+      }
+    },
+    "Auto-Reschedule Enabled:": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启用自动重新安排："
+          }
+        }
+      }
+    },
+    "Auto-Reschedule Invariant Counters": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自动重新安排不变计数器"
+          }
+        }
+      }
+    },
+    "Available Subsystems": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可用的子系统"
+          }
+        }
+      }
+    },
+    "Blocks: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "块：%@"
+          }
+        }
+      }
+    },
     "Body example": {
       "comment": "A text example used in the body typography category of the design tokens.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "身体示例"
+          }
+        }
+      }
     },
-    "Build Number": {},
+    "Build Number": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "内部版本号"
+          }
+        }
+      }
+    },
     "By Course": {
       "localizations": {
         "is": {
@@ -1526,11 +2627,35 @@
             "state": "translated",
             "value": "Eftir áfanga"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "按课程分类"
+          }
         }
       }
     },
-    "Cache": {},
-    "Calendar and Reminders integration options": {},
+    "Cache": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "缓存"
+          }
+        }
+      }
+    },
+    "Calendar and Reminders integration options": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日历和提醒集成选项"
+          }
+        }
+      }
+    },
     "calendar.debug.events_count": {
       "localizations": {
         "en": {
@@ -2089,13 +3214,28 @@
         }
       }
     },
-    "Caption example": {},
+    "Caption example": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "标题示例"
+          }
+        }
+      }
+    },
     "Cards": {
       "localizations": {
         "is": {
           "stringUnit": {
             "state": "translated",
             "value": "Spjöld"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "牌"
           }
         }
       }
@@ -2107,6 +3247,12 @@
             "state": "translated",
             "value": "Flokkar"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "类别"
+          }
         }
       }
     },
@@ -2117,20 +3263,125 @@
             "state": "translated",
             "value": "Flokkur"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "类别"
+          }
         }
       }
     },
-    "Category Chart": {},
-    "Charts framework unavailable": {},
-    "Check Interval": {},
-    "Choose a course from the sidebar to view details": {},
-    "Choose how Roots reacts to system appearance changes.": {},
-    "Choose what the app icon badge count represents": {},
-    "Choose which pages appear in the floating tab bar and reorder them.": {},
-    "Clear all debug logs and analytics data stored on your device.": {},
-    "Clear Debug Logs": {},
-    "Clock format": {},
-    "Cognitive Preferences": {},
+    "Category Chart": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "类别图表"
+          }
+        }
+      }
+    },
+    "Charts framework unavailable": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "图表框架不可用"
+          }
+        }
+      }
+    },
+    "Check Interval": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "检查间隔"
+          }
+        }
+      }
+    },
+    "Choose a course from the sidebar to view details": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从侧边栏选择课程以查看详细信息"
+          }
+        }
+      }
+    },
+    "Choose how Roots reacts to system appearance changes.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择 Roots 对系统外观变化的反应方式。"
+          }
+        }
+      }
+    },
+    "Choose what the app icon badge count represents": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择应用程序图标徽章计数代表的内容"
+          }
+        }
+      }
+    },
+    "Choose which pages appear in the floating tab bar and reorder them.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择浮动选项卡栏中显示的页面并对它们重新排序。"
+          }
+        }
+      }
+    },
+    "Clear all debug logs and analytics data stored on your device.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除设备上存储的所有调试日志和分析数据。"
+          }
+        }
+      }
+    },
+    "Clear Debug Logs": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除调试日志"
+          }
+        }
+      }
+    },
+    "Clock format": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "时钟格式"
+          }
+        }
+      }
+    },
+    "Cognitive Preferences": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "认知偏好"
+          }
+        }
+      }
+    },
     "Colors": {
       "localizations": {
         "is": {
@@ -2138,11 +3389,35 @@
             "state": "translated",
             "value": "Litir"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "颜色"
+          }
         }
       }
     },
-    "Common MLX models:": {},
-    "Common Ollama models:": {},
+    "Common MLX models:": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "常见MLX型号："
+          }
+        }
+      }
+    },
+    "Common Ollama models:": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "常见Ollama型号："
+          }
+        }
+      }
+    },
     "common.button.cancel": {
       "localizations": {
         "en": {
@@ -2246,7 +3521,16 @@
       }
     },
     "common.button.next": {},
-    "common.button.previous": {},
+    "common.button.previous": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "common.button.previous"
+          }
+        }
+      }
+    },
     "common.button.save": {
       "localizations": {
         "en": {
@@ -2335,6 +3619,12 @@
             "state": "translated",
             "value": "Отмена"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
+          }
         }
       }
     },
@@ -2379,8 +3669,26 @@
         }
       }
     },
-    "Compact Density: %@": {},
-    "Compact Mode": {},
+    "Compact Density: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "压实密度：%@"
+          }
+        }
+      }
+    },
+    "Compact Mode": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "紧凑模式"
+          }
+        }
+      }
+    },
     "Completed": {
       "localizations": {
         "is": {
@@ -2388,19 +3696,115 @@
             "state": "translated",
             "value": "Lokið"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已完成"
+          }
         }
       }
     },
-    "Configure how assignments are automatically scheduled": {},
-    "Configure Pomodoro work/break durations and iteration behavior. Changes apply to new timer sessions.": {},
-    "Configure the quick actions shown under the + button in the top-left of the app.": {},
-    "Configure when and how Roots sends you notifications.": {},
-    "Conflicts (%@)": {},
-    "Connect with third-party services for additional features": {},
-    "Connected": {},
-    "Content Start Line: %@pt": {},
-    "Control how Roots uses your data and manages privacy-sensitive features.": {},
-    "Corners & Spacing": {},
+    "Configure how assignments are automatically scheduled": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "配置如何自动安排分配"
+          }
+        }
+      }
+    },
+    "Configure Pomodoro work/break durations and iteration behavior. Changes apply to new timer sessions.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "配置番茄工作/休息持续时间和迭代行为。更改适用于新的计时器会话。"
+          }
+        }
+      }
+    },
+    "Configure the quick actions shown under the + button in the top-left of the app.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "配置应用程序左上角 + 按钮下显示的快速操作。"
+          }
+        }
+      }
+    },
+    "Configure when and how Roots sends you notifications.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "配置 Roots 向您发送通知的时间和方式。"
+          }
+        }
+      }
+    },
+    "Conflicts (%@)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "冲突 (%@)"
+          }
+        }
+      }
+    },
+    "Connect with third-party services for additional features": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "与第三方服务连接以获得附加功能"
+          }
+        }
+      }
+    },
+    "Connected": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已连接"
+          }
+        }
+      }
+    },
+    "Content Start Line: %@pt": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "内容起始行：%@pt"
+          }
+        }
+      }
+    },
+    "Control how Roots uses your data and manages privacy-sensitive features.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "控制 Roots 如何使用您的数据并管理隐私敏感功能。"
+          }
+        }
+      }
+    },
+    "Corners & Spacing": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "角点和间距"
+          }
+        }
+      }
+    },
     "Course Details": {
       "comment": "A section header in the course details view.",
       "isCommentAutoGenerated": true,
@@ -2410,18 +3814,77 @@
             "state": "translated",
             "value": "Upplýsingar um áfanga"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程详情"
+          }
         }
       }
     },
-    "Course Management": {},
-    "Course management coming soon": {},
-    "Course Materials": {},
+    "Course Management": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程管理"
+          }
+        }
+      }
+    },
+    "Course management coming soon": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程管理即将推出"
+          }
+        }
+      }
+    },
+    "Course Materials": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程资料"
+          }
+        }
+      }
+    },
     "Course Materials & Syllabus": {
       "comment": "A header for the section of a course detail view that lists attachments, including syllabi.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程材料和教学大纲"
+          }
+        }
+      }
     },
-    "Course Overview": {},
-    "Course: %@": {},
+    "Course Overview": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程概览"
+          }
+        }
+      }
+    },
+    "Course: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程： ％@"
+          }
+        }
+      }
+    },
     "Courses": {
       "localizations": {
         "is": {
@@ -2429,14 +3892,37 @@
             "state": "translated",
             "value": "Áfangar"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程"
+          }
         }
       }
     },
     "Courses in this semester": {
       "comment": "A label displayed above the list of courses in the current semester.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本学期课程"
+          }
+        }
+      }
     },
-    "Courses: %@": {},
+    "Courses: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程：%@"
+          }
+        }
+      }
+    },
     "courses.action.edit_courses": {
       "localizations": {
         "en": {
@@ -3719,11 +5205,56 @@
         }
       }
     },
-    "Create a plan for this assignment to manage task dependencies": {},
-    "Create an assignment plan to enable task dependencies": {},
-    "Create and manage academic semesters": {},
-    "Create modules, units, sections, chapters, and lessons to organize your course content.": {},
-    "Create your first deck to start studying with spaced repetition": {},
+    "Create a plan for this assignment to manage task dependencies": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "为此分配创建计划以管理任务依赖性"
+          }
+        }
+      }
+    },
+    "Create an assignment plan to enable task dependencies": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "创建分配计划以启用任务依赖性"
+          }
+        }
+      }
+    },
+    "Create and manage academic semesters": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "创建和管理学术学期"
+          }
+        }
+      }
+    },
+    "Create modules, units, sections, chapters, and lessons to organize your course content.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "创建模块、单元、部分、章节和课程来组织您的课程内容。"
+          }
+        }
+      }
+    },
+    "Create your first deck to start studying with spaced repetition": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "创建你的第一套牌，开始间隔重复学习"
+          }
+        }
+      }
+    },
     "Creating %@ questions for %@": {
       "localizations": {
         "en": {
@@ -3731,16 +5262,85 @@
             "state": "new",
             "value": "Creating %1$@ questions for %2$@"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "为%2$@创建%1$@问题"
+          }
         }
       }
     },
-    "CSV format ready for Anki import": {},
-    "Cumulative: %.2f": {},
-    "CURRENT": {},
-    "Current Activity": {},
-    "Current Grade": {},
-    "Current Profile": {},
-    "Current semester": {},
+    "CSV format ready for Anki import": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CSV 格式可供 Anki 导入"
+          }
+        }
+      }
+    },
+    "Cumulative: %.2f": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "累计：%.2f"
+          }
+        }
+      }
+    },
+    "CURRENT": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前的"
+          }
+        }
+      }
+    },
+    "Current Activity": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前活动"
+          }
+        }
+      }
+    },
+    "Current Grade": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前年级"
+          }
+        }
+      }
+    },
+    "Current Profile": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前简介"
+          }
+        }
+      }
+    },
+    "Current semester": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本学期"
+          }
+        }
+      }
+    },
     "Current Semester": {
       "localizations": {
         "is": {
@@ -3748,21 +5348,107 @@
             "state": "translated",
             "value": "Núverandi önn"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本学期"
+          }
         }
       }
     },
-    "Current System Settings": {},
-    "Current: —": {},
-    "Current: %.2f": {},
-    "Current: %@": {},
-    "Current: %@%%": {},
-    "Custom colors override the built-in palette.": {},
+    "Current System Settings": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前系统设置"
+          }
+        }
+      }
+    },
+    "Current: —": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前的： -"
+          }
+        }
+      }
+    },
+    "Current: %.2f": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "电流：%.2f"
+          }
+        }
+      }
+    },
+    "Current: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前的： ％@"
+          }
+        }
+      }
+    },
+    "Current: %@%%": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前的： ％@％％"
+          }
+        }
+      }
+    },
+    "Custom colors override the built-in palette.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自定义颜色会覆盖内置调色板。"
+          }
+        }
+      }
+    },
     "Customize your study preferences based on your peak productivity times.": {
       "comment": "A footer description under the \"Cognitive Preferences\" section of the Study Coach settings.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "根据您的最高生产力时间定制您的学习偏好。"
+          }
+        }
+      }
     },
-    "Daily limits and study options": {},
-    "Dark glass strength": {},
+    "Daily limits and study options": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每日限制和学习选择"
+          }
+        }
+      }
+    },
+    "Dark glass strength": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "深色玻璃强度"
+          }
+        }
+      }
+    },
     "dashboard.active_assignments": {
       "localizations": {
         "en": {
@@ -3776,6 +5462,12 @@
             "state": "translated",
             "value": "Активные задания"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "活动作业"
+          }
         }
       }
     },
@@ -3786,6 +5478,12 @@
             "state": "translated",
             "value": "Add an assignment to see it here."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加作业以在此处查看。"
+          }
         }
       }
     },
@@ -3795,6 +5493,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No upcoming assignments"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有即将到来的任务"
           }
         }
       }
@@ -3916,6 +5620,12 @@
             "state": "translated",
             "value": "Calendar access denied"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日历访问被拒绝"
+          }
         }
       }
     },
@@ -3948,6 +5658,12 @@
             "state": "translated",
             "value": "Connect your calendar to see events"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "连接您的日历以查看活动"
+          }
         }
       }
     },
@@ -3958,6 +5674,12 @@
             "state": "translated",
             "value": "Open Calendar"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开日历"
+          }
         }
       }
     },
@@ -3967,6 +5689,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "View All Events (%d)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查看所有事件 (%d)"
           }
         }
       }
@@ -3983,6 +5711,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Срок сегодня"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天到期"
           }
         }
       }
@@ -4066,6 +5800,12 @@
             "state": "translated",
             "value": "Уровень энергии"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "能级"
+          }
         }
       }
     },
@@ -4142,6 +5882,12 @@
             "state": "translated",
             "value": "How's your energy today?"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天你的精力怎么样？"
+          }
         }
       }
     },
@@ -4157,6 +5903,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "События сегодня"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日活动"
           }
         }
       }
@@ -4256,6 +6008,12 @@
             "state": "translated",
             "value": "%d min completed"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已完成 %d 分钟"
+          }
         }
       }
     },
@@ -4265,6 +6023,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No plan time available yet"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有可用的计划时间"
           }
         }
       }
@@ -4276,6 +6040,12 @@
             "state": "translated",
             "value": "No planned tasks today"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天没有计划任务"
+          }
         }
       }
     },
@@ -4285,6 +6055,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%d min remaining"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剩余 %d 分钟"
           }
         }
       }
@@ -4522,17 +6298,95 @@
             "state": "translated",
             "value": "Сегодня / Фокус"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日/焦点"
+          }
         }
       }
     },
-    "Debug Logging": {},
-    "Debug Options": {},
-    "Debugger Activated": {},
-    "Deck Name": {},
-    "Deck Settings": {},
-    "Design": {},
-    "Design debug": {},
-    "Design Tokens": {},
+    "Debug Logging": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "调试日志记录"
+          }
+        }
+      }
+    },
+    "Debug Options": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "调试选项"
+          }
+        }
+      }
+    },
+    "Debugger Activated": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "调试器已激活"
+          }
+        }
+      }
+    },
+    "Deck Name": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "卡组名称"
+          }
+        }
+      }
+    },
+    "Deck Settings": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "牌组设置"
+          }
+        }
+      }
+    },
+    "Design": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设计"
+          }
+        }
+      }
+    },
+    "Design debug": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设计调试"
+          }
+        }
+      }
+    },
+    "Design Tokens": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设计代币"
+          }
+        }
+      }
+    },
     "Details": {
       "localizations": {
         "is": {
@@ -4540,17 +6394,47 @@
             "state": "translated",
             "value": "Upplýsingar"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "细节"
+          }
         }
       }
     },
-    "DETAILS": {},
-    "Developer Mode": {},
+    "DETAILS": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "细节"
+          }
+        }
+      }
+    },
+    "Developer Mode": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开发者模式"
+          }
+        }
+      }
+    },
     "Difficulty": {
       "localizations": {
         "is": {
           "stringUnit": {
             "state": "translated",
             "value": "Erfiðleikastig"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "困难"
           }
         }
       }
@@ -4562,10 +6446,25 @@
             "state": "translated",
             "value": "Búið"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完成"
+          }
         }
       }
     },
-    "Due %@": {},
+    "Due %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "到期的 ％@"
+          }
+        }
+      }
+    },
     "Due Date": {
       "localizations": {
         "is": {
@@ -4573,16 +6472,37 @@
             "state": "translated",
             "value": "Skiladagur"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "到期日"
+          }
         }
       }
     },
-    "Due Now": {},
+    "Due Now": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "现在到期"
+          }
+        }
+      }
+    },
     "Duration": {
       "localizations": {
         "is": {
           "stringUnit": {
             "state": "translated",
             "value": "Tímalengd"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "期间"
           }
         }
       }
@@ -4594,11 +6514,35 @@
             "state": "translated",
             "value": "Breyta"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "编辑"
+          }
         }
       }
     },
-    "Edit Card": {},
-    "Education Level": {},
+    "Edit Card": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "编辑卡"
+          }
+        }
+      }
+    },
+    "Education Level": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "教育程度"
+          }
+        }
+      }
+    },
     "Email": {
       "localizations": {
         "is": {
@@ -4606,29 +6550,167 @@
             "state": "translated",
             "value": "Tölvupóstur"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "电子邮件"
+          }
         }
       }
     },
-    "Enable debugging features": {},
-    "Enable Flashcards": {},
-    "Enable Haptic Feedback": {},
-    "Enable optional UI animations (still respects Reduce Motion)": {},
-    "Enable the debugger to track main thread blocks, long operations, and performance issues.": {},
-    "End date": {},
-    "End time must be after the start time.": {},
-    "Ends": {},
-    "Energy Level": {},
-    "Energy: %@": {},
-    "Estimated": {},
-    "Estimation Factors": {},
-    "Event Buffer (Last 50)": {},
-    "Events (%@)": {},
+    "Enable debugging features": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启用调试功能"
+          }
+        }
+      }
+    },
+    "Enable Flashcards": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启用抽认卡"
+          }
+        }
+      }
+    },
+    "Enable Haptic Feedback": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启用触觉反馈"
+          }
+        }
+      }
+    },
+    "Enable optional UI animations (still respects Reduce Motion)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启用可选的 UI 动画（仍然遵循“减少运动”）"
+          }
+        }
+      }
+    },
+    "Enable the debugger to track main thread blocks, long operations, and performance issues.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使调试器能够跟踪主线程块、长时间操作和性能问题。"
+          }
+        }
+      }
+    },
+    "End date": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "结束日期"
+          }
+        }
+      }
+    },
+    "End time must be after the start time.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "结束时间必须晚于开始时间。"
+          }
+        }
+      }
+    },
+    "Ends": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "结束"
+          }
+        }
+      }
+    },
+    "Energy Level": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "能级"
+          }
+        }
+      }
+    },
+    "Energy: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "活力： ％@"
+          }
+        }
+      }
+    },
+    "Estimated": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "估计的"
+          }
+        }
+      }
+    },
+    "Estimation Factors": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "估计因素"
+          }
+        }
+      }
+    },
+    "Event Buffer (Last 50)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "事件缓冲区（最后 50 个）"
+          }
+        }
+      }
+    },
+    "Events (%@)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "事件 (%@)"
+          }
+        }
+      }
+    },
     "Every %@ %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "new",
             "value": "Every %1$@ %2$@"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每%1$@ %2$@"
           }
         }
       }
@@ -4640,6 +6722,12 @@
             "state": "translated",
             "value": "Próf"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "考试"
+          }
         }
       }
     },
@@ -4650,17 +6738,67 @@
             "state": "translated",
             "value": "Próf"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "考试"
+          }
         }
       }
     },
-    "Expected average on remaining work": {},
-    "Expected: 0 provider attempts when toggle is OFF": {},
-    "Export to Anki": {},
+    "Expected average on remaining work": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剩余工作的预期平均数"
+          }
+        }
+      }
+    },
+    "Expected: 0 provider attempts when toggle is OFF": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "预期：当切换关闭时，提供程序尝试 0 次"
+          }
+        }
+      }
+    },
+    "Export to Anki": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "导出到 Anki"
+          }
+        }
+      }
+    },
     "External Services": {
       "comment": "The header for the section that lists external services.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "外部服务"
+          }
+        }
+      }
     },
-    "Fall 2025": {},
+    "Fall 2025": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2025 年秋季"
+          }
+        }
+      }
+    },
     "Filters": {
       "localizations": {
         "is": {
@@ -4668,17 +6806,47 @@
             "state": "translated",
             "value": "Síur"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "过滤器"
+          }
         }
       }
     },
-    "Fine-tune which subsystems emit debug logs. Errors and warnings are always logged.": {},
-    "Flashcard System": {},
+    "Fine-tune which subsystems emit debug logs. Errors and warnings are always logged.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "微调哪些子系统发出调试日志。错误和警告始终被记录。"
+          }
+        }
+      }
+    },
+    "Flashcard System": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "抽认卡系统"
+          }
+        }
+      }
+    },
     "Flashcards": {
       "localizations": {
         "is": {
           "stringUnit": {
             "state": "translated",
             "value": "Minnismiðar"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "单词卡"
           }
         }
       }
@@ -5281,8 +7449,26 @@
         }
       }
     },
-    "Focus Debugger": {},
-    "From: %@": {},
+    "Focus Debugger": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "焦点调试器"
+          }
+        }
+      }
+    },
+    "From: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从： ％@"
+          }
+        }
+      }
+    },
     "General": {
       "localizations": {
         "is": {
@@ -5290,14 +7476,65 @@
             "state": "translated",
             "value": "Almennt"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "常规"
+          }
         }
       }
     },
-    "Generate Plan to create time blocks for today and the next few days.": {},
-    "Generation Failed": {},
-    "Get notified before assignments are due": {},
-    "Get notified when countdown or stopwatch timers complete": {},
-    "Get notified when work sessions and breaks complete": {},
+    "Generate Plan to create time blocks for today and the next few days.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "生成计划以创建今天和未来几天的时间段。"
+          }
+        }
+      }
+    },
+    "Generation Failed": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "生成失败"
+          }
+        }
+      }
+    },
+    "Get notified before assignments are due": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在作业到期前收到通知"
+          }
+        }
+      }
+    },
+    "Get notified when countdown or stopwatch timers complete": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "倒计时或秒表计时器完成时收到通知"
+          }
+        }
+      }
+    },
+    "Get notified when work sessions and breaks complete": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "工作会议和休息时间完成时收到通知"
+          }
+        }
+      }
+    },
     "GPA %@ / %@": {
       "localizations": {
         "en": {
@@ -5305,11 +7542,35 @@
             "state": "new",
             "value": "GPA %1$@ / %2$@"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平均绩点 %1$@ / %2$@"
+          }
         }
       }
     },
-    "GPA Overview": {},
-    "GPA Scale: %@": {},
+    "GPA Overview": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "平均绩点概览"
+          }
+        }
+      }
+    },
+    "GPA Scale: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPA 比例：%@"
+          }
+        }
+      }
+    },
     "Grade": {
       "localizations": {
         "is": {
@@ -5317,12 +7578,45 @@
             "state": "translated",
             "value": "Einkunn"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "成绩"
+          }
         }
       }
     },
-    "Grade Analytics": {},
-    "Grade Components": {},
-    "Grade Components – %@": {},
+    "Grade Analytics": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "成绩分析"
+          }
+        }
+      }
+    },
+    "Grade Components": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "等级成分"
+          }
+        }
+      }
+    },
+    "Grade Components – %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "等级成分 – %@"
+          }
+        }
+      }
+    },
     "grades.column.course": {
       "comment": "Course",
       "localizations": {
@@ -5603,10 +7897,46 @@
         }
       }
     },
-    "Haptic feedback and animations respect accessibility settings.": {},
-    "Haptic feedback is disabled when Reduce Motion is enabled": {},
-    "Haptic feedback respects accessibility settings": {},
-    "Haptics: %@": {},
+    "Haptic feedback and animations respect accessibility settings.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "触觉反馈和动画尊重辅助功能设置。"
+          }
+        }
+      }
+    },
+    "Haptic feedback is disabled when Reduce Motion is enabled": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启用“减少运动”后，触觉反馈将被禁用"
+          }
+        }
+      }
+    },
+    "Haptic feedback respects accessibility settings": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "触觉反馈尊重辅助功能设置"
+          }
+        }
+      }
+    },
+    "Haptics: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "触觉：%@"
+          }
+        }
+      }
+    },
     "High": {
       "localizations": {
         "is": {
@@ -5614,10 +7944,25 @@
             "state": "translated",
             "value": "Hátt"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高的"
+          }
         }
       }
     },
-    "Higher values make transitions feel gentler.": {},
+    "Higher values make transitions feel gentler.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "值越高，过渡感觉越柔和。"
+          }
+        }
+      }
+    },
     "Highest: %@ %@%%": {
       "localizations": {
         "en": {
@@ -5625,11 +7970,35 @@
             "state": "new",
             "value": "Highest: %1$@ %2$@%%"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最高：%1$@ %2$@%%"
+          }
         }
       }
     },
-    "History Chart": {},
-    "History: %@ items": {},
+    "History Chart": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "历史图表"
+          }
+        }
+      }
+    },
+    "History: %@ items": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "历史记录：%@ 项"
+          }
+        }
+      }
+    },
     "Homework": {
       "localizations": {
         "is": {
@@ -5637,14 +8006,65 @@
             "state": "translated",
             "value": "Heimavinna"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "家庭作业"
+          }
         }
       }
     },
-    "How Dependencies Work": {},
-    "How far ahead to scan for events when refreshing.": {},
-    "How well did you know this?": {},
-    "Hypothetical grades won't be saved": {},
-    "iCloud is connected and protected by native iCloud protections": {},
+    "How Dependencies Work": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "依赖关系如何工作"
+          }
+        }
+      }
+    },
+    "How far ahead to scan for events when refreshing.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刷新时提前多远扫描事件。"
+          }
+        }
+      }
+    },
+    "How well did you know this?": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "您对这一点了解多少？"
+          }
+        }
+      }
+    },
+    "Hypothetical grades won't be saved": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "假设成绩不会被保存"
+          }
+        }
+      }
+    },
+    "iCloud is connected and protected by native iCloud protections": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 通过本机 iCloud 保护进行连接和保护"
+          }
+        }
+      }
+    },
     "Icons": {},
     "Icons & Text": {},
     "If you score %@%% on remaining work, your projected final grade is %@%%.": {
@@ -7355,6 +9775,16 @@
         }
       }
     },
+    "planner.allowed_hours": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allowed hours: %1$d:00–%2$d:00"
+          }
+        }
+      }
+    },
     "planner.break.long": {
       "comment": "Long break session title",
       "extractionState": "extracted_with_value",
@@ -7759,6 +10189,16 @@
         }
       }
     },
+    "planner.minutes_total": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d minutes total"
+          }
+        }
+      }
+    },
     "planner.overdue.caught_up": {
       "localizations": {
         "en": {
@@ -7899,6 +10339,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "今天"
+          }
+        }
+      }
+    },
+    "planner.progress": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d%% complete"
           }
         }
       }
@@ -8267,6 +10717,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "自動計劃"
+          }
+        }
+      }
+    },
+    "planner.steps_count": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d/%2$d steps"
           }
         }
       }
@@ -9255,6 +11715,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "未安排的任務"
+          }
+        }
+      }
+    },
+    "planner.updated": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %@"
           }
         }
       }
@@ -11114,6 +13584,12 @@
             "state": "translated",
             "value": "Forgangur"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "优先级"
+          }
         }
       }
     },
@@ -12947,6 +15423,12 @@
             "state": "translated",
             "value": "2 Weeks"
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 Semanas"
+          }
         }
       }
     },
@@ -13762,6 +16244,12 @@
             "state": "translated",
             "value": "Byrja"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开始"
+          }
         }
       }
     },
@@ -13783,6 +16271,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Staða"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "状态"
           }
         }
       }
@@ -14969,6 +17463,12 @@
             "state": "translated",
             "value": "Í dag"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天"
+          }
         }
       }
     },
@@ -15032,57 +17532,7 @@
     "Year: %.2f": {},
     "You have unsaved changes. Save before closing to avoid losing them.": {},
     "You have unsaved edits. Save before closing to avoid losing them.": {},
-    "You studied %@ cards": {},
-    "planner.steps_count": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d/%2$d steps"
-          }
-        }
-      }
-    },
-    "planner.allowed_hours": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Allowed hours: %1$d:00–%2$d:00"
-          }
-        }
-      }
-    },
-    "planner.minutes_total": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d minutes total"
-          }
-        }
-      }
-    },
-    "planner.progress": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d%% complete"
-          }
-        }
-      }
-    },
-    "planner.updated": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Updated %@"
-          }
-        }
-      }
-    }
+    "You studied %@ cards": {}
   },
   "version": "1.1"
 }
