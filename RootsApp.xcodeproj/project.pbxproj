@@ -46,7 +46,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		1A9FC3972F05C23400832365 /* Exceptions for "SharedCore" folder in "Roots" target */ = {
+		1A9FC3BD2F05CBA100832365 /* Exceptions for "SharedCore" folder in "Roots" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				DesignSystem/Localizable.xcstrings,
@@ -56,7 +56,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		1A9FC3982F05C23400832365 /* Exceptions for "SharedCore" folder in "Compile Sources" phase from "Roots" target */ = {
+		1A9FC3BE2F05CBA100832365 /* Exceptions for "SharedCore" folder in "Compile Sources" phase from "Roots" target */ = {
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			buildPhase = 1AD7D4302EDD328800D403F3 /* Sources */;
 			membershipExceptions = (
@@ -84,8 +84,8 @@
 		1AD7D46B2EDD328800D403F3 /* SharedCore */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				1A9FC3972F05C23400832365 /* Exceptions for "SharedCore" folder in "Roots" target */,
-				1A9FC3982F05C23400832365 /* Exceptions for "SharedCore" folder in "Compile Sources" phase from "Roots" target */,
+				1A9FC3BD2F05CBA100832365 /* Exceptions for "SharedCore" folder in "Roots" target */,
+				1A9FC3BE2F05CBA100832365 /* Exceptions for "SharedCore" folder in "Compile Sources" phase from "Roots" target */,
 			);
 			path = SharedCore;
 			sourceTree = "<group>";
@@ -267,7 +267,7 @@
 		1AD7D42C2EDD328800D403F3 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = 1;
+				BuildIndependentTargetsInParallel = NO;
 				LastSwiftUpdateCheck = 2610;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
@@ -292,12 +292,13 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
 				ar,
 				"zh-Hans",
 				"zh-Hant",
 				fr,
 				de,
+				nl,
+				Base,
 			);
 			mainGroup = 1AD7D42B2EDD328800D403F3;
 			minimizedProjectReferenceProxies = 1;
