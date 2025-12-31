@@ -38,7 +38,7 @@ final class DragDropHandlerTests: XCTestCase {
     }
 
     func testScheduleAssignmentOpensPlannerForDueDate() {
-        let coordinator = PlannerCoordinator()
+        let coordinator = PlannerCoordinator.shared
         let dueDate = Calendar.current.date(from: DateComponents(year: 2026, month: 6, day: 15))!
         let assignment = AppTask(
             id: UUID(),

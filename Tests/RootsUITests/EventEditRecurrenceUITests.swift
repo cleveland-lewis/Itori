@@ -18,6 +18,10 @@ final class EventEditRecurrenceUITests: XCTestCase {
         app.launchArguments = ["--uitesting"]
         app.launch()
         
+        // Wait for app to be fully loaded by checking for any tab button
+        let dashboardTab = app.buttons["TabBar.dashboard"]
+        XCTAssertTrue(dashboardTab.waitForExistence(timeout: 10.0), "App did not load - no tab bar found")
+        
         // Navigate to Calendar page
         let calendarTab = app.buttons["TabBar.calendar"]
         XCTAssertTrue(calendarTab.waitForExistence(timeout: 5.0), "Calendar tab not found")

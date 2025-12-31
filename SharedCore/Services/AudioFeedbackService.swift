@@ -9,6 +9,9 @@ final class AudioFeedbackService {
     private var audioPlayers: [String: AVAudioPlayer] = [:]
     private let settings = AppSettingsModel.shared
     
+    // Keep strong references to audio engines during playback
+    private var activeEngines: [UUID: AVAudioEngine] = [:]
+    
     private init() {
         setupAudio()
     }
@@ -65,8 +68,8 @@ final class AudioFeedbackService {
         
         buffer.frameLength = AVAudioFrameCount(frameCount)
         
-        let channels = UnsafeBufferPointer(start: buffer.floatChannelData, count: Int(format.channelCount))
-        guard let channel = channels.first else { return }
+        guard let channelData = buffer.floatChannelData else { return }
+        let channel = channelData[0] // Mono channel
         
         // Generate sine wave with fade in/out envelope
         for frame in 0..<frameCount {
@@ -89,21 +92,33 @@ final class AudioFeedbackService {
         // Play the buffer
         let player = AVAudioPlayerNode()
         let engine = AVAudioEngine()
+        let engineID = UUID()
         
         engine.attach(player)
         engine.connect(player, to: engine.mainMixerNode, format: format)
         
         do {
             try engine.start()
+            
+            // Keep engine alive by storing reference
+            Task { @MainActor in
+                self.activeEngines[engineID] = engine
+            }
+            
             player.scheduleBuffer(buffer, at: nil, options: .interrupts) {
-                // Cleanup after playing
-                DispatchQueue.main.async {
+                // Cleanup after playing - remove engine reference
+                Task { @MainActor in
                     engine.stop()
+                    self.activeEngines.removeValue(forKey: engineID)
                 }
             }
             player.play()
         } catch {
             DebugLogger.log("Failed to play audio: \(error)")
+            // Clean up on error
+            Task { @MainActor in
+                self.activeEngines.removeValue(forKey: engineID)
+            }
         }
     }
     
@@ -124,8 +139,8 @@ final class AudioFeedbackService {
         
         buffer.frameLength = AVAudioFrameCount(frameCount)
         
-        let channels = UnsafeBufferPointer(start: buffer.floatChannelData, count: Int(format.channelCount))
-        guard let channel = channels.first else { return }
+        guard let channelData = buffer.floatChannelData else { return }
+        let channel = channelData[0] // Mono channel
         
         let segmentFrames = Int(sampleRate * segmentDuration)
         
@@ -177,8 +192,8 @@ final class AudioFeedbackService {
         
         buffer.frameLength = AVAudioFrameCount(frameCount)
         
-        let channels = UnsafeBufferPointer(start: buffer.floatChannelData, count: Int(format.channelCount))
-        guard let channel = channels.first else { return }
+        guard let channelData = buffer.floatChannelData else { return }
+        let channel = channelData[0] // Mono channel
         
         for frame in 0..<frameCount {
             let time = Double(frame) / sampleRate
@@ -218,21 +233,33 @@ final class AudioFeedbackService {
     private nonisolated func playBuffer(_ buffer: AVAudioPCMBuffer, format: AVAudioFormat) {
         let player = AVAudioPlayerNode()
         let engine = AVAudioEngine()
+        let engineID = UUID()
         
         engine.attach(player)
         engine.connect(player, to: engine.mainMixerNode, format: format)
         
         do {
             try engine.start()
+            
+            // Keep engine alive by storing reference
+            Task { @MainActor in
+                self.activeEngines[engineID] = engine
+            }
+            
             player.scheduleBuffer(buffer, at: nil, options: .interrupts) {
-                // Cleanup after playing
-                DispatchQueue.main.async {
+                // Cleanup after playing - remove engine reference
+                Task { @MainActor in
                     engine.stop()
+                    self.activeEngines.removeValue(forKey: engineID)
                 }
             }
             player.play()
         } catch {
             DebugLogger.log("Failed to play audio: \(error)")
+            // Clean up on error
+            Task { @MainActor in
+                self.activeEngines.removeValue(forKey: engineID)
+            }
         }
     }
     

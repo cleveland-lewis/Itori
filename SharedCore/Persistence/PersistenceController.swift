@@ -356,16 +356,18 @@ final class PersistenceController {
         let now = Date()
         for object in context.insertedObjects {
             // Only set timestamps if the entity has these attributes
-            if object.entity.attributesByName["createdAt"] != nil,
-               object.value(forKey: "createdAt") == nil {
-                object.setValue(now, forKey: "createdAt")
+            if let _ = object.entity.attributesByName["createdAt"] {
+                // Check if createdAt is nil before setting
+                if object.value(forKey: "createdAt") == nil {
+                    object.setValue(now, forKey: "createdAt")
+                }
             }
-            if object.entity.attributesByName["updatedAt"] != nil {
+            if let _ = object.entity.attributesByName["updatedAt"] {
                 object.setValue(now, forKey: "updatedAt")
             }
         }
         for object in context.updatedObjects {
-            if object.entity.attributesByName["updatedAt"] != nil {
+            if let _ = object.entity.attributesByName["updatedAt"] {
                 object.setValue(now, forKey: "updatedAt")
             }
         }
