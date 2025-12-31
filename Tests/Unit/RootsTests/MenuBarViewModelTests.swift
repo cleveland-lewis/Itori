@@ -29,8 +29,8 @@ final class MenuBarViewModelTests: XCTestCase {
     }
     
     func testModeCanBeChanged() {
-        viewModel.mode = .timer
-        XCTAssertEqual(viewModel.mode, .timer)
+        viewModel.mode = .countdown
+        XCTAssertEqual(viewModel.mode, .countdown)
         
         viewModel.mode = .stopwatch
         XCTAssertEqual(viewModel.mode, .stopwatch)

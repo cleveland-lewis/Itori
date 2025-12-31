@@ -5,6 +5,68 @@
 	<key>logFormatVersion</key>
 	<integer>12</integer>
 	<key>logs</key>
-	<dict/>
+	<dict>
+		<key>A954D854-67F2-4E8E-BC6F-042C4752D44D</key>
+		<dict>
+			<key>auxiliaryLogUniqueIdentifier</key>
+			<string>87561DE5-2D52-4362-ABA8-3430C7F36782</string>
+			<key>auxiliaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>1</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>1</integer>
+			</dict>
+			<key>className</key>
+			<string>IDESchemeActionsInvocationRecord</string>
+			<key>documentTypeString</key>
+			<string>&lt;nil&gt;</string>
+			<key>domainType</key>
+			<string>com.apple.dt.unit.cocoaUnitTest</string>
+			<key>fileName</key>
+			<string>Test-RootsTests-2025.12.31_17-13-44--0500.xcresult</string>
+			<key>hasAuxiliaryLog</key>
+			<true/>
+			<key>hasCoverageData</key>
+			<true/>
+			<key>hasPrimaryLog</key>
+			<true/>
+			<key>primaryObservable</key>
+			<dict>
+				<key>highLevelStatus</key>
+				<string>E</string>
+				<key>totalNumberOfAnalyzerIssues</key>
+				<integer>0</integer>
+				<key>totalNumberOfErrors</key>
+				<integer>2</integer>
+				<key>totalNumberOfTestFailures</key>
+				<integer>0</integer>
+				<key>totalNumberOfWarnings</key>
+				<integer>1</integer>
+			</dict>
+			<key>schemeIdentifier-containerName</key>
+			<string>RootsApp project</string>
+			<key>schemeIdentifier-schemeName</key>
+			<string>RootsTests</string>
+			<key>schemeIdentifier-sharedScheme</key>
+			<integer>1</integer>
+			<key>signature</key>
+			<string>Test RootsTests</string>
+			<key>timeStartedRecording</key>
+			<real>788912024.504287</real>
+			<key>timeStoppedRecording</key>
+			<real>788912040.23511302</real>
+			<key>title</key>
+			<string>Test RootsTests</string>
+			<key>uniqueIdentifier</key>
+			<string>A954D854-67F2-4E8E-BC6F-042C4752D44D</string>
+		</dict>
+	</dict>
 </dict>
 </plist>
