@@ -8065,8 +8065,26 @@
         }
       }
     },
-    "Icons": {},
-    "Icons & Text": {},
+    "Icons": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "图标"
+          }
+        }
+      }
+    },
+    "Icons & Text": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "图标和文本"
+          }
+        }
+      }
+    },
     "If you score %@%% on remaining work, your projected final grade is %@%%.": {
       "localizations": {
         "en": {
@@ -8074,19 +8092,67 @@
             "state": "new",
             "value": "If you score %1$@%% on remaining work, your projected final grade is %2$@%%."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "如果您在剩余作业中得分为 %1$@%%，则您的预计最终成绩为 %2$@%%。"
+          }
         }
       }
     },
-    "Include in overview:": {},
-    "Increase button and control sizes for easier tapping": {},
-    "Increase Contrast": {},
-    "Increase Contrast: %@": {},
+    "Include in overview:": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "包含在概述中："
+          }
+        }
+      }
+    },
+    "Increase button and control sizes for easier tapping": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "增加按钮和控件的尺寸以便于点击"
+          }
+        }
+      }
+    },
+    "Increase Contrast": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "增加对比度"
+          }
+        }
+      }
+    },
+    "Increase Contrast: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "增加对比度：%@"
+          }
+        }
+      }
+    },
     "Integration": {
       "localizations": {
         "is": {
           "stringUnit": {
             "state": "translated",
             "value": "Samþætting"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一体化"
           }
         }
       }
@@ -8098,10 +8164,25 @@
             "state": "translated",
             "value": "Samþættingar"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "集成"
+          }
         }
       }
     },
-    "Interactions": {},
+    "Interactions": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "互动"
+          }
+        }
+      }
+    },
     "Interface": {
       "localizations": {
         "is": {
@@ -8109,11 +8190,35 @@
             "state": "translated",
             "value": "Viðmót"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "界面"
+          }
         }
       }
     },
-    "Interface Preferences": {},
-    "Interval: %@d": {},
+    "Interface Preferences": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "界面首选项"
+          }
+        }
+      }
+    },
+    "Interval: %@d": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "间隔：%@d"
+          }
+        }
+      }
+    },
     "ios.dashboard.greeting.afternoon.1": {
       "comment": "Good afternoon",
       "localizations": {
@@ -8127,6 +8232,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Buenas tardes"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下午好"
           }
         }
       }
@@ -8145,6 +8256,12 @@
             "state": "translated",
             "value": "Tarde"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下午"
+          }
         }
       }
     },
@@ -8161,6 +8278,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sigue así"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "继续努力吧"
           }
         }
       }
@@ -8179,6 +8302,12 @@
             "state": "translated",
             "value": "Mantén el enfoque"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保持专注"
+          }
         }
       }
     },
@@ -8195,6 +8324,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Haciendo progreso"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取得进步"
           }
         }
       }
@@ -8213,6 +8348,12 @@
             "state": "translated",
             "value": "Hola"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你好"
+          }
         }
       }
     },
@@ -8229,6 +8370,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Buenas noches"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "晚上好"
           }
         }
       }
@@ -8247,6 +8394,12 @@
             "state": "translated",
             "value": "Noche"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "晚上"
+          }
         }
       }
     },
@@ -8263,6 +8416,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Terminando"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "总结"
           }
         }
       }
@@ -8281,6 +8440,12 @@
             "state": "translated",
             "value": "Casi ahí"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快到了"
+          }
         }
       }
     },
@@ -8297,6 +8462,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Termina fuerte"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "强势完成"
           }
         }
       }
@@ -8315,6 +8486,12 @@
             "state": "translated",
             "value": "Buenos días"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "早上好"
+          }
         }
       }
     },
@@ -8331,6 +8508,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Despierta y brilla"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "崛起并闪耀"
           }
         }
       }
@@ -8349,6 +8532,12 @@
             "state": "translated",
             "value": "Mañana"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "早晨"
+          }
         }
       }
     },
@@ -8365,6 +8554,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Comienza fuerte hoy"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从今天开始坚强"
           }
         }
       }
@@ -8383,6 +8578,12 @@
             "state": "translated",
             "value": "Bienvenido de nuevo"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "欢迎回来"
+          }
         }
       }
     },
@@ -8399,6 +8600,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hola"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你好"
           }
         }
       }
@@ -8417,6 +8624,12 @@
             "state": "translated",
             "value": "Bienvenido de nuevo"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "欢迎回来"
+          }
         }
       }
     },
@@ -8433,6 +8646,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Todavía trabajando"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仍在工作"
           }
         }
       }
@@ -8451,6 +8670,12 @@
             "state": "translated",
             "value": "Quemando el aceite de medianoche"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开夜车"
+          }
         }
       }
     },
@@ -8467,6 +8692,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cursos"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程"
           }
         }
       }
@@ -8485,6 +8716,12 @@
             "state": "translated",
             "value": "Vencen Pronto"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "即将到期"
+          }
         }
       }
     },
@@ -8502,6 +8739,12 @@
             "state": "translated",
             "value": "Próximos 7 Días"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接下来 7 天"
+          }
         }
       }
     },
@@ -8513,6 +8756,12 @@
           "stringUnit": {
             "state": "new",
             "value": "This Month"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本月"
           }
         }
       }
@@ -8526,6 +8775,12 @@
             "state": "new",
             "value": "Your progress"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你的进步"
+          }
         }
       }
     },
@@ -8537,6 +8792,12 @@
           "stringUnit": {
             "state": "new",
             "value": "Study Hours"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学习时间"
           }
         }
       }
@@ -8550,6 +8811,12 @@
             "state": "new",
             "value": "Today"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天"
+          }
         }
       }
     },
@@ -8561,6 +8828,12 @@
           "stringUnit": {
             "state": "new",
             "value": "This Week"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本星期"
           }
         }
       }
@@ -8579,6 +8852,12 @@
             "state": "translated",
             "value": "No hay eventos próximos."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有即将举行的活动。"
+          }
         }
       }
     },
@@ -8595,6 +8874,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "De tu calendario"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从您的日历中"
           }
         }
       }
@@ -8613,6 +8898,12 @@
             "state": "translated",
             "value": "Próximos"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "即将推出"
+          }
         }
       }
     },
@@ -8625,6 +8916,12 @@
             "state": "new",
             "value": "Assignment"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "任务"
+          }
         }
       }
     },
@@ -8635,6 +8932,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add Assignment"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加作业"
           }
         }
       }
@@ -8647,6 +8950,12 @@
             "state": "translated",
             "value": "Add Grade"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加成绩"
+          }
         }
       }
     },
@@ -8657,6 +8966,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Auto Schedule"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自动安排"
           }
         }
       }
@@ -8669,6 +8984,12 @@
             "state": "translated",
             "value": "Open menu"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开菜单"
+          }
         }
       }
     },
@@ -8679,6 +9000,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quick add"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快速添加"
           }
         }
       }
@@ -8691,6 +9018,12 @@
             "state": "translated",
             "value": "Settings"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置"
+          }
         }
       }
     },
@@ -8701,6 +9034,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tasks"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "任务"
           }
         }
       }
@@ -8719,6 +9058,12 @@
             "state": "translated",
             "value": "Hecho"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "完毕"
+          }
         }
       }
     },
@@ -8735,6 +9080,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vence %@ · %d min"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %d 分钟到期"
           }
         }
       }
@@ -8753,6 +9104,12 @@
             "state": "translated",
             "value": "Editar"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "编辑"
+          }
         }
       }
     },
@@ -8769,6 +9126,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Generar Plan"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "生成计划"
           }
         }
       }
@@ -8787,6 +9150,12 @@
             "state": "translated",
             "value": "Cómo funciona"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "它是如何运作的"
+          }
         }
       }
     },
@@ -8803,6 +9172,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Todas las sesiones colocadas"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有会话均已放置"
           }
         }
       }
@@ -8821,6 +9196,12 @@
             "state": "translated",
             "value": "Nada esperando en excedente."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "溢出中没有任何等待。"
+          }
         }
       }
     },
@@ -8837,6 +9218,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aún no programado"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未安排"
           }
         }
       }
@@ -8855,6 +9242,12 @@
             "state": "translated",
             "value": "Excedente"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "溢出"
+          }
         }
       }
     },
@@ -8871,6 +9264,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sin bloques programados"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有安排区块"
           }
         }
       }
@@ -8889,6 +9288,12 @@
             "state": "translated",
             "value": "Genera un plan para llenar hoy."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "制定一个今天要完成的计划。"
+          }
         }
       }
     },
@@ -8905,6 +9310,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bloques de tiempo"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "时间块"
           }
         }
       }
@@ -8923,6 +9334,12 @@
             "state": "translated",
             "value": "Horario"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日程"
+          }
         }
       }
     },
@@ -8939,6 +9356,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bloque actualizado"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "区块已更新"
           }
         }
       }
@@ -8957,6 +9380,12 @@
             "state": "translated",
             "value": "Conflicto de tiempo"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "时间冲突"
+          }
         }
       }
     },
@@ -8973,6 +9402,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hoy"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天"
           }
         }
       }
@@ -8991,6 +9426,12 @@
             "state": "translated",
             "value": "Agregar una fecha de entrega"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加截止日期"
+          }
         }
       }
     },
@@ -9007,6 +9448,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Todas las tareas tienen fechas"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有任务都有日期"
           }
         }
       }
@@ -9025,6 +9472,12 @@
             "state": "translated",
             "value": "Agrega fechas de entrega para mantener la planificación precisa."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加截止日期以保持计划准确。"
+          }
         }
       }
     },
@@ -9041,6 +9494,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Necesita atención"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需要注意"
           }
         }
       }
@@ -9059,6 +9518,12 @@
             "state": "translated",
             "value": "No Programadas"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "计划外"
+          }
         }
       }
     },
@@ -9076,6 +9541,12 @@
             "state": "translated",
             "value": "Настройки"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置"
+          }
         }
       }
     },
@@ -9087,6 +9558,12 @@
             "state": "translated",
             "value": "Break"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "休息"
+          }
         }
       }
     },
@@ -9097,6 +9574,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Focus"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重点"
           }
         }
       }
@@ -9115,6 +9598,12 @@
             "state": "translated",
             "value": "Modo"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模式"
+          }
         }
       }
     },
@@ -9125,6 +9614,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pause"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂停"
           }
         }
       }
@@ -9137,6 +9632,12 @@
             "state": "translated",
             "value": "Resume"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "恢复"
+          }
         }
       }
     },
@@ -9147,6 +9648,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Skip"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跳过"
           }
         }
       }
@@ -9159,6 +9666,12 @@
             "state": "translated",
             "value": "Start"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开始"
+          }
         }
       }
     },
@@ -9169,6 +9682,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stop"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停止"
           }
         }
       }
@@ -9181,6 +9700,12 @@
             "state": "translated",
             "value": "%@ added"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 添加了"
+          }
         }
       }
     },
@@ -9191,6 +9716,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Course added"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程已添加"
           }
         }
       }
@@ -9203,6 +9734,12 @@
             "state": "translated",
             "value": "Grade added"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加等级"
+          }
         }
       }
     },
@@ -9213,6 +9750,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No tasks to schedule"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有要安排的任务"
           }
         }
       }
@@ -9225,17 +9768,95 @@
             "state": "translated",
             "value": "Schedule updated"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "时间表已更新"
+          }
         }
       }
     },
-    "Keep your profile, backups, and school-wide settings in their respective sections. Roots will link here when account syncing is available.": {},
-    "Large Tap Targets": {},
-    "Large Tap Targets: %@": {},
-    "Last 500 events": {},
-    "Last Attempt:": {},
-    "Last Reason:": {},
-    "Last Suppression:": {},
-    "Last: %@": {},
+    "Keep your profile, backups, and school-wide settings in their respective sections. Roots will link here when account syncing is available.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将您的个人资料、备份和学校范围的设置保存在各自的部分中。当帐户同步可用时，根将链接到此处。"
+          }
+        }
+      }
+    },
+    "Large Tap Targets": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "大型攻丝目标"
+          }
+        }
+      }
+    },
+    "Large Tap Targets: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "大点击目标：%@"
+          }
+        }
+      }
+    },
+    "Last 500 events": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近 500 场活动"
+          }
+        }
+      }
+    },
+    "Last Attempt:": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最后一次尝试："
+          }
+        }
+      }
+    },
+    "Last Reason:": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最后的原因："
+          }
+        }
+      }
+    },
+    "Last Suppression:": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最后压制："
+          }
+        }
+      }
+    },
+    "Last: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最后的： ％@"
+          }
+        }
+      }
+    },
     "Layout": {
       "localizations": {
         "is": {
@@ -9243,31 +9864,187 @@
             "state": "translated",
             "value": "Útlit"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "布局"
+          }
         }
       }
     },
-    "Layout changes apply immediately to all screens.": {},
-    "Light glass strength": {},
-    "Link to Course": {},
-    "Links": {},
-    "Live Preview": {},
-    "LiveActivity: %@": {},
-    "LLM Assistance Enabled:": {},
-    "LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results.": {},
-    "LLM Provider Attempt Tracking": {},
-    "Loading counters...": {},
-    "Loading course analytics…": {},
-    "Local Database": {},
-    "Lock": {},
-    "Lock work to due date": {},
-    "Locked to due date": {},
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.": {},
+    "Layout changes apply immediately to all screens.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "布局更改会立即应用于所有屏幕。"
+          }
+        }
+      }
+    },
+    "Light glass strength": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "轻质玻璃强度"
+          }
+        }
+      }
+    },
+    "Link to Course": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程链接"
+          }
+        }
+      }
+    },
+    "Links": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "链接"
+          }
+        }
+      }
+    },
+    "Live Preview": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "实时预览"
+          }
+        }
+      }
+    },
+    "LiveActivity: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "直播活动：%@"
+          }
+        }
+      }
+    },
+    "LLM Assistance Enabled:": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启用法学硕士协助："
+          }
+        }
+      }
+    },
+    "LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LLM 协助已启用。根可以使用 Apple Intelligence、本地模型或自定义提供程序来提高解析准确性并向生成的计划添加冗余检查。法学硕士永远不会默默地覆盖确定性结果。"
+          }
+        }
+      }
+    },
+    "LLM Provider Attempt Tracking": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LLM 提供者尝试跟踪"
+          }
+        }
+      }
+    },
+    "Loading counters...": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在加载计数器..."
+          }
+        }
+      }
+    },
+    "Loading course analytics…": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正在加载课程分析..."
+          }
+        }
+      }
+    },
+    "Local Database": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本地数据库"
+          }
+        }
+      }
+    },
+    "Lock": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "锁"
+          }
+        }
+      }
+    },
+    "Lock work to due date": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将工作锁定在截止日期"
+          }
+        }
+      }
+    },
+    "Locked to due date": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "锁定截止日期"
+          }
+        }
+      }
+    },
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lorem ipsum dolor sat amet，consectetur adipiscing elit，sed do eiusmod tempor incididunt ut laboure et dolore magna aliqua。"
+          }
+        }
+      }
+    },
     "Low": {
       "localizations": {
         "is": {
           "stringUnit": {
             "state": "translated",
             "value": "Lágt"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "低的"
           }
         }
       }
@@ -9279,22 +10056,145 @@
             "state": "new",
             "value": "Lowest: %1$@ %2$@%%"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最低：%1$@ %2$@%%"
+          }
         }
       }
     },
-    "Main Thread Debugger": {},
-    "Main Thread Debugger Disabled": {},
-    "Manage all your courses, semesters, and academic settings from the Courses page.": {},
-    "Manage app capabilities that require permissions or connect to external services.": {},
-    "Manage data storage and iCloud synchronization.": {},
-    "Manage iCloud sync in Storage settings.": {},
-    "Manage Permissions": {},
-    "Manage your academic semesters. The current semester is used for new courses and appears in the main interface.": {},
-    "Manage your active and archived courses": {},
-    "Manage your current courses. Archived courses are hidden from the main interface but remain accessible.": {},
-    "Material Intensity": {},
-    "Material Intensity: %@": {},
-    "Material preview": {},
+    "Main Thread Debugger": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "主线程调试器"
+          }
+        }
+      }
+    },
+    "Main Thread Debugger Disabled": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "主线程调试器已禁用"
+          }
+        }
+      }
+    },
+    "Manage all your courses, semesters, and academic settings from the Courses page.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "从课程页面管理所有课程、学期和学术设置。"
+          }
+        }
+      }
+    },
+    "Manage app capabilities that require permissions or connect to external services.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "管理需要权限或连接到外部服务的应用程序功能。"
+          }
+        }
+      }
+    },
+    "Manage data storage and iCloud synchronization.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "管理数据存储和 iCloud 同步。"
+          }
+        }
+      }
+    },
+    "Manage iCloud sync in Storage settings.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在存储设置中管理 iCloud 同步。"
+          }
+        }
+      }
+    },
+    "Manage Permissions": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "管理权限"
+          }
+        }
+      }
+    },
+    "Manage your academic semesters. The current semester is used for new courses and appears in the main interface.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "管理你的学期。当前学期用于新课程并出现在主界面中。"
+          }
+        }
+      }
+    },
+    "Manage your active and archived courses": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "管理您的活动课程和存档课程"
+          }
+        }
+      }
+    },
+    "Manage your current courses. Archived courses are hidden from the main interface but remain accessible.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "管理您当前的课程。存档的课程在主界面中隐藏，但仍可访问。"
+          }
+        }
+      }
+    },
+    "Material Intensity": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "材料强度"
+          }
+        }
+      }
+    },
+    "Material Intensity: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "材料强度：%@"
+          }
+        }
+      }
+    },
+    "Material preview": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "材质预览"
+          }
+        }
+      }
+    },
     "Materials": {
       "localizations": {
         "is": {
@@ -9302,12 +10202,45 @@
             "state": "translated",
             "value": "Efni"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "材料"
+          }
         }
       }
     },
-    "Max Tasks to Push": {},
-    "Max Tokens: %@": {},
-    "Maximum of 5 tabs reached. Disable a tab to enable another.": {},
+    "Max Tasks to Push": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最大推送任务数"
+          }
+        }
+      }
+    },
+    "Max Tokens: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最大代币数：%@"
+          }
+        }
+      }
+    },
+    "Maximum of 5 tabs reached. Disable a tab to enable another.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已达到最多 5 个选项卡。禁用一个选项卡以启用另一个选项卡。"
+          }
+        }
+      }
+    },
     "Medium": {
       "localizations": {
         "is": {
@@ -9315,10 +10248,25 @@
             "state": "translated",
             "value": "Miðlungs"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中等的"
+          }
         }
       }
     },
-    "Meeting Times": {},
+    "Meeting Times": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "会议时间"
+          }
+        }
+      }
+    },
     "Message": {
       "localizations": {
         "is": {
@@ -9326,20 +10274,77 @@
             "state": "translated",
             "value": "Skilaboð"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "信息"
+          }
         }
       }
     },
-    "Minimize animations throughout the app": {},
-    "MLX Configuration": {},
-    "MLX models are loaded from the Hugging Face hub or local cache": {},
-    "Mock backend - no configuration needed": {},
-    "Modules": {},
+    "Minimize animations throughout the app": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最小化整个应用程序的动画"
+          }
+        }
+      }
+    },
+    "MLX Configuration": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MLX 配置"
+          }
+        }
+      }
+    },
+    "MLX models are loaded from the Hugging Face hub or local cache": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MLX 模型从 Hugging Face 中心或本地缓存加载"
+          }
+        }
+      }
+    },
+    "Mock backend - no configuration needed": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模拟后端 - 无需配置"
+          }
+        }
+      }
+    },
+    "Modules": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模块"
+          }
+        }
+      }
+    },
     "Name": {
       "localizations": {
         "is": {
           "stringUnit": {
             "state": "translated",
             "value": "Nafn"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "姓名"
           }
         }
       }
@@ -9351,6 +10356,12 @@
             "state": "translated",
             "value": "Aldrei"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "绝不"
+          }
         }
       }
     },
@@ -9360,6 +10371,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nýr áfangi"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新课程"
           }
         }
       }
@@ -9371,14 +10388,65 @@
             "state": "translated",
             "value": "Nýr viðburður"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新活动"
+          }
         }
       }
     },
-    "New Semester": {},
-    "No active courses": {},
-    "No Active Semester": {},
-    "No activity selected": {},
-    "No analytics yet.": {},
+    "New Semester": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新学期"
+          }
+        }
+      }
+    },
+    "No active courses": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有活跃课程"
+          }
+        }
+      }
+    },
+    "No Active Semester": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无活跃学期"
+          }
+        }
+      }
+    },
+    "No activity selected": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未选择活动"
+          }
+        }
+      }
+    },
+    "No analytics yet.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有分析。"
+          }
+        }
+      }
+    },
     "No assignments": {
       "localizations": {
         "is": {
@@ -9386,19 +10454,115 @@
             "state": "translated",
             "value": "Engin verkefni"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有作业"
+          }
         }
       }
     },
-    "No assignments available yet.": {},
-    "No assignments due today.": {},
-    "No assignments linked to this course yet.": {},
-    "No assignments recorded for this course.": {},
-    "No cards to study": {},
-    "No Cards to Study": {},
-    "No Cards Yet": {},
-    "No Course": {},
-    "No data yet": {},
-    "No due date": {},
+    "No assignments available yet.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有可用的作业。"
+          }
+        }
+      }
+    },
+    "No assignments due today.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天没有作业到期。"
+          }
+        }
+      }
+    },
+    "No assignments linked to this course yet.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚无与本课程相关的作业。"
+          }
+        }
+      }
+    },
+    "No assignments recorded for this course.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本课程没有记录作业。"
+          }
+        }
+      }
+    },
+    "No cards to study": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有卡可供学习"
+          }
+        }
+      }
+    },
+    "No Cards to Study": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有卡可供学习"
+          }
+        }
+      }
+    },
+    "No Cards Yet": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有卡"
+          }
+        }
+      }
+    },
+    "No Course": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无课程"
+          }
+        }
+      }
+    },
+    "No data yet": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有数据"
+          }
+        }
+      }
+    },
+    "No due date": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无截止日期"
+          }
+        }
+      }
+    },
     "No events": {
       "localizations": {
         "is": {
@@ -9406,40 +10570,297 @@
             "state": "translated",
             "value": "Engir viðburðir"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有活动"
+          }
         }
       }
     },
-    "No events on this day": {},
-    "No exams linked to this course yet.": {},
-    "No external services connected": {},
-    "No Flashcard Decks": {},
-    "No holiday source configured.": {},
-    "No module files yet.": {},
-    "No notes available": {},
-    "No Outline Yet": {},
-    "No Plan Found": {},
-    "No plan time available yet": {},
-    "No plan yet": {},
-    "No planned tasks today": {},
-    "No planner blocks on %@.": {},
-    "No practice quizzes yet.": {},
-    "No recently deleted semesters.": {},
-    "No Reschedule History": {},
-    "No scheduled meetings": {},
+    "No events on this day": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这一天没有活动"
+          }
+        }
+      }
+    },
+    "No exams linked to this course yet.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚无与本课程相关的考试。"
+          }
+        }
+      }
+    },
+    "No external services connected": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有连接外部服务"
+          }
+        }
+      }
+    },
+    "No Flashcard Decks": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有抽认卡组"
+          }
+        }
+      }
+    },
+    "No holiday source configured.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未配置节假日源。"
+          }
+        }
+      }
+    },
+    "No module files yet.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有模块文件。"
+          }
+        }
+      }
+    },
+    "No notes available": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有可用的注释"
+          }
+        }
+      }
+    },
+    "No Outline Yet": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有大纲"
+          }
+        }
+      }
+    },
+    "No Plan Found": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未找到计划"
+          }
+        }
+      }
+    },
+    "No plan time available yet": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有可用的计划时间"
+          }
+        }
+      }
+    },
+    "No plan yet": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有计划"
+          }
+        }
+      }
+    },
+    "No planned tasks today": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天没有计划任务"
+          }
+        }
+      }
+    },
+    "No planner blocks on %@.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 上没有计划程序阻塞。"
+          }
+        }
+      }
+    },
+    "No practice quizzes yet.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有练习测验。"
+          }
+        }
+      }
+    },
+    "No recently deleted semesters.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有最近删除的学期。"
+          }
+        }
+      }
+    },
+    "No Reschedule History": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有改期历史"
+          }
+        }
+      }
+    },
+    "No scheduled meetings": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有预定的会议"
+          }
+        }
+      }
+    },
     "No scheduled tests": {
       "comment": "A message displayed when there are no scheduled tests for a particular day.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有安排测试"
+          }
+        }
+      }
     },
-    "No semesters defined": {},
-    "No semesters yet. Add one to begin organizing your courses.": {},
-    "No study tracked today": {},
-    "No Tasks in Plan": {},
-    "No tests scheduled this week.": {},
-    "No time set - assumed due at 11:59 PM unless you set a time.": {},
-    "No upcoming assignments": {},
-    "No upcoming deadlines": {},
-    "No upcoming deadlines.": {},
-    "No upcoming events": {},
+    "No semesters defined": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有定义学期"
+          }
+        }
+      }
+    },
+    "No semesters yet. Add one to begin organizing your courses.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "还没有学期。添加一个以开始组织您的课程。"
+          }
+        }
+      }
+    },
+    "No study tracked today": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天没有跟踪研究"
+          }
+        }
+      }
+    },
+    "No Tasks in Plan": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "计划中没有任务"
+          }
+        }
+      }
+    },
+    "No tests scheduled this week.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本周没有安排测试。"
+          }
+        }
+      }
+    },
+    "No time set - assumed due at 11:59 PM unless you set a time.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未设置时间 - 除非您设置时间，否则假定截止时间为晚上 11:59。"
+          }
+        }
+      }
+    },
+    "No upcoming assignments": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有即将到来的任务"
+          }
+        }
+      }
+    },
+    "No upcoming deadlines": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有即将到来的截止日期"
+          }
+        }
+      }
+    },
+    "No upcoming deadlines.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有即将到来的截止日期。"
+          }
+        }
+      }
+    },
+    "No upcoming events": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有即将举行的活动"
+          }
+        }
+      }
+    },
     "None": {
       "localizations": {
         "is": {
@@ -9447,12 +10868,45 @@
             "state": "translated",
             "value": "Ekkert"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有任何"
+          }
         }
       }
     },
-    "Not Connected": {},
-    "Not set": {},
-    "Note: These simulations are for preview only and don't affect actual system behavior": {},
+    "Not Connected": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未连接"
+          }
+        }
+      }
+    },
+    "Not set": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未设置"
+          }
+        }
+      }
+    },
+    "Note: These simulations are for preview only and don't affect actual system behavior": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "注意：这些模拟仅供预览，不会影响实际系统行为"
+          }
+        }
+      }
+    },
     "Notes": {
       "localizations": {
         "is": {
@@ -9460,10 +10914,25 @@
             "state": "translated",
             "value": "Athugasemdir"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "笔记"
+          }
         }
       }
     },
-    "NOTES": {},
+    "NOTES": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "笔记"
+          }
+        }
+      }
+    },
     "notification.assignment.body": {
       "comment": "%@ is due soon",
       "localizations": {
@@ -9471,6 +10940,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ is due soon"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 即将到期"
           }
         }
       }
@@ -9483,6 +10958,12 @@
             "state": "translated",
             "value": "Assignment Due Soon"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "作业即将到期"
+          }
         }
       }
     },
@@ -9493,6 +10974,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open Roots to see today's plan"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开Roots查看今天的计划"
           }
         }
       }
@@ -9505,6 +10992,12 @@
             "state": "translated",
             "value": "You've got this!"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你已经得到了这个！"
+          }
         }
       }
     },
@@ -9515,6 +11008,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "1 task due today"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 个任务今天到期"
           }
         }
       }
@@ -9527,6 +11026,12 @@
             "state": "translated",
             "value": "%d tasks due today"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d 个任务今天到期"
+          }
         }
       }
     },
@@ -9537,6 +11042,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Good Morning!"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "早上好！"
           }
         }
       }
@@ -9549,6 +11060,12 @@
             "state": "translated",
             "value": "Keep up the great work!"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "继续努力！"
+          }
         }
       }
     },
@@ -9559,6 +11076,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "You're making progress!"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你正在进步！"
           }
         }
       }
@@ -9571,6 +11094,12 @@
             "state": "translated",
             "value": "Stay focused on your goals!"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "专注于你的目标！"
+          }
         }
       }
     },
@@ -9581,6 +11110,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Every small step counts!"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每一个小步骤都很重要！"
           }
         }
       }
@@ -9593,6 +11128,12 @@
             "state": "translated",
             "value": "Believe in yourself!"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "相信你自己！"
+          }
         }
       }
     },
@@ -9603,6 +11144,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "You're doing amazing!"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你做得太棒了！"
           }
         }
       }
@@ -9615,11 +11162,25 @@
             "state": "translated",
             "value": "Stay Motivated"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保持动力"
+          }
         }
       }
     },
     "notification.weekly_summary.title": {
-      "comment": "Weekly Summary"
+      "comment": "Weekly Summary",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "notification.weekly_summary.title"
+          }
+        }
+      }
     },
     "Off": {
       "localizations": {
@@ -9628,12 +11189,26 @@
             "state": "translated",
             "value": "Af"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "离开"
+          }
         }
       }
     },
     "Ollama Configuration": {
       "comment": "A section in the LLM settings view related to the Ollama API.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "奥拉马配置"
+          }
+        }
+      }
     },
     "On": {
       "localizations": {
@@ -9642,19 +11217,115 @@
             "state": "translated",
             "value": "Á"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在"
+          }
         }
       }
     },
-    "On Date": {},
-    "Only reminders from this list will appear in Roots.": {},
-    "Open a course in a new window to see details here.": {},
-    "Open System Settings to manage calendar, notifications, and other permissions.": {},
-    "OpenAI-Compatible LLM API Configuration": {},
-    "Overall Status": {},
-    "Peak workload week: %@": {},
-    "Percentage": {},
-    "Performance Debugging": {},
-    "Permission denied. Please enable in System Settings to use this feature.": {},
+    "On Date": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日期"
+          }
+        }
+      }
+    },
+    "Only reminders from this list will appear in Roots.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "只有来自此列表的提醒才会出现在根中。"
+          }
+        }
+      }
+    },
+    "Open a course in a new window to see details here.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在新窗口中打开课程以在此处查看详细信息。"
+          }
+        }
+      }
+    },
+    "Open System Settings to manage calendar, notifications, and other permissions.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开系统设置来管理日历、通知和其他权限。"
+          }
+        }
+      }
+    },
+    "OpenAI-Compatible LLM API Configuration": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OpenAI 兼容的 LLM API 配置"
+          }
+        }
+      }
+    },
+    "Overall Status": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "整体状况"
+          }
+        }
+      }
+    },
+    "Peak workload week: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高峰工作周：%@"
+          }
+        }
+      }
+    },
+    "Percentage": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "百分比"
+          }
+        }
+      }
+    },
+    "Performance Debugging": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "性能调试"
+          }
+        }
+      }
+    },
+    "Permission denied. Please enable in System Settings to use this feature.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有权限。请在系统设置中启用才能使用此功能。"
+          }
+        }
+      }
+    },
     "Pinned": {
       "localizations": {
         "is": {
@@ -9662,11 +11333,35 @@
             "state": "translated",
             "value": "Fest"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已固定"
+          }
         }
       }
     },
-    "Planner configuration settings": {},
-    "Planner uses your assignment due dates to build a schedule of study blocks.": {},
+    "Planner configuration settings": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "规划器配置设置"
+          }
+        }
+      }
+    },
+    "Planner uses your assignment due dates to build a schedule of study blocks.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planner 使用您的作业截止日期来构建学习块的时间表。"
+          }
+        }
+      }
+    },
     "planner.action.new_task": {
       "localizations": {
         "en": {
@@ -9782,6 +11477,12 @@
             "state": "translated",
             "value": "Allowed hours: %1$d:00–%2$d:00"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "允许的时间：%1$d:00–%2$d:00"
+          }
         }
       }
     },
@@ -9794,6 +11495,12 @@
             "state": "new",
             "value": "Long Break"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "长假"
+          }
         }
       }
     },
@@ -9805,6 +11512,12 @@
           "stringUnit": {
             "state": "new",
             "value": "Short Break"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "短暂休息"
           }
         }
       }
@@ -10196,6 +11909,12 @@
             "state": "translated",
             "value": "%d minutes total"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "总共 %d 分钟"
+          }
         }
       }
     },
@@ -10206,6 +11925,12 @@
             "state": "translated",
             "value": "You're caught up."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "你被追上了。"
+          }
         }
       }
     },
@@ -10215,6 +11940,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anything overdue will appear here so the planner can prioritize it."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "任何逾期的事情都会出现在这里，以便规划者可以对其进行优先排序。"
           }
         }
       }
@@ -10350,6 +12081,12 @@
             "state": "translated",
             "value": "%d%% complete"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d%% 已完成"
+          }
         }
       }
     },
@@ -10359,6 +12096,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "After"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "后"
           }
         }
       }
@@ -10524,6 +12267,12 @@
             "state": "translated",
             "value": "Never"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "绝不"
+          }
         }
       }
     },
@@ -10533,6 +12282,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No holiday source configured."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未配置节假日源。"
           }
         }
       }
@@ -10544,6 +12299,12 @@
             "state": "translated",
             "value": "None"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有任何"
+          }
         }
       }
     },
@@ -10554,6 +12315,12 @@
             "state": "translated",
             "value": "On Date"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日期"
+          }
         }
       }
     },
@@ -10563,6 +12330,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "System Calendar"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "系统日历"
           }
         }
       }
@@ -10727,6 +12500,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$d/%2$d steps"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$d/%2$d 步"
           }
         }
       }
@@ -11726,6 +13505,12 @@
             "state": "translated",
             "value": "Updated %@"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已更新%@"
+          }
         }
       }
     },
@@ -11736,10 +13521,25 @@
             "state": "translated",
             "value": "Skipulagning"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "规划"
+          }
         }
       }
     },
-    "Please create a semester first in the Semesters section.": {},
+    "Please create a semester first in the Semesters section.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请先在“学期”部分创建一个学期。"
+          }
+        }
+      }
+    },
     "Points": {
       "localizations": {
         "is": {
@@ -11747,14 +13547,37 @@
             "state": "translated",
             "value": "Stig"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "积分"
+          }
         }
       }
     },
     "Pomodoro Timer": {
       "comment": "The title of the Pomodoro Timer section in the settings view.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "番茄计时器"
+          }
+        }
+      }
     },
-    "Practice Quizzes": {},
+    "Practice Quizzes": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "练习测验"
+          }
+        }
+      }
+    },
     "practice.action.back": {
       "comment": "Back",
       "localizations": {
@@ -13576,7 +15399,16 @@
         }
       }
     },
-    "Previous: %@": {},
+    "Previous: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "以前的： ％@"
+          }
+        }
+      }
+    },
     "Priority": {
       "localizations": {
         "is": {
@@ -13593,12 +15425,66 @@
         }
       }
     },
-    "Privacy & Safety": {},
-    "Privacy & Security": {},
-    "Productivity Tracking": {},
-    "Profile Management": {},
-    "Profile management coming soon": {},
-    "Profile Type": {},
+    "Privacy & Safety": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隐私与安全"
+          }
+        }
+      }
+    },
+    "Privacy & Security": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隐私与安全"
+          }
+        }
+      }
+    },
+    "Productivity Tracking": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "生产力追踪"
+          }
+        }
+      }
+    },
+    "Profile Management": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "档案管理"
+          }
+        }
+      }
+    },
+    "Profile management coming soon": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "个人资料管理即将推出"
+          }
+        }
+      }
+    },
+    "Profile Type": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "型材类型"
+          }
+        }
+      }
+    },
     "Project": {
       "localizations": {
         "is": {
@@ -13606,17 +15492,47 @@
             "state": "translated",
             "value": "Verkefni"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "项目"
+          }
         }
       }
     },
-    "Provide tactile feedback for interactions": {},
-    "Pushed %@ task(s)": {},
+    "Provide tactile feedback for interactions": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "为交互提供触觉反馈"
+          }
+        }
+      }
+    },
+    "Pushed %@ task(s)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已推送 %@ 个任务"
+          }
+        }
+      }
+    },
     "Question": {
       "localizations": {
         "is": {
           "stringUnit": {
             "state": "translated",
             "value": "Spurning"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "问题"
           }
         }
       }
@@ -13628,6 +15544,12 @@
             "state": "translated",
             "value": "Flýtiaðgerðir"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快速行动"
+          }
         }
       }
     },
@@ -13638,10 +15560,25 @@
             "state": "translated",
             "value": "Próf"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "测验"
+          }
         }
       }
     },
-    "Range: %@": {},
+    "Range: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "范围： ％@"
+          }
+        }
+      }
+    },
     "Reading": {
       "localizations": {
         "is": {
@@ -13649,11 +15586,35 @@
             "state": "translated",
             "value": "Lestur"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "阅读"
+          }
         }
       }
     },
-    "Receive a daily summary of your schedule and tasks": {},
-    "Receive encouraging notifications throughout the day": {},
+    "Receive a daily summary of your schedule and tasks": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接收您的日程安排和任务的每日摘要"
+          }
+        }
+      }
+    },
+    "Receive encouraging notifications throughout the day": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全天接收令人鼓舞的通知"
+          }
+        }
+      }
+    },
     "Recent": {
       "localizations": {
         "is": {
@@ -13661,17 +15622,95 @@
             "state": "translated",
             "value": "Nýlegt"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近的"
+          }
         }
       }
     },
-    "Recent Events: %@": {},
-    "Recent Sessions": {},
-    "Reduce Motion": {},
-    "Reduce Motion: %@": {},
-    "Reduce Transparency": {},
-    "Reduce Transparency: %@": {},
-    "Remind me:": {},
-    "Reminders integration settings": {},
+    "Recent Events: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近的活动：%@"
+          }
+        }
+      }
+    },
+    "Recent Sessions": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最近的会议"
+          }
+        }
+      }
+    },
+    "Reduce Motion": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "减少运动"
+          }
+        }
+      }
+    },
+    "Reduce Motion: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "减少运动：%@"
+          }
+        }
+      }
+    },
+    "Reduce Transparency": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "降低透明度"
+          }
+        }
+      }
+    },
+    "Reduce Transparency: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "降低透明度：%@"
+          }
+        }
+      }
+    },
+    "Remind me:": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提醒我："
+          }
+        }
+      }
+    },
+    "Reminders integration settings": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提醒集成设置"
+          }
+        }
+      }
+    },
     "Repeat": {
       "localizations": {
         "is": {
@@ -13679,10 +15718,25 @@
             "state": "translated",
             "value": "Endurtaka"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重复"
+          }
         }
       }
     },
-    "Replace translucent backgrounds with opaque colors": {},
+    "Replace translucent backgrounds with opaque colors": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "用不透明颜色替换半透明背景"
+          }
+        }
+      }
+    },
     "Required": {
       "localizations": {
         "is": {
@@ -13690,11 +15744,35 @@
             "state": "translated",
             "value": "Nauðsynlegt"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "必需的"
+          }
         }
       }
     },
-    "Reset All Data": {},
-    "Reset All Settings": {},
+    "Reset All Data": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置所有数据"
+          }
+        }
+      }
+    },
+    "Reset All Settings": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重置所有设置"
+          }
+        }
+      }
+    },
     "Review": {
       "localizations": {
         "is": {
@@ -13702,39 +15780,211 @@
             "state": "translated",
             "value": "Yfirferð"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "审查"
+          }
         }
       }
     },
-    "Reviewed %@ cards": {},
-    "Risk Analysis": {},
-    "Runs a quick self-diagnostic across data, permissions, and local files.": {},
-    "Sample Card": {},
-    "Save Semester": {},
-    "Schedule suggestions ready": {},
-    "Scheduled Tests": {},
-    "Select a Calendar": {},
-    "Select a Course": {},
+    "Reviewed %@ cards": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已查看 %@ 卡"
+          }
+        }
+      }
+    },
+    "Risk Analysis": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "风险分析"
+          }
+        }
+      }
+    },
+    "Runs a quick self-diagnostic across data, permissions, and local files.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "对数据、权限和本地文件进行快速自诊断。"
+          }
+        }
+      }
+    },
+    "Sample Card": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "样本卡"
+          }
+        }
+      }
+    },
+    "Save Semester": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存学期"
+          }
+        }
+      }
+    },
+    "Schedule suggestions ready": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "安排建议已准备就绪"
+          }
+        }
+      }
+    },
+    "Scheduled Tests": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "预定测试"
+          }
+        }
+      }
+    },
+    "Select a Calendar": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择日历"
+          }
+        }
+      }
+    },
+    "Select a Course": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择课程"
+          }
+        }
+      }
+    },
     "Select a List": {
       "comment": "A label for a picker that lets a user select a school list for reminders.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择一个列表"
+          }
+        }
+      }
     },
-    "Select an event to view details": {},
+    "Select an event to view details": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择一个事件以查看详细信息"
+          }
+        }
+      }
+    },
     "Select course": {
       "comment": "A label for the picker that lets the user select a course.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择课程"
+          }
+        }
+      }
     },
-    "Select the calendar used for school/academic events.": {},
-    "Select up to %@ actions.": {},
-    "Select up to 5 pages to show in the tab bar. All pages remain accessible via the menu.": {},
-    "SELECTED DATE": {},
-    "Selected material": {},
-    "Selected: %@": {},
+    "Select the calendar used for school/academic events.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择用于学校/学术活动的日历。"
+          }
+        }
+      }
+    },
+    "Select up to %@ actions.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最多选择 %@ 个操作。"
+          }
+        }
+      }
+    },
+    "Select up to 5 pages to show in the tab bar. All pages remain accessible via the menu.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最多选择 5 个页面显示在选项卡栏中。所有页面均可通过菜单访问。"
+          }
+        }
+      }
+    },
+    "SELECTED DATE": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选定日期"
+          }
+        }
+      }
+    },
+    "Selected material": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "精选材质"
+          }
+        }
+      }
+    },
+    "Selected: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已选择：%@"
+          }
+        }
+      }
+    },
     "Selected: %@ • %@ today": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "new",
             "value": "Selected: %1$@ • %2$@ today"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已选择：%1$@ • 今天%2$@"
           }
         }
       }
@@ -13746,13 +15996,55 @@
             "state": "translated",
             "value": "Önn"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学期"
+          }
         }
       }
     },
-    "Semester Management": {},
-    "Semester management coming soon": {},
-    "Session Complete!": {},
-    "Session: %@": {},
+    "Semester Management": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学期管理"
+          }
+        }
+      }
+    },
+    "Semester management coming soon": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学期管理即将推出"
+          }
+        }
+      }
+    },
+    "Session Complete!": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "会议结束！"
+          }
+        }
+      }
+    },
+    "Session: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "会议： ％@"
+          }
+        }
+      }
+    },
     "settings.accessibility.guidance.header": {
       "comment": "Guidance",
       "localizations": {
@@ -13766,6 +16058,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Orientación"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "指导"
           }
         }
       }
@@ -13784,6 +16082,12 @@
             "state": "translated",
             "value": "Retroalimentación Háptica"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "触觉反馈"
+          }
         }
       }
     },
@@ -13800,6 +16104,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sentir respuestas táctiles para acciones"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "感受动作的触觉反应"
           }
         }
       }
@@ -13818,6 +16128,12 @@
             "state": "translated",
             "value": "Aumentar Contraste"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "增加对比度"
+          }
         }
       }
     },
@@ -13834,6 +16150,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hacer que los colores y bordes sean más distintos"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "让颜色和边框更加清晰"
           }
         }
       }
@@ -13852,6 +16174,12 @@
             "state": "translated",
             "value": "Interacción"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "相互作用"
+          }
         }
       }
     },
@@ -13868,6 +16196,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reducir Movimiento"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "减少运动"
           }
         }
       }
@@ -13886,6 +16220,12 @@
             "state": "translated",
             "value": "Minimizar animaciones y transiciones"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最小化动画和过渡"
+          }
         }
       }
     },
@@ -13902,6 +16242,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reducir Transparencia"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "降低透明度"
           }
         }
       }
@@ -13920,6 +16266,12 @@
             "state": "translated",
             "value": "Reducir efectos de desenfoque y transparencia"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "减少模糊和透明效果"
+          }
         }
       }
     },
@@ -13936,6 +16288,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostrar Información sobre Herramientas"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示工具提示"
           }
         }
       }
@@ -13954,6 +16312,12 @@
             "state": "translated",
             "value": "Mostrar sugerencias útiles para elementos de interfaz"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示界面元素的有用提示"
+          }
         }
       }
     },
@@ -13970,6 +16334,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Visual"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "视觉的"
           }
         }
       }
@@ -13988,6 +16358,12 @@
             "state": "translated",
             "value": "Mostrar Animaciones"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示动画"
+          }
         }
       }
     },
@@ -14004,6 +16380,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Habilitar transiciones y efectos suaves"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "实现平滑的过渡和效果"
           }
         }
       }
@@ -14022,6 +16404,12 @@
             "state": "translated",
             "value": "Radio de Esquina de Tarjeta"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "卡角半径"
+          }
         }
       }
     },
@@ -14038,6 +16426,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Efectos"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "效果"
           }
         }
       }
@@ -14056,6 +16450,12 @@
             "state": "translated",
             "value": "Efectos de Vidrio"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "玻璃效果"
+          }
         }
       }
     },
@@ -14072,6 +16472,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Usar fondos translúcidos y desenfoque"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用半透明背景并模糊"
           }
         }
       }
@@ -14090,6 +16496,12 @@
             "state": "translated",
             "value": "Estilo"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "风格"
+          }
         }
       }
     },
@@ -14106,6 +16518,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tema"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "主题"
           }
         }
       }
@@ -14124,6 +16542,12 @@
             "state": "translated",
             "value": "Auto"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "汽车"
+          }
         }
       }
     },
@@ -14140,6 +16564,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Oscuro"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "黑暗的"
           }
         }
       }
@@ -14158,6 +16588,12 @@
             "state": "translated",
             "value": "Apariencia"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "外貌"
+          }
         }
       }
     },
@@ -14174,6 +16610,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Claro"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "光"
           }
         }
       }
@@ -14192,17 +16634,47 @@
             "state": "translated",
             "value": "Sistema"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "系统"
+          }
         }
       }
     },
     "settings.calendar.lock_picker": {
-      "comment": "Lock Calendar Picker to School"
+      "comment": "Lock Calendar Picker to School",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.lock_picker"
+          }
+        }
+      }
     },
     "settings.calendar.lock_picker.disabled": {
-      "comment": "Users can choose which calendar to save new events to"
+      "comment": "Users can choose which calendar to save new events to",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.lock_picker.disabled"
+          }
+        }
+      }
     },
     "settings.calendar.lock_picker.enabled": {
-      "comment": "New events will always be saved to the school calendar"
+      "comment": "New events will always be saved to the school calendar",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.lock_picker.enabled"
+          }
+        }
+      }
     },
     "settings.calendar.not_authorized.message": {
       "comment": "Grant calendar access to sync events with your schedule",
@@ -14217,6 +16689,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otorga acceso al calendario para sincronizar eventos con tu horario"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "授予日历访问权限以将事件与您的日程同步"
           }
         }
       }
@@ -14235,11 +16713,25 @@
             "state": "translated",
             "value": "Acceso al Calendario Requerido"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需要访问日历"
+          }
         }
       }
     },
     "settings.calendar.picker_lock.header": {
-      "comment": "Event Creation"
+      "comment": "Event Creation",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.picker_lock.header"
+          }
+        }
+      }
     },
     "settings.calendar.range.1_month": {
       "comment": "1 Month",
@@ -14254,6 +16746,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "1 Mes"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1个月"
           }
         }
       }
@@ -14272,6 +16770,12 @@
             "state": "translated",
             "value": "1 Semana"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1周"
+          }
         }
       }
     },
@@ -14288,6 +16792,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "2 Meses"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2个月"
           }
         }
       }
@@ -14306,6 +16816,12 @@
             "state": "translated",
             "value": "2 Semanas"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2周"
+          }
         }
       }
     },
@@ -14322,6 +16838,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rango de Actualización"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刷新范围"
           }
         }
       }
@@ -14340,6 +16862,12 @@
             "state": "translated",
             "value": "Solicitar Acceso"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请求访问权限"
+          }
         }
       }
     },
@@ -14356,6 +16884,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Revocar Acceso al Calendario"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "撤销日历访问权限"
           }
         }
       }
@@ -14374,6 +16908,12 @@
             "state": "translated",
             "value": "Revocar Acceso"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "撤销访问权限"
+          }
         }
       }
     },
@@ -14390,6 +16930,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Esto borrará todos los datos de calendario sincronizados. Necesitarás revocar manualmente el permiso en Configuración de iOS > Roots > Calendarios."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这将清除所有同步的日历数据。您需要在 iOS 设置 > 根目录 > 日历中手动撤销权限。"
           }
         }
       }
@@ -14408,6 +16954,12 @@
             "state": "translated",
             "value": "¿Revocar Acceso al Calendario?"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "撤销日历访问权限？"
+          }
         }
       }
     },
@@ -14424,6 +16976,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Eliminar acceso al calendario y borrar todos los eventos sincronizados. Necesitarás revocar manualmente el permiso en Configuración de iOS."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "删除日历访问权限并清除所有同步事件。您需要在 iOS 设置中手动撤销权限。"
           }
         }
       }
@@ -14442,6 +17000,12 @@
             "state": "translated",
             "value": "Qué tan adelante escanear eventos al actualizar"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "刷新时提前多长时间扫描事件"
+          }
         }
       }
     },
@@ -14458,6 +17022,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Programación"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "调度"
           }
         }
       }
@@ -14476,6 +17046,12 @@
             "state": "translated",
             "value": "Selecciona el calendario a usar para el seguimiento de eventos y programación"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "选择用于事件跟踪和安排的日历"
+          }
         }
       }
     },
@@ -14493,26 +17069,80 @@
             "state": "translated",
             "value": "Calendario Escolar"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学校日历"
+          }
         }
       }
     },
     "settings.calendar.school_calendar.label": {
-      "comment": "School Calendar"
+      "comment": "School Calendar",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.school_calendar.label"
+          }
+        }
+      }
     },
     "settings.calendar.select_calendar": {
-      "comment": "Select a Calendar"
+      "comment": "Select a Calendar",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置.日历.select_calendar"
+          }
+        }
+      }
     },
     "settings.calendar.show_only_school": {
-      "comment": "Show Only School Calendar"
+      "comment": "Show Only School Calendar",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.show_only_school"
+          }
+        }
+      }
     },
     "settings.calendar.show_only_school.disabled": {
-      "comment": "Calendar UI will show events from all calendars"
+      "comment": "Calendar UI will show events from all calendars",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.show_only_school.disabled"
+          }
+        }
+      }
     },
     "settings.calendar.show_only_school.enabled": {
-      "comment": "Calendar UI will only show events from your school calendar"
+      "comment": "Calendar UI will only show events from your school calendar",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.show_only_school.enabled"
+          }
+        }
+      }
     },
     "settings.calendar.view_filter.header": {
-      "comment": "Calendar View"
+      "comment": "Calendar View",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.view_filter.header"
+          }
+        }
+      }
     },
     "settings.category.accessibility": {
       "comment": "Accessibility",
@@ -14527,6 +17157,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Accesibilidad"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无障碍"
           }
         }
       }
@@ -14545,6 +17181,12 @@
             "state": "translated",
             "value": "Apariencia"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "外貌"
+          }
         }
       }
     },
@@ -14561,6 +17203,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Calendario"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日历"
           }
         }
       }
@@ -14582,14 +17230,36 @@
             "state": "translated",
             "value": "Cursos y Planificador"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程与规划师"
+          }
         }
       }
     },
     "settings.category.developer": {
-      "comment": "Developer"
+      "comment": "Developer",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置.类别.开发者"
+          }
+        }
+      }
     },
     "settings.category.flashcards": {
-      "comment": "Flashcards"
+      "comment": "Flashcards",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置.类别.闪存卡"
+          }
+        }
+      }
     },
     "settings.category.general": {
       "comment": "General",
@@ -14605,11 +17275,25 @@
             "state": "translated",
             "value": "General"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一般的"
+          }
         }
       }
     },
     "settings.category.integrations": {
-      "comment": "Integrations"
+      "comment": "Integrations",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置.类别.集成"
+          }
+        }
+      }
     },
     "settings.category.interface": {
       "comment": "Interface",
@@ -14624,6 +17308,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Interfaz"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "界面"
           }
         }
       }
@@ -14642,11 +17332,25 @@
             "state": "translated",
             "value": "Notificaciones"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通知"
+          }
         }
       }
     },
     "settings.category.planner": {
-      "comment": "Planner"
+      "comment": "Planner",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置.类别.规划器"
+          }
+        }
+      }
     },
     "settings.category.privacy": {
       "comment": "Privacy",
@@ -14662,17 +17366,47 @@
             "state": "translated",
             "value": "Privacidad"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隐私"
+          }
         }
       }
     },
     "settings.category.profiles": {
-      "comment": "Profiles"
+      "comment": "Profiles",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置.类别.配置文件"
+          }
+        }
+      }
     },
     "settings.category.reminders": {
-      "comment": "Reminders"
+      "comment": "Reminders",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置.类别.提醒"
+          }
+        }
+      }
     },
     "settings.category.semesters": {
-      "comment": "Semesters"
+      "comment": "Semesters",
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置.类别.学期"
+          }
+        }
+      }
     },
     "settings.category.storage": {
       "comment": "Storage",
@@ -14687,6 +17421,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Almacenamiento"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "贮存"
           }
         }
       }
@@ -14705,6 +17445,12 @@
             "state": "translated",
             "value": "Temporizador"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "定时器"
+          }
         }
       }
     },
@@ -14715,6 +17461,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Course Display"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程展示"
           }
         }
       }
@@ -14727,6 +17479,12 @@
             "state": "translated",
             "value": "Both"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "两个都"
+          }
         }
       }
     },
@@ -14737,6 +17495,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Code"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "代码"
           }
         }
       }
@@ -14749,6 +17513,12 @@
             "state": "translated",
             "value": "How to display course information throughout the app"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "如何在整个应用程序中显示课程信息"
+          }
         }
       }
     },
@@ -14760,6 +17530,12 @@
             "state": "translated",
             "value": "Courses"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "课程"
+          }
         }
       }
     },
@@ -14770,6 +17546,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Name"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "姓名"
           }
         }
       }
@@ -14787,6 +17569,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pantalla"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "展示"
           }
         }
       }
@@ -14840,6 +17628,12 @@
             "state": "translated",
             "value": "Aumentar el contraste visual para mejor legibilidad"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "增加视觉对比度以获得更好的可读性"
+          }
         }
       }
     },
@@ -14892,6 +17686,12 @@
             "state": "translated",
             "value": "Mostrar horas en formato de 24 horas"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "以 24 小时格式显示时间"
+          }
         }
       }
     },
@@ -14908,6 +17708,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fin de Jornada Laboral"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "工作日结束"
           }
         }
       }
@@ -14926,6 +17732,12 @@
             "state": "translated",
             "value": "Inicio de Jornada Laboral"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "工作日开始"
+          }
         }
       }
     },
@@ -14942,6 +17754,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Afecta la programación del planificador y el seguimiento de energía"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "影响计划者调度和能量跟踪"
           }
         }
       }
@@ -14960,6 +17778,12 @@
             "state": "translated",
             "value": "Horas de Jornada Laboral"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "工作日时间"
+          }
         }
       }
     },
@@ -14970,6 +17794,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Motivational Messages"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "励志信息"
           }
         }
       }
@@ -14982,6 +17812,12 @@
             "state": "translated",
             "value": "Receive encouraging notifications"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接收令人鼓舞的通知"
+          }
         }
       }
     },
@@ -14992,6 +17828,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Assignment Reminders"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "作业提醒"
           }
         }
       }
@@ -15004,6 +17846,12 @@
             "state": "translated",
             "value": "Remind me before assignments are due"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在作业到期前提醒我"
+          }
         }
       }
     },
@@ -15014,6 +17862,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Daily Overview"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每日概览"
           }
         }
       }
@@ -15026,6 +17880,12 @@
             "state": "translated",
             "value": "Morning summary of today's schedule"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上午总结今天的日程"
+          }
         }
       }
     },
@@ -15036,6 +17896,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Debug"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "调试"
           }
         }
       }
@@ -15048,6 +17914,12 @@
             "state": "translated",
             "value": "Print Pending Notifications"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打印待处理通知"
+          }
         }
       }
     },
@@ -15058,6 +17930,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Send Test Notification (5s)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "发送测试通知（5秒）"
           }
         }
       }
@@ -15070,6 +17948,12 @@
             "state": "translated",
             "value": "Enable notifications in iOS Settings to receive reminders and alerts"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在 iOS 设置中启用通知以接收提醒和警报"
+          }
         }
       }
     },
@@ -15080,6 +17964,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Notifications Disabled"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通知已禁用"
           }
         }
       }
@@ -15098,6 +17988,12 @@
             "state": "translated",
             "value": "Habilitar Notificaciones"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启用通知"
+          }
         }
       }
     },
@@ -15115,6 +18011,12 @@
             "state": "translated",
             "value": "Recibir recordatorios para tareas y eventos"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "接收提醒和警报"
+          }
         }
       }
     },
@@ -15125,6 +18027,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "General"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一般的"
           }
         }
       }
@@ -15137,6 +18045,12 @@
             "state": "translated",
             "value": "Reminder Lead Time"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提醒提前时间"
+          }
         }
       }
     },
@@ -15147,6 +18061,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "1 day"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1天"
           }
         }
       }
@@ -15159,6 +18079,12 @@
             "state": "translated",
             "value": "1 hour"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1小时"
+          }
         }
       }
     },
@@ -15169,6 +18095,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "2 days"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2天"
           }
         }
       }
@@ -15181,6 +18113,12 @@
             "state": "translated",
             "value": "2 hours"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2小时"
+          }
         }
       }
     },
@@ -15191,6 +18129,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "6 hours"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6小时"
           }
         }
       }
@@ -15203,6 +18147,12 @@
             "state": "translated",
             "value": "12 hours"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "12小时"
+          }
         }
       }
     },
@@ -15213,6 +18163,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "15 minutes"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "15分钟"
           }
         }
       }
@@ -15225,6 +18181,12 @@
             "state": "translated",
             "value": "30 minutes"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30分钟"
+          }
         }
       }
     },
@@ -15235,6 +18197,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Motivation"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "动机"
           }
         }
       }
@@ -15247,6 +18215,12 @@
             "state": "translated",
             "value": "Open Settings"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开设置"
+          }
         }
       }
     },
@@ -15257,6 +18231,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Overview Time"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "概览时间"
           }
         }
       }
@@ -15269,6 +18249,12 @@
             "state": "translated",
             "value": "Please enable notifications in Settings to use this feature"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请在“设置”中启用通知才能使用此功能"
+          }
         }
       }
     },
@@ -15279,6 +18265,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Notifications Disabled"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通知已禁用"
           }
         }
       }
@@ -15291,6 +18283,12 @@
             "state": "translated",
             "value": "Open Settings"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开设置"
+          }
         }
       }
     },
@@ -15301,6 +18299,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reminders"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提醒事项"
           }
         }
       }
@@ -15313,6 +18317,12 @@
             "state": "translated",
             "value": "Summaries"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "摘要"
+          }
         }
       }
     },
@@ -15323,6 +18333,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "LLM-Assisted Planning"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "法学硕士辅助规划"
           }
         }
       }
@@ -15335,6 +18351,12 @@
             "state": "translated",
             "value": "Use intelligent suggestions for task scheduling"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用智能建议进行任务调度"
+          }
         }
       }
     },
@@ -15345,6 +18367,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Auto-Schedule Breaks"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自动安排休息时间"
           }
         }
       }
@@ -15357,6 +18385,12 @@
             "state": "translated",
             "value": "Automatically add break periods between study sessions"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自动在学习课程之间添加休息时间"
+          }
         }
       }
     },
@@ -15367,6 +18401,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Energy Tracking"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "能量追踪"
           }
         }
       }
@@ -15379,6 +18419,12 @@
             "state": "translated",
             "value": "Track and optimize based on your energy levels"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "根据您的能量水平进行跟踪和优化"
+          }
         }
       }
     },
@@ -15389,6 +18435,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Planning Horizon"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "规划范围"
           }
         }
       }
@@ -15401,6 +18453,12 @@
             "state": "translated",
             "value": "1 Month"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1个月"
+          }
         }
       }
     },
@@ -15411,6 +18469,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "1 Week"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1周"
           }
         }
       }
@@ -15429,6 +18493,12 @@
             "state": "translated",
             "value": "2 Semanas"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2周"
+          }
         }
       }
     },
@@ -15439,6 +18509,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Intelligence"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "智力"
           }
         }
       }
@@ -15451,6 +18527,12 @@
             "state": "translated",
             "value": "How far ahead to schedule tasks and study sessions"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提前多久安排任务和学习课程"
+          }
         }
       }
     },
@@ -15461,6 +18543,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scheduling"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "调度"
           }
         }
       }
@@ -15473,6 +18561,12 @@
             "state": "translated",
             "value": "Track Study Hours"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟踪学习时间"
+          }
         }
       }
     },
@@ -15484,6 +18578,12 @@
             "state": "translated",
             "value": "Monitor total time spent studying"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "监控学习总时间"
+          }
         }
       }
     },
@@ -15494,6 +18594,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tracking"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "追踪"
           }
         }
       }
@@ -15512,6 +18618,12 @@
             "state": "translated",
             "value": "Borrar Registros de Depuración"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除调试日志"
+          }
         }
       }
     },
@@ -15528,6 +18640,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Borrar Registros"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除日志"
           }
         }
       }
@@ -15546,6 +18664,12 @@
             "state": "translated",
             "value": "Esto borrará todos los registros de depuración y datos de análisis almacenados en tu dispositivo."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这将清除设备上存储的所有调试日志和分析数据。"
+          }
         }
       }
     },
@@ -15562,6 +18686,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "¿Borrar Registros de Depuración?"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除调试日志？"
           }
         }
       }
@@ -15580,6 +18710,12 @@
             "state": "translated",
             "value": "Almacenamiento de Datos"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "数据存储"
+          }
         }
       }
     },
@@ -15597,6 +18733,12 @@
             "state": "translated",
             "value": "Diagnósticos"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "诊断"
+          }
         }
       }
     },
@@ -15607,6 +18749,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "iCloud Sync"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud 同步"
           }
         }
       }
@@ -15619,6 +18767,12 @@
             "state": "translated",
             "value": "Sync data across your devices using iCloud"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用 iCloud 在您的设备之间同步数据"
+          }
         }
       }
     },
@@ -15629,6 +18783,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "All your data stays on this device. No cloud sync or external services are used."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "您的所有数据都保留在此设备上。不使用云同步或外部服务。"
           }
         }
       }
@@ -15647,6 +18807,12 @@
             "state": "translated",
             "value": "Administrar Permisos"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "管理权限"
+          }
         }
       }
     },
@@ -15663,6 +18829,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abre Configuración de iOS para administrar calendario, notificaciones y otros permisos"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开 iOS 设置来管理日历、通知和其他权限"
           }
         }
       }
@@ -15681,6 +18853,12 @@
             "state": "translated",
             "value": "Permisos"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "权限"
+          }
         }
       }
     },
@@ -15692,6 +18870,12 @@
             "state": "translated",
             "value": "Export your data as a backup file"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "将您的数据导出为备份文件"
+          }
         }
       }
     },
@@ -15702,6 +18886,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Backup"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "备份"
           }
         }
       }
@@ -15720,6 +18910,12 @@
             "state": "translated",
             "value": "Borrar Caché"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除缓存"
+          }
         }
       }
     },
@@ -15736,6 +18932,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Borrar Caché"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除缓存"
           }
         }
       }
@@ -15754,6 +18956,12 @@
             "state": "translated",
             "value": "Esto borrará archivos temporales y datos en caché. Tus tareas, cursos y configuraciones no se verán afectados."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这将清除临时文件和缓存数据。您的任务、课程和设置不会受到影响。"
+          }
         }
       }
     },
@@ -15771,6 +18979,12 @@
             "state": "translated",
             "value": "¿Borrar Caché?"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除缓存？"
+          }
         }
       }
     },
@@ -15781,6 +18995,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Export Data"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "导出数据"
           }
         }
       }
@@ -15793,6 +19013,12 @@
             "state": "translated",
             "value": "Export Now"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "立即导出"
+          }
         }
       }
     },
@@ -15803,6 +19029,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Unable to create the export file right now."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目前无法创建导出文件。"
           }
         }
       }
@@ -15815,6 +19047,12 @@
             "state": "translated",
             "value": "Export Failed"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "导出失败"
+          }
         }
       }
     },
@@ -15826,6 +19064,12 @@
             "state": "translated",
             "value": "Your data will be exported as a JSON file that you can save or share."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "您的数据将导出为 JSON 文件，您可以保存或共享。"
+          }
         }
       }
     },
@@ -15836,6 +19080,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Export Data"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "导出数据"
           }
         }
       }
@@ -15854,6 +19104,12 @@
             "state": "translated",
             "value": "Almacenamiento"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "贮存"
+          }
         }
       }
     },
@@ -15870,6 +19126,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ubicación"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "地点"
           }
         }
       }
@@ -15888,6 +19150,12 @@
             "state": "translated",
             "value": "Local"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当地的"
+          }
         }
       }
     },
@@ -15904,6 +19172,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Borrar el caché puede liberar espacio de almacenamiento y puede mejorar el rendimiento"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "清除缓存可以释放存储空间并可能提高性能"
           }
         }
       }
@@ -15922,6 +19196,12 @@
             "state": "translated",
             "value": "Mantenimiento"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "维护"
+          }
         }
       }
     },
@@ -15938,6 +19218,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Almacenamiento Usado"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已用存储空间"
           }
         }
       }
@@ -15956,6 +19242,12 @@
             "state": "translated",
             "value": "Temporizadores AlarmKit"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "闹钟套件定时器"
+          }
         }
       }
     },
@@ -15972,6 +19264,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Usar AlarmKit de iOS para alarmas de sistema fuertes"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用 iOS AlarmKit 发出响亮的系统警报"
           }
         }
       }
@@ -15990,6 +19288,12 @@
             "state": "translated",
             "value": "Alertas del Temporizador"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "定时器警报"
+          }
         }
       }
     },
@@ -16006,6 +19310,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mostrar notificación cuando se complete el temporizador"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "计时器完成时显示通知"
           }
         }
       }
@@ -16024,6 +19334,12 @@
             "state": "translated",
             "value": "AlarmKit proporciona alarmas a nivel de sistema que funcionan incluso cuando la aplicación está cerrada."
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AlarmKit 提供系统级警报，即使应用程序关闭也能正常工作。"
+          }
         }
       }
     },
@@ -16040,6 +19356,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Alertas"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "警报"
           }
         }
       }
@@ -16093,6 +19415,12 @@
             "state": "translated",
             "value": "Duración de Enfoque"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "聚焦持续时间"
+          }
         }
       }
     },
@@ -16109,6 +19437,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ciclos Pomodoro"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "番茄周期"
           }
         }
       }
@@ -16127,6 +19461,12 @@
             "state": "translated",
             "value": "Descanso Largo"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "长假"
+          }
         }
       }
     },
@@ -16143,6 +19483,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Alertas Pomodoro"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "番茄钟提醒"
           }
         }
       }
@@ -16161,6 +19507,12 @@
             "state": "translated",
             "value": "Alertar en cada cambio de fase pomodoro"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "每次番茄钟阶段变化时发出警报"
+          }
         }
       }
     },
@@ -16178,6 +19530,12 @@
             "state": "translated",
             "value": "Configuración de Pomodoro"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "番茄工作法设置"
+          }
         }
       }
     },
@@ -16194,6 +19552,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Descanso Corto"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "短暂休息"
           }
         }
       }
@@ -16227,16 +19591,78 @@
         }
       }
     },
-    "Show Animations": {},
-    "Show Answer": {},
-    "Show Sidebar": {},
+    "Show Animations": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示动画"
+          }
+        }
+      }
+    },
+    "Show Answer": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示答案"
+          }
+        }
+      }
+    },
+    "Show Sidebar": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示侧边栏"
+          }
+        }
+      }
+    },
     "Simulate Accessibility Features": {
       "comment": "A section header in the AccessibilityDebugView that lists the controls for simulating various accessibility features.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "模拟辅助功能"
+          }
+        }
+      }
     },
-    "Source: %@": {},
-    "Stack Trace": {},
-    "Standard (A-F)": {},
+    "Source: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "来源： ％@"
+          }
+        }
+      }
+    },
+    "Stack Trace": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "堆栈跟踪"
+          }
+        }
+      }
+    },
+    "Standard (A-F)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "标准 (A-F)"
+          }
+        }
+      }
+    },
     "Start": {
       "localizations": {
         "is": {
@@ -16253,14 +19679,38 @@
         }
       }
     },
-    "Start date": {},
-    "Starts": {},
+    "Start date": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开始日期"
+          }
+        }
+      }
+    },
+    "Starts": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开始"
+          }
+        }
+      }
+    },
     "Statistics": {
       "localizations": {
         "is": {
           "stringUnit": {
             "state": "translated",
             "value": "Tölfræði"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "统计数据"
           }
         }
       }
@@ -16281,11 +19731,56 @@
         }
       }
     },
-    "Status:": {},
-    "Status: %@": {},
-    "Storage & Sync": {},
-    "Storage info unavailable": {},
-    "Strengthen borders and text contrast": {},
+    "Status:": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "地位："
+          }
+        }
+      }
+    },
+    "Status: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "地位： ％@"
+          }
+        }
+      }
+    },
+    "Storage & Sync": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "存储与同步"
+          }
+        }
+      }
+    },
+    "Storage info unavailable": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "存储信息不可用"
+          }
+        }
+      }
+    },
+    "Strengthen borders and text contrast": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加强边框和文字对比度"
+          }
+        }
+      }
+    },
     "Student": {
       "localizations": {
         "is": {
@@ -16293,11 +19788,35 @@
             "state": "translated",
             "value": "Nemandi"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学生"
+          }
         }
       }
     },
-    "Study Coach": {},
-    "Study Materials": {},
+    "Study Coach": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学习教练"
+          }
+        }
+      }
+    },
+    "Study Materials": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学习材料"
+          }
+        }
+      }
+    },
     "Study Mode": {
       "localizations": {
         "is": {
@@ -16305,11 +19824,35 @@
             "state": "translated",
             "value": "Námshamur"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学习模式"
+          }
         }
       }
     },
-    "Study Now": {},
-    "Study Options": {},
+    "Study Now": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "现在学习"
+          }
+        }
+      }
+    },
+    "Study Options": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学习选择"
+          }
+        }
+      }
+    },
     "Study Session": {
       "localizations": {
         "is": {
@@ -16317,14 +19860,65 @@
             "state": "translated",
             "value": "Námsfundur"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学习会"
+          }
         }
       }
     },
-    "Study Session Defaults": {},
-    "Study Summary": {},
-    "Study time today:": {},
-    "Subsystem Toggles": {},
-    "Switch between different profiles for work, school, or personal use": {},
+    "Study Session Defaults": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "研究会话默认值"
+          }
+        }
+      }
+    },
+    "Study Summary": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "研究总结"
+          }
+        }
+      }
+    },
+    "Study time today:": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天学习时间："
+          }
+        }
+      }
+    },
+    "Subsystem Toggles": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "子系统切换"
+          }
+        }
+      }
+    },
+    "Switch between different profiles for work, school, or personal use": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在不同的配置文件之间切换以供工作、学校或个人使用"
+          }
+        }
+      }
+    },
     "Syllabus": {
       "localizations": {
         "is": {
@@ -16332,21 +19926,135 @@
             "state": "translated",
             "value": "Kennsluáætlun"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "教学大纲"
+          }
         }
       }
     },
-    "Sync tasks with Apple Reminders": {},
-    "System Calendar": {},
-    "Tab Bar Pages": {},
-    "Target %": {},
-    "Target %@%%": {},
-    "Targets help scenario calculations and visual indicators. This does not affect official grades.": {},
-    "Task Dependencies": {},
-    "Task Order": {},
-    "Task Order Enforced": {},
-    "Tasks must be completed in sequence. Drag to reorder.": {},
-    "Tasks without a due date stay in the Unscheduled section.": {},
-    "Temperature: %.2f": {},
+    "Sync tasks with Apple Reminders": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "与 Apple 提醒同步任务"
+          }
+        }
+      }
+    },
+    "System Calendar": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "系统日历"
+          }
+        }
+      }
+    },
+    "Tab Bar Pages": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "标签栏页面"
+          }
+        }
+      }
+    },
+    "Target %": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目标 ％"
+          }
+        }
+      }
+    },
+    "Target %@%%": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目标 ％@％％"
+          }
+        }
+      }
+    },
+    "Targets help scenario calculations and visual indicators. This does not affect official grades.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目标有助于场景计算和视觉指标。这不会影响官方成绩。"
+          }
+        }
+      }
+    },
+    "Task Dependencies": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "任务依赖关系"
+          }
+        }
+      }
+    },
+    "Task Order": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "任务顺序"
+          }
+        }
+      }
+    },
+    "Task Order Enforced": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "任务命令已执行"
+          }
+        }
+      }
+    },
+    "Tasks must be completed in sequence. Drag to reorder.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "任务必须按顺序完成。拖动以重新排序。"
+          }
+        }
+      }
+    },
+    "Tasks without a due date stay in the Unscheduled section.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有截止日期的任务将保留在“未计划”部分中。"
+          }
+        }
+      }
+    },
+    "Temperature: %.2f": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "温度：%.2f"
+          }
+        }
+      }
+    },
     "Term": {
       "localizations": {
         "is": {
@@ -16354,11 +20062,35 @@
             "state": "translated",
             "value": "Tímabil"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学期"
+          }
         }
       }
     },
-    "Test and preview accessibility features without changing system settings": {},
-    "Testing: TextEditor with custom Binding (CRITICAL)": {},
+    "Test and preview accessibility features without changing system settings": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无需更改系统设置即可测试和预览辅助功能"
+          }
+        }
+      }
+    },
+    "Testing: TextEditor with custom Binding (CRITICAL)": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "测试：具有自定义绑定的文本编辑器（关键）"
+          }
+        }
+      }
+    },
     "Text": {
       "localizations": {
         "is": {
@@ -16366,19 +20098,87 @@
             "state": "translated",
             "value": "Texti"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文本"
+          }
         }
       }
     },
-    "The Study Coach helps you maintain focus and suggests optimal study patterns based on your energy levels.": {},
+    "The Study Coach helps you maintain focus and suggests optimal study patterns based on your energy levels.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学习教练帮助您保持专注，并根据您的精力水平建议最佳的学习模式。"
+          }
+        }
+      }
+    },
     "These counters must remain zero when Auto-Reschedule is OFF. Only 'Suppressed' should increment.": {
       "comment": "A description below the list of auto-reschedule invariant counters, explaining their purpose and the condition under which they should remain zero.",
-      "isCommentAutoGenerated": true
+      "isCommentAutoGenerated": true,
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当自动重新安排关闭时，这些计数器必须保持为零。只有“抑制”应该增加。"
+          }
+        }
+      }
     },
-    "These settings determine your default study session configuration. You can adjust them for individual sessions.": {},
-    "These settings help improve readability and reduce visual complexity.": {},
-    "This can't be undone.": {},
-    "This card demonstrates material effects": {},
-    "This panel shows provider invocation counters to verify that the 'Enable LLM Assistance' toggle enforcement is airtight.": {},
+    "These settings determine your default study session configuration. You can adjust them for individual sessions.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这些设置决定您的默认学习会话配置。您可以针对各个会话调整它们。"
+          }
+        }
+      }
+    },
+    "These settings help improve readability and reduce visual complexity.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这些设置有助于提高可读性并降低视觉复杂性。"
+          }
+        }
+      }
+    },
+    "This can't be undone.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这无法撤消。"
+          }
+        }
+      }
+    },
+    "This card demonstrates material effects": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这张卡展示了材质效果"
+          }
+        }
+      }
+    },
+    "This panel shows provider invocation counters to verify that the 'Enable LLM Assistance' toggle enforcement is airtight.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此面板显示提供商调用计数器，以验证“启用 LLM 协助”切换执行是否严密。"
+          }
+        }
+      }
+    },
     "This Week": {
       "localizations": {
         "is": {
@@ -16386,16 +20186,85 @@
             "state": "translated",
             "value": "Þessi vika"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "本星期"
+          }
         }
       }
     },
-    "This will disable all LLM-powered features including Apple Intelligence, local models, and custom providers. Parsing and planning will use deterministic algorithms only.\n\nYou can re-enable LLM assistance at any time.": {},
-    "This will move the semester to Recently Deleted. You can recover it within 30 days.": {},
-    "This will permanently delete \"%@\" and all its cards. This action cannot be undone.": {},
-    "This will permanently delete all reschedule history. This cannot be undone.": {},
-    "This will remove all app data including courses, assignments, settings, and cached sessions. This action cannot be undone.": {},
-    "This will reset all settings to their default values": {},
-    "This will reset all settings to their default values. This action cannot be undone.": {},
+    "This will disable all LLM-powered features including Apple Intelligence, local models, and custom providers. Parsing and planning will use deterministic algorithms only.\n\nYou can re-enable LLM assistance at any time.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这将禁用所有由 LLM 支持的功能，包括 Apple Intelligence、本地模型和自定义提供商。解析和规划将仅使用确定性算法。\n\n您可以随时重新启用 LLM 帮助。"
+          }
+        }
+      }
+    },
+    "This will move the semester to Recently Deleted. You can recover it within 30 days.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这会将学期移至最近删除。您可以在 30 天内恢复。"
+          }
+        }
+      }
+    },
+    "This will permanently delete \"%@\" and all its cards. This action cannot be undone.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这将永久删除“%@”及其所有卡。此操作无法撤消。"
+          }
+        }
+      }
+    },
+    "This will permanently delete all reschedule history. This cannot be undone.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这将永久删除所有重新安排历史记录。此操作无法撤消。"
+          }
+        }
+      }
+    },
+    "This will remove all app data including courses, assignments, settings, and cached sessions. This action cannot be undone.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这将删除所有应用程序数据，包括课程、作业、设置和缓存的会话。此操作无法撤消。"
+          }
+        }
+      }
+    },
+    "This will reset all settings to their default values": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这会将所有设置重置为其默认值"
+          }
+        }
+      }
+    },
+    "This will reset all settings to their default values. This action cannot be undone.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "这会将所有设置重置为其默认值。此操作无法撤消。"
+          }
+        }
+      }
+    },
     "Thread": {
       "localizations": {
         "is": {
@@ -16403,10 +20272,25 @@
             "state": "translated",
             "value": "Þráður"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "线"
+          }
         }
       }
     },
-    "Time & Effort": {},
+    "Time & Effort": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "时间和精力"
+          }
+        }
+      }
+    },
     "time.am": {
       "comment": "AM",
       "localizations": {
@@ -16426,6 +20310,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ДП"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "是"
           }
         }
       }
@@ -16450,6 +20340,12 @@
             "state": "translated",
             "value": "мин"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "分钟"
+          }
         }
       }
     },
@@ -16473,10 +20369,25 @@
             "state": "translated",
             "value": "ПП"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下午"
+          }
         }
       }
     },
-    "Timeout: %@s": {},
+    "Timeout: %@s": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "超时：%@s"
+          }
+        }
+      }
+    },
     "timer.action.start": {
       "comment": "Start",
       "localizations": {
@@ -17451,11 +21362,56 @@
         }
       }
     },
-    "TIMING": {},
-    "Title / body / caption": {},
-    "to": {},
-    "To disconnect Roots from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars.": {},
-    "To disconnect Roots from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders.": {},
+    "TIMING": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "定时"
+          }
+        }
+      }
+    },
+    "Title / body / caption": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "标题/正文/标题"
+          }
+        }
+      }
+    },
+    "to": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "到"
+          }
+        }
+      }
+    },
+    "To disconnect Roots from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要断开 Roots 与日历的连接，请在系统设置 > 隐私和安全 > 日历中撤销访问权限。"
+          }
+        }
+      }
+    },
+    "To disconnect Roots from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "要断开 Roots 与提醒的连接，请在系统设置 > 隐私和安全 > 提醒中撤销访问权限。"
+          }
+        }
+      }
+    },
     "Today": {
       "localizations": {
         "is": {
@@ -17472,9 +21428,36 @@
         }
       }
     },
-    "Today: %@": {},
-    "Today's Plan": {},
-    "Tooltips: %@": {},
+    "Today: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天： ％@"
+          }
+        }
+      }
+    },
+    "Today's Plan": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今天的计划"
+          }
+        }
+      }
+    },
+    "Tooltips: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "工具提示：%@"
+          }
+        }
+      }
+    },
     "Total": {
       "localizations": {
         "is": {
@@ -17482,34 +21465,265 @@
             "state": "translated",
             "value": "Samtals"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部的"
+          }
         }
       }
     },
-    "Total Cards": {},
-    "Total: %@m": {},
-    "Track UI freezes and performance issues": {},
-    "Trends & Analytics": {},
-    "Turn flashcard system on or off": {},
-    "Turn flashcards on or off across the app. Disabling hides related UI and study flows.": {},
-    "Turning off Energy Panel will make the planning algorithm default to medium energy for all days.": {},
-    "Type the code to confirm": {},
-    "Typography": {},
-    "Upcoming Deadlines": {},
-    "Updated %@": {},
-    "Updated: %@": {},
-    "Upload Syllabus / Practice Test": {},
-    "Urgency": {},
-    "Use “Open in New Window” from the Assignments list to create a dedicated window.": {},
-    "Use “Open in New Window” from the Courses list to inspect a course without losing your place.": {},
-    "Use denser layout with less spacing": {},
-    "Use the Courses page to add, edit, and organize your academic schedule.": {},
-    "Verify invariant enforcement and suppressions": {},
-    "View History": {},
-    "View recent log events. Full logs are available in Console.app filtered by subsystem 'com.roots.app'.": {},
-    "Visualize your academic performance": {},
-    "We’ll show assignment progress and study time once this course has data.": {},
-    "Weight %": {},
-    "Weight: %@%%": {},
+    "Total Cards": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "总牌数"
+          }
+        }
+      }
+    },
+    "Total: %@m": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "总计：%@m"
+          }
+        }
+      }
+    },
+    "Track UI freezes and performance issues": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "跟踪 UI 冻结和性能问题"
+          }
+        }
+      }
+    },
+    "Trends & Analytics": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "趋势与分析"
+          }
+        }
+      }
+    },
+    "Turn flashcard system on or off": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "打开或关闭抽认卡系统"
+          }
+        }
+      }
+    },
+    "Turn flashcards on or off across the app. Disabling hides related UI and study flows.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在应用程序中打开或关闭抽认卡。禁用隐藏相关的 UI 和学习流程。"
+          }
+        }
+      }
+    },
+    "Turning off Energy Panel will make the planning algorithm default to medium energy for all days.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关闭能量面板将使规划算法全天默认为中等能量。"
+          }
+        }
+      }
+    },
+    "Type the code to confirm": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "输入代码进行确认"
+          }
+        }
+      }
+    },
+    "Typography": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "版式"
+          }
+        }
+      }
+    },
+    "Upcoming Deadlines": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "即将到来的截止日期"
+          }
+        }
+      }
+    },
+    "Updated %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已更新%@"
+          }
+        }
+      }
+    },
+    "Updated: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新：%@"
+          }
+        }
+      }
+    },
+    "Upload Syllabus / Practice Test": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上传教学大纲/练习测试"
+          }
+        }
+      }
+    },
+    "Urgency": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "紧迫性"
+          }
+        }
+      }
+    },
+    "Use “Open in New Window” from the Assignments list to create a dedicated window.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用“作业”列表中的“在新窗口中打开”来创建专用窗口。"
+          }
+        }
+      }
+    },
+    "Use “Open in New Window” from the Courses list to inspect a course without losing your place.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用课程列表中的“在新窗口中打开”来检查课程，而不会丢失您的位置。"
+          }
+        }
+      }
+    },
+    "Use denser layout with less spacing": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用更密集的布局和更小的间距"
+          }
+        }
+      }
+    },
+    "Use the Courses page to add, edit, and organize your academic schedule.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使用课程页面添加、编辑和组织您的学术日程。"
+          }
+        }
+      }
+    },
+    "Verify invariant enforcement and suppressions": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "验证不变的执行和抑制"
+          }
+        }
+      }
+    },
+    "View History": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查看历史记录"
+          }
+        }
+      }
+    },
+    "View recent log events. Full logs are available in Console.app filtered by subsystem 'com.roots.app'.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查看最近的日志事件。Console.app 中提供了完整日志，并由子系统“com.roots.app”过滤。"
+          }
+        }
+      }
+    },
+    "Visualize your academic performance": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可视化您的学业表现"
+          }
+        }
+      }
+    },
+    "We’ll show assignment progress and study time once this course has data.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一旦本课程有数据，我们将显示作业进度和学习时间。"
+          }
+        }
+      }
+    },
+    "Weight %": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重量 ％"
+          }
+        }
+      }
+    },
+    "Weight: %@%%": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "重量： ％@％％"
+          }
+        }
+      }
+    },
     "Weighted %@%% • %@ courses": {
       "localizations": {
         "en": {
@@ -17517,22 +21731,145 @@
             "state": "new",
             "value": "Weighted %1$@%% • %2$@ courses"
           }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加权%1$@%% • %2$@ 课程"
+          }
         }
       }
     },
-    "What-If Mode Active": {},
-    "What-If Scenario": {},
-    "When enabled, the app emits structured debug logging to the Xcode console. This helps with debugging, triage, and understanding app behavior at runtime.": {},
-    "When tasks are automatically rescheduled, they'll appear here": {},
-    "Workday": {},
-    "Workload Forecast": {},
-    "Works with OpenAI, Azure OpenAI, LM Studio, and other compatible LLM APIs": {},
-    "Worth %@%% of grade": {},
-    "Would you like to start '%@' now? This will create a new test attempt.": {},
-    "Year: %.2f": {},
-    "You have unsaved changes. Save before closing to avoid losing them.": {},
-    "You have unsaved edits. Save before closing to avoid losing them.": {},
-    "You studied %@ cards": {}
+    "What-If Mode Active": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "假设模式激活"
+          }
+        }
+      }
+    },
+    "What-If Scenario": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "假设情景"
+          }
+        }
+      }
+    },
+    "When enabled, the app emits structured debug logging to the Xcode console. This helps with debugging, triage, and understanding app behavior at runtime.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启用后，应用程序会将结构化调试日志记录发送到 Xcode 控制台。这有助于调试、分类和理解应用程序在运行时的行为。"
+          }
+        }
+      }
+    },
+    "When tasks are automatically rescheduled, they'll appear here": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当任务自动重新安排时，它们将出现在此处"
+          }
+        }
+      }
+    },
+    "Workday": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "工作日"
+          }
+        }
+      }
+    },
+    "Workload Forecast": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "工作量预测"
+          }
+        }
+      }
+    },
+    "Works with OpenAI, Azure OpenAI, LM Studio, and other compatible LLM APIs": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可与 OpenAI、Azure OpenAI、LM Studio 和其他兼容的 LLM API 配合使用"
+          }
+        }
+      }
+    },
+    "Worth %@%% of grade": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "价值 %@%% 的成绩"
+          }
+        }
+      }
+    },
+    "Would you like to start '%@' now? This will create a new test attempt.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "您想现在开始“%@”吗？这将创建一个新的测试尝试。"
+          }
+        }
+      }
+    },
+    "Year: %.2f": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "年份：%.2f"
+          }
+        }
+      }
+    },
+    "You have unsaved changes. Save before closing to avoid losing them.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "您有未保存的更改。关闭前保存以避免丢失。"
+          }
+        }
+      }
+    },
+    "You have unsaved edits. Save before closing to avoid losing them.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "您有未保存的编辑。关闭前保存以避免丢失。"
+          }
+        }
+      }
+    },
+    "You studied %@ cards": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "您学习了 %@ 卡"
+          }
+        }
+      }
+    }
   },
   "version": "1.1"
 }
