@@ -170,8 +170,10 @@ struct RootsApp: App {
                             plannerStore: .shared,
                             settings: .shared
                         )
+#if os(iOS)
                         BackgroundRefreshManager.shared.register()
                         BackgroundRefreshManager.shared.scheduleNext()
+#endif
                         await calendarManager.checkPermissionsOnStartup()
                         // TODO: Re-enable planner sync when function is available
                         // await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
