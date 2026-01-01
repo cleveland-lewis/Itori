@@ -14,7 +14,7 @@ final class LocaleFormattersTests: BaseTestCase {
     // MARK: - Time Formatter Tests
     
     func testTimeFormatter24Hour() {
-        let formatter = LocaleFormatters.timeFormatter(use24Hour: true, locale: Locale(identifier: "en_US"))
+        let formatter = LocaleFormatters.timeFormatter(use24Hour: true, locale: Locale(identifier: "en_US"), timeZone: calendar.timeZone)
         let date = date(year: 2024, month: 1, day: 1, hour: 14, minute: 30)
         let formatted = formatter.string(from: date)
         XCTAssertTrue(formatted.contains("14"))
@@ -22,7 +22,7 @@ final class LocaleFormattersTests: BaseTestCase {
     }
     
     func testTimeFormatter12Hour() {
-        let formatter = LocaleFormatters.timeFormatter(use24Hour: false, locale: Locale(identifier: "en_US"))
+        let formatter = LocaleFormatters.timeFormatter(use24Hour: false, locale: Locale(identifier: "en_US"), timeZone: calendar.timeZone)
         let date = date(year: 2024, month: 1, day: 1, hour: 14, minute: 30)
         let formatted = formatter.string(from: date)
         XCTAssertTrue(formatted.contains("2") || formatted.contains("14"))
@@ -30,7 +30,7 @@ final class LocaleFormattersTests: BaseTestCase {
     }
     
     func testTimeFormatterWithSeconds() {
-        let formatter = LocaleFormatters.timeFormatter(use24Hour: true, includeSeconds: true, locale: Locale(identifier: "en_US"))
+        let formatter = LocaleFormatters.timeFormatter(use24Hour: true, includeSeconds: true, locale: Locale(identifier: "en_US"), timeZone: calendar.timeZone)
         let date = date(year: 2024, month: 1, day: 1, hour: 14, minute: 30, second: 45)
         let formatted = formatter.string(from: date)
         XCTAssertTrue(formatted.contains("14"))
@@ -40,14 +40,14 @@ final class LocaleFormattersTests: BaseTestCase {
     // MARK: - Hour Formatter Tests
     
     func testHourFormatter24Hour() {
-        let formatter = LocaleFormatters.hourFormatter(use24Hour: true, locale: Locale(identifier: "en_US"))
+        let formatter = LocaleFormatters.hourFormatter(use24Hour: true, locale: Locale(identifier: "en_US"), timeZone: calendar.timeZone)
         let date = date(year: 2024, month: 1, day: 1, hour: 14, minute: 0)
         let formatted = formatter.string(from: date)
         XCTAssertTrue(formatted.contains("14"))
     }
     
     func testHourFormatter12Hour() {
-        let formatter = LocaleFormatters.hourFormatter(use24Hour: false, locale: Locale(identifier: "en_US"))
+        let formatter = LocaleFormatters.hourFormatter(use24Hour: false, locale: Locale(identifier: "en_US"), timeZone: calendar.timeZone)
         let date = date(year: 2024, month: 1, day: 1, hour: 14, minute: 0)
         let formatted = formatter.string(from: date)
         XCTAssertTrue(formatted.contains("2") || formatted.contains("PM"))
@@ -66,6 +66,7 @@ final class LocaleFormattersTests: BaseTestCase {
     
     func testLongDateFormatter() {
         let formatter = LocaleFormatters.longDate
+        formatter.timeZone = calendar.timeZone
         let testDate = date(year: 2024, month: 12, day: 23)
         let formatted = formatter.string(from: testDate)
         
@@ -75,6 +76,7 @@ final class LocaleFormattersTests: BaseTestCase {
     
     func testMediumDateFormatter() {
         let formatter = LocaleFormatters.mediumDate
+        formatter.timeZone = calendar.timeZone
         let testDate = date(year: 2024, month: 12, day: 23)
         let formatted = formatter.string(from: testDate)
         
@@ -113,7 +115,7 @@ final class LocaleFormattersTests: BaseTestCase {
     // MARK: - Edge Cases
     
     func testFormatterWithMidnight() {
-        let formatter = LocaleFormatters.timeFormatter(use24Hour: true, locale: Locale(identifier: "en_US"))
+        let formatter = LocaleFormatters.timeFormatter(use24Hour: true, locale: Locale(identifier: "en_US"), timeZone: calendar.timeZone)
         let midnight = date(year: 2024, month: 1, day: 1, hour: 0, minute: 0)
         let formatted = formatter.string(from: midnight)
         
@@ -121,7 +123,7 @@ final class LocaleFormattersTests: BaseTestCase {
     }
     
     func testFormatterWithNoon() {
-        let formatter = LocaleFormatters.timeFormatter(use24Hour: false, locale: Locale(identifier: "en_US"))
+        let formatter = LocaleFormatters.timeFormatter(use24Hour: false, locale: Locale(identifier: "en_US"), timeZone: calendar.timeZone)
         let noon = date(year: 2024, month: 1, day: 1, hour: 12, minute: 0)
         let formatted = formatter.string(from: noon)
         

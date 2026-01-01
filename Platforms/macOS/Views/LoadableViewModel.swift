@@ -23,20 +23,13 @@ extension LoadableViewModel {
         }
 
         defer {
-            // Use Task.detached with explicit capture to avoid Swift 6 warnings
-            Task.detached { [weak self] in
-                await self?.setLoadingComplete()
+            Task { @MainActor in
+                self.isLoading = false
+                self.loadingMessage = nil
             }
         }
 
         return try await work()
-    }
-    
-    private func setLoadingComplete() async {
-        await MainActor.run {
-            self.isLoading = false
-            self.loadingMessage = nil
-        }
     }
 }
 #endif
