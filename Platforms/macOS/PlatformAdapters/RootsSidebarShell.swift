@@ -117,10 +117,6 @@ struct SidebarColumn: View {
         VStack(alignment: .leading, spacing: 8) {
             // App header
             HStack {
-                Image(systemName: "leaf.circle.fill")
-                    .font(.title2)
-                    .foregroundStyle(settings.activeAccentColor)
-                
                 Text("Roots")
                     .font(.title2.weight(.semibold))
                 
