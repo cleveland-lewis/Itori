@@ -7,6 +7,10 @@ struct GlobalContextMenuModifier: ViewModifier {
     @EnvironmentObject private var calendarManager: CalendarManager
     @EnvironmentObject private var plannerCoordinator: PlannerCoordinator
     @EnvironmentObject private var settingsCoordinator: SettingsCoordinator
+    @EnvironmentObject private var assignmentsStore: AssignmentsStore
+    @EnvironmentObject private var coursesStore: CoursesStore
+    
+    @State private var showAddAssignmentPopover = false
     
     var pageSpecificItems: (() -> AnyView)?
     
@@ -24,12 +28,19 @@ struct GlobalContextMenuModifier: ViewModifier {
                 }
                 
                 Button(NSLocalizedString("timer.context.add_assignment", comment: "")) {
-                    GlobalMenuActions.shared.addAssignment()
+                    showAddAssignmentPopover = true
                 }
                 
                 Button(NSLocalizedString("timer.context.add_grade", comment: "")) {
                     GlobalMenuActions.shared.addGrade()
                 }
+            }
+            .sheet(isPresented: $showAddAssignmentPopover) {
+                AddAssignmentView(initialType: .homework) { task in
+                    assignmentsStore.addTask(task)
+                    showAddAssignmentPopover = false
+                }
+                .environmentObject(coursesStore)
             }
     }
 }
@@ -42,6 +53,10 @@ struct TimerContextMenuModifier: ViewModifier {
     let onEnd: () -> Void
     
     @EnvironmentObject private var appModel: AppModel
+    @EnvironmentObject private var assignmentsStore: AssignmentsStore
+    @EnvironmentObject private var coursesStore: CoursesStore
+    
+    @State private var showAddAssignmentPopover = false
     
     func body(content: Content) -> some View {
         content
@@ -75,12 +90,19 @@ struct TimerContextMenuModifier: ViewModifier {
                 }
                 
                 Button(NSLocalizedString("timer.context.add_assignment", comment: "")) {
-                    GlobalMenuActions.shared.addAssignment()
+                    showAddAssignmentPopover = true
                 }
                 
                 Button(NSLocalizedString("timer.context.add_grade", comment: "")) {
                     GlobalMenuActions.shared.addGrade()
                 }
+            }
+            .sheet(isPresented: $showAddAssignmentPopover) {
+                AddAssignmentView(initialType: .homework) { task in
+                    assignmentsStore.addTask(task)
+                    showAddAssignmentPopover = false
+                }
+                .environmentObject(coursesStore)
             }
     }
 }
