@@ -16,11 +16,13 @@ final class PlannerCoordinator: ObservableObject {
     func openPlanner(with courseId: UUID?) {
         requestedCourseId = courseId
         selectedCourseFilter = courseId
+        AppModel.shared.selectedPage = .planner
     }
 
     func openPlanner(for date: Date?, courseId: UUID? = nil) {
         requestedDate = date
         requestedCourseId = courseId
         selectedCourseFilter = courseId
+        AppModel.shared.selectedPage = .planner
     }
 }
