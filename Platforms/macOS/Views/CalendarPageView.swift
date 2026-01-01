@@ -86,8 +86,8 @@ struct CalendarPageView: View {
     @EnvironmentObject var calendarManager: CalendarManager
     @EnvironmentObject var deviceCalendar: DeviceCalendarManager
     @State private var currentViewMode: CalendarViewMode = .month
-    @State private var focusedDate: Date = Date()
-    @State private var selectedDate: Date? = Date()
+    @State private var focusedDate: Date = Calendar.current.startOfDay(for: Date())
+    @State private var selectedDate: Date? = nil  // No selection until explicit user action
     @State private var selectedEvent: CalendarEvent?
     @State private var metrics: CalendarStats = .empty
     @State private var showingNewEventSheet = false
@@ -96,6 +96,11 @@ struct CalendarPageView: View {
     private var eventStore: EKEventStore { DeviceCalendarManager.shared.store }
 
     private let calendar = Calendar.current
+    
+    // Computed today date (always start of day)
+    private var todayDate: Date {
+        calendar.startOfDay(for: Date())
+    }
 
     @State private var chevronLeftHover = false
     @State private var chevronRightHover = false
@@ -586,6 +591,7 @@ struct CalendarPageView: View {
         case .month:
             MonthCalendarView(
                 focusedDate: $focusedDate,
+                selectedDate: $selectedDate,
                 events: effectiveEvents,
                 onSelectDate: { day in
                     focusedDate = day
@@ -983,6 +989,7 @@ private struct MonthCalendarSplitView: View {
         } detail: {
             MonthCalendarView(
                 focusedDate: $focusedDate,
+                selectedDate: $selectedDate,
                 events: events,
                 onSelectDate: { day in
                     selectedDate = day
@@ -1104,12 +1111,17 @@ private struct MonthCalendarSplitView: View {
 
 private struct MonthCalendarView: View {
     @Binding var focusedDate: Date
+    @Binding var selectedDate: Date?
     let events: [CalendarEvent]
     let onSelectDate: (Date) -> Void
     let onSelectEvent: (CalendarEvent) -> Void
     @EnvironmentObject var eventsStore: EventsCountStore
     private let calendar = Calendar.current
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 6), count: 7)
+    
+    private var todayDate: Date {
+        calendar.startOfDay(for: Date())
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -1121,10 +1133,11 @@ private struct MonthCalendarView: View {
                     ForEach(days) { day in
                         let normalized = calendar.startOfDay(for: day.date)
                         let count = eventsStore.eventsByDate[normalized] ?? events(for: day.date).count
-                        let isSelected = calendar.isDate(day.date, inSameDayAs: focusedDate)
+                        let isToday = calendar.isDate(normalized, inSameDayAs: todayDate)
+                        let isSelected = selectedDate.map { calendar.isDate(normalized, inSameDayAs: $0) } ?? false
                         let calendarDay = CalendarDay(
                             date: day.date,
-                            isToday: calendar.isDateInToday(day.date),
+                            isToday: isToday,
                             isSelected: isSelected,
                             hasEvents: count > 0,
                             densityLevel: EventDensityLevel.fromCount(count),
@@ -2620,24 +2633,26 @@ private struct MonthDayCell: View {
     private var textColor: Color {
         if day.isSelected { return .white }
         if !day.isInCurrentMonth { return .secondary.opacity(0.5) }
-        if day.isToday { return .accentColor }
+        if day.isToday { return .primary }
         return .primary
     }
 
     private var backgroundFill: Color {
         if day.isSelected { return .accentColor }
-        if day.isToday { return .accentColor.opacity(0.12) }
+        if day.isToday { return .clear }
         return .clear
     }
 
     private var outlineColor: Color {
         if day.isSelected { return Color.accentColor.opacity(0.3) }
-        if day.isToday { return Color.accentColor.opacity(0.4) }
+        if day.isToday { return Color.accentColor }
         return .clear
     }
     
     private var outlineWidth: CGFloat {
-        day.isSelected ? 2.5 : 1
+        if day.isSelected { return 2.5 }
+        if day.isToday { return 2.0 }
+        return 0
     }
     
     private var shadowColor: Color {
