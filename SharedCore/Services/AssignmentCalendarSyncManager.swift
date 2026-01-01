@@ -90,19 +90,29 @@ final class AssignmentCalendarSyncManager: ObservableObject {
         }
         
         do {
+            let eventId: String?
             // Check if event already exists
-            if let eventId = assignment.calendarEventIdentifier,
-               let existingEvent = deviceCalendar.store.event(withIdentifier: eventId) {
+            if let existingEventId = assignment.calendarEventIdentifier,
+               let existingEvent = deviceCalendar.store.event(withIdentifier: existingEventId) {
                 // Update existing event
                 try updateEvent(existingEvent, with: assignment)
                 LOG_SYNC(.info, "AssignmentSync", "Updated assignment: \(assignment.title)")
-                return eventId
+                eventId = existingEventId
             } else {
                 // Create new event
                 let event = try createEvent(for: assignment, in: targetCalendar)
                 LOG_SYNC(.info, "AssignmentSync", "Created event for assignment: \(assignment.title)")
-                return event.eventIdentifier
+                eventId = event.eventIdentifier
             }
+            
+            // Save event ID back to assignment if it's new
+            if eventId != assignment.calendarEventIdentifier, let eventId {
+                var updatedAssignment = assignment
+                updatedAssignment.calendarEventIdentifier = eventId
+                AssignmentsStore.shared.updateTask(updatedAssignment)
+            }
+            
+            return eventId
         } catch {
             addError("Failed to sync assignment: \(error.localizedDescription)", assignment: assignment)
             return nil
@@ -216,22 +226,5 @@ final class AssignmentCalendarSyncManager: ObservableObject {
     
     private enum SyncErrorType: Error {
         case noDueDate
-    }
-}
-
-// MARK: - AppTask Extension for Calendar Event ID
-
-extension AppTask {
-    /// Calendar event identifier for synced events
-    /// Note: This would need to be added to the AppTask model and persisted
-    var calendarEventIdentifier: String? {
-        get {
-            // TODO: Implement proper storage in Core Data or as part of AppTask
-            // For now, return nil as placeholder
-            return nil
-        }
-        set {
-            // TODO: Implement proper storage
-        }
     }
 }
