@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import Network
 
 struct StoredScheduledSession: Identifiable, Codable, Hashable {
     let id: UUID
@@ -147,6 +148,9 @@ final class PlannerStore: ObservableObject {
     private let iCloudURL: URL?
     private let iCloudConflictsURL: URL?
     private var iCloudToggleObserver: NSObjectProtocol?
+    private var iCloudMonitor: Timer?
+    private var pathMonitor: NWPathMonitor?
+    private var isOnline: Bool = true
     
     private var isSyncEnabled: Bool {
         AppSettingsModel.shared.enableICloudSync
@@ -173,8 +177,10 @@ final class PlannerStore: ObservableObject {
         }
         
         // Load: iCloud first if enabled and available, then local
+        setupNetworkMonitoring()
         if isSyncEnabled {
             loadFromiCloud()
+            setupiCloudMonitoring()
         }
         
         // Always load local (as fallback or primary)
@@ -434,6 +440,7 @@ final class PlannerStore: ObservableObject {
 
     private func handleICloudToggle(enabled: Bool) {
         if enabled {
+            setupiCloudMonitoring()
             loadFromiCloud()
             if let url = iCloudURL, !FileManager.default.fileExists(atPath: url.path) {
                 let payload = Persisted(scheduled: scheduled, overflow: overflow)
@@ -441,6 +448,9 @@ final class PlannerStore: ObservableObject {
                     saveToiCloud(data: data)
                 }
             }
+        } else {
+            iCloudMonitor?.invalidate()
+            iCloudMonitor = nil
         }
     }
     
@@ -492,8 +502,37 @@ final class PlannerStore: ObservableObject {
         var scheduled: [StoredScheduledSession]
         var overflow: [StoredOverflowSession]
     }
+    
+    // MARK: - Network & iCloud Monitoring
+    
+    private func setupNetworkMonitoring() {
+        pathMonitor = NWPathMonitor()
+        pathMonitor?.pathUpdateHandler = { [weak self] path in
+            Task { @MainActor [weak self] in
+                self?.isOnline = path.status == .satisfied
+                if path.status == .satisfied, let self = self, self.isSyncEnabled, let url = self.iCloudURL {
+                    // Sync on reconnection
+                    if let data = try? JSONEncoder().encode(Persisted(scheduled: self.scheduled, overflow: self.overflow)) {
+                        self.saveToiCloud(data: data)
+                    }
+                }
+            }
+        }
+        pathMonitor?.start(queue: DispatchQueue.global(qos: .background))
+    }
+    
+    private func setupiCloudMonitoring() {
+        guard isSyncEnabled else { return }
+        iCloudMonitor = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.loadFromiCloud()
+            }
+        }
+    }
 
     deinit {
+        iCloudMonitor?.invalidate()
+        pathMonitor?.cancel()
         if let observer = iCloudToggleObserver {
             NotificationCenter.default.removeObserver(observer)
         }
