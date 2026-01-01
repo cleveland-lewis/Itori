@@ -47,55 +47,41 @@ struct PracticeTestPageView: View {
     // MARK: - Test List View
     
     private var testListView: some View {
-        VStack(spacing: 0) {
-            headerView
-            
-            ScrollView {
-                VStack(spacing: 16) {
-                    // Scheduled Tests Section (NEW)
-                    ScheduledTestsSection(
-                        store: scheduledTestsStore,
-                        onStartTest: { test in
-                            selectedScheduledTest = test
-                        }
-                    )
-                    
-                    if practiceStore.tests.isEmpty {
-                        emptyStateView
-                    } else {
-                        statsCardsView
-                        testHistoryView
+        ScrollView {
+            VStack(spacing: 16) {
+                // New Practice Test button at top
+                HStack {
+                    Spacer()
+                    Button {
+                        showingGenerator = true
+                    } label: {
+                        Label("New Practice Test", systemImage: "plus.circle.fill")
                     }
+                    .buttonStyle(.borderedProminent)
                 }
-                .padding()
+                .padding(.horizontal)
+                .padding(.top)
+                .sheet(isPresented: $showingGenerator) {
+                    PracticeTestGeneratorView(store: practiceStore)
+                }
+                
+                // Scheduled Tests Section (NEW)
+                ScheduledTestsSection(
+                    store: scheduledTestsStore,
+                    onStartTest: { test in
+                        selectedScheduledTest = test
+                    }
+                )
+                
+                if practiceStore.tests.isEmpty {
+                    emptyStateView
+                } else {
+                    statsCardsView
+                    testHistoryView
+                }
             }
+            .padding()
         }
-    }
-    
-    private var headerView: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(NSLocalizedString("practice.label.title", comment: ""))
-                    .font(.largeTitle.bold())
-                Text(NSLocalizedString("practice.label.subtitle", comment: ""))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            
-            Spacer()
-            
-            Button {
-                showingGenerator = true
-            } label: {
-                Label("New Practice Test", systemImage: "plus.circle.fill")
-            }
-            .buttonStyle(.borderedProminent)
-            .sheet(isPresented: $showingGenerator) {
-                PracticeTestGeneratorView(store: practiceStore)
-            }
-        }
-        .padding()
-        .background(.ultraThinMaterial)
     }
     
     private var emptyStateView: some View {
