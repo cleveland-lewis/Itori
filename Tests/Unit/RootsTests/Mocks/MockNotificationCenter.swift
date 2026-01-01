@@ -37,9 +37,7 @@ class MockNotificationCenter: NotificationSchedulable {
     }
     
     func notificationSettings() async -> UNNotificationSettings {
-        return MockNotificationSettings(authorizationStatus: authorizationStatus)
+        // Cannot create mock UNNotificationSettings, return real one
+        return await UNUserNotificationCenter.current().notificationSettings()
     }
 }
-
-// UNNotificationSettings cannot be subclassed, so we need to work with actual settings
-// For testing, we'll use the requestAuthorization callback to control authorization status

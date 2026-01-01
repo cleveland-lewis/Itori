@@ -124,7 +124,7 @@ struct RootsApp: App {
     var body: some Scene {
         WindowGroup(id: "main") {
             applyUITestOverrides(
-                to: ContentView()
+                to: RootsSidebarShell()
                     .environmentObject(AssignmentsStore.shared)
                     .environmentObject(coursesStore)
                     .environmentObject(appSettings)
