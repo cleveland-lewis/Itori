@@ -10,16 +10,14 @@ struct RootsSidebarShell: View {
     @Environment(\.colorScheme) private var colorScheme
     
     var body: some View {
-        HStack(spacing: 0) {
-            // Persistent left sidebar (never collapses, extends to full height)
-            SidebarColumn(selection: $selection)
-                .frame(width: 260)
-                .frame(maxHeight: .infinity)
-                .background(VisualEffectView(material: .hudWindow, blendingMode: .behindWindow))
-            
-            Divider()
-                .opacity(0.3)
-            
+        HStack(spacing: 16) {
+            // Persistent left sidebar (card style)
+            GlassPanel(material: .hudWindow, cornerRadius: 18, showBorder: true) {
+                SidebarColumn(selection: $selection)
+                    .frame(maxHeight: .infinity, alignment: .top)
+            }
+            .frame(width: 260)
+
             // Main content area with glass panel
             ZStack {
                 Color(nsColor: .windowBackgroundColor)
@@ -32,6 +30,7 @@ struct RootsSidebarShell: View {
                 .padding(20)
             }
         }
+        .padding(16)
         .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
         .globalContextMenu()
         .onAppear {
