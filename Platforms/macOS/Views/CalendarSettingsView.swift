@@ -108,6 +108,8 @@ struct CalendarSettingsView: View {
                         .foregroundStyle(.secondary)
                 }
                 
+                AssignmentSyncSection()
+                
                 Section("Calendar Picker Lock") {
                     Toggle("Lock Calendar Picker to School", isOn: $settings.lockCalendarPickerToSchool)
                         .toggleStyle(.switch)
@@ -149,6 +151,95 @@ struct CalendarSettingsView: View {
         case 30: return 2
         case 60: return 3
         default: return 1
+        }
+    }
+}
+
+// MARK: - Assignment Sync Section
+
+struct AssignmentSyncSection: View {
+    @StateObject private var syncManager = AssignmentCalendarSyncManager.shared
+    @State private var showingPermissionAlert = false
+    
+    var body: some View {
+        Section("Assignment Sync") {
+            Toggle("Sync Assignments to Calendar", isOn: Binding(
+                get: { syncManager.isSyncEnabled },
+                set: { newValue in
+                    handleToggleChange(newValue)
+                }
+            ))
+            .toggleStyle(.switch)
+            
+            Text("Automatically create calendar events for your assignments.")
+                .font(DesignSystem.Typography.caption)
+                .foregroundStyle(.secondary)
+            
+            if syncManager.isSyncEnabled {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Text("Last Sync:")
+                            .font(DesignSystem.Typography.caption)
+                            .foregroundStyle(.secondary)
+                        if let lastSync = syncManager.lastSyncDate {
+                            Text(lastSync, style: .relative)
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(.secondary)
+                        } else {
+                            Text("Never")
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    
+                    if !syncManager.syncErrors.isEmpty {
+                        HStack {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundStyle(.orange)
+                            Text("\(syncManager.syncErrors.count) sync errors")
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(.orange)
+                        }
+                    }
+                    
+                    Button("Sync Now") {
+                        Task {
+                            await syncManager.performFullSync()
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.small)
+                }
+                .padding(.top, 4)
+            }
+        }
+        .alert("Calendar Permission Required", isPresented: $showingPermissionAlert) {
+            Button("Grant Access") {
+                Task {
+                    let granted = await syncManager.requestPermissionsIfNeeded()
+                    if granted {
+                        syncManager.setSyncEnabled(true)
+                    }
+                }
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Roots needs access to your calendar to sync assignments. You can grant this in System Settings if you previously denied access.")
+        }
+    }
+    
+    private func handleToggleChange(_ newValue: Bool) {
+        if newValue {
+            Task {
+                let hasPermission = await syncManager.requestPermissionsIfNeeded()
+                if hasPermission {
+                    syncManager.setSyncEnabled(true)
+                } else {
+                    showingPermissionAlert = true
+                }
+            }
+        } else {
+            syncManager.setSyncEnabled(false)
         }
     }
 }
