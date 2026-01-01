@@ -130,9 +130,6 @@ struct GradesPageView: View {
 
     private var header: some View {
         HStack(alignment: .center, spacing: 12) {
-            Text(NSLocalizedString("grades.section.grades", comment: "Grades"))
-                .font(.title2.weight(.semibold))
-
             Spacer()
 
 
