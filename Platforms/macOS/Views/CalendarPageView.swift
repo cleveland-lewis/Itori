@@ -156,10 +156,8 @@ struct CalendarPageView: View {
             let sidebarWidth = max(220, min(280, availableWidth * 0.28))
             let gridPadding = max(8, min(16, availableWidth * 0.02))
             let loadingHeight: CGFloat = (isHydratingInitial || isHydratingFull) ? 24 : 0
-            let perfHeight: CGFloat = settings.devModePerformance ? 40 : 0
             let topSectionsHeight = topToolbarHeight
                 + (loadingHeight > 0 ? loadingHeight + topSectionSpacing : 0)
-                + (perfHeight > 0 ? perfHeight + topSectionSpacing : 0)
             let panelHeight = max(0, proxy.size.height - verticalPadding * 2 - topSectionsHeight - topSectionSpacing)
 
             VStack(spacing: topSectionSpacing) {
@@ -172,17 +170,6 @@ struct CalendarPageView: View {
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                         Spacer()
-                    }
-                    .padding(.horizontal, 4)
-                }
-
-                if settings.devModePerformance {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(NSLocalizedString("calendar.performance.title", comment: ""))
-                            .font(.caption.weight(.semibold))
-                        Text(String(format: NSLocalizedString("calendar.performance.stats", comment: ""), formattedMillis(firstFrameElapsed), formattedMillis(dataReadyElapsed), formattedMillis(fullDataReadyElapsed), loadedEventCount))
-                            .font(.caption2.monospacedDigit())
-                            .foregroundStyle(.secondary)
                     }
                     .padding(.horizontal, 4)
                 }
@@ -223,6 +210,11 @@ struct CalendarPageView: View {
             hydrateEventsIncrementally()
             updateFilteredEventsCache()
             updateMetrics()
+            
+            // Log performance metrics to console when developer mode is enabled
+            if settings.devModeEnabled {
+                logPerformanceMetrics()
+            }
         }
         .onChange(of: focusedDate) { _, newValue in
             invalidateEventsCache()
@@ -913,6 +905,22 @@ struct CalendarPageView: View {
     private func formattedMillis(_ interval: TimeInterval?) -> String {
         guard let interval else { return "—" }
         return String(format: "%.0f ms", interval * 1000)
+    }
+    
+    private func logPerformanceMetrics() {
+        // Schedule logging after a brief delay to ensure metrics are captured
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            let firstFrame = self.formattedMillis(self.firstFrameElapsed)
+            let dataReady = self.formattedMillis(self.dataReadyElapsed)
+            let fullReady = self.formattedMillis(self.fullDataReadyElapsed)
+            let eventCount = self.loadedEventCount
+            
+            print("📅 Calendar Performance:")
+            print("   First frame: \(firstFrame)")
+            print("   Data ready: \(dataReady)")
+            print("   Full ready: \(fullReady)")
+            print("   Events: \(eventCount)")
+        }
     }
 }
 
