@@ -358,7 +358,10 @@ struct AssignmentsPageView: View {
                                 onSelect: { selectedAssignment = assignment },
                                 leadingAction: settings.assignmentSwipeLeading,
                                 trailingAction: settings.assignmentSwipeTrailing,
-                                onPerformAction: { performSwipeAction($0, assignment: assignment) }
+                                onPerformAction: { performSwipeAction($0, assignment: assignment) },
+                                onSaveGrade: { earned, possible in
+                                    saveGrade(for: assignment, earned: earned, possible: possible)
+                                }
                             )
                             .background(
                                 GeometryReader { geo in
@@ -524,6 +527,22 @@ struct AssignmentsPageView: View {
             deleteAssignment(assignment)
         case .openDetail:
             selectedAssignment = assignment
+        }
+    }
+    
+    private func saveGrade(for assignment: Assignment, earned: Double, possible: Double) {
+        guard let idx = assignmentsStore.tasks.firstIndex(where: { $0.id == assignment.id }) else { return }
+        var task = assignmentsStore.tasks[idx]
+        task.gradeEarnedPoints = earned
+        task.gradePossiblePoints = possible
+        assignmentsStore.updateTask(task)
+        
+        if let updated = assignments.first(where: { $0.id == assignment.id }) {
+            selectedAssignment = updated
+        }
+        
+        Task { @MainActor in
+            Feedback.shared.play(.success)
         }
     }
 
@@ -825,7 +844,12 @@ struct AssignmentsPageRow: View {
     var leadingAction: AssignmentSwipeAction
     var trailingAction: AssignmentSwipeAction
     var onPerformAction: (AssignmentSwipeAction) -> Void
+    var onSaveGrade: (Double, Double) -> Void
     @EnvironmentObject private var plannerCoordinator: PlannerCoordinator
+    
+    @State private var showGradePopover = false
+    @State private var earnedPoints: String = ""
+    @State private var possiblePoints: String = ""
 
     private var urgencyColor: Color { assignment.urgency.color }
 
@@ -908,9 +932,16 @@ struct AssignmentsPageRow: View {
             swipeButton(for: trailingAction)
         }
         .contextMenu {
+            Button("assignments.action.add_grade".localized) {
+                showGradePopover = true
+            }
+            
             Button("timer.context.go_to_planner".localized) {
                 plannerCoordinator.openPlanner(for: assignment.dueDate, courseId: assignment.courseId)
             }
+        }
+        .popover(isPresented: $showGradePopover) {
+            gradePopoverContent
         }
     }
 
@@ -931,6 +962,74 @@ struct AssignmentsPageRow: View {
         case .delete: return .red
         case .openDetail: return .accentColor
         }
+    }
+    
+    private var gradePopoverContent: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("assignments.action.add_grade".localized)
+                .font(.headline)
+            
+            VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("assignments.grade.earned_points".localized)
+                        .font(.subheadline)
+                    TextField("0", text: $earnedPoints)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 120)
+                }
+                
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("assignments.grade.possible_points".localized)
+                        .font(.subheadline)
+                    TextField("100", text: $possiblePoints)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 120)
+                }
+            }
+            
+            HStack {
+                Button("common.cancel".localized) {
+                    showGradePopover = false
+                    earnedPoints = ""
+                    possiblePoints = ""
+                }
+                .keyboardShortcut(.cancelAction)
+                
+                Spacer()
+                
+                Button("assignments.grade.save".localized) {
+                    saveGrade()
+                }
+                .buttonStyle(.borderedProminent)
+                .keyboardShortcut(.defaultAction)
+                .disabled(!isGradeValid)
+            }
+        }
+        .padding(20)
+        .frame(width: 300)
+    }
+    
+    private var isGradeValid: Bool {
+        guard let earned = Double(earnedPoints),
+              let possible = Double(possiblePoints),
+              earned >= 0,
+              possible > 0,
+              earned <= possible else {
+            return false
+        }
+        return true
+    }
+    
+    private func saveGrade() {
+        guard let earned = Double(earnedPoints),
+              let possible = Double(possiblePoints) else {
+            return
+        }
+        
+        onSaveGrade(earned, possible)
+        showGradePopover = false
+        earnedPoints = ""
+        possiblePoints = ""
     }
 
     private var statusChip: some View {
