@@ -78,13 +78,15 @@ final class AssignmentCalendarSyncManager: ObservableObject {
     }
     
     /// Sync a single assignment to calendar
-    func syncAssignmentToCalendar(_ assignment: AppTask, calendar: EKCalendar? = nil) async {
-        guard isSyncEnabled, authManager.isAuthorized else { return }
+    /// Returns the calendar event identifier if successful
+    @discardableResult
+    func syncAssignmentToCalendar(_ assignment: AppTask, calendar: EKCalendar? = nil) async -> String? {
+        guard isSyncEnabled, authManager.isAuthorized else { return nil }
         
         let targetCalendar = calendar ?? getTargetCalendar()
         guard let targetCalendar else {
             addError("No calendar available", assignment: assignment)
-            return
+            return nil
         }
         
         do {
@@ -93,16 +95,17 @@ final class AssignmentCalendarSyncManager: ObservableObject {
                let existingEvent = deviceCalendar.store.event(withIdentifier: eventId) {
                 // Update existing event
                 try updateEvent(existingEvent, with: assignment)
+                LOG_SYNC(.info, "AssignmentSync", "Updated assignment: \(assignment.title)")
+                return eventId
             } else {
                 // Create new event
                 let event = try createEvent(for: assignment, in: targetCalendar)
-                // Store event identifier (would need to add this property to AppTask)
-                // assignment.calendarEventIdentifier = event.eventIdentifier
+                LOG_SYNC(.info, "AssignmentSync", "Created event for assignment: \(assignment.title)")
+                return event.eventIdentifier
             }
-            
-            LOG_SYNC(.info, "AssignmentSync", "Synced assignment: \(assignment.title)")
         } catch {
             addError("Failed to sync assignment: \(error.localizedDescription)", assignment: assignment)
+            return nil
         }
     }
     
