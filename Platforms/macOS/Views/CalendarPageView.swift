@@ -133,7 +133,10 @@ struct CalendarPageView: View {
         let filtered: [EKEvent]
         
         if settings.showOnlySchoolCalendar && !calendarManager.selectedCalendarID.isEmpty {
-            filtered = allEvents.filter { $0.calendar.calendarIdentifier == calendarManager.selectedCalendarID }
+            filtered = allEvents.filter { event in
+                guard let calendar = event.calendar else { return false }
+                return calendar.calendarIdentifier == calendarManager.selectedCalendarID
+            }
         } else {
             filtered = allEvents
         }
@@ -776,7 +779,7 @@ struct CalendarPageView: View {
                             ekIdentifier: reminder.calendarItemIdentifier,
                             isReminder: true,
                             category: nil,
-                            canEdit: reminder.calendar.allowsContentModifications,
+                            canEdit: reminder.calendar?.allowsContentModifications ?? false,
                             isRecurring: false
                         )
                     } ?? []
@@ -804,7 +807,7 @@ struct CalendarPageView: View {
             ekIdentifier: ek.eventIdentifier,
             isReminder: false,
             category: storedCategory,
-            canEdit: ek.calendar.allowsContentModifications,
+            canEdit: ek.calendar?.allowsContentModifications ?? false,
             isRecurring: !(ek.recurrenceRules?.isEmpty ?? true)
         )
     }
@@ -2133,7 +2136,10 @@ struct CalendarView: View {
         let allEvents = deviceCalendar.events
         guard settings.showOnlySchoolCalendar else { return allEvents }
         guard !calendarManager.selectedCalendarID.isEmpty else { return allEvents }
-        return allEvents.filter { $0.calendar.calendarIdentifier == calendarManager.selectedCalendarID }
+        return allEvents.filter { event in
+            guard let calendar = event.calendar else { return false }
+            return calendar.calendarIdentifier == calendarManager.selectedCalendarID
+        }
     }
 
     private var monthEvents: [EKEvent] {
@@ -2154,7 +2160,7 @@ struct CalendarView: View {
                 ekIdentifier: $0.eventIdentifier,
                 isReminder: false,
                 category: nil,
-                canEdit: $0.calendar.allowsContentModifications,
+                canEdit: $0.calendar?.allowsContentModifications ?? false,
                 isRecurring: !($0.recurrenceRules?.isEmpty ?? true)
             )
         }
@@ -2385,7 +2391,7 @@ struct CalendarView: View {
             ekIdentifier: ek.eventIdentifier,
             isReminder: false,
             category: storedCategory,
-            canEdit: ek.calendar.allowsContentModifications,
+            canEdit: ek.calendar?.allowsContentModifications ?? false,
             isRecurring: !(ek.recurrenceRules?.isEmpty ?? true)
         )
     }

@@ -4424,7 +4424,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "New Assignment"
           }
         },
@@ -4504,7 +4504,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Plan Day"
           }
         },
@@ -4584,7 +4584,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Choose an assignment to view details"
           }
         },
@@ -4624,7 +4624,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Select an assignment"
           }
         },
@@ -5412,7 +5412,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Search assignments"
           }
         },
@@ -5452,7 +5452,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "By Course"
           }
         },
@@ -5572,7 +5572,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Missed"
           }
         },
@@ -5612,7 +5612,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Today"
           }
         },
@@ -5704,7 +5704,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Upcoming Load"
           }
         },
@@ -5744,7 +5744,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "All"
           }
         },
@@ -5778,7 +5778,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Completed"
           }
         },
@@ -5812,7 +5812,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Assignments"
           }
         },
@@ -5852,7 +5852,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Upcoming"
           }
         },
@@ -5886,7 +5886,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Course"
           }
         },
@@ -5926,7 +5926,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Due Date"
           }
         },
@@ -5966,7 +5966,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Sort"
           }
         },
@@ -6006,7 +6006,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Urgency"
           }
         },
@@ -6046,7 +6046,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Assignments due"
           }
         },
@@ -6086,7 +6086,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "%d due · %d planned · %d remaining"
           }
         },
@@ -6126,7 +6126,7 @@
       "localizations": {
         "en": {
           "stringUnit": {
-            "state": "new",
+            "state": "translated",
             "value": "Overdue assignments"
           }
         },
