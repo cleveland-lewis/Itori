@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import Network
 
 @MainActor
 final class CoursesStore: ObservableObject {
@@ -23,6 +24,11 @@ final class CoursesStore: ObservableObject {
 
     private let storageURL: URL
     private let cacheURL: URL
+    private var iCloudMonitor: Timer?
+    private var pathMonitor: NWPathMonitor?
+    private var isOnline: Bool = true
+    private var isLoadingFromDisk: Bool = false
+    private var iCloudToggleObserver: NSObjectProtocol?
 
     init(storageURL: URL? = nil) {
         let fm = FileManager.default
@@ -40,11 +46,29 @@ final class CoursesStore: ObservableObject {
         try? FileManager.default.createDirectory(at: cacheFolder, withIntermediateDirectories: true)
         self.cacheURL = cacheFolder.appendingPathComponent("courses_cache.json")
 
+        setupNetworkMonitoring()
         loadCache()
         load()
+        loadFromiCloudIfEnabled()
+        setupiCloudMonitoring()
+        observeICloudToggle()
         cleanupOldData()
         CoursesStore.shared = self
         recalcGPA(tasks: AssignmentsStore.shared.tasks)
+    }
+    
+    private lazy var iCloudURL: URL? = {
+        let containerIdentifier = "iCloud.com.cwlewisiii.Roots"
+        guard let ubiquityURL = FileManager.default.url(forUbiquityContainerIdentifier: containerIdentifier) else {
+            return nil
+        }
+        let documentsURL = ubiquityURL.appendingPathComponent("Documents/Courses")
+        try? FileManager.default.createDirectory(at: documentsURL, withIntermediateDirectories: true)
+        return documentsURL.appendingPathComponent("courses.json")
+    }()
+    
+    private var isSyncEnabled: Bool {
+        AppSettingsModel.shared.enableICloudSync
     }
 
     // MARK: - Public API
@@ -269,6 +293,8 @@ final class CoursesStore: ObservableObject {
     }
 
     private func persist() {
+        guard !isLoadingFromDisk else { return }
+        
         let snapshot = PersistedData(
             semesters: semesters,
             courses: courses,
@@ -281,6 +307,11 @@ final class CoursesStore: ObservableObject {
             try data.write(to: storageURL, options: [.atomic, .completeFileProtection])
             try data.write(to: cacheURL, options: [.atomic, .completeFileProtection])
             LOG_PERSISTENCE(.debug, "CoursesSave", "Persisted courses data", metadata: ["semesters": "\(semesters.count)", "courses": "\(courses.count)", "size": "\(data.count)"])
+            
+            // Queue for iCloud sync if online and enabled
+            if isOnline && isSyncEnabled {
+                saveToiCloud()
+            }
         } catch {
             LOG_PERSISTENCE(.error, "CoursesSave", "Failed to persist courses data: \(error.localizedDescription)")
         }
@@ -641,6 +672,90 @@ extension CoursesStore {
         currentSemesterId = nil
         currentGPA = 0
         persist()
+    }
+    
+    // MARK: - iCloud Sync
+    
+    private func setupNetworkMonitoring() {
+        pathMonitor = NWPathMonitor()
+        pathMonitor?.pathUpdateHandler = { [weak self] path in
+            Task { @MainActor in
+                self?.isOnline = path.status == .satisfied
+            }
+        }
+        pathMonitor?.start(queue: DispatchQueue.global(qos: .background))
+    }
+    
+    private func setupiCloudMonitoring() {
+        iCloudMonitor = Timer.scheduledTimer(withTimeInterval: 300, repeats: true) { [weak self] _ in
+            guard let self = self, self.isSyncEnabled else { return }
+            self.loadFromiCloud()
+        }
+    }
+    
+    private func observeICloudToggle() {
+        iCloudToggleObserver = NotificationCenter.default.addObserver(
+            forName: UserDefaults.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            if self.isSyncEnabled {
+                self.loadFromiCloud()
+            }
+        }
+    }
+    
+    private func loadFromiCloudIfEnabled() {
+        guard isSyncEnabled else { return }
+        guard !AppSettingsModel.shared.suppressICloudRestore else { return }
+        loadFromiCloud()
+    }
+    
+    private func saveToiCloud() {
+        guard isSyncEnabled else { return }
+        guard let url = iCloudURL else { return }
+        
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let self = self else { return }
+            let snapshot = PersistedData(
+                semesters: self.semesters,
+                courses: self.courses,
+                outlineNodes: self.outlineNodes,
+                courseFiles: self.courseFiles,
+                currentSemesterId: self.currentSemesterId
+            )
+            do {
+                let data = try JSONEncoder().encode(snapshot)
+                try data.write(to: url, options: .atomic)
+                LOG_PERSISTENCE(.info, "CoursesiCloud", "Synced courses to iCloud", metadata: ["semesters": "\(self.semesters.count)", "courses": "\(self.courses.count)"])
+            } catch {
+                LOG_PERSISTENCE(.error, "CoursesiCloud", "iCloud sync failed: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    private func loadFromiCloud() {
+        guard let url = iCloudURL else { return }
+        guard FileManager.default.fileExists(atPath: url.path) else { return }
+        
+        do {
+            isLoadingFromDisk = true
+            let data = try Data(contentsOf: url)
+            let decoded = try JSONDecoder().decode(PersistedData.self, from: data)
+            
+            self.semesters = decoded.semesters
+            self.courses = decoded.courses
+            self.outlineNodes = decoded.outlineNodes
+            self.courseFiles = decoded.courseFiles
+            self.currentSemesterId = decoded.currentSemesterId
+            
+            LOG_PERSISTENCE(.info, "CoursesiCloud", "Loaded courses from iCloud", metadata: ["semesters": "\(semesters.count)", "courses": "\(courses.count)"])
+            isLoadingFromDisk = false
+        } catch {
+            isLoadingFromDisk = false
+            LOG_PERSISTENCE(.error, "CoursesiCloud", "Failed to load from iCloud: \(error.localizedDescription)")
+        }
     }
 }
 
