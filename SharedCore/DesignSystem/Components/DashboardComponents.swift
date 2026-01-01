@@ -75,7 +75,7 @@ struct DashboardCard<Content: View, HeaderContent: View, FooterContent: View>: V
             }
         }
         .padding(Space.cardPadding)
-        .background(.ultraThinMaterial)
+        .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: Space.cardCornerRadius))
         .animation(.easeInOut(duration: 0.25), value: mode)
         .animation(.easeInOut(duration: 0.25), value: isLoading)

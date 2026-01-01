@@ -143,12 +143,6 @@ struct DashboardView: View {
                 .frame(maxWidth: min(proxy.size.width, 1400))
                 .frame(maxWidth: .infinity)  // Center the constrained content
                 .padding(.horizontal, responsivePadding(for: proxy.size.width))
-                .background(
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(Color(nsColor: .controlBackgroundColor))
-                )
-                .padding(.horizontal, 8)
-                .padding(.vertical, 8)
             }
         }
         .background(Color(nsColor: .windowBackgroundColor))
