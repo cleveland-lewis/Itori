@@ -37,7 +37,7 @@ enum RootsColor {
     static var textSecondary: Color { .secondary }
     static var label: Color { .primary }
     static var secondaryLabel: Color { .secondary }
-    static var cardBackground: Color { Color(nsColor: .controlBackgroundColor) }
+    static var cardBackground: Color { DesignSystem.Colors.cardBackground }
     static var inputBackground: Color {
 #if canImport(AppKit)
         return Color(nsColor: NSColor.textBackgroundColor)
