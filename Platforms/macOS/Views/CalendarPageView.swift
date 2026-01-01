@@ -100,6 +100,8 @@ struct CalendarPageView: View {
     @State private var chevronLeftHover = false
     @State private var chevronRightHover = false
     @State private var todayHover = false
+    @State private var refreshHover = false
+    @State private var isRefreshing = false
     @State private var isHydratingInitial = false
     @State private var isHydratingFull = false
     @State private var openTimestamp: Date = Date()
@@ -332,6 +334,23 @@ struct CalendarPageView: View {
             .rootsStandardInteraction()
             .onHover { hovering in
                 withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { chevronRightHover = hovering }
+            }
+            
+            Button { refreshCalendar() } label: {
+                calendarButtonLabel(
+                    title: NSLocalizedString("timer.context.refresh_calendar", comment: ""),
+                    systemImage: isRefreshing ? "arrow.clockwise.circle.fill" : "arrow.clockwise"
+                )
+                .foregroundStyle(refreshHover ? Color.accentColor : .primary)
+                .scaleEffect(refreshHover ? 1.06 : 1.0)
+                .rotationEffect(.degrees(isRefreshing ? 360 : 0))
+                .animation(isRefreshing ? .linear(duration: 1.0).repeatForever(autoreverses: false) : .default, value: isRefreshing)
+            }
+            .buttonStyle(.plain)
+            .rootsStandardInteraction()
+            .disabled(isRefreshing)
+            .onHover { hovering in
+                withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { refreshHover = hovering }
             }
         }
         .frame(maxWidth: .infinity, alignment: .trailing)
@@ -649,6 +668,24 @@ struct CalendarPageView: View {
         focusedDate = today
         selectedDate = today
         calendarManager.selectedDate = today
+    }
+    
+    private func refreshCalendar() {
+        guard !isRefreshing else { return }
+        
+        isRefreshing = true
+        _Concurrency.Task {
+            await deviceCalendar.refreshEventsForVisibleRange(reason: "manual_refresh")
+            invalidateEventsCache()
+            hydrateEventsIncrementally()
+            
+            await MainActor.run {
+                // Keep spinning for a minimum duration for visual feedback
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    isRefreshing = false
+                }
+            }
+        }
     }
 
     private var effectiveEvents: [CalendarEvent] {
