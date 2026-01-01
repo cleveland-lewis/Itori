@@ -9,14 +9,14 @@ class MockNotificationCenter: NotificationSchedulable {
     var scheduledNotifications: [UNNotificationRequest] = []
     var authorizationStatus: UNAuthorizationStatus = .authorized
     
-    func requestAuthorization() async throws -> Bool {
+    func requestNotificationAuthorization() async throws -> Bool {
         if shouldFailAuthorization {
             throw NSError(domain: "UNErrorDomain", code: 1, userInfo: [NSLocalizedDescriptionKey: "User denied authorization"])
         }
         return isAuthorized
     }
     
-    func schedule(identifier: String, content: UNNotificationContent, trigger: UNNotificationTrigger?) async throws {
+    func scheduleNotification(identifier: String, content: UNNotificationContent, trigger: UNNotificationTrigger?) async throws {
         if shouldFailScheduling {
             throw NSError(domain: "UNErrorDomain", code: 1407, userInfo: [NSLocalizedDescriptionKey: "Notifications not authorized"])
         }
@@ -24,36 +24,22 @@ class MockNotificationCenter: NotificationSchedulable {
         scheduledNotifications.append(request)
     }
     
-    func getPendingNotifications() async -> [UNNotificationRequest] {
+    func pendingNotificationRequests() async -> [UNNotificationRequest] {
         return scheduledNotifications
     }
     
-    func removePendingNotifications(withIdentifiers identifiers: [String]) {
+    func removePendingNotificationRequests(withIdentifiers identifiers: [String]) {
         scheduledNotifications.removeAll { identifiers.contains($0.identifier) }
     }
     
-    func removeAllPendingNotifications() {
+    func removeAllPendingNotificationRequests() {
         scheduledNotifications.removeAll()
     }
     
-    func getNotificationSettings() async -> UNNotificationSettings {
+    func notificationSettings() async -> UNNotificationSettings {
         return MockNotificationSettings(authorizationStatus: authorizationStatus)
     }
 }
 
-class MockNotificationSettings: UNNotificationSettings {
-    private let _authorizationStatus: UNAuthorizationStatus
-    
-    init(authorizationStatus: UNAuthorizationStatus) {
-        self._authorizationStatus = authorizationStatus
-        super.init()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) not implemented")
-    }
-    
-    override var authorizationStatus: UNAuthorizationStatus {
-        return _authorizationStatus
-    }
-}
+// UNNotificationSettings cannot be subclassed, so we need to work with actual settings
+// For testing, we'll use the requestAuthorization callback to control authorization status
