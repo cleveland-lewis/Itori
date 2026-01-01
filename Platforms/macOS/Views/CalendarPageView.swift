@@ -1124,30 +1124,30 @@ private struct MonthCalendarView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            VStack(alignment: .leading, spacing: 12) {
-                Text(monthHeader)
-                    .font(DesignSystem.Typography.subHeader)
-                weekdayHeader
-                LazyVGrid(columns: columns, spacing: 12) {
-                    ForEach(days) { day in
-                        let normalized = calendar.startOfDay(for: day.date)
-                        let count = eventsStore.eventsByDate[normalized] ?? events(for: day.date).count
-                        let isToday = calendar.isDate(normalized, inSameDayAs: todayDate)
-                        let isSelected = selectedDate.map { calendar.isDate(normalized, inSameDayAs: $0) } ?? false
-                        let calendarDay = CalendarDay(
-                            date: day.date,
-                            isToday: isToday,
-                            isSelected: isSelected,
-                            hasEvents: count > 0,
-                            densityLevel: EventDensityLevel.fromCount(count),
-                            isInCurrentMonth: day.isCurrentMonth
-                        )
-                        let dayEvents = events(for: day.date).sorted { $0.startDate < $1.startDate }
-                        let maxVisibleEvents = 2
-                        let hasMoreEvents = dayEvents.count > maxVisibleEvents
-                        
-                        VStack(alignment: .leading, spacing: 6) {
+        GeometryReader { geometry in
+            let cellSize = (geometry.size.width - (6 * 12)) / 7  // 6 spacings of 12pt between 7 columns
+            let gridHeight = cellSize * 6 + (5 * 12)  // 6 rows with 5 spacings
+            
+            VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(monthHeader)
+                        .font(DesignSystem.Typography.subHeader)
+                    weekdayHeader
+                    LazyVGrid(columns: columns, spacing: 12) {
+                        ForEach(days) { day in
+                            let normalized = calendar.startOfDay(for: day.date)
+                            let count = eventsStore.eventsByDate[normalized] ?? events(for: day.date).count
+                            let isToday = calendar.isDate(normalized, inSameDayAs: todayDate)
+                            let isSelected = selectedDate.map { calendar.isDate(normalized, inSameDayAs: $0) } ?? false
+                            let calendarDay = CalendarDay(
+                                date: day.date,
+                                isToday: isToday,
+                                isSelected: isSelected,
+                                hasEvents: count > 0,
+                                densityLevel: EventDensityLevel.fromCount(count),
+                                isInCurrentMonth: day.isCurrentMonth
+                            )
+                            
                             Button {
                                 withAnimation(DesignSystem.Motion.snappyEase) {
                                     focusedDate = day.date
@@ -1157,66 +1157,18 @@ private struct MonthCalendarView: View {
                                 MonthDayCell(day: calendarDay)
                             }
                             .buttonStyle(.plain)
-
-                            VStack(alignment: .leading, spacing: 4) {
-                                ForEach(dayEvents.prefix(maxVisibleEvents)) { event in
-                                    Button {
-                                        onSelectEvent(event)
-                                    } label: {
-                                        HStack(spacing: 6) {
-                                            Circle()
-                                                .fill(event.category.color)
-                                                .frame(width: 8, height: 8)
-                                            Text(event.category.rawValue)
-                                                .font(DesignSystem.Typography.caption)
-                                                .foregroundStyle(.secondary)
-                                            Text(event.title)
-                                                .font(DesignSystem.Typography.caption)
-                                                .foregroundStyle(.primary)
-                                                .lineLimit(1)
-                                            Spacer(minLength: 0)
-                                        }
-                                        .padding(.horizontal, 6)
-                                        .padding(.vertical, 3)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                                                .fill(event.category.color.opacity(0.08))
-                                        )
-                                    }
-                                    .buttonStyle(.plain)
-                                }
-                                
-                                if hasMoreEvents {
-                                    HStack(spacing: 4) {
-                                        Image(systemName: "ellipsis")
-                                            .font(DesignSystem.Typography.caption)
-                                            .foregroundStyle(.tertiary)
-                                        Text(String(format: NSLocalizedString("calendar.more_events", comment: ""), dayEvents.count - maxVisibleEvents))
-                                            .font(DesignSystem.Typography.caption)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 3)
-                                } else {
-                                    ForEach(0..<(maxVisibleEvents - dayEvents.count), id: \.self) { _ in
-                                        Color.clear
-                                            .frame(height: 22)
-                                    }
-                                }
-                            }
-                            .frame(height: CGFloat(maxVisibleEvents) * 26 + CGFloat(maxVisibleEvents - 1) * 4)
+                            .frame(width: cellSize, height: cellSize)
+                            .background(
+                                RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusSmall, style: .continuous)
+                                    .fill(isSelected ? DesignSystem.Materials.surfaceHover : DesignSystem.Materials.surface)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusSmall, style: .continuous)
+                                            .strokeBorder(Color.primary.opacity(0.1), lineWidth: 1)
+                                    )
+                            )
                         }
-                        .padding(6)
-                        .frame(maxWidth: 180, minHeight: 120)
-                        .background(
-                            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusSmall, style: .continuous)
-                                .fill(isSelected ? DesignSystem.Materials.surfaceHover : DesignSystem.Materials.surface)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusSmall, style: .continuous)
-                                        .strokeBorder(Color.primary.opacity(0.1), lineWidth: 1)
-                                )
-                        )
                     }
+                    .frame(height: gridHeight)
                 }
             }
         }
