@@ -11,9 +11,10 @@ struct RootsSidebarShell: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            // Persistent left sidebar (never collapses)
+            // Persistent left sidebar (never collapses, extends to full height)
             SidebarColumn(selection: $selection)
                 .frame(width: 260)
+                .frame(maxHeight: .infinity)
                 .background(VisualEffectView(material: .hudWindow, blendingMode: .behindWindow))
             
             Divider()
