@@ -85,19 +85,19 @@ struct CoursesPageView: View {
     @State private var editingCourse: CoursePageCourse? = nil
 
     var body: some View {
-        ZStack {
-            Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
+        GeometryReader { proxy in
+            let width = proxy.size.width
+            let isStacked = width < 820
+            let ratios: (CGFloat, CGFloat) = {
+                if isStacked { return (1, 1) }
+                if width < 1200 { return (0.4, 0.6) }
+                return (1.0 / 3.0, 2.0 / 3.0)
+            }()
 
-            GeometryReader { proxy in
-                let width = proxy.size.width
-                let isStacked = width < 820
-                let ratios: (CGFloat, CGFloat) = {
-                    if isStacked { return (1, 1) }
-                    if width < 1200 { return (0.4, 0.6) }
-                    return (1.0 / 3.0, 2.0 / 3.0)
-                }()
+            let sidebarWidth = isStacked ? width : max(240, width * ratios.0)
 
-                let sidebarWidth = isStacked ? width : max(240, width * ratios.0)
+            ZStack {
+                Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
 
                 if isStacked {
                     VStack(spacing: RootsSpacing.l) {
@@ -109,7 +109,9 @@ struct CoursesPageView: View {
                             .frame(maxWidth: .infinity, alignment: .topLeading)
                             .layoutPriority(2)
                     }
-                    .padding(.horizontal, RootsSpacing.pagePadding)
+                    .frame(maxWidth: min(proxy.size.width, 1400))
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, responsivePadding(for: proxy.size.width))
                     .padding(.vertical, RootsSpacing.l)
                 } else {
                     HStack(alignment: .top, spacing: RootsSpacing.l) {
@@ -121,7 +123,9 @@ struct CoursesPageView: View {
                             .frame(maxWidth: .infinity, alignment: .topLeading)
                             .layoutPriority(2)
                     }
-                    .padding(.horizontal, RootsSpacing.pagePadding)
+                    .frame(maxWidth: min(proxy.size.width, 1400))
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, responsivePadding(for: proxy.size.width))
                     .padding(.vertical, RootsSpacing.l)
                 }
             }
@@ -243,6 +247,16 @@ struct CoursesPageView: View {
     private var currentSelection: CoursePageCourse? {
         guard let selectedCourseId else { return filteredCourses.first }
         return filteredCourses.first(where: { $0.id == selectedCourseId }) ?? filteredCourses.first
+    }
+
+    private func responsivePadding(for width: CGFloat) -> CGFloat {
+        switch width {
+        case ..<600: return 16
+        case 600..<900: return 20
+        case 900..<1200: return 24
+        case 1200..<1600: return 32
+        default: return 40
+        }
     }
 
     private func vm(from course: Course) -> CoursePageCourse {

@@ -179,7 +179,9 @@ struct AssignmentsPageView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
-            .padding(.horizontal, RootsSpacing.pagePadding)
+            .frame(maxWidth: min(proxy.size.width, 1400))
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, responsivePadding(for: proxy.size.width))
             .padding(.vertical, RootsSpacing.l)
             .rootsSystemBackground()
         }
@@ -481,6 +483,16 @@ struct AssignmentsPageView: View {
             filterCourse ?? "assignments.filter.any".localized
         ))
         return parts.joined(separator: " · ")
+    }
+
+    private func responsivePadding(for width: CGFloat) -> CGFloat {
+        switch width {
+        case ..<600: return 16
+        case 600..<900: return 20
+        case 900..<1200: return 24
+        case 1200..<1600: return 32
+        default: return 40
+        }
     }
 
     private func toggleCompletion(for assignment: Assignment) {

@@ -153,13 +153,15 @@ Compiled out in release builds via `#if DEBUG`.
 ## Future Application
 
 ### Other Pages to Update
-Apply the same pattern to:
+All major pages have been updated with consistent centering:
 - ✅ DashboardView (completed)
-- ⬜ AssignmentsPageView
-- ⬜ PlannerPageView
-- ⬜ CoursesPageView
-- ⬜ SettingsView
-- ⬜ GradesView
+- ✅ AssignmentsPageView (completed)
+- ✅ PlannerPageView (completed)
+- ✅ CoursesPageView (completed)
+- ✅ GradesView (completed)
+- ⬜ SettingsView (uses NavigationView/List - doesn't need centering)
+
+All pages now follow the same centering rule with responsive padding.
 
 ### Usage Pattern
 ```swift

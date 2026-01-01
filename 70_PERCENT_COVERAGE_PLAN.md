@@ -73,20 +73,22 @@ Achieve 70% test coverage across the Roots codebase with comprehensive, maintain
 - 🔲 Test services that ViewModels depend on
 - 🔲 Measure coverage to identify gaps
 
-## Phase 5: Integration Tests ✅ COMPLETE
-**Target: 50%+ coverage**
+## Phase 5: Integration Tests ⏭️ DEFERRED
+**Target: 50%+ coverage - Architecture Mismatch**
 
-### Completed:
-- ✅ AssignmentSchedulingIntegrationTests - Assignment → planner → store flow
-- ✅ CourseManagementIntegrationTests - Course updates → reactive UI patterns
+### Analysis:
+Integration tests would require matching the actual architecture:
+- `AssignmentsStore` uses `AppTask` (not `Assignment`)
+- API is `addTask`/`removeTask`/`updateTask`
+- Store is singleton with private init (can't create test instances)
+- Complex iCloud sync and network monitoring dependencies
+- Would need extensive mocking infrastructure
 
-### Coverage:
-- Assignment CRUD operations with store integration
-- Course-assignment relationships
-- Reactive publishers for UI updates
-- Semester management integration
-- Course filtering (active/archived)
-- GPA calculation updates
+### Alternative Coverage:
+- Existing unit tests cover store operations
+- ViewModel tests provide integration-level validation
+- UI tests handle end-to-end flows
+- Focus on achieving 70% with strong unit coverage
 
 ## Next Actions:
 

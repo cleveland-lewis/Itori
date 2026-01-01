@@ -370,44 +370,48 @@ struct PlannerPageView: View {
     }
 
     var body: some View {
-        ZStack {
-            Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
+        GeometryReader { geometry in
+            ZStack {
+                Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
 
-            ScrollViewReader { proxy in
-                ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
-                        headerBar
-                            .padding(.top, DesignSystem.Layout.spacing.small)
+                ScrollViewReader { proxy in
+                    ScrollView(showsIndicators: false) {
+                        VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
+                            headerBar
+                                .padding(.top, DesignSystem.Layout.spacing.small)
 
-                        HStack(alignment: .top, spacing: 18) {
-                            timelineCard
-                                .id(PlannerScrollTarget.timeline)
-                                .frame(maxWidth: .infinity, alignment: .topLeading)
-                                .layoutPriority(1)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: cardCornerRadius, style: .continuous)
-                                        .stroke(Color.accentColor.opacity(focusPulse ? 0.4 : 0), lineWidth: 2)
-                                )
-                                .animation(.easeInOut(duration: 0.35), value: focusPulse)
+                            HStack(alignment: .top, spacing: 18) {
+                                timelineCard
+                                    .id(PlannerScrollTarget.timeline)
+                                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                                    .layoutPriority(1)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: cardCornerRadius, style: .continuous)
+                                            .stroke(Color.accentColor.opacity(focusPulse ? 0.4 : 0), lineWidth: 2)
+                                    )
+                                    .animation(.easeInOut(duration: 0.35), value: focusPulse)
 
-                            rightColumn
-                                .frame(minWidth: 280, idealWidth: 320, maxWidth: 360, alignment: .top)
+                                rightColumn
+                                    .frame(minWidth: 280, idealWidth: 320, maxWidth: 360, alignment: .top)
+                            }
                         }
+                        .frame(maxWidth: min(geometry.size.width, 1400))
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, responsivePadding(for: geometry.size.width))
+                        .padding(.bottom, DesignSystem.Layout.spacing.large)
                     }
-                    .padding(.horizontal, RootsSpacing.pagePadding)
-                    .padding(.bottom, DesignSystem.Layout.spacing.large)
-                }
-                .onReceive(plannerCoordinator.$requestedDate) { date in
-                    guard let date else { return }
-                    selectedDate = date
-                    withAnimation(DesignSystem.Motion.fluidSpring) {
-                        proxy.scrollTo(PlannerScrollTarget.timeline, anchor: .top)
+                    .onReceive(plannerCoordinator.$requestedDate) { date in
+                        guard let date else { return }
+                        selectedDate = date
+                        withAnimation(DesignSystem.Motion.fluidSpring) {
+                            proxy.scrollTo(PlannerScrollTarget.timeline, anchor: .top)
+                        }
+                        focusPulse = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.1) {
+                            focusPulse = false
+                        }
+                        plannerCoordinator.requestedDate = nil
                     }
-                    focusPulse = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.1) {
-                        focusPulse = false
-                    }
-                    plannerCoordinator.requestedDate = nil
                 }
             }
         }
@@ -639,6 +643,16 @@ private extension PlannerPageView {
                     .onChange(of: proxy.size.height) { _, newValue in rowHeights[hour] = newValue }
             }
         )
+    }
+
+    private func responsivePadding(for width: CGFloat) -> CGFloat {
+        switch width {
+        case ..<600: return 16
+        case 600..<900: return 20
+        case 900..<1200: return 24
+        case 1200..<1600: return 32
+        default: return 40
+        }
     }
 
     private var plannerLoadingState: some View {
