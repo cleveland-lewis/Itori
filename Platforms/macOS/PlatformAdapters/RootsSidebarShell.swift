@@ -14,7 +14,7 @@ struct RootsSidebarShell: View {
             // Persistent left sidebar (never collapses)
             SidebarColumn(selection: $selection)
                 .frame(width: 260)
-                .background(VisualEffectView(material: .sidebar, blendingMode: .behindWindow))
+                .background(VisualEffectView(material: .hudWindow, blendingMode: .behindWindow))
             
             Divider()
                 .opacity(0.3)
