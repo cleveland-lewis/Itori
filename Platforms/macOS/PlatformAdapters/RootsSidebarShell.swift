@@ -11,9 +11,10 @@ struct RootsSidebarShell: View {
     
     var body: some View {
         HStack(spacing: 0) {
-            // Persistent left sidebar (never collapses)
+            // Persistent left sidebar (never collapses, extends to full height)
             SidebarColumn(selection: $selection)
                 .frame(width: 260)
+                .frame(maxHeight: .infinity)
                 .background(VisualEffectView(material: .hudWindow, blendingMode: .behindWindow))
             
             Divider()
@@ -117,10 +118,6 @@ struct SidebarColumn: View {
         VStack(alignment: .leading, spacing: 8) {
             // App header
             HStack {
-                Image(systemName: "leaf.circle.fill")
-                    .font(.title2)
-                    .foregroundStyle(settings.activeAccentColor)
-                
                 Text("Roots")
                     .font(.title2.weight(.semibold))
                 
