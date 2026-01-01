@@ -72,7 +72,7 @@ struct RootsSidebarShell: View {
             TimerPageView()
         case .flashcards:
             if settings.enableFlashcards {
-                FlashcardDashboard()
+                FlashcardsView()
             } else {
                 emptyFlashcardsView
             }
