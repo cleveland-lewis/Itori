@@ -29,6 +29,8 @@ final class CoursesStoreTests: BaseTestCase {
     
     override func tearDownWithError() throws {
         cancellables = nil
+        // Clear all store data before disposing
+        store?.clear()
         store = nil
         try? FileManager.default.removeItem(at: tempDir)
         tempDir = nil

@@ -50,68 +50,65 @@ struct DashboardView: View {
                     // ROW 1: STATUS STRIP (no card chrome)
                     statusStrip
                         .animateEntry(isLoaded: isLoaded, index: 0)
-                        .padding(.horizontal, contentPadding)
                         .padding(.bottom, cardSpacing)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                    // ROW 2: ANALYTICS
-                    Group {
-                        if isNarrow {
-                            VStack(spacing: cardSpacing) {
-                                workloadCard
-                                    .animateEntry(isLoaded: isLoaded, index: 1)
-                                if shouldShowProductivityInsights {
-                                    studyHoursCard
-                                        .animateEntry(isLoaded: isLoaded, index: 2)
+                        // ROW 2: ANALYTICS
+                        Group {
+                            if isNarrow {
+                                VStack(spacing: cardSpacing) {
+                                    workloadCard
+                                        .animateEntry(isLoaded: isLoaded, index: 1)
+                                    if shouldShowProductivityInsights {
+                                        studyHoursCard
+                                            .animateEntry(isLoaded: isLoaded, index: 2)
+                                    }
+                                }
+                            } else {
+                                HStack(alignment: .top, spacing: cardSpacing) {
+                                    workloadCard
+                                        .animateEntry(isLoaded: isLoaded, index: 1)
+                                        .frame(maxWidth: .infinity)
+
+                                    if shouldShowProductivityInsights {
+                                        studyHoursCard
+                                            .animateEntry(isLoaded: isLoaded, index: 2)
+                                            .frame(maxWidth: .infinity)
+                                    }
                                 }
                             }
-                        } else {
-                            HStack(alignment: .top, spacing: cardSpacing) {
-                                workloadCard
-                                    .animateEntry(isLoaded: isLoaded, index: 1)
-                                    .frame(maxWidth: .infinity)
+                        }
+                        .padding(.bottom, cardSpacing)
 
-                                if shouldShowProductivityInsights {
-                                    studyHoursCard
-                                        .animateEntry(isLoaded: isLoaded, index: 2)
+                        // ROW 3: ENERGY + UPCOMING
+                        Group {
+                            if isNarrow {
+                                VStack(spacing: cardSpacing) {
+                                    if shouldShowEnergyCard {
+                                        energyCard
+                                            .animateEntry(isLoaded: isLoaded, index: 3)
+                                    }
+                                    assignmentsCard
+                                        .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 4 : 3)
+                                }
+                            } else {
+                                HStack(alignment: .top, spacing: cardSpacing) {
+                                    if shouldShowEnergyCard {
+                                        energyCard
+                                            .animateEntry(isLoaded: isLoaded, index: 3)
+                                            .frame(maxWidth: .infinity)
+                                    }
+
+                                    assignmentsCard
+                                        .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 4 : 3)
                                         .frame(maxWidth: .infinity)
                                 }
                             }
                         }
-                    }
-                    .padding(.horizontal, contentPadding)
-                    .padding(.bottom, cardSpacing)
+                        .padding(.bottom, cardSpacing)
+                        .animation(.easeInOut(duration: 0.25), value: shouldShowEnergyCard)
 
-                    // ROW 3: ENERGY + UPCOMING
-                    Group {
-                        if isNarrow {
-                            VStack(spacing: cardSpacing) {
-                                if shouldShowEnergyCard {
-                                    energyCard
-                                        .animateEntry(isLoaded: isLoaded, index: 3)
-                                }
-                                assignmentsCard
-                                    .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 4 : 3)
-                            }
-                        } else {
-                            HStack(alignment: .top, spacing: cardSpacing) {
-                                if shouldShowEnergyCard {
-                                    energyCard
-                                        .animateEntry(isLoaded: isLoaded, index: 3)
-                                        .frame(maxWidth: .infinity)
-                                }
-
-                                assignmentsCard
-                                    .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 4 : 3)
-                                    .frame(maxWidth: .infinity)
-                            }
-                        }
-                    }
-                    .padding(.horizontal, contentPadding)
-                    .padding(.bottom, cardSpacing)
-                    .animation(.easeInOut(duration: 0.25), value: shouldShowEnergyCard)
-
-                    // ROW 4: TODAY + REMAINING + CALENDAR (wide)
+                        // ROW 4: TODAY + REMAINING + CALENDAR (wide)
                     Group {
                         if isNarrow {
                             VStack(spacing: cardSpacing) {
@@ -140,10 +137,12 @@ struct DashboardView: View {
                             }
                         }
                     }
-                    .padding(.horizontal, contentPadding)
                     .padding(.bottom, bottomDockClearancePadding)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: min(proxy.size.width, 1400))
+                .frame(maxWidth: .infinity)  // Center the constrained content
+                .padding(.horizontal, responsivePadding(for: proxy.size.width))
             }
         }
         .background(Color(nsColor: .windowBackgroundColor))
@@ -206,6 +205,21 @@ struct DashboardView: View {
         }
     }
 
+    /// Calculate responsive horizontal padding based on available width
+    private func responsivePadding(for width: CGFloat) -> CGFloat {
+        switch width {
+        case ..<600:
+            return 16
+        case 600..<900:
+            return 20
+        case 900..<1200:
+            return 24
+        case 1200..<1600:
+            return 32
+        default:
+            return 40
+        }
+    }
 
     private func triggerNextAssignment() {
         let today = Calendar.current.startOfDay(for: Date())

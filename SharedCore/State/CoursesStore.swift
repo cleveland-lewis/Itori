@@ -631,6 +631,17 @@ extension CoursesStore {
         courseFiles[index].updatedAt = Date()
         persist()
     }
+    
+    /// Clear all data (for testing)
+    func clear() {
+        semesters = []
+        courses = []
+        outlineNodes = []
+        courseFiles = []
+        currentSemesterId = nil
+        currentGPA = 0
+        persist()
+    }
 }
 
 // Combine publisher replaces brittle NotificationCenter bridges
