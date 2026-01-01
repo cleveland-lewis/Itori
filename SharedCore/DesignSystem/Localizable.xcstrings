@@ -17859,8 +17859,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Fine-tune which subsystems emit debug logs. Errors and warnings are always logged."
+            "state": "translated",
+            "value": "Verfijn welke subsystemen foutopsporingslogboeken verzenden.Fouten en waarschuwingen worden altijd geregistreerd."
           }
         }
       }
@@ -17899,8 +17899,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Flashcard System"
+            "state": "translated",
+            "value": "Flashcard-systeem"
           }
         }
       }
@@ -17945,8 +17945,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Flashcards"
+            "state": "translated",
+            "value": "Flitskaarten"
           }
         }
       }
@@ -17998,8 +17998,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.action.create_deck"
+            "state": "translated",
+            "value": "Maak een nieuw kaartspel"
           }
         }
       }
@@ -18051,8 +18051,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.action.new_deck"
+            "state": "translated",
+            "value": "Nieuw dek"
           }
         }
       }
@@ -18104,8 +18104,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.add.button_cancel"
+            "state": "translated",
+            "value": "Annuleren"
           }
         }
       }
@@ -18157,8 +18157,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.add.button_create"
+            "state": "translated",
+            "value": "Creëren"
           }
         }
       }
@@ -18210,8 +18210,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.add.coming_soon"
+            "state": "translated",
+            "value": "Cursuskeuze binnenkort"
           }
         }
       }
@@ -18263,8 +18263,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.add.link_section"
+            "state": "translated",
+            "value": "Link naar cursus (optioneel)"
           }
         }
       }
@@ -18316,8 +18316,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.add.name_field"
+            "state": "translated",
+            "value": "Deknaam"
           }
         }
       }
@@ -18369,8 +18369,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.add.title"
+            "state": "translated",
+            "value": "Nieuw dek"
           }
         }
       }
@@ -18422,8 +18422,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.deck.cards_count"
+            "state": "translated",
+            "value": "%d kaarten"
           }
         }
       }
@@ -18475,8 +18475,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.deck.help_create"
+            "state": "translated",
+            "value": "Maak een flashcard-deck voor %@"
           }
         }
       }
@@ -18528,8 +18528,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.empty.choose_deck"
+            "state": "translated",
+            "value": "Kies een kaartspel in de zijbalk om kaarten te bekijken en te bestuderen"
           }
         }
       }
@@ -18581,8 +18581,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.empty.create_first"
+            "state": "translated",
+            "value": "Maak je eerste flashcard-deck om aan de slag te gaan"
           }
         }
       }
@@ -18634,8 +18634,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.empty.no_decks"
+            "state": "translated",
+            "value": "Geen dekken"
           }
         }
       }
@@ -18688,7 +18688,7 @@
         "nl": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "flashcards.empty.no_results"
+            "value": "No Results"
           }
         }
       }
@@ -18741,7 +18741,7 @@
         "nl": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "flashcards.empty.select_deck"
+            "value": "Select a Deck"
           }
         }
       }
@@ -18793,8 +18793,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.search.placeholder"
+            "state": "translated",
+            "value": "Zoek decks"
           }
         }
       }
@@ -18846,8 +18846,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.section.all_decks"
+            "state": "translated",
+            "value": "Alle dekken"
           }
         }
       }
@@ -18899,8 +18899,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.section.current_semester"
+            "state": "translated",
+            "value": "Huidig ​​semester"
           }
         }
       }
@@ -18952,8 +18952,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.section.decks"
+            "state": "translated",
+            "value": "Dekken"
           }
         }
       }
@@ -19017,8 +19017,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "flashcards.title"
+            "state": "translated",
+            "value": "Flitskaarten"
           }
         }
       }
@@ -19057,8 +19057,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Focus Debugger"
+            "state": "translated",
+            "value": "Focus-debugger"
           }
         }
       }
@@ -19097,8 +19097,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "From: %@"
+            "state": "translated",
+            "value": "Van: %@"
           }
         }
       }
@@ -19143,8 +19143,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "General"
+            "state": "translated",
+            "value": "Algemeen"
           }
         }
       }
@@ -19183,8 +19183,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Generate Plan to create time blocks for today and the next few days."
+            "state": "translated",
+            "value": "Genereer een plan om tijdsblokken te creëren voor vandaag en de komende dagen."
           }
         }
       }
@@ -19223,8 +19223,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Generation Failed"
+            "state": "translated",
+            "value": "Generatie mislukt"
           }
         }
       }
@@ -19263,8 +19263,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Get notified before assignments are due"
+            "state": "translated",
+            "value": "Ontvang een melding voordat opdrachten klaar zijn"
           }
         }
       }
@@ -19303,8 +19303,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Get notified when countdown or stopwatch timers complete"
+            "state": "translated",
+            "value": "Ontvang een melding wanneer de aftel- of stopwatchtimers zijn voltooid"
           }
         }
       }
@@ -19343,8 +19343,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Get notified when work sessions and breaks complete"
+            "state": "translated",
+            "value": "Ontvang een melding wanneer werksessies en pauzes zijn voltooid"
           }
         }
       }
@@ -19389,8 +19389,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "GPA %@ / %@"
+            "state": "translated",
+            "value": "GPA %1$@ / %2$@"
           }
         }
       }
@@ -19429,8 +19429,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "GPA Overview"
+            "state": "translated",
+            "value": "GPA-overzicht"
           }
         }
       }
@@ -19469,8 +19469,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "GPA Scale: %@"
+            "state": "translated",
+            "value": "GPA-schaal: %@"
           }
         }
       }
@@ -19515,8 +19515,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Grade"
+            "state": "translated",
+            "value": "Cijfer"
           }
         }
       }
@@ -19555,8 +19555,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Grade Analytics"
+            "state": "translated",
+            "value": "Cijferanalyse"
           }
         }
       }
@@ -19595,8 +19595,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Grade Components"
+            "state": "translated",
+            "value": "Kwaliteitscomponenten"
           }
         }
       }
@@ -19635,8 +19635,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Grade Components – %@"
+            "state": "translated",
+            "value": "Kwaliteitscomponenten – %@"
           }
         }
       }
@@ -19688,8 +19688,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "grades.column.course"
+            "state": "translated",
+            "value": "Cursus"
           }
         }
       }
@@ -19741,8 +19741,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "grades.column.credits"
+            "state": "translated",
+            "value": "Kredieten"
           }
         }
       }
@@ -19794,8 +19794,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "grades.column.grade"
+            "state": "translated",
+            "value": "Cijfer"
           }
         }
       }
@@ -19847,8 +19847,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "grades.display.no_grade"
+            "state": "translated",
+            "value": "Nog geen cijfer"
           }
         }
       }
@@ -19900,8 +19900,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "grades.empty.select_course"
+            "state": "translated",
+            "value": "Selecteer een cursus in het middenpaneel om de uitsplitsing van de cijfers te bekijken."
           }
         }
       }
@@ -19953,8 +19953,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "grades.section.courses"
+            "state": "translated",
+            "value": "Cursussen"
           }
         }
       }
@@ -20006,8 +20006,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "grades.section.grades"
+            "state": "translated",
+            "value": "Cijfers"
           }
         }
       }
@@ -20059,8 +20059,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "grades.section.overall_status"
+            "state": "translated",
+            "value": "Algemene status"
           }
         }
       }
@@ -20099,8 +20099,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Haptic feedback and animations respect accessibility settings."
+            "state": "translated",
+            "value": "Haptische feedback en animaties respecteren de toegankelijkheidsinstellingen."
           }
         }
       }
@@ -20139,8 +20139,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Haptic feedback is disabled when Reduce Motion is enabled"
+            "state": "translated",
+            "value": "Haptische feedback is uitgeschakeld wanneer Beweging verminderen is ingeschakeld"
           }
         }
       }
@@ -20219,8 +20219,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Haptics: %@"
+            "state": "translated",
+            "value": "Haptiek: %@"
           }
         }
       }
@@ -20259,8 +20259,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "High"
+            "state": "translated",
+            "value": "Hoog"
           }
         }
       }
@@ -20299,8 +20299,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Higher values make transitions feel gentler."
+            "state": "translated",
+            "value": "Hogere waarden zorgen ervoor dat overgangen zachter aanvoelen."
           }
         }
       }
@@ -20345,8 +20345,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Highest: %@ %@%%"
+            "state": "translated",
+            "value": "Hoogste: %1$@ %2$@%%"
           }
         }
       }
@@ -20425,8 +20425,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "History: %@ items"
+            "state": "translated",
+            "value": "Geschiedenis: %@ items"
           }
         }
       }
@@ -20511,8 +20511,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "How Dependencies Work"
+            "state": "translated",
+            "value": "Hoe afhankelijkheden werken"
           }
         }
       }
@@ -20551,8 +20551,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "How far ahead to scan for events when refreshing."
+            "state": "translated",
+            "value": "Hoe ver vooruit om te scannen op gebeurtenissen bij vernieuwen."
           }
         }
       }
@@ -20591,8 +20591,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "How well did you know this?"
+            "state": "translated",
+            "value": "Hoe goed wist je dit?"
           }
         }
       }
@@ -20631,8 +20631,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Hypothetical grades won't be saved"
+            "state": "translated",
+            "value": "Hypothetische cijfers worden niet opgeslagen"
           }
         }
       }
@@ -20671,8 +20671,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "iCloud is connected and protected by native iCloud protections"
+            "state": "translated",
+            "value": "iCloud is verbonden en beschermd door native iCloud-beveiligingen"
           }
         }
       }
@@ -20711,8 +20711,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Icons"
+            "state": "translated",
+            "value": "Pictogrammen"
           }
         }
       }
@@ -20751,8 +20751,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Icons & Text"
+            "state": "translated",
+            "value": "Pictogrammen en tekst"
           }
         }
       }
@@ -20797,8 +20797,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "If you score %@%% on remaining work, your projected final grade is %@%%."
+            "state": "translated",
+            "value": "Als je %1$@%% scoort op het resterende werk, is je verwachte eindcijfer %2$@%%."
           }
         }
       }
@@ -20837,8 +20837,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Include in overview:"
+            "state": "translated",
+            "value": "In overzicht opnemen:"
           }
         }
       }
@@ -20877,8 +20877,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Increase button and control sizes for easier tapping"
+            "state": "translated",
+            "value": "Vergroot de grootte van de knoppen en bedieningselementen, zodat u gemakkelijker kunt tikken"
           }
         }
       }
@@ -20917,8 +20917,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Increase Contrast"
+            "state": "translated",
+            "value": "Verhoog het contrast"
           }
         }
       }
@@ -20957,8 +20957,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Increase Contrast: %@"
+            "state": "translated",
+            "value": "Contrast verhogen: %@"
           }
         }
       }
@@ -21003,8 +21003,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Integration"
+            "state": "translated",
+            "value": "Integratie"
           }
         }
       }
@@ -21049,8 +21049,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Integrations"
+            "state": "translated",
+            "value": "Integraties"
           }
         }
       }
@@ -21089,8 +21089,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Interactions"
+            "state": "translated",
+            "value": "Interacties"
           }
         }
       }
@@ -21175,8 +21175,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Interface Preferences"
+            "state": "translated",
+            "value": "Interfacevoorkeuren"
           }
         }
       }
@@ -21215,7 +21215,7 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "Interval: %@d"
           }
         }
@@ -21262,8 +21262,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.afternoon.1"
+            "state": "translated",
+            "value": "Goedemiddag"
           }
         }
       }
@@ -21309,8 +21309,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.afternoon.2"
+            "state": "translated",
+            "value": "Middag"
           }
         }
       }
@@ -21356,8 +21356,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.afternoon.3"
+            "state": "translated",
+            "value": "Ga zo door"
           }
         }
       }
@@ -21403,8 +21403,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.afternoon.4"
+            "state": "translated",
+            "value": "Blijf gefocust"
           }
         }
       }
@@ -21451,7 +21451,7 @@
         "nl": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "ios.dashboard.greeting.afternoon.5"
+            "value": "Making progress"
           }
         }
       }
@@ -21497,8 +21497,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.default"
+            "state": "translated",
+            "value": "Hallo"
           }
         }
       }
@@ -21544,8 +21544,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.evening.1"
+            "state": "translated",
+            "value": "Goedeavond"
           }
         }
       }
@@ -21591,8 +21591,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.evening.2"
+            "state": "translated",
+            "value": "Avond"
           }
         }
       }
@@ -21638,8 +21638,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.evening.3"
+            "state": "translated",
+            "value": "Inpakken"
           }
         }
       }
@@ -21685,8 +21685,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.evening.4"
+            "state": "translated",
+            "value": "Bijna daar"
           }
         }
       }
@@ -21732,8 +21732,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.evening.5"
+            "state": "translated",
+            "value": "Eindig sterk"
           }
         }
       }
@@ -21779,8 +21779,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.morning.1"
+            "state": "translated",
+            "value": "Goedemorgen"
           }
         }
       }
@@ -21826,8 +21826,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.morning.2"
+            "state": "translated",
+            "value": "Sta op en glans"
           }
         }
       }
@@ -21873,8 +21873,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.morning.3"
+            "state": "translated",
+            "value": "Ochtend"
           }
         }
       }
@@ -21920,8 +21920,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.morning.4"
+            "state": "translated",
+            "value": "Begin vandaag sterk"
           }
         }
       }
@@ -21967,8 +21967,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.morning.5"
+            "state": "translated",
+            "value": "Welkom terug"
           }
         }
       }
@@ -22014,8 +22014,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.night.1"
+            "state": "translated",
+            "value": "Hallo"
           }
         }
       }
@@ -22061,8 +22061,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.night.2"
+            "state": "translated",
+            "value": "Welkom terug"
           }
         }
       }
@@ -22108,8 +22108,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.night.3"
+            "state": "translated",
+            "value": "Werkt nog steeds"
           }
         }
       }
@@ -22155,8 +22155,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.night.4"
+            "state": "translated",
+            "value": "Het verbranden van de middernachtolie"
           }
         }
       }
@@ -22202,8 +22202,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.stats.courses"
+            "state": "translated",
+            "value": "Cursussen"
           }
         }
       }
@@ -22249,8 +22249,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.stats.due_soon"
+            "state": "translated",
+            "value": "Binnenkort verschuldigd"
           }
         }
       }
@@ -22296,8 +22296,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.stats.next_7_days"
+            "state": "translated",
+            "value": "Volgende 7 dagen"
           }
         }
       }
@@ -22344,8 +22344,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.study_hours.month"
+            "state": "translated",
+            "value": "Deze maand"
           }
         }
       }
@@ -22392,8 +22392,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.study_hours.subtitle"
+            "state": "translated",
+            "value": "Jouw voortgang"
           }
         }
       }
@@ -22440,8 +22440,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.study_hours.title"
+            "state": "translated",
+            "value": "Studie uren"
           }
         }
       }
@@ -22488,8 +22488,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.study_hours.today"
+            "state": "translated",
+            "value": "Vandaag"
           }
         }
       }
@@ -22536,8 +22536,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.study_hours.week"
+            "state": "translated",
+            "value": "Deze week"
           }
         }
       }
@@ -22583,8 +22583,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.upcoming.no_events"
+            "state": "translated",
+            "value": "Geen aankomende evenementen."
           }
         }
       }
@@ -22631,7 +22631,7 @@
         "nl": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "ios.dashboard.upcoming.subtitle"
+            "value": "From your calendar"
           }
         }
       }
@@ -22678,7 +22678,7 @@
         "nl": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "ios.dashboard.upcoming.title"
+            "value": "Upcoming"
           }
         }
       }
@@ -22725,8 +22725,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.item.assignment"
+            "state": "translated",
+            "value": "Opdracht"
           }
         }
       }
@@ -22772,8 +22772,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.menu.add_assignment"
+            "state": "translated",
+            "value": "Opdracht toevoegen"
           }
         }
       }
@@ -22819,8 +22819,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.menu.add_grade"
+            "state": "translated",
+            "value": "Cijfer toevoegen"
           }
         }
       }
@@ -22866,8 +22866,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.menu.auto_schedule"
+            "state": "translated",
+            "value": "Automatisch schema"
           }
         }
       }
@@ -22913,8 +22913,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.menu.hamburger"
+            "state": "translated",
+            "value": "Menu openen"
           }
         }
       }
@@ -22960,8 +22960,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.menu.quick_add"
+            "state": "translated",
+            "value": "Snel toevoegen"
           }
         }
       }
@@ -23007,8 +23007,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.menu.settings"
+            "state": "translated",
+            "value": "Instellingen"
           }
         }
       }
@@ -23054,8 +23054,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.menu.tasks"
+            "state": "translated",
+            "value": "Taken"
           }
         }
       }
@@ -23101,8 +23101,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.done"
+            "state": "translated",
+            "value": "Klaar"
           }
         }
       }
@@ -23148,8 +23148,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.due_format"
+            "state": "translated",
+            "value": "Verschuldigd %@ · %d min"
           }
         }
       }
@@ -23195,8 +23195,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.edit"
+            "state": "translated",
+            "value": "Bewerking"
           }
         }
       }
@@ -23242,8 +23242,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.generate_plan_button"
+            "state": "translated",
+            "value": "Plan genereren"
           }
         }
       }
@@ -23289,8 +23289,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.how_it_works"
+            "state": "translated",
+            "value": "Hoe het werkt"
           }
         }
       }
@@ -23336,8 +23336,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.overflow.empty"
+            "state": "translated",
+            "value": "Alle sessies geplaatst"
           }
         }
       }
@@ -23384,7 +23384,7 @@
         "nl": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "ios.planner.overflow.empty_subtitle"
+            "value": "Nothing waiting in overflow."
           }
         }
       }
@@ -23430,8 +23430,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.overflow.subtitle"
+            "state": "translated",
+            "value": "Nog niet gepland"
           }
         }
       }
@@ -23477,8 +23477,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.overflow.title"
+            "state": "translated",
+            "value": "Overloop"
           }
         }
       }
@@ -23524,8 +23524,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.schedule.empty"
+            "state": "translated",
+            "value": "Geen blokken gepland"
           }
         }
       }
@@ -23571,8 +23571,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.schedule.empty_subtitle"
+            "state": "translated",
+            "value": "Genereer een plan dat u vandaag nog kunt invullen."
           }
         }
       }
@@ -23618,8 +23618,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.schedule.subtitle"
+            "state": "translated",
+            "value": "Tijdsblokken"
           }
         }
       }
@@ -23665,8 +23665,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.schedule.title"
+            "state": "translated",
+            "value": "Schema"
           }
         }
       }
@@ -23712,8 +23712,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.toast.block_updated"
+            "state": "translated",
+            "value": "Blok bijgewerkt"
           }
         }
       }
@@ -23759,8 +23759,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.toast.time_conflict"
+            "state": "translated",
+            "value": "Tijdconflict"
           }
         }
       }
@@ -23806,8 +23806,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.today"
+            "state": "translated",
+            "value": "Vandaag"
           }
         }
       }
@@ -23853,8 +23853,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.unscheduled.add_due_date"
+            "state": "translated",
+            "value": "Voeg een vervaldatum toe"
           }
         }
       }
@@ -23900,8 +23900,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.unscheduled.empty"
+            "state": "translated",
+            "value": "Alle taken hebben datums"
           }
         }
       }
@@ -23947,8 +23947,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.unscheduled.empty_subtitle"
+            "state": "translated",
+            "value": "Voeg vervaldatums toe om de planning accuraat te houden."
           }
         }
       }
@@ -23994,8 +23994,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.unscheduled.subtitle"
+            "state": "translated",
+            "value": "Heeft aandacht nodig"
           }
         }
       }
@@ -24041,8 +24041,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.unscheduled.title"
+            "state": "translated",
+            "value": "Niet gepland"
           }
         }
       }
@@ -24094,8 +24094,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.settings.title"
+            "state": "translated",
+            "value": "Instellingen"
           }
         }
       }
@@ -24141,8 +24141,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.break"
+            "state": "translated",
+            "value": "Pauze"
           }
         }
       }
@@ -24188,8 +24188,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.focus"
+            "state": "translated",
+            "value": "Focus"
           }
         }
       }
@@ -24235,8 +24235,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.mode"
+            "state": "translated",
+            "value": "Modus"
           }
         }
       }
@@ -24282,8 +24282,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.pause"
+            "state": "translated",
+            "value": "Pauze"
           }
         }
       }
@@ -24329,8 +24329,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.resume"
+            "state": "translated",
+            "value": "Cv"
           }
         }
       }
@@ -24376,8 +24376,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.skip"
+            "state": "translated",
+            "value": "Overslaan"
           }
         }
       }
@@ -24423,8 +24423,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.start"
+            "state": "translated",
+            "value": "Begin"
           }
         }
       }
@@ -24470,8 +24470,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.stop"
+            "state": "translated",
+            "value": "Stop"
           }
         }
       }
@@ -24517,8 +24517,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.toast.assignment_added"
+            "state": "translated",
+            "value": "%@ toegevoegd"
           }
         }
       }
@@ -24565,7 +24565,7 @@
         "nl": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "ios.toast.course_added"
+            "value": "Course added"
           }
         }
       }
@@ -24611,8 +24611,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.toast.grade_added"
+            "state": "translated",
+            "value": "Cijfer toegevoegd"
           }
         }
       }
@@ -24658,8 +24658,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.toast.no_tasks_schedule"
+            "state": "translated",
+            "value": "Geen taken om te plannen"
           }
         }
       }
@@ -24705,8 +24705,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.toast.schedule_updated"
+            "state": "translated",
+            "value": "Schema bijgewerkt"
           }
         }
       }
@@ -24745,8 +24745,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Keep your profile, backups, and school-wide settings in their respective sections. Roots will link here when account syncing is available."
+            "state": "translated",
+            "value": "Bewaar uw profiel, back-ups en schoolbrede instellingen in hun respectievelijke secties.Roots zal hier naartoe linken wanneer accountsynchronisatie beschikbaar is."
           }
         }
       }
@@ -24785,8 +24785,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Large Tap Targets"
+            "state": "translated",
+            "value": "Grote tikdoelen"
           }
         }
       }
@@ -24825,8 +24825,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Large Tap Targets: %@"
+            "state": "translated",
+            "value": "Grote tikdoelen: %@"
           }
         }
       }
@@ -24865,8 +24865,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last 500 events"
+            "state": "translated",
+            "value": "Laatste 500 evenementen"
           }
         }
       }
@@ -24905,8 +24905,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last Attempt:"
+            "state": "translated",
+            "value": "Laatste poging:"
           }
         }
       }
@@ -24945,8 +24945,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last Reason:"
+            "state": "translated",
+            "value": "Laatste reden:"
           }
         }
       }
@@ -24985,8 +24985,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last Suppression:"
+            "state": "translated",
+            "value": "Laatste onderdrukking:"
           }
         }
       }
@@ -25019,8 +25019,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last: %@"
+            "state": "translated",
+            "value": "Laatst: %@"
           }
         }
       }
@@ -25065,8 +25065,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Layout"
+            "state": "translated",
+            "value": "Indeling"
           }
         }
       }
@@ -25105,8 +25105,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Layout changes apply immediately to all screens."
+            "state": "translated",
+            "value": "Lay-outwijzigingen zijn onmiddellijk van toepassing op alle schermen."
           }
         }
       }
@@ -25145,8 +25145,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Light glass strength"
+            "state": "translated",
+            "value": "Lichte glassterkte"
           }
         }
       }
@@ -25185,8 +25185,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Link to Course"
+            "state": "translated",
+            "value": "Link naar cursus"
           }
         }
       }
@@ -25225,8 +25225,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Links"
+            "state": "translated",
+            "value": "Koppelingen"
           }
         }
       }
@@ -25265,8 +25265,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Live Preview"
+            "state": "translated",
+            "value": "Live voorbeeld"
           }
         }
       }
@@ -25305,8 +25305,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "LiveActivity: %@"
+            "state": "translated",
+            "value": "LiveActiviteit: %@"
           }
         }
       }
@@ -25345,8 +25345,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "LLM Assistance Enabled:"
+            "state": "translated",
+            "value": "LLM-assistentie ingeschakeld:"
           }
         }
       }
@@ -25385,8 +25385,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results."
+            "state": "translated",
+            "value": "LLM-ondersteuning is ingeschakeld.Roots kan Apple Intelligence, lokale modellen of aangepaste providers gebruiken om de parseernauwkeurigheid te verbeteren en redundantiecontroles toe te voegen aan gegenereerde plannen.LLM's overschrijven nooit stilletjes deterministische resultaten."
           }
         }
       }
@@ -25425,8 +25425,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "LLM Provider Attempt Tracking"
+            "state": "translated",
+            "value": "LLM-aanbiederpogingen volgen"
           }
         }
       }
@@ -25465,8 +25465,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Loading counters..."
+            "state": "translated",
+            "value": "Tellers laden..."
           }
         }
       }
@@ -25505,8 +25505,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Loading course analytics…"
+            "state": "translated",
+            "value": "Cursusanalyse laden…"
           }
         }
       }
@@ -25545,8 +25545,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Local Database"
+            "state": "translated",
+            "value": "Lokale database"
           }
         }
       }
@@ -25585,8 +25585,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Lock"
+            "state": "translated",
+            "value": "Slot"
           }
         }
       }
@@ -25625,8 +25625,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Lock work to due date"
+            "state": "translated",
+            "value": "Vergrendel werk tot de vervaldatum"
           }
         }
       }
@@ -25665,8 +25665,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Locked to due date"
+            "state": "translated",
+            "value": "Vergrendeld tot uitgerekende datum"
           }
         }
       }
@@ -25705,8 +25705,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            "state": "translated",
+            "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut arbeid en dolore magna aliqua."
           }
         }
       }
@@ -25751,8 +25751,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Low"
+            "state": "translated",
+            "value": "Laag"
           }
         }
       }
@@ -25797,8 +25797,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Lowest: %@ %@%%"
+            "state": "translated",
+            "value": "Laagste: %1$@ %2$@%%"
           }
         }
       }
@@ -25837,8 +25837,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Main Thread Debugger"
+            "state": "translated",
+            "value": "Hoofdthread-debugger"
           }
         }
       }
@@ -25877,8 +25877,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Main Thread Debugger Disabled"
+            "state": "translated",
+            "value": "Debugger voor hoofdthreads uitgeschakeld"
           }
         }
       }
@@ -25917,8 +25917,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage all your courses, semesters, and academic settings from the Courses page."
+            "state": "translated",
+            "value": "Beheer al uw cursussen, semesters en academische instellingen vanaf de pagina Cursussen."
           }
         }
       }
@@ -25957,8 +25957,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage app capabilities that require permissions or connect to external services."
+            "state": "translated",
+            "value": "Beheer app-mogelijkheden waarvoor machtigingen nodig zijn of maak verbinding met externe services."
           }
         }
       }
@@ -25997,8 +25997,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage data storage and iCloud synchronization."
+            "state": "translated",
+            "value": "Beheer gegevensopslag en iCloud-synchronisatie."
           }
         }
       }
@@ -26037,8 +26037,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage iCloud sync in Storage settings."
+            "state": "translated",
+            "value": "Beheer iCloud-synchronisatie in Opslaginstellingen."
           }
         }
       }
@@ -26077,8 +26077,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage Permissions"
+            "state": "translated",
+            "value": "Beheer machtigingen"
           }
         }
       }
@@ -26117,8 +26117,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage your academic semesters. The current semester is used for new courses and appears in the main interface."
+            "state": "translated",
+            "value": "Beheer uw academische semesters.Het huidige semester wordt gebruikt voor nieuwe cursussen en verschijnt in de hoofdinterface."
           }
         }
       }
@@ -26157,8 +26157,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage your active and archived courses"
+            "state": "translated",
+            "value": "Beheer uw actieve en gearchiveerde cursussen"
           }
         }
       }
@@ -26197,8 +26197,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage your current courses. Archived courses are hidden from the main interface but remain accessible."
+            "state": "translated",
+            "value": "Beheer uw huidige cursussen.Gearchiveerde cursussen zijn verborgen in de hoofdinterface, maar blijven toegankelijk."
           }
         }
       }
@@ -26237,8 +26237,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Material Intensity"
+            "state": "translated",
+            "value": "Materiaalintensiteit"
           }
         }
       }
@@ -26277,8 +26277,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Material Intensity: %@"
+            "state": "translated",
+            "value": "Materiaalintensiteit: %@"
           }
         }
       }
@@ -26317,8 +26317,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Material preview"
+            "state": "translated",
+            "value": "Materiaalvoorbeeld"
           }
         }
       }
@@ -26363,8 +26363,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Materials"
+            "state": "translated",
+            "value": "Materialen"
           }
         }
       }
@@ -26403,8 +26403,8 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Max Tasks to Push"
+            "state": "translated",
+            "value": "Max. taken om te pushen"
           }
         }
       }
@@ -26815,7 +26815,7 @@
         },
         "nl": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "Modules"
           }
         }
