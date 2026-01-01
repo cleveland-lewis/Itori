@@ -1,32 +1,38 @@
 # Dutch (nl) Localization - Implementation Complete
 
 ## Overview
-Dutch localization support has been added to the Roots app.
+Dutch localization support has been added to the Roots app with automated Google Translate translations.
 
 ## Implementation Details
 
 ### Files Modified
 - `SharedCore/DesignSystem/Localizable.xcstrings` - Added Dutch (nl) translations for all 1,212 strings
+- Created automation scripts for translation workflow
 
 ### Configuration
 - Dutch (nl) is already listed in project's `knownRegions`
-- All strings marked as `needs_review` for manual translation/verification
+- Automated translation using Google Translate API
+- Most strings marked as `translated`, some as `needs_review`
 
 ### Statistics
 - **Total strings**: 1,217
 - **Dutch entries added**: 1,212
-- **Skipped**: 5 (empty entries)
-- **Initial state**: All marked as `needs_review`
+- **Translation method**: Google Translate API (googletrans library)
+- **State**: Partially translated (ongoing process)
 
 ### Translation Status
-All Dutch entries have been initialized with the source key as a placeholder. These need to be translated by a native Dutch speaker or professional translator.
+Dutch entries have been initialized and partially translated using Google Translate API. The translation process uses the `googletrans` Python library to automatically translate strings from English to Dutch.
+
+### Translation Scripts
+1. `add_dutch_localization.py` - Adds Dutch entry structure to all strings
+2. `translate_dutch_fast.py` - Uses Google Translate API to translate strings in batches
 
 ### Next Steps
 1. ✅ Add Dutch entries to Localizable.xcstrings
-2. ⏳ Translate strings from English to Dutch
-3. ⏳ Test UI in Dutch locale
-4. ⏳ Verify plural rules work correctly
-5. ⏳ Update state from `needs_review` to `translated` after verification
+2. ⏳ Complete automated translation (in progress)
+3. ⏳ Manual review and correction of automated translations
+4. ⏳ Test UI in Dutch locale
+5. ⏳ Verify plural rules work correctly
 
 ### Testing Dutch Locale
 To test the app in Dutch:
@@ -36,7 +42,8 @@ To test the app in Dutch:
 4. Restart the app
 
 ### Translation Guidelines
-- Keep strings concise and natural for Dutch speakers
+- Automated translations provide a good starting point
+- Native Dutch speakers should review for accuracy and naturalness
 - Maintain consistent terminology across the app
 - Respect Dutch grammar rules and formatting
 - Test on actual device to verify layout fits properly
@@ -51,5 +58,6 @@ To test the app in Dutch:
 ✅ Project structure maintained
 
 ---
-**Status**: Infrastructure complete, awaiting translations
+**Status**: Infrastructure complete, automated translation in progress
 **Date**: 2026-01-01
+**Translation Method**: Google Translate API (googletrans)
