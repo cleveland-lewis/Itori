@@ -18,17 +18,10 @@ struct RootsSidebarShell: View {
             }
             .frame(width: 260)
 
-            // Main content area with glass panel
-            ZStack {
-                Color(nsColor: .windowBackgroundColor)
-                    .ignoresSafeArea()
-                
-                GlassPanel(material: .hudWindow, cornerRadius: 18, showBorder: true) {
-                    currentPageView
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                }
+            // Main content area
+            currentPageView
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .padding(20)
-            }
         }
         .padding(16)
         .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
