@@ -6,6 +6,18 @@ The Platform Unification Framework provides a comprehensive system for building 
 
 ## Quick Links
 
+### 📋 Essential References
+
+1. **[Platform Capability Matrix](PLATFORM_CAPABILITY_MATRIX.md)** ⭐ **BINDING CONTRACT**
+   - Definitive reference for allowed/forbidden patterns per platform
+   - Must be consulted before implementing any new UI or feature
+   - Navigation, layout, input, persistence, and more
+   
+2. **[Capability Matrix Quick Reference](PLATFORM_CAPABILITY_MATRIX_QUICK_REFERENCE.md)**
+   - Fast lookup for common questions
+   - Decision guide for platform patterns
+   - Common violations to avoid
+
 ### 📚 Documentation
 
 1. **[Summary](PLATFORM_UNIFICATION_SUMMARY.md)** - Implementation summary and acceptance criteria

@@ -318,26 +318,33 @@ struct IOSTimerPageView: View {
     private var focusPage: some View {
         NavigationStack {
             VStack(spacing: 24) {
-                if displayStyle == .analog {
-                    RootsAnalogClock(
-                        style: .stopwatch,
-                        diameter: min(max(220, timerDialDiameter), 520),
-                        showSecondHand: true,
-                        accentColor: .accentColor,
-                        timerSeconds: timerDialSeconds
-                    )
-                } else {
-                    Text(timeString(for: viewModel.sessionRemaining, elapsed: viewModel.sessionElapsed))
-                        .font(.system(size: 84, weight: .bold, design: .rounded))
-                        .monospacedDigit()
-                        .minimumScaleFactor(0.4)
-                        .lineLimit(1)
+                VStack(spacing: 12) {
+                    if viewModel.currentMode == .pomodoro {
+                        Text(viewModel.isOnBreak ? NSLocalizedString("ios.timer.break", comment: "Break") : NSLocalizedString("ios.timer.focus", comment: "Focus"))
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    
+                    // Clock/Timer display - ONLY difference between analog and digital
+                    if displayStyle == .analog {
+                        RootsAnalogClock(
+                            style: .stopwatch,
+                            diameter: min(max(220, timerDialDiameter), 520),
+                            showSecondHand: true,
+                            accentColor: .accentColor,
+                            timerSeconds: timerDialSeconds
+                        )
+                        .frame(height: 260)
+                    } else {
+                        Text(timeString(for: viewModel.sessionRemaining, elapsed: viewModel.sessionElapsed))
+                            .font(.system(size: 84, weight: .bold, design: .rounded))
+                            .monospacedDigit()
+                            .minimumScaleFactor(0.4)
+                            .lineLimit(1)
+                            .frame(height: 260)
+                    }
                 }
-                if viewModel.currentMode == .pomodoro {
-                    Text(viewModel.isOnBreak ? NSLocalizedString("ios.timer.break", comment: "Break") : NSLocalizedString("ios.timer.focus", comment: "Focus"))
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
+                
                 controlRow
             }
             .padding(24)

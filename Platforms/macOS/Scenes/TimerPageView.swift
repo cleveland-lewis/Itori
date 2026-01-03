@@ -140,12 +140,16 @@ struct TimerPageView: View {
     
     private var mainGrid: some View {
         HStack(alignment: .top, spacing: DesignSystem.Layout.spacing.small) {
+            // Left sidebar - Activities
             activitiesColumn
-                .layoutPriority(1)
-            timerAndDetailColumn
-                .layoutPriority(2)
-            rightPane
-                .layoutPriority(1)
+                .frame(width: 280)
+            
+            // Right side - Timer and Study Summary
+            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+                timerCard
+                studySummaryCard
+            }
+            .frame(maxWidth: .infinity, alignment: .top)
         }
         .frame(maxWidth: .infinity, alignment: .top)
     }
@@ -165,47 +169,71 @@ struct TimerPageView: View {
             
             activityList
         }
-        .frame(minWidth: 260, idealWidth: 320, maxWidth: .infinity, alignment: .topLeading)
         .padding(cardPadding)
         .glassCard(cornerRadius: cardCorner)
     }
     
-    private var timerAndDetailColumn: some View {
-        VStack(spacing: DesignSystem.Layout.spacing.medium) {
-            timerCoreCard
+    private var timerCard: some View {
+        timerCoreCard
+    }
+    
+    private var studySummaryCard: some View {
+        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.medium) {
+            Text(NSLocalizedString("timer.stats.study_summary", comment: "Study summary"))
+                .font(DesignSystem.Typography.subHeader)
             
-            // Activity detail panel WITH TextEditor
-            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                if let activity = currentActivity {
-                    Text("Selected: \(activity.name)")
-                        .font(DesignSystem.Typography.body.weight(.semibold))
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(NSLocalizedString("timer.label.notes", comment: "Notes"))
-                            .font(DesignSystem.Typography.caption)
-                            .foregroundColor(.secondary)
-                        
-                        TextEditor(text: Binding(
-                            get: { activityNotes[activity.id] ?? "" },
-                            set: { newValue in
-                                activityNotes[activity.id] = newValue
-                                saveNotes(newValue, for: activity.id)
-                            })
-                        )
-                        .frame(minHeight: 100)
-                        .padding(10)
-                        .background(DesignSystem.Materials.surface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+            // Check if there's data to display
+            let todayTasks = tasksDueToday()
+            let weekTasks = tasksDueThisWeek()
+            let hasData = !todayTasks.isEmpty || !weekTasks.isEmpty
+            
+            if !hasData {
+                // No data state
+                VStack(spacing: 8) {
+                    Image(systemName: "chart.bar")
+                        .font(.largeTitle)
+                        .foregroundStyle(.tertiary)
+                    Text(NSLocalizedString("timer.stats.no_data", comment: "No data available"))
+                        .font(DesignSystem.Typography.body)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            } else {
+                // Data available
+                VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.medium) {
+                    // Tasks Due Today Section
+                    if !todayTasks.isEmpty {
+                        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+                            Text(NSLocalizedString("timer.tasks.due_today", comment: "Tasks Due Today"))
+                                .font(DesignSystem.Typography.body.weight(.semibold))
+                            
+                            ForEach(todayTasks, id: \.id) { task in
+                                taskCheckboxRow(task)
+                            }
+                        }
                     }
-                } else {
-                    Text(NSLocalizedString("timer.label.no_activity", comment: "No activity"))
-                        .font(DesignSystem.Typography.caption)
-                        .foregroundColor(.secondary)
+                    
+                    if !todayTasks.isEmpty && !weekTasks.isEmpty {
+                        Divider()
+                    }
+                    
+                    // Tasks Due This Week Section
+                    if !weekTasks.isEmpty {
+                        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+                            Text(NSLocalizedString("timer.tasks.due_this_week", comment: "Tasks Due This Week"))
+                                .font(DesignSystem.Typography.body.weight(.semibold))
+                            
+                            ForEach(weekTasks, id: \.id) { task in
+                                taskCheckboxRow(task)
+                            }
+                        }
+                    }
                 }
             }
-            .padding(cardPadding)
-            .glassCard(cornerRadius: cardCorner)
         }
-        .frame(minWidth: 320, idealWidth: 420, maxWidth: .infinity, alignment: .top)
+        .frame(maxWidth: .infinity, minHeight: 400, alignment: .topLeading)
+        .padding(cardPadding)
+        .glassCard(cornerRadius: cardCorner)
     }
     
     private var collectionsFilter: some View {
@@ -280,17 +308,73 @@ struct TimerPageView: View {
     }
     
     private var rightPane: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-            Text(NSLocalizedString("timer.stats.study_summary", comment: "Study summary"))
-                .font(DesignSystem.Typography.subHeader)
-            
-            Text("Activities: \(activities.count)")
-                .font(DesignSystem.Typography.caption)
-                .foregroundColor(.secondary)
+        EmptyView()
+    }
+    
+    private func taskCheckboxRow(_ task: AppTask) -> some View {
+        Button(action: { toggleTaskCompletion(task) }) {
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(task.isCompleted ? .green : .secondary)
+                    .font(.body)
+                
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(task.title)
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundColor(task.isCompleted ? .secondary : .primary)
+                        .strikethrough(task.isCompleted)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                    
+                    if let due = task.due {
+                        Text(due, style: .date)
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                
+                Spacer()
+            }
+            .padding(6)
+            .background(Color(nsColor: .controlBackgroundColor).opacity(0.3))
+            .cornerRadius(6)
         }
-        .frame(minWidth: 260, idealWidth: 320, maxWidth: .infinity, alignment: .top)
-        .padding(cardPadding)
-        .glassCard(cornerRadius: cardCorner)
+        .buttonStyle(.plain)
+    }
+    
+    private func tasksDueToday() -> [AppTask] {
+        let today = Calendar.current.startOfDay(for: Date())
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
+        
+        return assignmentsStore.tasks.filter { task in
+            guard let due = task.due else { return false }
+            return due >= today && due < tomorrow
+        }
+        .sorted { ($0.due ?? Date.distantFuture) < ($1.due ?? Date.distantFuture) }
+    }
+    
+    private func tasksDueThisWeek() -> [AppTask] {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
+        
+        // Get the end of this week (Sunday)
+        let weekday = calendar.component(.weekday, from: today)
+        let daysUntilEndOfWeek = 8 - weekday // Sunday = 1, so we want to reach the next Sunday
+        let endOfWeek = calendar.date(byAdding: .day, value: daysUntilEndOfWeek, to: today)!
+        
+        return assignmentsStore.tasks.filter { task in
+            guard let due = task.due else { return false }
+            // Exclude today's tasks (already shown in "Due Today")
+            return due >= tomorrow && due < endOfWeek
+        }
+        .sorted { ($0.due ?? Date.distantFuture) < ($1.due ?? Date.distantFuture) }
+    }
+    
+    private func toggleTaskCompletion(_ task: AppTask) {
+        var updatedTask = task
+        updatedTask.isCompleted.toggle()
+        assignmentsStore.updateTask(updatedTask)
     }
     
     @State private var showingModeMenu = false
@@ -411,6 +495,47 @@ struct TimerPageView: View {
                 }
                 .frame(height: 36)
                 
+                // Activity pill - shows only when activity is selected, with bounce animation
+                if let activity = currentActivity {
+                    HStack(spacing: 8) {
+                        Circle()
+                            .fill(Color.blue)
+                            .frame(width: 8, height: 8)
+                        Text(activity.name)
+                            .font(DesignSystem.Typography.caption.weight(.medium))
+                            .foregroundStyle(.primary)
+                        if let course = activity.courseCode {
+                            Text("•")
+                                .foregroundStyle(.secondary)
+                            Text(course)
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(
+                        Capsule()
+                            .fill(Color.accentColor.opacity(0.15))
+                    )
+                    .transition(.scale.combined(with: .opacity))
+                    .animation(.spring(response: 0.4, dampingFraction: 0.6), value: selectedActivityID)
+                } else {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.circle")
+                            .font(.caption)
+                        Text(NSLocalizedString("timer.label.no_activity_selected", comment: "No activity selected"))
+                            .font(DesignSystem.Typography.caption)
+                    }
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(
+                        Capsule()
+                            .fill(Color.secondary.opacity(0.1))
+                    )
+                }
+                
                 if isRunning {
                     clockGlassContainer {
                         clockDisplayContent(isRunningState: true)
@@ -526,6 +651,7 @@ struct TimerPageView: View {
                     totalSeconds: clockTimeForAnalog,
                     accentColor: .accentColor
                 )
+                .frame(height: 200)
             } else {
                 // Digital display
                 if mode == .pomodoro {
@@ -654,7 +780,10 @@ struct TimerPageView: View {
                 var updated = task
                 updated.isCompleted.toggle()
                 assignmentsStore.updateTask(updated)
-            }
+            },
+            onStart: { startTimer() },
+            onPause: { pauseTimer() },
+            onReset: { resetTimer() }
         )
         let focusViewWithEnv = focusView
             .environmentObject(assignmentsStore)
@@ -793,6 +922,9 @@ private struct FocusWindowView: View {
     var tasks: [AppTask]
     var pomodoroSessions: Int
     var toggleTask: (AppTask) -> Void
+    var onStart: () -> Void
+    var onPause: () -> Void
+    var onReset: () -> Void
     
     @EnvironmentObject private var settings: AppSettingsModel
     
@@ -811,48 +943,22 @@ private struct FocusWindowView: View {
     var body: some View {
         GlassClockCard(cornerRadius: DesignSystem.Layout.cornerRadiusLarge) {
             VStack(spacing: 24) {
-                if settings.isTimerAnalog {
-                    // Triple dial analog display
-                    TripleDialTimer(
-                        totalSeconds: clockTime,
-                        accentColor: accentColor
-                    )
-                    
-                    VStack(spacing: 8) {
-                        if mode == .pomodoro {
-                            Text(isPomodorBreak ? "Break" : "Work")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.secondary)
-                                .textCase(.uppercase)
-                        }
-                        
-                        if mode == .pomodoro {
-                            HStack(spacing: 8) {
-                                ForEach(Array(0..<max(1, pomodoroSessions)), id: \.self) { index in
-                                    Circle()
-                                        .fill(index < completedPomodoroSessions ? accentColor : Color.secondary.opacity(0.3))
-                                        .frame(width: 8, height: 8)
-                                }
-                            }
-                            .id(pomodoroSessions)
-                            .accessibilityElement(children: .ignore)
-                            .accessibilityLabelWithTooltip("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
-                        } else {
-                            Text("\(mode.label) running")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
+                VStack(spacing: 8) {
+                    if mode == .pomodoro {
+                        Text(isPomodorBreak ? "Break" : "Work")
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(.secondary)
+                            .textCase(.uppercase)
                     }
-                } else {
-                    // Digital display
-                    VStack(spacing: 8) {
-                        if mode == .pomodoro {
-                            Text(isPomodorBreak ? "Break" : "Work")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.secondary)
-                                .textCase(.uppercase)
-                        }
-                        
+                    
+                    // Clock/Timer display - ONLY difference between analog and digital
+                    if settings.isTimerAnalog {
+                        TripleDialTimer(
+                            totalSeconds: clockTime,
+                            accentColor: accentColor
+                        )
+                        .frame(height: 200)
+                    } else {
                         GeometryReader { proxy in
                             let base = min(proxy.size.width, proxy.size.height)
                             let size = max(96, min(base * 0.45, 220))
@@ -862,25 +968,58 @@ private struct FocusWindowView: View {
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                         }
                         .frame(height: 200)
-                            
-                        if mode == .pomodoro {
-                            HStack(spacing: 8) {
-                                ForEach(Array(0..<max(1, pomodoroSessions)), id: \.self) { index in
-                                    Circle()
-                                        .fill(index < completedPomodoroSessions ? accentColor : Color.secondary.opacity(0.3))
-                                        .frame(width: 8, height: 8)
-                                }
+                    }
+                        
+                    if mode == .pomodoro {
+                        HStack(spacing: 8) {
+                            ForEach(Array(0..<max(1, pomodoroSessions)), id: \.self) { index in
+                                Circle()
+                                    .fill(index < completedPomodoroSessions ? accentColor : Color.secondary.opacity(0.3))
+                                    .frame(width: 8, height: 8)
                             }
-                            .id(pomodoroSessions)
-                            .accessibilityElement(children: .ignore)
-                            .accessibilityLabelWithTooltip("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
-                        } else {
-                            Text("\(mode.label) running")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
                         }
+                        .id(pomodoroSessions)
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabelWithTooltip("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
+                    } else {
+                        Text("\(mode.label) running")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                 }
+                
+                // Timer control buttons
+                HStack(spacing: 12) {
+                    if isRunning {
+                        Button(action: onPause) {
+                            Label("Pause", systemImage: "pause.fill")
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 12)
+                        }
+                        .buttonStyle(.bordered)
+                        .controlSize(.large)
+                        .keyboardShortcut(.space, modifiers: [])
+                    } else {
+                        Button(action: onStart) {
+                            Label(remainingSeconds == 0 && mode != .stopwatch ? "Start" : "Resume", systemImage: "play.fill")
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 12)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
+                        .keyboardShortcut(.space, modifiers: [])
+                    }
+                    
+                    Button(action: onReset) {
+                        Label("Reset", systemImage: "arrow.counterclockwise")
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .keyboardShortcut("r", modifiers: [.command])
+                }
+                .padding(.horizontal, 8)
 
                 activityCard
             }
