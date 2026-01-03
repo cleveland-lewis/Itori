@@ -37,43 +37,70 @@ final class NotificationManager: ObservableObject {
         case failed(reason: String)
     }
 
+    /// Request authorization only if not already determined
+    /// Should only be called from Settings UI or explicit user action
     func requestAuthorization() {
-        let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-            DispatchQueue.main.async {
-                if granted {
-                    self.authorizationState = .granted
-                } else if let error {
-                    // Silently handle permission errors (common in sandboxed/restricted environments)
-                    if (error as NSError).domain != "UNErrorDomain" || (error as NSError).code != 1 {
-                        self.authorizationState = .error(error.localizedDescription)
+        // First check current status to avoid redundant requests
+        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+            guard let self else { return }
+            
+            // Only request if not determined
+            guard settings.authorizationStatus == .notDetermined else {
+                LOG_NOTIFICATIONS(.debug, "Permissions", "Authorization already determined (\(settings.authorizationStatus.rawValue)), skipping request")
+                DispatchQueue.main.async {
+                    self.updateStateFromSettings(settings)
+                }
+                return
+            }
+            
+            LOG_NOTIFICATIONS(.info, "Permissions", "Requesting notification authorization")
+            let center = UNUserNotificationCenter.current()
+            center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+                DispatchQueue.main.async {
+                    if granted {
+                        LOG_NOTIFICATIONS(.info, "Permissions", "Notification permission granted")
+                        self.authorizationState = .granted
+                    } else if let error {
+                        // Silently handle permission errors (common in sandboxed/restricted environments)
+                        let nsError = error as NSError
+                        if nsError.domain == "UNErrorDomain" && nsError.code == 1 {
+                            LOG_NOTIFICATIONS(.debug, "Permissions", "Notification authorization not available in this environment (UNError 1)")
+                            self.authorizationState = .denied
+                        } else {
+                            LOG_NOTIFICATIONS(.error, "Permissions", "Permission request failed: \(error.localizedDescription)")
+                            self.authorizationState = .error(error.localizedDescription)
+                        }
                     } else {
+                        LOG_NOTIFICATIONS(.info, "Permissions", "Notification permission denied by user")
                         self.authorizationState = .denied
                     }
-                } else {
-                    self.authorizationState = .denied
+                    self.isAuthorized = self.authorizationState.isAuthorized
                 }
-                self.isAuthorized = self.authorizationState.isAuthorized
             }
         }
     }
+    
+    private func updateStateFromSettings(_ settings: UNNotificationSettings) {
+        let state: AuthorizationState
+        switch settings.authorizationStatus {
+        case .notDetermined:
+            state = .notRequested
+        case .authorized, .provisional, .ephemeral:
+            state = .granted
+        case .denied:
+            state = .denied
+        @unknown default:
+            state = .error("Unknown authorization status")
+        }
+        self.authorizationState = state
+        self.isAuthorized = state.isAuthorized
+    }
 
     func refreshAuthorizationStatus() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            let state: AuthorizationState
-            switch settings.authorizationStatus {
-            case .notDetermined:
-                state = .notRequested
-            case .authorized, .provisional, .ephemeral:
-                state = .granted
-            case .denied:
-                state = .denied
-            @unknown default:
-                state = .error("Unknown authorization status")
-            }
+        UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
+            guard let self else { return }
             DispatchQueue.main.async {
-                self.authorizationState = state
-                self.isAuthorized = state.isAuthorized
+                self.updateStateFromSettings(settings)
             }
         }
     }

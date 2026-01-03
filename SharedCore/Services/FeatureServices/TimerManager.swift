@@ -54,37 +54,22 @@ final class TimerManager: ObservableObject {
         secondsRemaining -= 1
     }
 
+    /// Check notification permissions status (does not request)
+    /// Call this on launch to populate permission state
     func checkNotificationPermissions() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
-            LOG_NOTIFICATIONS(.info, "Permissions", "Notification auth status: \(settings.authorizationStatus.rawValue)")
-            if settings.authorizationStatus == .notDetermined {
-                DispatchQueue.main.async {
-                    self.requestNotificationPermission()
-                }
-            } else if settings.authorizationStatus == .denied {
-                LOG_NOTIFICATIONS(.warn, "Permissions", "Notification permissions denied by user")
+            LOG_NOTIFICATIONS(.debug, "Permissions", "Notification auth status: \(settings.authorizationStatus.rawValue)")
+            if settings.authorizationStatus == .denied {
+                LOG_NOTIFICATIONS(.debug, "Permissions", "Notification permissions denied by user")
+            } else if settings.authorizationStatus == .notDetermined {
+                LOG_NOTIFICATIONS(.debug, "Permissions", "Notification permissions not yet requested")
             }
+            // Don't auto-request - let user trigger from Settings or timer start
         }
     }
-
-    private func requestNotificationPermission() {
-        DispatchQueue.main.async {
-            LOG_NOTIFICATIONS(.info, "Permissions", "Requesting notification authorization")
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
-                if granted {
-                    LOG_NOTIFICATIONS(.info, "Permissions", "Notification permission granted")
-                } else if let error {
-                    // Silently handle UNErrorDomain error 1 (common in sandboxed environments)
-                    let nsError = error as NSError
-                    if nsError.domain == "UNErrorDomain" && nsError.code == 1 {
-                        LOG_NOTIFICATIONS(.debug, "Permissions", "Notification authorization not available in this environment")
-                    } else {
-                        LOG_NOTIFICATIONS(.error, "Permissions", "Permission request failed: \(error.localizedDescription)")
-                    }
-                } else {
-                    LOG_NOTIFICATIONS(.info, "Permissions", "Notification permission denied by user")
-                }
-            }
-        }
+    
+    /// Request notification permission (called explicitly by user action)
+    func requestNotificationPermission() {
+        NotificationManager.shared.requestAuthorization()
     }
 }
