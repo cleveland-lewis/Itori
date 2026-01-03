@@ -177,7 +177,7 @@ struct IOSRootView: View {
                         Label(def.title, systemImage: def.icon)
                     }
                 }
-                .listRowBackground(selectedTab == tab ? Color.accentColor.opacity(0.2) : Color.clear)
+                .listRowBackground(selectedTab == tab ? Color.primary.opacity(0.12) : Color.clear)
             }
             
             Section("Other Pages") {

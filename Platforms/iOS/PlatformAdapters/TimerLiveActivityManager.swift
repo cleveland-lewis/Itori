@@ -41,7 +41,7 @@ final class IOSTimerLiveActivityManager: ObservableObject {
         activity != nil
     }
 
-    func sync(currentMode: TimerMode, session: FocusSession?, elapsed: TimeInterval, remaining: TimeInterval, isOnBreak: Bool) {
+    func sync(currentMode: TimerMode, session: FocusSession?, elapsed: TimeInterval, remaining: TimeInterval, isOnBreak: Bool, activities: [TimerActivity], pomodoroCompletedCycles: Int, pomodoroMaxCycles: Int) {
         guard #available(iOS 16.1, *) else { return }
         guard ActivityAuthorizationInfo().areActivitiesEnabled else {
             Task { await end() }
@@ -64,6 +64,23 @@ final class IOSTimerLiveActivityManager: ObservableObject {
         } else {
             label = currentMode.displayName
         }
+        
+        // Phase 3.1: Get activity name and emoji
+        var activityName: String?
+        var activityEmoji: String?
+        if let activityID = session.activityID,
+           let activity = activities.first(where: { $0.id == activityID }) {
+            activityName = activity.name
+            activityEmoji = activity.emoji
+        }
+        
+        // Phase 3.1: Pomodoro cycle information
+        var pomodoroCurrentCycle: Int?
+        var pomodoroTotalCycles: Int?
+        if currentMode == .pomodoro && !isOnBreak {
+            pomodoroCurrentCycle = pomodoroCompletedCycles + 1 // 1-based for display
+            pomodoroTotalCycles = pomodoroMaxCycles
+        }
 
         let contentState = TimerLiveActivityAttributes.ContentState(
             mode: currentMode.displayName,
@@ -71,7 +88,11 @@ final class IOSTimerLiveActivityManager: ObservableObject {
             remainingSeconds: max(Int(remaining.rounded()), 0),
             elapsedSeconds: max(Int(elapsed.rounded()), 0),
             isRunning: session.state == .running,
-            isOnBreak: isOnBreak
+            isOnBreak: isOnBreak,
+            activityName: activityName,
+            activityEmoji: activityEmoji,
+            pomodoroCurrentCycle: pomodoroCurrentCycle,
+            pomodoroTotalCycles: pomodoroTotalCycles
         )
         lastContentState = contentState
 
@@ -130,7 +151,7 @@ final class IOSTimerLiveActivityManager: ObservableObject {
 }
 #else
 final class IOSTimerLiveActivityManager: ObservableObject {
-    func sync(currentMode: TimerMode, session: FocusSession?, elapsed: TimeInterval, remaining: TimeInterval, isOnBreak: Bool) {}
+    func sync(currentMode: TimerMode, session: FocusSession?, elapsed: TimeInterval, remaining: TimeInterval, isOnBreak: Bool, activities: [TimerActivity], pomodoroCompletedCycles: Int, pomodoroMaxCycles: Int) {}
 }
 #endif
 #endif

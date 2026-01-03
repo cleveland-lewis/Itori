@@ -3,7 +3,7 @@
 //  Roots
 //
 //  Shared between main app and widget extension
-//  Created on 12/24/24.
+//  Phase 3.1: Enhanced with activity name and pomodoro progress
 //
 
 import Foundation
@@ -21,14 +21,26 @@ public struct TimerLiveActivityAttributes: ActivityAttributes {
         public var isRunning: Bool
         public var isOnBreak: Bool
         
+        // Phase 3.1: Enhanced properties
+        public var activityName: String?           // Name of linked TimerActivity
+        public var activityEmoji: String?          // Emoji of linked TimerActivity
+        public var pomodoroCurrentCycle: Int?      // Current pomodoro cycle (1-based)
+        public var pomodoroTotalCycles: Int?       // Total cycles before long break
+        
         public init(mode: String, label: String, remainingSeconds: Int, 
-                   elapsedSeconds: Int, isRunning: Bool, isOnBreak: Bool) {
+                   elapsedSeconds: Int, isRunning: Bool, isOnBreak: Bool,
+                   activityName: String? = nil, activityEmoji: String? = nil,
+                   pomodoroCurrentCycle: Int? = nil, pomodoroTotalCycles: Int? = nil) {
             self.mode = mode
             self.label = label
             self.remainingSeconds = remainingSeconds
             self.elapsedSeconds = elapsedSeconds
             self.isRunning = isRunning
             self.isOnBreak = isOnBreak
+            self.activityName = activityName
+            self.activityEmoji = activityEmoji
+            self.pomodoroCurrentCycle = pomodoroCurrentCycle
+            self.pomodoroTotalCycles = pomodoroTotalCycles
         }
     }
 

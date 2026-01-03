@@ -175,20 +175,12 @@ struct DesignSystem {
 
     struct Materials {
         // Semantic materials aligned to Apple HIG guidance
-        static let sidebar: Material = .bar
+        static let sidebar: Material = .ultraThinMaterial
         static var card: AnyShapeStyle {
-            #if os(macOS)
-            return AnyShapeStyle(DesignSystem.Colors.cardBackground)
-            #else
             return AnyShapeStyle(.regularMaterial)
-            #endif
         }
         static var cardOpacity: Double {
-            #if os(macOS)
-            return 1.0
-            #else
             return 0.88
-            #endif
         }
         static let popup: Material = .thickMaterial
         static let hud: Material = .ultraThinMaterial

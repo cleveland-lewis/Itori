@@ -701,10 +701,7 @@ struct ByCourseSummaryCard: View {
                 }
                 .padding(.vertical, 6)
                 .padding(.horizontal, 10)
-                .background(
-                    RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                        .fill(RootsColor.cardBackground)
-                )
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
                 .overlay(
                     RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                         .stroke(RootsColor.glassBorder(for: colorScheme), lineWidth: 1)

@@ -141,11 +141,7 @@ struct InterfacePreferences: Equatable {
         }
         
         static func standard(intensity: Double) -> MaterialTokens {
-            #if os(macOS)
-            let cardMaterial: MaterialType = .solid(DesignSystem.Colors.cardBackground)
-            #else
             let cardMaterial: MaterialType = .material(.regularMaterial)
-            #endif
             return MaterialTokens(
                 cardMaterial: cardMaterial,
                 hudMaterial: .material(.ultraThinMaterial),

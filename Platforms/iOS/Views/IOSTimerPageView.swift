@@ -667,7 +667,10 @@ struct IOSTimerPageView: View {
             session: viewModel.currentSession,
             elapsed: viewModel.sessionElapsed,
             remaining: viewModel.sessionRemaining,
-            isOnBreak: viewModel.isOnBreak
+            isOnBreak: viewModel.isOnBreak,
+            activities: viewModel.activities,
+            pomodoroCompletedCycles: viewModel.pomodoroCompletedCycles,
+            pomodoroMaxCycles: viewModel.pomodoroMaxCycles
         )
     }
 

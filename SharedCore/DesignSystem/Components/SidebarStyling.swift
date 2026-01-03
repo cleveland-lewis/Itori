@@ -10,12 +10,11 @@ func makeSidebarBackground(colorScheme: ColorScheme) -> AnyView {
         )
     #else
     let bg = Color.clear
-        .background(DesignSystem.Materials.sidebar)
+        .background(.ultraThinMaterial)
         .overlay(
             Rectangle()
                 .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(colorScheme == .dark ? 0.16 : 0.12), lineWidth: 0.4)
         )
-        .background(DesignSystem.Colors.sidebarBackground)
     #endif
     return AnyView(bg)
 }

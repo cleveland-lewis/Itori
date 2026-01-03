@@ -26,13 +26,12 @@ struct FlashcardsView: View {
     }
     
     var body: some View {
-        NavigationSplitView {
-            sidebarContent
-        } detail: {
+        VStack(spacing: 0) {
+            // Main content area without sidebar
             if let deck = selectedDeck {
                 DeckDetailView(deck: deck)
             } else {
-                emptyDetailView
+                deckSelectionView
             }
         }
         .sheet(isPresented: $showingAddDeck) {
@@ -40,90 +39,87 @@ struct FlashcardsView: View {
         }
     }
     
-    // MARK: - Sidebar
+    // MARK: - Deck Selection View
     
-    private var sidebarContent: some View {
-        VStack(spacing: 0) {
-            // Header with search
-            VStack(spacing: 12) {
-                HStack {
-                    Text(NSLocalizedString("flashcards.section.decks", comment: "Decks"))
-                        .font(.title2.bold())
-                    
-                    Spacer()
-                    
-                    Button {
-                        showingAddDeck = true
-                    } label: {
-                        Image(systemName: "plus")
+    private var deckSelectionView: some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                // Header with search and add button
+                VStack(spacing: 12) {
+                    HStack {
+                        Text(NSLocalizedString("flashcards.section.decks", comment: "Decks"))
+                            .font(.title.bold())
+                        
+                        Spacer()
+                        
+                        Button {
+                            showingAddDeck = true
+                        } label: {
+                            Label(NSLocalizedString("flashcards.action.create_deck", comment: "Create new deck"), systemImage: "plus")
+                        }
+                        .buttonStyle(.borderedProminent)
                     }
-                    .buttonStyle(.borderless)
-                    .help(NSLocalizedString("flashcards.action.create_deck", comment: "Create new deck"))
+                    
+                    TextField(NSLocalizedString("flashcards.search.placeholder", comment: "Search decks"), text: $searchText)
+                        .textFieldStyle(.roundedBorder)
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 20)
+                .padding()
                 
-                TextField(NSLocalizedString("flashcards.search.placeholder", comment: "Search decks"), text: $searchText)
-                    .textFieldStyle(.roundedBorder)
-                    .padding(.horizontal, 20)
-            }
-            .padding(.bottom, 12)
-            
-            Divider()
-            
-            ScrollView {
-                VStack(spacing: 16) {
-                    // Current Semester Courses
-                    if !currentSemesterCourses.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(NSLocalizedString("flashcards.section.current_semester", comment: "Current Semester"))
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 20)
-                            
-                            LazyVStack(spacing: 4) {
-                                ForEach(currentSemesterCourses) { course in
-                                    CourseRowView(
-                                        course: course,
-                                        isSelected: false
-                                    ) {
-                                        createDeckForCourse(course)
-                                    }
+                Divider()
+                
+                // Current Semester Courses
+                if !currentSemesterCourses.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(NSLocalizedString("flashcards.section.current_semester", comment: "Current Semester"))
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal)
+                        
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 300))], spacing: 12) {
+                            ForEach(currentSemesterCourses) { course in
+                                CourseCardView(course: course) {
+                                    createDeckForCourse(course)
                                 }
                             }
                         }
-                        .padding(.top, 8)
-                    }
-                    
-                    // Deck list
-                    if !filteredDecks.isEmpty {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(NSLocalizedString("flashcards.section.all_decks", comment: "All Decks"))
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 20)
-                            
-                            LazyVStack(spacing: 4) {
-                                ForEach(filteredDecks) { deck in
-                                    DeckRowView(
-                                        deck: deck,
-                                        isSelected: selectedDeck?.id == deck.id
-                                    ) {
-                                        selectedDeck = deck
-                                    }
-                                }
-                            }
-                        }
-                    } else if currentSemesterCourses.isEmpty {
-                        emptyStateView
+                        .padding(.horizontal)
                     }
                 }
-                .padding(.vertical, 8)
+                
+                // All Decks
+                if !filteredDecks.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(NSLocalizedString("flashcards.section.all_decks", comment: "All Decks"))
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal)
+                        
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 300))], spacing: 12) {
+                            ForEach(filteredDecks) { deck in
+                                DeckCardView(deck: deck, isSelected: selectedDeck?.id == deck.id) {
+                                    selectedDeck = deck
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                } else if !searchText.isEmpty {
+                    VStack(spacing: 12) {
+                        Image(systemName: "magnifyingglass")
+                            .font(.system(size: 48))
+                            .foregroundStyle(.secondary)
+                        Text(NSLocalizedString("flashcards.search.no_results", comment: "No decks found"))
+                            .font(.headline)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 60)
+                }
             }
+            .padding(.vertical)
         }
-        .frame(minWidth: 250)
-        .sidebarCardStyle()
     }
+    
+    // MARK: - Helper Methods
     
     private func createDeckForCourse(_ course: Course) {
         // Check if deck already exists for this course
@@ -179,6 +175,129 @@ struct FlashcardsView: View {
         .padding(40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(nsColor: .textBackgroundColor))
+    }
+}
+
+// MARK: - Course Card
+
+struct CourseCardView: View {
+    let course: Course
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Circle()
+                        .fill(Color.blue.opacity(0.2))
+                        .frame(width: 40, height: 40)
+                        .overlay {
+                            Image(systemName: "book.fill")
+                                .foregroundStyle(.blue)
+                        }
+                    
+                    Spacer()
+                    
+                    Image(systemName: "plus.circle.fill")
+                        .foregroundStyle(.blue)
+                        .font(.title3)
+                }
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(course.title)
+                        .font(.headline)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                    
+                    Text("Create flashcard deck")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(nsColor: .controlBackgroundColor))
+            .cornerRadius(12)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Deck Card
+
+struct DeckCardView: View {
+    let deck: FlashcardDeck
+    let isSelected: Bool
+    let action: () -> Void
+    
+    private var dueCount: Int {
+        deck.cards.filter { $0.isDue }.count
+    }
+    
+    private var newCount: Int {
+        deck.cards.filter { $0.isNew }.count
+    }
+    
+    var body: some View {
+        Button(action: action) {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Circle()
+                        .fill(isSelected ? Color.accentColor : Color.secondary.opacity(0.2))
+                        .frame(width: 40, height: 40)
+                        .overlay {
+                            Image(systemName: "rectangle.stack.fill")
+                                .foregroundStyle(isSelected ? .white : .secondary)
+                        }
+                    
+                    Spacer()
+                    
+                    if isSelected {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.accentColor)
+                            .font(.title3)
+                    }
+                }
+                
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(deck.title)
+                        .font(.headline)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                    
+                    HStack(spacing: 12) {
+                        if dueCount > 0 {
+                            Label("\(dueCount)", systemImage: "clock.fill")
+                                .font(.caption)
+                                .foregroundStyle(.orange)
+                        }
+                        
+                        if newCount > 0 {
+                            Label("\(newCount)", systemImage: "sparkle")
+                                .font(.caption)
+                                .foregroundStyle(.blue)
+                        }
+                        
+                        Text("\(deck.cards.count) cards")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(isSelected ? Color.accentColor.opacity(0.1) : Color(nsColor: .controlBackgroundColor))
+            .cornerRadius(12)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(isSelected ? Color.accentColor : Color.secondary.opacity(0.2), lineWidth: isSelected ? 2 : 1)
+            )
+        }
+        .buttonStyle(.plain)
     }
 }
 

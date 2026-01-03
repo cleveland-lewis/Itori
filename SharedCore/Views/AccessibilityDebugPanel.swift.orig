@@ -44,9 +44,7 @@ struct AccessibilityDebugPanel: View {
                 }
             }
             .navigationTitle("Accessibility Debug")
-            #if !os(macOS)
             .navigationBarTitleDisplayMode(.inline)
-            #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Close") { dismiss() }
@@ -95,7 +93,7 @@ struct AccessibilityDebugPanel: View {
             )
         }
         .padding()
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(Color(uiColor: .secondarySystemBackground))
     }
     
     // MARK: - Issues View
@@ -118,45 +116,35 @@ struct AccessibilityDebugPanel: View {
     private var filterBar: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                severityFilters
+                // Severity filters
+                ForEach(AccessibilityAuditResult.Severity.allCases, id: \.self) { severity in
+                    FilterChip(
+                        title: severity.rawValue,
+                        isSelected: filterSeverity == severity,
+                        color: severity.color
+                    ) {
+                        filterSeverity = filterSeverity == severity ? nil : severity
+                    }
+                }
                 
                 Divider()
                     .frame(height: 24)
                 
-                categoryFilters
+                // Category filters
+                ForEach(AccessibilityAuditResult.Category.allCases.prefix(5), id: \.self) { category in
+                    FilterChip(
+                        title: category.rawValue,
+                        isSelected: filterCategory == category,
+                        color: .blue
+                    ) {
+                        filterCategory = filterCategory == category ? nil : category
+                    }
+                }
             }
             .padding(.horizontal)
         }
         .padding(.vertical, 8)
-        #if os(macOS)
-        .background(Color(nsColor: .controlBackgroundColor))
-        #else
         .background(Color(uiColor: .systemBackground))
-        #endif
-    }
-    
-    private var severityFilters: some View {
-        ForEach(AccessibilityAuditResult.Severity.allCases, id: \.self) { severity in
-            FilterChip(
-                title: severity.rawValue,
-                isSelected: filterSeverity == severity,
-                color: severity.color
-            ) {
-                filterSeverity = filterSeverity == severity ? nil : severity
-            }
-        }
-    }
-    
-    private var categoryFilters: some View {
-        ForEach(AccessibilityAuditResult.Category.allCases.prefix(5), id: \.self) { category in
-            FilterChip(
-                title: category.rawValue,
-                isSelected: filterCategory == category,
-                color: .blue
-            ) {
-                filterCategory = filterCategory == category ? nil : category
-            }
-        }
     }
     
     private var issuesList: some View {
@@ -221,7 +209,6 @@ struct AccessibilityDebugPanel: View {
             VStack(alignment: .leading, spacing: 16) {
                 SectionHeader(title: "Current Accessibility Settings")
                 
-                #if os(iOS)
                 SettingRow(
                     icon: "eye.slash",
                     title: "VoiceOver",
@@ -256,42 +243,6 @@ struct AccessibilityDebugPanel: View {
                     value: UIAccessibility.isDarkerSystemColorsEnabled ? "Enabled" : "Disabled",
                     color: .yellow
                 )
-                #else
-                SettingRow(
-                    icon: "eye.slash",
-                    title: "VoiceOver",
-                    value: NSWorkspace.shared.isVoiceOverEnabled ? "Enabled" : "Disabled",
-                    color: .blue
-                )
-                
-                SettingRow(
-                    icon: "textformat.size",
-                    title: "Dynamic Type",
-                    value: "System",
-                    color: .green
-                )
-                
-                SettingRow(
-                    icon: "moon.fill",
-                    title: "Reduce Motion",
-                    value: NSWorkspace.shared.accessibilityDisplayShouldReduceMotion ? "Enabled" : "Disabled",
-                    color: .purple
-                )
-                
-                SettingRow(
-                    icon: "decrease.indent",
-                    title: "Reduce Transparency",
-                    value: NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency ? "Enabled" : "Disabled",
-                    color: .orange
-                )
-                
-                SettingRow(
-                    icon: "sun.max.fill",
-                    title: "Increase Contrast",
-                    value: NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast ? "Enabled" : "Disabled",
-                    color: .yellow
-                )
-                #endif
                 
                 Divider()
                 
@@ -440,7 +391,7 @@ private struct FilterChip: View {
                 .font(.caption.bold())
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
-                .background(isSelected ? color.opacity(0.2) : Color(nsColor: .controlBackgroundColor))
+                .background(isSelected ? color.opacity(0.2) : Color(uiColor: .systemGray5))
                 .foregroundColor(isSelected ? color : .primary)
                 .cornerRadius(16)
         }
@@ -566,9 +517,7 @@ private struct IssueDetailView: View {
             .padding()
         }
         .navigationTitle("Issue Details")
-        #if !os(macOS)
         .navigationBarTitleDisplayMode(.inline)
-        #endif
     }
 }
 
@@ -587,7 +536,7 @@ private struct DetailSection<Content: View>: View {
                 .foregroundColor(.secondary)
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(nsColor: .controlBackgroundColor))
+                .background(Color(uiColor: .secondarySystemBackground))
                 .cornerRadius(8)
         }
     }
@@ -623,7 +572,7 @@ private struct SettingRow: View {
                 .foregroundColor(.secondary)
         }
         .padding()
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(Color(uiColor: .secondarySystemBackground))
         .cornerRadius(8)
     }
 }
@@ -651,7 +600,7 @@ private struct QuickActionButton: View {
                     .foregroundColor(.secondary)
             }
             .padding()
-            .background(Color(nsColor: .controlBackgroundColor))
+            .background(Color(uiColor: .secondarySystemBackground))
             .cornerRadius(8)
         }
     }
@@ -672,7 +621,7 @@ private struct ChecklistItem: View {
             Spacer()
         }
         .padding()
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(Color(uiColor: .secondarySystemBackground))
         .cornerRadius(8)
     }
 }

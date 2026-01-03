@@ -160,6 +160,26 @@ final class TimerPageViewModel: ObservableObject {
         }
         
         scheduleCompletionNotification()
+        
+        // Phase 2.2: Schedule AlarmKit alarm (iOS/iPadOS only, non-stopwatch)
+        if let scheduler = alarmScheduler, currentMode != .stopwatch, let duration = planned {
+            let title = NSLocalizedString("timer.alarm.complete", comment: "Timer Complete")
+            let body: String
+            if currentMode == .pomodoro {
+                body = isOnBreak ? 
+                    NSLocalizedString("timer.alarm.break_finished", comment: "Break finished") :
+                    NSLocalizedString("timer.alarm.work_finished", comment: "Work session finished")
+            } else {
+                body = NSLocalizedString("timer.alarm.timer_finished", comment: "Timer finished")
+            }
+            scheduler.scheduleTimerEnd(
+                id: session.id.uuidString,
+                fireIn: duration,
+                title: title,
+                body: body
+            )
+        }
+        
         persistState()
     }
 
@@ -176,6 +196,12 @@ final class TimerPageViewModel: ObservableObject {
         }
         
         cancelCompletionNotification()
+        
+        // Phase 2.2: Cancel AlarmKit alarm when paused
+        if let scheduler = alarmScheduler {
+            scheduler.cancelTimer(id: s.id.uuidString)
+        }
+        
         persistState()
     }
 
@@ -193,6 +219,26 @@ final class TimerPageViewModel: ObservableObject {
         }
         
         scheduleCompletionNotification()
+        
+        // Phase 2.2: Reschedule AlarmKit alarm with remaining time
+        if let scheduler = alarmScheduler, currentMode != .stopwatch, sessionRemaining > 0 {
+            let title = NSLocalizedString("timer.alarm.complete", comment: "Timer Complete")
+            let body: String
+            if currentMode == .pomodoro {
+                body = isOnBreak ?
+                    NSLocalizedString("timer.alarm.break_finished", comment: "Break finished") :
+                    NSLocalizedString("timer.alarm.work_finished", comment: "Work session finished")
+            } else {
+                body = NSLocalizedString("timer.alarm.timer_resumed", comment: "Timer resumed")
+            }
+            scheduler.scheduleTimerEnd(
+                id: s.id.uuidString,
+                fireIn: sessionRemaining,
+                title: title,
+                body: body
+            )
+        }
+        
         persistState()
     }
 
@@ -243,6 +289,12 @@ final class TimerPageViewModel: ObservableObject {
         }
         LOG_UI(.info, "Timer", "Ended session \(s.id) completed=\(completed)")
         cancelCompletionNotification()
+        
+        // Phase 2.2: Cancel AlarmKit alarm when session ends
+        if let scheduler = alarmScheduler {
+            scheduler.cancelTimer(id: s.id.uuidString)
+        }
+        
         persistState()
     }
 
@@ -336,38 +388,70 @@ final class TimerPageViewModel: ObservableObject {
         }
     }
 
+    // MARK: - Notification/Alarm Scheduling (Phase 2.4: Fallback Support)
+    
     private func scheduleCompletionNotification() {
         guard let session = currentSession, session.state == .running else { return }
         guard session.mode != .stopwatch else { return }
         if session.mode == .timer && !AppSettingsModel.shared.timerAlertsEnabled { return }
         if session.mode == .pomodoro && !AppSettingsModel.shared.pomodoroAlertsEnabled { return }
+        
         cancelCompletionNotification()
 
         let remaining = sessionRemaining > 0 ? sessionRemaining : (session.plannedDuration ?? 0) - sessionElapsed
         guard remaining > 0 else { return }
 
-        let title = session.mode == .pomodoro ? "Pomodoro Complete" : "Timer Finished"
-        let body = "Time to take a break or switch tasks!"
-        if alarmScheduler?.isEnabled == true {
-            alarmScheduler?.scheduleTimerEnd(id: "RootsTimerCompletion", fireIn: remaining, title: title, body: body)
-            return
+        let title: String
+        let body: String
+        
+        if session.mode == .pomodoro {
+            title = NSLocalizedString("timer.notification.pomodoro_complete", comment: "Pomodoro Complete")
+            body = isOnBreak ? 
+                NSLocalizedString("timer.notification.break_over", comment: "Break is over. Time to focus!") :
+                NSLocalizedString("timer.notification.work_over", comment: "Time for a break!")
+        } else {
+            title = NSLocalizedString("timer.notification.timer_finished", comment: "Timer Finished")
+            body = NSLocalizedString("timer.notification.check_progress", comment: "Time to check your progress!")
         }
-
+        
+        // Phase 2.4: Use AlarmKit if available and enabled, otherwise fall back to notifications
+        if let scheduler = alarmScheduler, scheduler.isEnabled {
+            // Use AlarmKit (iOS 26+ only when authorized)
+            scheduler.scheduleTimerEnd(
+                id: "RootsTimerCompletion",
+                fireIn: remaining,
+                title: title,
+                body: body
+            )
+            LOG_UI(.info, "Timer", "Scheduled AlarmKit alarm for completion in \(remaining)s")
+        } else {
+            // Fall back to standard notifications (all iOS versions, or when AlarmKit unavailable/disabled)
+            scheduleStandardNotification(remaining: remaining, title: title, body: body)
+        }
+    }
+    
+    private func scheduleStandardNotification(remaining: TimeInterval, title: String, body: String) {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
         content.sound = UNNotificationSound.default
+        content.categoryIdentifier = "TIMER_COMPLETE"
+        content.userInfo = ["sessionID": currentSession?.id.uuidString ?? "unknown"]
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: remaining, repeats: false)
         let request = UNNotificationRequest(identifier: "RootsTimerCompletion", content: content, trigger: trigger)
+        
         UNUserNotificationCenter.current().add(request) { error in
             if let error {
                 LOG_UI(.error, "Timer", "Error scheduling notification: \(error.localizedDescription)")
+            } else {
+                LOG_UI(.info, "Timer", "Scheduled standard notification for completion in \(remaining)s")
             }
         }
     }
 
     private func cancelCompletionNotification() {
+        // Cancel both AlarmKit and standard notifications to avoid duplicates
         alarmScheduler?.cancelTimer(id: "RootsTimerCompletion")
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["RootsTimerCompletion"])
     }
