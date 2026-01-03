@@ -753,6 +753,7 @@ extension TaskType {
         case .project: return 120
         case .exam: return 180
         case .quiz: return 30
+        case .study: return 60
         }
     }
     
@@ -760,7 +761,7 @@ extension TaskType {
     var stepSize: Int {
         switch self {
         case .reading, .review, .quiz: return 5
-        case .homework: return 10
+        case .homework, .study: return 10
         case .project, .exam: return 15
         }
     }
@@ -774,6 +775,7 @@ extension TaskType {
         case .homework: return .homework
         case .reading: return .reading
         case .review: return .review
+        case .study: return .review
         }
     }
 }

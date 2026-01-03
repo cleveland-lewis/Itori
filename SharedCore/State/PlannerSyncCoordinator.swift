@@ -150,6 +150,7 @@ final class PlannerSyncCoordinator: ObservableObject {
         case .homework: return .homework
         case .reading: return .reading
         case .review: return .review
+        case .study: return .review
         }
     }
 }

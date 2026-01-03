@@ -103,38 +103,27 @@ struct AdaptiveList<Content: View>: View {
     }
     
     var body: some View {
+        #if os(watchOS)
         List {
             content
         }
-        .listStyle(platformListStyle)
-    }
-    
-    private var platformListStyle: some ListStyle {
-        switch Platform.current {
-        case .watchOS:
-            return AnyListStyle(PlainListStyle())
-        case .iOS:
-            return AnyListStyle(InsetGroupedListStyle())
-        case .iPadOS:
-            return AnyListStyle(SidebarListStyle())
-        case .macOS:
-            return AnyListStyle(SidebarListStyle())
+        .listStyle(.plain)
+        #elseif os(iOS)
+        List {
+            content
         }
-    }
-}
-
-// Helper for type erasure
-struct AnyListStyle: ListStyle {
-    private let _makeBody: (Configuration) -> AnyView
-    
-    init<S: ListStyle>(_ style: S) {
-        _makeBody = { configuration in
-            AnyView(style.makeBody(configuration: configuration))
+        .listStyle(.insetGrouped)
+        #elseif os(macOS)
+        List {
+            content
         }
-    }
-    
-    func makeBody(configuration: Configuration) -> some View {
-        _makeBody(configuration)
+        .listStyle(.sidebar)
+        #else
+        List {
+            content
+        }
+        .listStyle(.sidebar)
+        #endif
     }
 }
 
@@ -178,33 +167,23 @@ struct AdaptiveToolbar<Content: View>: View {
 }
 
 // MARK: - Adaptive Modal Presentation
-struct AdaptiveModal<Content: View>: ViewModifier {
-    @Binding var isPresented: Bool
-    let content: Content
-    
-    init(isPresented: Binding<Bool>, @ViewBuilder content: () -> Content) {
-        self._isPresented = isPresented
-        self.content = content()
-    }
-    
-    func body(content: Content) -> some View {
-        content
-            .sheet(isPresented: $isPresented) {
-                if CapabilityDomain.Layout.prefersFullWidthSheets {
-                    self.content
-                } else {
-                    self.content
-                        .frame(minWidth: 400, minHeight: 300)
-                }
+extension View {
+    func adaptiveModal<Content: View>(
+        isPresented: Binding<Bool>,
+        @ViewBuilder content: @escaping () -> Content
+    ) -> some View {
+        self.sheet(isPresented: isPresented) {
+            if CapabilityDomain.Layout.prefersFullWidthSheets {
+                content()
+            } else {
+                content()
+                    .frame(minWidth: 400, minHeight: 300)
             }
+        }
     }
 }
 
-extension View {
-    func adaptiveModal<Content: View>(isPresented: Binding<Bool>, @ViewBuilder content: () -> Content) -> some View {
-        self.modifier(AdaptiveModal(isPresented: isPresented, content: content))
-    }
-}
+// MARK: - Platform-Aware Spacing
 
 // MARK: - Adaptive Density Container
 struct AdaptiveDensityContainer<Content: View>: View {

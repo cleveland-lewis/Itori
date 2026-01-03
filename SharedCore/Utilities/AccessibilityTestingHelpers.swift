@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+#if os(macOS)
+typealias PlatformColor = NSColor
+#else
+typealias PlatformColor = UIColor
+#endif
+
 #if DEBUG
 
 // MARK: - Accessibility Testing Helpers
@@ -64,8 +70,13 @@ enum AccessibilityTestingHelpers {
     
     /// Calculate contrast ratio between two colors
     static func contrastRatio(foreground: Color, background: Color) -> Double {
+        #if os(macOS)
+        let fg = NSColor(foreground)
+        let bg = NSColor(background)
+        #else
         let fg = UIColor(foreground)
         let bg = UIColor(background)
+        #endif
         
         let fgLuminance = relativeLuminance(of: fg)
         let bgLuminance = relativeLuminance(of: bg)
@@ -86,13 +97,18 @@ enum AccessibilityTestingHelpers {
         contrastRatio(foreground: foreground, background: background) >= 7.0
     }
     
-    private static func relativeLuminance(of color: UIColor) -> Double {
+    private static func relativeLuminance(of color: PlatformColor) -> Double {
         var red: CGFloat = 0
         var green: CGFloat = 0
         var blue: CGFloat = 0
         var alpha: CGFloat = 0
         
+        #if os(macOS)
+        guard let rgbColor = color.usingColorSpace(.deviceRGB) else { return 0 }
+        rgbColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        #else
         color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        #endif
         
         let r = linearize(red)
         let g = linearize(green)

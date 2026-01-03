@@ -2,17 +2,17 @@ import Foundation
 import CoreData
 
 /// Bridge between existing JSON-based storage and Core Data + CloudKit
-public final class PersistenceMigrationManager {
+final class PersistenceMigrationManager {
     private let persistenceController: PersistenceController
     private let moduleRepository: CourseModuleRepository
     private let analysisRepository: PlannerAnalysisRepository
     private let fileSyncManager: CourseFileCloudSyncManager
     
-    public init(
-        persistenceController: PersistenceController = .shared,
-        moduleRepository: CourseModuleRepository = CourseModuleRepository(),
-        analysisRepository: PlannerAnalysisRepository = PlannerAnalysisRepository(),
-        fileSyncManager: CourseFileCloudSyncManager = .shared
+    init(
+        persistenceController: PersistenceController,
+        moduleRepository: CourseModuleRepository,
+        analysisRepository: PlannerAnalysisRepository,
+        fileSyncManager: CourseFileCloudSyncManager
     ) {
         self.persistenceController = persistenceController
         self.moduleRepository = moduleRepository
@@ -20,10 +20,19 @@ public final class PersistenceMigrationManager {
         self.fileSyncManager = fileSyncManager
     }
     
+    convenience init() {
+        self.init(
+            persistenceController: .shared,
+            moduleRepository: CourseModuleRepository(),
+            analysisRepository: PlannerAnalysisRepository(),
+            fileSyncManager: .shared
+        )
+    }
+    
     // MARK: - Module Migration
     
     /// Migrate modules from JSON to Core Data
-    public func migrateModules(
+    func migrateModules(
         _ modules: [CourseOutlineNode],
         courseId: UUID
     ) async throws {
@@ -43,7 +52,7 @@ public final class PersistenceMigrationManager {
     }
     
     /// Migrate files from JSON to Core Data + iCloud
-    public func migrateFiles(
+    func migrateFiles(
         _ files: [CourseFile],
         courseId: UUID
     ) async throws {

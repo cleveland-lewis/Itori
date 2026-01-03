@@ -240,7 +240,7 @@ extension View {
     func platformHoverEffect() -> some View {
         Group {
             if CapabilityDomain.Interaction.supportsHover {
-                #if os(macOS) || os(iOS)
+                #if os(iOS)
                 self.hoverEffect()
                 #else
                 self

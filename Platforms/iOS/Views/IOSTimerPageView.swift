@@ -8,6 +8,7 @@ import SwiftUI
 
 struct IOSTimerPageView: View {
     @EnvironmentObject private var settings: AppSettingsModel
+    @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @StateObject private var viewModel = TimerPageViewModel()
     @StateObject private var liveActivityManager = IOSTimerLiveActivityManager()
     @State private var activitySearchText = ""
@@ -17,6 +18,8 @@ struct IOSTimerPageView: View {
     @State private var showingFocusPage = false
     @State private var showingRecentSessions = false
     @State private var showingAddSession = false
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     private var sessionState: FocusSession.State {
         viewModel.currentSession?.state ?? .idle
@@ -30,6 +33,12 @@ struct IOSTimerPageView: View {
         sessionState == .paused
     }
 
+    // MARK: - iPad Layout Detection
+    
+    private var isIPad: Bool {
+        horizontalSizeClass == .regular && verticalSizeClass == .regular
+    }
+    
     private var displayStyle: TimerDisplayStyle {
         TimerDisplayStyle(rawValue: timerDisplayStyleRaw) ?? .digital
     }
@@ -39,8 +48,49 @@ struct IOSTimerPageView: View {
     }
 
     var body: some View {
-        mainScroll
-            .modifier(TimerSyncModifiers(viewModel: viewModel, settings: settings, syncLiveActivity: syncLiveActivity, syncSettingsFromApp: syncSettingsFromApp))
+        if isIPad {
+            iPadLayout
+                .modifier(TimerSyncModifiers(viewModel: viewModel, settings: settings, syncLiveActivity: syncLiveActivity, syncSettingsFromApp: syncSettingsFromApp))
+        } else {
+            mainScroll
+                .modifier(TimerSyncModifiers(viewModel: viewModel, settings: settings, syncLiveActivity: syncLiveActivity, syncSettingsFromApp: syncSettingsFromApp))
+        }
+    }
+    
+    // MARK: - iPad Split View Layout
+    
+    private var iPadLayout: some View {
+        HStack(alignment: .top, spacing: 20) {
+            // Left column: Activity management
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text(NSLocalizedString("timer.label.activities", comment: "Activities"))
+                        .font(.title2.weight(.bold))
+                    
+                    activityCollections
+                    activitySearch
+                    activityList
+                }
+                .padding(20)
+            }
+            .frame(minWidth: 300, idealWidth: 350, maxWidth: 400)
+            .background(Color(uiColor: .systemGroupedBackground))
+            
+            // Right column: Timer and details
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    timerStatusCard
+                    activityNotes
+                    tasksSection
+                    sessionButtons
+#if DEBUG
+                    debugSection
+#endif
+                }
+                .padding(20)
+            }
+            .frame(maxWidth: .infinity)
+        }
     }
 
     private var mainScroll: some View {
@@ -52,10 +102,24 @@ struct IOSTimerPageView: View {
     private var contentStack: some View {
         VStack(alignment: .leading, spacing: 20) {
             timerStatusCard
-            activityPicker
-            activityCollections
-            activitySearch
+            
+            // Activity Management Section (Enhanced for Phase 1)
+            VStack(alignment: .leading, spacing: 12) {
+                Text(NSLocalizedString("timer.label.activities", comment: "Activities"))
+                    .font(.headline)
+                
+                activityCollections
+                activitySearch
+                activityList
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(uiColor: .secondarySystemGroupedBackground))
+            )
+            
             activityNotes
+            tasksSection
             sessionButtons
 #if DEBUG
             debugSection
@@ -180,19 +244,173 @@ struct IOSTimerPageView: View {
         }
     }
 
-    private var activityPicker: some View {
+    // MARK: - Activity List (Phase 1.1: Enhanced with Pinned Section)
+    
+    private var filteredActivities: [TimerActivity] {
+        let query = activitySearchText.lowercased()
+        
+        return viewModel.activities.filter { activity in
+            // Filter by collection
+            let collectionMatch = selectedCollectionID == nil || activity.collectionID == selectedCollectionID
+            
+            // Filter by search text
+            let searchMatch = query.isEmpty || 
+                activity.name.lowercased().contains(query) ||
+                (activity.note?.lowercased().contains(query) ?? false)
+            
+            return collectionMatch && searchMatch
+        }
+    }
+    
+    private var pinnedActivities: [TimerActivity] {
+        filteredActivities.filter { $0.isPinned }
+    }
+    
+    private var unpinnedActivities: [TimerActivity] {
+        filteredActivities.filter { !$0.isPinned }
+    }
+    
+    private var activityList: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(NSLocalizedString("timer.label.activity", comment: "Activity"))
-                .font(.headline)
-            Picker("Activity", selection: $viewModel.currentActivityID) {
-                Text(NSLocalizedString("timer.label.none", comment: "None")).tag(UUID?.none)
-                ForEach(viewModel.activities) { activity in
-                    Text(activity.name)
-                        .tag(Optional(activity.id))
+            // Pinned section
+            if !pinnedActivities.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(NSLocalizedString("timer.label.pinned", comment: "Pinned"))
+                        .font(.caption.weight(.semibold))
+                        .foregroundColor(.secondary)
+                        .textCase(.uppercase)
+                    
+                    ForEach(pinnedActivities) { activity in
+                        activityRow(activity)
+                    }
+                }
+                
+                if !unpinnedActivities.isEmpty {
+                    Divider()
+                        .padding(.vertical, 4)
                 }
             }
-            .pickerStyle(.menu)
+            
+            // All activities section
+            if !unpinnedActivities.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(NSLocalizedString("timer.label.all_activities", comment: "All Activities"))
+                        .font(.caption.weight(.semibold))
+                        .foregroundColor(.secondary)
+                        .textCase(.uppercase)
+                    
+                    ForEach(unpinnedActivities) { activity in
+                        activityRow(activity)
+                    }
+                }
+            }
+            
+            // Empty state
+            if filteredActivities.isEmpty {
+                VStack(spacing: 8) {
+                    Image(systemName: "tray")
+                        .font(.largeTitle)
+                        .foregroundColor(.secondary)
+                    Text(activitySearchText.isEmpty ? 
+                         NSLocalizedString("timer.activities.empty", comment: "No activities") :
+                         NSLocalizedString("timer.activities.no_results", comment: "No matching activities"))
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 32)
+            }
         }
+    }
+    
+    private func activityRow(_ activity: TimerActivity) -> some View {
+        Button {
+            viewModel.selectActivity(activity.id)
+        } label: {
+            HStack(spacing: 12) {
+                // Activity indicator
+                Circle()
+                    .fill(activity.isPinned ? Color.orange : Color.accentColor)
+                    .frame(width: 8, height: 8)
+                
+                // Activity info
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 6) {
+                        if let emoji = activity.emoji {
+                            Text(emoji)
+                                .font(.caption)
+                        }
+                        
+                        Text(activity.name)
+                            .font(.subheadline.weight(.medium))
+                            .foregroundColor(.primary)
+                        
+                        Spacer()
+                        
+                        if activity.isPinned {
+                            Image(systemName: "pin.fill")
+                                .font(.caption2)
+                                .foregroundColor(.orange)
+                        }
+                    }
+                    
+                    if let note = activity.note, !note.isEmpty {
+                        Text(note)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+                
+                // Selection indicator
+                if viewModel.currentActivityID == activity.id {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.accentColor)
+                        .font(.body)
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(viewModel.currentActivityID == activity.id ? 
+                          Color.accentColor.opacity(0.1) : 
+                          Color(uiColor: .tertiarySystemGroupedBackground))
+            )
+        }
+        .buttonStyle(.plain)
+        .contextMenu {
+            Button {
+                togglePin(activity)
+            } label: {
+                Label(
+                    activity.isPinned ? 
+                        NSLocalizedString("timer.activity.unpin", comment: "Unpin") :
+                        NSLocalizedString("timer.activity.pin", comment: "Pin"),
+                    systemImage: activity.isPinned ? "pin.slash" : "pin"
+                )
+            }
+            
+            Button {
+                viewModel.selectActivity(activity.id)
+            } label: {
+                Label(NSLocalizedString("timer.activity.select", comment: "Select"), systemImage: "checkmark.circle")
+            }
+            
+            Divider()
+            
+            Button(role: .destructive) {
+                viewModel.deleteActivity(id: activity.id)
+            } label: {
+                Label(NSLocalizedString("common.delete", comment: "Delete"), systemImage: "trash")
+            }
+        }
+    }
+    
+    private func togglePin(_ activity: TimerActivity) {
+        var updated = activity
+        updated.isPinned.toggle()
+        viewModel.updateActivity(updated)
     }
 
     private var activityCollections: some View {
@@ -236,19 +454,60 @@ struct IOSTimerPageView: View {
     private var activityNotes: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let activity = selectedActivity {
-                Text(activity.name)
-                    .font(.subheadline.weight(.semibold))
+                // Activity header
+                HStack(spacing: 12) {
+                    if let emoji = activity.emoji {
+                        Text(emoji)
+                            .font(.title2)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(activity.name)
+                            .font(.headline)
+                        
+                        if let category = activity.studyCategory {
+                            Text(category.displayName)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    if activity.isPinned {
+                        Image(systemName: "pin.fill")
+                            .foregroundColor(.orange)
+                            .font(.caption)
+                    }
+                }
+                
+                Divider()
+                
+                // Notes editor
                 NotesEditor(
                     title: NSLocalizedString("timer.label.notes", comment: "Notes"),
                     text: activityNoteBinding,
-                    minHeight: 120
+                    minHeight: 100
                 )
             } else {
-                Text(NSLocalizedString("timer.focus.no_linked_tasks", comment: "No activity"))
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                VStack(spacing: 12) {
+                    Image(systemName: "square.and.pencil")
+                        .font(.largeTitle)
+                        .foregroundColor(.secondary)
+                    Text(NSLocalizedString("timer.activity.select_to_add_notes", comment: "Select an activity to add notes"))
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 24)
             }
         }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color(uiColor: .secondarySystemGroupedBackground))
+        )
     }
 
     private var sessionButtons: some View {

@@ -2,17 +2,21 @@ import Foundation
 import CoreData
 
 /// Repository for managing course modules and files with iCloud sync
-public final class CourseModuleRepository {
+final class CourseModuleRepository {
     private let persistenceController: PersistenceController
     
-    public init(persistenceController: PersistenceController = .shared) {
+    init(persistenceController: PersistenceController) {
         self.persistenceController = persistenceController
+    }
+    
+    convenience init() {
+        self.init(persistenceController: .shared)
     }
     
     // MARK: - Module Operations
     
     /// Create a new course module
-    public func createModule(
+    func createModule(
         courseId: UUID,
         parentId: UUID? = nil,
         type: CourseOutlineNodeType,
@@ -51,7 +55,7 @@ public final class CourseModuleRepository {
     }
     
     /// Fetch all modules for a course
-    public func fetchModules(for courseId: UUID) async throws -> [CourseOutlineNode] {
+    func fetchModules(for courseId: UUID) async throws -> [CourseOutlineNode] {
         let context = persistenceController.newBackgroundContext()
         
         return try await context.perform {
@@ -65,7 +69,7 @@ public final class CourseModuleRepository {
     }
     
     /// Update module
-    public func updateModule(
+    func updateModule(
         id: UUID,
         title: String? = nil,
         sortIndex: Int? = nil
@@ -94,7 +98,7 @@ public final class CourseModuleRepository {
     }
     
     /// Delete module
-    public func deleteModule(id: UUID) async throws {
+    func deleteModule(id: UUID) async throws {
         let context = persistenceController.newBackgroundContext()
         
         try await context.perform {
@@ -114,7 +118,7 @@ public final class CourseModuleRepository {
     // MARK: - File Operations
     
     /// Add file to module or course
-    public func addFile(
+    func addFile(
         courseId: UUID,
         nodeId: UUID? = nil,
         fileName: String,
@@ -168,7 +172,7 @@ public final class CourseModuleRepository {
     }
     
     /// Fetch files for a module or course
-    public func fetchFiles(courseId: UUID, nodeId: UUID? = nil) async throws -> [CourseFile] {
+    func fetchFiles(courseId: UUID, nodeId: UUID? = nil) async throws -> [CourseFile] {
         let context = persistenceController.newBackgroundContext()
         
         return try await context.perform {
@@ -188,7 +192,7 @@ public final class CourseModuleRepository {
     }
     
     /// Update file sync status and iCloud URL
-    public func updateFileSync(
+    func updateFileSync(
         id: UUID,
         iCloudURL: String?,
         syncStatus: String
@@ -213,7 +217,7 @@ public final class CourseModuleRepository {
     }
     
     /// Update file parse status
-    public func updateFileParse(
+    func updateFileParse(
         id: UUID,
         parseStatus: ParseStatus,
         parseError: String? = nil
@@ -239,7 +243,7 @@ public final class CourseModuleRepository {
     }
     
     /// Delete file
-    public func deleteFile(id: UUID) async throws {
+    func deleteFile(id: UUID) async throws {
         let context = persistenceController.newBackgroundContext()
         
         try await context.perform {
@@ -259,7 +263,7 @@ public final class CourseModuleRepository {
     // MARK: - File Parse Results
     
     /// Save parse result
-    public func saveParseResult(
+    func saveParseResult(
         fileId: UUID,
         parseType: String,
         success: Bool,

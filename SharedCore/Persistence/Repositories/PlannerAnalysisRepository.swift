@@ -2,17 +2,21 @@ import Foundation
 import CoreData
 
 /// Repository for managing planner analyses and AI results with iCloud sync
-public final class PlannerAnalysisRepository {
+final class PlannerAnalysisRepository {
     private let persistenceController: PersistenceController
     
-    public init(persistenceController: PersistenceController = .shared) {
+    init(persistenceController: PersistenceController) {
         self.persistenceController = persistenceController
+    }
+    
+    convenience init() {
+        self.init(persistenceController: .shared)
     }
     
     // MARK: - Create Analysis
     
     /// Save a planner analysis result
-    public func saveAnalysis(
+    func saveAnalysis(
         type: String,
         startDate: Date,
         endDate: Date,
@@ -54,7 +58,7 @@ public final class PlannerAnalysisRepository {
     // MARK: - Fetch Analyses
     
     /// Fetch analyses for a date range
-    public func fetchAnalyses(
+    func fetchAnalyses(
         startDate: Date,
         endDate: Date,
         type: String? = nil
@@ -81,7 +85,7 @@ public final class PlannerAnalysisRepository {
     }
     
     /// Fetch most recent analysis of a type
-    public func fetchLatestAnalysis(type: String) async throws -> PlannerAnalysisResult? {
+    func fetchLatestAnalysis(type: String) async throws -> PlannerAnalysisResult? {
         let context = persistenceController.newBackgroundContext()
         
         return try await context.perform {
@@ -101,7 +105,7 @@ public final class PlannerAnalysisRepository {
     // MARK: - Update Analysis
     
     /// Update analysis with new result data
-    public func updateAnalysis(
+    func updateAnalysis(
         id: UUID,
         resultData: [String: Any]
     ) async throws {
@@ -129,7 +133,7 @@ public final class PlannerAnalysisRepository {
     // MARK: - Delete Analysis
     
     /// Delete old analyses (cleanup)
-    public func deleteOldAnalyses(olderThan date: Date) async throws -> Int {
+    func deleteOldAnalyses(olderThan date: Date) async throws -> Int {
         let context = persistenceController.newBackgroundContext()
         
         return try await context.perform {
@@ -149,7 +153,7 @@ public final class PlannerAnalysisRepository {
     }
     
     /// Delete specific analysis
-    public func deleteAnalysis(id: UUID) async throws {
+    func deleteAnalysis(id: UUID) async throws {
         let context = persistenceController.newBackgroundContext()
         
         try await context.perform {
