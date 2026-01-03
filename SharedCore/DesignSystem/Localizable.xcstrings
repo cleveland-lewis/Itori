@@ -36798,8 +36798,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "High"
+            "state": "translated",
+            "value": "Juu"
           }
         }
       }
@@ -36874,8 +36874,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Higher values make transitions feel gentler."
+            "state": "translated",
+            "value": "Maadili ya juu hufanya mabadiliko kuwa ya upole."
           }
         }
       }
@@ -36956,8 +36956,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Highest: %@ %@%%"
+            "state": "translated",
+            "value": "Ya juu zaidi: %1$@ %2$@%%"
           }
         }
       }
@@ -37032,8 +37032,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "History Chart"
+            "state": "translated",
+            "value": "Chati ya Historia"
           }
         }
       }
@@ -37108,8 +37108,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "History: %@ items"
+            "state": "translated",
+            "value": "Historia: %@ vipengee"
           }
         }
       }
@@ -37190,8 +37190,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Homework"
+            "state": "translated",
+            "value": "Kazi ya nyumbani"
           }
         }
       }
@@ -37266,8 +37266,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "How Dependencies Work"
+            "state": "translated",
+            "value": "Jinsi Mategemeo yanavyofanya kazi"
           }
         }
       }
@@ -37342,8 +37342,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "How far ahead to scan for events when refreshing."
+            "state": "translated",
+            "value": "Ni umbali gani wa mbele kutafuta matukio wakati wa kuonyesha upya."
           }
         }
       }
@@ -37418,8 +37418,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "How well did you know this?"
+            "state": "translated",
+            "value": "Ulijuaje hili?"
           }
         }
       }
@@ -37494,8 +37494,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Hypothetical grades won't be saved"
+            "state": "translated",
+            "value": "Alama dhahania hazitahifadhiwa"
           }
         }
       }
@@ -37570,8 +37570,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "iCloud is connected and protected by native iCloud protections"
+            "state": "translated",
+            "value": "iCloud imeunganishwa na kulindwa na ulinzi asili wa iCloud"
           }
         }
       }
@@ -37646,8 +37646,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Icons"
+            "state": "translated",
+            "value": "Aikoni"
           }
         }
       }
@@ -37722,8 +37722,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Icons & Text"
+            "state": "translated",
+            "value": "Aikoni na Maandishi"
           }
         }
       }
@@ -37804,8 +37804,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "If you score %@%% on remaining work, your projected final grade is %@%%."
+            "state": "translated",
+            "value": "Ukipata alama %1$@%% kwenye kazi iliyosalia, alama yako ya mwisho inayotarajiwa ni %2$@%%."
           }
         }
       }
@@ -37880,8 +37880,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Include in overview:"
+            "state": "translated",
+            "value": "Jumuisha katika muhtasari:"
           }
         }
       }
@@ -37956,8 +37956,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Increase button and control sizes for easier tapping"
+            "state": "translated",
+            "value": "Ongeza vitufe na saizi za udhibiti kwa kugonga kwa urahisi"
           }
         }
       }
@@ -38032,8 +38032,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Increase Contrast"
+            "state": "translated",
+            "value": "Ongeza Utofautishaji"
           }
         }
       }
@@ -38108,8 +38108,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Increase Contrast: %@"
+            "state": "translated",
+            "value": "Ongeza Utofautishaji: %@"
           }
         }
       }
@@ -38190,8 +38190,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Integration"
+            "state": "translated",
+            "value": "Kuunganisha"
           }
         }
       }
@@ -38272,8 +38272,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Integrations"
+            "state": "translated",
+            "value": "Ushirikiano"
           }
         }
       }
@@ -38348,8 +38348,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Interactions"
+            "state": "translated",
+            "value": "Maingiliano"
           }
         }
       }
@@ -38430,8 +38430,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Interface"
+            "state": "translated",
+            "value": "Kiolesura"
           }
         }
       }
@@ -38506,8 +38506,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Interface Preferences"
+            "state": "translated",
+            "value": "Mapendeleo ya Kiolesura"
           }
         }
       }
@@ -38582,8 +38582,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Interval: %@d"
+            "state": "translated",
+            "value": "Muda: %@d"
           }
         }
       }
@@ -38665,8 +38665,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.afternoon.1"
+            "state": "translated",
+            "value": "Habari za mchana"
           }
         }
       }
@@ -38748,8 +38748,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.afternoon.2"
+            "state": "translated",
+            "value": "Alasiri"
           }
         }
       }
@@ -38831,8 +38831,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.afternoon.3"
+            "state": "translated",
+            "value": "Endelea hivyo"
           }
         }
       }
@@ -38914,8 +38914,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.afternoon.4"
+            "state": "translated",
+            "value": "Endelea kuzingatia"
           }
         }
       }
@@ -38997,8 +38997,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.afternoon.5"
+            "state": "translated",
+            "value": "Kufanya maendeleo"
           }
         }
       }
@@ -39080,8 +39080,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.default"
+            "state": "translated",
+            "value": "Habari"
           }
         }
       }
@@ -39163,8 +39163,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.evening.1"
+            "state": "translated",
+            "value": "Habari za jioni"
           }
         }
       }
@@ -39246,8 +39246,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.evening.2"
+            "state": "translated",
+            "value": "Jioni"
           }
         }
       }
@@ -39329,8 +39329,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.evening.3"
+            "state": "translated",
+            "value": "Kuhitimisha"
           }
         }
       }
@@ -39412,8 +39412,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.evening.4"
+            "state": "translated",
+            "value": "Karibu huko"
           }
         }
       }
@@ -39495,8 +39495,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.evening.5"
+            "state": "translated",
+            "value": "Maliza kwa nguvu"
           }
         }
       }
@@ -39578,8 +39578,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.morning.1"
+            "state": "translated",
+            "value": "Habari za asubuhi"
           }
         }
       }
@@ -39661,8 +39661,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.morning.2"
+            "state": "translated",
+            "value": "Inuka na uangaze"
           }
         }
       }
@@ -39744,8 +39744,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.morning.3"
+            "state": "translated",
+            "value": "Asubuhi"
           }
         }
       }
@@ -39827,8 +39827,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.morning.4"
+            "state": "translated",
+            "value": "Anza kwa nguvu leo"
           }
         }
       }
@@ -39910,8 +39910,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.morning.5"
+            "state": "translated",
+            "value": "Karibu tena"
           }
         }
       }
@@ -39993,8 +39993,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.night.1"
+            "state": "translated",
+            "value": "Habari"
           }
         }
       }
@@ -40076,8 +40076,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.night.2"
+            "state": "translated",
+            "value": "Karibu tena"
           }
         }
       }
@@ -40159,8 +40159,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.night.3"
+            "state": "translated",
+            "value": "Bado inafanya kazi"
           }
         }
       }
@@ -40242,8 +40242,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.greeting.night.4"
+            "state": "translated",
+            "value": "Kuchoma mafuta ya usiku wa manane"
           }
         }
       }
@@ -40325,8 +40325,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.stats.courses"
+            "state": "translated",
+            "value": "Kozi"
           }
         }
       }
@@ -40408,8 +40408,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.stats.due_soon"
+            "state": "translated",
+            "value": "Inatakiwa Hivi Karibuni"
           }
         }
       }
@@ -40491,8 +40491,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.stats.next_7_days"
+            "state": "translated",
+            "value": "Siku 7 Zijazo"
           }
         }
       }
@@ -40575,8 +40575,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.study_hours.month"
+            "state": "translated",
+            "value": "Mwezi Huu"
           }
         }
       }
@@ -40659,8 +40659,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.study_hours.subtitle"
+            "state": "translated",
+            "value": "Maendeleo yako"
           }
         }
       }
@@ -40743,8 +40743,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.study_hours.title"
+            "state": "translated",
+            "value": "Saa za Masomo"
           }
         }
       }
@@ -40827,8 +40827,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.study_hours.today"
+            "state": "translated",
+            "value": "Leo"
           }
         }
       }
@@ -40911,8 +40911,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.study_hours.week"
+            "state": "translated",
+            "value": "Wiki Hii"
           }
         }
       }
@@ -40994,8 +40994,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.upcoming.no_events"
+            "state": "translated",
+            "value": "Hakuna matukio yanayokuja."
           }
         }
       }
@@ -41077,8 +41077,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.upcoming.subtitle"
+            "state": "translated",
+            "value": "Kutoka kwa kalenda yako"
           }
         }
       }
@@ -41160,8 +41160,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.dashboard.upcoming.title"
+            "state": "translated",
+            "value": "Ijayo"
           }
         }
       }
@@ -41244,8 +41244,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.item.assignment"
+            "state": "translated",
+            "value": "Mgawo"
           }
         }
       }
@@ -41327,8 +41327,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.menu.add_assignment"
+            "state": "translated",
+            "value": "Ongeza Kazi"
           }
         }
       }
@@ -41410,8 +41410,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.menu.add_grade"
+            "state": "translated",
+            "value": "Ongeza Daraja"
           }
         }
       }
@@ -41493,8 +41493,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.menu.auto_schedule"
+            "state": "translated",
+            "value": "Ratiba ya Otomatiki"
           }
         }
       }
@@ -41576,8 +41576,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.menu.hamburger"
+            "state": "translated",
+            "value": "Fungua menyu"
           }
         }
       }
@@ -41659,8 +41659,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.menu.quick_add"
+            "state": "translated",
+            "value": "Ongeza haraka"
           }
         }
       }
@@ -41742,8 +41742,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.menu.settings"
+            "state": "translated",
+            "value": "Mipangilio"
           }
         }
       }
@@ -41825,8 +41825,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.menu.tasks"
+            "state": "translated",
+            "value": "Kazi"
           }
         }
       }
@@ -41908,8 +41908,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.done"
+            "state": "translated",
+            "value": "Imekamilika"
           }
         }
       }
@@ -41991,8 +41991,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.due_format"
+            "state": "translated",
+            "value": "Inatakiwa %@ · dakika %d"
           }
         }
       }
@@ -42074,8 +42074,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.edit"
+            "state": "translated",
+            "value": "Hariri"
           }
         }
       }
@@ -42157,8 +42157,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.generate_plan_button"
+            "state": "translated",
+            "value": "Tengeneza Mpango"
           }
         }
       }
@@ -42240,8 +42240,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.how_it_works"
+            "state": "translated",
+            "value": "Jinsi inavyofanya kazi"
           }
         }
       }
@@ -42323,8 +42323,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.overflow.empty"
+            "state": "translated",
+            "value": "Vipindi vyote vimewekwa"
           }
         }
       }
@@ -42406,8 +42406,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.overflow.empty_subtitle"
+            "state": "translated",
+            "value": "Hakuna kinachosubiri katika kufurika."
           }
         }
       }
@@ -42489,8 +42489,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.overflow.subtitle"
+            "state": "translated",
+            "value": "Bado haijaratibiwa"
           }
         }
       }
@@ -42572,8 +42572,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.overflow.title"
+            "state": "translated",
+            "value": "Kufurika"
           }
         }
       }
@@ -42655,8 +42655,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.schedule.empty"
+            "state": "translated",
+            "value": "Hakuna vitalu vilivyoratibiwa"
           }
         }
       }
@@ -42738,8 +42738,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.schedule.empty_subtitle"
+            "state": "translated",
+            "value": "Tengeneza mpango wa kujaza leo."
           }
         }
       }
@@ -42821,8 +42821,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.schedule.subtitle"
+            "state": "translated",
+            "value": "Vizuizi vya wakati"
           }
         }
       }
@@ -42904,8 +42904,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.schedule.title"
+            "state": "translated",
+            "value": "Ratiba"
           }
         }
       }
@@ -42987,8 +42987,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.toast.block_updated"
+            "state": "translated",
+            "value": "Kizuizi kimesasishwa"
           }
         }
       }
@@ -43070,8 +43070,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.toast.time_conflict"
+            "state": "translated",
+            "value": "Mgogoro wa wakati"
           }
         }
       }
@@ -43153,8 +43153,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.today"
+            "state": "translated",
+            "value": "Leo"
           }
         }
       }
@@ -43236,8 +43236,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.unscheduled.add_due_date"
+            "state": "translated",
+            "value": "Ongeza tarehe ya kukamilisha"
           }
         }
       }
@@ -43319,8 +43319,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.unscheduled.empty"
+            "state": "translated",
+            "value": "Kazi zote zina tarehe"
           }
         }
       }
@@ -43402,8 +43402,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.unscheduled.empty_subtitle"
+            "state": "translated",
+            "value": "Ongeza tarehe za kukamilisha ili uendelee kupanga kwa usahihi."
           }
         }
       }
@@ -43485,8 +43485,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.unscheduled.subtitle"
+            "state": "translated",
+            "value": "Inahitaji umakini"
           }
         }
       }
@@ -43568,8 +43568,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.planner.unscheduled.title"
+            "state": "translated",
+            "value": "Haijaratibiwa"
           }
         }
       }
@@ -43657,8 +43657,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.settings.title"
+            "state": "translated",
+            "value": "Mipangilio"
           }
         }
       }
@@ -43740,8 +43740,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.break"
+            "state": "translated",
+            "value": "Kuvunja"
           }
         }
       }
@@ -43823,8 +43823,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.focus"
+            "state": "translated",
+            "value": "Kuzingatia"
           }
         }
       }
@@ -43906,8 +43906,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.mode"
+            "state": "translated",
+            "value": "Hali"
           }
         }
       }
@@ -43989,8 +43989,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.pause"
+            "state": "translated",
+            "value": "Sitisha"
           }
         }
       }
@@ -44072,8 +44072,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.resume"
+            "state": "translated",
+            "value": "Endelea"
           }
         }
       }
@@ -44155,8 +44155,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.skip"
+            "state": "translated",
+            "value": "Ruka"
           }
         }
       }
@@ -44238,8 +44238,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.start"
+            "state": "translated",
+            "value": "Anza"
           }
         }
       }
@@ -44321,8 +44321,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.timer.stop"
+            "state": "translated",
+            "value": "Acha"
           }
         }
       }
@@ -44404,8 +44404,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.toast.assignment_added"
+            "state": "translated",
+            "value": "%@ imeongezwa"
           }
         }
       }
@@ -44487,8 +44487,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.toast.course_added"
+            "state": "translated",
+            "value": "Kozi imeongezwa"
           }
         }
       }
@@ -44570,8 +44570,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.toast.grade_added"
+            "state": "translated",
+            "value": "Daraja limeongezwa"
           }
         }
       }
@@ -44653,8 +44653,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.toast.no_tasks_schedule"
+            "state": "translated",
+            "value": "Hakuna kazi za kuratibu"
           }
         }
       }
@@ -44736,8 +44736,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "ios.toast.schedule_updated"
+            "state": "translated",
+            "value": "Ratiba imesasishwa"
           }
         }
       }
@@ -44812,8 +44812,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Keep your profile, backups, and school-wide settings in their respective sections. Roots will link here when account syncing is available."
+            "state": "translated",
+            "value": "Weka wasifu wako, hifadhi rudufu, na mipangilio ya shule nzima katika sehemu husika.Roots itaunganishwa hapa wakati usawazishaji wa akaunti unapatikana."
           }
         }
       }
@@ -44888,8 +44888,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Large Tap Targets"
+            "state": "translated",
+            "value": "Malengo ya Bomba Kubwa"
           }
         }
       }
@@ -44964,8 +44964,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Large Tap Targets: %@"
+            "state": "translated",
+            "value": "Malengo Kubwa ya Gonga: %@"
           }
         }
       }
@@ -45040,8 +45040,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last 500 events"
+            "state": "translated",
+            "value": "Matukio 500 ya mwisho"
           }
         }
       }
@@ -45116,8 +45116,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last Attempt:"
+            "state": "translated",
+            "value": "Jaribio la Mwisho:"
           }
         }
       }
@@ -45192,8 +45192,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last Reason:"
+            "state": "translated",
+            "value": "Sababu ya Mwisho:"
           }
         }
       }
@@ -45268,8 +45268,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last Suppression:"
+            "state": "translated",
+            "value": "Ukandamizaji wa Mwisho:"
           }
         }
       }
@@ -45338,8 +45338,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last: %@"
+            "state": "translated",
+            "value": "Mwisho: %@"
           }
         }
       }
@@ -45420,8 +45420,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Layout"
+            "state": "translated",
+            "value": "Mpangilio"
           }
         }
       }
@@ -45496,8 +45496,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Layout changes apply immediately to all screens."
+            "state": "translated",
+            "value": "Mabadiliko ya mpangilio hutumika mara moja kwenye skrini zote."
           }
         }
       }
@@ -45572,8 +45572,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Light glass strength"
+            "state": "translated",
+            "value": "Nguvu ya kioo nyepesi"
           }
         }
       }
@@ -45648,8 +45648,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Link to Course"
+            "state": "translated",
+            "value": "Unganisha kwa Kozi"
           }
         }
       }
@@ -45724,8 +45724,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Links"
+            "state": "translated",
+            "value": "Viungo"
           }
         }
       }
@@ -45800,8 +45800,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Live Preview"
+            "state": "translated",
+            "value": "Hakiki ya Moja kwa Moja"
           }
         }
       }
@@ -45876,8 +45876,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "LiveActivity: %@"
+            "state": "translated",
+            "value": "Shughuli ya Moja kwa Moja: %@"
           }
         }
       }
@@ -45952,8 +45952,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "LLM Assistance Enabled:"
+            "state": "translated",
+            "value": "Usaidizi wa LLM Umewezeshwa:"
           }
         }
       }
@@ -46028,8 +46028,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results."
+            "state": "translated",
+            "value": "Usaidizi wa LLM umewashwa.Roots inaweza kutumia Apple Intelligence, miundo ya ndani, au watoa huduma maalum ili kuboresha usahihi wa uchanganuzi na kuongeza ukaguzi wa kutokuwa na uwezo kwa mipango inayozalishwa.LLM haziwahi kubatilisha matokeo ya kubaini kimya kimya."
           }
         }
       }
@@ -46104,8 +46104,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "LLM Provider Attempt Tracking"
+            "state": "translated",
+            "value": "Ufuatiliaji wa Jaribio la Mtoa Huduma wa LLM"
           }
         }
       }
@@ -46180,8 +46180,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Loading counters..."
+            "state": "translated",
+            "value": "Inapakia vihesabio..."
           }
         }
       }
@@ -46256,8 +46256,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Loading course analytics…"
+            "state": "translated",
+            "value": "Inapakia uchanganuzi wa kozi..."
           }
         }
       }
@@ -46332,8 +46332,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Local Database"
+            "state": "translated",
+            "value": "Hifadhidata ya Mitaa"
           }
         }
       }
@@ -46408,8 +46408,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Lock"
+            "state": "translated",
+            "value": "Funga"
           }
         }
       }
@@ -46484,8 +46484,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Lock work to due date"
+            "state": "translated",
+            "value": "Funga kazi hadi tarehe inayofaa"
           }
         }
       }
@@ -46560,8 +46560,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Locked to due date"
+            "state": "translated",
+            "value": "Imefungwa hadi tarehe ya kukamilisha"
           }
         }
       }
@@ -46636,7 +46636,7 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
           }
         }
@@ -46718,8 +46718,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Low"
+            "state": "translated",
+            "value": "Chini"
           }
         }
       }
@@ -46800,8 +46800,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Lowest: %@ %@%%"
+            "state": "translated",
+            "value": "Chini kabisa: %1$@ %2$@%%"
           }
         }
       }
@@ -46876,8 +46876,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Main Thread Debugger"
+            "state": "translated",
+            "value": "Kitatuzi kikuu cha Thread"
           }
         }
       }
@@ -46952,8 +46952,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Main Thread Debugger Disabled"
+            "state": "translated",
+            "value": "Kitatuzi Kikuu cha Thread Kimezimwa"
           }
         }
       }
@@ -47028,8 +47028,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage all your courses, semesters, and academic settings from the Courses page."
+            "state": "translated",
+            "value": "Dhibiti kozi, mihula na mipangilio yako yote ya masomo kutoka kwa ukurasa wa Kozi."
           }
         }
       }
@@ -47104,8 +47104,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage app capabilities that require permissions or connect to external services."
+            "state": "translated",
+            "value": "Dhibiti uwezo wa programu unaohitaji ruhusa au uunganishe kwenye huduma za nje."
           }
         }
       }
@@ -47180,8 +47180,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage data storage and iCloud synchronization."
+            "state": "translated",
+            "value": "Dhibiti hifadhi ya data na ulandanishi wa iCloud."
           }
         }
       }
@@ -47256,8 +47256,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage iCloud sync in Storage settings."
+            "state": "translated",
+            "value": "Dhibiti usawazishaji wa iCloud katika mipangilio ya Hifadhi."
           }
         }
       }
@@ -47332,8 +47332,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage Permissions"
+            "state": "translated",
+            "value": "Dhibiti Ruhusa"
           }
         }
       }
@@ -47408,8 +47408,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage your academic semesters. The current semester is used for new courses and appears in the main interface."
+            "state": "translated",
+            "value": "Dhibiti mihula yako ya masomo.Muhula wa sasa unatumika kwa kozi mpya na inaonekana kwenye kiolesura kikuu."
           }
         }
       }
@@ -47484,8 +47484,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage your active and archived courses"
+            "state": "translated",
+            "value": "Dhibiti kozi zako zinazotumika na zilizohifadhiwa kwenye kumbukumbu"
           }
         }
       }
@@ -47560,8 +47560,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage your current courses. Archived courses are hidden from the main interface but remain accessible."
+            "state": "translated",
+            "value": "Dhibiti kozi zako za sasa.Kozi zilizowekwa kwenye kumbukumbu zimefichwa kutoka kwa kiolesura kikuu lakini zinaendelea kufikiwa."
           }
         }
       }
@@ -47636,8 +47636,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Material Intensity"
+            "state": "translated",
+            "value": "Ukali wa Nyenzo"
           }
         }
       }
@@ -47712,8 +47712,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Material Intensity: %@"
+            "state": "translated",
+            "value": "Nguvu ya Nyenzo: %@"
           }
         }
       }
@@ -47788,8 +47788,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Material preview"
+            "state": "translated",
+            "value": "Onyesho la kukagua nyenzo"
           }
         }
       }
@@ -47870,8 +47870,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Materials"
+            "state": "translated",
+            "value": "Nyenzo"
           }
         }
       }
@@ -47946,8 +47946,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Max Tasks to Push"
+            "state": "translated",
+            "value": "Majukumu ya Juu ya Kusukuma"
           }
         }
       }
@@ -48022,8 +48022,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Max Tokens: %@"
+            "state": "translated",
+            "value": "Tokeni za Kiwango cha Juu: %@"
           }
         }
       }
@@ -48098,8 +48098,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Maximum of 5 tabs reached. Disable a tab to enable another."
+            "state": "translated",
+            "value": "Upeo wa vichupo 5 umefikiwa.Zima kichupo ili kuwezesha kingine."
           }
         }
       }
@@ -48180,8 +48180,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Medium"
+            "state": "translated",
+            "value": "Kati"
           }
         }
       }
@@ -48256,8 +48256,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Meeting Times"
+            "state": "translated",
+            "value": "Saa za Mikutano"
           }
         }
       }
@@ -48338,8 +48338,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Message"
+            "state": "translated",
+            "value": "Ujumbe"
           }
         }
       }
@@ -48414,8 +48414,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Minimize animations throughout the app"
+            "state": "translated",
+            "value": "Punguza uhuishaji katika programu yote"
           }
         }
       }
@@ -48490,8 +48490,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "MLX Configuration"
+            "state": "translated",
+            "value": "Usanidi wa MLX"
           }
         }
       }
@@ -48566,8 +48566,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "MLX models are loaded from the Hugging Face hub or local cache"
+            "state": "translated",
+            "value": "Miundo ya MLX imepakiwa kutoka kwa Hugging Face au akiba ya ndani"
           }
         }
       }
@@ -48642,8 +48642,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Mock backend - no configuration needed"
+            "state": "translated",
+            "value": "Backend maskhara - hakuna Configuration inahitajika"
           }
         }
       }
@@ -48718,8 +48718,8 @@
         },
         "sw": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Modules"
+            "state": "translated",
+            "value": "Moduli"
           }
         }
       }
@@ -53099,12 +53099,6 @@
             "state": "needs_review",
             "value": "notification.assignment.title"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تکلیف به زودی"
-          }
         }
       }
     },
@@ -53181,12 +53175,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "notification.daily_overview.default"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open Roots to see today's plan"
           }
         }
       }
@@ -53265,12 +53253,6 @@
             "state": "needs_review",
             "value": "notification.daily_overview.motivation"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "شما این را دارید!"
-          }
         }
       }
     },
@@ -53347,12 +53329,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "notification.daily_overview.task_singular"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 وظیفه امروز موعد مقرر"
           }
         }
       }
@@ -53431,12 +53407,6 @@
             "state": "needs_review",
             "value": "notification.daily_overview.tasks_plural"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d وظیفه امروز موعد مقرر است"
-          }
         }
       }
     },
@@ -53513,12 +53483,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "notification.daily_overview.title"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "صبح بخیر"
           }
         }
       }
@@ -53597,12 +53561,6 @@
             "state": "needs_review",
             "value": "notification.motivation.message_1"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "به کار عالی ادامه دهید!"
-          }
         }
       }
     },
@@ -53680,12 +53638,6 @@
             "state": "needs_review",
             "value": "notification.motivation.message_2"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "شما در حال پیشرفت هستید!"
-          }
         }
       }
     },
@@ -53756,12 +53708,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "notification.motivation.message_3"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "روی اهداف خود متمرکز بمانید!"
           }
         }
       }
@@ -53840,12 +53786,6 @@
             "state": "needs_review",
             "value": "notification.motivation.message_4"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هر قدم کوچک مهم است!"
-          }
         }
       }
     },
@@ -53922,12 +53862,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "notification.motivation.message_5"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "خودت را باور کن!"
           }
         }
       }
@@ -54006,12 +53940,6 @@
             "state": "needs_review",
             "value": "notification.motivation.message_6"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "شما شگفت انگیز انجام می دهید!"
-          }
         }
       }
     },
@@ -54082,12 +54010,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "notification.motivation.title"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "با انگیزه بمانید"
           }
         }
       }
@@ -54160,12 +54082,6 @@
             "state": "needs_review",
             "value": "notification.weekly_summary.title"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "notification.weekly_summary.title"
-          }
         }
       }
     },
@@ -54235,12 +54151,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Off"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "خاموش"
           }
         }
       }
@@ -54313,12 +54223,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Ollama Configuration"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پیکربندی اوللاما"
           }
         }
       }
@@ -54396,12 +54300,6 @@
             "state": "needs_review",
             "value": "On"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "روشن"
-          }
         }
       }
     },
@@ -54472,12 +54370,6 @@
             "state": "needs_review",
             "value": "On Date"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "در تاریخ"
-          }
         }
       }
     },
@@ -54546,12 +54438,6 @@
         "sw": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Only reminders from this list will appear in Roots."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
             "value": "Only reminders from this list will appear in Roots."
           }
         }
@@ -54624,12 +54510,6 @@
             "state": "needs_review",
             "value": "Open a course in a new window to see details here."
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "یک دوره را در یک پنجره جدید باز کنید تا جزئیات را در اینجا ببینید."
-          }
         }
       }
     },
@@ -54699,12 +54579,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Open System Settings to manage calendar, notifications, and other permissions."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "برای مدیریت تقویم، اعلان‌ها و سایر مجوزها، تنظیمات سیستم را باز کنید."
           }
         }
       }
@@ -54776,12 +54650,6 @@
             "state": "needs_review",
             "value": "OpenAI-Compatible LLM API Configuration"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پیکربندی API LLM سازگار با OpenAI"
-          }
         }
       }
     },
@@ -54851,12 +54719,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Overall Status"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "وضعیت کلی"
           }
         }
       }
@@ -54928,12 +54790,6 @@
             "state": "needs_review",
             "value": "Peak workload week: %@"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اوج بار کاری هفته: %@"
-          }
         }
       }
     },
@@ -55003,12 +54859,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Percentage"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "درصد"
           }
         }
       }
@@ -55080,12 +54930,6 @@
             "state": "needs_review",
             "value": "Performance Debugging"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اشکال زدایی عملکرد"
-          }
         }
       }
     },
@@ -55155,12 +54999,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Permission denied. Please enable in System Settings to use this feature."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اجازه رد شد.لطفاً برای استفاده از این ویژگی در تنظیمات سیستم فعال کنید."
           }
         }
       }
@@ -55238,12 +55076,6 @@
             "state": "needs_review",
             "value": "Pinned"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پین شده"
-          }
         }
       }
     },
@@ -55314,12 +55146,6 @@
             "state": "needs_review",
             "value": "Planner configuration settings"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تنظیمات پیکربندی برنامه ریز"
-          }
         }
       }
     },
@@ -55389,12 +55215,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Planner uses your assignment due dates to build a schedule of study blocks."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "برنامه ریز از تاریخ های تعیین تکلیف شما برای ایجاد برنامه زمانی بلوک های مطالعه استفاده می کند."
           }
         }
       }
@@ -55484,12 +55304,6 @@
             "state": "needs_review",
             "value": "planner.action.new_task"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "وظیفه جدید"
-          }
         }
       }
     },
@@ -55578,12 +55392,6 @@
             "state": "needs_review",
             "value": "planner.action.plan_day"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "روز برنامه ریزی"
-          }
         }
       }
     },
@@ -55666,12 +55474,6 @@
             "state": "needs_review",
             "value": "planner.action.planning"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "برنامه ریزی..."
-          }
         }
       }
     },
@@ -55747,12 +55549,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.allowed_hours"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ساعات مجاز: %1$d:00–%2$d:00"
           }
         }
       }
@@ -55832,12 +55628,6 @@
             "state": "needs_review",
             "value": "planner.break.long"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "استراحت طولانی"
-          }
         }
       }
     },
@@ -55915,12 +55705,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.break.short"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "استراحت کوتاه"
           }
         }
       }
@@ -56004,12 +55788,6 @@
             "state": "needs_review",
             "value": "planner.course.default"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "دوره"
-          }
         }
       }
     },
@@ -56086,12 +55864,6 @@
             "state": "needs_review",
             "value": "planner.debug.logs"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سیاههها"
-          }
         }
       }
     },
@@ -56162,12 +55934,6 @@
             "state": "needs_review",
             "value": "planner.debug.mark_deleted"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "علامت گذاری به عنوان حذف شده"
-          }
         }
       }
     },
@@ -56237,12 +56003,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.debug.mark_extended"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "علامت گذاری به عنوان تمدید شده"
           }
         }
       }
@@ -56320,12 +56080,6 @@
             "state": "needs_review",
             "value": "planner.debug.mark_kept"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "علامت گذاری به عنوان نگه داشته شده است"
-          }
         }
       }
     },
@@ -56402,12 +56156,6 @@
             "state": "needs_review",
             "value": "planner.debug.mark_rescheduled"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "علامت گذاری به عنوان زمان بندی مجدد"
-          }
         }
       }
     },
@@ -56477,12 +56225,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.debug.mark_shortened"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "علامت گذاری به عنوان کوتاه شده"
           }
         }
       }
@@ -56559,12 +56301,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.debug.schedule_result"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "نتیجه برنامه"
           }
         }
       }
@@ -56648,12 +56384,6 @@
             "state": "needs_review",
             "value": "planner.due.days_ago"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سررسید %d روز قبل"
-          }
         }
       }
     },
@@ -56735,12 +56465,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.due.one_day_ago"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سررسید 1 روز پیش"
           }
         }
       }
@@ -56824,12 +56548,6 @@
             "state": "needs_review",
             "value": "planner.due.today"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سررسید امروز"
-          }
         }
       }
     },
@@ -56912,12 +56630,6 @@
             "state": "needs_review",
             "value": "planner.empty.no_sessions"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز جلسه ای برای این روز وجود ندارد."
-          }
         }
       }
     },
@@ -56993,12 +56705,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.message.loading"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "در حال بارگیری جلسات…"
           }
         }
       }
@@ -57082,12 +56788,6 @@
             "state": "needs_review",
             "value": "planner.message.run_plan_day"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "برنامه روز را اجرا کنید تا کارها را برنامه ریزی کنید یا یک کار را به صورت دستی اضافه کنید."
-          }
         }
       }
     },
@@ -57163,12 +56863,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.minutes_total"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d دقیقه کل"
           }
         }
       }
@@ -57246,12 +56940,6 @@
             "state": "needs_review",
             "value": "planner.overdue.caught_up"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "گرفتار شدی"
-          }
         }
       }
     },
@@ -57327,12 +57015,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.overdue.caught_up_description"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هر چیزی که عقب افتاده باشد در اینجا ظاهر می شود تا برنامه ریز بتواند آن را اولویت بندی کند."
           }
         }
       }
@@ -57416,12 +57098,6 @@
             "state": "needs_review",
             "value": "planner.overdue.days"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d روز عقب افتاده است"
-          }
         }
       }
     },
@@ -57503,12 +57179,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.overdue.one_day"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 روز عقب افتاده"
           }
         }
       }
@@ -57598,12 +57268,6 @@
             "state": "needs_review",
             "value": "planner.overdue.title"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "وظایف عقب افتاده"
-          }
         }
       }
     },
@@ -57686,12 +57350,6 @@
             "state": "needs_review",
             "value": "planner.overdue.today"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "امروز"
-          }
         }
       }
     },
@@ -57761,12 +57419,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.progress"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d%% کامل شد"
           }
         }
       }
@@ -57844,12 +57496,6 @@
             "state": "needs_review",
             "value": "planner.recurrence.after"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بعد از"
-          }
         }
       }
     },
@@ -57925,12 +57571,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.recurrence.form.end"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پایان"
           }
         }
       }
@@ -58008,12 +57648,6 @@
             "state": "needs_review",
             "value": "planner.recurrence.form.holidays"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تعطیلات"
-          }
         }
       }
     },
@@ -58089,12 +57723,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.recurrence.form.interval"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "فاصله"
           }
         }
       }
@@ -58172,12 +57800,6 @@
             "state": "needs_review",
             "value": "planner.recurrence.form.repeat"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تکرار کنید"
-          }
         }
       }
     },
@@ -58253,12 +57875,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.recurrence.form.skip"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پرش کنید"
           }
         }
       }
@@ -58336,12 +57952,6 @@
             "state": "needs_review",
             "value": "planner.recurrence.form.skip_holidays"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "از تعطیلات بگذرید"
-          }
         }
       }
     },
@@ -58417,12 +58027,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.recurrence.form.skip_weekends"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تعطیلات آخر هفته را رها کنید"
           }
         }
       }
@@ -58500,12 +58104,6 @@
             "state": "needs_review",
             "value": "planner.recurrence.never"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هرگز"
-          }
         }
       }
     },
@@ -58582,12 +58180,6 @@
             "state": "needs_review",
             "value": "planner.recurrence.no_holiday_source"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ منبع تعطیلات پیکربندی نشده است."
-          }
         }
       }
     },
@@ -58657,12 +58249,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.recurrence.none"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ کدام"
           }
         }
       }
@@ -58740,12 +58326,6 @@
             "state": "needs_review",
             "value": "planner.recurrence.on_date"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "در تاریخ"
-          }
         }
       }
     },
@@ -58821,12 +58401,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.recurrence.system_calendar"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تقویم سیستم"
           }
         }
       }
@@ -58904,12 +58478,6 @@
             "state": "needs_review",
             "value": "planner.recurrence.type.daily"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "روزانه"
-          }
         }
       }
     },
@@ -58986,12 +58554,6 @@
             "state": "needs_review",
             "value": "planner.recurrence.type.monthly"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ماهانه"
-          }
         }
       }
     },
@@ -59061,12 +58623,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.recurrence.type.none"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ کدام"
           }
         }
       }
@@ -59144,12 +58700,6 @@
             "state": "needs_review",
             "value": "planner.recurrence.type.weekly"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هفتگی"
-          }
         }
       }
     },
@@ -59226,12 +58776,6 @@
             "state": "needs_review",
             "value": "planner.recurrence.type.yearly"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سالانه"
-          }
         }
       }
     },
@@ -59301,12 +58845,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.session.source.adjusted"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تنظیم شده است"
           }
         }
       }
@@ -59384,12 +58922,6 @@
             "state": "needs_review",
             "value": "planner.session.source.auto_plan"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "برنامه ریزی خودکار"
-          }
         }
       }
     },
@@ -59465,12 +58997,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.steps_count"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$d/%2$d مرحله"
           }
         }
       }
@@ -59554,12 +59080,6 @@
             "state": "needs_review",
             "value": "planner.task_sheet.action.cancel"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "لغو کنید"
-          }
         }
       }
     },
@@ -59641,12 +59161,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.task_sheet.action.create"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ایجاد کنید"
           }
         }
       }
@@ -59730,12 +59244,6 @@
             "state": "needs_review",
             "value": "planner.task_sheet.action.save"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ذخیره کنید"
-          }
         }
       }
     },
@@ -59817,12 +59325,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.task_sheet.edit_title"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ویرایش وظیفه"
           }
         }
       }
@@ -59906,12 +59408,6 @@
             "state": "needs_review",
             "value": "planner.task_sheet.field.assignment"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تکلیف"
-          }
         }
       }
     },
@@ -59993,12 +59489,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.task_sheet.field.assignment_linked"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پیوند داده شده است"
           }
         }
       }
@@ -60082,12 +59572,6 @@
             "state": "needs_review",
             "value": "planner.task_sheet.field.assignment_placeholder"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "لینک تکلیف (اختیاری)"
-          }
         }
       }
     },
@@ -60169,12 +59653,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.task_sheet.field.course"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "دوره"
           }
         }
       }
@@ -60258,12 +59736,6 @@
             "state": "needs_review",
             "value": "planner.task_sheet.field.course_none"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ کدام"
-          }
         }
       }
     },
@@ -60345,12 +59817,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.task_sheet.field.due_date"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سررسید"
           }
         }
       }
@@ -60434,12 +59900,6 @@
             "state": "needs_review",
             "value": "planner.task_sheet.field.focus_estimate"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "برآورد تمرکز"
-          }
         }
       }
     },
@@ -60521,12 +59981,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.task_sheet.field.lock_due_date"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "به تاریخ دقیق سررسید قفل کنید"
           }
         }
       }
@@ -60610,12 +60064,6 @@
             "state": "needs_review",
             "value": "planner.task_sheet.field.lock_due_date_help"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنگامی که قفل است، برنامه ریز LLM این بلوک را فقط در تاریخ مقرر برنامه ریزی می کند."
-          }
         }
       }
     },
@@ -60697,12 +60145,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.task_sheet.field.minutes"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "دقیقه"
           }
         }
       }
@@ -60786,12 +60228,6 @@
             "state": "needs_review",
             "value": "planner.task_sheet.field.priority"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اولویت"
-          }
         }
       }
     },
@@ -60873,12 +60309,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.task_sheet.field.title"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "عنوان"
           }
         }
       }
@@ -60962,12 +60392,6 @@
             "state": "needs_review",
             "value": "planner.task_sheet.new_title"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "وظیفه جدید"
-          }
         }
       }
     },
@@ -61049,12 +60473,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.task_sheet.section.course"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "دوره"
           }
         }
       }
@@ -61138,12 +60556,6 @@
             "state": "needs_review",
             "value": "planner.task_sheet.section.task"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "وظیفه"
-          }
         }
       }
     },
@@ -61225,12 +60637,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.task_sheet.section.timing"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "زمان بندی"
           }
         }
       }
@@ -61314,12 +60720,6 @@
             "state": "needs_review",
             "value": "planner.task_sheet.subtitle"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "وظایف به طور خودکار در جدول زمانی Planner برنامه ریزی می شوند."
-          }
         }
       }
     },
@@ -61401,12 +60801,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.task.due"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سررسید"
           }
         }
       }
@@ -61490,12 +60884,6 @@
             "state": "needs_review",
             "value": "planner.task.minutes_short"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "دقیقه"
-          }
         }
       }
     },
@@ -61578,12 +60966,6 @@
             "state": "needs_review",
             "value": "planner.timeline.free"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "رایگان"
-          }
         }
       }
     },
@@ -61665,12 +61047,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.timeline.overflow"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سرریز"
           }
         }
       }
@@ -61760,12 +61136,6 @@
             "state": "needs_review",
             "value": "planner.timeline.title"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "جدول زمانی برنامه ریز"
-          }
         }
       }
     },
@@ -61853,12 +61223,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.unscheduled.empty"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "در حال حاضر هیچ کار سرریز از طرف برنامه ریز وجود ندارد."
           }
         }
       }
@@ -61948,12 +61312,6 @@
             "state": "needs_review",
             "value": "planner.unscheduled.title"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "وظایف برنامه ریزی نشده"
-          }
         }
       }
     },
@@ -62029,12 +61387,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "planner.updated"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ به روز شد"
           }
         }
       }
@@ -62112,12 +61464,6 @@
             "state": "needs_review",
             "value": "Planning"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "برنامه ریزی"
-          }
         }
       }
     },
@@ -62187,12 +61533,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Please create a semester first in the Semesters section."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "لطفا ابتدا در قسمت ترم ها یک ترم ایجاد کنید."
           }
         }
       }
@@ -62270,12 +61610,6 @@
             "state": "needs_review",
             "value": "Points"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "امتیاز"
-          }
         }
       }
     },
@@ -62348,12 +61682,6 @@
             "state": "needs_review",
             "value": "Pomodoro Timer"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تایمر پومودورو"
-          }
         }
       }
     },
@@ -62423,12 +61751,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Practice Quizzes"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "آزمون ها را تمرین کنید"
           }
         }
       }
@@ -62507,12 +61829,6 @@
             "state": "needs_review",
             "value": "practice.action.back"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "برگشت"
-          }
         }
       }
     },
@@ -62589,12 +61905,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.action.back_to_tests"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بازگشت به تست ها"
           }
         }
       }
@@ -62673,12 +61983,6 @@
             "state": "needs_review",
             "value": "practice.action.cancel"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "لغو کنید"
-          }
         }
       }
     },
@@ -62755,12 +62059,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.action.generate"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تولید تست"
           }
         }
       }
@@ -62839,12 +62137,6 @@
             "state": "needs_review",
             "value": "practice.action.new_test"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تست جدید"
-          }
         }
       }
     },
@@ -62921,12 +62213,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.action.next"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بعدی"
           }
         }
       }
@@ -63005,12 +62291,6 @@
             "state": "needs_review",
             "value": "practice.action.previous"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "قبلی"
-          }
         }
       }
     },
@@ -63088,12 +62368,6 @@
             "state": "needs_review",
             "value": "practice.action.submit"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ارسال تست"
-          }
         }
       }
     },
@@ -63169,12 +62443,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.empty.message"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اولین آزمون تمرینی خود را برای شروع یادگیری ایجاد کنید"
           }
         }
       }
@@ -63253,12 +62521,6 @@
             "state": "needs_review",
             "value": "practice.empty.no_results"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بدون نتیجه"
-          }
         }
       }
     },
@@ -63336,12 +62598,6 @@
             "state": "needs_review",
             "value": "practice.empty.select_question"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "یک سوال را برای بررسی انتخاب کنید"
-          }
         }
       }
     },
@@ -63417,12 +62673,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.empty.title"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز تست تمرینی وجود ندارد"
           }
         }
       }
@@ -63501,12 +62751,6 @@
             "state": "needs_review",
             "value": "practice.generator.course.no_courses"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ دوره ای موجود نیستلطفا ابتدا یک دوره اضافه کنید."
-          }
         }
       }
     },
@@ -63583,12 +62827,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.generator.course.select"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "یک دوره را انتخاب کنید"
           }
         }
       }
@@ -63667,12 +62905,6 @@
             "state": "needs_review",
             "value": "practice.generator.difficulty.label"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "دشواری"
-          }
         }
       }
     },
@@ -63749,12 +62981,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.generator.question_count.label"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تعداد سوالات"
           }
         }
       }
@@ -63833,12 +63059,6 @@
             "state": "needs_review",
             "value": "practice.generator.section.course"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "دوره"
-          }
         }
       }
     },
@@ -63915,12 +63135,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.generator.section.question_types"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "انواع سوال"
           }
         }
       }
@@ -63999,12 +63213,6 @@
             "state": "needs_review",
             "value": "practice.generator.section.settings"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تنظیمات"
-          }
         }
       }
     },
@@ -64081,12 +63289,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.generator.section.topics"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "موضوعات (اختیاری)"
           }
         }
       }
@@ -64165,12 +63367,6 @@
             "state": "needs_review",
             "value": "practice.generator.subtitle"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پارامترهای آزمون تمرینی خود را پیکربندی کنید"
-          }
         }
       }
     },
@@ -64247,12 +63443,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.generator.title"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تولید تست تمرین"
           }
         }
       }
@@ -64331,12 +63521,6 @@
             "state": "needs_review",
             "value": "practice.generator.topics.add_button"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اضافه کنید"
-          }
         }
       }
     },
@@ -64413,12 +63597,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.generator.topics.add_field"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اضافه کردن موضوع"
           }
         }
       }
@@ -64497,12 +63675,6 @@
             "state": "needs_review",
             "value": "practice.generator.topics.help"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "موضوعاتی را برای تمرکز بر روی آنها مشخص کنید یا برای تمرین عمومی خالی بگذارید"
-          }
         }
       }
     },
@@ -64579,12 +63751,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.generator.types.explanation"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "توضیح"
           }
         }
       }
@@ -64663,12 +63829,6 @@
             "state": "needs_review",
             "value": "practice.generator.types.explanation_desc"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "توضیحات مفصل همراه با مثال"
-          }
         }
       }
     },
@@ -64745,12 +63905,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.generator.types.help"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "حداقل یک نوع سوال را انتخاب کنید"
           }
         }
       }
@@ -64829,12 +63983,6 @@
             "state": "needs_review",
             "value": "practice.generator.types.multiple_choice"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "انتخاب چندگانه"
-          }
         }
       }
     },
@@ -64912,12 +64060,6 @@
             "state": "needs_review",
             "value": "practice.generator.types.multiple_choice_desc"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "از 4 گزینه انتخاب کنید"
-          }
         }
       }
     },
@@ -64974,8 +64116,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คำตอบสั้น ๆ"
+            "state": "needs_review",
+            "value": "Short Answer"
           }
         },
         "zh-HK": {
@@ -64994,12 +64136,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.generator.types.short_answer"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پاسخ کوتاه"
           }
         }
       }
@@ -65057,8 +64193,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คำตอบเป็นลายลักษณ์อักษรสั้น ๆ"
+            "state": "needs_review",
+            "value": "Brief written responses"
           }
         },
         "zh-HK": {
@@ -65077,12 +64213,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.generator.types.short_answer_desc"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پاسخ های کتبی مختصر"
           }
         }
       }
@@ -65139,8 +64269,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การทดสอบล่าสุด"
+            "state": "needs_review",
+            "value": "Recent Tests"
           }
         },
         "zh-HK": {
@@ -65159,12 +64289,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.label.recent_tests"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تست های اخیر"
           }
         }
       }
@@ -65221,8 +64345,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ทดสอบความรู้ของคุณและติดตามความคืบหน้า"
+            "state": "needs_review",
+            "value": "Test your knowledge and track progress"
           }
         },
         "zh-HK": {
@@ -65241,12 +64365,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.label.subtitle"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "دانش خود را آزمایش کنید و پیشرفت را دنبال کنید"
           }
         }
       }
@@ -65303,8 +64421,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "แบบทดสอบฝึกหัด"
+            "state": "needs_review",
+            "value": "Practice Tests"
           }
         },
         "zh-HK": {
@@ -65323,12 +64441,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.label.title"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تست های تمرینی"
           }
         }
       }
@@ -65385,8 +64497,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "กำลังสร้างแบบทดสอบฝึกหัด"
+            "state": "needs_review",
+            "value": "Generating Practice Test"
           }
         },
         "zh-HK": {
@@ -65405,12 +64517,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.message.generating"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تست تمرین تولید"
           }
         }
       }
@@ -65468,8 +64574,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ถูกต้อง"
+            "state": "needs_review",
+            "value": "Correct"
           }
         },
         "zh-HK": {
@@ -65488,12 +64594,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.correct"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "صحیح"
           }
         }
       }
@@ -65551,8 +64651,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คำตอบที่ถูกต้อง"
+            "state": "needs_review",
+            "value": "Correct Answer"
           }
         },
         "zh-HK": {
@@ -65571,12 +64671,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.correct_answer"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پاسخ صحیح"
           }
         }
       }
@@ -65634,8 +64728,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คำอธิบาย"
+            "state": "needs_review",
+            "value": "Explanation"
           }
         },
         "zh-HK": {
@@ -65654,12 +64748,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.explanation"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "توضیح"
           }
         }
       }
@@ -65717,8 +64805,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ไม่ถูกต้อง"
+            "state": "needs_review",
+            "value": "Incorrect"
           }
         },
         "zh-HK": {
@@ -65737,12 +64825,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.incorrect"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "نادرست است"
           }
         }
       }
@@ -65800,8 +64882,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คะแนนรวม"
+            "state": "needs_review",
+            "value": "Overall Score"
           }
         },
         "zh-HK": {
@@ -65820,12 +64902,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.overall_score"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "امتیاز کلی"
           }
         }
       }
@@ -65883,8 +64959,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ยอดเยี่ยม!"
+            "state": "needs_review",
+            "value": "Excellent!"
           }
         },
         "zh-HK": {
@@ -65903,12 +64979,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.performance.excellent"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "عالی!"
           }
         }
       }
@@ -65966,8 +65036,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "งานที่ดี!"
+            "state": "needs_review",
+            "value": "Good Job!"
           }
         },
         "zh-HK": {
@@ -65986,12 +65056,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.performance.good"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "کار خوب"
           }
         }
       }
@@ -66049,8 +65113,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ฝึกซ้อมต่อไป"
+            "state": "needs_review",
+            "value": "Keep Practicing"
           }
         },
         "zh-HK": {
@@ -66069,12 +65133,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.performance.keep_practicing"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "به تمرین ادامه دهید"
           }
         }
       }
@@ -66132,8 +65190,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "จำเป็นต้องปรับปรุง"
+            "state": "needs_review",
+            "value": "Needs Improvement"
           }
         },
         "zh-HK": {
@@ -66152,12 +65210,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.performance.needs_improvement"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "نیاز به بهبود دارد"
           }
         }
       }
@@ -66215,8 +65267,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คำถาม %d"
+            "state": "needs_review",
+            "value": "Question %d"
           }
         },
         "zh-HK": {
@@ -66235,12 +65287,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.question_number"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سوال %d"
           }
         }
       }
@@ -66298,7 +65344,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "Q%d"
           }
         },
@@ -66318,12 +65364,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.question_prefix"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Q%d"
           }
         }
       }
@@ -66381,8 +65421,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คำถามทบทวน"
+            "state": "needs_review",
+            "value": "Review Questions"
           }
         },
         "zh-HK": {
@@ -66401,12 +65441,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.review_questions"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بررسی سوالات"
           }
         }
       }
@@ -66464,8 +65498,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ถูกต้อง"
+            "state": "needs_review",
+            "value": "Correct"
           }
         },
         "zh-HK": {
@@ -66484,12 +65518,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.status.correct"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "صحیح"
           }
         }
       }
@@ -66547,8 +65575,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ไม่ถูกต้อง"
+            "state": "needs_review",
+            "value": "Incorrect"
           }
         },
         "zh-HK": {
@@ -66567,12 +65595,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.status.incorrect"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "نادرست است"
           }
         }
       }
@@ -66630,8 +65652,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ผลการทดสอบการปฏิบัติ"
+            "state": "needs_review",
+            "value": "Practice Test Results"
           }
         },
         "zh-HK": {
@@ -66650,12 +65672,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.title"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "نتایج آزمون را تمرین کنید"
           }
         }
       }
@@ -66713,8 +65729,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คำตอบของคุณ"
+            "state": "needs_review",
+            "value": "Your Answer"
           }
         },
         "zh-HK": {
@@ -66733,12 +65749,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.results.your_answer"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پاسخ شما"
           }
         }
       }
@@ -66796,8 +65806,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ให้คำอธิบายโดยละเอียดพร้อมตัวอย่างเฉพาะเจาะจง"
+            "state": "needs_review",
+            "value": "Provide a detailed explanation with specific examples"
           }
         },
         "zh-HK": {
@@ -66816,12 +65826,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.taking.answer.explanation_help"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "توضیح مفصلی همراه با مثال های خاص ارائه دهید"
           }
         }
       }
@@ -66879,8 +65883,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คำตอบของคุณ:"
+            "state": "needs_review",
+            "value": "Your answer:"
           }
         },
         "zh-HK": {
@@ -66899,12 +65903,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.taking.answer.your_answer"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پاسخ شما:"
           }
         }
       }
@@ -66962,8 +65960,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คำอธิบายของคุณ:"
+            "state": "needs_review",
+            "value": "Your explanation:"
           }
         },
         "zh-HK": {
@@ -66982,12 +65980,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.taking.answer.your_explanation"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "توضیحات شما:"
           }
         }
       }
@@ -67045,8 +66037,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คำถาม %d จาก %d"
+            "state": "needs_review",
+            "value": "Question %d of %d"
           }
         },
         "zh-HK": {
@@ -67065,12 +66057,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.taking.question_number"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سوال %d از %d"
           }
         }
       }
@@ -67128,8 +66114,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ตอบแล้ว"
+            "state": "needs_review",
+            "value": "Answered"
           }
         },
         "zh-HK": {
@@ -67148,12 +66134,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.taking.status.answered"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پاسخ داد"
           }
         }
       }
@@ -67211,8 +66191,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ไม่ตอบ"
+            "state": "needs_review",
+            "value": "Not answered"
           }
         },
         "zh-HK": {
@@ -67231,12 +66211,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.taking.status.not_answered"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پاسخ داده نشد"
           }
         }
       }
@@ -67294,8 +66268,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ยกเลิก"
+            "state": "needs_review",
+            "value": "Cancel"
           }
         },
         "zh-HK": {
@@ -67314,12 +66288,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.taking.submit_confirm.cancel"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "لغو کنید"
           }
         }
       }
@@ -67377,8 +66345,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คุณแน่ใจหรือไม่ว่าต้องการส่ง?คุณไม่สามารถเปลี่ยนคำตอบของคุณหลังจากส่งแล้ว"
+            "state": "needs_review",
+            "value": "Are you sure you want to submit? You cannot change your answers after submission."
           }
         },
         "zh-HK": {
@@ -67397,12 +66365,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.taking.submit_confirm.complete"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "آیا مطمئن هستید که می خواهید ارسال کنید؟پس از ارسال نمی توانید پاسخ های خود را تغییر دهید."
           }
         }
       }
@@ -67460,8 +66422,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คุณได้ตอบ %d จาก %d คำถามแล้วคำถามที่ยังไม่ได้ตอบจะถูกทำเครื่องหมายว่าไม่ถูกต้อง"
+            "state": "needs_review",
+            "value": "You have answered %d out of %d questions. Unanswered questions will be marked incorrect."
           }
         },
         "zh-HK": {
@@ -67480,12 +66442,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.taking.submit_confirm.partial"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "به %d از %d سؤال پاسخ داده‌اید.سوالات بدون پاسخ به عنوان نادرست علامت گذاری می شوند."
           }
         }
       }
@@ -67543,8 +66499,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ส่ง"
+            "state": "needs_review",
+            "value": "Submit"
           }
         },
         "zh-HK": {
@@ -67563,12 +66519,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.taking.submit_confirm.submit"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ارسال کنید"
           }
         }
       }
@@ -67626,8 +66576,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ส่งแบบทดสอบฝึกหัด?"
+            "state": "needs_review",
+            "value": "Submit Practice Test?"
           }
         },
         "zh-HK": {
@@ -67646,12 +66596,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "practice.taking.submit_confirm.title"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "آزمون تمرینی را ارسال کنید؟"
           }
         }
       }
@@ -67702,8 +66646,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ก่อนหน้า: %@"
+            "state": "needs_review",
+            "value": "Previous: %@"
           }
         },
         "zh-HK": {
@@ -67722,12 +66666,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Previous: %@"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "قبلی: %@"
           }
         }
       }
@@ -67784,8 +66722,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ลำดับความสำคัญ"
+            "state": "needs_review",
+            "value": "Priority"
           }
         },
         "zh-HK": {
@@ -67804,12 +66742,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Priority"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اولویت"
           }
         }
       }
@@ -67860,8 +66792,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ความเป็นส่วนตัวและความปลอดภัย"
+            "state": "needs_review",
+            "value": "Privacy & Safety"
           }
         },
         "zh-HK": {
@@ -67880,12 +66812,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Privacy & Safety"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "حریم خصوصی و ایمنی"
           }
         }
       }
@@ -67936,8 +66862,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ความเป็นส่วนตัวและความปลอดภัย"
+            "state": "needs_review",
+            "value": "Privacy & Security"
           }
         },
         "zh-HK": {
@@ -67956,12 +66882,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Privacy & Security"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "حریم خصوصی و امنیت"
           }
         }
       }
@@ -68012,8 +66932,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การติดตามผลผลิต"
+            "state": "needs_review",
+            "value": "Productivity Tracking"
           }
         },
         "zh-HK": {
@@ -68032,12 +66952,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Productivity Tracking"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ردیابی بهره وری"
           }
         }
       }
@@ -68088,8 +67002,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การจัดการโปรไฟล์"
+            "state": "needs_review",
+            "value": "Profile Management"
           }
         },
         "zh-HK": {
@@ -68108,12 +67022,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Profile Management"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "مدیریت پروفایل"
           }
         }
       }
@@ -68164,8 +67072,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การจัดการโปรไฟล์จะมาเร็ว ๆ นี้"
+            "state": "needs_review",
+            "value": "Profile management coming soon"
           }
         },
         "zh-HK": {
@@ -68184,12 +67092,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Profile management coming soon"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "مدیریت پروفایل به زودی"
           }
         }
       }
@@ -68240,8 +67142,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ประเภทโปรไฟล์"
+            "state": "needs_review",
+            "value": "Profile Type"
           }
         },
         "zh-HK": {
@@ -68260,12 +67162,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Profile Type"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "نوع پروفایل"
           }
         }
       }
@@ -68322,8 +67218,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "โครงการ"
+            "state": "needs_review",
+            "value": "Project"
           }
         },
         "zh-HK": {
@@ -68342,12 +67238,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Project"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پروژه"
           }
         }
       }
@@ -68398,8 +67288,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ให้ผลตอบรับเชิงสัมผัสสำหรับการโต้ตอบ"
+            "state": "needs_review",
+            "value": "Provide tactile feedback for interactions"
           }
         },
         "zh-HK": {
@@ -68418,12 +67308,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Provide tactile feedback for interactions"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "برای تعاملات بازخورد لمسی ارائه دهید"
           }
         }
       }
@@ -68474,8 +67358,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ผลักดัน %@ งานแล้ว"
+            "state": "needs_review",
+            "value": "Pushed %@ task(s)"
           }
         },
         "zh-HK": {
@@ -68494,12 +67378,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Pushed %@ task(s)"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ کار(های) فشار داده شده"
           }
         }
       }
@@ -68556,8 +67434,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คำถาม"
+            "state": "needs_review",
+            "value": "Question"
           }
         },
         "zh-HK": {
@@ -68576,12 +67454,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Question"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سوال"
           }
         }
       }
@@ -68638,8 +67510,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การดำเนินการด่วน"
+            "state": "needs_review",
+            "value": "Quick Actions"
           }
         },
         "zh-HK": {
@@ -68658,12 +67530,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Quick Actions"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اقدامات سریع"
           }
         }
       }
@@ -68720,8 +67586,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "แบบทดสอบ"
+            "state": "needs_review",
+            "value": "Quiz"
           }
         },
         "zh-HK": {
@@ -68740,12 +67606,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Quiz"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "امتحان"
           }
         }
       }
@@ -68796,8 +67656,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "พิสัย: %@"
+            "state": "needs_review",
+            "value": "Range: %@"
           }
         },
         "zh-HK": {
@@ -68816,12 +67676,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Range: %@"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "محدوده: %@"
           }
         }
       }
@@ -68878,8 +67732,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การอ่าน"
+            "state": "needs_review",
+            "value": "Reading"
           }
         },
         "zh-HK": {
@@ -68898,12 +67752,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Reading"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "خواندن"
           }
         }
       }
@@ -68954,8 +67802,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "รับสรุปกำหนดการและงานของคุณทุกวัน"
+            "state": "needs_review",
+            "value": "Receive a daily summary of your schedule and tasks"
           }
         },
         "zh-HK": {
@@ -68974,12 +67822,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Receive a daily summary of your schedule and tasks"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "خلاصه ای روزانه از برنامه و وظایف خود را دریافت کنید"
           }
         }
       }
@@ -69030,8 +67872,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "รับการแจ้งเตือนให้กำลังใจตลอดทั้งวัน"
+            "state": "needs_review",
+            "value": "Receive encouraging notifications throughout the day"
           }
         },
         "zh-HK": {
@@ -69050,12 +67892,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Receive encouraging notifications throughout the day"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "در طول روز اعلان های تشویق کننده دریافت کنید"
           }
         }
       }
@@ -69112,8 +67948,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ล่าสุด"
+            "state": "needs_review",
+            "value": "Recent"
           }
         },
         "zh-HK": {
@@ -69132,12 +67968,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Recent"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اخیر"
           }
         }
       }
@@ -69188,8 +68018,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เหตุการณ์ล่าสุด: %@"
+            "state": "needs_review",
+            "value": "Recent Events: %@"
           }
         },
         "zh-HK": {
@@ -69208,12 +68038,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Recent Events: %@"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "رویدادهای اخیر: %@"
           }
         }
       }
@@ -69264,8 +68088,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เซสชันล่าสุด"
+            "state": "needs_review",
+            "value": "Recent Sessions"
           }
         },
         "zh-HK": {
@@ -69284,12 +68108,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Recent Sessions"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "جلسات اخیر"
           }
         }
       }
@@ -69340,8 +68158,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ลดการเคลื่อนไหว"
+            "state": "needs_review",
+            "value": "Reduce Motion"
           }
         },
         "zh-HK": {
@@ -69360,12 +68178,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Reduce Motion"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "کاهش حرکت"
           }
         }
       }
@@ -69416,8 +68228,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ลดการเคลื่อนไหว: %@"
+            "state": "needs_review",
+            "value": "Reduce Motion: %@"
           }
         },
         "zh-HK": {
@@ -69436,12 +68248,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Reduce Motion: %@"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "کاهش حرکت: %@"
           }
         }
       }
@@ -69492,8 +68298,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ลดความโปร่งใส"
+            "state": "needs_review",
+            "value": "Reduce Transparency"
           }
         },
         "zh-HK": {
@@ -69512,12 +68318,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Reduce Transparency"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "کاهش شفافیت"
           }
         }
       }
@@ -69568,8 +68368,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ลดความโปร่งใส: %@"
+            "state": "needs_review",
+            "value": "Reduce Transparency: %@"
           }
         },
         "zh-HK": {
@@ -69588,12 +68388,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Reduce Transparency: %@"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "کاهش شفافیت: %@"
           }
         }
       }
@@ -69644,8 +68438,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เตือนฉัน:"
+            "state": "needs_review",
+            "value": "Remind me:"
           }
         },
         "zh-HK": {
@@ -69664,12 +68458,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "Remind me:"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "به من یادآوری کن:"
           }
         }
       }
@@ -69720,8 +68508,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การตั้งค่าการรวมการแจ้งเตือน"
+            "state": "needs_review",
+            "value": "Reminders integration settings"
           }
         },
         "zh-HK": {
@@ -69796,8 +68584,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ทำซ้ำ"
+            "state": "needs_review",
+            "value": "Repeat"
           }
         },
         "zh-HK": {
@@ -69866,8 +68654,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "แทนที่พื้นหลังโปร่งแสงด้วยสีทึบแสง"
+            "state": "needs_review",
+            "value": "Replace translucent backgrounds with opaque colors"
           }
         },
         "zh-HK": {
@@ -69936,8 +68724,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ที่จำเป็น"
+            "state": "needs_review",
+            "value": "Required"
           }
         },
         "zh-HK": {
@@ -70006,8 +68794,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "รีเซ็ตข้อมูลทั้งหมด"
+            "state": "needs_review",
+            "value": "Reset All Data"
           }
         },
         "zh-HK": {
@@ -70076,8 +68864,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "รีเซ็ตการตั้งค่าทั้งหมด"
+            "state": "needs_review",
+            "value": "Reset All Settings"
           }
         },
         "zh-HK": {
@@ -70152,8 +68940,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ทบทวน"
+            "state": "needs_review",
+            "value": "Review"
           }
         },
         "zh-HK": {
@@ -70222,8 +69010,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ตรวจสอบการ์ด %@ แล้ว"
+            "state": "needs_review",
+            "value": "Reviewed %@ cards"
           }
         },
         "zh-HK": {
@@ -70292,8 +69080,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การวิเคราะห์ความเสี่ยง"
+            "state": "needs_review",
+            "value": "Risk Analysis"
           }
         },
         "zh-HK": {
@@ -70362,8 +69150,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เรียกใช้การวินิจฉัยตนเองอย่างรวดเร็วกับข้อมูล สิทธิ์ และไฟล์ในเครื่อง"
+            "state": "needs_review",
+            "value": "Runs a quick self-diagnostic across data, permissions, and local files."
           }
         },
         "zh-HK": {
@@ -70432,8 +69220,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "บัตรตัวอย่าง"
+            "state": "needs_review",
+            "value": "Sample Card"
           }
         },
         "zh-HK": {
@@ -70502,8 +69290,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "บันทึกภาคการศึกษา"
+            "state": "needs_review",
+            "value": "Save Semester"
           }
         },
         "zh-HK": {
@@ -70572,8 +69360,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ข้อเสนอแนะกำหนดการพร้อม"
+            "state": "needs_review",
+            "value": "Schedule suggestions ready"
           }
         },
         "zh-HK": {
@@ -70642,8 +69430,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การทดสอบตามกำหนดเวลา"
+            "state": "needs_review",
+            "value": "Scheduled Tests"
           }
         },
         "zh-HK": {
@@ -70712,8 +69500,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เลือกปฏิทิน"
+            "state": "needs_review",
+            "value": "Select a Calendar"
           }
         },
         "zh-HK": {
@@ -70782,8 +69570,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เลือกหลักสูตร"
+            "state": "needs_review",
+            "value": "Select a Course"
           }
         },
         "zh-HK": {
@@ -70854,8 +69642,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เลือกรายการ"
+            "state": "needs_review",
+            "value": "Select a List"
           }
         },
         "zh-HK": {
@@ -70924,8 +69712,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เลือกกิจกรรมเพื่อดูรายละเอียด"
+            "state": "needs_review",
+            "value": "Select an event to view details"
           }
         },
         "zh-HK": {
@@ -70996,8 +69784,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เลือกหลักสูตร"
+            "state": "needs_review",
+            "value": "Select course"
           }
         },
         "zh-HK": {
@@ -71066,8 +69854,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เลือกปฏิทินที่ใช้สำหรับกิจกรรมของโรงเรียน/วิชาการ"
+            "state": "needs_review",
+            "value": "Select the calendar used for school/academic events."
           }
         },
         "zh-HK": {
@@ -71136,8 +69924,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เลือกได้ถึง %@ การกระทำ"
+            "state": "needs_review",
+            "value": "Select up to %@ actions."
           }
         },
         "zh-HK": {
@@ -71206,8 +69994,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เลือกได้สูงสุด 5 หน้าเพื่อแสดงในแถบแท็บหน้าทั้งหมดยังคงสามารถเข้าถึงได้ผ่านทางเมนู"
+            "state": "needs_review",
+            "value": "Select up to 5 pages to show in the tab bar. All pages remain accessible via the menu."
           }
         },
         "zh-HK": {
@@ -71276,8 +70064,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "วันที่เลือก"
+            "state": "needs_review",
+            "value": "SELECTED DATE"
           }
         },
         "zh-HK": {
@@ -71346,8 +70134,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "วัสดุที่เลือก"
+            "state": "needs_review",
+            "value": "Selected material"
           }
         },
         "zh-HK": {
@@ -71410,8 +70198,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เลือกแล้ว: %@"
+            "state": "needs_review",
+            "value": "Selected: %@"
           }
         },
         "zh-HK": {
@@ -71486,8 +70274,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เลือกแล้ว: %1$@ • %2$@ วันนี้"
+            "state": "needs_review",
+            "value": "Selected: %1$@ • %2$@ today"
           }
         },
         "zh-HK": {
@@ -71562,8 +70350,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ภาคเรียน"
+            "state": "needs_review",
+            "value": "Semester"
           }
         },
         "zh-HK": {
@@ -71632,8 +70420,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การจัดการภาคการศึกษา"
+            "state": "needs_review",
+            "value": "Semester Management"
           }
         },
         "zh-HK": {
@@ -71702,8 +70490,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การจัดการภาคเรียนในเร็ว ๆ นี้"
+            "state": "needs_review",
+            "value": "Semester management coming soon"
           }
         },
         "zh-HK": {
@@ -71772,8 +70560,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เซสชันเสร็จสมบูรณ์!"
+            "state": "needs_review",
+            "value": "Session Complete!"
           }
         },
         "zh-HK": {
@@ -71842,8 +70630,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การประชุม: %@"
+            "state": "needs_review",
+            "value": "Session: %@"
           }
         },
         "zh-HK": {
@@ -71919,8 +70707,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คำแนะนำ"
+            "state": "needs_review",
+            "value": "Guidance"
           }
         },
         "zh-HK": {
@@ -71996,8 +70784,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การตอบสนองแบบสัมผัส"
+            "state": "needs_review",
+            "value": "Haptic Feedback"
           }
         },
         "zh-HK": {
@@ -72073,8 +70861,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "รู้สึกถึงการตอบสนองทางสัมผัสสำหรับการกระทำ"
+            "state": "needs_review",
+            "value": "Feel tactile responses for actions"
           }
         },
         "zh-HK": {
@@ -72150,8 +70938,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เพิ่มคอนทราสต์"
+            "state": "needs_review",
+            "value": "Increase Contrast"
           }
         },
         "zh-HK": {
@@ -72227,8 +71015,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ทำให้สีและเส้นขอบชัดเจนยิ่งขึ้น"
+            "state": "needs_review",
+            "value": "Make colors and borders more distinct"
           }
         },
         "zh-HK": {
@@ -72304,8 +71092,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ปฏิสัมพันธ์"
+            "state": "needs_review",
+            "value": "Interaction"
           }
         },
         "zh-HK": {
@@ -72381,8 +71169,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ลดการเคลื่อนไหว"
+            "state": "needs_review",
+            "value": "Reduce Motion"
           }
         },
         "zh-HK": {
@@ -72458,8 +71246,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ลดภาพเคลื่อนไหวและการเปลี่ยนภาพให้เหลือน้อยที่สุด"
+            "state": "needs_review",
+            "value": "Minimize animations and transitions"
           }
         },
         "zh-HK": {
@@ -72535,8 +71323,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ลดความโปร่งใส"
+            "state": "needs_review",
+            "value": "Reduce Transparency"
           }
         },
         "zh-HK": {
@@ -72612,8 +71400,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ลดเอฟเฟกต์ความเบลอและความโปร่งใส"
+            "state": "needs_review",
+            "value": "Reduce blur and transparency effects"
           }
         },
         "zh-HK": {
@@ -72689,8 +71477,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "แสดงคำแนะนำเครื่องมือ"
+            "state": "needs_review",
+            "value": "Show Tooltips"
           }
         },
         "zh-HK": {
@@ -72766,8 +71554,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "แสดงคำแนะนำที่เป็นประโยชน์สำหรับองค์ประกอบอินเทอร์เฟซ"
+            "state": "needs_review",
+            "value": "Display helpful hints for interface elements"
           }
         },
         "zh-HK": {
@@ -72843,8 +71631,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ภาพ"
+            "state": "needs_review",
+            "value": "Visual"
           }
         },
         "zh-HK": {
@@ -72920,8 +71708,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "แสดงภาพเคลื่อนไหว"
+            "state": "needs_review",
+            "value": "Show Animations"
           }
         },
         "zh-HK": {
@@ -72997,8 +71785,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เปิดใช้งานการเปลี่ยนภาพและเอฟเฟ็กต์ที่ราบรื่น"
+            "state": "needs_review",
+            "value": "Enable smooth transitions and effects"
           }
         },
         "zh-HK": {
@@ -73074,8 +71862,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "รัศมีมุมการ์ด"
+            "state": "needs_review",
+            "value": "Card Corner Radius"
           }
         },
         "zh-HK": {
@@ -73151,8 +71939,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ผลกระทบ"
+            "state": "needs_review",
+            "value": "Effects"
           }
         },
         "zh-HK": {
@@ -73228,8 +72016,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เอฟเฟกต์แก้ว"
+            "state": "needs_review",
+            "value": "Glass Effects"
           }
         },
         "zh-HK": {
@@ -73305,8 +72093,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ใช้พื้นหลังโปร่งแสงและเบลอ"
+            "state": "needs_review",
+            "value": "Use translucent backgrounds and blur"
           }
         },
         "zh-HK": {
@@ -73382,8 +72170,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "สไตล์"
+            "state": "needs_review",
+            "value": "Style"
           }
         },
         "zh-HK": {
@@ -73459,8 +72247,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ธีม"
+            "state": "needs_review",
+            "value": "Theme"
           }
         },
         "zh-HK": {
@@ -73536,8 +72324,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "อัตโนมัติ"
+            "state": "needs_review",
+            "value": "Auto"
           }
         },
         "zh-HK": {
@@ -73613,8 +72401,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "มืด"
+            "state": "needs_review",
+            "value": "Dark"
           }
         },
         "zh-HK": {
@@ -73690,8 +72478,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "รูปร่าง"
+            "state": "needs_review",
+            "value": "Appearance"
           }
         },
         "zh-HK": {
@@ -73767,8 +72555,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "แสงสว่าง"
+            "state": "needs_review",
+            "value": "Light"
           }
         },
         "zh-HK": {
@@ -73844,8 +72632,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ระบบ"
+            "state": "needs_review",
+            "value": "System"
           }
         },
         "zh-HK": {
@@ -73915,7 +72703,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.calendar.lock_picker"
           }
         },
@@ -73986,7 +72774,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.calendar.lock_picker.disabled"
           }
         },
@@ -74057,7 +72845,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.calendar.lock_picker.enabled"
           }
         },
@@ -74134,8 +72922,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ให้สิทธิ์การเข้าถึงปฏิทินเพื่อซิงค์กิจกรรมกับกำหนดการของคุณ"
+            "state": "needs_review",
+            "value": "Grant calendar access to sync events with your schedule"
           }
         },
         "zh-HK": {
@@ -74211,8 +72999,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "จำเป็นต้องเข้าถึงปฏิทิน"
+            "state": "needs_review",
+            "value": "Calendar Access Required"
           }
         },
         "zh-HK": {
@@ -74282,7 +73070,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.calendar.picker_lock.header"
           }
         },
@@ -74359,8 +73147,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "1 เดือน"
+            "state": "needs_review",
+            "value": "1 Month"
           }
         },
         "zh-HK": {
@@ -74436,8 +73224,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "1 สัปดาห์"
+            "state": "needs_review",
+            "value": "1 Week"
           }
         },
         "zh-HK": {
@@ -74513,8 +73301,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "2 เดือน"
+            "state": "needs_review",
+            "value": "2 Months"
           }
         },
         "zh-HK": {
@@ -74590,8 +73378,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "2 สัปดาห์"
+            "state": "needs_review",
+            "value": "2 Weeks"
           }
         },
         "zh-HK": {
@@ -74667,8 +73455,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "รีเฟรชช่วง"
+            "state": "needs_review",
+            "value": "Refresh Range"
           }
         },
         "zh-HK": {
@@ -74744,8 +73532,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ร้องขอการเข้าถึง"
+            "state": "needs_review",
+            "value": "Request Access"
           }
         },
         "zh-HK": {
@@ -74821,8 +73609,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เพิกถอนการเข้าถึงปฏิทิน"
+            "state": "needs_review",
+            "value": "Revoke Calendar Access"
           }
         },
         "zh-HK": {
@@ -74898,8 +73686,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เพิกถอนการเข้าถึง"
+            "state": "needs_review",
+            "value": "Revoke Access"
           }
         },
         "zh-HK": {
@@ -74975,7 +73763,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Roots > Calendars."
           }
         },
@@ -75052,8 +73840,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เพิกถอนการเข้าถึงปฏิทินหรือไม่"
+            "state": "needs_review",
+            "value": "Revoke Calendar Access?"
           }
         },
         "zh-HK": {
@@ -75129,8 +73917,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ลบการเข้าถึงปฏิทินและล้างกิจกรรมที่ซิงค์ทั้งหมดคุณจะต้องเพิกถอนการอนุญาตด้วยตนเองในการตั้งค่า iOS"
+            "state": "needs_review",
+            "value": "Remove calendar access and clear all synced events. You'll need to manually revoke permission in iOS Settings."
           }
         },
         "zh-HK": {
@@ -75206,8 +73994,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "สแกนหากิจกรรมเมื่อรีเฟรชได้ไกลแค่ไหน"
+            "state": "needs_review",
+            "value": "How far ahead to scan for events when refreshing"
           }
         },
         "zh-HK": {
@@ -75283,8 +74071,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การจัดตารางเวลา"
+            "state": "needs_review",
+            "value": "Scheduling"
           }
         },
         "zh-HK": {
@@ -75360,8 +74148,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เลือกปฏิทินที่จะใช้สำหรับการติดตามและกำหนดเวลากิจกรรม"
+            "state": "needs_review",
+            "value": "Select the calendar to use for event tracking and scheduling"
           }
         },
         "zh-HK": {
@@ -75437,8 +74225,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ปฏิทินโรงเรียน"
+            "state": "needs_review",
+            "value": "School Calendar"
           }
         },
         "zh-HK": {
@@ -75508,7 +74296,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.calendar.school_calendar.label"
           }
         },
@@ -75579,7 +74367,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.calendar.select_calendar"
           }
         },
@@ -75650,7 +74438,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.calendar.show_only_school"
           }
         },
@@ -75721,7 +74509,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.calendar.show_only_school.disabled"
           }
         },
@@ -75792,7 +74580,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.calendar.show_only_school.enabled"
           }
         },
@@ -75863,7 +74651,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.calendar.view_filter.header"
           }
         },
@@ -75940,8 +74728,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การเข้าถึง"
+            "state": "needs_review",
+            "value": "Accessibility"
           }
         },
         "zh-HK": {
@@ -76017,8 +74805,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "รูปร่าง"
+            "state": "needs_review",
+            "value": "Appearance"
           }
         },
         "zh-HK": {
@@ -76094,8 +74882,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ปฏิทิน"
+            "state": "needs_review",
+            "value": "Calendar"
           }
         },
         "zh-HK": {
@@ -76212,8 +75000,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "หลักสูตรและผู้วางแผน"
+            "state": "needs_review",
+            "value": "Courses & Planner"
           }
         },
         "zh-HK": {
@@ -76283,7 +75071,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.category.developer"
           }
         },
@@ -76354,7 +75142,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.category.flashcards"
           }
         },
@@ -76431,8 +75219,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ทั่วไป"
+            "state": "needs_review",
+            "value": "General"
           }
         },
         "zh-HK": {
@@ -76502,7 +75290,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.category.integrations"
           }
         },
@@ -76579,8 +75367,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "อินเทอร์เฟซ"
+            "state": "needs_review",
+            "value": "Interface"
           }
         },
         "zh-HK": {
@@ -76656,8 +75444,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การแจ้งเตือน"
+            "state": "needs_review",
+            "value": "Notifications"
           }
         },
         "zh-HK": {
@@ -76727,7 +75515,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.category.planner"
           }
         },
@@ -76804,8 +75592,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ความเป็นส่วนตัว"
+            "state": "needs_review",
+            "value": "Privacy"
           }
         },
         "zh-HK": {
@@ -76875,7 +75663,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.category.profiles"
           }
         },
@@ -76946,7 +75734,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.category.reminders"
           }
         },
@@ -77017,7 +75805,7 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
+            "state": "needs_review",
             "value": "settings.category.semesters"
           }
         },
@@ -77094,8 +75882,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "พื้นที่จัดเก็บ"
+            "state": "needs_review",
+            "value": "Storage"
           }
         },
         "zh-HK": {
@@ -77171,8 +75959,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ตัวจับเวลา"
+            "state": "needs_review",
+            "value": "Timer"
           }
         },
         "zh-HK": {
@@ -77248,8 +76036,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การแสดงหลักสูตร"
+            "state": "needs_review",
+            "value": "Course Display"
           }
         },
         "zh-HK": {
@@ -77319,8 +76107,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ทั้งคู่"
+            "state": "needs_review",
+            "value": "Both"
           }
         },
         "zh-HK": {
@@ -77396,8 +76184,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "รหัส"
+            "state": "needs_review",
+            "value": "Code"
           }
         },
         "zh-HK": {
@@ -77473,8 +76261,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "วิธีแสดงข้อมูลหลักสูตรตลอดทั้งแอป"
+            "state": "needs_review",
+            "value": "How to display course information throughout the app"
           }
         },
         "zh-HK": {
@@ -77550,8 +76338,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "หลักสูตร"
+            "state": "needs_review",
+            "value": "Courses"
           }
         },
         "zh-HK": {
@@ -77627,8 +76415,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ชื่อ"
+            "state": "needs_review",
+            "value": "Name"
           }
         },
         "zh-HK": {
@@ -77704,8 +76492,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "แสดง"
+            "state": "needs_review",
+            "value": "Display"
           }
         },
         "zh-HK": {
@@ -77787,8 +76575,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "คอนทราสต์สูง"
+            "state": "needs_review",
+            "value": "High Contrast"
           }
         },
         "zh-HK": {
@@ -77864,8 +76652,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เพิ่มคอนทราสต์ของภาพเพื่อให้อ่านง่ายขึ้น"
+            "state": "needs_review",
+            "value": "Increase visual contrast for better readability"
           }
         },
         "zh-HK": {
@@ -77947,8 +76735,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ใช้เวลาแบบ 24 ชั่วโมง"
+            "state": "needs_review",
+            "value": "Use 24-Hour Time"
           }
         },
         "zh-HK": {
@@ -78024,8 +76812,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "แสดงเวลาในรูปแบบ 24 ชั่วโมง"
+            "state": "needs_review",
+            "value": "Display times in 24-hour format"
           }
         },
         "zh-HK": {
@@ -78101,8 +76889,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "สิ้นสุดวันทำงาน"
+            "state": "needs_review",
+            "value": "Workday End"
           }
         },
         "zh-HK": {
@@ -78178,8 +76966,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เริ่มต้นวันทำงาน"
+            "state": "needs_review",
+            "value": "Workday Start"
           }
         },
         "zh-HK": {
@@ -78255,8 +77043,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ส่งผลต่อการจัดกำหนดการของผู้วางแผนและการติดตามพลังงาน"
+            "state": "needs_review",
+            "value": "Affects planner scheduling and energy tracking"
           }
         },
         "zh-HK": {
@@ -78332,8 +77120,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ชั่วโมงทำงาน"
+            "state": "needs_review",
+            "value": "Workday Hours"
           }
         },
         "zh-HK": {
@@ -78409,8 +77197,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ข้อความสร้างแรงบันดาลใจ"
+            "state": "needs_review",
+            "value": "Motivational Messages"
           }
         },
         "zh-HK": {
@@ -78486,8 +77274,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "รับการแจ้งเตือนที่ให้กำลังใจ"
+            "state": "needs_review",
+            "value": "Receive encouraging notifications"
           }
         },
         "zh-HK": {
@@ -78563,8 +77351,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การแจ้งเตือนการมอบหมายงาน"
+            "state": "needs_review",
+            "value": "Assignment Reminders"
           }
         },
         "zh-HK": {
@@ -78640,8 +77428,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เตือนฉันก่อนถึงกำหนดส่งงาน"
+            "state": "needs_review",
+            "value": "Remind me before assignments are due"
           }
         },
         "zh-HK": {
@@ -78717,8 +77505,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ภาพรวมรายวัน"
+            "state": "needs_review",
+            "value": "Daily Overview"
           }
         },
         "zh-HK": {
@@ -78794,8 +77582,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "สรุปตารางงานวันนี้ช่วงเช้า"
+            "state": "needs_review",
+            "value": "Morning summary of today's schedule"
           }
         },
         "zh-HK": {
@@ -78871,8 +77659,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ดีบัก"
+            "state": "needs_review",
+            "value": "Debug"
           }
         },
         "zh-HK": {
@@ -78948,8 +77736,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "พิมพ์การแจ้งเตือนที่รอดำเนินการ"
+            "state": "needs_review",
+            "value": "Print Pending Notifications"
           }
         },
         "zh-HK": {
@@ -79025,8 +77813,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ส่งการแจ้งเตือนการทดสอบ (5 วินาที)"
+            "state": "needs_review",
+            "value": "Send Test Notification (5s)"
           }
         },
         "zh-HK": {
@@ -79102,8 +77890,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เปิดใช้งานการแจ้งเตือนในการตั้งค่า iOS เพื่อรับการแจ้งเตือนและการแจ้งเตือน"
+            "state": "needs_review",
+            "value": "Enable notifications in iOS Settings to receive reminders and alerts"
           }
         },
         "zh-HK": {
@@ -79179,8 +77967,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "การแจ้งเตือนถูกปิดใช้งาน"
+            "state": "needs_review",
+            "value": "Notifications Disabled"
           }
         },
         "zh-HK": {
@@ -79256,8 +78044,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เปิดใช้งานการแจ้งเตือน"
+            "state": "needs_review",
+            "value": "Enable Notifications"
           }
         },
         "zh-HK": {
@@ -79333,8 +78121,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "รับการแจ้งเตือนและการแจ้งเตือน"
+            "state": "needs_review",
+            "value": "Receive reminders and alerts"
           }
         },
         "zh-HK": {
@@ -79410,8 +78198,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ทั่วไป"
+            "state": "needs_review",
+            "value": "General"
           }
         },
         "zh-HK": {
@@ -79487,8 +78275,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ระยะเวลารอคอยการแจ้งเตือน"
+            "state": "needs_review",
+            "value": "Reminder Lead Time"
           }
         },
         "zh-HK": {
@@ -79564,8 +78352,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "1 วัน"
+            "state": "needs_review",
+            "value": "1 day"
           }
         },
         "zh-HK": {
@@ -79641,8 +78429,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "1 ชั่วโมง"
+            "state": "needs_review",
+            "value": "1 hour"
           }
         },
         "zh-HK": {
@@ -79718,8 +78506,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "2 วัน"
+            "state": "needs_review",
+            "value": "2 days"
           }
         },
         "zh-HK": {
@@ -79795,8 +78583,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "2 ชั่วโมง"
+            "state": "needs_review",
+            "value": "2 hours"
           }
         },
         "zh-HK": {
@@ -79872,8 +78660,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "6 ชั่วโมง"
+            "state": "needs_review",
+            "value": "6 hours"
           }
         },
         "zh-HK": {
@@ -79949,8 +78737,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "12 ชม"
+            "state": "needs_review",
+            "value": "12 hours"
           }
         },
         "zh-HK": {
@@ -80026,8 +78814,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "15 นาที"
+            "state": "needs_review",
+            "value": "15 minutes"
           }
         },
         "zh-HK": {
@@ -80103,8 +78891,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "30 นาที"
+            "state": "needs_review",
+            "value": "30 minutes"
           }
         },
         "zh-HK": {
@@ -80180,8 +78968,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "แรงจูงใจ"
+            "state": "needs_review",
+            "value": "Motivation"
           }
         },
         "zh-HK": {
@@ -80257,8 +79045,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "เปิดการตั้งค่า"
+            "state": "needs_review",
+            "value": "Open Settings"
           }
         },
         "zh-HK": {
@@ -80334,8 +79122,8 @@
         },
         "th": {
           "stringUnit": {
-            "state": "translated",
-            "value": "ภาพรวมเวลา"
+            "state": "needs_review",
+            "value": "Overview Time"
           }
         },
         "zh-HK": {
