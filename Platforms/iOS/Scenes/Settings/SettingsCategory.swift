@@ -14,6 +14,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
     case flashcards
     case integrations
     case notifications
+    case intelligentScheduling
     case privacy
     case storage
     case developer
@@ -46,6 +47,8 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
             return NSLocalizedString("settings.category.integrations", comment: "Integrations")
         case .notifications:
             return NSLocalizedString("settings.category.notifications", comment: "Notifications")
+        case .intelligentScheduling:
+            return NSLocalizedString("settings.category.intelligentScheduling", comment: "Intelligent Scheduling")
         case .privacy:
             return NSLocalizedString("settings.category.privacy", comment: "Privacy")
         case .storage:
@@ -69,6 +72,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
         case .flashcards: return "rectangle.stack.badge.person.crop"
         case .integrations: return "arrow.triangle.2.circlepath.circle"
         case .notifications: return "bell.badge"
+        case .intelligentScheduling: return "brain"
         case .privacy: return "lock.shield"
         case .storage: return "externaldrive"
         case .developer: return "hammer.fill"
@@ -102,6 +106,8 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
             IOSIntegrationsSettingsView()
         case .notifications:
             IOSNotificationsSettingsView()
+        case .intelligentScheduling:
+            IOSIntelligentSchedulingSettingsView()
         case .privacy:
             IOSPrivacySettingsView()
         case .storage:

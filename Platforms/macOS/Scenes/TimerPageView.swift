@@ -547,7 +547,7 @@ struct TimerPageView: View {
                             HStack(spacing: 8) {
                                 ForEach(Array(0..<max(1, settings.pomodoroIterations)), id: \.self) { index in
                                     Circle()
-                                        .fill(index < completedPomodoroSessions ? Color.accentColor : .tertiary)
+                                        .fill(index < completedPomodoroSessions ? Color.accentColor : Color.secondary.opacity(0.3))
                                         .frame(width: 8, height: 8)
                                 }
                             }
@@ -839,7 +839,7 @@ struct TimerPageView: View {
     var body: some View {
         ScrollView {
             ZStack {
-                .primaryBackground.ignoresSafeArea()
+                Color.primaryBackground.ignoresSafeArea()
                 
                 VStack(spacing: 20) {
                     // Add topBar
@@ -974,7 +974,7 @@ private struct FocusWindowView: View {
                         HStack(spacing: 8) {
                             ForEach(Array(0..<max(1, pomodoroSessions)), id: \.self) { index in
                                 Circle()
-                                    .fill(index < completedPomodoroSessions ? accentColor : .tertiary)
+                                    .fill(index < completedPomodoroSessions ? accentColor : Color.secondary.opacity(0.3))
                                     .frame(width: 8, height: 8)
                             }
                         }

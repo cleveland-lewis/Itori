@@ -285,6 +285,8 @@ final class AppSettingsModel: ObservableObject, Codable {
         case showAnimationsStorage
         case enableHapticsStorage
         case showTooltipsStorage
+        case defaultEnergyLevelStorage
+        case energySelectionConfirmedStorage
     }
 
 
@@ -1071,13 +1073,53 @@ final class AppSettingsModel: ObservableObject, Codable {
     }
 
     var defaultEnergyLevel: String {
-        get { defaultEnergyLevelStorage }
-        set { defaultEnergyLevelStorage = newValue }
+        get { 
+            // Try to get from iCloud first if sync is enabled
+            if enableICloudSync {
+                let cloudValue = NSUbiquitousKeyValueStore.default.string(forKey: "roots.settings.defaultEnergyLevel")
+                if let cloudValue = cloudValue, !cloudValue.isEmpty {
+                    // Update local if different
+                    if cloudValue != defaultEnergyLevelStorage {
+                        defaultEnergyLevelStorage = cloudValue
+                    }
+                    return cloudValue
+                }
+            }
+            return defaultEnergyLevelStorage 
+        }
+        set { 
+            defaultEnergyLevelStorage = newValue
+            // Sync to iCloud if enabled
+            if enableICloudSync {
+                NSUbiquitousKeyValueStore.default.set(newValue, forKey: "roots.settings.defaultEnergyLevel")
+                NSUbiquitousKeyValueStore.default.synchronize()
+            }
+        }
     }
 
     var energySelectionConfirmed: Bool {
-        get { energySelectionConfirmedStorage }
-        set { energySelectionConfirmedStorage = newValue }
+        get { 
+            // Try to get from iCloud first if sync is enabled
+            if enableICloudSync {
+                let cloudValue = NSUbiquitousKeyValueStore.default.object(forKey: "roots.settings.energySelectionConfirmed") as? Bool
+                if let cloudValue = cloudValue {
+                    // Update local if different
+                    if cloudValue != energySelectionConfirmedStorage {
+                        energySelectionConfirmedStorage = cloudValue
+                    }
+                    return cloudValue
+                }
+            }
+            return energySelectionConfirmedStorage 
+        }
+        set { 
+            energySelectionConfirmedStorage = newValue
+            // Sync to iCloud if enabled
+            if enableICloudSync {
+                NSUbiquitousKeyValueStore.default.set(newValue, forKey: "roots.settings.energySelectionConfirmed")
+                NSUbiquitousKeyValueStore.default.synchronize()
+            }
+        }
     }
 
 
@@ -1254,6 +1296,40 @@ final class AppSettingsModel: ObservableObject, Codable {
     // Codable
     init() {
         UserDefaults.standard.removeObject(forKey: "roots.settings.userName")
+        
+        // Observe iCloud changes for energy settings
+        NotificationCenter.default.addObserver(
+            forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
+            object: NSUbiquitousKeyValueStore.default,
+            queue: .main
+        ) { [weak self] notification in
+            guard let self = self else { return }
+            
+            // Get changed keys
+            if let changedKeys = notification.userInfo?[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String] {
+                for key in changedKeys {
+                    switch key {
+                    case "roots.settings.defaultEnergyLevel":
+                        if let cloudValue = NSUbiquitousKeyValueStore.default.string(forKey: key) {
+                            if cloudValue != self.defaultEnergyLevelStorage {
+                                self.defaultEnergyLevelStorage = cloudValue
+                                self.objectWillChange.send()
+                                LOG_UI(.info, "AppSettings", "Energy level synced from iCloud: \(cloudValue)")
+                            }
+                        }
+                    case "roots.settings.energySelectionConfirmed":
+                        let cloudValue = NSUbiquitousKeyValueStore.default.bool(forKey: key)
+                        if cloudValue != self.energySelectionConfirmedStorage {
+                            self.energySelectionConfirmedStorage = cloudValue
+                            self.objectWillChange.send()
+                            LOG_UI(.info, "AppSettings", "Energy selection confirmed synced from iCloud: \(cloudValue)")
+                        }
+                    default:
+                        break
+                    }
+                }
+            }
+        }
     }
 
     func encode(to encoder: Encoder) throws {
@@ -1324,6 +1400,8 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(showAnimationsStorage, forKey: .showAnimationsStorage)
         try container.encode(enableHapticsStorage, forKey: .enableHapticsStorage)
         try container.encode(showTooltipsStorage, forKey: .showTooltipsStorage)
+        try container.encode(defaultEnergyLevelStorage, forKey: .defaultEnergyLevelStorage)
+        try container.encode(energySelectionConfirmedStorage, forKey: .energySelectionConfirmedStorage)
     }
 
     required init(from decoder: Decoder) throws {
@@ -1398,6 +1476,8 @@ final class AppSettingsModel: ObservableObject, Codable {
         showAnimationsStorage = try container.decodeIfPresent(Bool.self, forKey: .showAnimationsStorage) ?? true
         enableHapticsStorage = try container.decodeIfPresent(Bool.self, forKey: .enableHapticsStorage) ?? true
         showTooltipsStorage = try container.decodeIfPresent(Bool.self, forKey: .showTooltipsStorage) ?? true
+        defaultEnergyLevelStorage = try container.decodeIfPresent(String.self, forKey: .defaultEnergyLevelStorage) ?? "Medium"
+        energySelectionConfirmedStorage = try container.decodeIfPresent(Bool.self, forKey: .energySelectionConfirmedStorage) ?? false
     }
 
     func resetUserDefaults() {

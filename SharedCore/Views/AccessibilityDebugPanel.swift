@@ -95,7 +95,7 @@ struct AccessibilityDebugPanel: View {
             )
         }
         .padding()
-        .background(.secondaryBackground)
+        .background(Color.gray.opacity(0.1))
     }
     
     // MARK: - Issues View
@@ -129,7 +129,7 @@ struct AccessibilityDebugPanel: View {
         }
         .padding(.vertical, 8)
         #if os(macOS)
-        .background(.secondaryBackground)
+        .background(Color.gray.opacity(0.1))
         #else
         .background(Color(uiColor: .systemBackground))
         #endif
@@ -587,7 +587,7 @@ private struct DetailSection<Content: View>: View {
                 .foregroundColor(.secondary)
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(.secondaryBackground)
+                .background(Color.gray.opacity(0.1))
                 .cornerRadius(8)
         }
     }
@@ -623,7 +623,7 @@ private struct SettingRow: View {
                 .foregroundColor(.secondary)
         }
         .padding()
-        .background(.secondaryBackground)
+        .background(Color.gray.opacity(0.1))
         .cornerRadius(8)
     }
 }
@@ -651,7 +651,7 @@ private struct QuickActionButton: View {
                     .foregroundColor(.secondary)
             }
             .padding()
-            .background(.secondaryBackground)
+            .background(Color.gray.opacity(0.1))
             .cornerRadius(8)
         }
     }
@@ -672,7 +672,7 @@ private struct ChecklistItem: View {
             Spacer()
         }
         .padding()
-        .background(.secondaryBackground)
+        .background(Color.gray.opacity(0.1))
         .cornerRadius(8)
     }
 }

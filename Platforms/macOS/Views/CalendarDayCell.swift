@@ -15,7 +15,9 @@ struct CalendarDayCell: View {
         let isToday = calendar.isDateInToday(date)
         let a11yContent = VoiceOverLabels.dateCell(date: date, eventCount: eventCount)
 
-        VStack(spacing: 7) {
+        ZStack(alignment: .topTrailing) {
+            Color.clear
+            
             Text(dayString)
                 .font(DesignSystem.Typography.body)
                 .frame(minWidth: 28, minHeight: 28)
@@ -29,10 +31,9 @@ struct CalendarDayCell: View {
                     Circle()
                         .strokeBorder(isToday && !isSelected ? Color.accentColor.opacity(0.5) : Color.clear, lineWidth: 1.5)
                 )
-
-            // Event density bar removed per UI request
+                .padding(8)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
         .scaleEffect(isPressed ? 0.92 : 1.0)
         .animation(.easeInOut(duration: DesignSystem.Motion.instant), value: isPressed)
         .simultaneousGesture(

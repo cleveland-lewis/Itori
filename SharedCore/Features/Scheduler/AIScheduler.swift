@@ -385,17 +385,22 @@ struct AIScheduler {
         tasks inputTasks: [Task],
         fixedEvents: [FixedEvent],
         constraints: Constraints,
-        preferences: SchedulerPreferences = SchedulerPreferences.default()
+        preferences: SchedulerPreferences = SchedulerPreferences.default(),
+        energyLevel: EnergyLevel = .medium
     ) -> ScheduleResult {
-        LOG_SCHEDULER(.info, "ScheduleGeneration", "Starting schedule generation", metadata: ["tasks": "\(inputTasks.count)", "fixedEvents": "\(fixedEvents.count)"])
+        LOG_SCHEDULER(.info, "ScheduleGeneration", "Starting schedule generation", metadata: ["tasks": "\(inputTasks.count)", "fixedEvents": "\(fixedEvents.count)", "energyLevel": "\(energyLevel.rawValue)"])
         var log: [String] = []
 
-        // 1. Build free intervals per day
+        // 1. Filter tasks based on energy level
+        let filteredTasks = filterTasksByEnergyLevel(tasks: inputTasks, energyLevel: energyLevel)
+        LOG_SCHEDULER(.debug, "ScheduleGeneration", "Filtered tasks by energy", metadata: ["original": "\(inputTasks.count)", "filtered": "\(filteredTasks.count)", "energyLevel": "\(energyLevel.rawValue)"])
+
+        // 2. Build free intervals per day
         let dayIntervals = buildFreeIntervalsPerDay(fixedEvents: fixedEvents, constraints: constraints)
         LOG_SCHEDULER(.debug, "ScheduleGeneration", "Built free intervals", metadata: ["days": "\(dayIntervals.count)"])
 
-        // 2. Compute task priorities
-        var tasks = inputTasks // include locked tasks; they can be forced to due date
+        // 3. Compute task priorities
+        var tasks = filteredTasks // include locked tasks; they can be forced to due date
         let horizonDays = daysBetween(start: constraints.horizonStart, end: constraints.horizonEnd)
         var priorityMap: [UUID: Double] = [:]
         for task in tasks {
@@ -743,6 +748,74 @@ struct AIScheduler {
         }
         out.append(current)
         return out
+    }
+
+    // MARK: - Energy-Aware Task Filtering
+    /// Filters tasks based on current energy level
+    /// - High: All tasks
+    /// - Medium: Tasks due within 7 days + high importance tasks
+    /// - Low: Only critically due tasks (today/tomorrow) and urgent items
+    private static func filterTasksByEnergyLevel(tasks: [Task], energyLevel: EnergyLevel) -> [Task] {
+        let now = Date()
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: now)
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
+        let sevenDays = calendar.date(byAdding: .day, value: 7, to: today)!
+        
+        switch energyLevel {
+        case .high:
+            // High energy: schedule all tasks
+            return tasks
+            
+        case .medium:
+            // Medium energy: tasks due within a week OR high importance
+            return tasks.filter { task in
+                // Always include locked tasks
+                if task.locked { return true }
+                
+                // Include high importance tasks regardless of due date
+                if task.importance >= 0.7 { return true }
+                
+                // Include tasks due within 7 days
+                if let due = task.due, due <= sevenDays {
+                    return true
+                }
+                
+                // Include tasks with no due date if they're important enough
+                if task.due == nil && task.importance >= 0.5 {
+                    return true
+                }
+                
+                return false
+            }
+            
+        case .low:
+            // Low energy: only critically due (today/tomorrow) or very urgent
+            return tasks.filter { task in
+                // Always include locked tasks
+                if task.locked { return true }
+                
+                // Include tasks due today or tomorrow
+                if let due = task.due {
+                    if due <= tomorrow {
+                        return true
+                    }
+                    
+                    // Include very urgent tasks (within 2 days) if they're also important
+                    let twoDays = calendar.date(byAdding: .day, value: 2, to: today)!
+                    if due <= twoDays && task.importance >= 0.7 {
+                        return true
+                    }
+                }
+                
+                // Include critical items (high importance + difficulty)
+                if task.importance >= 0.8 && task.difficulty >= 0.6 {
+                    return true
+                }
+                
+                return false
+            }
+        }
     }
 
     // MARK: - Utilities

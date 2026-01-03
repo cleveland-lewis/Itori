@@ -372,7 +372,7 @@ struct PlannerPageView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                .primaryBackground.ignoresSafeArea()
+                Color.primaryBackground.ignoresSafeArea()
 
                 ScrollViewReader { proxy in
                     ScrollView(showsIndicators: false) {

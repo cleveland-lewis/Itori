@@ -570,6 +570,20 @@ enum PlannerEngine {
         settings: StudyPlanSettings,
         energyProfile: [Int: Double]
     ) -> (scheduled: [ScheduledSession], overflow: [PlannerSession]) {
+        // Get current energy level from settings
+        let energyLevelString = AppSettingsModel.shared.defaultEnergyLevel
+        let energyLevel: EnergyLevel
+        switch energyLevelString.lowercased() {
+        case "high":
+            energyLevel = .high
+        case "low":
+            energyLevel = .low
+        default:
+            energyLevel = .medium
+        }
+        
+        LOG_SCHEDULER(.info, "PlannerEngine", "Scheduling with energy level", metadata: ["energyLevel": "\(energyLevel.rawValue)", "sessions": "\(sessions.count)"])
+        
         // Convert PlannerSession to AIScheduler.Task
         let tasks = sessions.map { session -> AppTask in
             AppTask(
@@ -613,11 +627,12 @@ enum PlannerEngine {
             end: constraints.horizonEnd
         )
         
-        // Call AI scheduler
+        // Call AI scheduler with energy level
         let aiResult = AIScheduler.generateSchedule(
             tasks: tasks,
             fixedEvents: fixedEvents,
-            constraints: constraints
+            constraints: constraints,
+            energyLevel: energyLevel
         )
         
         // Convert back to ScheduledSession

@@ -92,7 +92,7 @@ struct StudySessionView: View {
         VStack(spacing: 0) {
             // Card content
             ZStack {
-                .tertiaryBackground
+                Color.tertiaryBackground
                 
                 VStack(spacing: 24) {
                     Spacer()

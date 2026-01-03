@@ -247,7 +247,7 @@ struct DeckCardView: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     Circle()
-                        .fill(isSelected ? Color.accentColor : .quaternary)
+                        .fill(isSelected ? Color.accentColor : Color.secondary.opacity(0.3))
                         .frame(width: 40, height: 40)
                         .overlay {
                             Image(systemName: "rectangle.stack.fill")
@@ -258,7 +258,7 @@ struct DeckCardView: View {
                     
                     if isSelected {
                         Image(systemName: "checkmark.circle.fill")
-                            .foregroundStyle(.accentColor)
+                            .foregroundStyle(Color.accentColor)
                             .font(.title3)
                     }
                 }
@@ -291,11 +291,11 @@ struct DeckCardView: View {
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(isSelected ? .accentQuaternary : .secondaryBackground)
-            .cornerRadius(12)
-            .overlay(
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .overlay(alignment: .center) {
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Color.accentColor : .quaternary, lineWidth: isSelected ? 2 : 1)
-            )
+                    .strokeBorder(isSelected ? Color.accentColor : Color.secondary.opacity(0.3), lineWidth: isSelected ? 2 : 1)
+            }
         }
         .buttonStyle(.plain)
     }
@@ -382,7 +382,7 @@ struct DeckRowView: View {
             HStack(spacing: 12) {
                 // Icon
                 Circle()
-                    .fill(isSelected ? Color.accentColor : .quaternary)
+                    .fill(isSelected ? Color.accentColor : Color.secondary.opacity(0.3))
                     .frame(width: 32, height: 32)
                     .overlay {
                         Image(systemName: "rectangle.stack.fill")

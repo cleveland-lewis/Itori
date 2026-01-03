@@ -27,6 +27,7 @@ struct RootsIOSApp: App {
     @StateObject private var preferences = AppPreferences()
     @StateObject private var parsingStore = SyllabusParsingStore.shared
     @StateObject private var eventsCountStore = EventsCountStore()
+    @StateObject private var schedulingCoordinator = IntelligentSchedulingCoordinator.shared
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
@@ -40,6 +41,13 @@ struct RootsIOSApp: App {
             settings.visibleTabs = TabRegistry.defaultEnabledTabs
             settings.tabOrder = TabRegistry.allTabs.map { $0.id }
             settings.save()
+        }
+        
+        // Initialize Intelligent Scheduling System
+        Task { @MainActor in
+            if settings.enableIntelligentScheduling {
+                IntelligentSchedulingCoordinator.shared.start()
+            }
         }
     }
 
@@ -67,6 +75,7 @@ struct RootsIOSApp: App {
                 .environmentObject(sheetRouter)
                 .environmentObject(toastRouter)
                 .environmentObject(filterState)
+                .environmentObject(schedulingCoordinator)
                 .onAppear {
                     preferences.highContrast = appSettings.highContrastMode
                     preferences.reduceTransparency = appSettings.increaseTransparency || !appSettings.enableGlassEffects

@@ -25,7 +25,7 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { proxy in
             ZStack(alignment: .topLeading) {
-                .primaryBackground.ignoresSafeArea()
+                Color.primaryBackground.ignoresSafeArea()
 
                 // LAYER 1: Main content
                 AppPageScaffold(

@@ -15,7 +15,7 @@ protocol TaskAlarmScheduling {
     var alarmKitAvailable: Bool { get }
     
     /// Whether the user has authorized alarms
-    var isAuthorized: Bool { get }
+    var isAuthorized: Bool { get async }
     
     /// Whether task alarms are enabled in settings
     var isEnabled: Bool { get set }

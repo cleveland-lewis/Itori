@@ -149,19 +149,17 @@ final class IOSTimerAlarmScheduler: TimerAlarmScheduling {
         }
     }
     
+    /* Commented out until AlarmKit API is available in iOS 26
     @available(iOS 26.0, *)
     private func alarmPresentation(title: String, body: String) -> AlarmPresentation {
-        // TODO: Implement when AlarmKit API is available
-        /*
         return AlarmPresentation(
             title: title,
             body: body,
             sound: .default,
             interruptionLevel: .timeSensitive
         )
-        */
-        fatalError("AlarmKit API not yet available")
     }
+    */
     #endif
     
     // MARK: - Cancellation

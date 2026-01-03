@@ -89,6 +89,14 @@ struct Flashcard: Codable, Identifiable, Hashable {
     var interval: Int = 0
     var easeFactor: Double = 2.5
     var lastReviewed: Date? = nil
+    
+    var isDue: Bool {
+        dueDate <= Date()
+    }
+    
+    var isNew: Bool {
+        repetition == 0
+    }
 }
 
 struct FlashcardDeck: Codable, Identifiable, Hashable {

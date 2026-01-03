@@ -125,7 +125,7 @@ struct TaskAlarmPickerView: View {
     init(task: AppTask) {
         self.task = task
         _alarmEnabled = State(initialValue: task.alarmEnabled)
-        _selectedDate = State(initialValue: task.alarmDate ?? defaultAlarmDate(for: task))
+        _selectedDate = State(initialValue: task.alarmDate ?? Self.defaultAlarmDate(for: task))
         _selectedSound = State(initialValue: task.alarmSound)
     }
     

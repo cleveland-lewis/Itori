@@ -102,7 +102,7 @@ struct CoursesPageView: View {
             let sidebarWidth = isStacked ? width : max(240, width * ratios.0)
 
             ZStack {
-                .primaryBackground.ignoresSafeArea()
+                Color.primaryBackground.ignoresSafeArea()
 
                 if isStacked {
                     VStack(spacing: RootsSpacing.l) {
@@ -1061,7 +1061,7 @@ struct ColorTagPicker: View {
                         .frame(width: 24, height: 24)
                         .overlay(
                             Circle()
-                                .stroke(selected == tag ? .accentColor : .separatorColor.opacity(0.12), lineWidth: selected == tag ? 3 : 1)
+                        .stroke(selected == tag ? Color.accentColor : Color.separatorColor.opacity(0.12), lineWidth: selected == tag ? 3 : 1)
                         )
                 }
                 .buttonStyle(.plain)

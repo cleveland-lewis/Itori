@@ -8,6 +8,7 @@
 #if os(iOS)
 import Foundation
 import UserNotifications
+import Combine
 
 #if canImport(AlarmKit)
 import AlarmKit
@@ -26,9 +27,11 @@ final class IOSTaskAlarmScheduler: ObservableObject, TaskAlarmScheduling {
     }
     
     var isAuthorized: Bool {
-        // TODO: Check AlarmKit authorization status
-        // For now, assume authorized if AlarmKit is available
-        true
+        get async {
+            // TODO: Check AlarmKit authorization status
+            // For now, assume authorized if AlarmKit is available
+            return true
+        }
     }
     
     init() {

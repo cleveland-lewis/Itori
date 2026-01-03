@@ -18,4 +18,8 @@ extension Notification.Name {
     
     // Planner settings
     static let plannerHorizonDidChange = Notification.Name("plannerHorizonDidChange")
+    
+    // Navigation
+    static let navigatePrevious = Notification.Name("navigatePrevious")
+    static let navigateNext = Notification.Name("navigateNext")
 }

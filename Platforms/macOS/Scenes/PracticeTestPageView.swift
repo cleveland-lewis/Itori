@@ -1,5 +1,6 @@
 #if os(macOS)
 import SwiftUI
+import Combine
 
 struct PracticeTestPageView: View {
     @EnvironmentObject private var appModel: AppModel
