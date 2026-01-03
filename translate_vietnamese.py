@@ -12,9 +12,10 @@ from googletrans import Translator
 def translate_vietnamese(file_path, max_translations=1232):
     """Translate Vietnamese entries efficiently"""
     
-    print("📖 Loading localization file...")
+    print("📖 Loading localization file...", flush=True)
     with open(file_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
+    print(f"✓ Loaded {len(data.get('strings', {}))} strings", flush=True)
     
     translator = Translator()
     
@@ -22,7 +23,7 @@ def translate_vietnamese(file_path, max_translations=1232):
     failed_count = 0
     skipped_count = 0
     
-    print("🌐 Starting Vietnamese (vi) translation...\n")
+    print("🌐 Starting Vietnamese (vi) translation...\n", flush=True)
     
     for idx, (key, value) in enumerate(data['strings'].items(), 1):
         if translated_count >= max_translations:
@@ -77,13 +78,13 @@ def translate_vietnamese(file_path, max_translations=1232):
             
             # Progress every 10 translations
             if translated_count % 10 == 0:
-                print(f"   {translated_count} translated - Last: '{source_text[:35]}'...")
+                print(f"   {translated_count} translated - Last: '{source_text[:35]}'...", flush=True)
                 
                 # Save every 25 translations
                 if translated_count % 25 == 0:
                     with open(file_path, 'w', encoding='utf-8') as f:
                         json.dump(data, f, ensure_ascii=False, indent=2)
-                    print(f"   💾 Saved")
+                    print(f"   💾 Saved", flush=True)
             
             time.sleep(0.1)  # Rate limiting
             

@@ -441,7 +441,15 @@ struct CoursesPageView: View {
                     print("Failed to create bookmark: \(error)")
                 }
                 
-                let file = CourseFile(
+                // Read file data for fingerprinting
+                var fileData: Data?
+                do {
+                    fileData = try Data(contentsOf: url)
+                } catch {
+                    print("Failed to read file data: \(error)")
+                }
+                
+                var file = CourseFile(
                     courseId: courseId,
                     nodeId: selectedModuleId,
                     filename: filename,
@@ -451,7 +459,16 @@ struct CoursesPageView: View {
                     isPracticeExam: false
                 )
                 
+                // Calculate fingerprint
+                file.contentFingerprint = FileParsingService.shared.calculateFingerprint(for: file, fileData: fileData)
+                
+                // Add to store
                 coursesStore.addFile(file)
+                
+                // Queue for parsing if appropriate category
+                if file.category.triggersAutoParsing {
+                    FileParsingService.shared.queueFileForParsing(file, priority: 0)
+                }
             }
         case .failure(let error):
             print("File import failed: \(error)")
