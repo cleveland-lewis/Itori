@@ -1,0 +1,12 @@
+{
+  "description": "choices field as comma-separated string",
+  "category": "schema_drift",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is mitosis?\",\"choices\":\"Cell division, Cell death, Cell growth, Cell mutation\",\"correct_choice_index\":0,\"rationale\":\"Mitosis is the process of cell division.\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "INVALID_CHOICES_TYPE",
+    "should_trigger_regeneration": true
+  },
+  "notes": "choices must be array of strings, not a single comma-separated string."
+}

@@ -1,0 +1,12 @@
+{
+  "description": "Topic close match (typo) - no fuzzy matching",
+  "category": "topic_scope",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cel_biology\",\"questions\":[{\"prompt\":\"What is mitosis?\",\"choices\":[\"Cell division\",\"Cell death\",\"Cell growth\",\"Cell mutation\"],\"correct_choice_index\":0,\"rationale\":\"Mitosis is the process of cell division.\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "INVALID_TOPIC_NO_FUZZY_MATCH",
+    "should_trigger_regeneration": true
+  },
+  "notes": "'cel_biology' is a typo of 'cell_biology'. Must reject - no fuzzy matching to prevent drift."
+}

@@ -25,8 +25,7 @@ struct DayEventsSidebar: View {
             content
         }
         .padding() // match calendar card padding so rounded backgrounds align
-        .background(DesignSystem.Materials.card)
-        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+        .sidebarCardStyle()
         .shadow(color: Color.black.opacity(0.06), radius: 8, y: 4)
     }
 
@@ -47,7 +46,10 @@ struct DayEventsSidebar: View {
             VStack(spacing: DesignSystem.Layout.spacing.small) {
                 if events.isEmpty {
                     VStack(spacing: DesignSystem.Layout.spacing.small) {
-                        Text("No events")
+                        Text(String.localizedStringWithFormat(
+                            NSLocalizedString("events_count", comment: ""),
+                            0
+                        ))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -71,11 +73,10 @@ struct DayEventsSidebar: View {
     }
 
     private var eventCountText: String {
-        switch events.count {
-        case 0: return "No events"
-        case 1: return "1 event"
-        default: return "\(events.count) events"
-        }
+        String.localizedStringWithFormat(
+            NSLocalizedString("events_count", comment: ""),
+            events.count
+        )
     }
 }
 

@@ -1,0 +1,12 @@
+{
+  "description": "Rationale doesn't mention correct answer",
+  "category": "rationale_constraints",
+  "severity": "warning",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is mitosis?\",\"choices\":[\"Cell division\",\"Cell death\",\"Cell growth\",\"Cell mutation\"],\"correct_choice_index\":0,\"rationale\":\"This process is important in biology and happens in many organisms.\"}]}",
+  "expected": {
+    "status": "warn",
+    "error_code": "RATIONALE_NO_MENTION_CORRECT",
+    "should_trigger_regeneration": false
+  },
+  "notes": "Rationale should explain WHY the correct answer is correct. This one doesn't mention 'Cell division'."
+}

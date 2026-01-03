@@ -64,32 +64,138 @@ public final class BYOProvider: AIProvider {
     ) async throws -> AIProviderResult {
         let startTime = Date()
         
-        // TODO: Implement actual API calls to BYO providers
-        // For now, return stub response
-        #if DEBUG
-        try await Task.sleep(nanoseconds: 2_000_000_000) // 2.0s
+        // Prepare prompt with JSON schema if needed
+        let finalPrompt = if let schema = schema {
+            enhancePromptWithSchema(prompt: prompt, schema: schema)
+        } else {
+            prompt
+        }
+        
+        // Call appropriate client based on provider type
+        let (text, tokenCount): (String, Int)
+        
+        switch type {
+        case .openai:
+            let client = OpenAIClient(apiKey: apiKey, endpoint: endpoint)
+            (text, tokenCount) = try await client.chatCompletion(
+                prompt: finalPrompt,
+                temperature: temperature,
+                requireJSON: schema != nil
+            )
+            
+        case .anthropic:
+            let client = AnthropicClient(apiKey: apiKey, endpoint: endpoint)
+            let systemPrompt = schema != nil ? "Always respond with valid JSON." : nil
+            (text, tokenCount) = try await client.messageCompletion(
+                prompt: finalPrompt,
+                temperature: temperature,
+                systemPrompt: systemPrompt
+            )
+            
+        case .custom:
+            guard let endpoint = endpoint else {
+                throw AIError.providerNotConfigured("Custom API endpoint required")
+            }
+            let client = CustomAPIClient(apiKey: apiKey, endpoint: endpoint)
+            (text, tokenCount) = try await client.chatCompletion(
+                prompt: finalPrompt,
+                temperature: temperature
+            )
+        }
         
         let latency = Int(Date().timeIntervalSince(startTime) * 1000)
         
+        // Parse JSON if schema was provided
+        let structuredData: [String: Any]? = if schema != nil {
+            try? parseJSONResponse(text: text)
+        } else {
+            nil
+        }
+        
         return AIProviderResult(
-            text: "[BYO \(type.displayName) response for '\(task.displayName)']",
+            text: text,
             provider: name,
             latencyMs: latency,
-            tokenCount: 75,
+            tokenCount: tokenCount,
             cached: false,
-            structuredData: schema != nil ? ["byo": true, "provider": type.rawValue] : nil
+            structuredData: structuredData
         )
-        #else
-        throw AIError.generationFailed("BYO provider not yet implemented")
-        #endif
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func enhancePromptWithSchema(prompt: String, schema: [String: Any]) -> String {
+        let schemaJSON = try? JSONSerialization.data(withJSONObject: schema, options: .prettyPrinted)
+        let schemaString = schemaJSON.flatMap { String(data: $0, encoding: .utf8) } ?? "{}"
+        
+        return """
+        \(prompt)
+        
+        Respond with valid JSON matching this schema:
+        \(schemaString)
+        """
+    }
+    
+    private func parseJSONResponse(text: String) throws -> [String: Any] {
+        // Extract JSON from markdown code blocks if present
+        let cleanedText = text
+            .replacingOccurrences(of: "```json", with: "")
+            .replacingOccurrences(of: "```", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        guard let data = cleanedText.data(using: .utf8),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw AIError.invalidSchema
+        }
+        
+        return json
     }
     
     public func isAvailable() async -> Bool {
         // Check if API key is provided
         guard !apiKey.isEmpty else { return false }
         
-        // TODO: Verify API key / network connectivity
-        // For now, just check if key exists
-        return true
+        // For custom provider, endpoint is required
+        if type == .custom && endpoint == nil {
+            return false
+        }
+        
+        // Quick availability check - try a minimal request
+        do {
+            switch type {
+            case .openai:
+                let client = OpenAIClient(apiKey: apiKey, endpoint: endpoint)
+                // Test with minimal prompt
+                _ = try await client.chatCompletion(
+                    prompt: "Say 'OK'",
+                    temperature: 0.0,
+                    requireJSON: false
+                )
+                return true
+                
+            case .anthropic:
+                let client = AnthropicClient(apiKey: apiKey, endpoint: endpoint)
+                _ = try await client.messageCompletion(
+                    prompt: "Say 'OK'",
+                    temperature: 0.0
+                )
+                return true
+                
+            case .custom:
+                guard let endpoint = endpoint else { return false }
+                let client = CustomAPIClient(apiKey: apiKey, endpoint: endpoint)
+                _ = try await client.chatCompletion(
+                    prompt: "Say 'OK'",
+                    temperature: 0.0
+                )
+                return true
+            }
+        } catch {
+            LOG_AI(.warn, "BYOProvider", "Availability check failed", metadata: [
+                "provider": type.rawValue,
+                "error": error.localizedDescription
+            ])
+            return false
+        }
     }
 }

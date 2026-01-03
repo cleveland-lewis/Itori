@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Task counts -->
+    <key>tasks_due_count</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>No tasks due</string>
+            <key>one</key>
+            <string>1 task due</string>
+            <key>other</key>
+            <string>%d tasks due</string>
+        </dict>
+    </dict>
+    
+    <key>tasks_due_today</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>No tasks due today</string>
+            <key>one</key>
+            <string>1 task due today</string>
+            <key>other</key>
+            <string>%d tasks due today</string>
+        </dict>
+    </dict>
+    
+    <!-- Event counts -->
+    <key>events_scheduled</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>No events scheduled</string>
+            <key>one</key>
+            <string>1 event scheduled</string>
+            <key>other</key>
+            <string>%d events scheduled</string>
+        </dict>
+    </dict>
+    
+    <!-- Assignment counts -->
+    <key>active_assignments_count</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>No active assignments</string>
+            <key>one</key>
+            <string>1 active assignment</string>
+            <key>other</key>
+            <string>%d active assignments</string>
+        </dict>
+    </dict>
+    
+    <!-- Minutes -->
+    <key>minutes_count</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>0 minutes</string>
+            <key>one</key>
+            <string>1 minute</string>
+            <key>other</key>
+            <string>%d minutes</string>
+        </dict>
+    </dict>
+    
+    <key>minutes_remaining</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>0 min remaining</string>
+            <key>one</key>
+            <string>1 min remaining</string>
+            <key>other</key>
+            <string>%d min remaining</string>
+        </dict>
+    </dict>
+    
+    <key>minutes_completed</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>0 min completed</string>
+            <key>one</key>
+            <string>1 min completed</string>
+            <key>other</key>
+            <string>%d min completed</string>
+        </dict>
+    </dict>
+    
+    <key>minutes_scheduled</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>0 min scheduled</string>
+            <key>one</key>
+            <string>1 min scheduled</string>
+            <key>other</key>
+            <string>%d min scheduled</string>
+        </dict>
+    </dict>
+    
+    <!-- Hours -->
+    <key>hours_count</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>0 hours</string>
+            <key>one</key>
+            <string>1 hour</string>
+            <key>other</key>
+            <string>%d hours</string>
+        </dict>
+    </dict>
+    
+    <!-- Study sessions -->
+    <key>study_sessions_count</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>No study sessions</string>
+            <key>one</key>
+            <string>1 study session</string>
+            <key>other</key>
+            <string>%d study sessions</string>
+        </dict>
+    </dict>
+    
+    <!-- Planner items -->
+    <key>assignments_planned</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>No assignments planned</string>
+            <key>one</key>
+            <string>1 assignment planned</string>
+            <key>other</key>
+            <string>%d assignments planned</string>
+        </dict>
+    </dict>
+    
+    <!-- Items/things generic -->
+    <key>items_count</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>No items</string>
+            <key>one</key>
+            <string>1 item</string>
+            <key>other</key>
+            <string>%d items</string>
+        </dict>
+    </dict>
+    
+    <!-- Events count -->
+    <key>events_count</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>No events</string>
+            <key>one</key>
+            <string>1 event</string>
+            <key>other</key>
+            <string>%d events</string>
+        </dict>
+    </dict>
+    
+    <!-- Time units for accessibility/voice over -->
+    <key>minutes_unit</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>one</key>
+            <string>minute</string>
+            <key>other</key>
+            <string>minutes</string>
+        </dict>
+    </dict>
+    
+    <key>seconds_unit</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>one</key>
+            <string>second</string>
+            <key>other</key>
+            <string>seconds</string>
+        </dict>
+    </dict>
+    
+    <!-- Recurrence units -->
+    <key>days_unit</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>one</key>
+            <string>day</string>
+            <key>other</key>
+            <string>days</string>
+        </dict>
+    </dict>
+    
+    <key>weeks_unit</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>one</key>
+            <string>week</string>
+            <key>other</key>
+            <string>weeks</string>
+        </dict>
+    </dict>
+    
+    <key>months_unit</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>one</key>
+            <string>month</string>
+            <key>other</key>
+            <string>months</string>
+        </dict>
+    </dict>
+    
+    <key>years_unit</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>one</key>
+            <string>year</string>
+            <key>other</key>
+            <string>years</string>
+        </dict>
+    </dict>
+    
+    <!-- Tasks completed -->
+    <key>tasks_completed</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@count@</string>
+        <key>count</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>zero</key>
+            <string>No tasks completed</string>
+            <key>one</key>
+            <string>Completed 1 task</string>
+            <key>other</key>
+            <string>Completed %d tasks</string>
+        </dict>
+    </dict>
+</dict>
+</plist>

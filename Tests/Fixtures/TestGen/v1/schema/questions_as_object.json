@@ -1,0 +1,12 @@
+{
+  "description": "questions field is object not array",
+  "category": "schema_drift",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":{\"q1\":{\"prompt\":\"What is mitosis?\",\"choices\":[\"Cell division\",\"Cell death\",\"Cell growth\",\"Cell mutation\"],\"correct_choice_index\":0,\"rationale\":\"Mitosis is the process of cell division.\"}}}",
+  "expected": {
+    "status": "fail",
+    "error_code": "INVALID_QUESTIONS_TYPE",
+    "should_trigger_regeneration": true
+  },
+  "notes": "questions must be array, not object/dict."
+}

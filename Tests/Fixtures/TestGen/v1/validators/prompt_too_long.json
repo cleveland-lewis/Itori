@@ -1,0 +1,12 @@
+{
+  "description": "Prompt exceeds maximum length (assume 500 char limit)",
+  "category": "prompt_constraints",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"This is an extremely long question prompt that goes on and on and on without really saying much of substance but just keeps adding more and more words to test whether the validation system properly checks for prompt length limits because we want to ensure that prompts are concise and clear for students and not overly verbose or unnecessarily complicated which could confuse learners and make the assessment less effective at measuring true understanding of the material being tested so we keep adding more text here to exceed any reasonable character limit that might be set.\",\"choices\":[\"Cell division\",\"Cell death\",\"Cell growth\",\"Cell mutation\"],\"correct_choice_index\":0,\"rationale\":\"Mitosis is the process of cell division.\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "PROMPT_TOO_LONG",
+    "should_trigger_regeneration": true
+  },
+  "notes": "Prompts should be concise. Enforce maximum length (e.g., 500 chars)."
+}

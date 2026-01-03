@@ -1,0 +1,12 @@
+{
+  "description": "Distribution within acceptable tolerance (positive case)",
+  "category": "distribution",
+  "severity": "info",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is the powerhouse of the cell?\",\"choices\":[\"Mitochondria\",\"Nucleus\",\"Ribosome\",\"Golgi\"],\"correct_choice_index\":0,\"rationale\":\"Mitochondria produce ATP.\"},{\"prompt\":\"Where is genetic material stored?\",\"choices\":[\"Cytoplasm\",\"Nucleus\",\"Membrane\",\"Ribosome\"],\"correct_choice_index\":1,\"rationale\":\"The nucleus stores DNA.\"},{\"prompt\":\"What makes proteins?\",\"choices\":[\"Mitochondria\",\"Nucleus\",\"Ribosome\",\"Golgi\"],\"correct_choice_index\":2,\"rationale\":\"Ribosomes synthesize proteins.\"},{\"prompt\":\"What modifies proteins?\",\"choices\":[\"Mitochondria\",\"Nucleus\",\"Ribosome\",\"Golgi apparatus\"],\"correct_choice_index\":3,\"rationale\":\"The Golgi modifies proteins.\"},{\"prompt\":\"What is the cell wall made of?\",\"choices\":[\"Cellulose\",\"Protein\",\"Lipid\",\"Sugar\"],\"correct_choice_index\":0,\"rationale\":\"Plant cell walls contain cellulose.\"}]}",
+  "expected": {
+    "status": "pass",
+    "distribution": {"A": 0.4, "B": 0.2, "C": 0.2, "D": 0.2},
+    "within_tolerance": true
+  },
+  "notes": "Answers: A,B,C,D,A. Distribution is (2,1,1,1) = (40%,20%,20%,20%). Acceptable."
+}

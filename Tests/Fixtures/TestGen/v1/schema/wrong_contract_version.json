@@ -1,0 +1,12 @@
+{
+  "description": "Wrong contract_version (future version)",
+  "category": "schema_drift",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"2.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is mitosis?\",\"choices\":[\"Cell division\",\"Cell death\",\"Cell growth\",\"Cell mutation\"],\"correct_choice_index\":0,\"rationale\":\"Mitosis is the process of cell division.\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "UNSUPPORTED_CONTRACT_VERSION",
+    "should_trigger_regeneration": true
+  },
+  "notes": "Version 2.0 not supported. Must reject and regenerate with correct version."
+}

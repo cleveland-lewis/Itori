@@ -1,0 +1,12 @@
+{
+  "description": "Rationale contains external URL",
+  "category": "rationale_constraints",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is mitosis?\",\"choices\":[\"Cell division\",\"Cell death\",\"Cell growth\",\"Cell mutation\"],\"correct_choice_index\":0,\"rationale\":\"Mitosis is cell division. Learn more at https://example.com/mitosis\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "RATIONALE_CONTAINS_URL",
+    "should_trigger_regeneration": true
+  },
+  "notes": "Rationales must be self-contained. No external links or citations."
+}

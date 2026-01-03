@@ -1,0 +1,12 @@
+{
+  "description": "Unknown nested key in question object",
+  "category": "schema_drift",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is mitosis?\",\"choices\":[\"Cell division\",\"Cell death\",\"Cell growth\",\"Cell mutation\"],\"correct_choice_index\":0,\"rationale\":\"Mitosis is the process of cell division.\",\"difficulty\":\"easy\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "UNKNOWN_QUESTION_KEY",
+    "should_trigger_regeneration": true
+  },
+  "notes": "Strict mode: question objects must not have extra keys like 'difficulty'."
+}

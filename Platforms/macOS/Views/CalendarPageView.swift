@@ -310,6 +310,7 @@ struct CalendarPageView: View {
             }
             .buttonStyle(.plain)
             .rootsStandardInteraction()
+            .keyboardShortcut(.leftArrow, modifiers: [.command])
             .onHover { hovering in
                 withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { chevronLeftHover = hovering }
             }
@@ -323,6 +324,7 @@ struct CalendarPageView: View {
             }
             .buttonStyle(.plain)
             .rootsStandardInteraction()
+            .keyboardShortcut("t", modifiers: [.command])
             .onHover { hovering in
                 withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { todayHover = hovering }
             }
@@ -337,6 +339,7 @@ struct CalendarPageView: View {
             }
             .buttonStyle(.plain)
             .rootsStandardInteraction()
+            .keyboardShortcut(.rightArrow, modifiers: [.command])
             .onHover { hovering in
                 withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { chevronRightHover = hovering }
             }
@@ -353,6 +356,7 @@ struct CalendarPageView: View {
             }
             .buttonStyle(.plain)
             .rootsStandardInteraction()
+            .keyboardShortcut("r", modifiers: [.command])
             .disabled(isRefreshing)
             .onHover { hovering in
                 withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { refreshHover = hovering }
@@ -403,12 +407,7 @@ struct CalendarPageView: View {
             eventListView
         }
         .frame(maxHeight: .infinity, alignment: .top)
-        .background(DesignSystem.Materials.card)
-        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                .stroke(Color.primary.opacity(0.06), lineWidth: 1)
-        )
+        .sidebarCardStyle()
     }
     
     @ViewBuilder
@@ -522,7 +521,10 @@ struct CalendarPageView: View {
         let date = selectedDate ?? focusedDate
         let dayEvents = events(on: date)
         let count = dayEvents.count
-        return count == 0 ? "No events" : "\(count) event\(count == 1 ? "" : "s")"
+        return String.localizedStringWithFormat(
+            NSLocalizedString("events_count", comment: ""),
+            count
+        )
     }
     
     private func isAllDay(event: CalendarEvent) -> Bool {
@@ -659,8 +661,11 @@ struct CalendarPageView: View {
         let start = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)) ?? date
         let end = Calendar.current.date(byAdding: .day, value: 6, to: start) ?? date
         let f = DateFormatter()
-        f.dateFormat = "d MMM"
-        return "\(f.string(from: start)) – \(f.string(from: end))"
+        f.dateFormat = "EEE, d MMM"
+        let startStr = f.string(from: start)
+        f.dateFormat = "EEE, d MMM"
+        let endStr = f.string(from: end)
+        return "\(startStr) – \(endStr)"
     }
 
     private func weekSubtitle(for date: Date) -> String {
@@ -1447,11 +1452,7 @@ private struct CalendarSidebarView: View {
                 }
             }
         }
-        .background(DesignSystem.Materials.popup, in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                .strokeBorder(neutralLine.opacity(0.3), lineWidth: 1)
-        )
+        .sidebarCardStyle()
     }
 }
 

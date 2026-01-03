@@ -452,6 +452,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage("roots.settings.pomodoroIterations") var pomodoroIterationsStorage: Int = 4
     @AppStorage("roots.settings.timerDurationMinutes") var timerDurationStorage: Int = 30
     @AppStorage("roots.settings.longBreakCadence") var longBreakCadenceStorage: Int = 4
+    @AppStorage("roots.settings.timerAppearance") var timerAppearanceStorage: String = "analog"
     
     // Auto-reschedule settings
     @AppStorage("roots.settings.enableAutoReschedule") var enableAutoReschedule: Bool = true
@@ -620,7 +621,11 @@ final class AppSettingsModel: ObservableObject, Codable {
 
     var plannerHorizon: String {
         get { plannerHorizonStorage }
-        set { plannerHorizonStorage = newValue }
+        set { 
+            plannerHorizonStorage = newValue
+            // Notify that scheduler should update
+            NotificationCenter.default.post(name: .plannerHorizonDidChange, object: nil)
+        }
     }
 
     var enableFlashcards: Bool {
@@ -823,6 +828,15 @@ final class AppSettingsModel: ObservableObject, Codable {
     var timerDurationMinutes: Int {
         get { timerDurationStorage }
         set { timerDurationStorage = newValue }
+    }
+    
+    var timerAppearance: String {
+        get { timerAppearanceStorage }
+        set { timerAppearanceStorage = newValue }
+    }
+    
+    var isTimerAnalog: Bool {
+        timerAppearance == "analog"
     }
     
     var longBreakCadence: Int {

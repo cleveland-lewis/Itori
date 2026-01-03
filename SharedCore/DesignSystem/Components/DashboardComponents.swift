@@ -172,7 +172,7 @@ struct DashboardEmptyState: View {
                     .padding(.top, 2)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 100, alignment: .leading)
     }
 }
 

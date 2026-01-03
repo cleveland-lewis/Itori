@@ -1,0 +1,12 @@
+{
+  "description": "All answers are A (index 0)",
+  "category": "distribution",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"Q1?\",\"choices\":[\"Correct\",\"Wrong1\",\"Wrong2\",\"Wrong3\"],\"correct_choice_index\":0,\"rationale\":\"R1\"},{\"prompt\":\"Q2?\",\"choices\":[\"Correct\",\"Wrong1\",\"Wrong2\",\"Wrong3\"],\"correct_choice_index\":0,\"rationale\":\"R2\"},{\"prompt\":\"Q3?\",\"choices\":[\"Correct\",\"Wrong1\",\"Wrong2\",\"Wrong3\"],\"correct_choice_index\":0,\"rationale\":\"R3\"},{\"prompt\":\"Q4?\",\"choices\":[\"Correct\",\"Wrong1\",\"Wrong2\",\"Wrong3\"],\"correct_choice_index\":0,\"rationale\":\"R4\"},{\"prompt\":\"Q5?\",\"choices\":[\"Correct\",\"Wrong1\",\"Wrong2\",\"Wrong3\"],\"correct_choice_index\":0,\"rationale\":\"R5\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "DISTRIBUTION_ALL_SAME_ANSWER",
+    "should_trigger_regeneration": true
+  },
+  "notes": "All questions have answer A. Pattern too obvious. Must regenerate for balanced distribution."
+}

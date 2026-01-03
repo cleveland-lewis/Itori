@@ -1,0 +1,25 @@
+{
+  "description": "First output invalid JSON, second valid",
+  "category": "regeneration",
+  "severity": "info",
+  "attempts": [
+    {
+      "attempt": 1,
+      "input": "I'll generate a test for you.\n\n{invalid json here",
+      "expected": {
+        "status": "fail",
+        "error_code": "INVALID_JSON",
+        "should_retry": true
+      }
+    },
+    {
+      "attempt": 2,
+      "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is mitosis?\",\"choices\":[\"Cell division\",\"Cell death\",\"Cell growth\",\"Cell mutation\"],\"correct_choice_index\":0,\"rationale\":\"Mitosis is the process of cell division that produces two identical daughter cells.\"}]}",
+      "expected": {
+        "status": "pass",
+        "should_retry": false
+      }
+    }
+  ],
+  "notes": "System should recover from JSON parse errors via regeneration."
+}

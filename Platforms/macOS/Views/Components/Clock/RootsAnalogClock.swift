@@ -422,19 +422,19 @@ struct AnalogClockHands: View {
         let ringOffset: CGFloat = radius * (isStopwatch ? 0.21 : 0.235)
 
         ZStack {
-            if !isStopwatch {
-                Capsule(style: .continuous)
-                    .fill(Color.primary.opacity(0.88))
-                    .frame(width: 6.5, height: radius * 0.46)
-                    .offset(y: -radius * 0.23)
-                    .rotationEffect(.degrees((hours / 12) * 360))
+            // Hour hand
+            Capsule(style: .continuous)
+                .fill(Color.primary.opacity(0.88))
+                .frame(width: isStopwatch ? 5.0 : 6.5, height: radius * 0.46)
+                .offset(y: -radius * 0.23)
+                .rotationEffect(.degrees((hours / 12) * 360))
 
-                Capsule(style: .continuous)
-                    .fill(Color.primary.opacity(0.82))
-                    .frame(width: 3.5, height: radius * 0.7)
-                    .offset(y: -radius * 0.35)
-                    .rotationEffect(.degrees((minutes / 60) * 360))
-            }
+            // Minute hand
+            Capsule(style: .continuous)
+                .fill(Color.primary.opacity(0.82))
+                .frame(width: isStopwatch ? 2.8 : 3.5, height: radius * 0.7)
+                .offset(y: -radius * 0.35)
+                .rotationEffect(.degrees((minutes / 60) * 360))
 
             if showSecondHand {
                 ZStack {

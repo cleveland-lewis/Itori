@@ -4,6 +4,7 @@ import SwiftUI
 /// Root shell view with persistent sidebar and glass content area
 struct RootsSidebarShell: View {
     @State private var selection: RootTab = .dashboard
+    @AppStorage("sidebarVisible") private var sidebarVisible: Bool = true
     @EnvironmentObject var settings: AppSettingsModel
     @EnvironmentObject var settingsCoordinator: SettingsCoordinator
     @EnvironmentObject var appModel: AppModel
@@ -12,16 +13,49 @@ struct RootsSidebarShell: View {
     var body: some View {
         HStack(spacing: 16) {
             // Persistent left sidebar (card style)
-            GlassPanel(material: .hudWindow, cornerRadius: 18, showBorder: true) {
-                SidebarColumn(selection: $selection)
-                    .frame(maxHeight: .infinity, alignment: .top)
+            if sidebarVisible {
+                GlassPanel(material: .hudWindow, cornerRadius: 18, showBorder: true) {
+                    SidebarColumn(selection: $selection)
+                        .frame(maxHeight: .infinity, alignment: .top)
+                }
+                .frame(width: 260)
+                .transition(.move(edge: .leading).combined(with: .opacity))
             }
-            .frame(width: 260)
 
-            // Main content area
-            currentPageView
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .padding(20)
+            // Main content area with toolbar
+            VStack(spacing: 0) {
+                // Toolbar with sidebar toggle
+                HStack {
+                    Button(action: {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                            sidebarVisible.toggle()
+                        }
+                    }) {
+                        Image(systemName: "sidebar.left")
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                            .frame(width: 32, height: 32)
+                            .background(
+                                Circle()
+                                    .fill(DesignSystem.Materials.hud.opacity(0.5))
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .help("Toggle Sidebar")
+                    .keyboardShortcut("s", modifiers: [.command, .control])
+                    
+                    Spacer()
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 12)
+                
+                // Page content
+                currentPageView
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 20)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding(16)
         .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)

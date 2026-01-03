@@ -1,0 +1,13 @@
+{
+  "description": "Golden fixture: Bio 101 - 5 question mini test",
+  "category": "golden",
+  "severity": "info",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is the primary function of mitochondria?\",\"choices\":[\"Energy production through ATP synthesis\",\"Protein synthesis\",\"DNA replication\",\"Waste removal\"],\"correct_choice_index\":0,\"rationale\":\"Mitochondria are known as the powerhouse of the cell because they produce ATP through cellular respiration.\"},{\"prompt\":\"Where is genetic material stored in eukaryotic cells?\",\"choices\":[\"Cytoplasm\",\"Cell membrane\",\"Nucleus\",\"Endoplasmic reticulum\"],\"correct_choice_index\":2,\"rationale\":\"The nucleus is the membrane-bound organelle that contains the cell's chromosomes and genetic material (DNA).\"},{\"prompt\":\"What organelle is responsible for protein synthesis?\",\"choices\":[\"Golgi apparatus\",\"Lysosome\",\"Ribosome\",\"Peroxisome\"],\"correct_choice_index\":2,\"rationale\":\"Ribosomes are the cellular structures that translate mRNA into polypeptide chains, synthesizing proteins.\"},{\"prompt\":\"Which process allows cells to maintain internal balance?\",\"choices\":[\"Mitosis\",\"Homeostasis\",\"Photosynthesis\",\"Fermentation\"],\"correct_choice_index\":1,\"rationale\":\"Homeostasis is the process by which cells and organisms maintain stable internal conditions despite external changes.\"},{\"prompt\":\"What is the function of the cell membrane?\",\"choices\":[\"Energy storage\",\"Protein production\",\"Selective permeability and protection\",\"Genetic information storage\"],\"correct_choice_index\":2,\"rationale\":\"The cell membrane controls what enters and leaves the cell through selective permeability while providing structural protection.\"}]}",
+  "expected": {
+    "status": "pass",
+    "all_validators_pass": true,
+    "distribution": {"A": 0.2, "B": 0.2, "C": 0.6, "D": 0.0},
+    "distribution_acceptable": true
+  },
+  "notes": "This is a golden fixture. It MUST pass all validators. Any changes require deliberate approval and review."
+}

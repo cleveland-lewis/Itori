@@ -1,0 +1,12 @@
+{
+  "description": "Contains 'clearly' or 'obviously'",
+  "category": "content_policy",
+  "severity": "warning",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is the clearly most important organelle?\",\"choices\":[\"Nucleus\",\"Mitochondria\",\"Ribosome\",\"Golgi apparatus\"],\"correct_choice_index\":0,\"rationale\":\"The nucleus is clearly the most important.\"}]}",
+  "expected": {
+    "status": "warn",
+    "error_code": "SUBJECTIVE_LANGUAGE_DETECTED",
+    "should_trigger_regeneration": false
+  },
+  "notes": "'Clearly/obviously' suggests answer is self-evident. Weak question design."
+}

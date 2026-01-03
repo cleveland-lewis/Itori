@@ -83,6 +83,7 @@ struct SystemStyleSettingsView: View {
         case .profiles: ProfilesSettingsView()
         case .timer: TimerSettingsView()
         case .flashcards: FlashcardSettingsView()
+        case .ai: AISettingsView()
         case .integrations: IntegrationsSettingsView()
         case .notifications: NotificationsSettingsView()
         case .privacy: PrivacySettingsView()

@@ -1,0 +1,22 @@
+{
+  "description": "Safe template fallback triggered",
+  "category": "regeneration",
+  "severity": "info",
+  "context": {
+    "max_retries_reached": true,
+    "all_attempts_failed": true
+  },
+  "expected_fallback": {
+    "contract_version": "1.0",
+    "topic": "cell_biology",
+    "questions": [
+      {
+        "prompt": "[FALLBACK] What is the basic unit of life?",
+        "choices": ["Cell", "Atom", "Molecule", "Organ"],
+        "correct_choice_index": 0,
+        "rationale": "The cell is the fundamental unit of life."
+      }
+    ]
+  },
+  "notes": "When all retries fail, use a safe, pre-validated template to never ship invalid output."
+}

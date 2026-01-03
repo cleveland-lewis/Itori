@@ -15,4 +15,7 @@ extension Notification.Name {
 
     // Timer state updates (menu bar manager uses this)
     static let timerStateDidChange = Notification.Name("timerStateDidChange")
+    
+    // Planner settings
+    static let plannerHorizonDidChange = Notification.Name("plannerHorizonDidChange")
 }

@@ -1,0 +1,12 @@
+{
+  "description": "All answers are C (index 2)",
+  "category": "distribution",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"Q1?\",\"choices\":[\"Wrong1\",\"Wrong2\",\"Correct\",\"Wrong3\"],\"correct_choice_index\":2,\"rationale\":\"R1\"},{\"prompt\":\"Q2?\",\"choices\":[\"Wrong1\",\"Wrong2\",\"Correct\",\"Wrong3\"],\"correct_choice_index\":2,\"rationale\":\"R2\"},{\"prompt\":\"Q3?\",\"choices\":[\"Wrong1\",\"Wrong2\",\"Correct\",\"Wrong3\"],\"correct_choice_index\":2,\"rationale\":\"R3\"},{\"prompt\":\"Q4?\",\"choices\":[\"Wrong1\",\"Wrong2\",\"Correct\",\"Wrong3\"],\"correct_choice_index\":2,\"rationale\":\"R4\"},{\"prompt\":\"Q5?\",\"choices\":[\"Wrong1\",\"Wrong2\",\"Correct\",\"Wrong3\"],\"correct_choice_index\":2,\"rationale\":\"R5\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "DISTRIBUTION_ALL_SAME_ANSWER",
+    "should_trigger_regeneration": true
+  },
+  "notes": "All questions have answer C. Must reject."
+}

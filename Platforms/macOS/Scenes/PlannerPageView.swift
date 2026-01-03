@@ -1529,10 +1529,26 @@ struct NewTaskSheet: View {
 
     private var recurrenceUnitLabel: String {
         switch draft.recurrenceFrequency {
-        case .daily: return draft.recurrenceInterval == 1 ? "day" : "days"
-        case .weekly: return draft.recurrenceInterval == 1 ? "week" : "weeks"
-        case .monthly: return draft.recurrenceInterval == 1 ? "month" : "months"
-        case .yearly: return draft.recurrenceInterval == 1 ? "year" : "years"
+        case .daily:
+            return String.localizedStringWithFormat(
+                NSLocalizedString("days_unit", comment: ""),
+                draft.recurrenceInterval
+            )
+        case .weekly:
+            return String.localizedStringWithFormat(
+                NSLocalizedString("weeks_unit", comment: ""),
+                draft.recurrenceInterval
+            )
+        case .monthly:
+            return String.localizedStringWithFormat(
+                NSLocalizedString("months_unit", comment: ""),
+                draft.recurrenceInterval
+            )
+        case .yearly:
+            return String.localizedStringWithFormat(
+                NSLocalizedString("years_unit", comment: ""),
+                draft.recurrenceInterval
+            )
         }
     }
 

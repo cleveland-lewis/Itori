@@ -1,0 +1,12 @@
+{
+  "description": "Contains 'Both A and B'",
+  "category": "content_policy",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What are organelles?\",\"choices\":[\"Mitochondria\",\"Nucleus\",\"Both A and B\",\"Neither A nor B\"],\"correct_choice_index\":2,\"rationale\":\"Mitochondria and nucleus are both organelles.\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "BANNED_PHRASE_BOTH_AB",
+    "should_trigger_regeneration": true
+  },
+  "notes": "'Both A and B' creates dependency on choice order. Not allowed."
+}

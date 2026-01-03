@@ -545,7 +545,10 @@ final class NotificationManager: ObservableObject {
         let weekMinutes = StudyHoursTracker.shared.totals.weekMinutes
         let completedTasks = AssignmentsStore.shared.tasks.filter { $0.isCompleted }.count
         let studyText = weekMinutes > 0 ? "Study time: \(StudyHoursTotals.formatMinutes(weekMinutes))" : "No study time logged"
-        let taskText = completedTasks == 0 ? "No tasks completed" : "Completed \(completedTasks) task\(completedTasks == 1 ? "" : "s")"
+        let taskText = String.localizedStringWithFormat(
+            NSLocalizedString("tasks_completed", comment: ""),
+            completedTasks
+        )
 
         content.body = "\(studyText) • \(taskText)"
         content.sound = .default

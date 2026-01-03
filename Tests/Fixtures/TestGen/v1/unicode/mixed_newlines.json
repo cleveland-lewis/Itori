@@ -1,0 +1,12 @@
+{
+  "description": "Mixed newline encodings (CRLF + LF)",
+  "category": "unicode",
+  "severity": "info",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is mitosis?\\r\\nIt is important.\",\"choices\":[\"Cell\\r\\ndivision\",\"Cell\\ndeath\",\"Cell\\r\\ngrowth\",\"Cell\\nmutation\"],\"correct_choice_index\":0,\"rationale\":\"Mitosis is the process\\r\\nof cell division.\\nIt produces two cells.\"}]}",
+  "expected": {
+    "status": "pass",
+    "should_normalize": true,
+    "normalized_newlines": "LF"
+  },
+  "notes": "Mixed CRLF (\\r\\n) and LF (\\n) should be normalized to consistent LF."
+}

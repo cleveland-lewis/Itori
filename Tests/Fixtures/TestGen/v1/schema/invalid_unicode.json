@@ -1,0 +1,12 @@
+{
+  "description": "Invalid unicode sequences",
+  "category": "json_parsing",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is \\uDEAD?\",\"choices\":[\"A\",\"B\",\"C\",\"D\"],\"correct_choice_index\":0,\"rationale\":\"Test\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "INVALID_UNICODE_SEQUENCE",
+    "should_trigger_regeneration": true
+  },
+  "notes": "\\uDEAD is an unpaired surrogate. Must fail validation."
+}

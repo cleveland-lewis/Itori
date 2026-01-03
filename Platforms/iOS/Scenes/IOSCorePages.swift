@@ -726,25 +726,73 @@ struct IOSCalendarView: View {
 }
 
 struct IOSPracticeView: View {
+    @StateObject private var practiceStore = PracticeTestStore.shared
+    @StateObject private var scheduledTestsStore = ScheduledTestsStore.shared
+    @State private var showingScheduledTests = false
+    
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 16) {
-                IOSInfoCard(
-                    title: "Practice Sessions",
-                    subtitle: "Warmups, drills, reviews",
-                    systemImage: "list.clipboard",
-                    detail: "Build short, focused practice loops."
-                )
-                IOSInfoCard(
-                    title: "Track Progress",
-                    subtitle: "Stay consistent",
-                    systemImage: "chart.line.uptrend.xyaxis",
-                    detail: "Log repetitions and streaks over time."
-                )
+        NavigationStack {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 16) {
+                    // Scheduled Tests Card
+                    Button {
+                        showingScheduledTests = true
+                    } label: {
+                        HStack(spacing: 16) {
+                            Image(systemName: "calendar.badge.clock")
+                                .font(.title)
+                                .foregroundStyle(.blue)
+                                .frame(width: 44, height: 44)
+                                .background(
+                                    Circle()
+                                        .fill(Color.blue.opacity(0.15))
+                                )
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Scheduled Tests")
+                                    .font(.headline)
+                                    .foregroundStyle(.primary)
+                                
+                                Text("\(scheduledTestsStore.scheduledTests.filter { $0.status != .archived }.count) upcoming")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                            
+                            Spacer()
+                            
+                            Image(systemName: "chevron.right")
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(16)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                .fill(Color(uiColor: .secondarySystemGroupedBackground))
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    
+                    IOSInfoCard(
+                        title: "Practice Sessions",
+                        subtitle: "Warmups, drills, reviews",
+                        systemImage: "list.clipboard",
+                        detail: "Build short, focused practice loops."
+                    )
+                    IOSInfoCard(
+                        title: "Track Progress",
+                        subtitle: "Stay consistent",
+                        systemImage: "chart.line.uptrend.xyaxis",
+                        detail: "Log repetitions and streaks over time."
+                    )
+                }
+                .padding(20)
             }
-            .padding(20)
+            .background(DesignSystem.Colors.appBackground)
+            .navigationTitle("Practice")
+            .sheet(isPresented: $showingScheduledTests) {
+                IOSScheduledTestsView()
+            }
         }
-        .background(DesignSystem.Colors.appBackground)
     }
 }
 
@@ -1455,10 +1503,26 @@ struct IOSTaskEditorView: View {
 
     private var recurrenceUnitLabel: String {
         switch draft.recurrenceFrequency {
-        case .daily: return draft.recurrenceInterval == 1 ? "day" : "days"
-        case .weekly: return draft.recurrenceInterval == 1 ? "week" : "weeks"
-        case .monthly: return draft.recurrenceInterval == 1 ? "month" : "months"
-        case .yearly: return draft.recurrenceInterval == 1 ? "year" : "years"
+        case .daily:
+            return String.localizedStringWithFormat(
+                NSLocalizedString("days_unit", comment: ""),
+                draft.recurrenceInterval
+            )
+        case .weekly:
+            return String.localizedStringWithFormat(
+                NSLocalizedString("weeks_unit", comment: ""),
+                draft.recurrenceInterval
+            )
+        case .monthly:
+            return String.localizedStringWithFormat(
+                NSLocalizedString("months_unit", comment: ""),
+                draft.recurrenceInterval
+            )
+        case .yearly:
+            return String.localizedStringWithFormat(
+                NSLocalizedString("years_unit", comment: ""),
+                draft.recurrenceInterval
+            )
         }
     }
 

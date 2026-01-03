@@ -425,10 +425,26 @@ struct AddAssignmentView: View {
 
     private var recurrenceUnitLabel: String {
         switch recurrenceFrequency {
-        case .daily: return recurrenceInterval == 1 ? "day" : "days"
-        case .weekly: return recurrenceInterval == 1 ? "week" : "weeks"
-        case .monthly: return recurrenceInterval == 1 ? "month" : "months"
-        case .yearly: return recurrenceInterval == 1 ? "year" : "years"
+        case .daily: 
+            return String.localizedStringWithFormat(
+                NSLocalizedString("days_unit", comment: ""),
+                recurrenceInterval
+            )
+        case .weekly: 
+            return String.localizedStringWithFormat(
+                NSLocalizedString("weeks_unit", comment: ""),
+                recurrenceInterval
+            )
+        case .monthly: 
+            return String.localizedStringWithFormat(
+                NSLocalizedString("months_unit", comment: ""),
+                recurrenceInterval
+            )
+        case .yearly: 
+            return String.localizedStringWithFormat(
+                NSLocalizedString("years_unit", comment: ""),
+                recurrenceInterval
+            )
         }
     }
 

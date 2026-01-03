@@ -1,0 +1,12 @@
+{
+  "description": "4 choices but correct_choice_index out of bounds (negative)",
+  "category": "mcq_structure",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is mitosis?\",\"choices\":[\"Cell division\",\"Cell death\",\"Cell growth\",\"Cell mutation\"],\"correct_choice_index\":-1,\"rationale\":\"Mitosis is the process of cell division.\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "CORRECT_INDEX_OUT_OF_BOUNDS",
+    "should_trigger_regeneration": true
+  },
+  "notes": "correct_choice_index must be 0-3 for 4 choices. -1 is invalid."
+}

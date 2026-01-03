@@ -1,0 +1,13 @@
+{
+  "description": "Zero-width joiners in text",
+  "category": "unicode",
+  "severity": "warning",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is mito\u200dsis?\",\"choices\":[\"Cell\u200d division\",\"Cell death\",\"Cell growth\",\"Cell mutation\"],\"correct_choice_index\":0,\"rationale\":\"Mitosis is the process of cell division.\"}]}",
+  "expected": {
+    "status": "warn",
+    "error_code": "ZERO_WIDTH_CHARACTER_DETECTED",
+    "should_trigger_regeneration": false,
+    "should_normalize": true
+  },
+  "notes": "Zero-width joiners (U+200D) can be used to obfuscate text. Detect and normalize."
+}

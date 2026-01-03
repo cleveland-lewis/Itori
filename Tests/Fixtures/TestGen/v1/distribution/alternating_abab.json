@@ -1,0 +1,13 @@
+{
+  "description": "Alternating ABAB pattern (detectable pattern)",
+  "category": "distribution",
+  "severity": "warning",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"Q1\",\"choices\":[\"Correct\",\"B\",\"C\",\"D\"],\"correct_choice_index\":0,\"rationale\":\"R1\"},{\"prompt\":\"Q2\",\"choices\":[\"A\",\"Correct\",\"C\",\"D\"],\"correct_choice_index\":1,\"rationale\":\"R2\"},{\"prompt\":\"Q3\",\"choices\":[\"Correct\",\"B\",\"C\",\"D\"],\"correct_choice_index\":0,\"rationale\":\"R3\"},{\"prompt\":\"Q4\",\"choices\":[\"A\",\"Correct\",\"C\",\"D\"],\"correct_choice_index\":1,\"rationale\":\"R4\"},{\"prompt\":\"Q5\",\"choices\":[\"Correct\",\"B\",\"C\",\"D\"],\"correct_choice_index\":0,\"rationale\":\"R5\"},{\"prompt\":\"Q6\",\"choices\":[\"A\",\"Correct\",\"C\",\"D\"],\"correct_choice_index\":1,\"rationale\":\"R6\"}]}",
+  "expected": {
+    "status": "warn",
+    "error_code": "DISTRIBUTION_PATTERN_DETECTED",
+    "should_trigger_regeneration": false,
+    "details": {"pattern": "ABABAB"}
+  },
+  "notes": "Alternating A/B pattern. May flag but not necessarily regenerate depending on policy."
+}

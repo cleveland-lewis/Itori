@@ -52,7 +52,8 @@ struct CalendarGrid: View {
                         GridDayCell(
                             day: day,
                             events: events(for: day),
-                            isSelected: calendar.isDate(day, inSameDayAs: calendarManager.selectedDate ?? Date())
+                            isToday: calendar.isDateInToday(day),
+                            isSelected: calendarManager.selectedDate.map { calendar.isDate(day, inSameDayAs: $0) } ?? false
                         )
                         .onTapGesture {
                             calendarManager.selectedDate = day
@@ -90,6 +91,7 @@ struct CalendarGrid: View {
 private struct GridDayCell: View {
     let day: Date
     let events: [EKEvent]
+    let isToday: Bool
     let isSelected: Bool
     
     @EnvironmentObject private var eventsStore: EventsCountStore
@@ -101,20 +103,24 @@ private struct GridDayCell: View {
         calendar.component(.day, from: day)
     }
     
-    private var isToday: Bool {
-        calendar.isDateInToday(day)
-    }
-    
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            // Day number
+            // Day number with distinct today vs selected styling
             Text("\(dayNumber)")
                 .font(.subheadline.weight(isToday ? .bold : .medium))
-                .foregroundStyle(isSelected ? .white : (isToday ? .accentColor : .primary))
+                .foregroundStyle(
+                    isSelected ? .white :
+                    isToday ? .accentColor :
+                    .primary
+                )
                 .frame(width: 28, height: 28)
                 .background(
                     Circle()
-                        .fill(isSelected ? Color.accentColor : (isToday ? Color.accentColor.opacity(0.12) : Color.clear))
+                        .fill(
+                            isSelected ? Color.accentColor :
+                            isToday ? Color.accentColor.opacity(0.12) :
+                            Color.clear
+                        )
                 )
             
             // Event indicators (max 3)

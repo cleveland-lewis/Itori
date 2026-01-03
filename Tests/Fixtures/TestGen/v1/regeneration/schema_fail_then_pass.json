@@ -1,0 +1,18 @@
+{
+  "description": "Schema validation fails then passes",
+  "category": "regeneration",
+  "severity": "info",
+  "attempts": [
+    {
+      "attempt": 1,
+      "input": "{\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is mitosis?\",\"choices\":[\"A\",\"B\",\"C\",\"D\"],\"correct_choice_index\":0,\"rationale\":\"Test\"}]}",
+      "expected": {"status": "fail", "error_code": "MISSING_CONTRACT_VERSION", "should_retry": true}
+    },
+    {
+      "attempt": 2,
+      "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is mitosis?\",\"choices\":[\"Cell division\",\"Cell death\",\"Cell growth\",\"Cell mutation\"],\"correct_choice_index\":0,\"rationale\":\"Mitosis is the process of cell division.\"}]}",
+      "expected": {"status": "pass", "should_retry": false}
+    }
+  ],
+  "notes": "Schema errors should trigger regeneration with corrective prompt."
+}

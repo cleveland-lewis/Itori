@@ -1,0 +1,12 @@
+{
+  "description": "Double negative in prompt",
+  "category": "content_policy",
+  "severity": "warning",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"Which is NOT unlikely to occur in mitosis?\",\"choices\":[\"Chromosome duplication\",\"Nuclear division\",\"Cell death\",\"DNA mutation\"],\"correct_choice_index\":0,\"rationale\":\"Chromosome duplication is likely in mitosis.\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "DOUBLE_NEGATIVE_DETECTED",
+    "should_trigger_regeneration": true
+  },
+  "notes": "'NOT unlikely' is confusing double negative. Should trigger regeneration."
+}

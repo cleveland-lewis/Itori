@@ -1,0 +1,12 @@
+{
+  "description": "Empty JSON object",
+  "category": "json_parsing",
+  "severity": "fatal",
+  "input": "{}",
+  "expected": {
+    "status": "fail",
+    "error_code": "MISSING_REQUIRED_FIELDS",
+    "should_trigger_regeneration": true
+  },
+  "notes": "Empty object missing contract_version, topic, questions."
+}

@@ -1,0 +1,12 @@
+{
+  "description": "Missing contract_version field",
+  "category": "schema_drift",
+  "severity": "fatal",
+  "input": "{\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is mitosis?\",\"choices\":[\"Cell division\",\"Cell death\",\"Cell growth\",\"Cell mutation\"],\"correct_choice_index\":0,\"rationale\":\"Mitosis is the process of cell division.\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "MISSING_CONTRACT_VERSION",
+    "should_trigger_regeneration": true
+  },
+  "notes": "contract_version is required for version detection and migration."
+}

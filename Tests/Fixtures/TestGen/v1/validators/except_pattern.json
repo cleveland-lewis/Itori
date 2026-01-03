@@ -1,0 +1,12 @@
+{
+  "description": "'All are true EXCEPT' pattern",
+  "category": "content_policy",
+  "severity": "warning",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"All are true about mitosis EXCEPT:\",\"choices\":[\"Produces two daughter cells\",\"Involves chromosome duplication\",\"Produces gametes\",\"Occurs in somatic cells\"],\"correct_choice_index\":2,\"rationale\":\"Mitosis does not produce gametes; meiosis does.\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "EXCEPT_PATTERN_DETECTED",
+    "should_trigger_regeneration": true
+  },
+  "notes": "'EXCEPT' questions are cognitively demanding and error-prone. Consider rejecting."
+}

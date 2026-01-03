@@ -1,0 +1,12 @@
+{
+  "description": "Topic not in allowed list",
+  "category": "topic_scope",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"quantum_physics\",\"questions\":[{\"prompt\":\"What is quantum entanglement?\",\"choices\":[\"Particle interaction\",\"Wave function\",\"Superposition\",\"Measurement\"],\"correct_choice_index\":0,\"rationale\":\"Quantum entanglement is a particle interaction phenomenon.\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "INVALID_TOPIC",
+    "should_trigger_regeneration": true
+  },
+  "notes": "Topic must be from allowed Bio 101 list. quantum_physics is not allowed."
+}

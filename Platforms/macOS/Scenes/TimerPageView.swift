@@ -321,18 +321,81 @@ struct TimerPageView: View {
                         }
                         .buttonStyle(.plain)
                         .popover(isPresented: $showingModeMenu, arrowEdge: .bottom) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                ForEach(LocalTimerMode.allCases, id: \.self) { timerMode in
+                            VStack(alignment: .leading, spacing: 8) {
+                                // Timer Mode section
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Timer Mode")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                        .padding(.horizontal, 12)
+                                        .padding(.top, 4)
+                                    
+                                    ForEach(LocalTimerMode.allCases, id: \.self) { timerMode in
+                                        Button(action: {
+                                            mode = timerMode
+                                            showingModeMenu = false
+                                        }) {
+                                            HStack {
+                                                if mode == timerMode {
+                                                    Image(systemName: "checkmark")
+                                                        .foregroundColor(.accentColor)
+                                                        .frame(width: 16)
+                                                } else {
+                                                    Spacer().frame(width: 16)
+                                                }
+                                                Text(timerMode.label)
+                                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                            }
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 6)
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                }
+                                
+                                Divider()
+                                    .padding(.vertical, 4)
+                                
+                                // Appearance section
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Appearance")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                        .padding(.horizontal, 12)
+                                    
                                     Button(action: {
-                                        mode = timerMode
+                                        settings.timerAppearance = "digital"
                                         showingModeMenu = false
                                     }) {
                                         HStack {
-                                            if mode == timerMode {
+                                            if settings.timerAppearance == "digital" {
                                                 Image(systemName: "checkmark")
                                                     .foregroundColor(.accentColor)
+                                                    .frame(width: 16)
+                                            } else {
+                                                Spacer().frame(width: 16)
                                             }
-                                            Text(timerMode.label)
+                                            Text("Digital")
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                        }
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                    }
+                                    .buttonStyle(.plain)
+                                    
+                                    Button(action: {
+                                        settings.timerAppearance = "analog"
+                                        showingModeMenu = false
+                                    }) {
+                                        HStack {
+                                            if settings.timerAppearance == "analog" {
+                                                Image(systemName: "checkmark")
+                                                    .foregroundColor(.accentColor)
+                                                    .frame(width: 16)
+                                            } else {
+                                                Spacer().frame(width: 16)
+                                            }
+                                            Text("Analog")
                                                 .frame(maxWidth: .infinity, alignment: .leading)
                                         }
                                         .padding(.horizontal, 12)
@@ -341,8 +404,8 @@ struct TimerPageView: View {
                                     .buttonStyle(.plain)
                                 }
                             }
-                            .padding(8)
-                            .frame(minWidth: 150)
+                            .padding(.vertical, 8)
+                            .frame(minWidth: 180)
                         }
                     }
                 }
@@ -457,27 +520,47 @@ struct TimerPageView: View {
     @ViewBuilder
     private func clockDisplayContent(isRunningState: Bool) -> some View {
         VStack(spacing: 8) {
-            if mode == .pomodoro {
-                Text(isPomodorBreak ? "Break" : "Work")
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(.secondary)
-                    .textCase(.uppercase)
+            if settings.isTimerAnalog {
+                // Triple dial analog display
+                TripleDialTimer(
+                    totalSeconds: clockTimeForAnalog,
+                    accentColor: .accentColor
+                )
             } else {
-                Text(mode.label)
-                    .font(.headline.weight(.medium))
+                // Digital display
+                if mode == .pomodoro {
+                    Text(isPomodorBreak ? "Break" : "Work")
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+                } else {
+                    Text(mode.label)
+                        .font(.headline.weight(.medium))
+                }
+                
+                GeometryReader { proxy in
+                    let base = min(proxy.size.width, proxy.size.height)
+                    let size = max(88, min(base * 0.45, 220))
+                    Text(timeDisplay)
+                        .font(.system(size: size, weight: .light, design: .monospaced))
+                        .monospacedDigit()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                }
+                .frame(height: 200)
             }
-            
-            GeometryReader { proxy in
-                let base = min(proxy.size.width, proxy.size.height)
-                let size = max(88, min(base * 0.45, 220))
-                Text(timeDisplay)
-                    .font(.system(size: size, weight: .light, design: .monospaced))
-                    .monospacedDigit()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            }
-            .frame(height: 200)
         }
         .padding(.vertical, 12)
+    }
+    
+    private var clockTimeForAnalog: TimeInterval {
+        guard isRunning else { return 0 }
+        
+        switch mode {
+        case .stopwatch:
+            return elapsedSeconds
+        case .pomodoro, .countdown:
+            return max(0, currentBlockDuration - remainingSeconds)
+        }
     }
     
     private var timeDisplay: String {
@@ -573,7 +656,9 @@ struct TimerPageView: View {
                 assignmentsStore.updateTask(updated)
             }
         )
-        let focusViewWithEnv = focusView.environmentObject(assignmentsStore)
+        let focusViewWithEnv = focusView
+            .environmentObject(assignmentsStore)
+            .environmentObject(settings)
         let hosting = NSHostingController(rootView: focusViewWithEnv)
         let window = NSWindow(contentViewController: hosting)
         window.styleMask = NSWindow.StyleMask([.titled, .closable, .miniaturizable, .resizable])
@@ -709,6 +794,8 @@ private struct FocusWindowView: View {
     var pomodoroSessions: Int
     var toggleTask: (AppTask) -> Void
     
+    @EnvironmentObject private var settings: AppSettingsModel
+    
     private var clockTime: TimeInterval {
         // When idle (not running), return 0 to show 12:00:00
         guard isRunning else { return 0 }
@@ -724,47 +811,74 @@ private struct FocusWindowView: View {
     var body: some View {
         GlassClockCard(cornerRadius: DesignSystem.Layout.cornerRadiusLarge) {
             VStack(spacing: 24) {
-                RootsAnalogClock(
-                    style: .stopwatch,
-                    diameter: 240,
-                    showSecondHand: true,
-                    accentColor: accentColor,
-                    timerSeconds: clockTime
-                )
-
-                VStack(spacing: 8) {
-                    if mode == .pomodoro {
-                        Text(isPomodorBreak ? "Break" : "Work")
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(.secondary)
-                            .textCase(.uppercase)
-                    }
+                if settings.isTimerAnalog {
+                    // Triple dial analog display
+                    TripleDialTimer(
+                        totalSeconds: clockTime,
+                        accentColor: accentColor
+                    )
                     
-                    GeometryReader { proxy in
-                        let base = min(proxy.size.width, proxy.size.height)
-                        let size = max(96, min(base * 0.45, 220)) // ~3x larger, scales with window
-                        Text(timeText)
-                            .font(.system(size: size, weight: .light, design: .monospaced))
-                            .monospacedDigit()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                    }
-                    .frame(height: 200)
-                        
-                    if mode == .pomodoro {
-                        HStack(spacing: 8) {
-                            ForEach(Array(0..<max(1, pomodoroSessions)), id: \.self) { index in
-                                Circle()
-                                    .fill(index < completedPomodoroSessions ? accentColor : Color.secondary.opacity(0.3))
-                                    .frame(width: 8, height: 8)
-                            }
+                    VStack(spacing: 8) {
+                        if mode == .pomodoro {
+                            Text(isPomodorBreak ? "Break" : "Work")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.secondary)
+                                .textCase(.uppercase)
                         }
-                        .id(pomodoroSessions)
-                        .accessibilityElement(children: .ignore)
-                        .accessibilityLabelWithTooltip("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
-                    } else {
-                        Text("\(mode.label) running")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        
+                        if mode == .pomodoro {
+                            HStack(spacing: 8) {
+                                ForEach(Array(0..<max(1, pomodoroSessions)), id: \.self) { index in
+                                    Circle()
+                                        .fill(index < completedPomodoroSessions ? accentColor : Color.secondary.opacity(0.3))
+                                        .frame(width: 8, height: 8)
+                                }
+                            }
+                            .id(pomodoroSessions)
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityLabelWithTooltip("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
+                        } else {
+                            Text("\(mode.label) running")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                } else {
+                    // Digital display
+                    VStack(spacing: 8) {
+                        if mode == .pomodoro {
+                            Text(isPomodorBreak ? "Break" : "Work")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.secondary)
+                                .textCase(.uppercase)
+                        }
+                        
+                        GeometryReader { proxy in
+                            let base = min(proxy.size.width, proxy.size.height)
+                            let size = max(96, min(base * 0.45, 220))
+                            Text(timeText)
+                                .font(.system(size: size, weight: .light, design: .monospaced))
+                                .monospacedDigit()
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                        }
+                        .frame(height: 200)
+                            
+                        if mode == .pomodoro {
+                            HStack(spacing: 8) {
+                                ForEach(Array(0..<max(1, pomodoroSessions)), id: \.self) { index in
+                                    Circle()
+                                        .fill(index < completedPomodoroSessions ? accentColor : Color.secondary.opacity(0.3))
+                                        .frame(width: 8, height: 8)
+                                }
+                            }
+                            .id(pomodoroSessions)
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityLabelWithTooltip("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
+                        } else {
+                            Text("\(mode.label) running")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
 

@@ -1,0 +1,13 @@
+{
+  "description": "80% of answers are C (exceeds tolerance)",
+  "category": "distribution",
+  "severity": "warning",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"Q1\",\"choices\":[\"A\",\"B\",\"C\",\"D\"],\"correct_choice_index\":2,\"rationale\":\"R1\"},{\"prompt\":\"Q2\",\"choices\":[\"A\",\"B\",\"C\",\"D\"],\"correct_choice_index\":2,\"rationale\":\"R2\"},{\"prompt\":\"Q3\",\"choices\":[\"A\",\"B\",\"C\",\"D\"],\"correct_choice_index\":2,\"rationale\":\"R3\"},{\"prompt\":\"Q4\",\"choices\":[\"A\",\"B\",\"C\",\"D\"],\"correct_choice_index\":2,\"rationale\":\"R4\"},{\"prompt\":\"Q5\",\"choices\":[\"A\",\"B\",\"C\",\"D\"],\"correct_choice_index\":0,\"rationale\":\"R5\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "DISTRIBUTION_SKEWED",
+    "should_trigger_regeneration": true,
+    "details": {"C": 0.8, "A": 0.2, "threshold": 0.5}
+  },
+  "notes": "4/5 = 80% are C. Exceeds acceptable threshold (e.g., 50%). Must regenerate for balance."
+}

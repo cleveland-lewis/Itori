@@ -12,6 +12,7 @@ enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
     case profiles
     case timer
     case flashcards
+    case ai
     case integrations
     case notifications
     case privacy
@@ -32,6 +33,7 @@ enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
         case .profiles: return "Profile"
         case .timer: return "Timer"
         case .flashcards: return "Flashcards"
+        case .ai: return "AI"
         case .integrations: return "Integrations"
         case .notifications: return "Notifications"
         case .privacy: return "Privacy"
@@ -52,6 +54,7 @@ enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
         case .profiles: return "person.crop.circle"
         case .timer: return "timer"
         case .flashcards: return "rectangle.stack.badge.person.crop"
+        case .ai: return "cpu.fill"
         case .integrations: return "arrow.triangle.2.circlepath.circle"
         case .notifications: return "bell.badge"
         case .privacy: return "lock.shield"

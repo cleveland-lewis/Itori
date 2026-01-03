@@ -38,7 +38,6 @@ struct FlashcardsView: View {
         .sheet(isPresented: $showingAddDeck) {
             AddDeckSheet()
         }
-        .navigationTitle(NSLocalizedString("flashcards.title", comment: "Flashcards"))
     }
     
     // MARK: - Sidebar
@@ -123,7 +122,7 @@ struct FlashcardsView: View {
             }
         }
         .frame(minWidth: 250)
-        .background(Color(nsColor: .controlBackgroundColor))
+        .sidebarCardStyle()
     }
     
     private func createDeckForCourse(_ course: Course) {

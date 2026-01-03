@@ -1,0 +1,23 @@
+{
+  "description": "Same invalid JSON repeated (should cap retries)",
+  "category": "regeneration",
+  "severity": "fatal",
+  "attempts": [
+    {
+      "attempt": 1,
+      "input": "{invalid",
+      "expected": {"status": "fail", "error_code": "INVALID_JSON", "should_retry": true}
+    },
+    {
+      "attempt": 2,
+      "input": "{invalid",
+      "expected": {"status": "fail", "error_code": "INVALID_JSON", "should_retry": true}
+    },
+    {
+      "attempt": 3,
+      "input": "{invalid",
+      "expected": {"status": "fail", "error_code": "INVALID_JSON_MAX_RETRIES", "should_retry": false}
+    }
+  ],
+  "notes": "After N identical failures, stop retrying and trigger safe template or report error."
+}

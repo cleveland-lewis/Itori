@@ -55,12 +55,6 @@ struct AppPageScaffold<Content: View>: View {
 
     private var header: some View {
         HStack(alignment: .firstTextBaseline) {
-            Text(title)
-                .font(.largeTitle.weight(.bold))
-                .foregroundStyle(.primary)
-                .accessibilityIdentifier("Overlay.Title")
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
             Spacer()
         }
         .padding(.top, appLayout.overlayTopInset)

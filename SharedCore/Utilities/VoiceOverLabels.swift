@@ -102,8 +102,14 @@ public struct VoiceOverLabels {
     }
     
     public static func timerDisplay(minutes: Int, seconds: Int) -> AccessibilityContent {
-        let minutesText = minutes == 1 ? "minute" : "minutes"
-        let secondsText = seconds == 1 ? "second" : "seconds"
+        let minutesText = String.localizedStringWithFormat(
+            NSLocalizedString("minutes_unit", comment: ""),
+            minutes
+        )
+        let secondsText = String.localizedStringWithFormat(
+            NSLocalizedString("seconds_unit", comment: ""),
+            seconds
+        )
         
         return AccessibilityContent(
             label: "Timer",
@@ -131,8 +137,10 @@ public struct VoiceOverLabels {
         formatter.dateStyle = .medium
         let dateString = formatter.string(from: date)
         
-        let eventsText = eventCount == 1 ? "event" : "events"
-        let value = eventCount > 0 ? "\(eventCount) \(eventsText)" : "No events"
+        let value = String.localizedStringWithFormat(
+            NSLocalizedString("events_count", comment: ""),
+            eventCount
+        )
         
         return AccessibilityContent(
             label: dateString,

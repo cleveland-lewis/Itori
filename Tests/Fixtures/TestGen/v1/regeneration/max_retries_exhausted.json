@@ -1,0 +1,13 @@
+{
+  "description": "Max retries exhausted (e.g., 5 attempts)",
+  "category": "regeneration",
+  "severity": "fatal",
+  "attempts": [
+    {"attempt": 1, "input": "{}", "expected": {"status": "fail", "should_retry": true}},
+    {"attempt": 2, "input": "{}", "expected": {"status": "fail", "should_retry": true}},
+    {"attempt": 3, "input": "{}", "expected": {"status": "fail", "should_retry": true}},
+    {"attempt": 4, "input": "{}", "expected": {"status": "fail", "should_retry": true}},
+    {"attempt": 5, "input": "{}", "expected": {"status": "fail", "should_retry": false, "trigger_fallback": true}}
+  ],
+  "notes": "After max retries, must give up and use safe template or report failure."
+}

@@ -17,12 +17,7 @@ struct DayDetailSidebar: View {
             Spacer()
         }
         .frame(width: width)
-        .background(DesignSystem.Materials.card, in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
-        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                .stroke(Color(nsColor: .separatorColor).opacity(0.06), lineWidth: 1)
-        )
+        .sidebarCardStyle()
         .padding(.vertical, 4)
         .focusable()
         .onKeyPress(.upArrow) {
@@ -81,7 +76,10 @@ struct DayDetailSidebar: View {
             Image(systemName: "calendar.badge.exclamationmark")
                 .font(.title2)
                 .foregroundStyle(.tertiary)
-            Text("No events")
+            Text(String.localizedStringWithFormat(
+                NSLocalizedString("events_count", comment: ""),
+                0
+            ))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }

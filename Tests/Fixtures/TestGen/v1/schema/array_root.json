@@ -1,0 +1,12 @@
+{
+  "description": "Array instead of object at root",
+  "category": "json_parsing",
+  "severity": "fatal",
+  "input": "[{\"prompt\":\"What is mitosis?\",\"choices\":[\"A\",\"B\",\"C\",\"D\"],\"correct_choice_index\":0,\"rationale\":\"Test\"}]",
+  "expected": {
+    "status": "fail",
+    "error_code": "INVALID_ROOT_TYPE",
+    "should_trigger_regeneration": true
+  },
+  "notes": "Root must be object with contract_version, not array."
+}

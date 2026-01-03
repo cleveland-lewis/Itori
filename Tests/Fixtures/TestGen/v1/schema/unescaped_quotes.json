@@ -1,0 +1,12 @@
+{
+  "description": "Unescaped quotes in string values",
+  "category": "json_parsing",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"What is the \"powerhouse\" of the cell?\",\"choices\":[\"Mitochondria\",\"Nucleus\",\"Ribosome\",\"Golgi apparatus\"],\"correct_choice_index\":0,\"rationale\":\"Mitochondria is often called the \"powerhouse\" of the cell.\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "INVALID_JSON_UNESCAPED_QUOTES",
+    "should_trigger_regeneration": true
+  },
+  "notes": "Quotes inside strings must be escaped as \\\"."
+}

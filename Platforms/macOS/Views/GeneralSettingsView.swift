@@ -30,9 +30,28 @@ struct GeneralSettingsView: View {
 
         var id: String { rawValue }
     }
+    
+    enum PlannerLookahead: String, CaseIterable, Identifiable {
+        case oneWeek = "1w"
+        case twoWeeks = "2w"
+        case oneMonth = "1m"
+        case twoMonths = "2m"
+        
+        var id: String { rawValue }
+        
+        var displayName: String {
+            switch self {
+            case .oneWeek: return NSLocalizedString("settings.planner.lookahead.1week", comment: "1 Week")
+            case .twoWeeks: return NSLocalizedString("settings.planner.lookahead.2weeks", comment: "2 Weeks")
+            case .oneMonth: return NSLocalizedString("settings.planner.lookahead.1month", comment: "1 Month")
+            case .twoMonths: return NSLocalizedString("settings.planner.lookahead.2months", comment: "2 Months")
+            }
+        }
+    }
 
     @State private var startOfWeek: StartOfWeek = .sunday
     @State private var defaultView: DefaultView = .dashboard
+    @State private var plannerLookahead: PlannerLookahead = .twoWeeks
 
     var body: some View {
         Form {
@@ -65,6 +84,16 @@ struct GeneralSettingsView: View {
                 }
                 .onChange(of: defaultView) { _, newValue in
                     settings.defaultView = newValue.rawValue
+                    settings.save()
+                }
+                
+                Picker("Scheduler Lookahead", selection: $plannerLookahead) {
+                    ForEach(PlannerLookahead.allCases) { option in
+                        Text(option.displayName).tag(option)
+                    }
+                }
+                .onChange(of: plannerLookahead) { _, newValue in
+                    settings.plannerHorizon = newValue.rawValue
                     settings.save()
                 }
             }
@@ -167,6 +196,7 @@ struct GeneralSettingsView: View {
         .onAppear {
             startOfWeek = StartOfWeek(rawValue: settings.startOfWeek ?? "Sunday") ?? .sunday
             defaultView = DefaultView(rawValue: settings.defaultView ?? "Dashboard") ?? .dashboard
+            plannerLookahead = PlannerLookahead(rawValue: settings.plannerHorizon) ?? .twoWeeks
         }
         .sheet(isPresented: $showResetSheet) {
             VStack(spacing: 18) {

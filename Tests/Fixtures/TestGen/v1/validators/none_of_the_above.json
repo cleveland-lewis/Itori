@@ -1,0 +1,12 @@
+{
+  "description": "Contains 'None of the above'",
+  "category": "content_policy",
+  "severity": "fatal",
+  "input": "{\"contract_version\":\"1.0\",\"topic\":\"cell_biology\",\"questions\":[{\"prompt\":\"Which structure contains chlorophyll?\",\"choices\":[\"Mitochondria\",\"Nucleus\",\"Ribosome\",\"None of the above\"],\"correct_choice_index\":3,\"rationale\":\"Chlorophyll is in chloroplasts, not listed.\"}]}",
+  "expected": {
+    "status": "fail",
+    "error_code": "BANNED_PHRASE_NONE_OF_ABOVE",
+    "should_trigger_regeneration": true
+  },
+  "notes": "'None of the above' indicates incomplete answer set. Must reject."
+}
