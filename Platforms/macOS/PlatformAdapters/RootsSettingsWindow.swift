@@ -11,6 +11,19 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     case interface
     case accounts
     case courses
+    case calendar
+    case reminders
+    case planner
+    case semesters
+    case profiles
+    case timer
+    case flashcards
+    case ai
+    case integrations
+    case notifications
+    case privacy
+    case storage
+    case developer
 
     var id: String { rawValue }
 
@@ -25,6 +38,19 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         case .interface: return "rectangle.3.offgrid"
         case .accounts: return "person.crop.circle"
         case .courses: return "books.vertical"
+        case .calendar: return "calendar"
+        case .reminders: return "bell"
+        case .planner: return "calendar.badge.clock"
+        case .semesters: return "calendar.circle"
+        case .profiles: return "person.text.rectangle"
+        case .timer: return "timer"
+        case .flashcards: return "rectangle.stack"
+        case .ai: return "brain"
+        case .integrations: return "puzzlepiece.extension"
+        case .notifications: return "bell.badge"
+        case .privacy: return "hand.raised"
+        case .storage: return "externaldrive"
+        case .developer: return "hammer"
         }
     }
 }
@@ -67,6 +93,8 @@ struct SettingsRootView: View {
                     TimerSettingsView()
                 case .flashcards:
                     FlashcardSettingsView()
+                case .ai:
+                    AISettingsView()
                 case .integrations:
                     IntegrationsSettingsView()
                 case .notifications:
@@ -223,6 +251,10 @@ private struct SettingsDetail: View {
                     .environmentObject(coursesStore)
             case .accounts:
                 AccountsSettingsView(accentColor: accentColor)
+            default:
+                // Legacy view - unimplemented sections use new SettingsRootView
+                Text("Use new Settings window for \(selection.title)")
+                    .foregroundStyle(.secondary)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

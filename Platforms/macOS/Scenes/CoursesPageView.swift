@@ -1,6 +1,7 @@
 #if os(macOS)
 import SwiftUI
 import AppKit
+import UniformTypeIdentifiers
 
 // MARK: - Models (namespaced to avoid clashing with existing Course model)
 
@@ -78,6 +79,9 @@ struct CoursesPageView: View {
     @State private var gradePercentInput: Double = 90
     @State private var gradeLetterInput: String = "A"
     @State private var showingParsedAssignmentsReview = false
+    @State private var showingCreateModuleSheet = false
+    @State private var showingFileImporter = false
+    @State private var selectedModuleId: UUID? = nil
 
     @State private var selectedCourseId: UUID? = nil
     @State private var searchText: String = ""
@@ -153,6 +157,20 @@ struct CoursesPageView: View {
                     .environmentObject(coursesStore)
             }
         }
+        .sheet(isPresented: $showingCreateModuleSheet) {
+            if let courseId = selectedCourseId {
+                CreateModuleSheet(courseId: courseId) { module in
+                    coursesStore.addOutlineNode(module)
+                }
+            }
+        }
+        .fileImporter(
+            isPresented: $showingFileImporter,
+            allowedContentTypes: [.item],
+            allowsMultipleSelection: true
+        ) { result in
+            handleFileImport(result)
+        }
         .onAppear {
             if selectedCourseId == nil {
                 selectedCourseId = filteredCourses.first?.id
@@ -183,9 +201,22 @@ struct CoursesPageView: View {
 
     private var rightColumn: some View {
         VStack(alignment: .leading, spacing: RootsSpacing.m) {
-            if let course = currentSelection {
+            if let moduleId = selectedModuleId, 
+               let module = coursesStore.outlineNodes.first(where: { $0.id == moduleId }) {
+                // Show module detail
+                let moduleFiles = coursesStore.nodeFiles(for: moduleId)
+                ModuleDetailView(
+                    module: module,
+                    files: moduleFiles,
+                    onBack: { selectedModuleId = nil },
+                    onAddFiles: { beginAddFilesForModule(moduleId) }
+                )
+                .frame(maxWidth: .infinity, alignment: .topLeading)
+            } else if let course = currentSelection {
                 CoursesPageDetailView(
                     course: course,
+                    modules: coursesStore.rootOutlineNodes(for: course.id),
+                    files: coursesStore.rootFiles(for: course.id),
                     onEdit: {
                         editingCourse = course
                         showNewCourseSheet = true
@@ -204,7 +235,16 @@ struct CoursesPageView: View {
                     },
                     onReviewParsedAssignments: hasParsedAssignments(for: course) ? {
                         showingParsedAssignmentsReview = true
-                    } : nil
+                    } : nil,
+                    onCreateModule: {
+                        showingCreateModuleSheet = true
+                    },
+                    onAddFiles: {
+                        showingFileImporter = true
+                    },
+                    onSelectModule: { module in
+                        selectedModuleId = module.id
+                    }
                 )
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             } else {
@@ -373,6 +413,53 @@ struct CoursesPageView: View {
     
     private func hasParsedAssignments(for course: CoursePageCourse) -> Bool {
         return !parsingStore.parsedAssignmentsByCourse(course.id).isEmpty
+    }
+    
+    private func handleFileImport(_ result: Result<[URL], Error>) {
+        guard let courseId = selectedCourseId else { return }
+        
+        switch result {
+        case .success(let urls):
+            for url in urls {
+                // Start accessing security-scoped resource
+                guard url.startAccessingSecurityScopedResource() else { continue }
+                defer { url.stopAccessingSecurityScopedResource() }
+                
+                let filename = url.lastPathComponent
+                let fileType = url.pathExtension
+                
+                // Store bookmark data for persistent access
+                var bookmarkData: Data?
+                do {
+                    bookmarkData = try url.bookmarkData(
+                        options: .withSecurityScope,
+                        includingResourceValuesForKeys: nil,
+                        relativeTo: nil
+                    )
+                } catch {
+                    print("Failed to create bookmark: \(error)")
+                }
+                
+                let file = CourseFile(
+                    courseId: courseId,
+                    nodeId: selectedModuleId,
+                    filename: filename,
+                    fileType: fileType,
+                    localURL: bookmarkData?.base64EncodedString() ?? url.path,
+                    isSyllabus: false,
+                    isPracticeExam: false
+                )
+                
+                coursesStore.addFile(file)
+            }
+        case .failure(let error):
+            print("File import failed: \(error)")
+        }
+    }
+    
+    private func beginAddFilesForModule(_ moduleId: UUID) {
+        selectedModuleId = moduleId
+        showingFileImporter = true
     }
 
     private var emptyDetailState: some View {
@@ -591,12 +678,17 @@ struct CourseSidebarRow: View {
 
 struct CoursesPageDetailView: View {
     let course: CoursePageCourse
+    let modules: [CourseOutlineNode]
+    let files: [CourseFile]
     var onEdit: () -> Void
     var onAddAssignment: () -> Void
     var onAddExam: () -> Void
     var onAddGrade: () -> Void
     var onViewPlanner: () -> Void
     var onReviewParsedAssignments: (() -> Void)? = nil
+    var onCreateModule: () -> Void
+    var onAddFiles: () -> Void
+    var onSelectModule: (CourseOutlineNode) -> Void
 
     private let cardCorner: CGFloat = 24
 
@@ -604,6 +696,17 @@ struct CoursesPageDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 headerCard
+                
+                // Modules & Files Section
+                CourseModulesFilesSection(
+                    course: course,
+                    modules: modules,
+                    files: files,
+                    onCreateModule: onCreateModule,
+                    onAddFiles: onAddFiles,
+                    onSelectModule: onSelectModule
+                )
+                
                 HStack(alignment: .top, spacing: 16) {
                     meetingsCard
                     syllabusCard
