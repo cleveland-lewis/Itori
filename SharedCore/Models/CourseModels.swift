@@ -299,8 +299,18 @@ struct CourseFile: Identifiable, Codable, Hashable {
     var filename: String
     var fileType: String  // e.g., "pdf", "docx"
     var localURL: String?  // File path or bookmark data
+    
+    // Legacy flags (maintained for backwards compatibility)
     var isSyllabus: Bool
     var isPracticeExam: Bool
+    
+    // New classification system
+    var category: FileCategory
+    var parseStatus: ParseStatus
+    var parsedAt: Date?
+    var parseError: String?
+    var contentFingerprint: String
+    
     var createdAt: Date
     var updatedAt: Date
     
@@ -313,6 +323,11 @@ struct CourseFile: Identifiable, Codable, Hashable {
         localURL: String? = nil,
         isSyllabus: Bool = false,
         isPracticeExam: Bool = false,
+        category: FileCategory = .uncategorized,
+        parseStatus: ParseStatus = .notParsed,
+        parsedAt: Date? = nil,
+        parseError: String? = nil,
+        contentFingerprint: String = "",
         createdAt: Date = Date(),
         updatedAt: Date = Date()
     ) {
@@ -324,7 +339,39 @@ struct CourseFile: Identifiable, Codable, Hashable {
         self.localURL = localURL
         self.isSyllabus = isSyllabus
         self.isPracticeExam = isPracticeExam
+        self.category = category
+        self.parseStatus = parseStatus
+        self.parsedAt = parsedAt
+        self.parseError = parseError
+        self.contentFingerprint = contentFingerprint
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+    }
+    
+    // Backwards compatibility
+    private enum CodingKeys: String, CodingKey {
+        case id, courseId, nodeId, filename, fileType, localURL
+        case isSyllabus, isPracticeExam
+        case category, parseStatus, parsedAt, parseError, contentFingerprint
+        case createdAt, updatedAt
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        courseId = try container.decode(UUID.self, forKey: .courseId)
+        nodeId = try container.decodeIfPresent(UUID.self, forKey: .nodeId)
+        filename = try container.decode(String.self, forKey: .filename)
+        fileType = try container.decodeIfPresent(String.self, forKey: .fileType) ?? ""
+        localURL = try container.decodeIfPresent(String.self, forKey: .localURL)
+        isSyllabus = try container.decodeIfPresent(Bool.self, forKey: .isSyllabus) ?? false
+        isPracticeExam = try container.decodeIfPresent(Bool.self, forKey: .isPracticeExam) ?? false
+        category = try container.decodeIfPresent(FileCategory.self, forKey: .category) ?? .uncategorized
+        parseStatus = try container.decodeIfPresent(ParseStatus.self, forKey: .parseStatus) ?? .notParsed
+        parsedAt = try container.decodeIfPresent(Date.self, forKey: .parsedAt)
+        parseError = try container.decodeIfPresent(String.self, forKey: .parseError)
+        contentFingerprint = try container.decodeIfPresent(String.self, forKey: .contentFingerprint) ?? ""
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date()
+        updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? Date()
     }
 }

@@ -1,5 +1,6 @@
 #if os(macOS)
 import SwiftUI
+import AppKit
 import UniformTypeIdentifiers
 
 /// Modules & Files section for Course Information panel
@@ -157,15 +158,19 @@ private struct ModuleRow: View {
 
 /// Individual file row
 private struct FileRow: View {
-    let file: CourseFile
+    @State var file: CourseFile
+    @State private var isHovered = false
+    @StateObject private var parsingService = FileParsingService.shared
     
     var body: some View {
         HStack(spacing: 12) {
+            // File icon
             Image(systemName: fileIcon)
                 .font(.title3)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(isHovered ? Color.accentColor : .secondary)
                 .frame(width: 32)
             
+            // File info
             VStack(alignment: .leading, spacing: 2) {
                 Text(file.filename)
                     .font(.body)
@@ -177,7 +182,23 @@ private struct FileRow: View {
                         .font(.caption2.weight(.medium))
                         .foregroundStyle(.secondary)
                     
-                    if file.isSyllabus {
+                    // Parse status indicator
+                    if file.parseStatus != .notParsed {
+                        Text("•")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                        
+                        HStack(spacing: 4) {
+                            Image(systemName: file.parseStatus.icon)
+                                .font(.caption2)
+                            Text(file.parseStatus.displayName)
+                                .font(.caption2.weight(.medium))
+                        }
+                        .foregroundStyle(parseStatusColor)
+                    }
+                    
+                    // Legacy indicators (if set)
+                    if file.isSyllabus && file.category != .syllabus {
                         Text("•")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
@@ -186,7 +207,7 @@ private struct FileRow: View {
                             .foregroundStyle(.blue)
                     }
                     
-                    if file.isPracticeExam {
+                    if file.isPracticeExam && file.category != .practiceTest {
                         Text("•")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
@@ -198,13 +219,113 @@ private struct FileRow: View {
             }
             
             Spacer()
+            
+            // Category dropdown (replaces button)
+            Menu {
+                ForEach(FileCategory.allCases) { category in
+                    Button(action: {
+                        Task {
+                            await updateCategory(category)
+                        }
+                    }) {
+                        HStack {
+                            Image(systemName: category.icon)
+                            Text(category.displayName)
+                            if file.category == category {
+                                Spacer()
+                                Image(systemName: "checkmark")
+                            }
+                        }
+                    }
+                }
+                
+                Divider()
+                
+                if file.parseStatus == .failed, let error = file.parseError {
+                    Button(action: { showParseError(error) }) {
+                        Label("View Error", systemImage: "exclamationmark.triangle")
+                    }
+                }
+                
+                Button(action: openFile) {
+                    Label("Open File", systemImage: "arrow.up.right.square")
+                }
+            } label: {
+                HStack(spacing: 4) {
+                    Image(systemName: file.category.icon)
+                        .font(.caption)
+                    Text(file.category.displayName)
+                        .font(.caption.weight(.medium))
+                    Image(systemName: "chevron.down")
+                        .font(.caption2)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .fill(Color(nsColor: .controlBackgroundColor))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                        .strokeBorder(Color.secondary.opacity(0.2), lineWidth: 0.5)
+                )
+            }
+            .menuStyle(.borderlessButton)
+            .fixedSize()
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .background(
             RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .fill(Color(nsColor: .controlBackgroundColor).opacity(0.3))
+                .fill(isHovered ? Color.accentColor.opacity(0.08) : Color(nsColor: .controlBackgroundColor).opacity(0.3))
         )
+        .onHover { hovering in
+            isHovered = hovering
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .courseFileUpdated)) { notification in
+            if let updatedFile = notification.object as? CourseFile,
+               updatedFile.id == file.id {
+                file = updatedFile
+            }
+        }
+    }
+    
+    private var parseStatusColor: Color {
+        switch file.parseStatus {
+        case .notParsed: return .gray
+        case .queued: return .orange
+        case .parsing: return .blue
+        case .parsed: return .green
+        case .failed: return .red
+        }
+    }
+    
+    private func updateCategory(_ newCategory: FileCategory) async {
+        var updatedFile = file
+        updatedFile.category = newCategory
+        updatedFile.updatedAt = Date()
+        file = updatedFile
+        
+        await parsingService.updateFileCategory(file, newCategory: newCategory)
+    }
+    
+    private func showParseError(_ error: String) {
+        let alert = NSAlert()
+        alert.messageText = "Parse Error"
+        alert.informativeText = error
+        alert.alertStyle = .warning
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
+    
+    private func openFile() {
+        guard let urlString = file.localURL,
+              let url = URL(string: urlString) else {
+            DebugLogger.log("⚠️ No valid file URL for: \(file.filename)")
+            return
+        }
+        
+        NSWorkspace.shared.open(url)
     }
     
     private var fileIcon: String {
@@ -212,7 +333,7 @@ private struct FileRow: View {
         switch ext {
         case "pdf": return "doc.richtext"
         case "doc", "docx": return "doc.text"
-        case "xls", "xlsx": return "tablecells"
+        case "xls", "xlsx", "csv": return "tablecells"
         case "ppt", "pptx": return "rectangle.3.offgrid"
         case "zip", "rar": return "doc.zipper"
         case "png", "jpg", "jpeg": return "photo"

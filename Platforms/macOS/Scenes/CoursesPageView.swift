@@ -200,7 +200,7 @@ struct CoursesPageView: View {
     }
 
     private var rightColumn: some View {
-        VStack(alignment: .leading, spacing: RootsSpacing.m) {
+        Group {
             if let moduleId = selectedModuleId, 
                let module = coursesStore.outlineNodes.first(where: { $0.id == moduleId }) {
                 // Show module detail
@@ -252,6 +252,7 @@ struct CoursesPageView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
             }
         }
+        .rootsCardBackground(radius: RootsRadius.card)
     }
 
     private func placeholderModule(title: String, detail: String) -> some View {

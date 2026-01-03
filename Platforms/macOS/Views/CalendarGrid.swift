@@ -123,7 +123,7 @@ private struct GridDayCell: View {
                         )
                 )
             
-            // Event indicators (max 3)
+            // Event indicators (max 3 visible)
             VStack(spacing: 2) {
                 ForEach(events.prefix(3), id: \.eventIdentifier) { event in
                     HStack(spacing: 4) {
@@ -134,22 +134,26 @@ private struct GridDayCell: View {
                         Text(event.title)
                             .font(.caption2)
                             .lineLimit(1)
+                            .truncationMode(.tail)
                             .foregroundStyle(.primary)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(height: 14)  // Fixed height per event row
                 }
                 
                 if events.count > 3 {
                     Text("+\(events.count - 3) more")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
+                        .frame(height: 14)  // Match event row height
                 }
             }
-            
-            Spacer(minLength: 0)
+            .frame(maxHeight: .infinity, alignment: .top)  // Prevent expansion
+            .clipped()  // Clip any overflow
         }
         .padding(8)
-        .frame(maxWidth: .infinity, minHeight: 80, alignment: .topLeading)
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .frame(height: 80)  // Fixed height
         .background(DesignSystem.Materials.surface)
         .background(
             RoundedRectangle(cornerRadius: 8, style: .continuous)

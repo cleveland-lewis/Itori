@@ -137,63 +137,67 @@ private struct ModuleFileRow: View {
     @State private var isHovered = false
     
     var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: fileIcon)
-                .font(.title3)
-                .foregroundStyle(isHovered ? Color.accentColor : .secondary)
-                .frame(width: 40, height: 40)
-                .background(
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(Color(nsColor: .controlBackgroundColor).opacity(0.5))
-                )
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(file.filename)
-                    .font(.body.weight(.medium))
-                    .foregroundStyle(.primary)
-                    .lineLimit(1)
+        Button(action: openFile) {
+            HStack(spacing: 12) {
+                Image(systemName: fileIcon)
+                    .font(.title3)
+                    .foregroundStyle(isHovered ? Color.accentColor : .secondary)
+                    .frame(width: 40, height: 40)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(Color(nsColor: .controlBackgroundColor).opacity(0.5))
+                    )
                 
-                HStack(spacing: 8) {
-                    Text(file.fileType.uppercased())
-                        .font(.caption2.weight(.medium))
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 2)
-                        .background(
-                            Capsule()
-                                .fill(Color(nsColor: .controlBackgroundColor).opacity(0.5))
-                        )
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(file.filename)
+                        .font(.body.weight(.medium))
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
                     
-                    Text(file.createdAt, style: .date)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            
-            Spacer()
-            
-            if let url = file.localURL {
-                Button {
-                    // Open file
-                    if let fileURL = URL(string: url) {
-                        NSWorkspace.shared.open(fileURL)
+                    HStack(spacing: 8) {
+                        Text(file.fileType.uppercased())
+                            .font(.caption2.weight(.medium))
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(
+                                Capsule()
+                                    .fill(Color(nsColor: .controlBackgroundColor).opacity(0.5))
+                            )
+                        
+                        Text(file.createdAt, style: .date)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
                     }
-                } label: {
-                    Image(systemName: "arrow.up.right.square")
-                        .font(.body)
                 }
-                .buttonStyle(.plain)
-                .foregroundStyle(isHovered ? Color.accentColor : .secondary)
+                
+                Spacer()
+                
+                Image(systemName: "arrow.up.right.square")
+                    .font(.body)
+                    .foregroundStyle(isHovered ? Color.accentColor : .secondary)
             }
+            .padding(12)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(isHovered ? Color.accentColor.opacity(0.06) : Color.clear)
+            )
         }
-        .padding(12)
-        .background(
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .fill(isHovered ? Color.accentColor.opacity(0.06) : Color.clear)
-        )
+        .buttonStyle(.plain)
         .onHover { hovering in
             isHovered = hovering
         }
+    }
+    
+    private func openFile() {
+        guard let urlString = file.localURL,
+              let url = URL(string: urlString) else {
+            DebugLogger.log("⚠️ No valid file URL for: \(file.filename)")
+            return
+        }
+        
+        // Open the file with the system's default application
+        NSWorkspace.shared.open(url)
     }
     
     private var fileIcon: String {

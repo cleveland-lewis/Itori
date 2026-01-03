@@ -1,0 +1,639 @@
+//
+//  AccessibilityDebugPanel.swift
+//  Roots
+//
+//  Created on 2026-01-03.
+//
+
+import SwiftUI
+
+#if DEBUG
+
+// MARK: - Accessibility Debug Panel
+
+/// Debug panel for testing accessibility features
+struct AccessibilityDebugPanel: View {
+    @StateObject private var auditEngine = AccessibilityAuditEngine.shared
+    @State private var selectedTab = 0
+    @State private var filterSeverity: AccessibilityAuditResult.Severity?
+    @State private var filterCategory: AccessibilityAuditResult.Category?
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                // Header Stats
+                statsHeader
+                
+                Divider()
+                
+                // Tab Selection
+                Picker("View", selection: $selectedTab) {
+                    Text("Issues (\(auditEngine.totalIssues))").tag(0)
+                    Text("Live Testing").tag(1)
+                    Text("Settings").tag(2)
+                }
+                .pickerStyle(.segmented)
+                .padding()
+                
+                // Content
+                TabView(selection: $selectedTab) {
+                    issuesView.tag(0)
+                    liveTestingView.tag(1)
+                    settingsView.tag(2)
+                }
+            }
+            .navigationTitle("Accessibility Debug")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") { dismiss() }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Button(action: { Task { await auditEngine.runFullAudit() } }) {
+                        Label("Scan", systemImage: "arrow.clockwise")
+                    }
+                    .disabled(auditEngine.isScanning)
+                }
+            }
+        }
+        .task {
+            if auditEngine.results.isEmpty {
+                await auditEngine.runFullAudit()
+            }
+        }
+    }
+    
+    // MARK: - Stats Header
+    
+    private var statsHeader: some View {
+        HStack(spacing: 16) {
+            StatBadge(
+                count: auditEngine.criticalCount,
+                severity: .critical,
+                label: "Critical"
+            )
+            
+            StatBadge(
+                count: auditEngine.highCount,
+                severity: .high,
+                label: "High"
+            )
+            
+            StatBadge(
+                count: auditEngine.mediumCount,
+                severity: .medium,
+                label: "Medium"
+            )
+            
+            StatBadge(
+                count: auditEngine.lowCount,
+                severity: .low,
+                label: "Low"
+            )
+        }
+        .padding()
+        .background(Color(uiColor: .secondarySystemBackground))
+    }
+    
+    // MARK: - Issues View
+    
+    private var issuesView: some View {
+        VStack(spacing: 0) {
+            // Filters
+            filterBar
+            
+            if auditEngine.isScanning {
+                scanningView
+            } else if filteredResults.isEmpty {
+                emptyStateView
+            } else {
+                issuesList
+            }
+        }
+    }
+    
+    private var filterBar: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                // Severity filters
+                ForEach(AccessibilityAuditResult.Severity.allCases, id: \.self) { severity in
+                    FilterChip(
+                        title: severity.rawValue,
+                        isSelected: filterSeverity == severity,
+                        color: severity.color
+                    ) {
+                        filterSeverity = filterSeverity == severity ? nil : severity
+                    }
+                }
+                
+                Divider()
+                    .frame(height: 24)
+                
+                // Category filters
+                ForEach(AccessibilityAuditResult.Category.allCases.prefix(5), id: \.self) { category in
+                    FilterChip(
+                        title: category.rawValue,
+                        isSelected: filterCategory == category,
+                        color: .blue
+                    ) {
+                        filterCategory = filterCategory == category ? nil : category
+                    }
+                }
+            }
+            .padding(.horizontal)
+        }
+        .padding(.vertical, 8)
+        .background(Color(uiColor: .systemBackground))
+    }
+    
+    private var issuesList: some View {
+        List(filteredResults) { result in
+            NavigationLink(destination: IssueDetailView(result: result)) {
+                IssueRow(result: result)
+            }
+        }
+        .listStyle(.plain)
+    }
+    
+    private var scanningView: some View {
+        VStack(spacing: 16) {
+            ProgressView(value: auditEngine.scanProgress) {
+                Text("Scanning accessibility...")
+                    .font(.headline)
+            }
+            .progressViewStyle(.linear)
+            
+            Text("\(Int(auditEngine.scanProgress * 100))% complete")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    
+    private var emptyStateView: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "checkmark.circle.fill")
+                .font(.system(size: 60))
+                .foregroundColor(.green)
+            
+            Text("No Issues Found")
+                .font(.headline)
+            
+            Text("Your app meets accessibility standards!")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    
+    private var filteredResults: [AccessibilityAuditResult] {
+        auditEngine.results.filter { result in
+            if let severity = filterSeverity, result.severity != severity {
+                return false
+            }
+            if let category = filterCategory, result.category != category {
+                return false
+            }
+            return true
+        }
+    }
+    
+    // MARK: - Live Testing View
+    
+    private var liveTestingView: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                SectionHeader(title: "Current Accessibility Settings")
+                
+                SettingRow(
+                    icon: "eye.slash",
+                    title: "VoiceOver",
+                    value: UIAccessibility.isVoiceOverRunning ? "Enabled" : "Disabled",
+                    color: .blue
+                )
+                
+                SettingRow(
+                    icon: "textformat.size",
+                    title: "Dynamic Type",
+                    value: "\(UIFont.preferredFont(forTextStyle: .body).pointSize) pt",
+                    color: .green
+                )
+                
+                SettingRow(
+                    icon: "moon.fill",
+                    title: "Reduce Motion",
+                    value: UIAccessibility.isReduceMotionEnabled ? "Enabled" : "Disabled",
+                    color: .purple
+                )
+                
+                SettingRow(
+                    icon: "decrease.indent",
+                    title: "Reduce Transparency",
+                    value: UIAccessibility.isReduceTransparencyEnabled ? "Enabled" : "Disabled",
+                    color: .orange
+                )
+                
+                SettingRow(
+                    icon: "sun.max.fill",
+                    title: "Increase Contrast",
+                    value: UIAccessibility.isDarkerSystemColorsEnabled ? "Enabled" : "Disabled",
+                    color: .yellow
+                )
+                
+                Divider()
+                
+                SectionHeader(title: "Quick Actions")
+                
+                QuickActionButton(
+                    icon: "speaker.wave.2",
+                    title: "Announce Test",
+                    color: .blue
+                ) {
+                    announceTest()
+                }
+                
+                QuickActionButton(
+                    icon: "eye",
+                    title: "Simulate VoiceOver",
+                    color: .green
+                ) {
+                    // Opens Settings for user to enable
+                }
+                
+                QuickActionButton(
+                    icon: "square.grid.2x2",
+                    title: "View Element Tree",
+                    color: .purple
+                ) {
+                    // Show element hierarchy
+                }
+                
+                Divider()
+                
+                SectionHeader(title: "Testing Checklist")
+                
+                ChecklistItem(text: "Test with VoiceOver enabled", isComplete: false)
+                ChecklistItem(text: "Test at largest text size", isComplete: false)
+                ChecklistItem(text: "Test with Reduce Motion enabled", isComplete: false)
+                ChecklistItem(text: "Test keyboard navigation (macOS)", isComplete: false)
+                ChecklistItem(text: "Test with high contrast mode", isComplete: false)
+                ChecklistItem(text: "Test color blind simulation", isComplete: false)
+            }
+            .padding()
+        }
+    }
+    
+    // MARK: - Settings View
+    
+    private var settingsView: some View {
+        Form {
+            Section("Audit Configuration") {
+                Toggle("Auto-run on app launch", isOn: .constant(false))
+                Toggle("Show severity badges in UI", isOn: .constant(true))
+                Toggle("Enable accessibility logging", isOn: .constant(false))
+            }
+            
+            Section("WCAG Compliance Level") {
+                Picker("Target Level", selection: .constant("AA")) {
+                    Text("A - Minimum").tag("A")
+                    Text("AA - Standard").tag("AA")
+                    Text("AAA - Enhanced").tag("AAA")
+                }
+            }
+            
+            Section("Ignored Issues") {
+                Text("No ignored issues")
+                    .foregroundColor(.secondary)
+            }
+            
+            Section {
+                Button("Export Audit Report") {
+                    exportReport()
+                }
+                
+                Button("Clear Audit Cache") {
+                    // Clear cache
+                }
+                .foregroundColor(.red)
+            }
+            
+            Section("About") {
+                HStack {
+                    Text("Last Scan")
+                    Spacer()
+                    if let date = auditEngine.lastScanDate {
+                        Text(date.formatted())
+                            .foregroundColor(.secondary)
+                    }
+                }
+                
+                HStack {
+                    Text("Total Issues")
+                    Spacer()
+                    Text("\(auditEngine.totalIssues)")
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+    }
+    
+    // MARK: - Helper Functions
+    
+    private func announceTest() {
+        #if os(iOS)
+        UIAccessibility.post(
+            notification: .announcement,
+            argument: "This is a test announcement for VoiceOver users."
+        )
+        #endif
+    }
+    
+    private func exportReport() {
+        // TODO: Export audit results as JSON/PDF
+        print("Exporting audit report...")
+    }
+}
+
+// MARK: - Supporting Views
+
+private struct StatBadge: View {
+    let count: Int
+    let severity: AccessibilityAuditResult.Severity
+    let label: String
+    
+    var body: some View {
+        VStack(spacing: 4) {
+            Text("\(count)")
+                .font(.title2.bold())
+                .foregroundColor(severity.color)
+            
+            Text(label)
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+private struct FilterChip: View {
+    let title: String
+    let isSelected: Bool
+    let color: Color
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.caption.bold())
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(isSelected ? color.opacity(0.2) : Color(uiColor: .systemGray5))
+                .foregroundColor(isSelected ? color : .primary)
+                .cornerRadius(16)
+        }
+    }
+}
+
+private struct IssueRow: View {
+    let result: AccessibilityAuditResult
+    
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: result.severity.icon)
+                .foregroundColor(result.severity.color)
+                .font(.title3)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(result.issue)
+                    .font(.subheadline.bold())
+                
+                Text(result.location)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                HStack(spacing: 8) {
+                    Text(result.category.rawValue)
+                        .font(.caption2)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 2)
+                        .background(Color.blue.opacity(0.2))
+                        .foregroundColor(.blue)
+                        .cornerRadius(4)
+                    
+                    if let wcag = result.wcagCriteria {
+                        Text(wcag)
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .padding(.top, 2)
+            }
+            
+            Spacer()
+            
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .padding(.vertical, 8)
+    }
+}
+
+private struct IssueDetailView: View {
+    let result: AccessibilityAuditResult
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                // Issue Header
+                HStack(alignment: .top) {
+                    Image(systemName: result.severity.icon)
+                        .font(.largeTitle)
+                        .foregroundColor(result.severity.color)
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(result.severity.rawValue)
+                            .font(.caption.bold())
+                            .foregroundColor(result.severity.color)
+                        
+                        Text(result.issue)
+                            .font(.title2.bold())
+                    }
+                }
+                
+                Divider()
+                
+                // Location
+                DetailSection(title: "Location", icon: "location") {
+                    Text(result.location)
+                }
+                
+                // Recommendation
+                DetailSection(title: "How to Fix", icon: "wrench.and.screwdriver") {
+                    Text(result.recommendation)
+                }
+                
+                // WCAG Criteria
+                if let wcag = result.wcagCriteria {
+                    DetailSection(title: "WCAG Criteria", icon: "checkmark.seal") {
+                        Text(wcag)
+                    }
+                }
+                
+                // Category
+                DetailSection(title: "Category", icon: "folder") {
+                    Text(result.category.rawValue)
+                }
+                
+                Spacer()
+                
+                // Actions
+                VStack(spacing: 12) {
+                    Button(action: { /* Copy details */ }) {
+                        Label("Copy Details", systemImage: "doc.on.doc")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    
+                    Button(action: { /* Mark as fixed */ }) {
+                        Label("Mark as Fixed", systemImage: "checkmark.circle")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    
+                    Button(action: { /* Ignore issue */ }) {
+                        Text("Ignore This Issue")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.red)
+                }
+            }
+            .padding()
+        }
+        .navigationTitle("Issue Details")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+private struct DetailSection<Content: View>: View {
+    let title: String
+    let icon: String
+    @ViewBuilder let content: () -> Content
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(title, systemImage: icon)
+                .font(.headline)
+            
+            content()
+                .font(.body)
+                .foregroundColor(.secondary)
+                .padding()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color(uiColor: .secondarySystemBackground))
+                .cornerRadius(8)
+        }
+    }
+}
+
+private struct SectionHeader: View {
+    let title: String
+    
+    var body: some View {
+        Text(title)
+            .font(.headline)
+            .padding(.top, 8)
+    }
+}
+
+private struct SettingRow: View {
+    let icon: String
+    let title: String
+    let value: String
+    let color: Color
+    
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .foregroundColor(color)
+                .frame(width: 30)
+            
+            Text(title)
+            
+            Spacer()
+            
+            Text(value)
+                .foregroundColor(.secondary)
+        }
+        .padding()
+        .background(Color(uiColor: .secondarySystemBackground))
+        .cornerRadius(8)
+    }
+}
+
+private struct QuickActionButton: View {
+    let icon: String
+    let title: String
+    let color: Color
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Image(systemName: icon)
+                    .foregroundColor(color)
+                    .frame(width: 30)
+                
+                Text(title)
+                    .foregroundColor(.primary)
+                
+                Spacer()
+                
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding()
+            .background(Color(uiColor: .secondarySystemBackground))
+            .cornerRadius(8)
+        }
+    }
+}
+
+private struct ChecklistItem: View {
+    let text: String
+    let isComplete: Bool
+    
+    var body: some View {
+        HStack {
+            Image(systemName: isComplete ? "checkmark.circle.fill" : "circle")
+                .foregroundColor(isComplete ? .green : .secondary)
+            
+            Text(text)
+                .foregroundColor(isComplete ? .secondary : .primary)
+            
+            Spacer()
+        }
+        .padding()
+        .background(Color(uiColor: .secondarySystemBackground))
+        .cornerRadius(8)
+    }
+}
+
+// MARK: - UIColor Extension
+
+#if os(iOS)
+private extension Color {
+    init(uiColor: UIColor) {
+        self.init(uiColor)
+    }
+}
+#endif
+
+#endif
