@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Copy roots.icon to project root and rename to Itori.icon
+# Copy itori.icon to project root and rename to Itori.icon
 
 echo "Copying and renaming icon file..."
-cp /Users/clevelandlewis/Desktop/Itori/Docs/roots.icon /Users/clevelandlewis/Desktop/Itori/Itori.icon
+cp /Users/clevelandlewis/Desktop/Itori/Docs/itori.icon /Users/clevelandlewis/Desktop/Itori/Itori.icon
 
 if [ -f "/Users/clevelandlewis/Desktop/Itori/Itori.icon" ]; then
     echo "✅ Success! Itori.icon has been created in the project root."
