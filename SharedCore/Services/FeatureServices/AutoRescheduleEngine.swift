@@ -145,11 +145,12 @@ final class AutoRescheduleEngine: ObservableObject {
         let now = Date()
         let calendar = Calendar.current
         let todayEnd = calendar.date(bySettingHour: 21, minute: 0, second: 0, of: now) ?? now
+        let sameDayRange: ClosedRange<Date>? = now <= todayEnd ? now...todayEnd : nil
         
         LOG_UI(.debug, "AutoReschedule", "Analyzing session: \(session.title)")
         
         // Strategy 1: Find free slot today
-        if let slot = findFreeSlot(for: session, within: now...todayEnd) {
+        if let range = sameDayRange, let slot = findFreeSlot(for: session, within: range) {
             LOG_UI(.info, "AutoReschedule", "Strategy: Same day slot for \(session.title)")
             return RescheduleOperation(
                 id: UUID(),
@@ -166,7 +167,8 @@ final class AutoRescheduleEngine: ObservableObject {
         
         // Strategy 2: Push lower priority tasks today
         if settings.autoReschedulePushLowerPriority,
-           let result = findSlotWithPush(for: session, within: now...todayEnd) {
+           let range = sameDayRange,
+           let result = findSlotWithPush(for: session, within: range) {
             LOG_UI(.info, "AutoReschedule", "Strategy: Same day with push for \(session.title)")
             return RescheduleOperation(
                 id: UUID(),

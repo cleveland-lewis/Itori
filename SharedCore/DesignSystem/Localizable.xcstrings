@@ -25452,8 +25452,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Developer Mode"
+            "state": "translated",
+            "value": "Modalità sviluppatore"
           }
         }
       }
@@ -25522,8 +25522,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Difficulty"
+            "state": "translated",
+            "value": "Difficoltà"
           }
         }
       }
@@ -25592,8 +25592,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Done"
+            "state": "translated",
+            "value": "Fatto"
           }
         }
       }
@@ -25656,8 +25656,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Due %@"
+            "state": "translated",
+            "value": "Dovuto %@"
           }
         }
       }
@@ -25726,8 +25726,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Due Date"
+            "state": "translated",
+            "value": "Scadenza"
           }
         }
       }
@@ -25790,8 +25790,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Due Now"
+            "state": "translated",
+            "value": "Scadenza adesso"
           }
         }
       }
@@ -25860,8 +25860,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Duration"
+            "state": "translated",
+            "value": "Durata"
           }
         }
       }
@@ -25930,8 +25930,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Edit"
+            "state": "translated",
+            "value": "Modificare"
           }
         }
       }
@@ -25994,8 +25994,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Edit Card"
+            "state": "translated",
+            "value": "Modifica carta"
           }
         }
       }
@@ -26058,8 +26058,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Education Level"
+            "state": "translated",
+            "value": "Livello di istruzione"
           }
         }
       }
@@ -26128,8 +26128,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Email"
+            "state": "translated",
+            "value": "E-mail"
           }
         }
       }
@@ -26192,8 +26192,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Enable debugging features"
+            "state": "translated",
+            "value": "Abilita le funzionalità di debug"
           }
         }
       }
@@ -26256,8 +26256,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Enable Flashcards"
+            "state": "translated",
+            "value": "Abilita Flashcard"
           }
         }
       }
@@ -26320,8 +26320,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Enable Haptic Feedback"
+            "state": "translated",
+            "value": "Abilita feedback tattile"
           }
         }
       }
@@ -26384,8 +26384,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Enable optional UI animations (still respects Reduce Motion)"
+            "state": "translated",
+            "value": "Abilita animazioni dell'interfaccia utente opzionali (rispetta comunque la riduzione del movimento)"
           }
         }
       }
@@ -26448,8 +26448,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Enable the debugger to track main thread blocks, long operations, and performance issues."
+            "state": "translated",
+            "value": "Abilita il debugger per tenere traccia dei blocchi del thread principale, delle operazioni lunghe e dei problemi di prestazioni."
           }
         }
       }
@@ -26512,8 +26512,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "End date"
+            "state": "translated",
+            "value": "Data di fine"
           }
         }
       }
@@ -26576,8 +26576,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "End time must be after the start time."
+            "state": "translated",
+            "value": "L'ora di fine deve essere successiva all'ora di inizio."
           }
         }
       }
@@ -26640,8 +26640,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Ends"
+            "state": "translated",
+            "value": "Finisce"
           }
         }
       }
@@ -26704,8 +26704,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Energy Level"
+            "state": "translated",
+            "value": "Livello energetico"
           }
         }
       }
@@ -26768,8 +26768,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Energy: %@"
+            "state": "translated",
+            "value": "Energia: %@"
           }
         }
       }
@@ -26826,8 +26826,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Estimated"
+            "state": "translated",
+            "value": "Stima"
           }
         }
       }
@@ -26890,8 +26890,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Estimation Factors"
+            "state": "translated",
+            "value": "Fattori di stima"
           }
         }
       }
@@ -26954,8 +26954,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Event Buffer (Last 50)"
+            "state": "translated",
+            "value": "Buffer eventi (ultimi 50)"
           }
         }
       }
@@ -27018,8 +27018,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Events (%@)"
+            "state": "translated",
+            "value": "Eventi (%@)"
           }
         }
       }
@@ -27088,8 +27088,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Every %1$@ %2$@"
+            "state": "translated",
+            "value": "Ogni %1$@ %2$@"
           }
         }
       }
@@ -27158,8 +27158,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Exam"
+            "state": "translated",
+            "value": "Esame"
           }
         }
       }
@@ -27228,8 +27228,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Exams"
+            "state": "translated",
+            "value": "Esami"
           }
         }
       }
@@ -27292,8 +27292,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Expected average on remaining work"
+            "state": "translated",
+            "value": "Media prevista sul lavoro rimanente"
           }
         }
       }
@@ -27356,8 +27356,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Expected: 0 provider attempts when toggle is OFF"
+            "state": "translated",
+            "value": "Previsto: 0 tentativi del provider quando l'attivazione/disattivazione è disattivata"
           }
         }
       }
@@ -27420,8 +27420,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Export to Anki"
+            "state": "translated",
+            "value": "Esporta ad Anki"
           }
         }
       }
@@ -27486,8 +27486,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "External Services"
+            "state": "translated",
+            "value": "Servizi Esterni"
           }
         }
       }
@@ -27550,8 +27550,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Fall 2025"
+            "state": "translated",
+            "value": "Autunno 2025"
           }
         }
       }
@@ -27620,8 +27620,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Filters"
+            "state": "translated",
+            "value": "Filtri"
           }
         }
       }
@@ -27684,8 +27684,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Fine-tune which subsystems emit debug logs. Errors and warnings are always logged."
+            "state": "translated",
+            "value": "Ottimizza quali sottosistemi emettono log di debug.Errori e avvisi vengono sempre registrati."
           }
         }
       }
@@ -27748,8 +27748,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Flashcard System"
+            "state": "translated",
+            "value": "Sistema di carte flash"
           }
         }
       }
@@ -27818,8 +27818,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Flashcards"
+            "state": "translated",
+            "value": "Flashcard"
           }
         }
       }
@@ -27895,8 +27895,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Create new deck"
+            "state": "translated",
+            "value": "Crea un nuovo mazzo"
           }
         }
       }
@@ -27972,8 +27972,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "New Deck"
+            "state": "translated",
+            "value": "Nuovo mazzo"
           }
         }
       }
@@ -28049,8 +28049,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Cancel"
+            "state": "translated",
+            "value": "Cancellare"
           }
         }
       }
@@ -28126,8 +28126,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Create"
+            "state": "translated",
+            "value": "Creare"
           }
         }
       }
@@ -28203,8 +28203,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Course selection coming soon"
+            "state": "translated",
+            "value": "A breve la selezione del corso"
           }
         }
       }
@@ -28280,8 +28280,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Link to Course (Optional)"
+            "state": "translated",
+            "value": "Link al corso (facoltativo)"
           }
         }
       }
@@ -28357,8 +28357,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Deck Name"
+            "state": "translated",
+            "value": "Nome del mazzo"
           }
         }
       }
@@ -28434,8 +28434,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "New Deck"
+            "state": "translated",
+            "value": "Nuovo mazzo"
           }
         }
       }
@@ -28511,8 +28511,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "%d cards"
+            "state": "translated",
+            "value": "%d carte"
           }
         }
       }
@@ -28588,8 +28588,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Create flashcard deck for %@"
+            "state": "translated",
+            "value": "Crea un mazzo di flashcard per %@"
           }
         }
       }
@@ -28665,8 +28665,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Choose a deck from the sidebar to view cards and study"
+            "state": "translated",
+            "value": "Scegli un mazzo dalla barra laterale per visualizzare le carte e studiare"
           }
         }
       }
@@ -28742,8 +28742,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Create your first flashcard deck to get started"
+            "state": "translated",
+            "value": "Crea il tuo primo mazzo di flashcard per iniziare"
           }
         }
       }
@@ -28819,8 +28819,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No Decks"
+            "state": "translated",
+            "value": "Nessun mazzo"
           }
         }
       }
@@ -28896,8 +28896,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No Results"
+            "state": "translated",
+            "value": "Nessun risultato"
           }
         }
       }
@@ -28973,8 +28973,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select a Deck"
+            "state": "translated",
+            "value": "Seleziona un mazzo"
           }
         }
       }
@@ -29050,8 +29050,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Search decks"
+            "state": "translated",
+            "value": "Cerca mazzi"
           }
         }
       }
@@ -29127,8 +29127,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "All Decks"
+            "state": "translated",
+            "value": "Tutti i mazzi"
           }
         }
       }
@@ -29204,8 +29204,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Current Semester"
+            "state": "translated",
+            "value": "Semestre corrente"
           }
         }
       }
@@ -29281,8 +29281,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Decks"
+            "state": "translated",
+            "value": "Mazzi"
           }
         }
       }
@@ -29428,8 +29428,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Focus Debugger"
+            "state": "translated",
+            "value": "Messa a fuoco debugger"
           }
         }
       }
@@ -29492,8 +29492,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "From: %@"
+            "state": "translated",
+            "value": "Da: %@"
           }
         }
       }
@@ -29562,8 +29562,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "General"
+            "state": "translated",
+            "value": "Generale"
           }
         }
       }
@@ -29626,8 +29626,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Generate Plan to create time blocks for today and the next few days."
+            "state": "translated",
+            "value": "Genera un piano per creare blocchi temporali per oggi e per i prossimi giorni."
           }
         }
       }
@@ -29690,8 +29690,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Generation Failed"
+            "state": "translated",
+            "value": "Generazione fallita"
           }
         }
       }
@@ -29754,8 +29754,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Get notified before assignments are due"
+            "state": "translated",
+            "value": "Ricevi una notifica prima della scadenza dei compiti"
           }
         }
       }
@@ -29818,8 +29818,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Get notified when countdown or stopwatch timers complete"
+            "state": "translated",
+            "value": "Ricevi una notifica al completamento del conto alla rovescia o del cronometro"
           }
         }
       }
@@ -29882,8 +29882,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Get notified when work sessions and breaks complete"
+            "state": "translated",
+            "value": "Ricevi una notifica al termine delle sessioni di lavoro e delle pause"
           }
         }
       }
@@ -29952,7 +29952,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "GPA %1$@ / %2$@"
           }
         }
@@ -30016,8 +30016,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "GPA Overview"
+            "state": "translated",
+            "value": "Panoramica del GPA"
           }
         }
       }
@@ -30080,8 +30080,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "GPA Scale: %@"
+            "state": "translated",
+            "value": "Scala GPA: %@"
           }
         }
       }
@@ -30150,8 +30150,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Grade"
+            "state": "translated",
+            "value": "Grado"
           }
         }
       }
@@ -30214,8 +30214,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Grade Analytics"
+            "state": "translated",
+            "value": "Analisi dei voti"
           }
         }
       }
@@ -30278,8 +30278,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Grade Components"
+            "state": "translated",
+            "value": "Componenti di grado"
           }
         }
       }
@@ -30342,8 +30342,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Grade Components – %@"
+            "state": "translated",
+            "value": "Componenti di grado – %@"
           }
         }
       }
@@ -30496,8 +30496,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Credits"
+            "state": "translated",
+            "value": "Crediti"
           }
         }
       }
@@ -30573,8 +30573,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Grade"
+            "state": "translated",
+            "value": "Grado"
           }
         }
       }
@@ -30650,8 +30650,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No grade yet"
+            "state": "translated",
+            "value": "Nessun voto ancora"
           }
         }
       }
@@ -30727,8 +30727,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select a course from the center panel to see its grade breakdown."
+            "state": "translated",
+            "value": "Seleziona un corso dal pannello centrale per visualizzarne la suddivisione dei voti."
           }
         }
       }
@@ -30804,8 +30804,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Courses"
+            "state": "translated",
+            "value": "Corsi"
           }
         }
       }
@@ -30881,8 +30881,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Grades"
+            "state": "translated",
+            "value": "Gradi"
           }
         }
       }
@@ -30958,8 +30958,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Overall Status"
+            "state": "translated",
+            "value": "Stato generale"
           }
         }
       }
@@ -31022,8 +31022,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Haptic feedback and animations respect accessibility settings."
+            "state": "translated",
+            "value": "Il feedback tattile e le animazioni rispettano le impostazioni di accessibilità."
           }
         }
       }
@@ -31086,8 +31086,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Haptic feedback is disabled when Reduce Motion is enabled"
+            "state": "translated",
+            "value": "Il feedback tattile è disabilitato quando Riduci movimento è abilitato"
           }
         }
       }
@@ -31150,8 +31150,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Haptic feedback respects accessibility settings"
+            "state": "translated",
+            "value": "Il feedback tattile rispetta le impostazioni di accessibilità"
           }
         }
       }
@@ -31214,8 +31214,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Haptics: %@"
+            "state": "translated",
+            "value": "Tattica: %@"
           }
         }
       }
@@ -31278,8 +31278,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "High"
+            "state": "translated",
+            "value": "Alto"
           }
         }
       }
@@ -31342,8 +31342,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Higher values make transitions feel gentler."
+            "state": "translated",
+            "value": "Valori più alti rendono le transizioni più delicate."
           }
         }
       }
@@ -31412,8 +31412,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Highest: %1$@ %2$@%%"
+            "state": "translated",
+            "value": "Più alto: %1$@ %2$@%%"
           }
         }
       }
@@ -31476,8 +31476,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "History Chart"
+            "state": "translated",
+            "value": "Grafico della storia"
           }
         }
       }
@@ -31540,8 +31540,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "History: %@ items"
+            "state": "translated",
+            "value": "Cronologia: %@ elementi"
           }
         }
       }
@@ -31610,8 +31610,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Homework"
+            "state": "translated",
+            "value": "Compiti a casa"
           }
         }
       }
@@ -31674,8 +31674,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "How Dependencies Work"
+            "state": "translated",
+            "value": "Come funzionano le dipendenze"
           }
         }
       }
@@ -31738,8 +31738,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "How far ahead to scan for events when refreshing."
+            "state": "translated",
+            "value": "Quanto tempo occorre per eseguire la scansione degli eventi durante l'aggiornamento."
           }
         }
       }
@@ -31802,8 +31802,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "How well did you know this?"
+            "state": "translated",
+            "value": "Quanto bene lo sapevi?"
           }
         }
       }
@@ -31866,8 +31866,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Hypothetical grades won't be saved"
+            "state": "translated",
+            "value": "I voti ipotetici non verranno salvati"
           }
         }
       }
@@ -31930,8 +31930,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "iCloud is connected and protected by native iCloud protections"
+            "state": "translated",
+            "value": "iCloud è connesso e protetto dalle protezioni iCloud native"
           }
         }
       }
@@ -31994,8 +31994,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Icons"
+            "state": "translated",
+            "value": "Icone"
           }
         }
       }
@@ -32058,8 +32058,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Icons & Text"
+            "state": "translated",
+            "value": "Icone e testo"
           }
         }
       }
@@ -32128,8 +32128,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "If you score %1$@%% on remaining work, your projected final grade is %2$@%%."
+            "state": "translated",
+            "value": "Se ottieni un punteggio di %1$@%% sul lavoro rimanente, il voto finale previsto sarà %2$@%%."
           }
         }
       }
@@ -32192,8 +32192,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Include in overview:"
+            "state": "translated",
+            "value": "Includi nella panoramica:"
           }
         }
       }
@@ -32256,8 +32256,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Increase button and control sizes for easier tapping"
+            "state": "translated",
+            "value": "Aumenta le dimensioni dei pulsanti e dei controlli per un tocco più semplice"
           }
         }
       }
@@ -32320,8 +32320,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Increase Contrast"
+            "state": "translated",
+            "value": "Aumenta il contrasto"
           }
         }
       }
@@ -32384,8 +32384,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Increase Contrast: %@"
+            "state": "translated",
+            "value": "Aumenta contrasto: %@"
           }
         }
       }
@@ -32454,8 +32454,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Integration"
+            "state": "translated",
+            "value": "Integrazione"
           }
         }
       }
@@ -32524,8 +32524,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Integrations"
+            "state": "translated",
+            "value": "Integrazioni"
           }
         }
       }
@@ -32588,8 +32588,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Interactions"
+            "state": "translated",
+            "value": "Interazioni"
           }
         }
       }
@@ -32658,8 +32658,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Interface"
+            "state": "translated",
+            "value": "Interfaccia"
           }
         }
       }
@@ -32722,8 +32722,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Interface Preferences"
+            "state": "translated",
+            "value": "Preferenze dell'interfaccia"
           }
         }
       }
@@ -32786,8 +32786,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Interval: %@d"
+            "state": "translated",
+            "value": "Intervallo: %@d"
           }
         }
       }
@@ -32857,8 +32857,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Good afternoon"
+            "state": "translated",
+            "value": "Buon pomeriggio"
           }
         }
       }
@@ -32928,8 +32928,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Afternoon"
+            "state": "translated",
+            "value": "Pomeriggio"
           }
         }
       }
@@ -32999,8 +32999,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Keep it up"
+            "state": "translated",
+            "value": "Continua così"
           }
         }
       }
@@ -33070,8 +33070,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Stay focused"
+            "state": "translated",
+            "value": "Rimani concentrato"
           }
         }
       }
@@ -33141,8 +33141,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Making progress"
+            "state": "translated",
+            "value": "Fare progressi"
           }
         }
       }
@@ -33212,8 +33212,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Hello"
+            "state": "translated",
+            "value": "Ciao"
           }
         }
       }
@@ -33283,8 +33283,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Good evening"
+            "state": "translated",
+            "value": "Buonasera"
           }
         }
       }
@@ -33354,8 +33354,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Evening"
+            "state": "translated",
+            "value": "Sera"
           }
         }
       }
@@ -33425,8 +33425,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Wrapping up"
+            "state": "translated",
+            "value": "Concludendo"
           }
         }
       }
@@ -33496,8 +33496,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Almost there"
+            "state": "translated",
+            "value": "Ci siamo quasi"
           }
         }
       }
@@ -33567,8 +33567,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Finish strong"
+            "state": "translated",
+            "value": "Finisci alla grande"
           }
         }
       }
@@ -33638,8 +33638,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Good morning"
+            "state": "translated",
+            "value": "Buongiorno"
           }
         }
       }
@@ -33709,8 +33709,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Rise and shine"
+            "state": "translated",
+            "value": "Alzati e risplendi"
           }
         }
       }
@@ -33780,8 +33780,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Morning"
+            "state": "translated",
+            "value": "Mattina"
           }
         }
       }
@@ -33851,8 +33851,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Start strong today"
+            "state": "translated",
+            "value": "Inizia forte oggi"
           }
         }
       }
@@ -33922,8 +33922,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Welcome back"
+            "state": "translated",
+            "value": "Bentornato"
           }
         }
       }
@@ -33993,8 +33993,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Hello"
+            "state": "translated",
+            "value": "Ciao"
           }
         }
       }
@@ -34064,8 +34064,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Welcome back"
+            "state": "translated",
+            "value": "Bentornato"
           }
         }
       }
@@ -34135,8 +34135,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Still working"
+            "state": "translated",
+            "value": "Funziona ancora"
           }
         }
       }
@@ -34206,8 +34206,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Burning the midnight oil"
+            "state": "translated",
+            "value": "Bruciare l'olio di mezzanotte"
           }
         }
       }
@@ -34277,8 +34277,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Courses"
+            "state": "translated",
+            "value": "Corsi"
           }
         }
       }
@@ -34348,8 +34348,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Due Soon"
+            "state": "translated",
+            "value": "A breve"
           }
         }
       }
@@ -34419,8 +34419,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Next 7 Days"
+            "state": "translated",
+            "value": "Prossimi 7 giorni"
           }
         }
       }
@@ -34491,8 +34491,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "This Month"
+            "state": "translated",
+            "value": "Questo mese"
           }
         }
       }
@@ -34563,8 +34563,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Your progress"
+            "state": "translated",
+            "value": "I tuoi progressi"
           }
         }
       }
@@ -34635,8 +34635,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Study Hours"
+            "state": "translated",
+            "value": "Ore di studio"
           }
         }
       }
@@ -34707,8 +34707,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Today"
+            "state": "translated",
+            "value": "Oggi"
           }
         }
       }
@@ -34779,8 +34779,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "This Week"
+            "state": "translated",
+            "value": "Questa settimana"
           }
         }
       }
@@ -34850,8 +34850,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No upcoming events."
+            "state": "translated",
+            "value": "Nessun evento in programma."
           }
         }
       }
@@ -34921,8 +34921,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "From your calendar"
+            "state": "translated",
+            "value": "Dal tuo calendario"
           }
         }
       }
@@ -34992,8 +34992,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Upcoming"
+            "state": "translated",
+            "value": "Prossimamente"
           }
         }
       }
@@ -35064,8 +35064,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Assignment"
+            "state": "translated",
+            "value": "Compito"
           }
         }
       }
@@ -35135,8 +35135,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Add Assignment"
+            "state": "translated",
+            "value": "Aggiungi compito"
           }
         }
       }
@@ -35206,8 +35206,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Add Grade"
+            "state": "translated",
+            "value": "Aggiungi voto"
           }
         }
       }
@@ -35277,8 +35277,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Auto Schedule"
+            "state": "translated",
+            "value": "Pianificazione automatica"
           }
         }
       }
@@ -35348,8 +35348,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Open menu"
+            "state": "translated",
+            "value": "Apri il menu"
           }
         }
       }
@@ -35419,8 +35419,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Quick add"
+            "state": "translated",
+            "value": "Aggiunta rapida"
           }
         }
       }
@@ -35490,8 +35490,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Settings"
+            "state": "translated",
+            "value": "Impostazioni"
           }
         }
       }
@@ -35561,8 +35561,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Tasks"
+            "state": "translated",
+            "value": "Compiti"
           }
         }
       }
@@ -35632,8 +35632,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Done"
+            "state": "translated",
+            "value": "Fatto"
           }
         }
       }
@@ -35703,8 +35703,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Due %@ · %d min"
+            "state": "translated",
+            "value": "Scadenza %@ · %d min"
           }
         }
       }
@@ -35774,8 +35774,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Edit"
+            "state": "translated",
+            "value": "Modificare"
           }
         }
       }
@@ -35845,8 +35845,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Generate Plan"
+            "state": "translated",
+            "value": "Genera piano"
           }
         }
       }
@@ -35916,8 +35916,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "How it works"
+            "state": "translated",
+            "value": "Come funziona"
           }
         }
       }
@@ -35987,8 +35987,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "All sessions placed"
+            "state": "translated",
+            "value": "Tutte le sessioni piazzate"
           }
         }
       }
@@ -36058,8 +36058,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Nothing waiting in overflow."
+            "state": "translated",
+            "value": "Niente in attesa in eccesso."
           }
         }
       }
@@ -36129,8 +36129,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Not scheduled yet"
+            "state": "translated",
+            "value": "Non ancora programmato"
           }
         }
       }
@@ -36200,8 +36200,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Overflow"
+            "state": "translated",
+            "value": "Traboccamento"
           }
         }
       }
@@ -36271,8 +36271,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No blocks scheduled"
+            "state": "translated",
+            "value": "Nessun blocco in programma"
           }
         }
       }
@@ -36342,8 +36342,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Generate a plan to fill today."
+            "state": "translated",
+            "value": "Genera un piano da riempire oggi."
           }
         }
       }
@@ -36413,8 +36413,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Time blocks"
+            "state": "translated",
+            "value": "Blocchi temporali"
           }
         }
       }
@@ -36484,8 +36484,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Schedule"
+            "state": "translated",
+            "value": "Programma"
           }
         }
       }
@@ -36555,8 +36555,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Block updated"
+            "state": "translated",
+            "value": "Blocco aggiornato"
           }
         }
       }
@@ -36626,8 +36626,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Time conflict"
+            "state": "translated",
+            "value": "Conflitto temporale"
           }
         }
       }
@@ -36697,8 +36697,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Today"
+            "state": "translated",
+            "value": "Oggi"
           }
         }
       }
@@ -36768,8 +36768,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Add a due date"
+            "state": "translated",
+            "value": "Aggiungi una data di scadenza"
           }
         }
       }
@@ -36839,8 +36839,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "All tasks have dates"
+            "state": "translated",
+            "value": "Tutte le attività hanno date"
           }
         }
       }
@@ -36910,8 +36910,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Add due dates to keep planning accurate."
+            "state": "translated",
+            "value": "Aggiungi date di scadenza per mantenere una pianificazione accurata."
           }
         }
       }
@@ -36981,8 +36981,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Needs attention"
+            "state": "translated",
+            "value": "Ha bisogno di attenzione"
           }
         }
       }
@@ -37052,8 +37052,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Unscheduled"
+            "state": "translated",
+            "value": "Non programmato"
           }
         }
       }
@@ -37129,8 +37129,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Settings"
+            "state": "translated",
+            "value": "Impostazioni"
           }
         }
       }
@@ -37200,8 +37200,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Break"
+            "state": "translated",
+            "value": "Rottura"
           }
         }
       }
@@ -37271,8 +37271,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Focus"
+            "state": "translated",
+            "value": "Messa a fuoco"
           }
         }
       }
@@ -37342,8 +37342,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Mode"
+            "state": "translated",
+            "value": "Modalità"
           }
         }
       }
@@ -37413,8 +37413,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Pause"
+            "state": "translated",
+            "value": "Pausa"
           }
         }
       }
@@ -37484,8 +37484,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Resume"
+            "state": "translated",
+            "value": "Riprendere"
           }
         }
       }
@@ -37555,8 +37555,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Skip"
+            "state": "translated",
+            "value": "Saltare"
           }
         }
       }
@@ -37626,8 +37626,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Start"
+            "state": "translated",
+            "value": "Inizio"
           }
         }
       }
@@ -37697,8 +37697,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Stop"
+            "state": "translated",
+            "value": "Fermare"
           }
         }
       }
@@ -37768,8 +37768,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "%@ added"
+            "state": "translated",
+            "value": "%@ ha aggiunto"
           }
         }
       }
@@ -37839,8 +37839,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Course added"
+            "state": "translated",
+            "value": "Corso aggiunto"
           }
         }
       }
@@ -37910,8 +37910,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Grade added"
+            "state": "translated",
+            "value": "Grado aggiunto"
           }
         }
       }
@@ -37981,8 +37981,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No tasks to schedule"
+            "state": "translated",
+            "value": "Nessuna attività da pianificare"
           }
         }
       }
@@ -38052,8 +38052,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Schedule updated"
+            "state": "translated",
+            "value": "Programma aggiornato"
           }
         }
       }
@@ -38116,8 +38116,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Keep your profile, backups, and school-wide settings in their respective sections. Roots will link here when account syncing is available."
+            "state": "translated",
+            "value": "Mantieni il tuo profilo, i backup e le impostazioni a livello di scuola nelle rispettive sezioni.Roots si collegherà qui quando sarà disponibile la sincronizzazione dell'account."
           }
         }
       }
@@ -38180,8 +38180,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Large Tap Targets"
+            "state": "translated",
+            "value": "Target tocco grandi"
           }
         }
       }
@@ -38244,8 +38244,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Large Tap Targets: %@"
+            "state": "translated",
+            "value": "Target tocco grandi: %@"
           }
         }
       }
@@ -38308,8 +38308,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last 500 events"
+            "state": "translated",
+            "value": "Ultimi 500 eventi"
           }
         }
       }
@@ -38372,8 +38372,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last Attempt:"
+            "state": "translated",
+            "value": "Ultimo tentativo:"
           }
         }
       }
@@ -38436,8 +38436,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last Reason:"
+            "state": "translated",
+            "value": "Ultimo motivo:"
           }
         }
       }
@@ -38500,8 +38500,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last Suppression:"
+            "state": "translated",
+            "value": "Ultima soppressione:"
           }
         }
       }
@@ -38558,8 +38558,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Last: %@"
+            "state": "translated",
+            "value": "Scorso: %@"
           }
         }
       }
@@ -38628,8 +38628,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Layout"
+            "state": "translated",
+            "value": "Disposizione"
           }
         }
       }
@@ -38692,8 +38692,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Layout changes apply immediately to all screens."
+            "state": "translated",
+            "value": "Le modifiche al layout si applicano immediatamente a tutte le schermate."
           }
         }
       }
@@ -38756,8 +38756,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Light glass strength"
+            "state": "translated",
+            "value": "Resistenza del vetro leggero"
           }
         }
       }
@@ -38820,8 +38820,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Link to Course"
+            "state": "translated",
+            "value": "Collegamento al corso"
           }
         }
       }
@@ -38884,8 +38884,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Links"
+            "state": "translated",
+            "value": "Collegamenti"
           }
         }
       }
@@ -38948,8 +38948,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Live Preview"
+            "state": "translated",
+            "value": "Anteprima dal vivo"
           }
         }
       }
@@ -39012,8 +39012,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "LiveActivity: %@"
+            "state": "translated",
+            "value": "Attività dal vivo: %@"
           }
         }
       }
@@ -39076,8 +39076,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "LLM Assistance Enabled:"
+            "state": "translated",
+            "value": "Assistenza LLM abilitata:"
           }
         }
       }
@@ -39140,8 +39140,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results."
+            "state": "translated",
+            "value": "L'assistenza LLM è abilitata.I root possono utilizzare Apple Intelligence, modelli locali o provider personalizzati per migliorare la precisione dell'analisi e aggiungere controlli di ridondanza ai piani generati.Gli LLM non sovrascrivono mai silenziosamente i risultati deterministici."
           }
         }
       }
@@ -39204,8 +39204,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "LLM Provider Attempt Tracking"
+            "state": "translated",
+            "value": "Monitoraggio dei tentativi del provider LLM"
           }
         }
       }
@@ -39268,8 +39268,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Loading counters..."
+            "state": "translated",
+            "value": "Caricamento contatori..."
           }
         }
       }
@@ -39332,8 +39332,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Loading course analytics…"
+            "state": "translated",
+            "value": "Caricamento analisi del corso…"
           }
         }
       }
@@ -39396,8 +39396,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Local Database"
+            "state": "translated",
+            "value": "Banca dati locale"
           }
         }
       }
@@ -39460,8 +39460,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Lock"
+            "state": "translated",
+            "value": "Serratura"
           }
         }
       }
@@ -39524,8 +39524,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Lock work to due date"
+            "state": "translated",
+            "value": "Blocca il lavoro alla data di scadenza"
           }
         }
       }
@@ -39588,8 +39588,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Locked to due date"
+            "state": "translated",
+            "value": "Bloccato alla data di scadenza"
           }
         }
       }
@@ -39652,7 +39652,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
           }
         }
@@ -39722,8 +39722,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Low"
+            "state": "translated",
+            "value": "Basso"
           }
         }
       }
@@ -39792,8 +39792,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Lowest: %1$@ %2$@%%"
+            "state": "translated",
+            "value": "Minimo: %1$@ %2$@%%"
           }
         }
       }
@@ -39856,8 +39856,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Main Thread Debugger"
+            "state": "translated",
+            "value": "Debugger del thread principale"
           }
         }
       }
@@ -39920,8 +39920,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Main Thread Debugger Disabled"
+            "state": "translated",
+            "value": "Debugger del thread principale disabilitato"
           }
         }
       }
@@ -39984,8 +39984,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage all your courses, semesters, and academic settings from the Courses page."
+            "state": "translated",
+            "value": "Gestisci tutti i tuoi corsi, semestri e impostazioni accademiche dalla pagina Corsi."
           }
         }
       }
@@ -40048,8 +40048,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage app capabilities that require permissions or connect to external services."
+            "state": "translated",
+            "value": "Gestisci le funzionalità dell'app che richiedono autorizzazioni o connettiti a servizi esterni."
           }
         }
       }
@@ -40112,8 +40112,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage data storage and iCloud synchronization."
+            "state": "translated",
+            "value": "Gestisci l'archiviazione dei dati e la sincronizzazione di iCloud."
           }
         }
       }
@@ -40176,8 +40176,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage iCloud sync in Storage settings."
+            "state": "translated",
+            "value": "Gestisci la sincronizzazione di iCloud nelle impostazioni di archiviazione."
           }
         }
       }
@@ -40240,8 +40240,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage Permissions"
+            "state": "translated",
+            "value": "Gestisci autorizzazioni"
           }
         }
       }
@@ -40304,8 +40304,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage your academic semesters. The current semester is used for new courses and appears in the main interface."
+            "state": "translated",
+            "value": "Gestisci i tuoi semestri accademici.Il semestre corrente viene utilizzato per i nuovi corsi e appare nell'interfaccia principale."
           }
         }
       }
@@ -40368,8 +40368,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage your active and archived courses"
+            "state": "translated",
+            "value": "Gestisci i tuoi corsi attivi e archiviati"
           }
         }
       }
@@ -40432,8 +40432,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Manage your current courses. Archived courses are hidden from the main interface but remain accessible."
+            "state": "translated",
+            "value": "Gestisci i tuoi corsi attuali.I corsi archiviati sono nascosti dall'interfaccia principale ma rimangono accessibili."
           }
         }
       }
@@ -40496,8 +40496,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Material Intensity"
+            "state": "translated",
+            "value": "Intensità materiale"
           }
         }
       }
@@ -40560,8 +40560,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Material Intensity: %@"
+            "state": "translated",
+            "value": "Intensità del materiale: %@"
           }
         }
       }
@@ -40624,8 +40624,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Material preview"
+            "state": "translated",
+            "value": "Anteprima del materiale"
           }
         }
       }
@@ -40694,8 +40694,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Materials"
+            "state": "translated",
+            "value": "Materiali"
           }
         }
       }
@@ -40758,8 +40758,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Max Tasks to Push"
+            "state": "translated",
+            "value": "Numero massimo di attività da inviare"
           }
         }
       }
@@ -40822,8 +40822,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Max Tokens: %@"
+            "state": "translated",
+            "value": "Gettoni massimi: %@"
           }
         }
       }
@@ -40886,8 +40886,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Maximum of 5 tabs reached. Disable a tab to enable another."
+            "state": "translated",
+            "value": "Raggiunto il massimo di 5 schede.Disabilitare una scheda per abilitarne un'altra."
           }
         }
       }
@@ -40956,8 +40956,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Medium"
+            "state": "translated",
+            "value": "Medio"
           }
         }
       }
@@ -41020,8 +41020,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Meeting Times"
+            "state": "translated",
+            "value": "Orari delle riunioni"
           }
         }
       }
@@ -41090,8 +41090,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Message"
+            "state": "translated",
+            "value": "Messaggio"
           }
         }
       }
@@ -41154,8 +41154,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Minimize animations throughout the app"
+            "state": "translated",
+            "value": "Riduci al minimo le animazioni in tutta l'app"
           }
         }
       }
@@ -41218,8 +41218,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "MLX Configuration"
+            "state": "translated",
+            "value": "Configurazione MLX"
           }
         }
       }
@@ -41282,8 +41282,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "MLX models are loaded from the Hugging Face hub or local cache"
+            "state": "translated",
+            "value": "I modelli MLX vengono caricati dall'hub Hugging Face o dalla cache locale"
           }
         }
       }
@@ -41346,8 +41346,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Mock backend - no configuration needed"
+            "state": "translated",
+            "value": "Backend simulato: nessuna configurazione necessaria"
           }
         }
       }
@@ -41410,8 +41410,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Modules"
+            "state": "translated",
+            "value": "Moduli"
           }
         }
       }
@@ -41480,8 +41480,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Name"
+            "state": "translated",
+            "value": "Nome"
           }
         }
       }
@@ -41550,8 +41550,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Never"
+            "state": "translated",
+            "value": "Mai"
           }
         }
       }
@@ -41620,8 +41620,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "New Course"
+            "state": "translated",
+            "value": "Nuovo corso"
           }
         }
       }
@@ -41690,8 +41690,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "New Event"
+            "state": "translated",
+            "value": "Nuovo evento"
           }
         }
       }
@@ -41754,8 +41754,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "New Semester"
+            "state": "translated",
+            "value": "Nuovo semestre"
           }
         }
       }
@@ -41818,8 +41818,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No active courses"
+            "state": "translated",
+            "value": "Nessun corso attivo"
           }
         }
       }
@@ -41882,8 +41882,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No Active Semester"
+            "state": "translated",
+            "value": "Nessun semestre attivo"
           }
         }
       }
@@ -41946,8 +41946,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No activity selected"
+            "state": "translated",
+            "value": "Nessuna attività selezionata"
           }
         }
       }
@@ -42010,8 +42010,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No analytics yet."
+            "state": "translated",
+            "value": "Nessuna analisi ancora."
           }
         }
       }
@@ -42080,8 +42080,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No assignments"
+            "state": "translated",
+            "value": "Nessun incarico"
           }
         }
       }
@@ -42144,8 +42144,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No assignments available yet."
+            "state": "translated",
+            "value": "Nessun incarico ancora disponibile."
           }
         }
       }
@@ -42208,8 +42208,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No assignments due today."
+            "state": "translated",
+            "value": "Nessun compito in scadenza oggi."
           }
         }
       }
@@ -42272,8 +42272,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No assignments linked to this course yet."
+            "state": "translated",
+            "value": "Nessun compito collegato a questo corso ancora."
           }
         }
       }
@@ -42336,8 +42336,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No assignments recorded for this course."
+            "state": "translated",
+            "value": "Nessun compito registrato per questo corso."
           }
         }
       }
@@ -42400,8 +42400,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No cards to study"
+            "state": "translated",
+            "value": "Nessuna carta da studiare"
           }
         }
       }
@@ -42464,8 +42464,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No Cards to Study"
+            "state": "translated",
+            "value": "Nessuna carta da studiare"
           }
         }
       }
@@ -42528,8 +42528,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No Cards Yet"
+            "state": "translated",
+            "value": "Nessuna carta ancora"
           }
         }
       }
@@ -42592,8 +42592,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No Course"
+            "state": "translated",
+            "value": "Nessun corso"
           }
         }
       }
@@ -42656,8 +42656,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No data yet"
+            "state": "translated",
+            "value": "Nessun dato ancora"
           }
         }
       }
@@ -42720,8 +42720,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No due date"
+            "state": "translated",
+            "value": "Nessuna data di scadenza"
           }
         }
       }
@@ -42790,8 +42790,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No events"
+            "state": "translated",
+            "value": "Nessun evento"
           }
         }
       }
@@ -42854,8 +42854,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No events on this day"
+            "state": "translated",
+            "value": "Nessun evento in questo giorno"
           }
         }
       }
@@ -42918,8 +42918,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No exams linked to this course yet."
+            "state": "translated",
+            "value": "Nessun esame collegato a questo corso ancora."
           }
         }
       }
@@ -42982,8 +42982,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No external services connected"
+            "state": "translated",
+            "value": "Nessun servizio esterno connesso"
           }
         }
       }
@@ -43046,8 +43046,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No Flashcard Decks"
+            "state": "translated",
+            "value": "Nessun mazzo di flashcard"
           }
         }
       }
@@ -43110,8 +43110,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No holiday source configured."
+            "state": "translated",
+            "value": "Nessuna fonte di festività configurata."
           }
         }
       }
@@ -43174,8 +43174,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No module files yet."
+            "state": "translated",
+            "value": "Nessun file del modulo ancora."
           }
         }
       }
@@ -43238,8 +43238,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No notes available"
+            "state": "translated",
+            "value": "Nessuna nota disponibile"
           }
         }
       }
@@ -43302,8 +43302,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No Outline Yet"
+            "state": "translated",
+            "value": "Nessun contorno ancora"
           }
         }
       }
@@ -43366,8 +43366,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No Plan Found"
+            "state": "translated",
+            "value": "Nessun piano trovato"
           }
         }
       }
@@ -43430,8 +43430,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No plan time available yet"
+            "state": "translated",
+            "value": "Nessun tempo di pianificazione ancora disponibile"
           }
         }
       }
@@ -43494,8 +43494,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No plan yet"
+            "state": "translated",
+            "value": "Nessun piano ancora"
           }
         }
       }
@@ -43558,8 +43558,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No planned tasks today"
+            "state": "translated",
+            "value": "Nessuna attività pianificata oggi"
           }
         }
       }
@@ -43622,8 +43622,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No planner blocks on %@."
+            "state": "translated",
+            "value": "Nessun blocco del pianificatore su %@."
           }
         }
       }
@@ -43686,8 +43686,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No practice quizzes yet."
+            "state": "translated",
+            "value": "Nessun quiz pratico ancora."
           }
         }
       }
@@ -43750,8 +43750,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No recently deleted semesters."
+            "state": "translated",
+            "value": "Nessun semestre eliminato di recente."
           }
         }
       }
@@ -43814,8 +43814,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No Reschedule History"
+            "state": "translated",
+            "value": "Nessuna cronologia di riprogrammazione"
           }
         }
       }
@@ -43878,8 +43878,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No scheduled meetings"
+            "state": "translated",
+            "value": "Nessun incontro programmato"
           }
         }
       }
@@ -43944,8 +43944,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No scheduled tests"
+            "state": "translated",
+            "value": "Nessun test programmato"
           }
         }
       }
@@ -44008,8 +44008,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No semesters defined"
+            "state": "translated",
+            "value": "Nessun semestre definito"
           }
         }
       }
@@ -44072,8 +44072,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No semesters yet. Add one to begin organizing your courses."
+            "state": "translated",
+            "value": "Nessun semestre ancora.Aggiungine uno per iniziare a organizzare i tuoi corsi."
           }
         }
       }
@@ -44136,8 +44136,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No study tracked today"
+            "state": "translated",
+            "value": "Nessuno studio monitorato oggi"
           }
         }
       }
@@ -44200,8 +44200,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No Tasks in Plan"
+            "state": "translated",
+            "value": "Nessuna attività nel piano"
           }
         }
       }
@@ -44264,8 +44264,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No tests scheduled this week."
+            "state": "translated",
+            "value": "Nessun test in programma questa settimana."
           }
         }
       }
@@ -44328,8 +44328,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No time set - assumed due at 11:59 PM unless you set a time."
+            "state": "translated",
+            "value": "Nessun orario impostato: la scadenza è prevista alle 23:59 a meno che non venga impostata un'ora."
           }
         }
       }
@@ -44392,8 +44392,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No upcoming assignments"
+            "state": "translated",
+            "value": "Nessun incarico imminente"
           }
         }
       }
@@ -44456,8 +44456,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No upcoming deadlines"
+            "state": "translated",
+            "value": "Nessuna scadenza imminente"
           }
         }
       }
@@ -44520,8 +44520,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No upcoming deadlines."
+            "state": "translated",
+            "value": "Nessuna scadenza imminente."
           }
         }
       }
@@ -44584,8 +44584,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No upcoming events"
+            "state": "translated",
+            "value": "Nessun evento in programma"
           }
         }
       }
@@ -44648,8 +44648,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "None"
+            "state": "translated",
+            "value": "Nessuno"
           }
         }
       }
@@ -44706,8 +44706,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Not Connected"
+            "state": "translated",
+            "value": "Non connesso"
           }
         }
       }
@@ -44770,8 +44770,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Not set"
+            "state": "translated",
+            "value": "Non impostato"
           }
         }
       }
@@ -44834,8 +44834,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Note: These simulations are for preview only and don't affect actual system behavior"
+            "state": "translated",
+            "value": "Nota: queste simulazioni sono solo a scopo di anteprima e non influiscono sul comportamento effettivo del sistema"
           }
         }
       }
@@ -44904,8 +44904,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Notes"
+            "state": "translated",
+            "value": "Note"
           }
         }
       }
@@ -44968,8 +44968,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "NOTES"
+            "state": "translated",
+            "value": "NOTE"
           }
         }
       }
@@ -45039,8 +45039,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "%@ is due soon"
+            "state": "translated",
+            "value": "%@ scade a breve"
           }
         }
       }
@@ -45110,8 +45110,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Assignment Due Soon"
+            "state": "translated",
+            "value": "Assegnazione in scadenza a breve"
           }
         }
       }
@@ -45181,8 +45181,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Open Roots to see today's plan"
+            "state": "translated",
+            "value": "Apri Roots per vedere il piano di oggi"
           }
         }
       }
@@ -45252,8 +45252,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "You've got this!"
+            "state": "translated",
+            "value": "Hai questo!"
           }
         }
       }
@@ -45323,8 +45323,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "1 task due today"
+            "state": "translated",
+            "value": "1 attività in scadenza oggi"
           }
         }
       }
@@ -45394,8 +45394,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "%d tasks due today"
+            "state": "translated",
+            "value": "%d attività in scadenza oggi"
           }
         }
       }
@@ -45465,8 +45465,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Good Morning!"
+            "state": "translated",
+            "value": "Buongiorno!"
           }
         }
       }
@@ -45536,8 +45536,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Keep up the great work!"
+            "state": "translated",
+            "value": "Continuate così!"
           }
         }
       }
@@ -45607,8 +45607,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "You're making progress!"
+            "state": "translated",
+            "value": "Stai facendo progressi!"
           }
         }
       }
@@ -45672,8 +45672,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Stay focused on your goals!"
+            "state": "translated",
+            "value": "Rimani concentrato sui tuoi obiettivi!"
           }
         }
       }
@@ -45743,8 +45743,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Every small step counts!"
+            "state": "translated",
+            "value": "Ogni piccolo passo conta!"
           }
         }
       }
@@ -45814,8 +45814,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Believe in yourself!"
+            "state": "translated",
+            "value": "Credi in te stesso!"
           }
         }
       }
@@ -45885,8 +45885,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "You're doing amazing!"
+            "state": "translated",
+            "value": "Stai andando alla grande!"
           }
         }
       }
@@ -45950,8 +45950,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Stay Motivated"
+            "state": "translated",
+            "value": "Rimani motivato"
           }
         }
       }
@@ -46015,7 +46015,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "notification.weekly_summary.title"
           }
         }
@@ -46079,8 +46079,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Off"
+            "state": "translated",
+            "value": "Spento"
           }
         }
       }
@@ -46145,8 +46145,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Ollama Configuration"
+            "state": "translated",
+            "value": "Configurazione Ollama"
           }
         }
       }
@@ -46215,8 +46215,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "On"
+            "state": "translated",
+            "value": "SU"
           }
         }
       }
@@ -46279,8 +46279,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "On Date"
+            "state": "translated",
+            "value": "In data"
           }
         }
       }
@@ -46343,8 +46343,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Only reminders from this list will appear in Roots."
+            "state": "translated",
+            "value": "Solo i promemoria di questo elenco verranno visualizzati in Roots."
           }
         }
       }
@@ -46407,8 +46407,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Open a course in a new window to see details here."
+            "state": "translated",
+            "value": "Apri un corso in una nuova finestra per vedere i dettagli qui."
           }
         }
       }
@@ -46471,8 +46471,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Open System Settings to manage calendar, notifications, and other permissions."
+            "state": "translated",
+            "value": "Apri Impostazioni di sistema per gestire calendario, notifiche e altre autorizzazioni."
           }
         }
       }
@@ -46535,8 +46535,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "OpenAI-Compatible LLM API Configuration"
+            "state": "translated",
+            "value": "Configurazione API LLM compatibile con OpenAI"
           }
         }
       }
@@ -46599,8 +46599,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Overall Status"
+            "state": "translated",
+            "value": "Stato generale"
           }
         }
       }
@@ -46663,8 +46663,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Peak workload week: %@"
+            "state": "translated",
+            "value": "Settimana del carico di lavoro di punta: %@"
           }
         }
       }
@@ -46727,8 +46727,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Percentage"
+            "state": "translated",
+            "value": "Percentuale"
           }
         }
       }
@@ -46791,8 +46791,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Performance Debugging"
+            "state": "translated",
+            "value": "Debug delle prestazioni"
           }
         }
       }
@@ -46855,8 +46855,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Permission denied. Please enable in System Settings to use this feature."
+            "state": "translated",
+            "value": "Autorizzazione negata.Si prega di abilitare nelle Impostazioni di sistema per utilizzare questa funzione."
           }
         }
       }
@@ -46925,8 +46925,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Pinned"
+            "state": "translated",
+            "value": "Appuntato"
           }
         }
       }
@@ -46989,8 +46989,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Planner configuration settings"
+            "state": "translated",
+            "value": "Impostazioni di configurazione del pianificatore"
           }
         }
       }
@@ -47053,8 +47053,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Planner uses your assignment due dates to build a schedule of study blocks."
+            "state": "translated",
+            "value": "Planner utilizza le date di scadenza dei compiti per creare un programma di blocchi di studio."
           }
         }
       }
@@ -47293,8 +47293,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Planning..."
+            "state": "translated",
+            "value": "Pianificazione..."
           }
         }
       }
@@ -47363,8 +47363,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Allowed hours: %1$d:00–%2$d:00"
+            "state": "translated",
+            "value": "Ore consentite: %1$d:00–%2$d:00"
           }
         }
       }
@@ -47435,8 +47435,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Long Break"
+            "state": "translated",
+            "value": "Lunga pausa"
           }
         }
       }
@@ -47507,8 +47507,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Short Break"
+            "state": "translated",
+            "value": "Breve pausa"
           }
         }
       }
@@ -47653,8 +47653,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Logs"
+            "state": "translated",
+            "value": "Registri"
           }
         }
       }
@@ -47717,8 +47717,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Mark as deleted"
+            "state": "translated",
+            "value": "Contrassegna come eliminato"
           }
         }
       }
@@ -47781,8 +47781,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Mark as extended"
+            "state": "translated",
+            "value": "Contrassegna come esteso"
           }
         }
       }
@@ -47851,8 +47851,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Mark as kept"
+            "state": "translated",
+            "value": "Contrassegna come mantenuto"
           }
         }
       }
@@ -47921,8 +47921,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Mark as rescheduled"
+            "state": "translated",
+            "value": "Contrassegna come riprogrammato"
           }
         }
       }
@@ -47985,8 +47985,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Mark as shortened"
+            "state": "translated",
+            "value": "Contrassegna come abbreviato"
           }
         }
       }
@@ -48055,8 +48055,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Schedule Result"
+            "state": "translated",
+            "value": "Risultato della pianificazione"
           }
         }
       }
@@ -48131,8 +48131,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Due %d days ago"
+            "state": "translated",
+            "value": "Scadenza %d giorni fa"
           }
         }
       }
@@ -48207,8 +48207,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Due 1 day ago"
+            "state": "translated",
+            "value": "Scadenza 1 giorno fa"
           }
         }
       }
@@ -48283,8 +48283,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Due today"
+            "state": "translated",
+            "value": "Scadenza oggi"
           }
         }
       }
@@ -48429,8 +48429,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Loading sessions…"
+            "state": "translated",
+            "value": "Caricamento sessioni…"
           }
         }
       }
@@ -48575,8 +48575,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "%d minutes total"
+            "state": "translated",
+            "value": "%d minuti in totale"
           }
         }
       }
@@ -48645,8 +48645,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "You're caught up."
+            "state": "translated",
+            "value": "Sei preso."
           }
         }
       }
@@ -48715,8 +48715,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Anything overdue will appear here so the planner can prioritize it."
+            "state": "translated",
+            "value": "Tutto ciò che è in ritardo apparirà qui in modo che il pianificatore possa dargli la priorità."
           }
         }
       }
@@ -48791,8 +48791,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "%d days overdue"
+            "state": "translated",
+            "value": "%d giorni di ritardo"
           }
         }
       }
@@ -48867,8 +48867,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "1 day overdue"
+            "state": "translated",
+            "value": "1 giorno di ritardo"
           }
         }
       }
@@ -49025,8 +49025,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Today"
+            "state": "translated",
+            "value": "Oggi"
           }
         }
       }
@@ -49089,8 +49089,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "%d%% complete"
+            "state": "translated",
+            "value": "%d%% completato"
           }
         }
       }
@@ -49159,8 +49159,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "After"
+            "state": "translated",
+            "value": "Dopo"
           }
         }
       }
@@ -49229,8 +49229,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "End"
+            "state": "translated",
+            "value": "FINE"
           }
         }
       }
@@ -49299,8 +49299,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Holidays"
+            "state": "translated",
+            "value": "Vacanze"
           }
         }
       }
@@ -49369,8 +49369,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Interval"
+            "state": "translated",
+            "value": "Intervallo"
           }
         }
       }
@@ -49439,8 +49439,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Repeat"
+            "state": "translated",
+            "value": "Ripetere"
           }
         }
       }
@@ -49509,8 +49509,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Skip"
+            "state": "translated",
+            "value": "Saltare"
           }
         }
       }
@@ -49579,8 +49579,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Skip holidays"
+            "state": "translated",
+            "value": "Salta le vacanze"
           }
         }
       }
@@ -49649,8 +49649,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Skip weekends"
+            "state": "translated",
+            "value": "Salta i fine settimana"
           }
         }
       }
@@ -49719,8 +49719,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Never"
+            "state": "translated",
+            "value": "Mai"
           }
         }
       }
@@ -49789,8 +49789,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No holiday source configured."
+            "state": "translated",
+            "value": "Nessuna fonte di festività configurata."
           }
         }
       }
@@ -49853,8 +49853,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "None"
+            "state": "translated",
+            "value": "Nessuno"
           }
         }
       }
@@ -49923,8 +49923,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "On Date"
+            "state": "translated",
+            "value": "In data"
           }
         }
       }
@@ -49993,8 +49993,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "System Calendar"
+            "state": "translated",
+            "value": "Calendario di sistema"
           }
         }
       }
@@ -50133,8 +50133,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Monthly"
+            "state": "translated",
+            "value": "Mensile"
           }
         }
       }
@@ -50197,8 +50197,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "None"
+            "state": "translated",
+            "value": "Nessuno"
           }
         }
       }
@@ -50267,8 +50267,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Weekly"
+            "state": "translated",
+            "value": "Settimanale"
           }
         }
       }
@@ -50337,8 +50337,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Yearly"
+            "state": "translated",
+            "value": "Annuale"
           }
         }
       }
@@ -50471,8 +50471,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Auto-plan"
+            "state": "translated",
+            "value": "Pianificazione automatica"
           }
         }
       }
@@ -50541,8 +50541,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "%1$d/%2$d steps"
+            "state": "translated",
+            "value": "%1$d/%2$d passi"
           }
         }
       }
@@ -50617,8 +50617,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Cancel"
+            "state": "translated",
+            "value": "Cancellare"
           }
         }
       }
@@ -50693,8 +50693,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Create"
+            "state": "translated",
+            "value": "Creare"
           }
         }
       }
@@ -50769,8 +50769,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Save"
+            "state": "translated",
+            "value": "Salva"
           }
         }
       }
@@ -50845,8 +50845,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Edit Task"
+            "state": "translated",
+            "value": "Modifica attività"
           }
         }
       }
@@ -50921,8 +50921,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Assignment"
+            "state": "translated",
+            "value": "Compito"
           }
         }
       }
@@ -50997,8 +50997,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Linked"
+            "state": "translated",
+            "value": "Collegato"
           }
         }
       }
@@ -51073,8 +51073,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Assignment link (optional)"
+            "state": "translated",
+            "value": "Link del compito (facoltativo)"
           }
         }
       }
@@ -51225,8 +51225,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "None"
+            "state": "translated",
+            "value": "Nessuno"
           }
         }
       }
@@ -51301,8 +51301,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Due date"
+            "state": "translated",
+            "value": "Scadenza"
           }
         }
       }
@@ -51377,8 +51377,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Focus estimate"
+            "state": "translated",
+            "value": "Stima del focus"
           }
         }
       }
@@ -51453,8 +51453,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Lock to exact due date"
+            "state": "translated",
+            "value": "Blocca alla data di scadenza esatta"
           }
         }
       }
@@ -51529,8 +51529,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "When locked, the LLM planner schedules this block only on the due date."
+            "state": "translated",
+            "value": "Quando bloccato, il pianificatore LLM pianifica questo blocco solo alla data di scadenza."
           }
         }
       }
@@ -51605,7 +51605,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "min"
           }
         }
@@ -51681,8 +51681,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Priority"
+            "state": "translated",
+            "value": "Priorità"
           }
         }
       }
@@ -51757,8 +51757,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Title"
+            "state": "translated",
+            "value": "Titolo"
           }
         }
       }
@@ -51833,8 +51833,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "New Task"
+            "state": "translated",
+            "value": "Nuovo compito"
           }
         }
       }
@@ -51985,8 +51985,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Task"
+            "state": "translated",
+            "value": "Compito"
           }
         }
       }
@@ -52137,8 +52137,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Tasks are auto-scheduled into the Planner timeline."
+            "state": "translated",
+            "value": "Le attività vengono pianificate automaticamente nella sequenza temporale di Planner."
           }
         }
       }
@@ -52289,7 +52289,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "min"
           }
         }
@@ -52441,8 +52441,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "overflow"
+            "state": "translated",
+            "value": "traboccare"
           }
         }
       }
@@ -52827,8 +52827,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Planning"
+            "state": "translated",
+            "value": "Pianificazione"
           }
         }
       }
@@ -52891,8 +52891,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Please create a semester first in the Semesters section."
+            "state": "translated",
+            "value": "Crea prima un semestre nella sezione Semestri."
           }
         }
       }
@@ -52961,8 +52961,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Points"
+            "state": "translated",
+            "value": "Punti"
           }
         }
       }
@@ -53027,8 +53027,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Pomodoro Timer"
+            "state": "translated",
+            "value": "Temporizzatore del pomodoro"
           }
         }
       }
@@ -53091,8 +53091,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Practice Quizzes"
+            "state": "translated",
+            "value": "Quiz pratici"
           }
         }
       }
@@ -53162,8 +53162,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Back"
+            "state": "translated",
+            "value": "Indietro"
           }
         }
       }
@@ -53233,8 +53233,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Back to Tests"
+            "state": "translated",
+            "value": "Torniamo ai test"
           }
         }
       }
@@ -53304,8 +53304,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Cancel"
+            "state": "translated",
+            "value": "Cancellare"
           }
         }
       }
@@ -53375,8 +53375,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Generate Test"
+            "state": "translated",
+            "value": "Genera prova"
           }
         }
       }
@@ -53446,8 +53446,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "New Test"
+            "state": "translated",
+            "value": "Nuova prova"
           }
         }
       }
@@ -53588,8 +53588,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Previous"
+            "state": "translated",
+            "value": "Precedente"
           }
         }
       }
@@ -53659,8 +53659,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Submit Test"
+            "state": "translated",
+            "value": "Invia prova"
           }
         }
       }
@@ -53729,8 +53729,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Create your first practice test to start learning"
+            "state": "translated",
+            "value": "Crea il tuo primo test pratico per iniziare ad apprendere"
           }
         }
       }
@@ -53800,8 +53800,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No Results"
+            "state": "translated",
+            "value": "Nessun risultato"
           }
         }
       }
@@ -53871,8 +53871,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select a question to review"
+            "state": "translated",
+            "value": "Seleziona una domanda da rivedere"
           }
         }
       }
@@ -53941,8 +53941,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No Practice Tests Yet"
+            "state": "translated",
+            "value": "Ancora nessuna prova pratica"
           }
         }
       }
@@ -54012,8 +54012,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "No courses available. Please add a course first."
+            "state": "translated",
+            "value": "Nessun corso disponibileAggiungi prima un corso."
           }
         }
       }
@@ -54083,8 +54083,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select a course"
+            "state": "translated",
+            "value": "Seleziona un corso"
           }
         }
       }
@@ -54154,8 +54154,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Difficulty"
+            "state": "translated",
+            "value": "Difficoltà"
           }
         }
       }
@@ -54225,8 +54225,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Number of Questions"
+            "state": "translated",
+            "value": "Numero di domande"
           }
         }
       }
@@ -54367,8 +54367,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Question Types"
+            "state": "translated",
+            "value": "Tipi di domande"
           }
         }
       }
@@ -54438,8 +54438,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Settings"
+            "state": "translated",
+            "value": "Impostazioni"
           }
         }
       }
@@ -54509,8 +54509,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Topics (Optional)"
+            "state": "translated",
+            "value": "Argomenti (facoltativo)"
           }
         }
       }
@@ -54580,8 +54580,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Configure your practice test parameters"
+            "state": "translated",
+            "value": "Configura i parametri del tuo test pratico"
           }
         }
       }
@@ -54651,8 +54651,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Generate Practice Test"
+            "state": "translated",
+            "value": "Genera prova pratica"
           }
         }
       }
@@ -54722,8 +54722,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Add"
+            "state": "translated",
+            "value": "Aggiungere"
           }
         }
       }
@@ -54793,8 +54793,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Add topic"
+            "state": "translated",
+            "value": "Aggiungi argomento"
           }
         }
       }
@@ -54864,8 +54864,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Specify topics to focus on, or leave blank for general practice"
+            "state": "translated",
+            "value": "Specificare gli argomenti su cui concentrarsi o lasciare vuoto per la medicina generale"
           }
         }
       }
@@ -54935,8 +54935,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Explanation"
+            "state": "translated",
+            "value": "Spiegazione"
           }
         }
       }
@@ -55006,8 +55006,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Detailed explanations with examples"
+            "state": "translated",
+            "value": "Spiegazioni dettagliate con esempi"
           }
         }
       }
@@ -55077,8 +55077,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select at least one question type"
+            "state": "translated",
+            "value": "Seleziona almeno un tipo di domanda"
           }
         }
       }
@@ -55148,8 +55148,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Multiple Choice"
+            "state": "translated",
+            "value": "Scelta multipla"
           }
         }
       }
@@ -55219,8 +55219,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select from 4 options"
+            "state": "translated",
+            "value": "Scegli tra 4 opzioni"
           }
         }
       }
@@ -55290,8 +55290,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Short Answer"
+            "state": "translated",
+            "value": "Risposta breve"
           }
         }
       }
@@ -55361,8 +55361,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Brief written responses"
+            "state": "translated",
+            "value": "Brevi risposte scritte"
           }
         }
       }
@@ -55431,8 +55431,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Recent Tests"
+            "state": "translated",
+            "value": "Test recenti"
           }
         }
       }
@@ -55501,8 +55501,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Test your knowledge and track progress"
+            "state": "translated",
+            "value": "Metti alla prova le tue conoscenze e monitora i progressi"
           }
         }
       }
@@ -55571,8 +55571,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Practice Tests"
+            "state": "translated",
+            "value": "Prove pratiche"
           }
         }
       }
@@ -55641,8 +55641,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Generating Practice Test"
+            "state": "translated",
+            "value": "Generazione di prove pratiche"
           }
         }
       }
@@ -55783,8 +55783,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Correct Answer"
+            "state": "translated",
+            "value": "Risposta corretta"
           }
         }
       }
@@ -55854,8 +55854,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Explanation"
+            "state": "translated",
+            "value": "Spiegazione"
           }
         }
       }
@@ -55996,8 +55996,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Overall Score"
+            "state": "translated",
+            "value": "Punteggio complessivo"
           }
         }
       }
@@ -56067,8 +56067,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Excellent!"
+            "state": "translated",
+            "value": "Eccellente!"
           }
         }
       }
@@ -56138,8 +56138,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Good Job!"
+            "state": "translated",
+            "value": "Buon lavoro!"
           }
         }
       }
@@ -56209,8 +56209,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Keep Practicing"
+            "state": "translated",
+            "value": "Continua a esercitarti"
           }
         }
       }
@@ -56280,8 +56280,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Needs Improvement"
+            "state": "translated",
+            "value": "Ha bisogno di miglioramenti"
           }
         }
       }
@@ -56351,8 +56351,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Question %d"
+            "state": "translated",
+            "value": "Domanda %d"
           }
         }
       }
@@ -56422,7 +56422,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "Q%d"
           }
         }
@@ -56493,8 +56493,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Review Questions"
+            "state": "translated",
+            "value": "Domande di revisione"
           }
         }
       }
@@ -56706,8 +56706,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Practice Test Results"
+            "state": "translated",
+            "value": "Risultati dei test pratici"
           }
         }
       }
@@ -56777,8 +56777,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Your Answer"
+            "state": "translated",
+            "value": "La tua risposta"
           }
         }
       }
@@ -56848,8 +56848,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Provide a detailed explanation with specific examples"
+            "state": "translated",
+            "value": "Fornire una spiegazione dettagliata con esempi specifici"
           }
         }
       }
@@ -56919,8 +56919,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Your answer:"
+            "state": "translated",
+            "value": "La tua risposta:"
           }
         }
       }
@@ -56990,8 +56990,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Your explanation:"
+            "state": "translated",
+            "value": "La tua spiegazione:"
           }
         }
       }
@@ -57061,8 +57061,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Question %d of %d"
+            "state": "translated",
+            "value": "Domanda %d di %d"
           }
         }
       }
@@ -57132,8 +57132,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Answered"
+            "state": "translated",
+            "value": "Risposto"
           }
         }
       }
@@ -57203,8 +57203,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Not answered"
+            "state": "translated",
+            "value": "Non ho risposto"
           }
         }
       }
@@ -57274,8 +57274,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Cancel"
+            "state": "translated",
+            "value": "Cancellare"
           }
         }
       }
@@ -57345,8 +57345,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Are you sure you want to submit? You cannot change your answers after submission."
+            "state": "translated",
+            "value": "Sei sicuro di voler inviare?Non è possibile modificare le risposte dopo l'invio."
           }
         }
       }
@@ -57416,8 +57416,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "You have answered %d out of %d questions. Unanswered questions will be marked incorrect."
+            "state": "translated",
+            "value": "Hai risposto a %d domande su %d.Le domande senza risposta verranno contrassegnate come errate."
           }
         }
       }
@@ -57487,8 +57487,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Submit"
+            "state": "translated",
+            "value": "Invia"
           }
         }
       }
@@ -57558,8 +57558,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Submit Practice Test?"
+            "state": "translated",
+            "value": "Inviare prova pratica?"
           }
         }
       }
@@ -57622,8 +57622,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Previous: %@"
+            "state": "translated",
+            "value": "Precedente: %@"
           }
         }
       }
@@ -57692,8 +57692,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Priority"
+            "state": "translated",
+            "value": "Priorità"
           }
         }
       }
@@ -57756,8 +57756,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Privacy & Safety"
+            "state": "translated",
+            "value": "Privacy e sicurezza"
           }
         }
       }
@@ -57820,8 +57820,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Privacy & Security"
+            "state": "translated",
+            "value": "Privacy e sicurezza"
           }
         }
       }
@@ -57884,8 +57884,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Productivity Tracking"
+            "state": "translated",
+            "value": "Monitoraggio della produttività"
           }
         }
       }
@@ -57948,8 +57948,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Profile Management"
+            "state": "translated",
+            "value": "Gestione del profilo"
           }
         }
       }
@@ -58012,8 +58012,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Profile management coming soon"
+            "state": "translated",
+            "value": "La gestione del profilo sarà disponibile a breve"
           }
         }
       }
@@ -58076,8 +58076,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Profile Type"
+            "state": "translated",
+            "value": "Tipo di profilo"
           }
         }
       }
@@ -58146,8 +58146,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Project"
+            "state": "translated",
+            "value": "Progetto"
           }
         }
       }
@@ -58210,8 +58210,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Provide tactile feedback for interactions"
+            "state": "translated",
+            "value": "Fornire feedback tattile per le interazioni"
           }
         }
       }
@@ -58274,8 +58274,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Pushed %@ task(s)"
+            "state": "translated",
+            "value": "%@ attività inviate"
           }
         }
       }
@@ -58344,8 +58344,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Question"
+            "state": "translated",
+            "value": "Domanda"
           }
         }
       }
@@ -58414,8 +58414,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Quick Actions"
+            "state": "translated",
+            "value": "Azioni rapide"
           }
         }
       }
@@ -58484,7 +58484,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "Quiz"
           }
         }
@@ -58548,8 +58548,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Range: %@"
+            "state": "translated",
+            "value": "Allineare: %@"
           }
         }
       }
@@ -58618,8 +58618,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Reading"
+            "state": "translated",
+            "value": "Lettura"
           }
         }
       }
@@ -58682,8 +58682,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Receive a daily summary of your schedule and tasks"
+            "state": "translated",
+            "value": "Ricevi un riepilogo giornaliero del tuo programma e delle tue attività"
           }
         }
       }
@@ -58746,8 +58746,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Receive encouraging notifications throughout the day"
+            "state": "translated",
+            "value": "Ricevi notifiche incoraggianti durante il giorno"
           }
         }
       }
@@ -58816,8 +58816,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Recent"
+            "state": "translated",
+            "value": "Recente"
           }
         }
       }
@@ -58880,8 +58880,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Recent Events: %@"
+            "state": "translated",
+            "value": "Eventi recenti: %@"
           }
         }
       }
@@ -58944,8 +58944,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Recent Sessions"
+            "state": "translated",
+            "value": "Sessioni recenti"
           }
         }
       }
@@ -59008,8 +59008,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Reduce Motion"
+            "state": "translated",
+            "value": "Riduci il movimento"
           }
         }
       }
@@ -59072,8 +59072,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Reduce Motion: %@"
+            "state": "translated",
+            "value": "Riduci movimento: %@"
           }
         }
       }
@@ -59136,8 +59136,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Reduce Transparency"
+            "state": "translated",
+            "value": "Ridurre la trasparenza"
           }
         }
       }
@@ -59200,8 +59200,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Reduce Transparency: %@"
+            "state": "translated",
+            "value": "Riduci trasparenza: %@"
           }
         }
       }
@@ -59264,8 +59264,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Remind me:"
+            "state": "translated",
+            "value": "Ricordamelo:"
           }
         }
       }
@@ -59328,8 +59328,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Reminders integration settings"
+            "state": "translated",
+            "value": "Impostazioni di integrazione dei promemoria"
           }
         }
       }
@@ -59398,8 +59398,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Repeat"
+            "state": "translated",
+            "value": "Ripetere"
           }
         }
       }
@@ -59462,8 +59462,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Replace translucent backgrounds with opaque colors"
+            "state": "translated",
+            "value": "Sostituisci gli sfondi traslucidi con colori opachi"
           }
         }
       }
@@ -59590,8 +59590,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Reset All Data"
+            "state": "translated",
+            "value": "Reimposta tutti i dati"
           }
         }
       }
@@ -59654,8 +59654,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Reset All Settings"
+            "state": "translated",
+            "value": "Ripristina tutte le impostazioni"
           }
         }
       }
@@ -59724,8 +59724,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Review"
+            "state": "translated",
+            "value": "Revisione"
           }
         }
       }
@@ -59788,8 +59788,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Reviewed %@ cards"
+            "state": "translated",
+            "value": "Carte %@ riviste"
           }
         }
       }
@@ -59852,8 +59852,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Risk Analysis"
+            "state": "translated",
+            "value": "Analisi dei rischi"
           }
         }
       }
@@ -59916,8 +59916,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Runs a quick self-diagnostic across data, permissions, and local files."
+            "state": "translated",
+            "value": "Esegue una rapida autodiagnosi su dati, autorizzazioni e file locali."
           }
         }
       }
@@ -59980,8 +59980,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Sample Card"
+            "state": "translated",
+            "value": "Scheda campione"
           }
         }
       }
@@ -60044,8 +60044,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Save Semester"
+            "state": "translated",
+            "value": "Salva semestre"
           }
         }
       }
@@ -60108,8 +60108,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Schedule suggestions ready"
+            "state": "translated",
+            "value": "Suggerimenti di pianificazione pronti"
           }
         }
       }
@@ -60172,8 +60172,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Scheduled Tests"
+            "state": "translated",
+            "value": "Prove programmate"
           }
         }
       }
@@ -60236,8 +60236,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select a Calendar"
+            "state": "translated",
+            "value": "Seleziona un calendario"
           }
         }
       }
@@ -60300,8 +60300,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select a Course"
+            "state": "translated",
+            "value": "Seleziona un corso"
           }
         }
       }
@@ -60366,8 +60366,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select a List"
+            "state": "translated",
+            "value": "Seleziona un elenco"
           }
         }
       }
@@ -60430,8 +60430,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select an event to view details"
+            "state": "translated",
+            "value": "Seleziona un evento per visualizzarne i dettagli"
           }
         }
       }
@@ -60496,8 +60496,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select course"
+            "state": "translated",
+            "value": "Seleziona il corso"
           }
         }
       }
@@ -60560,8 +60560,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select the calendar used for school/academic events."
+            "state": "translated",
+            "value": "Seleziona il calendario utilizzato per gli eventi scolastici/accademici."
           }
         }
       }
@@ -60624,8 +60624,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select up to %@ actions."
+            "state": "translated",
+            "value": "Seleziona fino a %@ azioni."
           }
         }
       }
@@ -60688,8 +60688,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select up to 5 pages to show in the tab bar. All pages remain accessible via the menu."
+            "state": "translated",
+            "value": "Seleziona fino a 5 pagine da visualizzare nella barra delle schede.Tutte le pagine rimangono accessibili tramite il menu."
           }
         }
       }
@@ -60752,8 +60752,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "SELECTED DATE"
+            "state": "translated",
+            "value": "DATA SELEZIONATA"
           }
         }
       }
@@ -60816,8 +60816,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Selected material"
+            "state": "translated",
+            "value": "Materiale selezionato"
           }
         }
       }
@@ -60874,8 +60874,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Selected: %@"
+            "state": "translated",
+            "value": "Selezionato: %@"
           }
         }
       }
@@ -60944,8 +60944,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Selected: %1$@ • %2$@ today"
+            "state": "translated",
+            "value": "Selezionato: %1$@ • %2$@ oggi"
           }
         }
       }
@@ -61014,8 +61014,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Semester"
+            "state": "translated",
+            "value": "Semestre"
           }
         }
       }
@@ -61078,8 +61078,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Semester Management"
+            "state": "translated",
+            "value": "Gestione del semestre"
           }
         }
       }
@@ -61142,8 +61142,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Semester management coming soon"
+            "state": "translated",
+            "value": "La gestione del semestre in arrivo"
           }
         }
       }
@@ -61206,8 +61206,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Session Complete!"
+            "state": "translated",
+            "value": "Sessione completata!"
           }
         }
       }
@@ -61270,8 +61270,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Session: %@"
+            "state": "translated",
+            "value": "Sessione: %@"
           }
         }
       }
@@ -61341,8 +61341,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Guidance"
+            "state": "translated",
+            "value": "Guida"
           }
         }
       }
@@ -61412,8 +61412,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Haptic Feedback"
+            "state": "translated",
+            "value": "Feedback tattile"
           }
         }
       }
@@ -61483,8 +61483,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Feel tactile responses for actions"
+            "state": "translated",
+            "value": "Senti le risposte tattili alle azioni"
           }
         }
       }
@@ -61554,8 +61554,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Increase Contrast"
+            "state": "translated",
+            "value": "Aumenta il contrasto"
           }
         }
       }
@@ -61625,8 +61625,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Make colors and borders more distinct"
+            "state": "translated",
+            "value": "Rendi i colori e i bordi più distinti"
           }
         }
       }
@@ -61696,8 +61696,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Interaction"
+            "state": "translated",
+            "value": "Interazione"
           }
         }
       }
@@ -61767,8 +61767,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Reduce Motion"
+            "state": "translated",
+            "value": "Riduci il movimento"
           }
         }
       }
@@ -61838,8 +61838,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Minimize animations and transitions"
+            "state": "translated",
+            "value": "Riduci al minimo le animazioni e le transizioni"
           }
         }
       }
@@ -61909,8 +61909,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Reduce Transparency"
+            "state": "translated",
+            "value": "Ridurre la trasparenza"
           }
         }
       }
@@ -61980,8 +61980,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Reduce blur and transparency effects"
+            "state": "translated",
+            "value": "Riduci gli effetti di sfocatura e trasparenza"
           }
         }
       }
@@ -62051,8 +62051,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Show Tooltips"
+            "state": "translated",
+            "value": "Mostra descrizioni comandi"
           }
         }
       }
@@ -62122,8 +62122,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Display helpful hints for interface elements"
+            "state": "translated",
+            "value": "Visualizza suggerimenti utili per gli elementi dell'interfaccia"
           }
         }
       }
@@ -62264,8 +62264,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Show Animations"
+            "state": "translated",
+            "value": "Mostra animazioni"
           }
         }
       }
@@ -62335,8 +62335,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Enable smooth transitions and effects"
+            "state": "translated",
+            "value": "Abilita transizioni ed effetti fluidi"
           }
         }
       }
@@ -62406,8 +62406,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Card Corner Radius"
+            "state": "translated",
+            "value": "Raggio dell'angolo della carta"
           }
         }
       }
@@ -62477,8 +62477,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Effects"
+            "state": "translated",
+            "value": "Effetti"
           }
         }
       }
@@ -62548,8 +62548,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Glass Effects"
+            "state": "translated",
+            "value": "Effetti del vetro"
           }
         }
       }
@@ -62619,8 +62619,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Use translucent backgrounds and blur"
+            "state": "translated",
+            "value": "Usa sfondi traslucidi e sfocati"
           }
         }
       }
@@ -62690,8 +62690,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Style"
+            "state": "translated",
+            "value": "Stile"
           }
         }
       }
@@ -62761,8 +62761,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Theme"
+            "state": "translated",
+            "value": "Tema"
           }
         }
       }
@@ -62832,7 +62832,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "Auto"
           }
         }
@@ -62974,8 +62974,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Appearance"
+            "state": "translated",
+            "value": "Aspetto"
           }
         }
       }
@@ -63116,8 +63116,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "System"
+            "state": "translated",
+            "value": "Sistema"
           }
         }
       }
@@ -63181,7 +63181,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "settings.calendar.lock_picker"
           }
         }
@@ -63246,7 +63246,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "settings.calendar.lock_picker.disabled"
           }
         }
@@ -63311,7 +63311,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "settings.calendar.lock_picker.enabled"
           }
         }
@@ -63382,8 +63382,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Grant calendar access to sync events with your schedule"
+            "state": "translated",
+            "value": "Concedi l'accesso al calendario per sincronizzare gli eventi con la tua pianificazione"
           }
         }
       }
@@ -63453,8 +63453,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Calendar Access Required"
+            "state": "translated",
+            "value": "È richiesto l'accesso al calendario"
           }
         }
       }
@@ -63518,7 +63518,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "settings.calendar.picker_lock.header"
           }
         }
@@ -63589,8 +63589,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "1 Month"
+            "state": "translated",
+            "value": "1 mese"
           }
         }
       }
@@ -63660,8 +63660,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "1 Week"
+            "state": "translated",
+            "value": "1 settimana"
           }
         }
       }
@@ -63731,8 +63731,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "2 Months"
+            "state": "translated",
+            "value": "2 mesi"
           }
         }
       }
@@ -63802,8 +63802,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "2 Weeks"
+            "state": "translated",
+            "value": "2 settimane"
           }
         }
       }
@@ -63873,8 +63873,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Refresh Range"
+            "state": "translated",
+            "value": "Aggiorna intervallo"
           }
         }
       }
@@ -63944,8 +63944,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Request Access"
+            "state": "translated",
+            "value": "Richiedi l'accesso"
           }
         }
       }
@@ -64015,8 +64015,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Revoke Calendar Access"
+            "state": "translated",
+            "value": "Revoca l'accesso al calendario"
           }
         }
       }
@@ -64086,8 +64086,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Revoke Access"
+            "state": "translated",
+            "value": "Revoca accesso"
           }
         }
       }
@@ -64157,8 +64157,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Roots > Calendars."
+            "state": "translated",
+            "value": "Ciò cancellerà tutti i dati del calendario sincronizzati.Dovrai revocare manualmente l'autorizzazione in Impostazioni iOS > Roots > Calendari."
           }
         }
       }
@@ -64228,8 +64228,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Revoke Calendar Access?"
+            "state": "translated",
+            "value": "Revocare l'accesso al calendario?"
           }
         }
       }
@@ -64299,8 +64299,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Remove calendar access and clear all synced events. You'll need to manually revoke permission in iOS Settings."
+            "state": "translated",
+            "value": "Rimuovi l'accesso al calendario e cancella tutti gli eventi sincronizzati.Dovrai revocare manualmente l'autorizzazione nelle Impostazioni iOS."
           }
         }
       }
@@ -64370,8 +64370,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "How far ahead to scan for events when refreshing"
+            "state": "translated",
+            "value": "Quanto tempo occorre per eseguire la scansione degli eventi durante l'aggiornamento"
           }
         }
       }
@@ -64441,8 +64441,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Scheduling"
+            "state": "translated",
+            "value": "Pianificazione"
           }
         }
       }
@@ -64512,8 +64512,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Select the calendar to use for event tracking and scheduling"
+            "state": "translated",
+            "value": "Seleziona il calendario da utilizzare per il monitoraggio e la pianificazione degli eventi"
           }
         }
       }
@@ -64583,8 +64583,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "School Calendar"
+            "state": "translated",
+            "value": "Calendario scolastico"
           }
         }
       }
@@ -64648,7 +64648,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "settings.calendar.school_calendar.label"
           }
         }
@@ -64713,7 +64713,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "settings.calendar.select_calendar"
           }
         }
@@ -64778,7 +64778,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "settings.calendar.show_only_school"
           }
         }
@@ -64843,7 +64843,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "settings.calendar.show_only_school.disabled"
           }
         }
@@ -64908,7 +64908,7 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
+            "state": "translated",
             "value": "settings.calendar.show_only_school.enabled"
           }
         }
@@ -65044,8 +65044,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Accessibility"
+            "state": "translated",
+            "value": "Accessibilità"
           }
         }
       }
@@ -65115,8 +65115,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Appearance"
+            "state": "translated",
+            "value": "Aspetto"
           }
         }
       }
@@ -65186,8 +65186,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Calendar"
+            "state": "translated",
+            "value": "Calendario"
           }
         }
       }
@@ -65292,8 +65292,8 @@
         },
         "it": {
           "stringUnit": {
-            "state": "needs_review",
-            "value": "Courses & Planner"
+            "state": "translated",
+            "value": "Corsi e pianificazione"
           }
         }
       }
