@@ -32,6 +32,12 @@
             "state": "translated",
             "value": " "
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": " "
+          }
         }
       }
     },
@@ -66,6 +72,12 @@
             "state": "translated",
             "value": "—"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "—"
+          }
         }
       }
     },
@@ -96,6 +108,12 @@
           }
         },
         "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "·"
+          }
+        },
+        "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "·"
@@ -166,6 +184,12 @@
           }
         },
         "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· %@"
+          }
+        },
+        "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "· %@"
@@ -246,6 +270,12 @@
             "state": "translated",
             "value": "· %1$@ %2$@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· %1$@ %2$@"
+          }
         }
       }
     },
@@ -315,6 +345,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "· %@ اعتبار"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· %@ tín chỉ"
           }
         }
       }
@@ -392,6 +428,12 @@
             "state": "translated",
             "value": "· ~%1$@ %2$@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· ~%1$@ %2$@"
+          }
         }
       }
     },
@@ -461,6 +503,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "· هدف: %@%%"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "· Mục tiêu: %@%%"
           }
         }
       }
@@ -538,6 +586,12 @@
             "state": "translated",
             "value": "(%1$@-%2$@)"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(%1$@-%2$@)"
+          }
         }
       }
     },
@@ -604,6 +658,12 @@
           }
         },
         "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(%@)"
+          }
+        },
+        "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "(%@)"
@@ -678,6 +738,12 @@
             "state": "translated",
             "value": "[%@]"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "[%@]"
+          }
         }
       }
     },
@@ -708,6 +774,12 @@
           }
         },
         "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@"
+          }
+        },
+        "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "%@"
@@ -788,6 +860,12 @@
             "state": "translated",
             "value": "%1$@ – %2$@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ – %2$@"
+          }
         }
       }
     },
@@ -860,6 +938,12 @@
           }
         },
         "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        },
+        "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ · %2$@"
@@ -940,6 +1024,12 @@
             "state": "translated",
             "value": "%1$@ / %2$@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ / %2$@"
+          }
         }
       }
     },
@@ -1016,6 +1106,12 @@
             "state": "translated",
             "value": "%1$@ %2$@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$@"
+          }
         }
       }
     },
@@ -1085,6 +1181,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ کارت"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "thẻ %@"
           }
         }
       }
@@ -1156,6 +1258,12 @@
             "state": "translated",
             "value": "%@ سررسید کارت"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ thẻ đến hạn"
+          }
         }
       }
     },
@@ -1225,6 +1333,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ دقیقه"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ phút"
           }
         }
       }
@@ -1296,6 +1410,12 @@
             "state": "translated",
             "value": "%@ دقیقه تکمیل شد"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ phút đã hoàn thành"
+          }
         }
       }
     },
@@ -1366,6 +1486,12 @@
             "state": "translated",
             "value": "%@ دقیقه باقی مانده است"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "còn lại %@ phút"
+          }
         }
       }
     },
@@ -1435,6 +1561,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ دقیقه کل"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tổng cộng %@ phút"
           }
         }
       }
@@ -1512,6 +1644,12 @@
             "state": "translated",
             "value": "%1$@ دقیقه · %2$@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ phút · %2$@"
+          }
         }
       }
     },
@@ -1581,6 +1719,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ رخداد"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ lần xuất hiện"
           }
         }
       }
@@ -1658,6 +1802,12 @@
             "state": "translated",
             "value": "%1$@ از %2$@ تأیید شد"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ trong số %2$@ đã được phê duyệt"
+          }
         }
       }
     },
@@ -1728,6 +1878,12 @@
             "state": "translated",
             "value": "%@ در حال اجرا"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ đang chạy"
+          }
         }
       }
     },
@@ -1791,6 +1947,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ مطالعه شد"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ đã học"
           }
         }
       }
@@ -1864,6 +2026,12 @@
           }
         },
         "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@"
+          }
+        },
+        "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "%1$@: %2$@"
@@ -1944,6 +2112,12 @@
             "state": "translated",
             "value": "%1$@/%2$@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@/%2$@"
+          }
         }
       }
     },
@@ -2020,6 +2194,12 @@
             "state": "translated",
             "value": "%1$@/%2$@ گام"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@/%2$@ bước"
+          }
         }
       }
     },
@@ -2086,6 +2266,12 @@
           }
         },
         "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@%%"
+          }
+        },
+        "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "%@%%"
@@ -2160,6 +2346,12 @@
             "state": "translated",
             "value": "%@h"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@h"
+          }
         }
       }
     },
@@ -2230,6 +2422,12 @@
             "state": "translated",
             "value": "%@h کل"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tổng cộng %@h"
+          }
         }
       }
     },
@@ -2296,6 +2494,12 @@
           }
         },
         "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@m"
+          }
+        },
+        "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "%@m"
@@ -2368,6 +2572,12 @@
           }
         },
         "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "•"
+          }
+        },
+        "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "•"
@@ -2448,6 +2658,12 @@
             "state": "translated",
             "value": "• %1$@ %2$@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "• %1$@ %2$@"
+          }
         }
       }
     },
@@ -2517,6 +2733,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "+ %@ هفته دیگر"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ %@ thêm tuần nữa"
           }
         }
       }
@@ -2588,6 +2810,12 @@
             "state": "translated",
             "value": "+%@ بیشتر"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%@ thêm"
+          }
         }
       }
     },
@@ -2654,6 +2882,12 @@
           }
         },
         "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ">"
+          }
+        },
+        "vi": {
           "stringUnit": {
             "state": "translated",
             "value": ">"
@@ -2728,6 +2962,12 @@
             "state": "translated",
             "value": "● %@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "● %@"
+          }
         }
       }
     },
@@ -2797,6 +3037,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "🔧 فاز 6.7: ویرایشگر متن با Binding سفارشی اضافه شده است"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🔧 Giai đoạn 6.7: TextEditor với Binding tùy chỉnh ĐƯỢC THÊM"
           }
         }
       }
@@ -2868,6 +3114,12 @@
             "state": "translated",
             "value": "🧪 فاز 5.7: کارت TimerCore کامل با دایره های ثابت"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🧪 Giai đoạn 5.7: TimeCoreCard ĐẦY ĐỦ với các vòng tròn CỐ ĐỊNH"
+          }
         }
       }
     },
@@ -2937,6 +3189,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "🚧 صفحه تایمر - فاز 6.7"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🚧 Trang hẹn giờ - Giai đoạn 6.7"
           }
         }
       }
@@ -3010,6 +3268,12 @@
             "state": "translated",
             "value": "1 روز قبل"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 ngày trước"
+          }
         }
       }
     },
@@ -3079,6 +3343,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "1 ساعت قبل"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 giờ trước"
           }
         }
       }
@@ -3150,6 +3420,12 @@
             "state": "translated",
             "value": "1 ماه"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 tháng"
+          }
         }
       }
     },
@@ -3219,6 +3495,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "1 هفته"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 tuần"
           }
         }
       }
@@ -3290,6 +3572,12 @@
             "state": "translated",
             "value": "1. روی دکمه زیر کلیک کنید تا تنظیمات سیستم باز شود."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. Nhấp vào nút bên dưới để mở Cài đặt hệ thống."
+          }
         }
       }
     },
@@ -3360,6 +3648,12 @@
             "state": "translated",
             "value": "2 ساعت قبل"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 giờ trước"
+          }
         }
       }
     },
@@ -3429,6 +3723,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "2 ماه"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 tháng"
           }
         }
       }
@@ -3501,6 +3801,12 @@
             "state": "translated",
             "value": "2 هفته"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2 tuần"
+          }
         }
       }
     },
@@ -3571,6 +3877,12 @@
             "state": "translated",
             "value": "2. Find 'Roots' in the list."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2. Tìm “Roots” trong danh sách."
+          }
         }
       }
     },
@@ -3640,6 +3952,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "3. سوئیچ را روی ON قرار دهید."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3. Chuyển công tắc sang BẬT."
           }
         }
       }
@@ -3713,6 +4031,12 @@
             "state": "translated",
             "value": "4. برای همگام سازی به اینجا برگردید."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4. Quay lại đây để đồng bộ."
+          }
         }
       }
     },
@@ -3782,6 +4106,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "12 ساعته"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "12 giờ"
           }
         }
       }
@@ -3853,6 +4183,12 @@
             "state": "translated",
             "value": "15 دقیقه قبل"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "15 phút trước"
+          }
         }
       }
     },
@@ -3922,6 +4258,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "24 ساعته"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "24 giờ"
           }
         }
       }
@@ -3993,6 +4335,12 @@
             "state": "translated",
             "value": "30 دقیقه قبل"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 phút trước"
+          }
         }
       }
     },
@@ -4062,6 +4410,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "دانشگاهی"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Học thuật"
           }
         }
       }
@@ -4139,6 +4493,12 @@
             "state": "translated",
             "value": "سال تحصیلی"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Năm học"
+          }
         }
       }
     },
@@ -4214,6 +4574,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "دسترسی ممنوع شد"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Truy cập bị từ chối"
           }
         }
       }
@@ -4291,6 +4657,12 @@
             "state": "translated",
             "value": "قابلیت دسترسی"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khả năng tiếp cận"
+          }
         }
       }
     },
@@ -4366,6 +4738,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ابزارهای اشکال زدایی دسترسی"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Công cụ gỡ lỗi trợ năng"
           }
         }
       }
@@ -4443,6 +4821,12 @@
             "state": "translated",
             "value": "مدیریت حساب در به روز رسانی آینده وارد خواهد شد."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quản lý tài khoản sẽ có trong bản cập nhật trong tương lai."
+          }
         }
       }
     },
@@ -4518,6 +4902,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "حساب ها"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài khoản"
           }
         }
       }
@@ -4595,6 +4985,12 @@
             "state": "translated",
             "value": "دوره های فعال"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các khóa học đang hoạt động"
+          }
         }
       }
     },
@@ -4670,6 +5066,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ترم فعال"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Học kỳ hoạt động"
           }
         }
       }
@@ -4747,6 +5149,12 @@
             "state": "translated",
             "value": "ترم های فعال"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Học kỳ hoạt động"
+          }
         }
       }
     },
@@ -4822,6 +5230,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "زیرسیستم های فعال"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hệ thống con đang hoạt động"
           }
         }
       }
@@ -4901,6 +5315,12 @@
             "state": "translated",
             "value": "فعالیت ها"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các hoạt động"
+          }
         }
       }
     },
@@ -4971,6 +5391,12 @@
             "state": "translated",
             "value": "فعالیت ها: %@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các hoạt động: %@"
+          }
         }
       }
     },
@@ -5040,6 +5466,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "فعالیت:"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoạt động:"
           }
         }
       }
@@ -5117,6 +5549,12 @@
             "state": "translated",
             "value": "برای فعال کردن تکرار، یک تاریخ سررسید اضافه کنید."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm ngày đáo hạn để cho phép lặp lại."
+          }
         }
       }
     },
@@ -5192,6 +5630,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "یک تکلیف اضافه کنید تا آن را در اینجا ببینید."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm một bài tập để xem nó ở đây."
           }
         }
       }
@@ -5271,6 +5715,12 @@
             "state": "translated",
             "value": "افزودن تکلیف"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm bài tập"
+          }
         }
       }
     },
@@ -5346,6 +5796,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "تکالیف را اضافه کنید تا برنامه های آنها را ببینید"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm bài tập để xem kế hoạch của họ"
           }
         }
       }
@@ -5423,6 +5879,12 @@
             "state": "translated",
             "value": "اضافه کردن کارت"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm thẻ"
+          }
         }
       }
     },
@@ -5498,6 +5960,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "اضافه کردن دوره"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm khóa học"
           }
         }
       }
@@ -5575,6 +6043,12 @@
             "state": "translated",
             "value": "اضافه کردن درجه"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm lớp"
+          }
         }
       }
     },
@@ -5650,6 +6124,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "افزودن جلسه"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm phiên"
           }
         }
       }
@@ -5727,6 +6207,12 @@
             "state": "translated",
             "value": "به تقویم اضافه کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm vào lịch"
+          }
         }
       }
     },
@@ -5802,6 +6288,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "اولین فلش کارت خود را برای شروع مطالعه اضافه کنید"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm flashcard đầu tiên của bạn để bắt đầu học"
           }
         }
       }
@@ -5879,6 +6371,12 @@
             "state": "translated",
             "value": "شدت بصری جلوه های شیشه و مواد را تنظیم کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Điều chỉnh cường độ hình ảnh của hiệu ứng kính và vật liệu"
+          }
         }
       }
     },
@@ -5948,6 +6446,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "پیشرفته"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trình độ cao"
           }
         }
       }
@@ -6025,6 +6529,12 @@
             "state": "translated",
             "value": "ابزاری پیشرفته برای تشخیص بلوک های رشته اصلی، عملیات طولانی و مشکلات حافظه."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Công cụ nâng cao để phát hiện các khối luồng chính, hoạt động dài và các vấn đề về bộ nhớ."
+          }
         }
       }
     },
@@ -6100,6 +6610,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "بعد از"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sau đó"
           }
         }
       }
@@ -6178,6 +6694,12 @@
             "state": "translated",
             "value": "شکستن"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phá vỡ"
+          }
         }
       }
     },
@@ -6254,6 +6776,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "مکث کنید"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tạm dừng"
           }
         }
       }
@@ -6332,6 +6860,12 @@
             "state": "translated",
             "value": "مکث کرد"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã tạm dừng"
+          }
         }
       }
     },
@@ -6408,6 +6942,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "رزومه"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bản tóm tắt"
           }
         }
       }
@@ -6486,6 +7026,12 @@
             "state": "translated",
             "value": "توقف کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dừng lại"
+          }
         }
       }
     },
@@ -6563,6 +7109,12 @@
             "state": "translated",
             "value": "کار کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Công việc"
+          }
         }
       }
     },
@@ -6632,6 +7184,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "همه"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả"
           }
         }
       }
@@ -6709,6 +7267,12 @@
             "state": "translated",
             "value": "تمام فعالیت ها"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả hoạt động"
+          }
         }
       }
     },
@@ -6785,6 +7349,12 @@
             "state": "translated",
             "value": "همه کارت ها به روز هستند!"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả các thẻ đều được cập nhật!"
+          }
         }
       }
     },
@@ -6854,6 +7424,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "همه گرفتار شدند!"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả đã bắt kịp!"
           }
         }
       }
@@ -6931,6 +7507,12 @@
             "state": "translated",
             "value": "همه ویژگی های LLM غیرفعال هستند.برنامه ریزی و تجزیه فقط از الگوریتم های قطعی استفاده می کند."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả các tính năng LLM đều bị tắt.Lập kế hoạch và phân tích cú pháp chỉ sử dụng các thuật toán xác định."
+          }
         }
       }
     },
@@ -7000,6 +7582,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "وقتی حالت برنامه‌نویس فعال است، همه زیرسیستم‌ها به طور فعال ثبت می‌شوند."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả các hệ thống con đang tích cực ghi nhật ký khi Chế độ nhà phát triển được bật."
           }
         }
       }
@@ -7071,6 +7659,12 @@
             "state": "translated",
             "value": "همه سیستم ها سالم به نظر می رسند."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả các hệ thống trông khỏe mạnh."
+          }
         }
       }
     },
@@ -7140,6 +7734,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "تمام روز"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cả ngày"
           }
         }
       }
@@ -7217,6 +7817,12 @@
             "state": "translated",
             "value": "ساعات مجاز: %1$d:00–%2$d:00"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số giờ được phép: %1$d:00–%2$d:00"
+          }
         }
       }
     },
@@ -7286,6 +7892,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "همیشه نوار کناری ناوبری را در iPad نمایش دهید"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luôn hiển thị thanh bên điều hướng trên iPad"
           }
         }
       }
@@ -7357,6 +7969,12 @@
             "state": "translated",
             "value": "همیشه پنهان"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luôn ẩn"
+          }
         }
       }
     },
@@ -7426,6 +8044,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "همیشه قابل مشاهده است"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luôn hiển thị"
           }
         }
       }
@@ -7497,6 +8121,12 @@
             "state": "translated",
             "value": "نرمی انیمیشن"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoạt hình mềm mại"
+          }
         }
       }
     },
@@ -7567,6 +8197,12 @@
             "state": "translated",
             "value": "انیمیشن:"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoạt hình:"
+          }
         }
       }
     },
@@ -7636,6 +8272,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "انیمیشن ها: %@"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoạt ảnh: %@"
           }
         }
       }
@@ -7713,6 +8355,12 @@
             "state": "translated",
             "value": "پاسخ دهید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trả lời"
+          }
         }
       }
     },
@@ -7789,6 +8437,12 @@
             "state": "translated",
             "value": "اطلاعات برنامه"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thông tin ứng dụng"
+          }
         }
       }
     },
@@ -7858,6 +8512,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "نسخه برنامه"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phiên bản ứng dụng"
           }
         }
       }
@@ -7935,6 +8595,12 @@
             "state": "translated",
             "value": "ظاهر"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vẻ bề ngoài"
+          }
         }
       }
     },
@@ -8004,6 +8670,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "خدمات اپل"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dịch vụ của Apple"
           }
         }
       }
@@ -8075,6 +8747,12 @@
             "state": "translated",
             "value": "تنظیمات بایگانی به زودی ارائه می شود"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sắp có cài đặt lưu trữ"
+          }
         }
       }
     },
@@ -8138,6 +8816,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "بایگانی شد"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ĐÃ LƯU TRỮ"
           }
         }
       }
@@ -8209,6 +8893,12 @@
             "state": "translated",
             "value": "دوره های بایگانی شده"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khóa học đã lưu trữ"
+          }
         }
       }
     },
@@ -8279,6 +8969,12 @@
             "state": "translated",
             "value": "جزئیات تکلیف در اینجا ظاهر می شود."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi tiết bài tập sẽ xuất hiện ở đây."
+          }
         }
       }
     },
@@ -8348,6 +9044,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "طرح های تکلیف"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kế hoạch bài tập"
           }
         }
       }
@@ -8425,6 +9127,12 @@
             "state": "translated",
             "value": "تکالیف"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bài tập"
+          }
         }
       }
     },
@@ -8495,6 +9203,12 @@
             "state": "translated",
             "value": "تکالیف موعد امروز"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bài tập đến hạn hôm nay"
+          }
         }
       }
     },
@@ -8564,6 +9278,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "تکالیف باقی مانده امروز:"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhiệm vụ còn lại hôm nay:"
           }
         }
       }
@@ -8641,6 +9361,12 @@
             "state": "translated",
             "value": "افزودن تکلیف"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm bài tập"
+          }
         }
       }
     },
@@ -8716,6 +9442,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "لغو کنید"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hủy bỏ"
           }
         }
       }
@@ -8793,6 +9525,12 @@
             "state": "translated",
             "value": "ویرایش کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biên tập"
+          }
         }
       }
     },
@@ -8868,6 +9606,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "فیلتر کنید"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lọc"
           }
         }
       }
@@ -8945,6 +9689,12 @@
             "state": "translated",
             "value": "تکلیف جدید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhiệm vụ mới"
+          }
         }
       }
     },
@@ -9020,6 +9770,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "باشه"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ĐƯỢC RỒI"
           }
         }
       }
@@ -9097,6 +9853,12 @@
             "state": "translated",
             "value": "روز برنامه ریزی"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày lập kế hoạch"
+          }
         }
       }
     },
@@ -9172,6 +9934,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ذخیره کنید"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cứu"
           }
         }
       }
@@ -9249,6 +10017,12 @@
             "state": "translated",
             "value": "یک تکلیف را برای مشاهده جزئیات انتخاب کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn nhiệm vụ để xem chi tiết"
+          }
         }
       }
     },
@@ -9324,6 +10098,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "یک تکلیف را انتخاب کنید"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn một bài tập"
           }
         }
       }
@@ -9401,6 +10181,12 @@
             "state": "translated",
             "value": "اولین تکلیف خود را برای شروع ایجاد کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tạo bài tập đầu tiên của bạn để bắt đầu"
+          }
         }
       }
     },
@@ -9476,6 +10262,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "بدون تکالیف"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có bài tập"
           }
         }
       }
@@ -9553,6 +10345,12 @@
             "state": "translated",
             "value": "بدون تکالیف تجزیه شده"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có bài tập được phân tích cú pháp"
+          }
         }
       }
     },
@@ -9629,6 +10427,12 @@
             "state": "translated",
             "value": "یک فایل برنامه درسی را برای دیدن تکالیف در اینجا تجزیه کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phân tích tệp giáo trình để xem bài tập ở đây"
+          }
         }
       }
     },
@@ -9698,6 +10502,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "همه"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả"
           }
         }
       }
@@ -9775,6 +10585,12 @@
             "state": "translated",
             "value": "سررسید به زودی"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sắp đến hạn"
+          }
         }
       }
     },
@@ -9844,6 +10660,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "عقب افتاده"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quá hạn"
           }
         }
       }
@@ -9921,6 +10743,12 @@
             "state": "translated",
             "value": "سررسید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày đáo hạn"
+          }
         }
       }
     },
@@ -9996,6 +10824,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "عنوان"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiêu đề"
           }
         }
       }
@@ -10073,6 +10907,12 @@
             "state": "translated",
             "value": "تایپ کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kiểu"
+          }
         }
       }
     },
@@ -10148,6 +10988,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "اضافه کردن تکالیف تجزیه شده"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thêm bài tập được phân tích cú pháp"
           }
         }
       }
@@ -10225,6 +11071,12 @@
             "state": "translated",
             "value": "همه را لغو انتخاب کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ chọn tất cả"
+          }
         }
       }
     },
@@ -10300,6 +11152,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ویرایش تکلیف تجزیه شده"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉnh sửa bài tập được phân tích cú pháp"
           }
         }
       }
@@ -10377,6 +11235,12 @@
             "state": "translated",
             "value": "%d تکلیف (ها) با موفقیت وارد شد."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d bài tập đã được nhập thành công."
+          }
         }
       }
     },
@@ -10452,6 +11316,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "واردات با موفقیت انجام شد"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nhập thành công"
           }
         }
       }
@@ -10529,6 +11399,12 @@
             "state": "translated",
             "value": "موارد را برای وارد کردن آنها به تکالیف خود تأیید کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Phê duyệt các mục để nhập chúng vào bài tập của bạn"
+          }
         }
       }
     },
@@ -10604,6 +11480,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "بررسی تکالیف تجزیه شده"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xem lại bài tập đã phân tích cú pháp"
           }
         }
       }
@@ -10681,6 +11563,12 @@
             "state": "translated",
             "value": "همه را انتخاب کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn tất cả"
+          }
         }
       }
     },
@@ -10756,6 +11644,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "منبع نامعلوم"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nguồn không xác định"
           }
         }
       }
@@ -10833,6 +11727,12 @@
             "state": "translated",
             "value": "جستجوی تکالیف"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tìm kiếm bài tập"
+          }
         }
       }
     },
@@ -10908,6 +11808,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "البته"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theo khóa học"
           }
         }
       }
@@ -10985,6 +11891,12 @@
             "state": "translated",
             "value": "سررسید این هفته"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đến hạn vào tuần này"
+          }
         }
       }
     },
@@ -11060,6 +11972,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "سررسید امروز"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đến hạn hôm nay"
           }
         }
       }
@@ -11137,6 +12055,12 @@
             "state": "translated",
             "value": "از دست رفته"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bỏ lỡ"
+          }
         }
       }
     },
@@ -11212,6 +12136,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "امروز"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hôm nay"
           }
         }
       }
@@ -11301,6 +12231,12 @@
             "state": "translated",
             "value": "آینده"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sắp tới"
+          }
         }
       }
     },
@@ -11377,6 +12313,12 @@
             "state": "translated",
             "value": "بار آینده"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tải sắp tới"
+          }
         }
       }
     },
@@ -11447,6 +12389,12 @@
             "state": "translated",
             "value": "همه"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tất cả"
+          }
         }
       }
     },
@@ -11516,6 +12464,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "تکمیل شد"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoàn thành"
           }
         }
       }
@@ -11593,6 +12547,12 @@
             "state": "translated",
             "value": "تکالیف"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bài tập"
+          }
         }
       }
     },
@@ -11662,6 +12622,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "آینده"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sắp tới"
           }
         }
       }
@@ -11739,6 +12705,12 @@
             "state": "translated",
             "value": "دوره"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khóa học"
+          }
         }
       }
     },
@@ -11814,6 +12786,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "سررسید"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ngày đáo hạn"
           }
         }
       }
@@ -11891,6 +12869,12 @@
             "state": "translated",
             "value": "مرتب کردن"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loại"
+          }
         }
       }
     },
@@ -11966,6 +12950,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "فوریت"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "khẩn cấp"
           }
         }
       }
@@ -12043,6 +13033,12 @@
             "state": "translated",
             "value": "تکالیف سررسید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bài tập đến hạn"
+          }
         }
       }
     },
@@ -12118,6 +13114,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%d سررسید · %d برنامه ریزی شده · %d باقی مانده است"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d đến hạn · %d dự định · %d còn lại"
           }
         }
       }
@@ -12195,6 +13197,12 @@
             "state": "translated",
             "value": "تکالیف عقب افتاده"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bài tập quá hạn"
+          }
         }
       }
     },
@@ -12265,6 +13273,12 @@
             "state": "translated",
             "value": "پیوست ها"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ĐÍNH KÈM"
+          }
         }
       }
     },
@@ -12334,6 +13348,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "جمع شدن خودکار"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tự động thu gọn"
           }
         }
       }
@@ -12411,6 +13431,12 @@
             "state": "translated",
             "value": "تنظیم مجدد خودکار"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tự động lên lịch lại"
+          }
         }
       }
     },
@@ -12480,6 +13506,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "تنظیم مجدد خودکار شمارنده ها"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ đếm tự động lên lịch lại"
           }
         }
       }
@@ -12551,6 +13583,12 @@
             "state": "translated",
             "value": "برنامه ریزی مجدد خودکار اشکال زدایی"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tự động lên lịch lại việc gỡ lỗi"
+          }
         }
       }
     },
@@ -12620,6 +13658,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "زمان‌بندی مجدد خودکار فعال شد:"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã bật tự động lên lịch lại:"
           }
         }
       }
@@ -12691,6 +13735,12 @@
             "state": "translated",
             "value": "تنظیم مجدد خودکار شمارنده های ثابت"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tự động lên lịch lại bộ đếm bất biến"
+          }
         }
       }
     },
@@ -12761,6 +13811,12 @@
             "state": "translated",
             "value": "زیرسیستم های موجود"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hệ thống con có sẵn"
+          }
         }
       }
     },
@@ -12830,6 +13886,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "بلوک: %@"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khối: %@"
           }
         }
       }
@@ -12903,6 +13965,12 @@
             "state": "translated",
             "value": "نمونه بدن"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ví dụ về cơ thể"
+          }
         }
       }
     },
@@ -12972,6 +14040,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "شماره ساخت"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số bản dựng"
           }
         }
       }
@@ -13049,6 +14123,12 @@
             "state": "translated",
             "value": "البته"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theo khóa học"
+          }
         }
       }
     },
@@ -13119,6 +14199,12 @@
             "state": "translated",
             "value": "حافظه پنهان"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bộ nhớ đệm"
+          }
         }
       }
     },
@@ -13188,6 +14274,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "گزینه های ادغام تقویم و یادآوری ها"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tùy chọn tích hợp Lịch và Lời nhắc"
           }
         }
       }
@@ -13265,6 +14357,12 @@
             "state": "translated",
             "value": "رویدادها: %d"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sự kiện: %d"
+          }
         }
       }
     },
@@ -13341,6 +14439,12 @@
             "state": "translated",
             "value": "آخرین به روز رسانی: %@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Làm mới lần cuối: %@"
+          }
         }
       }
     },
@@ -13416,6 +14520,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "آخرین به روز رسانی: هرگز"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Làm mới lần cuối: không bao giờ"
           }
         }
       }
@@ -13499,6 +14609,12 @@
             "state": "translated",
             "value": "این مورد را از %@ شما حذف می کند."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thao tác này sẽ xóa mục khỏi %@ của bạn."
+          }
         }
       }
     },
@@ -13575,6 +14691,12 @@
             "state": "translated",
             "value": "تقویم"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lịch"
+          }
         }
       }
     },
@@ -13650,6 +14772,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "یادآوری ها"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lời nhắc"
           }
         }
       }
@@ -13733,6 +14861,12 @@
             "state": "translated",
             "value": "مکان: %@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vị trí: %@"
+          }
         }
       }
     },
@@ -13808,6 +14942,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "جریان ایجاد رویداد به اینجا می رود."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luồng tạo sự kiện sẽ diễn ra ở đây."
           }
         }
       }
@@ -13891,6 +15031,12 @@
             "state": "translated",
             "value": "+%d بیشتر"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%d thêm"
+          }
         }
       }
     },
@@ -13972,6 +15118,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "رویداد جدید"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sự kiện mới"
           }
         }
       }
@@ -14061,6 +15213,12 @@
             "state": "translated",
             "value": "امروز هیچ رویدادی وجود ندارد"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có sự kiện nào hôm nay"
+          }
         }
       }
     },
@@ -14149,6 +15307,12 @@
             "state": "translated",
             "value": "هیچ رویدادی وجود ندارد"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Không có sự kiện"
+          }
         }
       }
     },
@@ -14225,6 +15389,12 @@
             "state": "translated",
             "value": "فریم اول: %@ |داده آماده: %@ |آماده کامل: %@ |رویدادها: %d"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khung hình đầu tiên: %@ |Dữ liệu đã sẵn sàng: %@ |Đã sẵn sàng hoàn toàn: %@ |Sự kiện: %d"
+          }
         }
       }
     },
@@ -14300,6 +15470,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "عملکرد تقویم"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiệu suất lịch"
           }
         }
       }
@@ -14383,6 +15559,12 @@
             "state": "translated",
             "value": "دسترسی به تقویم غیرفعال است.دسترسی را در تنظیمات سیستم > حریم خصوصی و امنیت > تقویم ها فعال کنید."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quyền truy cập lịch bị vô hiệu hóa.Cho phép truy cập trong Cài đặt hệ thống > Quyền riêng tư & bảo mật > Lịch."
+          }
         }
       }
     },
@@ -14464,6 +15646,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "تقویم به روز شد، اما زمان‌بندی کامل نشد."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã làm mới lịch nhưng không thể hoàn tất việc lên lịch."
           }
         }
       }
@@ -14553,6 +15741,12 @@
             "state": "translated",
             "value": "امروز"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hôm nay"
+          }
         }
       }
     },
@@ -14635,6 +15829,12 @@
             "state": "translated",
             "value": "زمان سفر: %@"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thời gian di chuyển: %@"
+          }
         }
       }
     },
@@ -14704,6 +15904,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "نمونه کپشن"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ví dụ về chú thích"
           }
         }
       }
@@ -14781,6 +15987,12 @@
             "state": "translated",
             "value": "کارت ها"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thẻ"
+          }
         }
       }
     },
@@ -14856,6 +16068,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "دسته بندی ها"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thể loại"
           }
         }
       }
@@ -14933,6 +16151,12 @@
             "state": "translated",
             "value": "دسته بندی"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loại"
+          }
         }
       }
     },
@@ -15002,6 +16226,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "نمودار دسته بندی"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biểu đồ danh mục"
           }
         }
       }
@@ -15073,6 +16303,12 @@
             "state": "translated",
             "value": "چارچوب نمودارها در دسترس نیست"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khung biểu đồ không có sẵn"
+          }
         }
       }
     },
@@ -15142,6 +16378,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "فاصله را بررسی کنید"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khoảng thời gian kiểm tra"
           }
         }
       }
@@ -15213,6 +16455,12 @@
             "state": "translated",
             "value": "برای مشاهده جزئیات، یک دوره را از نوار کناری انتخاب کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn một khóa học từ thanh bên để xem chi tiết"
+          }
         }
       }
     },
@@ -15282,6 +16530,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Choose how Roots reacts to system appearance changes."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn cách Roots phản ứng với những thay đổi về diện mạo của hệ thống."
           }
         }
       }
@@ -15353,6 +16607,12 @@
             "state": "translated",
             "value": "انتخاب کنید که تعداد نشان نماد برنامه چه چیزی را نشان دهد"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn số lượng huy hiệu biểu tượng ứng dụng đại diện"
+          }
         }
       }
     },
@@ -15422,6 +16682,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "صفحاتی را انتخاب کنید که در نوار برگه شناور ظاهر شوند و ترتیب آنها را تغییر دهید."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chọn trang nào xuất hiện trong thanh tab nổi và sắp xếp lại chúng."
           }
         }
       }
@@ -15493,6 +16759,12 @@
             "state": "translated",
             "value": "تمام گزارش های اشکال زدایی و داده های تجزیه و تحلیل ذخیره شده در دستگاه خود را پاک کنید."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xóa tất cả nhật ký gỡ lỗi và dữ liệu phân tích được lưu trữ trên thiết bị của bạn."
+          }
         }
       }
     },
@@ -15562,6 +16834,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "پاک کردن گزارش های اشکال زدایی"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xóa nhật ký gỡ lỗi"
           }
         }
       }
@@ -15633,6 +16911,12 @@
             "state": "translated",
             "value": "فرمت ساعت"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Định dạng đồng hồ"
+          }
         }
       }
     },
@@ -15702,6 +16986,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "ترجیحات شناختی"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sở thích nhận thức"
           }
         }
       }
@@ -15779,6 +17069,12 @@
             "state": "translated",
             "value": "رنگ ها"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Màu sắc"
+          }
         }
       }
     },
@@ -15849,6 +17145,12 @@
             "state": "translated",
             "value": "مدل های رایج MLX:"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các mô hình MLX phổ biến:"
+          }
         }
       }
     },
@@ -15918,6 +17220,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "مدل های رایج اولاما:"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các mẫu Ollama phổ biến:"
           }
         }
       }
@@ -16001,6 +17309,12 @@
             "state": "translated",
             "value": "لغو کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hủy bỏ"
+          }
         }
       }
     },
@@ -16082,6 +17396,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "بستن"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đóng"
           }
         }
       }
@@ -16165,6 +17485,12 @@
             "state": "translated",
             "value": "ویرایش کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biên tập"
+          }
         }
       }
     },
@@ -16195,6 +17521,12 @@
           }
         },
         "fa": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "common.button.next"
+          }
+        },
+        "vi": {
           "stringUnit": {
             "state": "needs_review",
             "value": "common.button.next"
@@ -16268,6 +17600,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "مشترک.دکمه.قبلی"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "chung.button.previous"
           }
         }
       }
@@ -16351,6 +17689,12 @@
             "state": "translated",
             "value": "ذخیره کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cứu"
+          }
         }
       }
     },
@@ -16432,6 +17776,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "اکنون شروع کنید"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bắt đầu ngay bây giờ"
           }
         }
       }
@@ -16516,6 +17866,12 @@
             "state": "translated",
             "value": "لغو کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hủy bỏ"
+          }
         }
       }
     },
@@ -16599,6 +17955,12 @@
             "state": "translated",
             "value": "انجام شد"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xong"
+          }
         }
       }
     },
@@ -16668,6 +18030,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "چگالی فشرده: %@"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mật độ nhỏ gọn: %@"
           }
         }
       }
@@ -16739,6 +18107,12 @@
             "state": "translated",
             "value": "حالت فشرده"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chế độ nhỏ gọn"
+          }
         }
       }
     },
@@ -16808,6 +18182,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "تکمیل شد"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoàn thành"
           }
         }
       }
@@ -16879,6 +18259,12 @@
             "state": "translated",
             "value": "نحوه برنامه ریزی خودکار تکالیف را پیکربندی کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Định cấu hình cách các bài tập được lên lịch tự động"
+          }
         }
       }
     },
@@ -16948,6 +18334,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "مدت زمان کار/وقفه و رفتار تکرار پومودورو را پیکربندی کنید.تغییرات در جلسات تایمر جدید اعمال می شود."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Định cấu hình thời lượng làm việc/nghỉ và hành vi lặp lại của Pomodoro.Những thay đổi áp dụng cho các phiên hẹn giờ mới."
           }
         }
       }
@@ -17019,6 +18411,12 @@
             "state": "translated",
             "value": "اقدامات سریع نشان داده شده در زیر دکمه + در سمت چپ بالای برنامه را پیکربندی کنید."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Định cấu hình các hành động nhanh được hiển thị bên dưới nút + ở phía trên bên trái của ứng dụng."
+          }
         }
       }
     },
@@ -17088,6 +18486,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Configure when and how Roots sends you notifications."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Định cấu hình thời điểm và cách thức Roots gửi thông báo cho bạn."
           }
         }
       }
@@ -17159,6 +18563,12 @@
             "state": "translated",
             "value": "تضادها (%@)"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Xung đột (%@)"
+          }
         }
       }
     },
@@ -17229,6 +18639,12 @@
             "state": "translated",
             "value": "برای ویژگی های اضافی با خدمات شخص ثالث ارتباط برقرار کنید"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kết nối với các dịch vụ của bên thứ ba để có các tính năng bổ sung"
+          }
         }
       }
     },
@@ -17292,6 +18708,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "متصل شد"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đã kết nối"
           }
         }
       }
@@ -17363,6 +18785,12 @@
             "state": "translated",
             "value": "خط شروع محتوا: %@pt"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dòng bắt đầu nội dung: %@pt"
+          }
         }
       }
     },
@@ -17433,6 +18861,12 @@
             "state": "translated",
             "value": "Control how Roots uses your data and manages privacy-sensitive features."
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kiểm soát cách Roots sử dụng dữ liệu của bạn và quản lý các tính năng nhạy cảm về quyền riêng tư."
+          }
         }
       }
     },
@@ -17502,6 +18936,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "گوشه ها و فاصله"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Góc & Khoảng cách"
           }
         }
       }
@@ -17581,6 +19021,12 @@
             "state": "translated",
             "value": "جزئیات دوره"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chi tiết khóa học"
+          }
         }
       }
     },
@@ -17650,6 +19096,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "مدیریت دوره"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quản lý khóa học"
           }
         }
       }
@@ -17721,6 +19173,12 @@
             "state": "translated",
             "value": "مدیریت دوره به زودی"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sắp có quản lý khóa học"
+          }
         }
       }
     },
@@ -17790,6 +19248,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "مواد درسی"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài liệu khóa học"
           }
         }
       }
@@ -17863,6 +19327,12 @@
             "state": "translated",
             "value": "مواد درسی و برنامه درسی"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tài liệu & Giáo trình khóa học"
+          }
         }
       }
     },
@@ -17933,6 +19403,12 @@
             "state": "translated",
             "value": "بررسی اجمالی دوره"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tổng quan khóa học"
+          }
         }
       }
     },
@@ -18002,6 +19478,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "دوره: %@"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khóa học: %@"
           }
         }
       }
@@ -18079,6 +19561,12 @@
             "state": "translated",
             "value": "دوره ها"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khóa học"
+          }
         }
       }
     },
@@ -18151,6 +19639,12 @@
             "state": "translated",
             "value": "دروس این ترم"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các khóa học trong học kỳ này"
+          }
         }
       }
     },
@@ -18220,6 +19714,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "دوره ها: %@"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Các khóa học: %@"
           }
         }
       }
@@ -18297,6 +19797,12 @@
             "state": "translated",
             "value": "ویرایش دوره ها"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chỉnh sửa khóa học"
+          }
         }
       }
     },
@@ -18372,6 +19878,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "دوره جدید"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Khóa học mới"
           }
         }
       }
@@ -18449,6 +19961,12 @@
             "state": "translated",
             "value": "مدت فعلی"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thời hạn hiện tại"
+          }
         }
       }
     },
@@ -18518,6 +20036,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "مربی"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Người hướng dẫn"
           }
         }
       }
@@ -18595,6 +20119,12 @@
             "state": "translated",
             "value": "مکان TBA"
           }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vị trí TBA"
+          }
         }
       }
     },
@@ -18667,6 +20197,12 @@
           }
         },
         "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TBD"
+          }
+        },
+        "vi": {
           "stringUnit": {
             "state": "translated",
             "value": "TBD"
@@ -18753,6 +20289,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "هنوز جلسه ای اضافه نشده است."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chưa có cuộc họp nào được thêm vào."
           }
         }
       }
@@ -45575,12 +47117,6 @@
             "state": "translated",
             "value": "Nessun semestre attivo"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بدون ترم فعال"
-          }
         }
       }
     },
@@ -45645,12 +47181,6 @@
             "state": "translated",
             "value": "Nessuna attività selezionata"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ فعالیتی انتخاب نشده است"
-          }
         }
       }
     },
@@ -45714,12 +47244,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessuna analisi ancora."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز هیچ تحلیلی وجود ندارد."
           }
         }
       }
@@ -45791,12 +47315,6 @@
             "state": "translated",
             "value": "Nessun incarico"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بدون تکالیف"
-          }
         }
       }
     },
@@ -45860,12 +47378,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessun incarico ancora disponibile."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز تکالیفی در دسترس نیست."
           }
         }
       }
@@ -45931,12 +47443,6 @@
             "state": "translated",
             "value": "Nessun compito in scadenza oggi."
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "امروز موعد تعیین تکلیف نیست"
-          }
         }
       }
     },
@@ -46000,12 +47506,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessun compito collegato a questo corso ancora."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز هیچ تکلیفی به این دوره مرتبط نشده است."
           }
         }
       }
@@ -46071,12 +47571,6 @@
             "state": "translated",
             "value": "Nessun compito registrato per questo corso."
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ تکلیفی برای این دوره ثبت نشده است."
-          }
         }
       }
     },
@@ -46140,12 +47634,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessuna carta da studiare"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بدون کارت برای مطالعه"
           }
         }
       }
@@ -46211,12 +47699,6 @@
             "state": "translated",
             "value": "Nessuna carta da studiare"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بدون کارت برای مطالعه"
-          }
         }
       }
     },
@@ -46280,12 +47762,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessuna carta ancora"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز کارتی وجود ندارد"
           }
         }
       }
@@ -46351,12 +47827,6 @@
             "state": "translated",
             "value": "Nessun corso"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بدون دوره"
-          }
         }
       }
     },
@@ -46421,12 +47891,6 @@
             "state": "translated",
             "value": "Nessun dato ancora"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز داده ای وجود ندارد"
-          }
         }
       }
     },
@@ -46490,12 +47954,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessuna data di scadenza"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بدون تاریخ سررسید"
           }
         }
       }
@@ -46567,12 +48025,6 @@
             "state": "translated",
             "value": "Nessun evento"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ رویدادی وجود ندارد"
-          }
         }
       }
     },
@@ -46636,12 +48088,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessun evento in questo giorno"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ رویدادی در این روز وجود ندارد"
           }
         }
       }
@@ -46707,12 +48153,6 @@
             "state": "translated",
             "value": "Nessun esame collegato a questo corso ancora."
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز هیچ آزمونی به این دوره مرتبط نشده است."
-          }
         }
       }
     },
@@ -46776,12 +48216,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessun servizio esterno connesso"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ سرویس خارجی متصل نیست"
           }
         }
       }
@@ -46847,12 +48281,6 @@
             "state": "translated",
             "value": "Nessun mazzo di flashcard"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بدون فلش کارت"
-          }
         }
       }
     },
@@ -46916,12 +48344,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessuna fonte di festività configurata."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ منبع تعطیلات پیکربندی نشده است."
           }
         }
       }
@@ -46987,12 +48409,6 @@
             "state": "translated",
             "value": "Nessun file del modulo ancora."
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز فایل ماژولی وجود ندارد."
-          }
         }
       }
     },
@@ -47056,12 +48472,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessuna nota disponibile"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ یادداشتی در دسترس نیست"
           }
         }
       }
@@ -47127,12 +48537,6 @@
             "state": "translated",
             "value": "Nessun contorno ancora"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز طرح کلی وجود ندارد"
-          }
         }
       }
     },
@@ -47196,12 +48600,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessun piano trovato"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "طرحی پیدا نشد"
           }
         }
       }
@@ -47267,12 +48665,6 @@
             "state": "translated",
             "value": "Nessun tempo di pianificazione ancora disponibile"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز زمان برنامه در دسترس نیست"
-          }
         }
       }
     },
@@ -47336,12 +48728,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessun piano ancora"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز برنامه ای وجود ندارد"
           }
         }
       }
@@ -47407,12 +48793,6 @@
             "state": "translated",
             "value": "Nessuna attività pianificata oggi"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "امروز هیچ کار برنامه ریزی شده ای وجود ندارد"
-          }
         }
       }
     },
@@ -47476,12 +48856,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessun blocco del pianificatore su %@."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ برنامه‌ریزی در %@ مسدود نشده است."
           }
         }
       }
@@ -47547,12 +48921,6 @@
             "state": "translated",
             "value": "Nessun quiz pratico ancora."
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز آزمون تمرینی وجود ندارد."
-          }
         }
       }
     },
@@ -47616,12 +48984,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessun semestre eliminato di recente."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بدون ترم اخیر حذف شده."
           }
         }
       }
@@ -47687,12 +49049,6 @@
             "state": "translated",
             "value": "Nessuna cronologia di riprogrammazione"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بدون تاریخچه زمانبندی مجدد"
-          }
         }
       }
     },
@@ -47756,12 +49112,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessun incontro programmato"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بدون جلسات برنامه ریزی شده"
           }
         }
       }
@@ -47829,12 +49179,6 @@
             "state": "translated",
             "value": "Nessun test programmato"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بدون آزمون برنامه ریزی شده"
-          }
         }
       }
     },
@@ -47898,12 +49242,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessun semestre definito"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ترم تعریف نشده"
           }
         }
       }
@@ -47969,12 +49307,6 @@
             "state": "translated",
             "value": "Nessun semestre ancora.Aggiungine uno per iniziare a organizzare i tuoi corsi."
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز ترم نیستبرای شروع سازماندهی دوره های خود یکی اضافه کنید."
-          }
         }
       }
     },
@@ -48038,12 +49370,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessuno studio monitorato oggi"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "امروز مطالعه ای پیگیری نشد"
           }
         }
       }
@@ -48109,12 +49435,6 @@
             "state": "translated",
             "value": "Nessuna attività nel piano"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ کار در طرح وجود ندارد"
-          }
         }
       }
     },
@@ -48178,12 +49498,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessun test in programma questa settimana."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ آزمونی در این هفته برنامه ریزی نشده است."
           }
         }
       }
@@ -48249,12 +49563,6 @@
             "state": "translated",
             "value": "Nessun orario impostato: la scadenza è prevista alle 23:59 a meno che non venga impostata un'ora."
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "زمان تعیین نشده - مقرر شده در ساعت 11:59 بعد از ظهر تعیین شود، مگر اینکه زمانی را تعیین کنید."
-          }
         }
       }
     },
@@ -48318,12 +49626,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessun incarico imminente"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تکالیف آینده وجود ندارد"
           }
         }
       }
@@ -48389,12 +49691,6 @@
             "state": "translated",
             "value": "Nessuna scadenza imminente"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بدون ضرب الاجل آینده"
-          }
         }
       }
     },
@@ -48458,12 +49754,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nessuna scadenza imminente."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "بدون ضرب الاجل آینده"
           }
         }
       }
@@ -48529,12 +49819,6 @@
             "state": "translated",
             "value": "Nessun evento in programma"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "رویدادهای آینده وجود ندارد"
-          }
         }
       }
     },
@@ -48599,12 +49883,6 @@
             "state": "translated",
             "value": "Nessuno"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هیچ کدام"
-          }
         }
       }
     },
@@ -48662,12 +49940,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Non connesso"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "متصل نیست"
           }
         }
       }
@@ -48733,12 +50005,6 @@
             "state": "translated",
             "value": "Non impostato"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تنظیم نشده است"
-          }
         }
       }
     },
@@ -48802,12 +50068,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nota: queste simulazioni sono solo a scopo di anteprima e non influiscono sul comportamento effettivo del sistema"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "توجه: این شبیه‌سازی‌ها فقط برای پیش‌نمایش هستند و بر رفتار واقعی سیستم تأثیری نمی‌گذارند"
           }
         }
       }
@@ -48879,12 +50139,6 @@
             "state": "translated",
             "value": "Note"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "یادداشت ها"
-          }
         }
       }
     },
@@ -48948,12 +50202,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "NOTE"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "یادداشت ها"
           }
         }
       }
@@ -49026,12 +50274,6 @@
             "state": "translated",
             "value": "%@ scade a breve"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ به زودی موعد مقرر است"
-          }
         }
       }
     },
@@ -49102,12 +50344,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Assegnazione in scadenza a breve"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تکلیف به زودی"
           }
         }
       }
@@ -49180,12 +50416,6 @@
             "state": "translated",
             "value": "Apri Roots per vedere il piano di oggi"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open Roots to see today's plan"
-          }
         }
       }
     },
@@ -49256,12 +50486,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hai questo!"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "شما این را دارید!"
           }
         }
       }
@@ -49334,12 +50558,6 @@
             "state": "translated",
             "value": "1 attività in scadenza oggi"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "1 وظیفه امروز موعد مقرر"
-          }
         }
       }
     },
@@ -49410,12 +50628,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%d attività in scadenza oggi"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d وظیفه امروز موعد مقرر است"
           }
         }
       }
@@ -49488,12 +50700,6 @@
             "state": "translated",
             "value": "Buongiorno!"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "صبح بخیر"
-          }
         }
       }
     },
@@ -49564,12 +50770,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Continuate così!"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "به کار عالی ادامه دهید!"
           }
         }
       }
@@ -49642,12 +50842,6 @@
             "state": "translated",
             "value": "Stai facendo progressi!"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "You're making progress!"
-          }
         }
       }
     },
@@ -49712,12 +50906,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rimani concentrato sui tuoi obiettivi!"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "روی اهداف خود متمرکز بمانید!"
           }
         }
       }
@@ -49790,12 +50978,6 @@
             "state": "translated",
             "value": "Ogni piccolo passo conta!"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هر قدم کوچک مهم است!"
-          }
         }
       }
     },
@@ -49866,12 +51048,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Credi in te stesso!"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "خودت را باور کن!"
           }
         }
       }
@@ -49944,12 +51120,6 @@
             "state": "translated",
             "value": "Stai andando alla grande!"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "شما شگفت انگیز انجام می دهید!"
-          }
         }
       }
     },
@@ -50015,12 +51185,6 @@
             "state": "translated",
             "value": "Rimani motivato"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "با انگیزه بمانید"
-          }
         }
       }
     },
@@ -50082,12 +51246,6 @@
           }
         },
         "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "notification.weekly_summary.title"
-          }
-        },
-        "fa": {
           "stringUnit": {
             "state": "translated",
             "value": "notification.weekly_summary.title"
@@ -50156,12 +51314,6 @@
             "state": "translated",
             "value": "Spento"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "خاموش"
-          }
         }
       }
     },
@@ -50227,12 +51379,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Configurazione Ollama"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پیکربندی اوللاما"
           }
         }
       }
@@ -50304,12 +51450,6 @@
             "state": "translated",
             "value": "SU"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "روشن"
-          }
         }
       }
     },
@@ -50373,12 +51513,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "In data"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "در تاریخ"
           }
         }
       }
@@ -50444,12 +51578,6 @@
             "state": "translated",
             "value": "Solo i promemoria di questo elenco verranno visualizzati in Roots."
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Only reminders from this list will appear in Roots."
-          }
         }
       }
     },
@@ -50513,12 +51641,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Apri un corso in una nuova finestra per vedere i dettagli qui."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "یک دوره را در یک پنجره جدید باز کنید تا جزئیات را در اینجا ببینید."
           }
         }
       }
@@ -50584,12 +51706,6 @@
             "state": "translated",
             "value": "Apri Impostazioni di sistema per gestire calendario, notifiche e altre autorizzazioni."
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "برای مدیریت تقویم، اعلان‌ها و سایر مجوزها، تنظیمات سیستم را باز کنید."
-          }
         }
       }
     },
@@ -50653,12 +51769,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Configurazione API LLM compatibile con OpenAI"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پیکربندی API LLM سازگار با OpenAI"
           }
         }
       }
@@ -50724,12 +51834,6 @@
             "state": "translated",
             "value": "Stato generale"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "وضعیت کلی"
-          }
         }
       }
     },
@@ -50793,12 +51897,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Settimana del carico di lavoro di punta: %@"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اوج بار کاری هفته: %@"
           }
         }
       }
@@ -50864,12 +51962,6 @@
             "state": "translated",
             "value": "Percentuale"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "درصد"
-          }
         }
       }
     },
@@ -50934,12 +52026,6 @@
             "state": "translated",
             "value": "Debug delle prestazioni"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اشکال زدایی عملکرد"
-          }
         }
       }
     },
@@ -51003,12 +52089,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Autorizzazione negata.Si prega di abilitare nelle Impostazioni di sistema per utilizzare questa funzione."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اجازه رد شد.لطفاً برای استفاده از این ویژگی در تنظیمات سیستم فعال کنید."
           }
         }
       }
@@ -51080,12 +52160,6 @@
             "state": "translated",
             "value": "Appuntato"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "پین شده"
-          }
         }
       }
     },
@@ -51150,12 +52224,6 @@
             "state": "translated",
             "value": "Impostazioni di configurazione del pianificatore"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تنظیمات پیکربندی برنامه ریز"
-          }
         }
       }
     },
@@ -51219,12 +52287,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Planner utilizza le date di scadenza dei compiti per creare un programma di blocchi di studio."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "برنامه ریز از تاریخ های تعیین تکلیف شما برای ایجاد برنامه زمانی بلوک های مطالعه استفاده می کند."
           }
         }
       }
@@ -51308,12 +52370,6 @@
             "state": "translated",
             "value": "新任務"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "وظیفه جدید"
-          }
         }
       }
     },
@@ -51396,12 +52452,6 @@
             "state": "translated",
             "value": "計劃日"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "روز برنامه ریزی"
-          }
         }
       }
     },
@@ -51478,12 +52528,6 @@
             "state": "translated",
             "value": "Pianificazione..."
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "برنامه ریزی..."
-          }
         }
       }
     },
@@ -51553,12 +52597,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ore consentite: %1$d:00–%2$d:00"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ساعات مجاز: %1$d:00–%2$d:00"
           }
         }
       }
@@ -51632,12 +52670,6 @@
             "state": "translated",
             "value": "Lunga pausa"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "استراحت طولانی"
-          }
         }
       }
     },
@@ -51709,12 +52741,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Breve pausa"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "استراحت کوتاه"
           }
         }
       }
@@ -51792,12 +52818,6 @@
             "state": "needs_review",
             "value": "Course"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "دوره"
-          }
         }
       }
     },
@@ -51868,12 +52888,6 @@
             "state": "translated",
             "value": "Registri"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سیاههها"
-          }
         }
       }
     },
@@ -51938,12 +52952,6 @@
             "state": "translated",
             "value": "Contrassegna come eliminato"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "علامت گذاری به عنوان حذف شده"
-          }
         }
       }
     },
@@ -52007,12 +53015,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Contrassegna come esteso"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "علامت گذاری به عنوان تمدید شده"
           }
         }
       }
@@ -52084,12 +53086,6 @@
             "state": "translated",
             "value": "Contrassegna come mantenuto"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "علامت گذاری به عنوان نگه داشته شده است"
-          }
         }
       }
     },
@@ -52160,12 +53156,6 @@
             "state": "translated",
             "value": "Contrassegna come riprogrammato"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "علامت گذاری به عنوان زمان بندی مجدد"
-          }
         }
       }
     },
@@ -52229,12 +53219,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Contrassegna come abbreviato"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "علامت گذاری به عنوان کوتاه شده"
           }
         }
       }
@@ -52305,12 +53289,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Risultato della pianificazione"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "نتیجه برنامه"
           }
         }
       }
@@ -52388,12 +53366,6 @@
             "state": "translated",
             "value": "Scadenza %d giorni fa"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سررسید %d روز قبل"
-          }
         }
       }
     },
@@ -52469,12 +53441,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scadenza 1 giorno fa"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سررسید 1 روز پیش"
           }
         }
       }
@@ -52552,12 +53518,6 @@
             "state": "translated",
             "value": "Scadenza oggi"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "سررسید امروز"
-          }
         }
       }
     },
@@ -52634,12 +53594,6 @@
             "state": "translated",
             "value": "這一天還沒有會議。"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هنوز جلسه ای برای این روز وجود ندارد."
-          }
         }
       }
     },
@@ -52709,12 +53663,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Caricamento sessioni…"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "در حال بارگیری جلسات…"
           }
         }
       }
@@ -52792,12 +53740,6 @@
             "state": "translated",
             "value": "運行“計劃日”來計劃任務或手動添加任務。"
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "برنامه روز را اجرا کنید تا کارها را برنامه ریزی کنید یا یک کار را به صورت دستی اضافه کنید."
-          }
         }
       }
     },
@@ -52867,12 +53809,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%d minuti in totale"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%d دقیقه کل"
           }
         }
       }
@@ -52944,12 +53880,6 @@
             "state": "translated",
             "value": "Sei preso."
           }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "گرفتار شدی"
-          }
         }
       }
     },
@@ -53019,12 +53949,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tutto ciò che è in ritardo apparirà qui in modo che il pianificatore possa dargli la priorità."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "هر چیزی که عقب افتاده باشد در اینجا ظاهر می شود تا برنامه ریز بتواند آن را اولویت بندی کند."
           }
         }
       }
