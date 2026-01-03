@@ -3,7 +3,7 @@
 > ⚠️ **Note:** This repository is source-visible for inspection only and is NOT open source. 
 > See [LICENSE](LICENSE) for usage restrictions.
 
-Roots is a macOS student planner distributed as proprietary software. This source code 
+Itori is a macOS student planner distributed as proprietary software. This source code 
 is made available for security auditing, transparency, and educational purposes only.
 
 This document explains how to report security vulnerabilities discovered through code inspection.

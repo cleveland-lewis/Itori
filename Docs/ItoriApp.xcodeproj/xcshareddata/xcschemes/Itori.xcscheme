@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1AD7D4332EDD328800D403F3"
-               BuildableName = "Roots.app"
+               BuildableName = "Itori.app"
                BlueprintName = "Itori"
-               ReferencedContainer = "container:RootsApp.xcodeproj">
+               ReferencedContainer = "container:ItoriApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -36,9 +36,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1AD7D4422EDD328A00D403F3"
-               BuildableName = "RootsTests.xctest"
-               BlueprintName = "RootsTests"
-               ReferencedContainer = "container:RootsApp.xcodeproj">
+               BuildableName = "ItoriTests.xctest"
+               BlueprintName = "ItoriTests"
+               ReferencedContainer = "container:ItoriApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -47,9 +47,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1AD7D44C2EDD328A00D403F3"
-               BuildableName = "RootsUITests.xctest"
-               BlueprintName = "RootsUITests"
-               ReferencedContainer = "container:RootsApp.xcodeproj">
+               BuildableName = "ItoriUITests.xctest"
+               BlueprintName = "ItoriUITests"
+               ReferencedContainer = "container:ItoriApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -69,9 +69,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1AD7D4332EDD328800D403F3"
-            BuildableName = "Roots.app"
+            BuildableName = "Itori.app"
             BlueprintName = "Itori"
-            ReferencedContainer = "container:RootsApp.xcodeproj">
+            ReferencedContainer = "container:ItoriApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -86,9 +86,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1AD7D4332EDD328800D403F3"
-            BuildableName = "Roots.app"
+            BuildableName = "Itori.app"
             BlueprintName = "Itori"
-            ReferencedContainer = "container:RootsApp.xcodeproj">
+            ReferencedContainer = "container:ItoriApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

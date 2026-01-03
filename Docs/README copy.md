@@ -1,10 +1,10 @@
-# Roots
+# Itori
 
-Roots is an academic planning and productivity application for macOS. It provides structured task management, automated scheduling, and time-based planning tools designed for complex academic workloads.
+Itori is an academic planning and productivity application for macOS. It provides structured task management, automated scheduling, and time-based planning tools designed for complex academic workloads.
 
 ## Overview
 
-Roots centralizes course management, assignment tracking, and study scheduling into a unified interface. The application processes academic tasks and generates time-blocked schedules based on due dates, priority levels, and available time slots.
+Itori centralizes course management, assignment tracking, and study scheduling into a unified interface. The application processes academic tasks and generates time-blocked schedules based on due dates, priority levels, and available time slots.
 
 ## Features
 

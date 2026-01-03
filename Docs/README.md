@@ -16,7 +16,7 @@ Roots acts as your academic command center:
 - **Planner** — Scheduling engine (in development) for auto-generated study blocks.  
 - **Settings** — True macOS window with editable profiles, semesters, and interface controls.
 
-Roots is built for clarity, stability, and neurodivergent-friendly workflows.
+Itori is built for clarity, stability, and neurodivergent-friendly workflows.
 
 ---
 
@@ -25,7 +25,7 @@ Roots is built for clarity, stability, and neurodivergent-friendly workflows.
 ### 1. Clone and open in Xcode
 ```bash
 git clone <your-repo-url>
-open Roots.xcodeproj
+open Itori.xcodeproj
 
 2. Build & run
 
