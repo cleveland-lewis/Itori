@@ -71,7 +71,7 @@ struct DashboardView: View {
                                         .frame(maxWidth: .infinity)
 
                                     if shouldShowProductivityInsights {
-                                        studyHoursCard
+                                        calendarCard
                                             .animateEntry(isLoaded: isLoaded, index: 2)
                                             .frame(maxWidth: .infinity)
                                     }
@@ -80,7 +80,7 @@ struct DashboardView: View {
                         }
                         .padding(.bottom, cardSpacing)
 
-                        // ROW 3: ENERGY + UPCOMING
+                        // ROW 3: TODAY'S WORK + UPCOMING
                         Group {
                             if isNarrow {
                                 VStack(spacing: cardSpacing) {
@@ -88,8 +88,10 @@ struct DashboardView: View {
                                         energyCard
                                             .animateEntry(isLoaded: isLoaded, index: 3)
                                     }
-                                    assignmentsCard
+                                    workRemainingCard
                                         .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 4 : 3)
+                                    assignmentsCard
+                                        .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 5 : 4)
                                 }
                             } else {
                                 HStack(alignment: .top, spacing: cardSpacing) {
@@ -98,9 +100,13 @@ struct DashboardView: View {
                                             .animateEntry(isLoaded: isLoaded, index: 3)
                                             .frame(maxWidth: .infinity)
                                     }
+                                    
+                                    workRemainingCard
+                                        .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 4 : 3)
+                                        .frame(maxWidth: .infinity)
 
                                     assignmentsCard
-                                        .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 4 : 3)
+                                        .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 5 : 4)
                                         .frame(maxWidth: .infinity)
                                 }
                             }
@@ -108,35 +114,37 @@ struct DashboardView: View {
                         .padding(.bottom, cardSpacing)
                         .animation(.easeInOut(duration: 0.25), value: shouldShowEnergyCard)
 
-                        // ROW 4: TODAY + REMAINING + CALENDAR (wide)
+                        // ROW 4: STUDY TIME + TODAY
                     Group {
                         if isNarrow {
                             VStack(spacing: cardSpacing) {
+                                if shouldShowProductivityInsights {
+                                    studyHoursCard
+                                        .animateEntry(isLoaded: isLoaded, index: 5)
+                                }
                                 plannerTodayCard
-                                    .animateEntry(isLoaded: isLoaded, index: 5)
-                                workRemainingCard
-                                    .animateEntry(isLoaded: isLoaded, index: 5)
-                                calendarCard
                                     .animateEntry(isLoaded: isLoaded, index: 6)
                             }
                         } else {
                             HStack(alignment: .top, spacing: cardSpacing) {
-                                HStack(alignment: .top, spacing: cardSpacing) {
-                                    plannerTodayCard
-                                        .frame(maxWidth: .infinity)
-
-                                    workRemainingCard
+                                if shouldShowProductivityInsights {
+                                    studyHoursCard
+                                        .animateEntry(isLoaded: isLoaded, index: 5)
                                         .frame(maxWidth: .infinity)
                                 }
-                                .animateEntry(isLoaded: isLoaded, index: 5)
-                                .frame(maxWidth: .infinity)
 
-                                calendarCard
+                                plannerTodayCard
                                     .animateEntry(isLoaded: isLoaded, index: 6)
                                     .frame(maxWidth: .infinity)
                             }
                         }
                     }
+                    
+                    // Version dropdown footer
+                    VersionDropdownView()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.top, 32)
+                    
                     .padding(.bottom, bottomDockClearancePadding)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -353,7 +361,20 @@ struct DashboardView: View {
         let plannedCount = assignmentsStore.tasks.filter { !$0.isCompleted && AssignmentPlansStore.shared.plan(for: $0.id) != nil }.count
         let scheduledMinutes = tasksDueToday().reduce(0) { $0 + $1.estimatedMinutes }
         
-        return "Today: \(dueCount) due · \(plannedCount) planned · \(scheduledMinutes) min scheduled"
+        let dueText = String.localizedStringWithFormat(
+            NSLocalizedString("tasks_due_count", comment: ""),
+            dueCount
+        )
+        let plannedText = String.localizedStringWithFormat(
+            NSLocalizedString("assignments_planned", comment: ""),
+            plannedCount
+        )
+        let scheduledText = String.localizedStringWithFormat(
+            NSLocalizedString("minutes_scheduled", comment: ""),
+            scheduledMinutes
+        )
+        
+        return "\(NSLocalizedString("common.today", comment: "")): \(dueText) · \(plannedText) · \(scheduledText)"
     }
 
     private var shouldShowEnergyCard: Bool {
@@ -450,11 +471,17 @@ struct DashboardView: View {
                 let dueToday = tasksDueToday().count
                 Text("\(dueToday)")
                     .font(.system(size: 40, weight: .bold))
-                Text(dueToday == 1 ? "Task due today" : "Tasks due today")
+                Text(String.localizedStringWithFormat(
+                    NSLocalizedString("tasks_due_today", comment: ""),
+                    dueToday
+                ))
                     .font(.title3.weight(.semibold))
 
                 let eventsTodayCount = todaysCalendarEvents().count
-                Text(eventsTodayCount == 0 ? "No events scheduled" : "\(eventsTodayCount) events scheduled")
+                Text(String.localizedStringWithFormat(
+                    NSLocalizedString("events_scheduled", comment: ""),
+                    eventsTodayCount
+                ))
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
@@ -1142,7 +1169,7 @@ struct DashboardView: View {
 
     private var workRemainingCard: some View {
         DashboardCard(
-            title: NSLocalizedString("dashboard.section.remaining", comment: ""),
+            title: NSLocalizedString("dashboard.section.todays_work", comment: ""),
             isLoading: !isLoaded
         ) {
             let snapshot = remainingWorkSnapshot
@@ -1158,10 +1185,16 @@ struct DashboardView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("\(snapshot.remainingPercent)%")
                         .font(.system(size: 36, weight: .bold))
-                    Text(String(format: NSLocalizedString("dashboard.planner.remaining_minutes", comment: ""), snapshot.remainingMinutes))
+                    Text(String.localizedStringWithFormat(
+                        NSLocalizedString("minutes_remaining", comment: ""),
+                        snapshot.remainingMinutes
+                    ))
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text(String(format: NSLocalizedString("dashboard.planner.completed_minutes", comment: ""), snapshot.completedMinutes))
+                    Text(String.localizedStringWithFormat(
+                        NSLocalizedString("minutes_completed", comment: ""),
+                        snapshot.completedMinutes
+                    ))
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                 }
