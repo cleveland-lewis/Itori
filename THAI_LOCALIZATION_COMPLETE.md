@@ -10,14 +10,13 @@ Successfully added Thai (th) language localization to the Roots app using the fr
 2. **translate_thai.py** - Translates English strings to Thai using Google Translate API
 
 ### Translation Statistics
-- **Total Thai entries**: 1,217
-- **Translated**: 807 (66.3%)
-- **Needs review**: 410 (33.7%)
+- **Total Thai entries**: 1,232
+- **Translated**: 1,230 (99.8%) ✅
+- **Needs review**: 2 (0.2%)
 
-The remaining entries that need review are primarily:
-- Format strings that should remain in English
-- Technical terms and brand names (e.g., "Roots")
-- Entries that hit rate limits during translation
+The remaining 2 entries that need review are:
+- `common.button.next` - Technical identifier
+- `settings.category.courses` - Technical identifier
 
 ## Translation Samples
 
@@ -60,7 +59,7 @@ python3 translate_thai.py
 4. SwiftUI will automatically display Thai text
 
 ## Next Steps (Optional)
-1. Review the 410 "needs_review" entries manually if needed
+1. The 2 remaining "needs_review" entries are technical identifiers and can likely be left as-is
 2. Test the app with Thai language on device/simulator
 3. Verify proper text wrapping and layout for Thai script
 4. Consider professional review for critical user-facing strings

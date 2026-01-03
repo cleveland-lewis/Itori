@@ -13,6 +13,7 @@ enum TaskType: String, Hashable, CaseIterable, Codable {
     case homework
     case reading
     case review
+    case study
 
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
@@ -68,8 +69,12 @@ struct AppTask: Codable, Equatable, Hashable {
     var gradePossiblePoints: Double?
     var gradeEarnedPoints: Double?
     var calendarEventIdentifier: String?
+    var sourceUniqueKey: String?
+    var sourceFingerprint: String?
+    var notes: String?
+    var needsReview: Bool = false  // Marks items that may be orphaned from source
 
-    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil, category: TaskType? = nil, dueTimeMinutes: Int? = nil, recurrence: RecurrenceRule? = nil, recurrenceSeriesID: UUID? = nil, recurrenceIndex: Int? = nil, calendarEventIdentifier: String? = nil) {
+    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil, category: TaskType? = nil, dueTimeMinutes: Int? = nil, recurrence: RecurrenceRule? = nil, recurrenceSeriesID: UUID? = nil, recurrenceIndex: Int? = nil, calendarEventIdentifier: String? = nil, sourceUniqueKey: String? = nil, sourceFingerprint: String? = nil, notes: String? = nil, needsReview: Bool = false) {
         self.id = id
         self.title = title
         self.courseId = courseId
@@ -92,6 +97,10 @@ struct AppTask: Codable, Equatable, Hashable {
         self.gradePossiblePoints = gradePossiblePoints
         self.gradeEarnedPoints = gradeEarnedPoints
         self.calendarEventIdentifier = calendarEventIdentifier
+        self.sourceUniqueKey = sourceUniqueKey
+        self.sourceFingerprint = sourceFingerprint
+        self.notes = notes
+        self.needsReview = needsReview
     }
 
     enum CodingKeys: String, CodingKey {
@@ -117,6 +126,10 @@ struct AppTask: Codable, Equatable, Hashable {
         case gradePossiblePoints
         case gradeEarnedPoints
         case calendarEventIdentifier
+        case sourceUniqueKey
+        case sourceFingerprint
+        case notes
+        case needsReview
     }
 
     init(from decoder: Decoder) throws {
@@ -158,6 +171,10 @@ struct AppTask: Codable, Equatable, Hashable {
         gradePossiblePoints = try container.decodeIfPresent(Double.self, forKey: .gradePossiblePoints)
         gradeEarnedPoints = try container.decodeIfPresent(Double.self, forKey: .gradeEarnedPoints)
         calendarEventIdentifier = try container.decodeIfPresent(String.self, forKey: .calendarEventIdentifier)
+        sourceUniqueKey = try container.decodeIfPresent(String.self, forKey: .sourceUniqueKey)
+        sourceFingerprint = try container.decodeIfPresent(String.self, forKey: .sourceFingerprint)
+        notes = try container.decodeIfPresent(String.self, forKey: .notes)
+        needsReview = try container.decodeIfPresent(Bool.self, forKey: .needsReview) ?? false
     }
 
     func encode(to encoder: Encoder) throws {
@@ -184,6 +201,10 @@ struct AppTask: Codable, Equatable, Hashable {
         try container.encodeIfPresent(gradePossiblePoints, forKey: .gradePossiblePoints)
         try container.encodeIfPresent(gradeEarnedPoints, forKey: .gradeEarnedPoints)
         try container.encodeIfPresent(calendarEventIdentifier, forKey: .calendarEventIdentifier)
+        try container.encodeIfPresent(sourceUniqueKey, forKey: .sourceUniqueKey)
+        try container.encodeIfPresent(sourceFingerprint, forKey: .sourceFingerprint)
+        try container.encodeIfPresent(notes, forKey: .notes)
+        try container.encode(needsReview, forKey: .needsReview)
     }
 
     func withCourseId(_ newCourseId: UUID?) -> AppTask {
@@ -209,7 +230,10 @@ struct AppTask: Codable, Equatable, Hashable {
             recurrence: recurrence,
             recurrenceSeriesID: recurrenceSeriesID,
             recurrenceIndex: recurrenceIndex,
-            calendarEventIdentifier: calendarEventIdentifier
+            calendarEventIdentifier: calendarEventIdentifier,
+            sourceUniqueKey: sourceUniqueKey,
+            sourceFingerprint: sourceFingerprint,
+            notes: notes
         )
     }
 }

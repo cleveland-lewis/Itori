@@ -160,6 +160,7 @@ private struct ModuleRow: View {
 private struct FileRow: View {
     @State var file: CourseFile
     @State private var isHovered = false
+    @State private var showErrorAlert = false
     @StateObject private var parsingService = FileParsingService.shared
     
     var body: some View {
@@ -189,8 +190,16 @@ private struct FileRow: View {
                             .foregroundStyle(.secondary)
                         
                         HStack(spacing: 4) {
-                            Image(systemName: file.parseStatus.icon)
-                                .font(.caption2)
+                            // Show progress bar if parsing
+                            if file.parseStatus == .parsing,
+                               let progress = parsingService.parsingProgress[file.id] {
+                                ProgressView(value: progress)
+                                    .controlSize(.mini)
+                                    .frame(width: 40)
+                            } else {
+                                Image(systemName: file.parseStatus.icon)
+                                    .font(.caption2)
+                            }
                             Text(file.parseStatus.displayName)
                                 .font(.caption2.weight(.medium))
                         }
@@ -242,7 +251,9 @@ private struct FileRow: View {
                 Divider()
                 
                 if file.parseStatus == .failed, let error = file.parseError {
-                    Button(action: { showParseError(error) }) {
+                    Button(action: { 
+                        showErrorAlert = true
+                    }) {
                         Label("View Error", systemImage: "exclamationmark.triangle")
                     }
                 }
@@ -288,6 +299,11 @@ private struct FileRow: View {
                 file = updatedFile
             }
         }
+        .alert("Parse Error", isPresented: $showErrorAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(file.parseError ?? "Unknown error")
+        }
     }
     
     private var parseStatusColor: Color {
@@ -307,15 +323,6 @@ private struct FileRow: View {
         file = updatedFile
         
         await parsingService.updateFileCategory(file, newCategory: newCategory)
-    }
-    
-    private func showParseError(_ error: String) {
-        let alert = NSAlert()
-        alert.messageText = "Parse Error"
-        alert.informativeText = error
-        alert.alertStyle = .warning
-        alert.addButton(withTitle: "OK")
-        alert.runModal()
     }
     
     private func openFile() {

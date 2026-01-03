@@ -82,6 +82,7 @@ struct CoursesPageView: View {
     @State private var showingCreateModuleSheet = false
     @State private var showingFileImporter = false
     @State private var selectedModuleId: UUID? = nil
+    @State private var showingBatchReview = false
 
     @State private var selectedCourseId: UUID? = nil
     @State private var searchText: String = ""
@@ -163,6 +164,24 @@ struct CoursesPageView: View {
                     coursesStore.addOutlineNode(module)
                 }
             }
+        }
+        .sheet(isPresented: $showingBatchReview) {
+            if let batchState = FileParsingService.shared.batchReviewItems {
+                BatchReviewSheet(
+                    state: batchState,
+                    onApprove: {
+                        await FileParsingService.shared.approveBatchReview(batchState)
+                    },
+                    onCancel: {
+                        Task {
+                            await FileParsingService.shared.cancelBatchReview()
+                        }
+                    }
+                )
+            }
+        }
+        .onReceive(FileParsingService.shared.$batchReviewItems) { batchState in
+            showingBatchReview = batchState != nil
         }
         .fileImporter(
             isPresented: $showingFileImporter,

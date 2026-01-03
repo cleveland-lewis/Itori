@@ -109,4 +109,78 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
+    <entity name="CourseOutlineNode" representedClassName="CourseOutlineNodeMO" syncable="YES" codeGenerationType="class">
+        <attribute name="courseId" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="parentId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="sortIndex" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="title" attributeType="String"/>
+        <attribute name="type" attributeType="String"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="files" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CourseFile" inverseName="node" inverseEntity="CourseFile"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="CourseFile" representedClassName="CourseFileMO" syncable="YES" codeGenerationType="class">
+        <attribute name="category" attributeType="String"/>
+        <attribute name="contentFingerprint" attributeType="String"/>
+        <attribute name="courseId" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="fileName" attributeType="String"/>
+        <attribute name="fileType" attributeType="String"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="iCloudURL" optional="YES" attributeType="String"/>
+        <attribute name="isPracticeExam" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="isSyllabus" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="localURL" optional="YES" attributeType="String"/>
+        <attribute name="nodeId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="parseError" optional="YES" attributeType="String"/>
+        <attribute name="parseStatus" attributeType="String"/>
+        <attribute name="parsedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="syncStatus" attributeType="String" defaultValueString="pending"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="node" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CourseOutlineNode" inverseName="files" inverseEntity="CourseOutlineNode"/>
+        <relationship name="parseResults" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="FileParseResult" inverseName="file" inverseEntity="FileParseResult"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="FileParseResult" representedClassName="FileParseResultMO" syncable="YES" codeGenerationType="class">
+        <attribute name="contentJSON" optional="YES" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="errorMessage" optional="YES" attributeType="String"/>
+        <attribute name="extractedText" optional="YES" attributeType="String"/>
+        <attribute name="fileId" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="parseType" attributeType="String"/>
+        <attribute name="success" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="file" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CourseFile" inverseName="parseResults" inverseEntity="CourseFile"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
+    <entity name="PlannerAnalysis" representedClassName="PlannerAnalysisMO" syncable="YES" codeGenerationType="class">
+        <attribute name="analysisJSON" attributeType="String"/>
+        <attribute name="analysisType" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="endDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="resultJSON" optional="YES" attributeType="String"/>
+        <attribute name="startDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
+    </entity>
 </model>

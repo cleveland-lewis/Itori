@@ -81,6 +81,7 @@ struct AssignmentConverter {
         case .quiz: return .quiz
         case .review: return .review
         case .project: return .project
+        case .study: return .review
         }
     }
     

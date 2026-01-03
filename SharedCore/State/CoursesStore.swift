@@ -568,6 +568,14 @@ extension CoursesStore {
         newFile.createdAt = Date()
         newFile.updatedAt = Date()
         
+        // Generate content fingerprint if not provided
+        if newFile.contentFingerprint.isEmpty {
+            newFile.contentFingerprint = generateFingerprint(for: newFile)
+        }
+        
+        // Set initial parse status
+        newFile.parseStatus = .queued
+        
         // Enforce single syllabus rule
         if newFile.isSyllabus {
             // Unmark any existing syllabus
@@ -581,6 +589,22 @@ extension CoursesStore {
         
         courseFiles.append(newFile)
         persist()
+        
+        // Trigger parsing asynchronously
+        Task {
+            await FileParsingService.shared.parseFile(newFile)
+        }
+    }
+    
+    private func generateFingerprint(for file: CourseFile) -> String {
+        // Generate fingerprint from file size + filename + creation date
+        let components = [
+            file.filename,
+            String(file.createdAt.timeIntervalSince1970),
+            file.fileType
+        ]
+        let combined = components.joined(separator: "|")
+        return combined.sha256()
     }
     
     /// Update a file
@@ -661,6 +685,35 @@ extension CoursesStore {
         courseFiles[index].isPracticeExam.toggle()
         courseFiles[index].updatedAt = Date()
         persist()
+    }
+    
+    /// Update parse status for a file
+    func updateParseStatus(fileId: UUID, status: ParseStatus, error: String?) {
+        guard let index = courseFiles.firstIndex(where: { $0.id == fileId }) else { return }
+        courseFiles[index].parseStatus = status
+        courseFiles[index].parseError = error
+        if status == .parsed {
+            courseFiles[index].parsedAt = Date()
+        }
+        courseFiles[index].updatedAt = Date()
+        persist()
+    }
+    
+    /// Update file category and trigger parsing if needed
+    func updateFileCategory(fileId: UUID, category: FileCategory) {
+        guard let index = courseFiles.firstIndex(where: { $0.id == fileId }) else { return }
+        let oldCategory = courseFiles[index].category
+        courseFiles[index].category = category
+        courseFiles[index].updatedAt = Date()
+        persist()
+        
+        // Trigger parsing if changing to a high-signal category
+        let highSignalCategories: [FileCategory] = [.syllabus, .test, .practiceTest, .rubric, .classNotes, .assignmentList]
+        if highSignalCategories.contains(category) && category != oldCategory {
+            Task {
+                await FileParsingService.shared.parseFile(courseFiles[index], force: true)
+            }
+        }
     }
     
     /// Clear all data (for testing)

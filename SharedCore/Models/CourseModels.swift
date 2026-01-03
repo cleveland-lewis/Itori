@@ -374,4 +374,15 @@ struct CourseFile: Identifiable, Codable, Hashable {
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date()
         updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? Date()
     }
+    
+    var displayName: String {
+        filename
+    }
+    
+    var url: URL {
+        guard let urlString = localURL else {
+            return URL(fileURLWithPath: "/tmp/\(filename)")
+        }
+        return URL(fileURLWithPath: urlString)
+    }
 }

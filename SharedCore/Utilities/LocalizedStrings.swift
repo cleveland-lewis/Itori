@@ -17,6 +17,8 @@ extension TaskType {
             return "task.type.review".localized
         case .project:
             return "task.type.project".localized
+        case .study:
+            return "task.type.study".localized
         }
     }
 }

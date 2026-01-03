@@ -1515,9 +1515,11 @@ private struct EventDetailView: View {
     @EnvironmentObject private var calendarManager: CalendarManager
     @EnvironmentObject private var settings: AppSettingsModel
     @State private var showDeleteConfirm = false
+    @State private var showScopeSelection = false
     @State private var showEdit = false
     @State private var errorMessage: String?
     @State private var showError = false
+    @State private var selectedScope: EventDeletionService.RecurringDeletionScope?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -1664,23 +1666,47 @@ private struct EventDetailView: View {
                     .disabled(!item.canEdit)
                     Spacer()
                     Button(role: .destructive) {
-                        showDeleteConfirm = true
+                        handleDelete()
                     } label: {
                         Label("Delete", systemImage: "trash")
                     }
                     .buttonStyle(.plain)
                     .foregroundStyle(.red)
                 }
-                .confirmationDialog("Delete this item?", isPresented: $showDeleteConfirm, titleVisibility: .visible) {
-                    Button("Delete", role: .destructive) {
-                        _Concurrency.Task {
-                            try? await calendarManager.deleteCalendarItem(identifier: identifier, isReminder: item.isReminder)
-                            isPresented = false
-                        }
+                // Scope selection for recurring events (shown first)
+                .confirmationDialog(
+                    NSLocalizedString("event.delete.scope_selection_title", comment: ""),
+                    isPresented: $showScopeSelection,
+                    titleVisibility: .visible
+                ) {
+                    Button(NSLocalizedString("event.delete.scope.this_event", comment: "")) {
+                        selectedScope = .thisEvent
+                        showDeleteConfirm = true
+                    }
+                    Button(NSLocalizedString("event.delete.scope.future_events", comment: "")) {
+                        selectedScope = .futureEvents
+                        showDeleteConfirm = true
+                    }
+                    Button(NSLocalizedString("event.delete.scope.all_events", comment: "")) {
+                        selectedScope = .allEvents
+                        showDeleteConfirm = true
                     }
                     Button("Cancel", role: .cancel) { }
                 } message: {
-                    Text(String(format: NSLocalizedString("calendar.delete_confirmation", comment: ""), item.isReminder ? NSLocalizedString("calendar.delete.reminders_item", comment: "") : NSLocalizedString("calendar.delete.calendar_item", comment: "")))
+                    Text(NSLocalizedString("event.delete.scope_selection_message", comment: ""))
+                }
+                // Final confirmation (shown after scope selection or immediately for non-recurring)
+                .confirmationDialog(
+                    NSLocalizedString("event.delete.confirm_title", comment: ""),
+                    isPresented: $showDeleteConfirm,
+                    titleVisibility: .visible
+                ) {
+                    Button("Delete", role: .destructive) {
+                        performDelete()
+                    }
+                    Button("Cancel", role: .cancel) { }
+                } message: {
+                    Text(confirmationMessage)
                 }
             }
         }
@@ -1744,6 +1770,67 @@ private struct EventDetailView: View {
         let f = DateFormatter()
         f.timeStyle = .short
         return "\(f.string(from: item.startDate)) – \(f.string(from: item.endDate))"
+    }
+    
+    // MARK: - Delete Handling
+    
+    private func handleDelete() {
+        // Step 1: If recurring, show scope selection first
+        if item.isRecurring {
+            showScopeSelection = true
+        } else {
+            // Non-recurring: skip to confirmation
+            selectedScope = .thisEvent
+            showDeleteConfirm = true
+        }
+    }
+    
+    private var confirmationMessage: String {
+        if item.isReminder {
+            return NSLocalizedString("event.delete.confirm_message_reminder", comment: "")
+        }
+        
+        guard item.isRecurring, let scope = selectedScope else {
+            return NSLocalizedString("event.delete.confirm_message_single", comment: "")
+        }
+        
+        switch scope {
+        case .thisEvent:
+            return NSLocalizedString("event.delete.confirm_message_this", comment: "")
+        case .futureEvents:
+            return NSLocalizedString("event.delete.confirm_message_future", comment: "")
+        case .allEvents:
+            return NSLocalizedString("event.delete.confirm_message_all", comment: "")
+        }
+    }
+    
+    private func performDelete() {
+        guard let identifier = item.ekIdentifier else {
+            errorMessage = "Event identifier not found"
+            showError = true
+            return
+        }
+        
+        _Concurrency.Task {
+            let result = await EventDeletionService.shared.deleteEvent(
+                eventId: identifier,
+                isReminder: item.isReminder,
+                presentConfirmation: { _, _ in true }, // Already confirmed via dialog
+                presentScopeSelection: { selectedScope }
+            )
+            
+            await MainActor.run {
+                switch result {
+                case .deleted:
+                    isPresented = false
+                case .cancelled:
+                    break
+                case .failed(let error):
+                    errorMessage = error.localizedDescription
+                    showError = true
+                }
+            }
+        }
     }
 
     @ViewBuilder
