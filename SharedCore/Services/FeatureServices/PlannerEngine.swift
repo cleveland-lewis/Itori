@@ -1,4 +1,5 @@
 import Foundation
+import EventKit
 
 // MARK: - Study Plan Settings
 
@@ -606,10 +607,16 @@ enum PlannerEngine {
             energyProfile: energyProfile
         )
         
+        // Get busy calendar events to block out times
+        let fixedEvents = getFixedEventsFromCalendar(
+            start: constraints.horizonStart,
+            end: constraints.horizonEnd
+        )
+        
         // Call AI scheduler
         let aiResult = AIScheduler.generateSchedule(
             tasks: tasks,
-            fixedEvents: [],
+            fixedEvents: fixedEvents,
             constraints: constraints
         )
         
@@ -731,5 +738,53 @@ enum PlannerEngine {
         case .project: return .project
         @unknown default: return .homework
         }
+    }
+    
+    // MARK: - Calendar Integration
+    
+    /// Get fixed events from device calendar that are marked as busy
+    private static func getFixedEventsFromCalendar(start: Date, end: Date) -> [FixedEvent] {
+        var fixedEvents: [FixedEvent] = []
+        
+        #if !os(watchOS)
+        let calendarManager = DeviceCalendarManager.shared
+        
+        // Only process if authorized
+        guard calendarManager.isAuthorized else {
+            return fixedEvents
+        }
+        
+        // Filter events to only those in the time range
+        let relevantEvents = calendarManager.events.filter { event in
+            event.startDate >= start && event.startDate < end
+        }
+        
+        // Convert busy events to FixedEvent objects
+        for event in relevantEvents {
+            // Only include events marked as busy (not free/tentative)
+            // EKEventAvailability: .busy, .free, .tentative, .unavailable
+            guard event.availability == .busy || event.availability == .unavailable else {
+                continue
+            }
+            
+            // Skip all-day events as they don't block specific time slots
+            guard !event.isAllDay else {
+                continue
+            }
+            
+            let fixedEvent = FixedEvent(
+                id: UUID(uuidString: event.eventIdentifier) ?? UUID(),
+                title: event.title ?? "Busy",
+                start: event.startDate,
+                end: event.endDate,
+                isLocked: true,
+                source: .calendar
+            )
+            
+            fixedEvents.append(fixedEvent)
+        }
+        #endif
+        
+        return fixedEvents
     }
 }
