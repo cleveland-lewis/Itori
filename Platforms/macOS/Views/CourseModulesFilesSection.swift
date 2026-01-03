@@ -24,8 +24,7 @@ struct CourseModulesFilesSection: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.accentColor)
+                .buttonStyle(.bordered)
                 
                 Button(action: onAddFiles) {
                     Label("Add Files", systemImage: "doc.badge.plus")
