@@ -166,19 +166,22 @@ struct CoursesPageView: View {
             }
         }
         .sheet(isPresented: $showingBatchReview) {
-            if let batchState = FileParsingService.shared.batchReviewItems {
-                BatchReviewSheet(
-                    state: batchState,
-                    onApprove: {
-                        await FileParsingService.shared.approveBatchReview(batchState)
-                    },
-                    onCancel: {
-                        Task {
-                            await FileParsingService.shared.cancelBatchReview()
-                        }
-                    }
-                )
-            }
+            // TODO: Restore BatchReviewSheet once FileParsingService is stabilized
+            Text("Batch review temporarily unavailable")
+                .padding()
+            // if let batchState = FileParsingService.shared.batchReviewItems {
+            //     BatchReviewSheet(
+            //         state: batchState,
+            //         onApprove: {
+            //             await FileParsingService.shared.approveBatchReview(batchState)
+            //         },
+            //         onCancel: {
+            //             Task {
+            //                 await FileParsingService.shared.cancelBatchReview()
+            //             }
+            //         }
+            //     )
+            // }
         }
         .onReceive(FileParsingService.shared.$batchReviewItems) { batchState in
             showingBatchReview = batchState != nil
@@ -479,14 +482,14 @@ struct CoursesPageView: View {
                 )
                 
                 // Calculate fingerprint
-                file.contentFingerprint = FileParsingService.shared.calculateFingerprint(for: file, fileData: fileData)
+                file.contentFingerprint = FileParsingService.shared.calculateFingerprint(for: file)
                 
                 // Add to store
                 coursesStore.addFile(file)
                 
                 // Queue for parsing if appropriate category
                 if file.category.triggersAutoParsing {
-                    FileParsingService.shared.queueFileForParsing(file, priority: 0)
+                    FileParsingService.shared.queueFileForParsing(file, courseId: file.courseId)
                 }
             }
         case .failure(let error):

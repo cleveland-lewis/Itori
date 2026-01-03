@@ -223,6 +223,8 @@ struct ContentView: View {
         case .homework: return .homework
         case .reading: return .reading
         case .review: return .review
+        case .study:
+            fallthrough
         case .project: return .project
         }
     }

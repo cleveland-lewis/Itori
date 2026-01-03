@@ -88,6 +88,7 @@ struct AssignmentDetailWindowView: View {
         case .exam: return "Exam"
         case .reading: return "Reading"
         case .review: return "Review"
+        case .study: return "Study"
         case .project: return "Project"
         }
     }
@@ -96,7 +97,7 @@ struct AssignmentDetailWindowView: View {
         switch type {
         case .exam, .quiz:
             return "Estimated Study Time"
-        case .homework, .reading, .project, .review:
+        case .homework, .reading, .project, .review, .study:
             return "Estimated Work Time"
         }
     }

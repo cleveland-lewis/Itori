@@ -251,21 +251,19 @@ extension View {
     
     /// Preview with Reduce Motion
     func previewWithReduceMotion() -> some View {
-        self.environment(\.accessibilityReduceMotion, true)
+        self // Simplified - environment modification not available in current Swift version
     }
     
     /// Preview with high contrast
     func previewWithHighContrast() -> some View {
-        self.environment(\.accessibilityDifferentiateWithoutColor, true)
+        self // Simplified - environment modification not available in current Swift version
     }
     
     /// Preview with all accessibility features
     func previewAccessibilityMaximum() -> some View {
         self
             .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
-            .environment(\.accessibilityReduceMotion, true)
-            .environment(\.accessibilityReduceTransparency, true)
-            .environment(\.accessibilityDifferentiateWithoutColor, true)
+            // Other accessibility environment vars not modifiable in current Swift version
     }
 }
 

@@ -797,6 +797,8 @@ struct DashboardView: View {
         case .exam: return .red.opacity(0.5)
         case .quiz: return .orange.opacity(0.5)
         case .review: return .purple.opacity(0.4)
+        case .study:
+            fallthrough
         case .project: return .teal.opacity(0.5)
         }
     }
@@ -1063,6 +1065,8 @@ struct DashboardView: View {
         case .exam: return .red.opacity(0.7)
         case .quiz: return .orange.opacity(0.7)
         case .review: return .purple.opacity(0.6)
+        case .study:
+            fallthrough
         case .project: return .teal.opacity(0.7)
         }
     }

@@ -314,6 +314,8 @@
 				th,
 				uk,
 				pl,
+				he,
+				hu,
 			);
 			mainGroup = 1AD7D42B2EDD328800D403F3;
 			minimizedProjectReferenceProxies = 1;

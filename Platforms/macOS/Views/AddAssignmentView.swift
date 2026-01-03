@@ -392,6 +392,7 @@ struct AddAssignmentView: View {
         case .homework: return "Homework"
         case .reading: return "Reading"
         case .review: return "Review"
+        case .study: return "Study"
         }
     }
 

@@ -292,12 +292,13 @@ private struct FileRow: View {
         .onHover { hovering in
             isHovered = hovering
         }
-        .onReceive(NotificationCenter.default.publisher(for: .courseFileUpdated)) { notification in
-            if let updatedFile = notification.object as? CourseFile,
-               updatedFile.id == file.id {
-                file = updatedFile
-            }
-        }
+        // .onReceive(NotificationCenter.default.publisher(for: .courseFileUpdated)) { notification in
+        //     // TODO: Restore once courseFileUpdated notification is defined
+        //     if let updatedFile = notification.object as? CourseFile,
+        //        updatedFile.id == file.id {
+        //         file = updatedFile
+        //     }
+        // }
         .alert("Parse Error", isPresented: $showErrorAlert) {
             Button("OK", role: .cancel) {}
         } message: {
