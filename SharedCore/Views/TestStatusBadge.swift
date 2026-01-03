@@ -92,7 +92,7 @@ struct TestStatusBadge: View {
         case .missed:
             return Color.orange.opacity(0.3)
         case .archived:
-            return Color.secondary.opacity(0.2)
+            return .quaternary
         }
     }
 }

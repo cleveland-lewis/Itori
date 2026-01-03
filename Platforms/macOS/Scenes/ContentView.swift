@@ -16,6 +16,7 @@ struct ContentView: View {
     @State private var selectedTab: RootTab = .dashboard
     @State private var settingsRotation: Double = 0
     @Environment(\.colorScheme) private var colorScheme
+    @FocusedBinding(\.selectedTab) private var focusedTab: RootTab?
 
     private var interfacePreferences: InterfacePreferences {
         InterfacePreferences.from(preferences, settings: settings, colorScheme: colorScheme)
@@ -24,7 +25,7 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { proxy in
             ZStack(alignment: .topLeading) {
-                Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
+                .primaryBackground.ignoresSafeArea()
 
                 // LAYER 1: Main content
                 AppPageScaffold(
@@ -70,6 +71,8 @@ struct ContentView: View {
         .interfacePreferences(interfacePreferences)
         .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
         .globalContextMenu()
+        .focusedSceneValue(\.selectedTab, $selectedTab)
+        .focusedValue(\.canCreateAssignment, true)
         .onAppear {
             setupNotificationObservers()
             DispatchQueue.main.async {
@@ -262,8 +265,41 @@ struct ContentView: View {
             }
         }
         
+        // Keyboard shortcut: Tab switching
+        NotificationCenter.default.addObserver(forName: .switchToTab, object: nil, queue: .main) { notification in
+            if let tab = notification.object as? RootTab {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    selectedTab = tab
+                }
+            }
+        }
+        
         NotificationCenter.default.addObserver(forName: .addAssignmentRequested, object: nil, queue: .main) { _ in
             LOG_UI(.info, "ContextMenu", "Add Assignment requested")
+        }
+        
+        // Keyboard shortcut: New assignment
+        NotificationCenter.default.addObserver(forName: .createNewAssignment, object: nil, queue: .main) { _ in
+            LOG_UI(.info, "KeyboardShortcut", "New Assignment (⌘T)")
+            // TODO: Show new assignment sheet
+        }
+        
+        // Keyboard shortcut: New course
+        NotificationCenter.default.addObserver(forName: .createNewCourse, object: nil, queue: .main) { _ in
+            LOG_UI(.info, "KeyboardShortcut", "New Course (⌘⇧N)")
+            // TODO: Show new course sheet
+        }
+        
+        // Keyboard shortcut: New deck
+        NotificationCenter.default.addObserver(forName: .createNewDeck, object: nil, queue: .main) { _ in
+            LOG_UI(.info, "KeyboardShortcut", "New Deck (⌘⇧D)")
+            // TODO: Show new deck sheet
+        }
+        
+        // Keyboard shortcut: Focus search
+        NotificationCenter.default.addObserver(forName: .focusSearchField, object: nil, queue: .main) { _ in
+            LOG_UI(.info, "KeyboardShortcut", "Focus Search (⌘F)")
+            // TODO: Focus search field in current view
         }
         
         NotificationCenter.default.addObserver(forName: .addGradeRequested, object: nil, queue: .main) { _ in

@@ -99,7 +99,7 @@ struct AISettingsView: View {
                     .padding(12)
                     .background(
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(router.mode == mode ? Color.accentColor.opacity(0.1) : Color.clear)
+                            .fill(router.mode == mode ? .accentQuaternary : Color.clear)
                     )
                 }
                 .buttonStyle(.plain)
@@ -235,7 +235,7 @@ struct AISettingsView: View {
             .padding()
             .background(
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(Color(nsColor: .controlBackgroundColor))
+                    .fill(.secondaryBackground)
             )
         }
     }
@@ -270,7 +270,7 @@ struct AISettingsView: View {
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 8)
-                        .fill(Color(nsColor: .controlBackgroundColor))
+                        .fill(.secondaryBackground)
                 )
             } else {
                 Text("Configure your own AI provider (OpenAI, Anthropic, or custom API)")
@@ -382,7 +382,7 @@ struct AISettingsView: View {
                 .padding()
                 .background(
                     RoundedRectangle(cornerRadius: 8)
-                        .fill(Color(nsColor: .controlBackgroundColor))
+                        .fill(.secondaryBackground)
                 )
             }
         }

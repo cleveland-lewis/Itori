@@ -23,12 +23,28 @@ struct TimerLiveActivity: Widget {
             DynamicIsland {
                 // Expanded UI
                 DynamicIslandExpandedRegion(.leading) {
-                    HStack(spacing: 4) {
-                        Image(systemName: iconName(for: context.state.mode))
-                            .foregroundColor(.accentColor)
-                        Text(context.state.label)
-                            .font(.caption)
-                            .fontWeight(.semibold)
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(spacing: 4) {
+                            if let emoji = context.state.activityEmoji {
+                                Text(emoji)
+                                    .font(.caption)
+                            } else {
+                                Image(systemName: iconName(for: context.state.mode))
+                                    .foregroundColor(.accentColor)
+                                    .font(.caption)
+                            }
+                            Text(context.state.label)
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                        }
+                        
+                        // Phase 3.2: Show activity name
+                        if let activityName = context.state.activityName {
+                            Text(activityName)
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                        }
                     }
                 }
                 
@@ -51,9 +67,23 @@ struct TimerLiveActivity: Widget {
                             .tint(context.state.isOnBreak ? .orange : .blue)
                         
                         HStack {
-                            Text(context.state.mode)
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
+                            // Phase 3.2: Pomodoro cycle or mode
+                            if let currentCycle = context.state.pomodoroCurrentCycle,
+                               let totalCycles = context.state.pomodoroTotalCycles {
+                                HStack(spacing: 3) {
+                                    Image(systemName: "flame.fill")
+                                        .font(.caption2)
+                                        .foregroundColor(.orange)
+                                    Text("\(currentCycle)/\(totalCycles)")
+                                        .font(.caption2)
+                                        .foregroundColor(.secondary)
+                                }
+                            } else {
+                                Text(context.state.mode)
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+                            
                             Spacer()
                             Text("\(Int(progress(context.state) * 100))%")
                                 .font(.caption2.monospacedDigit())
@@ -62,18 +92,28 @@ struct TimerLiveActivity: Widget {
                     }
                 }
             } compactLeading: {
-                // Compact leading (timer icon)
-                Image(systemName: iconName(for: context.state.mode))
-                    .foregroundColor(context.state.isOnBreak ? .orange : .blue)
+                // Compact leading (emoji or timer icon)
+                if let emoji = context.state.activityEmoji {
+                    Text(emoji)
+                        .font(.caption)
+                } else {
+                    Image(systemName: iconName(for: context.state.mode))
+                        .foregroundColor(context.state.isOnBreak ? .orange : .blue)
+                }
             } compactTrailing: {
                 // Compact trailing (time remaining)
                 Text(compactTimeString(context.state.remainingSeconds))
                     .font(.caption2.monospacedDigit())
                     .fontWeight(.medium)
             } minimal: {
-                // Minimal view (just icon)
-                Image(systemName: context.state.isRunning ? "timer" : "pause.circle.fill")
-                    .foregroundColor(context.state.isOnBreak ? .orange : .blue)
+                // Minimal view (emoji or icon with status)
+                if let emoji = context.state.activityEmoji {
+                    Text(emoji)
+                        .font(.caption2)
+                } else {
+                    Image(systemName: context.state.isRunning ? "timer" : "pause.circle.fill")
+                        .foregroundColor(context.state.isOnBreak ? .orange : .blue)
+                }
             }
         }
     }
@@ -127,14 +167,28 @@ struct LiveActivityView: View {
     
     var body: some View {
         VStack(spacing: 12) {
-            // Header
+            // Header with activity name (Phase 3.2)
             HStack {
                 HStack(spacing: 6) {
-                    Image(systemName: iconName)
-                        .font(.system(size: 16))
-                        .foregroundColor(.accentColor)
-                    Text(context.state.mode)
-                        .font(.headline)
+                    if let emoji = context.state.activityEmoji {
+                        Text(emoji)
+                            .font(.system(size: 18))
+                    } else {
+                        Image(systemName: iconName)
+                            .font(.system(size: 16))
+                            .foregroundColor(.accentColor)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        if let activityName = context.state.activityName {
+                            Text(activityName)
+                                .font(.subheadline.weight(.semibold))
+                                .lineLimit(1)
+                        }
+                        Text(context.state.mode)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
                 
                 Spacer()
@@ -162,6 +216,19 @@ struct LiveActivityView: View {
                     Spacer()
                     Text("\(Int(progress * 100))% complete")
                         .font(.caption2.monospacedDigit())
+                        .foregroundColor(.secondary)
+                }
+            }
+            
+            // Phase 3.2: Pomodoro cycle indicator
+            if let currentCycle = context.state.pomodoroCurrentCycle,
+               let totalCycles = context.state.pomodoroTotalCycles {
+                HStack(spacing: 4) {
+                    Image(systemName: "flame.fill")
+                        .font(.caption2)
+                        .foregroundColor(.orange)
+                    Text("Cycle \(currentCycle) of \(totalCycles)")
+                        .font(.caption2)
                         .foregroundColor(.secondary)
                 }
             }

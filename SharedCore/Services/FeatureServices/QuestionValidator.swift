@@ -52,21 +52,21 @@ class QuestionValidator {
         
         // MCQ-specific validation
         if let choices = draft.choices {
-            if choices.count != 4 {
+            if choices.count != 5 {
                 errors.append(ValidationError(
                     category: .schema,
                     field: "choices",
-                    message: "MCQ must have exactly 4 choices, got \(choices.count)",
+                    message: "MCQ must have exactly 5 choices (A-E), got \(choices.count)",
                     severity: "error"
                 ))
             }
             
             if let correctIndex = draft.correctIndex {
-                if correctIndex < 0 || correctIndex > 3 {
+                if correctIndex < 0 || correctIndex > 4 {
                     errors.append(ValidationError(
                         category: .schema,
                         field: "correctIndex",
-                        message: "correctIndex must be 0-3, got \(correctIndex)",
+                        message: "correctIndex must be 0-4 for 5 choices, got \(correctIndex)",
                         severity: "error"
                     ))
                 }

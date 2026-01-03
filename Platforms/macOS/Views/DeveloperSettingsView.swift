@@ -107,7 +107,7 @@ struct DeveloperSettingsView: View {
                             .padding(8)
                         }
                         .frame(maxHeight: 200)
-                        .background(Color(nsColor: .controlBackgroundColor))
+                        .background(.secondaryBackground)
                         .cornerRadius(6)
                     }
                 } header: {
@@ -153,7 +153,7 @@ struct DeveloperSettingsView: View {
                                 .padding(8)
                             }
                             .frame(maxHeight: 300)
-                            .background(Color(nsColor: .controlBackgroundColor))
+                            .background(.secondaryBackground)
                             .cornerRadius(6)
                         }
                     }

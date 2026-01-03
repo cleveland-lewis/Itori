@@ -47,7 +47,7 @@ public struct EstimationInfoView: View {
                     ForEach(estimate.reasonCodes, id: \.self) { code in
                         HStack {
                             Circle()
-                                .fill(Color.secondary.opacity(0.3))
+                                .fill(.tertiary)
                                 .frame(width: 4, height: 4)
                             Text(formatReasonCode(code))
                                 .font(.caption)

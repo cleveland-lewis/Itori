@@ -253,7 +253,7 @@ final class LocalLLMService: ObservableObject {
         {
           "contractVersion": "testgen.v1",
           "prompt": "Your question text here",
-          "choices": ["Choice A", "Choice B", "Choice C", "Choice D"],
+          "choices": ["Choice A", "Choice B", "Choice C", "Choice D", "Choice E"],
           "correctAnswer": "The exact text of the correct choice",
           "correctIndex": 0,
           "rationale": "Explanation of why this is correct (minimum 10 words)",
@@ -337,7 +337,8 @@ final class LocalLLMService: ObservableObject {
                 "A fundamental principle that forms the basis of \(topicText)",
                 "An advanced technique used only in specialized applications",
                 "A deprecated approach that is no longer recommended",
-                "An alternative methodology with limited practical use"
+                "An alternative methodology with limited practical use",
+                "A supplementary concept with minimal relevance to core theory"
             ]
             
         case .causeEffect:
@@ -346,7 +347,8 @@ final class LocalLLMService: ObservableObject {
                 "Enhanced understanding and practical application capabilities",
                 "Reduced flexibility in problem-solving approaches",
                 "Increased complexity without tangible benefits",
-                "Limited applicability to real-world scenarios"
+                "Limited applicability to real-world scenarios",
+                "No measurable impact on outcomes or understanding"
             ]
             
         case .scenarioChange:
@@ -355,7 +357,8 @@ final class LocalLLMService: ObservableObject {
                 "The results would align more closely with theoretical expectations",
                 "The system would become less predictable and harder to control",
                 "There would be no significant change in outcomes",
-                "The approach would contradict established best practices"
+                "The approach would contradict established best practices",
+                "The implementation would require complete redesign of existing methods"
             ]
             
         case .dataInterpretation:
@@ -364,7 +367,8 @@ final class LocalLLMService: ObservableObject {
                 "The data demonstrates clear patterns consistent with \(topicText) theory",
                 "The data shows inconsistencies that contradict current understanding",
                 "The data is insufficient to draw meaningful conclusions",
-                "The data supports alternative explanations over \(topicText)"
+                "The data supports alternative explanations over \(topicText)",
+                "The data reveals unexpected correlations requiring further investigation"
             ]
             
         case .compareContrast:
@@ -373,12 +377,13 @@ final class LocalLLMService: ObservableObject {
                 "\(topicText) provides unique insights while building on foundational concepts",
                 "\(topicText) completely replaces all previous approaches",
                 "\(topicText) is largely redundant with existing methods",
-                "\(topicText) contradicts most established principles"
+                "\(topicText) contradicts most established principles",
+                "\(topicText) offers a parallel perspective with limited overlap to existing theories"
             ]
         }
         
         // Randomize correct answer position
-        let correctIndex = Int.random(in: 0..<4)
+        let correctIndex = Int.random(in: 0..<5)
         
         return (prompt, choices, correctIndex)
     }
@@ -433,7 +438,8 @@ final class LocalLLMService: ObservableObject {
                     "A fundamental concept that forms the basis of the subject",
                     "An advanced technique used in specialized applications",
                     "A deprecated approach no longer used",
-                    "An alternative methodology with limited applications"
+                    "An alternative methodology with limited applications",
+                    "A supplementary topic with minimal impact on core understanding"
                 ],
                 correctAnswer: "A fundamental concept that forms the basis of the subject",
                 explanation: "This concept is essential to understanding \(topicText) and serves as a foundation for more advanced topics in \(courseName).",

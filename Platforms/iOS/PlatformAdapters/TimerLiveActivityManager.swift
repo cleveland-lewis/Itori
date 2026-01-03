@@ -27,8 +27,9 @@ struct TimerLiveActivityAttributes: ActivityAttributes {
 final class IOSTimerLiveActivityManager: ObservableObject {
     private var activity: Activity<TimerLiveActivityAttributes>?
     private var lastUpdate: Date?
-    private let minUpdateInterval: TimeInterval = 1.0
+    private let minUpdateInterval: TimeInterval = 2.0  // Phase 3.3: Increased to 2 seconds for battery efficiency
     private var lastContentState: TimerLiveActivityAttributes.ContentState?
+    private var significantChangeThreshold: Int = 5  // Phase 3.3: Only update if remaining seconds changed by at least 5
 
     var isAvailable: Bool {
         if #available(iOS 16.1, *) {
@@ -122,10 +123,29 @@ final class IOSTimerLiveActivityManager: ObservableObject {
 
     @available(iOS 16.1, *)
     private func update(contentState: TimerLiveActivityAttributes.ContentState) async {
+        // Phase 3.3: Enhanced throttling logic
         let now = Date()
+        
+        // Time-based throttling
         if let last = lastUpdate, now.timeIntervalSince(last) < minUpdateInterval {
             return
         }
+        
+        // Significant change detection
+        if let lastState = lastContentState {
+            let remainingDiff = abs(contentState.remainingSeconds - lastState.remainingSeconds)
+            let isStatusChange = contentState.isRunning != lastState.isRunning
+            let isModeChange = contentState.isOnBreak != lastState.isOnBreak
+            
+            // Only update if:
+            // 1. Status changed (running/paused)
+            // 2. Mode changed (work/break)
+            // 3. Significant time change (>= threshold)
+            if !isStatusChange && !isModeChange && remainingDiff < significantChangeThreshold {
+                return
+            }
+        }
+        
         lastUpdate = now
         guard let live = activity else { return }
         if #available(iOS 16.2, *) {

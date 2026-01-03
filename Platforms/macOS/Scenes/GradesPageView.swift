@@ -488,7 +488,7 @@ struct GradesPageView: View {
 
     private var cardStroke: some View {
         RoundedRectangle(cornerRadius: cardCorner, style: .continuous)
-            .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+            .stroke(.separatorColor, lineWidth: 1)
     }
 }
 
@@ -537,7 +537,7 @@ struct OverallStatusCard: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                .stroke(.separatorColor, lineWidth: 1)
         )
     }
 
@@ -606,7 +606,7 @@ struct CourseGradeRow: View {
                             .font(.caption2.weight(.semibold))
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)
-                            .background(Capsule().fill(Color(nsColor: .controlBackgroundColor)))
+                            .background(Capsule().fill(.secondaryBackground))
                     }
                 }
             }
@@ -614,11 +614,11 @@ struct CourseGradeRow: View {
             .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(isSelected ? Color.accentColor.opacity(0.12) : Color(nsColor: .controlBackgroundColor))
+                    .fill(isSelected ? .accentQuaternary : .secondaryBackground)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .stroke(isScenarioHighlight ? Color.accentColor : Color(nsColor: .separatorColor), lineWidth: 1)
+                    .stroke(isScenarioHighlight ? Color.accentColor : .separatorColor, lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -633,7 +633,7 @@ struct CourseGradeRow: View {
     private var ring: some View {
         ZStack {
             Circle()
-                .stroke(Color.secondary.opacity(0.2), lineWidth: 6)
+                .stroke(.quaternary, lineWidth: 6)
                 .frame(width: 44, height: 44)
             if let pct = course.currentPercentage {
                 Circle()
@@ -794,11 +794,11 @@ struct GradeDetailCard: View {
             .frame(minHeight: 120)
             .background(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(Color(nsColor: .controlBackgroundColor))
+                    .fill(.secondaryBackground)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                    .stroke(.separatorColor, lineWidth: 1)
             )
         }
     }

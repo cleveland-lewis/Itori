@@ -264,7 +264,7 @@ struct ParsedAssignmentRow: View {
                             .font(.caption)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
-                            .background(Color.accentColor.opacity(0.2))
+                            .background(.accentTertiary)
                             .clipShape(RoundedRectangle(cornerRadius: 4))
                     }
                     
@@ -308,11 +308,11 @@ struct ParsedAssignmentRow: View {
         .padding(12)
         .background(
             RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(isApproved ? Color.accentColor.opacity(0.1) : Color.clear)
+                .fill(isApproved ? .accentQuaternary : Color.clear)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .strokeBorder(Color.secondary.opacity(0.2), lineWidth: 1)
+                .strokeBorder(.quaternary, lineWidth: 1)
         )
     }
     

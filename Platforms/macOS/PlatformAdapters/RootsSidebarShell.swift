@@ -144,7 +144,7 @@ struct SidebarColumn: View {
         VStack(alignment: .leading, spacing: 8) {
             // App header
             HStack {
-                Text("Roots")
+                Text("Itori")
                     .font(.title2.weight(.semibold))
                 
                 Spacer()

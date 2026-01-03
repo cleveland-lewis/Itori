@@ -252,7 +252,8 @@ final class AlgorithmicTestGenerator: ObservableObject {
                 correctAnswer,
                 "An unrelated concept from a different field",
                 "A superficial memorization approach",
-                "A tangential application without depth"
+                "A tangential application without depth",
+                "A commonly confused misconception about the topic"
             ],
             correctAnswer: correctAnswer,
             explanation: explanation,

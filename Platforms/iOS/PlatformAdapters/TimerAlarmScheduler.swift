@@ -274,43 +274,44 @@ final class NotificationFallbackScheduler: TimerAlarmScheduling {
     }
 }
 
-
-#if canImport(AlarmKit)
-    private func alarmID(for id: String) -> UUID {
-        if let existing = scheduledIDs[id] { return existing }
-        let newID = UUID()
-        scheduledIDs[id] = newID
-        return newID
-    }
-
-    private func alarmPresentation(title: String) -> AlarmPresentation {
-        let stop = AlarmButton(text: LocalizedStringResource(stringLiteral: NSLocalizedString("alarm.stop", comment: "Stop")), textColor: .white, systemImageName: "stop.fill")
-        let pause = AlarmButton(text: LocalizedStringResource(stringLiteral: NSLocalizedString("alarm.pause", comment: "Pause")), textColor: .white, systemImageName: "pause.fill")
-        let resume = AlarmButton(text: LocalizedStringResource(stringLiteral: NSLocalizedString("alarm.resume", comment: "Resume")), textColor: .white, systemImageName: "play.fill")
-
-        let alert = AlarmPresentation.Alert(
-            title: LocalizedStringResource(stringLiteral: title),
-            stopButton: stop,
-            secondaryButton: nil,
-            secondaryButtonBehavior: nil
-        )
-        let countdown = AlarmPresentation.Countdown(
-            title: LocalizedStringResource(stringLiteral: title),
-            pauseButton: pause
-        )
-        let paused = AlarmPresentation.Paused(
-            title: LocalizedStringResource(stringLiteral: NSLocalizedString("alarm.paused", comment: "Paused")),
-            resumeButton: resume
-        )
-        return AlarmPresentation(alert: alert, countdown: countdown, paused: paused)
-    }
-#endif
-}
-
-#if canImport(AlarmKit)
-private struct TimerAlarmMetadata: AlarmMetadata, Codable, Hashable, Sendable {
-    var mode: String
-}
-#endif
+// TODO: Restore AlarmKit integration
+// #if canImport(AlarmKit)
+//     private func alarmID(for id: String) -> UUID {
+//         if let existing = scheduledIDs[id] { return existing }
+//         let newID = UUID()
+//         scheduledIDs[id] = newID
+//         return newID
+//     }
+// 
+//     private func alarmPresentation(title: String) -> AlarmPresentation {
+//         let stop = AlarmButton(text: LocalizedStringResource(stringLiteral: NSLocalizedString("alarm.stop", comment: "Stop")), textColor: .white, systemImageName: "stop.fill")
+//         let pause = AlarmButton(text: LocalizedStringResource(stringLiteral: NSLocalizedString("alarm.pause", comment: "Pause")), textColor: .white, systemImageName: "pause.fill")
+//         let resume = AlarmButton(text: LocalizedStringResource(stringLiteral: NSLocalizedString("alarm.resume", comment: "Resume")), textColor: .white, systemImageName: "play.fill")
+// 
+//         let alert = AlarmPresentation.Alert(
+//             title: LocalizedStringResource(stringLiteral: title),
+//             stopButton: stop,
+//             secondaryButton: nil,
+//             secondaryButtonBehavior: nil
+//         )
+//         let countdown = AlarmPresentation.Countdown(
+//             title: LocalizedStringResource(stringLiteral: title),
+//             pauseButton: pause
+//         )
+//         let paused = AlarmPresentation.Paused(
+//             title: LocalizedStringResource(stringLiteral: NSLocalizedString("alarm.paused", comment: "Paused")),
+//             resumeButton: resume
+//         )
+//         return AlarmPresentation(alert: alert, countdown: countdown, paused: paused)
+//     }
+// #endif
+// }
+// 
+// TODO: Restore AlarmKit metadata
+// #if canImport(AlarmKit)
+// private struct TimerAlarmMetadata: AlarmMetadata, Codable, Hashable, Sendable {
+//     var mode: String
+// }
+// #endif
 
 #endif // os(iOS)

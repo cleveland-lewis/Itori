@@ -241,7 +241,7 @@ struct IntegrationCard: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .strokeBorder(Color(nsColor: .separatorColor).opacity(0.2), lineWidth: 0.5)
+                .strokeBorder(.separatorColor.opacity(0.2), lineWidth: 0.5)
         )
     }
 }

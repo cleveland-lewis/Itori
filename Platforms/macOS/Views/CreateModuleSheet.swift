@@ -49,7 +49,7 @@ struct CreateModuleSheet: View {
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(Color(nsColor: .controlBackgroundColor).opacity(0.3))
+                    .fill(.secondaryBackground.opacity(0.3))
             )
             
             Spacer()

@@ -1063,7 +1063,7 @@ private struct MonthCalendarSplitView: View {
                                 .buttonStyle(.plain)
                                 .background(
                                     RoundedRectangle(cornerRadius: DesignSystem.Corners.pill, style: .continuous)
-                                        .fill(event.id == selectedEvent?.id ? Color.accentColor.opacity(0.1) : Color.clear)
+                                        .fill(event.id == selectedEvent?.id ? .accentQuaternary : Color.clear)
                                 )
                             }
                         }
@@ -1349,7 +1349,7 @@ private struct WeekCalendarView: View {
                 ForEach(placeholders) { block in
                     let yOffset = CGFloat(block.startHour - 6) * hourHeight
                     RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                        .fill(Color.accentColor.opacity(0.2))
+                        .fill(.accentTertiary)
                         .overlay(
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(block.title).font(.caption.weight(.semibold))
@@ -1378,7 +1378,7 @@ private struct WeekCalendarView: View {
                 .frame(width: 38, height: 38)
                 .background(
                     Circle()
-                        .fill(isToday ? Color.accentColor.opacity(0.9) : Color(nsColor: .controlBackgroundColor).opacity(0.08))
+                        .fill(isToday ? Color.accentColor.opacity(0.9) : .secondaryBackground.opacity(0.08))
                 )
                 .foregroundColor(isToday ? .white : .primary.opacity(0.8))
         }
@@ -1493,7 +1493,7 @@ private struct EventRow: View {
         .padding(.vertical, 10)
         .background(
             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                .fill(isHovered ? Color(nsColor: .controlBackgroundColor).opacity(0.15) : Color.clear)
+                .fill(isHovered ? .secondaryBackground.opacity(0.15) : Color.clear)
         )
         .onHover { hovering in
             withAnimation(DesignSystem.Motion.snappyEase) {
@@ -1893,7 +1893,7 @@ private struct EventChipsRow: View {
                             .padding(.vertical, 8)
                             .background(
                                 RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                    .fill(Color(nsColor: .controlBackgroundColor).opacity(0.06))
+                                    .fill(.secondaryBackground.opacity(0.06))
                             )
                         }
                     }

@@ -111,7 +111,7 @@ struct GradesAnalyticsView: View {
             .foregroundStyle(.secondary)
         }
         .padding()
-        .background(Color.accentColor.opacity(0.1))
+        .background(.accentQuaternary)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .overlay(
             RoundedRectangle(cornerRadius: 12)

@@ -728,7 +728,9 @@ struct IOSCalendarView: View {
 struct IOSPracticeView: View {
     @StateObject private var practiceStore = PracticeTestStore.shared
     @StateObject private var scheduledTestsStore = ScheduledTestsStore.shared
+    @EnvironmentObject private var coursesStore: CoursesStore
     @State private var showingScheduledTests = false
+    @State private var showingGenerateTest = false
     
     var body: some View {
         NavigationStack {
@@ -772,18 +774,36 @@ struct IOSPracticeView: View {
                     }
                     .buttonStyle(.plain)
                     
-                    IOSInfoCard(
-                        title: "Practice Sessions",
-                        subtitle: "Warmups, drills, reviews",
-                        systemImage: "list.clipboard",
-                        detail: "Build short, focused practice loops."
-                    )
-                    IOSInfoCard(
-                        title: "Track Progress",
-                        subtitle: "Stay consistent",
-                        systemImage: "chart.line.uptrend.xyaxis",
-                        detail: "Log repetitions and streaks over time."
-                    )
+                    // Practice Tests Section
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text("Practice Tests")
+                                .font(.headline)
+                            Spacer()
+                            Button {
+                                showingGenerateTest = true
+                            } label: {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.title2)
+                                    .foregroundStyle(.blue)
+                            }
+                        }
+                        
+                        if practiceStore.isGenerating {
+                            generatingCard
+                        } else if let currentTest = practiceStore.currentTest {
+                            currentTestCard(currentTest)
+                        } else if practiceStore.tests.isEmpty {
+                            emptyTestsCard
+                        } else {
+                            recentTestsList
+                        }
+                    }
+                    
+                    // Statistics Card
+                    if practiceStore.summary.totalTests > 0 {
+                        statisticsCard
+                    }
                 }
                 .padding(20)
             }
@@ -792,7 +812,406 @@ struct IOSPracticeView: View {
             .sheet(isPresented: $showingScheduledTests) {
                 IOSScheduledTestsView()
             }
+            .sheet(isPresented: $showingGenerateTest) {
+                IOSPracticeTestGeneratorView(store: practiceStore)
+                    .environmentObject(coursesStore)
+            }
         }
+    }
+    
+    // MARK: - Generating Card
+    
+    private var generatingCard: some View {
+        VStack(spacing: 16) {
+            ProgressView()
+                .scaleEffect(1.2)
+            
+            VStack(spacing: 4) {
+                Text("Generating Test")
+                    .font(.headline)
+                Text("Creating questions with AI...")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(24)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Color(uiColor: .secondarySystemGroupedBackground))
+        )
+    }
+    
+    // MARK: - Current Test Card
+    
+    private func currentTestCard(_ test: PracticeTest) -> some View {
+        Group {
+            switch test.status {
+            case .ready:
+                readyTestCard(test)
+            case .inProgress:
+                inProgressTestCard(test)
+            case .submitted:
+                submittedTestCard(test)
+            case .failed:
+                failedTestCard(test)
+            default:
+                EmptyView()
+            }
+        }
+    }
+    
+    private func readyTestCard(_ test: PracticeTest) -> some View {
+        Button {
+            // Open test taking view
+            practiceStore.startTest(test.id)
+        } label: {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Image(systemName: "play.circle.fill")
+                        .font(.title)
+                        .foregroundStyle(.green)
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Ready to Start")
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+                        Text("\(test.courseName)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    Spacer()
+                }
+                
+                HStack {
+                    Label("\(test.questionCount) questions", systemImage: "questionmark.circle")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    
+                    Spacer()
+                    
+                    Text(test.difficulty.rawValue)
+                        .font(.caption)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(
+                            Capsule()
+                                .fill(Color.blue.opacity(0.15))
+                        )
+                        .foregroundStyle(.blue)
+                }
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color(uiColor: .secondarySystemGroupedBackground))
+            )
+        }
+        .buttonStyle(.plain)
+        .fullScreenCover(isPresented: Binding(
+            get: { test.status == .inProgress },
+            set: { _ in }
+        )) {
+            IOSPracticeTestTakingView(test: test, store: practiceStore)
+        }
+    }
+    
+    private func inProgressTestCard(_ test: PracticeTest) -> some View {
+        Button {
+            // Resume test
+        } label: {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Image(systemName: "arrow.clockwise.circle.fill")
+                        .font(.title)
+                        .foregroundStyle(.orange)
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("In Progress")
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+                        Text("\(test.courseName)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    Spacer()
+                }
+                
+                HStack {
+                    ProgressView(value: Double(test.answers.count), total: Double(test.questionCount))
+                        .tint(.orange)
+                    
+                    Text("\(test.answers.count)/\(test.questionCount)")
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color(uiColor: .secondarySystemGroupedBackground))
+            )
+        }
+        .buttonStyle(.plain)
+        .fullScreenCover(isPresented: Binding(
+            get: { test.status == .inProgress },
+            set: { _ in }
+        )) {
+            IOSPracticeTestTakingView(test: test, store: practiceStore)
+        }
+    }
+    
+    private func submittedTestCard(_ test: PracticeTest) -> some View {
+        Button {
+            // Show results
+        } label: {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    let score = test.score ?? 0
+                    let scoreColor: Color = score >= 0.9 ? .green : score >= 0.7 ? .blue : score >= 0.5 ? .orange : .red
+                    
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.title)
+                        .foregroundStyle(scoreColor)
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Completed")
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+                        Text("\(test.courseName)")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    Spacer()
+                    
+                    Text("\(Int(score * 100))%")
+                        .font(.title2.bold())
+                        .foregroundStyle(scoreColor)
+                }
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color(uiColor: .secondarySystemGroupedBackground))
+            )
+        }
+        .buttonStyle(.plain)
+        .fullScreenCover(isPresented: Binding(
+            get: { test.status == .submitted },
+            set: { _ in }
+        )) {
+            IOSPracticeTestResultsView(test: test, store: practiceStore)
+        }
+    }
+    
+    private func failedTestCard(_ test: PracticeTest) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.title)
+                    .foregroundStyle(.red)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Generation Failed")
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                    if let error = test.generationError {
+                        Text(error)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
+                }
+                
+                Spacer()
+            }
+            
+            Button {
+                Task {
+                    await practiceStore.retryGeneration(testId: test.id)
+                }
+            } label: {
+                Text("Retry")
+                    .font(.subheadline.bold())
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .fill(Color.blue)
+                    )
+                    .foregroundStyle(.white)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Color(uiColor: .secondarySystemGroupedBackground))
+        )
+    }
+    
+    // MARK: - Empty Tests Card
+    
+    private var emptyTestsCard: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "doc.text.magnifyingglass")
+                .font(.system(size: 48))
+                .foregroundStyle(.secondary)
+            
+            Text("No Practice Tests Yet")
+                .font(.headline)
+            
+            Text("Generate your first test to start practicing")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            
+            Button {
+                showingGenerateTest = true
+            } label: {
+                Text("Generate Test")
+                    .font(.subheadline.bold())
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 10)
+                    .background(
+                        Capsule()
+                            .fill(Color.blue)
+                    )
+                    .foregroundStyle(.white)
+            }
+            .buttonStyle(.plain)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(32)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Color(uiColor: .secondarySystemGroupedBackground))
+        )
+    }
+    
+    // MARK: - Recent Tests List
+    
+    private var recentTestsList: some View {
+        VStack(spacing: 8) {
+            ForEach(Array(practiceStore.tests.prefix(5)), id: \.id) { test in
+                recentTestRow(test)
+            }
+        }
+    }
+    
+    private func recentTestRow(_ test: PracticeTest) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: statusIcon(for: test.status))
+                .font(.title3)
+                .foregroundStyle(statusColor(for: test.status))
+                .frame(width: 32)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(test.courseName)
+                    .font(.subheadline.bold())
+                Text(formattedDate(test.createdAt))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            
+            Spacer()
+            
+            if test.status == .submitted, let score = test.score {
+                Text("\(Int(score * 100))%")
+                    .font(.subheadline.bold())
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color(uiColor: .secondarySystemGroupedBackground))
+        )
+        .onTapGesture {
+            practiceStore.currentTest = test
+        }
+    }
+    
+    // MARK: - Statistics Card
+    
+    private var statisticsCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Statistics")
+                .font(.headline)
+            
+            HStack(spacing: 16) {
+                statisticItem(
+                    value: "\(practiceStore.summary.totalTests)",
+                    label: "Tests",
+                    icon: "doc.text"
+                )
+                
+                statisticItem(
+                    value: "\(Int(practiceStore.summary.averageScore * 100))%",
+                    label: "Avg Score",
+                    icon: "chart.bar"
+                )
+                
+                statisticItem(
+                    value: "\(practiceStore.summary.totalQuestions)",
+                    label: "Questions",
+                    icon: "questionmark.circle"
+                )
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Color(uiColor: .secondarySystemGroupedBackground))
+        )
+    }
+    
+    private func statisticItem(value: String, label: String, icon: String) -> some View {
+        VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.title3)
+                .foregroundStyle(.blue)
+            
+            Text(value)
+                .font(.title3.bold())
+            
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+    }
+    
+    // MARK: - Helpers
+    
+    private func statusIcon(for status: PracticeTestStatus) -> String {
+        switch status {
+        case .generating: return "hourglass"
+        case .ready: return "play.circle"
+        case .inProgress: return "arrow.clockwise.circle"
+        case .submitted: return "checkmark.circle"
+        case .failed: return "exclamationmark.triangle"
+        }
+    }
+    
+    private func statusColor(for status: PracticeTestStatus) -> Color {
+        switch status {
+        case .generating: return .orange
+        case .ready: return .green
+        case .inProgress: return .blue
+        case .submitted: return .green
+        case .failed: return .red
+        }
+    }
+    
+    private func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
     }
 }
 

@@ -102,7 +102,7 @@ struct CoursesPageView: View {
             let sidebarWidth = isStacked ? width : max(240, width * ratios.0)
 
             ZStack {
-                Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
+                .primaryBackground.ignoresSafeArea()
 
                 if isStacked {
                     VStack(spacing: RootsSpacing.l) {
@@ -288,7 +288,7 @@ struct CoursesPageView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: RootsRadius.card, style: .continuous)
-                .fill(Color(nsColor: .controlBackgroundColor))
+                .fill(.secondaryBackground)
         )
     }
 
@@ -695,7 +695,7 @@ struct CourseSidebarRow: View {
                     .fill(
                         isSelected
                         ? Color.accentColor.opacity(0.14)
-                        : Color(nsColor: .controlBackgroundColor).opacity(0.12)
+                        : .secondaryBackground.opacity(0.12)
                     )
             )
             .overlay(
@@ -703,7 +703,7 @@ struct CourseSidebarRow: View {
                     .stroke(
                         isSelected
                         ? Color.accentColor.opacity(0.35)
-                        : Color(nsColor: .separatorColor).opacity(0.18),
+                        : .separatorColor.opacity(0.18),
                         lineWidth: isSelected ? 1.5 : 1
                     )
             )
@@ -777,7 +777,7 @@ struct CoursesPageDetailView: View {
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
-                        .background(Color(nsColor: .controlBackgroundColor).opacity(0.5))
+                        .background(.secondaryBackground.opacity(0.5))
                         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
                         .buttonStyle(.plain)
                 }
@@ -1003,7 +1003,7 @@ struct GradeChip: View {
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(.secondaryBackground)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
     }
 }
@@ -1014,7 +1014,7 @@ struct GradeRing: View {
     var body: some View {
         ZStack {
             Circle()
-                .stroke(Color(nsColor: .separatorColor).opacity(0.08), lineWidth: 6)
+                .stroke(.separatorColor.opacity(0.08), lineWidth: 6)
                 .frame(width: 64, height: 64)
 
             if let current = gradeInfo.currentPercentage {
@@ -1061,7 +1061,7 @@ struct ColorTagPicker: View {
                         .frame(width: 24, height: 24)
                         .overlay(
                             Circle()
-                                .stroke(selected == tag ? .accentColor : Color(nsColor: .separatorColor).opacity(0.12), lineWidth: selected == tag ? 3 : 1)
+                                .stroke(selected == tag ? .accentColor : .separatorColor.opacity(0.12), lineWidth: selected == tag ? 3 : 1)
                         )
                 }
                 .buttonStyle(.plain)

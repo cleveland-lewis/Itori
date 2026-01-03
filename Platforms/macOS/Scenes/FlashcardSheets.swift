@@ -39,7 +39,7 @@ struct AddCardSheet: View {
                         .font(.body)
                         .frame(minHeight: 100)
                         .scrollContentBackground(.hidden)
-                        .background(Color(nsColor: .textBackgroundColor))
+                        .background(.tertiaryBackground)
                         .cornerRadius(6)
                 }
                 
@@ -48,7 +48,7 @@ struct AddCardSheet: View {
                         .font(.body)
                         .frame(minHeight: 100)
                         .scrollContentBackground(.hidden)
-                        .background(Color(nsColor: .textBackgroundColor))
+                        .background(.tertiaryBackground)
                         .cornerRadius(6)
                 }
                 
@@ -135,7 +135,7 @@ struct EditCardSheet: View {
                         .font(.body)
                         .frame(minHeight: 100)
                         .scrollContentBackground(.hidden)
-                        .background(Color(nsColor: .textBackgroundColor))
+                        .background(.tertiaryBackground)
                         .cornerRadius(6)
                 }
                 
@@ -144,7 +144,7 @@ struct EditCardSheet: View {
                         .font(.body)
                         .frame(minHeight: 100)
                         .scrollContentBackground(.hidden)
-                        .background(Color(nsColor: .textBackgroundColor))
+                        .background(.tertiaryBackground)
                         .cornerRadius(6)
                 }
                 
@@ -377,7 +377,7 @@ struct ExportSheet: View {
                         .textSelection(.enabled)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(12)
-                        .background(Color(nsColor: .textBackgroundColor))
+                        .background(.tertiaryBackground)
                         .cornerRadius(8)
                 }
             }

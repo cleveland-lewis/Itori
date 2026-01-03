@@ -248,7 +248,7 @@ struct TimerPageView: View {
                             .padding(.vertical, 6)
                             .background(
                                 Capsule()
-                                    .fill(isSelected ? Color.accentColor.opacity(0.2) : Color(nsColor: .controlBackgroundColor))
+                                    .fill(isSelected ? .accentTertiary : .secondaryBackground)
                             )
                             .overlay(
                                 Capsule().stroke(DesignSystem.Colors.neutralLine(for: colorScheme), lineWidth: 1)
@@ -301,7 +301,7 @@ struct TimerPageView: View {
                 }
             }
             .padding(8)
-            .background(selectedActivityID == activity.id ? Color.accentColor.opacity(0.12) : Color(nsColor: .controlBackgroundColor))
+            .background(selectedActivityID == activity.id ? .accentQuaternary : .secondaryBackground)
             .cornerRadius(8)
         }
         .buttonStyle(.plain)
@@ -336,7 +336,7 @@ struct TimerPageView: View {
                 Spacer()
             }
             .padding(6)
-            .background(Color(nsColor: .controlBackgroundColor).opacity(0.3))
+            .background(.secondaryBackground.opacity(0.3))
             .cornerRadius(6)
         }
         .buttonStyle(.plain)
@@ -516,7 +516,7 @@ struct TimerPageView: View {
                     .padding(.vertical, 8)
                     .background(
                         Capsule()
-                            .fill(Color.accentColor.opacity(0.15))
+                            .fill(.accentQuaternary)
                     )
                     .transition(.scale.combined(with: .opacity))
                     .animation(.spring(response: 0.4, dampingFraction: 0.6), value: selectedActivityID)
@@ -547,7 +547,7 @@ struct TimerPageView: View {
                             HStack(spacing: 8) {
                                 ForEach(Array(0..<max(1, settings.pomodoroIterations)), id: \.self) { index in
                                     Circle()
-                                        .fill(index < completedPomodoroSessions ? Color.accentColor : Color.secondary.opacity(0.3))
+                                        .fill(index < completedPomodoroSessions ? Color.accentColor : .tertiary)
                                         .frame(width: 8, height: 8)
                                 }
                             }
@@ -839,7 +839,7 @@ struct TimerPageView: View {
     var body: some View {
         ScrollView {
             ZStack {
-                Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
+                .primaryBackground.ignoresSafeArea()
                 
                 VStack(spacing: 20) {
                     // Add topBar
@@ -974,7 +974,7 @@ private struct FocusWindowView: View {
                         HStack(spacing: 8) {
                             ForEach(Array(0..<max(1, pomodoroSessions)), id: \.self) { index in
                                 Circle()
-                                    .fill(index < completedPomodoroSessions ? accentColor : Color.secondary.opacity(0.3))
+                                    .fill(index < completedPomodoroSessions ? accentColor : .tertiary)
                                     .frame(width: 8, height: 8)
                             }
                         }
@@ -1084,7 +1084,7 @@ private struct FocusWindowView: View {
         .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color(nsColor: .controlBackgroundColor))
+                .fill(.secondaryBackground)
         )
     }
     

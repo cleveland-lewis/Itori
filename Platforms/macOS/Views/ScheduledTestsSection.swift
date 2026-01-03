@@ -14,39 +14,16 @@ struct ScheduledTestsSection: View {
     
     var body: some View {
         if !upcomingTests.isEmpty {
-            VStack(alignment: .leading, spacing: 16) {
-                // Header
-                HStack {
-                    Text("Scheduled Tests")
-                        .font(.title2.weight(.semibold))
-                    
-                    Spacer()
-                    
-                    Text("\(upcomingTests.count)")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(
-                            Capsule()
-                                .fill(Color.secondary.opacity(0.15))
-                        )
+            VStack(spacing: 12) {
+                ForEach(upcomingTests) { test in
+                    ScheduledTestRow(
+                        test: test,
+                        hasCompletedAttempt: store.hasCompletedAttempt(for: test.id),
+                        onStart: { onStartTest(test) }
+                    )
                 }
-                .padding(.horizontal)
-                
-                // Scheduled tests list
-                VStack(spacing: 12) {
-                    ForEach(upcomingTests) { test in
-                        ScheduledTestRow(
-                            test: test,
-                            hasCompletedAttempt: store.hasCompletedAttempt(for: test.id),
-                            onStart: { onStartTest(test) }
-                        )
-                    }
-                }
-                .padding(.horizontal)
             }
-            .padding(.vertical)
+            .padding(.horizontal)
         }
     }
 }
@@ -133,6 +110,27 @@ private struct ScheduledTestRow: View {
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.15)) {
                 isHovered = hovering
+            }
+        }
+        .contextMenu {
+            if canStart {
+                Button("Start Test") {
+                    onStart()
+                }
+            }
+            
+            Button("View Details") {
+                // Could open a detail sheet if implemented
+            }
+            
+            Divider()
+            
+            Button("Edit Schedule") {
+                // Could open an edit sheet if implemented
+            }
+            
+            Button("Delete Test", role: .destructive) {
+                // Could trigger deletion
             }
         }
     }

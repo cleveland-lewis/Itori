@@ -134,7 +134,7 @@ private struct ModuleRow: View {
             .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(isHovered ? Color.accentColor.opacity(0.08) : Color(nsColor: .controlBackgroundColor).opacity(0.5))
+                    .fill(isHovered ? Color.accentColor.opacity(0.08) : .secondaryBackground.opacity(0.5))
             )
         }
         .buttonStyle(.plain)
@@ -273,11 +273,11 @@ private struct FileRow: View {
                 .padding(.vertical, 6)
                 .background(
                     RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .fill(Color(nsColor: .controlBackgroundColor))
+                        .fill(.secondaryBackground)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 6, style: .continuous)
-                        .strokeBorder(Color.secondary.opacity(0.2), lineWidth: 0.5)
+                        .strokeBorder(.quaternary, lineWidth: 0.5)
                 )
             }
             .menuStyle(.borderlessButton)
@@ -287,7 +287,7 @@ private struct FileRow: View {
         .padding(.vertical, 10)
         .background(
             RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .fill(isHovered ? Color.accentColor.opacity(0.08) : Color(nsColor: .controlBackgroundColor).opacity(0.3))
+                .fill(isHovered ? Color.accentColor.opacity(0.08) : .secondaryBackground.opacity(0.3))
         )
         .onHover { hovering in
             isHovered = hovering

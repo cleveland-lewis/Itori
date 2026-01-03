@@ -205,7 +205,7 @@ struct TaskDependencyEditorView: View {
                 .foregroundStyle(.tertiary)
         }
         .padding(DesignSystem.Layout.padding.card)
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(.secondaryBackground)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Corners.small, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Corners.small, style: .continuous)

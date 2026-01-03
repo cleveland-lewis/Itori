@@ -68,7 +68,7 @@ struct DeckDetailView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(nsColor: .textBackgroundColor))
+        .background(.tertiaryBackground)
         .sheet(isPresented: $showingAddCard) {
             AddCardSheet(deck: deck)
         }
@@ -132,7 +132,7 @@ struct DeckDetailView: View {
             }
         }
         .padding(20)
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(.secondaryBackground)
     }
     
     // MARK: - Cards View
@@ -272,7 +272,7 @@ struct DeckDetailView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(Color(nsColor: .controlBackgroundColor))
+                .fill(.secondaryBackground)
         )
     }
 }
@@ -351,7 +351,7 @@ struct FlashcardRowView: View {
         .padding(.vertical, 12)
         .background(
             RoundedRectangle(cornerRadius: 8)
-                .fill(Color(nsColor: .controlBackgroundColor))
+                .fill(.secondaryBackground)
         )
         .contextMenu {
             Button {

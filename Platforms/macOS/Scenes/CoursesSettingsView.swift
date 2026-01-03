@@ -137,7 +137,7 @@ struct CourseSettingsRow: View {
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
-                            .background(Color.secondary.opacity(0.2), in: Capsule())
+                            .background(.quaternary, in: Capsule())
                     }
                 }
 

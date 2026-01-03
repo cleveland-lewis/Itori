@@ -192,7 +192,7 @@ struct IOSRootView: View {
                 }
             }
         }
-        .navigationTitle("Roots")
+        .navigationTitle("Itori")
         .listStyle(.sidebar)
     }
     

@@ -372,7 +372,7 @@ struct PlannerPageView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
+                .primaryBackground.ignoresSafeArea()
 
                 ScrollViewReader { proxy in
                     ScrollView(showsIndicators: false) {
@@ -483,7 +483,7 @@ private extension PlannerPageView {
                         .padding(.horizontal, 14)
                         .padding(.vertical, 10)
                         .frame(height: 38)
-                        .background(Color(nsColor: .controlBackgroundColor))
+                        .background(.secondaryBackground)
                         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                 }
                 .buttonStyle(.plain)
@@ -531,7 +531,7 @@ private extension PlannerPageView {
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 4)
-                        .background(Color(nsColor: .controlBackgroundColor))
+                        .background(.secondaryBackground)
                         .clipShape(Capsule())
                         .overlay(
                             Capsule().stroke(neutralLine.opacity(0.2), lineWidth: 1)
@@ -574,7 +574,7 @@ private extension PlannerPageView {
                         .stroke(neutralLine.opacity(0.8), lineWidth: 1)
                         .background(
                             RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
-                                .fill(Color(nsColor: .controlBackgroundColor).opacity(0.7))
+                                .fill(.secondaryBackground.opacity(0.7))
                         )
                         .frame(height: 34)
                         .overlay(
@@ -701,7 +701,7 @@ private extension PlannerPageView {
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 4)
-                        .background(Color(nsColor: .controlBackgroundColor))
+                        .background(.secondaryBackground)
                         .clipShape(Capsule())
                         .overlay(
                             Capsule().stroke(neutralLine.opacity(0.2), lineWidth: 1)
@@ -715,7 +715,7 @@ private extension PlannerPageView {
                         .padding(DesignSystem.Layout.spacing.small)
                         .background(
                             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                                .fill(Color(nsColor: .controlBackgroundColor))
+                                .fill(.secondaryBackground)
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
@@ -1253,7 +1253,7 @@ struct PlannerBlockRow: View {
         .frame(height: DesignSystem.Layout.rowHeight.medium)
         .background(
             RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
-                .fill(Color(nsColor: .controlBackgroundColor).opacity(isFixedEvent ? 0.95 : 0.85))
+                .fill(.secondaryBackground.opacity(isFixedEvent ? 0.95 : 0.85))
         )
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
@@ -1309,7 +1309,7 @@ struct PlannerTaskRow: View {
             .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(Color(nsColor: .controlBackgroundColor))
+                    .fill(.secondaryBackground)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)

@@ -381,7 +381,7 @@ struct AssignmentsPageView: View {
                 .fill(Color(nsColor: NSColor.alternatingContentBackgroundColors[0]).opacity(0.85))
                 .overlay(
                     RoundedRectangle(cornerRadius: DesignSystem.Corners.card, style: .continuous)
-                        .stroke(Color(nsColor: .separatorColor).opacity(0.2), lineWidth: 1)
+                        .stroke(.separatorColor.opacity(0.2), lineWidth: 1)
                 )
         )
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -888,7 +888,7 @@ struct AssignmentsPageRow: View {
                             .foregroundStyle(.primary)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 2)
-                            .background(Color(nsColor: .controlBackgroundColor).opacity(0.95))
+                            .background(.secondaryBackground.opacity(0.95))
                             .overlay(
                                 Capsule()
                                     .stroke(Color.accentColor.opacity(0.5), lineWidth: 1)
@@ -918,7 +918,7 @@ struct AssignmentsPageRow: View {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
-                    .stroke(Color(nsColor: .separatorColor).opacity(0.35), lineWidth: 1)
+                    .stroke(.separatorColor.opacity(0.35), lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -1036,11 +1036,11 @@ struct AssignmentsPageRow: View {
             .padding(.vertical, 4)
             .background(
                 Capsule()
-                    .fill(Color(nsColor: .controlBackgroundColor))
+                    .fill(.secondaryBackground)
             )
             .overlay(
                 Capsule()
-                    .stroke(Color(nsColor: .separatorColor), lineWidth: 1)
+                    .stroke(.separatorColor, lineWidth: 1)
             )
     }
 
@@ -1101,7 +1101,7 @@ struct AssignmentDetailPanel: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 6)
                 .background(
-                    Capsule().fill(Color(nsColor: .controlBackgroundColor))
+                    Capsule().fill(.secondaryBackground)
                 )
             Button {
                 onEdit(assignment)
@@ -1598,7 +1598,7 @@ private extension AssignmentsPageView {
                         .stroke(Color.accentColor.opacity(0.6), lineWidth: 1.2)
                         .background(
                             RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                .fill(Color.accentColor.opacity(0.12))
+                                .fill(.accentQuaternary)
                         )
                         .frame(width: rect.width, height: rect.height)
                         .position(x: rect.midX, y: rect.midY)

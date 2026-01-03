@@ -25,6 +25,17 @@ struct PracticeTestPageView: View {
                 testListView
             }
         }
+        .practiceTestContextMenu(
+            practiceStore: practiceStore,
+            scheduledTestsStore: scheduledTestsStore,
+            onNewTest: {
+                showingGenerator = true
+            },
+            onRefreshStats: {
+                // Force refresh of statistics
+                practiceStore.objectWillChange.send()
+            }
+        )
         .alert("Start Scheduled Test", isPresented: Binding(
             get: { selectedScheduledTest != nil },
             set: { if !$0 { selectedScheduledTest = nil } }
@@ -49,38 +60,67 @@ struct PracticeTestPageView: View {
     private var testListView: some View {
         ScrollView {
             VStack(spacing: 16) {
-                // New Practice Test button at top
-                HStack {
-                    Spacer()
-                    Button {
-                        showingGenerator = true
-                    } label: {
-                        Label("New Practice Test", systemImage: "plus.circle.fill")
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
-                .padding(.horizontal)
-                .padding(.top)
-                .sheet(isPresented: $showingGenerator) {
-                    PracticeTestGeneratorView(store: practiceStore)
+                // Statistics at the top (if we have tests)
+                if !practiceStore.tests.isEmpty {
+                    statsCardsView
+                        .padding(.top)
                 }
                 
-                // Scheduled Tests Section (NEW)
-                ScheduledTestsSection(
-                    store: scheduledTestsStore,
-                    onStartTest: { test in
-                        selectedScheduledTest = test
-                    }
-                )
+                // Scheduled Tests Section with integrated header
+                scheduledTestsSectionWithHeader
                 
                 if practiceStore.tests.isEmpty {
                     emptyStateView
                 } else {
-                    statsCardsView
                     testHistoryView
                 }
             }
             .padding()
+        }
+        .sheet(isPresented: $showingGenerator) {
+            PracticeTestGeneratorView(store: practiceStore)
+        }
+    }
+    
+    private var scheduledTestsSectionWithHeader: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // Header with count badge on left and New Test button on right
+            HStack {
+                HStack(spacing: 8) {
+                    Text("Scheduled Tests")
+                        .font(.title2.weight(.semibold))
+                    
+                    if !scheduledTestsStore.scheduledTests.filter({ $0.status != .archived }).isEmpty {
+                        Text("\(scheduledTestsStore.scheduledTests.filter({ $0.status != .archived }).count)")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(
+                                Capsule()
+                                    .fill(Color.secondary.opacity(0.15))
+                            )
+                    }
+                }
+                
+                Spacer()
+                
+                Button {
+                    showingGenerator = true
+                } label: {
+                    Label("New Practice Test", systemImage: "plus.circle.fill")
+                }
+                .buttonStyle(.borderedProminent)
+            }
+            .padding(.horizontal)
+            
+            // Scheduled tests list
+            ScheduledTestsSection(
+                store: scheduledTestsStore,
+                onStartTest: { test in
+                    selectedScheduledTest = test
+                }
+            )
         }
     }
     
@@ -214,6 +254,38 @@ struct PracticeTestPageView: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(.plain)
+        .contextMenu {
+            Button("Open Test") {
+                practiceStore.currentTest = test
+            }
+            
+            if test.status == .submitted {
+                Button("Review Answers") {
+                    practiceStore.currentTest = test
+                }
+            }
+            
+            if test.status == .ready {
+                Button("Start Test") {
+                    practiceStore.startTest(test.id)
+                    practiceStore.currentTest = test
+                }
+            }
+            
+            if test.status == .failed {
+                Button("Retry Generation") {
+                    Task {
+                        await practiceStore.retryGeneration(testId: test.id)
+                    }
+                }
+            }
+            
+            Divider()
+            
+            Button("Delete Test", role: .destructive) {
+                practiceStore.deleteTest(test.id)
+            }
+        }
     }
     
     private func statusIcon(for status: PracticeTestStatus) -> some View {

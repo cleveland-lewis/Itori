@@ -33,7 +33,7 @@ struct ModuleDetailView: View {
                             .frame(width: 40, height: 40)
                             .background(
                                 Circle()
-                                    .fill(Color.accentColor.opacity(0.15))
+                                    .fill(.accentQuaternary)
                             )
                         
                         VStack(alignment: .leading, spacing: 4) {
@@ -145,7 +145,7 @@ private struct ModuleFileRow: View {
                     .frame(width: 40, height: 40)
                     .background(
                         RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .fill(Color(nsColor: .controlBackgroundColor).opacity(0.5))
+                            .fill(.secondaryBackground.opacity(0.5))
                     )
                 
                 VStack(alignment: .leading, spacing: 4) {
@@ -162,7 +162,7 @@ private struct ModuleFileRow: View {
                             .padding(.vertical, 2)
                             .background(
                                 Capsule()
-                                    .fill(Color(nsColor: .controlBackgroundColor).opacity(0.5))
+                                    .fill(.secondaryBackground.opacity(0.5))
                             )
                         
                         Text(file.createdAt, style: .date)

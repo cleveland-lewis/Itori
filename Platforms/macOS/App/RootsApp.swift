@@ -241,6 +241,7 @@ struct RootsApp: App {
             )
         }
         .commands {
+            RootsCommands()
             AppCommands()
             SettingsCommands(showSettings: {
                 settingsCoordinator.show()

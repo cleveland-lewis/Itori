@@ -216,7 +216,7 @@ struct TimerPageView_Simple: View {
                             .padding(.vertical, 6)
                             .background(
                                 Capsule()
-                                    .fill(isSelected ? Color.accentColor.opacity(0.2) : Color.gray.opacity(0.1))
+                                    .fill(isSelected ? .accentTertiary : Color.gray.opacity(0.1))
                             )
                     }
                     .buttonStyle(.plain)
@@ -266,7 +266,7 @@ struct TimerPageView_Simple: View {
                 }
             }
             .padding(8)
-            .background(selectedActivityID == activity.id ? Color.accentColor.opacity(0.1) : Color.clear)
+            .background(selectedActivityID == activity.id ? .accentQuaternary : Color.clear)
             .cornerRadius(6)
         }
         .buttonStyle(.plain)
@@ -366,7 +366,7 @@ struct TimerPageView_Simple: View {
                         HStack(spacing: 8) {
                             ForEach(Array(0..<max(1, settings.pomodoroIterations)), id: \.self) { index in
                                 Circle()
-                                    .fill(index < completedPomodoroSessions ? Color.accentColor : Color.secondary.opacity(0.3))
+                                    .fill(index < completedPomodoroSessions ? Color.accentColor : .tertiary)
                                     .frame(width: 8, height: 8)
                             }
                         }
@@ -511,7 +511,7 @@ struct TimerPageView_Simple: View {
         // Phase 4.2: Add ZStack + Color (matching original structure)
         ScrollView {
             ZStack {
-                Color(nsColor: .windowBackgroundColor).ignoresSafeArea()
+                .primaryBackground.ignoresSafeArea()
                 
                 VStack(spacing: 20) {
                     #if DEBUG

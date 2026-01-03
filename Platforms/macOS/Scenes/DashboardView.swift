@@ -153,7 +153,7 @@ struct DashboardView: View {
                 .padding(.horizontal, responsivePadding(for: proxy.size.width))
             }
         }
-        .background(Color(nsColor: .windowBackgroundColor))
+        .background(.primaryBackground)
         .sheet(isPresented: $showAddAssignmentSheet) {
             AddAssignmentView(initialType: .homework) { task in
                 assignmentsStore.addTask(task)
@@ -676,7 +676,7 @@ struct DashboardView: View {
         .padding(.horizontal, 8)
         .background(
             RoundedRectangle(cornerRadius: 6)
-                .fill(Color(nsColor: .controlBackgroundColor).opacity(0))
+                .fill(.secondaryBackground.opacity(0))
         )
         .contentShape(Rectangle())
         .onHover { hovering in
@@ -1008,7 +1008,7 @@ struct DashboardView: View {
                     .padding(.vertical, 4)
                     .background(
                         Capsule()
-                            .fill(Color(nsColor: .controlBackgroundColor))
+                            .fill(.secondaryBackground)
                     )
             }
         }
@@ -1092,7 +1092,7 @@ struct DashboardView: View {
         .padding(.horizontal, DesignSystem.Spacing.small)
         .background(
             RoundedRectangle(cornerRadius: 6)
-                .fill(Color(nsColor: .controlBackgroundColor).opacity(0))
+                .fill(.secondaryBackground.opacity(0))
         )
         .contentShape(Rectangle())
         .onHover { hovering in
@@ -1942,7 +1942,7 @@ struct StaticMonthCalendarView: View {
                 Circle()
                     .fill(isToday ? Color.accentColor.opacity(0.85) : Color.clear)
                     .background(
-                        Circle().fill(Color(nsColor: .controlBackgroundColor).opacity(isToday ? 0.12 : 0.06))
+                        Circle().fill(.secondaryBackground.opacity(isToday ? 0.12 : 0.06))
                     )
             )
             .foregroundColor(isToday ? .white : .primary.opacity(0.7))

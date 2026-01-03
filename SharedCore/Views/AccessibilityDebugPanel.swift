@@ -95,7 +95,7 @@ struct AccessibilityDebugPanel: View {
             )
         }
         .padding()
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(.secondaryBackground)
     }
     
     // MARK: - Issues View
@@ -129,7 +129,7 @@ struct AccessibilityDebugPanel: View {
         }
         .padding(.vertical, 8)
         #if os(macOS)
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(.secondaryBackground)
         #else
         .background(Color(uiColor: .systemBackground))
         #endif
@@ -440,7 +440,7 @@ private struct FilterChip: View {
                 .font(.caption.bold())
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
-                .background(isSelected ? color.opacity(0.2) : Color(nsColor: .controlBackgroundColor))
+                .background(isSelected ? color.opacity(0.2) : .secondaryBackground)
                 .foregroundColor(isSelected ? color : .primary)
                 .cornerRadius(16)
         }
@@ -587,7 +587,7 @@ private struct DetailSection<Content: View>: View {
                 .foregroundColor(.secondary)
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(nsColor: .controlBackgroundColor))
+                .background(.secondaryBackground)
                 .cornerRadius(8)
         }
     }
@@ -623,7 +623,7 @@ private struct SettingRow: View {
                 .foregroundColor(.secondary)
         }
         .padding()
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(.secondaryBackground)
         .cornerRadius(8)
     }
 }
@@ -651,7 +651,7 @@ private struct QuickActionButton: View {
                     .foregroundColor(.secondary)
             }
             .padding()
-            .background(Color(nsColor: .controlBackgroundColor))
+            .background(.secondaryBackground)
             .cornerRadius(8)
         }
     }
@@ -672,7 +672,7 @@ private struct ChecklistItem: View {
             Spacer()
         }
         .padding()
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(.secondaryBackground)
         .cornerRadius(8)
     }
 }

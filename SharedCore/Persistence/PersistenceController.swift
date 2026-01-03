@@ -5,7 +5,7 @@ import Combine
 final class PersistenceController {
     static let shared = PersistenceController()
 
-    private let cloudKitContainerIdentifier = "iCloud.com.cwlewisiii.Roots"
+    private let cloudKitContainerIdentifier = "iCloud.com.cwlewisiii.Itori"
     var container: NSPersistentCloudKitContainer
     private var cancellables = Set<AnyCancellable>()
 
@@ -15,7 +15,7 @@ final class PersistenceController {
     private(set) var lastCloudKitStatusMessage: String? = nil
 
     init(inMemory: Bool = false) {
-        container = NSPersistentCloudKitContainer(name: "Roots")
+        container = NSPersistentCloudKitContainer(name: "Itori")
 
         var description = container.persistentStoreDescriptions.first
         if description == nil {

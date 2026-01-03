@@ -68,7 +68,7 @@ struct CalendarWeekView: View {
                         .frame(width: 32, height: 32)
                         .background(
                             Circle()
-                                .fill(calendar.isDateInToday(day) ? Color.accentColor.opacity(0.15) : Color.clear)
+                                .fill(calendar.isDateInToday(day) ? .accentQuaternary : Color.clear)
                         )
                 }
                 .frame(maxWidth: .infinity)

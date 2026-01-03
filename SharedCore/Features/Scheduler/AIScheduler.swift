@@ -73,8 +73,13 @@ struct AppTask: Codable, Equatable, Hashable {
     var sourceFingerprint: String?
     var notes: String?
     var needsReview: Bool = false  // Marks items that may be orphaned from source
+    
+    // Phase 4.1: Alarm reminder properties (iOS/iPadOS only)
+    var alarmDate: Date?               // When to fire the alarm reminder
+    var alarmEnabled: Bool = false     // Whether alarm is active
+    var alarmSound: String?            // Optional custom alarm sound identifier
 
-    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil, category: TaskType? = nil, dueTimeMinutes: Int? = nil, recurrence: RecurrenceRule? = nil, recurrenceSeriesID: UUID? = nil, recurrenceIndex: Int? = nil, calendarEventIdentifier: String? = nil, sourceUniqueKey: String? = nil, sourceFingerprint: String? = nil, notes: String? = nil, needsReview: Bool = false) {
+    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil, category: TaskType? = nil, dueTimeMinutes: Int? = nil, recurrence: RecurrenceRule? = nil, recurrenceSeriesID: UUID? = nil, recurrenceIndex: Int? = nil, calendarEventIdentifier: String? = nil, sourceUniqueKey: String? = nil, sourceFingerprint: String? = nil, notes: String? = nil, needsReview: Bool = false, alarmDate: Date? = nil, alarmEnabled: Bool = false, alarmSound: String? = nil) {
         self.id = id
         self.title = title
         self.courseId = courseId
@@ -101,6 +106,9 @@ struct AppTask: Codable, Equatable, Hashable {
         self.sourceFingerprint = sourceFingerprint
         self.notes = notes
         self.needsReview = needsReview
+        self.alarmDate = alarmDate
+        self.alarmEnabled = alarmEnabled
+        self.alarmSound = alarmSound
     }
 
     enum CodingKeys: String, CodingKey {
@@ -130,6 +138,9 @@ struct AppTask: Codable, Equatable, Hashable {
         case sourceFingerprint
         case notes
         case needsReview
+        case alarmDate           // Phase 4.1
+        case alarmEnabled        // Phase 4.1
+        case alarmSound          // Phase 4.1
     }
 
     init(from decoder: Decoder) throws {
@@ -175,6 +186,11 @@ struct AppTask: Codable, Equatable, Hashable {
         sourceFingerprint = try container.decodeIfPresent(String.self, forKey: .sourceFingerprint)
         notes = try container.decodeIfPresent(String.self, forKey: .notes)
         needsReview = try container.decodeIfPresent(Bool.self, forKey: .needsReview) ?? false
+        
+        // Phase 4.1: Decode alarm properties
+        alarmDate = try container.decodeIfPresent(Date.self, forKey: .alarmDate)
+        alarmEnabled = try container.decodeIfPresent(Bool.self, forKey: .alarmEnabled) ?? false
+        alarmSound = try container.decodeIfPresent(String.self, forKey: .alarmSound)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -205,6 +221,11 @@ struct AppTask: Codable, Equatable, Hashable {
         try container.encodeIfPresent(sourceFingerprint, forKey: .sourceFingerprint)
         try container.encodeIfPresent(notes, forKey: .notes)
         try container.encode(needsReview, forKey: .needsReview)
+        
+        // Phase 4.1: Encode alarm properties
+        try container.encodeIfPresent(alarmDate, forKey: .alarmDate)
+        try container.encode(alarmEnabled, forKey: .alarmEnabled)
+        try container.encodeIfPresent(alarmSound, forKey: .alarmSound)
     }
 
     func withCourseId(_ newCourseId: UUID?) -> AppTask {
@@ -233,7 +254,11 @@ struct AppTask: Codable, Equatable, Hashable {
             calendarEventIdentifier: calendarEventIdentifier,
             sourceUniqueKey: sourceUniqueKey,
             sourceFingerprint: sourceFingerprint,
-            notes: notes
+            notes: notes,
+            needsReview: needsReview,
+            alarmDate: alarmDate,
+            alarmEnabled: alarmEnabled,
+            alarmSound: alarmSound
         )
     }
 }

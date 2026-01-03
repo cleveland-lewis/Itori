@@ -211,7 +211,7 @@ struct PracticeTestResultsView: View {
             .padding(12)
             .background(
                 RoundedRectangle(cornerRadius: 10)
-                    .fill(selectedQuestionId == question.id ? Color.accentColor.opacity(0.2) : Color.clear)
+                    .fill(selectedQuestionId == question.id ? .accentTertiary : Color.clear)
             )
         }
         .buttonStyle(.plain)

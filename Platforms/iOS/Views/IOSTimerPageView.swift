@@ -681,6 +681,117 @@ struct IOSTimerPageView: View {
         viewModel.timerDuration = TimeInterval(settings.timerDurationMinutes * 60)
         viewModel.pomodoroMaxCycles = settings.pomodoroIterations
     }
+    
+    // MARK: - Phase 4.3: Tasks Section
+    
+    private var tasksSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text(NSLocalizedString("timer.tasks.title", comment: "Tasks"))
+                .font(.headline)
+            
+            tasksDueTodaySection
+            tasksDueThisWeekSection
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color(uiColor: .secondarySystemGroupedBackground))
+        )
+    }
+    
+    private var tasksDueTodaySection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Image(systemName: "calendar.badge.clock")
+                    .foregroundColor(.orange)
+                Text(NSLocalizedString("timer.tasks.dueToday", comment: "Due Today"))
+                    .font(.subheadline.weight(.medium))
+                Spacer()
+                if !tasksDueToday.isEmpty {
+                    Text("\(tasksDueToday.count)")
+                        .font(.caption.weight(.semibold))
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Capsule().fill(Color(uiColor: .tertiarySystemFill)))
+                }
+            }
+            
+            if tasksDueToday.isEmpty {
+                Text(NSLocalizedString("timer.tasks.noDueToday", comment: "No tasks due today"))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .padding(.leading, 28)
+            } else {
+                ForEach(tasksDueToday) { task in
+                    TaskCheckboxRow(task: task, onToggle: { toggleTaskCompletion($0) })
+                }
+            }
+        }
+    }
+    
+    private var tasksDueThisWeekSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Image(systemName: "calendar.badge.plus")
+                    .foregroundColor(.blue)
+                Text(NSLocalizedString("timer.tasks.dueThisWeek", comment: "Due This Week"))
+                    .font(.subheadline.weight(.medium))
+                Spacer()
+                if !tasksDueThisWeek.isEmpty {
+                    Text("\(tasksDueThisWeek.count)")
+                        .font(.caption.weight(.semibold))
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Capsule().fill(Color(uiColor: .tertiarySystemFill)))
+                }
+            }
+            
+            if tasksDueThisWeek.isEmpty {
+                Text(NSLocalizedString("timer.tasks.noDueThisWeek", comment: "No tasks due this week"))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .padding(.leading, 28)
+            } else {
+                ForEach(tasksDueThisWeek) { task in
+                    TaskCheckboxRow(task: task, onToggle: { toggleTaskCompletion($0) })
+                }
+            }
+        }
+    }
+    
+    // Task filtering
+    private var tasksDueToday: [AppTask] {
+        let today = Calendar.current.startOfDay(for: Date())
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
+        
+        return assignmentsStore.tasks
+            .filter { task in
+                guard let dueDate = task.due else { return false }
+                return dueDate >= today && dueDate < tomorrow && !task.isCompleted
+            }
+            .sorted { ($0.due ?? .distantFuture) < ($1.due ?? .distantFuture) }
+    }
+    
+    private var tasksDueThisWeek: [AppTask] {
+        let today = Calendar.current.startOfDay(for: Date())
+        let nextWeek = Calendar.current.date(byAdding: .weekOfYear, value: 1, to: today)!
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
+        
+        return assignmentsStore.tasks
+            .filter { task in
+                guard let dueDate = task.due else { return false }
+                return dueDate >= tomorrow && dueDate < nextWeek && !task.isCompleted
+            }
+            .sorted { ($0.due ?? .distantFuture) < ($1.due ?? .distantFuture) }
+    }
+    
+    private func toggleTaskCompletion(_ task: AppTask) {
+        var updatedTask = task
+        updatedTask.isCompleted.toggle()
+        assignmentsStore.updateTask(updatedTask)
+    }
 
 #if DEBUG
     private var debugSection: some View {

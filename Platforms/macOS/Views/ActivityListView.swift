@@ -97,7 +97,7 @@ struct ActivityListView: View {
                 .background(selected ? Color.accentColor.opacity(0.18) : Color.secondary.opacity(0.12))
                 .overlay(
                     RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                        .stroke(selected ? Color.accentColor.opacity(0.6) : Color(nsColor: .separatorColor).opacity(0.08), lineWidth: 1)
+                        .stroke(selected ? Color.accentColor.opacity(0.6) : .separatorColor.opacity(0.08), lineWidth: 1)
                 )
                 .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
         }

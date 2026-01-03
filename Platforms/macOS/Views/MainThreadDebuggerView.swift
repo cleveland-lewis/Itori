@@ -29,7 +29,7 @@ struct MainThreadDebuggerView: View {
                     .padding(.vertical, 16)
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(nsColor: .controlBackgroundColor))
+                            .fill(.secondaryBackground)
                             .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 5)
                     )
                     .padding(.bottom, 50)
@@ -94,7 +94,7 @@ struct MainThreadDebuggerView: View {
                 }
             }
             .padding()
-            .background(Color(nsColor: .controlBackgroundColor))
+            .background(.secondaryBackground)
             
             Divider()
             
@@ -149,7 +149,7 @@ struct MainThreadDebuggerView: View {
                     .padding(.vertical, 16)
                     .background(
                         RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(nsColor: .controlBackgroundColor))
+                            .fill(.secondaryBackground)
                             .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 5)
                     )
                     .padding(.bottom, 50)
@@ -198,7 +198,7 @@ struct MainThreadDebuggerView: View {
             )
         }
         .padding()
-        .background(Color(nsColor: .controlBackgroundColor).opacity(0.5))
+        .background(.secondaryBackground.opacity(0.5))
     }
     
     private var eventsSection: some View {
@@ -215,14 +215,14 @@ struct MainThreadDebuggerView: View {
                 }
                 .padding(.horizontal)
                 .padding(.vertical, 8)
-                .background(Color(nsColor: .controlBackgroundColor))
+                .background(.secondaryBackground)
                 
                 ScrollViewReader { proxy in
                     ScrollView {
                         LazyVStack(spacing: 1) {
                             ForEach(debugger.events.reversed()) { event in
                                 eventRow(event)
-                                    .background(selectedEvent?.id == event.id ? Color.accentColor.opacity(0.2) : Color.clear)
+                                    .background(selectedEvent?.id == event.id ? .accentTertiary : Color.clear)
                                     .onTapGesture {
                                         selectedEvent = event
                                     }
@@ -251,7 +251,7 @@ struct MainThreadDebuggerView: View {
                         .foregroundColor(.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(nsColor: .controlBackgroundColor).opacity(0.3))
+                .background(.secondaryBackground.opacity(0.3))
             }
         }
     }
@@ -279,7 +279,7 @@ struct MainThreadDebuggerView: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 6)
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(.secondaryBackground)
     }
     
     private func eventDetailView(_ event: MainThreadDebugger.DebugEvent) -> some View {
@@ -330,7 +330,7 @@ struct MainThreadDebuggerView: View {
                         }
                         .padding(8)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color(nsColor: .controlBackgroundColor))
+                        .background(.secondaryBackground)
                         .cornerRadius(6)
                     }
                 }
@@ -339,7 +339,7 @@ struct MainThreadDebuggerView: View {
             }
             .padding()
         }
-        .background(Color(nsColor: .windowBackgroundColor))
+        .background(.primaryBackground)
     }
     
     private func metricCard(icon: String, title: String, value: String, color: Color) -> some View {
@@ -358,7 +358,7 @@ struct MainThreadDebuggerView: View {
         }
         .frame(maxWidth: .infinity)
         .padding()
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(.secondaryBackground)
         .cornerRadius(8)
     }
     

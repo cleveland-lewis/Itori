@@ -83,7 +83,7 @@ struct StudySessionView: View {
             }
         }
         .padding(20)
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(.secondaryBackground)
     }
     
     // MARK: - Card View
@@ -92,7 +92,7 @@ struct StudySessionView: View {
         VStack(spacing: 0) {
             // Card content
             ZStack {
-                Color(nsColor: .textBackgroundColor)
+                .tertiaryBackground
                 
                 VStack(spacing: 24) {
                     Spacer()
@@ -140,7 +140,7 @@ struct StudySessionView: View {
                 
                 ratingButtons(for: card)
                     .padding(20)
-                    .background(Color(nsColor: .controlBackgroundColor))
+                    .background(.secondaryBackground)
             }
         }
     }

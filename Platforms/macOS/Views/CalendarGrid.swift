@@ -118,7 +118,7 @@ private struct GridDayCell: View {
                     Circle()
                         .fill(
                             isSelected ? Color.accentColor :
-                            isToday ? Color.accentColor.opacity(0.12) :
+                            isToday ? .accentQuaternary :
                             Color.clear
                         )
                 )

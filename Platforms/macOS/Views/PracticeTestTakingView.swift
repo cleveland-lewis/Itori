@@ -155,7 +155,7 @@ struct PracticeTestTakingView: View {
             .padding(8)
             .background(
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(currentQuestionIndex == index ? Color.accentColor.opacity(0.2) : Color.clear)
+                    .fill(currentQuestionIndex == index ? .accentTertiary : Color.clear)
             )
         }
         .buttonStyle(.plain)

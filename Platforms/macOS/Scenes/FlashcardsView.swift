@@ -174,7 +174,7 @@ struct FlashcardsView: View {
         }
         .padding(40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(nsColor: .textBackgroundColor))
+        .background(.tertiaryBackground)
     }
 }
 
@@ -189,7 +189,7 @@ struct CourseCardView: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     Circle()
-                        .fill(Color.blue.opacity(0.2))
+                        .fill(.blue.tertiary)
                         .frame(width: 40, height: 40)
                         .overlay {
                             Image(systemName: "book.fill")
@@ -216,11 +216,11 @@ struct CourseCardView: View {
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(nsColor: .controlBackgroundColor))
+            .background(.secondaryBackground)
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.secondary.opacity(0.2), lineWidth: 1)
+                    .stroke(.quaternary, lineWidth: 1)
             )
         }
         .buttonStyle(.plain)
@@ -247,7 +247,7 @@ struct DeckCardView: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
                     Circle()
-                        .fill(isSelected ? Color.accentColor : Color.secondary.opacity(0.2))
+                        .fill(isSelected ? Color.accentColor : .quaternary)
                         .frame(width: 40, height: 40)
                         .overlay {
                             Image(systemName: "rectangle.stack.fill")
@@ -290,11 +290,11 @@ struct DeckCardView: View {
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(isSelected ? Color.accentColor.opacity(0.1) : Color(nsColor: .controlBackgroundColor))
+            .background(isSelected ? .accentQuaternary : .secondaryBackground)
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Color.accentColor : Color.secondary.opacity(0.2), lineWidth: isSelected ? 2 : 1)
+                    .stroke(isSelected ? Color.accentColor : .quaternary, lineWidth: isSelected ? 2 : 1)
             )
         }
         .buttonStyle(.plain)
@@ -382,7 +382,7 @@ struct DeckRowView: View {
             HStack(spacing: 12) {
                 // Icon
                 Circle()
-                    .fill(isSelected ? Color.accentColor : Color.secondary.opacity(0.2))
+                    .fill(isSelected ? Color.accentColor : .quaternary)
                     .frame(width: 32, height: 32)
                     .overlay {
                         Image(systemName: "rectangle.stack.fill")
@@ -422,7 +422,7 @@ struct DeckRowView: View {
             .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(isSelected ? Color.accentColor.opacity(0.15) : Color.clear)
+                    .fill(isSelected ? .accentQuaternary : Color.clear)
             )
             .contentShape(Rectangle())
         }
