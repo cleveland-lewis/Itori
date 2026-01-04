@@ -493,7 +493,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage("roots.settings.calendarAccessGranted") var calendarAccessGranted: Bool = true
     
     // Starred tabs for iOS (max 5) - stored as comma-separated string
-    @AppStorage("roots.settings.starredTabsString") private var starredTabsString: String = "dashboard,calendar,timer,assignments,settings"
+    @AppStorage("roots.settings.starredTabsString") private var starredTabsString: String = "dashboard,calendar,timer,assignments"
     
     var starredTabsRaw: [String] {
         get {
@@ -1279,62 +1279,110 @@ final class AppSettingsModel: ObservableObject, Codable {
     }
 
     // MARK: - Persistence helpers
+    
+    // Version tracking for settings schema
+    private static let settingsSchemaVersion = 2 // Increment when adding/removing properties
+    private static let schemaVersionKey = "roots.settings.schemaVersion"
+    
     static func load() -> AppSettingsModel {
         // Note: Can't use LOG_SETTINGS here as it accesses AppSettingsModel.shared which may not be initialized
-        if UserDefaults.standard.bool(forKey: Keys.devModeEnabled) {
+        let devMode = UserDefaults.standard.bool(forKey: Keys.devModeEnabled)
+        if devMode {
             print("[AppSettings] Starting load...")
         }
+        
+        // Check schema version
+        let savedVersion = UserDefaults.standard.integer(forKey: schemaVersionKey)
+        if savedVersion != 0 && savedVersion != settingsSchemaVersion {
+            print("[AppSettings] Schema version changed (\(savedVersion) → \(settingsSchemaVersion)), clearing old settings")
+            UserDefaults.standard.removeObject(forKey: "roots.settings.appsettings")
+            UserDefaults.standard.set(settingsSchemaVersion, forKey: schemaVersionKey)
+            return AppSettingsModel()
+        }
+        
+        // Set current version if not set
+        if savedVersion == 0 {
+            UserDefaults.standard.set(settingsSchemaVersion, forKey: schemaVersionKey)
+        }
+        
         let key = "roots.settings.appsettings"
         
         guard let data = UserDefaults.standard.data(forKey: key) else {
-            if UserDefaults.standard.bool(forKey: Keys.devModeEnabled) {
+            if devMode {
                 print("[AppSettings] No saved data found, creating new instance")
             }
             return AppSettingsModel()
         }
         
-        let devMode = UserDefaults.standard.bool(forKey: Keys.devModeEnabled)
         if devMode {
             print("[AppSettings] Found saved data (\(data.count) bytes), attempting to decode...")
         }
         let decoder = JSONDecoder()
         
-        do {
-            if devMode {
-                print("[AppSettings] About to call decoder.decode()...")
+        // Add timeout protection for decode operation
+        let decodeResult: AppSettingsModel? = {
+            let semaphore = DispatchSemaphore(value: 0)
+            var result: AppSettingsModel?
+            var decodeError: Error?
+            
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    if devMode {
+                        print("[AppSettings] About to call decoder.decode()...")
+                    }
+                    let decoded = try decoder.decode(AppSettingsModel.self, from: data)
+                    if devMode {
+                        print("[AppSettings] Successfully decoded from UserDefaults")
+                    }
+                    result = decoded
+                } catch {
+                    decodeError = error
+                }
+                semaphore.signal()
             }
-            let decoded = try decoder.decode(AppSettingsModel.self, from: data)
-            if devMode {
-                print("[AppSettings] Successfully decoded from UserDefaults")
+            
+            // Wait max 5 seconds for decode
+            let timeout = DispatchTime.now() + .seconds(5)
+            if semaphore.wait(timeout: timeout) == .timedOut {
+                print("[AppSettings] ⚠️ Decode timeout after 5 seconds - data may be corrupted")
+                return nil
             }
+            
+            if let error = decodeError {
+                if let decodingError = error as? DecodingError {
+                    print("[AppSettings] ⚠️ DecodingError: \(decodingError)")
+                    if devMode {
+                        switch decodingError {
+                        case .keyNotFound(let key, let context):
+                            print("  - Missing key: \(key.stringValue) at \(context.codingPath)")
+                        case .typeMismatch(let type, let context):
+                            print("  - Type mismatch for \(type) at \(context.codingPath)")
+                        case .valueNotFound(let type, let context):
+                            print("  - Value not found for \(type) at \(context.codingPath)")
+                        case .dataCorrupted(let context):
+                            print("  - Data corrupted at \(context.codingPath)")
+                        @unknown default:
+                            print("  - Unknown decoding error")
+                        }
+                    }
+                } else {
+                    print("[AppSettings] ⚠️ Unexpected error: \(error)")
+                }
+                return nil
+            }
+            
+            return result
+        }()
+        
+        if let decoded = decodeResult {
             // Set up iCloud observer for decoded instance
             decoded.setupICloudObserver()
             return decoded
-        } catch let error as DecodingError {
-            // Always show decode errors as they are critical
-            print("[AppSettings] ⚠️ DecodingError: \(error)")
-            if devMode {
-                switch error {
-                case .keyNotFound(let key, let context):
-                    print("  - Missing key: \(key.stringValue) at \(context.codingPath)")
-                case .typeMismatch(let type, let context):
-                    print("  - Type mismatch for \(type) at \(context.codingPath)")
-                case .valueNotFound(let type, let context):
-                    print("  - Value not found for \(type) at \(context.codingPath)")
-                case .dataCorrupted(let context):
-                    print("  - Data corrupted at \(context.codingPath)")
-                @unknown default:
-                    print("  - Unknown decoding error")
-                }
-            }
-            print("[AppSettings] Clearing incompatible data and creating fresh instance")
-            UserDefaults.standard.removeObject(forKey: key)
-        } catch {
-            // Always show unexpected errors as they are critical
-            print("[AppSettings] ⚠️ Unexpected error: \(error)")
-            print("[AppSettings] Clearing data and creating fresh instance")
-            UserDefaults.standard.removeObject(forKey: key)
         }
+        
+        // Decode failed or timed out - clear and create fresh
+        print("[AppSettings] Clearing incompatible/corrupted data and creating fresh instance")
+        UserDefaults.standard.removeObject(forKey: key)
         
         return AppSettingsModel()
     }

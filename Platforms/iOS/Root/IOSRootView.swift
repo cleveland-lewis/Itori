@@ -16,7 +16,15 @@ struct IOSRootView: View {
     @Environment(\.colorScheme) private var colorScheme
     
     @State private var selectedTab: RootTab = .dashboard
+    @State private var selectedTabOrMore: TabSelection = .tab(.dashboard)
     @State private var columnVisibility: NavigationSplitViewVisibility = .automatic
+    @State private var showMoreMenu = false
+    @State private var moreMenuSelected = false
+    
+    private enum TabSelection: Hashable {
+        case tab(RootTab)
+        case more
+    }
     
     init() {
         _tabBarPrefs = StateObject(wrappedValue: TabBarPreferencesStore(settings: AppSettingsModel.shared))
@@ -125,18 +133,25 @@ struct IOSRootView: View {
     
     private var standardNavigationView: some View {
         NavigationStack(path: $navigation.path) {
-            TabView(selection: $selectedTab) {
+            TabView(selection: $selectedTabOrMore) {
                 ForEach(starredTabs, id: \.self) { tab in
                     IOSAppShell(title: tab.title) {
                         tabView(for: tab)
                     }
-                    .tag(tab)
+                    .tag(TabSelection.tab(tab))
                     .tabItem {
                         if let def = TabRegistry.definition(for: tab) {
                             Label(def.title, systemImage: def.icon)
                         }
                     }
                 }
+                
+                // More menu tab (rightmost position)
+                Color.clear
+                    .tag(TabSelection.more)
+                    .tabItem {
+                        Label(NSLocalizedString("iosroot.label.more", value: "More", comment: "More"), systemImage: "ellipsis.circle")
+                    }
             }
             .navigationDestination(for: IOSNavigationTarget.self) { destination in
                 IOSAppShell(title: destinationTitle(for: destination), hideNavigationButtons: false) {
@@ -148,9 +163,25 @@ struct IOSRootView: View {
             }
         }
         .toolbarBackground(.hidden, for: .navigationBar)
+        .sheet(isPresented: $showMoreMenu) {
+            moreMenuSheet
+        }
+        .onChange(of: selectedTabOrMore) { oldValue, newValue in
+            if case .more = newValue {
+                showMoreMenu = true
+                // Reset to previous tab
+                Task { @MainActor in
+                    try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+                    selectedTabOrMore = oldValue
+                }
+            } else if case .tab(let tab) = newValue {
+                selectedTab = tab
+            }
+        }
         .onChange(of: settings.enableFlashcards) { _, enabled in
             guard !enabled, selectedTab == .flashcards else { return }
             selectedTab = .dashboard
+            selectedTabOrMore = .tab(.dashboard)
             navigation.path = NavigationPath()
         }
     }
@@ -297,6 +328,51 @@ struct IOSRootView: View {
         switch destination {
         case .page(let page):
             return page.title
+        }
+    }
+    
+    // MARK: - More Menu
+    
+    private var moreMenuSheet: some View {
+        NavigationStack {
+            List {
+                ForEach(nonStarredTabs, id: \.self) { tab in
+                    Button {
+                        showMoreMenu = false
+                        // Navigate to the selected tab
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            navigation.open(page: AppPage.from(tab), starredTabs: starredTabs)
+                        }
+                    } label: {
+                        HStack {
+                            if let def = TabRegistry.definition(for: tab) {
+                                Label {
+                                    Text(def.title)
+                                        .foregroundColor(.primary)
+                                } icon: {
+                                    Image(systemName: def.icon)
+                                        .foregroundColor(.accentColor)
+                                        .frame(width: 28, height: 28)
+                                }
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("More Pages")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(NSLocalizedString("iosroot.button.done", value: "Done", comment: "Done")) {
+                        showMoreMenu = false
+                    }
+                }
+            }
         }
     }
     
