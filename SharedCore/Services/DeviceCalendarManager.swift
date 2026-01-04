@@ -45,7 +45,8 @@ final class DeviceCalendarManager: ObservableObject {
         // Check authorization before attempting to fetch
         guard authManager.isAuthorized else {
             authManager.logDeniedOnce(context: reason)
-            await MainActor.run {
+            await MainActor.run { [weak self] in
+                guard let self else { return }
                 self.events = []
                 self.lastRefreshAt = Date()
                 self.lastRefreshReason = "\(reason) - unauthorized"
@@ -70,7 +71,8 @@ final class DeviceCalendarManager: ObservableObject {
         let predicate = store.predicateForEvents(withStart: start, end: end, calendars: calendarsToFetch)
         let fetched = store.events(matching: predicate)
 
-        await MainActor.run {
+        await MainActor.run { [weak self] in
+            guard let self else { return }
             self.events = fetched
             self.lastRefreshAt = Date()
             self.lastRefreshReason = reason
@@ -81,7 +83,8 @@ final class DeviceCalendarManager: ObservableObject {
         // Check authorization before attempting to fetch
         guard authManager.isAuthorized else {
             authManager.logDeniedOnce(context: reason)
-            await MainActor.run {
+            await MainActor.run { [weak self] in
+                guard let self else { return }
                 self.events = []
                 self.lastRefreshAt = Date()
                 self.lastRefreshReason = "\(reason) - unauthorized"
@@ -102,7 +105,8 @@ final class DeviceCalendarManager: ObservableObject {
         let predicate = store.predicateForEvents(withStart: start, end: end, calendars: calendarsToFetch)
         let fetched = store.events(matching: predicate)
 
-        await MainActor.run {
+        await MainActor.run { [weak self] in
+            guard let self else { return }
             self.events = fetched
             self.lastRefreshAt = Date()
             self.lastRefreshReason = reason
@@ -111,7 +115,9 @@ final class DeviceCalendarManager: ObservableObject {
 
     func requestFullAccessIfNeeded() async -> Bool {
         let granted = await authManager.requestAccess(using: store)
-        await MainActor.run { self.isAuthorized = granted }
+        await MainActor.run { [weak self] in
+            self?.isAuthorized = granted
+        }
         return granted
     }
 
@@ -119,8 +125,8 @@ final class DeviceCalendarManager: ObservableObject {
         // Check authorization before attempting to fetch
         guard authManager.isAuthorized else {
             authManager.logDeniedOnce(context: "rangeRefresh")
-            await MainActor.run {
-                self.events = []
+            await MainActor.run { [weak self] in
+                self?.events = []
             }
             return
         }
@@ -142,8 +148,8 @@ final class DeviceCalendarManager: ObservableObject {
         let predicate = store.predicateForEvents(withStart: start, end: end, calendars: calendarsToFetch)
         let fetched = store.events(matching: predicate)
 
-        await MainActor.run {
-            self.events = fetched
+        await MainActor.run { [weak self] in
+            self?.events = fetched
         }
     }
 
