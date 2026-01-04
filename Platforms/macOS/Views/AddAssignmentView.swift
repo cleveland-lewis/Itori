@@ -77,7 +77,8 @@ struct AddAssignmentView: View {
     }
 
     private var isSaveDisabled: Bool {
-        title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || selectedCourseId == nil
+        // Only require title - course is now optional for personal tasks
+        title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     private var hasUnsavedChanges: Bool {
@@ -362,6 +363,12 @@ struct AddAssignmentView: View {
                 .buttonStyle(.bordered)
             } else {
                 Picker("Course", selection: $selectedCourseId) {
+                    // Add "Personal (No Course)" option
+                    Text("Personal (No Course)")
+                        .tag(Optional<UUID>(nil))
+                    
+                    Divider()
+                    
                     ForEach(coursesStore.currentSemesterCourses, id: \.id) { c in
                         Text("\(c.code) · \(c.title)").tag(Optional(c.id))
                     }

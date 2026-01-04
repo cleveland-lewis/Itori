@@ -91,6 +91,13 @@ public final class AIEngine: Sendable {
         // CRITICAL: Single Kill-Switch Gate for LLM Toggle Enforcement
         // If enableLLMAssistance is OFF, skip all provider logic and use fallback only
         if !AppSettingsModel.shared.enableLLMAssistance {
+            // Developer Mode: Log LLM suppression
+            LOG_DEV(.info, "LLM", "🚫 LLM assistance disabled - using fallback only", metadata: [
+                "port": P.id.rawValue,
+                "trigger": context.requestID.uuidString,
+                "reason": "user_setting_disabled"
+            ])
+            
             let inputHash = try Self.computeInputHash(
                 for: input,
                 excludedKeys: P.inputHashExcludedKeys,
@@ -113,11 +120,24 @@ public final class AIEngine: Sendable {
 
             // Execute fallback-only path (no provider selection, no network)
             guard P.supportsDeterministicFallback && fallback.canFallback(for: P.id) else {
+                LOG_DEV(.error, "LLM", "❌ No fallback available for port", metadata: [
+                    "port": P.id.rawValue,
+                    "supportsFallback": "\(P.supportsDeterministicFallback)"
+                ])
                 throw AIEngineError.policyDenied(reason: "llm_disabled_no_fallback:\(P.id.rawValue)")
             }
 
             AIEngine.healthMonitor.recordFallbackOnly()
+            
+            let fallbackStart = Date()
             var result = try await fallback.executeFallback(P.self, input: input, context: context)
+            let fallbackDuration = Date().timeIntervalSince(fallbackStart)
+            
+            LOG_DEV(.debug, "LLM", "Fallback completed (LLM disabled)", metadata: [
+                "port": P.id.rawValue,
+                "duration": String(format: "%.3fs", fallbackDuration)
+            ])
+            
             result = result.withMetadata(
                 AIResultMetadata(
                     inputHash: inputHash,
@@ -282,7 +302,23 @@ public final class AIEngine: Sendable {
     ) async throws -> AIResult<P.Output> {
         // Use fallback immediately
         usedFallback = true
+        
+        // Developer Mode: Log fallback execution
+        LOG_DEV(.info, "LLM", "🔄 Using deterministic fallback (no LLM)", metadata: [
+            "port": P.id.rawValue,
+            "reason": "fallback-first strategy",
+            "trigger": context.requestID.uuidString
+        ])
+        
+        let fallbackStart = Date()
         let result = try await fallback.executeFallback(P.self, input: input, context: context)
+        let fallbackDuration = Date().timeIntervalSince(fallbackStart)
+        
+        LOG_DEV(.debug, "LLM", "Fallback completed", metadata: [
+            "port": P.id.rawValue,
+            "duration": String(format: "%.3fs", fallbackDuration),
+            "deterministic": "true"
+        ])
         
         // Optionally enhance with provider in background (not implemented yet)
         // This would update future defaults without blocking current response
@@ -392,10 +428,53 @@ public final class AIEngine: Sendable {
             }
             #endif
             
+            // Developer Mode: Log LLM execution start
+            LOG_DEV(.info, "LLM", "🤖 Starting LLM request", metadata: [
+                "provider": provider.id.rawValue,
+                "port": P.id.rawValue,
+                "trigger": context.requestID.uuidString,
+                "privacy": "\(context.privacy)",
+                "inputSize": "\(finalInput.count) bytes",
+                "timestamp": "\(Date())"
+            ])
+            
             (outJSON, diag) = try await budget.execute {
                 try await provider.execute(port: P.id, inputJSON: finalInput, context: context)
             }
+            
+            let executionDuration = Date().timeIntervalSince(start)
+            
+            // Developer Mode: Log LLM execution completion  
+            LOG_DEV(.info, "LLM", "✅ LLM request completed", metadata: [
+                "provider": provider.id.rawValue,
+                "port": P.id.rawValue,
+                "duration": String(format: "%.3fs", executionDuration),
+                "outputSize": "\(outJSON.count) bytes",
+                "modelUsed": diag.modelUsed ?? "unknown",
+                "tokensUsed": diag.tokensUsed.map { "\($0)" } ?? "unknown",
+                "success": "true"
+            ])
+            
+            // Developer Mode: Log output preview (first 200 chars)
+            if let outputString = String(data: outJSON, encoding: .utf8) {
+                let preview = String(outputString.prefix(200))
+                LOG_DEV(.debug, "LLM", "Output preview", metadata: [
+                    "provider": provider.id.rawValue,
+                    "preview": preview + (outputString.count > 200 ? "..." : "")
+                ])
+            }
         } catch {
+            let executionDuration = Date().timeIntervalSince(start)
+            
+            // Developer Mode: Log LLM execution failure
+            LOG_DEV(.error, "LLM", "❌ LLM request failed", metadata: [
+                "provider": provider.id.rawValue,
+                "port": P.id.rawValue,
+                "duration": String(format: "%.3fs", executionDuration),
+                "error": "\(error)",
+                "willRetry": "false"
+            ])
+            
             providerReliability.recordProviderFailure(provider.id.rawValue)
             throw error
         }

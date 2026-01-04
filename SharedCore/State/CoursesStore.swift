@@ -15,8 +15,21 @@ final class CoursesStore: ObservableObject {
     @Published private(set) var courseFiles: [CourseFile] = []
     @Published private(set) var currentGPA: Double = 0
 
+    // MARK: - Active Semesters (Multi-semester support)
+    
+    @Published var activeSemesterIds: Set<UUID> = [] {
+        didSet {
+            persist()
+        }
+    }
+    
+    // Legacy support: currentSemesterId for backward compatibility
     @Published var currentSemesterId: UUID? {
         didSet {
+            // Migrate: if currentSemesterId is set, ensure it's in activeSemesterIds
+            if let id = currentSemesterId, !activeSemesterIds.contains(id) {
+                activeSemesterIds = [id]
+            }
             markCurrentSemester(currentSemesterId)
             persist()
         }
@@ -73,6 +86,7 @@ final class CoursesStore: ObservableObject {
 
     // MARK: - Public API
 
+    // Legacy single semester support
     var currentSemester: Semester? {
         guard let id = currentSemesterId else { return nil }
         return semesters.first(where: { $0.id == id && $0.deletedAt == nil })
@@ -82,17 +96,67 @@ final class CoursesStore: ObservableObject {
         guard let id = currentSemesterId else { return [] }
         return courses.filter { $0.semesterId == id }
     }
+    
+    
+    /// Toggle a semester's active state
+    func toggleActiveSemester(_ semester: Semester) {
+        if activeSemesterIds.contains(semester.id) {
+            activeSemesterIds.remove(semester.id)
+        } else {
+            activeSemesterIds.insert(semester.id)
+        }
+        
+        // Keep currentSemesterId in sync (use first active or nil)
+        if activeSemesterIds.isEmpty {
+            currentSemesterId = nil
+        } else if let current = currentSemesterId, !activeSemesterIds.contains(current) {
+            currentSemesterId = activeSemesterIds.first
+        } else if currentSemesterId == nil {
+            currentSemesterId = activeSemesterIds.first
+        }
+    }
+    
+    /// Set multiple active semesters at once
+    func setActiveSemesters(_ semesterIds: Set<UUID>) {
+        activeSemesterIds = semesterIds
+        
+        // Sync currentSemesterId
+        if activeSemesterIds.isEmpty {
+            currentSemesterId = nil
+        } else if let current = currentSemesterId, !activeSemesterIds.contains(current) {
+            currentSemesterId = activeSemesterIds.first
+        } else if currentSemesterId == nil {
+            currentSemesterId = activeSemesterIds.first
+        }
+    }
+    
+    /// Get courses for a specific semester
+    func courses(in semester: Semester) -> [Course] {
+        courses.filter { $0.semesterId == semester.id && !$0.isArchived }
+    }
+    
+    /// Get courses in active semesters only
+    func courses(activeOnly: Bool = false) -> [Course] {
+        if activeOnly {
+            return activeCourses
+        } else {
+            return courses.filter { !$0.isArchived }
+        }
+    }
 
     func addSemester(_ semester: Semester) {
         semesters.append(semester)
         if semester.isCurrent {
             currentSemesterId = semester.id
+            activeSemesterIds.insert(semester.id)
         }
         persist()
     }
 
     func setCurrentSemester(_ semester: Semester) {
         currentSemesterId = semester.id
+        // Ensure current semester is in active set
+        activeSemesterIds.insert(semester.id)
     }
 
     func toggleCurrentSemester(_ semester: Semester) {
@@ -156,8 +220,16 @@ final class CoursesStore: ObservableObject {
         courses.filter { $0.semesterId == semester.id }
     }
 
+    /// All courses across active semesters (respecting activeSemesterIds)
     var activeCourses: [Course] {
-        courses.filter { !$0.isArchived }
+        if activeSemesterIds.isEmpty {
+            // Fallback: show courses from current semester if no active semesters set
+            if let currentId = currentSemesterId {
+                return courses.filter { $0.semesterId == currentId && !$0.isArchived }
+            }
+            return courses.filter { !$0.isArchived }
+        }
+        return courses.filter { activeSemesterIds.contains($0.semesterId) && !$0.isArchived }
     }
 
     var archivedCourses: [Course] {
@@ -186,6 +258,7 @@ final class CoursesStore: ObservableObject {
         if currentSemesterId == id {
             currentSemesterId = nil
         }
+        activeSemesterIds.remove(id)
         persist()
         recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
@@ -203,12 +276,18 @@ final class CoursesStore: ObservableObject {
         if currentSemesterId == id {
             currentSemesterId = nil
         }
+        activeSemesterIds.remove(id)
         persist()
         recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
 
-    var activeSemesters: [Semester] {
+    var nonArchivedSemesters: [Semester] {
         semesters.filter { !$0.isArchived && $0.deletedAt == nil }.sorted { $0.startDate > $1.startDate }
+    }
+    
+    /// All semesters marked as active (supports multiple concurrent semesters)
+    var activeSemesters: [Semester] {
+        semesters.filter { activeSemesterIds.contains($0.id) && $0.deletedAt == nil && !$0.isArchived }
     }
 
     var archivedSemesters: [Semester] {
@@ -232,6 +311,7 @@ final class CoursesStore: ObservableObject {
         var outlineNodes: [CourseOutlineNode]
         var courseFiles: [CourseFile]
         var currentSemesterId: UUID?
+        var activeSemesterIds: [UUID]?  // New: multi-semester support
         
         // Custom decoding to handle backward compatibility
         init(from decoder: Decoder) throws {
@@ -242,15 +322,17 @@ final class CoursesStore: ObservableObject {
             outlineNodes = try container.decodeIfPresent([CourseOutlineNode].self, forKey: .outlineNodes) ?? []
             courseFiles = try container.decodeIfPresent([CourseFile].self, forKey: .courseFiles) ?? []
             currentSemesterId = try container.decodeIfPresent(UUID.self, forKey: .currentSemesterId)
+            activeSemesterIds = try container.decodeIfPresent([UUID].self, forKey: .activeSemesterIds)
         }
         
         // Memberwise init for encoding
-        init(semesters: [Semester], courses: [Course], outlineNodes: [CourseOutlineNode], courseFiles: [CourseFile], currentSemesterId: UUID?) {
+        init(semesters: [Semester], courses: [Course], outlineNodes: [CourseOutlineNode], courseFiles: [CourseFile], currentSemesterId: UUID?, activeSemesterIds: Set<UUID>) {
             self.semesters = semesters
             self.courses = courses
             self.outlineNodes = outlineNodes
             self.courseFiles = courseFiles
             self.currentSemesterId = currentSemesterId
+            self.activeSemesterIds = Array(activeSemesterIds)
         }
     }
 
@@ -267,7 +349,18 @@ final class CoursesStore: ObservableObject {
             self.outlineNodes = decoded.outlineNodes
             self.courseFiles = decoded.courseFiles
             self.currentSemesterId = decoded.currentSemesterId
-            LOG_PERSISTENCE(.info, "CoursesLoad", "Loaded courses data", metadata: ["semesters": "\(semesters.count)", "courses": "\(courses.count)"])
+            
+            // Migration: populate activeSemesterIds from currentSemesterId if needed
+            if let activeSemesterIdsArray = decoded.activeSemesterIds {
+                self.activeSemesterIds = Set(activeSemesterIdsArray)
+            } else if let currentId = decoded.currentSemesterId {
+                // Migrate old data: current semester becomes the only active semester
+                self.activeSemesterIds = [currentId]
+            } else {
+                self.activeSemesterIds = []
+            }
+            
+            LOG_PERSISTENCE(.info, "CoursesLoad", "Loaded courses data", metadata: ["semesters": "\(semesters.count)", "courses": "\(courses.count)", "activeSemesters": "\(activeSemesterIds.count)"])
         } catch {
             LOG_PERSISTENCE(.error, "CoursesLoad", "Failed to decode courses data: \(error.localizedDescription)")
         }
@@ -286,6 +379,14 @@ final class CoursesStore: ObservableObject {
             self.outlineNodes = decoded.outlineNodes
             self.courseFiles = decoded.courseFiles
             self.currentSemesterId = decoded.currentSemesterId
+            
+            // Migration for activeSemesterIds
+            if let activeSemesterIdsArray = decoded.activeSemesterIds {
+                self.activeSemesterIds = Set(activeSemesterIdsArray)
+            } else if let currentId = decoded.currentSemesterId {
+                self.activeSemesterIds = [currentId]
+            }
+            
             LOG_PERSISTENCE(.debug, "CoursesCache", "Loaded cache", metadata: ["semesters": "\(semesters.count)", "courses": "\(courses.count)"])
         } catch {
             LOG_PERSISTENCE(.error, "CoursesCache", "Failed to load cache: \(error.localizedDescription)")
@@ -300,13 +401,14 @@ final class CoursesStore: ObservableObject {
             courses: courses,
             outlineNodes: outlineNodes,
             courseFiles: courseFiles,
-            currentSemesterId: currentSemesterId
+            currentSemesterId: currentSemesterId,
+            activeSemesterIds: activeSemesterIds
         )
         do {
             let data = try JSONEncoder().encode(snapshot)
             try data.write(to: storageURL, options: [.atomic, .completeFileProtection])
             try data.write(to: cacheURL, options: [.atomic, .completeFileProtection])
-            LOG_PERSISTENCE(.debug, "CoursesSave", "Persisted courses data", metadata: ["semesters": "\(semesters.count)", "courses": "\(courses.count)", "size": "\(data.count)"])
+            LOG_PERSISTENCE(.debug, "CoursesSave", "Persisted courses data", metadata: ["semesters": "\(semesters.count)", "courses": "\(courses.count)", "activeSemesters": "\(activeSemesterIds.count)", "size": "\(data.count)"])
             
             // Queue for iCloud sync if online and enabled
             if isOnline && isSyncEnabled {

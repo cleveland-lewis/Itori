@@ -5,6 +5,7 @@
 
 #if os(iOS)
 import SwiftUI
+import BackgroundTasks
 
 @main
 struct RootsIOSApp: App {
@@ -43,11 +44,12 @@ struct RootsIOSApp: App {
             settings.save()
         }
         
-        // Initialize Intelligent Scheduling System
+        // Register background tasks
+        RootsIOSApp.registerBackgroundTasks()
+        
+        // Initialize Intelligent Scheduling System (Always On)
         Task { @MainActor in
-            if settings.enableIntelligentScheduling {
-                IntelligentSchedulingCoordinator.shared.start()
-            }
+            IntelligentSchedulingCoordinator.shared.start()
         }
     }
 
@@ -96,6 +98,16 @@ struct RootsIOSApp: App {
                 .onChange(of: scenePhase) { _, phase in
                     if phase == .background {
                         BackgroundRefreshManager.shared.scheduleNext()
+                        
+                        // Schedule background task for intelligent scheduling
+                        Task {
+                            await scheduleIntelligentSchedulingBackgroundTask()
+                        }
+                    } else if phase == .active {
+                        // Check for overdue tasks when app becomes active
+                        Task {
+                            await IntelligentSchedulingCoordinator.shared.checkOverdueTasks()
+                        }
                     }
                 }
                 .onChange(of: appSettings.highContrastMode) { _, newValue in
@@ -133,6 +145,56 @@ struct RootsIOSApp: App {
             IOSTimerPageView()
                 .environmentObject(appSettings)
         }
+    }
+    
+    // MARK: - Background Task Scheduling
+    
+    private func scheduleIntelligentSchedulingBackgroundTask() async {
+        let identifier = "com.clevelandlewis.Itori.intelligentScheduling"
+        
+        // Cancel any existing tasks
+        BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: identifier)
+        
+        // Schedule new background task
+        let request = BGAppRefreshTaskRequest(identifier: identifier)
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60) // 15 minutes from now
+        
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            LOG_UI(.info, "Background", "Scheduled intelligent scheduling background task")
+        } catch {
+            LOG_UI(.error, "Background", "Failed to schedule background task: \(error)")
+        }
+    }
+}
+
+// MARK: - Background Task Registration
+
+extension RootsIOSApp {
+    static func registerBackgroundTasks() {
+        let identifier = "com.clevelandlewis.Itori.intelligentScheduling"
+        
+        BGTaskScheduler.shared.register(
+            forTaskWithIdentifier: identifier,
+            using: nil
+        ) { task in
+            Task { @MainActor in
+                await handleIntelligentSchedulingBackgroundTask(task: task as! BGAppRefreshTask)
+            }
+        }
+    }
+    
+    static func handleIntelligentSchedulingBackgroundTask(task: BGAppRefreshTask) async {
+        LOG_UI(.info, "Background", "Running intelligent scheduling background task")
+        
+        // Schedule next background task
+        await RootsIOSApp().scheduleIntelligentSchedulingBackgroundTask()
+        
+        // Perform intelligent scheduling work
+        await IntelligentSchedulingCoordinator.shared.checkOverdueTasks()
+        
+        // Mark task as complete
+        task.setTaskCompleted(success: true)
     }
 }
 #endif

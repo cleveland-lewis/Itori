@@ -176,24 +176,6 @@ final class IntelligentSchedulingCoordinator: ObservableObject {
 // MARK: - App Settings Extension
 
 extension AppSettingsModel {
-    /// Enable or disable intelligent scheduling
-    var enableIntelligentScheduling: Bool {
-        get { UserDefaults.standard.bool(forKey: "enableIntelligentScheduling") }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "enableIntelligentScheduling")
-            
-            if newValue {
-                Task { @MainActor in
-                    IntelligentSchedulingCoordinator.shared.start()
-                }
-            } else {
-                Task { @MainActor in
-                    IntelligentSchedulingCoordinator.shared.stop()
-                }
-            }
-        }
-    }
-    
     /// Grade change threshold for triggering study time recommendations
     var gradeChangeThreshold: Double {
         get {

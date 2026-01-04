@@ -260,6 +260,7 @@ struct IOSAppShell<Content: View>: View {
         case .reading: return .reading
         case .review: return .review
         case .project: return .project
+        case .study: return .homework // Map study to homework category
         }
     }
 
