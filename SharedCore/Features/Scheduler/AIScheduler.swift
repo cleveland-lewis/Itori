@@ -287,6 +287,11 @@ private func decodeRecurrenceRule(from container: KeyedDecodingContainer<AppTask
 }
 
 extension AppTask {
+    /// True if this task is not associated with any course (personal task)
+    var isPersonal: Bool {
+        courseId == nil
+    }
+    
     var effectiveDueDateTime: Date? {
         guard let due else { return nil }
         if let dueTimeMinutes {

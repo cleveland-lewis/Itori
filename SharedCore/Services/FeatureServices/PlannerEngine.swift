@@ -582,7 +582,19 @@ enum PlannerEngine {
             energyLevel = .medium
         }
         
-        LOG_SCHEDULER(.info, "PlannerEngine", "Scheduling with energy level", metadata: ["energyLevel": "\(energyLevel.rawValue)", "sessions": "\(sessions.count)"])
+        LOG_SCHEDULER(.info, "PlannerEngine", "🔋 Starting AI scheduling with energy awareness", metadata: [
+            "energyLevel": "\(energyLevel.rawValue)",
+            "energyString": energyLevelString,
+            "totalSessions": "\(sessions.count)",
+            "timestamp": "\(Date())"
+        ])
+        
+        LOG_DEV(.debug, "EnergyScheduling", "Energy level configuration", metadata: [
+            "level": energyLevel.rawValue,
+            "filteringRules": energyLevel == .high ? "All tasks" : 
+                             energyLevel == .medium ? "7-day window + high importance" :
+                             "Critical tasks only (today/tomorrow)"
+        ])
         
         // Convert PlannerSession to AIScheduler.Task
         let tasks = sessions.map { session -> AppTask in
@@ -634,6 +646,21 @@ enum PlannerEngine {
             constraints: constraints,
             energyLevel: energyLevel
         )
+        
+        LOG_DEV(.info, "EnergyScheduling", "📊 AI Scheduler completed", metadata: [
+            "inputTasks": "\(tasks.count)",
+            "scheduledBlocks": "\(aiResult.blocks.count)",
+            "unscheduledTasks": "\(aiResult.unscheduledTasks.count)",
+            "energyLevel": energyLevel.rawValue,
+            "filteringEfficiency": String(format: "%.1f%%", Double(aiResult.blocks.count) / Double(max(1, tasks.count)) * 100)
+        ])
+        
+        if !aiResult.unscheduledTasks.isEmpty {
+            LOG_DEV(.warn, "EnergyScheduling", "⚠️ Some tasks could not be scheduled", metadata: [
+                "count": "\(aiResult.unscheduledTasks.count)",
+                "possibleReason": energyLevel == .low ? "Low energy filtered out non-critical tasks" : "Not enough time slots available"
+            ])
+        }
         
         // Convert back to ScheduledSession
         var scheduled: [ScheduledSession] = []

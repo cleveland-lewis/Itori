@@ -19,11 +19,9 @@ Added:
 
 Added in `init()`:
 ```swift
-// Initialize Intelligent Scheduling System
+// Initialize Intelligent Scheduling System (Always On)
 Task { @MainActor in
-    if settings.enableIntelligentScheduling {
-        IntelligentSchedulingCoordinator.shared.start()
-    }
+    IntelligentSchedulingCoordinator.shared.start()
 }
 ```
 
@@ -57,6 +55,19 @@ Added destination view:
 case .intelligentScheduling:
     IOSIntelligentSchedulingSettingsView()
 ```
+
+## Important: Always On
+
+⚡ **The Intelligent Scheduling System is ALWAYS ACTIVE** - no toggle to disable.
+
+Users can:
+- ✅ Configure grade change threshold
+- ✅ Set work hours for rescheduling  
+- ✅ View recommendations and notifications
+- ✅ Manually trigger checks
+- ❌ Cannot disable the system
+
+This ensures continuous monitoring and automatic task management.
 
 ## Next Steps - YOU NEED TO DO
 
@@ -93,12 +104,11 @@ Cmd+B
 Cmd+R
 ```
 
-### 3. Enable the Feature
+### 3. Navigate to Settings
 
 1. Launch app
-2. Go to Settings → Intelligent Scheduling (should be in the list now)
-3. Toggle ON
-4. Configure thresholds and work hours
+2. Go to Settings → Intelligent Scheduling (automatically active)
+3. Configure thresholds and work hours as needed
 
 ### 4. Test It Works
 
@@ -118,8 +128,9 @@ Cmd+R
 
 ✅ Code integrated into app files
 ✅ Settings category added
-✅ Initialization code added
+✅ Initialization code added (always on)
 ✅ Environment objects configured
+✅ System starts automatically on app launch
 
 ## What You Still Need To Do
 
@@ -157,4 +168,4 @@ If build fails:
 2. Clean derived data: Xcode → Product → Clean Build Folder
 3. Check console for specific errors
 
-The system is ready to go - just need to add the files to Xcode! 🚀
+The system is ready to go and will start automatically - just need to add the files to Xcode! 🚀

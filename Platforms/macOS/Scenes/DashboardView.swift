@@ -1305,7 +1305,9 @@ struct DashboardView: View {
     private func syncTasks() {
         let dueTodayTasks = tasksDueToday()
         tasks = dueTodayTasks.map { appTask in
-            DashboardTask(title: appTask.title, course: appTask.courseId?.uuidString, isDone: appTask.isCompleted)
+            // For personal tasks, use "Personal" as course name
+            let courseName = appTask.isPersonal ? "Personal" : appTask.courseId?.uuidString
+            return DashboardTask(title: appTask.title, course: courseName, isDone: appTask.isCompleted)
         }
     }
 
@@ -1333,6 +1335,7 @@ struct DashboardView: View {
 
     private func tasksDueToday() -> [AppTask] {
         let cal = Calendar.current
+        // Returns ALL tasks due today, including personal tasks (courseId == nil)
         return assignmentsStore.tasks
             .filter { !$0.isCompleted }
             .filter { task in
@@ -1471,22 +1474,40 @@ struct DashboardView: View {
     }
 
     private func setEnergy(_ level: EnergyLevel) {
+        LOG_DEV(.info, "EnergySync", "🎯 User selected energy level", metadata: [
+            "level": level.rawValue,
+            "device": "Mac",
+            "timestamp": "\(Date())"
+        ])
+        
         let current = SchedulerPreferencesStore.shared.preferences.learnedEnergyProfile
         let base: [Int: Double]
         switch level {
         case .high:
             base = current.mapValues { min(1.0, $0 + 0.2) }
+            LOG_DEV(.debug, "EnergySync", "Adjusted energy profile for HIGH", metadata: ["adjustment": "+0.2"])
         case .medium:
             base = current
+            LOG_DEV(.debug, "EnergySync", "Using default energy profile for MEDIUM")
         case .low:
             base = current.mapValues { max(0.1, $0 - 0.2) }
+            LOG_DEV(.debug, "EnergySync", "Adjusted energy profile for LOW", metadata: ["adjustment": "-0.2"])
         }
+        
+        LOG_DEV(.debug, "EnergySync", "Updating scheduler preferences energy profile")
         SchedulerPreferencesStore.shared.updateEnergyProfile(base)
+        
+        LOG_DEV(.info, "EnergySync", "📅 Requesting planner recompute", metadata: [
+            "reason": "energy level changed",
+            "newLevel": level.rawValue
+        ])
         PlannerSyncCoordinator.shared.requestRecompute(
             assignmentsStore: assignmentsStore,
             plannerStore: plannerStore,
             settings: settings
         )
+        
+        LOG_DEV(.info, "EnergySync", "✅ Energy update complete, schedule will regenerate")
     }
 
     private var energyResetTimer: Publishers.Autoconnect<Timer.TimerPublisher> {

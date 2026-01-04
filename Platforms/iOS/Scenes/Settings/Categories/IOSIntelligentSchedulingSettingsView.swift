@@ -1,5 +1,6 @@
 import SwiftUI
 
+#if os(iOS)
 struct IOSIntelligentSchedulingSettingsView: View {
     @StateObject private var coordinator = IntelligentSchedulingCoordinator.shared
     @StateObject private var gradeMonitor = GradeMonitoringService.shared
@@ -10,32 +11,30 @@ struct IOSIntelligentSchedulingSettingsView: View {
     
     var body: some View {
         List {
-            // MARK: - System Status
+            // MARK: - System Status (Always On)
             Section {
                 HStack {
-                    Image(systemName: coordinator.isActive ? "checkmark.circle.fill" : "xmark.circle.fill")
-                        .foregroundColor(coordinator.isActive ? .green : .red)
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.green)
                     
                     VStack(alignment: .leading) {
                         Text("Intelligent Scheduling")
                             .font(.headline)
-                        Text(coordinator.isActive ? "Active" : "Inactive")
+                        Text("Always Active")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
                     
                     Spacer()
-                    
-                    Toggle("", isOn: $settings.enableIntelligentScheduling)
-                        .labelsHidden()
                 }
             } header: {
                 Text("Status")
+            } footer: {
+                Text("Intelligent scheduling is always enabled to provide continuous grade monitoring and task rescheduling.")
             }
             
-            if coordinator.isActive {
-                // MARK: - Grade Monitoring
-                Section {
+            // MARK: - Grade Monitoring
+            Section {
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
                             Image(systemName: "chart.line.uptrend.xyaxis")
@@ -202,7 +201,6 @@ struct IOSIntelligentSchedulingSettingsView: View {
                         Text("Notifications")
                     }
                 }
-            }
         }
         .navigationTitle("Intelligent Scheduling")
         .navigationBarTitleDisplayMode(.inline)
@@ -485,3 +483,4 @@ struct RescheduleNotificationRow: View {
         IOSIntelligentSchedulingSettingsView()
     }
 }
+#endif

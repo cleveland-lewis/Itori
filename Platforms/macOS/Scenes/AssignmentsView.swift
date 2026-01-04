@@ -6,6 +6,7 @@ struct AssignmentsView: View {
         case all
         case dueSoon
         case overdue
+        case personal  // NEW: Personal tasks filter
         
         var id: String { rawValue }
         
@@ -14,6 +15,7 @@ struct AssignmentsView: View {
             case .all: return NSLocalizedString("assignments.filter.all", comment: "")
             case .dueSoon: return NSLocalizedString("assignments.filter.due_soon", comment: "")
             case .overdue: return NSLocalizedString("assignments.filter.overdue", comment: "")
+            case .personal: return "Personal"  // NEW
             }
         }
     }
@@ -21,9 +23,32 @@ struct AssignmentsView: View {
     @State private var filter: Filter = .all
 
     @EnvironmentObject var assignmentsStore: AssignmentsStore
+    @EnvironmentObject var coursesStore: CoursesStore  // NEW: For course lookups
 
     @State private var showingAddSheet: Bool = false
     @State private var editingTask: AppTask? = nil
+    
+    // NEW: Computed property for filtered tasks
+    private var filteredTasks: [AppTask] {
+        let tasks = assignmentsStore.tasks
+        switch filter {
+        case .all:
+            return tasks
+        case .dueSoon:
+            let soon = Calendar.current.date(byAdding: .day, value: 3, to: Date()) ?? Date()
+            return tasks.filter { task in
+                guard let due = task.due else { return false }
+                return due <= soon && due >= Date()
+            }
+        case .overdue:
+            return tasks.filter { task in
+                guard let due = task.due else { return false }
+                return due < Date() && !task.isCompleted
+            }
+        case .personal:
+            return tasks.filter { $0.isPersonal }  // NEW: Filter personal tasks
+        }
+    }
 
     var body: some View {
         ScrollView {
@@ -91,6 +116,37 @@ struct AssignmentsView: View {
                         } else {
                             ForEach(tasks, id: \.id) { t in
                                 AssignmentRow(task: t)
+                            }
+                        }
+                    }
+
+                    // NEW: Personal Tasks Section
+                    if filter == .all || filter == .personal {
+                        Section(header: HStack {
+                            Text("Personal Tasks")
+                                .font(DesignSystem.Typography.body)
+                            Image(systemName: "person.fill")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }) {
+                            let personalTasks = assignmentsStore.tasks.filter { $0.isPersonal && !$0.isCompleted }
+                            if personalTasks.isEmpty {
+                                AppCard {
+                                    VStack(spacing: DesignSystem.Spacing.small) {
+                                        Image(systemName: "person.crop.circle")
+                                            .imageScale(.large)
+                                        Text("Personal Tasks")
+                                            .font(DesignSystem.Typography.title)
+                                        Text("Create personal tasks not tied to any course")
+                                            .font(DesignSystem.Typography.body)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                                .frame(minHeight: DesignSystem.Cards.defaultHeight)
+                            } else {
+                                ForEach(personalTasks, id: \.id) { t in
+                                    AssignmentRow(task: t)
+                                }
                             }
                         }
                     }
