@@ -11,7 +11,7 @@ struct CalendarGrid: View {
     @Environment(\.colorScheme) private var colorScheme
     
     private let calendar = Calendar.current
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: 8), count: 7)
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 0), count: 7)
     
     private var monthName: String {
         let formatter = DateFormatter()
@@ -46,7 +46,7 @@ struct CalendarGrid: View {
         VStack(spacing: 16) {
             weekdayHeader
             
-            LazyVGrid(columns: columns, spacing: 8) {
+            LazyVGrid(columns: columns, spacing: 0) {
                 ForEach(Array(days.enumerated()), id: \.offset) { _, day in
                     if let day = day {
                         GridDayCell(
@@ -60,7 +60,7 @@ struct CalendarGrid: View {
                         }
                     } else {
                         Color.clear
-                            .frame(height: 80)
+                            .frame(height: 90)
                     }
                 }
             }
@@ -72,7 +72,7 @@ struct CalendarGrid: View {
         let first = calendar.firstWeekday - 1
         let ordered = Array(symbols[first..<symbols.count] + symbols[0..<first])
         
-        return HStack(spacing: 8) {
+        return HStack(spacing: 0) {
             ForEach(ordered, id: \.self) { symbol in
                 Text(symbol.uppercased())
                     .font(.caption.weight(.semibold))
@@ -96,6 +96,7 @@ private struct GridDayCell: View {
     
     @EnvironmentObject private var eventsStore: EventsCountStore
     @State private var isHovered = false
+    @Environment(\.colorScheme) private var colorScheme
     
     private let calendar = Calendar.current
     
@@ -104,77 +105,124 @@ private struct GridDayCell: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            // Day number with distinct today vs selected styling
-            Text("\(dayNumber)")
-                .font(.subheadline.weight(isToday ? .bold : .medium))
-                .foregroundStyle(
-                    isSelected ? .white :
-                    isToday ? .accentColor :
-                    .primary
-                )
-                .frame(width: 28, height: 28)
-                .background(
-                    Circle()
-                        .fill(
-                            isSelected ? Color.accentColor :
-                            isToday ? .accentQuaternary :
-                            Color.clear
-                        )
-                )
+        VStack(alignment: .leading, spacing: 0) {
+            // Day number at top-left with ONLY today getting a small red circle
+            HStack {
+                Text("\(dayNumber)")
+                    .font(.system(size: 13, weight: .regular))
+                    .foregroundStyle(
+                        isToday ? .white :
+                        .primary
+                    )
+                    .padding(6)
+                    .background(
+                        // CRITICAL: ONLY today gets a circle - small red circle behind date number
+                        Group {
+                            if isToday {
+                                Circle()
+                                    .fill(Color.red)
+                                    .frame(width: 22, height: 22)
+                            }
+                        }
+                    )
+                
+                Spacer()
+            }
+            .padding(.top, 6)
+            .padding(.leading, 6)
             
-            // Event indicators (max 3 visible)
+            // Event bars (horizontal colored bars, not dots+text)
             VStack(spacing: 2) {
                 ForEach(events.prefix(3), id: \.eventIdentifier) { event in
-                    HStack(spacing: 4) {
-                        Circle()
-                            .fill(categoryColor(for: event))
-                            .frame(width: 4, height: 4)
-                        
-                        Text(event.title)
-                            .font(.caption2)
-                            .lineLimit(1)
-                            .truncationMode(.tail)
-                            .foregroundStyle(.primary)
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .frame(height: 14)  // Fixed height per event row
+                    EventBar(event: event)
                 }
                 
                 if events.count > 3 {
-                    Text("+\(events.count - 3) more")
-                        .font(.caption2)
+                    Text("+\(events.count - 3)")
+                        .font(.system(size: 9))
                         .foregroundStyle(.secondary)
-                        .frame(height: 14)  // Match event row height
+                        .padding(.leading, 4)
                 }
             }
-            .frame(maxHeight: .infinity, alignment: .top)  // Prevent expansion
-            .clipped()  // Clip any overflow
+            .padding(.horizontal, 4)
+            .padding(.top, 4)
+            
+            Spacer(minLength: 0)
         }
-        .padding(8)
-        .frame(maxWidth: .infinity, alignment: .topLeading)
-        .frame(height: 80)  // Fixed height
-        .background(DesignSystem.Materials.surface)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(height: 90)  // Closer to square aspect ratio
         .background(
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(isHovered ? Color.primary.opacity(0.05) : Color.clear)
+            // Selection highlights entire cell background
+            Group {
+                if isSelected {
+                    Color.accentColor.opacity(0.15)
+                }
+            }
         )
-        .overlay(
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .strokeBorder(isSelected ? Color.accentColor.opacity(0.4) : Color.primary.opacity(0.08), lineWidth: isSelected ? 2 : 1)
-        )
+        .background(DesignSystem.Materials.surface)
+        .border(Color.primary.opacity(colorScheme == .dark ? 0.15 : 0.1), width: 0.5)  // Hairline border
+        .contentShape(Rectangle())
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.15)) {
                 isHovered = hovering
             }
         }
+        .overlay(
+            // Subtle hover effect
+            Group {
+                if isHovered && !isSelected {
+                    Color.primary.opacity(0.03)
+                }
+            }
+        )
     }
     
-    private func categoryColor(for event: EKEvent) -> Color {
-        if let category = parseEventCategory(from: event.title) {
-            return category.color
+    // Helper view for horizontal event bars
+    private struct EventBar: View {
+        let event: EKEvent
+        
+        var body: some View {
+            HStack(spacing: 3) {
+                // Time for timed events (all-day events show no time)
+                if !event.isAllDay {
+                    Text(timeString)
+                        .font(.system(size: 9))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+                
+                // Colored horizontal bar with event title
+                HStack(spacing: 0) {
+                    // Left color indicator bar
+                    Rectangle()
+                        .fill(categoryColor)
+                        .frame(width: 2)
+                    
+                    Text(event.title)
+                        .font(.system(size: 10))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .padding(.leading, 3)
+                }
+                .frame(height: 14)
+                .background(categoryColor.opacity(0.15))
+                .clipShape(RoundedRectangle(cornerRadius: 2))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        return .accentColor
+        
+        private var timeString: String {
+            let formatter = DateFormatter()
+            formatter.timeStyle = .short
+            return formatter.string(from: event.startDate)
+        }
+        
+        private var categoryColor: Color {
+            if let category = parseEventCategory(from: event.title) {
+                return category.color
+            }
+            return .accentColor
+        }
     }
 }
 
@@ -202,50 +250,37 @@ struct CalendarHeader: View {
             
             Spacer()
             
-            // Navigation controls
-            HStack(spacing: 8) {
+            // Month/Year label
+            Text(monthLabel)
+                .font(.title2.weight(.semibold))
+            
+            Spacer()
+            
+            // Navigation buttons
+            HStack(spacing: 12) {
                 Button(action: onPrevious) {
-                    calendarHeaderButtonLabel(
-                        title: NSLocalizedString("common.button.previous", comment: ""),
-                        systemImage: "chevron.left"
-                    )
-                    .font(.body.weight(.medium))
+                    Image(systemName: "chevron.left")
+                        .font(.body.weight(.medium))
                 }
                 .buttonStyle(.plain)
-                .rootsStandardInteraction()
                 
-                Button(action: onToday) {
-                    Text("Today")
-                        .font(.subheadline.weight(.medium))
-                }
-                .buttonStyle(.bordered)
+                Button("Today", action: onToday)
+                    .buttonStyle(.bordered)
                 
                 Button(action: onNext) {
-                    calendarHeaderButtonLabel(
-                        title: NSLocalizedString("common.button.next", comment: ""),
-                        systemImage: "chevron.right"
-                    )
-                    .font(.body.weight(.medium))
+                    Image(systemName: "chevron.right")
+                        .font(.body.weight(.medium))
                 }
                 .buttonStyle(.plain)
-                .rootsStandardInteraction()
             }
         }
     }
-
-    @ViewBuilder
-    private func calendarHeaderButtonLabel(title: String, systemImage: String) -> some View {
-        switch settings.tabBarMode {
-        case .iconsOnly:
-            Image(systemName: systemImage)
-        case .textOnly:
-            Text(title)
-        case .iconsAndText:
-            HStack(spacing: DesignSystem.Spacing.xsmall) {
-                Image(systemName: systemImage)
-                Text(title)
-            }
-        }
+    
+    private var monthLabel: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "LLLL yyyy"
+        return formatter.string(from: currentMonth)
     }
 }
+
 #endif
