@@ -1,4 +1,5 @@
 import SwiftUI
+import OSLog
 #if os(macOS)
 import AppKit
 #endif
@@ -1078,31 +1079,31 @@ final class AppSettingsModel: ObservableObject, Codable {
             if enableICloudSync {
                 let cloudValue = NSUbiquitousKeyValueStore.default.string(forKey: "roots.settings.defaultEnergyLevel")
                 if let cloudValue = cloudValue, !cloudValue.isEmpty {
-                    LOG_DEV(OSLogType.debug, "EnergySync", "Reading energy from iCloud", metadata: ["cloudValue": cloudValue, "localValue": defaultEnergyLevelStorage])
+                    LOG_DEV(LogSeverity.debug, "EnergySync", "Reading energy from iCloud", metadata: ["cloudValue": cloudValue, "localValue": defaultEnergyLevelStorage])
                     // Update local if different
                     if cloudValue != defaultEnergyLevelStorage {
-                        LOG_DEV(OSLogType.info, "EnergySync", "Syncing iCloud value to local storage", metadata: ["from": defaultEnergyLevelStorage, "to": cloudValue])
+                        LOG_DEV(LogSeverity.info, "EnergySync", "Syncing iCloud value to local storage", metadata: ["from": defaultEnergyLevelStorage, "to": cloudValue])
                         defaultEnergyLevelStorage = cloudValue
                     }
                     return cloudValue
                 }
-                LOG_DEV(OSLogType.debug, "EnergySync", "No iCloud value found, using local", metadata: ["localValue": defaultEnergyLevelStorage])
+                LOG_DEV(LogSeverity.debug, "EnergySync", "No iCloud value found, using local", metadata: ["localValue": defaultEnergyLevelStorage])
             } else {
-                LOG_DEV(OSLogType.debug, "EnergySync", "iCloud sync disabled, using local only", metadata: ["localValue": defaultEnergyLevelStorage])
+                LOG_DEV(LogSeverity.debug, "EnergySync", "iCloud sync disabled, using local only", metadata: ["localValue": defaultEnergyLevelStorage])
             }
             return defaultEnergyLevelStorage 
         }
         set { 
-            LOG_DEV(OSLogType.info, "EnergySync", "Setting energy level", metadata: ["oldValue": defaultEnergyLevelStorage, "newValue": newValue, "iCloudEnabled": "\(enableICloudSync)"])
+            LOG_DEV(LogSeverity.info, "EnergySync", "Setting energy level", metadata: ["oldValue": defaultEnergyLevelStorage, "newValue": newValue, "iCloudEnabled": "\(enableICloudSync)"])
             defaultEnergyLevelStorage = newValue
             // Sync to iCloud if enabled
             if enableICloudSync {
-                LOG_DEV(OSLogType.debug, "EnergySync", "Writing energy to iCloud", metadata: ["value": newValue])
+                LOG_DEV(LogSeverity.debug, "EnergySync", "Writing energy to iCloud", metadata: ["value": newValue])
                 NSUbiquitousKeyValueStore.default.set(newValue, forKey: "roots.settings.defaultEnergyLevel")
                 let syncResult = NSUbiquitousKeyValueStore.default.synchronize()
-                LOG_DEV(OSLogType.debug, "EnergySync", "iCloud synchronize() called", metadata: ["success": "\(syncResult)"])
+                LOG_DEV(LogSeverity.debug, "EnergySync", "iCloud synchronize() called", metadata: ["success": "\(syncResult)"])
             } else {
-                LOG_DEV(OSLogType.debug, "EnergySync", "Skipped iCloud write (sync disabled)")
+                LOG_DEV(LogSeverity.debug, "EnergySync", "Skipped iCloud write (sync disabled)")
             }
         }
     }
