@@ -1305,7 +1305,9 @@ struct DashboardView: View {
     private func syncTasks() {
         let dueTodayTasks = tasksDueToday()
         tasks = dueTodayTasks.map { appTask in
-            DashboardTask(title: appTask.title, course: appTask.courseId?.uuidString, isDone: appTask.isCompleted)
+            // For personal tasks, use "Personal" as course name
+            let courseName = appTask.isPersonal ? "Personal" : appTask.courseId?.uuidString
+            return DashboardTask(title: appTask.title, course: courseName, isDone: appTask.isCompleted)
         }
     }
 
@@ -1333,6 +1335,7 @@ struct DashboardView: View {
 
     private func tasksDueToday() -> [AppTask] {
         let cal = Calendar.current
+        // Returns ALL tasks due today, including personal tasks (courseId == nil)
         return assignmentsStore.tasks
             .filter { !$0.isCompleted }
             .filter { task in

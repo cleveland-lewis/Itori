@@ -18,7 +18,7 @@ struct CoursesView: View {
                 AppCard {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            Text("Current semester")
+                            Text("Active Semesters")
                                 .font(DesignSystem.Typography.subHeader)
 
                             Spacer()
@@ -37,30 +37,25 @@ struct CoursesView: View {
                                 .font(.callout)
                                 .foregroundStyle(.secondary)
                         } else {
-                            Picker("Semester", selection: Binding(
-                                get: { coursesStore.currentSemesterId ?? coursesStore.semesters.first?.id },
-                                set: { newId in
-                                    if let id = newId,
-                                       let sem = coursesStore.semesters.first(where: { $0.id == id }) {
-                                        coursesStore.setCurrentSemester(sem)
-                                    }
-                                }
-                            )) {
-                                ForEach(coursesStore.semesters) { semester in
-                                    Text(semester.name).tag(Optional(semester.id))
-                                }
+                            // NEW: Use multi-select semester picker
+                            SemesterPickerView()
+                            
+                            if coursesStore.activeSemesterIds.isEmpty {
+                                Text("Select one or more semesters to view courses")
+                                    .font(.callout)
+                                    .foregroundStyle(.secondary)
+                                    .padding(.top, 4)
                             }
-                            .pickerStyle(.segmented)
                         }
                     }
                 }
                 .padding(.horizontal, 20)
 
-                // Courses for current semester
+                // Courses for active semesters
                 AppCard {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            Text("Courses in this semester")
+                            Text("Courses")
                                 .font(DesignSystem.Typography.subHeader)
 
                             Spacer()
@@ -74,15 +69,23 @@ struct CoursesView: View {
                             .controlSize(.small)
                         }
 
-                        if let semester = coursesStore.currentSemester,
-                           !coursesStore.courses(in: semester).isEmpty {
+                        if coursesStore.activeSemesters.isEmpty {
+                            Text("No active semesters selected")
+                                .font(.callout)
+                                .foregroundStyle(.secondary)
+                        } else if coursesStore.activeCourses.isEmpty {
+                            Text("No courses yet. Add a course to get started.")
+                                .font(.callout)
+                                .foregroundStyle(.secondary)
+                        } else {
                             CardGrid {
-                                ForEach(coursesStore.courses(in: semester)) { course in
-                                    CourseCard(course: course, semester: semester)
+                                ForEach(coursesStore.activeCourses) { course in
+                                    // Find the semester for this course
+                                    if let semester = coursesStore.semesters.first(where: { $0.id == course.semesterId }) {
+                                        CourseCard(course: course, semester: semester)
+                                    }
                                 }
                             }
-                        } else {
-                            EmptyStateView(icon: "book.closed")
                         }
                     }
                 }
