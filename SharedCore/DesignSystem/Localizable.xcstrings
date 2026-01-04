@@ -19659,7 +19659,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "الأحداث: %د"
+            "value": "الأحداث: %d"
           }
         },
         "ja": {
@@ -21039,7 +21039,7 @@
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "الإطار الأول: %@ |البيانات جاهزة: %@ |جاهز بالكامل: %@ |الأحداث: %د"
+            "value": "الإطار الأول: %@ |البيانات جاهزة: %@ |جاهز بالكامل: %@ |الأحداث: %d"
           }
         },
         "ja": {
@@ -21117,7 +21117,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "calendar.performance.stats"
+            "value": "Erster Frame: %@ |Daten bereit: %@ |Vollständig bereit: %@ |Ereignisse: %d"
           }
         }
       }
@@ -57136,7 +57136,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "ios.planner.due_format"
+            "value": "Fällig %@ · %d Min"
           }
         }
       }

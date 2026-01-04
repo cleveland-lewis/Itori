@@ -36,8 +36,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1AD7D4422EDD328A00D403F3"
-               BuildableName = "RootsTests.xctest"
-               BlueprintName = "RootsTests"
+               BuildableName = "ItoriTests.xctest"
+               BlueprintName = "ItoriTests"
                ReferencedContainer = "container:ItoriApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -47,8 +47,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1AD7D44C2EDD328A00D403F3"
-               BuildableName = "RootsUITests.xctest"
-               BlueprintName = "RootsUITests"
+               BuildableName = "ItoriUITests.xctest"
+               BlueprintName = "ItoriUITests"
                ReferencedContainer = "container:ItoriApp.xcodeproj">
             </BuildableReference>
          </TestableReference>

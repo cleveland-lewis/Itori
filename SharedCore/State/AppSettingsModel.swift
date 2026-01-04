@@ -1280,12 +1280,22 @@ final class AppSettingsModel: ObservableObject, Codable {
 
     // MARK: - Persistence helpers
     static func load() -> AppSettingsModel {
+        print("[AppSettings] Starting load...")
         let key = "roots.settings.appsettings"
         if let data = UserDefaults.standard.data(forKey: key) {
+            print("[AppSettings] Found saved data, attempting to decode...")
             let decoder = JSONDecoder()
-            if let decoded = try? decoder.decode(AppSettingsModel.self, from: data) {
+            do {
+                let decoded = try decoder.decode(AppSettingsModel.self, from: data)
+                print("[AppSettings] Successfully decoded from UserDefaults")
+                // Set up iCloud observer for decoded instance
+                decoded.setupICloudObserver()
                 return decoded
+            } catch {
+                print("[AppSettings] Decode failed: \(error). Creating new instance.")
             }
+        } else {
+            print("[AppSettings] No saved data found, creating new instance")
         }
         return AppSettingsModel()
     }
@@ -1312,10 +1322,21 @@ final class AppSettingsModel: ObservableObject, Codable {
 
     // Codable
     init() {
-        UserDefaults.standard.removeObject(forKey: "roots.settings.userName")
+        print("[AppSettings] init() started")
+        print("[AppSettings] About to access UserDefaults")
+        // UserDefaults.standard.removeObject(forKey: "roots.settings.userName")
+        print("[AppSettings] UserDefaults access completed (removeObject commented out)")
         
-        LOG_DEV(.info, "EnergySync", "Initializing AppSettingsModel with iCloud observer")
+        // Note: Can't use LOG_DEV here as it accesses AppSettingsModel.shared which is being initialized
+        print("[EnergySync] Initializing AppSettingsModel with iCloud observer")
         
+        print("[AppSettings] About to call setupICloudObserver()")
+        setupICloudObserver()
+        print("[AppSettings] init() completed successfully")
+    }
+    
+    private func setupICloudObserver() {
+        print("[AppSettings] setupICloudObserver() started")
         // Observe iCloud changes for energy settings
         NotificationCenter.default.addObserver(
             forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
@@ -1324,7 +1345,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         ) { [weak self] notification in
             guard let self = self else { return }
             
-            LOG_DEV(LogSeverity.info, "EnergySync", "🔔 Received iCloud change notification", metadata: ["timestamp": "\(Date())"])
+            LOG_DEV(.info as DeveloperLogLevel, "EnergySync", "🔔 Received iCloud change notification", metadata: ["timestamp": "\(Date())"])
             
             // Get change reason
             if let reason = notification.userInfo?[NSUbiquitousKeyValueStoreChangeReasonKey] as? Int {
@@ -1395,7 +1416,7 @@ final class AppSettingsModel: ObservableObject, Codable {
             }
         }
         
-        LOG_DEV(.debug as DeveloperLogLevel, "EnergySync", "iCloud observer registered successfully")
+        print("[AppSettings] setupICloudObserver() completed successfully")
     }
 
     func encode(to encoder: Encoder) throws {

@@ -2,6 +2,7 @@
 import SwiftUI
 
 struct AISettingsView: View {
+    @EnvironmentObject var settings: AppSettingsModel
     @StateObject private var router = AIRouter.shared
     @StateObject private var modelManager = LocalModelManager.shared
     @State private var showingBYOConfig = false
@@ -10,6 +11,7 @@ struct AISettingsView: View {
     @State private var byoEndpoint = ""
     @State private var testingConnection = false
     @State private var connectionResult: ConnectionResult?
+    @State private var showingDisableAlert = false
     
     enum ConnectionResult {
         case success
@@ -22,29 +24,44 @@ struct AISettingsView: View {
             
             Divider()
             
-            modeSelectionSection
+            llmEnabledSection
             
-            Divider()
-            
-            providerStatusSection
-            
-            Divider()
-            
-            if router.mode == .localOnly || router.mode == .auto {
-                localModelSection
+            if settings.enableLLMAssistance {
                 Divider()
-            }
-            
-            if router.mode == .byoOnly || router.mode == .auto {
-                byoProviderSection
+                
+                modeSelectionSection
+                
                 Divider()
+                
+                providerStatusSection
+                
+                Divider()
+                
+                if router.mode == .localOnly || router.mode == .auto {
+                    localModelSection
+                    Divider()
+                }
+                
+                if router.mode == .byoOnly || router.mode == .auto {
+                    byoProviderSection
+                    Divider()
+                }
+                
+                observabilitySection
             }
-            
-            observabilitySection
         }
         .padding()
         .sheet(isPresented: $showingBYOConfig) {
             byoConfigurationSheet
+        }
+        .alert("Disable LLM Assistance?", isPresented: $showingDisableAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Disable", role: .destructive) {
+                settings.enableLLMAssistance = false
+                AIEngine.shared.resetProviderState()
+            }
+        } message: {
+            Text("All LLM features will be disabled. Planning and parsing will use deterministic algorithms only.")
         }
     }
     
@@ -58,13 +75,46 @@ struct AISettingsView: View {
                     .foregroundStyle(.blue.gradient)
                 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("AI & Machine Learning")
+                    Text("LLM Configuration")
                         .font(.title.weight(.semibold))
                     
-                    Text("Configure AI providers and routing behavior")
+                    Text("Configure LLM providers and routing behavior")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
+            }
+        }
+    }
+    
+    // MARK: - LLM Enable/Disable
+    
+    private var llmEnabledSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("LLM Assistance")
+                .font(.headline)
+            
+            Toggle("Enable LLM Assistance", isOn: Binding(
+                get: { settings.enableLLMAssistance },
+                set: { newValue in
+                    if !newValue {
+                        showingDisableAlert = true
+                    } else {
+                        settings.enableLLMAssistance = newValue
+                        AIEngine.shared.resetProviderState()
+                        LOG_SETTINGS(.info, "LLMSettings", "LLM features enabled")
+                    }
+                }
+            ))
+            .toggleStyle(.switch)
+            
+            if settings.enableLLMAssistance {
+                Text("LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                Text("All LLM features are disabled. Planning and parsing use deterministic algorithms only.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
         }
     }

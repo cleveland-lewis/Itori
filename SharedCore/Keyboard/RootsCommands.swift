@@ -124,7 +124,7 @@ struct RootsCommands: Commands {
         // Go menu for navigation
         CommandMenu("Go") {
             Button(AppShortcut.goToday.title) {
-                NotificationCenter.default.post(name: .goToToday, object: nil)
+                NotificationCenter.default.post(name: .goToTodayNotification, object: nil)
             }
             .keyboardShortcut(AppShortcut.goToday.keyEquivalent, modifiers: AppShortcut.goToday.modifiers)
             

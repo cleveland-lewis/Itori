@@ -33,7 +33,7 @@ enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
         case .profiles: return "Profile"
         case .timer: return "Timer"
         case .flashcards: return "Flashcards"
-        case .ai: return "AI"
+        case .ai: return "LLM"
         case .integrations: return "Integrations"
         case .notifications: return "Notifications"
         case .privacy: return "Privacy"

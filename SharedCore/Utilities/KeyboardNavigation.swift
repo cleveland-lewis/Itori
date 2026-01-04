@@ -118,7 +118,7 @@ public struct AppKeyboardCommands: Commands {
             .keyboardShortcut(.rightArrow, modifiers: [.command, .option])
             
             Button("Today") {
-                NotificationCenter.default.post(name: .goToToday, object: nil)
+                NotificationCenter.default.post(name: .goToTodayNotification, object: nil)
             }
             .keyboardShortcut("t", modifiers: [.command])
         }
@@ -147,7 +147,7 @@ extension Notification.Name {
     public static let nextDay = Notification.Name("app.keyboard.nextDay")
     public static let previousWeek = Notification.Name("app.keyboard.previousWeek")
     public static let nextWeek = Notification.Name("app.keyboard.nextWeek")
-    // goToToday is defined in Notification+Names.swift for cross-platform use
+    // goToTodayNotification is defined in Notification+Names.swift for cross-platform use
     public static let focusSearch = Notification.Name("app.keyboard.focusSearch")
     
     #if DEBUG

@@ -3,7 +3,7 @@ import SwiftUI
 
 struct FlashcardsView: View {
     @StateObject private var manager = FlashcardManager.shared
-    @StateObject private var coursesStore = CoursesStore.shared!
+    @EnvironmentObject private var coursesStore: CoursesStore
     @State private var selectedDeck: FlashcardDeck?
     @State private var showingAddDeck = false
     @State private var showingStudySession = false

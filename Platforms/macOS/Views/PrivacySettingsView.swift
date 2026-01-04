@@ -4,7 +4,6 @@ import AppKit
 
 struct PrivacySettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
-    @State private var showingAIDisabledAlert = false
     
     var body: some View {
         Form {
@@ -19,80 +18,10 @@ struct PrivacySettingsView: View {
             }
             .listRowBackground(Color.clear)
             
-            Section("LLM Assistance") {
-                Toggle("Enable LLM Assistance", isOn: Binding(
-                    get: { settings.enableLLMAssistance },
-                    set: { newValue in
-                        if !newValue {
-                            showingAIDisabledAlert = true
-                        } else {
-                            settings.enableLLMAssistance = newValue
-                            settings.save()
-                            AIEngine.shared.resetProviderState()
-                            LOG_SETTINGS(.info, "LLMPrivacy", "LLM features enabled")
-                        }
-                    }
-                ))
-                
-                if settings.enableLLMAssistance {
-                    Text("LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else {
-                    Label {
-                        Text("All LLM features are disabled. Planning and parsing use deterministic algorithms only.")
-                    } icon: {
-                        Image(systemName: "lock.shield.fill")
-                            .foregroundStyle(.green)
-                    }
+            Section("LLM Settings") {
+                Text("LLM configuration has been moved to the LLM settings page.")
                     .font(.caption)
-                }
-            }
-            
-            Section("What This Controls") {
-                VStack(alignment: .leading, spacing: 12) {
-                    PrivacyFeatureRow(
-                        icon: "brain.head.profile",
-                        title: "LLM Providers",
-                        description: "Apple Intelligence, local models, and custom providers",
-                        isEnabled: settings.enableLLMAssistance
-                    )
-                    
-                    PrivacyFeatureRow(
-                        icon: "wand.and.stars",
-                        title: "Smart Suggestions",
-                        description: "LLM-assisted scheduling, summaries, and recommendations",
-                        isEnabled: settings.enableLLMAssistance
-                    )
-                    
-                    PrivacyFeatureRow(
-                        icon: "doc.text.magnifyingglass",
-                        title: "Content Analysis",
-                        description: "Syllabus parsing, question generation, and text analysis",
-                        isEnabled: settings.enableLLMAssistance
-                    )
-                    
-                    PrivacyFeatureRow(
-                        icon: "calendar.badge.clock",
-                        title: "LLM Scheduling",
-                        description: "Intelligent task scheduling and time optimization",
-                        isEnabled: settings.enableLLMAssistance
-                    )
-                }
-            }
-            
-            Section("Privacy Guarantees") {
-                VStack(alignment: .leading, spacing: 8) {
-                    Label("No LLM processing when disabled", systemImage: "checkmark.shield")
-                        .font(.caption)
-                    Label("No network calls to LLM providers", systemImage: "checkmark.shield")
-                        .font(.caption)
-                    Label("No local model inference", systemImage: "checkmark.shield")
-                        .font(.caption)
-                    Label("All LLM features gracefully disabled", systemImage: "checkmark.shield")
-                        .font(.caption)
-                }
-                .foregroundStyle(.secondary)
+                    .foregroundStyle(.secondary)
             }
             
             Section("Data Storage") {
@@ -138,17 +67,6 @@ struct PrivacySettingsView: View {
         .formStyle(.grouped)
         .navigationTitle("Privacy")
         .frame(minWidth: 500, maxWidth: 700)
-        .alert("Disable LLM Assistance?", isPresented: $showingAIDisabledAlert) {
-            Button("Cancel", role: .cancel) { }
-            Button("Disable", role: .destructive) {
-                settings.enableLLMAssistance = false
-                settings.save()
-                AIEngine.shared.resetProviderState()
-                LOG_SETTINGS(.warn, "LLMPrivacy", "LLM features disabled by user")
-            }
-        } message: {
-            Text("This will disable all LLM-powered features including Apple Intelligence, local models, and custom providers. Parsing and planning will use deterministic algorithms only.\n\nYou can re-enable LLM assistance at any time.")
-        }
     }
     
     private func clearDebugLogs() {

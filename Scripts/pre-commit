@@ -47,7 +47,7 @@ for FILE in $SWIFT_FILES; do
     
     # Extract filename
     BASENAME=$(basename "$FILE" .swift)
-    TEST_FILE="Tests/Unit/RootsTests/${BASENAME}Tests.swift"
+    TEST_FILE="Tests/Unit/ItoriTests/${BASENAME}Tests.swift"
     
     if [ ! -f "$TEST_FILE" ]; then
         UNTESTED_FILES="$UNTESTED_FILES\n  - $FILE"
@@ -62,7 +62,7 @@ if [ -n "$UNTESTED_FILES" ]; then
     for FILE in $SWIFT_FILES; do
         if [[ "$FILE" != *"Tests"* ]]; then
             BASENAME=$(basename "$FILE" .swift)
-            TEST_FILE="Tests/Unit/RootsTests/${BASENAME}Tests.swift"
+            TEST_FILE="Tests/Unit/ItoriTests/${BASENAME}Tests.swift"
             if [ ! -f "$TEST_FILE" ]; then
                 echo "   ./Scripts/generate_test_stub.sh $FILE"
             fi
@@ -85,7 +85,7 @@ echo "🧪 Running unit tests..."
 if xcodebuild test \
     -scheme Roots \
     -destination 'platform=macOS' \
-    -only-testing:RootsTests \
+    -only-testing:ItoriTests \
     -quiet 2>&1 | tee /tmp/test_output.log | grep -E "Test Suite|FAILED|PASSED"; then
     
     # Check if tests actually passed

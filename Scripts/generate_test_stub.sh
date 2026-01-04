@@ -22,7 +22,7 @@ fi
 
 # Extract filename without path and extension
 BASENAME=$(basename "$SOURCE_FILE" .swift)
-TEST_FILE="Tests/Unit/RootsTests/${BASENAME}Tests.swift"
+TEST_FILE="Tests/Unit/ItoriTests/${BASENAME}Tests.swift"
 
 # Check if test already exists
 if [ -f "$TEST_FILE" ]; then
@@ -42,7 +42,7 @@ fi
 cat > "$TEST_FILE" << EOF
 //
 //  ${BASENAME}Tests.swift
-//  RootsTests
+//  ItoriTests
 //
 //  Auto-generated test stub for ${BASENAME}.swift
 //  TODO: Implement actual tests
@@ -107,4 +107,4 @@ echo "Next steps:"
 echo "1. Open $TEST_FILE"
 echo "2. Replace XCTFail with actual test implementations"
 echo "3. Add necessary setup and mocks"
-echo "4. Run tests: xcodebuild test -scheme Roots -only-testing:RootsTests/${BASENAME}Tests"
+echo "4. Run tests: xcodebuild test -scheme Roots -only-testing:ItoriTests/${BASENAME}Tests"

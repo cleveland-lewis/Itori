@@ -63,6 +63,7 @@ final class PersistenceController {
 
         if let error = loadError {
             LOG_DATA(.error, "Persistence", "Persistent store load failed: \(error.localizedDescription)")
+            print("[Persistence] Full error: \(error)")
             
             // If CloudKit failed, recreate container without CloudKit
             if iCloudSyncEnabled {
@@ -70,7 +71,7 @@ final class PersistenceController {
                 isCloudKitEnabled = false
                 
                 // Create new container without CloudKit
-                let newContainer = NSPersistentCloudKitContainer(name: "Roots")
+                let newContainer = NSPersistentCloudKitContainer(name: "Itori")
                 guard let newDescription = newContainer.persistentStoreDescriptions.first else {
                     LOG_DATA(.error, "Persistence", "CRITICAL: Missing description on retry - using fallback")
                     // Use in-memory as last resort

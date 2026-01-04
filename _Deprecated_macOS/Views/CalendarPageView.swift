@@ -285,7 +285,7 @@ struct CalendarPageView: View {
         .onReceive(NotificationCenter.default.publisher(for: .nextWeek)) { _ in
             moveFocusedDate(by: .weekOfYear, value: 1)
         }
-        .onReceive(NotificationCenter.default.publisher(for: .goToToday)) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .goToTodayNotification)) { _ in
             jumpToToday()
         }
         .onReceive(deviceCalendar.$events) { _ in
