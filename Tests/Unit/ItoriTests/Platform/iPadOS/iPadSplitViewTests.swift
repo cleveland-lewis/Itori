@@ -11,6 +11,7 @@ class iPadSplitViewTests: XCTestCase {
         // Test only runs on iPad
         guard idiom == .pad else {
             XCTSkip("Test only applicable on iPad")
+            return
         }
         
         // Verify split view capability exists
@@ -20,6 +21,7 @@ class iPadSplitViewTests: XCTestCase {
     func testMultiWindowSupport() {
         guard UIDevice.current.userInterfaceIdiom == .pad else {
             XCTSkip("Test only applicable on iPad")
+            return
         }
         
         // Test that app supports multiple windows on iPadOS
