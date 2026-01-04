@@ -15,39 +15,41 @@ struct RootsSidebarShell: View {
             // Persistent left sidebar (card style)
             if sidebarVisible {
                 GlassPanel(material: .hudWindow, cornerRadius: 18, showBorder: true) {
-                    SidebarColumn(selection: $selection)
+                    SidebarColumn(selection: $selection, sidebarVisible: $sidebarVisible)
                         .frame(maxHeight: .infinity, alignment: .top)
                 }
                 .frame(width: 260)
                 .transition(.move(edge: .leading).combined(with: .opacity))
             }
 
-            // Main content area with toolbar
+            // Main content area
             VStack(spacing: 0) {
-                // Toolbar with sidebar toggle
-                HStack {
-                    Button(action: {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                            sidebarVisible.toggle()
+                // Show toggle button only when sidebar is hidden
+                if !sidebarVisible {
+                    HStack {
+                        Button(action: {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                sidebarVisible.toggle()
+                            }
+                        }) {
+                            Image(systemName: "sidebar.left")
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                                .frame(width: 32, height: 32)
+                                .background(
+                                    Circle()
+                                        .fill(DesignSystem.Materials.hud.opacity(0.5))
+                                )
                         }
-                    }) {
-                        Image(systemName: "sidebar.left")
-                            .font(.body)
-                            .foregroundStyle(.secondary)
-                            .frame(width: 32, height: 32)
-                            .background(
-                                Circle()
-                                    .fill(DesignSystem.Materials.hud.opacity(0.5))
-                            )
+                        .buttonStyle(.plain)
+                        .help("Show Sidebar")
+                        .keyboardShortcut("s", modifiers: [.command, .control])
+                        
+                        Spacer()
                     }
-                    .buttonStyle(.plain)
-                    .help("Toggle Sidebar")
-                    .keyboardShortcut("s", modifiers: [.command, .control])
-                    
-                    Spacer()
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 12)
                 }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 12)
                 
                 // Page content
                 currentPageView
@@ -112,9 +114,9 @@ struct RootsSidebarShell: View {
             Image(systemName: "rectangle.stack.badge.person.crop")
                 .font(.title)
                 .foregroundStyle(.secondary)
-            Text("Flashcards are turned off")
+            Text(NSLocalizedString("ui.flashcards.are.turned.off", value: "Flashcards are turned off", comment: "Flashcards are turned off"))
                 .font(DesignSystem.Typography.subHeader)
-            Text("Enable flashcards in Settings → Flashcards to study decks.")
+            Text(NSLocalizedString("ui.enable.flashcards.in.settings.flashcards", value: "Enable flashcards in Settings → Flashcards to study decks.", comment: "Enable flashcards in Settings → Flashcards to stud..."))
                 .font(DesignSystem.Typography.caption)
                 .foregroundStyle(.secondary)
         }
@@ -136,18 +138,34 @@ struct RootsSidebarShell: View {
 /// Sidebar column with navigation items
 struct SidebarColumn: View {
     @Binding var selection: RootTab
+    @Binding var sidebarVisible: Bool
     @EnvironmentObject var settings: AppSettingsModel
     @EnvironmentObject var settingsCoordinator: SettingsCoordinator
     @State private var settingsRotation: Double = 0
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // App header
+            // App header with toggle
             HStack {
-                Text("Itori")
+                Text(NSLocalizedString("ui.itori", value: "Itori", comment: "Itori"))
                     .font(.title2.weight(.semibold))
                 
                 Spacer()
+                
+                Button(action: {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                        sidebarVisible.toggle()
+                    }
+                }) {
+                    Image(systemName: "sidebar.left")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 28, height: 28)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .help("Hide Sidebar")
+                .keyboardShortcut("s", modifiers: [.command, .control])
             }
             .padding(.horizontal, 16)
             .padding(.top, 20)
@@ -190,7 +208,7 @@ struct SidebarColumn: View {
                         .font(.body)
                         .rotationEffect(.degrees(settingsRotation))
                     
-                    Text("Settings")
+                    Text(NSLocalizedString("ui.settings", value: "Settings", comment: "Settings"))
                         .font(.body)
                     
                     Spacer()
