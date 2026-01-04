@@ -45,6 +45,17 @@ final class CoursesStore: ObservableObject {
     
     // OPTIMIZATION: Track loading state for UI
     @Published private(set) var isInitialLoadComplete: Bool = false
+    
+    // PHASE 2: Snapshot structure for off-main loading
+    private struct InitialCoursesSnapshot {
+        let semesters: [Semester]
+        let courses: [Course]
+        let outlineNodes: [CourseOutlineNode]
+        let courseFiles: [CourseFile]
+        let currentSemesterId: UUID?
+        let activeSemesterIds: Set<UUID>
+        let computedGPA: Double
+    }
 
     init(storageURL: URL? = nil) {
         let fm = FileManager.default
@@ -74,16 +85,153 @@ final class CoursesStore: ObservableObject {
     }
     
     // OPTIMIZATION: Async data loading - doesn't block app launch
-    @MainActor
+    // PHASE 2: Moved heavy work off MainActor
     private func loadDataAsync() async {
-        loadCache()
-        load()
-        loadFromiCloudIfEnabled()
-        setupiCloudMonitoring()
-        cleanupOldData()
-        recalcGPA(tasks: AssignmentsStore.shared.tasks)
-        isInitialLoadComplete = true
-        LOG_PERSISTENCE(.info, "CoursesLoad", "Async initial load complete")
+        // PHASE 2: Perform ALL disk I/O, decoding, and computation OFF main thread
+        let snapshot = await Task.detached(priority: .userInitiated) { [weak self] () -> InitialCoursesSnapshot? in
+            guard let self = self else { return nil }
+            
+            let startTime = CFAbsoluteTimeGetCurrent()
+            LOG_PERSISTENCE(.debug, "CoursesLoad", "Starting off-main data load")
+            
+            // Step 1: Load cache (fast path)
+            var semesters: [Semester] = []
+            var courses: [Course] = []
+            var outlineNodes: [CourseOutlineNode] = []
+            var courseFiles: [CourseFile] = []
+            var currentSemesterId: UUID?
+            var activeSemesterIds: Set<UUID> = []
+            
+            // Load cache first (if available)
+            if FileManager.default.fileExists(atPath: self.cacheURL.path) {
+                do {
+                    let data = try Data(contentsOf: self.cacheURL)
+                    let decoded = try JSONDecoder().decode(PersistedData.self, from: data)
+                    semesters = decoded.semesters
+                    courses = decoded.courses
+                    outlineNodes = decoded.outlineNodes
+                    courseFiles = decoded.courseFiles
+                    currentSemesterId = decoded.currentSemesterId
+                    activeSemesterIds = decoded.activeSemesterIds.map { Set($0) } ?? (currentSemesterId.map { [$0] } ?? [])
+                    LOG_PERSISTENCE(.debug, "CoursesCache", "Loaded cache off-main", metadata: ["semesters": "\(semesters.count)"])
+                } catch {
+                    LOG_PERSISTENCE(.error, "CoursesCache", "Cache load failed: \(error.localizedDescription)")
+                }
+            }
+            
+            // Step 2: Load main storage (may override cache)
+            if FileManager.default.fileExists(atPath: self.storageURL.path) {
+                do {
+                    let data = try Data(contentsOf: self.storageURL)
+                    let decoded = try JSONDecoder().decode(PersistedData.self, from: data)
+                    semesters = decoded.semesters
+                    courses = decoded.courses
+                    outlineNodes = decoded.outlineNodes
+                    courseFiles = decoded.courseFiles
+                    currentSemesterId = decoded.currentSemesterId
+                    activeSemesterIds = decoded.activeSemesterIds.map { Set($0) } ?? (currentSemesterId.map { [$0] } ?? [])
+                    LOG_PERSISTENCE(.debug, "CoursesLoad", "Loaded main storage off-main", metadata: ["semesters": "\(semesters.count)"])
+                } catch {
+                    LOG_PERSISTENCE(.error, "CoursesLoad", "Storage load failed: \(error.localizedDescription)")
+                }
+            }
+            
+            // Step 3: Cleanup old data (off-main)
+            let threshold = Date().addingTimeInterval(-30 * 24 * 60 * 60)
+            let expiredIds = semesters.compactMap { semester -> UUID? in
+                guard let deletedAt = semester.deletedAt, deletedAt < threshold else { return nil }
+                return semester.id
+            }
+            if !expiredIds.isEmpty {
+                semesters.removeAll { expiredIds.contains($0.id) }
+                courses.removeAll { expiredIds.contains($0.semesterId) }
+                if let currentId = currentSemesterId, expiredIds.contains(currentId) {
+                    currentSemesterId = nil
+                }
+                LOG_PERSISTENCE(.debug, "CoursesCleanup", "Cleaned \(expiredIds.count) expired items off-main")
+            }
+            
+            // Step 4: Compute GPA off-main (expensive!)
+            let gradedCourses = courses.filter { !$0.isArchived }
+            // Note: GPA calculation needs tasks, but we'll defer that to avoid circular dependency
+            // For now, compute basic GPA structure
+            let gpa = 0.0  // Will be computed properly on main thread after merge
+            
+            let elapsed = (CFAbsoluteTimeGetCurrent() - startTime) * 1000
+            LOG_PERSISTENCE(.info, "CoursesLoad", "Off-main load complete in \(Int(elapsed))ms")
+            
+            return InitialCoursesSnapshot(
+                semesters: semesters,
+                courses: courses,
+                outlineNodes: outlineNodes,
+                courseFiles: courseFiles,
+                currentSemesterId: currentSemesterId,
+                activeSemesterIds: activeSemesterIds,
+                computedGPA: gpa
+            )
+        }.value
+        
+        // PHASE 2: Apply snapshot on main thread in ONE batch
+        guard let snapshot = snapshot else {
+            LOG_PERSISTENCE(.error, "CoursesLoad", "Failed to load snapshot")
+            isInitialLoadComplete = true
+            return
+        }
+        
+        await MainActor.run {
+            LOG_PERSISTENCE(.debug, "CoursesLoad", "Applying snapshot on main thread")
+            
+            // Single batch update - triggers @Published ONCE
+            self.semesters = snapshot.semesters
+            self.courses = snapshot.courses
+            self.outlineNodes = snapshot.outlineNodes
+            self.courseFiles = snapshot.courseFiles
+            self.currentSemesterId = snapshot.currentSemesterId
+            self.activeSemesterIds = snapshot.activeSemesterIds
+            self.currentGPA = snapshot.computedGPA
+            
+            // SAFETY: Ensure activeSemesterIds is never empty if there are active semesters
+            if self.activeSemesterIds.isEmpty {
+                // Try current semester first
+                if let currentId = self.currentSemesterId, !self.isDeleted(semesterId: currentId) {
+                    self.activeSemesterIds = [currentId]
+                    LOG_PERSISTENCE(.info, "CoursesLoad", "Initialized activeSemesterIds from currentSemesterId")
+                }
+                // Fallback to most recent non-archived, non-deleted semester
+                else if let mostRecent = self.semesters
+                    .filter({ !$0.isArchived && !$0.isDeleted })
+                    .sorted(by: { $0.startDate > $1.startDate })
+                    .first {
+                    self.activeSemesterIds = [mostRecent.id]
+                    LOG_PERSISTENCE(.info, "CoursesLoad", "Initialized activeSemesterIds to most recent semester")
+                }
+            }
+            
+            LOG_PERSISTENCE(.info, "CoursesLoad", "Initial load complete - data published")
+        }
+        
+        // PHASE 2: Defer iCloud and expensive operations
+        await loadFromiCloudIfEnabledAsync()
+        
+        // PHASE 2: Setup monitoring after data is loaded
+        await MainActor.run {
+            setupiCloudMonitoring()
+            isInitialLoadComplete = true
+            LOG_PERSISTENCE(.info, "CoursesLoad", "All initialization complete")
+        }
+        
+        // PHASE 2: Compute GPA async after UI is interactive
+        Task.detached(priority: .utility) { [weak self] in
+            await Task.sleep(nanoseconds: 500_000_000) // 0.5s delay
+            guard let self = self else { return }
+            let tasks = await AssignmentsStore.shared.tasks
+            let gradedCourses = await self.courses.filter { !$0.isArchived }
+            let gpa = GradeCalculator.calculateGPA(courses: gradedCourses, tasks: tasks)
+            await MainActor.run {
+                self.currentGPA = gpa
+                LOG_PERSISTENCE(.debug, "CoursesGPA", "GPA computed async: \(gpa)")
+            }
+        }
     }
     
     private lazy var iCloudURL: URL? = {
@@ -101,6 +249,13 @@ final class CoursesStore: ObservableObject {
     }
 
     // MARK: - Public API
+    
+    // MARK: - Helper Methods
+    
+    /// Check if a semester is soft-deleted
+    private func isDeleted(semesterId: UUID) -> Bool {
+        return semesters.first(where: { $0.id == semesterId })?.isDeleted ?? false
+    }
 
     // Legacy single semester support
     var currentSemester: Semester? {
@@ -877,6 +1032,44 @@ extension CoursesStore {
         guard isSyncEnabled else { return }
         guard !AppSettingsModel.shared.suppressICloudRestore else { return }
         loadFromiCloud()
+    }
+    
+    // PHASE 2: Async iCloud loading that merges without multiple publishes
+    private func loadFromiCloudIfEnabledAsync() async {
+        guard isSyncEnabled else { return }
+        guard !AppSettingsModel.shared.suppressICloudRestore else { return }
+        guard let url = iCloudURL else { return }
+        guard FileManager.default.fileExists(atPath: url.path) else { return }
+        
+        // Load and decode off-main
+        let cloudData = await Task.detached(priority: .utility) { () -> PersistedData? in
+            do {
+                let data = try Data(contentsOf: url)
+                let decoded = try JSONDecoder().decode(PersistedData.self, from: data)
+                LOG_PERSISTENCE(.debug, "CoursesiCloud", "Decoded iCloud data off-main")
+                return decoded
+            } catch {
+                LOG_PERSISTENCE(.error, "CoursesiCloud", "iCloud load failed: \(error.localizedDescription)")
+                return nil
+            }
+        }.value
+        
+        guard let decoded = cloudData else { return }
+        
+        // PHASE 2: Merge on main in ONE update
+        await MainActor.run {
+            isLoadingFromDisk = true
+            self.semesters = decoded.semesters
+            self.courses = decoded.courses
+            self.outlineNodes = decoded.outlineNodes
+            self.courseFiles = decoded.courseFiles
+            self.currentSemesterId = decoded.currentSemesterId
+            if let activeSemesterIdsArray = decoded.activeSemesterIds {
+                self.activeSemesterIds = Set(activeSemesterIdsArray)
+            }
+            isLoadingFromDisk = false
+            LOG_PERSISTENCE(.info, "CoursesiCloud", "iCloud data merged", metadata: ["semesters": "\(semesters.count)"])
+        }
     }
     
     private func saveToiCloud() {

@@ -78,10 +78,22 @@ struct RootsIOSApp: App {
                     preferences.reduceTransparency = appSettings.increaseTransparency || !appSettings.enableGlassEffects
                     preferences.glassIntensity = appSettings.glassIntensity
                     preferences.reduceMotion = appSettings.reduceMotion
+                    
+                    // PHASE 3: Start prewarming hot views after idle
+                    Task {
+                        try? await Task.sleep(nanoseconds: 1_200_000_000) // 1.2s
+                        PrewarmCoordinator.shared.startPrewarming(
+                            coursesStore: coursesStore,
+                            assignmentsStore: .shared
+                        )
+                    }
                 }
                 .onChange(of: scenePhase) { _, phase in
                     if phase == .background {
                         BackgroundRefreshManager.shared.scheduleNext()
+                        
+                        // PHASE 3: Cancel prewarming when app goes to background
+                        PrewarmCoordinator.shared.cancelPrewarming()
                         
                         // Schedule background task for intelligent scheduling
                         Task {
@@ -152,25 +164,50 @@ struct RootsIOSApp: App {
     }
     
     // OPTIMIZATION: Initialize background services after first frame renders
+    // PHASE 2: Tiered initialization - core services first, then delayed services
     @MainActor
     private func initializeBackgroundServices() async {
-        LOG_LIFECYCLE(.info, "BackgroundInit", "Starting background service initialization")
+        LOG_LIFECYCLE(.info, "BackgroundInit", "Starting tiered background service initialization")
         
-        // Initialize services in parallel for maximum speed
+        // TIER 1: Core services needed for basic interaction (start immediately)
+        await withTaskGroup(of: Void.self) { group in
+            // Reset coordinator (affects app state)
+            group.addTask {
+                ResetCoordinator.shared.start(appModel: AppModel.shared)
+                LOG_LIFECYCLE(.debug, "Tier1", "ResetCoordinator initialized")
+            }
+            
+            // Background tasks registration
+            group.addTask {
+                RootsIOSApp.registerBackgroundTasks()
+                LOG_LIFECYCLE(.debug, "Tier1", "BackgroundTasks registered")
+            }
+        }
+        
+        LOG_LIFECYCLE(.info, "BackgroundInit", "Tier 1 services initialized")
+        
+        // PHASE 2: Wait for initial data load OR 1 second delay
+        let dataLoadWaitTask = Task {
+            for _ in 0..<20 {  // Check up to 2 seconds
+                if CoursesStore.shared?.isInitialLoadComplete == true {
+                    break
+                }
+                try? await Task.sleep(nanoseconds: 100_000_000) // 0.1s
+            }
+        }
+        await dataLoadWaitTask.value
+        
+        // Additional small delay to ensure UI is stable
+        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5s
+        
+        LOG_LIFECYCLE(.info, "BackgroundInit", "Starting Tier 2 services")
+        
+        // TIER 2: All other services (defer to avoid blocking interaction)
         await withTaskGroup(of: Void.self) { group in
             // PhoneWatch communication
             group.addTask {
                 _ = PhoneWatchBridge.shared
-            }
-            
-            // Reset coordinator
-            group.addTask {
-                ResetCoordinator.shared.start(appModel: AppModel.shared)
-            }
-            
-            // Background tasks
-            group.addTask {
-                RootsIOSApp.registerBackgroundTasks()
+                LOG_LIFECYCLE(.debug, "Tier2", "PhoneWatchBridge initialized")
             }
             
             // Planner sync
@@ -180,26 +217,30 @@ struct RootsIOSApp: App {
                     plannerStore: .shared,
                     settings: .shared
                 )
+                LOG_LIFECYCLE(.debug, "Tier2", "PlannerSync initialized")
             }
             
             // Missed event detection
             group.addTask {
                 MissedEventDetectionService.shared.startMonitoring()
+                LOG_LIFECYCLE(.debug, "Tier2", "MissedEventDetection initialized")
             }
             
             // Background refresh
             group.addTask {
                 BackgroundRefreshManager.shared.register()
                 BackgroundRefreshManager.shared.scheduleNext()
+                LOG_LIFECYCLE(.debug, "Tier2", "BackgroundRefresh initialized")
             }
             
             // Intelligent scheduling
             group.addTask {
                 IntelligentSchedulingCoordinator.shared.start()
+                LOG_LIFECYCLE(.debug, "Tier2", "IntelligentScheduling initialized")
             }
         }
         
-        LOG_LIFECYCLE(.info, "BackgroundInit", "Background services initialized")
+        LOG_LIFECYCLE(.info, "BackgroundInit", "All background services initialized (tiered)")
     }
 }
 

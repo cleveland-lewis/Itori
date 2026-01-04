@@ -78,8 +78,13 @@ struct AppTask: Codable, Equatable, Hashable {
     var alarmDate: Date?               // When to fire the alarm reminder
     var alarmEnabled: Bool = false     // Whether alarm is active
     var alarmSound: String?            // Optional custom alarm sound identifier
+    
+    // Soft delete support for data integrity
+    var deletedAt: Date?               // When task was soft-deleted (nil = active)
+    
+    var isDeleted: Bool { deletedAt != nil }
 
-    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil, category: TaskType? = nil, dueTimeMinutes: Int? = nil, recurrence: RecurrenceRule? = nil, recurrenceSeriesID: UUID? = nil, recurrenceIndex: Int? = nil, calendarEventIdentifier: String? = nil, sourceUniqueKey: String? = nil, sourceFingerprint: String? = nil, notes: String? = nil, needsReview: Bool = false, alarmDate: Date? = nil, alarmEnabled: Bool = false, alarmSound: String? = nil) {
+    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil, category: TaskType? = nil, dueTimeMinutes: Int? = nil, recurrence: RecurrenceRule? = nil, recurrenceSeriesID: UUID? = nil, recurrenceIndex: Int? = nil, calendarEventIdentifier: String? = nil, sourceUniqueKey: String? = nil, sourceFingerprint: String? = nil, notes: String? = nil, needsReview: Bool = false, alarmDate: Date? = nil, alarmEnabled: Bool = false, alarmSound: String? = nil, deletedAt: Date? = nil) {
         self.id = id
         self.title = title
         self.courseId = courseId
@@ -109,6 +114,7 @@ struct AppTask: Codable, Equatable, Hashable {
         self.alarmDate = alarmDate
         self.alarmEnabled = alarmEnabled
         self.alarmSound = alarmSound
+        self.deletedAt = deletedAt
     }
 
     enum CodingKeys: String, CodingKey {
@@ -141,6 +147,7 @@ struct AppTask: Codable, Equatable, Hashable {
         case alarmDate           // Phase 4.1
         case alarmEnabled        // Phase 4.1
         case alarmSound          // Phase 4.1
+        case deletedAt           // Soft delete support
     }
 
     init(from decoder: Decoder) throws {
@@ -191,6 +198,9 @@ struct AppTask: Codable, Equatable, Hashable {
         alarmDate = try container.decodeIfPresent(Date.self, forKey: .alarmDate)
         alarmEnabled = try container.decodeIfPresent(Bool.self, forKey: .alarmEnabled) ?? false
         alarmSound = try container.decodeIfPresent(String.self, forKey: .alarmSound)
+        
+        // Soft delete support
+        deletedAt = try container.decodeIfPresent(Date.self, forKey: .deletedAt)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -226,6 +236,9 @@ struct AppTask: Codable, Equatable, Hashable {
         try container.encodeIfPresent(alarmDate, forKey: .alarmDate)
         try container.encode(alarmEnabled, forKey: .alarmEnabled)
         try container.encodeIfPresent(alarmSound, forKey: .alarmSound)
+        
+        // Soft delete support
+        try container.encodeIfPresent(deletedAt, forKey: .deletedAt)
     }
 
     func withCourseId(_ newCourseId: UUID?) -> AppTask {
