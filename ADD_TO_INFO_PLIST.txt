@@ -1,0 +1,35 @@
+═══════════════════════════════════════════════════════════════════════════════
+  COPY THIS INTO YOUR Info.plist FILE
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP-BY-STEP:
+
+1. In Xcode, open your project
+2. In Project Navigator, find Info.plist for iOS target
+3. Right-click Info.plist → Open As → Source Code
+4. Find the closing </dict> tag (near the end of file)
+5. Paste this BEFORE that closing </dict> tag:
+
+───────────────────────────────────────────────────────────────────────────────
+COPY STARTING HERE ↓
+───────────────────────────────────────────────────────────────────────────────
+
+<!-- Intelligent Scheduling Background Execution -->
+<key>UIBackgroundModes</key>
+<array>
+<string>fetch</string>
+<string>processing</string>
+</array>
+<key>BGTaskSchedulerPermittedIdentifiers</key>
+<array>
+<string>com.clevelandlewis.Itori.intelligentScheduling</string>
+</array>
+
+───────────────────────────────────────────────────────────────────────────────
+COPY ENDING HERE ↑
+───────────────────────────────────────────────────────────────────────────────
+
+6. Save the file (Cmd+S)
+7. Done! ✅
+
+═══════════════════════════════════════════════════════════════════════════════
