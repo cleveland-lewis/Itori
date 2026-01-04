@@ -663,7 +663,7 @@ struct TodaySummaryCard: View {
                 ForEach(AssignmentUrgency.allCases, id: \.self) { urgency in
                     let count = dueToday.filter { $0.urgency == urgency }.count
                     if count > 0 {
-                        Label("\(count)", systemImage: "circle.fill")
+                        Label(NSLocalizedString("assignments.label.count", value: "\(count)", comment: "\(count)"), systemImage: "circle.fill")
                             .labelStyle(.titleAndIcon)
                             .font(.caption2.weight(.semibold))
                             .foregroundColor(urgency.color)

@@ -120,27 +120,27 @@ struct PracticeTestContextMenuModifier: ViewModifier {
         content
             .contextMenu {
                 // Practice Test-specific items
-                Button("New Practice Test") {
+                Button(NSLocalizedString("ui.button.new.practice.test", value: "New Practice Test", comment: "New Practice Test")) {
                     onNewTest()
                 }
                 .keyboardShortcut("n", modifiers: [.command, .shift])
                 
                 if let currentTest = practiceStore.currentTest {
                     if currentTest.status == .ready || currentTest.status == .inProgress {
-                        Button("Submit Test") {
+                        Button(NSLocalizedString("ui.button.submit.test", value: "Submit Test", comment: "Submit Test")) {
                             practiceStore.submitTest(currentTest.id)
                         }
                         .keyboardShortcut(.return, modifiers: [.command, .shift])
                     }
                     
                     if currentTest.status == .submitted {
-                        Button("Review Test") {
+                        Button(NSLocalizedString("ui.button.review.test", value: "Review Test", comment: "Review Test")) {
                             // Test is already showing
                         }
                     }
                     
                     if currentTest.status == .failed {
-                        Button("Retry Generation") {
+                        Button(NSLocalizedString("ui.button.retry.generation", value: "Retry Generation", comment: "Retry Generation")) {
                             Task {
                                 await practiceStore.retryGeneration(testId: currentTest.id)
                             }
@@ -150,7 +150,7 @@ struct PracticeTestContextMenuModifier: ViewModifier {
                     
                     Divider()
                     
-                    Button("Back to List") {
+                    Button(NSLocalizedString("ui.button.back.to.list", value: "Back to List", comment: "Back to List")) {
                         practiceStore.clearCurrentTest()
                     }
                     .keyboardShortcut(.leftArrow, modifiers: .command)
@@ -159,12 +159,12 @@ struct PracticeTestContextMenuModifier: ViewModifier {
                 if !practiceStore.tests.isEmpty {
                     Divider()
                     
-                    Button("Refresh Statistics") {
+                    Button(NSLocalizedString("ui.button.refresh.statistics", value: "Refresh Statistics", comment: "Refresh Statistics")) {
                         onRefreshStats()
                     }
                     .keyboardShortcut("r", modifiers: [.command])
                     
-                    Button("Clear All Tests") {
+                    Button(NSLocalizedString("ui.button.clear.all.tests", value: "Clear All Tests", comment: "Clear All Tests")) {
                         showDeleteConfirmation = true
                     }
                     .keyboardShortcut(.delete, modifiers: [.command, .shift])
@@ -173,12 +173,12 @@ struct PracticeTestContextMenuModifier: ViewModifier {
                 Divider()
                 
                 // Navigation items
-                Button("Go to Courses") {
+                Button(NSLocalizedString("ui.button.go.to.courses", value: "Go to Courses", comment: "Go to Courses")) {
                     GlobalMenuActions.shared.navigateToCourses()
                 }
                 .keyboardShortcut("1", modifiers: [.command, .option])
                 
-                Button("Go to Planner") {
+                Button(NSLocalizedString("ui.button.go.to.planner", value: "Go to Planner", comment: "Go to Planner")) {
                     GlobalMenuActions.shared.navigateToPlanner()
                 }
                 .keyboardShortcut("2", modifiers: [.command, .option])
@@ -189,7 +189,7 @@ struct PracticeTestContextMenuModifier: ViewModifier {
                     practiceStore.resetAll()
                 }
             } message: {
-                Text("Are you sure you want to delete all practice tests? This action cannot be undone.")
+                Text(NSLocalizedString("ui.are.you.sure.you.want", value: "Are you sure you want to delete all practice tests? This action cannot be undone.", comment: "Are you sure you want to delete all practice tests..."))
             }
     }
 }

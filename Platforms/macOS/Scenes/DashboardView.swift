@@ -1474,7 +1474,7 @@ struct DashboardView: View {
     }
 
     private func setEnergy(_ level: EnergyLevel) {
-        LOG_DEV(.info as DeveloperLogLevel, "EnergySync", "🎯 User selected energy level", metadata: [
+        LOG_DEV(.info, "EnergySync", "🎯 User selected energy level", metadata: [
             "level": level.rawValue,
             "device": "Mac",
             "timestamp": "\(Date())"
@@ -1485,19 +1485,19 @@ struct DashboardView: View {
         switch level {
         case .high:
             base = current.mapValues { min(1.0, $0 + 0.2) }
-            LOG_DEV(.debug as DeveloperLogLevel, "EnergySync", "Adjusted energy profile for HIGH", metadata: ["adjustment": "+0.2"])
+            LOG_DEV(.debug, "EnergySync", "Adjusted energy profile for HIGH", metadata: ["adjustment": "+0.2"])
         case .medium:
             base = current
-            LOG_DEV(.debug as DeveloperLogLevel, "EnergySync", "Using default energy profile for MEDIUM")
+            LOG_DEV(.debug, "EnergySync", "Using default energy profile for MEDIUM")
         case .low:
             base = current.mapValues { max(0.1, $0 - 0.2) }
-            LOG_DEV(.debug as DeveloperLogLevel, "EnergySync", "Adjusted energy profile for LOW", metadata: ["adjustment": "-0.2"])
+            LOG_DEV(.debug, "EnergySync", "Adjusted energy profile for LOW", metadata: ["adjustment": "-0.2"])
         }
         
-        LOG_DEV(.debug as DeveloperLogLevel, "EnergySync", "Updating scheduler preferences energy profile")
+        LOG_DEV(.debug, "EnergySync", "Updating scheduler preferences energy profile")
         SchedulerPreferencesStore.shared.updateEnergyProfile(base)
         
-        LOG_DEV(.info as DeveloperLogLevel, "EnergySync", "📅 Requesting planner recompute", metadata: [
+        LOG_DEV(.info, "EnergySync", "📅 Requesting planner recompute", metadata: [
             "reason": "energy level changed",
             "newLevel": level.rawValue
         ])

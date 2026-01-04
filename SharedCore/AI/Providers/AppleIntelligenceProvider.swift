@@ -39,7 +39,7 @@ public final class AppleIntelligenceProvider: AIProvider {
 
     public static func availability() -> Availability {
         #if canImport(FoundationModels)
-        if #available(iOS 18.0, macOS 15.0, *) {
+        if #available(iOS 26.0, macOS 26.0, *) {
             #if os(iOS) || os(macOS)
             if AppleFoundationClient.isAvailable() {
                 return Availability(available: true, reason: "Apple Foundation Models available")
@@ -49,7 +49,7 @@ public final class AppleIntelligenceProvider: AIProvider {
             return Availability(available: false, reason: "Unsupported OS for Apple Intelligence")
             #endif
         }
-        return Availability(available: false, reason: "Requires iOS 18+ / macOS 15+")
+        return Availability(available: false, reason: "Requires iOS 26+ / macOS 26+")
         #else
         return Availability(available: false, reason: "FoundationModels framework not available in this SDK")
         #endif
@@ -69,7 +69,7 @@ public final class AppleIntelligenceProvider: AIProvider {
         let startTime = Date()
 
         #if canImport(FoundationModels)
-        if #available(iOS 18.0, macOS 15.0, *) {
+        if #available(iOS 26.0, macOS 26.0, *) {
             let responseText = try await AppleFoundationClient.generate(prompt: prompt, temperature: temperature)
             let latency = Int(Date().timeIntervalSince(startTime) * 1000)
             return AIProviderResult(
@@ -92,15 +92,16 @@ public final class AppleIntelligenceProvider: AIProvider {
 }
 
 #if canImport(FoundationModels)
-@available(iOS 18.0, macOS 15.0, *)
+@available(iOS 26.0, macOS 26.0, *)
 private enum AppleFoundationClient {
     static func isAvailable() -> Bool {
-        // SystemLanguageModel API not available in current SDK
-        return false
+        return SystemLanguageModel.default.isAvailable
     }
 
     static func generate(prompt: String, temperature: Double) async throws -> String {
-        throw AIError.providerUnavailable("AppleIntelligence")
+        let session = LanguageModelSession(model: .default)
+        let response = try await session.respond(to: prompt)
+        return response.content
     }
 }
 #endif

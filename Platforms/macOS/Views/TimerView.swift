@@ -18,7 +18,7 @@ struct TimerView: View {
                 // Left column: Activities list
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
-                        Text("Activities")
+                        Text(NSLocalizedString("timer.activities", value: "Activities", comment: "Activities"))
                             .font(DesignSystem.Typography.subHeader)
                         Spacer()
                         Button {
@@ -75,7 +75,7 @@ struct TimerView: View {
                 }
                 .buttonStyle(LegacyGlassProminentButtonStyle())
 
-                Button("Reset") {
+                Button(NSLocalizedString("timer.button.reset", value: "Reset", comment: "Reset")) {
                     reset()
                 }
                 .buttonStyle(GlassButtonStyle())

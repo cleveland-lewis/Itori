@@ -17,12 +17,12 @@ struct AddCardSheet: View {
         VStack(spacing: 20) {
             // Header
             HStack {
-                Text("Add Card")
+                Text(NSLocalizedString("ui.add.card", value: "Add Card", comment: "Add Card"))
                     .font(.title2.bold())
                 
                 Spacer()
                 
-                Button("Cancel") {
+                Button(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel")) {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
@@ -67,12 +67,12 @@ struct AddCardSheet: View {
             HStack {
                 Spacer()
                 
-                Button("Cancel") {
+                Button(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel")) {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
                 
-                Button("Add Card") {
+                Button(NSLocalizedString("ui.button.add.card", value: "Add Card", comment: "Add Card")) {
                     addCard()
                 }
                 .buttonStyle(.borderedProminent)
@@ -113,12 +113,12 @@ struct EditCardSheet: View {
         VStack(spacing: 20) {
             // Header
             HStack {
-                Text("Edit Card")
+                Text(NSLocalizedString("ui.edit.card", value: "Edit Card", comment: "Edit Card"))
                     .font(.title2.bold())
                 
                 Spacer()
                 
-                Button("Cancel") {
+                Button(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel")) {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
@@ -171,7 +171,7 @@ struct EditCardSheet: View {
             
             // Actions
             HStack {
-                Button("Reset Progress") {
+                Button(NSLocalizedString("ui.button.reset.progress", value: "Reset Progress", comment: "Reset Progress")) {
                     resetProgress()
                 }
                 .buttonStyle(.bordered)
@@ -179,12 +179,12 @@ struct EditCardSheet: View {
                 
                 Spacer()
                 
-                Button("Cancel") {
+                Button(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel")) {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
                 
-                Button("Save") {
+                Button(NSLocalizedString("ui.button.save", value: "Save", comment: "Save")) {
                     saveCard()
                 }
                 .buttonStyle(.borderedProminent)
@@ -252,12 +252,12 @@ struct DeckSettingsSheet: View {
         VStack(spacing: 20) {
             // Header
             HStack {
-                Text("Deck Settings")
+                Text(NSLocalizedString("ui.deck.settings", value: "Deck Settings", comment: "Deck Settings"))
                     .font(.title2.bold())
                 
                 Spacer()
                 
-                Button("Done") {
+                Button(NSLocalizedString("ui.button.done", value: "Done", comment: "Done")) {
                     dismiss()
                 }
                 .keyboardShortcut(.defaultAction)
@@ -285,7 +285,7 @@ struct DeckSettingsSheet: View {
                     Button {
                         exportToAnki()
                     } label: {
-                        Label("Export to Anki Format", systemImage: "square.and.arrow.up")
+                        Label(NSLocalizedString("ui.label.export.to.anki.format", value: "Export to Anki Format", comment: "Export to Anki Format"), systemImage: "square.and.arrow.up")
                     }
                 }
                 
@@ -293,7 +293,7 @@ struct DeckSettingsSheet: View {
                     Button(role: .destructive) {
                         showingDeleteConfirmation = true
                     } label: {
-                        Label("Delete Deck", systemImage: "trash")
+                        Label(NSLocalizedString("ui.label.delete.deck", value: "Delete Deck", comment: "Delete Deck"), systemImage: "trash")
                             .frame(maxWidth: .infinity)
                     }
                 }
@@ -352,12 +352,12 @@ struct ExportSheet: View {
     var body: some View {
         VStack(spacing: 20) {
             HStack {
-                Text("Export to Anki")
+                Text(NSLocalizedString("ui.export.to.anki", value: "Export to Anki", comment: "Export to Anki"))
                     .font(.title2.bold())
                 
                 Spacer()
                 
-                Button("Done") {
+                Button(NSLocalizedString("ui.button.done", value: "Done", comment: "Done")) {
                     dismiss()
                 }
             }
@@ -367,7 +367,7 @@ struct ExportSheet: View {
             Divider()
             
             VStack(alignment: .leading, spacing: 12) {
-                Text("CSV format ready for Anki import")
+                Text(NSLocalizedString("ui.csv.format.ready.for.anki.import", value: "CSV format ready for Anki import", comment: "CSV format ready for Anki import"))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 

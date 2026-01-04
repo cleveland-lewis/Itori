@@ -54,14 +54,14 @@ struct AISettingsView: View {
         .sheet(isPresented: $showingBYOConfig) {
             byoConfigurationSheet
         }
-        .alert("Disable LLM Assistance?", isPresented: $showingDisableAlert) {
-            Button("Cancel", role: .cancel) { }
-            Button("Disable", role: .destructive) {
+        .alert(NSLocalizedString("settings.llm.disable.alert.title", value: "Disable LLM Assistance?", comment: "Alert title when disabling LLM"), isPresented: $showingDisableAlert) {
+            Button(NSLocalizedString("settings.llm.disable.alert.cancel", value: "Cancel", comment: "Cancel button"), role: .cancel) { }
+            Button(NSLocalizedString("settings.llm.disable.alert.confirm", value: "Disable", comment: "Confirm disable button"), role: .destructive) {
                 settings.enableLLMAssistance = false
                 AIEngine.shared.resetProviderState()
             }
         } message: {
-            Text("All LLM features will be disabled. Planning and parsing will use deterministic algorithms only.")
+            Text(NSLocalizedString("settings.llm.disable.alert.message", value: "All LLM features will be disabled. Planning and parsing will use deterministic algorithms only.", comment: "Alert message explaining LLM disable"))
         }
     }
     
@@ -75,10 +75,10 @@ struct AISettingsView: View {
                     .foregroundStyle(.blue.gradient)
                 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("LLM Configuration")
+                    Text(NSLocalizedString("settings.llm.header.title", value: "LLM Configuration", comment: "LLM settings page title"))
                         .font(.title.weight(.semibold))
                     
-                    Text("Configure LLM providers and routing behavior")
+                    Text(NSLocalizedString("settings.llm.header.subtitle", value: "Configure LLM providers and routing behavior", comment: "LLM settings page subtitle"))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -90,10 +90,10 @@ struct AISettingsView: View {
     
     private var llmEnabledSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("LLM Assistance")
+            Text(NSLocalizedString("settings.llm.assistance.title", value: "LLM Assistance", comment: "LLM assistance section title"))
                 .font(.headline)
             
-            Toggle("Enable LLM Assistance", isOn: Binding(
+            Toggle(NSLocalizedString("settings.llm.assistance.toggle", value: "Enable LLM Assistance", comment: "Toggle to enable LLM assistance"), isOn: Binding(
                 get: { settings.enableLLMAssistance },
                 set: { newValue in
                     if !newValue {
@@ -108,11 +108,11 @@ struct AISettingsView: View {
             .toggleStyle(.switch)
             
             if settings.enableLLMAssistance {
-                Text("LLM assistance is enabled. Itori can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans.")
+                Text(NSLocalizedString("settings.llm.assistance.enabled.description", value: "LLM assistance is enabled. Itori can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans.", comment: "Description when LLM is enabled"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else {
-                Text("All LLM features are disabled. Planning and parsing use deterministic algorithms only.")
+                Text(NSLocalizedString("settings.llm.assistance.disabled.description", value: "All LLM features are disabled. Planning and parsing use deterministic algorithms only.", comment: "Description when LLM is disabled"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -123,7 +123,7 @@ struct AISettingsView: View {
     
     private var modeSelectionSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("AI Mode")
+            Text(NSLocalizedString("settings.llm.mode.title", value: "AI Mode", comment: "AI mode section title"))
                 .font(.headline)
             
             ForEach(AIMode.allCases) { mode in
@@ -161,12 +161,12 @@ struct AISettingsView: View {
     
     private var providerStatusSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Provider Status")
+            Text(NSLocalizedString("settings.llm.provider.status.title", value: "Provider Status", comment: "Provider status section title"))
                 .font(.headline)
             
             VStack(spacing: 8) {
                 providerRow(
-                    name: "Apple Intelligence",
+                    name: NSLocalizedString("settings.llm.provider.apple", value: "Apple Intelligence", comment: "Apple Intelligence provider name"),
                     icon: "apple.logo",
                     available: checkAppleIntelligence(),
                     description: appleIntelligenceDescription()
@@ -174,10 +174,10 @@ struct AISettingsView: View {
                 
                 #if os(macOS)
                 providerRow(
-                    name: "Local Model (macOS Standard)",
+                    name: NSLocalizedString("settings.llm.provider.local.macos", value: "Local Model (macOS Standard)", comment: "Local macOS model provider name"),
                     icon: "brain.head.profile",
                     available: modelManager.isModelDownloaded(.macOSStandard),
-                    description: "800 MB • Full capabilities"
+                    description: NSLocalizedString("settings.llm.provider.local.macos.description", value: "800 MB • Full capabilities", comment: "Local macOS model description")
                 )
                 #else
                 providerRow(
@@ -226,7 +226,7 @@ struct AISettingsView: View {
     
     private var localModelSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Local Model")
+            Text(NSLocalizedString("settings.llm.model.title", value: "Local Model", comment: "Local model section title"))
                 .font(.headline)
             
             #if os(macOS)
@@ -241,7 +241,7 @@ struct AISettingsView: View {
                         Text(modelType.displayName)
                             .font(.body.weight(.medium))
                         
-                        Text("Size: \(modelType.estimatedSize)")
+                        Text(String(format: NSLocalizedString("settings.llm.model.size", value: "Size: %@", comment: "Model size display"), modelType.estimatedSize))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -252,14 +252,14 @@ struct AISettingsView: View {
                         ProgressView(value: modelManager.downloadProgress(modelType))
                             .frame(width: 100)
                     } else if modelManager.isModelDownloaded(modelType) {
-                        Button("Delete") {
+                        Button(NSLocalizedString("settings.llm.model.button.delete", value: "Delete", comment: "Delete model button")) {
                             Task {
                                 try? modelManager.deleteModel(modelType)
                             }
                         }
                         .foregroundStyle(.red)
                     } else {
-                        Button("Download") {
+                        Button(NSLocalizedString("settings.llm.model.button.download", value: "Download", comment: "Download model button")) {
                             Task {
                                 do {
                                     try await modelManager.downloadModel(modelType)
@@ -273,11 +273,11 @@ struct AISettingsView: View {
                 }
                 
                 if modelManager.isModelDownloaded(modelType) {
-                    Text("✓ Model ready for offline use")
+                    Text(NSLocalizedString("settings.llm.model.ready", value: "✓ Model ready for offline use", comment: "Model ready status"))
                         .font(.caption)
                         .foregroundStyle(.green)
                 } else {
-                    Text("Download required for local-only mode")
+                    Text(NSLocalizedString("settings.llm.model.download.required", value: "Download required for local-only mode", comment: "Download required message"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -295,12 +295,12 @@ struct AISettingsView: View {
     private var byoProviderSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Text("Bring Your Own Provider")
+                Text(NSLocalizedString("settings.llm.byo.title", value: "Bring Your Own Provider", comment: "BYO provider section title"))
                     .font(.headline)
                 
                 Spacer()
                 
-                Button("Configure") {
+                Button(NSLocalizedString("settings.llm.byo.configure.button.short", value: "Configure", comment: "Configure BYO button")) {
                     showingBYOConfig = true
                 }
                 .buttonStyle(.borderedProminent)
@@ -308,11 +308,11 @@ struct AISettingsView: View {
             
             if checkBYOProvider() {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("✓ BYO provider configured")
+                    Text(NSLocalizedString("settings.llm.byo.configured", value: "✓ BYO provider configured", comment: "BYO configured status"))
                         .font(.caption)
                         .foregroundStyle(.green)
                     
-                    Button("Remove Configuration") {
+                    Button(NSLocalizedString("settings.llm.byo.remove.button", value: "Remove Configuration", comment: "Remove BYO configuration button")) {
                         AIRouter.shared.removeBYOProvider()
                     }
                     .foregroundStyle(.red)
@@ -323,7 +323,7 @@ struct AISettingsView: View {
                         .fill(.secondaryBackground)
                 )
             } else {
-                Text("Configure your own AI provider (OpenAI, Anthropic, or custom API)")
+                Text(NSLocalizedString("settings.llm.byo.description", value: "Configure your own AI provider (OpenAI, Anthropic, or custom API)", comment: "BYO provider description"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -332,10 +332,10 @@ struct AISettingsView: View {
     
     private var byoConfigurationSheet: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("Configure BYO Provider")
+            Text(NSLocalizedString("settings.llm.byo.configure.title", value: "Configure BYO Provider", comment: "BYO configuration sheet title"))
                 .font(.title2.weight(.semibold))
             
-            Picker("Provider Type", selection: $byoType) {
+            Picker(NSLocalizedString("settings.llm.byo.provider.type", value: "Provider Type", comment: "Provider type picker label"), selection: $byoType) {
                 ForEach(BYOProviderType.allCases) { type in
                     Text(type.displayName).tag(type)
                 }
@@ -387,12 +387,12 @@ struct AISettingsView: View {
     private var observabilitySection: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Text("Observability")
+                Text(NSLocalizedString("settings.llm.observability.title", value: "Observability", comment: "Observability section title"))
                     .font(.headline)
                 
                 Spacer()
                 
-                Button("Clear Logs") {
+                Button(NSLocalizedString("settings.llm.observability.clear.button", value: "Clear Logs", comment: "Clear logs button")) {
                     router.clearRoutingLog()
                 }
             }
@@ -400,13 +400,13 @@ struct AISettingsView: View {
             let logs = router.getRoutingLog().suffix(5)
             
             if logs.isEmpty {
-                Text("No recent AI requests")
+                Text(NSLocalizedString("settings.llm.observability.no.requests", value: "No recent AI requests", comment: "No recent requests message"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .padding()
             } else {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Recent Requests")
+                    Text(NSLocalizedString("settings.llm.observability.recent.title", value: "Recent Requests", comment: "Recent requests title"))
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                     

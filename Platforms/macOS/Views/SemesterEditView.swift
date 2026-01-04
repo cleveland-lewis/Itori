@@ -86,7 +86,7 @@ struct SemesterEditorView: View {
         RootsCard {
             VStack(spacing: DesignSystem.Spacing.medium) {
                 HStack {
-                    Text("Term")
+                    Text(NSLocalizedString("semesteredit.term", value: "Term", comment: "Term"))
                         .foregroundStyle(.secondary)
                     Spacer()
                     Picker("Term", selection: $term) {
@@ -101,7 +101,7 @@ struct SemesterEditorView: View {
                 Divider()
 
                 HStack {
-                    Text("Academic Year")
+                    Text(NSLocalizedString("semesteredit.academic.year", value: "Academic Year", comment: "Academic Year"))
                         .foregroundStyle(.secondary)
                     Spacer()
                     Picker("Year", selection: $year) {
@@ -120,7 +120,7 @@ struct SemesterEditorView: View {
     private var levelPicker: some View {
         RootsCard {
             HStack {
-                Text("Education Level")
+                Text(NSLocalizedString("semesteredit.education.level", value: "Education Level", comment: "Education Level"))
                     .foregroundStyle(.secondary)
                 Spacer()
                 Picker("Level", selection: $level) {
@@ -138,7 +138,7 @@ struct SemesterEditorView: View {
     private var dateSection: some View {
         RootsCard {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
-                Text("Duration")
+                Text(NSLocalizedString("semesteredit.duration", value: "Duration", comment: "Duration"))
                     .font(DesignSystem.Typography.subHeader)
 
                 HStack {
@@ -158,7 +158,7 @@ struct SemesterEditorView: View {
     private var footerSection: some View {
         VStack(spacing: DesignSystem.Spacing.medium) {
             Button(action: saveSemester) {
-                Text("Save Semester")
+                Text(NSLocalizedString("semesteredit.save.semester", value: "Save Semester", comment: "Save Semester"))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 4)
             }
@@ -177,11 +177,11 @@ struct SemesterEditorView: View {
                     }
                     Button("Cancel", role: .cancel) { }
                 } message: {
-                    Text("This will move the semester to Recently Deleted. You can recover it within 30 days.")
+                    Text(NSLocalizedString("semesteredit.this.will.move.the.semester", value: "This will move the semester to Recently Deleted. You can recover it within 30 days.", comment: "This will move the semester to Recently Deleted. Y..."))
                 }
             }
 
-            Button("Cancel") {
+            Button(NSLocalizedString("semesteredit.button.cancel", value: "Cancel", comment: "Cancel")) {
                 dismiss()
             }
             .buttonStyle(.plain)

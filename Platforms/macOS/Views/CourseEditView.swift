@@ -68,7 +68,7 @@ struct CourseEditView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Meeting Times")
+                        Text(NSLocalizedString("courseedit.meeting.times", value: "Meeting Times", comment: "Meeting Times"))
                             .font(.headline)
                         
                         MeetingTimesSelector(meetingTimes: Binding(
@@ -94,13 +94,13 @@ struct CourseEditView: View {
 
                 Section("Additional Information") {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Syllabus")
+                        Text(NSLocalizedString("courseedit.syllabus", value: "Syllabus", comment: "Syllabus"))
                             .font(.headline)
                         
                         Button {
                             selectSyllabusFile()
                         } label: {
-                            Label("Add Files", systemImage: "doc.badge.plus")
+                            Label(NSLocalizedString("courseedit.label.add.files", value: "Add Files", comment: "Add Files"), systemImage: "doc.badge.plus")
                         }
                         .buttonStyle(.bordered)
                         
@@ -123,7 +123,7 @@ struct CourseEditView: View {
             .navigationTitle(isNewCourse ? "New Course" : "Edit Course")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(NSLocalizedString("courseedit.button.cancel", value: "Cancel", comment: "Cancel")) {
                         dismiss()
                     }
                 }
@@ -202,7 +202,7 @@ struct MeetingTimesSelector: View {
                     .labelsHidden()
                     .onChange(of: startTime) { _, _ in updateMeetingTimesString() }
                 
-                Text("to")
+                Text(NSLocalizedString("courseedit.to", value: "to", comment: "to"))
                     .foregroundStyle(.secondary)
                 
                 DatePicker("End", selection: $endTime, displayedComponents: .hourAndMinute)

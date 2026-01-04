@@ -63,7 +63,10 @@ final class PersistenceController {
 
         if let error = loadError {
             LOG_DATA(.error, "Persistence", "Persistent store load failed: \(error.localizedDescription)")
-            print("[Persistence] Full error: \(error)")
+            // Only show detailed error in developer mode
+            if AppSettingsModel.shared.devModeEnabled {
+                print("[Persistence] Full error: \(error)")
+            }
             
             // If CloudKit failed, recreate container without CloudKit
             if iCloudSyncEnabled {

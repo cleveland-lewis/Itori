@@ -33,9 +33,9 @@ struct TimerSettingsView: View {
                     }
 
             } header: {
-                Text("Pomodoro Timer")
+                Text(NSLocalizedString("settings.pomodoro.timer", value: "Pomodoro Timer", comment: "Pomodoro Timer"))
             } footer: {
-                Text("Configure Pomodoro work/break durations and iteration behavior. Changes apply to new timer sessions.")
+                Text(NSLocalizedString("settings.configure.pomodoro.workbreak.durations.and", value: "Configure Pomodoro work/break durations and iteration behavior. Changes apply to new timer sessions.", comment: "Configure Pomodoro work/break durations and iterat..."))
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
             }

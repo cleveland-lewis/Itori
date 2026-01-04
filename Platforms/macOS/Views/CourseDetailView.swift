@@ -68,10 +68,10 @@ struct CourseDetailView: View {
     private var upcomingDeadlinesCard: some View {
         AppCard {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                Text("Upcoming Deadlines")
+                Text(NSLocalizedString("coursedetail.upcoming.deadlines", value: "Upcoming Deadlines", comment: "Upcoming Deadlines"))
                     .font(DesignSystem.Typography.subHeader)
                 if upcomingCourseTasks.isEmpty {
-                    Text("No upcoming deadlines.")
+                    Text(NSLocalizedString("coursedetail.no.upcoming.deadlines", value: "No upcoming deadlines.", comment: "No upcoming deadlines."))
                         .font(.callout)
                         .foregroundStyle(.secondary)
                 } else {
@@ -114,11 +114,11 @@ struct CourseDetailView: View {
     private var assignmentsCard: some View {
         AppCard {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                Text("Assignments")
+                Text(NSLocalizedString("coursedetail.assignments", value: "Assignments", comment: "Assignments"))
                     .font(DesignSystem.Typography.subHeader)
 
                 if courseAssignments.isEmpty {
-                    Text("No assignments linked to this course yet.")
+                    Text(NSLocalizedString("coursedetail.no.assignments.linked.to.this.course.yet", value: "No assignments linked to this course yet.", comment: "No assignments linked to this course yet."))
                         .font(.callout)
                         .foregroundStyle(.secondary)
                 } else {
@@ -145,11 +145,11 @@ struct CourseDetailView: View {
     private var examsCard: some View {
         AppCard {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                Text("Exams")
+                Text(NSLocalizedString("coursedetail.exams", value: "Exams", comment: "Exams"))
                     .font(DesignSystem.Typography.subHeader)
 
                 if courseExams.isEmpty {
-                    Text("No exams linked to this course yet.")
+                    Text(NSLocalizedString("coursedetail.no.exams.linked.to.this.course.yet", value: "No exams linked to this course yet.", comment: "No exams linked to this course yet."))
                         .font(.callout)
                         .foregroundStyle(.secondary)
                 } else {
@@ -177,13 +177,13 @@ struct CourseDetailView: View {
         AppCard {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                 HStack {
-                    Text("Course Materials & Syllabus")
+                    Text(NSLocalizedString("coursedetail.course.materials.syllabus", value: "Course Materials & Syllabus", comment: "Course Materials & Syllabus"))
                         .font(DesignSystem.Typography.subHeader)
                     Spacer()
                     Button {
                         showingSyllabusImporter = true
                     } label: {
-                        Label("Import Syllabus", systemImage: "square.and.arrow.down")
+                        Label(NSLocalizedString("coursedetail.label.import.syllabus", value: "Import Syllabus", comment: "Import Syllabus"), systemImage: "square.and.arrow.down")
                     }
                     .buttonStyle(.borderedProminent)
                 }
@@ -197,21 +197,21 @@ struct CourseDetailView: View {
         AppCard {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                 HStack {
-                    Text("Modules")
+                    Text(NSLocalizedString("coursedetail.modules", value: "Modules", comment: "Modules"))
                         .font(DesignSystem.Typography.subHeader)
                     Spacer()
                     NavigationLink {
                         CourseOutlineEditorView(course: course)
                             .environmentObject(dataManager)
                     } label: {
-                        Label("Edit Outline", systemImage: "list.bullet.indent")
+                        Label(NSLocalizedString("coursedetail.label.edit.outline", value: "Edit Outline", comment: "Edit Outline"), systemImage: "list.bullet.indent")
                             .font(DesignSystem.Typography.caption)
                     }
                     .buttonStyle(.borderless)
                 }
 
                 if groupedAttachments.isEmpty {
-                    Text("No module files yet.")
+                    Text(NSLocalizedString("coursedetail.no.module.files.yet", value: "No module files yet.", comment: "No module files yet."))
                         .font(.callout)
                         .foregroundStyle(.secondary)
                 } else {
@@ -227,9 +227,9 @@ struct CourseDetailView: View {
     private var practiceQuizzesCard: some View {
         AppCard {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                Text("Practice Quizzes")
+                Text(NSLocalizedString("coursedetail.practice.quizzes", value: "Practice Quizzes", comment: "Practice Quizzes"))
                     .font(DesignSystem.Typography.subHeader)
-                Text("No practice quizzes yet.")
+                Text(NSLocalizedString("coursedetail.no.practice.quizzes.yet", value: "No practice quizzes yet.", comment: "No practice quizzes yet."))
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }

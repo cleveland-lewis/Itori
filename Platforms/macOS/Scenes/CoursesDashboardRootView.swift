@@ -63,11 +63,11 @@ struct CoursesDashboardRootView: View {
                 .font(DesignSystem.Typography.body)
                 .foregroundStyle(.tertiary)
 
-            Text("Select a Course")
+            Text(NSLocalizedString("coursesdashboardroot.select.a.course", value: "Select a Course", comment: "Select a Course"))
                 .font(.title2.weight(.semibold))
                 .foregroundStyle(.primary)
 
-            Text("Choose a course from the sidebar to view details")
+            Text(NSLocalizedString("coursesdashboardroot.choose.a.course.from.the.sidebar.to.view.details", value: "Choose a course from the sidebar to view details", comment: "Choose a course from the sidebar to view details"))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -78,7 +78,7 @@ struct CoursesDashboardRootView: View {
     private var loadingState: some View {
         VStack(spacing: 12) {
             ProgressView()
-            Text("Loading course analytics…")
+            Text(NSLocalizedString("coursesdashboardroot.loading.course.analytics", value: "Loading course analytics…", comment: "Loading course analytics…"))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }

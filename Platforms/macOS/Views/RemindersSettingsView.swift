@@ -13,7 +13,7 @@ struct RemindersSettingsView: View {
     var body: some View {
         List {
             Section("Reminders Sync") {
-                Toggle("Enable Reminders Sync", isOn: Binding(
+                Toggle(NSLocalizedString("settings.toggle.enable.reminders.sync", value: "Enable Reminders Sync", comment: "Enable Reminders Sync"), isOn: Binding(
                     get: { isAuthorized },
                     set: { newValue in
                         if newValue {
@@ -26,16 +26,16 @@ struct RemindersSettingsView: View {
                 .toggleStyle(.switch)
 
                 HStack {
-                    Text("Status:")
+                    Text(NSLocalizedString("settings.status", value: "Status:", comment: "Status:"))
                         .foregroundStyle(.secondary)
                     if isAuthorized {
-                        Text("Connected").foregroundStyle(.green)
+                        Text(NSLocalizedString("settings.connected", value: "Connected", comment: "Connected")).foregroundStyle(.green)
                     } else if calendarManager.isRemindersAccessDenied {
-                        Text("Access Denied").foregroundStyle(.red)
-                        Button("Open Settings") { calendarManager.openSystemPrivacySettings() }
+                        Text(NSLocalizedString("settings.access.denied", value: "Access Denied", comment: "Access Denied")).foregroundStyle(.red)
+                        Button(NSLocalizedString("settings.button.open.settings", value: "Open Settings", comment: "Open Settings")) { calendarManager.openSystemPrivacySettings() }
                             .buttonStyle(.link)
                     } else {
-                        Text("Not Connected").foregroundStyle(.secondary)
+                        Text(NSLocalizedString("settings.not.connected", value: "Not Connected", comment: "Not Connected")).foregroundStyle(.secondary)
                     }
                 }
                 .font(DesignSystem.Typography.caption)
@@ -44,7 +44,7 @@ struct RemindersSettingsView: View {
             if isAuthorized {
                 Section("School List") {
                     Picker("School List", selection: Binding(get: { calendarManager.selectedReminderListID.isEmpty ? nil : calendarManager.selectedReminderListID }, set: { calendarManager.selectedReminderListID = $0 ?? "" })) {
-                        Text("Select a List").tag(String?.none)
+                        Text(NSLocalizedString("settings.select.a.list", value: "Select a List", comment: "Select a List")).tag(String?.none)
                         ForEach(calendarManager.availableReminderLists, id: \.calendarIdentifier) { list in
                             HStack {
                                 if let cgColor = list.cgColor, let nsColor = NSColor(cgColor: cgColor) {
@@ -62,7 +62,7 @@ struct RemindersSettingsView: View {
                         _Concurrency.Task { await calendarManager.refreshAll() }
                     }
 
-                    Text("Only reminders from this list will appear in Itori.")
+                    Text(NSLocalizedString("settings.only.reminders.from.this.list.will.appear.in.itori", value: "Only reminders from this list will appear in Itori.", comment: "Only reminders from this list will appear in Itori..."))
                         .font(DesignSystem.Typography.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -70,12 +70,12 @@ struct RemindersSettingsView: View {
         }
         .listStyle(.sidebar)
         .alert("Disable Reminders Sync", isPresented: $showingRevokeAlert) {
-            Button("Open System Settings") {
+            Button(NSLocalizedString("settings.button.open.system.settings", value: "Open System Settings", comment: "Open System Settings")) {
                 calendarManager.openSystemPrivacySettings()
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("To disconnect Itori from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders.")
+            Text(NSLocalizedString("settings.to.disconnect.itori.from.your", value: "To disconnect Itori from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders.", comment: "To disconnect Itori from your Reminders, please re..."))
         }
         .onAppear {
             _Concurrency.Task { await calendarManager.refreshAuthStatus() }

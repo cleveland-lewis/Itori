@@ -408,7 +408,7 @@ struct TimerPageView: View {
                             VStack(alignment: .leading, spacing: 8) {
                                 // Timer Mode section
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text("Timer Mode")
+                                    Text(NSLocalizedString("timer.timer.mode", value: "Timer Mode", comment: "Timer Mode"))
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                         .padding(.horizontal, 12)
@@ -442,7 +442,7 @@ struct TimerPageView: View {
                                 
                                 // Appearance section
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text("Appearance")
+                                    Text(NSLocalizedString("timer.appearance", value: "Appearance", comment: "Appearance"))
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                         .padding(.horizontal, 12)
@@ -459,7 +459,7 @@ struct TimerPageView: View {
                                             } else {
                                                 Spacer().frame(width: 16)
                                             }
-                                            Text("Digital")
+                                            Text(NSLocalizedString("timer.digital", value: "Digital", comment: "Digital"))
                                                 .frame(maxWidth: .infinity, alignment: .leading)
                                         }
                                         .padding(.horizontal, 12)
@@ -479,7 +479,7 @@ struct TimerPageView: View {
                                             } else {
                                                 Spacer().frame(width: 16)
                                             }
-                                            Text("Analog")
+                                            Text(NSLocalizedString("timer.analog", value: "Analog", comment: "Analog"))
                                                 .frame(maxWidth: .infinity, alignment: .leading)
                                         }
                                         .padding(.horizontal, 12)
@@ -505,7 +505,7 @@ struct TimerPageView: View {
                             .font(DesignSystem.Typography.caption.weight(.medium))
                             .foregroundStyle(.primary)
                         if let course = activity.courseCode {
-                            Text("•")
+                            Text(NSLocalizedString("timer.", value: "•", comment: "•"))
                                 .foregroundStyle(.secondary)
                             Text(course)
                                 .font(DesignSystem.Typography.caption)
@@ -992,7 +992,7 @@ private struct FocusWindowView: View {
                 HStack(spacing: 12) {
                     if isRunning {
                         Button(action: onPause) {
-                            Label("Pause", systemImage: "pause.fill")
+                            Label(NSLocalizedString("timer.label.pause", value: "Pause", comment: "Pause"), systemImage: "pause.fill")
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 12)
                         }
@@ -1011,7 +1011,7 @@ private struct FocusWindowView: View {
                     }
                     
                     Button(action: onReset) {
-                        Label("Reset", systemImage: "arrow.counterclockwise")
+                        Label(NSLocalizedString("timer.label.reset", value: "Reset", comment: "Reset"), systemImage: "arrow.counterclockwise")
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
                     }

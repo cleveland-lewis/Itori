@@ -10,7 +10,7 @@ struct TimerRightPane: View {
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.medium) {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                Text("Study Summary")
+                Text(NSLocalizedString("ui.study.summary", value: "Study Summary", comment: "Study Summary"))
                     .font(.headline)
                 
                 TodayStudyStackedBarChart(activities: activities)

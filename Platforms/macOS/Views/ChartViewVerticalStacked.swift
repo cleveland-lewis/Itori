@@ -60,7 +60,7 @@ struct ChartViewVerticalStacked: View {
     private var legendView: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Text("Categories")
+                Text(NSLocalizedString("chartverticalstacked.categories", value: "Categories", comment: "Categories"))
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
                 Spacer()

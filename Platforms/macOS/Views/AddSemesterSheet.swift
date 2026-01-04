@@ -17,7 +17,7 @@ struct AddSemesterSheet: View {
         VStack {
             AppCard {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("New Semester")
+                    Text(NSLocalizedString("ui.new.semester", value: "New Semester", comment: "New Semester"))
                         .font(.title3.bold())
 
                     HStack {
@@ -54,18 +54,18 @@ struct AddSemesterSheet: View {
                         }
                     }
 
-                    Text("Start date")
+                    Text(NSLocalizedString("ui.start.date", value: "Start date", comment: "Start date"))
                     DatePicker("Start", selection: $startDate, displayedComponents: .date)
 
-                    Text("End date")
+                    Text(NSLocalizedString("ui.end.date", value: "End date", comment: "End date"))
                     DatePicker("End", selection: $endDate, displayedComponents: .date)
 
-                    Toggle("Set as current semester", isOn: $markAsCurrent)
+                    Toggle(NSLocalizedString("ui.toggle.set.as.current.semester", value: "Set as current semester", comment: "Set as current semester"), isOn: $markAsCurrent)
 
                     HStack {
                         Spacer()
-                        Button("Cancel") { dismiss() }
-                        Button("Save") {
+                        Button(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel")) { dismiss() }
+                        Button(NSLocalizedString("ui.button.save", value: "Save", comment: "Save")) {
                             guard endDate >= startDate else { return }
                             let sem = Semester(
                                 startDate: startDate,

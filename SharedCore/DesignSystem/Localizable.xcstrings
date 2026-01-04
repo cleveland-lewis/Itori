@@ -10636,118 +10636,6 @@
         }
       }
     },
-    "Allowed hours: %@:00–%@:00": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "new",
-            "value": "Allowed hours: %1$d:00–%2$d:00"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "允许的时间：%1$d:00–%2$d:00"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Horas permitidas: %1$d:00–%2$d:00"
-          }
-        },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "الساعات المسموح بها: %1$d:00–%2$d:00"
-          }
-        },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "允許的時間：%1$d:00–%2$d:00"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "許可される時間: %1$d:00–%2$d:00"
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Toegestane uren: %1$d:00–%2$d:00"
-          }
-        },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Дозволені години: %1$d:00–%2$d:00"
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ชั่วโมงที่อนุญาต: %1$d:00–%2$d:00"
-          }
-        },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "允許的時間：%1$d:00–%2$d:00"
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ore consentite: %1$d:00–%2$d:00"
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ساعات مجاز: %1$d:00–%2$d:00"
-          }
-        },
-        "sw": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saa zinazoruhusiwa: %1$d:00–%2$d:00"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Số giờ được phép: %1$d:00–%2$d:00"
-          }
-        },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tilladte timer: %1$d:00–%2$d:00"
-          }
-        },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sallitut aukioloajat: %1$d:00–%2$d:00"
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Heures autorisées : %1$d :00–%2$d :00"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Allowed hours: %@:00–%@:00"
-          }
-        }
-      }
-    },
     "Always display the navigation sidebar on iPad": {
       "localizations": {
         "zh-Hans": {
@@ -130673,6 +130561,118 @@
           "stringUnit": {
             "state": "translated",
             "value": "task.alarm.error.schedulingFailed"
+          }
+        }
+      }
+    },
+    "Allowed hours: %d:00–%d:00": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Allowed hours: %1$d:00–%2$d:00"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "允许的时间：%1$d:00–%2$d:00"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horas permitidas: %1$d:00–%2$d:00"
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "الساعات المسموح بها: %1$d:00–%2$d:00"
+          }
+        },
+        "zh-Hant": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "允許的時間：%1$d:00–%2$d:00"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "許可される時間: %1$d:00–%2$d:00"
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toegestane uren: %1$d:00–%2$d:00"
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дозволені години: %1$d:00–%2$d:00"
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ชั่วโมงที่อนุญาต: %1$d:00–%2$d:00"
+          }
+        },
+        "zh-HK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "允許的時間：%1$d:00–%2$d:00"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ore consentite: %1$d:00–%2$d:00"
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ساعات مجاز: %1$d:00–%2$d:00"
+          }
+        },
+        "sw": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saa zinazoruhusiwa: %1$d:00–%2$d:00"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Số giờ được phép: %1$d:00–%2$d:00"
+          }
+        },
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tilladte timer: %1$d:00–%2$d:00"
+          }
+        },
+        "fi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sallitut aukioloajat: %1$d:00–%2$d:00"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heures autorisées : %1$d :00–%2$d :00"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allowed hours: %d:00–%d:00"
           }
         }
       }

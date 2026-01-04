@@ -8,12 +8,12 @@ struct RootDesignPreviewPage: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
-                Text("Design Tokens")
+                Text(NSLocalizedString("ui.design.tokens", value: "Design Tokens", comment: "Design Tokens"))
                     .font(DesignSystem.Typography.title)
 
                 // Colors
                 VStack(alignment: .leading) {
-                    Text("Colors").font(DesignSystem.Typography.subHeader)
+                    Text(NSLocalizedString("ui.colors", value: "Colors", comment: "Colors")).font(DesignSystem.Typography.subHeader)
                     HStack {
                         ColorSwatch(name: "Primary", color: DesignSystem.Colors.primary)
                         ColorSwatch(name: "Secondary", color: DesignSystem.Colors.secondary)
@@ -25,18 +25,18 @@ struct RootDesignPreviewPage: View {
 
                 // Typography
                 VStack(alignment: .leading) {
-                    Text("Typography").font(DesignSystem.Typography.subHeader)
-                    Text("Title / body / caption")
+                    Text(NSLocalizedString("ui.typography", value: "Typography", comment: "Typography")).font(DesignSystem.Typography.subHeader)
+                    Text(NSLocalizedString("ui.title.body.caption", value: "Title / body / caption", comment: "Title / body / caption"))
                         .font(DesignSystem.Typography.title)
-                    Text("Body example")
+                    Text(NSLocalizedString("ui.body.example", value: "Body example", comment: "Body example"))
                         .font(DesignSystem.Typography.body)
-                    Text("Caption example")
+                    Text(NSLocalizedString("ui.caption.example", value: "Caption example", comment: "Caption example"))
                         .font(DesignSystem.Typography.caption)
                 }
 
                 // Materials
                 VStack(alignment: .leading) {
-                    Text("Materials").font(DesignSystem.Typography.subHeader)
+                    Text(NSLocalizedString("ui.materials", value: "Materials", comment: "Materials")).font(DesignSystem.Typography.subHeader)
                     Picker("Material", selection: $selectedMaterial) {
                         ForEach(DesignSystem.materials, id: \.name) { token in
                             Text(token.name).tag(token)
@@ -47,14 +47,14 @@ struct RootDesignPreviewPage: View {
                     AppCard {
                         Image(systemName: "cube.fill")
                             .imageScale(.large)
-                        Text("Material preview")
+                        Text(NSLocalizedString("ui.material.preview", value: "Material preview", comment: "Material preview"))
                     }
                     .frame(minHeight: DesignSystem.Cards.defaultHeight)
                 }
 
                 // Corners & spacing
                 VStack(alignment: .leading) {
-                    Text("Corners & Spacing").font(DesignSystem.Typography.subHeader)
+                    Text(NSLocalizedString("ui.corners.spacing", value: "Corners & Spacing", comment: "Corners & Spacing")).font(DesignSystem.Typography.subHeader)
                     HStack {
                         RoundedRectangle(cornerRadius: DesignSystem.Corners.small)
                             .fill(Color.secondary)

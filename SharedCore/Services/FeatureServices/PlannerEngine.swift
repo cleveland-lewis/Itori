@@ -589,7 +589,7 @@ enum PlannerEngine {
             "timestamp": "\(Date())"
         ])
         
-        LOG_DEV(.debug as DeveloperLogLevel, "EnergyScheduling", "Energy level configuration", metadata: [
+        LOG_DEV(.debug, "EnergyScheduling", "Energy level configuration", metadata: [
             "level": energyLevel.rawValue,
             "filteringRules": energyLevel == .high ? "All tasks" : 
                              energyLevel == .medium ? "7-day window + high importance" :
@@ -647,7 +647,7 @@ enum PlannerEngine {
             energyLevel: energyLevel
         )
         
-        LOG_DEV(.info as DeveloperLogLevel, "EnergyScheduling", "📊 AI Scheduler completed", metadata: [
+        LOG_DEV(.info, "EnergyScheduling", "📊 AI Scheduler completed", metadata: [
             "inputTasks": "\(tasks.count)",
             "scheduledBlocks": "\(aiResult.blocks.count)",
             "unscheduledTasks": "\(aiResult.unscheduledTasks.count)",
@@ -656,7 +656,7 @@ enum PlannerEngine {
         ])
         
         if !aiResult.unscheduledTasks.isEmpty {
-            LOG_DEV(.warning as DeveloperLogLevel, "EnergyScheduling", "⚠️ Some tasks could not be scheduled", metadata: [
+            LOG_DEV(.warn, "EnergyScheduling", "⚠️ Some tasks could not be scheduled", metadata: [
                 "count": "\(aiResult.unscheduledTasks.count)",
                 "possibleReason": energyLevel == .low ? "Low energy filtered out non-critical tasks" : "Not enough time slots available"
             ])

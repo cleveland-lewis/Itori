@@ -140,7 +140,7 @@ struct TimerPageView_Simple: View {
     private var activitiesColumn: some View {
         VStack(alignment: .leading, spacing: 12) {
                 HStack {
-                    Text("Activities")
+                    Text(NSLocalizedString("timer_simple.activities", value: "Activities", comment: "Activities"))
                         .font(.body)
                     Spacer()
                 }
@@ -169,7 +169,7 @@ struct TimerPageView_Simple: View {
                             .font(.headline)
                         
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Notes")
+                            Text(NSLocalizedString("timer_simple.notes", value: "Notes", comment: "Notes"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                             
@@ -187,12 +187,12 @@ struct TimerPageView_Simple: View {
                         }
                         
                         #if DEBUG
-                        Text("🔧 Phase 6.7: TextEditor with custom Binding ADDED")
+                        Text(NSLocalizedString("timer_simple.phase.67.texteditor.with.custom.binding.added", value: "🔧 Phase 6.7: TextEditor with custom Binding ADDED", comment: "🔧 Phase 6.7: TextEditor with custom Binding ADDED"))
                             .font(.caption)
                             .foregroundColor(.green)
                         #endif
                     } else {
-                        Text("No activity selected")
+                        Text(NSLocalizedString("timer_simple.no.activity.selected", value: "No activity selected", comment: "No activity selected"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -230,7 +230,7 @@ struct TimerPageView_Simple: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 8) {
                 if !cachedPinnedActivities.isEmpty {
-                    Text("Pinned")
+                    Text(NSLocalizedString("timer_simple.pinned", value: "Pinned", comment: "Pinned"))
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
@@ -239,7 +239,7 @@ struct TimerPageView_Simple: View {
                     }
                 }
                 
-                Text("All Activities")
+                Text(NSLocalizedString("timer_simple.all.activities", value: "All Activities", comment: "All Activities"))
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
@@ -274,7 +274,7 @@ struct TimerPageView_Simple: View {
     
     private var rightPane: some View {
         VStack(alignment: .leading, spacing: 12) {
-                Text("Study Summary")
+                Text(NSLocalizedString("timer_simple.study.summary", value: "Study Summary", comment: "Study Summary"))
                     .font(.headline)
                 
                 Text("Activities: \(activities.count)")
@@ -434,7 +434,7 @@ struct TimerPageView_Simple: View {
             }
             
             #if DEBUG
-            Text("🧪 Phase 5.7: FULL TimerCoreCard with FIXED circles")
+            Text(NSLocalizedString("timer_simple.phase.57.full.timercorecard.with.fixed.circles", value: "🧪 Phase 5.7: FULL TimerCoreCard with FIXED circles", comment: "🧪 Phase 5.7: FULL TimerCoreCard with FIXED circles"))
                 .font(.caption)
             #endif
         }
@@ -515,10 +515,10 @@ struct TimerPageView_Simple: View {
                 
                 VStack(spacing: 20) {
                     #if DEBUG
-                    Text("🚧 Timer Page - Phase 6.7")
+                    Text(NSLocalizedString("timer_simple.timer.page.phase.67", value: "🚧 Timer Page - Phase 6.7", comment: "🚧 Timer Page - Phase 6.7"))
                         .font(.largeTitle)
                     
-                    Text("Testing: TextEditor with custom Binding (CRITICAL)")
+                    Text(NSLocalizedString("timer_simple.testing.texteditor.with.custom.binding.critical", value: "Testing: TextEditor with custom Binding (CRITICAL)", comment: "Testing: TextEditor with custom Binding (CRITICAL)"))
                         .foregroundColor(.secondary)
                     #endif
                     

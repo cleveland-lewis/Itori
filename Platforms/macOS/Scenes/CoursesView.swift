@@ -18,7 +18,7 @@ struct CoursesView: View {
                 AppCard {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            Text("Active Semesters")
+                            Text(NSLocalizedString("courses.active.semesters", value: "Active Semesters", comment: "Active Semesters"))
                                 .font(DesignSystem.Typography.subHeader)
 
                             Spacer()
@@ -26,14 +26,14 @@ struct CoursesView: View {
                             Button {
                                 showingAddSemester = true
                             } label: {
-                                Label("Add Semester", systemImage: "plus")
+                                Label(NSLocalizedString("courses.label.add.semester", value: "Add Semester", comment: "Add Semester"), systemImage: "plus")
                                     .labelStyle(.iconOnly)
                             }
                             .buttonStyle(.plain)
                         }
 
                         if coursesStore.semesters.isEmpty {
-                            Text("No semesters yet. Add one to begin organizing your courses.")
+                            Text(NSLocalizedString("courses.no.semesters.yet.add.one", value: "No semesters yet. Add one to begin organizing your courses.", comment: "No semesters yet. Add one to begin organizing your..."))
                                 .font(.callout)
                                 .foregroundStyle(.secondary)
                         } else {
@@ -41,7 +41,7 @@ struct CoursesView: View {
                             SemesterPickerView()
                             
                             if coursesStore.activeSemesterIds.isEmpty {
-                                Text("Select one or more semesters to view courses")
+                                Text(NSLocalizedString("courses.select.one.or.more.semesters.to.view.courses", value: "Select one or more semesters to view courses", comment: "Select one or more semesters to view courses"))
                                     .font(.callout)
                                     .foregroundStyle(.secondary)
                                     .padding(.top, 4)
@@ -55,7 +55,7 @@ struct CoursesView: View {
                 AppCard {
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            Text("Courses")
+                            Text(NSLocalizedString("courses.courses", value: "Courses", comment: "Courses"))
                                 .font(DesignSystem.Typography.subHeader)
 
                             Spacer()
@@ -63,18 +63,18 @@ struct CoursesView: View {
                             Button {
                                 showingAddCourse = true
                             } label: {
-                                Label("Add Course", systemImage: "plus")
+                                Label(NSLocalizedString("courses.label.add.course", value: "Add Course", comment: "Add Course"), systemImage: "plus")
                             }
                             .buttonStyle(.bordered)
                             .controlSize(.small)
                         }
 
                         if coursesStore.activeSemesters.isEmpty {
-                            Text("No active semesters selected")
+                            Text(NSLocalizedString("courses.no.active.semesters.selected", value: "No active semesters selected", comment: "No active semesters selected"))
                                 .font(.callout)
                                 .foregroundStyle(.secondary)
                         } else if coursesStore.activeCourses.isEmpty {
-                            Text("No courses yet. Add a course to get started.")
+                            Text(NSLocalizedString("courses.no.courses.yet.add.a.course.to.get.started", value: "No courses yet. Add a course to get started.", comment: "No courses yet. Add a course to get started."))
                                 .font(.callout)
                                 .foregroundStyle(.secondary)
                         } else {
@@ -131,7 +131,7 @@ struct CourseCard: View {
             Button {
                 SceneActivationHelper.openCourseWindow(for: course)
             } label: {
-                Label("Open in New Window", systemImage: "doc.on.doc")
+                Label(NSLocalizedString("courses.label.open.in.new.window", value: "Open in New Window", comment: "Open in New Window"), systemImage: "doc.on.doc")
             }
         }
     }

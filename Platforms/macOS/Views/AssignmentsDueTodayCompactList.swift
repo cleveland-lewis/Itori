@@ -15,11 +15,11 @@ struct AssignmentsDueTodayCompactList: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Assignments Due Today")
+            Text(NSLocalizedString("ui.assignments.due.today", value: "Assignments Due Today", comment: "Assignments Due Today"))
                 .font(.headline)
 
             if todayTasks.isEmpty {
-                Text("No assignments due today.")
+                Text(NSLocalizedString("ui.no.assignments.due.today", value: "No assignments due today.", comment: "No assignments due today."))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .padding(.vertical, 8)

@@ -113,22 +113,37 @@ final class Diagnostics: ObservableObject {
         let lineInt = Int(line)
         let msg = message()
 
-        // Filtering
+        // Filtering based on developer mode and subsystem toggles
         if !isDeveloperModeEnabled {
-            // Only allow fatal and error through when dev mode is off
+            // When dev mode is OFF: only allow fatal and error through
             if severity != .fatal && severity != .error { return }
         } else {
-            // respect subsystem toggles
+            // When dev mode is ON: respect subsystem toggles for debug/info logs
+            // Warnings, errors, and fatal always go through even if subsystem toggle is OFF
             switch subsystem {
-            case .ui:
-                if !enableUILogging && severity == .debug { return }
-            case .data, .sync:
-                if !enableDataLogging && severity == .debug { return }
-            case .scheduler, .practice:
-                if !enableSchedulerLogging && severity == .debug { return }
+            // UI-related subsystems
+            case .ui, .navigation, .appLifecycle:
+                // If UI logging is OFF, only allow warn/error/fatal
+                if !enableUILogging && (severity == .debug || severity == .info) { return }
+            
+            // Data & sync related subsystems
+            case .data, .sync, .persistence, .courses, .grades, .settings:
+                // If Data logging is OFF, only allow warn/error/fatal
+                if !enableDataLogging && (severity == .debug || severity == .info) { return }
+            
+            // Scheduler & planner related subsystems
+            case .scheduler, .planner, .practice, .calendar, .eventKit, .timer, .focus, .notifications:
+                // If Scheduler logging is OFF, only allow warn/error/fatal
+                if !enableSchedulerLogging && (severity == .debug || severity == .info) { return }
+            
+            // Performance subsystem
             case .performance:
+                // If Performance warnings are OFF, suppress warn level (but error/fatal still show)
                 if !enablePerformanceWarnings && severity == .warn { return }
+            
+            // Other subsystems (networking, integrations, ai)
             default:
+                // These always log when dev mode is ON (no specific toggle)
                 break
             }
         }

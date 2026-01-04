@@ -36,7 +36,7 @@ struct CourseOutlineEditorView: View {
                     newNodeParent = nil
                     showingAddNode = true
                 } label: {
-                    Label("Add", systemImage: "plus")
+                    Label(NSLocalizedString("courseoutlineeditor.label.add", value: "Add", comment: "Add"), systemImage: "plus")
                 }
             }
         }
@@ -60,11 +60,11 @@ struct CourseOutlineEditorView: View {
                 .font(.largeTitle)
                 .foregroundStyle(.tertiary)
             
-            Text("No Outline Yet")
+            Text(NSLocalizedString("courseoutlineeditor.no.outline.yet", value: "No Outline Yet", comment: "No Outline Yet"))
                 .font(DesignSystem.Typography.subHeader)
                 .foregroundStyle(.secondary)
             
-            Text("Create modules, units, sections, chapters, and lessons to organize your course content.")
+            Text(NSLocalizedString("courseoutlineeditor.create.modules.units.sections.chapters", value: "Create modules, units, sections, chapters, and lessons to organize your course content.", comment: "Create modules, units, sections, chapters, and les..."))
                 .font(DesignSystem.Typography.caption)
                 .foregroundStyle(.tertiary)
                 .multilineTextAlignment(.center)
@@ -73,7 +73,7 @@ struct CourseOutlineEditorView: View {
             Button {
                 showingAddNode = true
             } label: {
-                Label("Create First Node", systemImage: "plus.circle.fill")
+                Label(NSLocalizedString("courseoutlineeditor.label.create.first.node", value: "Create First Node", comment: "Create First Node"), systemImage: "plus.circle.fill")
             }
             .buttonStyle(.borderedProminent)
         }
@@ -157,7 +157,7 @@ private struct OutlineNodeRow: View {
                 Button {
                     // Trigger rename
                 } label: {
-                    Label("Rename", systemImage: "pencil")
+                    Label(NSLocalizedString("courseoutlineeditor.label.rename", value: "Rename", comment: "Rename"), systemImage: "pencil")
                 }
                 
                 Button(role: .destructive) {
@@ -167,7 +167,7 @@ private struct OutlineNodeRow: View {
                     }
                     coursesStore.deleteSubtree(node.id)
                 } label: {
-                    Label("Delete", systemImage: "trash")
+                    Label(NSLocalizedString("courseoutlineeditor.label.delete", value: "Delete", comment: "Delete"), systemImage: "trash")
                 }
             }
             
@@ -215,10 +215,10 @@ private struct AddNodeSheet: View {
         .frame(width: 400, height: 150)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") { dismiss() }
+                Button(NSLocalizedString("courseoutlineeditor.button.cancel", value: "Cancel", comment: "Cancel")) { dismiss() }
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button("Add") {
+                Button(NSLocalizedString("courseoutlineeditor.button.add", value: "Add", comment: "Add")) {
                     let sortIndex = coursesStore.nextSortIndex(for: parentId)
                     let node = CourseOutlineNode(
                         courseId: courseId,
@@ -258,10 +258,10 @@ private struct RenameNodeSheet: View {
         .frame(width: 400, height: 100)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") { dismiss() }
+                Button(NSLocalizedString("courseoutlineeditor.button.cancel", value: "Cancel", comment: "Cancel")) { dismiss() }
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save") {
+                Button(NSLocalizedString("courseoutlineeditor.button.save", value: "Save", comment: "Save")) {
                     var updated = node
                     updated.title = newTitle
                     coursesStore.updateOutlineNode(updated)

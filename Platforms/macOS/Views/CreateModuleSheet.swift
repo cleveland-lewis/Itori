@@ -18,9 +18,9 @@ struct CreateModuleSheet: View {
         VStack(spacing: 20) {
             // Header
             VStack(alignment: .leading, spacing: 8) {
-                Text("Create Module")
+                Text(NSLocalizedString("ui.create.module", value: "Create Module", comment: "Create Module"))
                     .font(.title2.weight(.semibold))
-                Text("Add a new organizational module to this course")
+                Text(NSLocalizedString("ui.add.a.new.organizational.module.to.this.course", value: "Add a new organizational module to this course", comment: "Add a new organizational module to this course"))
                     .font(.callout)
                     .foregroundStyle(.secondary)
             }
@@ -29,14 +29,14 @@ struct CreateModuleSheet: View {
             // Form
             VStack(alignment: .leading, spacing: 16) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Module Name")
+                    Text(NSLocalizedString("ui.module.name", value: "Module Name", comment: "Module Name"))
                         .font(.headline.weight(.medium))
                     TextField("e.g., Introduction to Biology", text: $moduleName)
                         .textFieldStyle(.roundedBorder)
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Type")
+                    Text(NSLocalizedString("ui.type", value: "Type", comment: "Type"))
                         .font(.headline.weight(.medium))
                     Picker("Module Type", selection: $moduleType) {
                         ForEach(CourseOutlineNodeType.allCases) { type in
@@ -56,12 +56,12 @@ struct CreateModuleSheet: View {
             
             // Buttons
             HStack(spacing: 12) {
-                Button("Cancel") {
+                Button(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel")) {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
                 
-                Button("Create") {
+                Button(NSLocalizedString("ui.button.create", value: "Create", comment: "Create")) {
                     createModule()
                 }
                 .keyboardShortcut(.defaultAction)

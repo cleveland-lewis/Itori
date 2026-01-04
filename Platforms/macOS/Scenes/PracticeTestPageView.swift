@@ -88,7 +88,7 @@ struct PracticeTestPageView: View {
             // Header with count badge on left and New Test button on right
             HStack {
                 HStack(spacing: 8) {
-                    Text("Scheduled Tests")
+                    Text(NSLocalizedString("practicetest.scheduled.tests", value: "Scheduled Tests", comment: "Scheduled Tests"))
                         .font(.title2.weight(.semibold))
                     
                     if !scheduledTestsStore.scheduledTests.filter({ $0.status != .archived }).isEmpty {
@@ -109,7 +109,7 @@ struct PracticeTestPageView: View {
                 Button {
                     showingGenerator = true
                 } label: {
-                    Label("New Practice Test", systemImage: "plus.circle.fill")
+                    Label(NSLocalizedString("practicetest.label.new.practice.test", value: "New Practice Test", comment: "New Practice Test"), systemImage: "plus.circle.fill")
                 }
                 .buttonStyle(.borderedProminent)
             }
@@ -142,7 +142,7 @@ struct PracticeTestPageView: View {
             Button {
                 showingGenerator = true
             } label: {
-                Label("Create Practice Test", systemImage: "plus.circle")
+                Label(NSLocalizedString("practicetest.label.create.practice.test", value: "Create Practice Test", comment: "Create Practice Test"), systemImage: "plus.circle")
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
@@ -226,7 +226,7 @@ struct PracticeTestPageView: View {
                     }
                     
                     HStack(spacing: 8) {
-                        Label("\(test.questionCount) questions", systemImage: "number")
+                        Label(NSLocalizedString("practicetest.label.testquestioncount.questions", value: "\(test.questionCount) questions", comment: "\(test.questionCount) questions"), systemImage: "number")
                         Label(test.difficulty.rawValue, systemImage: "slider.horizontal.3")
                     }
                     .font(.caption2)
@@ -256,25 +256,25 @@ struct PracticeTestPageView: View {
         }
         .buttonStyle(.plain)
         .contextMenu {
-            Button("Open Test") {
+            Button(NSLocalizedString("practicetest.button.open.test", value: "Open Test", comment: "Open Test")) {
                 practiceStore.currentTest = test
             }
             
             if test.status == .submitted {
-                Button("Review Answers") {
+                Button(NSLocalizedString("practicetest.button.review.answers", value: "Review Answers", comment: "Review Answers")) {
                     practiceStore.currentTest = test
                 }
             }
             
             if test.status == .ready {
-                Button("Start Test") {
+                Button(NSLocalizedString("practicetest.button.start.test", value: "Start Test", comment: "Start Test")) {
                     practiceStore.startTest(test.id)
                     practiceStore.currentTest = test
                 }
             }
             
             if test.status == .failed {
-                Button("Retry Generation") {
+                Button(NSLocalizedString("practicetest.button.retry.generation", value: "Retry Generation", comment: "Retry Generation")) {
                     Task {
                         await practiceStore.retryGeneration(testId: test.id)
                     }
@@ -333,7 +333,7 @@ struct PracticeTestPageView: View {
                 .font(.body)
                 .foregroundStyle(.secondary)
             
-            Button("Cancel") {
+            Button(NSLocalizedString("practicetest.button.cancel", value: "Cancel", comment: "Cancel")) {
                 practiceStore.clearCurrentTest()
             }
             .buttonStyle(.bordered)
@@ -350,7 +350,7 @@ struct PracticeTestPageView: View {
                 .font(.system(size: 64))
                 .foregroundStyle(.red)
             
-            Text("Generation Failed")
+            Text(NSLocalizedString("practicetest.generation.failed", value: "Generation Failed", comment: "Generation Failed"))
                 .font(.title2.bold())
             
             if let error = test.generationError {
@@ -361,12 +361,12 @@ struct PracticeTestPageView: View {
             }
             
             HStack(spacing: 12) {
-                Button("Go Back") {
+                Button(NSLocalizedString("practicetest.button.go.back", value: "Go Back", comment: "Go Back")) {
                     practiceStore.clearCurrentTest()
                 }
                 .buttonStyle(.bordered)
                 
-                Button("Retry") {
+                Button(NSLocalizedString("practicetest.button.retry", value: "Retry", comment: "Retry")) {
                     Task {
                         await practiceStore.retryGeneration(testId: test.id)
                     }

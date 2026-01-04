@@ -19,7 +19,7 @@ struct CourseModulesFilesSection: View {
             // Action Buttons
             HStack(spacing: 12) {
                 Button(action: onCreateModule) {
-                    Label("Create Module", systemImage: "folder.badge.plus")
+                    Label(NSLocalizedString("ui.label.create.module", value: "Create Module", comment: "Create Module"), systemImage: "folder.badge.plus")
                         .font(.body.weight(.medium))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
@@ -27,7 +27,7 @@ struct CourseModulesFilesSection: View {
                 .buttonStyle(.bordered)
                 
                 Button(action: onAddFiles) {
-                    Label("Add Files", systemImage: "doc.badge.plus")
+                    Label(NSLocalizedString("ui.label.add.files", value: "Add Files", comment: "Add Files"), systemImage: "doc.badge.plus")
                         .font(.body.weight(.medium))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
@@ -37,7 +37,7 @@ struct CourseModulesFilesSection: View {
             
             // Modules List
             VStack(alignment: .leading, spacing: 12) {
-                Text("Modules")
+                Text(NSLocalizedString("ui.modules", value: "Modules", comment: "Modules"))
                     .font(.headline.weight(.semibold))
                     .padding(.horizontal, 18)
                     .padding(.top, 18)
@@ -47,9 +47,9 @@ struct CourseModulesFilesSection: View {
                         Image(systemName: "folder.badge.questionmark")
                             .font(.title2)
                             .foregroundStyle(.tertiary)
-                        Text("No modules yet")
+                        Text(NSLocalizedString("ui.no.modules.yet", value: "No modules yet", comment: "No modules yet"))
                             .font(.subheadline.weight(.medium))
-                        Text("Create a module to organize content")
+                        Text(NSLocalizedString("ui.create.a.module.to.organize.content", value: "Create a module to organize content", comment: "Create a module to organize content"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -76,7 +76,7 @@ struct CourseModulesFilesSection: View {
             // Files List (Course-level files)
             if !files.isEmpty {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Course Files")
+                    Text(NSLocalizedString("ui.course.files", value: "Course Files", comment: "Course Files"))
                         .font(.headline.weight(.semibold))
                         .padding(.horizontal, 18)
                         .padding(.top, 18)
@@ -184,7 +184,7 @@ private struct FileRow: View {
                     
                     // Parse status indicator
                     if file.parseStatus != .notParsed {
-                        Text("•")
+                        Text(NSLocalizedString("ui.", value: "•", comment: "•"))
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                         
@@ -207,19 +207,19 @@ private struct FileRow: View {
                     
                     // Legacy indicators (if set)
                     if file.isSyllabus && file.category != .syllabus {
-                        Text("•")
+                        Text(NSLocalizedString("ui.", value: "•", comment: "•"))
                             .font(.caption2)
                             .foregroundStyle(.secondary)
-                        Text("Syllabus")
+                        Text(NSLocalizedString("ui.syllabus", value: "Syllabus", comment: "Syllabus"))
                             .font(.caption2.weight(.medium))
                             .foregroundStyle(.blue)
                     }
                     
                     if file.isPracticeExam && file.category != .practiceTest {
-                        Text("•")
+                        Text(NSLocalizedString("ui.", value: "•", comment: "•"))
                             .font(.caption2)
                             .foregroundStyle(.secondary)
-                        Text("Practice Exam")
+                        Text(NSLocalizedString("ui.practice.exam", value: "Practice Exam", comment: "Practice Exam"))
                             .font(.caption2.weight(.medium))
                             .foregroundStyle(.purple)
                     }
@@ -253,12 +253,12 @@ private struct FileRow: View {
                     Button(action: { 
                         showErrorAlert = true
                     }) {
-                        Label("View Error", systemImage: "exclamationmark.triangle")
+                        Label(NSLocalizedString("ui.label.view.error", value: "View Error", comment: "View Error"), systemImage: "exclamationmark.triangle")
                     }
                 }
                 
                 Button(action: openFile) {
-                    Label("Open File", systemImage: "arrow.up.right.square")
+                    Label(NSLocalizedString("ui.label.open.file", value: "Open File", comment: "Open File"), systemImage: "arrow.up.right.square")
                 }
             } label: {
                 HStack(spacing: 4) {

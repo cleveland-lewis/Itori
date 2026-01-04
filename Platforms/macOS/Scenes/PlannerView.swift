@@ -48,7 +48,7 @@ struct PlannerView: View {
                     Spacer()
                     Button("planner.action.schedule".localized) { runScheduler() }
                         .buttonStyle(.glassBlueProminent)
-                    Button("Re-learn") {
+                    Button(NSLocalizedString("planner.button.relearn", value: "Re-learn", comment: "Re-learn")) {
                         var prefs = SchedulerPreferencesStore.shared.preferences
                         SchedulerLearner.updatePreferences(from: SchedulerFeedbackStore.shared.feedback, preferences: &prefs)
                         SchedulerPreferencesStore.shared.preferences = prefs
@@ -104,7 +104,7 @@ struct PlannerView: View {
                 // Sections
                 LazyVStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
                     // Today's Plan
-                    Section(header: Text("Today's Plan").font(DesignSystem.Typography.body)) {
+                    Section(header: Text(NSLocalizedString("planner.todays.plan", value: "Today's Plan", comment: "Today's Plan")).font(DesignSystem.Typography.body)) {
                         if todayTasks.isEmpty {
                             if calendarManager.reminderAuthorizationStatus == .denied || calendarManager.reminderAuthorizationStatus == .restricted {
                                 AppCard {
@@ -136,7 +136,7 @@ struct PlannerView: View {
                                     VStack(spacing: DesignSystem.Spacing.small) {
                                         Image(systemName: "checklist")
                                             .imageScale(.large)
-                                        Text("Today's Plan")
+                                        Text(NSLocalizedString("planner.todays.plan", value: "Today's Plan", comment: "Today's Plan"))
                                             .font(DesignSystem.Typography.title)
                                         Text(DesignSystem.emptyStateMessage)
                                             .font(DesignSystem.Typography.body)
@@ -188,7 +188,7 @@ struct PlannerView: View {
             Button {
                 SceneActivationHelper.openPlannerWindow(for: Date())
             } label: {
-                Label("Open in New Window", systemImage: "doc.on.doc")
+                Label(NSLocalizedString("planner.label.open.in.new.window", value: "Open in New Window", comment: "Open in New Window"), systemImage: "doc.on.doc")
             }
         }
         .onAppear {
