@@ -19,6 +19,10 @@ struct TimerLiveActivityAttributes: ActivityAttributes {
         var elapsedSeconds: Int
         var isRunning: Bool
         var isOnBreak: Bool
+        var activityName: String?
+        var activityEmoji: String?
+        var pomodoroCurrentCycle: Int?
+        var pomodoroTotalCycles: Int?
     }
 
     var activityID: String

@@ -42,6 +42,9 @@ final class CoursesStore: ObservableObject {
     private var isOnline: Bool = true
     private var isLoadingFromDisk: Bool = false
     private var iCloudToggleObserver: NSObjectProtocol?
+    
+    // OPTIMIZATION: Track loading state for UI
+    @Published private(set) var isInitialLoadComplete: Bool = false
 
     init(storageURL: URL? = nil) {
         let fm = FileManager.default
@@ -59,15 +62,28 @@ final class CoursesStore: ObservableObject {
         try? FileManager.default.createDirectory(at: cacheFolder, withIntermediateDirectories: true)
         self.cacheURL = cacheFolder.appendingPathComponent("courses_cache.json")
 
+        // OPTIMIZATION: Setup only - defer actual data loading
         setupNetworkMonitoring()
+        observeICloudToggle()
+        CoursesStore.shared = self
+        
+        // OPTIMIZATION: Load data asynchronously after initialization
+        Task { @MainActor in
+            await loadDataAsync()
+        }
+    }
+    
+    // OPTIMIZATION: Async data loading - doesn't block app launch
+    @MainActor
+    private func loadDataAsync() async {
         loadCache()
         load()
         loadFromiCloudIfEnabled()
         setupiCloudMonitoring()
-        observeICloudToggle()
         cleanupOldData()
-        CoursesStore.shared = self
         recalcGPA(tasks: AssignmentsStore.shared.tasks)
+        isInitialLoadComplete = true
+        LOG_PERSISTENCE(.info, "CoursesLoad", "Async initial load complete")
     }
     
     private lazy var iCloudURL: URL? = {
@@ -135,8 +151,8 @@ final class CoursesStore: ObservableObject {
         courses.filter { $0.semesterId == semester.id && !$0.isArchived }
     }
     
-    /// Get courses in active semesters only
-    func courses(activeOnly: Bool = false) -> [Course] {
+    /// Get all non-archived courses, optionally filtered to active semesters only
+    func getAllCourses(activeOnly: Bool = false) -> [Course] {
         if activeOnly {
             return activeCourses
         } else {

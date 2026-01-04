@@ -32,8 +32,7 @@ struct RootsIOSApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
-        _ = PhoneWatchBridge.shared
-        ResetCoordinator.shared.start(appModel: AppModel.shared)
+        // OPTIMIZATION: Only essential initialization - defer everything else
         let store = CoursesStore()
         _coursesStore = StateObject(wrappedValue: store)
         let settings = AppSettingsModel.shared
@@ -42,14 +41,6 @@ struct RootsIOSApp: App {
             settings.visibleTabs = TabRegistry.defaultEnabledTabs
             settings.tabOrder = TabRegistry.allTabs.map { $0.id }
             settings.save()
-        }
-        
-        // Register background tasks
-        RootsIOSApp.registerBackgroundTasks()
-        
-        // Initialize Intelligent Scheduling System (Always On)
-        Task { @MainActor in
-            IntelligentSchedulingCoordinator.shared.start()
         }
     }
 
@@ -78,22 +69,15 @@ struct RootsIOSApp: App {
                 .environmentObject(toastRouter)
                 .environmentObject(filterState)
                 .environmentObject(schedulingCoordinator)
+                .task {
+                    // OPTIMIZATION: Defer non-essential initialization until after first frame
+                    await initializeBackgroundServices()
+                }
                 .onAppear {
                     preferences.highContrast = appSettings.highContrastMode
                     preferences.reduceTransparency = appSettings.increaseTransparency || !appSettings.enableGlassEffects
                     preferences.glassIntensity = appSettings.glassIntensity
                     preferences.reduceMotion = appSettings.reduceMotion
-                    PlannerSyncCoordinator.shared.start(
-                        assignmentsStore: .shared,
-                        plannerStore: .shared,
-                        settings: .shared
-                    )
-                    
-                    // Start auto-reschedule monitoring
-                    MissedEventDetectionService.shared.startMonitoring()
-
-                    BackgroundRefreshManager.shared.register()
-                    BackgroundRefreshManager.shared.scheduleNext()
                 }
                 .onChange(of: scenePhase) { _, phase in
                     if phase == .background {
@@ -165,6 +149,57 @@ struct RootsIOSApp: App {
         } catch {
             LOG_UI(.error, "Background", "Failed to schedule background task: \(error)")
         }
+    }
+    
+    // OPTIMIZATION: Initialize background services after first frame renders
+    @MainActor
+    private func initializeBackgroundServices() async {
+        LOG_LIFECYCLE(.info, "BackgroundInit", "Starting background service initialization")
+        
+        // Initialize services in parallel for maximum speed
+        await withTaskGroup(of: Void.self) { group in
+            // PhoneWatch communication
+            group.addTask {
+                _ = PhoneWatchBridge.shared
+            }
+            
+            // Reset coordinator
+            group.addTask {
+                ResetCoordinator.shared.start(appModel: AppModel.shared)
+            }
+            
+            // Background tasks
+            group.addTask {
+                RootsIOSApp.registerBackgroundTasks()
+            }
+            
+            // Planner sync
+            group.addTask {
+                PlannerSyncCoordinator.shared.start(
+                    assignmentsStore: .shared,
+                    plannerStore: .shared,
+                    settings: .shared
+                )
+            }
+            
+            // Missed event detection
+            group.addTask {
+                MissedEventDetectionService.shared.startMonitoring()
+            }
+            
+            // Background refresh
+            group.addTask {
+                BackgroundRefreshManager.shared.register()
+                BackgroundRefreshManager.shared.scheduleNext()
+            }
+            
+            // Intelligent scheduling
+            group.addTask {
+                IntelligentSchedulingCoordinator.shared.start()
+            }
+        }
+        
+        LOG_LIFECYCLE(.info, "BackgroundInit", "Background services initialized")
     }
 }
 

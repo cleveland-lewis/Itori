@@ -70,8 +70,7 @@ struct RootsApp: App {
     private var menuBarManager: MenuBarManager
 
     init() {
-        LOG_LIFECYCLE(.info, "AppInit", "RootsApp initializing")
-        ResetCoordinator.shared.start(appModel: AppModel.shared)
+        // OPTIMIZATION: Only essential initialization
         let store = CoursesStore()
         _coursesStore = StateObject(wrappedValue: store)
         let settings = AppSettingsModel.shared
@@ -83,7 +82,6 @@ struct RootsApp: App {
         let focus = FocusManager()
         _focusManager = StateObject(wrappedValue: focus)
         menuBarManager = MenuBarManager(focusManager: focus, assignmentsStore: assignments, settings: settings)
-        LOG_LIFECYCLE(.info, "AppInit", "RootsApp initialization complete")
     }
 
 #if !DISABLE_SWIFTDATA
@@ -314,6 +312,17 @@ struct RootsApp: App {
             }
             NotificationManager.shared.clearBadge()
         }
+    }
+    
+    // OPTIMIZATION: Initialize background services after first frame renders
+    @MainActor
+    private func initializeBackgroundServices() async {
+        LOG_LIFECYCLE(.info, "BackgroundInit", "Starting macOS background service initialization")
+        
+        // Initialize ResetCoordinator (was in init)
+        ResetCoordinator.shared.start(appModel: appModel)
+        
+        LOG_LIFECYCLE(.info, "BackgroundInit", "macOS background services initialized")
     }
 }
 #endif
