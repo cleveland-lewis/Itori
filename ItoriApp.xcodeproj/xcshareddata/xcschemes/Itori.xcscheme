@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1AD7D4332EDD328800D403F3"
-               BuildableName = "Roots.app"
-               BlueprintName = "Roots"
+               BuildableName = "Itori.app"
+               BlueprintName = "Itori"
                ReferencedContainer = "container:ItoriApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -69,8 +69,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1AD7D4332EDD328800D403F3"
-            BuildableName = "Roots.app"
-            BlueprintName = "Roots"
+            BuildableName = "Itori.app"
+            BlueprintName = "Itori"
             ReferencedContainer = "container:ItoriApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -86,8 +86,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1AD7D4332EDD328800D403F3"
-            BuildableName = "Roots.app"
-            BlueprintName = "Roots"
+            BuildableName = "Itori.app"
+            BlueprintName = "Itori"
             ReferencedContainer = "container:ItoriApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

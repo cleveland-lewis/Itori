@@ -1,5 +1,5 @@
 import XCTest
-@testable import Roots
+@testable import Itori
 
 final class LocalizationComprehensiveTests: XCTestCase {
     

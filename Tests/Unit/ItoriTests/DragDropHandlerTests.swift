@@ -4,7 +4,7 @@
 //
 
 import XCTest
-@testable import Roots
+@testable import Itori
 
 @MainActor
 final class DragDropHandlerTests: XCTestCase {

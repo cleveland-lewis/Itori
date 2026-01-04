@@ -1,6 +1,6 @@
 import Testing
 import Foundation
-@testable import Roots
+@testable import Itori
 
 /// Comprehensive algorithm test suite covering all major algorithms in Roots
 /// Tests determinism, correctness, edge cases, and performance

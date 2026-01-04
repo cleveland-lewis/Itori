@@ -1,5 +1,5 @@
 import XCTest
-@testable import Roots
+@testable import Itori
 
 /// Critical tests to ensure NO localization keys ever appear in UI
 /// These tests are release-blocking - any failure is a critical bug

@@ -1,5 +1,5 @@
 import XCTest
-@testable import Roots
+@testable import Itori
 
 /// Tests for slot-level regeneration behavior
 class RegenerationBehaviorTests: XCTestCase {

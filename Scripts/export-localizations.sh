@@ -8,11 +8,11 @@ set -e
 
 LANGUAGES=("en" "zh-Hans" "zh-Hant")
 OUTPUT_DIR="./Localizations"
-PROJECT="RootsApp.xcodeproj"
+PROJECT="ItoriApp.xcodeproj"
 SDK="macosx"
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Exporting Localizations for Roots"
+echo "Exporting Localizations for Itori"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 

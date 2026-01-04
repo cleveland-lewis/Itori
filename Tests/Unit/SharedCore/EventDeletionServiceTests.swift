@@ -1,6 +1,6 @@
 import XCTest
 import EventKit
-@testable import RootsApp
+@testable import ItoriApp
 
 @MainActor
 final class EventDeletionServiceTests: XCTestCase {

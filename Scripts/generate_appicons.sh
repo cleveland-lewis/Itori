@@ -2,7 +2,7 @@
 # Script to generate placeholder AppIcon images for macOS
 # This creates simple colored squares as placeholders until proper icons are designed
 
-ICON_DIR="/workspaces/Roots/SharedCore/DesignSystem/Assets.xcassets/AppIcon.appiconset"
+ICON_DIR="/workspaces/Itori/SharedCore/DesignSystem/Assets.xcassets/AppIcon.appiconset"
 
 # Check if we have ImageMagick or sips (macOS built-in)
 if command -v sips &> /dev/null; then

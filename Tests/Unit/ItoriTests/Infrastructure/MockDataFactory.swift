@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@testable import Roots
+@testable import Itori
 
 /// Factory for creating mock data objects for testing
 @MainActor

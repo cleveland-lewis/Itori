@@ -1,6 +1,6 @@
 //
 //  TimerLiveActivity.swift
-//  RootsTimerWidget
+//  ItoriTimerWidget
 //
 //  Created on 12/24/24.
 //

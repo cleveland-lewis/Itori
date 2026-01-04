@@ -1,5 +1,5 @@
 import XCTest
-@testable import Roots
+@testable import Itori
 
 #if os(iOS)
 @available(iOS 14.0, *)

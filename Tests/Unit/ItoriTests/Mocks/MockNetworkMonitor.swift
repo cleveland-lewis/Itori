@@ -7,7 +7,7 @@
 
 import Foundation
 import Network
-@testable import Roots
+@testable import Itori
 
 enum ConnectionType {
     case wifi

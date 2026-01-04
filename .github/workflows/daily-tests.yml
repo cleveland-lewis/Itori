@@ -27,8 +27,8 @@ jobs:
           set -o pipefail
           # Example: adapt this to your scheme / destination
           xcodebuild \
-            -project RootsApp.xcodeproj \
-            -scheme Roots \
+            -project ItoriApp.xcodeproj \
+            -scheme Itori \
             -sdk macosx \
             -destination "platform=macOS" \
             test | tee xcodebuild_daily_tests.log

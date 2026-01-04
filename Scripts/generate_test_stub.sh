@@ -49,7 +49,7 @@ cat > "$TEST_FILE" << EOF
 //
 
 import XCTest
-@testable import Roots
+@testable import Itori
 
 @MainActor
 final class ${BASENAME}Tests: BaseTestCase {
@@ -107,4 +107,4 @@ echo "Next steps:"
 echo "1. Open $TEST_FILE"
 echo "2. Replace XCTFail with actual test implementations"
 echo "3. Add necessary setup and mocks"
-echo "4. Run tests: xcodebuild test -scheme Roots -only-testing:ItoriTests/${BASENAME}Tests"
+echo "4. Run tests: xcodebuild test -scheme Itori -only-testing:ItoriTests/${BASENAME}Tests"

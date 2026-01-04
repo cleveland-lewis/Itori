@@ -1,13 +1,13 @@
 //
-//  RootsWatchApp.swift
-//  Roots (watchOS)
+//  ItoriWatchApp.swift
+//  Itori (watchOS)
 //
 
 #if os(watchOS)
 import SwiftUI
 
 @main
-struct RootsWatchApp: App {
+struct ItoriWatchApp: App {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var syncManager = WatchSyncManager.shared
     

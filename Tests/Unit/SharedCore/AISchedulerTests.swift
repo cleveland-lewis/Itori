@@ -1,6 +1,6 @@
 #if canImport(XCTest)
 import XCTest
-@testable import Roots
+@testable import Itori
 
 final class AISchedulerTests: XCTestCase {
     func date(_ y:Int,_ m:Int,_ d:Int,_ h:Int,_ min:Int) -> Date {

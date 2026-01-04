@@ -1,6 +1,6 @@
 #if canImport(XCTest)
 import XCTest
-@testable import Roots
+@testable import Itori
 
 final class PlannerSafetyNetTests: XCTestCase {
 

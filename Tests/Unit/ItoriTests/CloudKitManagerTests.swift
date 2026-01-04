@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import Roots
+@testable import Itori
 
 final class CloudKitManagerTests: XCTestCase {
     var mockCloudKit: MockCloudKitManager!

@@ -11,7 +11,7 @@ cd "$REPO_ROOT"
 # Create output file
 {
 echo "==================================="
-echo "Roots Localization Audit"
+echo "Itori Localization Audit"
 echo "==================================="
 echo ""
 echo "Generated: $(date)"

@@ -1,5 +1,5 @@
 import XCTest
-@testable import Roots
+@testable import Itori
 
 /// Integration test: 100 consecutive generations with mixed success/failure
 class HundredRunIntegrationTests: XCTestCase {

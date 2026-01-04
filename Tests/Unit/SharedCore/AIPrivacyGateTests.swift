@@ -1,5 +1,5 @@
 import XCTest
-@testable import Roots
+@testable import Itori
 
 /// Tests to verify the global AI privacy kill switch (Issue #390)
 /// Ensures that when AI is disabled, NO AI calls can occur

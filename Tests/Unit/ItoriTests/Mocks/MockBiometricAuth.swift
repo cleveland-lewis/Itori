@@ -7,7 +7,7 @@
 
 import Foundation
 import LocalAuthentication
-@testable import Roots
+@testable import Itori
 
 enum MockBiometricError: Error {
     case notAvailable

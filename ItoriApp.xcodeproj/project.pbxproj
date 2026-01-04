@@ -20,25 +20,25 @@
 			containerPortal = 1AD7D42C2EDD328800D403F3 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 1AD7D4332EDD328800D403F3;
-			remoteInfo = Roots;
+			remoteInfo = Itori;
 		};
 		1AD7D44E2EDD328A00D403F3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1AD7D42C2EDD328800D403F3 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 1AD7D4332EDD328800D403F3;
-			remoteInfo = Roots;
+			remoteInfo = Itori;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		1A2001922F09CFFF00700496 /* itori.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = itori.icon; sourceTree = "<group>"; };
-		1A41D6D02F09EDC9008D1FA6 /* Roots-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Roots-Info.plist"; sourceTree = "<group>"; };
+		1A41D6D02F09EDC9008D1FA6 /* Itori-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Itori-Info.plist"; sourceTree = "<group>"; };
 		1A58B1612EF58EAB0077C827 /* Notification+Names.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Names.swift"; sourceTree = "<group>"; };
-		1AD7D4342EDD328800D403F3 /* Roots.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Roots.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AD7D4342EDD328800D403F3 /* Itori.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Itori.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AD7D4432EDD328A00D403F3 /* ItoriTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ItoriTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AD7D44D2EDD328A00D403F3 /* ItoriUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ItoriUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9BBB386A3C3046FCA7A3D6DB /* RootsWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RootsWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BBB386A3C3046FCA7A3D6DB /* ItoriWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ItoriWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -47,7 +47,7 @@
 			membershipExceptions = (
 				DesignSystem/Localizable.xcstrings,
 			);
-			target = 1AD7D4332EDD328800D403F3 /* Roots */;
+			target = 1AD7D4332EDD328800D403F3 /* Itori */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -141,7 +141,7 @@
 		1AD7D42B2EDD328800D403F3 = {
 			isa = PBXGroup;
 			children = (
-				1A41D6D02F09EDC9008D1FA6 /* Roots-Info.plist */,
+				1A41D6D02F09EDC9008D1FA6 /* Itori-Info.plist */,
 				1A2001922F09CFFF00700496 /* itori.icon */,
 				1AD7D46B2EDD328800D403F3 /* SharedCore */,
 				1AD7D46C2EDD328800D403F3 /* Platforms/macOS */,
@@ -157,10 +157,10 @@
 		1AD7D4352EDD328800D403F3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1AD7D4342EDD328800D403F3 /* Roots.app */,
+				1AD7D4342EDD328800D403F3 /* Itori.app */,
 				1AD7D4432EDD328A00D403F3 /* ItoriTests.xctest */,
 				1AD7D44D2EDD328A00D403F3 /* ItoriUITests.xctest */,
-				9BBB386A3C3046FCA7A3D6DB /* RootsWatch.app */,
+				9BBB386A3C3046FCA7A3D6DB /* ItoriWatch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -168,9 +168,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		1AD7D4332EDD328800D403F3 /* Roots */ = {
+		1AD7D4332EDD328800D403F3 /* Itori */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1AD7D4572EDD328A00D403F3 /* Build configuration list for PBXNativeTarget "Roots" */;
+			buildConfigurationList = 1AD7D4572EDD328A00D403F3 /* Build configuration list for PBXNativeTarget "Itori" */;
 			buildPhases = (
 				1AD7D4302EDD328800D403F3 /* Sources */,
 				1AD7D4312EDD328800D403F3 /* Frameworks */,
@@ -185,11 +185,11 @@
 				1AD7D46C2EDD328800D403F3 /* Platforms/macOS */,
 				1AD7D4702EDD328800D403F3 /* Platforms/iOS */,
 			);
-			name = Roots;
+			name = Itori;
 			packageProductDependencies = (
 			);
-			productName = Roots;
-			productReference = 1AD7D4342EDD328800D403F3 /* Roots.app */;
+			productName = Itori;
+			productReference = 1AD7D4342EDD328800D403F3 /* Itori.app */;
 			productType = "com.apple.product-type.application";
 		};
 		1AD7D4422EDD328A00D403F3 /* ItoriTests */ = {
@@ -238,9 +238,9 @@
 			productReference = 1AD7D44D2EDD328A00D403F3 /* ItoriUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		A3D4E93275A547E499CA3B3E /* RootsWatch */ = {
+		A3D4E93275A547E499CA3B3E /* ItoriWatch */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FAAF631C0E284669ACB25FE7 /* Build configuration list for PBXNativeTarget "RootsWatch" */;
+			buildConfigurationList = FAAF631C0E284669ACB25FE7 /* Build configuration list for PBXNativeTarget "ItoriWatch" */;
 			buildPhases = (
 				EC428515A2604A26815D8F53 /* Sources */,
 				1247E4305FC34D9FA2A5E45A /* Frameworks */,
@@ -250,11 +250,11 @@
 			);
 			dependencies = (
 			);
-			name = RootsWatch;
+			name = ItoriWatch;
 			packageProductDependencies = (
 			);
-			productName = RootsWatch;
-			productReference = 9BBB386A3C3046FCA7A3D6DB /* RootsWatch.app */;
+			productName = ItoriWatch;
+			productReference = 9BBB386A3C3046FCA7A3D6DB /* ItoriWatch.app */;
 			productType = "com.apple.product-type.application.watchapp2";
 		};
 /* End PBXNativeTarget section */
@@ -320,10 +320,10 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				1AD7D4332EDD328800D403F3 /* Roots */,
+				1AD7D4332EDD328800D403F3 /* Itori */,
 				1AD7D4422EDD328A00D403F3 /* ItoriTests */,
 				1AD7D44C2EDD328A00D403F3 /* ItoriUITests */,
-				A3D4E93275A547E499CA3B3E /* RootsWatch */,
+				A3D4E93275A547E499CA3B3E /* ItoriWatch */,
 			);
 		};
 /* End PBXProject section */
@@ -398,12 +398,12 @@
 /* Begin PBXTargetDependency section */
 		1AD7D4452EDD328A00D403F3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1AD7D4332EDD328800D403F3 /* Roots */;
+			target = 1AD7D4332EDD328800D403F3 /* Itori */;
 			targetProxy = 1AD7D4442EDD328A00D403F3 /* PBXContainerItemProxy */;
 		};
 		1AD7D44F2EDD328A00D403F3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 1AD7D4332EDD328800D403F3 /* Roots */;
+			target = 1AD7D4332EDD328800D403F3 /* Itori */;
 			targetProxy = 1AD7D44E2EDD328A00D403F3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -574,9 +574,9 @@
 				AUTOMATION_APPLE_EVENTS = YES;
 				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGNING_REQUIRED = YES;
-				CODE_SIGN_ENTITLEMENTS = Config/Roots.entitlements;
-				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = "Config/Roots-iOS.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]" = "Config/Roots-iOS.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Config/Itori.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = "Config/Itori-iOS.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]" = "Config/Itori-iOS.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -601,17 +601,17 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Roots-Info.plist";
-				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = com.roots.background.refresh;
+				INFOPLIST_FILE = "Itori-Info.plist";
+				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = com.itori.background.refresh;
 				INFOPLIST_KEY_CFBundleDisplayName = Itori;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Roots needs full calendar access to display and manage your schedule across courses and tasks.";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "Roots needs access to your calendar to show and schedule classes and events.";
-				INFOPLIST_KEY_NSFaceIDUsageDescription = "Roots uses Face ID to securely authenticate you when required features request identity verification.";
-				INFOPLIST_KEY_NSFocusStatusUsageDescription = "Roots uses your Focus status to pause alerts and adjust notifications during study sessions.";
-				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Roots needs full reminders access to sync and manage your tasks safely across devices.";
-				INFOPLIST_KEY_NSRemindersUsageDescription = "Roots needs access to your reminders to show tasks alongside your assignments.";
-				INFOPLIST_KEY_NSUserNotificationUsageDescription = "Roots uses notifications to alert you when timers or scheduled tasks are finished.";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Itori needs full calendar access to display and manage your schedule across courses and tasks.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Itori needs access to your calendar to show and schedule classes and events.";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Itori uses Face ID to securely authenticate you when required features request identity verification.";
+				INFOPLIST_KEY_NSFocusStatusUsageDescription = "Itori uses your Focus status to pause alerts and adjust notifications during study sessions.";
+				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Itori needs full reminders access to sync and manage your tasks safely across devices.";
+				INFOPLIST_KEY_NSRemindersUsageDescription = "Itori needs access to your reminders to show tasks alongside your assignments.";
+				INFOPLIST_KEY_NSUserNotificationUsageDescription = "Itori uses notifications to alert you when timers or scheduled tasks are finished.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -666,9 +666,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				AUTOMATION_APPLE_EVENTS = YES;
-				CODE_SIGN_ENTITLEMENTS = Config/Roots.entitlements;
-				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = "Config/Roots-iOS.entitlements";
-				"CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]" = "Config/Roots-iOS.entitlements";
+				CODE_SIGN_ENTITLEMENTS = Config/Itori.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = "Config/Itori-iOS.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=iphonesimulator*]" = "Config/Itori-iOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
@@ -689,17 +689,17 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = "Roots-Info.plist";
-				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = com.roots.background.refresh;
+				INFOPLIST_FILE = "Itori-Info.plist";
+				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = com.itori.background.refresh;
 				INFOPLIST_KEY_CFBundleDisplayName = Itori;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
-				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Roots needs full calendar access to display and manage your schedule across courses and tasks.";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "Roots needs access to your calendar to show and schedule classes and events.";
-				INFOPLIST_KEY_NSFaceIDUsageDescription = "Roots uses Face ID to securely authenticate you when required features request identity verification.";
-				INFOPLIST_KEY_NSFocusStatusUsageDescription = "Roots uses your Focus status to pause alerts and adjust notifications during study sessions.";
-				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Roots needs full reminders access to sync and manage your tasks safely across devices.";
-				INFOPLIST_KEY_NSRemindersUsageDescription = "Roots needs access to your reminders to show tasks alongside your assignments.";
-				INFOPLIST_KEY_NSUserNotificationUsageDescription = "Roots uses notifications to alert you when timers or scheduled tasks are finished.";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Itori needs full calendar access to display and manage your schedule across courses and tasks.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Itori needs access to your calendar to show and schedule classes and events.";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Itori uses Face ID to securely authenticate you when required features request identity verification.";
+				INFOPLIST_KEY_NSFocusStatusUsageDescription = "Itori uses your Focus status to pause alerts and adjust notifications during study sessions.";
+				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Itori needs full reminders access to sync and manage your tasks safely across devices.";
+				INFOPLIST_KEY_NSRemindersUsageDescription = "Itori needs access to your reminders to show tasks alongside your assignments.";
+				INFOPLIST_KEY_NSUserNotificationUsageDescription = "Itori uses notifications to alert you when timers or scheduled tasks are finished.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -771,7 +771,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Roots.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Roots";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Itori.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Roots";
 				XROS_DEPLOYMENT_TARGET = 26.1;
 			};
 			name = Debug;
@@ -802,7 +802,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Roots.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Roots";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Itori.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Roots";
 				XROS_DEPLOYMENT_TARGET = 26.1;
 			};
 			name = Release;
@@ -831,7 +831,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_TARGET_NAME = Roots;
+				TEST_TARGET_NAME = Itori;
 				XROS_DEPLOYMENT_TARGET = 26.1;
 			};
 			name = Debug;
@@ -860,7 +860,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				TEST_TARGET_NAME = Roots;
+				TEST_TARGET_NAME = Itori;
 				XROS_DEPLOYMENT_TARGET = 26.1;
 			};
 			name = Release;
@@ -905,7 +905,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1AD7D4572EDD328A00D403F3 /* Build configuration list for PBXNativeTarget "Roots" */ = {
+		1AD7D4572EDD328A00D403F3 /* Build configuration list for PBXNativeTarget "Itori" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1AD7D4582EDD328A00D403F3 /* Debug */,
@@ -932,7 +932,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FAAF631C0E284669ACB25FE7 /* Build configuration list for PBXNativeTarget "RootsWatch" */ = {
+		FAAF631C0E284669ACB25FE7 /* Build configuration list for PBXNativeTarget "ItoriWatch" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D6FA2CD38EA64955A98B6401 /* Debug */,

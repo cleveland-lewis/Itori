@@ -1282,21 +1282,54 @@ final class AppSettingsModel: ObservableObject, Codable {
     static func load() -> AppSettingsModel {
         print("[AppSettings] Starting load...")
         let key = "roots.settings.appsettings"
-        if let data = UserDefaults.standard.data(forKey: key) {
-            print("[AppSettings] Found saved data, attempting to decode...")
-            let decoder = JSONDecoder()
-            do {
-                let decoded = try decoder.decode(AppSettingsModel.self, from: data)
-                print("[AppSettings] Successfully decoded from UserDefaults")
-                // Set up iCloud observer for decoded instance
-                decoded.setupICloudObserver()
-                return decoded
-            } catch {
-                print("[AppSettings] Decode failed: \(error). Creating new instance.")
-            }
-        } else {
-            print("[AppSettings] No saved data found, creating new instance")
+        
+        // TEMPORARY: Clear any saved settings to avoid decode crash after recent changes
+        // Remove this after a few releases
+        let migrationKey = "roots.settings.migrated.v2026.01"
+        if !UserDefaults.standard.bool(forKey: migrationKey) {
+            print("[AppSettings] Performing one-time migration: clearing old settings format")
+            UserDefaults.standard.removeObject(forKey: key)
+            UserDefaults.standard.set(true, forKey: migrationKey)
+            return AppSettingsModel()
         }
+        
+        guard let data = UserDefaults.standard.data(forKey: key) else {
+            print("[AppSettings] No saved data found, creating new instance")
+            return AppSettingsModel()
+        }
+        
+        print("[AppSettings] Found saved data (\(data.count) bytes), attempting to decode...")
+        let decoder = JSONDecoder()
+        
+        do {
+            print("[AppSettings] About to call decoder.decode()...")
+            let decoded = try decoder.decode(AppSettingsModel.self, from: data)
+            print("[AppSettings] Successfully decoded from UserDefaults")
+            // Set up iCloud observer for decoded instance
+            decoded.setupICloudObserver()
+            return decoded
+        } catch let error as DecodingError {
+            print("[AppSettings] ⚠️ DecodingError: \(error)")
+            switch error {
+            case .keyNotFound(let key, let context):
+                print("  - Missing key: \(key.stringValue) at \(context.codingPath)")
+            case .typeMismatch(let type, let context):
+                print("  - Type mismatch for \(type) at \(context.codingPath)")
+            case .valueNotFound(let type, let context):
+                print("  - Value not found for \(type) at \(context.codingPath)")
+            case .dataCorrupted(let context):
+                print("  - Data corrupted at \(context.codingPath)")
+            @unknown default:
+                print("  - Unknown decoding error")
+            }
+            print("[AppSettings] Clearing incompatible data and creating fresh instance")
+            UserDefaults.standard.removeObject(forKey: key)
+        } catch {
+            print("[AppSettings] ⚠️ Unexpected error: \(error)")
+            print("[AppSettings] Clearing data and creating fresh instance")
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+        
         return AppSettingsModel()
     }
 

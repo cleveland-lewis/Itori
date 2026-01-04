@@ -1,6 +1,6 @@
 import Foundation
 import UserNotifications
-@testable import Roots
+@testable import Itori
 
 class MockNotificationCenter: NotificationSchedulable {
     var isAuthorized = true

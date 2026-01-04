@@ -6,7 +6,7 @@
 //
 
 import Foundation
-@testable import Roots
+@testable import Itori
 
 enum MockCloudKitError: Error {
     case syncFailed

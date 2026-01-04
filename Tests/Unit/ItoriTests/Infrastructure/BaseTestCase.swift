@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import Roots
+@testable import Itori
 
 /// Base test case with common setup and utilities for all tests
 @MainActor

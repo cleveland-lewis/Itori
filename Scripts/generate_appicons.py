@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate placeholder AppIcon images for macOS Roots app.
+Generate placeholder AppIcon images for macOS Itori app.
 Requires: Pillow (PIL)
 Install with: pip3 install Pillow
 """
@@ -8,7 +8,7 @@ Install with: pip3 install Pillow
 from PIL import Image, ImageDraw, ImageFont
 import os
 
-ICON_DIR = "/workspaces/Roots/SharedCore/DesignSystem/Assets.xcassets/AppIcon.appiconset"
+ICON_DIR = "/workspaces/Itori/SharedCore/DesignSystem/Assets.xcassets/AppIcon.appiconset"
 
 # Define all required sizes
 SIZES = {

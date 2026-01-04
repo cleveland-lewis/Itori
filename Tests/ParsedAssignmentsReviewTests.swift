@@ -7,7 +7,7 @@
 
 import Testing
 import Foundation
-@testable import Roots
+@testable import Itori
 
 @MainActor
 struct ParsedAssignmentsReviewTests {

@@ -1,6 +1,6 @@
 //
-//  RootsApp.swift
-//  Roots
+//  ItoriApp.swift
+//  Itori
 //
 //  Created by Cleveland Lewis III on 11/30/25.
 //
@@ -13,7 +13,7 @@ import SwiftData
 #endif
 
 @main
-struct RootsApp: App {
+struct ItoriApp: App {
 
     @StateObject private var coursesStore: CoursesStore
     @StateObject private var appSettings = AppSettingsModel.shared
@@ -37,7 +37,7 @@ struct RootsApp: App {
     private var menuBarManager: MenuBarManager
 
     init() {
-        LOG_LIFECYCLE(.info, "AppInit", "RootsApp initializing")
+        LOG_LIFECYCLE(.info, "AppInit", "ItoriApp initializing")
         let store = CoursesStore()
         _coursesStore = StateObject(wrappedValue: store)
         let settings = AppSettingsModel.shared
@@ -49,7 +49,7 @@ struct RootsApp: App {
         let focus = FocusManager()
         _focusManager = StateObject(wrappedValue: focus)
         menuBarManager = MenuBarManager(focusManager: focus, assignmentsStore: assignments, settings: settings)
-        LOG_LIFECYCLE(.info, "AppInit", "RootsApp initialization complete")
+        LOG_LIFECYCLE(.info, "AppInit", "ItoriApp initialization complete")
     }
 
 #if !DISABLE_SWIFTDATA

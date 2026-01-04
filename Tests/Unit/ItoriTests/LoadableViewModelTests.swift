@@ -1,7 +1,7 @@
 #if os(macOS)
 import XCTest
 import Combine
-@testable import Roots
+@testable import Itori
 
 @MainActor
 final class LoadableViewModelTests: XCTestCase {

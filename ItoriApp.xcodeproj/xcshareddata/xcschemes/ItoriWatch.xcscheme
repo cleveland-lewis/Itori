@@ -16,9 +16,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A3D4E93275A547E499CA3B3E"
-               BuildableName = "RootsWatch.app"
-               BlueprintName = "RootsWatch"
-               ReferencedContainer = "container:RootsApp.xcodeproj">
+               BuildableName = "ItoriWatch.app"
+               BlueprintName = "ItoriWatch"
+               ReferencedContainer = "container:ItoriApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,9 +45,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A3D4E93275A547E499CA3B3E"
-            BuildableName = "RootsWatch.app"
-            BlueprintName = "RootsWatch"
-            ReferencedContainer = "container:RootsApp.xcodeproj">
+            BuildableName = "ItoriWatch.app"
+            BlueprintName = "ItoriWatch"
+            ReferencedContainer = "container:ItoriApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,9 +62,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A3D4E93275A547E499CA3B3E"
-            BuildableName = "RootsWatch.app"
-            BlueprintName = "RootsWatch"
-            ReferencedContainer = "container:RootsApp.xcodeproj">
+            BuildableName = "ItoriWatch.app"
+            BlueprintName = "ItoriWatch"
+            ReferencedContainer = "container:ItoriApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -7,7 +7,7 @@
 
 import Foundation
 import EventKit
-@testable import Roots
+@testable import Itori
 
 enum MockEventStoreError: Error {
     case accessDenied

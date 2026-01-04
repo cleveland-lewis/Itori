@@ -1,10 +1,10 @@
 #!/usr/bin/swift
-// Comprehensive Roots App Workflow Test Script
+// Comprehensive Itori App Workflow Test Script
 // Tests: Semester → Courses → Assignments → Planning → Scheduling → Dynamic Updates
 
 import Foundation
 
-print("🧪 Starting Comprehensive Roots Workflow Test")
+print("🧪 Starting Comprehensive Itori Workflow Test")
 print("=" * 60)
 
 // This script outlines the test but requires manual execution

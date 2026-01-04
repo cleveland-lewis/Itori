@@ -8,10 +8,10 @@ set -e
 
 LANGUAGES=("zh-Hans" "zh-Hant")
 INPUT_DIR="./Localizations"
-PROJECT="RootsApp.xcodeproj"
+PROJECT="ItoriApp.xcodeproj"
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Importing Localizations for Roots"
+echo "Importing Localizations for Itori"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 

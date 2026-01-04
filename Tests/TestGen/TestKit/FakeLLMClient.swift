@@ -1,5 +1,5 @@
 import Foundation
-@testable import Roots
+@testable import Itori
 
 /// Fake LLM client for testing with scriptable outputs and failure injection
 class FakeLLMClient: LLMBackend {

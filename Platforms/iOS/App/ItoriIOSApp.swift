@@ -1,6 +1,6 @@
 //
-//  RootsIOSApp.swift
-//  Roots (iOS)
+//  ItoriIOSApp.swift
+//  Itori (iOS)
 //
 
 #if os(iOS)
@@ -8,7 +8,7 @@ import SwiftUI
 import BackgroundTasks
 
 @main
-struct RootsIOSApp: App {
+struct ItoriIOSApp: App {
     @StateObject private var coursesStore: CoursesStore
     @StateObject private var appSettings = AppSettingsModel.shared
     @StateObject private var settingsCoordinator: SettingsCoordinator
@@ -179,7 +179,7 @@ struct RootsIOSApp: App {
             
             // Background tasks registration
             group.addTask {
-                RootsIOSApp.registerBackgroundTasks()
+                ItoriIOSApp.registerBackgroundTasks()
                 LOG_LIFECYCLE(.debug, "Tier1", "BackgroundTasks registered")
             }
         }
@@ -246,7 +246,7 @@ struct RootsIOSApp: App {
 
 // MARK: - Background Task Registration
 
-extension RootsIOSApp {
+extension ItoriIOSApp {
     static func registerBackgroundTasks() {
         let identifier = "com.clevelandlewis.Itori.intelligentScheduling"
         
@@ -264,7 +264,7 @@ extension RootsIOSApp {
         LOG_UI(.info, "Background", "Running intelligent scheduling background task")
         
         // Schedule next background task
-        await RootsIOSApp().scheduleIntelligentSchedulingBackgroundTask()
+        await ItoriIOSApp().scheduleIntelligentSchedulingBackgroundTask()
         
         // Perform intelligent scheduling work
         await IntelligentSchedulingCoordinator.shared.checkOverdueTasks()

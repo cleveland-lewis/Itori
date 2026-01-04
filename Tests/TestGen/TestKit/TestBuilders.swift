@@ -1,5 +1,5 @@
 import Foundation
-@testable import Roots
+@testable import Itori
 
 /// Builders for test data structures
 class TestBuilders {

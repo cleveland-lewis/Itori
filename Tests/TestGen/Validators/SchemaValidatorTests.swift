@@ -1,5 +1,5 @@
 import XCTest
-@testable import Roots
+@testable import Itori
 
 /// Tests for strict schema validation
 class SchemaValidatorTests: XCTestCase {

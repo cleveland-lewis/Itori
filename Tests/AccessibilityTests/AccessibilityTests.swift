@@ -7,7 +7,7 @@
 
 import XCTest
 import SwiftUI
-@testable import Roots
+@testable import Itori
 
 #if DEBUG
 

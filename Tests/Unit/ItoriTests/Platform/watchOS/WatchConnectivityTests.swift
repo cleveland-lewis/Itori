@@ -2,7 +2,7 @@ import XCTest
 #if canImport(WatchConnectivity)
 import WatchConnectivity
 #endif
-@testable import Roots
+@testable import Itori
 
 #if os(watchOS) && canImport(WatchConnectivity)
 class WatchConnectivityTests: XCTestCase {

@@ -7,7 +7,7 @@
 
 import XCTest
 import CoreData
-@testable import Roots
+@testable import Itori
 
 final class CoreDataStackTests: XCTestCase {
     

@@ -1,5 +1,5 @@
 import XCTest
-@testable import Roots
+@testable import Itori
 
 /// Tests that run against the fixture corpus
 class FixtureBasedTests: XCTestCase {

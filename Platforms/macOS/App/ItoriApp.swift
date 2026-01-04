@@ -1,6 +1,6 @@
 //
-//  RootsApp.swift
-//  Roots (macOS)
+//  ItoriApp.swift
+//  Itori (macOS)
 //
 
 #if os(macOS)
@@ -43,7 +43,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 @main
-struct RootsApp: App {
+struct ItoriApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     private let appAccentColor: Color = .blue
