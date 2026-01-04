@@ -40,16 +40,13 @@ final class PersistenceController {
             description.url = URL(fileURLWithPath: "/dev/null")
         }
 
-        let iCloudSyncEnabled = AppSettingsModel.shared.enableICloudSync
+        // Defer iCloud check to avoid circular dependency with AppSettingsModel
+        // Default to disabled during initial setup
+        let iCloudSyncEnabled = false
         isCloudKitEnabled = iCloudSyncEnabled
         
-        if iCloudSyncEnabled {
-            description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
-                containerIdentifier: cloudKitContainerIdentifier
-            )
-        } else {
-            description.cloudKitContainerOptions = nil
-        }
+        // Always start without CloudKit to avoid circular dependency
+        description.cloudKitContainerOptions = nil
         
         description.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
         description.setOption(true as NSNumber, forKey: NSInferMappingModelAutomaticallyOption)
@@ -63,10 +60,7 @@ final class PersistenceController {
 
         if let error = loadError {
             LOG_DATA(.error, "Persistence", "Persistent store load failed: \(error.localizedDescription)")
-            // Only show detailed error in developer mode
-            if AppSettingsModel.shared.devModeEnabled {
-                print("[Persistence] Full error: \(error)")
-            }
+            print("[Persistence] Full error: \(error)")
             
             // If CloudKit failed, recreate container without CloudKit
             if iCloudSyncEnabled {
