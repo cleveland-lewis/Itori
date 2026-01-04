@@ -40,6 +40,7 @@
 
 /* Begin PBXFileReference section */
 		1A2001922F09CFFF00700496 /* itori.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = itori.icon; sourceTree = "<group>"; };
+		1A41D6D02F09EDC9008D1FA6 /* Roots-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Roots-Info.plist"; sourceTree = "<group>"; };
 		1A58B1612EF58EAB0077C827 /* Notification+Names.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Names.swift"; sourceTree = "<group>"; };
 		1AD7D4342EDD328800D403F3 /* Roots.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Roots.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AD7D4432EDD328A00D403F3 /* RootsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RootsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,6 +148,7 @@
 		1AD7D42B2EDD328800D403F3 = {
 			isa = PBXGroup;
 			children = (
+				1A41D6D02F09EDC9008D1FA6 /* Roots-Info.plist */,
 				1A2001922F09CFFF00700496 /* itori.icon */,
 				1AD7D46B2EDD328800D403F3 /* SharedCore */,
 				1AD7D46C2EDD328800D403F3 /* Platforms/macOS */,
@@ -612,6 +614,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Roots-Info.plist";
 				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = com.roots.background.refresh;
 				INFOPLIST_KEY_CFBundleDisplayName = Itori;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
@@ -699,6 +702,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Roots-Info.plist";
 				INFOPLIST_KEY_BGTaskSchedulerPermittedIdentifiers = com.roots.background.refresh;
 				INFOPLIST_KEY_CFBundleDisplayName = Itori;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";

@@ -60,7 +60,7 @@ struct CalendarGrid: View {
                         }
                     } else {
                         Color.clear
-                            .frame(height: 80)
+                            .frame(height: 90)
                     }
                 }
             }
@@ -96,6 +96,7 @@ private struct GridDayCell: View {
     
     @EnvironmentObject private var eventsStore: EventsCountStore
     @State private var isHovered = false
+    @Environment(\.colorScheme) private var colorScheme
     
     private let calendar = Calendar.current
     
@@ -105,7 +106,7 @@ private struct GridDayCell: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Day number at top-left with only today getting a red circle
+            // Day number at top-left with ONLY today getting a small red circle
             HStack {
                 Text("\(dayNumber)")
                     .font(.system(size: 13, weight: .regular))
@@ -115,7 +116,7 @@ private struct GridDayCell: View {
                     )
                     .padding(6)
                     .background(
-                        // ONLY today gets a circle - small red circle
+                        // CRITICAL: ONLY today gets a circle - small red circle behind date number
                         Group {
                             if isToday {
                                 Circle()
@@ -130,7 +131,7 @@ private struct GridDayCell: View {
             .padding(.top, 6)
             .padding(.leading, 6)
             
-            // Event bars (horizontal colored bars, not dots)
+            // Event bars (horizontal colored bars, not dots+text)
             VStack(spacing: 2) {
                 ForEach(events.prefix(3), id: \.eventIdentifier) { event in
                     EventBar(event: event)
@@ -176,15 +177,13 @@ private struct GridDayCell: View {
         )
     }
     
-    @Environment(\.colorScheme) private var colorScheme
-    
-    // Helper view for event bars
+    // Helper view for horizontal event bars
     private struct EventBar: View {
         let event: EKEvent
         
         var body: some View {
             HStack(spacing: 3) {
-                // Time for timed events
+                // Time for timed events (all-day events show no time)
                 if !event.isAllDay {
                     Text(timeString)
                         .font(.system(size: 9))
@@ -192,9 +191,9 @@ private struct GridDayCell: View {
                         .lineLimit(1)
                 }
                 
-                // Colored bar with event title
+                // Colored horizontal bar with event title
                 HStack(spacing: 0) {
-                    // Color indicator bar
+                    // Left color indicator bar
                     Rectangle()
                         .fill(categoryColor)
                         .frame(width: 2)
@@ -251,50 +250,37 @@ struct CalendarHeader: View {
             
             Spacer()
             
-            // Navigation controls
-            HStack(spacing: 8) {
+            // Month/Year label
+            Text(monthLabel)
+                .font(.title2.weight(.semibold))
+            
+            Spacer()
+            
+            // Navigation buttons
+            HStack(spacing: 12) {
                 Button(action: onPrevious) {
-                    calendarHeaderButtonLabel(
-                        title: NSLocalizedString("common.button.previous", comment: ""),
-                        systemImage: "chevron.left"
-                    )
-                    .font(.body.weight(.medium))
+                    Image(systemName: "chevron.left")
+                        .font(.body.weight(.medium))
                 }
                 .buttonStyle(.plain)
-                .rootsStandardInteraction()
                 
-                Button(action: onToday) {
-                    Text("Today")
-                        .font(.subheadline.weight(.medium))
-                }
-                .buttonStyle(.bordered)
+                Button("Today", action: onToday)
+                    .buttonStyle(.bordered)
                 
                 Button(action: onNext) {
-                    calendarHeaderButtonLabel(
-                        title: NSLocalizedString("common.button.next", comment: ""),
-                        systemImage: "chevron.right"
-                    )
-                    .font(.body.weight(.medium))
+                    Image(systemName: "chevron.right")
+                        .font(.body.weight(.medium))
                 }
                 .buttonStyle(.plain)
-                .rootsStandardInteraction()
             }
         }
     }
-
-    @ViewBuilder
-    private func calendarHeaderButtonLabel(title: String, systemImage: String) -> some View {
-        switch settings.tabBarMode {
-        case .iconsOnly:
-            Image(systemName: systemImage)
-        case .textOnly:
-            Text(title)
-        case .iconsAndText:
-            HStack(spacing: DesignSystem.Spacing.xsmall) {
-                Image(systemName: systemImage)
-                Text(title)
-            }
-        }
+    
+    private var monthLabel: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "LLLL yyyy"
+        return formatter.string(from: currentMonth)
     }
 }
+
 #endif

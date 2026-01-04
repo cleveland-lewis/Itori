@@ -134,7 +134,7 @@ final class EnhancedAutoRescheduleService: ObservableObject {
     // MARK: - Task Detection
     
     private func findOverdueTasks(currentTime: Date) -> [Assignment] {
-        assignmentsStore.assignments.filter { assignment in
+        assignmentsStore.tasks.filter { assignment in
             guard assignment.status != .completed && assignment.status != .archived else {
                 return false
             }
@@ -175,7 +175,7 @@ final class EnhancedAutoRescheduleService: ObservableObject {
         // Update assignment in store
         var updatedAssignment = assignment
         updatedAssignment.dueDate = newDueDate
-        assignmentsStore.updateAssignment(updatedAssignment)
+        assignmentsStore.update(updatedAssignment)
         
         // Create notification
         let notification = createRescheduleNotification(
@@ -306,7 +306,7 @@ final class EnhancedAutoRescheduleService: ObservableObject {
     
     private func getScheduledTasksForDay(_ date: Date) -> [Assignment] {
         let calendar = Calendar.current
-        return assignmentsStore.assignments.filter { assignment in
+        return assignmentsStore.tasks.filter { assignment in
             guard assignment.status != .completed && assignment.status != .archived else {
                 return false
             }
