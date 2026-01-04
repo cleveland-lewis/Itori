@@ -22,7 +22,7 @@ struct VersionDropdownView: View {
                 HStack(spacing: 8) {
                     Image(systemName: "info.circle")
                         .font(.caption)
-                    Text("Roots v\(appVersion)")
+                    Text("Itori v\(appVersion)")
                         .font(.caption)
                         .monospacedDigit()
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
@@ -111,7 +111,7 @@ struct VersionDropdownView: View {
                     }
                     
                     // Additional info
-                    Text("© 2026 Roots. All rights reserved.")
+                    Text("© 2026 Itori. All rights reserved.")
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                         .frame(maxWidth: .infinity, alignment: .center)
@@ -143,7 +143,7 @@ struct VersionDropdownView: View {
     }
     
     private func openReleaseNotes() {
-        if let url = URL(string: "https://github.com/yourusername/Roots/releases") {
+        if let url = URL(string: "https://github.com/yourusername/Itori/releases") {
             NSWorkspace.shared.open(url)
         }
     }

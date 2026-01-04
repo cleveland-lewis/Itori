@@ -3,7 +3,7 @@
 ## Current Dashboard Analysis
 
 ### Overview
-The Roots dashboard uses a card-based layout with 6 main cards arranged in a 2-column grid:
+The Itori dashboard uses a card-based layout with 6 main cards arranged in a 2-column grid:
 1. **Today Overview** - Stats for events and tasks due today
 2. **Clock & Calendar** - Analog clock + mini calendar
 3. **Events** - Upcoming calendar events
@@ -40,7 +40,7 @@ The Roots dashboard uses a card-based layout with 6 main cards arranged in a 2-c
    - Fix: Remove fixed heights, use proper content sizing
 
 ### ❌ Visual Design
-1. **Custom card component (`RootsCard`)**
+1. **Custom card component (`ItoriCard`)**
    - Should use native macOS materials and vibrancy
    - Missing proper hover/focus states
    - No proper corner radius (should be 10pt for cards)
@@ -62,7 +62,7 @@ The Roots dashboard uses a card-based layout with 6 main cards arranged in a 2-c
    - Fix: Remove unnecessary tap handlers or add proper navigation
 
 2. **Button styles** - Mix of custom styles
-   - `.borderedProminent`, `RootsLiquidButtonStyle()`
+   - `.borderedProminent`, `ItoriLiquidButtonStyle()`
    - HIG: Use consistent native button styles
    - Fix: Standardize on `.borderedProminent` or `.bordered`
 
@@ -336,8 +336,8 @@ Use system text styles:
 
 ### Before (Current)
 ```swift
-RootsCard(title: "Today Overview", icon: "sun.max") {
-    VStack(alignment: .leading, spacing: RootsSpacing.m) {
+ItoriCard(title: "Today Overview", icon: "sun.max") {
+    VStack(alignment: .leading, spacing: ItoriSpacing.m) {
         DashboardTileBody(
             rows: [
                 ("Events Today", "\(eventsTodayCount)"),

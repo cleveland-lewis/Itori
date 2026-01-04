@@ -1,7 +1,7 @@
 # Implementation Summary: Phases B, C, and D
 
 ## Overview
-This document describes the implementation of three feature settings in the Roots app:
+This document describes the implementation of three feature settings in the Itori app:
 1. **AI-Powered Planning** (enableAIPlannerStorage)
 2. **Auto-Schedule Breaks** (autoScheduleBreaksStorage)  
 3. **Track Study Hours** (trackStudyHoursStorage)
@@ -157,7 +157,7 @@ if completed, let actualDuration = s.actualDuration {
 - Preserves longer periods when rolling over shorter ones
 
 **Persistence**:
-- Location: `~/Library/Application Support/RootsAnalytics/`
+- Location: `~/Library/Application Support/ItoriAnalytics/`
 - Files:
   - `study_hours.json`: Current totals + lastResetDate
   - `completed_sessions.json`: Array of recorded session UUIDs
@@ -182,7 +182,7 @@ if completed, let actualDuration = s.actualDuration {
 ## Test Coverage
 
 ### PlannerEngine Tests
-**File**: `RootsTests/PlannerEngineTests.swift`
+**File**: `ItoriTests/PlannerEngineTests.swift`
 
 Tests:
 - `testDeterministicSchedulingWhenAIDisabled`: Verifies deterministic path
@@ -194,7 +194,7 @@ Tests:
 - `testNoBreakWithInsufficientTime`: Gap validation
 
 ### StudyHoursTracker Tests
-**File**: `RootsTests/StudyHoursTrackerTests.swift`
+**File**: `ItoriTests/StudyHoursTrackerTests.swift`
 
 Tests:
 - `testRecordSessionWhenEnabled`: Basic recording
@@ -209,17 +209,17 @@ Tests:
 
 ### Running Tests
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 
 # Run PlannerEngine tests
-xcodebuild test -project RootsApp.xcodeproj -scheme Roots \
+xcodebuild test -project ItoriApp.xcodeproj -scheme Itori \
   -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' \
-  -only-testing:RootsTests/PlannerEngineTests
+  -only-testing:ItoriTests/PlannerEngineTests
 
 # Run StudyHoursTracker tests
-xcodebuild test -project RootsApp.xcodeproj -scheme Roots \
+xcodebuild test -project ItoriApp.xcodeproj -scheme Itori \
   -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 17' \
-  -only-testing:RootsTests/StudyHoursTrackerTests
+  -only-testing:ItoriTests/StudyHoursTrackerTests
 ```
 
 ---

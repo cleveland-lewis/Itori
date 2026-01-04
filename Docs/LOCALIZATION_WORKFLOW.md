@@ -1,7 +1,7 @@
 # Localization Workflow with Xcode String Catalogs
 
 ## Overview
-This guide explains how to use Xcode's modern localization export system to manage translations for the Roots app. The workflow uses `.xcloc` packages and `.xliff` files for professional translation workflows.
+This guide explains how to use Xcode's modern localization export system to manage translations for the Itori app. The workflow uses `.xcloc` packages and `.xliff` files for professional translation workflows.
 
 ## Current Localization Setup
 
@@ -13,7 +13,7 @@ This guide explains how to use Xcode's modern localization export system to mana
 ### String Catalog Files
 Located in `SharedCore/DesignSystem/`:
 - `Localizable.xcstrings` - Main app strings
-- `Roots-InfoPlist.xcstrings` - App metadata (name, permissions, etc.)
+- `Itori-InfoPlist.xcstrings` - App metadata (name, permissions, etc.)
 
 ### Legacy Files
 Located in language-specific `.lproj` folders:
@@ -33,21 +33,21 @@ Export all localizable content for translation:
 ```bash
 # Export English (base language)
 xcodebuild -exportLocalizations \
-  -project RootsApp.xcodeproj \
+  -project ItoriApp.xcodeproj \
   -localizationPath ./Localizations \
   -exportLanguage en \
   -sdk macosx
 
 # Export Simplified Chinese
 xcodebuild -exportLocalizations \
-  -project RootsApp.xcodeproj \
+  -project ItoriApp.xcodeproj \
   -localizationPath ./Localizations \
   -exportLanguage zh-Hans \
   -sdk macosx
 
 # Export Traditional Chinese
 xcodebuild -exportLocalizations \
-  -project RootsApp.xcodeproj \
+  -project ItoriApp.xcodeproj \
   -localizationPath ./Localizations \
   -exportLanguage zh-Hant \
   -sdk macosx
@@ -66,7 +66,7 @@ Localizations/
 │   ├── Source Contents/
 │   │   └── SharedCore/DesignSystem/
 │   │       ├── Localizable.xcstrings
-│   │       └── Roots-InfoPlist.xcstrings
+│   │       └── Itori-InfoPlist.xcstrings
 │   └── Notes/
 ├── zh-Hans.xcloc/
 │   └── ...
@@ -106,18 +106,18 @@ After translation is complete:
 ```bash
 # Import Simplified Chinese translations
 xcodebuild -importLocalizations \
-  -project RootsApp.xcodeproj \
+  -project ItoriApp.xcodeproj \
   -localizationPath ./Localizations/zh-Hans.xcloc
 
 # Import Traditional Chinese translations
 xcodebuild -importLocalizations \
-  -project RootsApp.xcodeproj \
+  -project ItoriApp.xcodeproj \
   -localizationPath ./Localizations/zh-Hant.xcloc
 ```
 
 This will:
 - Update `SharedCore/DesignSystem/Localizable.xcstrings` with new translations
-- Update `SharedCore/DesignSystem/Roots-InfoPlist.xcstrings` 
+- Update `SharedCore/DesignSystem/Itori-InfoPlist.xcstrings` 
 - Merge translations into existing string catalogs
 - Preserve any existing translations not in the XLIFF
 
@@ -127,7 +127,7 @@ After import:
 
 1. **Build and run the app**
    ```bash
-   xcodebuild -scheme Roots -destination 'platform=macOS' build
+   xcodebuild -scheme Itori -destination 'platform=macOS' build
    ```
 
 2. **Test each language**
@@ -161,7 +161,7 @@ In Xcode:
 
 ```bash
 xcodebuild -exportLocalizations \
-  -project RootsApp.xcodeproj \
+  -project ItoriApp.xcodeproj \
   -localizationPath ./Localizations \
   -exportLanguage es \
   -sdk macosx
@@ -185,7 +185,7 @@ Text("user.greeting", bundle: .main)
   .replacingOccurrences(of: "{name}", with: userName)
 
 // ❌ Bad - Hardcoded string
-Text("Welcome to Roots")
+Text("Welcome to Itori")
 ```
 
 ### 2. Add Context Comments
@@ -263,7 +263,7 @@ echo "Exporting localizations..."
 for LANG in "${LANGUAGES[@]}"; do
     echo "Exporting $LANG..."
     xcodebuild -exportLocalizations \
-        -project RootsApp.xcodeproj \
+        -project ItoriApp.xcodeproj \
         -localizationPath "$OUTPUT_DIR" \
         -exportLanguage "$LANG" \
         -sdk macosx
@@ -288,7 +288,7 @@ for LANG in "${LANGUAGES[@]}"; do
     if [ -d "$INPUT_DIR/$LANG.xcloc" ]; then
         echo "Importing $LANG..."
         xcodebuild -importLocalizations \
-            -project RootsApp.xcodeproj \
+            -project ItoriApp.xcodeproj \
             -localizationPath "$INPUT_DIR/$LANG.xcloc"
     else
         echo "⚠️  Skipping $LANG (not found)"
@@ -386,7 +386,7 @@ Check String Catalogs in Xcode:
 
 All localization exports are in:
 ```
-/Users/clevelandlewis/Desktop/Roots/Localizations/
+/Users/clevelandlewis/Desktop/Itori/Localizations/
 ```
 
 Contents:

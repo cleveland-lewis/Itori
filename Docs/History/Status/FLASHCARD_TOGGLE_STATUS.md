@@ -142,7 +142,7 @@ Tab bar should use `effectiveVisibleTabs` or check `settings.enableFlashcards`
 
 ### 3. Check UserDefaults
 ```bash
-defaults read com.yourapp.Roots roots.settings.enableFlashcards
+defaults read com.yourapp.Itori roots.settings.enableFlashcards
 ```
 Should return `1` (enabled) or `0` (disabled)
 

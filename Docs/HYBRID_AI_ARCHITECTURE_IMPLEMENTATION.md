@@ -1,7 +1,7 @@
 # Hybrid AI Architecture - Implementation Summary
 
 ## Overview
-Roots now has a comprehensive hybrid AI architecture supporting Apple Intelligence, local offline models, and bring-your-own (BYO) providers with platform-specific optimizations.
+Itori now has a comprehensive hybrid AI architecture supporting Apple Intelligence, local offline models, and bring-your-own (BYO) providers with platform-specific optimizations.
 
 ## Implementation Date
 2026-01-03

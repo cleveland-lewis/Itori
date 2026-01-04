@@ -8,7 +8,7 @@
 ## Issues Fixed
 
 ### 1. watchOS Info.plist Path Error
-**Error**: `Build input file cannot be found: '/Users/clevelandlewis/Desktop/Roots/watchOS/App/Info.plist'`
+**Error**: `Build input file cannot be found: '/Users/clevelandlewis/Desktop/Itori/watchOS/App/Info.plist'`
 
 **Fix**: Updated path from `watchOS/App/Info.plist` to `Platforms/watchOS/App/Info.plist`
 
@@ -29,9 +29,9 @@
 
 | Platform | Scheme | SDK | Status |
 |----------|--------|-----|--------|
-| iOS | Roots | iphonesimulator | ✅ BUILD SUCCEEDED |
-| macOS | Roots | macosx | ✅ BUILD SUCCEEDED |
-| watchOS | RootsWatch | watchsimulator | ✅ BUILD SUCCEEDED |
+| iOS | Itori | iphonesimulator | ✅ BUILD SUCCEEDED |
+| macOS | Itori | macosx | ✅ BUILD SUCCEEDED |
+| watchOS | ItoriWatch | watchsimulator | ✅ BUILD SUCCEEDED |
 
 ---
 
@@ -41,9 +41,9 @@
 Follow the guide in `WATCHOS_COMPANION_SETUP.md` to configure the watchOS app to install automatically with the iOS app.
 
 **Quick Steps**:
-1. Open `RootsApp.xcodeproj` in Xcode
-2. Select "Roots" target → "General" tab
-3. Add "RootsWatch.app" to "Frameworks, Libraries, and Embedded Content"
+1. Open `ItoriApp.xcodeproj` in Xcode
+2. Select "Itori" target → "General" tab
+3. Add "ItoriWatch.app" to "Frameworks, Libraries, and Embedded Content"
 4. Set embed setting to "Embed & Sign"
 
 ### Option 2: Build and Run
@@ -51,13 +51,13 @@ All three platforms are ready to build and run:
 
 ```bash
 # iOS Simulator
-xcodebuild -project RootsApp.xcodeproj -scheme Roots -sdk iphonesimulator build
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori -sdk iphonesimulator build
 
 # macOS
-xcodebuild -project RootsApp.xcodeproj -scheme Roots -sdk macosx build
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori -sdk macosx build
 
 # watchOS Simulator
-xcodebuild -project RootsApp.xcodeproj -scheme RootsWatch -sdk watchsimulator build
+xcodebuild -project ItoriApp.xcodeproj -scheme ItoriWatch -sdk watchsimulator build
 ```
 
 ---
@@ -76,8 +76,8 @@ These can be addressed in future cleanup but are not blocking.
 ## Project Structure
 
 ```
-Roots/
-├── RootsApp.xcodeproj/          ✅ Project file
+Itori/
+├── ItoriApp.xcodeproj/          ✅ Project file
 ├── Platforms/
 │   ├── iOS/                     ✅ iOS-specific code
 │   ├── macOS/                   ✅ macOS-specific code

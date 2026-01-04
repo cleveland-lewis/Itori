@@ -48,8 +48,8 @@
 ```
 SharedCore/Persistence/
 ├── PersistenceController.swift          # Main controller (pre-existing, 16 KB)
-├── Roots.xcdatamodeld/                  # Core Data model (updated)
-│   └── Roots.xcdatamodel/contents       # 5 entities: Semester, Course, Assignment, Attachment, TimerSession
+├── Itori.xcdatamodeld/                  # Core Data model (updated)
+│   └── Itori.xcdatamodel/contents       # 5 entities: Semester, Course, Assignment, Attachment, TimerSession
 ├── SyncMonitor.swift                    # Debug sync monitoring (new, 5.8 KB)
 └── Repositories/
     └── BaseRepository.swift             # Repository pattern base (new, 2.3 KB)
@@ -64,8 +64,8 @@ Tests/PersistenceTests/
 ### Configuration
 ```
 Config/
-├── Roots.entitlements                   # macOS CloudKit config (verified)
-└── Roots-iOS.entitlements               # iOS CloudKit config (verified)
+├── Itori.entitlements                   # macOS CloudKit config (verified)
+└── Itori-iOS.entitlements               # iOS CloudKit config (verified)
 ```
 
 ## 🎯 Use Cases
@@ -150,7 +150,7 @@ Config/
 ### 1. Understand What Exists (2 minutes)
 ```bash
 # View Core Data entities
-grep 'entity name=' SharedCore/Persistence/Roots.xcdatamodeld/Roots.xcdatamodel/contents
+grep 'entity name=' SharedCore/Persistence/Itori.xcdatamodeld/Itori.xcdatamodel/contents
 # Output: Semester, Course, Assignment, Attachment, TimerSession
 ```
 
@@ -159,8 +159,8 @@ Open: **[CORE_DATA_CLOUDKIT_QUICK_REFERENCE.md](CORE_DATA_CLOUDKIT_QUICK_REFEREN
 
 ### 3. Run Tests (2 minutes)
 ```bash
-xcodebuild test -scheme Roots -destination 'platform=macOS' \
-    -only-testing:RootsTests/CoreDataStackTests
+xcodebuild test -scheme Itori -destination 'platform=macOS' \
+    -only-testing:ItoriTests/CoreDataStackTests
 ```
 
 ### 4. Start Using (Immediate)
@@ -237,7 +237,7 @@ print("Last sync: \(monitor.lastRemoteChange?.formatted() ?? "Never")")
 Run this quick check:
 ```bash
 # 1. Core Data model has 5 entities
-grep -c 'entity name=' SharedCore/Persistence/Roots.xcdatamodeld/Roots.xcdatamodel/contents
+grep -c 'entity name=' SharedCore/Persistence/Itori.xcdatamodeld/Itori.xcdatamodel/contents
 # Should output: 5
 
 # 2. SyncMonitor exists
@@ -245,8 +245,8 @@ ls SharedCore/Persistence/SyncMonitor.swift
 # Should succeed
 
 # 3. Tests pass
-xcodebuild test -scheme Roots -destination 'platform=macOS' \
-    -only-testing:RootsTests/CoreDataStackTests
+xcodebuild test -scheme Itori -destination 'platform=macOS' \
+    -only-testing:ItoriTests/CoreDataStackTests
 # Should pass
 ```
 

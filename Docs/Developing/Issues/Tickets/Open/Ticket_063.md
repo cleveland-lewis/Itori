@@ -118,7 +118,7 @@ All platforms:
     
 - docs/data-storage-policy.md:
     
-    - Clear statement: “Roots stores all user data locally by default. External sync is opt-in only.”
+    - Clear statement: “Itori stores all user data locally by default. External sync is opt-in only.”
         
     
 - Explicit code-level constraints:
@@ -156,7 +156,7 @@ Create a structured inventory.
 |----|----------------|-------------------------------------|---------------------|--------------------------------------------|------------------------|
 | D1 | Assignments    | Assignment list, statuses, due     | JSON in Documents   | /Documents/assignments.json                | Local only             |
 | D2 | Settings       | Theme, calendars, privacy toggles  | UserDefaults        | com.roots.settings.*                       | Local only             |
-| D3 | Scheduler Logs | Minimal debug logs (no content)    | File in Application | /Library/Logs/Roots/scheduler.log          | No PII / content data  |
+| D3 | Scheduler Logs | Minimal debug logs (no content)    | File in Application | /Library/Logs/Itori/scheduler.log          | No PII / content data  |
 ```
 
 -   
@@ -231,7 +231,7 @@ within **your app’s sandbox**:
 
 ```
 let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-    .appendingPathComponent("Roots")
+    .appendingPathComponent("Itori")
 ```
 
 - Check for:
@@ -267,7 +267,7 @@ let url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userD
 
 - Any logging facility you build under TICKET-017 must:
     
-    - Write to local file (e.g. Application Support/Logs/Roots/…)
+    - Write to local file (e.g. Application Support/Logs/Itori/…)
         
     - Or use in-memory logs only
         
@@ -336,7 +336,7 @@ Add docs/data-storage-policy.md that:
 
 - Summarizes:
     
-    - “Roots stores all academic data, schedules, notes, and settings **only on your device** inside the iOS/macOS sandbox.”
+    - “Itori stores all academic data, schedules, notes, and settings **only on your device** inside the iOS/macOS sandbox.”
         
     - “No cloud servers are used by default.”
         
@@ -376,7 +376,7 @@ Create something like AppPaths:
 enum AppPaths {
     static var appSupportDirectory: URL {
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let dir = base.appendingPathComponent("Roots", isDirectory: true)
+        let dir = base.appendingPathComponent("Itori", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         return dir
     }
@@ -540,7 +540,7 @@ Once this is locked, 064 (offline behavior) is the natural follow-up, because no
 Summary of changes:
 - Added docs/data-inventory.md (comprehensive mapping of persisted data categories and paths).
 - Added docs/data-storage-policy.md (local-first policy, export opt-in guidance).
-- Added Sources/Roots/Utilities/AppPaths.swift centralizing AppSupport/Data/Logs/Caches directories.
+- Added Sources/Itori/Utilities/AppPaths.swift centralizing AppSupport/Data/Logs/Caches directories.
 - Updated DashboardStorage to persist dashboard-summary.json under AppPaths.dataDirectory and ensured directory creation prior to writes.
 - Updated FileStorageManager to use AppPaths.dataDirectory for course files.
 

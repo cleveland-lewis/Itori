@@ -3,7 +3,7 @@
 ## ✅ Implementation Complete
 
 ### Overview
-Built a complete **spaced repetition flashcard system** for the Roots app using Apple native practices and the SM-2 algorithm for intelligent scheduling.
+Built a complete **spaced repetition flashcard system** for the Itori app using Apple native practices and the SM-2 algorithm for intelligent scheduling.
 
 ## 🎯 Features Implemented
 
@@ -454,7 +454,7 @@ Successfully built a complete **spaced repetition flashcard system** with:
 - Visual feedback
 - Accessibility
 
-The flashcard system is now fully integrated into the Roots app and accessible via the tab bar. Users can create decks, add cards, and study with intelligent spaced repetition scheduling!
+The flashcard system is now fully integrated into the Itori app and accessible via the tab bar. Users can create decks, add cards, and study with intelligent spaced repetition scheduling!
 
 ---
 

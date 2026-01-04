@@ -210,16 +210,16 @@ var animation: Animation {
 
 ### All Accessibility Tests
 ```bash
-xcodebuild test -scheme Roots \
+xcodebuild test -scheme Itori \
     -destination 'platform=iOS Simulator,name=iPhone 15' \
-    -only-testing:RootsTests/AccessibilityTests
+    -only-testing:ItoriTests/AccessibilityTests
 ```
 
 ### Specific Test
 ```bash
-xcodebuild test -scheme Roots \
+xcodebuild test -scheme Itori \
     -destination 'platform=iOS Simulator,name=iPhone 15' \
-    -only-testing:RootsTests/AccessibilityTests/testContrastRatioCalculation
+    -only-testing:ItoriTests/AccessibilityTests/testContrastRatioCalculation
 ```
 
 ## 🎨 Preview Helpers

@@ -8,24 +8,24 @@ When installing the watchOS app to a physical Apple Watch, the installation fail
 Error Code: 97
 Domain: MIInstallerErrorDomain
 
-clelewisiii.Roots.watch: Missing WKCompanionAppBundleIdentifier key in WatchKit 1.0 app's Info.plist
+clelewisiii.Itori.watch: Missing WKCompanionAppBundleIdentifier key in WatchKit 1.0 app's Info.plist
 
-Recovery Suggestion: clelewisiii.Roots.watch: Missing WKCompanionAppBundleIdentifier 
+Recovery Suggestion: clelewisiii.Itori.watch: Missing WKCompanionAppBundleIdentifier 
 key in WatchKit 1.0 app's Info.plist
 ```
 
 ## Root Cause
 
-The watchOS app target (RootsWatch) was configured to auto-generate its Info.plist (`GENERATE_INFOPLIST_FILE = YES`), but it was missing the required `WKCompanionAppBundleIdentifier` key.
+The watchOS app target (ItoriWatch) was configured to auto-generate its Info.plist (`GENERATE_INFOPLIST_FILE = YES`), but it was missing the required `WKCompanionAppBundleIdentifier` key.
 
 This key tells watchOS which iOS app is the companion app that the watch app is bundled with. Without it, the system cannot properly install the watch app on the device.
 
 ## Solution Applied
 
-Added the `INFOPLIST_KEY_WKCompanionAppBundleIdentifier` build setting to both Debug and Release configurations of the RootsWatch target:
+Added the `INFOPLIST_KEY_WKCompanionAppBundleIdentifier` build setting to both Debug and Release configurations of the ItoriWatch target:
 
 ```
-INFOPLIST_KEY_WKCompanionAppBundleIdentifier = clelewisiii.Roots;
+INFOPLIST_KEY_WKCompanionAppBundleIdentifier = clelewisiii.Itori;
 ```
 
 This setting automatically adds the `WKCompanionAppBundleIdentifier` key to the auto-generated Info.plist during the build process.
@@ -34,8 +34,8 @@ This setting automatically adds the `WKCompanionAppBundleIdentifier` key to the 
 
 ### Bundle Identifiers Structure
 
-- **iOS App Bundle ID:** `clelewisiii.Roots`
-- **watchOS App Bundle ID:** `clelewisiii.Roots.watch`
+- **iOS App Bundle ID:** `clelewisiii.Itori`
+- **watchOS App Bundle ID:** `clelewisiii.Itori.watch`
 - **Companion Link:** watchOS app → iOS app via `WKCompanionAppBundleIdentifier`
 
 ### How It Works
@@ -45,23 +45,23 @@ This setting automatically adds the `WKCompanionAppBundleIdentifier` key to the 
 3. The resulting Info.plist contains:
    ```xml
    <key>WKCompanionAppBundleIdentifier</key>
-   <string>clelewisiii.Roots</string>
+   <string>clelewisiii.Itori</string>
    ```
 4. When installing to the watch, iOS verifies that the companion app with this bundle ID exists
 5. The watch app installs successfully
 
 ## Files Modified
 
-**RootsApp.xcodeproj/project.pbxproj**
-- Added `INFOPLIST_KEY_WKCompanionAppBundleIdentifier = clelewisiii.Roots;` to:
-  - RootsWatch Debug configuration (D6FA2CD38EA64955A98B6401)
-  - RootsWatch Release configuration (0C12087117E646F3BDB74716)
+**ItoriApp.xcodeproj/project.pbxproj**
+- Added `INFOPLIST_KEY_WKCompanionAppBundleIdentifier = clelewisiii.Itori;` to:
+  - ItoriWatch Debug configuration (D6FA2CD38EA64955A98B6401)
+  - ItoriWatch Release configuration (0C12087117E646F3BDB74716)
 
 ## Verification
 
 ### Build Success ✅
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme "RootsWatch" \
+xcodebuild -project ItoriApp.xcodeproj -scheme "ItoriWatch" \
   -sdk watchsimulator -destination 'generic/platform=watchOS Simulator' build
 ```
 **Result:** BUILD SUCCEEDED
@@ -69,14 +69,14 @@ xcodebuild -project RootsApp.xcodeproj -scheme "RootsWatch" \
 ### Info.plist Check ✅
 ```bash
 /usr/libexec/PlistBuddy -c "Print :WKCompanionAppBundleIdentifier" \
-  DerivedData/.../RootsWatch.app/Info.plist
+  DerivedData/.../ItoriWatch.app/Info.plist
 ```
-**Output:** `clelewisiii.Roots` ✅
+**Output:** `clelewisiii.Itori` ✅
 
 ## Installation Instructions
 
 ### On Simulator
-1. Select RootsWatch scheme
+1. Select ItoriWatch scheme
 2. Choose a watchOS Simulator destination
 3. Run (⌘R)
 4. App should install and launch successfully
@@ -84,12 +84,12 @@ xcodebuild -project RootsApp.xcodeproj -scheme "RootsWatch" \
 ### On Physical Device
 1. **Ensure iOS app is installed first:**
    - Connect your iPhone
-   - Build and run the Roots iOS app (scheme: "Roots")
+   - Build and run the Itori iOS app (scheme: "Itori")
    - Verify it launches successfully on your iPhone
 
 2. **Install watchOS app:**
    - Keep iPhone connected and paired with Apple Watch
-   - Select RootsWatch scheme
+   - Select ItoriWatch scheme
    - Choose your Apple Watch as destination
    - Run (⌘R)
    - Xcode will:

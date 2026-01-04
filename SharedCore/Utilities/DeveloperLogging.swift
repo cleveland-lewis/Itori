@@ -58,7 +58,7 @@ func LOG_DEV(
     }
     
     // Use os_log for proper system logging
-    let log = OSLog(subsystem: "com.roots.app", category: category)
+    let log = OSLog(subsystem: "com.itori.app", category: category)
     os_log("%{public}@", log: log, type: osLogType, logMessage)
     
     // Also print to console for Xcode debugging

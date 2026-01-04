@@ -54,13 +54,13 @@ Unified coordinator that integrates both services and manages notifications.
 
 1. **Add files to Xcode project**: Add all four files to your Xcode project under the appropriate targets.
 
-2. **Initialize the system** in your app startup (e.g., in `RootsIOSApp.swift`):
+2. **Initialize the system** in your app startup (e.g., in `ItoriIOSApp.swift`):
 
 ```swift
 import SwiftUI
 
 @main
-struct RootsIOSApp: App {
+struct ItoriIOSApp: App {
     @StateObject private var schedulingCoordinator = IntelligentSchedulingCoordinator.shared
     
     init() {

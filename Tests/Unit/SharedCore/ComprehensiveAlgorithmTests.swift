@@ -2,7 +2,7 @@ import Testing
 import Foundation
 @testable import Itori
 
-/// Comprehensive algorithm test suite covering all major algorithms in Roots
+/// Comprehensive algorithm test suite covering all major algorithms in Itori
 /// Tests determinism, correctness, edge cases, and performance
 @MainActor
 struct ComprehensiveAlgorithmTests {

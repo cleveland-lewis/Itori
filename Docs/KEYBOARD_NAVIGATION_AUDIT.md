@@ -255,7 +255,7 @@ SharedCore/
   Keyboard/
     KeyboardShortcuts.swift         # Shortcut definitions
     KeyboardShortcutsManager.swift  # Registration & management
-    CommandGroups+Roots.swift       # Menu bar commands
+    CommandGroups+Itori.swift       # Menu bar commands
     FocusManagement.swift           # Focus helpers
 ```
 
@@ -267,7 +267,7 @@ SharedCore/
 
 // In App
 .commands {
-    RootsCommands()
+    ItoriCommands()
 }
 ```
 
@@ -308,7 +308,7 @@ enum AppShortcut: String, CaseIterable {
 
 ### Command Groups
 ```swift
-struct RootsCommands: Commands {
+struct ItoriCommands: Commands {
     var body: some Commands {
         CommandGroup(replacing: .newItem) {
             Button("New Assignment") { }

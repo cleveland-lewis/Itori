@@ -164,15 +164,15 @@
 
 ### Files Location
 ```
-/Users/clevelandlewis/Desktop/Roots/Tests/Unit/RootsTests/
+/Users/clevelandlewis/Desktop/Itori/Tests/Unit/ItoriTests/
 ```
 
 ### Quick Integration (Xcode)
 ```bash
 # 1. Open project
-open /Users/clevelandlewis/Desktop/Roots/RootsApp.xcodeproj
+open /Users/clevelandlewis/Desktop/Itori/ItoriApp.xcodeproj
 
-# 2. Add 24 new test files to RootsTests target
+# 2. Add 24 new test files to ItoriTests target
 # 3. Build (⌘+B)
 # 4. Run tests (⌘+U)
 # 5. Generate coverage report

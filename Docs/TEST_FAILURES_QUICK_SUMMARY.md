@@ -4,7 +4,7 @@
 
 ### Test Command
 ```bash
-xcodebuild test -scheme RootsTests -destination 'platform=macOS'
+xcodebuild test -scheme ItoriTests -destination 'platform=macOS'
 ```
 
 ### Result
@@ -44,7 +44,7 @@ Tests cannot run due to compilation errors.
 
 ### Automated (if gh CLI installed)
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 ./create_test_issues.sh
 ```
 

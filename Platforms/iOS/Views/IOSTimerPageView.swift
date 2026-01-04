@@ -1,6 +1,6 @@
 //
 //  IOSTimerPageView.swift
-//  Roots (iOS)
+//  Itori (iOS)
 //
 
 #if os(iOS)

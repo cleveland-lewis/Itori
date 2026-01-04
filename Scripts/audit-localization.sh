@@ -2,7 +2,7 @@
 # Localization Audit Script
 # Finds all potential localization issues in the codebase
 
-echo "🔍 Roots Localization Audit"
+echo "🔍 Itori Localization Audit"
 echo "================================"
 echo ""
 

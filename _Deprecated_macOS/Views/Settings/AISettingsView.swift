@@ -19,7 +19,7 @@ struct AISettingsView: View {
                     .bold()
                     .padding(.bottom, 4)
                 
-                Text("Configure how Roots uses LLMs for intelligent scheduling, summarization, and more.")
+                Text("Configure how Itori uses LLMs for intelligent scheduling, summarization, and more.")
                     .foregroundStyle(.secondary)
             }
             .listRowBackground(Color.clear)
@@ -77,7 +77,7 @@ struct AISettingsView: View {
                     }
                     
                     if !isAppleIntelligenceAvailable {
-                        Text("Apple Intelligence is not currently available on this device. Roots will fall back to the local model when needed.")
+                        Text("Apple Intelligence is not currently available on this device. Itori will fall back to the local model when needed.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }

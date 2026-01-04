@@ -4,14 +4,14 @@
 
 ### 1. **Synchronous Initialization in init() (CRITICAL)**
 
-**iOS App (RootsIOSApp.swift):**
+**iOS App (ItoriIOSApp.swift):**
 ```swift
 init() {
     _ = PhoneWatchBridge.shared                    // ❌ Blocking
     ResetCoordinator.shared.start(...)             // ❌ Blocking
     let store = CoursesStore()                      // ❌ Loads from disk synchronously
     ...
-    RootsIOSApp.registerBackgroundTasks()          // ❌ Blocking
+    ItoriIOSApp.registerBackgroundTasks()          // ❌ Blocking
     
     Task { @MainActor in
         IntelligentSchedulingCoordinator.shared.start()  // ⚠️ Better but still on main thread
@@ -19,7 +19,7 @@ init() {
 }
 ```
 
-**macOS App (RootsApp.swift):**
+**macOS App (ItoriApp.swift):**
 ```swift
 init() {
     LOG_LIFECYCLE(...)                             // ⚠️ Small but unnecessary
@@ -319,7 +319,7 @@ extension EnvironmentValues {
 // Move to .task { } or .onAppear:
 - PhoneWatchBridge.shared
 - ResetCoordinator.shared.start()
-- RootsIOSApp.registerBackgroundTasks()
+- ItoriIOSApp.registerBackgroundTasks()
 - IntelligentSchedulingCoordinator.shared.start()
 - MenuBarManager initialization
 ```

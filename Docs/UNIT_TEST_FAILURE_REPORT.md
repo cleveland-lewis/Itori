@@ -11,7 +11,7 @@ Unit tests cannot execute due to 4 critical compilation errors in the codebase. 
 
 ### Command
 ```bash
-xcodebuild test -scheme RootsTests -destination 'platform=macOS'
+xcodebuild test -scheme ItoriTests -destination 'platform=macOS'
 ```
 
 ### Result
@@ -152,7 +152,7 @@ Update all `AppTask(...)` call sites to include new parameters with defaults.
 ### Phase 2: Run Tests
 4. **Execute Unit Tests**
    ```bash
-   xcodebuild test -scheme RootsTests -destination 'platform=macOS'
+   xcodebuild test -scheme ItoriTests -destination 'platform=macOS'
    ```
    
 5. **Document Results**
@@ -193,7 +193,7 @@ The following issue documents have been created in the project root:
 
 ### Option A: Use GitHub CLI
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 
 # Issue 1
 gh issue create \
@@ -234,7 +234,7 @@ gh issue create \
 - **Time:** 14:51 PST
 - **Platform:** macOS (arm64)
 - **Xcode:** Current version
-- **Scheme:** RootsTests
+- **Scheme:** ItoriTests
 - **Result:** Build failed before tests could execute
 
 ---

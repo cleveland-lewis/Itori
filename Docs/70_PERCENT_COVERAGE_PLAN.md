@@ -1,7 +1,7 @@
 # 70% Code Coverage Plan - Progress Log
 
 ## Goal
-Achieve 70% test coverage across the Roots codebase with comprehensive, maintainable tests.
+Achieve 70% test coverage across the Itori codebase with comprehensive, maintainable tests.
 
 ## Phase 1: Core Utilities & Models ✅ COMPLETE
 **Target: 80%+ coverage**

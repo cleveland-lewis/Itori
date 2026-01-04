@@ -42,7 +42,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		1A9FC3BD2F05CBA100832365 /* Exceptions for "SharedCore" folder in "Roots" target */ = {
+		1A9FC3BD2F05CBA100832365 /* Exceptions for "SharedCore" folder in "Itori" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				DesignSystem/Localizable.xcstrings,
@@ -52,7 +52,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		1A9FC3BE2F05CBA100832365 /* Exceptions for "SharedCore" folder in "Compile Sources" phase from "Roots" target */ = {
+		1A9FC3BE2F05CBA100832365 /* Exceptions for "SharedCore" folder in "Compile Sources" phase from "Itori" target */ = {
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			buildPhase = 1AD7D4302EDD328800D403F3 /* Sources */;
 			membershipExceptions = (
@@ -80,8 +80,8 @@
 		1AD7D46B2EDD328800D403F3 /* SharedCore */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				1A9FC3BD2F05CBA100832365 /* Exceptions for "SharedCore" folder in "Roots" target */,
-				1A9FC3BE2F05CBA100832365 /* Exceptions for "SharedCore" folder in "Compile Sources" phase from "Roots" target */,
+				1A9FC3BD2F05CBA100832365 /* Exceptions for "SharedCore" folder in "Itori" target */,
+				1A9FC3BE2F05CBA100832365 /* Exceptions for "SharedCore" folder in "Compile Sources" phase from "Itori" target */,
 			);
 			path = SharedCore;
 			sourceTree = "<group>";
@@ -627,7 +627,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_UTExportedTypeDeclarations = "{\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Roots Assignment\";\n    UTTypeIdentifier = \"com.roots.assignment\";\n} {\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Roots Course\";\n    UTTypeIdentifier = \"com.roots.course\";\n} {\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Roots Session\";\n    UTTypeIdentifier = \"com.roots.session\";\n}";
+				INFOPLIST_KEY_UTExportedTypeDeclarations = "{\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Itori Assignment\";\n    UTTypeIdentifier = \"com.itori.assignment\";\n} {\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Itori Course\";\n    UTTypeIdentifier = \"com.itori.course\";\n} {\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Itori Session\";\n    UTTypeIdentifier = \"com.itori.session\";\n}";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -715,7 +715,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_UTExportedTypeDeclarations = "{\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Roots Assignment\";\n    UTTypeIdentifier = \"com.roots.assignment\";\n} {\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Roots Course\";\n    UTTypeIdentifier = \"com.roots.course\";\n} {\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Roots Session\";\n    UTTypeIdentifier = \"com.roots.session\";\n}";
+				INFOPLIST_KEY_UTExportedTypeDeclarations = "{\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Itori Assignment\";\n    UTTypeIdentifier = \"com.itori.assignment\";\n} {\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Itori Course\";\n    UTTypeIdentifier = \"com.itori.course\";\n} {\n    UTTypeConformsTo =     (\n        \"public.data\"\n    );\n    UTTypeDescription = \"Itori Session\";\n    UTTypeIdentifier = \"com.itori.session\";\n}";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -771,7 +771,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Itori.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Roots";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Itori.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Itori";
 				XROS_DEPLOYMENT_TARGET = 26.1;
 			};
 			name = Debug;
@@ -802,7 +802,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Itori.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Roots";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Itori.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Itori";
 				XROS_DEPLOYMENT_TARGET = 26.1;
 			};
 			name = Release;

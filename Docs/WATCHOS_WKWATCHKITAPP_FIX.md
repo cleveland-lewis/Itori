@@ -14,15 +14,15 @@
 
 set -e
 
-echo "🔨 Building RootsWatch..."
-xcodebuild -project RootsApp.xcodeproj \
-  -scheme RootsWatch \
+echo "🔨 Building ItoriWatch..."
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme ItoriWatch \
   -sdk watchsimulator \
   -configuration Debug \
   build > /dev/null 2>&1
 
 # Find built watch app
-WATCH_APP=$(find ~/Library/Developer/Xcode/DerivedData/RootsApp-*/Build/Products/Debug-watchsimulator/RootsWatch.app -maxdepth 0 2>/dev/null | head -1)
+WATCH_APP=$(find ~/Library/Developer/Xcode/DerivedData/ItoriApp-*/Build/Products/Debug-watchsimulator/ItoriWatch.app -maxdepth 0 2>/dev/null | head -1)
 
 if [ -z "$WATCH_APP" ]; then
     echo "❌ Watch app not built"
@@ -37,9 +37,9 @@ INFO_PLIST="$WATCH_APP/Info.plist"
 echo "✅ Removed WKWatchKitApp key"
 
 echo ""
-echo "🔨 Building Roots (iOS)..."
-xcodebuild -project RootsApp.xcodeproj \
-  -scheme Roots \
+echo "🔨 Building Itori (iOS)..."
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme Itori \
   -sdk iphonesimulator \
   -configuration Debug \
   build > /dev/null 2>&1
@@ -47,8 +47,8 @@ xcodebuild -project RootsApp.xcodeproj \
 echo "✅ iOS app built with watch app embedded"
 
 # Verify embedded watch app
-IOS_APP=$(find ~/Library/Developer/Xcode/DerivedData/RootsApp-*/Build/Products/Debug-iphonesimulator/Roots.app -maxdepth 0 2>/dev/null | head -1)
-EMBEDDED_WATCH="$IOS_APP/Watch/RootsWatch.app/Info.plist"
+IOS_APP=$(find ~/Library/Developer/Xcode/DerivedData/ItoriApp-*/Build/Products/Debug-iphonesimulator/Itori.app -maxdepth 0 2>/dev/null | head -1)
+EMBEDDED_WATCH="$IOS_APP/Watch/ItoriWatch.app/Info.plist"
 
 if [ -f "$EMBEDDED_WATCH" ]; then
     HAS_LEGACY_KEY=$(plutil -p "$EMBEDDED_WATCH" | grep "WKWatchKitApp" || true)
@@ -79,12 +79,12 @@ chmod +x build_for_simulator.sh
 
 ### 1. Build Watch App
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme RootsWatch -sdk watchsimulator build
+xcodebuild -project ItoriApp.xcodeproj -scheme ItoriWatch -sdk watchsimulator build
 ```
 
 ### 2. Remove Legacy Key
 ```bash
-WATCH_APP=$(find ~/Library/Developer/Xcode/DerivedData/RootsApp-*/Build/Products/Debug-watchsimulator/RootsWatch.app -maxdepth 0 2>/dev/null | head -1)
+WATCH_APP=$(find ~/Library/Developer/Xcode/DerivedData/ItoriApp-*/Build/Products/Debug-watchsimulator/ItoriWatch.app -maxdepth 0 2>/dev/null | head -1)
 /usr/libexec/PlistBuddy -c "Delete :WKWatchKitApp" "$WATCH_APP/Info.plist"
 ```
 
@@ -94,18 +94,18 @@ plutil -p "$WATCH_APP/Info.plist" | grep "WK"
 ```
 **Expected output**:
 ```
-"WKCompanionAppBundleIdentifier" => "clewisiii.Roots"
+"WKCompanionAppBundleIdentifier" => "clewisiii.Itori"
 ```
 (NO `WKWatchKitApp` key!)
 
 ### 4. Build iOS App
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme Roots -sdk iphonesimulator build
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori -sdk iphonesimulator build
 ```
 
 ### 5. Install on Simulator
 ```bash
-IOS_APP=$(find ~/Library/Developer/Xcode/DerivedData/RootsApp-*/Build/Products/Debug-iphonesimulator/Roots.app -maxdepth 0 2>/dev/null | head -1)
+IOS_APP=$(find ~/Library/Developer/Xcode/DerivedData/ItoriApp-*/Build/Products/Debug-iphonesimulator/Itori.app -maxdepth 0 2>/dev/null | head -1)
 xcrun simctl boot "iPhone 17 Pro"
 xcrun simctl install booted "$IOS_APP"
 ```
@@ -126,10 +126,10 @@ xcrun simctl install booted "$IOS_APP"
 
 ## Permanent Solution (Build Phase Script)
 
-To automate this, add a build phase script to the RootsWatch target:
+To automate this, add a build phase script to the ItoriWatch target:
 
 1. Open Xcode
-2. Select RootsWatch target
+2. Select ItoriWatch target
 3. Build Phases tab
 4. Click "+" → "New Run Script Phase"
 5. Add this script:

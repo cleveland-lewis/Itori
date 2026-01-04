@@ -1,7 +1,7 @@
 # Dutch (nl) Localization - Implementation Complete
 
 ## Overview
-Dutch localization support has been added to the Roots app with automated Google Translate translations.
+Dutch localization support has been added to the Itori app with automated Google Translate translations.
 
 ## Implementation Details
 

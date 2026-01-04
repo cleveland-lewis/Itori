@@ -34,7 +34,7 @@ Task { @MainActor in
 ---
 
 ### ❌ ISSUE 2: Memory Corruption
-**Location:** `RootsApp.swift:79, 162`  
+**Location:** `ItoriApp.swift:79, 162`  
 **Problem:** Creating fresh `EventsCountStore()` instead of using `@StateObject`
 
 ```swift
@@ -90,7 +90,7 @@ func startTickTimer() {
 
 ## Files Modified
 1. ✅ `TimerPageView.swift` - Line 201: Added `@MainActor` to Task
-2. ✅ `RootsApp.swift` - Fixed EventsCountStore lifecycle
+2. ✅ `ItoriApp.swift` - Fixed EventsCountStore lifecycle
 3. ✅ `TimerPageView.swift` - Fixed timer publisher lifecycle
 
 ## Testing Instructions

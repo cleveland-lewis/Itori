@@ -106,7 +106,7 @@ Update UI with any changes
 
 ## Code Changes Made
 
-### 1. RootsIOSApp.swift
+### 1. ItoriIOSApp.swift
 
 Added imports:
 ```swift
@@ -116,7 +116,7 @@ import BackgroundTasks
 Added in init():
 ```swift
 // Register background tasks
-RootsIOSApp.registerBackgroundTasks()
+ItoriIOSApp.registerBackgroundTasks()
 ```
 
 Added scene phase handling:
@@ -332,7 +332,7 @@ The system will now work continuously in the background! 🚀
 
 ## Files Modified
 
-- ✅ `Platforms/iOS/App/RootsIOSApp.swift` - Added background task handling
+- ✅ `Platforms/iOS/App/ItoriIOSApp.swift` - Added background task handling
 
 ## Next Steps
 

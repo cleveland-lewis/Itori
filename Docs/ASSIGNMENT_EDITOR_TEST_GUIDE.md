@@ -10,7 +10,7 @@ The "New Assignment" screen now has:
 ## Quick Test (5 minutes)
 
 ### Test 1: Create Assignment
-1. Open Roots on iOS/iPad
+1. Open Itori on iOS/iPad
 2. Tap the **+** (quick add) button
 3. Select **"Add Assignment"**
 4. Fill in:
@@ -87,14 +87,14 @@ If you need to rebuild the app:
 
 ```bash
 # iOS Simulator
-xcodebuild -project RootsApp.xcodeproj \
-  -scheme RootsiOS \
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme ItoriiOS \
   -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
   clean build
 
 # iPad Simulator  
-xcodebuild -project RootsApp.xcodeproj \
-  -scheme RootsiOS \
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme ItoriiOS \
   -destination 'platform=iOS Simulator,name=iPad Pro (12.9-inch) (6th generation)' \
   clean build
 ```

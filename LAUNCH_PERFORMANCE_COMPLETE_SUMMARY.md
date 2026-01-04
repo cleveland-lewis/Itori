@@ -55,8 +55,8 @@
 
 ### Files:
 - SharedCore/State/CoursesStore.swift
-- Platforms/iOS/App/RootsIOSApp.swift
-- Platforms/macOS/App/RootsApp.swift
+- Platforms/iOS/App/ItoriIOSApp.swift
+- Platforms/macOS/App/ItoriApp.swift
 
 ---
 
@@ -87,7 +87,7 @@
 
 ### Files:
 - SharedCore/State/CoursesStore.swift (enhanced)
-- Platforms/iOS/App/RootsIOSApp.swift (tiered init)
+- Platforms/iOS/App/ItoriIOSApp.swift (tiered init)
 
 ---
 
@@ -125,7 +125,7 @@
 
 ### Files:
 - SharedCore/Views/SheetShellView.swift (new)
-- Platforms/iOS/App/RootsIOSApp.swift (prewarm integration)
+- Platforms/iOS/App/ItoriIOSApp.swift (prewarm integration)
 
 ---
 
@@ -201,13 +201,13 @@ SheetShellView(title: "Add") {
    - Coalesced publishes
    - ~150 lines changed
 
-2. **Platforms/iOS/App/RootsIOSApp.swift**
+2. **Platforms/iOS/App/ItoriIOSApp.swift**
    - Deferred initialization
    - Tiered services
    - Prewarm integration
    - ~100 lines changed
 
-3. **Platforms/macOS/App/RootsApp.swift**
+3. **Platforms/macOS/App/ItoriApp.swift**
    - Deferred initialization
    - ~15 lines changed
 
@@ -417,7 +417,7 @@ SheetShellView(title: "Add") {
 
 ## Conclusion
 
-The three-phase launch performance optimization has transformed Roots into a **fast, responsive, professional app**:
+The three-phase launch performance optimization has transformed Itori into a **fast, responsive, professional app**:
 
 - **Phase 1:** 60-75% faster launch
 - **Phase 2:** 93% reduction in main-thread stalls
@@ -449,7 +449,7 @@ The three-phase launch performance optimization has transformed Roots into a **f
 ### Key Components:
 - `SharedCore/State/CoursesStore.swift` (Optimized store)
 - `SharedCore/Views/SheetShellView.swift` (UI performance utilities)
-- `Platforms/iOS/App/RootsIOSApp.swift` (Optimized app init)
+- `Platforms/iOS/App/ItoriIOSApp.swift` (Optimized app init)
 
 ---
 

@@ -56,7 +56,7 @@ Create a master 1024x1024 icon design, then generate all required sizes.
 4. **Color**: Use 2-3 colors maximum for clarity
 5. **Padding**: Leave ~10% margin around the edges
 
-### Suggested Design for Roots
+### Suggested Design for Itori
 - **Background**: Gradient from blue (#4A90E2) to purple (#7B68EE)
 - **Icon**: White "R" or tree/root symbol
 - **Style**: Modern, rounded corners

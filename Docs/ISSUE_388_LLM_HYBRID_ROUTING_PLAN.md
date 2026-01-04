@@ -8,7 +8,7 @@
 
 ## Overview
 
-Implement a sophisticated hybrid AI architecture for Roots that uses Apple Intelligence as primary, allows optional BYO providers, and provides platform-optimized local fallbacks with explicit routing and privacy guarantees.
+Implement a sophisticated hybrid AI architecture for Itori that uses Apple Intelligence as primary, allows optional BYO providers, and provides platform-optimized local fallbacks with explicit routing and privacy guarantees.
 
 ---
 

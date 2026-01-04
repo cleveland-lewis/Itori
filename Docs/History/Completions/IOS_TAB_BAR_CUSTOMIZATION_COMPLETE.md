@@ -24,7 +24,7 @@ The store is injected as an environment object throughout the iOS view hierarchy
    - Handles persistence to UserDefaults
    - Enforces minimum-one-enabled and selection fallback logic
 
-2. **RootsTests/TabBarPreferencesStoreTests.swift** (NEW)
+2. **ItoriTests/TabBarPreferencesStoreTests.swift** (NEW)
    - Comprehensive unit tests covering:
      - Initialization and defaults
      - Canonical ordering

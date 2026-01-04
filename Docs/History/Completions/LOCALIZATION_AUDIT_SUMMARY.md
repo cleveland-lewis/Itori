@@ -16,7 +16,7 @@
    - Planner/Dashboard/Menu helpers
    - Format string helpers
 
-3. **Unit Tests** (`RootsTests/LocalizationValidationTests.swift`)
+3. **Unit Tests** (`ItoriTests/LocalizationValidationTests.swift`)
    - Tests that keys never return themselves
    - Tests enum localization
    - Tests fallback behavior

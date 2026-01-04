@@ -177,12 +177,12 @@ Result after sync: course.title = "Mathematics 101" (10:05 AM wins)
 ### Run Tests
 ```bash
 # All persistence tests
-xcodebuild test -scheme Roots -destination 'platform=macOS' \
-    -only-testing:RootsTests/CoreDataStackTests
+xcodebuild test -scheme Itori -destination 'platform=macOS' \
+    -only-testing:ItoriTests/CoreDataStackTests
 
 # Specific test
-xcodebuild test -scheme Roots -destination 'platform=macOS' \
-    -only-testing:RootsTests/CoreDataStackTests/testCreateTimerSession
+xcodebuild test -scheme Itori -destination 'platform=macOS' \
+    -only-testing:ItoriTests/CoreDataStackTests/testCreateTimerSession
 ```
 
 ### In-Memory Testing
@@ -196,7 +196,7 @@ let testContext = testController.viewContext
 
 ### Sync Not Working?
 1. **Check iCloud account:** Settings → iCloud → Signed in?
-2. **Check sync toggle:** Roots Settings → Enable iCloud Sync
+2. **Check sync toggle:** Itori Settings → Enable iCloud Sync
 3. **Check network:** Online?
 4. **Wait:** CloudKit sync takes 10-30 seconds normally
 5. **Check SyncMonitor:** Any errors logged?
@@ -255,8 +255,8 @@ fetchRequest.relationshipKeyPathsForPrefetching = ["course"]
 ```
 SharedCore/Persistence/
 ├── PersistenceController.swift          # Main controller (pre-existing)
-├── Roots.xcdatamodeld/                  # Core Data model (updated)
-│   └── Roots.xcdatamodel/contents       # 5 entities
+├── Itori.xcdatamodeld/                  # Core Data model (updated)
+│   └── Itori.xcdatamodel/contents       # 5 entities
 ├── SyncMonitor.swift                    # Debug sync monitoring (new)
 └── Repositories/
     └── BaseRepository.swift             # Repository pattern base (new)
@@ -272,13 +272,13 @@ Documentation/
 
 ## Capabilities Check
 
-### macOS (Config/Roots.entitlements)
-- ✅ iCloud.com.cwlewisiii.Roots
+### macOS (Config/Itori.entitlements)
+- ✅ iCloud.com.cwlewisiii.Itori
 - ✅ CloudKit
 - ✅ CloudDocuments
 
-### iOS (Config/Roots-iOS.entitlements)
-- ✅ iCloud.com.cwlewisiii.Roots
+### iOS (Config/Itori-iOS.entitlements)
+- ✅ iCloud.com.cwlewisiii.Itori
 - ✅ CloudKit
 - ✅ CloudDocuments
 

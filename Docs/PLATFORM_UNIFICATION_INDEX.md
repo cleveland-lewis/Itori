@@ -44,7 +44,7 @@ The Platform Unification Framework provides a comprehensive system for building 
 
 ### 🧪 Tests
 
-**Unit Tests**: `Tests/Unit/RootsTests/Platform/PlatformUnificationTests.swift`
+**Unit Tests**: `Tests/Unit/ItoriTests/Platform/PlatformUnificationTests.swift`
 - 40+ comprehensive tests
 - Platform detection validation
 - Capability verification
@@ -194,7 +194,7 @@ errors.forEach { print($0) }
 ### Run Platform Tests
 
 ```bash
-xcodebuild test -scheme "Roots" -only-testing:RootsTests/PlatformUnificationTests
+xcodebuild test -scheme "Itori" -only-testing:ItoriTests/PlatformUnificationTests
 ```
 
 ### Test Coverage

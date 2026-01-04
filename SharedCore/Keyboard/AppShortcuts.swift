@@ -1,6 +1,6 @@
 //
 //  AppShortcuts.swift
-//  Roots
+//  Itori
 //
 //  Centralized keyboard shortcut definitions
 //  Created: 2026-01-03

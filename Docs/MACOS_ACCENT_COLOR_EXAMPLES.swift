@@ -90,7 +90,7 @@ struct ViewModePicker_After2: View {
             }
         }
         .pickerStyle(.segmented)
-        // ✅ No .tint() needed - inherits from RootsApp global tint
+        // ✅ No .tint() needed - inherits from ItoriApp global tint
     }
 }
 
@@ -188,7 +188,7 @@ struct SettingsToggle: View {
     
     var body: some View {
         Toggle("Feature enabled", isOn: $enabled)
-        // ✅ Automatically uses accent color from global .tint() in RootsApp
+        // ✅ Automatically uses accent color from global .tint() in ItoriApp
         // No explicit .tint() needed
     }
 }

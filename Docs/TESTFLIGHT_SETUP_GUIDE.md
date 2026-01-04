@@ -1,4 +1,4 @@
-# TestFlight Setup Guide for Roots
+# TestFlight Setup Guide for Itori
 
 **Date**: December 30, 2024  
 **Purpose**: Distribute iOS + watchOS app to testers via TestFlight
@@ -17,8 +17,8 @@
 - Access at: https://appstoreconnect.apple.com/
 
 ### 3. Required Information
-- **App Name**: Roots (or whatever you want to call it publicly)
-- **Bundle ID**: `clewisiii.Roots` (already configured)
+- **App Name**: Itori (or whatever you want to call it publicly)
+- **Bundle ID**: `clewisiii.Itori` (already configured)
 - **SKU**: Any unique string (e.g., "ROOTS-2024")
 - **Primary Language**: English
 - **App Category**: Education or Productivity
@@ -38,9 +38,9 @@
 1. Click **"+"** button → **"New App"**
 2. Fill in:
    - **Platforms**: Check **iOS** (watchOS is included automatically)
-   - **Name**: `Roots` (or your preferred public name)
+   - **Name**: `Itori` (or your preferred public name)
    - **Primary Language**: English
-   - **Bundle ID**: Select `clewisiii.Roots` from dropdown
+   - **Bundle ID**: Select `clewisiii.Itori` from dropdown
      - If not in list, you need to register it first (see Phase 2)
    - **SKU**: `ROOTS-2024` (any unique identifier)
    - **User Access**: Full Access
@@ -68,42 +68,42 @@ If your Bundle ID isn't in App Store Connect:
 3. Click **"Identifiers"** → **"+"** button
 4. Select **"App IDs"** → Continue
 5. Fill in:
-   - **Description**: Roots iOS App
-   - **Bundle ID**: Explicit → `clewisiii.Roots`
+   - **Description**: Itori iOS App
+   - **Bundle ID**: Explicit → `clewisiii.Itori`
    - **Capabilities**: Check any needed (e.g., iCloud, Push Notifications)
 6. Click **"Continue"** → **"Register"**
 
 Repeat for watch app:
-- **Bundle ID**: `clewisiii.Roots.watchkitapp`
-- **Description**: Roots Watch App
+- **Bundle ID**: `clewisiii.Itori.watchkitapp`
+- **Description**: Itori Watch App
 
 ---
 
 ### Phase 3: Create Archive in Xcode
 
 #### 3.1 Prepare for Archive
-1. Open `RootsApp.xcodeproj` in Xcode
-2. Select **"Roots"** scheme from scheme selector
+1. Open `ItoriApp.xcodeproj` in Xcode
+2. Select **"Itori"** scheme from scheme selector
 3. In scheme selector, choose **"Any iOS Device"** (not a simulator)
 4. **Product** → **"Clean Build Folder"** (⇧⌘K)
 
 #### 3.2 Set Version and Build Number
-1. Select **Roots** target (iOS app) in project navigator
+1. Select **Itori** target (iOS app) in project navigator
 2. Go to **"General"** tab
 3. Set:
    - **Version**: `1.0` (or whatever you want)
    - **Build**: `1` (increment each upload)
 
-Repeat for **RootsWatch** target:
+Repeat for **ItoriWatch** target:
 - Use same **Version** and **Build** numbers
 
 #### 3.3 Configure Signing
-1. Select **Roots** target → **"Signing & Capabilities"** tab
+1. Select **Itori** target → **"Signing & Capabilities"** tab
 2. Check **"Automatically manage signing"**
 3. Select your **Team** from dropdown
 4. Xcode will create provisioning profiles
 
-Repeat for **RootsWatch** target
+Repeat for **ItoriWatch** target
 
 #### 3.4 Create Archive
 1. **Product** → **"Archive"**
@@ -138,7 +138,7 @@ Repeat for **RootsWatch** target
 
 #### 4.3 Processing
 1. Go to App Store Connect (https://appstoreconnect.apple.com/)
-2. Click **"My Apps"** → **"Roots"**
+2. Click **"My Apps"** → **"Itori"**
 3. Click **"TestFlight"** tab at top
 4. You'll see your build with status **"Processing"**
 5. **Wait**: Processing takes 10-60 minutes
@@ -198,7 +198,7 @@ Repeat for **RootsWatch** target
 1. Open **Watch** app on iPhone
 2. Go to **"My Watch"** tab
 3. Scroll to bottom → **"Available Apps"**
-4. Find **"Roots"** → Tap **"Install"**
+4. Find **"Itori"** → Tap **"Install"**
 
 ---
 
@@ -240,7 +240,7 @@ Repeat for **RootsWatch** target
 - Validate archive before uploading
 
 ### Watch App Not Showing
-- Make sure it's embedded in iOS app (check `Roots.app/Watch/RootsWatch.app`)
+- Make sure it's embedded in iOS app (check `Itori.app/Watch/ItoriWatch.app`)
 - Check bundle IDs match companion relationship
 - Verify `WKCompanionAppBundleIdentifier` in watch Info.plist
 
@@ -256,12 +256,12 @@ Repeat for **RootsWatch** target
 ### Build for Archive
 ```bash
 # Clean
-xcodebuild -project RootsApp.xcodeproj -scheme Roots clean
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori clean
 
 # Archive (creates .xcarchive)
-xcodebuild -project RootsApp.xcodeproj \
-  -scheme Roots \
-  -archivePath ~/Desktop/Roots.xcarchive \
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme Itori \
+  -archivePath ~/Desktop/Itori.xcarchive \
   archive
 ```
 
@@ -269,9 +269,9 @@ xcodebuild -project RootsApp.xcodeproj \
 ```bash
 # Create export options plist first (see below)
 xcodebuild -exportArchive \
-  -archivePath ~/Desktop/Roots.xcarchive \
+  -archivePath ~/Desktop/Itori.xcarchive \
   -exportOptionsPlist exportOptions.plist \
-  -exportPath ~/Desktop/RootsExport
+  -exportPath ~/Desktop/ItoriExport
 ```
 
 ### Export Options Plist

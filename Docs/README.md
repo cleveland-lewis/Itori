@@ -1,13 +1,13 @@
-# 🎓 Roots School Dashboard  
+# 🎓 Itori School Dashboard  
 *A fully Apple-native academic and cognitive management suite optimized for ADHD/ASD learning profiles.*
 
-Roots is a SwiftUI macOS/iPadOS application designed for cognitively lightweight, friction-free school organization. It unifies your calendar, assignments, courses, analytics, and study timers into one adaptive system that reduces overwhelm and strengthens executive functioning. Every component follows Apple’s Human Interface Guidelines, using system materials, SF Symbols, dynamic type, and responsive layout behavior.
+Itori is a SwiftUI macOS/iPadOS application designed for cognitively lightweight, friction-free school organization. It unifies your calendar, assignments, courses, analytics, and study timers into one adaptive system that reduces overwhelm and strengthens executive functioning. Every component follows Apple’s Human Interface Guidelines, using system materials, SF Symbols, dynamic type, and responsive layout behavior.
 
 ---
 
 ## 🌱 Overview
 
-Roots acts as your academic command center:
+Itori acts as your academic command center:
 
 - **Courses** — Meetings, assignments, exams, syllabus elements, and quick actions.  
 - **Assignments** — Category-based planning, time estimation, notes, and status tracking.  
@@ -61,7 +61,7 @@ No external dependencies required — the entire system uses SwiftUI, Combine, a
 	•	Due date
 	•	Urgency
 	•	Notes
-	•	All popups use RootsPopupContainer for consistent cards, materials, and corner radius
+	•	All popups use ItoriPopupContainer for consistent cards, materials, and corner radius
 	•	Planner/Omodoro replaced with two equal action buttons:
 Planner and Timer
 
@@ -127,10 +127,10 @@ Built with Swift Charts and semantic color helpers.
 🏛 Architecture
 
 Core Components
-	•	RootsCard — Standard cards
-	•	RootsPopupContainer — Unified popup styling
-	•	RootsIconButton — Circular accent buttons
-	•	RootsFormRow — Consistent alignment for settings/forms
+	•	ItoriCard — Standard cards
+	•	ItoriPopupContainer — Unified popup styling
+	•	ItoriIconButton — Circular accent buttons
+	•	ItoriFormRow — Consistent alignment for settings/forms
 	•	MetricCard / MetricsRow — Reusable analytics UI
 	•	MonthCalendarView — Tappable Apple-style month grid
 	•	SidebarView — Event list for selected date
@@ -164,7 +164,7 @@ All computation is local:
 
 🧪 Project Structure
 
-Roots/
+Itori/
 │
 ├── Models/
 ├── Views/
@@ -206,7 +206,7 @@ Calendar shifts when selecting a date
 → Confirm the calendar grid uses stable frames and no GeometryReader that affects layout.
 
 Popup corners look mismatched
-→ Wrap all popups in RootsPopupContainer.
+→ Wrap all popups in ItoriPopupContainer.
 
 Courses not appearing in assignment dropdown
 → Verify active semester → courses filtering in Settings.
@@ -215,7 +215,7 @@ Courses not appearing in assignment dropdown
 
 🎯 Philosophy
 
-Roots is built around clarity, predictability, and reduced cognitive strain.
+Itori is built around clarity, predictability, and reduced cognitive strain.
 Everything is designed to:
 	•	minimize overwhelm
 	•	support executive functioning

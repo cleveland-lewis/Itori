@@ -42,7 +42,7 @@ Used `git checkout --theirs` to accept the fix branch version entirely, as all c
 - `CALENDAR_GRID_FIXES.md` (new)
 - `ItoriApp.xcodeproj/project.pbxproj`
 - `Platforms/iOS/Scenes/Settings/Categories/IOSIntelligentSchedulingSettingsView.swift`
-- `Roots-Info.plist` (new)
+- `Itori-Info.plist` (new)
 - `SharedCore/Services/FeatureServices/EnhancedAutoRescheduleService.swift`
 
 ## Build Status

@@ -1,9 +1,9 @@
 # Multitasking Overview
 
 ## Overview
-- Multiwindow and drag/drop make Roots more productive on iPad and macOS by letting users open assignment, course, planner, and timer surfaces without disrupting the main workspace.
+- Multiwindow and drag/drop make Itori more productive on iPad and macOS by letting users open assignment, course, planner, and timer surfaces without disrupting the main workspace.
 - SceneStorage keys and `WindowState` keep each window tied to its entity while `SceneActivationHelper` centralizes the short-lived `NSUserActivity` payload that drives window activation.
-- Drag/drop uses a custom transferable payload (`TransferableAssignment`) backed by exported UTIs so assignments move fluidly inside Roots and to other apps.
+- Drag/drop uses a custom transferable payload (`TransferableAssignment`) backed by exported UTIs so assignments move fluidly inside Itori and to other apps.
 
 ## Purpose
 - Keep each screen self-contained so a user can open multiple assignment or course details side by side, work across planner days, and monitor the timer in a dedicated window.
@@ -25,7 +25,7 @@
 - Drop handlers (`DragDropHandler`) mutate `AssignmentsStore` and `PlannerCoordinator` directly to keep stores synchronized across windows without manual notification wiring.
 
 ## Limitations
-- Picture-in-picture is intentionally out of scope because Roots has no AVPlayer or call surface; the app relies on multiwindow + floating planner blocks to maintain visibility instead.
+- Picture-in-picture is intentionally out of scope because Itori has no AVPlayer or call surface; the app relies on multiwindow + floating planner blocks to maintain visibility instead.
 - “Open in New Window” is gated by device type (iPad or macOS) and size class; iPhone still uses the single-window experience to preserve stability.
 - Timer windows reuse the existing timer view (`IOSTimerPageView` / `TimerPageView`), so any timer-specific state lives locally to that instance rather than being shared via `WindowState`.
 

@@ -6,7 +6,7 @@ The Intelligent Scheduling System now runs in the background on iOS/iPadOS, even
 
 ## Changes Made
 
-### 1. RootsIOSApp.swift - UPDATED ✓
+### 1. ItoriIOSApp.swift - UPDATED ✓
 
 **Added:**
 - `import BackgroundTasks`
@@ -174,7 +174,7 @@ Xcode → Target → Signing & Capabilities → Add Background Modes
 
 ## Files Modified
 
-✅ `Platforms/iOS/App/RootsIOSApp.swift`
+✅ `Platforms/iOS/App/ItoriIOSApp.swift`
    - Added BackgroundTasks import
    - Added background task registration
    - Added scene phase monitoring

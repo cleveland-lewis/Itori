@@ -40,7 +40,7 @@ struct ContentView: View {
             }
         }
         .interfacePreferences(interfacePreferences)
-        .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
+        .frame(minWidth: ItoriWindowSizing.minMainWidth, minHeight: ItoriWindowSizing.minMainHeight)
         .globalContextMenu()
         .onAppear {
             setupNotificationObservers()
@@ -133,7 +133,7 @@ struct ContentView: View {
                 }
             }
         }
-        .navigationTitle("Roots")
+        .navigationTitle("Itori")
     }
 
     private var selectionBinding: Binding<RootTab?> {

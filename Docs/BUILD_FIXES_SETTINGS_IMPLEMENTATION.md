@@ -8,22 +8,22 @@ Fixed all build errors across iOS and macOS platforms following the iOS Settings
 ## Build Status
 
 ### ✅ iOS - PASSED
-**Scheme:** Roots (iOS)  
+**Scheme:** Itori (iOS)  
 **SDK:** iphonesimulator  
 **Status:** BUILD SUCCEEDED  
 **Log:** ios_build_settings4.log
 
 ### ✅ macOS - PASSED
-**Scheme:** Roots (macOS)  
+**Scheme:** Itori (macOS)  
 **SDK:** macosx  
 **Status:** BUILD SUCCEEDED  
 **Log:** macos_build_settings4.log
 
 ### ⚠️ watchOS - Configuration Issue (Pre-existing)
-**Scheme:** RootsWatch  
+**Scheme:** ItoriWatch  
 **SDK:** watchsimulator  
 **Status:** BUILD FAILED (Pre-existing project issue - **NOT caused by settings implementation**)  
-**Error:** `Multiple commands produce '/path/to/RootsWatch.app/RootsWatch'`  
+**Error:** `Multiple commands produce '/path/to/ItoriWatch.app/ItoriWatch'`  
 **Cause:** Xcode build system creating duplicate tasks: CreateUniversalBinary + Ld/CopyAndPreserveArchs  
 **Logs:** watch_build_settings2.log, watch_build_fix.log, watch_build_exclude_x86.log  
 **Resolution:** Requires manual fix in Xcode IDE (see WATCHOS_BUILD_ISSUE.md for detailed steps)
@@ -86,19 +86,19 @@ Wrapped all iOS settings files in `#if os(iOS)` ... `#endif`:
 macOS code referenced `SettingsRootView` which was now iOS-only.
 
 **Solution:**
-Created a compatibility wrapper in RootsSettingsWindow.swift:
+Created a compatibility wrapper in ItoriSettingsWindow.swift:
 ```swift
 struct SettingsRootView: View {
     @Binding var selection: SettingsToolbarIdentifier
     
     var body: some View {
-        RootsSettingsWindow()
+        ItoriSettingsWindow()
     }
 }
 ```
 
 **Files Modified:**
-- `macOSApp/PlatformAdapters/RootsSettingsWindow.swift` - Added wrapper
+- `macOSApp/PlatformAdapters/ItoriSettingsWindow.swift` - Added wrapper
 
 ### 3. API Mismatches
 
@@ -212,14 +212,14 @@ public enum TimerMode: String, CaseIterable, Identifiable, Codable {
 16. iOS/Services/WatchBridge/PhoneWatchBridge.swift - Fixed WCSession call
 
 ### macOS (1 file)
-1. macOSApp/PlatformAdapters/RootsSettingsWindow.swift - Added SettingsRootView wrapper
+1. macOSApp/PlatformAdapters/ItoriSettingsWindow.swift - Added SettingsRootView wrapper
 
 ## Build Commands Used
 
 ### iOS
 ```bash
-xcodebuild -project RootsApp.xcodeproj \
-  -scheme "Roots" \
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme "Itori" \
   -sdk iphonesimulator \
   -destination 'generic/platform=iOS Simulator' \
   build
@@ -227,8 +227,8 @@ xcodebuild -project RootsApp.xcodeproj \
 
 ### macOS
 ```bash
-xcodebuild -project RootsApp.xcodeproj \
-  -scheme "Roots" \
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme "Itori" \
   -sdk macosx \
   -destination 'platform=macOS' \
   build
@@ -236,8 +236,8 @@ xcodebuild -project RootsApp.xcodeproj \
 
 ### watchOS
 ```bash
-xcodebuild -project RootsApp.xcodeproj \
-  -scheme "RootsWatch" \
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme "ItoriWatch" \
   -sdk watchsimulator \
   -destination 'generic/platform=watchOS Simulator' \
   build
@@ -283,11 +283,11 @@ xcodebuild -project RootsApp.xcodeproj \
 - ❌ Various build setting overrides
 
 **Required Solution:**
-This must be fixed by opening RootsApp.xcodeproj in Xcode IDE and:
+This must be fixed by opening ItoriApp.xcodeproj in Xcode IDE and:
 1. Checking Build Phases for duplicates
 2. Verifying Build Settings (CREATE_UNIVERSAL_BINARY, ARCHS, VALID_ARCHS)
 3. Possibly converting File System Synchronized Groups to explicit references
-4. Or recreating the RootsWatch target from scratch
+4. Or recreating the ItoriWatch target from scratch
 
 See **WATCHOS_BUILD_ISSUE.md** for complete diagnostic information and step-by-step resolution guide.
 
@@ -305,7 +305,7 @@ See **WATCHOS_BUILD_ISSUE.md** for complete diagnostic information and step-by-s
 ### macOS
 - [x] App compiles without errors
 - [ ] Settings window opens
-- [ ] RootsSettingsWindow displays correctly
+- [ ] ItoriSettingsWindow displays correctly
 - [ ] Settings persistence works
 - [ ] No regression in existing features
 

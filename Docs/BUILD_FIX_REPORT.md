@@ -106,14 +106,14 @@ let calendars = store.calendars(for: .event).filter { calendar in
 
 ### Expected Results
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 
 # macOS
-xcodebuild -scheme Roots -destination 'platform=macOS' build
+xcodebuild -scheme Itori -destination 'platform=macOS' build
 # Expected: BUILD SUCCEEDED
 
 # iOS
-xcodebuild -scheme Roots -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
+xcodebuild -scheme Itori -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
 # Expected: BUILD SUCCEEDED
 ```
 

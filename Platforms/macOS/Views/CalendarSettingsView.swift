@@ -131,7 +131,7 @@ struct CalendarSettingsView: View {
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("To disconnect Roots from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars.")
+            Text("To disconnect Itori from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars.")
         }
         .onAppear {
             _Concurrency.Task { await calendarManager.refreshAuthStatus() }
@@ -224,7 +224,7 @@ struct AssignmentSyncSection: View {
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("Roots needs access to your calendar to sync assignments. You can grant this in System Settings if you previously denied access.")
+            Text("Itori needs access to your calendar to sync assignments. You can grant this in System Settings if you previously denied access.")
         }
     }
     

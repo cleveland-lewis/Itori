@@ -2,7 +2,7 @@
 
 ## Status: Production Ready
 
-The Platform Unification Framework is **fully implemented, tested, and documented** for the Roots app.
+The Platform Unification Framework is **fully implemented, tested, and documented** for the Itori app.
 
 ---
 
@@ -164,8 +164,8 @@ let errors = PlatformValidation.validate()
 
 ### Run Tests
 ```bash
-xcodebuild test -scheme "Roots" \
-  -only-testing:RootsTests/PlatformUnificationTests
+xcodebuild test -scheme "Itori" \
+  -only-testing:ItoriTests/PlatformUnificationTests
 ```
 
 ### Debug Tools
@@ -346,7 +346,7 @@ if PlatformFeature.isEnabled(.keyboardShortcuts) {
 
 ### Code
 - **Source**: `SharedCore/Platform/`
-- **Tests**: `Tests/Unit/RootsTests/Platform/`
+- **Tests**: `Tests/Unit/ItoriTests/Platform/`
 
 ---
 

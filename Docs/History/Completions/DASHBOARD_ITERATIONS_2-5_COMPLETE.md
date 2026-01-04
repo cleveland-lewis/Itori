@@ -4,7 +4,7 @@
 
 ### Iteration 2: Energy Card ✅
 **Improvements:**
-- Replaced RootsCard with DashboardCard
+- Replaced ItoriCard with DashboardCard
 - Added descriptive caption explaining feature
 - Color-coded buttons (green=High, orange=Medium, red=Low)
 - Icons for each energy level (bolt.fill, bolt, bolt.slash)
@@ -15,7 +15,7 @@
 
 **Before:**
 ```swift
-RootsCard with custom 2x2 grid
+ItoriCard with custom 2x2 grid
 Large buttons with .borderedProminent
 No context description
 ```
@@ -31,7 +31,7 @@ Footer navigation
 
 ### Iteration 3: Study Hours Card ✅
 **Improvements:**
-- Replaced RootsCard with DashboardCard
+- Replaced ItoriCard with DashboardCard
 - Replaced custom studyHourRow with DashboardStatRow
 - Consistent blue color for all values
 - Added footer "View Details" link
@@ -57,7 +57,7 @@ Footer navigation to timer
 ### Iteration 4: Events & Assignments Cards ✅
 **Improvements:**
 **Events Card:**
-- Replaced RootsCard with DashboardCard
+- Replaced ItoriCard with DashboardCard
 - Added empty state with "Add Event" button
 - Added header "+" button for quick add
 - Show first 5 events with "View All" footer
@@ -66,7 +66,7 @@ Footer navigation to timer
 - Proper accessibility
 
 **Assignments Card:**
-- Replaced RootsCard with DashboardCard  
+- Replaced ItoriCard with DashboardCard  
 - Added empty state with "Add Assignment" button
 - Added header "+" button for quick add
 - Show first 5 tasks with "View All" footer
@@ -93,7 +93,7 @@ Proper visual hierarchy
 
 ### Iteration 5: Clock & Calendar Card ✅
 **Improvements:**
-- Replaced RootsCard with DashboardCard
+- Replaced ItoriCard with DashboardCard
 - Reduced clock size (140 → 120pt)
 - Added digital time below clock
 - Added footer "Open Calendar" link
@@ -104,7 +104,7 @@ Proper visual hierarchy
 
 **Before:**
 ```swift
-RootsCard with custom padding
+ItoriCard with custom padding
 Large 140pt clock
 No digital time
 No footer actions
@@ -128,11 +128,11 @@ Cleaner spacing
 
 ### Before (Iterations 1)
 - Today Card: ✅ Updated
-- Energy: ❌ Custom RootsCard
+- Energy: ❌ Custom ItoriCard
 - Study Hours: ❌ Custom styling
 - Events: ❌ Basic column
 - Assignments: ❌ Basic column
-- Clock: ❌ RootsCard
+- Clock: ❌ ItoriCard
 
 ### After (Iterations 1-5)
 - Today Card: ✅ DashboardCard + actions
@@ -203,7 +203,7 @@ Cleaner spacing
 - Clock Card: ~25 lines
 
 ### Components Replaced: 6
-- RootsCard → DashboardCard (6x)
+- ItoriCard → DashboardCard (6x)
 - Custom rows → DashboardStatRow (2x)
 - No empty states → DashboardEmptyState (3x)
 

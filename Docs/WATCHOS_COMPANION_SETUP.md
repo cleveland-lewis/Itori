@@ -1,10 +1,10 @@
 # watchOS Companion App Setup Guide
 
 ## Current Status
-✅ watchOS target exists: `RootsWatch`  
+✅ watchOS target exists: `ItoriWatch`  
 ✅ Bundle IDs configured correctly:
-- iOS: `clewisiii.Roots`
-- watchOS: `clewisiii.Roots.watchkitapp`
+- iOS: `clewisiii.Itori`
+- watchOS: `clewisiii.Itori.watchkitapp`
 ✅ `WKCompanionAppBundleIdentifier` set in watchOS Info.plist
 
 ## What's Missing
@@ -16,36 +16,36 @@ The watchOS app needs to be **embedded** in the iOS app so they install together
 
 ### Step 1: Open Project in Xcode
 ```bash
-open RootsApp.xcodeproj
+open ItoriApp.xcodeproj
 ```
 
 ### Step 2: Configure iOS Target to Embed watchOS App
 
 1. **Select the Project** in the navigator (not the folder)
-2. **Select the "Roots" target** (iOS app)
+2. **Select the "Itori" target** (iOS app)
 3. Go to **"General"** tab
 4. Scroll down to **"Frameworks, Libraries, and Embedded Content"**
 5. Click the **"+"** button
 6. In the dialog, switch from "Frameworks" to **"Products"** in the top dropdown
-7. You should see **"RootsWatch.app"** in the list
+7. You should see **"ItoriWatch.app"** in the list
 8. Select it and click **"Add"**
 9. In the "Embed" column, change from "Do Not Embed" to **"Embed & Sign"**
 
 ### Step 3: Add Target Dependency
 
-1. Still on the **"Roots" target**
+1. Still on the **"Itori" target**
 2. Go to **"Build Phases"** tab
 3. Click **"+"** at the top left
 4. Select **"New Copy Files Phase"**
 5. Name it **"Embed Watch Content"**
 6. Set **"Destination"** to **"Products Directory"** → **"Watch"**
 7. Click **"+"** in the files section
-8. Select **"RootsWatch.app"**
+8. Select **"ItoriWatch.app"**
 9. Click **"Add"**
 
 ### Step 4: Verify Deployment Target
 
-1. Select **"RootsWatch" target**
+1. Select **"ItoriWatch" target**
 2. Go to **"Build Settings"** tab
 3. Search for **"watchOS Deployment Target"**
 4. Set to **watchOS 10.0** or later (currently set to 26.1 which seems too high)
@@ -63,7 +63,7 @@ If you prefer automation, run this script:
 # This script configures the watchOS companion app embedding
 # Use at your own risk - Xcode project files are fragile
 
-cd RootsApp.xcodeproj
+cd ItoriApp.xcodeproj
 
 # Backup the project file
 cp project.pbxproj project.pbxproj.backup.$(date +%Y%m%d_%H%M%S)
@@ -72,12 +72,12 @@ cp project.pbxproj project.pbxproj.backup.$(date +%Y%m%d_%H%M%S)
 ruby << 'RUBY'
 require 'xcodeproj'
 
-project_path = 'RootsApp.xcodeproj'
+project_path = 'ItoriApp.xcodeproj'
 project = Xcodeproj::Project.open(project_path)
 
 # Find targets
-ios_target = project.targets.find { |t| t.name == 'Roots' }
-watch_target = project.targets.find { |t| t.name == 'RootsWatch' }
+ios_target = project.targets.find { |t| t.name == 'Itori' }
+watch_target = project.targets.find { |t| t.name == 'ItoriWatch' }
 
 if ios_target.nil? || watch_target.nil?
   puts "❌ Could not find targets"
@@ -117,30 +117,30 @@ sudo gem install xcodeproj
 ### 1. Build Both Targets
 ```bash
 # Build iOS app (should also build watchOS automatically)
-xcodebuild -project RootsApp.xcodeproj -scheme Roots -configuration Debug build
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori -configuration Debug build
 
 # Build watchOS directly (optional)
-xcodebuild -project RootsApp.xcodeproj -scheme RootsWatch -configuration Debug build
+xcodebuild -project ItoriApp.xcodeproj -scheme ItoriWatch -configuration Debug build
 ```
 
 ### 2. Check if watchOS App is Embedded
 
 In Xcode:
-1. Select **"Roots" target** → **"Build Phases"**
+1. Select **"Itori" target** → **"Build Phases"**
 2. You should see **"Embed Watch Content"** phase
-3. It should contain **"RootsWatch.app"**
+3. It should contain **"ItoriWatch.app"**
 
 Or via command line:
 ```bash
 # After building, check if watchOS app exists in iOS bundle
-ls -la ~/Library/Developer/Xcode/DerivedData/*/Build/Products/Debug-iphonesimulator/Roots.app/Watch/
+ls -la ~/Library/Developer/Xcode/DerivedData/*/Build/Products/Debug-iphonesimulator/Itori.app/Watch/
 ```
 
-You should see `RootsWatch.app` inside.
+You should see `ItoriWatch.app` inside.
 
 ### 3. Run on Simulator
 
-1. In Xcode, select **"Roots" scheme**
+1. In Xcode, select **"Itori" scheme**
 2. Choose **"iPhone 15 Pro"** (or similar)
 3. Click **"Run"** (⌘R)
 4. The iOS app should launch
@@ -154,20 +154,20 @@ Your current setup follows Apple's convention:
 
 | Platform | Bundle ID | ✅/❌ |
 |----------|-----------|-------|
-| iOS | `clewisiii.Roots` | ✅ |
-| watchOS | `clewisiii.Roots.watchkitapp` | ✅ |
-| macOS | `clewisiii.Roots` *(same as iOS)* | ⚠️ Should be different |
+| iOS | `clewisiii.Itori` | ✅ |
+| watchOS | `clewisiii.Itori.watchkitapp` | ✅ |
+| macOS | `clewisiii.Itori` *(same as iOS)* | ⚠️ Should be different |
 
-**Recommendation**: Change macOS to `clewisiii.Roots.mac` to avoid conflicts.
+**Recommendation**: Change macOS to `clewisiii.Itori.mac` to avoid conflicts.
 
 ---
 
 ## Troubleshooting
 
-### Error: "Unable to install 'RootsWatch'"
+### Error: "Unable to install 'ItoriWatch'"
 **Solution**: Make sure the iOS app is installed first. The watch app cannot install independently.
 
-### Error: "No devices available for 'RootsWatch'"
+### Error: "No devices available for 'ItoriWatch'"
 **Solution**: Pair a watch simulator:
 1. **Window** → **Devices and Simulators**
 2. Select **"Simulators"** tab
@@ -182,10 +182,10 @@ Your current setup follows Apple's convention:
 
 ### watchOS App Shows but Crashes
 **Solution**: Check that both apps share the same App Group:
-1. Select **"Roots" target** → **"Signing & Capabilities"**
+1. Select **"Itori" target** → **"Signing & Capabilities"**
 2. Add **"App Groups"**
-3. Create group: `group.clewisiii.Roots`
-4. Repeat for **"RootsWatch" target**
+3. Create group: `group.clewisiii.Itori`
+4. Repeat for **"ItoriWatch" target**
 
 ---
 

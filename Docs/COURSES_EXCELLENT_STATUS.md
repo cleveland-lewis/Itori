@@ -138,14 +138,14 @@ Label(NSLocalizedString("courses.action.edit_courses", comment: ""), systemImage
 
 ```swift
 // Before
-RootsFormRow(label: "Code") { ... }
-RootsFormRow(label: "Title") { ... }
-RootsFormRow(label: "Instructor") { ... }
+ItoriFormRow(label: "Code") { ... }
+ItoriFormRow(label: "Title") { ... }
+ItoriFormRow(label: "Instructor") { ... }
 
 // After
-RootsFormRow(label: NSLocalizedString("courses.form.label.code", comment: "")) { ... }
-RootsFormRow(label: NSLocalizedString("courses.form.label.title", comment: "")) { ... }
-RootsFormRow(label: NSLocalizedString("courses.form.label.instructor", comment: "")) { ... }
+ItoriFormRow(label: NSLocalizedString("courses.form.label.code", comment: "")) { ... }
+ItoriFormRow(label: NSLocalizedString("courses.form.label.title", comment: "")) { ... }
+ItoriFormRow(label: NSLocalizedString("courses.form.label.instructor", comment: "")) { ... }
 ```
 
 ### Form Title with Conditional Localization
@@ -316,7 +316,7 @@ To see the changes:
 
 ```bash
 # Close Xcode
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp*
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp*
 
 # Reopen Xcode
 # Product → Clean Build Folder (Shift+Cmd+K)

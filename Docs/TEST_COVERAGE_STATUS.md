@@ -1,4 +1,4 @@
-# Test Coverage Status - Roots App
+# Test Coverage Status - Itori App
 
 **Date**: December 31, 2024  
 **Current Coverage**: 8.33% (8,457 of 101,543 lines)  
@@ -136,8 +136,8 @@ final class AssignmentsStore: ObservableObject {
 
 - `/SharedCore/State/AssignmentsStore.swift` - Singleton pattern
 - `/SharedCore/State/CoursesStore.swift` - Singleton pattern  
-- `/Tests/Unit/RootsTests/Infrastructure/BaseTestCase.swift` - Test infrastructure
-- `/Tests/Unit/RootsTests/Infrastructure/MockDataFactory.swift` - Test data factory
+- `/Tests/Unit/ItoriTests/Infrastructure/BaseTestCase.swift` - Test infrastructure
+- `/Tests/Unit/ItoriTests/Infrastructure/MockDataFactory.swift` - Test data factory
 
 ---
 

@@ -1,7 +1,7 @@
 # Dutch Localization - COMPLETE ✅
 
 ## Summary
-Dutch (nl) language localization has been successfully completed for the Roots app using the free Google Translate API via the `googletrans` Python library.
+Dutch (nl) language localization has been successfully completed for the Itori app using the free Google Translate API via the `googletrans` Python library.
 
 ## Final Status
 

@@ -69,7 +69,7 @@ Even if NSLocalizedString fails, the app:
 ### Check if .strings files are in bundle:
 ```bash
 # Build the app, then check the bundle
-cd ~/Library/Developer/Xcode/DerivedData/RootsApp-*/Build/Products/Debug/Roots.app/Contents/Resources
+cd ~/Library/Developer/Xcode/DerivedData/ItoriApp-*/Build/Products/Debug/Itori.app/Contents/Resources
 ls -la *.lproj/
 ```
 
@@ -77,10 +77,10 @@ ls -la *.lproj/
 1. Open Xcode
 2. Select `en.lproj/Localizable.strings`
 3. Open File Inspector (⌘⌥1)
-4. Check "Target Membership" - ensure "Roots" is checked
+4. Check "Target Membership" - ensure "Itori" is checked
 
 ### Check build phase:
-1. Select Roots target in Xcode
+1. Select Itori target in Xcode
 2. Go to "Build Phases"
 3. Check "Copy Bundle Resources"
 4. Verify `.lproj` folders are listed
@@ -102,7 +102,7 @@ To properly fix the bundle issue:
 
 ### Option 1: Verify Target Membership
 1. Select each `.lproj` folder in Xcode
-2. Check Roots target in File Inspector
+2. Check Itori target in File Inspector
 3. Rebuild
 
 ### Option 2: Re-add Resources
@@ -114,12 +114,12 @@ To properly fix the bundle issue:
 ### Option 3: Clean Build
 ```bash
 # Clean derived data
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp-*
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp-*
 
 # Clean and rebuild
-cd /path/to/Roots
-xcodebuild clean -scheme Roots
-xcodebuild build -scheme Roots
+cd /path/to/Itori
+xcodebuild clean -scheme Itori
+xcodebuild build -scheme Itori
 ```
 
 ## Verification

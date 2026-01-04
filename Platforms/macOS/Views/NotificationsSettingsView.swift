@@ -9,7 +9,7 @@ struct NotificationsSettingsView: View {
     var body: some View {
         Form {
             Section {
-                Text("Configure when and how Roots sends you notifications.")
+                Text("Configure when and how Itori sends you notifications.")
                     .foregroundStyle(.secondary)
             }
             .listRowBackground(Color.clear)

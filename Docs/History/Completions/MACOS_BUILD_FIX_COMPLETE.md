@@ -75,7 +75,7 @@ To re-enable AI scheduling:
 
 ## Build Command
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme "Roots" -destination 'platform=macOS' build
+xcodebuild -project ItoriApp.xcodeproj -scheme "Itori" -destination 'platform=macOS' build
 ```
 
 ## Files Modified

@@ -11,7 +11,7 @@
   - Help text generation
   - View modifiers for easy use
 
-- `SharedCore/Keyboard/RootsCommands.swift` - Menu bar integration
+- `SharedCore/Keyboard/ItoriCommands.swift` - Menu bar integration
   - File menu shortcuts (New Assignment, Course, Deck)
   - Edit menu shortcuts (Edit, Delete, Duplicate, Info)
   - View menu shortcuts (Tab navigation ⌘1-9)
@@ -19,8 +19,8 @@
 
 ### 2. Integrated Into App ✅
 
-**RootsApp.swift:**
-- Added `RootsCommands()` to `.commands` block
+**ItoriApp.swift:**
+- Added `ItoriCommands()` to `.commands` block
 - Menu bar now shows all shortcuts
 
 **ContentView.swift:**

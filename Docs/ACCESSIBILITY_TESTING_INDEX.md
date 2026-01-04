@@ -92,8 +92,8 @@ let passes = AccessibilityTestingHelpers.meetsWCAGAA(fg, bg)
 
 **Quick use:**
 ```bash
-xcodebuild test -scheme Roots \
-    -only-testing:RootsTests/AccessibilityTests
+xcodebuild test -scheme Itori \
+    -only-testing:ItoriTests/AccessibilityTests
 ```
 
 ## 🎯 Common Use Cases
@@ -187,8 +187,8 @@ let ratio = AccessibilityTestingHelpers.contrastRatio(
 print("Contrast: \(ratio):1")
 
 // 4. Run unit tests
-// Terminal: xcodebuild test -scheme Roots \
-//   -only-testing:RootsTests/AccessibilityTests
+// Terminal: xcodebuild test -scheme Itori \
+//   -only-testing:ItoriTests/AccessibilityTests
 #endif
 ```
 

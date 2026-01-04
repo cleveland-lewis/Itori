@@ -45,7 +45,7 @@ Due Tasks Card
 
 ## Analog Clock Design
 
-The analog clock design is already well-implemented in `RootsAnalogClock.swift` with:
+The analog clock design is already well-implemented in `ItoriAnalogClock.swift` with:
 - ✅ Proper bezel and tick marks
 - ✅ Smooth animations with TimelineView
 - ✅ Stopwatch and clock styles

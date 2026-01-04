@@ -314,7 +314,7 @@ class MockFileWatcher: FileSystemWatchable {
 ```bash
 # Run with coverage
 xcodebuild test \
-  -scheme Roots \
+  -scheme Itori \
   -destination 'platform=iOS Simulator,name=iPhone 15' \
   -enableCodeCoverage YES \
   -resultBundlePath TestResults.xcresult

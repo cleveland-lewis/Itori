@@ -160,7 +160,7 @@ struct DeveloperSettingsView: View {
                 } header: {
                     Text("Event Buffer (Last 50)")
                 } footer: {
-                    Text("View recent log events. Full logs are available in Console.app filtered by subsystem 'com.roots.app'.")
+                    Text("View recent log events. Full logs are available in Console.app filtered by subsystem 'com.itori.app'.")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }

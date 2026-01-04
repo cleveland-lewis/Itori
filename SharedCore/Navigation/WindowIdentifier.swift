@@ -1,6 +1,6 @@
 //
 //  WindowIdentifier.swift
-//  Roots
+//  Itori
 //
 //  Multi-window support identifiers
 //
@@ -17,7 +17,7 @@ enum WindowIdentifier: String {
     
     var title: String {
         switch self {
-        case .main: return "Roots"
+        case .main: return "Itori"
         case .assignmentDetail: return "Assignment"
         case .courseDetail: return "Course"
         case .plannerDay: return "Planner"

@@ -2,7 +2,7 @@ import XCTest
 import EventKit
 @testable import SharedCore
 
-/// Tests validating Roots' EventKit interaction contract:
+/// Tests validating Itori' EventKit interaction contract:
 /// - Create, edit, delete operations
 /// - Repeating series deletion behavior (this event / future / all)
 /// - Optimistic UI patch behavior

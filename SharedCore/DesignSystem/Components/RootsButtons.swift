@@ -159,7 +159,7 @@ public struct RootsAccentToggleStyle: ToggleStyle {
 }
 
 // MARK: - Icon-only circular button helper
-// Note: RootsIconButton is defined in Components/RootsIconButton.swift
+// Note: ItoriIconButton is defined in Components/ItoriIconButton.swift
 // GlassIconButton is defined in GlassIconButton.swift
 
 // Convenience extensions for quick usage

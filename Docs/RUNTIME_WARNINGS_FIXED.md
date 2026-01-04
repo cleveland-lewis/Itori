@@ -51,7 +51,7 @@ Stale derived data causing database lock conflicts.
 
 **Solution:**
 ```bash
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp-*
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp-*
 ```
 
 **Result:**
@@ -205,7 +205,7 @@ If you want to eliminate the warning completely, you can:
 
 **Option 2:** Remove roots.icon from Watch target's asset catalogs
 ```
-# In Xcode: RootsWatch target → Build Phases → Copy Bundle Resources
+# In Xcode: ItoriWatch target → Build Phases → Copy Bundle Resources
 # Remove roots.icon reference if present
 ```
 

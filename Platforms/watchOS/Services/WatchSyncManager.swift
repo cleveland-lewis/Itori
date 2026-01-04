@@ -1,6 +1,6 @@
 //
 //  WatchSyncManager.swift
-//  Roots (watchOS)
+//  Itori (watchOS)
 //
 //  Manages data synchronization between iPhone and Apple Watch
 //

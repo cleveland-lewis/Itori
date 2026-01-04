@@ -25,7 +25,7 @@ extension View {
 
 ### 2. Global Application
 
-The app already applies accent color globally in **RootsApp.swift**:
+The app already applies accent color globally in **ItoriApp.swift**:
 ```swift
 ContentView()
     .accentColor(preferences.currentAccentColor)
@@ -120,7 +120,7 @@ Circle()
 ### Infrastructure
 - [x] DesignSystem.Colors.accent defined
 - [x] AccentColorExtensions.swift created
-- [x] Global .tint() and .accentColor() applied in RootsApp
+- [x] Global .tint() and .accentColor() applied in ItoriApp
 - [x] Documentation completed
 
 ### Existing Views

@@ -1,7 +1,7 @@
 # Localization Export Summary
 
 ## Overview
-Successfully set up Xcode's modern localization export system for the Roots app using industry-standard XLIFF format.
+Successfully set up Xcode's modern localization export system for the Itori app using industry-standard XLIFF format.
 
 ## Export Statistics
 
@@ -29,7 +29,7 @@ Localizations/
 │   ├── Source Contents/
 │   │   └── SharedCore/DesignSystem/
 │   │       ├── Localizable.xcstrings
-│   │       └── Roots-InfoPlist.xcstrings
+│   │       └── Itori-InfoPlist.xcstrings
 │   └── Notes/
 ├── zh-Hans.xcloc/              # Simplified Chinese
 └── zh-Hant.xcloc/              # Traditional Chinese
@@ -72,7 +72,7 @@ The XLIFF (XML Localization Interchange File Format) is supported by:
 
 ### Export All Languages
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 ./scripts/export-localizations.sh
 ```
 
@@ -95,7 +95,7 @@ cd /Users/clevelandlewis/Desktop/Roots
 ```
 
 ### Test in App
-1. Build: `xcodebuild -scheme Roots -destination 'platform=macOS' build`
+1. Build: `xcodebuild -scheme Itori -destination 'platform=macOS' build`
 2. Change system language, or
 3. Use Xcode scheme language override
 
@@ -136,8 +136,8 @@ cd /Users/clevelandlewis/Desktop/Roots
 
 ```xml
 <trans-unit id="dashboard.welcome" xml:space="preserve">
-  <source>Welcome to Roots</source>
-  <target state="translated">欢迎使用 Roots</target>
+  <source>Welcome to Itori</source>
+  <target state="translated">欢迎使用 Itori</target>
   <note>Greeting shown on dashboard</note>
 </trans-unit>
 ```
@@ -152,7 +152,7 @@ cd /Users/clevelandlewis/Desktop/Roots
 
 The export integrates with Xcode String Catalogs:
 - `SharedCore/DesignSystem/Localizable.xcstrings`
-- `SharedCore/DesignSystem/Roots-InfoPlist.xcstrings`
+- `SharedCore/DesignSystem/Itori-InfoPlist.xcstrings`
 
 When you import translations:
 1. XLIFF translations merge into `.xcstrings` files
@@ -194,7 +194,7 @@ Same key has different context comments. Consider:
 2. **Export Spanish**
    ```bash
    xcodebuild -exportLocalizations \
-     -project RootsApp.xcodeproj \
+     -project ItoriApp.xcodeproj \
      -localizationPath ./Localizations \
      -exportLanguage es \
      -sdk macosx

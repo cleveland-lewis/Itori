@@ -11,16 +11,16 @@ Enhanced the dashboard analog clock with hour numerals and darker, more prominen
 **Change:**
 ```swift
 // Before
-RootsAnalogClock(diameter: clockSize, showSecondHand: true, accentColor: .accentColor)
+ItoriAnalogClock(diameter: clockSize, showSecondHand: true, accentColor: .accentColor)
 
 // After
-RootsAnalogClock(diameter: clockSize, showSecondHand: true, accentColor: .accentColor, showNumerals: true)
+ItoriAnalogClock(diameter: clockSize, showSecondHand: true, accentColor: .accentColor, showNumerals: true)
 ```
 
 **Result:** Dashboard clock now displays hour numerals (12, 3, 6, 9 for 160pt diameter)
 
 ### 2. Enhanced Outer Bezel - macOSApp Version
-**File:** `macOSApp/Views/Components/Clock/RootsAnalogClock.swift`
+**File:** `macOSApp/Views/Components/Clock/ItoriAnalogClock.swift`
 
 **Changes:**
 - **Outer circle:** Opacity increased from 0.28 → 0.5 (+79% more visible)
@@ -40,7 +40,7 @@ Circle().stroke(neutralLine.opacity(0.2), lineWidth: 1)   // Inner - slightly vi
 ```
 
 ### 3. Enhanced Bezel - macOS Version
-**File:** `macOS/Views/Components/Clock/RootsAnalogClock.swift`
+**File:** `macOS/Views/Components/Clock/ItoriAnalogClock.swift`
 
 **Changes:**
 - **Outer circle:** Opacity increased from 0.28 → 0.5 (+79% more visible)
@@ -131,8 +131,8 @@ Compare dashboard clock appearance:
 
 ## Files Modified
 1. `macOSApp/Scenes/DashboardView.swift` - Enable numerals
-2. `macOSApp/Views/Components/Clock/RootsAnalogClock.swift` - Enhance bezel
-3. `macOS/Views/Components/Clock/RootsAnalogClock.swift` - Enhance bezel (legacy)
+2. `macOSApp/Views/Components/Clock/ItoriAnalogClock.swift` - Enhance bezel
+3. `macOS/Views/Components/Clock/ItoriAnalogClock.swift` - Enhance bezel (legacy)
 
 ## Backwards Compatibility
 ✅ All changes are visual enhancements only

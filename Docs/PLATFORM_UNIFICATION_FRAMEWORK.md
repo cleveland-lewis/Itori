@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Platform Unification Framework establishes a clear hierarchy and capability matrix for Roots across watchOS, iOS, iPadOS, and macOS. It ensures consistent visual language while respecting platform-specific strengths and interaction models.
+The Platform Unification Framework establishes a clear hierarchy and capability matrix for Itori across watchOS, iOS, iPadOS, and macOS. It ensures consistent visual language while respecting platform-specific strengths and interaction models.
 
 ## Platform Hierarchy
 

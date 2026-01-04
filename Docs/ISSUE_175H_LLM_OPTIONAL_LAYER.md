@@ -90,7 +90,7 @@ var aiEnabledStorage: Bool = false  // Global AI kill switch - DISABLED BY DEFAU
 
 3. **Enabled Description** (Lines 35-38):
    ```swift
-   Text("LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results.")
+   Text("LLM assistance is enabled. Itori can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results.")
    ```
    - Explicitly states LLM usage scope
    - Guarantees non-overwriting behavior
@@ -339,7 +339,7 @@ When adding LLM enhancements in the future:
 
 From the Privacy settings description:
 
-> "LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to **improve parsing accuracy** and **add redundancy checks** to generated plans. LLMs **never silently overwrite deterministic results**."
+> "LLM assistance is enabled. Itori can use Apple Intelligence, local models, or custom providers to **improve parsing accuracy** and **add redundancy checks** to generated plans. LLMs **never silently overwrite deterministic results**."
 
 When disabled:
 

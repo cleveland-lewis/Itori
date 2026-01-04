@@ -1,7 +1,7 @@
 # Professional Polish Summary
 
 ## Overview
-Comprehensive UI/UX polish applied to the Roots (TreyDashboard) macOS app to create a premium, professional feel throughout the application.
+Comprehensive UI/UX polish applied to the Itori (TreyDashboard) macOS app to create a premium, professional feel throughout the application.
 
 ## New Professional Components Created
 

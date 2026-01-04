@@ -197,7 +197,7 @@ Product → Clean Build Folder (⌘⇧K)
 # From terminal
 rm -rf ~/Library/Developer/Xcode/DerivedData
 cd /Users/clevelandlewis/Desktop/Itori
-xcodebuild -scheme Roots -sdk iphonesimulator clean
+xcodebuild -scheme Itori -sdk iphonesimulator clean
 ```
 
 ### Fresh Install Test
@@ -212,7 +212,7 @@ Device → Erase All Content and Settings
 ### Build Command
 ```bash
 cd /Users/clevelandlewis/Desktop/Itori
-xcodebuild -scheme Roots -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15' build
+xcodebuild -scheme Itori -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15' build
 ```
 
 ---

@@ -131,7 +131,7 @@ enum Spacing {
 ## Related Files
 - `SharedCore/DesignSystem/Components/DesignSystem.swift` - Spacing constants
 - `LAYOUT_CONSISTENCY_TESTS_CREATED.md` - Test documentation
-- `RootsUITests/LayoutConsistencyTests.swift` - Layout test suite
+- `ItoriUITests/LayoutConsistencyTests.swift` - Layout test suite
 
 ---
 **Date:** December 27, 2025  

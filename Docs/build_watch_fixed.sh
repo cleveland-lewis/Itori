@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 
-echo "🔨 Building RootsWatch..."
-xcodebuild -project RootsApp.xcodeproj -scheme RootsWatch -sdk watchsimulator build
+echo "🔨 Building ItoriWatch..."
+xcodebuild -project ItoriApp.xcodeproj -scheme ItoriWatch -sdk watchsimulator build
 
-WATCH_APP=$(find ~/Library/Developer/Xcode/DerivedData/RootsApp-*/Build/Products/Debug-watchsimulator/RootsWatch.app -maxdepth 0 2>/dev/null | head -1)
+WATCH_APP=$(find ~/Library/Developer/Xcode/DerivedData/ItoriApp-*/Build/Products/Debug-watchsimulator/ItoriWatch.app -maxdepth 0 2>/dev/null | head -1)
 
 if [ ! -f "$WATCH_APP/Info.plist" ]; then
     echo "❌ Watch app not found"
@@ -28,4 +28,4 @@ echo ""
 echo "✅ Watch app ready!"
 echo ""
 echo "Now build iOS app:"
-echo "  xcodebuild -project RootsApp.xcodeproj -scheme Roots -sdk iphonesimulator build"
+echo "  xcodebuild -project ItoriApp.xcodeproj -scheme Itori -sdk iphonesimulator build"

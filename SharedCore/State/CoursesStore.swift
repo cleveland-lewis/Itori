@@ -235,7 +235,7 @@ final class CoursesStore: ObservableObject {
     }
     
     private lazy var iCloudURL: URL? = {
-        let containerIdentifier = "iCloud.com.cwlewisiii.Roots"
+        let containerIdentifier = "iCloud.com.cwlewisiii.Itori"
         guard let ubiquityURL = FileManager.default.url(forUbiquityContainerIdentifier: containerIdentifier) else {
             return nil
         }

@@ -1,7 +1,7 @@
 # Swahili Localization Complete ✅
 
 ## Summary
-Successfully added Swahili (sw) language localization to the Roots app using the free Google Translate API via the `googletrans` Python library.
+Successfully added Swahili (sw) language localization to the Itori app using the free Google Translate API via the `googletrans` Python library.
 
 ## What Was Done
 

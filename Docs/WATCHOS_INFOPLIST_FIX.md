@@ -2,14 +2,14 @@
 
 ## Issue
 ```
-Build input file cannot be found: '/Users/clevelandlewis/Desktop/Roots/watchOS/App/Info.plist'
+Build input file cannot be found: '/Users/clevelandlewis/Desktop/Itori/watchOS/App/Info.plist'
 ```
 
 ## Root Cause
 The Xcode project was configured with the path `watchOS/App/Info.plist`, but the actual file is located at `Platforms/watchOS/App/Info.plist`.
 
 ## Fix Applied
-Updated the `INFOPLIST_FILE` build setting in `RootsApp.xcodeproj/project.pbxproj`:
+Updated the `INFOPLIST_FILE` build setting in `ItoriApp.xcodeproj/project.pbxproj`:
 
 **Before:**
 ```
@@ -24,7 +24,7 @@ INFOPLIST_FILE = Platforms/watchOS/App/Info.plist;
 ## Verification
 ✅ watchOS target now builds successfully:
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme RootsWatch -sdk watchsimulator build
+xcodebuild -project ItoriApp.xcodeproj -scheme ItoriWatch -sdk watchsimulator build
 # Result: ** BUILD SUCCEEDED **
 ```
 

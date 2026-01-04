@@ -188,10 +188,10 @@ Grand Total: ~7,130 lines of new content
 - Edge case coverage expanded 8x
 
 ### ⚠️ Pending (Blocked by Pre-existing Issues)
-- **Build integration**: Conflicts in `RootsInsightsEngine.swift`
+- **Build integration**: Conflicts in `ItoriInsightsEngine.swift`
   - Issue: Ambiguous type lookup for `Assignment` and `AssignmentCategory`
   - Cause: File has local definitions conflicting with shared models
-  - Solution: Refactor RootsInsightsEngine to use SharedPlanningModels (separate task)
+  - Solution: Refactor ItoriInsightsEngine to use SharedPlanningModels (separate task)
   
 - **Test execution**: Cannot run until build succeeds
   - Once build issues resolved, all 88 tests ready to execute
@@ -217,10 +217,10 @@ Grand Total: ~7,130 lines of new content
 
 ```bash
 # Run all new tests
-xcodebuild test -scheme Roots \
-  -only-testing:RootsTests/ComprehensiveAlgorithmTests \
-  -only-testing:RootsTests/AssignmentPlanEngineTests \
-  -only-testing:RootsTests/PlannerEngineDeterminismTests
+xcodebuild test -scheme Itori \
+  -only-testing:ItoriTests/ComprehensiveAlgorithmTests \
+  -only-testing:ItoriTests/AssignmentPlanEngineTests \
+  -only-testing:ItoriTests/PlannerEngineDeterminismTests
 
 # Expected output
 Test Suite 'All Tests' started
@@ -236,17 +236,17 @@ Time: 0.782s
 
 ```bash
 # Edge cases only (25 tests)
-xcodebuild test -scheme Roots \
-  -only-testing:RootsTests/ComprehensiveAlgorithmTests/testEdgeCase*
+xcodebuild test -scheme Itori \
+  -only-testing:ItoriTests/ComprehensiveAlgorithmTests/testEdgeCase*
 
 # Performance tests only (3 tests)
-xcodebuild test -scheme Roots \
-  -only-testing:RootsTests/ComprehensiveAlgorithmTests/testPerformance*
+xcodebuild test -scheme Itori \
+  -only-testing:ItoriTests/ComprehensiveAlgorithmTests/testPerformance*
 
 # Determinism tests only
-xcodebuild test -scheme Roots \
-  -only-testing:RootsTests/AssignmentPlanEngineTests/test*Determinism* \
-  -only-testing:RootsTests/PlannerEngineDeterminismTests/testDeterministic*
+xcodebuild test -scheme Itori \
+  -only-testing:ItoriTests/AssignmentPlanEngineTests/test*Determinism* \
+  -only-testing:ItoriTests/PlannerEngineDeterminismTests/testDeterministic*
 ```
 
 ---
@@ -276,7 +276,7 @@ xcodebuild test -scheme Roots \
 ## Next Steps
 
 ### Immediate (To Unblock)
-1. Resolve RootsInsightsEngine.swift conflicts
+1. Resolve ItoriInsightsEngine.swift conflicts
    - Remove local type definitions
    - Import SharedPlanningModels
    - Update references
@@ -353,13 +353,13 @@ Issue 177.B12 is **COMPLETE** with the following delivered:
 ✅ **Professional documentation** for all algorithms  
 ✅ **Production-ready** pending build fix  
 
-The comprehensive algorithm test suite ensures that every major algorithm in Roots works correctly, performs efficiently, and handles edge cases gracefully. This provides a solid foundation for future development and ensures high-quality, reliable software.
+The comprehensive algorithm test suite ensures that every major algorithm in Itori works correctly, performs efficiently, and handles edge cases gracefully. This provides a solid foundation for future development and ensures high-quality, reliable software.
 
 ---
 
 **Status**: ✅ **ISSUE 177.B12 COMPLETE**  
 **Ready for**: Code review and integration (pending build fix)  
-**Next Action**: Resolve RootsInsightsEngine.swift conflicts
+**Next Action**: Resolve ItoriInsightsEngine.swift conflicts
 
 ---
 

@@ -5,7 +5,7 @@
 ## What Was Implemented
 
 ### ✅ 1. Core Data Model (Complete)
-**File:** `SharedCore/Persistence/Roots.xcdatamodeld/Roots.xcdatamodel/contents`
+**File:** `SharedCore/Persistence/Itori.xcdatamodeld/Itori.xcdatamodel/contents`
 
 **5 Entities Created:**
 
@@ -95,7 +95,7 @@
 **File:** `SharedCore/Persistence/PersistenceController.swift`
 
 - NSPersistentCloudKitContainer configured
-- CloudKit container: `iCloud.com.cwlewisiii.Roots`
+- CloudKit container: `iCloud.com.cwlewisiii.Itori`
 - History tracking enabled
 - Remote change notifications enabled
 - Merge policy: NSMergeByPropertyObjectTrumpMergePolicy
@@ -156,8 +156,8 @@ Changes → NSPersistentCloudKitContainer → CloudKit → NSPersistentCloudKitC
 
 ### ✅ Enabled in Both Targets (macOS + iOS)
 
-**Config/Roots.entitlements** (macOS)
-- iCloud container: `iCloud.com.cwlewisiii.Roots`
+**Config/Itori.entitlements** (macOS)
+- iCloud container: `iCloud.com.cwlewisiii.Itori`
 - CloudKit service
 - CloudDocuments service
 - App Sandbox
@@ -165,8 +165,8 @@ Changes → NSPersistentCloudKitContainer → CloudKit → NSPersistentCloudKitC
 - Calendar access
 - Reminders access
 
-**Config/Roots-iOS.entitlements** (iOS)
-- iCloud container: `iCloud.com.cwlewisiii.Roots`
+**Config/Itori-iOS.entitlements** (iOS)
+- iCloud container: `iCloud.com.cwlewisiii.Itori`
 - CloudKit service
 - CloudDocuments service
 
@@ -273,12 +273,12 @@ try courseRepo.create(course)
 
 ```bash
 # Run all persistence tests
-xcodebuild test -scheme Roots -destination 'platform=macOS' \
-    -only-testing:RootsTests/CoreDataStackTests
+xcodebuild test -scheme Itori -destination 'platform=macOS' \
+    -only-testing:ItoriTests/CoreDataStackTests
 
 # Run specific test
-xcodebuild test -scheme Roots -destination 'platform=macOS' \
-    -only-testing:RootsTests/CoreDataStackTests/testCreateTimerSession
+xcodebuild test -scheme Itori -destination 'platform=macOS' \
+    -only-testing:ItoriTests/CoreDataStackTests/testCreateTimerSession
 ```
 
 ### Manual Smoke Test Plan
@@ -286,7 +286,7 @@ xcodebuild test -scheme Roots -destination 'platform=macOS' \
 **Prerequisites:**
 - Two devices (iPhone + Mac) or (iPad + Mac)
 - Both logged into same iCloud account
-- Both have Roots installed
+- Both have Itori installed
 - iCloud sync enabled in Settings
 
 **Test Procedure:**

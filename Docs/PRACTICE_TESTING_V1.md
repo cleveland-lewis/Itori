@@ -235,7 +235,7 @@ All v1 acceptance criteria have been met:
 
 ## Support
 
-For questions or issues, refer to the main Roots documentation or file an issue in the repository.
+For questions or issues, refer to the main Itori documentation or file an issue in the repository.
 
 ---
 

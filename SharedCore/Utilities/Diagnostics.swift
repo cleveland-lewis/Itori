@@ -45,7 +45,7 @@ enum LogSubsystem: String, CaseIterable {
     case ai           = "AI"
     
     var logger: Logger {
-        Logger(subsystem: "com.roots.app", category: self.rawValue)
+        Logger(subsystem: "com.itori.app", category: self.rawValue)
     }
 }
 

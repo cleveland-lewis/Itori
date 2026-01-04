@@ -5232,7 +5232,7 @@
         }
       }
     },
-    "2. Find 'Roots' in the list.": {
+    "2. Find 'Itori' in the list.": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
@@ -5261,13 +5261,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "2. リストから「Roots」を見つけます。"
+            "value": "2. リストから「Itori」を見つけます。"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "2. Zoek 'Roots' in de lijst."
+            "value": "2. Zoek 'Itori' in de lijst."
           }
         },
         "uk": {
@@ -5279,7 +5279,7 @@
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "2. ค้นหา 'Roots' ในรายการ"
+            "value": "2. ค้นหา 'Itori' ในรายการ"
           }
         },
         "zh-HK": {
@@ -5297,7 +5297,7 @@
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "2. Find 'Roots' in the list."
+            "value": "2. Find 'Itori' in the list."
           }
         },
         "sw": {
@@ -5309,7 +5309,7 @@
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "2. Tìm “Roots” trong danh sách."
+            "value": "2. Tìm “Itori” trong danh sách."
           }
         },
         "da": {
@@ -5321,13 +5321,13 @@
         "fi": {
           "stringUnit": {
             "state": "translated",
-            "value": "2. Find 'Roots' in the list."
+            "value": "2. Find 'Itori' in the list."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "2. Find 'Roots' in the list."
+            "value": "2. Find 'Itori' in the list."
           }
         },
         "de": {
@@ -22572,108 +22572,108 @@
         }
       }
     },
-    "Choose how Roots reacts to system appearance changes.": {
+    "Choose how Itori reacts to system appearance changes.": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "选择 Roots 对系统外观变化的反应方式。"
+            "value": "选择 Itori 对系统外观变化的反应方式。"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Elija cómo reacciona Roots a los cambios en la apariencia del sistema."
+            "value": "Elija cómo reacciona Itori a los cambios en la apariencia del sistema."
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "اختر كيفية تفاعل Roots مع تغييرات مظهر النظام."
+            "value": "اختر كيفية تفاعل Itori مع تغييرات مظهر النظام."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "選擇 Roots 對系統外觀變化的反應方式。"
+            "value": "選擇 Itori 對系統外觀變化的反應方式。"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "システムの外観の変化に Roots がどのように反応するかを選択します。"
+            "value": "システムの外観の変化に Itori がどのように反応するかを選択します。"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kies hoe Roots reageert op veranderingen in het uiterlijk van het systeem."
+            "value": "Kies hoe Itori reageert op veranderingen in het uiterlijk van het systeem."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Виберіть, як Roots реагує на зміни зовнішнього вигляду системи."
+            "value": "Виберіть, як Itori реагує на зміни зовнішнього вигляду системи."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เลือกวิธีที่ Roots ตอบสนองต่อการเปลี่ยนแปลงรูปลักษณ์ของระบบ"
+            "value": "เลือกวิธีที่ Itori ตอบสนองต่อการเปลี่ยนแปลงรูปลักษณ์ของระบบ"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "選擇 Roots 對系統外觀變化的反應方式。"
+            "value": "選擇 Itori 對系統外觀變化的反應方式。"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scegli come Roots reagisce alle modifiche dell'aspetto del sistema."
+            "value": "Scegli come Itori reagisce alle modifiche dell'aspetto del sistema."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choose how Roots reacts to system appearance changes."
+            "value": "Choose how Itori reacts to system appearance changes."
           }
         },
         "sw": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chagua jinsi Roots hujibu mabadiliko ya mwonekano wa mfumo."
+            "value": "Chagua jinsi Itori hujibu mabadiliko ya mwonekano wa mfumo."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chọn cách Roots phản ứng với những thay đổi về diện mạo của hệ thống."
+            "value": "Chọn cách Itori phản ứng với những thay đổi về diện mạo của hệ thống."
           }
         },
         "da": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vælg, hvordan Roots reagerer på ændringer i systemets udseende."
+            "value": "Vælg, hvordan Itori reagerer på ændringer i systemets udseende."
           }
         },
         "fi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choose how Roots reacts to system appearance changes."
+            "value": "Choose how Itori reacts to system appearance changes."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choose how Roots reacts to system appearance changes."
+            "value": "Choose how Itori reacts to system appearance changes."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choose how Roots reacts to system appearance changes."
+            "value": "Choose how Itori reacts to system appearance changes."
           }
         }
       }
@@ -25278,108 +25278,108 @@
         }
       }
     },
-    "Configure when and how Roots sends you notifications.": {
+    "Configure when and how Itori sends you notifications.": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "配置 Roots 向您发送通知的时间和方式。"
+            "value": "配置 Itori 向您发送通知的时间和方式。"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Configura cuándo y cómo Roots te envía notificaciones."
+            "value": "Configura cuándo y cómo Itori te envía notificaciones."
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "قم بتكوين متى وكيف يرسل Roots الإشعارات إليك."
+            "value": "قم بتكوين متى وكيف يرسل Itori الإشعارات إليك."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "配置 Roots 向您發送通知的時間和方式。"
+            "value": "配置 Itori 向您發送通知的時間和方式。"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "Roots が通知を送信するタイミングと方法を構成します。"
+            "value": "Itori が通知を送信するタイミングと方法を構成します。"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Configureer wanneer en hoe Roots u meldingen stuurt."
+            "value": "Configureer wanneer en hoe Itori u meldingen stuurt."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Налаштуйте, коли та як Roots надсилає вам сповіщення."
+            "value": "Налаштуйте, коли та як Itori надсилає вам сповіщення."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "กำหนดเวลาและวิธีที่ Roots จะส่งการแจ้งเตือนถึงคุณ"
+            "value": "กำหนดเวลาและวิธีที่ Itori จะส่งการแจ้งเตือนถึงคุณ"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "配置 Roots 向您發送通知的時間和方式。"
+            "value": "配置 Itori 向您發送通知的時間和方式。"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Configura quando e come Roots ti invia le notifiche."
+            "value": "Configura quando e come Itori ti invia le notifiche."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "Configure when and how Roots sends you notifications."
+            "value": "Configure when and how Itori sends you notifications."
           }
         },
         "sw": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sanidi lini na jinsi Roots hukutumia arifa."
+            "value": "Sanidi lini na jinsi Itori hukutumia arifa."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Định cấu hình thời điểm và cách thức Roots gửi thông báo cho bạn."
+            "value": "Định cấu hình thời điểm và cách thức Itori gửi thông báo cho bạn."
           }
         },
         "da": {
           "stringUnit": {
             "state": "translated",
-            "value": "Konfigurer, hvornår og hvordan Roots sender dig notifikationer."
+            "value": "Konfigurer, hvornår og hvordan Itori sender dig notifikationer."
           }
         },
         "fi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Configure when and how Roots sends you notifications."
+            "value": "Configure when and how Itori sends you notifications."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Configure when and how Roots sends you notifications."
+            "value": "Configure when and how Itori sends you notifications."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Configure when and how Roots sends you notifications."
+            "value": "Configure when and how Itori sends you notifications."
           }
         }
       }
@@ -25802,108 +25802,108 @@
         }
       }
     },
-    "Control how Roots uses your data and manages privacy-sensitive features.": {
+    "Control how Itori uses your data and manages privacy-sensitive features.": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "控制 Roots 如何使用您的数据并管理隐私敏感功能。"
+            "value": "控制 Itori 如何使用您的数据并管理隐私敏感功能。"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Controle cómo Roots usa sus datos y administra las funciones sensibles a la privacidad."
+            "value": "Controle cómo Itori usa sus datos y administra las funciones sensibles a la privacidad."
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "التحكم في كيفية استخدام Roots لبياناتك وإدارة الميزات الحساسة للخصوصية."
+            "value": "التحكم في كيفية استخدام Itori لبياناتك وإدارة الميزات الحساسة للخصوصية."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "控制 Roots 如何使用您的數據並管理隱私敏感功能。"
+            "value": "控制 Itori 如何使用您的數據並管理隱私敏感功能。"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "Roots がデータをどのように使用し、プライバシーに配慮した機能を管理するかを制御します。"
+            "value": "Itori がデータをどのように使用し、プライバシーに配慮した機能を管理するかを制御します。"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bepaal hoe Roots uw gegevens gebruikt en privacygevoelige functies beheert."
+            "value": "Bepaal hoe Itori uw gegevens gebruikt en privacygevoelige functies beheert."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Контролюйте, як Roots використовує ваші дані та керує конфіденційними функціями."
+            "value": "Контролюйте, як Itori використовує ваші дані та керує конфіденційними функціями."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "ควบคุมวิธีที่ Roots ใช้ข้อมูลของคุณและจัดการคุณสมบัติที่ละเอียดอ่อนต่อความเป็นส่วนตัว"
+            "value": "ควบคุมวิธีที่ Itori ใช้ข้อมูลของคุณและจัดการคุณสมบัติที่ละเอียดอ่อนต่อความเป็นส่วนตัว"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "控制 Roots 如何使用您的數據並管理隱私敏感功能。"
+            "value": "控制 Itori 如何使用您的數據並管理隱私敏感功能。"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Controlla il modo in cui Roots utilizza i tuoi dati e gestisce le funzionalità sensibili alla privacy."
+            "value": "Controlla il modo in cui Itori utilizza i tuoi dati e gestisce le funzionalità sensibili alla privacy."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "Control how Roots uses your data and manages privacy-sensitive features."
+            "value": "Control how Itori uses your data and manages privacy-sensitive features."
           }
         },
         "sw": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dhibiti jinsi Roots hutumia data yako na kudhibiti vipengele vinavyozingatia faragha."
+            "value": "Dhibiti jinsi Itori hutumia data yako na kudhibiti vipengele vinavyozingatia faragha."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kiểm soát cách Roots sử dụng dữ liệu của bạn và quản lý các tính năng nhạy cảm về quyền riêng tư."
+            "value": "Kiểm soát cách Itori sử dụng dữ liệu của bạn và quản lý các tính năng nhạy cảm về quyền riêng tư."
           }
         },
         "da": {
           "stringUnit": {
             "state": "translated",
-            "value": "Styr, hvordan Roots bruger dine data og administrerer privatlivsfølsomme funktioner."
+            "value": "Styr, hvordan Itori bruger dine data og administrerer privatlivsfølsomme funktioner."
           }
         },
         "fi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Control how Roots uses your data and manages privacy-sensitive features."
+            "value": "Control how Itori uses your data and manages privacy-sensitive features."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Control how Roots uses your data and manages privacy-sensitive features."
+            "value": "Control how Itori uses your data and manages privacy-sensitive features."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Control how Roots uses your data and manages privacy-sensitive features."
+            "value": "Control how Itori uses your data and manages privacy-sensitive features."
           }
         }
       }
@@ -60678,7 +60678,7 @@
         }
       }
     },
-    "Keep your profile, backups, and school-wide settings in their respective sections. Roots will link here when account syncing is available.": {
+    "Keep your profile, backups, and school-wide settings in their respective sections. Itori will link here when account syncing is available.": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
@@ -60689,7 +60689,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mantenga su perfil, copias de seguridad y configuraciones de toda la escuela en sus respectivas secciones.Roots se vinculará aquí cuando la sincronización de cuentas esté disponible."
+            "value": "Mantenga su perfil, copias de seguridad y configuraciones de toda la escuela en sus respectivas secciones.Itori se vinculará aquí cuando la sincronización de cuentas esté disponible."
           }
         },
         "ar": {
@@ -60707,25 +60707,25 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "プロファイル、バックアップ、学校全体の設定をそれぞれのセクションに保管します。アカウントの同期が利用可能な場合、Roots はここにリンクします。"
+            "value": "プロファイル、バックアップ、学校全体の設定をそれぞれのセクションに保管します。アカウントの同期が利用可能な場合、Itori はここにリンクします。"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bewaar uw profiel, back-ups en schoolbrede instellingen in hun respectievelijke secties.Roots zal hier naartoe linken wanneer accountsynchronisatie beschikbaar is."
+            "value": "Bewaar uw profiel, back-ups en schoolbrede instellingen in hun respectievelijke secties.Itori zal hier naartoe linken wanneer accountsynchronisatie beschikbaar is."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Keep your profile, backups, and school-wide settings in their respective sections. Roots will link here when account syncing is available."
+            "value": "Keep your profile, backups, and school-wide settings in their respective sections. Itori will link here when account syncing is available."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เก็บโปรไฟล์ ข้อมูลสำรอง และการตั้งค่าทั่วทั้งโรงเรียนของคุณไว้ในส่วนที่เกี่ยวข้องRoots จะเชื่อมโยงที่นี่เมื่อมีการซิงค์บัญชี"
+            "value": "เก็บโปรไฟล์ ข้อมูลสำรอง และการตั้งค่าทั่วทั้งโรงเรียนของคุณไว้ในส่วนที่เกี่ยวข้องItori จะเชื่อมโยงที่นี่เมื่อมีการซิงค์บัญชี"
           }
         },
         "zh-HK": {
@@ -60737,43 +60737,43 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mantieni il tuo profilo, i backup e le impostazioni a livello di scuola nelle rispettive sezioni.Roots si collegherà qui quando sarà disponibile la sincronizzazione dell'account."
+            "value": "Mantieni il tuo profilo, i backup e le impostazioni a livello di scuola nelle rispettive sezioni.Itori si collegherà qui quando sarà disponibile la sincronizzazione dell'account."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keep your profile, backups, and school-wide settings in their respective sections. Roots will link here when account syncing is available."
+            "value": "Keep your profile, backups, and school-wide settings in their respective sections. Itori will link here when account syncing is available."
           }
         },
         "sw": {
           "stringUnit": {
             "state": "translated",
-            "value": "Weka wasifu wako, hifadhi rudufu, na mipangilio ya shule nzima katika sehemu husika.Roots itaunganishwa hapa wakati usawazishaji wa akaunti unapatikana."
+            "value": "Weka wasifu wako, hifadhi rudufu, na mipangilio ya shule nzima katika sehemu husika.Itori itaunganishwa hapa wakati usawazishaji wa akaunti unapatikana."
           }
         },
         "da": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gem din profil, sikkerhedskopier og indstillinger for hele skolen i deres respektive sektioner.Roots vil linke her, når kontosynkronisering er tilgængelig."
+            "value": "Gem din profil, sikkerhedskopier og indstillinger for hele skolen i deres respektive sektioner.Itori vil linke her, når kontosynkronisering er tilgængelig."
           }
         },
         "fi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keep your profile, backups, and school-wide settings in their respective sections. Roots will link here when account syncing is available."
+            "value": "Keep your profile, backups, and school-wide settings in their respective sections. Itori will link here when account syncing is available."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keep your profile, backups, and school-wide settings in their respective sections. Roots will link here when account syncing is available."
+            "value": "Keep your profile, backups, and school-wide settings in their respective sections. Itori will link here when account syncing is available."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keep your profile, backups, and school-wide settings in their respective sections. Roots will link here when account syncing is available."
+            "value": "Keep your profile, backups, and school-wide settings in their respective sections. Itori will link here when account syncing is available."
           }
         }
       }
@@ -62278,7 +62278,7 @@
         }
       }
     },
-    "LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results.": {
+    "LLM assistance is enabled. Itori can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results.": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
@@ -62289,13 +62289,13 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La asistencia LLM está habilitada.Roots puede utilizar Apple Intelligence, modelos locales o proveedores personalizados para mejorar la precisión del análisis y agregar comprobaciones de redundancia a los planes generados.Los LLM nunca sobrescriben silenciosamente los resultados deterministas."
+            "value": "La asistencia LLM está habilitada.Itori puede utilizar Apple Intelligence, modelos locales o proveedores personalizados para mejorar la precisión del análisis y agregar comprobaciones de redundancia a los planes generados.Los LLM nunca sobrescriben silenciosamente los resultados deterministas."
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "تم تمكين مساعدة LLM.يمكن لـ Roots استخدام Apple Intelligence أو النماذج المحلية أو موفري الخدمة المخصصين لتحسين دقة التحليل وإضافة عمليات التحقق من التكرار إلى الخطط التي تم إنشاؤها.لا تقوم LLMs أبدًا بالكتابة فوق النتائج الحتمية بصمت."
+            "value": "تم تمكين مساعدة LLM.يمكن لـ Itori استخدام Apple Intelligence أو النماذج المحلية أو موفري الخدمة المخصصين لتحسين دقة التحليل وإضافة عمليات التحقق من التكرار إلى الخطط التي تم إنشاؤها.لا تقوم LLMs أبدًا بالكتابة فوق النتائج الحتمية بصمت."
           }
         },
         "zh-Hant": {
@@ -62313,19 +62313,19 @@
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "LLM-ondersteuning is ingeschakeld.Roots kan Apple Intelligence, lokale modellen of aangepaste providers gebruiken om de parseernauwkeurigheid te verbeteren en redundantiecontroles toe te voegen aan gegenereerde plannen.LLM's overschrijven nooit stilletjes deterministische resultaten."
+            "value": "LLM-ondersteuning is ingeschakeld.Itori kan Apple Intelligence, lokale modellen of aangepaste providers gebruiken om de parseernauwkeurigheid te verbeteren en redundantiecontroles toe te voegen aan gegenereerde plannen.LLM's overschrijven nooit stilletjes deterministische resultaten."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results."
+            "value": "LLM assistance is enabled. Itori can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เปิดใช้งานความช่วยเหลือ LLM แล้วRoots สามารถใช้ Apple Intelligence, รุ่นท้องถิ่น หรือผู้ให้บริการแบบกำหนดเอง เพื่อปรับปรุงความแม่นยำในการแยกวิเคราะห์ และเพิ่มการตรวจสอบความซ้ำซ้อนให้กับแผนที่สร้างขึ้นLLM ไม่เคยเขียนทับผลลัพธ์ที่กำหนดอย่างเงียบๆ"
+            "value": "เปิดใช้งานความช่วยเหลือ LLM แล้วItori สามารถใช้ Apple Intelligence, รุ่นท้องถิ่น หรือผู้ให้บริการแบบกำหนดเอง เพื่อปรับปรุงความแม่นยำในการแยกวิเคราะห์ และเพิ่มการตรวจสอบความซ้ำซ้อนให้กับแผนที่สร้างขึ้นLLM ไม่เคยเขียนทับผลลัพธ์ที่กำหนดอย่างเงียบๆ"
           }
         },
         "zh-HK": {
@@ -62343,37 +62343,37 @@
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results."
+            "value": "LLM assistance is enabled. Itori can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results."
           }
         },
         "sw": {
           "stringUnit": {
             "state": "translated",
-            "value": "Usaidizi wa LLM umewashwa.Roots inaweza kutumia Apple Intelligence, miundo ya ndani, au watoa huduma maalum ili kuboresha usahihi wa uchanganuzi na kuongeza ukaguzi wa kutokuwa na uwezo kwa mipango inayozalishwa.LLM haziwahi kubatilisha matokeo ya kubaini kimya kimya."
+            "value": "Usaidizi wa LLM umewashwa.Itori inaweza kutumia Apple Intelligence, miundo ya ndani, au watoa huduma maalum ili kuboresha usahihi wa uchanganuzi na kuongeza ukaguzi wa kutokuwa na uwezo kwa mipango inayozalishwa.LLM haziwahi kubatilisha matokeo ya kubaini kimya kimya."
           }
         },
         "da": {
           "stringUnit": {
             "state": "translated",
-            "value": "LLM assistance er aktiveret.Roots kan bruge Apple Intelligence, lokale modeller eller tilpassede udbydere til at forbedre parsingsnøjagtigheden og tilføje redundanstjek til genererede planer.LLM'er overskriver aldrig stille deterministiske resultater."
+            "value": "LLM assistance er aktiveret.Itori kan bruge Apple Intelligence, lokale modeller eller tilpassede udbydere til at forbedre parsingsnøjagtigheden og tilføje redundanstjek til genererede planer.LLM'er overskriver aldrig stille deterministiske resultater."
           }
         },
         "fi": {
           "stringUnit": {
             "state": "translated",
-            "value": "LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results."
+            "value": "LLM assistance is enabled. Itori can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results."
+            "value": "LLM assistance is enabled. Itori can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results."
+            "value": "LLM assistance is enabled. Itori can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans. LLMs never silently overwrite deterministic results."
           }
         }
       }
@@ -71661,72 +71661,72 @@
       }
     },
     "notification.daily_overview.default": {
-      "comment": "Open Roots to see today's plan",
+      "comment": "Open Itori to see today's plan",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open Roots to see today's plan"
+            "value": "Open Itori to see today's plan"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "打开Roots查看今天的计划"
+            "value": "打开Itori查看今天的计划"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abre Roots para ver el plan de hoy"
+            "value": "Abre Itori para ver el plan de hoy"
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "افتح Roots لرؤية خطة اليوم"
+            "value": "افتح Itori لرؤية خطة اليوم"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "打開Roots查看今天的計劃"
+            "value": "打開Itori查看今天的計劃"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rootsを開いて今日の計画を確認してください"
+            "value": "Itoriを開いて今日の計画を確認してください"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open Roots om het plan van vandaag te zien"
+            "value": "Open Itori om het plan van vandaag te zien"
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Відкрийте Roots, щоб побачити план на сьогодні"
+            "value": "Відкрийте Itori, щоб побачити план на сьогодні"
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เปิด Roots เพื่อดูแผนของวันนี้"
+            "value": "เปิด Itori เพื่อดูแผนของวันนี้"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "打開Roots查看今天的計劃"
+            "value": "打開Itori查看今天的計劃"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Apri Roots per vedere il piano di oggi"
+            "value": "Apri Itori per vedere il piano di oggi"
           }
         },
         "sw": {
@@ -71744,19 +71744,19 @@
         "da": {
           "stringUnit": {
             "state": "translated",
-            "value": "Åbn Roots for at se dagens plan"
+            "value": "Åbn Itori for at se dagens plan"
           }
         },
         "fi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open Roots to see today's plan"
+            "value": "Open Itori to see today's plan"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open Roots to see today's plan"
+            "value": "Open Itori to see today's plan"
           }
         },
         "de": {
@@ -73435,7 +73435,7 @@
         }
       }
     },
-    "Only reminders from this list will appear in Roots.": {
+    "Only reminders from this list will appear in Itori.": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
@@ -73446,13 +73446,13 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solo los recordatorios de esta lista aparecerán en Roots."
+            "value": "Solo los recordatorios de esta lista aparecerán en Itori."
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "ستظهر التذكيرات من هذه القائمة فقط في Roots."
+            "value": "ستظهر التذكيرات من هذه القائمة فقط في Itori."
           }
         },
         "zh-Hant": {
@@ -73464,25 +73464,25 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "このリストのリマインダーのみが Roots に表示されます。"
+            "value": "このリストのリマインダーのみが Itori に表示されます。"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Alleen herinneringen uit deze lijst verschijnen in Roots."
+            "value": "Alleen herinneringen uit deze lijst verschijnen in Itori."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Лише нагадування з цього списку відображатимуться в Roots."
+            "value": "Лише нагадування з цього списку відображатимуться в Itori."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "เฉพาะการเตือนความจำจากรายการนี้เท่านั้นที่จะปรากฏใน Roots"
+            "value": "เฉพาะการเตือนความจำจากรายการนี้เท่านั้นที่จะปรากฏใน Itori"
           }
         },
         "zh-HK": {
@@ -73494,19 +73494,19 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solo i promemoria di questo elenco verranno visualizzati in Roots."
+            "value": "Solo i promemoria di questo elenco verranno visualizzati in Itori."
           }
         },
         "sw": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vikumbusho kutoka kwenye orodha hii pekee ndivyo vitaonekana katika Roots."
+            "value": "Vikumbusho kutoka kwenye orodha hii pekee ndivyo vitaonekana katika Itori."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "فقط یادآورهای این لیست در Roots ظاهر می شوند."
+            "value": "فقط یادآورهای این لیست در Itori ظاهر می شوند."
           }
         },
         "da": {
@@ -73518,19 +73518,19 @@
         "fi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Only reminders from this list will appear in Roots."
+            "value": "Only reminders from this list will appear in Itori."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Only reminders from this list will appear in Roots."
+            "value": "Only reminders from this list will appear in Itori."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Only reminders from this list will appear in Roots."
+            "value": "Only reminders from this list will appear in Itori."
           }
         }
       }
@@ -100375,18 +100375,18 @@
       }
     },
     "settings.calendar.revoke_access.confirm.message": {
-      "comment": "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Roots > Calendars.",
+      "comment": "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Itori > Calendars.",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Roots > Calendars."
+            "value": "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Itori > Calendars."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Esto borrará todos los datos de calendario sincronizados. Necesitarás revocar manualmente el permiso en Configuración de iOS > Roots > Calendarios."
+            "value": "Esto borrará todos los datos de calendario sincronizados. Necesitarás revocar manualmente el permiso en Configuración de iOS > Itori > Calendarios."
           }
         },
         "zh-Hans": {
@@ -100416,19 +100416,19 @@
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hiermee worden alle gesynchroniseerde agendagegevens gewist.Je moet de toestemming handmatig intrekken via iOS-instellingen > Roots > Agenda's."
+            "value": "Hiermee worden alle gesynchroniseerde agendagegevens gewist.Je moet de toestemming handmatig intrekken via iOS-instellingen > Itori > Agenda's."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Це очистить усі синхронізовані дані календаря.Вам потрібно буде вручну відкликати дозвіл у iOS Settings > Roots > Calendars."
+            "value": "Це очистить усі синхронізовані дані календаря.Вам потрібно буде вручну відкликати дозвіл у iOS Settings > Itori > Calendars."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Roots > Calendars."
+            "value": "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Itori > Calendars."
           }
         },
         "zh-HK": {
@@ -100440,7 +100440,7 @@
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ciò cancellerà tutti i dati del calendario sincronizzati.Dovrai revocare manualmente l'autorizzazione in Impostazioni iOS > Roots > Calendari."
+            "value": "Ciò cancellerà tutti i dati del calendario sincronizzati.Dovrai revocare manualmente l'autorizzazione in Impostazioni iOS > Itori > Calendari."
           }
         },
         "sw": {
@@ -100464,13 +100464,13 @@
         "fi": {
           "stringUnit": {
             "state": "translated",
-            "value": "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Roots > Calendars."
+            "value": "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Itori > Calendars."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Roots > Calendars."
+            "value": "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Itori > Calendars."
           }
         },
         "de": {
@@ -124951,30 +124951,30 @@
         }
       }
     },
-    "To disconnect Roots from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars.": {
+    "To disconnect Itori from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars.": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "要断开 Roots 与日历的连接，请在系统设置 > 隐私和安全 > 日历中撤销访问权限。"
+            "value": "要断开 Itori 与日历的连接，请在系统设置 > 隐私和安全 > 日历中撤销访问权限。"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Para desconectar Roots de su Calendario, revoque el acceso en Configuración del sistema > Privacidad y seguridad > Calendarios."
+            "value": "Para desconectar Itori de su Calendario, revoque el acceso en Configuración del sistema > Privacidad y seguridad > Calendarios."
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "لفصل Roots عن التقويم الخاص بك، يرجى إلغاء الوصول في إعدادات النظام > الخصوصية والأمان > التقويمات."
+            "value": "لفصل Itori عن التقويم الخاص بك، يرجى إلغاء الوصول في إعدادات النظام > الخصوصية والأمان > التقويمات."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "要斷開 Roots 與日曆的連接，請在系統設置 > 隱私和安全 > 日曆中撤銷訪問權限。"
+            "value": "要斷開 Itori 與日曆的連接，請在系統設置 > 隱私和安全 > 日曆中撤銷訪問權限。"
           }
         },
         "ja": {
@@ -124986,43 +124986,43 @@
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Als u Roots wilt ontkoppelen van uw agenda, trekt u de toegang in Systeeminstellingen > Privacy en beveiliging > Agenda's in."
+            "value": "Als u Itori wilt ontkoppelen van uw agenda, trekt u de toegang in Systeeminstellingen > Privacy en beveiliging > Agenda's in."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Щоб від’єднати Roots від свого календаря, скасуйте доступ у системних налаштуваннях > Конфіденційність і безпека > Календарі."
+            "value": "Щоб від’єднати Itori від свого календаря, скасуйте доступ у системних налаштуваннях > Конфіденційність і безпека > Календарі."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "To disconnect Roots from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars."
+            "value": "To disconnect Itori from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars."
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "要斷開 Roots 與日曆的連接，請在系統設置 > 隱私和安全 > 日曆中撤銷訪問權限。"
+            "value": "要斷開 Itori 與日曆的連接，請在系統設置 > 隱私和安全 > 日曆中撤銷訪問權限。"
           }
         },
         "it": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "To disconnect Roots from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars."
+            "value": "To disconnect Itori from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars."
           }
         },
         "sw": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "To disconnect Roots from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars."
+            "value": "To disconnect Itori from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "برای قطع ارتباط Roots از تقویم خود، لطفاً دسترسی را در تنظیمات سیستم > حریم خصوصی و امنیت > تقویم‌ها لغو کنید."
+            "value": "برای قطع ارتباط Itori از تقویم خود، لطفاً دسترسی را در تنظیمات سیستم > حریم خصوصی و امنیت > تقویم‌ها لغو کنید."
           }
         },
         "da": {
@@ -125034,47 +125034,47 @@
         "fi": {
           "stringUnit": {
             "state": "translated",
-            "value": "To disconnect Roots from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars."
+            "value": "To disconnect Itori from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "To disconnect Roots from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars."
+            "value": "To disconnect Itori from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "To disconnect Roots from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars."
+            "value": "To disconnect Itori from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars."
           }
         }
       }
     },
-    "To disconnect Roots from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders.": {
+    "To disconnect Itori from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders.": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "要断开 Roots 与提醒的连接，请在系统设置 > 隐私和安全 > 提醒中撤销访问权限。"
+            "value": "要断开 Itori 与提醒的连接，请在系统设置 > 隐私和安全 > 提醒中撤销访问权限。"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Para desconectar Roots de sus Recordatorios, revoque el acceso en Configuración del sistema > Privacidad y seguridad > Recordatorios."
+            "value": "Para desconectar Itori de sus Recordatorios, revoque el acceso en Configuración del sistema > Privacidad y seguridad > Recordatorios."
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "لفصل Roots عن التذكيرات، يرجى إلغاء الوصول في إعدادات النظام > الخصوصية والأمان > التذكيرات."
+            "value": "لفصل Itori عن التذكيرات، يرجى إلغاء الوصول في إعدادات النظام > الخصوصية والأمان > التذكيرات."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "要斷開 Roots 與提醒的連接，請在系統設置 > 隱私和安全 > 提醒中撤銷訪問權限。"
+            "value": "要斷開 Itori 與提醒的連接，請在系統設置 > 隱私和安全 > 提醒中撤銷訪問權限。"
           }
         },
         "ja": {
@@ -125086,67 +125086,67 @@
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Om Roots te ontkoppelen van uw herinneringen, trekt u de toegang in via Systeeminstellingen > Privacy en beveiliging > Herinneringen."
+            "value": "Om Itori te ontkoppelen van uw herinneringen, trekt u de toegang in via Systeeminstellingen > Privacy en beveiliging > Herinneringen."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Щоб від’єднати Roots від своїх нагадувань, скасуйте доступ у системних налаштуваннях > Конфіденційність і безпека > Нагадування."
+            "value": "Щоб від’єднати Itori від своїх нагадувань, скасуйте доступ у системних налаштуваннях > Конфіденційність і безпека > Нагадування."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "To disconnect Roots from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders."
+            "value": "To disconnect Itori from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders."
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "要斷開 Roots 與提醒的連接，請在系統設置 > 隱私和安全 > 提醒中撤銷訪問權限。"
+            "value": "要斷開 Itori 與提醒的連接，請在系統設置 > 隱私和安全 > 提醒中撤銷訪問權限。"
           }
         },
         "it": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "To disconnect Roots from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders."
+            "value": "To disconnect Itori from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders."
           }
         },
         "sw": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "To disconnect Roots from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders."
+            "value": "To disconnect Itori from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "برای قطع ارتباط Roots از یادآوری‌ها، لطفاً دسترسی را در تنظیمات سیستم > حریم خصوصی و امنیت > یادآوری‌ها لغو کنید."
+            "value": "برای قطع ارتباط Itori از یادآوری‌ها، لطفاً دسترسی را در تنظیمات سیستم > حریم خصوصی و امنیت > یادآوری‌ها لغو کنید."
           }
         },
         "da": {
           "stringUnit": {
             "state": "translated",
-            "value": "For at afbryde forbindelsen mellem Roots og dine påmindelser, skal du tilbagekalde adgangen i Systemindstillinger > Privatliv og sikkerhed > Påmindelser."
+            "value": "For at afbryde forbindelsen mellem Itori og dine påmindelser, skal du tilbagekalde adgangen i Systemindstillinger > Privatliv og sikkerhed > Påmindelser."
           }
         },
         "fi": {
           "stringUnit": {
             "state": "translated",
-            "value": "To disconnect Roots from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders."
+            "value": "To disconnect Itori from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "To disconnect Roots from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders."
+            "value": "To disconnect Itori from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "To disconnect Roots from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders."
+            "value": "To disconnect Itori from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders."
           }
         }
       }
@@ -127657,102 +127657,102 @@
         }
       }
     },
-    "View recent log events. Full logs are available in Console.app filtered by subsystem 'com.roots.app'.": {
+    "View recent log events. Full logs are available in Console.app filtered by subsystem 'com.itori.app'.": {
       "localizations": {
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "查看最近的日志事件。Console.app 中提供了完整日志，并由子系统“com.roots.app”过滤。"
+            "value": "查看最近的日志事件。Console.app 中提供了完整日志，并由子系统“com.itori.app”过滤。"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ver eventos de registro recientes.Los registros completos están disponibles en Console.app filtrados por el subsistema 'com.roots.app'."
+            "value": "Ver eventos de registro recientes.Los registros completos están disponibles en Console.app filtrados por el subsistema 'com.itori.app'."
           }
         },
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "عرض أحداث السجل الأخيرة.تتوفر السجلات الكاملة في Console.app الذي تمت تصفيته بواسطة النظام الفرعي \"com.roots.app\"."
+            "value": "عرض أحداث السجل الأخيرة.تتوفر السجلات الكاملة في Console.app الذي تمت تصفيته بواسطة النظام الفرعي \"com.itori.app\"."
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "查看最近的日誌事件。Console.app 中提供了完整日誌，並由子系統“com.roots.app”過濾。"
+            "value": "查看最近的日誌事件。Console.app 中提供了完整日誌，並由子系統“com.itori.app”過濾。"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "最近のログ イベントを表示します。完全なログは、サブシステム「com.roots.app」でフィルタリングされた Console.app で利用できます。"
+            "value": "最近のログ イベントを表示します。完全なログは、サブシステム「com.itori.app」でフィルタリングされた Console.app で利用できます。"
           }
         },
         "nl": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bekijk recente loggebeurtenissen.Volledige logboeken zijn beschikbaar in Console.app, gefilterd op subsysteem 'com.roots.app'."
+            "value": "Bekijk recente loggebeurtenissen.Volledige logboeken zijn beschikbaar in Console.app, gefilterd op subsysteem 'com.itori.app'."
           }
         },
         "uk": {
           "stringUnit": {
             "state": "translated",
-            "value": "Переглянути останні події журналу.Повні журнали доступні в Console.app, відфільтровані підсистемою 'com.roots.app'."
+            "value": "Переглянути останні події журналу.Повні журнали доступні в Console.app, відфільтровані підсистемою 'com.itori.app'."
           }
         },
         "th": {
           "stringUnit": {
             "state": "translated",
-            "value": "ดูเหตุการณ์บันทึกล่าสุดบันทึกฉบับเต็มมีอยู่ใน Console.app ซึ่งกรองโดยระบบย่อย 'com.roots.app'"
+            "value": "ดูเหตุการณ์บันทึกล่าสุดบันทึกฉบับเต็มมีอยู่ใน Console.app ซึ่งกรองโดยระบบย่อย 'com.itori.app'"
           }
         },
         "zh-HK": {
           "stringUnit": {
             "state": "translated",
-            "value": "查看最近的日誌事件。Console.app 中提供了完整日誌，並由子系統“com.roots.app”過濾。"
+            "value": "查看最近的日誌事件。Console.app 中提供了完整日誌，並由子系統“com.itori.app”過濾。"
           }
         },
         "it": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "View recent log events. Full logs are available in Console.app filtered by subsystem 'com.roots.app'."
+            "value": "View recent log events. Full logs are available in Console.app filtered by subsystem 'com.itori.app'."
           }
         },
         "sw": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "View recent log events. Full logs are available in Console.app filtered by subsystem 'com.roots.app'."
+            "value": "View recent log events. Full logs are available in Console.app filtered by subsystem 'com.itori.app'."
           }
         },
         "fa": {
           "stringUnit": {
             "state": "translated",
-            "value": "مشاهده رویدادهای گزارش اخیرگزارش‌های کامل در Console.app در دسترس هستند که توسط زیرسیستم «com.roots.app» فیلتر شده‌اند."
+            "value": "مشاهده رویدادهای گزارش اخیرگزارش‌های کامل در Console.app در دسترس هستند که توسط زیرسیستم «com.itori.app» فیلتر شده‌اند."
           }
         },
         "da": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se seneste loghændelser.Fuld logfiler er tilgængelige i Console.app filtreret efter undersystemet 'com.roots.app'."
+            "value": "Se seneste loghændelser.Fuld logfiler er tilgængelige i Console.app filtreret efter undersystemet 'com.itori.app'."
           }
         },
         "fi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Näytä viimeisimmät lokitapahtumat.Täydelliset lokit ovat saatavilla Console.app-alijärjestelmällä com.roots.app suodatettuna."
+            "value": "Näytä viimeisimmät lokitapahtumat.Täydelliset lokit ovat saatavilla Console.app-alijärjestelmällä com.itori.app suodatettuna."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Afficher les événements récents du journal.Full logs are available in Console.app filtered by subsystem 'com.roots.app'."
+            "value": "Afficher les événements récents du journal.Full logs are available in Console.app filtered by subsystem 'com.itori.app'."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "View recent log events. Full logs are available in Console.app filtered by subsystem 'com.roots.app'."
+            "value": "View recent log events. Full logs are available in Console.app filtered by subsystem 'com.itori.app'."
           }
         }
       }

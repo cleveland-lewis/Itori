@@ -1,4 +1,4 @@
-# Implementation Status - Roots App
+# Implementation Status - Itori App
 
 ## Completed Implementations
 

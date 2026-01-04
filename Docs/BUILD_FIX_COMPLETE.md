@@ -134,14 +134,14 @@ public struct RecurrenceRule: Codable, Equatable, Hashable, Sendable {
 
 ### macOS
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild -scheme Roots -destination 'platform=macOS' build
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild -scheme Itori -destination 'platform=macOS' build
 ```
 **Expected:** ✅ BUILD SUCCEEDED
 
 ### iOS
 ```bash
-xcodebuild -scheme Roots -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
+xcodebuild -scheme Itori -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
 ```
 **Expected:** ✅ BUILD SUCCEEDED
 

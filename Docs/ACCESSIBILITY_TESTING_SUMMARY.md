@@ -4,7 +4,7 @@
 
 ## Overview
 
-A comprehensive accessibility testing framework has been implemented for the Roots app, providing automated auditing, real-time debugging, and unit testing capabilities. The framework supports WCAG 2.1 Level AA/AAA compliance testing.
+A comprehensive accessibility testing framework has been implemented for the Itori app, providing automated auditing, real-time debugging, and unit testing capabilities. The framework supports WCAG 2.1 Level AA/AAA compliance testing.
 
 ## What Was Created
 
@@ -301,9 +301,9 @@ import SwiftUI
 ### CI/CD Integration
 ```bash
 # Run accessibility tests in CI
-xcodebuild test -scheme Roots \
+xcodebuild test -scheme Itori \
     -destination 'platform=iOS Simulator,name=iPhone 15' \
-    -only-testing:RootsTests/AccessibilityTests
+    -only-testing:ItoriTests/AccessibilityTests
 ```
 
 ## Testing Workflow

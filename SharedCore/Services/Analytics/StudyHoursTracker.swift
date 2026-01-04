@@ -1,6 +1,6 @@
 //
 //  StudyHoursTracker.swift
-//  Roots
+//  Itori
 //
 //  Tracks study hours based on completed timer sessions
 //

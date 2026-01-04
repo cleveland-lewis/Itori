@@ -16,7 +16,7 @@
 • No implicit assumptions may override any part of this document.
 
 0.4 Changelog Verification  
-• After successfully reading and validating all rules, agents must read the changelog located at `/Users/clevelandlewis/PyCharm/Roots/Documents/Developing/Changelog.md`.  
+• After successfully reading and validating all rules, agents must read the changelog located at `/Users/clevelandlewis/PyCharm/Itori/Documents/Developing/Changelog.md`.  
 • The changelog must be checked before beginning any task execution.  
 • Agents must confirm awareness of the most recent updates to avoid using outdated assumptions.  
 • If the changelog cannot be accessed or appears incomplete, agents must request clarification or halt safely.
@@ -364,7 +364,7 @@ Each issue must contain:
 15.1 Workflow
 	•	All changes follow:
 	•	issue → branch → PR → review → merge
-	•	All changes must be recorded with timestamps in `/Users/clevelandlewis/PyCharm/Roots/Documents/Developing/Changelog.rtf`.
+	•	All changes must be recorded with timestamps in `/Users/clevelandlewis/PyCharm/Itori/Documents/Developing/Changelog.rtf`.
 
 15.2 Maintenance
 	•	Regular cleanup cycles.

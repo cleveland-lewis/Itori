@@ -1,6 +1,6 @@
 # Core Concepts
 
-This page explains the fundamental data structures and relationships in Roots.
+This page explains the fundamental data structures and relationships in Itori.
 
 ## Semesters
 

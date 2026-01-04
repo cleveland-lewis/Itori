@@ -2,13 +2,13 @@
 
 **Date**: December 22, 2024  
 **Status**: ✅ **COMPLETE**  
-**Issue**: https://github.com/cleveland-lewis/Roots/issues/390
+**Issue**: https://github.com/cleveland-lewis/Itori/issues/390
 
 ---
 
 ## Summary
 
-Successfully verified and tested the global AI privacy kill switch that disables ALL AI features across Roots. The implementation was already in place and meets all requirements specified in Issue #390.
+Successfully verified and tested the global AI privacy kill switch that disables ALL AI features across Itori. The implementation was already in place and meets all requirements specified in Issue #390.
 
 ---
 

@@ -84,7 +84,7 @@ en.lproj/
 ```swift
 // Master operations
 .requestAuthorization()                 // Request iOS permission
-.cancelAllScheduledNotifications()      // Cancel all Roots notifications
+.cancelAllScheduledNotifications()      // Cancel all Itori notifications
 
 // Assignment reminders
 .scheduleAssignmentDue(_ task)          // Schedule single reminder
@@ -204,13 +204,13 @@ notification.motivation.message_1
 
 #### Notifications Not Appearing?
 1. Check master toggle is ON
-2. Check iOS Settings > Roots > Notifications is ON
+2. Check iOS Settings > Itori > Notifications is ON
 3. Check Do Not Disturb / Focus mode
 4. Check `printPendingNotifications()` console output
 5. Verify trigger date is in future (not past)
 
 #### Permission Denied?
-- User must go to iOS Settings > Roots > Notifications
+- User must go to iOS Settings > Itori > Notifications
 - Enable "Allow Notifications"
 - Return to app and toggle master ON
 
@@ -233,7 +233,7 @@ notification.motivation.message_1
 
 ### How to Enable Notifications
 
-1. Open Roots app
+1. Open Itori app
 2. Tap Settings (gear icon)
 3. Tap Notifications
 4. Toggle "Enable Notifications" ON
@@ -244,9 +244,9 @@ notification.motivation.message_1
 ### If Notifications Stop Working
 
 1. Check Settings > Notifications > Master toggle is ON
-2. Check iOS Settings > Roots > Notifications is ON
+2. Check iOS Settings > Itori > Notifications is ON
 3. Check iOS Focus/Do Not Disturb settings
-4. Restart Roots app
+4. Restart Itori app
 5. If still issues, toggle OFF then ON to re-request permission
 
 ### Customizing Notifications

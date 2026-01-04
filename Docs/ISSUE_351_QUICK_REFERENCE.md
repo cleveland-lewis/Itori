@@ -193,7 +193,7 @@ UNUserNotificationCenter.current().add(request) { error in
 
 ## Issue Link
 
-https://github.com/cleveland-lewis/Roots/issues/351
+https://github.com/cleveland-lewis/Itori/issues/351
 
 ---
 

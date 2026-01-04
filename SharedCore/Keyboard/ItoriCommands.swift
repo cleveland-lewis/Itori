@@ -1,6 +1,6 @@
 //
-//  RootsCommands.swift
-//  Roots
+//  ItoriCommands.swift
+//  Itori
 //
 //  Menu bar keyboard shortcuts
 //  Created: 2026-01-03
@@ -9,7 +9,7 @@
 import SwiftUI
 
 /// Main application commands and shortcuts
-struct RootsCommands: Commands {
+struct ItoriCommands: Commands {
     @FocusedBinding(\.selectedTab) var selectedTab: RootTab?
     @FocusedValue(\.canCreateAssignment) var canCreateAssignment: Bool?
     @FocusedValue(\.canEditItem) var canEditItem: Bool?

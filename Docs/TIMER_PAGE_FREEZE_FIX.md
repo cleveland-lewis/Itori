@@ -245,7 +245,7 @@ Move heavy work OUT of onAppear:
 
 1. `macOSApp/Scenes/TimerPageView_Simple.swift` - Test harness
 2. `macOSApp/Scenes/ContentView.swift` - Routes to simple version
-3. `macOSApp/App/RootsApp.swift` - Fixed duplicate window issue
+3. `macOSApp/App/ItoriApp.swift` - Fixed duplicate window issue
 4. `SharedCore/Utilities/MainThreadDebugger.swift` - Enhanced logging
 
 ---

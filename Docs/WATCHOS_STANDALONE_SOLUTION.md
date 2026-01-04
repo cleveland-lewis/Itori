@@ -7,7 +7,7 @@ The watchOS app cannot install because it's configured as a legacy WatchKit 1.0 
 
 1. **Info.plist Legacy Keys**: The `WKWatchKitApp = true` key is automatically added by Xcode for `watchapp2` product types, but this makes the system think it's a WatchKit 1.0 app.
 
-2. **Bundle ID Typo**: Fixed `clelewisiii.Roots` → `clewisiii.Roots`
+2. **Bundle ID Typo**: Fixed `clelewisiii.Itori` → `clewisiii.Itori`
 
 3. **Conflicting Keys**: Initially had both `WKApplication` and `WKWatchOnly` which caused conflicts.
 
@@ -29,7 +29,7 @@ Since you're running the latest watchOS (26.2) which dropped support for legacy 
 
 ```bash
 # Remove companion app configuration
-cd RootsApp.xcodeproj
+cd ItoriApp.xcodeproj
 python3 << 'EOF'
 import re
 
@@ -38,7 +38,7 @@ with open('project.pbxproj', 'r') as f:
 
 # Remove companion bundle identifier setting
 content = re.sub(
-    r'\s*INFOPLIST_KEY_WKCompanionAppBundleIdentifier = clewisiii\.Roots;',
+    r'\s*INFOPLIST_KEY_WKCompanionAppBundleIdentifier = clewisiii\.Itori;',
     '',
     content
 )
@@ -50,14 +50,14 @@ print("✅ Converted to standalone watchOS app")
 EOF
 
 # Rebuild
-xcodebuild -project RootsApp.xcodeproj -scheme RootsWatch -sdk watchsimulator clean build
+xcodebuild -project ItoriApp.xcodeproj -scheme ItoriWatch -sdk watchsimulator clean build
 ```
 
 ### Install watchOS App
 
 ```bash
 # Find the built app
-WATCH_APP=$(find ~/Library/Developer/Xcode/DerivedData/*/Build/Products/Debug-watchsimulator/RootsWatch.app -maxdepth 0 2>/dev/null | head -1)
+WATCH_APP=$(find ~/Library/Developer/Xcode/DerivedData/*/Build/Products/Debug-watchsimulator/ItoriWatch.app -maxdepth 0 2>/dev/null | head -1)
 
 # Install on watch simulator
 xcrun simctl install 6FFF2617-CCA1-4044-826E-2ABD1ABCA927 "$WATCH_APP"

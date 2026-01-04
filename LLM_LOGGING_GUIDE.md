@@ -255,7 +255,7 @@ Search: "LLM"
 **Console.app:**
 ```
 category:LLM
-subsystem:Roots category:LLM
+subsystem:Itori category:LLM
 ```
 
 **Only LLM requests:**

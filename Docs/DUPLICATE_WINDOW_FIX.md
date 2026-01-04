@@ -11,7 +11,7 @@ App opens with TWO windows instead of one - this is caused by macOS window resto
 
 ## Fix Applied
 
-### File: `macOSApp/App/RootsApp.swift`
+### File: `macOSApp/App/ItoriApp.swift`
 
 **Enhanced AppDelegate with multiple prevention strategies:**
 
@@ -77,8 +77,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 2. **Clear existing saved state:**
    ```bash
    # Run in Terminal:
-   defaults delete com.clevelandlewis.Roots NSQuitAlwaysKeepsWindows
-   defaults delete com.clevelandlewis.Roots ApplePersistenceIgnoreState
+   defaults delete com.clevelandlewis.Itori NSQuitAlwaysKeepsWindows
+   defaults delete com.clevelandlewis.Itori ApplePersistenceIgnoreState
    ```
 
 3. **Quit and relaunch the app**

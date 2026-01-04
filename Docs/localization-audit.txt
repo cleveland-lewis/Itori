@@ -1,5 +1,5 @@
 ===================================
-Roots Localization Audit
+Itori Localization Audit
 ===================================
 
 Generated: Sat Dec 13 15:23:25 EST 2025
@@ -161,7 +161,7 @@ macOSApp/Scenes/PlannerView.swift:89:                            HStack { Text("
 macOSApp/Scenes/PlannerView.swift:90:                            HStack { Text("Size"); Slider(value: $weightSize, in: 0...1) }
 macOSApp/Scenes/PlannerView.swift:99:                    Section(header: Text("Today's Plan").font(DesignSystem.Typography.body)) {
 macOSApp/Scenes/PlannerView.swift:106:                                        Text("Reminders access is turned off")
-macOSApp/Scenes/PlannerView.swift:108:                                        Text("Enable Reminders access in System Settings → Privacy so Roots can show your tasks.")
+macOSApp/Scenes/PlannerView.swift:108:                                        Text("Enable Reminders access in System Settings → Privacy so Itori can show your tasks.")
 macOSApp/Scenes/PlannerView.swift:131:                                        Text("Today's Plan")
 macOSApp/Scenes/PlannerView.swift:141:                            Text("TODO: Today's tasks")
 macOSApp/Scenes/PlannerView.swift:146:                    Section(header: Text("This Week").font(DesignSystem.Typography.body)) {
@@ -338,7 +338,7 @@ macOSApp/App/AppCommands.swift:12:            Button("New Exam…") {
 macOSApp/App/AppCommands.swift:19:            Button("Go to Courses") {
 macOSApp/App/AppCommands.swift:24:            Button("Go to Grades") {
 macOSApp/App/AppCommands.swift:37:            Button("Preferences…", action: showSettings)
-macOSApp/PlatformAdapters/RootsSettingsWindow.swift:467:                Button("Manage…") { }
+macOSApp/PlatformAdapters/ItoriSettingsWindow.swift:467:                Button("Manage…") { }
 macOSApp/Views/SemesterEditView.swift:168:                Button("Delete Semester", role: .destructive) {
 macOSApp/Views/SemesterEditView.swift:175:                    Button("Delete", role: .destructive) {
 macOSApp/Views/SemesterEditView.swift:178:                    Button("Cancel", role: .cancel) { }

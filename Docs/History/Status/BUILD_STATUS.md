@@ -26,17 +26,17 @@
 - **Configuration:** Debug
 - **Error:** Multiple commands produce (Xcode project configuration issue)
 
-**Issue:** The RootsWatch target has duplicate build rules causing:
+**Issue:** The ItoriWatch target has duplicate build rules causing:
 ```
-error: Multiple commands produce '/path/to/RootsWatch.app/RootsWatch'
+error: Multiple commands produce '/path/to/ItoriWatch.app/ItoriWatch'
 ```
 
 This is an Xcode project file issue, not a source code issue. The watchOS source files are minimal:
-- `watchOS/App/RootsWatchApp.swift`
+- `watchOS/App/ItoriWatchApp.swift`
 - `watchOS/Root/WatchRootView.swift`
 
-**Fix Required:** Open RootsApp.xcodeproj in Xcode and:
-1. Select RootsWatch target
+**Fix Required:** Open ItoriApp.xcodeproj in Xcode and:
+1. Select ItoriWatch target
 2. Go to Build Phases
 3. Check for duplicate "Copy Files" or "Embed" phases
 4. Remove duplicates
@@ -58,31 +58,31 @@ The watchOS issue is a project configuration problem, not a code issue. All Swif
 
 ### iOS
 ```bash
-xcodebuild -scheme "Roots" -configuration Debug \
+xcodebuild -scheme "Itori" -configuration Debug \
   -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
 ### iPadOS
 ```bash
-xcodebuild -scheme "Roots" -configuration Debug \
+xcodebuild -scheme "Itori" -configuration Debug \
   -destination 'platform=iOS Simulator,name=iPad Pro 13-inch (M5)' build
 ```
 
 ### macOS
 ```bash
-xcodebuild -scheme "Roots" -configuration Debug \
+xcodebuild -scheme "Itori" -configuration Debug \
   -destination 'platform=macOS' build
 ```
 
 ### watchOS
 ```bash
-xcodebuild -scheme "RootsWatch" -configuration Debug \
+xcodebuild -scheme "ItoriWatch" -configuration Debug \
   -destination 'platform=watchOS Simulator,name=Apple Watch Ultra 3 (49mm)' build
 ```
 
 ## Files Modified (This Session)
 
-1. **Removed:** `SharedCore/Views/Clock/RootsAnalogClockShared.swift`
+1. **Removed:** `SharedCore/Views/Clock/ItoriAnalogClockShared.swift`
    - Was causing duplicate symbol errors with macOSApp version
 
 2. **Updated:** Localization files

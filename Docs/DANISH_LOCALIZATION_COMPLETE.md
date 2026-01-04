@@ -1,7 +1,7 @@
 # Danish Localization - COMPLETE ✅
 
 ## Summary
-Danish (da) language localization has been successfully completed for the Roots app using the free Google Translate API via the `googletrans` Python library.
+Danish (da) language localization has been successfully completed for the Itori app using the free Google Translate API via the `googletrans` Python library.
 
 ## Final Status
 
@@ -155,7 +155,7 @@ The script correctly preserved:
 - Symbols: `—`, `·`, `•`, `/`, `&`, `+`, `-`, `=`
 
 ### Brand Name Handling
-- "Roots" kept in English (app name)
+- "Itori" kept in English (app name)
 - Technical terms like "LLM", "API", "OpenAI" preserved
 - Format-only strings marked as translated without modification
 
@@ -183,7 +183,7 @@ The script correctly preserved:
 
 ### Verification Command
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 python3 -c "
 import json
 with open('SharedCore/DesignSystem/Localizable.xcstrings', 'r', encoding='utf-8') as f:
@@ -200,7 +200,7 @@ print(f'Danish: {da_translated}/{da_total} ({da_translated/da_total*100:.2f}%)')
 
 ### Translation Command
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 python3 translate_danish.py
 ```
 

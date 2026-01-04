@@ -30,7 +30,7 @@
 
   
 
-Roots is designed as a **local-first**, academic planning system.
+Itori is designed as a **local-first**, academic planning system.
 
 To meet this expectation, the application must remain operational in environments with:
 
@@ -530,8 +530,8 @@ TICKET-064 is complete when the application demonstrates:
 ## 11. Change Log
 ### Implementation notes (2025-11-30T16:10:57Z)
 
-- Added Sources/Roots/Utilities/NetworkStatusMonitor.swift: NWPath-based observable monitor (shared singleton).
-- Added Sources/Roots/Utilities/ConnectivityRequirement.swift: simple enum for feature annotation.
+- Added Sources/Itori/Utilities/NetworkStatusMonitor.swift: NWPath-based observable monitor (shared singleton).
+- Added Sources/Itori/Utilities/ConnectivityRequirement.swift: simple enum for feature annotation.
 - Gated network calls:
   - Eve API client (chat and schedule) now throws when offline.
   - RemoteDashboardAPIClient now checks NetworkStatusMonitor before making requests.

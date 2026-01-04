@@ -170,7 +170,7 @@ Text(NSLocalizedString("common.label.activities", comment: ""))
 
 ### Visual Verification
 - [ ] Switch macOS system language to Chinese
-- [ ] Launch Roots app
+- [ ] Launch Itori app
 - [ ] Navigate to **Timer page** → verify buttons/labels in Chinese
   - "更改" button instead of "Change"
   - "活动" instead of "Activities"

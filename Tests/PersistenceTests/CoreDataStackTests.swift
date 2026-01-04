@@ -1,6 +1,6 @@
 //
 //  CoreDataStackTests.swift
-//  RootsTests
+//  ItoriTests
 //
 //  Tests for Core Data + CloudKit persistence layer
 //

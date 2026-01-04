@@ -1,7 +1,7 @@
 # French Localization - COMPLETE ✅
 
 ## Summary
-French (fr) language localization has been successfully completed for the Roots app using the free Google Translate API via the `googletrans` Python library.
+French (fr) language localization has been successfully completed for the Itori app using the free Google Translate API via the `googletrans` Python library.
 
 ## Final Status
 
@@ -161,7 +161,7 @@ The script correctly preserved:
 - Symbols: `—`, `·`, `•`, `/`, `&`, `+`, `-`, `=`
 
 ### Brand Name Handling
-- "Roots" kept in English (app name)
+- "Itori" kept in English (app name)
 - Technical terms like "LLM", "API", "OpenAI" preserved
 - Format-only strings marked as translated without modification
 

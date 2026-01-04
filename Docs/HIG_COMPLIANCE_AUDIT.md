@@ -1,11 +1,11 @@
 # macOS Human Interface Guidelines Compliance Audit
 **Date:** 2026-01-03  
 **Platform:** macOS  
-**App:** Roots
+**App:** Itori
 
 ## Executive Summary
 
-This document audits Roots against Apple's Human Interface Guidelines (HIG) for macOS, ensuring maximum native UI compliance and platform consistency.
+This document audits Itori against Apple's Human Interface Guidelines (HIG) for macOS, ensuring maximum native UI compliance and platform consistency.
 
 ---
 

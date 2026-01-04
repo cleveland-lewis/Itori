@@ -17,7 +17,7 @@ final class SyllabusParsingStore: ObservableObject {
             self.storageURL = storageURL
         } else {
             let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-            let appDir = appSupport.appendingPathComponent("Roots", isDirectory: true)
+            let appDir = appSupport.appendingPathComponent("Itori", isDirectory: true)
             try? FileManager.default.createDirectory(at: appDir, withIntermediateDirectories: true)
             self.storageURL = appDir.appendingPathComponent("syllabus_parsing.json")
         }

@@ -2,7 +2,7 @@
 
 // Objective
 /*
-Roots aims to deliver a student-focused productivity dashboard that empowers neurodivergent users and student-athletes by providing zero-choice, energy-aware study recommendations, intelligent scheduling, and rapid access to academic resources. Its core goal: help users know exactly what to do and when, with a minimum of cognitive overhead, using Apple-native privacy and user experience standards.
+Itori aims to deliver a student-focused productivity dashboard that empowers neurodivergent users and student-athletes by providing zero-choice, energy-aware study recommendations, intelligent scheduling, and rapid access to academic resources. Its core goal: help users know exactly what to do and when, with a minimum of cognitive overhead, using Apple-native privacy and user experience standards.
 */
 
 // Success Metrics

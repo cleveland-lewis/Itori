@@ -1,6 +1,6 @@
 //
 //  IOSWatchSyncCoordinator.swift
-//  Roots (iOS)
+//  Itori (iOS)
 //
 //  Handles watch connectivity on the iPhone side
 //

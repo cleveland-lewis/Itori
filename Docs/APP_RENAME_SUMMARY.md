@@ -1,39 +1,39 @@
-# App Rename: Roots → Itori
+# App Rename: Itori → Itori
 
 ## Summary
-Successfully renamed the entire app from "Roots" to "Itori" on January 3, 2026.
+Successfully renamed the entire app from "Itori" to "Itori" on January 3, 2026.
 
 ## Changes Made
 
 ### 1. Bundle Identifiers & Display Names
-- **Main App**: `clewisiii.Roots` → `clewisiii.Itori`
-- **Watch App**: `clewisiii.Roots.watchkitapp` → `clewisiii.Itori.watchkitapp`
-- **Tests**: `clewisiii.RootsTests` → `clewisiii.ItoriTests`
-- **UI Tests**: `clewisiii.RootsUITests` → `clewisiii.ItoriUITests`
-- **Display Name**: Changed from "Roots" to "Itori" in all Info.plist files
+- **Main App**: `clewisiii.Itori` → `clewisiii.Itori`
+- **Watch App**: `clewisiii.Itori.watchkitapp` → `clewisiii.Itori.watchkitapp`
+- **Tests**: `clewisiii.ItoriTests` → `clewisiii.ItoriTests`
+- **UI Tests**: `clewisiii.ItoriUITests` → `clewisiii.ItoriUITests`
+- **Display Name**: Changed from "Itori" to "Itori" in all Info.plist files
 
 ### 2. iCloud & CloudKit
-- **CloudKit Container**: `iCloud.com.cwlewisiii.Roots` → `iCloud.com.cwlewisiii.Itori`
+- **CloudKit Container**: `iCloud.com.cwlewisiii.Itori` → `iCloud.com.cwlewisiii.Itori`
 - Updated in:
   - `PersistenceController.swift`
-  - `Config/Roots.entitlements`
-  - `Config/Roots-iOS.entitlements`
+  - `Config/Itori.entitlements`
+  - `Config/Itori-iOS.entitlements`
 
 ### 3. Core Data Model
-- Renamed: `Roots.xcdatamodeld` → `Itori.xcdatamodeld`
-- Renamed: `Roots.xcdatamodel` → `Itori.xcdatamodel`
+- Renamed: `Itori.xcdatamodeld` → `Itori.xcdatamodeld`
+- Renamed: `Itori.xcdatamodel` → `Itori.xcdatamodel`
 - Updated `.xccurrentversion` to reference new model name
 - Updated `PersistenceController` to load "Itori" container
 
 ### 4. Xcode Schemes
-- `Roots.xcscheme` → `Itori.xcscheme`
-- `RootsTests.xcscheme` → `ItoriTests.xcscheme`
-- `RootsUITests.xcscheme` → `ItoriUITests.xcscheme`
-- `RootsWatch.xcscheme` → `ItoriWatch.xcscheme`
+- `Itori.xcscheme` → `Itori.xcscheme`
+- `ItoriTests.xcscheme` → `ItoriTests.xcscheme`
+- `ItoriUITests.xcscheme` → `ItoriUITests.xcscheme`
+- `ItoriWatch.xcscheme` → `ItoriWatch.xcscheme`
 
 ### 5. User-Facing Strings
-- iOS navigation title: "Roots" → "Itori"
-- macOS sidebar title: "Roots" → "Itori"
+- iOS navigation title: "Itori" → "Itori"
+- macOS sidebar title: "Itori" → "Itori"
 
 ### 6. Watch App Configuration
 - Updated `WKCompanionAppBundleIdentifier` in Watch Info.plist
@@ -42,33 +42,33 @@ Successfully renamed the entire app from "Roots" to "Itori" on January 3, 2026.
 ## Files Modified
 
 ### Xcode Project
-- `RootsApp.xcodeproj/project.pbxproj` - Bundle identifiers and display names
+- `ItoriApp.xcodeproj/project.pbxproj` - Bundle identifiers and display names
 
 ### Info.plist Files
 - `Platforms/watchOS/App/Info.plist`
 
 ### Entitlements
-- `Config/Roots.entitlements`
-- `Config/Roots-iOS.entitlements`
+- `Config/Itori.entitlements`
+- `Config/Itori-iOS.entitlements`
 
 ### Swift Code
 - `SharedCore/Persistence/PersistenceController.swift`
 - `Platforms/iOS/Root/IOSRootView.swift`
-- `Platforms/macOS/PlatformAdapters/RootsSidebarShell.swift`
+- `Platforms/macOS/PlatformAdapters/ItoriSidebarShell.swift`
 
 ### Core Data
 - `SharedCore/Persistence/Itori.xcdatamodeld/` (renamed)
 - `SharedCore/Persistence/Itori.xcdatamodeld/Itori.xcdatamodel/` (renamed)
 
 ### Schemes
-- All scheme files in `RootsApp.xcodeproj/xcshareddata/xcschemes/`
+- All scheme files in `ItoriApp.xcodeproj/xcshareddata/xcschemes/`
 
 ## Next Steps
 
-⚠️ **IMPORTANT**: The Xcode project file itself (`RootsApp.xcodeproj`) has NOT been renamed yet. This should be done carefully:
+⚠️ **IMPORTANT**: The Xcode project file itself (`ItoriApp.xcodeproj`) has NOT been renamed yet. This should be done carefully:
 
 1. Close Xcode completely
-2. Rename `RootsApp.xcodeproj` → `ItoriApp.xcodeproj`
+2. Rename `ItoriApp.xcodeproj` → `ItoriApp.xcodeproj`
 3. Update any workspace files if they exist
 4. Reopen the project in Xcode
 5. Verify all schemes and targets load correctly
@@ -86,6 +86,6 @@ After renaming the .xcodeproj file:
 
 ## Notes
 
-- The project directory name is still `/Roots` - this can be renamed separately if desired
-- Any CI/CD scripts or documentation referencing "Roots" will need manual updates
+- The project directory name is still `/Itori` - this can be renamed separately if desired
+- Any CI/CD scripts or documentation referencing "Itori" will need manual updates
 - App Store Connect will need a new app record for "Itori" with the new bundle identifier

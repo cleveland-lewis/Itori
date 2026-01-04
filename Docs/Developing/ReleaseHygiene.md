@@ -1,7 +1,7 @@
 # Release Hygiene Guidelines
 
 ## Purpose
-Ensure the Roots app maintains high quality standards before any release by preventing common pitfalls that could impact users or degrade the codebase.
+Ensure the Itori app maintains high quality standards before any release by preventing common pitfalls that could impact users or degrade the codebase.
 
 ---
 

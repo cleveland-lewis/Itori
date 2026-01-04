@@ -9,7 +9,7 @@ Implement foundational Core Data + CloudKit mirroring using NSPersistentCloudKit
 
 ### ✅ Already Implemented
 - CloudKit capabilities enabled in entitlements (macOS + iOS)
-- iCloud container: `iCloud.com.cwlewisiii.Roots`
+- iCloud container: `iCloud.com.cwlewisiii.Itori`
 - NSPersistentCloudKitContainer setup in PersistenceController
 - History tracking enabled
 - Remote change notifications enabled
@@ -32,7 +32,7 @@ Implement foundational Core Data + CloudKit mirroring using NSPersistentCloudKit
 ### 🔧 What Needs Implementation
 
 #### 1. Core Data Model Completion
-**File:** `SharedCore/Persistence/Roots.xcdatamodeld`
+**File:** `SharedCore/Persistence/Itori.xcdatamodeld`
 
 **Entities to Add/Update:**
 
@@ -342,7 +342,7 @@ Create:
 
 ### CloudKit Container
 Using single container for simplicity:
-- Container: `iCloud.com.cwlewisiii.Roots`
+- Container: `iCloud.com.cwlewisiii.Itori`
 - Database: Private (user data)
 - Automatic schema migration
 

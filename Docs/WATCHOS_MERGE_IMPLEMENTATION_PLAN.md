@@ -3,21 +3,21 @@
 ## Current State
 
 ### Existing Targets
-1. **Roots** — Multi-platform target (macOS + iOS)
-2. **RootsWatch** — Separate watchOS target
-3. **RootsTests** — Test target
-4. **RootsUITests** — UI test target
+1. **Itori** — Multi-platform target (macOS + iOS)
+2. **ItoriWatch** — Separate watchOS target
+3. **ItoriTests** — Test target
+4. **ItoriUITests** — UI test target
 
 ### Current App Entry Points
-- **macOS:** `Platforms/macOS/App/RootsApp.swift` with `#if os(macOS)`
-- **iOS:** `Platforms/iOS/App/RootsIOSApp.swift` with `#if os(iOS)`
-- **watchOS:** `Platforms/watchOS/App/RootsWatchApp.swift` with `#if os(watchOS)` (separate target)
+- **macOS:** `Platforms/macOS/App/ItoriApp.swift` with `#if os(macOS)`
+- **iOS:** `Platforms/iOS/App/ItoriIOSApp.swift` with `#if os(iOS)`
+- **watchOS:** `Platforms/watchOS/App/ItoriWatchApp.swift` with `#if os(watchOS)` (separate target)
 
 ---
 
 ## Goal
 
-Merge `RootsWatch` target into the main `Roots` target so all three platforms share:
+Merge `ItoriWatch` target into the main `Itori` target so all three platforms share:
 - Dependencies
 - Build settings (where appropriate)
 - Deployment workflow
@@ -38,10 +38,10 @@ Merge `RootsWatch` target into the main `Roots` target so all three platforms sh
 - Requires careful Xcode GUI work or project.pbxproj editing
 
 **Steps:**
-1. Add watchOS as a supported destination to the `Roots` target
-2. Migrate all `RootsWatch` source files to `Roots` target membership
-3. Configure watchOS-specific build settings in `Roots` target
-4. Remove `RootsWatch` target
+1. Add watchOS as a supported destination to the `Itori` target
+2. Migrate all `ItoriWatch` source files to `Itori` target membership
+3. Configure watchOS-specific build settings in `Itori` target
+4. Remove `ItoriWatch` target
 5. Update schemes
 
 ---
@@ -72,15 +72,15 @@ git stash push -m "Pre-watch-merge state"
 git branch backup/before-watch-merge
 
 # Ensure clean build
-xcodebuild clean -scheme Roots
-xcodebuild clean -scheme RootsWatch
+xcodebuild clean -scheme Itori
+xcodebuild clean -scheme ItoriWatch
 ```
 
-### Phase 2: Add watchOS Support to Roots Target
+### Phase 2: Add watchOS Support to Itori Target
 
 **In Xcode:**
-1. Open `RootsApp.xcodeproj`
-2. Select `Roots` target
+1. Open `ItoriApp.xcodeproj`
+2. Select `Itori` target
 3. Go to "Build Settings"
 4. Search for "Supported Platforms"
 5. Add `watchOS` to supported platforms
@@ -95,38 +95,38 @@ xcodebuild clean -scheme RootsWatch
 
 ### Phase 3: Migrate Source Files
 
-**Files to Add to Roots Target:**
-1. `Platforms/watchOS/App/RootsWatchApp.swift`
+**Files to Add to Itori Target:**
+1. `Platforms/watchOS/App/ItoriWatchApp.swift`
 2. `Platforms/watchOS/Root/WatchRootView.swift`
 3. Any other watchOS-specific files
 
 **In Xcode:**
 1. Select each file in Project Navigator
 2. In File Inspector (right sidebar)
-3. Check the box for `Roots` target membership
-4. Uncheck the box for `RootsWatch` target (if present)
+3. Check the box for `Itori` target membership
+4. Uncheck the box for `ItoriWatch` target (if present)
 
 ### Phase 4: Configure Conditional Compilation
 
 **Ensure all entry points use platform guards:**
 
 ```swift
-// Platforms/macOS/App/RootsApp.swift
+// Platforms/macOS/App/ItoriApp.swift
 #if os(macOS)
 @main
-struct RootsApp: App { ... }
+struct ItoriApp: App { ... }
 #endif
 
-// Platforms/iOS/App/RootsIOSApp.swift
+// Platforms/iOS/App/ItoriIOSApp.swift
 #if os(iOS)
 @main
-struct RootsIOSApp: App { ... }
+struct ItoriIOSApp: App { ... }
 #endif
 
-// Platforms/watchOS/App/RootsWatchApp.swift
+// Platforms/watchOS/App/ItoriWatchApp.swift
 #if os(watchOS)
 @main
-struct RootsWatchApp: App { ... }
+struct ItoriWatchApp: App { ... }
 #endif
 ```
 
@@ -148,14 +148,14 @@ Config/
 
 ### Phase 6: Configure watchOS-Specific Build Settings
 
-**In Roots target build settings:**
+**In Itori target build settings:**
 
 ```
 // Watch App Bundle Identifier
-PRODUCT_BUNDLE_IDENTIFIER[sdk=watchos*] = clewisiii.Roots.watchkitapp
+PRODUCT_BUNDLE_IDENTIFIER[sdk=watchos*] = clewisiii.Itori.watchkitapp
 
 // Product Name
-PRODUCT_NAME[sdk=watchos*] = Roots Watch
+PRODUCT_NAME[sdk=watchos*] = Itori Watch
 
 // Skip Install (for watch)
 SKIP_INSTALL[sdk=watchos*] = NO
@@ -164,39 +164,39 @@ SKIP_INSTALL[sdk=watchos*] = NO
 ASSETCATALOG_COMPILER_APPICON_NAME[sdk=watchos*] = AppIcon
 
 // Watch App
-WATCH_APPLICATION_BUNDLE_IDENTIFIER = clewisiii.Roots.watchkitapp
+WATCH_APPLICATION_BUNDLE_IDENTIFIER = clewisiii.Itori.watchkitapp
 ```
 
 ### Phase 7: Update Schemes
 
-**Modify "Roots" Scheme:**
+**Modify "Itori" Scheme:**
 1. Product → Scheme → Edit Scheme
 2. Add watchOS destinations:
    - Apple Watch (build for active architecture)
    - Apple Watch Simulator
 
-**Remove "RootsWatch" Scheme:**
+**Remove "ItoriWatch" Scheme:**
 - Product → Scheme → Manage Schemes
-- Delete `RootsWatch` scheme
+- Delete `ItoriWatch` scheme
 
-### Phase 8: Remove Old RootsWatch Target
+### Phase 8: Remove Old ItoriWatch Target
 
 **In Xcode:**
-1. Select `RootsWatch` target in project navigator
+1. Select `ItoriWatch` target in project navigator
 2. Press Delete
 3. Confirm deletion
 
 **Cleanup:**
-- Remove any RootsWatch-specific build products
-- Remove RootsWatch from target dependencies
+- Remove any ItoriWatch-specific build products
+- Remove ItoriWatch from target dependencies
 
 ### Phase 9: Test Build
 
 ```bash
 # Build for all platforms
-xcodebuild build -scheme Roots -destination 'platform=macOS'
-xcodebuild build -scheme Roots -destination 'platform=iOS Simulator,name=iPhone 15'
-xcodebuild build -scheme Roots -destination 'platform=watchOS Simulator,name=Apple Watch Series 9 (45mm)'
+xcodebuild build -scheme Itori -destination 'platform=macOS'
+xcodebuild build -scheme Itori -destination 'platform=iOS Simulator,name=iPhone 15'
+xcodebuild build -scheme Itori -destination 'platform=watchOS Simulator,name=Apple Watch Series 9 (45mm)'
 ```
 
 ### Phase 10: Verify SharedCore Compatibility
@@ -225,13 +225,13 @@ import AppKit
 ## Files Requiring Changes
 
 ### Xcode Project File
-- `RootsApp.xcodeproj/project.pbxproj` (extensive changes)
+- `ItoriApp.xcodeproj/project.pbxproj` (extensive changes)
 
 ### Build Configuration (Optional)
 - `Config/Info-watchOS.plist` (if creating separate plists)
 
 ### Schemes
-- `RootsApp.xcodeproj/xcshareddata/xcschemes/Roots.xcscheme`
+- `ItoriApp.xcodeproj/xcshareddata/xcschemes/Itori.xcscheme`
 
 ### Source Files (Minimal Changes)
 - All platform-specific app entry points already have `#if os(...)` guards ✅
@@ -301,7 +301,7 @@ ENTITLEMENTS_FILE[sdk=macosx*] = Config/Entitlements-macOS.entitlements
 - [ ] SharedCore compiles for all platforms
 - [ ] No duplicate symbols or linking errors
 - [ ] Version/build numbers consistent across platforms
-- [ ] No orphaned build products from old RootsWatch target
+- [ ] No orphaned build products from old ItoriWatch target
 
 ---
 
@@ -318,8 +318,8 @@ git stash pop
 
 # Rebuild with separate targets
 xcodebuild clean -alltargets
-xcodebuild build -scheme Roots
-xcodebuild build -scheme RootsWatch
+xcodebuild build -scheme Itori
+xcodebuild build -scheme ItoriWatch
 ```
 
 ---
@@ -332,15 +332,15 @@ If manual Xcode editing is too error-prone, create a script:
 #!/bin/bash
 # merge_watch_target.sh
 
-PROJECT="RootsApp.xcodeproj/project.pbxproj"
+PROJECT="ItoriApp.xcodeproj/project.pbxproj"
 
 # Backup
 cp "$PROJECT" "$PROJECT.backup"
 
 # Use PlistBuddy or direct text editing to:
-# 1. Add watchOS to Roots target supported platforms
+# 1. Add watchOS to Itori target supported platforms
 # 2. Update target membership for watchOS files
-# 3. Remove RootsWatch target
+# 3. Remove ItoriWatch target
 
 # Example (simplified):
 sed -i '' 's/SUPPORTED_PLATFORMS = macosx iphoneos iphonesimulator/SUPPORTED_PLATFORMS = macosx iphoneos iphonesimulator watchos watchsimulator/' "$PROJECT"
@@ -356,11 +356,11 @@ sed -i '' 's/SUPPORTED_PLATFORMS = macosx iphoneos iphonesimulator/SUPPORTED_PLA
 1. Use Xcode GUI for all changes (no manual pbxproj editing)
 2. Make incremental changes with git commits after each phase
 3. Test build after each phase before proceeding
-4. Keep RootsWatch target until Roots target fully works with watchOS
-5. Only delete RootsWatch after successful verification
+4. Keep ItoriWatch target until Itori target fully works with watchOS
+5. Only delete ItoriWatch after successful verification
 
 **Fastest Path (Higher Risk):**
-1. Duplicate RootsWatch target as "Roots (watchOS)"
+1. Duplicate ItoriWatch target as "Itori (watchOS)"
 2. Merge settings manually in project.pbxproj
 3. Delete both old targets
 4. Verify in one shot
@@ -372,8 +372,8 @@ sed -i '' 's/SUPPORTED_PLATFORMS = macosx iphoneos iphonesimulator/SUPPORTED_PLA
 ## Success Criteria
 
 After completion:
-- Single `Roots` target builds for macOS, iOS, and watchOS
-- No `RootsWatch` target exists
+- Single `Itori` target builds for macOS, iOS, and watchOS
+- No `ItoriWatch` target exists
 - Single scheme with multiple destinations
 - Shared versioning and build configuration
 - Platform-specific code properly guarded with `#if os(...)`
@@ -395,7 +395,7 @@ After completion:
 
 1. **Confirm approach:** Should I proceed with Option 1 (merge targets)?
 2. **Choose method:** Xcode GUI or script-based?
-3. **Verify current state:** Does RootsWatch currently build successfully?
+3. **Verify current state:** Does ItoriWatch currently build successfully?
 4. **Begin implementation:** Start with Phase 1 (backup)
 
 Would you like me to proceed with the implementation, or would you prefer to review the plan first?

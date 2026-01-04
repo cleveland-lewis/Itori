@@ -1,21 +1,21 @@
-# Roots Multi-Target Architecture Diagram
+# Itori Multi-Target Architecture Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         Roots.xcodeproj                              │
+│                         Itori.xcodeproj                              │
 └─────────────────────────────────────────────────────────────────────┘
                                   │
                   ┌───────────────┴───────────────┐
                   │                               │
                   ▼                               ▼
 ┌─────────────────────────────┐   ┌─────────────────────────────┐
-│      RootsApp Target        │   │     RootsMac Target         │
+│      ItoriApp Target        │   │     ItoriMac Target         │
 │       (iOS/iPadOS)          │   │        (macOS)              │
 └─────────────────────────────┘   └─────────────────────────────┘
 │                               │   │                               │
-│  ├─ RootsApp.swift           │   │  ├─ RootsMacApp.swift        │
+│  ├─ ItoriApp.swift           │   │  ├─ ItoriMacApp.swift        │
 │  ├─ Info.plist               │   │  ├─ Info.plist               │
-│  ├─ Roots.entitlements       │   │  ├─ RootsMac.entitlements    │
+│  ├─ Itori.entitlements       │   │  ├─ ItoriMac.entitlements    │
 │  │                            │   │  │                            │
 │  ├─ Views/                   │   │  ├─ Views/                   │
 │  │   ├─ IOSRootView.swift    │   │  │   ├─ MacRootView.swift    │
@@ -38,7 +38,7 @@
 └───────────────┬───────────────┘   └───────────────┬───────────────┘
                 │                                   │
                 │   ┌───────────────────────────┐   │
-                └───►     RootsShared (SPM)     ◄───┘
+                └───►     ItoriShared (SPM)     ◄───┘
                     │   Swift Package Module    │
                     └───────────────────────────┘
                                   │
@@ -90,7 +90,7 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │              Platform-Specific App Entry Point                   │
 │                                                                  │
-│  iOS: RootsApp.swift        macOS: RootsMacApp.swift           │
+│  iOS: ItoriApp.swift        macOS: ItoriMacApp.swift           │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -103,7 +103,7 @@
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│              Initialize Shared Container (RootsShared)           │
+│              Initialize Shared Container (ItoriShared)           │
 │                                                                  │
 │  let container = AppContainer(persistenceService: persistence)  │
 └─────────────────────────────────────────────────────────────────┘
@@ -137,7 +137,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  RootsShared (Cross-Platform)                    │
+│                  ItoriShared (Cross-Platform)                    │
 │                                                                  │
 │  struct Course {                                                │
 │      let id: UUID                                               │
@@ -189,7 +189,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      RootsShared/DI/                             │
+│                      ItoriShared/DI/                             │
 │                                                                  │
 │  protocol PersistenceService: Actor {                           │
 │      func saveCourse(_ course: Course) async throws             │
@@ -242,7 +242,7 @@
                 ▼                           ▼
 ┌───────────────────────────┐   ┌───────────────────────────┐
 │  @main                    │   │  @main                    │
-│  struct RootsApp: App {   │   │  struct RootsMacApp: App {│
+│  struct ItoriApp: App {   │   │  struct ItoriMacApp: App {│
 │      @StateObject var     │   │      @StateObject var     │
 │        container =        │   │        container =        │
 │        AppDependencies    │   │        AppDependencies    │
@@ -261,12 +261,12 @@
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                   Build RootsShared Package                      │
+│                   Build ItoriShared Package                      │
 │                                                                  │
 │  1. Compile Models/*.swift                                      │
 │  2. Compile Services/*.swift                                    │
 │  3. Compile Utilities/*.swift                                   │
-│  4. Link into RootsShared.framework                             │
+│  4. Link into ItoriShared.framework                             │
 └─────────────────────────────────────────────────────────────────┘
                               │
                 ┌─────────────┴─────────────┐
@@ -275,11 +275,11 @@
 ┌───────────────────────────┐   ┌───────────────────────────┐
 │  Build iOS Target         │   │  Build macOS Target       │
 │                           │   │                           │
-│  1. Link RootsShared      │   │  1. Link RootsShared      │
+│  1. Link ItoriShared      │   │  1. Link ItoriShared      │
 │  2. Compile Views/*.swift │   │  2. Compile Views/*.swift │
 │  3. Compile Platform-     │   │  3. Compile Platform-     │
 │     Extensions/*.swift    │   │     Extensions/*.swift    │
-│  4. Compile RootsApp.swift│   │  4. Compile RootsMac.swift│
+│  4. Compile ItoriApp.swift│   │  4. Compile ItoriMac.swift│
 │  5. Link frameworks       │   │  5. Link frameworks       │
 │  6. Code sign             │   │  6. Code sign             │
 │  7. Generate .app         │   │  7. Generate .app         │
@@ -287,7 +287,7 @@
                 │                           │
                 ▼                           ▼
 ┌───────────────────────────┐   ┌───────────────────────────┐
-│    RootsApp.app           │   │    RootsMac.app           │
+│    ItoriApp.app           │   │    ItoriMac.app           │
 │  (iOS/iPadOS)             │   │    (macOS)                │
 └───────────────────────────┘   └───────────────────────────┘
 ```
@@ -299,7 +299,7 @@
 │                    Code Placement Rules                          │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                  │
-│  RootsShared (Cross-Platform):                                  │
+│  ItoriShared (Cross-Platform):                                  │
 │    ✓ Domain models (Course, Assignment, etc.)                   │
 │    ✓ Business logic (planning, scheduling)                      │
 │    ✓ Service protocols                                          │

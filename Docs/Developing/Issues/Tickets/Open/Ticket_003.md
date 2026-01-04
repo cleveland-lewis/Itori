@@ -200,7 +200,7 @@ When user changes theme:
 The ThemeManager should be created at the app entry point:
 
 @main
-struct RootsApp: App {
+struct ItoriApp: App {
     @StateObject private var themeManager = ThemeManager()
 
     var body: some Scene {

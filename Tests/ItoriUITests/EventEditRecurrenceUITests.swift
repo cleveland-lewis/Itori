@@ -126,11 +126,11 @@ final class EventEditRecurrenceUITests: XCTestCase {
     
     // MARK: - Round-Trip Tests (Integration with EventKit)
     
-    /// Test round-trip: Create in Roots, verify event exists in system calendar
+    /// Test round-trip: Create in Itori, verify event exists in system calendar
     /// Note: This test may require EventKit permissions and may be skipped in CI
     func testRoundTripCreateInRoots() throws {
         // TODO: Implement test flow
-        // 1. Create recurring event with alerts in Roots
+        // 1. Create recurring event with alerts in Itori
         // 2. Query EventKit to verify event exists
         // 3. Verify recurrence rules match
         // 4. Verify alerts match
@@ -140,7 +140,7 @@ final class EventEditRecurrenceUITests: XCTestCase {
         throw XCTSkip("EventKit integration tests require manual execution with calendar permissions")
     }
     
-    /// Test round-trip: Edit event in system Calendar, verify changes in Roots
+    /// Test round-trip: Edit event in system Calendar, verify changes in Itori
     /// Note: This test requires manual intervention and is documented for QA
     func testRoundTripEditInSystemCalendar() throws {
         // This test is documented in the manual test checklist

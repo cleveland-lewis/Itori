@@ -9,8 +9,8 @@ See xcodebuild_after_calendar_fix3_build.log and xcodebuild_after_calendar_fix4_
 Suggested labels: bug, build-failure, ci
 
 Steps to reproduce:
-1. Open the Roots Xcode project.
-2. Run a Clean & Build for the Roots target or run xcodebuild -target Roots clean build.
+1. Open the Itori Xcode project.
+2. Run a Clean & Build for the Itori target or run xcodebuild -target Itori clean build.
 3. Observe the compiler errors shown in the attached logs.
 
 Proposed fix summary:
@@ -18,6 +18,6 @@ Proposed fix summary:
 - Replace AnyView returns with @ViewBuilder computed property to avoid complex generic inference.
 - Restore matching braces and remove stray method-chain expressions placed outside of view builders.
 
-File to inspect: Roots/Roots/Roots/CalendarPageView.swift
+File to inspect: Itori/Itori/Itori/CalendarPageView.swift
 
 Timestamp: 2025-12-11T20:14:23.124Z

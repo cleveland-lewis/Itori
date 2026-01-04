@@ -44,7 +44,7 @@ Text("dashboard.events.title".localized)
 ```
 
 **Files Fixed:**
-- `macOSApp/Views/Components/Clock/RootsAnalogClock.swift`
+- `macOSApp/Views/Components/Clock/ItoriAnalogClock.swift`
 
 **Result:** 
 - All numerals (1-12 and second markers) now fully visible

@@ -57,7 +57,7 @@ xcrun simctl list devices | grep Booted
 ### Step 3: Fix in Xcode
 
 1. **Open Xcode**
-2. **Select your target** (Roots)
+2. **Select your target** (Itori)
 3. **General tab** → Minimum Deployments
 4. **Set iOS Deployment Target** to match your actual test device
 
@@ -100,8 +100,8 @@ If you have access to a stable Xcode version:
 Run this to see current configuration:
 
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild -project RootsApp.xcodeproj -scheme Roots -showBuildSettings | grep -E "(ARCHS|DEPLOYMENT_TARGET|SDK)"
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori -showBuildSettings | grep -E "(ARCHS|DEPLOYMENT_TARGET|SDK)"
 ```
 
 **Should see:**
@@ -117,10 +117,10 @@ If you need to manually fix the deployment target:
 
 ```bash
 # Edit project file
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 
 # Replace all instances of 26.1 with 17.0 (or your target iOS version)
-sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 26.1;/IPHONEOS_DEPLOYMENT_TARGET = 17.0;/g' RootsApp.xcodeproj/project.pbxproj
+sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 26.1;/IPHONEOS_DEPLOYMENT_TARGET = 17.0;/g' ItoriApp.xcodeproj/project.pbxproj
 ```
 
 **Note:** Better to do this in Xcode GUI to avoid corrupting the project file.
@@ -148,8 +148,8 @@ sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 26.1;/IPHONEOS_DEPLOYMENT_TARGET = 17.
 Run this to check what you're building for:
 
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild -project RootsApp.xcodeproj -scheme Roots -configuration Debug -showBuildSettings | grep -A 2 "IPHONEOS_DEPLOYMENT_TARGET"
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori -configuration Debug -showBuildSettings | grep -A 2 "IPHONEOS_DEPLOYMENT_TARGET"
 ```
 
 Expected:
@@ -177,8 +177,8 @@ Your project is configured for a non-existent iOS version, which causes the bina
 
 ### Option 1: In Xcode (RECOMMENDED)
 
-1. Open `RootsApp.xcodeproj`
-2. Select "Roots" target
+1. Open `ItoriApp.xcodeproj`
+2. Select "Itori" target
 3. General tab → Minimum Deployments → iOS
 4. Change from "26.1" to "17.0" (or your actual target)
 5. Clean build (⌘⇧K)
@@ -187,16 +187,16 @@ Your project is configured for a non-existent iOS version, which causes the bina
 ### Option 2: Command Line
 
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 
 # Backup first
-cp RootsApp.xcodeproj/project.pbxproj RootsApp.xcodeproj/project.pbxproj.backup
+cp ItoriApp.xcodeproj/project.pbxproj ItoriApp.xcodeproj/project.pbxproj.backup
 
 # Fix deployment target
-sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 26.1;/IPHONEOS_DEPLOYMENT_TARGET = 17.0;/g' RootsApp.xcodeproj/project.pbxproj
+sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 26.1;/IPHONEOS_DEPLOYMENT_TARGET = 17.0;/g' ItoriApp.xcodeproj/project.pbxproj
 
 # Verify
-grep "IPHONEOS_DEPLOYMENT_TARGET" RootsApp.xcodeproj/project.pbxproj | head -3
+grep "IPHONEOS_DEPLOYMENT_TARGET" ItoriApp.xcodeproj/project.pbxproj | head -3
 
 # Should show 17.0 now
 ```
@@ -207,7 +207,7 @@ grep "IPHONEOS_DEPLOYMENT_TARGET" RootsApp.xcodeproj/project.pbxproj | head -3
 
 1. Clean everything:
 ```bash
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp-*
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp-*
 ```
 
 2. In Xcode: Product → Clean Build Folder (⌘⇧K)

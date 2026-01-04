@@ -195,11 +195,11 @@ These tests validate the core PlanGraph behavior that `PlanGraphSchedulerIntegra
 - ⚠️ Unable to run tests due to unrelated deployment target issue in `AccessibilityInfrastructureTests.swift`
 
 ## Test Execution
-The tests can be executed once the deployment target issue in RootsTests is resolved:
+The tests can be executed once the deployment target issue in ItoriTests is resolved:
 ```bash
-xcodebuild test -project RootsApp.xcodeproj -scheme RootsTests \
+xcodebuild test -project ItoriApp.xcodeproj -scheme ItoriTests \
   -destination 'platform=macOS' \
-  -only-testing:RootsTests/PlanGraphTests
+  -only-testing:ItoriTests/PlanGraphTests
 ```
 
 Or individually in Xcode Test Navigator.

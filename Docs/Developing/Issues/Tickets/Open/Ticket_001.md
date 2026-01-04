@@ -2,7 +2,7 @@
 
 ## Category: Project layout and run target cleanup
  
-### Goal: One canonical “Roots” app target with a clean, predictable source layout and no duplicate files, so that Xcode opens → build → run is trivial and deterministic.
+### Goal: One canonical “Itori” app target with a clean, predictable source layout and no duplicate files, so that Xcode opens → build → run is trivial and deterministic.
 
 ⸻
 
@@ -10,9 +10,9 @@
 
 You currently have:
 	•	Multiple source roots, e.g.:
-	•	Roots/Source/Main/
-	•	Roots/Source/Main/swift-new/
-	•	Possibly extra folders under Roots/ or Swift/ created while iterating.
+	•	Itori/Source/Main/
+	•	Itori/Source/Main/swift-new/
+	•	Possibly extra folders under Itori/ or Swift/ created while iterating.
 	•	Multiple targets/schemes and/or stale ones:
 	•	Old experiments, test harnesses, possibly a web or CLI target.
 	•	Duplicate files/types:
@@ -22,8 +22,8 @@ You currently have:
 	•	The wrong version of a file is being used at runtime.
 
 This ticket’s job is to normalise the project to a predictable, Apple-native structure:
-	•	Single main app target: Roots
-	•	Single module/code root: Roots/Sources/Roots
+	•	Single main app target: Itori
+	•	Single module/code root: Itori/Sources/Itori
 	•	All platform-specific entry points and configurations are clearly separated.
 	•	Only one copy of each type is compiled.
 
@@ -33,35 +33,35 @@ This ticket’s job is to normalise the project to a predictable, Apple-native s
 
 You already have:
 
-	•	Xcode workspace opens, and one “Roots” target builds and runs the app without manual file repositioning.
+	•	Xcode workspace opens, and one “Itori” target builds and runs the app without manual file repositioning.
 	•	No duplicate source files with conflicting definitions remain in the build path.
 
 Expanded into concrete checks:
 	1.	Workspace & Target Simplicity
-	•	Opening Roots. xcworkspace or Roots.xcodeproj shows:
-	•	Exactly one primary app target named Roots for the platform you’re focused on now (e.g., macOS, or macOS + iOS if you’re ready for multiplatform).
-	•	The default scheme Roots:
+	•	Opening Itori. xcworkspace or Itori.xcodeproj shows:
+	•	Exactly one primary app target named Itori for the platform you’re focused on now (e.g., macOS, or macOS + iOS if you’re ready for multiplatform).
+	•	The default scheme Itori:
 	•	Builds without any target selection gymnastics.
 	•	Runs the app directly from Product → Run or ⌘R.
 	2.	Canonical Source Layout
 	•	All Swift sources for the main app live under:
-	•	Roots/Sources/Roots/…
+	•	Itori/Sources/Itori/…
 	•	Platform-specific subfolders (optional but recommended), e.g.:
-	•	Roots/Sources/Roots/App/
-	•	Roots/Sources/Roots/Features/Dashboard/
-	•	Roots/Sources/Roots/Features/Calendar/
-	•	Roots/Sources/Roots/Shared/Models/
-	•	Roots/Sources/Roots/Shared/Services/
+	•	Itori/Sources/Itori/App/
+	•	Itori/Sources/Itori/Features/Dashboard/
+	•	Itori/Sources/Itori/Features/Calendar/
+	•	Itori/Sources/Itori/Shared/Models/
+	•	Itori/Sources/Itori/Shared/Services/
 	•	No code is compiled from Source/Main or Source/Main/swift-new anymore — those become either:
 	•	Deleted, or
 	•	Marked as archive/ or legacy/ and excluded from all targets.
 	3.	No Duplicate Definitions
 	•	Cmd+Shift+F for a representative type name (e.g., RootApp, DashboardView, AIScheduler) returns exactly one active definition that is part of the main target.
 	•	Build with -Xfrontend -warn-long-function-bodies=… / static analysis shows no duplicate type names in the same module.
-	•	You can search for a class or a struct of key types and verify that the canonical one lives under Sources/Roots.
+	•	You can search for a class or a struct of key types and verify that the canonical one lives under Sources/Itori.
 	4.	Build Settings & File Membership
-	•	In Xcode’s File Inspector, no source file outside Sources/Roots is ticked for the Roots target (except maybe test targets).
-	•	Any test targets use clearly separated file membership under Tests/RootsTests, etc.
+	•	In Xcode’s File Inspector, no source file outside Sources/Itori is ticked for the Itori target (except maybe test targets).
+	•	Any test targets use clearly separated file membership under Tests/ItoriTests, etc.
 	5.	Clean Incremental Build
 	•	Deleting DerivedData and rebuilding from scratch succeeds without:
 	•	File not found errors.
@@ -86,13 +86,13 @@ If, during cleanup, you find logic you want to rewrite, that goes into separate 
 
 Recommended final structure:
 
-Roots/
-  Roots.xcodeproj
-  Roots.xcworkspace (optional)
+Itori/
+  Itori.xcodeproj
+  Itori.xcworkspace (optional)
   Sources/
-    Roots/
+    Itori/
       App/
-        RootsApp.swift
+        ItoriApp.swift
         AppDelegate.swift (if needed)
         SceneDelegate.swift (iOS)
         RootView.swift
@@ -133,7 +133,7 @@ Roots/
           DateUtils.swift
           ResultExtensions.swift
   Tests/
-    RootsTests/
+    ItoriTests/
       SchedulerTests.swift
       CalendarIntegrationTests.swift
   archive/
@@ -142,7 +142,7 @@ Roots/
         Main/
         Main/swift-new/
 
-Key rule: only Sources/Roots/** is part of the Roots target.
+Key rule: only Sources/Itori/** is part of the Itori target.
 
 ⸻
 
@@ -162,20 +162,20 @@ Git commit -m "chore: snapshot project before layout cleanup."
 
 
 Step 2 — Inventory Existing Targets & Schemes
-	1.	Open Xcode → Project Navigator → Roots:
+	1.	Open Xcode → Project Navigator → Itori:
 	•	Go to Project→ Targets.
 	2.	List current targets:
 	•	Example possibilities:
-	•	Roots
-	•	Roots-macOS
-	•	Roots-iOS
+	•	Itori
+	•	Itori-macOS
+	•	Itori-iOS
 	•	WebApp
 	•	DemoApp
 	3.	Decide:
-	•	Primary app target name: Roots
+	•	Primary app target name: Itori
 	•	Optional:
-	•	RootsTests
-	•	RootsUITests
+	•	ItoriTests
+	•	ItoriUITests
 	4.	Remove or disable obsolete targets:
 	•	For any experiment target:
 	•	Document in commit message.
@@ -184,18 +184,18 @@ Step 2 — Inventory Existing Targets & Schemes
 
 Goal: one main app target you care about right now.
 
-Step 3 — Identify Source Roots & Duplicates
+Step 3 — Identify Source Itori & Duplicates
 
 You currently have at least:
-	•	Roots/Source/Main/
-	•	Roots/Source/Main/swift-new/
+	•	Itori/Source/Main/
+	•	Itori/Source/Main/swift-new/
 
 Do this:
 	1.	In Xcode Project Navigator:
 	•	Right-click Source folders → “Show in Finder” and verify actual on-disk paths.
 	2.	In Finder or CLI:
 
-find Roots -maxdepth 4 -type d \( -name "Source" -o -name "Sources" -o -name "swift-new" \)
+find Itori -maxdepth 4 -type d \( -name "Source" -o -name "Sources" -o -name "swift-new" \)
 
 
 	3.	Build a quick mapping:
@@ -205,46 +205,46 @@ find Roots -maxdepth 4 -type d \( -name "Source" -o -name "Sources" -o -name "sw
 	•	Almost certainly the swift-new variant is the one to keep.
 	•	Mark the other as legacy unless it contains pieces you need.
 
-Step 4 — Create the Canonical Sources/Roots Module
+Step 4 — Create the Canonical Sources/Itori Module
 	1.	In Finder:
 
-mkdir -p Roots/Sources/Roots
+mkdir -p Itori/Sources/Itori
 
 
 	2.	In Xcode:
-	•	Right-click on the project root → Add Files to "Roots"...
+	•	Right-click on the project root → Add Files to "Itori"...
 	•	Select Sources folder.
 	•	Make sure:
 	•	“Create folder references” is unchecked.
-	•	“Add to targets” has Roots checked.
-	3.	Under Sources/Roots, create subfolders:
+	•	“Add to targets” has Itori checked.
+	3.	Under Sources/Itori, create subfolders:
 	•	App, Features, Shared, etc. (as above).
 
-Step 5 — Move Code from swift-new into Sources/Roots
+Step 5 — Move Code from swift-new into Sources/Itori
 	1.	In Xcode, under Source/Main/swift-new:
 	•	For each file:
-	•	Drag it into the appropriate Sources/Roots/... folder.
-	•	e.g. ContentView.swift → Sources/Roots/App/RootsApp.swift or RootView.swift
-	•	DashboardView.swift → Sources/Roots/Features/Dashboard/
+	•	Drag it into the appropriate Sources/Itori/... folder.
+	•	e.g. ContentView.swift → Sources/Itori/App/ItoriApp.swift or RootView.swift
+	•	DashboardView.swift → Sources/Itori/Features/Dashboard/
 	2.	Ensure that:
 	•	“Copy items if needed” is unchecked (you’re moving, not duplicating, if done within project).
-	•	File membership for target Roots is checked.
+	•	File membership for target Itori is checked.
 	3.	Keep types consistent:
 	•	If you rename ContentView to RootView, do it deliberately and update references in:
-	•	RootsApp / @main struct.
+	•	ItoriApp / @main struct.
 	•	Any previews.
 	4.	Commit after a meaningful chunk:
 
 git add .
-git commit -m "refactor: move swift-new sources into Sources/Roots"
+git commit -m "refactor: move swift-new sources into Sources/Itori"
 
 
 
 Step 6 — Remove Old Source/Main and Exclude From Target
-	1.	Once everything you care about is in Sources/Roots:
+	1.	Once everything you care about is in Sources/Itori:
 	•	In Xcode, find the old Source/Main groups in the navigator.
 	•	For each file:
-	•	Verify that Target Membership for Roots is unchecked.
+	•	Verify that Target Membership for Itori is unchecked.
 	•	Then remove those groups:
 	•	Right-click → “Delete” → “Remove References” (do not delete from disk yet if you’re paranoid).
 	2.	On disk:
@@ -262,13 +262,13 @@ rm -rf ~/Library/Developer/Xcode/DerivedData/*
 
 Then re-open Xcode and build.
 
-Expected: only Sources/Roots is part of the app.
+Expected: only Sources/Itori is part of the app.
 
 Step 7 — Fix Entry Points & Run Target
 	1.	Ensure there is exactly one @main app entry:
 
 @main
-struct RootsApp: App {
+struct ItoriApp: App {
     @StateObject private var appState = AppState()
 
     var body: some Scene {
@@ -282,14 +282,14 @@ struct RootsApp: App {
 
 	2.	Ensure there are no leftover @main declarations:
 	•	Search @main in project.
-	•	Only RootsApp should exist (unless you have platform-specific @main which must be gated by #if os(...) and separate targets).
+	•	Only ItoriApp should exist (unless you have platform-specific @main which must be gated by #if os(...) and separate targets).
 	3.	Run:
-	•	Choose Roots scheme.
+	•	Choose Itori scheme.
 	•	Hit ⌘R.
 	•	App runs with the new sources.
 
 If multiple schemes exist:
-- Set Roots as default in Scheme dialog.
+- Set Itori as default in Scheme dialog.
 
 ⸻
 
@@ -298,7 +298,7 @@ If multiple schemes exist:
     	1. SWIFT_ACTIVE_COMPILATION_CONDITIONS should be minimal (e.g. DEBUG only).
     	2. Remove stale flags like SWIFT_NEW or LEGACY_APP unless actively used.
 	2. In Build Phases:
-    	1. “Compile Sources” phase for Roots should list only files under Sources/Roots.
+    	1. “Compile Sources” phase for Itori should list only files under Sources/Itori.
 	3. Check for duplicate symbols:
     	1. Build.
     	2. If you see errors like “Invalid redeclaration of X”:
@@ -312,8 +312,8 @@ If multiple schemes exist:
 7.1 Structural Tests (Manual)
 	•	Test 1 — Simple clone & build
 	•	Clone repo on a new machine / clean directory.
-	•	open Roots/Roots.xcodeproj.
-	•	Select Roots scheme → build & run.
+	•	open Itori/Itori.xcodeproj.
+	•	Select Itori scheme → build & run.
 	•	Pass if app appears with Dashboard and no build issues.
 	•	Test 2 — Search duplicates
 	•	Use Cmd+Shift+F for key types (AIScheduler, CalendarEvent, ThemeManager).
@@ -342,7 +342,7 @@ if find. -path "*Source/Main*" -name "*.swift" | grep -q .; then
 fi
 
 xcodebuild \
-  -scheme Roots \
+  -scheme Itori \
   -sdk macosx \
   -destination 'platform=macOS,arch=x86_64' \
   clean build
@@ -371,7 +371,7 @@ Rollout Strategy
 	•	Settings page opens.
 	2.	After merge:
 	•	All future tickets must assume:
-	•	Only Sources/Roots is allowed for app source.
+	•	Only Sources/Itori is allowed for app source.
 	•	Any new feature must be placed there using the feature folder structure.
 
 ⸻
@@ -379,11 +379,11 @@ Rollout Strategy
 9. Done Definition (Strict)
 
 TICKET-001 is only done when:
-	•	Sources/Roots is the sole source root for the app.
+	•	Sources/Itori is the sole source root for the app.
 	•	Source/Main and Source/Main/swift-new are removed or quarantined under archive/ and excluded from all targets.
-	•	Only one app target is used for development (Roots).
+	•	Only one app target is used for development (Itori).
 	•	Clean build from scratch succeeds immediately without any path or module errors.
 	•	A fresh checkout builds and runs using the default scheme without manual target or file jiggling.
-	•	You can list all compiled Swift files for Roots and they all live under Sources/Roots.
+	•	You can list all compiled Swift files for Itori and they all live under Sources/Itori.
 
 ⸻

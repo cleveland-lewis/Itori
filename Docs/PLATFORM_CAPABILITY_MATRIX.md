@@ -352,4 +352,4 @@ This matrix is a **binding contract** for all UI and feature development. Any de
 
 ---
 
-*This document defines the boundaries within which Roots operates on each Apple platform. It ensures platform-appropriate experiences while maintaining cross-platform data consistency and feature parity where appropriate.*
+*This document defines the boundaries within which Itori operates on each Apple platform. It ensures platform-appropriate experiences while maintaining cross-platform data consistency and feature parity where appropriate.*

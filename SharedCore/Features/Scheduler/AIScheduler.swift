@@ -1,6 +1,6 @@
 import Foundation
 
-// Simple scheduling types and algorithm for Roots
+// Simple scheduling types and algorithm for Itori
 
 enum EventSource {
     case calendar, `class`, exam, external

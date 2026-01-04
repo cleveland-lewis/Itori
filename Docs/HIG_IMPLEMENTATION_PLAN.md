@@ -149,7 +149,7 @@ Picker("", selection: $value) {
 
 **User requested:**
 - ❌ No sidebars in Flashcards
-- ❌ No "Roots" title at top
+- ❌ No "Itori" title at top
 
 **We will:**
 - ✅ Keep full-width card layouts

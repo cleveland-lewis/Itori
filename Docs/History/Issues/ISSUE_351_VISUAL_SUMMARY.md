@@ -242,7 +242,7 @@
 **User Journey**:
 1. Click "Open System Settings"
 2. System Settings opens to Notifications
-3. User sees "Roots" in sidebar
+3. User sees "Itori" in sidebar
 4. Can toggle notifications on/off
 5. Return to app → status auto-refreshes on next Settings view
 
@@ -253,11 +253,11 @@
 UIApplication.openSettingsURLString
 ```
 
-**Deep Link Target**: Roots app settings page
+**Deep Link Target**: Itori app settings page
 
 **User Journey**:
 1. Click "Open System Settings"
-2. Settings app opens to Roots page
+2. Settings app opens to Itori page
 3. User sees "Notifications" row at top
 4. Tap → Toggle notifications on/off
 5. Return to app → status auto-refreshes on next Settings view

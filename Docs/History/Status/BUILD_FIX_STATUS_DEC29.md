@@ -50,8 +50,8 @@ private var eventsCard: some View { ... }
 
 **To verify build:**
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild -scheme "Roots" -destination 'platform=macOS' clean build
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild -scheme "Itori" -destination 'platform=macOS' clean build
 ```
 
 **Expected result:** BUILD SUCCEEDED

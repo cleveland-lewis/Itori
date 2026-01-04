@@ -1,7 +1,7 @@
 # Documentation Professionalization Summary
 
 **Date:** December 17, 2025  
-**Repository:** cleveland-lewis/Roots  
+**Repository:** cleveland-lewis/Itori  
 **Action:** Complete documentation restructure and professionalization
 
 ---

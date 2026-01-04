@@ -108,7 +108,7 @@ struct AISettingsView: View {
             .toggleStyle(.switch)
             
             if settings.enableLLMAssistance {
-                Text("LLM assistance is enabled. Roots can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans.")
+                Text("LLM assistance is enabled. Itori can use Apple Intelligence, local models, or custom providers to improve parsing accuracy and add redundancy checks to generated plans.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             } else {

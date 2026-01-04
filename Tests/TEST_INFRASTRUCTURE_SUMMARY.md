@@ -1,9 +1,9 @@
-# Roots Test Infrastructure - Implementation Summary
+# Itori Test Infrastructure - Implementation Summary
 
 ## What Was Done
 
 ### 1. Test Coverage Audit ✅
-- **Created**: `Tests/Unit/RootsTests/TestCoverageAudit.md`
+- **Created**: `Tests/Unit/ItoriTests/TestCoverageAudit.md`
 - Comprehensive analysis of current coverage
 - Identified critical gaps (248 source files, only 12 test files)
 - Prioritized missing test areas
@@ -12,7 +12,7 @@
 ### 2. Test Infrastructure ✅
 
 #### A. BaseTestCase
-- **Created**: `Tests/Unit/RootsTests/Infrastructure/BaseTestCase.swift`
+- **Created**: `Tests/Unit/ItoriTests/Infrastructure/BaseTestCase.swift`
 - Provides common test setup/teardown
 - Includes helper methods:
   - `wait(for:timeout:)` - Async operation waiting
@@ -22,7 +22,7 @@
 - Isolated test environment (UserDefaults, Calendar)
 
 #### B. MockDataFactory
-- **Created**: `Tests/Unit/RootsTests/Infrastructure/MockDataFactory.swift`
+- **Created**: `Tests/Unit/ItoriTests/Infrastructure/MockDataFactory.swift`
 - Centralized test data creation
 - Factories for all major models:
   - `createTask()` - AppTask instances
@@ -59,7 +59,7 @@
 - Install: `cp Scripts/pre-commit .git/hooks/pre-commit`
 
 ### 4. Sample Tests ✅
-- **Created**: `Tests/Unit/RootsTests/AssignmentsStoreTests.swift`
+- **Created**: `Tests/Unit/ItoriTests/AssignmentsStoreTests.swift`
 - Demonstrates best practices
 - Comprehensive test coverage:
   - Task creation (single & batch)
@@ -91,7 +91,7 @@
 ```
 Tests/
 ├── Unit/
-│   └── RootsTests/
+│   └── ItoriTests/
 │       ├── Infrastructure/
 │       │   ├── BaseTestCase.swift          ← Common test base
 │       │   └── MockDataFactory.swift       ← Test data factory
@@ -100,7 +100,7 @@ Tests/
 │       ├── [Feature]Tests.swift            ← Other tests
 │       ├── TestCoverageAudit.md            ← Coverage analysis
 │       └── TESTING_GUIDE.md                ← Complete guide
-├── RootsUITests/                           ← UI tests
+├── ItoriUITests/                           ← UI tests
 └── Scripts/
     ├── generate_test_stub.sh               ← Auto-generate tests
     └── pre-commit                          ← Pre-commit hook
@@ -123,7 +123,7 @@ Tests/
 
 3. **Implement tests**:
    ```swift
-   // Tests/Unit/RootsTests/NewFeatureTests.swift
+   // Tests/Unit/ItoriTests/NewFeatureTests.swift
    @MainActor
    final class NewFeatureTests: BaseTestCase {
        func testSomething() {
@@ -135,7 +135,7 @@ Tests/
 
 4. **Run tests**:
    ```bash
-   xcodebuild test -scheme Roots -only-testing:RootsTests/NewFeatureTests
+   xcodebuild test -scheme Itori -only-testing:ItoriTests/NewFeatureTests
    ```
 
 ### Install Pre-Commit Hook
@@ -151,7 +151,7 @@ Now tests run automatically before each commit!
 
 ```bash
 xcodebuild test \
-  -scheme Roots \
+  -scheme Itori \
   -destination 'platform=macOS' \
   -enableCodeCoverage YES \
   -resultBundlePath TestResults.xcresult
@@ -213,10 +213,10 @@ xcrun xccov view --report TestResults.xcresult
 
 ## Files Created
 
-1. `Tests/Unit/RootsTests/TestCoverageAudit.md`
-2. `Tests/Unit/RootsTests/Infrastructure/BaseTestCase.swift`
-3. `Tests/Unit/RootsTests/Infrastructure/MockDataFactory.swift`
-4. `Tests/Unit/RootsTests/AssignmentsStoreTests.swift`
+1. `Tests/Unit/ItoriTests/TestCoverageAudit.md`
+2. `Tests/Unit/ItoriTests/Infrastructure/BaseTestCase.swift`
+3. `Tests/Unit/ItoriTests/Infrastructure/MockDataFactory.swift`
+4. `Tests/Unit/ItoriTests/AssignmentsStoreTests.swift`
 5. `Tests/TESTING_GUIDE.md`
 6. `Scripts/generate_test_stub.sh`
 7. `Scripts/pre-commit`
@@ -231,7 +231,7 @@ xcrun xccov view --report TestResults.xcresult
 
 ## Conclusion
 
-The Roots test suite is now designed to:
+The Itori test suite is now designed to:
 1. ✅ Check the **entirety** of the app's codebase
 2. ✅ Adapt easily to **new code** through:
    - Automated test stub generation

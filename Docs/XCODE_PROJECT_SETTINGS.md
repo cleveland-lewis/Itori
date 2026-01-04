@@ -2,11 +2,11 @@
 
 ## Target Configuration
 
-### iOS Target (RootsApp)
+### iOS Target (ItoriApp)
 
 #### General Tab
 ```
-Display Name: Roots
+Display Name: Itori
 Bundle Identifier: com.yourcompany.roots
 Version: 1.0
 Build: 1
@@ -19,7 +19,7 @@ Deployment Info:
 App Category: Productivity
 
 Frameworks, Libraries, and Embedded Content:
-  + RootsShared.framework (Do Not Embed)
+  + ItoriShared.framework (Do Not Embed)
 ```
 
 #### Signing & Capabilities
@@ -40,8 +40,8 @@ Future Capabilities:
 
 #### Build Settings (Key Values)
 ```
-Product Name: RootsApp
-Product Module Name: RootsApp
+Product Name: ItoriApp
+Product Module Name: ItoriApp
 Swift Language Version: Swift 5
 iOS Deployment Target: 17.0
 
@@ -63,7 +63,7 @@ Search Paths:
 #### Info.plist Key Values
 ```xml
 <key>CFBundleDisplayName</key>
-<string>Roots</string>
+<string>Itori</string>
 
 <key>UILaunchScreen</key>
 <dict/>
@@ -92,11 +92,11 @@ Search Paths:
 
 ---
 
-### macOS Target (RootsMac)
+### macOS Target (ItoriMac)
 
 #### General Tab
 ```
-Display Name: Roots
+Display Name: Itori
 Bundle Identifier: com.yourcompany.roots.mac
 Version: 1.0
 Build: 1
@@ -107,7 +107,7 @@ Deployment Info:
 App Category: Productivity
 
 Frameworks, Libraries, and Embedded Content:
-  + RootsShared.framework (Do Not Embed)
+  + ItoriShared.framework (Do Not Embed)
 ```
 
 #### Signing & Capabilities
@@ -129,8 +129,8 @@ Future Capabilities:
 
 #### Build Settings (Key Values)
 ```
-Product Name: RootsMac
-Product Module Name: RootsMac
+Product Name: ItoriMac
+Product Module Name: ItoriMac
 Swift Language Version: Swift 5
 macOS Deployment Target: 14.0
 
@@ -149,7 +149,7 @@ Search Paths:
 #### Info.plist Key Values
 ```xml
 <key>CFBundleDisplayName</key>
-<string>Roots</string>
+<string>Itori</string>
 
 <key>LSMinimumSystemVersion</key>
 <string>14.0</string>
@@ -163,7 +163,7 @@ Search Paths:
 
 ---
 
-## Swift Package (RootsShared)
+## Swift Package (ItoriShared)
 
 ### Package.swift Configuration
 
@@ -172,15 +172,15 @@ Search Paths:
 import PackageDescription
 
 let package = Package(
-    name: "RootsShared",
+    name: "ItoriShared",
     platforms: [
         .iOS(.v17),
         .macOS(.v14)
     ],
     products: [
         .library(
-            name: "RootsShared",
-            targets: ["RootsShared"]
+            name: "ItoriShared",
+            targets: ["ItoriShared"]
         )
     ],
     dependencies: [
@@ -188,9 +188,9 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "RootsShared",
+            name: "ItoriShared",
             dependencies: [],
-            path: "Sources/RootsShared",
+            path: "Sources/ItoriShared",
             swiftSettings: [
                 .enableUpcomingFeature("BareSlashRegexLiterals"),
                 .enableUpcomingFeature("ConciseMagicFile"),
@@ -201,9 +201,9 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: "RootsSharedTests",
-            dependencies: ["RootsShared"],
-            path: "Tests/RootsSharedTests"
+            name: "ItoriSharedTests",
+            dependencies: ["ItoriShared"],
+            path: "Tests/ItoriSharedTests"
         )
     ]
 )
@@ -212,11 +212,11 @@ let package = Package(
 ### Directory Structure (Exact)
 
 ```
-RootsShared/
+ItoriShared/
 ├── Package.swift
 ├── README.md
 ├── Sources/
-│   └── RootsShared/
+│   └── ItoriShared/
 │       ├── Models/
 │       ├── Services/
 │       │   └── Protocols/
@@ -226,31 +226,31 @@ RootsShared/
 │       ├── Localization/
 │       └── DependencyInjection/
 └── Tests/
-    └── RootsSharedTests/
+    └── ItoriSharedTests/
 ```
 
 ---
 
 ## Scheme Configuration
 
-### iOS Scheme (RootsApp)
+### iOS Scheme (ItoriApp)
 
 ```
 Build:
-  ✓ RootsApp (Target)
-  ✓ RootsShared (Package)
+  ✓ ItoriApp (Target)
+  ✓ ItoriShared (Package)
 
 Run:
   Build Configuration: Debug
-  Executable: RootsApp.app
+  Executable: ItoriApp.app
   Debugger: LLDB
   Launch: Automatically
 
 Test:
   Build Configuration: Debug
   Test Targets:
-    ✓ RootsAppTests
-    ✓ RootsSharedTests
+    ✓ ItoriAppTests
+    ✓ ItoriSharedTests
 
 Profile:
   Build Configuration: Release
@@ -262,24 +262,24 @@ Archive:
   Build Configuration: Release
 ```
 
-### macOS Scheme (RootsMac)
+### macOS Scheme (ItoriMac)
 
 ```
 Build:
-  ✓ RootsMac (Target)
-  ✓ RootsShared (Package)
+  ✓ ItoriMac (Target)
+  ✓ ItoriShared (Package)
 
 Run:
   Build Configuration: Debug
-  Executable: RootsMac.app
+  Executable: ItoriMac.app
   Debugger: LLDB
   Launch: Automatically
 
 Test:
   Build Configuration: Debug
   Test Targets:
-    ✓ RootsMacTests
-    ✓ RootsSharedTests
+    ✓ ItoriMacTests
+    ✓ ItoriSharedTests
 
 Profile:
   Build Configuration: Release
@@ -338,7 +338,7 @@ Assets.xcassets/
 
 ## Entitlements Configuration
 
-### iOS Entitlements (Roots.entitlements)
+### iOS Entitlements (Itori.entitlements)
 
 **Minimal Configuration**:
 ```xml
@@ -372,7 +372,7 @@ Assets.xcassets/
 </dict>
 ```
 
-### macOS Entitlements (RootsMac.entitlements)
+### macOS Entitlements (ItoriMac.entitlements)
 
 **Minimal Configuration**:
 ```xml
@@ -506,8 +506,8 @@ Package.resolved
 ### Build iOS
 ```bash
 xcodebuild \
-  -project Roots.xcodeproj \
-  -scheme RootsApp \
+  -project Itori.xcodeproj \
+  -scheme ItoriApp \
   -sdk iphonesimulator \
   -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
   build
@@ -516,30 +516,30 @@ xcodebuild \
 ### Build macOS
 ```bash
 xcodebuild \
-  -project Roots.xcodeproj \
-  -scheme RootsMac \
+  -project Itori.xcodeproj \
+  -scheme ItoriMac \
   -sdk macosx \
   build
 ```
 
 ### Test Shared Package
 ```bash
-cd RootsShared
+cd ItoriShared
 swift test
 ```
 
 ### Test Both Targets
 ```bash
 xcodebuild \
-  -project Roots.xcodeproj \
-  -scheme RootsApp \
+  -project Itori.xcodeproj \
+  -scheme ItoriApp \
   -sdk iphonesimulator \
   -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
   test
 
 xcodebuild \
-  -project Roots.xcodeproj \
-  -scheme RootsMac \
+  -project Itori.xcodeproj \
+  -scheme ItoriMac \
   -sdk macosx \
   test
 ```
@@ -560,10 +560,10 @@ xcodebuild \
 2. Check for accidental file inclusion in both targets
 3. Verify platform guards (`#if os(...)`)
 
-### Issue: Can't import RootsShared
+### Issue: Can't import ItoriShared
 **Solution**:
 1. Verify package is added to target dependencies
-2. Check `import RootsShared` statement is correct
+2. Check `import ItoriShared` statement is correct
 3. Rebuild package explicitly
 
 ### Issue: Different behavior on iOS vs macOS
@@ -578,17 +578,17 @@ xcodebuild \
 
 1. **Verify Build**
    ```bash
-   xcodebuild -project Roots.xcodeproj -scheme RootsApp build
-   xcodebuild -project Roots.xcodeproj -scheme RootsMac build
+   xcodebuild -project Itori.xcodeproj -scheme ItoriApp build
+   xcodebuild -project Itori.xcodeproj -scheme ItoriMac build
    ```
 
 2. **Run Tests**
    ```bash
-   cd RootsShared && swift test
+   cd ItoriShared && swift test
    ```
 
 3. **Add First Shared Model**
-   - Create `Course.swift` in `RootsShared/Sources/RootsShared/Models/`
+   - Create `Course.swift` in `ItoriShared/Sources/ItoriShared/Models/`
    - Import in both targets
    - Verify compilation
 
@@ -598,7 +598,7 @@ xcodebuild \
    - Test color rendering
 
 5. **Setup Dependency Injection**
-   - Create `AppContainer` in RootsShared
+   - Create `AppContainer` in ItoriShared
    - Create platform-specific `AppDependencies`
    - Wire up in app entry points
 

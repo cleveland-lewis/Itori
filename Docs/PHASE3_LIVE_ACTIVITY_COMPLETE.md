@@ -84,7 +84,7 @@ func sync(
 - ✅ Conditional rendering (only show when data available)
 
 **Files Modified**:
-- `RootsTimerWidget/TimerLiveActivity.swift`
+- `ItoriTimerWidget/TimerLiveActivity.swift`
 
 **UI Improvements**:
 
@@ -634,7 +634,7 @@ All implemented features work as expected.
    ✓ Pass activities array
    ✓ Pass pomodoro cycles
 
-4. RootsTimerWidget/TimerLiveActivity.swift
+4. ItoriTimerWidget/TimerLiveActivity.swift
    ✓ Enhanced Lock Screen view
    ✓ Enhanced Dynamic Island views
    ✓ Activity emoji support

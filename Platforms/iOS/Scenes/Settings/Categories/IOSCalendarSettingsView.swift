@@ -188,7 +188,7 @@ struct IOSCalendarSettingsView: View {
             }
             Button(NSLocalizedString("common.cancel", comment: "Cancel"), role: .cancel) {}
         } message: {
-            Text(NSLocalizedString("settings.calendar.revoke_access.confirm.message", comment: "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Roots > Calendars."))
+            Text(NSLocalizedString("settings.calendar.revoke_access.confirm.message", comment: "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Itori > Calendars."))
         }
     }
     

@@ -1,6 +1,6 @@
 //
 //  TimerLiveActivityAttributes.swift
-//  Roots
+//  Itori
 //
 //  Shared between main app and widget extension
 //  Phase 3.1: Enhanced with activity name and pomodoro progress

@@ -48,7 +48,7 @@
 ## 📁 All Files Location
 
 ```
-/Users/clevelandlewis/Desktop/Roots/Tests/Unit/RootsTests/
+/Users/clevelandlewis/Desktop/Itori/Tests/Unit/ItoriTests/
 ├── Infrastructure/
 │   ├── BaseTestCase.swift
 │   └── MockDataFactory.swift
@@ -72,26 +72,26 @@
 
 ### 1. Add to Xcode Project
 ```bash
-open /Users/clevelandlewis/Desktop/Roots/RootsApp.xcodeproj
+open /Users/clevelandlewis/Desktop/Itori/ItoriApp.xcodeproj
 ```
 
 In Xcode:
-- Right-click Tests/Unit/RootsTests
-- Add Files to "RootsApp"
+- Right-click Tests/Unit/ItoriTests
+- Add Files to "ItoriApp"
 - Select all 12 new test files
-- ✅ Check "Add to targets: RootsTests"
+- ✅ Check "Add to targets: ItoriTests"
 - Click "Add"
 
 ### 2. Build Project
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild build -scheme Roots -destination 'platform=macOS'
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild build -scheme Itori -destination 'platform=macOS'
 ```
 
 ### 3. Run Tests
 ```bash
-xcodebuild test -scheme Roots -destination 'platform=macOS' \
-  -only-testing:RootsTests -enableCodeCoverage YES \
+xcodebuild test -scheme Itori -destination 'platform=macOS' \
+  -only-testing:ItoriTests -enableCodeCoverage YES \
   -resultBundlePath /tmp/Coverage.xcresult
 ```
 

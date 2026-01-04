@@ -86,7 +86,7 @@ public func recordCompletedSession(sessionId: UUID, durationMinutes: Int) {
 @ObservedObject private var tracker = StudyHoursTracker.shared
 
 private var studyHoursCard: some View {
-    RootsCard(...) {
+    ItoriCard(...) {
         HStack {
             studyHoursStat(
                 label: "Today",
@@ -145,7 +145,7 @@ private var studyHoursCard: some View {
 
 ### Storage Location
 ```
-~/Library/Application Support/RootsAnalytics/
+~/Library/Application Support/ItoriAnalytics/
 ├── study_hours.json          # Current totals + lastResetDate
 └── completed_sessions.json    # Array of recorded session UUIDs
 ```

@@ -117,7 +117,7 @@ final class PersistenceController {
             LOG_DATA(.error, "Persistence", "Using in-memory store as final fallback.")
             isCloudKitEnabled = false
             
-            let memoryContainer = NSPersistentCloudKitContainer(name: "Roots")
+            let memoryContainer = NSPersistentCloudKitContainer(name: "Itori")
             guard let memoryDescription = memoryContainer.persistentStoreDescriptions.first else {
                 LOG_DATA(.error, "Persistence", "CRITICAL: Cannot create memory store description")
                 // Absolute last resort - create minimal container

@@ -1,8 +1,8 @@
-# Roots Testing Guide
+# Itori Testing Guide
 
 ## Overview
 
-This guide ensures Roots maintains high test coverage and quality as the codebase evolves.
+This guide ensures Itori maintains high test coverage and quality as the codebase evolves.
 
 ## Test Architecture
 
@@ -11,31 +11,31 @@ This guide ensures Roots maintains high test coverage and quality as the codebas
 ```
 Tests/
 ├── Unit/
-│   └── RootsTests/
+│   └── ItoriTests/
 │       ├── Infrastructure/          # Test base classes and utilities
 │       │   ├── BaseTestCase.swift
 │       │   └── MockDataFactory.swift
 │       ├── Mocks/                   # Mock implementations
 │       ├── [Feature]Tests.swift     # Feature-specific tests
 │       └── TestCoverageAudit.md
-└── RootsUITests/                    # UI automation tests
+└── ItoriUITests/                    # UI automation tests
 ```
 
 ### Test Categories
 
-**Unit Tests** (Tests/Unit/RootsTests/)
+**Unit Tests** (Tests/Unit/ItoriTests/)
 - Fast, isolated tests
 - No external dependencies
 - Test individual functions/methods
 - Target: Run in < 30 seconds
 
-**Integration Tests** (Tests/Unit/RootsTests/Integration/)
+**Integration Tests** (Tests/Unit/ItoriTests/Integration/)
 - Test multiple components together
 - May use real Core Data, UserDefaults
 - Test data flow between components
 - Target: Run in < 2 minutes
 
-**UI Tests** (Tests/RootsUITests/)
+**UI Tests** (Tests/ItoriUITests/)
 - End-to-end user workflows
 - Real app instance
 - Test user interactions
@@ -154,7 +154,7 @@ func testEdgeCases() {
 ```bash
 # Run tests with coverage
 xcodebuild test \
-  -scheme Roots \
+  -scheme Itori \
   -destination 'platform=macOS' \
   -enableCodeCoverage YES \
   -resultBundlePath TestResults.xcresult
@@ -173,7 +173,7 @@ For any new Swift file without tests:
 ./Scripts/generate_test_stub.sh SharedCore/State/NewFeature.swift
 ```
 
-This creates `Tests/Unit/RootsTests/NewFeatureTests.swift` with:
+This creates `Tests/Unit/ItoriTests/NewFeatureTests.swift` with:
 - Proper structure
 - Test method stubs
 - TODO comments
@@ -276,9 +276,9 @@ jobs:
       - name: Run Unit Tests
         run: |
           xcodebuild test \
-            -scheme Roots \
+            -scheme Itori \
             -destination 'platform=macOS' \
-            -only-testing:RootsTests
+            -only-testing:ItoriTests
       - name: Check Coverage
         run: |
           xcrun xccov view --report TestResults.xcresult \
@@ -296,7 +296,7 @@ When adding a new feature:
 - [ ] Write tests for error conditions
 - [ ] Add integration tests if multiple components involved
 - [ ] Update TestCoverageAudit.md
-- [ ] Run tests locally: `xcodebuild test -scheme Roots -only-testing:RootsTests`
+- [ ] Run tests locally: `xcodebuild test -scheme Itori -only-testing:ItoriTests`
 - [ ] Check coverage meets minimum requirements
 - [ ] Add UI tests for user-facing features
 
@@ -376,7 +376,7 @@ func testDateCalculation() {
 
 ## Resources
 
-- **Test Files**: `Tests/Unit/RootsTests/`
+- **Test Files**: `Tests/Unit/ItoriTests/`
 - **Coverage Report**: `TestResults.xcresult`
 - **CI Logs**: GitHub Actions
 - **Coverage Audit**: `TestCoverageAudit.md`

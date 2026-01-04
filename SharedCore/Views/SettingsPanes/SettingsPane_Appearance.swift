@@ -51,7 +51,7 @@ struct SettingsPane_Appearance: View {
                     .pickerStyle(.segmented)
                     .onChange(of: settings.interfaceStyle) { _, _ in settings.save() }
 
-                    Text("Choose how Roots reacts to system appearance changes.")
+                    Text("Choose how Itori reacts to system appearance changes.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

@@ -1,6 +1,6 @@
 //
 //  DragDropTypes.swift
-//  Roots
+//  Itori
 //
 //  Drag & drop type definitions and UTIs
 //
@@ -10,19 +10,19 @@ import UniformTypeIdentifiers
 import CoreTransferable
 import SwiftUI
 
-/// Custom UTIs for Roots entities
+/// Custom UTIs for Itori entities
 extension UTType {
-    /// Assignment drag type: com.roots.assignment
-    static let rootsAssignment = UTType(exportedAs: "com.roots.assignment")
+    /// Assignment drag type: com.itori.assignment
+    static let itoriAssignment = UTType(exportedAs: "com.itori.assignment")
     
-    /// Course drag type: com.roots.course  
-    static let rootsCourse = UTType(exportedAs: "com.roots.course")
+    /// Course drag type: com.itori.course  
+    static let itoriCourse = UTType(exportedAs: "com.itori.course")
     
-    /// Planner session drag type: com.roots.session
-    static let rootsSession = UTType(exportedAs: "com.roots.session")
+    /// Planner session drag type: com.itori.session
+    static let itoriSession = UTType(exportedAs: "com.itori.session")
 
-    /// Calendar event drag type: com.roots.calendar.event
-    static let rootsCalendarEvent = UTType(exportedAs: "com.roots.calendar.event")
+    /// Calendar event drag type: com.itori.calendar.event
+    static let itoriCalendarEvent = UTType(exportedAs: "com.itori.calendar.event")
 }
 
 /// Transferable assignment representation for drag & drop
@@ -71,7 +71,7 @@ nonisolated struct TransferableCourse: Codable, Sendable {
 @MainActor
 extension TransferableAssignment: Transferable {
     static var transferRepresentation: some TransferRepresentation {
-        CodableRepresentation(contentType: .rootsAssignment)
+        CodableRepresentation(contentType: .itoriAssignment)
         DataRepresentation(exportedContentType: .plainText) { payload in
             Data(payload.plainTextRepresentation.utf8)
         }
@@ -81,7 +81,7 @@ extension TransferableAssignment: Transferable {
 @MainActor
 extension TransferableCourse: Transferable {
     static var transferRepresentation: some TransferRepresentation {
-        CodableRepresentation(contentType: .rootsCourse)
+        CodableRepresentation(contentType: .itoriCourse)
         DataRepresentation(exportedContentType: .plainText) { payload in
             Data(payload.plainTextRepresentation.utf8)
         }

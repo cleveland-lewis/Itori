@@ -118,12 +118,12 @@
 
 ### Location
 ```
-/Users/clevelandlewis/Desktop/Roots/Tests/Unit/RootsTests/
+/Users/clevelandlewis/Desktop/Itori/Tests/Unit/ItoriTests/
 ```
 
 ### Integration Steps
-1. Open Xcode: `open /Users/clevelandlewis/Desktop/Roots/RootsApp.xcodeproj`
-2. Add 18 test files to RootsTests target
+1. Open Xcode: `open /Users/clevelandlewis/Desktop/Itori/ItoriApp.xcodeproj`
+2. Add 18 test files to ItoriTests target
 3. Build: `⌘ + B`
 4. Run tests: `⌘ + U`
 5. Measure coverage

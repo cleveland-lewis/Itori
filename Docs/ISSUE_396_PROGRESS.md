@@ -6,7 +6,7 @@
 ## Issue Summary
 
 **Title**: Build errors: actor isolation + non-exhaustive switches  
-**Link**: https://github.com/cleveland-lewis/Roots/issues/396  
+**Link**: https://github.com/cleveland-lewis/Itori/issues/396  
 **Priority**: CRITICAL - blocks builds on all platforms
 
 ## Work Completed

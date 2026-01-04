@@ -6,7 +6,7 @@ set -e
 
 cd "$(dirname "$0")"
 
-echo "🧪 Running Roots Unit Tests..."
+echo "🧪 Running Itori Unit Tests..."
 echo ""
 
 echo "🔧 Running tooltip lint..."
@@ -14,12 +14,12 @@ Scripts/lint_tooltips.sh
 echo ""
 echo "Build configuration: Debug"
 echo "Platform: macOS"
-echo "Scheme: RootsTests"
+echo "Scheme: ItoriTests"
 echo ""
 
 # Run tests and capture result
 xcodebuild test \
-  -scheme RootsTests \
+  -scheme ItoriTests \
   -destination 'platform=macOS' \
   -quiet \
   2>&1 | tee test_results_$(date +%Y%m%d_%H%M%S).log

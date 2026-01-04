@@ -134,7 +134,7 @@ error: Multiple commands produce 'AIRouter.stringsdata'
 
 **Manual Steps Required**:
 
-1. **Open RootsApp.xcodeproj in Xcode**
+1. **Open ItoriApp.xcodeproj in Xcode**
 
 2. **Find these files in Project Navigator**:
    - `SharedCore/AI/AIProvider.swift`
@@ -153,8 +153,8 @@ error: Multiple commands produce 'AIRouter.stringsdata'
 4. **Clean Build**:
    ```bash
    rm -rf DerivedData
-   xcodebuild clean -project RootsApp.xcodeproj -scheme Roots
-   xcodebuild -project RootsApp.xcodeproj -scheme Roots build
+   xcodebuild clean -project ItoriApp.xcodeproj -scheme Itori
+   xcodebuild -project ItoriApp.xcodeproj -scheme Itori build
    ```
 
 5. **Verify Build Success**:

@@ -57,7 +57,7 @@
 **Files Created:**
 - `SharedCore/Utilities/LocalizationManager.swift`
 - `SharedCore/Utilities/LocalizedStrings.swift`
-- `RootsTests/LocalizationValidationTests.swift`
+- `ItoriTests/LocalizationValidationTests.swift`
 - `Scripts/audit-localization.sh`
 - `LOCALIZATION_ENFORCEMENT_PLAN.md`
 - `LOCALIZATION_AUDIT_SUMMARY.md`
@@ -77,7 +77,7 @@
 - ✅ Traditional clock face styling
 
 **Files:**
-- Modified: `macOSApp/Views/Components/Clock/RootsAnalogClock.swift`
+- Modified: `macOSApp/Views/Components/Clock/ItoriAnalogClock.swift`
 - Modified: `macOS/Scenes/DashboardView.swift`
 
 ### Code Quality Metrics
@@ -161,7 +161,7 @@ No critical issues. All builds succeed. No breaking changes.
 ### Repository Structure
 
 ```
-Roots/
+Itori/
 ├── iOS/                    # iOS-specific views
 │   ├── Root/              # App shell, navigation
 │   ├── Scenes/            # Page views
@@ -174,7 +174,7 @@ Roots/
 │   ├── State/            # App state
 │   ├── Utilities/        # Helpers (NEW: Localization)
 │   └── Views/            # Shared components
-├── RootsTests/            # Unit tests (NEW: Localization tests)
+├── ItoriTests/            # Unit tests (NEW: Localization tests)
 ├── Scripts/               # Build/audit scripts (NEW: audit-localization.sh)
 ├── en.lproj/             # English localization
 ├── zh-Hans.lproj/        # Chinese (Simplified)

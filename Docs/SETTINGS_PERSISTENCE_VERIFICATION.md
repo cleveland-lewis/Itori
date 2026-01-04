@@ -1,7 +1,7 @@
 # Settings Persistence Verification
 
 ## Overview
-All settings in the Roots app are configured to persist between page changes AND app closings.
+All settings in the Itori app are configured to persist between page changes AND app closings.
 
 ## Persistence Mechanisms
 

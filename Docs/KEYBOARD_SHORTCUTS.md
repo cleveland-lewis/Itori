@@ -1,6 +1,6 @@
 # Keyboard Shortcuts Reference
 
-Complete guide to keyboard navigation in Roots app (macOS)
+Complete guide to keyboard navigation in Itori app (macOS)
 
 ---
 

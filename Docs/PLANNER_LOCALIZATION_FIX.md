@@ -142,7 +142,7 @@ To see the changes:
 ```bash
 # 1. Close Xcode
 # 2. Clean derived data
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp*
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp*
 
 # 3. Reopen Xcode
 # 4. Product → Clean Build Folder (Shift+Cmd+K)

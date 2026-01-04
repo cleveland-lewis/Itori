@@ -11,7 +11,7 @@
 ### 1. Current Target Configuration
 
 **✅ CORRECT: Single Modern Watch App Target**
-- Target name: `RootsWatch`
+- Target name: `ItoriWatch`
 - Product type: `com.apple.product-type.application.watchapp2` ✅
 - **This is the modern single-target watch app (not legacy WatchKit Extension split)**
 - No legacy WatchKit Extension target found ✅
@@ -27,24 +27,24 @@ WATCHOS_DEPLOYMENT_TARGET = 26.0   ❌ (Likely meant to be watchOS 10.0)
 
 **✅ CORRECT: Proper Naming Convention**
 ```
-iOS App:    clewisiii.Roots
-Watch App:  clewisiii.Roots.watchkitapp
+iOS App:    clewisiii.Itori
+Watch App:  clewisiii.Itori.watchkitapp
 ```
 
 **✅ CORRECT: Companion Bundle ID Set**
 ```
-INFOPLIST_KEY_WKCompanionAppBundleIdentifier = clewisiii.Roots
+INFOPLIST_KEY_WKCompanionAppBundleIdentifier = clewisiii.Itori
 ```
 
 ### 3. Embedding Status
 
 **❌ CRITICAL ISSUE: Watch App NOT Embedded in iOS App**
 
-Checked iOS target (`Roots`) for:
+Checked iOS target (`Itori`) for:
 - ✅ Has buildPhases
 - ✅ Has dependencies section
 - ❌ **No "Embed Watch Content" copy files phase**
-- ❌ **No target dependency on RootsWatch**
+- ❌ **No target dependency on ItoriWatch**
 - ❌ **Watch app will NOT be included in iOS .ipa**
 
 **This is why the watch app doesn't install with the iOS app.**
@@ -52,8 +52,8 @@ Checked iOS target (`Roots`) for:
 ### 4. Entitlements
 
 **✅ PRESENT: iOS and macOS Entitlements**
-- `Config/Roots.entitlements` (macOS - has sandbox)
-- `Config/Roots-iOS.entitlements` (iOS - no sandbox)
+- `Config/Itori.entitlements` (macOS - has sandbox)
+- `Config/Itori-iOS.entitlements` (iOS - no sandbox)
 - Both have iCloud/CloudKit configured
 
 **⚠️ MISSING: Watch App Entitlements**
@@ -72,7 +72,7 @@ Checked iOS target (`Roots`) for:
 **⚠️ CONCERN: Custom Info.plist with Manual Keys**
 ```xml
 <key>WKCompanionAppBundleIdentifier</key>
-<string>clewisiii.Roots</string>
+<string>clewisiii.Itori</string>
 ```
 
 Modern Xcode projects should use:
@@ -116,7 +116,7 @@ watchOS: 26.0 → 10.0 (or 11.0)
 3. Implement basic message/context passing
 
 ### 🟡 HIGH: Create Watch Entitlements
-1. Create `Config/Roots-watchOS.entitlements`
+1. Create `Config/Itori-watchOS.entitlements`
 2. Add App Groups if needed for shared data
 3. Configure in Xcode project
 
@@ -141,7 +141,7 @@ After fixes, verify:
 - [ ] watchOS deployment target is valid (10.0 - 11.0)
 - [ ] `xcodebuild -showBuildSettings` shows watch app in iOS embed phase
 - [ ] Archive iOS app → Product → Show in Finder → Show Package Contents
-- [ ] iOS .app/Watch/ directory exists and contains RootsWatch.app
+- [ ] iOS .app/Watch/ directory exists and contains ItoriWatch.app
 - [ ] Install on TestFlight: iOS installs → Watch app appears in Watch app
 - [ ] WatchConnectivity: Send test message from iPhone → received on watch
 - [ ] Real device test: Pair watch → install iOS app → watch app auto-installs (if user allows)

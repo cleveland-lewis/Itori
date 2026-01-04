@@ -1,4 +1,4 @@
-# Test Coverage Audit - Roots App
+# Test Coverage Audit - Itori App
 
 ## Current Test Files (12)
 1. AccessibilityInfrastructureTests.swift ✅
@@ -8,7 +8,7 @@
 5. DragDropTypesTests.swift ✅
 6. LocalizationValidationTests.swift ✅
 7. PlannerEngineTests.swift ✅
-8. RootsTests.swift (empty placeholder)
+8. ItoriTests.swift (empty placeholder)
 9. StudyHoursTrackerTests.swift ✅
 10. TabBarPreferencesStoreTests.swift
 11. TimerPagePerformanceTests.swift ✅

@@ -117,8 +117,8 @@ This ensures the entire app respects the user's appearance choice.
 
 1. **Build and Run**:
    ```bash
-   xcodebuild -scheme RootsWatch -sdk watchsimulator build
-   xcodebuild -scheme Roots -sdk iphonesimulator build
+   xcodebuild -scheme ItoriWatch -sdk watchsimulator build
+   xcodebuild -scheme Itori -sdk iphonesimulator build
    ```
 
 2. **Test Each Option**:

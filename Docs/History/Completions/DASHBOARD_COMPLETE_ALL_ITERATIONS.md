@@ -14,7 +14,7 @@
 
 ### Iteration 2: Energy Card ✅
 **Color-Coded Energy Selection**
-- Replaced RootsCard with DashboardCard
+- Replaced ItoriCard with DashboardCard
 - Color-coded buttons (🟢 High, 🟠 Medium, 🔴 Low)
 - Icons for each level (bolt variations)
 - Descriptive caption text
@@ -24,7 +24,7 @@
 
 ### Iteration 3: Study Hours Card ✅
 **Consistent Stats Display**
-- Replaced RootsCard with DashboardCard
+- Replaced ItoriCard with DashboardCard
 - Used DashboardStatRow for all stats
 - Consistent blue color scheme
 - Footer "View Details" link
@@ -173,7 +173,7 @@ Fixed Layout:
 
 Issues:
 ❌ Fixed 2-column layout
-❌ Custom RootsCard component
+❌ Custom ItoriCard component
 ❌ Custom text styles
 ❌ No empty states
 ❌ No loading states
@@ -380,7 +380,7 @@ Features:
 
 For other views in the app:
 
-1. Replace `RootsCard` with `DashboardCard`
+1. Replace `ItoriCard` with `DashboardCard`
 2. Use `DashboardStatRow` for stats
 3. Use `DashboardEmptyState` for empty views
 4. Add context menus to interactive rows
@@ -412,7 +412,7 @@ The dashboard now exemplifies Apple's Human Interface Guidelines with native mat
 
 ---
 
-**Project:** Roots Academic Planner  
+**Project:** Itori Academic Planner  
 **Component:** Dashboard View  
 **Status:** ✅ Complete  
 **Date:** December 27, 2025 03:50 AM  

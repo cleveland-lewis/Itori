@@ -1,6 +1,6 @@
 # Issue #262: Mini Calendar Phantom Date Highlight - FIXED
 
-**Issue**: [Bug: Mini calendar highlights a date (e.g., Dec 13) unexpectedly with no user selection](https://github.com/cleveland-lewis/Roots/issues/262)  
+**Issue**: [Bug: Mini calendar highlights a date (e.g., Dec 13) unexpectedly with no user selection](https://github.com/cleveland-lewis/Itori/issues/262)  
 **Date**: December 23, 2025  
 **Status**: ✅ **FIXED**
 

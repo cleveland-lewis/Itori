@@ -54,19 +54,19 @@ func scheduleLocalNotification(title: String, body: String, identifier: String) 
 
 ### iOS Build
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme Roots -sdk iphonesimulator build
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori -sdk iphonesimulator build
 # Result: ** BUILD SUCCEEDED **
 ```
 
 ### macOS Build
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme Roots -sdk macosx build
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori -sdk macosx build
 # Result: ** BUILD SUCCEEDED **
 ```
 
 ### watchOS Build
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme RootsWatch -sdk watchsimulator build
+xcodebuild -project ItoriApp.xcodeproj -scheme ItoriWatch -sdk watchsimulator build
 # Result: ** BUILD SUCCEEDED **
 ```
 

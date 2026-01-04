@@ -1,7 +1,7 @@
 # iCloud Sync Configuration
 
 ## Overview
-The Roots app now supports full iCloud sync across macOS, iOS, and iPadOS devices.
+The Itori app now supports full iCloud sync across macOS, iOS, and iPadOS devices.
 
 ## What Gets Synced
 - **Assignments/Tasks**: All assignments are synced via iCloud Documents
@@ -11,15 +11,15 @@ The Roots app now supports full iCloud sync across macOS, iOS, and iPadOS device
 
 ### Entitlements
 Both iOS and macOS have been configured with:
-- **iCloud Container**: `iCloud.com.cwlewisiii.Roots`
+- **iCloud Container**: `iCloud.com.cwlewisiii.Itori`
 - **CloudKit** service enabled
 - **CloudDocuments** service enabled for file-based sync
 - **Ubiquity Key-Value Store** for settings sync
 - **Ubiquity Containers** for document storage
 
 ### Files Updated
-1. `Config/Roots-iOS.entitlements` - iOS/iPadOS entitlements
-2. `Config/Roots.entitlements` - macOS entitlements
+1. `Config/Itori-iOS.entitlements` - iOS/iPadOS entitlements
+2. `Config/Itori.entitlements` - macOS entitlements
 3. `SharedCore/State/AssignmentsStore.swift` - Explicit container identifier
 
 ## How It Works
@@ -33,7 +33,7 @@ Both iOS and macOS have been configured with:
 ### Conflict Resolution
 - If significant conflicts are detected (>5 tasks or >20% different), both versions are saved
 - User is notified via `AssignmentsSyncConflict` notification
-- Conflict files are saved in: `~/Library/Application Support/RootsAssignments/Conflicts/`
+- Conflict files are saved in: `~/Library/Application Support/ItoriAssignments/Conflicts/`
 
 ### Toggle Sync
 Users can enable/disable iCloud sync in Settings:
@@ -45,7 +45,7 @@ Users can enable/disable iCloud sync in Settings:
 ### Prerequisites
 1. Sign in to iCloud on both devices with the same Apple ID
 2. Ensure iCloud Drive is enabled in System Settings/Settings
-3. Enable iCloud sync in Roots app settings
+3. Enable iCloud sync in Itori app settings
 
 ### Test Steps
 1. **Device A**: Create an assignment
@@ -57,7 +57,7 @@ Users can enable/disable iCloud sync in Settings:
 If sync isn't working:
 1. Check iCloud Drive is enabled in system settings
 2. Check network connectivity
-3. Check that "iCloud Sync" is enabled in Roots settings
+3. Check that "iCloud Sync" is enabled in Itori settings
 4. Check Console.app for sync messages (search for "iCloud")
 
 ## Network Resilience
@@ -68,7 +68,7 @@ If sync isn't working:
 ## Container Identifier
 The app uses the explicit container identifier:
 ```
-iCloud.com.cwlewisiii.Roots
+iCloud.com.cwlewisiii.Itori
 ```
 
 This ensures consistent access across all platforms.

@@ -7,7 +7,7 @@ Created a complete three-phase roadmap for production readiness as GitHub issues
 
 ### Meta Issue
 **#420 - Meta: Production Readiness Roadmap (Epic 1→2→3)**  
-https://github.com/cleveland-lewis/Roots/issues/420
+https://github.com/cleveland-lewis/Itori/issues/420
 - Tracks overall progress across all three epics
 - Shows dependency graph
 - Lists next actions
@@ -15,19 +15,19 @@ https://github.com/cleveland-lewis/Roots/issues/420
 ### Epic Issues
 
 **#417 - Epic 1: Local-First Persistence Foundation**  
-https://github.com/cleveland-lewis/Roots/issues/417
+https://github.com/cleveland-lewis/Itori/issues/417
 - Foundation epic (no blockers)
 - Establishes offline-first persistence layer
 - Must complete before Epic 2 or 3
 
 **#418 - Epic 2: CloudKit iCloud Sync (Apple-Native Sync Layer)**  
-https://github.com/cleveland-lewis/Roots/issues/418
+https://github.com/cleveland-lewis/Itori/issues/418
 - Blocked by: Epic 1 (#417)
 - Requires: Apple Developer Program enrollment ($99)
 - Adds cross-device sync without changing UI
 
 **#419 - Epic 3: App Store Production & Subscriptions**  
-https://github.com/cleveland-lewis/Roots/issues/419
+https://github.com/cleveland-lewis/Itori/issues/419
 - Blocked by: Epic 1 (#417) required, Epic 2 (#418) recommended
 - Requires: Apple Developer Program + TestFlight testing
 - Handles distribution and monetization

@@ -152,7 +152,7 @@ struct CalendarSettingsView: View {
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("To disconnect Roots from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars.")
+            Text("To disconnect Itori from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars.")
         }
         .onAppear {
             _Concurrency.Task { await calendarManager.refreshAuthStatus() }

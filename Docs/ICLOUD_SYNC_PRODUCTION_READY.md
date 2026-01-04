@@ -29,7 +29,7 @@ Comprehensive, production-ready iCloud synchronization for **Planner** and **Ass
 
 3. **iCloud Directory Structure**
    ```
-   iCloud.com.cwlewisiii.Roots/
+   iCloud.com.cwlewisiii.Itori/
    └── Documents/
        └── Planner/
            ├── planner.json
@@ -73,7 +73,7 @@ Comprehensive, production-ready iCloud synchronization for **Planner** and **Ass
 
 3. **iCloud Directory Structure**
    ```
-   iCloud.com.cwlewisiii.Roots/
+   iCloud.com.cwlewisiii.Itori/
    └── Documents/
        └── Assignments/
            ├── tasks.json
@@ -159,7 +159,7 @@ iCloud Sync (if enabled & online) ←─── OPPORTUNISTIC
 ## Technical Achievements
 
 ### 1. Container Management
-- ✅ Correct container ID: `iCloud.com.cwlewisiii.Roots`
+- ✅ Correct container ID: `iCloud.com.cwlewisiii.Itori`
 - ✅ Directory creation with error handling
 - ✅ Lazy initialization for performance
 - ✅ Nil handling for unavailable containers
@@ -231,7 +231,7 @@ iCloud Sync (if enabled & online) ←─── OPPORTUNISTIC
 ### iCloud Entitlements
 Ensure the following are configured in Xcode:
 1. **Capabilities → iCloud** (enabled)
-2. **iCloud Containers**: `iCloud.com.cwlewisiii.Roots`
+2. **iCloud Containers**: `iCloud.com.cwlewisiii.Itori`
 3. **Key-Value Storage**: Enabled (optional)
 4. **CloudKit**: Not required (using ubiquity container)
 

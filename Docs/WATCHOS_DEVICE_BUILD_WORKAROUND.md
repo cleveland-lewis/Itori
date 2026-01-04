@@ -24,21 +24,21 @@ Simulator builds work perfectly and the watch app is properly embedded:
 
 ```bash
 # Build watch app for simulator
-xcodebuild -project RootsApp.xcodeproj \
-  -scheme RootsWatch \
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme ItoriWatch \
   -sdk watchsimulator \
   -configuration Debug \
   build
 
 # Build iOS app for simulator (includes watch app)
-xcodebuild -project RootsApp.xcodeproj \
-  -scheme Roots \
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme Itori \
   -sdk iphonesimulator \
   -configuration Debug \
   build
 
 # Verify
-ls ~/Library/Developer/Xcode/DerivedData/RootsApp-*/Build/Products/Debug-iphonesimulator/Roots.app/Watch/RootsWatch.app
+ls ~/Library/Developer/Xcode/DerivedData/ItoriApp-*/Build/Products/Debug-iphonesimulator/Itori.app/Watch/ItoriWatch.app
 # ✅ Watch app is embedded!
 ```
 
@@ -50,9 +50,9 @@ ls ~/Library/Developer/Xcode/DerivedData/RootsApp-*/Build/Products/Debug-iphones
 
 The Xcode GUI handles watchOS companion apps better than xcodebuild:
 
-1. Open `RootsApp.xcodeproj` in Xcode
+1. Open `ItoriApp.xcodeproj` in Xcode
 2. Connect iPhone via USB
-3. Select **Roots** scheme
+3. Select **Itori** scheme
 4. Select your iPhone as destination
 5. Click **Run** (⌘R)
 6. **Result**: Both iOS and watch apps install
@@ -65,8 +65,8 @@ Build and install iOS and watch apps independently:
 
 ```bash
 # 1. Build iOS app
-xcodebuild -project RootsApp.xcodeproj \
-  -scheme Roots \
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme Itori \
   -sdk iphoneos \
   -configuration Debug \
   -derivedDataPath ./build \
@@ -74,8 +74,8 @@ xcodebuild -project RootsApp.xcodeproj \
   build
 
 # 2. Build watch app separately  
-xcodebuild -project RootsApp.xcodeproj \
-  -scheme RootsWatch \
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme ItoriWatch \
   -sdk watchos \
   -configuration Debug \
   -derivedDataPath ./build \
@@ -85,10 +85,10 @@ xcodebuild -project RootsApp.xcodeproj \
 # 3. Install iOS app on connected iPhone
 xcrun devicectl device install app \
   --device <iphone-udid> \
-  ./build/Build/Products/Debug-iphoneos/Roots.app
+  ./build/Build/Products/Debug-iphoneos/Itori.app
 
 # 4. Install watch app via iPhone's Watch app
-# Open Watch app on iPhone → My Watch → Available Apps → Roots → Install
+# Open Watch app on iPhone → My Watch → Available Apps → Itori → Install
 ```
 
 ### Option 3: TestFlight (Best for Distribution)
@@ -143,8 +143,8 @@ Apple needs to update the validation utility to recognize modern watchOS apps th
 ### Development (Daily Testing)
 Use **simulators** - they work perfectly and build fast:
 ```bash
-xcodebuild -scheme RootsWatch -sdk watchsimulator build
-xcodebuild -scheme Roots -sdk iphonesimulator build
+xcodebuild -scheme ItoriWatch -sdk watchsimulator build
+xcodebuild -scheme Itori -sdk iphonesimulator build
 ```
 
 ### Device Testing (Pre-Release)

@@ -144,27 +144,27 @@ let badJSON = builders.buildInvalidJSON(type: .trailingComma)
 ### All Tests
 
 ```bash
-xcodebuild test -scheme Roots -destination 'platform=macOS'
+xcodebuild test -scheme Itori -destination 'platform=macOS'
 ```
 
 ### Specific Test Suite
 
 ```bash
 # Blueprint tests only
-xcodebuild test -scheme Roots -only-testing:RootsTests/BlueprintDeterminismTests
+xcodebuild test -scheme Itori -only-testing:ItoriTests/BlueprintDeterminismTests
 
 # Validators only
-xcodebuild test -scheme Roots -only-testing:RootsTests/SchemaValidatorTests
-xcodebuild test -scheme Roots -only-testing:RootsTests/ContentValidatorTests
+xcodebuild test -scheme Itori -only-testing:ItoriTests/SchemaValidatorTests
+xcodebuild test -scheme Itori -only-testing:ItoriTests/ContentValidatorTests
 
 # 100-run integration
-xcodebuild test -scheme Roots -only-testing:RootsTests/HundredRunIntegrationTests
+xcodebuild test -scheme Itori -only-testing:ItoriTests/HundredRunIntegrationTests
 ```
 
 ### From Xcode
 
-1. Open `RootsApp.xcodeproj`
-2. Select `Roots` scheme
+1. Open `ItoriApp.xcodeproj`
+2. Select `Itori` scheme
 3. Run tests: `Cmd+U`
 4. View test navigator: `Cmd+6`
 

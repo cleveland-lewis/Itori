@@ -1,4 +1,4 @@
-name: Roots CI
+name: Itori CI
 permissions:
   contents: read
 
@@ -47,10 +47,10 @@ jobs:
           PROJ=$(find . -maxdepth 3 -name "*.xcodeproj" | head -n 1)
           if [ -n "$WS" ]; then
             echo "Using workspace: $WS"
-            xcodebuild -workspace "$WS" -scheme "Roots" -destination "platform=macOS" clean test | tee "$LOG_FILE" | xcpretty -r junit --output "$JUNIT_FILE"
+            xcodebuild -workspace "$WS" -scheme "Itori" -destination "platform=macOS" clean test | tee "$LOG_FILE" | xcpretty -r junit --output "$JUNIT_FILE"
           elif [ -n "$PROJ" ]; then
             echo "Using project: $PROJ"
-            xcodebuild -project "$PROJ" -scheme "Roots" -destination "platform=macOS" clean test | tee "$LOG_FILE" | xcpretty -r junit --output "$JUNIT_FILE"
+            xcodebuild -project "$PROJ" -scheme "Itori" -destination "platform=macOS" clean test | tee "$LOG_FILE" | xcpretty -r junit --output "$JUNIT_FILE"
           else
             echo "No .xcworkspace or .xcodeproj found in repo" >&2
             ls -la

@@ -1,7 +1,7 @@
 # German Localization - Setup Complete
 
 ## Overview
-Added German (de) locale structure to the Roots app localization file, ready for translation.
+Added German (de) locale structure to the Itori app localization file, ready for translation.
 
 ## What Was Done
 

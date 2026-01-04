@@ -14,7 +14,7 @@ All data syncs automatically across devices via CloudKit and remains available o
 
 ### Core Components
 
-1. **Core Data Entities** (`Roots.xcdatamodeld`)
+1. **Core Data Entities** (`Itori.xcdatamodeld`)
    - `CourseOutlineNodeMO` - Course modules/folders
    - `CourseFileMO` - File metadata and sync status
    - `FileParseResultMO` - Parse results and extracted content

@@ -3,7 +3,7 @@
 ## Issue
 watchOS app failed to install on physical device with error:
 ```
-clelewisiii.Roots.watch: Missing WKCompanionAppBundleIdentifier key in WatchKit 1.0 app's Info.plist
+clelewisiii.Itori.watch: Missing WKCompanionAppBundleIdentifier key in WatchKit 1.0 app's Info.plist
 Domain: MIInstallerErrorDomain
 Code: 97
 ```
@@ -25,7 +25,7 @@ Created an explicit `Info.plist` file for the watchOS app with all required keys
 <key>WKApplication</key>
 <true/>
 <key>WKCompanionAppBundleIdentifier</key>
-<string>clelewisiii.Roots</string>
+<string>clelewisiii.Itori</string>
 <key>WKWatchOnly</key>
 <true/>
 <!-- Standard bundle keys -->
@@ -35,23 +35,23 @@ Created an explicit `Info.plist` file for the watchOS app with all required keys
 
 **Critical keys:**
 - `WKApplication`: `true` - Identifies this as a watchOS app
-- `WKCompanionAppBundleIdentifier`: `clelewisiii.Roots` - Links to iOS companion app
+- `WKCompanionAppBundleIdentifier`: `clelewisiii.Itori` - Links to iOS companion app
 - `WKWatchOnly`: `true` - Indicates watchOS-only (no iOS component)
 
 ### 2. Updated Xcode Project Build Settings
-Modified `RootsApp.xcodeproj/project.pbxproj` for both Debug and Release configurations:
+Modified `ItoriApp.xcodeproj/project.pbxproj` for both Debug and Release configurations:
 
 **Before:**
 ```
 GENERATE_INFOPLIST_FILE = YES;
-INFOPLIST_KEY_WKCompanionAppBundleIdentifier = clelewisiii.Roots;
+INFOPLIST_KEY_WKCompanionAppBundleIdentifier = clelewisiii.Itori;
 ```
 
 **After:**
 ```
 GENERATE_INFOPLIST_FILE = NO;
 INFOPLIST_FILE = watchOS/App/Info.plist;
-INFOPLIST_KEY_WKCompanionAppBundleIdentifier = clelewisiii.Roots;
+INFOPLIST_KEY_WKCompanionAppBundleIdentifier = clelewisiii.Itori;
 ```
 
 ## Build Status
@@ -60,19 +60,19 @@ INFOPLIST_KEY_WKCompanionAppBundleIdentifier = clelewisiii.Roots;
 
 **macOS:**
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme Roots -destination 'platform=macOS' build
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori -destination 'platform=macOS' build
 ** BUILD SUCCEEDED **
 ```
 
 **iOS:**
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme Roots -destination 'platform=iOS Simulator,...' build
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori -destination 'platform=iOS Simulator,...' build
 ** BUILD SUCCEEDED **
 ```
 
 **watchOS:**
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme RootsWatch -destination 'platform=watchOS Simulator,...' build
+xcodebuild -project ItoriApp.xcodeproj -scheme ItoriWatch -destination 'platform=watchOS Simulator,...' build
 ** BUILD SUCCEEDED **
 ```
 
@@ -80,7 +80,7 @@ xcodebuild -project RootsApp.xcodeproj -scheme RootsWatch -destination 'platform
 
 1. **Clean Xcode Cache:**
    ```bash
-   rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp-*
+   rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp-*
    ```
 
 2. **Open Project in Xcode:**
@@ -111,12 +111,12 @@ The following warnings appear but do not affect functionality:
 
 To verify the Info.plist is correctly embedded:
 ```bash
-plutil -p ~/Library/Developer/Xcode/DerivedData/RootsApp-*/Build/Products/Debug-watchos/RootsWatch.app/Info.plist | grep -A 1 "WKCompanionAppBundleIdentifier"
+plutil -p ~/Library/Developer/Xcode/DerivedData/ItoriApp-*/Build/Products/Debug-watchos/ItoriWatch.app/Info.plist | grep -A 1 "WKCompanionAppBundleIdentifier"
 ```
 
 Expected output:
 ```
-"WKCompanionAppBundleIdentifier" => "clelewisiii.Roots"
+"WKCompanionAppBundleIdentifier" => "clelewisiii.Itori"
 ```
 
 ---

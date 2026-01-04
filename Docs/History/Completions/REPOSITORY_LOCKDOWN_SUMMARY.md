@@ -1,7 +1,7 @@
 # Repository Lockdown Summary
 
 **Date:** December 17, 2025  
-**Repository:** cleveland-lewis/Roots  
+**Repository:** cleveland-lewis/Itori  
 **Action:** Convert to proprietary source-visible inspection-only repository
 
 ---

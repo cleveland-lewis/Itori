@@ -112,8 +112,8 @@ extension AppTask {
 **Files Updated:**
 1. `Tests/Unit/SharedCore/StorageSafetyTests.swift` - 4 initializers fixed
 2. `Tests/Unit/SharedCore/ResetAllDataTests.swift` - 1 initializer fixed
-3. `Tests/Unit/RootsTests/DragDropTypesTests.swift` - 2 initializers fixed
-4. `Tests/Unit/RootsTests/DragDropHandlerTests.swift` - 2 initializers fixed
+3. `Tests/Unit/ItoriTests/DragDropTypesTests.swift` - 2 initializers fixed
+4. `Tests/Unit/ItoriTests/DragDropHandlerTests.swift` - 2 initializers fixed
 
 **Pattern Applied:**
 ```swift
@@ -144,8 +144,8 @@ AppTask(id:title:courseId:due:estimatedMinutes:minBlockMinutes:
 - ✅ `SharedCore/Features/Scheduler/AIScheduler.swift` - CodingKeys + convenience init
 - ✅ `Tests/Unit/SharedCore/StorageSafetyTests.swift` - 4 call sites
 - ✅ `Tests/Unit/SharedCore/ResetAllDataTests.swift` - 1 call site  
-- ✅ `Tests/Unit/RootsTests/DragDropTypesTests.swift` - 2 call sites
-- ✅ `Tests/Unit/RootsTests/DragDropHandlerTests.swift` - 2 call sites
+- ✅ `Tests/Unit/ItoriTests/DragDropTypesTests.swift` - 2 call sites
+- ✅ `Tests/Unit/ItoriTests/DragDropHandlerTests.swift` - 2 call sites
 
 **Total:** 7 files touched, NO DUPLICATES
 
@@ -191,8 +191,8 @@ Tests should now **compile and run**. Remaining issues (if any) will be:
 
 **Command:**
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild test -scheme RootsTests -destination 'platform=macOS'
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild test -scheme ItoriTests -destination 'platform=macOS'
 ```
 
 **Expected:**

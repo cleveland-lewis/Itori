@@ -10,7 +10,7 @@
 
 ### 2. App Initialization Updated ✓
 
-**File: `Platforms/iOS/App/RootsIOSApp.swift`**
+**File: `Platforms/iOS/App/ItoriIOSApp.swift`**
 
 Added:
 ```swift

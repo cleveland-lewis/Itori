@@ -1,4 +1,4 @@
-# Production Rules for Roots
+# Production Rules for Itori
 
 Non-negotiables before anything ships:
 

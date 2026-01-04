@@ -2,14 +2,14 @@
 
 ## Problem
 
-The RootsWatch (watchOS) target fails to build with the following error:
+The ItoriWatch (watchOS) target fails to build with the following error:
 
 ```
-error: Multiple commands produce '/path/to/RootsWatch.app/RootsWatch'
-    note: Target 'RootsWatch' (project 'RootsApp'): CopyAndPreserveArchs
-    note: Target 'RootsWatch' (project 'RootsApp') has link command with output
-warning: duplicate output file '/path/to/RootsWatch.app/RootsWatch' on task: 
-    CreateUniversalBinary /path/to/RootsWatch.app/RootsWatch normal arm64 x86_64
+error: Multiple commands produce '/path/to/ItoriWatch.app/ItoriWatch'
+    note: Target 'ItoriWatch' (project 'ItoriApp'): CopyAndPreserveArchs
+    note: Target 'ItoriWatch' (project 'ItoriApp') has link command with output
+warning: duplicate output file '/path/to/ItoriWatch.app/ItoriWatch' on task: 
+    CreateUniversalBinary /path/to/ItoriWatch.app/ItoriWatch normal arm64 x86_64
 ```
 
 ## Root Cause
@@ -74,12 +74,12 @@ This issue **requires manual intervention in Xcode IDE**. It cannot be fixed via
 
 1. **Open the project in Xcode**
    ```bash
-   open RootsApp.xcodeproj
+   open ItoriApp.xcodeproj
    ```
 
-2. **Select RootsWatch target**
+2. **Select ItoriWatch target**
    - Click on the project in the navigator
-   - Select "RootsWatch" target from the targets list
+   - Select "ItoriWatch" target from the targets list
 
 3. **Check Build Phases**
    - Click on "Build Phases" tab
@@ -106,7 +106,7 @@ This issue **requires manual intervention in Xcode IDE**. It cannot be fixed via
 
 6. **Alternative: Recreate Watch Target**
    If the above doesn't work:
-   - Delete the RootsWatch target completely
+   - Delete the ItoriWatch target completely
    - Create a new watchOS App target
    - Re-add source files
    - Reconfigure build settings
@@ -117,8 +117,8 @@ After applying fixes in Xcode:
 
 ```bash
 # Clean and rebuild
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild -project RootsApp.xcodeproj -scheme "RootsWatch" \
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild -project ItoriApp.xcodeproj -scheme "ItoriWatch" \
   -sdk watchsimulator -destination 'generic/platform=watchOS Simulator' \
   clean build
 ```
@@ -151,8 +151,8 @@ Until the Xcode project is fixed, developers can:
 
 ## Related Files
 
-- Project file: `/Users/clevelandlewis/Desktop/Roots/RootsApp.xcodeproj/project.pbxproj`
-- Watch source: `/Users/clevelandlewis/Desktop/Roots/watchOS/`
+- Project file: `/Users/clevelandlewis/Desktop/Itori/ItoriApp.xcodeproj/project.pbxproj`
+- Watch source: `/Users/clevelandlewis/Desktop/Itori/watchOS/`
 - Build logs: `watch_build_*.log`
 
 ---

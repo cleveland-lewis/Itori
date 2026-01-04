@@ -4,7 +4,7 @@
 The warning `-[NSApplication(NSWindowRestoration) restoreWindowWithIdentifier:state:completionHandler:] Unable to find className=(null)` was appearing on every app launch.
 
 ## Fix Applied
-Updated `AppDelegate` in `macOSApp/App/RootsApp.swift` to disable window restoration **before** the app finishes launching by setting `NSQuitAlwaysKeepsWindows` to `false` in the `init()` method.
+Updated `AppDelegate` in `macOSApp/App/ItoriApp.swift` to disable window restoration **before** the app finishes launching by setting `NSQuitAlwaysKeepsWindows` to `false` in the `init()` method.
 
 ## What Changed
 ```swift
@@ -26,7 +26,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 ### Test 1: Fresh Launch
 1. **Clean UserDefaults** (optional but recommended for clean test):
    ```bash
-   defaults delete com.clevelandlewis.Roots NSQuitAlwaysKeepsWindows
+   defaults delete com.clevelandlewis.Itori NSQuitAlwaysKeepsWindows
    ```
 
 2. **Launch the app**

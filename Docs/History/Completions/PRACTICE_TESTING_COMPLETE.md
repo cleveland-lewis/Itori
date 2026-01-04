@@ -331,8 +331,8 @@ practice_test_generation_v2/
 
 ### v1 (main branch)
 ```bash
-$ cd /Users/clevelandlewis/Roots
-$ xcodebuild -project RootsApp.xcodeproj -scheme Roots -configuration Debug build
+$ cd /Users/clevelandlewis/Itori
+$ xcodebuild -project ItoriApp.xcodeproj -scheme Itori -configuration Debug build
 
 ** BUILD SUCCEEDED **
 ```

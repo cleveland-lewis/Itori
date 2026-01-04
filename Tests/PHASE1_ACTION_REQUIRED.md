@@ -10,14 +10,14 @@
 ## ✅ Files Created and Ready
 
 ### 1. Infrastructure (Completed)
-- ✅ `Tests/Unit/RootsTests/Infrastructure/BaseTestCase.swift`
-- ✅ `Tests/Unit/RootsTests/Infrastructure/MockDataFactory.swift`
+- ✅ `Tests/Unit/ItoriTests/Infrastructure/BaseTestCase.swift`
+- ✅ `Tests/Unit/ItoriTests/Infrastructure/MockDataFactory.swift`
 - ✅ `Scripts/generate_test_stub.sh`
 - ✅ `Scripts/pre-commit`
 
 ### 2. Test Files Created This Session
-- ✅ `Tests/Unit/RootsTests/FocusModelsTests.swift` (21 tests)
-- ✅ `Tests/Unit/RootsTests/AttachmentTests.swift` (20 tests)
+- ✅ `Tests/Unit/ItoriTests/FocusModelsTests.swift` (21 tests)
+- ✅ `Tests/Unit/ItoriTests/AttachmentTests.swift` (20 tests)
 
 ### 3. Test Code Ready to Copy (in 70_PERCENT_COVERAGE_PLAN.md)
 - ✅ CourseModelsTests.swift (~30 tests) - Lines 15-205
@@ -31,18 +31,18 @@
 
 ### Step 1: Add Test Files to Project (15 minutes)
 
-1. Open `RootsApp.xcodeproj` in Xcode
-2. Navigate to `Tests/Unit/RootsTests/` folder
+1. Open `ItoriApp.xcodeproj` in Xcode
+2. Navigate to `Tests/Unit/ItoriTests/` folder
 3. Add these files if not already added:
-   - Right-click folder → Add Files to "RootsApp"
+   - Right-click folder → Add Files to "ItoriApp"
    - Select:
      - `FocusModelsTests.swift`
      - `AttachmentTests.swift`
-   - ✅ Ensure "Add to targets: RootsTests" is checked
+   - ✅ Ensure "Add to targets: ItoriTests" is checked
    - Click "Add"
 
 4. Create CourseModelsTests.swift:
-   - Right-click `Tests/Unit/RootsTests/` → New File
+   - Right-click `Tests/Unit/ItoriTests/` → New File
    - Choose "Unit Test Case Class"
    - Name: `CourseModelsTests`
    - Copy code from `70_PERCENT_COVERAGE_PLAN.md` lines 15-205
@@ -56,12 +56,12 @@
 ### Step 2: Build and Fix Compilation (10 minutes)
 
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild build -scheme Roots -destination 'platform=macOS'
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild build -scheme Itori -destination 'platform=macOS'
 ```
 
 **Common Issues to Fix:**
-- Import statements: Ensure `@testable import Roots` is present
+- Import statements: Ensure `@testable import Itori` is present
 - Model availability: Check if models need `#if` directives
 - Missing properties: Verify struct/class properties match
 - Mock data: Ensure MockDataFactory has all needed factories
@@ -70,17 +70,17 @@ xcodebuild build -scheme Roots -destination 'platform=macOS'
 
 ```bash
 # Run individual test files
-xcodebuild test -scheme Roots -destination 'platform=macOS' \
-  -only-testing:RootsTests/FocusModelsTests
+xcodebuild test -scheme Itori -destination 'platform=macOS' \
+  -only-testing:ItoriTests/FocusModelsTests
 
-xcodebuild test -scheme Roots -destination 'platform=macOS' \
-  -only-testing:RootsTests/AttachmentTests
+xcodebuild test -scheme Itori -destination 'platform=macOS' \
+  -only-testing:ItoriTests/AttachmentTests
 
-xcodebuild test -scheme Roots -destination 'platform=macOS' \
-  -only-testing:RootsTests/CourseModelsTests
+xcodebuild test -scheme Itori -destination 'platform=macOS' \
+  -only-testing:ItoriTests/CourseModelsTests
   
-xcodebuild test -scheme Roots -destination 'platform=macOS' \
-  -only-testing:RootsTests/CoursesStoreTests
+xcodebuild test -scheme Itori -destination 'platform=macOS' \
+  -only-testing:ItoriTests/CoursesStoreTests
 ```
 
 ### Step 4: Measure Coverage (5 minutes)
@@ -88,9 +88,9 @@ xcodebuild test -scheme Roots -destination 'platform=macOS' \
 ```bash
 # Run all tests with coverage
 xcodebuild test \
-  -scheme Roots \
+  -scheme Itori \
   -destination 'platform=macOS' \
-  -only-testing:RootsTests \
+  -only-testing:ItoriTests \
   -enableCodeCoverage YES \
   -resultBundlePath /tmp/Phase1_Coverage.xcresult
 
@@ -180,7 +180,7 @@ Once Phase 1 is complete, Phase 2 focuses on **Core Stores**:
 
 ## 📝 Quick Reference
 
-**Test Files Location**: `Tests/Unit/RootsTests/`
+**Test Files Location**: `Tests/Unit/ItoriTests/`
 **Plan Document**: `Tests/70_PERCENT_COVERAGE_PLAN.md`
 **Testing Guide**: `Tests/TESTING_GUIDE.md`
 **Coverage Command**: `xcrun xccov view --report [xcresult]`

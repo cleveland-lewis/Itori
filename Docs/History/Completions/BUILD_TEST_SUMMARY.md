@@ -2,7 +2,7 @@
 
 ## ✅ iOS Build: SUCCESS
 
-The iOS build for the Roots app completed successfully after fixing the following issues:
+The iOS build for the Itori app completed successfully after fixing the following issues:
 
 ### iOS Issues Fixed:
 1. **IOSRootView.swift**: Removed extra `defaults` parameter from `IOSTaskEditorView` initialization
@@ -16,7 +16,7 @@ The iOS build for the Roots app completed successfully after fixing the followin
 
 ### iOS Build Command:
 ```bash
-xcodebuild -scheme Roots -destination 'platform=iOS Simulator,name=iPhone 17' build
+xcodebuild -scheme Itori -destination 'platform=iOS Simulator,name=iPhone 17' build
 ```
 
 **Result**: BUILD SUCCEEDED ✅
@@ -29,7 +29,7 @@ The macOS build completed successfully after addressing multiple issues:
 
 ### macOS Issues Fixed:
 
-1. **Config/Roots.entitlements**: Temporarily commented out iCloud entitlements
+1. **Config/Itori.entitlements**: Temporarily commented out iCloud entitlements
    - iCloud CloudKit entitlements require paid Apple Developer Program membership
    - Calendar and Reminders permissions retained
    - Can be restored when signing with proper developer certificate
@@ -38,7 +38,7 @@ The macOS build completed successfully after addressing multiple issues:
    - macOS code in `DayDetailSidebar.swift` needs access to this enum
    - Now available on all platforms
 
-3. **macOSApp/App/RootsApp.swift**: Removed duplicate iOS-only router declarations
+3. **macOSApp/App/ItoriApp.swift**: Removed duplicate iOS-only router declarations
    - Removed `IOSSheetRouter`, `IOSToastRouter`, and `IOSFilterState` (iOS-only)
    - These were incorrectly included in macOS app
 
@@ -52,7 +52,7 @@ The macOS build completed successfully after addressing multiple issues:
 
 ### macOS Build Command:
 ```bash
-xcodebuild -scheme Roots -destination 'platform=macOS' build
+xcodebuild -scheme Itori -destination 'platform=macOS' build
 ```
 
 **Result**: BUILD SUCCEEDED ✅
@@ -60,12 +60,12 @@ xcodebuild -scheme Roots -destination 'platform=macOS' build
 ---
 
 ## Files Modified:
-1. `/Users/clevelandlewis/Desktop/Roots/iOS/Root/IOSRootView.swift`
-2. `/Users/clevelandlewis/Desktop/Roots/iOS/Scenes/IOSCorePages.swift`
-3. `/Users/clevelandlewis/Desktop/Roots/Config/Roots.entitlements`
-4. `/Users/clevelandlewis/Desktop/Roots/SharedCore/PlatformStubs.swift`
-5. `/Users/clevelandlewis/Desktop/Roots/macOSApp/App/RootsApp.swift`
-6. `/Users/clevelandlewis/Desktop/Roots/macOSApp/Scenes/ContentView.swift`
-7. `/Users/clevelandlewis/Desktop/Roots/macOSApp/Views/CalendarPageView.swift`
+1. `/Users/clevelandlewis/Desktop/Itori/iOS/Root/IOSRootView.swift`
+2. `/Users/clevelandlewis/Desktop/Itori/iOS/Scenes/IOSCorePages.swift`
+3. `/Users/clevelandlewis/Desktop/Itori/Config/Itori.entitlements`
+4. `/Users/clevelandlewis/Desktop/Itori/SharedCore/PlatformStubs.swift`
+5. `/Users/clevelandlewis/Desktop/Itori/macOSApp/App/ItoriApp.swift`
+6. `/Users/clevelandlewis/Desktop/Itori/macOSApp/Scenes/ContentView.swift`
+7. `/Users/clevelandlewis/Desktop/Itori/macOSApp/Views/CalendarPageView.swift`
 
 All changes were minimal and surgical, fixing only the specific compilation errors.

@@ -301,7 +301,7 @@ private func scheduleStandardNotification(...) {
 
 private func cancelCompletionNotification() {
     // Cancel BOTH to avoid duplicates
-    alarmScheduler?.cancelTimer(id: "RootsTimerCompletion")
+    alarmScheduler?.cancelTimer(id: "ItoriTimerCompletion")
     UNUserNotificationCenter.current().removePendingNotificationRequests(...)
 }
 ```

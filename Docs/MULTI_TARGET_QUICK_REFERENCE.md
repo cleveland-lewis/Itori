@@ -1,8 +1,8 @@
 # Multi-Target Quick Reference Card
 
-## When to Put Code in RootsShared vs Platform Targets
+## When to Put Code in ItoriShared vs Platform Targets
 
-### ✅ RootsShared (Cross-Platform)
+### ✅ ItoriShared (Cross-Platform)
 
 **Models**
 ```swift
@@ -84,7 +84,7 @@ struct MacCommands: Commands { }
 **App Entry Points**
 ```swift
 @main
-struct RootsApp: App { }
+struct ItoriApp: App { }
 ```
 
 ---
@@ -96,15 +96,15 @@ Is this code...
 
 ├─ A data model?
 │  ├─ Does it use Color/UIColor/NSColor?
-│  │  ├─ Yes → Store as hex string in RootsShared + platform extension
-│  │  └─ No → Put in RootsShared
-│  └─ Yes → Put in RootsShared
+│  │  ├─ Yes → Store as hex string in ItoriShared + platform extension
+│  │  └─ No → Put in ItoriShared
+│  └─ Yes → Put in ItoriShared
 │
 ├─ Business logic?
 │  ├─ Does it call platform APIs?
-│  │  ├─ Yes → Protocol in RootsShared, implementation in target
-│  │  └─ No → Put in RootsShared
-│  └─ Yes → Put in RootsShared
+│  │  ├─ Yes → Protocol in ItoriShared, implementation in target
+│  │  └─ No → Put in ItoriShared
+│  └─ Yes → Put in ItoriShared
 │
 ├─ A SwiftUI View?
 │  └─ Always put in platform target
@@ -120,7 +120,7 @@ Is this code...
 
 ## Import Statements
 
-### In RootsShared
+### In ItoriShared
 ```swift
 import Foundation  // ✅ Always OK
 import SwiftUI     // ⚠️  Only if needed for @Observable, etc.
@@ -130,7 +130,7 @@ import SwiftUI     // ⚠️  Only if needed for @Observable, etc.
 ### In Platform Targets
 ```swift
 import SwiftUI     // ✅ Always OK
-import RootsShared // ✅ Always needed
+import ItoriShared // ✅ Always needed
 import EventKit    // ✅ OK (platform-specific)
 ```
 
@@ -140,7 +140,7 @@ import EventKit    // ✅ OK (platform-specific)
 
 ### Pattern 1: Model with Platform-Specific Colors
 
-**RootsShared**:
+**ItoriShared**:
 ```swift
 public struct Course {
     public let id: UUID
@@ -151,7 +151,7 @@ public struct Course {
 **iOS/macOS Target**:
 ```swift
 import SwiftUI
-import RootsShared
+import ItoriShared
 
 extension Course {
     var color: Color {
@@ -162,7 +162,7 @@ extension Course {
 
 ### Pattern 2: Protocol + Platform Implementation
 
-**RootsShared**:
+**ItoriShared**:
 ```swift
 public protocol PersistenceService: Actor {
     func saveCourse(_ course: Course) async throws
@@ -171,7 +171,7 @@ public protocol PersistenceService: Actor {
 
 **iOS Target**:
 ```swift
-import RootsShared
+import ItoriShared
 
 actor IOSPersistenceService: PersistenceService {
     func saveCourse(_ course: Course) async throws {
@@ -182,7 +182,7 @@ actor IOSPersistenceService: PersistenceService {
 
 **macOS Target**:
 ```swift
-import RootsShared
+import ItoriShared
 
 actor MacPersistenceService: PersistenceService {
     func saveCourse(_ course: Course) async throws {
@@ -193,7 +193,7 @@ actor MacPersistenceService: PersistenceService {
 
 ### Pattern 3: Shared Container + Platform Injection
 
-**RootsShared**:
+**ItoriShared**:
 ```swift
 @MainActor
 public final class AppContainer: ObservableObject {
@@ -207,7 +207,7 @@ public final class AppContainer: ObservableObject {
 **iOS App**:
 ```swift
 @main
-struct RootsApp: App {
+struct ItoriApp: App {
     @StateObject private var container = AppContainer(
         persistenceService: IOSPersistenceService()
     )
@@ -224,7 +224,7 @@ struct RootsApp: App {
 **macOS App**:
 ```swift
 @main
-struct RootsMacApp: App {
+struct ItoriMacApp: App {
     @StateObject private var container = AppContainer(
         persistenceService: MacPersistenceService()
     )
@@ -244,13 +244,13 @@ struct RootsMacApp: App {
 
 | Type | Location | Example |
 |------|----------|---------|
-| Model | `RootsShared/Models/` | `Course.swift` |
-| Service | `RootsShared/Services/` | `AssignmentPlanEngine.swift` |
-| Protocol | `RootsShared/Services/Protocols/` | `PersistenceService.swift` |
-| iOS View | `RootsApp/Views/` | `DashboardView.swift` |
-| macOS View | `RootsMac/Views/` | `DashboardView.swift` |
-| iOS Extension | `RootsApp/PlatformExtensions/` | `Color+iOS.swift` |
-| macOS Extension | `RootsMac/PlatformExtensions/` | `Color+macOS.swift` |
+| Model | `ItoriShared/Models/` | `Course.swift` |
+| Service | `ItoriShared/Services/` | `AssignmentPlanEngine.swift` |
+| Protocol | `ItoriShared/Services/Protocols/` | `PersistenceService.swift` |
+| iOS View | `ItoriApp/Views/` | `DashboardView.swift` |
+| macOS View | `ItoriMac/Views/` | `DashboardView.swift` |
+| iOS Extension | `ItoriApp/PlatformExtensions/` | `Color+iOS.swift` |
+| macOS Extension | `ItoriMac/PlatformExtensions/` | `Color+macOS.swift` |
 
 ---
 
@@ -258,9 +258,9 @@ struct RootsMacApp: App {
 
 ### Test Shared Code
 ```swift
-// RootsSharedTests/AssignmentPlanEngineTests.swift
+// ItoriSharedTests/AssignmentPlanEngineTests.swift
 import XCTest
-@testable import RootsShared
+@testable import ItoriShared
 
 final class AssignmentPlanEngineTests: XCTestCase {
     func testGeneratePlan() {
@@ -272,9 +272,9 @@ final class AssignmentPlanEngineTests: XCTestCase {
 
 ### Test Platform Code
 ```swift
-// RootsTests/IOSViewTests.swift
+// ItoriTests/IOSViewTests.swift
 import XCTest
-@testable import RootsApp
+@testable import ItoriApp
 
 final class IOSViewTests: XCTestCase {
     func testDashboardView() {
@@ -289,27 +289,27 @@ final class IOSViewTests: XCTestCase {
 
 ```bash
 # Build iOS
-xcodebuild -project Roots.xcodeproj -scheme RootsApp -sdk iphonesimulator
+xcodebuild -project Itori.xcodeproj -scheme ItoriApp -sdk iphonesimulator
 
 # Build macOS
-xcodebuild -project Roots.xcodeproj -scheme RootsMac -sdk macosx
+xcodebuild -project Itori.xcodeproj -scheme ItoriMac -sdk macosx
 
 # Build and Test Shared Package
-cd RootsShared
+cd ItoriShared
 swift build
 swift test
 
 # Build All Targets
-xcodebuild -project Roots.xcodeproj -scheme "All" build
+xcodebuild -project Itori.xcodeproj -scheme "All" build
 ```
 
 ---
 
 ## Troubleshooting
 
-### "Cannot find 'RootsShared' in scope"
-→ Verify `RootsShared` is added to target dependencies  
-→ Check `import RootsShared` statement  
+### "Cannot find 'ItoriShared' in scope"
+→ Verify `ItoriShared` is added to target dependencies  
+→ Check `import ItoriShared` statement  
 → Clean build folder (⇧⌘K)
 
 ### "Type 'Color' not found"
@@ -319,7 +319,7 @@ xcodebuild -project Roots.xcodeproj -scheme "All" build
 
 ### "Duplicate symbol" errors
 → Make sure code isn't duplicated in both targets  
-→ Check that shared code is only in `RootsShared`  
+→ Check that shared code is only in `ItoriShared`  
 → Verify platform extensions use `#if os(...)` guards
 
 ### Package doesn't update
@@ -336,7 +336,7 @@ xcodebuild -project Roots.xcodeproj -scheme "All" build
    - [ ] List all service/business logic files
    - [ ] List all utility files
 
-2. **Move to RootsShared**
+2. **Move to ItoriShared**
    - [ ] Move models (remove Color properties)
    - [ ] Move services
    - [ ] Move utilities
@@ -348,7 +348,7 @@ xcodebuild -project Roots.xcodeproj -scheme "All" build
    - [ ] Add color computed properties
 
 4. **Update views**
-   - [ ] Add `import RootsShared` to all views
+   - [ ] Add `import ItoriShared` to all views
    - [ ] Update color references to use extensions
    - [ ] Verify compilation
 
@@ -362,10 +362,10 @@ xcodebuild -project Roots.xcodeproj -scheme "All" build
 
 ## Remember
 
-**The Golden Rule**: If it compiles without `import SwiftUI`, `import UIKit`, or `import AppKit`, it belongs in `RootsShared`.
+**The Golden Rule**: If it compiles without `import SwiftUI`, `import UIKit`, or `import AppKit`, it belongs in `ItoriShared`.
 
 **The Color Rule**: Models store hex strings. Platform targets provide `var color: Color` computed properties.
 
-**The Service Rule**: Protocols in `RootsShared`, implementations in platform targets.
+**The Service Rule**: Protocols in `ItoriShared`, implementations in platform targets.
 
 **The View Rule**: All SwiftUI views live in platform targets. No exceptions.

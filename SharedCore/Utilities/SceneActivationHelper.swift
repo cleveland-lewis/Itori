@@ -10,7 +10,7 @@ import AppKit
 
 /// Helper for requesting SwiftUI scene activations with `NSUserActivity` payloads.
 enum SceneActivationHelper {
-    static let windowActivityType = "com.roots.scene.windowState"
+    static let windowActivityType = "com.itori.scene.windowState"
     static let windowStateKey = "roots.scene.windowState"
     static let assignmentSceneStorageKey = "roots.scene.assignmentDetail.assignmentId"
     static let courseSceneStorageKey = "roots.scene.courseDetail.courseId"

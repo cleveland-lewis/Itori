@@ -549,7 +549,7 @@ func toPlanGraph(plan: AssignmentPlan) -> PlanGraph {
 
 ## Issue Link
 
-https://github.com/cleveland-lewis/Roots/issues/342
+https://github.com/cleveland-lewis/Itori/issues/342
 
 ---
 

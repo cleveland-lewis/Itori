@@ -21,7 +21,7 @@
 │ Status: ✅ FIXED                                                            │
 │                                                                             │
 │ Changes:                                                                    │
-│   • RootsApp.swift - Added inline AppDelegate, added window ID             │
+│   • ItoriApp.swift - Added inline AppDelegate, added window ID             │
 │                                                                             │
 │ Result: Window restoration works properly, no more className warnings      │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -45,7 +45,7 @@
 FILES MODIFIED (3):
   ✓ SharedCore/Services/FeatureServices/NotificationManager.swift
   ✓ SharedCore/Services/FeatureServices/TimerManager.swift  
-  ✓ macOSApp/App/RootsApp.swift
+  ✓ macOSApp/App/ItoriApp.swift
 
 FILES CREATED (3):
   ✓ RUNTIME_ERRORS_FIX_SUMMARY.md

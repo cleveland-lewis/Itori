@@ -1,6 +1,6 @@
 //
 //  TimerAlarmScheduler.swift
-//  Roots (iOS)
+//  Itori (iOS)
 //
 //  Phase 2.1: AlarmKit Integration
 //  Note: AlarmKit requires iOS 26.0+. Falls back to notifications on older iOS.

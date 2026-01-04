@@ -172,7 +172,7 @@ Completed full translation of all English strings to Simplified Chinese (zh-Hans
 
 ### Manual Testing
 - [ ] Switch macOS language to Simplified Chinese
-- [ ] Launch Roots app
+- [ ] Launch Itori app
 - [ ] Navigate to Timer page → verify Chinese labels
 - [ ] Navigate to Assignments page → verify Chinese text
 - [ ] Navigate to Planner page → verify Chinese interface

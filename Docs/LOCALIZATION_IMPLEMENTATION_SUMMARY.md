@@ -61,7 +61,7 @@ Text(String.localizedStringWithFormat(
 ```
 
 #### 3. Comprehensive Test Suite
-**File Created:** `Tests/Unit/RootsTests/LocalizationComprehensiveTests.swift`
+**File Created:** `Tests/Unit/ItoriTests/LocalizationComprehensiveTests.swift`
 
 **Test Coverage:**
 - Number formatting (integers, decimals, percentages) across 5 locales
@@ -230,9 +230,9 @@ Add specialized formatters for:
 
 Run LocalizationComprehensiveTests (when test target fixed):
 ```bash
-xcodebuild test -project RootsApp.xcodeproj -scheme Roots \
+xcodebuild test -project ItoriApp.xcodeproj -scheme Itori \
   -destination 'platform=macOS' \
-  -only-testing:RootsTests/LocalizationComprehensiveTests
+  -only-testing:ItoriTests/LocalizationComprehensiveTests
 ```
 
 Expected: All 20+ tests pass
@@ -267,7 +267,7 @@ grep -rn 'Text("' --include="*.swift" | grep -v 'NSLocalizedString\|\.localized'
 
 ### Test Target
 **Issue:** WatchConnectivity import error prevents running tests
-**File:** `Tests/Unit/RootsTests/Platform/watchOS/WatchConnectivityTests.swift`
+**File:** `Tests/Unit/ItoriTests/Platform/watchOS/WatchConnectivityTests.swift`
 **Impact:** Can't run automated tests yet
 **Workaround:** Manual testing, or fix test target configuration
 
@@ -283,7 +283,7 @@ import WatchConnectivity
 
 ### Created
 1. `SharedCore/DesignSystem/Localizable.stringsdict` - Pluralization rules
-2. `Tests/Unit/RootsTests/LocalizationComprehensiveTests.swift` - Test suite
+2. `Tests/Unit/ItoriTests/LocalizationComprehensiveTests.swift` - Test suite
 3. `LOCALIZATION_IMPLEMENTATION_PLAN.md` - Implementation guide
 4. `LOCALIZATION_IMPLEMENTATION_SUMMARY.md` - This file
 

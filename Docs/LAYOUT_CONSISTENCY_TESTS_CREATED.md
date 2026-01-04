@@ -1,12 +1,12 @@
 # Layout Consistency Tests - Implementation Summary
 
 ## Overview
-Created comprehensive test suites to verify layout consistency, proper spacing, and adherence to Apple HIG guidelines throughout the Roots app.
+Created comprehensive test suites to verify layout consistency, proper spacing, and adherence to Apple HIG guidelines throughout the Itori app.
 
 ## Test Files Created
 
 ### 1. LayoutConsistencyTests.swift
-**Location:** `/Users/clevelandlewis/Desktop/Roots/RootsUITests/LayoutConsistencyTests.swift`
+**Location:** `/Users/clevelandlewis/Desktop/Itori/ItoriUITests/LayoutConsistencyTests.swift`
 
 **Purpose:** UI tests that verify layout consistency and spacing across the app using XCUITest framework.
 
@@ -46,7 +46,7 @@ Created comprehensive test suites to verify layout consistency, proper spacing, 
 - `testScreenEdgePadding()` - Verifies minimum 8-point padding from screen edges
 
 ### 2. DesignSystemConsistencyTests.swift
-**Location:** `/Users/clevelandlewis/Desktop/Roots/RootsTests/DesignSystemConsistencyTests.swift`
+**Location:** `/Users/clevelandlewis/Desktop/Itori/ItoriTests/DesignSystemConsistencyTests.swift`
 
 **Purpose:** Unit tests that verify design system constants follow Apple's recommended patterns.
 
@@ -155,17 +155,17 @@ enum CornerRadius {
 
 ### Run All Layout Tests
 ```bash
-xcodebuild test -scheme Roots -destination 'platform=macOS' -only-testing:RootsUITests/LayoutConsistencyTests
+xcodebuild test -scheme Itori -destination 'platform=macOS' -only-testing:ItoriUITests/LayoutConsistencyTests
 ```
 
 ### Run All Design System Tests
 ```bash
-xcodebuild test -scheme Roots -destination 'platform=macOS' -only-testing:RootsTests/DesignSystemConsistencyTests
+xcodebuild test -scheme Itori -destination 'platform=macOS' -only-testing:ItoriTests/DesignSystemConsistencyTests
 ```
 
 ### Run Specific Test
 ```bash
-xcodebuild test -scheme Roots -destination 'platform=macOS' -only-testing:RootsUITests/LayoutConsistencyTests/testDashboardClockCentering
+xcodebuild test -scheme Itori -destination 'platform=macOS' -only-testing:ItoriUITests/LayoutConsistencyTests/testDashboardClockCentering
 ```
 
 ## Test Outputs
@@ -199,7 +199,7 @@ Some tests are temporarily commented out due to missing `AccessibilityTestHelper
 - Touch target tests  
 - Dynamic type tests
 
-**TODO:** Add `Tests/AccessibilityTestHelpers.swift` to the RootsTests target to re-enable these tests.
+**TODO:** Add `Tests/AccessibilityTestHelpers.swift` to the ItoriTests target to re-enable these tests.
 
 ## Benefits
 

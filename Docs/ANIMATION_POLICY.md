@@ -2,7 +2,7 @@
 
 ## Overview
 
-Roots uses a centralized `AnimationPolicy` to ensure all animations respect the system's Reduce Motion accessibility setting. This guide explains how to use the animation policy correctly.
+Itori uses a centralized `AnimationPolicy` to ensure all animations respect the system's Reduce Motion accessibility setting. This guide explains how to use the animation policy correctly.
 
 ## Why Use AnimationPolicy?
 

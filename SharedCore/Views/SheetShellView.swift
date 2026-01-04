@@ -1,6 +1,6 @@
 //
 //  SheetShellView.swift
-//  Roots
+//  Itori
 //
 //  PHASE 3: Instant Sheet Presentation
 //  Two-step sheet that shows immediately with placeholder, loads content async

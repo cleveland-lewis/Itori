@@ -233,7 +233,7 @@ struct ModelConfig {
 
 **Usage**:
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 ./Scripts/test_model_server.sh
 ```
 
@@ -583,7 +583,7 @@ func downloadWithRetry(type: LocalModelType, maxRetries: Int = 3) async throws {
 
 **1. Start Test Server**:
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 ./Scripts/test_model_server.sh
 ```
 

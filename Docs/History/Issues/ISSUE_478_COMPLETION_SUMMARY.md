@@ -1,12 +1,12 @@
 # Issue #478: Create Minutes Sub-Dial for Stopwatch - COMPLETE ✅
 
 ## Summary
-Successfully implemented minutes sub-dial (and bonus hours sub-dial) for the stopwatch face in `RootsAnalogClock`. The sub-dials display elapsed time with dedicated hands and clear markings, providing a traditional stopwatch appearance.
+Successfully implemented minutes sub-dial (and bonus hours sub-dial) for the stopwatch face in `ItoriAnalogClock`. The sub-dials display elapsed time with dedicated hands and clear markings, providing a traditional stopwatch appearance.
 
 ## Implementation Details
 
 ### Files Modified
-**macOSApp/Views/Components/Clock/RootsAnalogClock.swift**
+**macOSApp/Views/Components/Clock/ItoriAnalogClock.swift**
 - Added `StopwatchSubDial` component (new struct)
 - Integrated two sub-dials into `clockBody`:
   - Minutes sub-dial (0-60) - positioned in lower portion
@@ -224,7 +224,7 @@ let components = timeComponents(from: timerSeconds)
 - **Related:** #477 (Add outer dial numerals) - Completed
 
 ## Build Status
-✅ **Compiles successfully** - No errors in RootsAnalogClock.swift
+✅ **Compiles successfully** - No errors in ItoriAnalogClock.swift
 ❌ Unrelated build failure in QuickActionsDismissLayer.swift (not part of this issue)
 
 ## Future Enhancements (Optional)
@@ -235,6 +235,6 @@ let components = timeComponents(from: timerSeconds)
 - Customizable numeral display (all vs. cardinal only)
 
 ## Notes
-This implementation follows traditional stopwatch design patterns while maintaining the minimalist aesthetic of the Roots app. The dual sub-dial approach (minutes + hours) is inspired by classic chronograph watches and provides clear, at-a-glance timing information.
+This implementation follows traditional stopwatch design patterns while maintaining the minimalist aesthetic of the Itori app. The dual sub-dial approach (minutes + hours) is inspired by classic chronograph watches and provides clear, at-a-glance timing information.
 
 The reusable `StopwatchSubDial` component is generic and can be easily adapted for other timing needs or extended with additional features in future updates.

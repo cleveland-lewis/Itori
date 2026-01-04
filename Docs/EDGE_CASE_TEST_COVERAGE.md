@@ -136,29 +136,29 @@ Invalid Inputs:
 
 ### Run All Edge Cases
 ```bash
-xcodebuild test -scheme Roots \
-  -only-testing:RootsTests/ComprehensiveAlgorithmTests/testEdgeCase*
+xcodebuild test -scheme Itori \
+  -only-testing:ItoriTests/ComprehensiveAlgorithmTests/testEdgeCase*
 ```
 
 ### Run Duration Edge Cases
 ```bash
-xcodebuild test -scheme Roots \
-  -only-testing:RootsTests/ComprehensiveAlgorithmTests/testEdgeCase_*Duration
+xcodebuild test -scheme Itori \
+  -only-testing:ItoriTests/ComprehensiveAlgorithmTests/testEdgeCase_*Duration
 ```
 
 ### Run Time Window Edge Cases
 ```bash
-xcodebuild test -scheme Roots \
-  -only-testing:RootsTests/ComprehensiveAlgorithmTests/testEdgeCase_*DueDate \
-  -only-testing:RootsTests/ComprehensiveAlgorithmTests/testEdgeCase_*Future
+xcodebuild test -scheme Itori \
+  -only-testing:ItoriTests/ComprehensiveAlgorithmTests/testEdgeCase_*DueDate \
+  -only-testing:ItoriTests/ComprehensiveAlgorithmTests/testEdgeCase_*Future
 ```
 
 ### Run Grade Edge Cases
 ```bash
-xcodebuild test -scheme Roots \
-  -only-testing:RootsTests/ComprehensiveAlgorithmTests/testEdgeCase_*Grades \
-  -only-testing:RootsTests/ComprehensiveAlgorithmTests/testEdgeCase_*Weight \
-  -only-testing:RootsTests/ComprehensiveAlgorithmTests/testEdgeCase_*Credit
+xcodebuild test -scheme Itori \
+  -only-testing:ItoriTests/ComprehensiveAlgorithmTests/testEdgeCase_*Grades \
+  -only-testing:ItoriTests/ComprehensiveAlgorithmTests/testEdgeCase_*Weight \
+  -only-testing:ItoriTests/ComprehensiveAlgorithmTests/testEdgeCase_*Credit
 ```
 
 ---

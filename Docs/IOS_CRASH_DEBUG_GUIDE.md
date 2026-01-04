@@ -68,7 +68,7 @@ init() {
 A view might be trying to access an @EnvironmentObject that wasn't injected.
 
 **Check:**
-Make sure all environment objects in `RootsIOSApp.swift` are provided before views that need them.
+Make sure all environment objects in `ItoriIOSApp.swift` are provided before views that need them.
 
 **Current injection (should be correct):**
 ```swift
@@ -84,7 +84,7 @@ IOSRootView()
 ### Issue 3: Watch Bridge Initialization
 
 **Problem:**
-`PhoneWatchBridge.shared` in `RootsIOSApp.swift` line 32 might crash if Watch Connectivity isn't available.
+`PhoneWatchBridge.shared` in `ItoriIOSApp.swift` line 32 might crash if Watch Connectivity isn't available.
 
 **Fix:**
 
@@ -161,7 +161,7 @@ init() {
 
 If the crash is in PhoneWatchBridge:
 
-1. Open `iOS/App/RootsIOSApp.swift`
+1. Open `iOS/App/ItoriIOSApp.swift`
 
 2. Comment out line 32:
 ```swift

@@ -18,7 +18,7 @@
 - [x] Configured external binary storage for large files
 
 **Files Modified:**
-- `SharedCore/Persistence/Roots.xcdatamodeld/Roots.xcdatamodel/contents` (Updated)
+- `SharedCore/Persistence/Itori.xcdatamodeld/Itori.xcdatamodel/contents` (Updated)
 
 ### Phase 2: Sync Monitoring ✅ DONE
 - [x] Created SyncMonitor class
@@ -85,7 +85,7 @@
 ### Pre-Existing (Already Implemented) ✅ VERIFIED
 - [x] NSPersistentCloudKitContainer configured
 - [x] CloudKit capabilities enabled (macOS + iOS)
-- [x] iCloud container identifier set: `iCloud.com.cwlewisiii.Roots`
+- [x] iCloud container identifier set: `iCloud.com.cwlewisiii.Itori`
 - [x] History tracking enabled
 - [x] Remote change notifications enabled
 - [x] Merge policy: NSMergeByPropertyObjectTrumpMergePolicy
@@ -99,8 +99,8 @@
 
 **Pre-Existing Files:**
 - `SharedCore/Persistence/PersistenceController.swift` (16 KB)
-- `Config/Roots.entitlements` (macOS)
-- `Config/Roots-iOS.entitlements` (iOS)
+- `Config/Itori.entitlements` (macOS)
+- `Config/Itori-iOS.entitlements` (iOS)
 
 ## Acceptance Criteria Review
 
@@ -170,7 +170,7 @@ Documentation/ (Project Root)
 ### Files Modified (1 file)
 ```
 SharedCore/Persistence/
-└── Roots.xcdatamodeld/Roots.xcdatamodel/contents
+└── Itori.xcdatamodeld/Itori.xcdatamodel/contents
     └── Added: Semester, Course, Assignment, Attachment entities
     └── Updated: TimerSession entity (added timestamps, indexes)
 ```
@@ -178,8 +178,8 @@ SharedCore/Persistence/
 ### Files Verified (3 pre-existing)
 ```
 Config/
-├── Roots.entitlements           (macOS CloudKit config)
-└── Roots-iOS.entitlements       (iOS CloudKit config)
+├── Itori.entitlements           (macOS CloudKit config)
+└── Itori-iOS.entitlements       (iOS CloudKit config)
 
 SharedCore/Persistence/
 └── PersistenceController.swift  (Already excellent!)
@@ -199,8 +199,8 @@ SharedCore/Persistence/
 
 ### ✅ 1. Verify Core Data Model
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-grep -c 'entity name=' SharedCore/Persistence/Roots.xcdatamodeld/Roots.xcdatamodel/contents
+cd /Users/clevelandlewis/Desktop/Itori
+grep -c 'entity name=' SharedCore/Persistence/Itori.xcdatamodeld/Itori.xcdatamodel/contents
 # Should output: 5
 ```
 
@@ -214,14 +214,14 @@ ls -lh Tests/PersistenceTests/CoreDataStackTests.swift
 
 ### ✅ 3. Build Test
 ```bash
-xcodebuild clean build -scheme Roots -destination 'platform=macOS'
+xcodebuild clean build -scheme Itori -destination 'platform=macOS'
 # Should succeed
 ```
 
 ### ✅ 4. Run Tests
 ```bash
-xcodebuild test -scheme Roots -destination 'platform=macOS' \
-    -only-testing:RootsTests/CoreDataStackTests
+xcodebuild test -scheme Itori -destination 'platform=macOS' \
+    -only-testing:ItoriTests/CoreDataStackTests
 # Should pass
 ```
 

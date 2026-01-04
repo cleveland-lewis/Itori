@@ -130,8 +130,8 @@ See: `Docs/PRODUCTION_VERIFICATION_CHECKLIST_LLM.md`
 
 ```bash
 # Run enforcement tests locally
-xcodebuild test -scheme Roots -destination 'platform=macOS' \
-  -only-testing:RootsTests/LLMToggleDisablesProviderAttemptsTests
+xcodebuild test -scheme Itori -destination 'platform=macOS' \
+  -only-testing:ItoriTests/LLMToggleDisablesProviderAttemptsTests
 
 # Check for unauthorized imports
 grep -r "import.*Provider" --include="*.swift" \

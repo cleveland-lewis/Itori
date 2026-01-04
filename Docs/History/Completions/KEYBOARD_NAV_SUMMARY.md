@@ -7,7 +7,7 @@
 
 ## 🎉 What Was Accomplished
 
-Implemented comprehensive keyboard navigation and focus management system for the Roots macOS app, enabling full keyboard-only operation without requiring mouse/trackpad.
+Implemented comprehensive keyboard navigation and focus management system for the Itori macOS app, enabling full keyboard-only operation without requiring mouse/trackpad.
 
 ---
 

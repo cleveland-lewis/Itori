@@ -288,8 +288,8 @@ Result
 
 ```bash
 # Run enforcement tests
-xcodebuild test -scheme Roots \
-  -only-testing:RootsTests/LLMToggleDisablesProviderAttemptsTests
+xcodebuild test -scheme Itori \
+  -only-testing:ItoriTests/LLMToggleDisablesProviderAttemptsTests
 
 # Expected: All tests PASS
 ```
@@ -345,11 +345,11 @@ xcodebuild test -scheme Roots \
 ### Automated Testing:
 ```bash
 # Run full test suite
-xcodebuild test -scheme Roots
+xcodebuild test -scheme Itori
 
 # Run only LLM enforcement tests
-xcodebuild test -scheme Roots \
-  -only-testing:RootsTests/LLMToggleDisablesProviderAttemptsTests
+xcodebuild test -scheme Itori \
+  -only-testing:ItoriTests/LLMToggleDisablesProviderAttemptsTests
 ```
 
 ### Stress Testing:

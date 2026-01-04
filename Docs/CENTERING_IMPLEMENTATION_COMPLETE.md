@@ -2,7 +2,7 @@
 
 ## ✅ Implementation Complete
 
-All major page views in the Roots app now use consistent horizontal centering with responsive padding.
+All major page views in the Itori app now use consistent horizontal centering with responsive padding.
 
 ## Pages Updated
 
@@ -15,7 +15,7 @@ All major page views in the Roots app now use consistent horizontal centering wi
 
 ### 2. AssignmentsPageView ✅
 **File**: `Platforms/macOS/Scenes/AssignmentsPageView.swift`
-- Replaced `RootsSpacing.pagePadding` with responsive padding
+- Replaced `ItoriSpacing.pagePadding` with responsive padding
 - Added constrain-then-center frames
 - Max width: 1400pt
 - Three-column layout (summary, list, detail) stays centered

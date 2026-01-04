@@ -3,12 +3,12 @@
 **Status:** In Progress  
 **Criticality:** 3  
 **Effort:** XL  
-**File Path:** /Users/clevelandlewis/PyCharm/Roots/Documents/Developing/Issues/Tickets/Open/Ticket_040.md
+**File Path:** /Users/clevelandlewis/PyCharm/Itori/Documents/Developing/Issues/Tickets/Open/Ticket_040.md
 
 ---
 
 ## Summary
-This ticket defines and implements Motion-like auto-scheduling behavior within the Roots application.  
+This ticket defines and implements Motion-like auto-scheduling behavior within the Itori application.  
 The goal is to ensure that all unlocked school tasks and app-owned school events are automatically scheduled into free time around fixed constraints while maintaining determinism, predictability, and safety. The scheduler must integrate cleanly with CalendarViewModel, SchoolCalendarManager, persistence layers, and UI components.
 
 ---
@@ -161,7 +161,7 @@ The ticket is considered complete when:
 ## Change Log
 
 ### 2025-11-30T16:31:18Z — AIScheduler Fixes
-- Unified AIScheduler definitions into a single module in `Sources/Roots/Utilities/AIScheduler.swift`.
+- Unified AIScheduler definitions into a single module in `Sources/Itori/Utilities/AIScheduler.swift`.
 - Replaced the undefined `Source` type with `CalendarEvent.EventSource` and used `.assignment` / `.todo` appropriately.
 - Corrected construction of AI-suggested `CalendarEvent` objects, including nil `id`, and proper population of `courseId`, `location`, `type`, `priority`, and locked flags.
 - Removed invalid checks against nonexistent `Assignment.locked` property.

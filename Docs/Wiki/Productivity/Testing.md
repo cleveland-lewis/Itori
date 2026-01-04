@@ -5,13 +5,13 @@
 - Manual scripts focus on the high-value workflows (multiwindow context menus and drag-to-planner interactions) that SwiftUI drag/drop and scene restoration govern.
 
 ## Purpose
-- Ensure `TransferableAssignment` serializes as expected and supports both JSON and plaintext exports (`RootsTests/DragDropTypesTests.swift`).
-- Verify `DragDropHandler` updates the correct store/coordinator state so drag destinations are deterministic (`RootsTests/DragDropHandlerTests.swift`).
+- Ensure `TransferableAssignment` serializes as expected and supports both JSON and plaintext exports (`ItoriTests/DragDropTypesTests.swift`).
+- Verify `DragDropHandler` updates the correct store/coordinator state so drag destinations are deterministic (`ItoriTests/DragDropHandlerTests.swift`).
 - Validate multiwindow flows by opening course, assignment, planner, and timer scenes on iPad Stage Manager and macOS.
 - Confirm drag/drop still works when dragging between in-app panes and into cross-app hosts such as Notes or Mail.
 
 ## Behavior
-- Automatic tests run via `xcodebuild test -scheme Roots -destination 'platform=iOS Simulator,name=iPhone 15'` (adjust the destination as needed for macOS by adding `-destination 'platform=macOS'`).
+- Automatic tests run via `xcodebuild test -scheme Itori -destination 'platform=iOS Simulator,name=iPhone 15'` (adjust the destination as needed for macOS by adding `-destination 'platform=macOS'`).
   * `DragDropTypesTests` exercises `TransferableAssignment`/`TransferableCourse` constructors, text formatting, and `WindowState` encoding.
   * `DragDropHandlerTests` exercises reassignment and planner scheduling, verifying `AssignmentsStore` and `PlannerCoordinator` behave as expected.
 - Manual verification steps:
@@ -31,5 +31,5 @@
 - Automated tests cover store manipulations and serialization but do not exercise the UI preview or toast states shown to the user.
 
 ## Related Systems
-- `RootsTests/DragDropTypesTests.swift` and `RootsTests/DragDropHandlerTests.swift` live alongside the main app tests to highlight the transferable payloads and drop mapping rules outlined in this wiki.
+- `ItoriTests/DragDropTypesTests.swift` and `ItoriTests/DragDropHandlerTests.swift` live alongside the main app tests to highlight the transferable payloads and drop mapping rules outlined in this wiki.
 - `SceneActivationHelper`, `WindowIdentifier`, and `DragDropHandler` form the shared plumbing that these tests validate.

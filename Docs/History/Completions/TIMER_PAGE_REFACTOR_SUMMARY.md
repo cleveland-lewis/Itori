@@ -111,7 +111,7 @@ Sessions will sync across devices automatically when:
 5. **Note:** Initial sync may take longer; requires both devices online
 
 ### Split View / Stage Manager (iPad)
-1. **Enter Split View** with Roots on one side
+1. **Enter Split View** with Itori on one side
 2. **Navigate to Timer page**
 3. **Verify:**
    - Buttons remain visible and functional

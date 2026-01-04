@@ -7,7 +7,7 @@
 
 ## Overview
 
-Phase 2 implements full HTTP client support for BYO (Bring Your Own) AI providers, enabling users to connect their own OpenAI, Anthropic, or custom API endpoints to Roots.
+Phase 2 implements full HTTP client support for BYO (Bring Your Own) AI providers, enabling users to connect their own OpenAI, Anthropic, or custom API endpoints to Itori.
 
 ---
 

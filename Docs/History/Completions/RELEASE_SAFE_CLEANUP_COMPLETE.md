@@ -3,7 +3,7 @@
 ## Status: ✅ COMPLETE
 
 **Date:** 2025-12-30  
-**Objective:** Make the Roots app release-safe by removing user-visible placeholders, crash landmines, and build artifacts.
+**Objective:** Make the Itori app release-safe by removing user-visible placeholders, crash landmines, and build artifacts.
 
 ---
 
@@ -64,7 +64,7 @@ grep -r "TODO" --include="*.swift" Platforms/ SharedCore/ | grep -E 'Text\(|\.la
    - **Line 17:** `fatalError("Could not find documents directory")`
      - **Fix:** Fallback to temp directory with logging
 
-3. **`Platforms/macOS/App/RootsApp.swift`**
+3. **`Platforms/macOS/App/ItoriApp.swift`**
    - **Line 101:** `fatalError("Could not create ModelContainer")`
      - **Fix:** Multi-level fallback strategy:
        1. Try in-memory container
@@ -98,7 +98,7 @@ grep -r "TODO" --include="*.swift" Platforms/ SharedCore/ | grep -E 'Text\(|\.la
 - `./Platforms/macOS/Scenes/TimerPageView.swift.backup`
 - `./Platforms/macOS/Views/AddAssignmentView.swift.bak`
 - `./SharedCore/DesignSystem/Components/DashboardComponents.swift.bak`
-- `./RootsApp.xcodeproj/project.pbxproj.backup`
+- `./ItoriApp.xcodeproj/project.pbxproj.backup`
 - Plus duplicates in `_Deprecated_macOS/`, `macOSApp/`, and `Localizations/`
 
 **Total Removed:** 13 backup files
@@ -247,7 +247,7 @@ Before any release:
 3. `SharedCore/Persistence/PersistenceController.swift`
 4. `SharedCore/Services/FeatureServices/AttachmentManager.swift`
 5. `SharedCore/Services/FeatureServices/StorageRetentionManager.swift`
-6. `Platforms/macOS/App/RootsApp.swift`
+6. `Platforms/macOS/App/ItoriApp.swift`
 7. `Platforms/macOS/PlatformAdapters/SettingsWindowController.swift`
 8. `.gitignore`
 
@@ -318,7 +318,7 @@ Before any release:
 
 ## Conclusion
 
-✅ **The Roots app is now RELEASE-SAFE.**
+✅ **The Itori app is now RELEASE-SAFE.**
 
 All critical issues (P0) have been resolved:
 - No user-visible placeholders

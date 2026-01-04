@@ -2,9 +2,9 @@
 
 ## Problem Solved
 
-The RootsWatch (watchOS) target had a build error:
+The ItoriWatch (watchOS) target had a build error:
 ```
-error: Multiple commands produce 'RootsWatch.app/RootsWatch'
+error: Multiple commands produce 'ItoriWatch.app/ItoriWatch'
     note: CopyAndPreserveArchs
     note: has link command with output
 ```
@@ -13,7 +13,7 @@ This error prevented the watchOS app from building.
 
 ## Root Cause
 
-The issue was caused by **File System Synchronized Groups** (a new Xcode 15/16 feature) in the RootsWatch target configuration. This feature automatically syncs files from the filesystem but can cause build system conflicts with watchOS targets, resulting in duplicate build tasks:
+The issue was caused by **File System Synchronized Groups** (a new Xcode 15/16 feature) in the ItoriWatch target configuration. This feature automatically syncs files from the filesystem but can cause build system conflicts with watchOS targets, resulting in duplicate build tasks:
 - CreateUniversalBinary task
 - Link (Ld) task
 - CopyAndPreserveArchs task
@@ -22,7 +22,7 @@ All three were trying to create the same output file.
 
 ## Solution Applied
 
-**Removed fileSystemSynchronizedGroups from the RootsWatch target** in `RootsApp.xcodeproj/project.pbxproj`.
+**Removed fileSystemSynchronizedGroups from the ItoriWatch target** in `ItoriApp.xcodeproj/project.pbxproj`.
 
 The problematic section was:
 ```
@@ -36,7 +36,7 @@ This was completely removed from the target configuration.
 
 ## Build Settings Also Added
 
-To ensure compatibility, the following build settings were added to both Debug and Release configurations for RootsWatch:
+To ensure compatibility, the following build settings were added to both Debug and Release configurations for ItoriWatch:
 
 1. **CREATE_UNIVERSAL_BINARY = NO**
    - Prevents the duplicate CreateUniversalBinary task
@@ -51,34 +51,34 @@ To ensure compatibility, the following build settings were added to both Debug a
 
 ### ✅ watchOS
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme "RootsWatch" \
+xcodebuild -project ItoriApp.xcodeproj -scheme "ItoriWatch" \
   -sdk watchsimulator -destination 'generic/platform=watchOS Simulator' build
 ```
 **Result:** BUILD SUCCEEDED
 
 ### ✅ iOS
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme "Roots" \
+xcodebuild -project ItoriApp.xcodeproj -scheme "Itori" \
   -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build
 ```
 **Result:** BUILD SUCCEEDED
 
 ### ✅ macOS
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme "Roots" \
+xcodebuild -project ItoriApp.xcodeproj -scheme "Itori" \
   -destination 'platform=macOS' build
 ```
 **Result:** BUILD SUCCEEDED
 
 ## Files Modified
 
-1. **RootsApp.xcodeproj/project.pbxproj**
-   - Removed fileSystemSynchronizedGroups from RootsWatch target
+1. **ItoriApp.xcodeproj/project.pbxproj**
+   - Removed fileSystemSynchronizedGroups from ItoriWatch target
    - Added CREATE_UNIVERSAL_BINARY = NO to Debug and Release
    - Added ONLY_ACTIVE_ARCH = YES to Debug
    - Added VALIDATE_WORKSPACE = NO to both configs
 
-2. **Backup created:** `RootsApp.xcodeproj/project.pbxproj.backup`
+2. **Backup created:** `ItoriApp.xcodeproj/project.pbxproj.backup`
 
 ## Important Notes
 
@@ -101,18 +101,18 @@ When you add new Swift files to the watchOS folder, you'll need to:
 
 1. **Option A: Use Xcode (Recommended)**
    - Right-click on watchOS folder in Xcode
-   - Select "Add Files to RootsWatch..."
+   - Select "Add Files to ItoriWatch..."
    - Choose your new files
-   - Ensure "RootsWatch" target is checked
+   - Ensure "ItoriWatch" target is checked
 
 2. **Option B: Manual drag-and-drop**
    - Drag the new file into the Xcode project navigator
-   - Make sure it's added to the RootsWatch target (check Target Membership in File Inspector)
+   - Make sure it's added to the ItoriWatch target (check Target Membership in File Inspector)
 
 ### Current watchOS Source Files
 
 The following files are currently part of the watchOS app:
-- `watchOS/App/RootsWatchApp.swift`
+- `watchOS/App/ItoriWatchApp.swift`
 - `watchOS/Root/WatchRootView.swift`
 - Plus access to SharedCore framework
 
@@ -132,7 +132,7 @@ All these files will continue to work normally.
 
 1. **Clean Build Folder**
    ```bash
-   rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp-*
+   rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp-*
    ```
 
 2. **Clean in Xcode**
@@ -141,14 +141,14 @@ All these files will continue to work normally.
 3. **Check Target Membership**
    - Select any watchOS source file
    - Open File Inspector (⌘⌥1)
-   - Ensure "RootsWatch" is checked under Target Membership
+   - Ensure "ItoriWatch" is checked under Target Membership
 
 ### If You Need to Restore the Old Configuration
 
 The backup file is available:
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-cp RootsApp.xcodeproj/project.pbxproj.backup RootsApp.xcodeproj/project.pbxproj
+cd /Users/clevelandlewis/Desktop/Itori
+cp ItoriApp.xcodeproj/project.pbxproj.backup ItoriApp.xcodeproj/project.pbxproj
 ```
 
 (But you probably won't need this - the current configuration is better!)

@@ -14,7 +14,7 @@
 
 ### ⚠️ Build Fixes (PARTIAL)
 Fixed several type conflicts:
-1. ✅ RootsInsightsEngine.swift - Added comment clarifying shared types
+1. ✅ ItoriInsightsEngine.swift - Added comment clarifying shared types
 2. ✅ PlannerPageView.swift - Converted LocalAssignment references to Assignment
 3. ✅ AssignmentsPageView.swift - Fixed multiple Local* type references:
    - `AssignmentCategory` → `LocalAssignmentCategory`
@@ -154,7 +154,7 @@ Accept the duplication, ensure proper conversion at boundaries.
 
 ## Files Modified in Build Fix Attempt
 
-1. SharedCore/Features/Insights/RootsInsightsEngine.swift
+1. SharedCore/Features/Insights/ItoriInsightsEngine.swift
 2. macOSApp/Scenes/PlannerPageView.swift  
 3. macOSApp/Scenes/AssignmentsPageView.swift
 

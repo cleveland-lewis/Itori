@@ -12,7 +12,7 @@ final class MainThreadDebugger: ObservableObject {
     
     private var timer: Timer?
     private let maxEvents = 500
-    private let logger = Logger(subsystem: "com.roots.app", category: "MainThreadDebugger")
+    private let logger = Logger(subsystem: "com.itori.app", category: "MainThreadDebugger")
     
     struct DebugEvent: Identifiable {
         let id = UUID()

@@ -239,7 +239,7 @@ struct ItoriApp: App {
             )
         }
         .commands {
-            RootsCommands()
+            ItoriCommands()
             AppCommands()
             SettingsCommands(showSettings: {
                 settingsCoordinator.show()

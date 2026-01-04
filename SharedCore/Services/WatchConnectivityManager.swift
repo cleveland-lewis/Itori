@@ -1,6 +1,6 @@
 //
 //  WatchConnectivityManager.swift
-//  Roots (Shared)
+//  Itori (Shared)
 //
 //  Created by AI Agent on 2024-12-30
 //  Purpose: Sync data between iPhone and Apple Watch

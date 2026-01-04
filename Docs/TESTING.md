@@ -1,23 +1,23 @@
-# Roots Testing Guide
+# Itori Testing Guide
 
 ## Manual Testing Checklist
 
-This document provides comprehensive manual test procedures for verifying critical functionality in Roots, particularly around event recurrence and alerts integration with Apple Calendar.
+This document provides comprehensive manual test procedures for verifying critical functionality in Itori, particularly around event recurrence and alerts integration with Apple Calendar.
 
 ## Recurrence + Alerts Round-Trip Testing
 
 ### Prerequisites
-- Roots app installed and running
+- Itori app installed and running
 - Apple Calendar app accessible
-- Calendar permissions granted to Roots
-- School calendar configured in Roots settings
+- Calendar permissions granted to Itori
+- School calendar configured in Itori settings
 
 ---
 
 ## Test Suite 1: Basic Recurrence Round-Trip
 
 ### Test 1.1: Daily Recurrence
-**Create in Roots:**
+**Create in Itori:**
 1. Open AddEventPopup (+ button)
 2. Title: "Daily Standup"
 3. Set start time: 9:00 AM tomorrow
@@ -38,8 +38,8 @@ This document provides comprehensive manual test procedures for verifying critic
 1. Change alert to 30 minutes before
 2. Save
 
-**Verify in Roots:**
-1. Return to Roots calendar view
+**Verify in Itori:**
+1. Return to Itori calendar view
 2. Find "Daily Standup" event
 3. Open event details
 4. ✅ Verify alert updated: 30 minutes before
@@ -48,7 +48,7 @@ This document provides comprehensive manual test procedures for verifying critic
 ---
 
 ### Test 1.2: Weekly Recurrence - Single Day
-**Create in Roots:**
+**Create in Itori:**
 1. New event: "Weekly Team Meeting"
 2. Start: Next Monday 2:00 PM
 3. Duration: 1 hour
@@ -68,7 +68,7 @@ This document provides comprehensive manual test procedures for verifying critic
 2. Apply to "This and all future events"
 3. Save
 
-**Verify in Roots:**
+**Verify in Itori:**
 1. ✅ Verify time updated: 3:00 PM
 2. ✅ Verify both alerts preserved
 3. ✅ Verify recurrence intact
@@ -76,7 +76,7 @@ This document provides comprehensive manual test procedures for verifying critic
 ---
 
 ### Test 1.3: Weekly Recurrence - Multiple Days
-**Create in Roots:**
+**Create in Itori:**
 1. New event: "Workout Session"
 2. Start: Next Monday 6:00 AM
 3. Duration: 1 hour
@@ -96,7 +96,7 @@ This document provides comprehensive manual test procedures for verifying critic
 2. Apply to all future events
 3. Save
 
-**Verify in Roots:**
+**Verify in Itori:**
 1. Open event details
 2. ✅ Verify primary alert: At time of event
 3. ✅ Verify secondary alert: 10 minutes before
@@ -107,7 +107,7 @@ This document provides comprehensive manual test procedures for verifying critic
 ## Test Suite 2: Recurrence End Conditions
 
 ### Test 2.1: End After N Occurrences
-**Create in Roots:**
+**Create in Itori:**
 1. New event: "Project Sprint Review"
 2. Start: Next Monday 10:00 AM
 3. Repeat: Weekly
@@ -126,14 +126,14 @@ This document provides comprehensive manual test procedures for verifying critic
 1. Change to 10 occurrences
 2. Save
 
-**Verify in Roots:**
+**Verify in Itori:**
 1. Open event details
 2. ✅ Verify recurrence end count updated: 10 occurrences
 
 ---
 
 ### Test 2.2: End By Specific Date
-**Create in Roots:**
+**Create in Itori:**
 1. New event: "Summer Reading Club"
 2. Start: Next week, 3:00 PM
 3. Repeat: Weekly
@@ -152,7 +152,7 @@ This document provides comprehensive manual test procedures for verifying critic
 1. Extend end date by 2 weeks
 2. Save
 
-**Verify in Roots:**
+**Verify in Itori:**
 1. ✅ Verify additional 2 weekly occurrences appear
 2. ✅ Verify alerts preserved on new occurrences
 
@@ -161,7 +161,7 @@ This document provides comprehensive manual test procedures for verifying critic
 ## Test Suite 3: Alert Configurations
 
 ### Test 3.1: No Alerts
-**Create in Roots:**
+**Create in Itori:**
 1. New event: "Personal Time"
 2. Start: Tomorrow 7:00 PM
 3. Repeat: None
@@ -177,13 +177,13 @@ This document provides comprehensive manual test procedures for verifying critic
 1. Add alert: 15 minutes before
 2. Save
 
-**Verify in Roots:**
+**Verify in Itori:**
 1. ✅ Verify alert appears: 15 minutes before
 
 ---
 
 ### Test 3.2: Single Alert
-**Create in Roots:**
+**Create in Itori:**
 1. New event: "Doctor Appointment"
 2. Start: Next week, 2:00 PM
 3. Primary alert: 1 day before
@@ -199,14 +199,14 @@ This document provides comprehensive manual test procedures for verifying critic
 1. Change alert to 2 days before
 2. Save
 
-**Verify in Roots:**
+**Verify in Itori:**
 1. ✅ Verify alert updated: 2 days before
 2. ✅ Verify still only one alert
 
 ---
 
 ### Test 3.3: Two Alerts (Primary + Secondary)
-**Create in Roots:**
+**Create in Itori:**
 1. New event: "Flight Departure"
 2. Start: Next month, 6:00 AM
 3. Primary alert: 1 day before
@@ -223,7 +223,7 @@ This document provides comprehensive manual test procedures for verifying critic
 2. Add new alert: 30 minutes before
 3. Save
 
-**Verify in Roots:**
+**Verify in Itori:**
 1. ✅ Verify primary alert: 1 day before
 2. ✅ Verify secondary alert: 30 minutes before
 
@@ -232,7 +232,7 @@ This document provides comprehensive manual test procedures for verifying critic
 ## Test Suite 4: Complex Scenarios
 
 ### Test 4.1: Monthly Recurrence with Alerts
-**Create in Roots:**
+**Create in Itori:**
 1. New event: "Monthly Budget Review"
 2. Start: First Monday of next month, 9:00 AM
 3. Repeat: Monthly
@@ -250,7 +250,7 @@ This document provides comprehensive manual test procedures for verifying critic
 5. Change time to 10:00 AM
 6. Save
 
-**Verify in Roots:**
+**Verify in Itori:**
 1. ✅ Verify first occurrence time: 10:00 AM
 2. ✅ Verify future occurrences still 9:00 AM
 3. ✅ Verify alerts preserved on all
@@ -258,7 +258,7 @@ This document provides comprehensive manual test procedures for verifying critic
 ---
 
 ### Test 4.2: Edit Recurrence Pattern Mid-Series
-**Create in Roots:**
+**Create in Itori:**
 1. New event: "Training Session"
 2. Start: Next Monday, 1:00 PM
 3. Repeat: Weekly
@@ -274,7 +274,7 @@ This document provides comprehensive manual test procedures for verifying critic
 4. Change repeat to every 2 weeks
 5. Save
 
-**Verify in Roots:**
+**Verify in Itori:**
 1. ✅ Verify first 4 occurrences: weekly
 2. ✅ Verify occurrences 5+: bi-weekly
 3. ✅ Verify alerts preserved throughout
@@ -282,7 +282,7 @@ This document provides comprehensive manual test procedures for verifying critic
 ---
 
 ### Test 4.3: Delete Single Occurrence
-**Create in Roots:**
+**Create in Itori:**
 1. New event: "Daily Check-in"
 2. Start: Tomorrow, 9:00 AM
 3. Repeat: Daily
@@ -295,7 +295,7 @@ This document provides comprehensive manual test procedures for verifying critic
 2. Delete the 3rd occurrence only
 3. Confirm delete
 
-**Verify in Roots:**
+**Verify in Itori:**
 1. ✅ Verify 6 occurrences remain
 2. ✅ Verify gap on day 3
 3. ✅ Verify remaining occurrences unchanged
@@ -305,7 +305,7 @@ This document provides comprehensive manual test procedures for verifying critic
 ## Test Suite 5: Edge Cases
 
 ### Test 5.1: All-Day Recurring Event with Alerts
-**Create in Roots:**
+**Create in Itori:**
 1. New event: "Vacation Days"
 2. Toggle: All-day ON
 3. Start: Next week
@@ -324,14 +324,14 @@ This document provides comprehensive manual test procedures for verifying critic
 1. Change duration to 2 days per occurrence
 2. Save
 
-**Verify in Roots:**
+**Verify in Itori:**
 1. ✅ Verify each occurrence spans 2 days
 2. ✅ Verify alerts still at 9:00 AM
 
 ---
 
 ### Test 5.2: Event with Location, Notes, and URL
-**Create in Roots:**
+**Create in Itori:**
 1. New event: "Conference Workshop"
 2. Start: Next month, 2:00 PM
 3. Location: "Convention Center Room 301"
@@ -350,7 +350,7 @@ This document provides comprehensive manual test procedures for verifying critic
 6. Add recurrence: Weekly for 4 weeks
 7. Save
 
-**Verify in Roots:**
+**Verify in Itori:**
 1. ✅ Verify 4 weekly occurrences
 2. ✅ Verify all have location, notes, URL
 3. ✅ Verify all have alert
@@ -358,7 +358,7 @@ This document provides comprehensive manual test procedures for verifying critic
 ---
 
 ### Test 5.3: Convert Non-Recurring to Recurring
-**Create in Roots:**
+**Create in Itori:**
 1. New event: "Team Sync"
 2. Start: Tomorrow, 10:00 AM
 3. Repeat: None
@@ -371,11 +371,11 @@ This document provides comprehensive manual test procedures for verifying critic
 3. End: After 8 occurrences
 4. Save
 
-**Verify in Roots:**
+**Verify in Itori:**
 1. ✅ Verify event now shows recurrence
 2. ✅ Verify 8 weekly occurrences
 3. ✅ Verify alert on all occurrences
-4. Edit in Roots
+4. Edit in Itori
 5. Change alert to 30 minutes before
 6. Save
 
@@ -387,7 +387,7 @@ This document provides comprehensive manual test procedures for verifying critic
 ## Test Suite 6: Category Integration
 
 ### Test 6.1: Recurring Event with Category
-**Create in Roots:**
+**Create in Itori:**
 1. New event: "Homework Review"
 2. Category: Study
 3. Start: Next Monday, 4:00 PM
@@ -403,7 +403,7 @@ This document provides comprehensive manual test procedures for verifying critic
 4. Change time to 5:00 PM (all future)
 5. Save
 
-**Verify in Roots:**
+**Verify in Itori:**
 1. ✅ Verify time updated: 5:00 PM
 2. ✅ Verify category still: Study
 3. ✅ Verify category visible in UI
@@ -414,7 +414,7 @@ This document provides comprehensive manual test procedures for verifying critic
 
 ### Failure Test 1: Rapid Editing
 **Procedure:**
-1. Create recurring event in Roots
+1. Create recurring event in Itori
 2. Immediately open in Apple Calendar
 3. Edit without waiting for sync
 4. Save in both apps nearly simultaneously
@@ -422,7 +422,7 @@ This document provides comprehensive manual test procedures for verifying critic
 **Expected:**
 - ✅ Last write wins (no crash)
 - ✅ EventKit resolves conflicts gracefully
-- ✅ Roots refreshes to show final state
+- ✅ Itori refreshes to show final state
 
 ---
 
@@ -430,10 +430,10 @@ This document provides comprehensive manual test procedures for verifying critic
 **Procedure:**
 1. Create event in Apple Calendar
 2. Set recurrence: Every weekday (Mon-Fri)
-3. View in Roots
+3. View in Itori
 
 **Expected:**
-- ✅ Roots displays recurrence correctly
+- ✅ Itori displays recurrence correctly
 - ✅ No data loss when editing other fields
 
 ---
@@ -442,10 +442,10 @@ This document provides comprehensive manual test procedures for verifying critic
 **Procedure:**
 1. Create event in Apple Calendar
 2. Add 5 different alerts
-3. View in Roots
+3. View in Itori
 
 **Expected:**
-- ✅ Roots shows primary and secondary alerts
+- ✅ Itori shows primary and secondary alerts
 - ✅ Additional alerts preserved in EventKit
 - ✅ No crash or data corruption
 
@@ -462,8 +462,8 @@ Before each release, verify:
 - [ ] Primary alert preserved
 - [ ] Secondary alert preserved
 - [ ] No alerts preserved
-- [ ] Edit in Roots → verify in Calendar
-- [ ] Edit in Calendar → verify in Roots
+- [ ] Edit in Itori → verify in Calendar
+- [ ] Edit in Calendar → verify in Itori
 - [ ] Delete single occurrence works
 - [ ] Delete all occurrences works
 - [ ] Category survives round-trip
@@ -481,12 +481,12 @@ Before each release, verify:
 
 ### Known Limitations
 - Some recurrence patterns (e.g., "2nd Tuesday of month") may not be fully supported in UI but are preserved in EventKit
-- Alerts beyond 2 may be stored but only first 2 editable in Roots
+- Alerts beyond 2 may be stored but only first 2 editable in Itori
 - Custom recurrence rules from other apps are preserved but may not be editable
 
 ### Troubleshooting
 - If events don't appear: Check calendar permissions
-- If edits don't sync: Force refresh in Roots (pull-to-refresh)
+- If edits don't sync: Force refresh in Itori (pull-to-refresh)
 - If recurrence breaks: Check EventKit console logs
 - If alerts missing: Verify notification permissions
 
@@ -494,7 +494,7 @@ Before each release, verify:
 
 ## Automated Testing Coverage
 
-See `RootsTests/CalendarRecurrenceTests.swift` for automated unit tests covering:
+See `ItoriTests/CalendarRecurrenceTests.swift` for automated unit tests covering:
 - Recurrence rule conversion
 - Alert mapping fidelity
 - Category encoding/decoding

@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-All files added through the Roots app are now automatically saved locally and synced to iCloud across all devices. The system works offline-first, queuing uploads for when connectivity is restored.
+All files added through the Itori app are now automatically saved locally and synced to iCloud across all devices. The system works offline-first, queuing uploads for when connectivity is restored.
 
 ---
 
@@ -62,7 +62,7 @@ User adds file
 
 ```
 ~/Library/Application Support/
-  └─ Roots/
+  └─ Itori/
       └─ CourseFiles/
           └─ {courseId}/
               └─ {fileId}.{extension}
@@ -76,7 +76,7 @@ User adds file
 ### **iCloud Storage (When Available)**
 
 ```
-iCloud.com.cwlewisiii.Roots/
+iCloud.com.cwlewisiii.Itori/
   └─ Documents/
       └─ CourseFiles/
           └─ {courseId}/
@@ -687,7 +687,7 @@ if let bookmarkData = Data(base64Encoded: courseFile.localURL) {
 
 **Check:**
 1. iCloud signed in (System Settings)
-2. iCloud Drive enabled for Roots
+2. iCloud Drive enabled for Itori
 3. Network connectivity
 4. Storage quota not exceeded
 

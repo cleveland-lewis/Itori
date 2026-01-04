@@ -1,11 +1,11 @@
-# Roots Multi-Target Architecture - Implementation Guide
+# Itori Multi-Target Architecture - Implementation Guide
 
 ## Overview
-This guide restructures Roots into a clean multi-target architecture with maximum code sharing and platform-native UIs.
+This guide restructures Itori into a clean multi-target architecture with maximum code sharing and platform-native UIs.
 
 ## Architecture Goals
 ✅ Multiple targets: iOS/iPadOS + macOS  
-✅ Shared Swift Package (`RootsShared`) with cross-platform logic  
+✅ Shared Swift Package (`ItoriShared`) with cross-platform logic  
 ✅ Platform-specific UI in each target  
 ✅ No code duplication for business logic  
 ✅ Apple-native (SwiftUI, no Catalyst)  
@@ -16,13 +16,13 @@ This guide restructures Roots into a clean multi-target architecture with maximu
 ## Part 1: Recommended Folder Layout
 
 ```
-Roots/
-├── Roots.xcodeproj/
+Itori/
+├── Itori.xcodeproj/
 │
-├── RootsShared/                           # Swift Package (cross-platform)
+├── ItoriShared/                           # Swift Package (cross-platform)
 │   ├── Package.swift
 │   ├── Sources/
-│   │   └── RootsShared/
+│   │   └── ItoriShared/
 │   │       ├── Models/
 │   │       │   ├── Course.swift
 │   │       │   ├── Assignment.swift
@@ -57,12 +57,12 @@ Roots/
 │   │       └── Localization/
 │   │           └── LocalizationKeys.swift
 │   └── Tests/
-│       └── RootsSharedTests/
+│       └── ItoriSharedTests/
 │
-├── RootsApp/                              # iOS/iPadOS Target
-│   ├── RootsApp.swift                     # App entry point
+├── ItoriApp/                              # iOS/iPadOS Target
+│   ├── ItoriApp.swift                     # App entry point
 │   ├── Info.plist
-│   ├── Roots.entitlements
+│   ├── Itori.entitlements
 │   ├── Views/
 │   │   ├── Dashboard/
 │   │   ├── Calendar/
@@ -83,10 +83,10 @@ Roots/
 │   │   └── AppDependencies.swift
 │   └── Assets.xcassets/
 │
-├── RootsMac/                              # macOS Target
-│   ├── RootsMacApp.swift                  # App entry point
+├── ItoriMac/                              # macOS Target
+│   ├── ItoriMacApp.swift                  # App entry point
 │   ├── Info.plist
-│   ├── RootsMac.entitlements
+│   ├── ItoriMac.entitlements
 │   ├── Views/
 │   │   ├── Dashboard/
 │   │   ├── Calendar/
@@ -107,8 +107,8 @@ Roots/
 │   │   └── AppDependencies.swift
 │   └── Assets.xcassets/
 │
-└── RootsTests/                            # Shared tests (optional)
-    └── RootsSharedTests/
+└── ItoriTests/                            # Shared tests (optional)
+    └── ItoriSharedTests/
 ```
 
 ---
@@ -117,24 +117,24 @@ Roots/
 
 ### Step 1: Create the Shared Swift Package
 
-1. **In Finder**, navigate to your `Roots` project folder
-2. Create a new folder named `RootsShared` at the root level (same level as `Roots.xcodeproj`)
-3. **In Terminal**, navigate to the `RootsShared` folder:
+1. **In Finder**, navigate to your `Itori` project folder
+2. Create a new folder named `ItoriShared` at the root level (same level as `Itori.xcodeproj`)
+3. **In Terminal**, navigate to the `ItoriShared` folder:
    ```bash
-   cd /path/to/Roots/RootsShared
+   cd /path/to/Itori/ItoriShared
    ```
 4. Create a new Swift Package:
    ```bash
-   swift package init --type library --name RootsShared
+   swift package init --type library --name ItoriShared
    ```
 5. Edit `Package.swift` to match the structure below
 
-### Step 2: Add RootsShared Package to Xcode Project
+### Step 2: Add ItoriShared Package to Xcode Project
 
-1. Open `Roots.xcodeproj` in Xcode
+1. Open `Itori.xcodeproj` in Xcode
 2. **File → Add Package Dependencies...**
 3. Click **"Add Local..."** button
-4. Navigate to and select the `RootsShared` folder
+4. Navigate to and select the `ItoriShared` folder
 5. Click **"Add Package"**
 6. In the dialog, select **both targets** (iOS and macOS)
 7. Click **"Add Package"**
@@ -145,7 +145,7 @@ Roots/
 2. Click the **"+"** button at the bottom of the targets list
 3. Choose **macOS → App**
 4. Fill in:
-   - Product Name: `RootsMac`
+   - Product Name: `ItoriMac`
    - Team: Your development team
    - Organization Identifier: `com.yourcompany`
    - Interface: **SwiftUI**
@@ -157,22 +157,22 @@ Roots/
 ### Step 4: Rename iOS Target (Optional but Recommended)
 
 1. Select the iOS target in the project navigator
-2. Click on the target name (it might be "Roots")
-3. Rename it to `RootsApp`
+2. Click on the target name (it might be "Itori")
+3. Rename it to `ItoriApp`
 4. Update the scheme name to match
 
 ### Step 5: Configure Target Dependencies
 
-**For iOS Target (RootsApp)**:
-1. Select `RootsApp` target → **General** tab
+**For iOS Target (ItoriApp)**:
+1. Select `ItoriApp` target → **General** tab
 2. Scroll to **Frameworks, Libraries, and Embedded Content**
-3. Click **"+"** → Add `RootsShared`
+3. Click **"+"** → Add `ItoriShared`
 4. Set to **"Do Not Embed"** (it's a static library)
 
-**For macOS Target (RootsMac)**:
-1. Select `RootsMac` target → **General** tab
+**For macOS Target (ItoriMac)**:
+1. Select `ItoriMac` target → **General** tab
 2. Scroll to **Frameworks, Libraries, and Embedded Content**
-3. Click **"+"** → Add `RootsShared`
+3. Click **"+"** → Add `ItoriShared`
 4. Set to **"Do Not Embed"**
 
 ### Step 6: Configure Build Settings
@@ -196,15 +196,15 @@ Roots/
 import PackageDescription
 
 let package = Package(
-    name: "RootsShared",
+    name: "ItoriShared",
     platforms: [
         .iOS(.v17),
         .macOS(.v14)
     ],
     products: [
         .library(
-            name: "RootsShared",
-            targets: ["RootsShared"]
+            name: "ItoriShared",
+            targets: ["ItoriShared"]
         )
     ],
     dependencies: [
@@ -213,14 +213,14 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "RootsShared",
+            name: "ItoriShared",
             dependencies: [],
-            path: "Sources/RootsShared"
+            path: "Sources/ItoriShared"
         ),
         .testTarget(
-            name: "RootsSharedTests",
-            dependencies: ["RootsShared"],
-            path: "Tests/RootsSharedTests"
+            name: "ItoriSharedTests",
+            dependencies: ["ItoriShared"],
+            path: "Tests/ItoriSharedTests"
         )
     ]
 )
@@ -230,7 +230,7 @@ let package = Package(
 
 ## Part 4: Shared Code Examples
 
-### RootsShared/Sources/RootsShared/Models/Course.swift
+### ItoriShared/Sources/ItoriShared/Models/Course.swift
 
 ```swift
 import Foundation
@@ -274,7 +274,7 @@ public struct Course: Identifiable, Codable, Hashable, Sendable {
 }
 ```
 
-### RootsShared/Sources/RootsShared/Models/Assignment.swift
+### ItoriShared/Sources/ItoriShared/Models/Assignment.swift
 
 ```swift
 import Foundation
@@ -327,7 +327,7 @@ public struct Assignment: Identifiable, Codable, Hashable, Sendable {
 }
 ```
 
-### RootsShared/Sources/RootsShared/Services/Protocols/PersistenceService.swift
+### ItoriShared/Sources/ItoriShared/Services/Protocols/PersistenceService.swift
 
 ```swift
 import Foundation
@@ -347,7 +347,7 @@ public protocol PersistenceService: Actor {
 }
 ```
 
-### RootsShared/Sources/RootsShared/Services/AssignmentPlanEngine.swift
+### ItoriShared/Sources/ItoriShared/Services/AssignmentPlanEngine.swift
 
 ```swift
 import Foundation
@@ -414,7 +414,7 @@ public struct PlanStep: Identifiable, Codable, Hashable, Sendable {
 }
 ```
 
-### RootsShared/Sources/RootsShared/DesignTokens/Spacing.swift
+### ItoriShared/Sources/ItoriShared/DesignTokens/Spacing.swift
 
 ```swift
 import Foundation
@@ -442,7 +442,7 @@ public struct BorderRadius {
 }
 ```
 
-### RootsShared/Sources/RootsShared/Utilities/DateHelpers.swift
+### ItoriShared/Sources/ItoriShared/Utilities/DateHelpers.swift
 
 ```swift
 import Foundation
@@ -479,11 +479,11 @@ public extension Date {
 
 ## Part 5: Platform-Specific Extensions
 
-### RootsApp/PlatformExtensions/Color+iOS.swift
+### ItoriApp/PlatformExtensions/Color+iOS.swift
 
 ```swift
 import SwiftUI
-import RootsShared
+import ItoriShared
 
 #if os(iOS)
 extension AssignmentUrgency {
@@ -533,11 +533,11 @@ extension Color {
 #endif
 ```
 
-### RootsMac/PlatformExtensions/Color+macOS.swift
+### ItoriMac/PlatformExtensions/Color+macOS.swift
 
 ```swift
 import SwiftUI
-import RootsShared
+import ItoriShared
 
 #if os(macOS)
 extension AssignmentUrgency {
@@ -591,7 +591,7 @@ extension Color {
 
 ## Part 6: Dependency Injection Pattern
 
-### RootsShared/Sources/RootsShared/DependencyInjection/AppContainer.swift
+### ItoriShared/Sources/ItoriShared/DependencyInjection/AppContainer.swift
 
 ```swift
 import Foundation
@@ -648,11 +648,11 @@ public final class AppContainer: ObservableObject {
 }
 ```
 
-### RootsApp/DependencyInjection/AppDependencies.swift (iOS)
+### ItoriApp/DependencyInjection/AppDependencies.swift (iOS)
 
 ```swift
 import SwiftUI
-import RootsShared
+import ItoriShared
 
 #if os(iOS)
 /// iOS-specific dependency setup
@@ -720,11 +720,11 @@ public struct Schedule: Identifiable, Codable, Hashable, Sendable {
 #endif
 ```
 
-### RootsMac/DependencyInjection/AppDependencies.swift (macOS)
+### ItoriMac/DependencyInjection/AppDependencies.swift (macOS)
 
 ```swift
 import SwiftUI
-import RootsShared
+import ItoriShared
 
 #if os(macOS)
 /// macOS-specific dependency setup
@@ -792,15 +792,15 @@ public struct Schedule: Identifiable, Codable, Hashable, Sendable {
 #endif
 ```
 
-### RootsApp/RootsApp.swift (iOS Entry Point)
+### ItoriApp/ItoriApp.swift (iOS Entry Point)
 
 ```swift
 import SwiftUI
-import RootsShared
+import ItoriShared
 
 #if os(iOS)
 @main
-struct RootsApp: App {
+struct ItoriApp: App {
     
     @StateObject private var container = AppDependencies.shared.container
     
@@ -817,15 +817,15 @@ struct RootsApp: App {
 #endif
 ```
 
-### RootsMac/RootsMacApp.swift (macOS Entry Point)
+### ItoriMac/ItoriMacApp.swift (macOS Entry Point)
 
 ```swift
 import SwiftUI
-import RootsShared
+import ItoriShared
 
 #if os(macOS)
 @main
-struct RootsMacApp: App {
+struct ItoriMacApp: App {
     
     @StateObject private var container = AppDependencies.shared.container
     
@@ -853,8 +853,8 @@ struct RootsMacApp: App {
 
 ### Entitlements Location
 
-**iOS**: `RootsApp/Roots.entitlements`  
-**macOS**: `RootsMac/RootsMac.entitlements`
+**iOS**: `ItoriApp/Itori.entitlements`  
+**macOS**: `ItoriMac/ItoriMac.entitlements`
 
 ### Adding Capabilities (Future)
 
@@ -915,7 +915,7 @@ struct RootsMacApp: App {
 ## Part 8: Implementation Checklist
 
 ### Phase 1: Setup Package Structure
-- [ ] Create `RootsShared` folder
+- [ ] Create `ItoriShared` folder
 - [ ] Run `swift package init` in folder
 - [ ] Edit `Package.swift` with correct structure
 - [ ] Add package to Xcode project
@@ -923,17 +923,17 @@ struct RootsMacApp: App {
 
 ### Phase 2: Add macOS Target
 - [ ] Create new macOS target in Xcode
-- [ ] Rename iOS target to `RootsApp`
+- [ ] Rename iOS target to `ItoriApp`
 - [ ] Configure build settings for both targets
-- [ ] Add `RootsShared` dependency to both targets
+- [ ] Add `ItoriShared` dependency to both targets
 
 ### Phase 3: Move Shared Code
-- [ ] Move domain models to `RootsShared/Models/`
-- [ ] Move services to `RootsShared/Services/`
-- [ ] Move persistence protocols to `RootsShared/Persistence/`
-- [ ] Move utilities to `RootsShared/Utilities/`
-- [ ] Move design tokens to `RootsShared/DesignTokens/`
-- [ ] Verify all imports use `import RootsShared`
+- [ ] Move domain models to `ItoriShared/Models/`
+- [ ] Move services to `ItoriShared/Services/`
+- [ ] Move persistence protocols to `ItoriShared/Persistence/`
+- [ ] Move utilities to `ItoriShared/Utilities/`
+- [ ] Move design tokens to `ItoriShared/DesignTokens/`
+- [ ] Verify all imports use `import ItoriShared`
 
 ### Phase 4: Create Platform Extensions
 - [ ] Create `Color+iOS.swift` in iOS target
@@ -942,7 +942,7 @@ struct RootsMacApp: App {
 - [ ] Verify colors compile on both platforms
 
 ### Phase 5: Setup Dependency Injection
-- [ ] Create `AppContainer` in `RootsShared`
+- [ ] Create `AppContainer` in `ItoriShared`
 - [ ] Create `AppDependencies.swift` in iOS target
 - [ ] Create `AppDependencies.swift` in macOS target
 - [ ] Wire up container in both app entry points
@@ -966,7 +966,7 @@ struct RootsMacApp: App {
 ## Part 9: Key Principles
 
 ### ✅ DO:
-- Put business logic in `RootsShared`
+- Put business logic in `ItoriShared`
 - Put UI code in platform targets
 - Use protocols for platform-specific implementations
 - Store colors as hex strings in models
@@ -975,7 +975,7 @@ struct RootsMacApp: App {
 
 ### ❌ DON'T:
 - Import `SwiftUI` in shared models (unless necessary)
-- Use `UIColor` or `NSColor` in `RootsShared`
+- Use `UIColor` or `NSColor` in `ItoriShared`
 - Duplicate business logic across targets
 - Put platform-specific APIs in shared package
 - Mix persistence implementation with interfaces
@@ -986,12 +986,12 @@ struct RootsMacApp: App {
 
 ### iOS Build Command
 ```bash
-xcodebuild -project Roots.xcodeproj -scheme RootsApp -sdk iphonesimulator build
+xcodebuild -project Itori.xcodeproj -scheme ItoriApp -sdk iphonesimulator build
 ```
 
 ### macOS Build Command
 ```bash
-xcodebuild -project Roots.xcodeproj -scheme RootsMac -sdk macosx build
+xcodebuild -project Itori.xcodeproj -scheme ItoriMac -sdk macosx build
 ```
 
 ### Expected Result

@@ -1,4 +1,4 @@
-# Roots Roadmap
+# Itori Roadmap
 
 roadmap.md — UI Revamp Phase (Dashboard + Liquid Glass Popups)
 

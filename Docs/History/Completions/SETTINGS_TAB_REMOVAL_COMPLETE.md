@@ -46,7 +46,7 @@ Successfully removed the Settings tab from the tab bar on both iOS and macOS pla
 ### macOS:
 - **Before**: Settings tab appeared in tab bar (rarely used)
 - **After**: Settings removed from tab bar
-- **Access**: Settings remain accessible via macOS menu bar (Roots → Settings... or ⌘,)
+- **Access**: Settings remain accessible via macOS menu bar (Itori → Settings... or ⌘,)
 
 ## Build Status
 ✅ **BUILD SUCCEEDED** - No compilation errors

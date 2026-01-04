@@ -166,7 +166,7 @@ final class PlannerStore: ObservableObject {
         self.storageURL = folder.appendingPathComponent("planner.json")
         
         // Setup iCloud URLs (opportunistic, no errors if unavailable)
-        if let containerURL = fm.url(forUbiquityContainerIdentifier: "iCloud.com.cwlewisiii.Roots") {
+        if let containerURL = fm.url(forUbiquityContainerIdentifier: "iCloud.com.cwlewisiii.Itori") {
             let iCloudFolder = containerURL.appendingPathComponent("Documents/Planner", isDirectory: true)
             try? fm.createDirectory(at: iCloudFolder, withIntermediateDirectories: true)
             self.iCloudURL = iCloudFolder.appendingPathComponent("planner.json")

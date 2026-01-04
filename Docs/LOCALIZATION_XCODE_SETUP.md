@@ -25,11 +25,11 @@
 ### Method 1: Quick Fix (Recommended)
 
 1. **Open Xcode**
-   - Open `RootsApp.xcodeproj`
+   - Open `ItoriApp.xcodeproj`
 
 2. **Add Localization Files**
    - In Project Navigator, right-click the `Shared` folder
-   - Select "Add Files to 'Roots'..."
+   - Select "Add Files to 'Itori'..."
    - Navigate to your project root
    - **Hold Command** and select all three folders:
      - `en.lproj`
@@ -39,7 +39,7 @@
 3. **Important Settings**
    - ✅ Check "Copy items if needed" (if prompted)
    - ✅ Select "Create folder references" (NOT "Create groups")
-   - ✅ Check ALL targets (Roots, Roots iOS, etc.)
+   - ✅ Check ALL targets (Itori, Itori iOS, etc.)
    - Click "Add"
 
 4. **Verify Localizable.strings Appears**
@@ -57,14 +57,14 @@
      - ☑ Chinese (Traditional)
 
 6. **Verify Build Phase**
-   - Select Roots target
+   - Select Itori target
    - Go to "Build Phases" tab
    - Expand "Copy Bundle Resources"
    - Verify `Localizable.strings` is listed
 
 7. **Clean Build**
    ```bash
-   rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp*
+   rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp*
    ```
    - In Xcode: Product → Clean Build Folder (⇧⌘K)
    - Build and run
@@ -74,8 +74,8 @@
 ### Method 2: Add from Project Settings
 
 1. **Open Project Settings**
-   - Click the blue Roots project icon at top of navigator
-   - Select "Roots" project (not target)
+   - Click the blue Itori project icon at top of navigator
+   - Select "Itori" project (not target)
    - Go to "Info" tab
 
 2. **Check Localizations Section**
@@ -101,7 +101,7 @@
 
 ⚠️ **Only if Methods 1 & 2 fail. Close Xcode first!**
 
-This requires manually editing `RootsApp.xcodeproj/project.pbxproj`.
+This requires manually editing `ItoriApp.xcodeproj/project.pbxproj`.
 
 **Generated UUIDs** (use these):
 - Variant Group: `49A80ADF8ACC4936B88C85F6`
@@ -186,7 +186,7 @@ Xcode tracks files in `project.pbxproj`, so any file created externally must be 
 1. System Settings → Language & Region
 2. Add "Chinese, Simplified" (简体中文)
 3. Drag to top of preferred languages
-4. Restart Roots app
+4. Restart Itori app
 5. Verify UI shows Chinese text:
    - Dashboard: "今日概览", "状态"
    - Courses: "课程列表", "新建课程"
@@ -196,7 +196,7 @@ Xcode tracks files in `project.pbxproj`, so any file created externally must be 
 1. System Settings → Language & Region
 2. Add "Chinese, Traditional" (繁體中文)
 3. Drag to top of preferred languages
-4. Restart Roots app
+4. Restart Itori app
 5. Verify UI shows Chinese text:
    - Dashboard: "今日概覽", "狀態"
    - Courses: "課程清單", "新增課程"
@@ -237,7 +237,7 @@ To completely fix "0 pages localized":
 - [ ] Close Xcode
 - [ ] Verify files exist: `ls -la *.lproj/Localizable.strings`
 - [ ] Open Xcode
-- [ ] Add .lproj folders via "Add Files to Roots..."
+- [ ] Add .lproj folders via "Add Files to Itori..."
 - [ ] Use "Create folder references"
 - [ ] Check all targets
 - [ ] Select Localizable.strings → Localize

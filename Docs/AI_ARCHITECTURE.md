@@ -1,8 +1,8 @@
-# Roots AI Architecture
+# Itori AI Architecture
 
 ## Overview
 
-Roots implements a hybrid AI architecture that provides intelligent features across all platforms while respecting user privacy and device capabilities.
+Itori implements a hybrid AI architecture that provides intelligent features across all platforms while respecting user privacy and device capabilities.
 
 ## Architecture Components
 

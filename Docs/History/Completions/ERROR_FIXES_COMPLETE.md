@@ -55,7 +55,7 @@ BUG IN CLIENT OF CLOUDKIT: CloudKit push notifications require
 the 'remote-notification' background mode in your info plist.
 ```
 
-**Status:** Already configured correctly in `RootsApp.xcodeproj/project.pbxproj`:
+**Status:** Already configured correctly in `ItoriApp.xcodeproj/project.pbxproj`:
 ```
 INFOPLIST_KEY_UIBackgroundModes[sdk=iphoneos*] = "remote-notification"
 ```

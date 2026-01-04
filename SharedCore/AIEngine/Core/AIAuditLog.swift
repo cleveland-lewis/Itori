@@ -80,7 +80,7 @@ public actor AIAuditLog {
     private let maxFileSizeBytes: Int
     private var entries: [AIAuditEntry] = []
     private let fileURL: URL
-    private let logger = Logger(subsystem: "com.roots.app", category: "AIAudit")
+    private let logger = Logger(subsystem: "com.itori.app", category: "AIAudit")
     
     public init(maxEntries: Int = 1000, maxFileSizeBytes: Int = 5_000_000) {
         self.maxEntries = maxEntries

@@ -1,6 +1,6 @@
 import Foundation
 
-/// Represents all persisted entity types in Roots for Storage Center
+/// Represents all persisted entity types in Itori for Storage Center
 /// Maps to STORAGE_DATA_INVENTORY.md
 public enum StorageEntityType: String, CaseIterable, Identifiable, Codable {
     // MARK: - Academic

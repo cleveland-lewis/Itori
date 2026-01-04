@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Accessibility Testing Framework provides comprehensive tools for auditing, testing, and debugging accessibility features in the Roots app. It supports WCAG 2.1 Level AA/AAA compliance testing and provides real-time debugging tools for developers.
+The Accessibility Testing Framework provides comprehensive tools for auditing, testing, and debugging accessibility features in the Itori app. It supports WCAG 2.1 Level AA/AAA compliance testing and provides real-time debugging tools for developers.
 
 ## Components
 
@@ -131,14 +131,14 @@ print(report)
 **Running Tests:**
 ```bash
 # Run all accessibility tests
-xcodebuild test -scheme Roots \
+xcodebuild test -scheme Itori \
     -destination 'platform=iOS Simulator,name=iPhone 15' \
-    -only-testing:RootsTests/AccessibilityTests
+    -only-testing:ItoriTests/AccessibilityTests
 
 # Run specific test
-xcodebuild test -scheme Roots \
+xcodebuild test -scheme Itori \
     -destination 'platform=iOS Simulator,name=iPhone 15' \
-    -only-testing:RootsTests/AccessibilityTests/testContrastRatioCalculation
+    -only-testing:ItoriTests/AccessibilityTests/testContrastRatioCalculation
 ```
 
 ## Testing Workflows
@@ -395,9 +395,9 @@ ContentView()
 echo "Running accessibility tests..."
 
 xcodebuild test \
-    -scheme Roots \
+    -scheme Itori \
     -destination 'platform=iOS Simulator,name=iPhone 15' \
-    -only-testing:RootsTests/AccessibilityTests \
+    -only-testing:ItoriTests/AccessibilityTests \
     -quiet
 
 if [ $? -eq 0 ]; then

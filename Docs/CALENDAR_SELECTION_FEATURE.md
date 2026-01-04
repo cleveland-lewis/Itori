@@ -246,7 +246,7 @@ Section(header: Text("Calendar")) {
    - Load calendars on appear
 
 ### macOS
-4. **macOSApp/Views/Components/Clock/RootsAnalogClock.swift**
+4. **macOSApp/Views/Components/Clock/ItoriAnalogClock.swift**
    - Fixed stride compatibility issue (unrelated bug fix)
 
 ## API Usage

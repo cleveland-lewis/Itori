@@ -174,16 +174,16 @@ source: stored.isUserEdited
 #### 3. Recurrence Form Labels
 ```swift
 // Before
-RootsFormRow(label: "Repeat") { ... }
-RootsFormRow(label: "Interval") { ... }
-RootsFormRow(label: "End") { ... }
-RootsFormRow(label: "Skip") { ... }
+ItoriFormRow(label: "Repeat") { ... }
+ItoriFormRow(label: "Interval") { ... }
+ItoriFormRow(label: "End") { ... }
+ItoriFormRow(label: "Skip") { ... }
 
 // After
-RootsFormRow(label: NSLocalizedString("planner.recurrence.form.repeat", comment: "")) { ... }
-RootsFormRow(label: NSLocalizedString("planner.recurrence.form.interval", comment: "")) { ... }
-RootsFormRow(label: NSLocalizedString("planner.recurrence.form.end", comment: "")) { ... }
-RootsFormRow(label: NSLocalizedString("planner.recurrence.form.skip", comment: "")) { ... }
+ItoriFormRow(label: NSLocalizedString("planner.recurrence.form.repeat", comment: "")) { ... }
+ItoriFormRow(label: NSLocalizedString("planner.recurrence.form.interval", comment: "")) { ... }
+ItoriFormRow(label: NSLocalizedString("planner.recurrence.form.end", comment: "")) { ... }
+ItoriFormRow(label: NSLocalizedString("planner.recurrence.form.skip", comment: "")) { ... }
 ```
 
 #### 4. Toggle Labels
@@ -361,7 +361,7 @@ Button(NSLocalizedString("planner.debug.mark_rescheduled", comment: "")) { ... }
 
 ```bash
 # Close Xcode
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp*
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp*
 
 # Reopen Xcode
 # Product → Clean Build Folder (Shift+Cmd+K)
@@ -443,7 +443,7 @@ With **119 planner keys** in English and **full Chinese translations**, the Plan
 
 **All 4 major pages (Planner, Dashboard, Calendar, Courses) now have EXCELLENT localization status!** 🎊
 
-The Roots app is **production-ready for international release** with comprehensive localization across all core features!
+The Itori app is **production-ready for international release** with comprehensive localization across all core features!
 
 ---
 

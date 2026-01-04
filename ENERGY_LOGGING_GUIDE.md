@@ -13,7 +13,7 @@ Comprehensive developer mode logging has been added to track the entire energy l
 
 2. **View Logs**
    - Logs appear in Xcode console when running from Xcode
-   - Or use Console.app and filter for "Roots" process
+   - Or use Console.app and filter for "Itori" process
 
 ## Log Categories
 

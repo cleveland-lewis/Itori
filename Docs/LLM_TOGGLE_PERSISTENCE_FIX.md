@@ -92,7 +92,7 @@ No manual save() calls needed - persistence is immediate!
 2. **Verify Immediate Persistence**:
    ```bash
    # Check UserDefaults
-   defaults read clewisiii.Roots "roots.settings.aiEnabled"
+   defaults read clewisiii.Itori "roots.settings.aiEnabled"
    # Should output: 1 (true)
    ```
 

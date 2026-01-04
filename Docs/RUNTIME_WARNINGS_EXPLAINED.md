@@ -1,6 +1,6 @@
 # Runtime Warnings Explained
 
-This document explains the various runtime warnings you may see in the console when running the Roots app on macOS.
+This document explains the various runtime warnings you may see in the console when running the Itori app on macOS.
 
 ## Fixed Issues
 

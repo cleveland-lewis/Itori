@@ -57,8 +57,8 @@ Same non-critical warnings as macOS build:
 ```bash
 # Launch app in iPhone Air simulator
 open -a Simulator
-xcrun simctl install booted ~/Library/Developer/Xcode/DerivedData/RootsApp-*/Build/Products/Debug-iphonesimulator/Roots.app
-xcrun simctl launch booted clewisiii.Roots
+xcrun simctl install booted ~/Library/Developer/Xcode/DerivedData/ItoriApp-*/Build/Products/Debug-iphonesimulator/Itori.app
+xcrun simctl launch booted clewisiii.Itori
 ```
 
 ### Verify Features

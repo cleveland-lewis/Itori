@@ -51,7 +51,7 @@ December 23, 2025
 ### 1. Master Notifications Toggle ✅
 - **Location**: General section
 - **Behavior**:
-  - OFF: Cancels ALL Roots notifications immediately
+  - OFF: Cancels ALL Itori notifications immediately
   - ON: Requests permission (if not granted), then schedules enabled categories
   - Shows permission denied alert if user denies
   - Can open iOS Settings directly
@@ -266,7 +266,7 @@ settings.dailyOverviewTime = newValue
 
 ## Acceptance Criteria Status
 
-✅ **Master toggle OFF**: Cancels all Roots notifications and disables sub-controls  
+✅ **Master toggle OFF**: Cancels all Itori notifications and disables sub-controls  
 ✅ **Master toggle ON**: Requests permission if needed and schedules enabled categories  
 ✅ **Lead time changes**: Re-schedules assignment reminders without duplicates  
 ✅ **Daily overview time**: Updates schedule instantly  

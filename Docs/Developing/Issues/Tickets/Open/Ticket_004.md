@@ -84,7 +84,7 @@ This ticket is specifically about **OS sync behavior**, not about UI wiring or p
     
 - **Touches:**
     
-    - App entry (RootsApp / SceneDelegate)
+    - App entry (ItoriApp / SceneDelegate)
         
     - ThemeManager logic
         
@@ -353,11 +353,11 @@ final class MacSystemAppearanceProvider: SystemAppearanceProvider {
 
   
 
-In RootsApp (SwiftUI entry):
+In ItoriApp (SwiftUI entry):
 
 ```
 @main
-struct RootsApp: App {
+struct ItoriApp: App {
     @StateObject private var themeManager = ThemeManager()
 
     var body: some Scene {

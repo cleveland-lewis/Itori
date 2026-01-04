@@ -1,6 +1,6 @@
 //
 //  SyncMonitor.swift
-//  Roots
+//  Itori
 //
 //  Core Data + CloudKit sync monitoring for debugging
 //

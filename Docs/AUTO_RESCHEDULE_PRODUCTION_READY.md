@@ -346,7 +346,7 @@ autoRescheduleMaxPushCount = 5
 
 **Run**:
 ```bash
-xcodebuild test -scheme Roots -destination 'platform=macOS'
+xcodebuild test -scheme Itori -destination 'platform=macOS'
 ```
 
 ---
@@ -509,10 +509,10 @@ Phase 5 - Safety:
 
 **New Feature: Auto-Reschedule**
 
-Roots now automatically reschedules missed tasks to keep your schedule current!
+Itori now automatically reschedules missed tasks to keep your schedule current!
 
 **How it works**:
-- When you miss a task, Roots finds a new time automatically
+- When you miss a task, Itori finds a new time automatically
 - Tries to fit it later today first
 - Can push lower-priority tasks if needed
 - Moves to tomorrow if today is full

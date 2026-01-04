@@ -6,13 +6,13 @@ echo "════════════════════════�
 echo ""
 
 echo "Step 1: Cleaning all build artifacts..."
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp-*
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp-*
 echo "✅ Derived data cleaned"
 
 echo ""
 echo "Step 2: Cleaning build folder..."
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild clean -project RootsApp.xcodeproj -scheme Roots > /dev/null 2>&1
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild clean -project ItoriApp.xcodeproj -scheme Itori > /dev/null 2>&1
 echo "✅ Build folder cleaned"
 
 echo ""

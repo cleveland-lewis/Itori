@@ -22,7 +22,7 @@
 - `Platforms/macOS/Scenes/Shared/MultiWindowScenes.swift`
 - `Platforms/macOS/ViewModels/MenuBarViewModel.swift`
 
-**Test file**: `Tests/Unit/RootsTests/Platform/macOSWindowManagementTests.swift`
+**Test file**: `Tests/Unit/ItoriTests/Platform/macOSWindowManagementTests.swift`
 
 #### B. macOS-Specific Views
 - [ ] MenuBarViewModel behavior
@@ -33,7 +33,7 @@
 - `Platforms/macOS/Scenes/SettingsView.swift`
 - `Platforms/macOS/Scenes/PlannerSettingsView.swift`
 
-**Test file**: `Tests/Unit/RootsTests/Platform/macOSViewTests.swift`
+**Test file**: `Tests/Unit/ItoriTests/Platform/macOSViewTests.swift`
 
 ### Phase 2: iPadOS Adaptations (Medium ROI)
 **Target**: Test iPad-specific layouts and features
@@ -47,7 +47,7 @@
 - [ ] Drawing/annotation features (if any)
 - [ ] Scribble input handling
 
-**Test file**: `Tests/Unit/RootsTests/Platform/iPadOSAdaptationTests.swift`
+**Test file**: `Tests/Unit/ItoriTests/Platform/iPadOSAdaptationTests.swift`
 
 ### Phase 3: watchOS Connectivity (Targeted ROI)
 **Target**: Test basic watch sync and connectivity
@@ -62,7 +62,7 @@
 - `Platforms/watchOS/` connectivity code
 - Watch-iPhone data sync
 
-**Test file**: `Tests/Unit/RootsTests/Platform/watchOSConnectivityTests.swift`
+**Test file**: `Tests/Unit/ItoriTests/Platform/watchOSConnectivityTests.swift`
 
 #### B. Watch Complications (Optional)
 - [ ] Complication data updates
@@ -72,7 +72,7 @@
 
 ### 1. Create Platform Test Infrastructure
 ```swift
-// Tests/Unit/RootsTests/Platform/PlatformTestBase.swift
+// Tests/Unit/ItoriTests/Platform/PlatformTestBase.swift
 class PlatformTestBase: XCTestCase {
     #if os(macOS)
     // macOS-specific setup
@@ -116,7 +116,7 @@ Use `#if os(...)` to separate platform-specific tests
 - Prioritize by user impact
 
 ### Step 2: Create Platform Test Structure (1 hour)
-- Create `Tests/Unit/RootsTests/Platform/` directory
+- Create `Tests/Unit/ItoriTests/Platform/` directory
 - Set up base classes with conditional compilation
 - Create mock infrastructure
 

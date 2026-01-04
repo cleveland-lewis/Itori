@@ -9,12 +9,12 @@
 ## 📦 What's Been Created
 
 ### Test Infrastructure ✅
-- `Tests/Unit/RootsTests/Infrastructure/BaseTestCase.swift`
+- `Tests/Unit/ItoriTests/Infrastructure/BaseTestCase.swift`
   - Common test setup/teardown
   - Helper methods for dates, async, assertions
   - Isolated test environment
 
-- `Tests/Unit/RootsTests/Infrastructure/MockDataFactory.swift`
+- `Tests/Unit/ItoriTests/Infrastructure/MockDataFactory.swift`
   - Test data factories for all models
   - Batch creation helpers
   - Consistent test data generation
@@ -52,19 +52,19 @@
 
 1. **Open Project**:
    ```bash
-   open /Users/clevelandlewis/Desktop/Roots/RootsApp.xcodeproj
+   open /Users/clevelandlewis/Desktop/Itori/ItoriApp.xcodeproj
    ```
 
 2. **Add Files**:
-   - In Project Navigator, find `Tests/Unit/RootsTests`
-   - Right-click → "Add Files to RootsApp"
-   - Navigate to `/Users/clevelandlewis/Desktop/Roots/Tests/Unit/RootsTests/`
+   - In Project Navigator, find `Tests/Unit/ItoriTests`
+   - Right-click → "Add Files to ItoriApp"
+   - Navigate to `/Users/clevelandlewis/Desktop/Itori/Tests/Unit/ItoriTests/`
    - Select:
      - `Infrastructure` folder (if not already added)
      - `FocusModelsTests.swift`
      - `AttachmentTests.swift`
      - `CourseModelsTests.swift`
-   - ✅ Check "Add to targets: RootsTests"
+   - ✅ Check "Add to targets: ItoriTests"
    - Click "Add"
 
 3. **Build**:
@@ -86,24 +86,24 @@
 
 2. **Run Tests**:
    ```bash
-   cd /Users/clevelandlewis/Desktop/Roots
+   cd /Users/clevelandlewis/Desktop/Itori
    
    # Run all new tests
    xcodebuild test \
-     -scheme Roots \
+     -scheme Itori \
      -destination 'platform=macOS' \
-     -only-testing:RootsTests/FocusModelsTests \
-     -only-testing:RootsTests/AttachmentTests \
-     -only-testing:RootsTests/CourseModelsTests
+     -only-testing:ItoriTests/FocusModelsTests \
+     -only-testing:ItoriTests/AttachmentTests \
+     -only-testing:ItoriTests/CourseModelsTests
    ```
 
 3. **Measure Coverage**:
    ```bash
    # Run with coverage enabled
    xcodebuild test \
-     -scheme Roots \
+     -scheme Itori \
      -destination 'platform=macOS' \
-     -only-testing:RootsTests \
+     -only-testing:ItoriTests \
      -enableCodeCoverage YES \
      -resultBundlePath /tmp/TestCoverage.xcresult
    
@@ -133,8 +133,8 @@
 - **Overall Project**: ~15% → ~20-23% (+5-8%)
 
 ### If Tests Fail
-1. Check that files are added to RootsTests target
-2. Verify imports: `@testable import Roots`
+1. Check that files are added to ItoriTests target
+2. Verify imports: `@testable import Itori`
 3. Check that models match expected API
 4. Review error messages carefully
 5. See TESTING_GUIDE.md "Troubleshooting" section

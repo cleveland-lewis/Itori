@@ -85,8 +85,8 @@ private var eventsCard: some View {
 ## Build Command
 
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild -scheme "Roots" -destination 'platform=macOS' build
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild -scheme "Itori" -destination 'platform=macOS' build
 ```
 
 ## Expected Result

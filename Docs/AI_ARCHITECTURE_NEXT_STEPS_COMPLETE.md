@@ -15,7 +15,7 @@ Created comprehensive AI Settings view integrated into the macOS Settings window
 
 **Files Modified**:
 - `Platforms/macOS/PlatformAdapters/SettingsToolbarIdentifiers.swift` - Added `.ai` case
-- `Platforms/macOS/PlatformAdapters/RootsSettingsWindow.swift` - Added AI settings route
+- `Platforms/macOS/PlatformAdapters/ItoriSettingsWindow.swift` - Added AI settings route
 - `Platforms/macOS/PlatformAdapters/SettingsWindowController.swift` - Added AI case to switch
 
 **Features**:
@@ -261,7 +261,7 @@ All test scaffolding is in place:
    - Added `.ai` case to enum
    - Added label, icon, and identifier
 
-2. ✅ `Platforms/macOS/PlatformAdapters/RootsSettingsWindow.swift`
+2. ✅ `Platforms/macOS/PlatformAdapters/ItoriSettingsWindow.swift`
    - Added `.ai` case to SettingsRootView switch
    - Added default case for legacy SettingsSection
 

@@ -138,7 +138,7 @@ grep -r "AppTask(" --include="*.swift" Platforms/
 ```
 
 ## Steps to Reproduce
-1. Run unit tests: `xcodebuild test -scheme RootsTests -destination 'platform=macOS'`
+1. Run unit tests: `xcodebuild test -scheme ItoriTests -destination 'platform=macOS'`
 2. Build fails with argument mismatch errors
 
 ## Impact
@@ -153,7 +153,7 @@ grep -r "AppTask(" --include="*.swift" Platforms/
 ## Environment
 - macOS
 - Xcode (current version)
-- Test suite: RootsTests
+- Test suite: ItoriTests
 
 ---
 

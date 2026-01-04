@@ -3,7 +3,7 @@ import EventKit
 
 /// Tests for recurrence and alerts round-trip fidelity
 /// Verifies that event recurrence patterns and alerts are correctly
-/// converted between Roots models and EventKit, preserving all data
+/// converted between Itori models and EventKit, preserving all data
 final class CalendarRecurrenceTests: XCTestCase {
     
     // Mock EventCategory for testing

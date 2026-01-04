@@ -35,7 +35,7 @@ final class CourseFileSyncManager: ObservableObject {
     
     // iCloud URLs
     private var iCloudContainerURL: URL? {
-        fileManager.url(forUbiquityContainerIdentifier: "iCloud.com.cwlewisiii.Roots")
+        fileManager.url(forUbiquityContainerIdentifier: "iCloud.com.cwlewisiii.Itori")
     }
     
     private var iCloudFilesURL: URL? {

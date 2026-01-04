@@ -21,7 +21,7 @@ iOS: 26.1 → 17.0
 watchOS: 26.0 → 10.0
 ```
 
-**File Modified**: `RootsApp.xcodeproj/project.pbxproj`  
+**File Modified**: `ItoriApp.xcodeproj/project.pbxproj`  
 **Xcode Setting**: `IPHONEOS_DEPLOYMENT_TARGET`, `WATCHOS_DEPLOYMENT_TARGET`
 
 ---
@@ -38,11 +38,11 @@ watchOS: 26.0 → 10.0
 3. **Added PBXCopyFilesBuildPhase**: "Embed Watch Content" - copies watch app into iOS bundle
 4. **Added Target Dependency** (then removed): Initially added but removed to avoid cross-platform build issues
 
-**File Modified**: `RootsApp.xcodeproj/project.pbxproj`  
+**File Modified**: `ItoriApp.xcodeproj/project.pbxproj`  
 **Xcode Equivalent**: Target → Build Phases → "Embed Watch Content"
 
 **Destination Path**: `$(CONTENTS_FOLDER_PATH)/Watch`  
-**Expected Result**: iOS .app/Watch/RootsWatch.app
+**Expected Result**: iOS .app/Watch/ItoriWatch.app
 
 ---
 
@@ -65,7 +65,7 @@ watchOS: 26.0 → 10.0
 import WatchConnectivity
 
 @main
-struct RootsApp: App {
+struct ItoriApp: App {
     init() {
         // Activate connectivity
         _ = WatchConnectivityManager.shared
@@ -90,22 +90,22 @@ WatchConnectivityManager.shared.printStatus()
 
 **Verified Correct**:
 ```
-iOS App:    clewisiii.Roots
-Watch App:  clewisiii.Roots.watchkitapp
+iOS App:    clewisiii.Itori
+Watch App:  clewisiii.Itori.watchkitapp
 ```
 
-**Companion Link**: Watch Info.plist contains `WKCompanionAppBundleIdentifier = clewisiii.Roots`
+**Companion Link**: Watch Info.plist contains `WKCompanionAppBundleIdentifier = clewisiii.Itori`
 
 ---
 
 ### 5. Entitlements Status ⚠️
 
 **Current State**:
-- ✅ iOS entitlements exist: `Config/Roots-iOS.entitlements`
-- ✅ macOS entitlements exist: `Config/Roots.entitlements`
+- ✅ iOS entitlements exist: `Config/Itori-iOS.entitlements`
+- ✅ macOS entitlements exist: `Config/Itori.entitlements`
 - ⚠️  **watchOS entitlements missing** (may need if using iCloud sync)
 
-**Recommendation**: Create `Config/Roots-watchOS.entitlements` if watch app needs:
+**Recommendation**: Create `Config/Itori-watchOS.entitlements` if watch app needs:
 - iCloud/CloudKit access
 - App Groups for shared data
 - Keychain sharing
@@ -116,7 +116,7 @@ Watch App:  clewisiii.Roots.watchkitapp
 
 ### Build Verification
 
-- [x] watchOS target builds: `xcodebuild -scheme RootsWatch -sdk watchsimulator`
+- [x] watchOS target builds: `xcodebuild -scheme ItoriWatch -sdk watchsimulator`
 - [ ] iOS target builds: **Currently has 26 compilation errors (unrelated to watch embedding)**
 - [ ] Archive iOS app for distribution
 - [ ] Verify Watch folder exists in iOS .app bundle
@@ -126,17 +126,17 @@ Watch App:  clewisiii.Roots.watchkitapp
 **TestFlight / Local Device**:
 1. [ ] Install iOS app on iPhone
 2. [ ] Open Watch app on iPhone
-3. [ ] Verify "Roots" appears in available apps list
+3. [ ] Verify "Itori" appears in available apps list
 4. [ ] If auto-install enabled: Watch app auto-installs
 5. [ ] If manual: Tap "Install" → watch app installs
 
 **Pairing Verification**:
 ```bash
 # On iPhone after iOS install
-xcrun simctl install <iphone-udid> path/to/Roots.ipa
+xcrun simctl install <iphone-udid> path/to/Itori.ipa
 
 # Check watch app appears
-xcrun simctl listapps <watch-udid> | grep Roots
+xcrun simctl listapps <watch-udid> | grep Itori
 ```
 
 ### WatchConnectivity Testing
@@ -154,10 +154,10 @@ xcrun simctl listapps <watch-udid> | grep Roots
 ### Scenario 1: Clean Install (No Apps Installed)
 
 **Steps**:
-1. Delete any existing Roots apps from devices
+1. Delete any existing Itori apps from devices
 2. Install iOS app via TestFlight or Xcode
 3. Open Watch app on iPhone
-4. **Expected**: Roots appears in "AVAILABLE APPS"
+4. **Expected**: Itori appears in "AVAILABLE APPS"
 5. User taps "Install" (or auto-installs if enabled)
 6. **Expected**: Watch app installs on watch
 
@@ -173,8 +173,8 @@ xcrun simctl listapps <watch-udid> | grep Roots
 **Steps**:
 1. Archive iOS app: Product → Archive
 2. Show in Finder → Show Package Contents
-3. Navigate to `Roots.app/Watch/`
-4. **Expected**: `RootsWatch.app` exists in this folder
+3. Navigate to `Itori.app/Watch/`
+4. **Expected**: `ItoriWatch.app` exists in this folder
 5. **Expected**: Watch app is ~5-10MB (contains compiled binary)
 
 ### Scenario 4: Verify WatchConnectivity
@@ -220,7 +220,7 @@ AutoRescheduleGuard.swift:37:6: error: initializer 'init(wrappedValue:)' is not 
 ### ✅ Modern watchOS App Structure
 - Single watch app target (not legacy WatchKit Extension)
 - Product type: `com.apple.product-type.watchapp2`
-- SwiftUI-based (`@main struct RootsWatchApp: App`)
+- SwiftUI-based (`@main struct ItoriWatchApp: App`)
 
 ### ✅ Proper Bundle Relationship
 - Watch bundle ID is child of iOS bundle ID
@@ -250,7 +250,7 @@ AutoRescheduleGuard.swift:37:6: error: initializer 'init(wrappedValue:)' is not 
 6. Test on real devices (not just simulators)
 
 ### Optional Enhancements
-7. Create `Roots-watchOS.entitlements` if needed
+7. Create `Itori-watchOS.entitlements` if needed
 8. Implement app group shared data (if desired)
 9. Add watch-specific complications
 10. Implement background sync strategies
@@ -263,10 +263,10 @@ AutoRescheduleGuard.swift:37:6: error: initializer 'init(wrappedValue:)' is not 
 
 ```bash
 # After building iOS app
-unzip -l ~/path/to/Roots.ipa | grep "Watch/RootsWatch.app"
+unzip -l ~/path/to/Itori.ipa | grep "Watch/ItoriWatch.app"
 
 # Or in Derived Data
-ls -la ~/Library/Developer/Xcode/DerivedData/RootsApp-*/Build/Products/Debug-iphonesimulator/Roots.app/Watch/
+ls -la ~/Library/Developer/Xcode/DerivedData/ItoriApp-*/Build/Products/Debug-iphonesimulator/Itori.app/Watch/
 ```
 
 ### Check WatchConnectivity Status
@@ -285,7 +285,7 @@ ls -la ~/Library/Developer/Xcode/DerivedData/RootsApp-*/Build/Products/Debug-iph
 If watch app doesn't auto-install:
 1. Open Watch app on iPhone
 2. Scroll to "Available Apps"
-3. Find "Roots"
+3. Find "Itori"
 4. Tap "Install"
 
 ---
@@ -294,7 +294,7 @@ If watch app doesn't auto-install:
 
 | File | Action | Purpose |
 |------|--------|---------|
-| `RootsApp.xcodeproj/project.pbxproj` | Modified | Fixed deployment targets, added embedding |
+| `ItoriApp.xcodeproj/project.pbxproj` | Modified | Fixed deployment targets, added embedding |
 | `SharedCore/Services/WatchConnectivityManager.swift` | Created | iPhone ↔ Watch sync |
 | `Scripts/configure_watch_embedding.py` | Created | Automation script for embedding config |
 | `WATCHOS_COMPANION_AUDIT.md` | Created | Detailed audit findings |

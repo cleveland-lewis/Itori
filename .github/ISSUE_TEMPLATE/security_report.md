@@ -12,7 +12,7 @@ assignees: ''
 **Please DO NOT report security vulnerabilities in public issues.**
 
 Use GitHub's private security advisory feature instead:
-👉 https://github.com/cleveland-lewis/Roots/security/advisories/new
+👉 https://github.com/cleveland-lewis/Itori/security/advisories/new
 
 ---
 

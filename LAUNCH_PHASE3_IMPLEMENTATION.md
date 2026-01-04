@@ -7,7 +7,7 @@
 `perf/launch-phase3-ui-speed`
 
 ## Objective
-Make Roots feel faster in UI interactions: instant sheets, snappy transitions, eliminate hitching.
+Make Itori feel faster in UI interactions: instant sheets, snappy transitions, eliminate hitching.
 
 ---
 
@@ -296,7 +296,7 @@ Button("Save") {
    - DateFormatter extensions
 
 ### Modified Files
-2. **Platforms/iOS/App/RootsIOSApp.swift**
+2. **Platforms/iOS/App/ItoriIOSApp.swift**
    - Integrated PrewarmCoordinator
    - Added 1.2s delay before prewarming
    - Cancel prewarming on background
@@ -603,7 +603,7 @@ Impact:
 
 Files: 2 changed (1 new, 1 modified)
 - SharedCore/Views/SheetShellView.swift (new)
-- Platforms/iOS/App/RootsIOSApp.swift (modified)
+- Platforms/iOS/App/ItoriIOSApp.swift (modified)
 
 Profile with: Instruments Core Animation + Time Profiler
 ```
@@ -634,7 +634,7 @@ Profile with: Instruments Core Animation + Time Profiler
 
 ## Conclusion
 
-Phase 3 transforms the **perceived performance** of Roots by:
+Phase 3 transforms the **perceived performance** of Itori by:
 - Making sheets appear instantly
 - Providing immediate tap feedback
 - Prewarming expensive resources

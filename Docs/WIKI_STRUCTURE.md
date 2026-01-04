@@ -1,6 +1,6 @@
 # GitHub Wiki Structure
 
-This document outlines the intended structure and content for the Roots GitHub Wiki. The Wiki serves as comprehensive user documentation.
+This document outlines the intended structure and content for the Itori GitHub Wiki. The Wiki serves as comprehensive user documentation.
 
 ---
 

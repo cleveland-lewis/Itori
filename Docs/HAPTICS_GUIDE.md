@@ -2,7 +2,7 @@
 
 ## Overview
 
-Roots uses haptic feedback on macOS to provide tactile responses for user interactions. All haptic feedback respects user preferences and accessibility settings.
+Itori uses haptic feedback on macOS to provide tactile responses for user interactions. All haptic feedback respects user preferences and accessibility settings.
 
 ## Haptic Types
 

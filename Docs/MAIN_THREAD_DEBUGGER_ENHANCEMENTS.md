@@ -17,7 +17,7 @@
 ℹ️  [2025-12-18 12:25:30.123] [MainThreadDebugger] [TimerPageView] onAppear START
 ℹ️  Thread: 🔵 Main Thread | Queue: com.apple.main-thread | Priority: 0.50
 ℹ️  Call stack:
-ℹ️    [0] 4   Roots   0x0000000102db6d40 $s5Roots16TimerPageViewV4bodyQrvg + 2848
+ℹ️    [0] 4   Itori   0x0000000102db6d40 $s5Itori16TimerPageViewV4bodyQrvg + 2848
 ℹ️    [1] 5   SwiftUI 0x00000001a9e3e1a0 OUTLINED_FUNCTION_266 + 1234
 ℹ️    [2] 6   SwiftUI 0x00000001a9e3e2d4 _ViewGraph_Update + 888
 ℹ️    ...
@@ -39,8 +39,8 @@
 ⚠️  [2025-12-18 12:25:30.456] [MainThreadDebugger] WARNING: View update cycle detected
 ⚠️  Thread: 🔵 Main Thread | Queue: com.apple.main-thread | Priority: 0.50
 ⚠️  Full call stack:
-⚠️    [0] 3   Roots   0x0000000102db7890 TimerPageView.updateCachedValues()
-⚠️    [1] 4   Roots   0x0000000102db7a20 closure #1 in TimerPageView.body.getter
+⚠️    [0] 3   Itori   0x0000000102db7890 TimerPageView.updateCachedValues()
+⚠️    [1] 4   Itori   0x0000000102db7a20 closure #1 in TimerPageView.body.getter
 ⚠️    [2] 5   SwiftUI 0x00000001a9e3f120 ViewGraph.updateValue()
 ⚠️    ...
 ⚠️  Memory: 247.1MB

@@ -9,7 +9,7 @@ struct SettingsPane_Accounts: View {
             Text("Account management will arrive in a future update.")
                 .rootsSectionHeader()
 
-            Text("Keep your profile, backups, and school-wide settings in their respective sections. Roots will link here when account syncing is available.")
+            Text("Keep your profile, backups, and school-wide settings in their respective sections. Itori will link here when account syncing is available.")
                 .rootsBodySecondary()
 
             Button("Open System Settings…", action: openSystemSettings)

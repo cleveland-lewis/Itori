@@ -364,7 +364,7 @@ private struct AppearanceSettingsView: View {
                             .labelsHidden()
                         }
 
-                        SettingsRow(title: "Mode", description: "Choose how Roots reacts to system appearance changes.") {
+                        SettingsRow(title: "Mode", description: "Choose how Itori reacts to system appearance changes.") {
                             Picker("", selection: $settings.interfaceStyle) {
                                 ForEach(InterfaceStyle.allCases) { style in
                                     Text(style.label).tag(style)

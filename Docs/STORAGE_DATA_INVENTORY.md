@@ -1,6 +1,6 @@
 # Storage Data Inventory
 
-Complete inventory of all persisted entity types in Roots, including title/display name mappings and required fields for Storage Center UI.
+Complete inventory of all persisted entity types in Itori, including title/display name mappings and required fields for Storage Center UI.
 
 **Version:** 1.0  
 **Last Updated:** 2025-12-16  
@@ -10,7 +10,7 @@ Complete inventory of all persisted entity types in Roots, including title/displ
 
 ## Overview
 
-This document catalogs every data type that is persisted to disk in the Roots application, organized by domain. Each entity includes:
+This document catalogs every data type that is persisted to disk in the Itori application, organized by domain. Each entity includes:
 - **Has Title Field**: Whether the entity has a native `title` property
 - **Display Name Strategy**: How to generate a human-readable name for UI lists
 - **Context Fields**: Associated course, semester, or date information

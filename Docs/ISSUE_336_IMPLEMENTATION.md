@@ -300,11 +300,11 @@ All requirements met:
 
 ```bash
 # All fixture tests
-xcodebuild test -scheme Roots -only-testing:FixtureBasedTests
+xcodebuild test -scheme Itori -only-testing:FixtureBasedTests
 
 # Specific category
-xcodebuild test -scheme Roots -only-testing:FixtureBasedTests/testSchemaFixtures
-xcodebuild test -scheme Roots -only-testing:FixtureBasedTests/testGoldenFixtures
+xcodebuild test -scheme Itori -only-testing:FixtureBasedTests/testSchemaFixtures
+xcodebuild test -scheme Itori -only-testing:FixtureBasedTests/testGoldenFixtures
 ```
 
 ### Adding a New Fixture

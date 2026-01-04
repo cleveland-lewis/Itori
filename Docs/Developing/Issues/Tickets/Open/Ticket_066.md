@@ -8,7 +8,7 @@
 - Effort: M (1–2 days)
 - Status: Open
 - Owner: UI/Frontend
-- File Path: /Users/clevelandlewis/PyCharm/Roots/Documents/Developing/Issues/Tickets/Open/Ticket_066.md
+- File Path: /Users/clevelandlewis/PyCharm/Itori/Documents/Developing/Issues/Tickets/Open/Ticket_066.md
 - Scope: Enterprise/production-grade redesign of Settings dashboard with nav bar alignment fixes
 
 ## 2. Executive Summary
@@ -117,7 +117,7 @@
 - 2025-11-30T21:56:18Z – Fixes: Added EnvironmentObject themeManager to SidebarView and SidebarButton to avoid missing scope errors.
 - 2025-11-30T22:01:24Z – Fixes: Corrected ChatView send button to use theme.accentBlue (local EnvironmentObject) instead of themeManager.
 - 2025-11-30T22:07:10Z – Progress: Added MainWindowAccessor to enable macOS full-screen behavior (collectionBehavior .fullScreenPrimary and resizable styleMask) and injected it into the root view.
-- 2025-11-30T22:09:06Z – Fixes: Adjusted RootsApp to apply fullscreen/resizable styleMask and collectionBehavior across NSApp.windows and removed automatic toggleFullScreen call to avoid user-unexpected behavior.
+- 2025-11-30T22:09:06Z – Fixes: Adjusted ItoriApp to apply fullscreen/resizable styleMask and collectionBehavior across NSApp.windows and removed automatic toggleFullScreen call to avoid user-unexpected behavior.
 - 2025-11-30T22:41:57Z – Progress: Added minimal Info.plist with CFBundleIdentifier to ensure the app window is recognized as an application window for macOS window/tab features.
 - 2025-11-30T21:40:15Z – Fixes: Resolved reduceMotion binding errors by consolidating reduceMotion into SettingsViewModel and removing invalid ThemeManager.reduceMotion assignment.
 

@@ -3,7 +3,7 @@
 ## The Error You're Seeing
 
 ```
-error: Multiple commands produce 'RootsWatch.app/RootsWatch'
+error: Multiple commands produce 'ItoriWatch.app/ItoriWatch'
     note: CopyAndPreserveArchs
     note: has link command with output
 ```
@@ -12,9 +12,9 @@ error: Multiple commands produce 'RootsWatch.app/RootsWatch'
 
 ### Option 1: Build Settings Fix (Try This First - 2 minutes)
 
-1. **In Xcode, select the RootsWatch target**
+1. **In Xcode, select the ItoriWatch target**
    - Click on the blue project icon in the navigator
-   - In the targets list, click "RootsWatch"
+   - In the targets list, click "ItoriWatch"
 
 2. **Go to Build Settings tab**
 
@@ -39,7 +39,7 @@ error: Multiple commands produce 'RootsWatch.app/RootsWatch'
 
 The error specifically mentions "CopyAndPreserveArchs" which is an extra phase that shouldn't exist.
 
-1. **Select RootsWatch target**
+1. **Select ItoriWatch target**
 
 2. **Click "Build Phases" tab**
 
@@ -78,8 +78,8 @@ This is a known Xcode 15/16 bug with the new "File System Synchronized" feature.
    - Choose "Remove Reference" (don't move to trash)
 
 4. **Now re-add the folder:**
-   - Right-click on RootsWatch target in navigator
-   - "Add Files to RootsWatch..."
+   - Right-click on ItoriWatch target in navigator
+   - "Add Files to ItoriWatch..."
    - Navigate to the watchOS folder
    - **IMPORTANT:** UNCHECK "Create folder references"
    - CHECK "Create groups" instead
@@ -93,7 +93,7 @@ This is a known Xcode 15/16 bug with the new "File System Synchronized" feature.
 
 ### Option 4: Quick Nuclear Option (If You're Stuck)
 
-1. **In Xcode, select the RootsWatch target**
+1. **In Xcode, select the ItoriWatch target**
 
 2. **Build Settings tab**
 
@@ -120,20 +120,20 @@ If none of the above work, the fastest solution is:
 
 1. **Back up your watchOS source files** (copy the folder somewhere safe)
 
-2. **Delete RootsWatch target:**
-   - Select RootsWatch target
+2. **Delete ItoriWatch target:**
+   - Select ItoriWatch target
    - Press Delete key
    - Confirm deletion
 
 3. **Create new watchOS target:**
    - File → New → Target
    - watchOS → Watch App
-   - Name it "RootsWatch"
+   - Name it "ItoriWatch"
    - Click Finish
 
 4. **Add your source files back:**
    - Drag your watchOS source files into the new target
-   - Make sure they're added to the RootsWatch target (check Target Membership)
+   - Make sure they're added to the ItoriWatch target (check Target Membership)
 
 5. **Configure build settings** to match your app
 
@@ -172,8 +172,8 @@ Check the detailed diagnostic document: **WATCHOS_BUILD_ISSUE.md**
 Or run this diagnostic command to see what's actually being built:
 
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild -project RootsApp.xcodeproj -scheme "RootsWatch" -showBuildSettings | grep -E "ARCHS|CREATE_UNIVERSAL"
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild -project ItoriApp.xcodeproj -scheme "ItoriWatch" -showBuildSettings | grep -E "ARCHS|CREATE_UNIVERSAL"
 ```
 
 This will show you the exact architecture settings being used.

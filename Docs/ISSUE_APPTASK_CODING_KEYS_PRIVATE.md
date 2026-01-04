@@ -68,7 +68,7 @@ extension AppTask {
 ```
 
 ## Steps to Reproduce
-1. Run unit tests: `xcodebuild test -scheme RootsTests -destination 'platform=macOS'`
+1. Run unit tests: `xcodebuild test -scheme ItoriTests -destination 'platform=macOS'`
 2. Build fails with protocol conformance errors
 
 ## Impact
@@ -82,7 +82,7 @@ extension AppTask {
 ## Environment
 - macOS
 - Xcode (current version)
-- Test suite: RootsTests
+- Test suite: ItoriTests
 
 ---
 

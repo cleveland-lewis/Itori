@@ -1,7 +1,7 @@
 # Thai Localization Implementation Complete ✅
 
 ## Summary
-Successfully added Thai (th) language localization to the Roots app using the free Google Translate API via the `googletrans` Python library.
+Successfully added Thai (th) language localization to the Itori app using the free Google Translate API via the `googletrans` Python library.
 
 ## Implementation Details
 

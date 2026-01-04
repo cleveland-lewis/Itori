@@ -14,8 +14,8 @@ This checklist verifies that the LLM kill-switch invariant holds in production b
 ### 1. Build Release Configuration
 
 ```bash
-cd /path/to/Roots
-xcodebuild -scheme Roots -configuration Release build
+cd /path/to/Itori
+xcodebuild -scheme Itori -configuration Release build
 ```
 
 - [ ] Build succeeds without errors
@@ -222,8 +222,8 @@ Repeat steps 2-7 on:
 
 1. Run `LLMToggleEnforcementTests` locally:
    ```bash
-   xcodebuild test -scheme Roots -destination 'platform=macOS' \
-     -only-testing:RootsTests/LLMToggleDisablesProviderAttemptsTests
+   xcodebuild test -scheme Itori -destination 'platform=macOS' \
+     -only-testing:ItoriTests/LLMToggleDisablesProviderAttemptsTests
    ```
 
 2. Enable DEBUG canary in Development build:

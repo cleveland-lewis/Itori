@@ -76,7 +76,7 @@ The `/macOSApp/` directory appears to be an **old/deprecated** directory that du
 
 **Steps:**
 
-1. Open `RootsApp.xcodeproj` in Xcode
+1. Open `ItoriApp.xcodeproj` in Xcode
 2. In Project Navigator, find each duplicate file from `/macOSApp/` directory
 3. For each file:
    - Right-click → Delete
@@ -97,9 +97,9 @@ The `/macOSApp/` directory appears to be an **old/deprecated** directory that du
 If `/macOSApp/` is completely unused:
 
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 # First, verify it's not needed
-grep -r "macOSApp" RootsApp.xcodeproj/project.pbxproj
+grep -r "macOSApp" ItoriApp.xcodeproj/project.pbxproj
 
 # If confirmed unused, remove it
 rm -rf macOSApp/
@@ -107,8 +107,8 @@ rm -rf macOSApp/
 
 Then clean and rebuild:
 ```bash
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp-*
-xcodebuild -project RootsApp.xcodeproj -scheme Roots clean
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp-*
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori clean
 ```
 
 ### Option 3: Platform-Specific Compilation (COMPLEX)
@@ -147,9 +147,9 @@ To verify my changes compile correctly, we need to fix the duplicate file issue 
 ### Quick Test (After Fixing Duplicates)
 
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp-*
-xcodebuild -project RootsApp.xcodeproj -scheme Roots -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
+cd /Users/clevelandlewis/Desktop/Itori
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp-*
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
 ```
 
 ---
@@ -197,7 +197,7 @@ All completed work is documented in:
 
 ## Next Steps
 
-1. Open `RootsApp.xcodeproj` in Xcode
+1. Open `ItoriApp.xcodeproj` in Xcode
 2. Remove duplicate file references from `/macOSApp/` directory
 3. Clean build folder (Product → Clean Build Folder)
 4. Build and run iOS target

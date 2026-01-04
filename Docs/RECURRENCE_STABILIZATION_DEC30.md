@@ -90,8 +90,8 @@ func testRecurrencePersistsFromPlannerUI() {
 
 ### Build Test
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild build -scheme Roots -destination 'platform=macOS'
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild build -scheme Itori -destination 'platform=macOS'
 # Expected: ** BUILD SUCCEEDED **
 ```
 

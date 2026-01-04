@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `ComprehensiveAlgorithmTests` suite provides **end-to-end validation** of all major algorithms in the Roots app. This test suite ensures correctness, determinism, performance, and edge case handling across the entire application.
+The `ComprehensiveAlgorithmTests` suite provides **end-to-end validation** of all major algorithms in the Itori app. This test suite ensures correctness, determinism, performance, and edge case handling across the entire application.
 
 ## Test Coverage Summary
 
@@ -526,16 +526,16 @@ assert(plan1.steps == plan2.steps)  // Guaranteed
 
 ### Run All Algorithm Tests
 ```bash
-xcodebuild test -scheme Roots -only-testing:RootsTests/ComprehensiveAlgorithmTests
+xcodebuild test -scheme Itori -only-testing:ItoriTests/ComprehensiveAlgorithmTests
 ```
 
 ### Run Specific Category
 ```bash
 # Plan Engine only
-xcodebuild test -scheme Roots -only-testing:RootsTests/ComprehensiveAlgorithmTests/testAssignmentPlanEngine_*
+xcodebuild test -scheme Itori -only-testing:ItoriTests/ComprehensiveAlgorithmTests/testAssignmentPlanEngine_*
 
 # Performance only
-xcodebuild test -scheme Roots -only-testing:RootsTests/ComprehensiveAlgorithmTests/testPerformance_*
+xcodebuild test -scheme Itori -only-testing:ItoriTests/ComprehensiveAlgorithmTests/testPerformance_*
 ```
 
 ### Expected Output
@@ -558,7 +558,7 @@ Time: 0.512s
 ```bash
 #!/bin/bash
 # Run algorithm tests before commit
-xcodebuild test -scheme Roots -only-testing:RootsTests/ComprehensiveAlgorithmTests
+xcodebuild test -scheme Itori -only-testing:ItoriTests/ComprehensiveAlgorithmTests
 if [ $? -ne 0 ]; then
     echo "❌ Algorithm tests failed. Commit aborted."
     exit 1
@@ -576,8 +576,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run Algorithm Tests
         run: |
-          xcodebuild test -scheme Roots \
-            -only-testing:RootsTests/ComprehensiveAlgorithmTests
+          xcodebuild test -scheme Itori \
+            -only-testing:ItoriTests/ComprehensiveAlgorithmTests
 ```
 
 ## Algorithm Complexity Analysis
@@ -662,7 +662,7 @@ Where:
 
 ## Conclusion
 
-The `ComprehensiveAlgorithmTests` suite provides **complete coverage** of all major algorithms in Roots. With **55 tests** covering **8 categories** (including **25 edge case tests**), it ensures:
+The `ComprehensiveAlgorithmTests` suite provides **complete coverage** of all major algorithms in Itori. With **55 tests** covering **8 categories** (including **25 edge case tests**), it ensures:
 
 ✅ **Correctness**: Algorithms produce expected outputs  
 ✅ **Determinism**: Results are reproducible  
@@ -670,7 +670,7 @@ The `ComprehensiveAlgorithmTests` suite provides **complete coverage** of all ma
 ✅ **Reliability**: Edge cases are handled gracefully  
 ✅ **Robustness**: Boundary conditions tested thoroughly  
 
-This test suite serves as both **quality assurance** and **living documentation** of how Roots algorithms work.
+This test suite serves as both **quality assurance** and **living documentation** of how Itori algorithms work.
 
 ---
 

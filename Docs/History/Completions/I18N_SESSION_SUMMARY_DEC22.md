@@ -165,7 +165,7 @@ These 4 issues were part of the broader Chinese localization epic. With their co
 
 ## 🎉 Impact
 
-The Roots app is now **significantly more accessible to international users**, with comprehensive localization infrastructure in place. All major UI sections are ready for translation, bringing the app closer to serving Chinese-speaking students globally.
+The Itori app is now **significantly more accessible to international users**, with comprehensive localization infrastructure in place. All major UI sections are ready for translation, bringing the app closer to serving Chinese-speaking students globally.
 
 **Status:** Ready for Chinese translation work 🌏
 

@@ -1,6 +1,6 @@
 //
 //  AnalyticsModels.swift
-//  Roots
+//  Itori
 //
 //  Study hours tracking models
 //

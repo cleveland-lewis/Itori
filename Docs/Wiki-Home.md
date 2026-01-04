@@ -1,6 +1,6 @@
-# Roots Documentation
+# Itori Documentation
 
-Roots is an academic planning application providing structured task management, automated scheduling, and productivity tools for complex academic workloads.
+Itori is an academic planning application providing structured task management, automated scheduling, and productivity tools for complex academic workloads.
 
 ## Navigation
 

@@ -60,7 +60,7 @@
 **In Repository**:
 ```
 Tests/
-├── Unit/RootsTests/
+├── Unit/ItoriTests/
 │   ├── Infrastructure/
 │   │   ├── BaseTestCase.swift              ✅ READY
 │   │   └── MockDataFactory.swift           ✅ READY

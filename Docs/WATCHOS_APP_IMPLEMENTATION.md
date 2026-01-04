@@ -35,7 +35,7 @@
 ```
 Platforms/watchOS/
 ├── App/
-│   ├── RootsWatchApp.swift          # App entry point
+│   ├── ItoriWatchApp.swift          # App entry point
 │   └── Info.plist
 ├── Root/
 │   ├── WatchRootView.swift          # Tab view (Timer + Tasks)
@@ -253,7 +253,7 @@ In your iOS app initialization (e.g., `IOSRootView` or app delegate):
 import SwiftUI
 
 @main
-struct RootsApp: App {
+struct ItoriApp: App {
     @StateObject private var timerManager = TimerManager()
     @StateObject private var assignmentsStore = AssignmentsStore()
     @StateObject private var watchSync = IOSWatchSyncCoordinator.shared
@@ -318,7 +318,7 @@ The watch app is fully configured with:
 3. **Verify watch app appears**:
    - Open Watch app on iPhone
    - Go to My Watch → Available Apps
-   - Find "Roots" → Install
+   - Find "Itori" → Install
 
 4. **Test features**:
    - ✅ Timer starts on both devices

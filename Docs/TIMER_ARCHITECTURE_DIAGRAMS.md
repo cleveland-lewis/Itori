@@ -369,7 +369,7 @@ Actions at each transition:
 ## File Structure
 
 ```
-Roots/
+Itori/
 ├── SharedCore/
 │   ├── State/
 │   │   └── TimerPageViewModel.swift ─────────► Shared engine
@@ -401,9 +401,9 @@ Roots/
 ├── Shared/
 │   └── TimerLiveActivityAttributes.swift ─────► Live Activity model
 │
-└── RootsTimerWidget/
+└── ItoriTimerWidget/
     ├── TimerLiveActivity.swift ───────────────► Live Activity UI
-    └── RootsTimerWidgetBundle.swift
+    └── ItoriTimerWidgetBundle.swift
 ```
 
 ---

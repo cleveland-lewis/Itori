@@ -110,8 +110,8 @@ Plans receive a **quality score (0-100)**:
 ### Test Execution
 Tests are ready to run once build issues in unrelated files are resolved:
 ```bash
-xcodebuild test -only-testing:RootsTests/AssignmentPlanEngineTests
-xcodebuild test -only-testing:RootsTests/PlannerEngineDeterminismTests
+xcodebuild test -only-testing:ItoriTests/AssignmentPlanEngineTests
+xcodebuild test -only-testing:ItoriTests/PlannerEngineDeterminismTests
 ```
 
 ## Documentation Created
@@ -141,16 +141,16 @@ xcodebuild test -only-testing:RootsTests/PlannerEngineDeterminismTests
 - Shared models created
 
 ### ⚠️ Pending
-- **Build integration**: Pre-existing compilation errors in `RootsInsightsEngine.swift` prevent full build
+- **Build integration**: Pre-existing compilation errors in `ItoriInsightsEngine.swift` prevent full build
   - Issue: Ambiguous type lookup for `Assignment` and `AssignmentCategory`
   - Cause: The file has its own struct definitions conflicting with shared models
-  - Solution: Refactor RootsInsightsEngine to use shared models (separate task)
+  - Solution: Refactor ItoriInsightsEngine to use shared models (separate task)
   
 - **Test execution**: Tests cannot run until build succeeds
 
 ### 🎯 Next Steps
 
-1. **Resolve RootsInsightsEngine conflicts** (separate PR):
+1. **Resolve ItoriInsightsEngine conflicts** (separate PR):
    ```swift
    // Current (conflicts):
    struct Assignment { ... }  // Local definition
@@ -162,7 +162,7 @@ xcodebuild test -only-testing:RootsTests/PlannerEngineDeterminismTests
 
 2. **Run test suite**:
    ```bash
-   xcodebuild test -scheme Roots
+   xcodebuild test -scheme Itori
    ```
 
 3. **Collect baseline metrics**:
@@ -277,4 +277,4 @@ All code follows best practices and is ready for code review and integration.
 4. SharedCore/Models/SharedPlanningModels.swift
 5. Docs/DETERMINISTIC_PLANNING_ENGINE.md
 
-**Recommended Next Action**: Resolve RootsInsightsEngine.swift conflicts to enable build and test execution.
+**Recommended Next Action**: Resolve ItoriInsightsEngine.swift conflicts to enable build and test execution.

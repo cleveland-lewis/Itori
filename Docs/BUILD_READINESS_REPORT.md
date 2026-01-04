@@ -23,10 +23,10 @@ The `.xcodeproj` file must be in the root directory for Xcode to find all source
 
 ### ✅ Scheme Files Fixed
 Updated all references in `Itori.xcscheme`:
-- Changed `RootsApp.xcodeproj` → `ItoriApp.xcodeproj`
-- Changed `Roots.app` → `Itori.app`  
-- Changed `RootsTests` → `ItoriTests`
-- Changed `RootsUITests` → `ItoriUITests`
+- Changed `ItoriApp.xcodeproj` → `ItoriApp.xcodeproj`
+- Changed `Itori.app` → `Itori.app`  
+- Changed `ItoriTests` → `ItoriTests`
+- Changed `ItoriUITests` → `ItoriUITests`
 
 ### ✅ Previously Completed
 - Bundle identifiers updated to `clewisiii.Itori`

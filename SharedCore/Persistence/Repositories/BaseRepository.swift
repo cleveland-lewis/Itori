@@ -1,6 +1,6 @@
 //
 //  BaseRepository.swift
-//  Roots
+//  Itori
 //
 //  Base repository for Core Data operations with consistent error handling
 //

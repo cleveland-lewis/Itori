@@ -116,15 +116,15 @@ func deleteCalendarItem(identifier: String, isReminder: Bool) async throws {
 
 ### Manual Test Scenarios
 1. **External Deletion Test**:
-   - Create event in Roots app
+   - Create event in Itori app
    - Delete same event in Apple Calendar app
-   - Try to edit the event in Roots
+   - Try to edit the event in Itori
    - ✅ Expected: Error message shown, event removed from UI, no repeated errors
 
 2. **Deletion Race Condition**:
-   - Create event in Roots
+   - Create event in Itori
    - Delete in Apple Calendar during sync
-   - Try to delete in Roots
+   - Try to delete in Itori
    - ✅ Expected: Graceful handling, UI updates, no crash
 
 3. **Developer Mode Logging**:

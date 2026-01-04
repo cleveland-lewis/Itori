@@ -14,7 +14,7 @@
 
 ```swift
 import XCTest
-@testable import Roots
+@testable import Itori
 
 @MainActor
 final class CourseModelsTests: BaseTestCase {
@@ -217,7 +217,7 @@ final class CourseModelsTests: BaseTestCase {
 ```swift
 import XCTest
 import Combine
-@testable import Roots
+@testable import Itori
 
 @MainActor
 final class CoursesStoreTests: BaseTestCase {
@@ -462,10 +462,10 @@ Continue pattern for 70% goal within 4-6 hours.
 #### Task Checklist:
 
 **CourseModelsTests.swift** 
-- [ ] Create test file in Tests/Unit/RootsTests/
-- [ ] Add to Xcode project (File → Add Files to "RootsApp")
+- [ ] Create test file in Tests/Unit/ItoriTests/
+- [ ] Add to Xcode project (File → Add Files to "ItoriApp")
 - [ ] Ensure it compiles
-- [ ] Run tests: `xcodebuild test -scheme Roots -only-testing:RootsTests/CourseModelsTests`
+- [ ] Run tests: `xcodebuild test -scheme Itori -only-testing:ItoriTests/CourseModelsTests`
 - [ ] Verify all tests pass
 - [ ] Check coverage impact
 
@@ -653,7 +653,7 @@ _None yet - starting Phase 1_
 
 ### Files Location:
 ```
-/Users/clevelandlewis/Desktop/Roots/Tests/Unit/RootsTests/
+/Users/clevelandlewis/Desktop/Itori/Tests/Unit/ItoriTests/
 ├── Infrastructure/BaseTestCase.swift
 ├── Infrastructure/MockDataFactory.swift
 ├── FocusModelsTests.swift
@@ -663,7 +663,7 @@ _None yet - starting Phase 1_
 
 ### Next Immediate Steps:
 1. Open Xcode project
-2. Add test files to project (right-click Tests/Unit/RootsTests → Add Files)
+2. Add test files to project (right-click Tests/Unit/ItoriTests → Add Files)
 3. Build project (⌘ + B)
 4. Run tests (⌘ + U or xcodebuild test)
 5. Measure coverage
@@ -696,7 +696,7 @@ _None yet - starting Phase 1_
 - Total test methods: 99 tests
 - Estimated coverage: +8-12%
 
-**All files ready in**: `/Users/clevelandlewis/Desktop/Roots/Tests/Unit/RootsTests/`
+**All files ready in**: `/Users/clevelandlewis/Desktop/Itori/Tests/Unit/ItoriTests/`
 
 
 ---
@@ -740,7 +740,7 @@ _None yet - starting Phase 1_
 - **Projected coverage**: ~35-45%
 
 ### Files Ready
-All 10 test files in: `/Users/clevelandlewis/Desktop/Roots/Tests/Unit/RootsTests/`
+All 10 test files in: `/Users/clevelandlewis/Desktop/Itori/Tests/Unit/ItoriTests/`
 
 **Status**: Ready for Xcode integration
 **Next**: Add to Xcode project and run tests
@@ -934,8 +934,8 @@ All 10 test files in: `/Users/clevelandlewis/Desktop/Roots/Tests/Unit/RootsTests
 ## 🚀 Production Readiness
 
 ### Integration Status: ✅ READY
-- All files in: `/Users/clevelandlewis/Desktop/Roots/Tests/Unit/RootsTests/`
-- Documentation in: `/Users/clevelandlewis/Desktop/Roots/Tests/`
+- All files in: `/Users/clevelandlewis/Desktop/Itori/Tests/Unit/ItoriTests/`
+- Documentation in: `/Users/clevelandlewis/Desktop/Itori/Tests/`
 - Zero dependencies needed
 - Works with existing test infrastructure
 
@@ -948,7 +948,7 @@ All 10 test files in: `/Users/clevelandlewis/Desktop/Roots/Tests/Unit/RootsTests
 
 ### Next Steps
 1. Open Xcode project
-2. Add 28 new test files to RootsTests target
+2. Add 28 new test files to ItoriTests target
 3. Build (⌘+B)
 4. Run tests (⌘+U)
 5. Generate coverage report

@@ -226,7 +226,7 @@ Add translations in Xcode String Catalog editor.
 ## 🐛 Troubleshooting
 
 ### Alarm doesn't fire
-1. Check notification permissions: Settings → Roots → Notifications
+1. Check notification permissions: Settings → Itori → Notifications
 2. Verify alarm enabled on task
 3. Check alarm date is in future
 4. Ensure app isn't force-closed (iOS limitation)

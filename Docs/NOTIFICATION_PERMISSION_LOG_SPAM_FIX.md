@@ -30,7 +30,7 @@ These logs drowned out actionable app logs and indicated potential flow problems
 
 **Location:** `SharedCore/Services/FeatureServices/TimerManager.swift:57`
 
-**Called From:** `Platforms/macOS/App/RootsApp.swift:180`
+**Called From:** `Platforms/macOS/App/ItoriApp.swift:180`
 
 **Result:**
 - Every launch triggered `requestAuthorization()`
@@ -101,7 +101,7 @@ Accessibility: Not vending elements because elementWindow(0) is lower than shiel
 
 **Action:** None - expected behavior
 
-**Verification:** ✅ No AX automation calls in Roots codebase
+**Verification:** ✅ No AX automation calls in Itori codebase
 
 ---
 
@@ -147,9 +147,9 @@ BSBlockSentinel failures
   - Menu bar updates
   - Status items change
   - System controls render
-- Roots does not create menu bar items (MenuBarManager is for notifications, not status items)
+- Itori does not create menu bar items (MenuBarManager is for notifications, not status items)
 
-**Verification:** ✅ No NSStatusItem in Roots codebase (MenuBarManager uses UNNotifications)
+**Verification:** ✅ No NSStatusItem in Itori codebase (MenuBarManager uses UNNotifications)
 
 **Action:** None - system framework issue
 
@@ -284,7 +284,7 @@ else if let error {
 ### On App Launch
 
 ```
-1. RootsApp.init()
+1. ItoriApp.init()
          ↓
 2. timerManager.checkNotificationPermissions()  // Only checks, doesn't request
          ↓
@@ -423,7 +423,7 @@ Control Center NSStatusItemView "No matching scene to invalidate..."
 ```
 **Source:** macOS Control Center framework  
 **Trigger:** Menu bar updates, system controls  
-**Action:** None - not related to Roots  
+**Action:** None - not related to Itori  
 **Frequency:** Rare, system framework issue
 
 ---
@@ -548,7 +548,7 @@ NotificationManager.shared.requestAuthorization()
 
 **Solution:** Permission requests now only triggered by explicit user action from Settings UI, with proper guards to prevent redundant attempts.
 
-**System Noise:** Identified and documented - fence timeouts, accessibility warnings, XPC interruptions, and Control Center logs are all macOS system framework behaviors unrelated to Roots.
+**System Noise:** Identified and documented - fence timeouts, accessibility warnings, XPC interruptions, and Control Center logs are all macOS system framework behaviors unrelated to Itori.
 
 **Result:** Clean, readable console logs with actionable app messages only.
 

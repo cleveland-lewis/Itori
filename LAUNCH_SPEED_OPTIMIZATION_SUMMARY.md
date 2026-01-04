@@ -74,7 +74,7 @@ private func loadDataAsync() async {
 init() {
     _ = PhoneWatchBridge.shared                    // Blocks
     ResetCoordinator.shared.start(...)             // Blocks
-    RootsIOSApp.registerBackgroundTasks()          // Blocks
+    ItoriIOSApp.registerBackgroundTasks()          // Blocks
     IntelligentSchedulingCoordinator.shared.start() // Blocks
 }
 
@@ -100,7 +100,7 @@ private func initializeBackgroundServices() async {
     await withTaskGroup(of: Void.self) { group in
         group.addTask { _ = PhoneWatchBridge.shared }
         group.addTask { ResetCoordinator.shared.start(...) }
-        group.addTask { RootsIOSApp.registerBackgroundTasks() }
+        group.addTask { ItoriIOSApp.registerBackgroundTasks() }
         group.addTask { PlannerSyncCoordinator.shared.start(...) }
         group.addTask { MissedEventDetectionService.shared.startMonitoring() }
         group.addTask { BackgroundRefreshManager.shared.register() }
@@ -191,14 +191,14 @@ if coursesStore.isInitialLoadComplete {
   - Non-blocking init()
 
 ### iOS
-- **Platforms/iOS/App/RootsIOSApp.swift**
+- **Platforms/iOS/App/ItoriIOSApp.swift**
   - Stripped init() to essentials only
   - Added `initializeBackgroundServices()` method
   - Parallel service initialization with TaskGroup
   - Moved 7 services to .task
 
 ### macOS
-- **Platforms/macOS/App/RootsApp.swift**
+- **Platforms/macOS/App/ItoriApp.swift**
   - Removed LOG_LIFECYCLE from init()
   - Added `initializeBackgroundServices()` method
   - Deferred ResetCoordinator

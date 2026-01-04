@@ -7,7 +7,7 @@
 
 ## 🎉 Project Complete - Overview
 
-The Hybrid AI Architecture for Roots has been **fully implemented** across all planned phases. The system is production-ready pending only external infrastructure (model training and CDN setup).
+The Hybrid AI Architecture for Itori has been **fully implemented** across all planned phases. The system is production-ready pending only external infrastructure (model training and CDN setup).
 
 ---
 
@@ -493,7 +493,7 @@ Routing Logs: ~10KB
 ## File Structure
 
 ```
-Roots/
+Itori/
 ├── SharedCore/
 │   └── AI/
 │       ├── AIProvider.swift                    (Core protocol)
@@ -516,7 +516,7 @@ Roots/
 │       └── PlatformAdapters/
 │           ├── SettingsToolbarIdentifiers.swift (Modified)
 │           ├── SettingsWindowController.swift   (Modified)
-│           └── RootsSettingsWindow.swift        (Modified)
+│           └── ItoriSettingsWindow.swift        (Modified)
 │
 ├── Scripts/
 │   └── test_model_server.sh                    ✨ NEW
@@ -609,7 +609,7 @@ Roots/
 
 ### 🎉 Project Status: COMPLETE
 
-The Hybrid AI Architecture for Roots has been **successfully implemented** with all planned phases delivered:
+The Hybrid AI Architecture for Itori has been **successfully implemented** with all planned phases delivered:
 
 ✅ **Phase 1**: Settings UI Integration  
 ✅ **Phase 2**: BYO Provider HTTP Implementation  

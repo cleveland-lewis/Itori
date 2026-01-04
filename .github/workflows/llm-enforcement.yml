@@ -58,9 +58,9 @@ jobs:
           echo ""
           
           xcodebuild test \
-            -scheme Roots \
+            -scheme Itori \
             -destination 'platform=macOS' \
-            -only-testing:RootsTests/LLMToggleDisablesProviderAttemptsTests \
+            -only-testing:ItoriTests/LLMToggleDisablesProviderAttemptsTests \
             | tee llm_enforcement_test_output.log \
             | xcpretty --color --simple
           

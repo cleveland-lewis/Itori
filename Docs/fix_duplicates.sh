@@ -13,6 +13,6 @@ rm -f "macOSApp/Scenes/SettingsRootView.swift"
 
 echo "Duplicate files removed."
 echo "Cleaning derived data..."
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp-*
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp-*
 
 echo "Done. Ready to rebuild."

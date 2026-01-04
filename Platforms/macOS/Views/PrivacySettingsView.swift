@@ -13,7 +13,7 @@ struct PrivacySettingsView: View {
                     .bold()
                     .padding(.bottom, 4)
                 
-                Text("Control how Roots uses your data and manages privacy-sensitive features.")
+                Text("Control how Itori uses your data and manages privacy-sensitive features.")
                     .foregroundStyle(.secondary)
             }
             .listRowBackground(Color.clear)

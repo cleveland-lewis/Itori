@@ -48,7 +48,7 @@ Full iOS/iPadOS ↔ macOS timer parity + AlarmKit loud alarms + Live Activity + 
 - [ ] Test StandBy mode
 
 **Key Files:**
-- `RootsTimerWidget/TimerLiveActivity.swift`
+- `ItoriTimerWidget/TimerLiveActivity.swift`
 - `Shared/TimerLiveActivityAttributes.swift`
 - `Platforms/iOS/PlatformAdapters/TimerLiveActivityManager.swift`
 
@@ -232,12 +232,12 @@ UNUserNotificationCenter.current().removePendingNotificationRequests(
 
 ### Build iOS
 ```bash
-xcodebuild -scheme Roots -destination 'platform=iOS Simulator,name=iPhone 15 Pro' build
+xcodebuild -scheme Itori -destination 'platform=iOS Simulator,name=iPhone 15 Pro' build
 ```
 
 ### Run iOS Tests
 ```bash
-xcodebuild -scheme Roots -destination 'platform=iOS Simulator,name=iPhone 15 Pro' test
+xcodebuild -scheme Itori -destination 'platform=iOS Simulator,name=iPhone 15 Pro' test
 ```
 
 ### Check AlarmKit Availability

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Deterministic Planning Engine is a core component of Roots that generates predictable, algorithmic study plans for assignments. Unlike AI-based approaches, this engine uses strict rules and calculations to ensure consistent, testable, and instantaneous plan generation.
+The Deterministic Planning Engine is a core component of Itori that generates predictable, algorithmic study plans for assignments. Unlike AI-based approaches, this engine uses strict rules and calculations to ensure consistent, testable, and instantaneous plan generation.
 
 ## Architecture
 

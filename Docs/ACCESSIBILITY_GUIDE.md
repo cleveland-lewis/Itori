@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the complete accessibility infrastructure for the Roots app, covering VoiceOver support, Reduce Motion, keyboard navigation, color contrast, and testing.
+This document describes the complete accessibility infrastructure for the Itori app, covering VoiceOver support, Reduce Motion, keyboard navigation, color contrast, and testing.
 
 ## Architecture
 
@@ -235,7 +235,7 @@ func testButtonSize() {
 
 ### Unit Tests
 
-See `RootsTests/AccessibilityInfrastructureTests.swift` for infrastructure tests:
+See `ItoriTests/AccessibilityInfrastructureTests.swift` for infrastructure tests:
 - AnimationPolicy behavior
 - MaterialPolicy behavior
 - Contrast ratio calculations
@@ -244,7 +244,7 @@ See `RootsTests/AccessibilityInfrastructureTests.swift` for infrastructure tests
 
 ### UI Tests
 
-Create UI tests in `RootsUITests/` to verify:
+Create UI tests in `ItoriUITests/` to verify:
 - VoiceOver can reach all interactive elements
 - All buttons have accessibility labels
 - Keyboard navigation reaches all controls

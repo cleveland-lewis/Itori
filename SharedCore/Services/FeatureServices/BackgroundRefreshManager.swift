@@ -6,7 +6,7 @@ import BackgroundTasks
 final class BackgroundRefreshManager {
     static let shared = BackgroundRefreshManager()
 
-    private let refreshIdentifier = "com.roots.background.refresh"
+    private let refreshIdentifier = "com.itori.background.refresh"
 
     private init() {}
 

@@ -16,11 +16,11 @@
 ### Verification
 
 ```bash
-$ ls -lah Roots.app/Watch/
-drwxr-xr-x  RootsWatch.app
+$ ls -lah Itori.app/Watch/
+drwxr-xr-x  ItoriWatch.app
 
-$ find Roots.app/Watch -name "RootsWatch.app"
-/path/to/Roots.app/Watch/RootsWatch.app
+$ find Itori.app/Watch -name "ItoriWatch.app"
+/path/to/Itori.app/Watch/ItoriWatch.app
 ```
 
 **✅ Watch app is successfully embedded in iOS bundle!**
@@ -47,8 +47,8 @@ $ find Roots.app/Watch -name "RootsWatch.app"
 - **Solution**: Build watch target first, then iOS target
 - **Command**:
   ```bash
-  xcodebuild -scheme RootsWatch -sdk watchsimulator build
-  xcodebuild -scheme Roots -sdk iphonesimulator build
+  xcodebuild -scheme ItoriWatch -sdk watchsimulator build
+  xcodebuild -scheme Itori -sdk iphonesimulator build
   ```
 
 ---
@@ -59,10 +59,10 @@ $ find Roots.app/Watch -name "RootsWatch.app"
 - [x] watchOS deployment target: 10.0
 - [x] watchOS target builds successfully
 - [x] iOS target builds successfully
-- [x] Watch app embedded in iOS bundle at `Roots.app/Watch/RootsWatch.app`
+- [x] Watch app embedded in iOS bundle at `Itori.app/Watch/ItoriWatch.app`
 - [x] Bundle identifiers correct:
-  - iOS: `clewisiii.Roots`
-  - watchOS: `clewisiii.Roots.watchkitapp`
+  - iOS: `clewisiii.Itori`
+  - watchOS: `clewisiii.Itori.watchkitapp`
 - [x] Companion bundle ID set in watch Info.plist
 - [x] WatchConnectivity Manager created
 - [ ] Tested on TestFlight (pending)
@@ -76,15 +76,15 @@ $ find Roots.app/Watch -name "RootsWatch.app"
 
 ```bash
 # Build watch app first
-xcodebuild -project RootsApp.xcodeproj \
-  -scheme RootsWatch \
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme ItoriWatch \
   -sdk watchsimulator \
   -configuration Debug \
   build
 
 # Then build iOS app (embeds watch app)
-xcodebuild -project RootsApp.xcodeproj \
-  -scheme Roots \
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme Itori \
   -sdk iphonesimulator \
   -configuration Debug \
   build
@@ -92,9 +92,9 @@ xcodebuild -project RootsApp.xcodeproj \
 
 ### Option 2: In Xcode
 
-1. Select "RootsWatch" scheme → Build (⌘B)
-2. Select "Roots" scheme → Build (⌘B)
-3. **Result**: iOS app includes watch app in `Roots.app/Watch/`
+1. Select "ItoriWatch" scheme → Build (⌘B)
+2. Select "Itori" scheme → Build (⌘B)
+3. **Result**: iOS app includes watch app in `Itori.app/Watch/`
 
 ---
 
@@ -104,10 +104,10 @@ xcodebuild -project RootsApp.xcodeproj \
 
 ```bash
 # After building
-cd ~/Library/Developer/Xcode/DerivedData/RootsApp-*/Build/Products/Debug-iphonesimulator/
+cd ~/Library/Developer/Xcode/DerivedData/ItoriApp-*/Build/Products/Debug-iphonesimulator/
 
 # Check watch app exists
-ls -la Roots.app/Watch/RootsWatch.app
+ls -la Itori.app/Watch/ItoriWatch.app
 
 # Expected: Directory exists with binary, Info.plist, etc.
 ```
@@ -120,7 +120,7 @@ xcrun simctl boot "iPhone 17"
 
 # Install iOS app
 xcrun simctl install booted \
-  ~/Library/Developer/Xcode/DerivedData/.../Roots.app
+  ~/Library/Developer/Xcode/DerivedData/.../Itori.app
 
 # Check if watch app is accessible
 # (Note: Simulator doesn't support watch app installation testing fully)
@@ -140,7 +140,7 @@ xcrun simctl install booted \
 4. Open **Watch** app on iPhone
 5. Go to **My Watch** tab
 6. Scroll to bottom → **AVAILABLE APPS**
-7. **Expected**: "Roots" appears
+7. **Expected**: "Itori" appears
 8. Tap "Install" → watch app installs on watch
 
 ### Test 4: TestFlight
@@ -169,7 +169,7 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
-            Text("Roots")
+            Text("Itori")
             
             #if DEBUG
             Button("Check Watch Status") {

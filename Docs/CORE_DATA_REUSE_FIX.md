@@ -37,7 +37,7 @@ This caused: **"invalid reuse after initialization failure"**
    if let error = loadError {
        if iCloudSyncEnabled {
            // Create NEW container without CloudKit
-           let newContainer = NSPersistentCloudKitContainer(name: "Roots")
+           let newContainer = NSPersistentCloudKitContainer(name: "Itori")
            guard let newDescription = newContainer.persistentStoreDescriptions.first else {
                fatalError("Missing persistent store description on retry")
            }
@@ -60,7 +60,7 @@ This caused: **"invalid reuse after initialization failure"**
    ```swift
    if let error = loadError {
        // Create fresh container for in-memory store
-       let memoryContainer = NSPersistentCloudKitContainer(name: "Roots")
+       let memoryContainer = NSPersistentCloudKitContainer(name: "Itori")
        memoryDescription.url = URL(fileURLWithPath: "/dev/null")
        
        memoryContainer.loadPersistentStores { _, error in ... }

@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # Build script to identify and report errors
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 
 echo "🧹 Cleaning derived data..."
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp-*
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp-*
 
 echo "🔨 Building iOS target..."
 xcodebuild \
-  -project RootsApp.xcodeproj \
-  -scheme Roots \
+  -project ItoriApp.xcodeproj \
+  -scheme Itori \
   -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
   clean build \
   CODE_SIGN_IDENTITY="" \

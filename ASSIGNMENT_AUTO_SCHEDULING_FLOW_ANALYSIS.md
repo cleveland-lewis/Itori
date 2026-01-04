@@ -60,7 +60,7 @@ The Itori app features an intelligent auto-scheduling system that:
 │ 6. CALENDAR INTEGRATION (After Approval)            │
 │    - CalendarRefreshCoordinator.applyScheduleDiff() │
 │    - Creates EKEvents in selected calendar          │
-│    - Tags events with [RootsAutoSchedule:UUID]      │
+│    - Tags events with [ItoriAutoSchedule:UUID]      │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -122,7 +122,7 @@ struct ScheduleDiff {
 }
 
 struct ProposedBlock {
-    let tempID: String           // Tag: "[RootsAutoSchedule:UUID-chunkIndex]"
+    let tempID: String           // Tag: "[ItoriAutoSchedule:UUID-chunkIndex]"
     let title: String
     let startDate: Date
     let duration: TimeInterval
@@ -138,7 +138,7 @@ EKEvent {
     var startDate: Date
     var endDate: Date
     var calendar: EKCalendar
-    var notes: String?  // Contains [RootsAutoSchedule:...] tag
+    var notes: String?  // Contains [ItoriAutoSchedule:...] tag
 }
 ```
 
@@ -475,7 +475,7 @@ static func generateSchedule(
             
             // Create proposed block
             let block = ProposedBlock(
-                tempID: "[RootsAutoSchedule:\(task.id)-\(scheduledChunks)]",
+                tempID: "[ItoriAutoSchedule:\(task.id)-\(scheduledChunks)]",
                 title: task.title,
                 startDate: slot.startDate,
                 duration: TimeInterval(chunk * 60),
@@ -784,7 +784,7 @@ private func applyScheduleDiff(
         event.startDate = block.startDate
         event.endDate = block.startDate.addingTimeInterval(block.duration)
         event.calendar = targetCalendar
-        event.notes = block.tempID  // Tag: "[RootsAutoSchedule:UUID-0]"
+        event.notes = block.tempID  // Tag: "[ItoriAutoSchedule:UUID-0]"
         
         try deviceCalendar.store.save(event, span: .thisEvent)
     }
@@ -826,8 +826,8 @@ private func findEvent(by tag: String) -> EKEvent? {
 
 **Event Tagging System**:
 - Each auto-scheduled event has a unique tag in `notes` field
-- Format: `[RootsAutoSchedule:UUID-chunkIndex]`
-- Example: `[RootsAutoSchedule:A1B2C3D4-5678-90AB-CDEF-123456789012-0]`
+- Format: `[ItoriAutoSchedule:UUID-chunkIndex]`
+- Example: `[ItoriAutoSchedule:A1B2C3D4-5678-90AB-CDEF-123456789012-0]`
 - Enables:
   - Finding auto-scheduled events later
   - Moving/resizing specific blocks
@@ -963,7 +963,7 @@ if userApproved {
 7. User clicks "Apply (4 changes)"
    → CalendarRefreshCoordinator.applyPendingScheduleSuggestion()
    → Creates 4 EKEvents in Apple Calendar
-   → Tags each with [RootsAutoSchedule:UUID-index]
+   → Tags each with [ItoriAutoSchedule:UUID-index]
    → Success toast: "4 sessions added to calendar"
 
 8. User opens Calendar.app
@@ -982,7 +982,7 @@ if userApproved {
 
 3. Conflict detected
    → ScheduleConflict(
-        blockID: "[RootsAutoSchedule:...]",
+        blockID: "[ItoriAutoSchedule:...]",
         conflictingEventTitle: "Doctor's Appointment",
         reason: "Time slot unavailable"
      )

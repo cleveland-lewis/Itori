@@ -26,7 +26,7 @@ Use this checklist to integrate the Intelligent Scheduling System into Itori.
 
 ### App Initialization
 
-- [ ] Open `Platforms/iOS/App/RootsIOSApp.swift`
+- [ ] Open `Platforms/iOS/App/ItoriIOSApp.swift`
 - [ ] Add coordinator initialization:
 ```swift
 @StateObject private var schedulingCoordinator = IntelligentSchedulingCoordinator.shared

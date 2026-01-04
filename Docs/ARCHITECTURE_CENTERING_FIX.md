@@ -24,7 +24,7 @@ Without a maximum width constraint, content would:
 - At narrow widths: stick to edges with fixed padding
 - At wide widths: stretch infinitely with no centering anchor
 
-The `RootsSpacing.pagePadding = 20` constant was applied uniformly regardless of window width, so a 600pt window and a 2000pt window had the same 20pt padding, causing content to appear off-center in wide layouts.
+The `ItoriSpacing.pagePadding = 20` constant was applied uniformly regardless of window width, so a 600pt window and a 2000pt window had the same 20pt padding, causing content to appear off-center in wide layouts.
 
 ## Architectural Solution
 
@@ -102,7 +102,7 @@ GeometryReader { proxy in
 ```
 
 **Removed**:
-- `private let contentPadding: CGFloat = RootsSpacing.pagePadding`
+- `private let contentPadding: CGFloat = ItoriSpacing.pagePadding`
 - All instances of `.padding(.horizontal, contentPadding)`
 
 **Added**:

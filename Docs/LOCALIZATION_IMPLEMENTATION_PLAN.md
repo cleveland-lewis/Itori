@@ -170,11 +170,11 @@ let firstWeekday = calendar.firstWeekday // Respects locale
 ### Phase 5: Testing Infrastructure (Priority: HIGH)
 
 #### Task 5.1: Create Locale Testing Utility
-**File:** `Tests/Unit/RootsTests/LocalizationTestHelper.swift`
+**File:** `Tests/Unit/ItoriTests/LocalizationTestHelper.swift`
 
 ```swift
 import XCTest
-@testable import Roots
+@testable import Itori
 
 class LocalizationTestHelper {
     static func withLocale<T>(
@@ -202,11 +202,11 @@ class LocalizationTestHelper {
 ```
 
 #### Task 5.2: Add Localization Tests
-**File:** `Tests/Unit/RootsTests/LocalizationTests.swift`
+**File:** `Tests/Unit/ItoriTests/LocalizationTests.swift`
 
 ```swift
 import XCTest
-@testable import Roots
+@testable import Itori
 
 final class LocalizationTests: XCTestCase {
     
@@ -394,8 +394,8 @@ final class LocalizationTests: XCTestCase {
 ### New Files
 - [ ] `SharedCore/DesignSystem/Localizable.stringsdict`
 - [ ] `SharedCore/Extensions/FormatStyle+Extensions.swift`
-- [ ] `Tests/Unit/RootsTests/LocalizationTests.swift`
-- [ ] `Tests/Unit/RootsTests/LocalizationTestHelper.swift`
+- [ ] `Tests/Unit/ItoriTests/LocalizationTests.swift`
+- [ ] `Tests/Unit/ItoriTests/LocalizationTestHelper.swift`
 - [ ] `Docs/LOCALIZATION_GUIDELINES.md`
 
 ### Files to Update

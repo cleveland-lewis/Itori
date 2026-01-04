@@ -85,7 +85,7 @@ When conflicts detected:
 
 **Conflict Files Location:**
 ```
-~/Library/Application Support/RootsAssignments/Conflicts/
+~/Library/Application Support/ItoriAssignments/Conflicts/
   ├─ local_1735502400.json
   └─ cloud_1735502400.json
 ```
@@ -303,7 +303,7 @@ AppSettingsModel.shared.enableICloudSync  // Bool
 
 **Local Cache:**
 ```
-~/Library/Application Support/RootsAssignments/
+~/Library/Application Support/ItoriAssignments/
   └─ tasks_cache.json
 ```
 
@@ -315,7 +315,7 @@ iCloud Drive/Documents/
 
 **Conflict Files:**
 ```
-~/Library/Application Support/RootsAssignments/Conflicts/
+~/Library/Application Support/ItoriAssignments/Conflicts/
   ├─ local_[timestamp].json
   └─ cloud_[timestamp].json
 ```

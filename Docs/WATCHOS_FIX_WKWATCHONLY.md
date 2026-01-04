@@ -16,7 +16,7 @@ WKCompanionAppBundleIdentifier in the app's Info.plist.
 **Root Cause:**
 Conflicting settings in `watchOS/App/Info.plist`:
 - `WKWatchOnly = true` (standalone watch app)
-- `WKCompanionAppBundleIdentifier = clelewisiii.Roots` (companion app)
+- `WKCompanionAppBundleIdentifier = clelewisiii.Itori` (companion app)
 
 These are mutually exclusive.
 
@@ -37,14 +37,14 @@ The watch app is now correctly configured as a **companion app** that requires t
 <key>WKWatchOnly</key>
 <true/>  ❌ Conflicts with companion identifier
 <key>WKCompanionAppBundleIdentifier</key>
-<string>clelewisiii.Roots</string>
+<string>clelewisiii.Itori</string>
 ```
 
 ### After (Fixed):
 ```xml
 <!-- WKWatchOnly removed ✅ -->
 <key>WKCompanionAppBundleIdentifier</key>
-<string>clelewisiii.Roots</string>  ✅ Companion app
+<string>clelewisiii.Itori</string>  ✅ Companion app
 ```
 
 ---

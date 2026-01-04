@@ -94,7 +94,7 @@ TimelineView(.periodic(from: .now, by: reduceMotion ? 1.0 : 0.25))
 
 ### Modified
 - `macOSApp/Scenes/DashboardView.swift`
-  - Line 344: Changed from `RootsAnalogClock` to `NativeAnalogClock`
+  - Line 344: Changed from `ItoriAnalogClock` to `NativeAnalogClock`
   - Removed stopwatch style parameter
   - Reduced clock size from 160pt to 140pt (better proportions)
 

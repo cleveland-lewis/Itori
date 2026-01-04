@@ -2,7 +2,7 @@
 
 ## Summary
 
-Comprehensive test suite validating Roots' EventKit interaction contract, including create, edit, delete operations, repeating series behavior, and optimistic UI updates.
+Comprehensive test suite validating Itori' EventKit interaction contract, including create, edit, delete operations, repeating series behavior, and optimistic UI updates.
 
 ## Implementation Complete ✅
 
@@ -213,14 +213,14 @@ All tests use **fake adapters** that simulate EventKit:
 
 ```bash
 # Run all EventKit contract tests
-xcodebuild test -scheme "Roots" \
+xcodebuild test -scheme "Itori" \
   -destination 'platform=macOS' \
-  -only-testing:RootsTests/EventKitContractTests
+  -only-testing:ItoriTests/EventKitContractTests
 
 # Run recurring series tests
-xcodebuild test -scheme "Roots" \
+xcodebuild test -scheme "Itori" \
   -destination 'platform=macOS' \
-  -only-testing:RootsTests/EventKitRecurrenceSeriesTests
+  -only-testing:ItoriTests/EventKitRecurrenceSeriesTests
 ```
 
 ## Test Count

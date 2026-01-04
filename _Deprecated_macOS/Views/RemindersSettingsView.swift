@@ -62,7 +62,7 @@ struct RemindersSettingsView: View {
                         _Concurrency.Task { await calendarManager.refreshAll() }
                     }
 
-                    Text("Only reminders from this list will appear in Roots.")
+                    Text("Only reminders from this list will appear in Itori.")
                         .font(DesignSystem.Typography.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -76,7 +76,7 @@ struct RemindersSettingsView: View {
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("To disconnect Roots from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders.")
+            Text("To disconnect Itori from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders.")
         }
         .onAppear {
             _Concurrency.Task { await calendarManager.refreshAuthStatus() }

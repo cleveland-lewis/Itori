@@ -6,10 +6,10 @@
 
 ### 1. Clean Build Folder
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp*
-xcodebuild clean -scheme Roots
-xcodebuild -scheme Roots -destination 'platform=macOS' build
+cd /Users/clevelandlewis/Desktop/Itori
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp*
+xcodebuild clean -scheme Itori
+xcodebuild -scheme Itori -destination 'platform=macOS' build
 ```
 
 ### 2. Verify System Language
@@ -72,7 +72,7 @@ Run the app and check Console for output.
 
 Should show:
 ```
-Main bundle path: /path/to/Roots.app
+Main bundle path: /path/to/Itori.app
 Localized planner title: Planner Timeline
 Available localizations: ["en", "zh-Hans", "zh-Hant"]
 Preferred localizations: ["en"]
@@ -92,8 +92,8 @@ Then the bundle isn't finding the strings file.
 ```bash
 # 1. Close Xcode completely
 # 2. Run these commands:
-cd /Users/clevelandlewis/Desktop/Roots
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp*
+cd /Users/clevelandlewis/Desktop/Itori
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp*
 rm -rf ~/Library/Caches/com.apple.dt.Xcode
 # 3. Reopen Xcode
 # 4. Product → Clean Build Folder (Shift+Cmd+K)
@@ -111,7 +111,7 @@ Check Info.plist for development region:
 <string>en</string>
 ```
 
-If missing, add it to the Roots target's Info.plist.
+If missing, add it to the Itori target's Info.plist.
 
 ---
 

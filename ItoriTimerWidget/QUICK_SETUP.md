@@ -11,15 +11,15 @@
 ### 1. Add Widget Target
 ```
 File → New → Target → Widget Extension
-Name: RootsTimerWidget
-Bundle ID: clewisiii.Roots.RootsTimerWidget
+Name: ItoriTimerWidget
+Bundle ID: clewisiii.Itori.ItoriTimerWidget
 ```
 
 ### 2. Add Files to Targets
-- [ ] `TimerLiveActivity.swift` → RootsTimerWidget ✅
-- [ ] `RootsTimerWidgetBundle.swift` → RootsTimerWidget ✅
-- [ ] `Info.plist` → RootsTimerWidget ✅
-- [ ] `Shared/TimerLiveActivityAttributes.swift` → Roots ✅ + RootsTimerWidget ✅
+- [ ] `TimerLiveActivity.swift` → ItoriTimerWidget ✅
+- [ ] `ItoriTimerWidgetBundle.swift` → ItoriTimerWidget ✅
+- [ ] `Info.plist` → ItoriTimerWidget ✅
+- [ ] `Shared/TimerLiveActivityAttributes.swift` → Itori ✅ + ItoriTimerWidget ✅
 
 ### 3. Update Main App Info.plist
 Add:
@@ -34,7 +34,7 @@ Add:
 Remove inline struct (lines 13-25) - now in shared file
 
 ### 5. Build
-- Scheme: Roots
+- Scheme: Itori
 - Device: Physical iPhone (iOS 16.1+)
 - Build: ⌘B
 

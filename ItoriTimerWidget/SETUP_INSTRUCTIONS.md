@@ -5,10 +5,10 @@
 The following files have been created for the Widget Extension:
 
 ### Widget Code
-- ✅ `RootsTimerWidget/TimerLiveActivity.swift` - Live Activity UI (lock screen + Dynamic Island)
-- ✅ `RootsTimerWidget/RootsTimerWidgetBundle.swift` - Widget bundle entry point
-- ✅ `RootsTimerWidget/Info.plist` - Widget configuration
-- ✅ `RootsTimerWidget/Assets.xcassets/` - Widget assets
+- ✅ `ItoriTimerWidget/TimerLiveActivity.swift` - Live Activity UI (lock screen + Dynamic Island)
+- ✅ `ItoriTimerWidget/ItoriTimerWidgetBundle.swift` - Widget bundle entry point
+- ✅ `ItoriTimerWidget/Info.plist` - Widget configuration
+- ✅ `ItoriTimerWidget/Assets.xcassets/` - Widget assets
 
 ### Shared Code
 - ✅ `Shared/TimerLiveActivityAttributes.swift` - Shared data model
@@ -17,59 +17,59 @@ The following files have been created for the Widget Extension:
 
 ### Step 1: Create Widget Extension Target
 
-1. Open `RootsApp.xcodeproj` in Xcode
+1. Open `ItoriApp.xcodeproj` in Xcode
 2. Select the project in the navigator
 3. Click the "+" button at the bottom of the targets list
 4. Search for "Widget Extension"
 5. Click "Next"
 
 **Configuration:**
-- **Product Name**: `RootsTimerWidget`
-- **Bundle Identifier**: `clewisiii.Roots.RootsTimerWidget`
+- **Product Name**: `ItoriTimerWidget`
+- **Bundle Identifier**: `clewisiii.Itori.ItoriTimerWidget`
 - **Include Configuration Intent**: ❌ (uncheck)
 - **Include Live Activity**: ✅ (check if available)
 - Click "Finish"
 
-**Important**: When prompted, click "Cancel" on the "Activate RootsTimerWidget scheme?" dialog. We'll configure manually.
+**Important**: When prompted, click "Cancel" on the "Activate ItoriTimerWidget scheme?" dialog. We'll configure manually.
 
 ### Step 2: Delete Default Files
 
 Xcode creates default files. Delete these (Move to Trash):
-- `RootsTimerWidget.swift` (if created)
-- `RootsTimerWidgetLiveActivity.swift` (if created)
+- `ItoriTimerWidget.swift` (if created)
+- `ItoriTimerWidgetLiveActivity.swift` (if created)
 - Any other auto-generated files
 
 ### Step 3: Add Our Files to Target
 
 For each file created above:
 
-**RootsTimerWidget Target Members:**
+**ItoriTimerWidget Target Members:**
 1. Select the file in Xcode
 2. Open File Inspector (⌘⌥1)
 3. Under "Target Membership", check:
-   - ✅ `RootsTimerWidget`
+   - ✅ `ItoriTimerWidget`
 
 **Shared File (`Shared/TimerLiveActivityAttributes.swift`):**
 1. Select this file
 2. Check BOTH targets:
-   - ✅ `Roots` (iOS app)
-   - ✅ `RootsTimerWidget`
+   - ✅ `Itori` (iOS app)
+   - ✅ `ItoriTimerWidget`
 
 ### Step 4: Configure Build Settings
 
-Select `RootsTimerWidget` target → Build Settings:
+Select `ItoriTimerWidget` target → Build Settings:
 
 **Deployment**:
 - iOS Deployment Target: `16.1` (minimum for Live Activities)
 
 **Signing & Capabilities**:
 - Team: Select your development team
-- Bundle Identifier: `clewisiii.Roots.RootsTimerWidget`
+- Bundle Identifier: `clewisiii.Itori.ItoriTimerWidget`
 - Signing Certificate: Automatic
 
 ### Step 5: Add Capability to Main App
 
-Select `Roots` target → Signing & Capabilities:
+Select `Itori` target → Signing & Capabilities:
 1. Click "+ Capability"
 2. Add "Push Notifications" (if not already present)
 
@@ -106,7 +106,7 @@ Add import at top:
 
 ### Step 8: Build and Run
 
-1. **Select Scheme**: "Roots" (not the widget scheme)
+1. **Select Scheme**: "Itori" (not the widget scheme)
 2. **Device**: Physical iPhone (iOS 16.1+)
    - ⚠️ Live Activities don't work in Simulator
 3. **Build**: ⌘B
@@ -153,7 +153,7 @@ Add import at top:
 1. Confirm you're on a physical device (not simulator)
 2. Check iOS version is 16.1+
 3. Go to Settings → [Your Name] → Notifications → Live Activities → ON
-4. Check app permissions: Settings → Roots → Notifications → Allow
+4. Check app permissions: Settings → Itori → Notifications → Allow
 
 **Updates are slow**
 - Live Activities update every 1-2 seconds (by design)
@@ -203,14 +203,14 @@ var isAvailable: Bool {
 ## Files Reference
 
 ```
-Roots/
+Itori/
 ├── Shared/
 │   └── TimerLiveActivityAttributes.swift    [App + Widget]
 ├── iOS/
 │   └── PlatformAdapters/
 │       └── TimerLiveActivityManager.swift   [App only]
-└── RootsTimerWidget/
-    ├── RootsTimerWidgetBundle.swift         [Widget only]
+└── ItoriTimerWidget/
+    ├── ItoriTimerWidgetBundle.swift         [Widget only]
     ├── TimerLiveActivity.swift              [Widget only]
     ├── Info.plist                           [Widget only]
     └── Assets.xcassets/                     [Widget only]

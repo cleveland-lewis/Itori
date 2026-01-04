@@ -21,17 +21,17 @@ The project had an **excellent foundation** already in place:
 
 2. **Entitlements**
    - CloudKit capabilities enabled (macOS + iOS)
-   - iCloud container: `iCloud.com.cwlewisiii.Roots`
+   - iCloud container: `iCloud.com.cwlewisiii.Itori`
    - Proper configuration in both entitlements files
 
 3. **Basic Core Data Model**
-   - Roots.xcdatamodeld structure created
+   - Itori.xcdatamodeld structure created
    - TimerSession entity started (incomplete)
 
 ## What Was Completed (Final 10%)
 
 ### 1. ✅ Complete Core Data Model
-**File:** `SharedCore/Persistence/Roots.xcdatamodeld/Roots.xcdatamodel/contents`
+**File:** `SharedCore/Persistence/Itori.xcdatamodeld/Itori.xcdatamodel/contents`
 
 Created **5 production-ready entities:**
 
@@ -154,7 +154,7 @@ Created **5 production-ready entities:**
 
 ### Updated Files (1)
 ```
-SharedCore/Persistence/Roots.xcdatamodeld/Roots.xcdatamodel/contents
+SharedCore/Persistence/Itori.xcdatamodeld/Itori.xcdatamodel/contents
 └── Added 4 entities, updated 1 entity, added all attributes/relationships
 ```
 
@@ -223,9 +223,9 @@ print("Events: \(monitor.syncEvents.count)")
 
 ### Run Unit Tests
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild test -scheme Roots -destination 'platform=macOS' \
-    -only-testing:RootsTests/CoreDataStackTests
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild test -scheme Itori -destination 'platform=macOS' \
+    -only-testing:ItoriTests/CoreDataStackTests
 ```
 
 ### Manual Smoke Test (When Ready)

@@ -38,10 +38,10 @@ Fixed 4 critical compilation errors blocking unit tests:
 3. **`Tests/Unit/SharedCore/ResetAllDataTests.swift`**
    - Updated 1 `AppTask(...)` call site
 
-4. **`Tests/Unit/RootsTests/DragDropTypesTests.swift`**
+4. **`Tests/Unit/ItoriTests/DragDropTypesTests.swift`**
    - Updated 2 `AppTask(...)` call sites
 
-5. **`Tests/Unit/RootsTests/DragDropHandlerTests.swift`**
+5. **`Tests/Unit/ItoriTests/DragDropHandlerTests.swift`**
    - Updated 2 `AppTask(...)` call sites
 
 6. **`RECURRENCE_FIX_REPORT.md`** (documentation)
@@ -176,8 +176,8 @@ if let rule = task.recurrence, let due = task.due {
 
 ### Expected Outcome
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild test -scheme RootsTests -destination 'platform=macOS'
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild test -scheme ItoriTests -destination 'platform=macOS'
 ```
 
 **Should produce:**
@@ -247,18 +247,18 @@ let task = AppTask(id: ..., title: ..., /* all 20 params */)
 ## Test Execution Command
 
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 
 # Run all unit tests
-xcodebuild test -scheme RootsTests -destination 'platform=macOS'
+xcodebuild test -scheme ItoriTests -destination 'platform=macOS'
 
 # Or just build to verify compilation
-xcodebuild build -scheme Roots -destination 'platform=macOS'
+xcodebuild build -scheme Itori -destination 'platform=macOS'
 
 # Check specific test
-xcodebuild test -scheme RootsTests \
+xcodebuild test -scheme ItoriTests \
   -destination 'platform=macOS' \
-  -only-testing:RootsTests/StorageSafetyTests
+  -only-testing:ItoriTests/StorageSafetyTests
 ```
 
 ---

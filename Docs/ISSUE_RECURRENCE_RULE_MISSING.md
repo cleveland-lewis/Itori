@@ -77,7 +77,7 @@ public struct RecurrenceRule: Codable, Equatable, Hashable {
 - Add backward compatibility for complex rules if needed
 
 ## Steps to Reproduce
-1. Run unit tests: `xcodebuild test -scheme RootsTests -destination 'platform=macOS'`
+1. Run unit tests: `xcodebuild test -scheme ItoriTests -destination 'platform=macOS'`
 2. Build fails with "Cannot find type 'RecurrenceRule'"
 
 ## Impact
@@ -92,7 +92,7 @@ public struct RecurrenceRule: Codable, Equatable, Hashable {
 ## Environment
 - macOS
 - Xcode (current version)
-- Test suite: RootsTests
+- Test suite: ItoriTests
 
 ---
 

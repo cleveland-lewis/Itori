@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
   - name: ⚠️ Read Before Opening Issues
-    url: https://github.com/cleveland-lewis/Roots/blob/main/.github/REPOSITORY_STATUS.md
+    url: https://github.com/cleveland-lewis/Itori/blob/main/.github/REPOSITORY_STATUS.md
     about: This repository does NOT accept contributions. Read repository status first.
   - name: 🔒 Security Vulnerability (Private Report)
-    url: https://github.com/cleveland-lewis/Roots/security/advisories/new
+    url: https://github.com/cleveland-lewis/Itori/security/advisories/new
     about: Report security vulnerabilities privately (preferred method)
   - name: 📄 License and Usage Terms
-    url: https://github.com/cleveland-lewis/Roots/blob/main/LICENSE
+    url: https://github.com/cleveland-lewis/Itori/blob/main/LICENSE
     about: Review the proprietary source-available license terms

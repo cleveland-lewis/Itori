@@ -1,13 +1,13 @@
 # Issue #477: Add Outer Dial Numerals to Main Stopwatch Face - COMPLETE ✅
 
 ## Summary
-Successfully implemented traditional clock numerals (1-12 or cardinal hours 12, 3, 6, 9) around the outer edge of the stopwatch face in `RootsAnalogClock`.
+Successfully implemented traditional clock numerals (1-12 or cardinal hours 12, 3, 6, 9) around the outer edge of the stopwatch face in `ItoriAnalogClock`.
 
 ## Implementation Details
 
 ### Files Modified
-1. **macOS/Views/Components/Clock/RootsAnalogClock.swift** - Updated `StopwatchNumerals` struct
-2. **macOSApp/Views/Components/Clock/RootsAnalogClock.swift** - Already had proper implementation
+1. **macOS/Views/Components/Clock/ItoriAnalogClock.swift** - Updated `StopwatchNumerals` struct
+2. **macOSApp/Views/Components/Clock/ItoriAnalogClock.swift** - Already had proper implementation
 
 ### Key Features Implemented
 
@@ -76,7 +76,7 @@ struct StopwatchNumerals: View {
 ```
 
 ### Integration
-- Used in `RootsAnalogClock` view
+- Used in `ItoriAnalogClock` view
 - Displayed in stopwatch/timer mode via `TimerPageView`
 - Part of layered clock design with bezel, ticks, sub-dials, and hands
 

@@ -139,8 +139,8 @@ var starredTabs: [RootTab] {
 Files are ready to build. To compile:
 
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
-xcodebuild -project RootsApp.xcodeproj -scheme Roots \
+cd /Users/clevelandlewis/Desktop/Itori
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori \
   -configuration Debug \
   -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
   build

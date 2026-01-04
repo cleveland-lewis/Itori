@@ -11,7 +11,7 @@ FILES CREATED (4):
 
 FILES MODIFIED (2):
 ───────────────────
-✓ Platforms/iOS/App/RootsIOSApp.swift
+✓ Platforms/iOS/App/ItoriIOSApp.swift
 ✓ Platforms/iOS/Scenes/Settings/SettingsCategory.swift
 
 DOCUMENTATION CREATED (6):
@@ -28,7 +28,7 @@ DOCUMENTATION CREATED (6):
 DETAILED CHANGES:
 ─────────────────
 
-1. Platforms/iOS/App/RootsIOSApp.swift
+1. Platforms/iOS/App/ItoriIOSApp.swift
    
    Line 30: Added
    @StateObject private var schedulingCoordinator = IntelligentSchedulingCoordinator.shared

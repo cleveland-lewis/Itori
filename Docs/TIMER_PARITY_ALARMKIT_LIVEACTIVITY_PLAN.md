@@ -119,7 +119,7 @@ Bring iOS/iPadOS Timer apps to full feature parity with macOS, integrate AlarmKi
 ### 2.1 Enable AlarmKit Framework
 **Files**: 
 - `Platforms/iOS/PlatformAdapters/TimerAlarmScheduler.swift`
-- `RootsApp.xcodeproj` (capabilities)
+- `ItoriApp.xcodeproj` (capabilities)
 
 #### Changes:
 1. Remove `#if false` disabling AlarmKit
@@ -301,7 +301,7 @@ private func scheduleCompletionNotification() {
 
 ### 3.1 Live Activity Content Improvements
 **Files**: 
-- `RootsTimerWidget/TimerLiveActivity.swift`
+- `ItoriTimerWidget/TimerLiveActivity.swift`
 - `Shared/TimerLiveActivityAttributes.swift`
 
 #### Enhance ContentState:
@@ -612,7 +612,7 @@ struct TaskAlarmPickerView: View {
 ## Phase 5: Testing & Verification
 
 ### 5.1 Unit Tests
-**Files**: Create `Tests/Unit/RootsTests/TimerAlarmSchedulerTests.swift`
+**Files**: Create `Tests/Unit/ItoriTests/TimerAlarmSchedulerTests.swift`
 
 ```swift
 @available(iOS 17.0, *)
@@ -647,7 +647,7 @@ final class TimerAlarmSchedulerTests: XCTestCase {
 ```
 
 ### 5.2 UI Tests
-**Files**: `Tests/RootsUITests/TimerLiveActivityUITests.swift`
+**Files**: `Tests/ItoriUITests/TimerLiveActivityUITests.swift`
 
 ```swift
 final class TimerLiveActivityUITests: XCTestCase {

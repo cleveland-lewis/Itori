@@ -199,7 +199,7 @@ All plan generation uses **deterministic algorithms**:
 
 ## 📝 Files Modified
 
-1. `iOS/App/RootsIOSApp.swift` - Added AssignmentPlansStore to environment
+1. `iOS/App/ItoriIOSApp.swift` - Added AssignmentPlansStore to environment
 2. `SharedCore/Models/AssignmentPlan.swift` - Already complete (no changes needed)
 
 ## 🎯 Acceptance Criteria Status

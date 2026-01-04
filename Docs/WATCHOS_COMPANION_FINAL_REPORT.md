@@ -54,7 +54,7 @@
 
 ## ✅ DELIVERABLE 2: Exact Xcode Settings Modified
 
-### Project File: `RootsApp.xcodeproj/project.pbxproj`
+### Project File: `ItoriApp.xcodeproj/project.pbxproj`
 
 | Setting | Old Value | New Value |
 |---------|-----------|-----------|
@@ -67,10 +67,10 @@
 - **"Embed Watch Content"** (PBXCopyFilesBuildPhase)
   - Destination: Products Directory → Watch
   - Path: `$(CONTENTS_FOLDER_PATH)/Watch`
-  - Files: `RootsWatch.app`
+  - Files: `ItoriWatch.app`
 
 **Cross-Reference**:
-- Xcode UI: Roots target → Build Phases → "+ Copy Files" → "Embed Watch Content"
+- Xcode UI: Itori target → Build Phases → "+ Copy Files" → "Embed Watch Content"
 
 ### Code Changes
 
@@ -132,7 +132,7 @@ manager.printStatus()
 import SwiftUI
 
 @main
-struct RootsApp: App {
+struct ItoriApp: App {
     init() {
         // Activate connectivity on launch
         _ = WatchConnectivityManager.shared
@@ -149,7 +149,7 @@ struct RootsApp: App {
 import SwiftUI
 
 @main
-struct RootsWatchApp: App {
+struct ItoriWatchApp: App {
     init() {
         // Activate connectivity on launch
         _ = WatchConnectivityManager.shared
@@ -172,20 +172,20 @@ struct RootsWatchApp: App {
 **Steps**:
 1. Build iOS app for simulator:
    ```bash
-   xcodebuild -project RootsApp.xcodeproj -scheme Roots -sdk iphonesimulator build
+   xcodebuild -project ItoriApp.xcodeproj -scheme Itori -sdk iphonesimulator build
    ```
 
 2. Navigate to built app:
    ```bash
-   cd ~/Library/Developer/Xcode/DerivedData/RootsApp-*/Build/Products/Debug-iphonesimulator/
+   cd ~/Library/Developer/Xcode/DerivedData/ItoriApp-*/Build/Products/Debug-iphonesimulator/
    ```
 
 3. Check for Watch folder:
    ```bash
-   ls -la Roots.app/Watch/
+   ls -la Itori.app/Watch/
    ```
 
-4. **✅ PASS IF**: `RootsWatch.app` exists in Watch folder
+4. **✅ PASS IF**: `ItoriWatch.app` exists in Watch folder
 
 ---
 
@@ -195,9 +195,9 @@ struct RootsWatchApp: App {
 1. In Xcode: Product → Archive
 2. Right-click archive → Show in Finder
 3. Right-click `.xcarchive` → Show Package Contents
-4. Navigate to: `Products/Applications/Roots.app/Watch/`
+4. Navigate to: `Products/Applications/Itori.app/Watch/`
 
-**✅ PASS IF**: `RootsWatch.app` directory exists and contains binary
+**✅ PASS IF**: `ItoriWatch.app` directory exists and contains binary
 
 ---
 
@@ -215,7 +215,7 @@ struct RootsWatchApp: App {
 5. Navigate to "My Watch" → scroll to bottom
 
 **✅ PASS IF**: 
-- "Roots" appears in "AVAILABLE APPS" list
+- "Itori" appears in "AVAILABLE APPS" list
 - Tapping "Install" successfully installs on watch
 - Or app auto-installs if user has that setting enabled
 
@@ -261,21 +261,21 @@ struct RootsWatchApp: App {
 - Devices paired
 
 **Steps**:
-1. Delete any existing Roots apps from both devices
+1. Delete any existing Itori apps from both devices
 2. Install iOS app via Xcode or TestFlight
 3. **Immediately after install**: Open Watch app on iPhone
 4. Swipe down to "My Watch" tab
 5. Scroll to bottom → "AVAILABLE APPS"
 
 **✅ PASS CRITERIA**:
-- Roots appears in available apps within 30 seconds
+- Itori appears in available apps within 30 seconds
 - Status shows "Install" button or "Installing..." or "Installed"
 - If auto-install enabled: App installs automatically
 - If manual: Tapping "Install" installs successfully
 
 6. **Verify on Watch**:
    - Press Digital Crown
-   - Scroll to find Roots app icon
+   - Scroll to find Itori app icon
    - Tap to launch
    - App opens successfully
 
@@ -326,13 +326,13 @@ struct RootsWatchApp: App {
 
 **Solution**: Clean build folder and rebuild:
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme Roots clean
-xcodebuild -project RootsApp.xcodeproj -scheme Roots -sdk iphonesimulator build
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori clean
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori -sdk iphonesimulator build
 ```
 
 **Note**: watchOS target builds successfully:
 ```bash
-xcodebuild -project RootsApp.xcodeproj -scheme RootsWatch -sdk watchsimulator build
+xcodebuild -project ItoriApp.xcodeproj -scheme ItoriWatch -sdk watchsimulator build
 # Result: ** BUILD SUCCEEDED **
 ```
 
@@ -342,7 +342,7 @@ xcodebuild -project RootsApp.xcodeproj -scheme RootsWatch -sdk watchsimulator bu
 
 | File | Status | Purpose |
 |------|--------|---------|
-| `RootsApp.xcodeproj/project.pbxproj` | ✅ Modified | Deployment targets, embedding config |
+| `ItoriApp.xcodeproj/project.pbxproj` | ✅ Modified | Deployment targets, embedding config |
 | `SharedCore/Services/WatchConnectivityManager.swift` | ✅ Created | iPhone ↔ Watch sync |
 | `SharedCore/Services/FeatureServices/AutoRescheduleGuard.swift` | ✅ Modified | Added Combine import |
 | `SharedCore/Services/FeatureServices/AutoRescheduleEngine.swift` | ✅ Modified | Added clearHistory() |

@@ -238,7 +238,7 @@ Most LMS export assignment lists as CSV:
 2. Export → CSV
 3. Keep `title` and `due` columns
 4. Delete extra columns if needed
-5. Import to Roots
+5. Import to Itori
 
 ---
 

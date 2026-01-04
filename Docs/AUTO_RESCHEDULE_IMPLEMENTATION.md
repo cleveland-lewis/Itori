@@ -92,7 +92,7 @@ func updateBulk(_ sessions: [StoredScheduledSession])
 ## App Integration
 
 ### iOS App
-**Location**: `Platforms/iOS/App/RootsIOSApp.swift`
+**Location**: `Platforms/iOS/App/ItoriIOSApp.swift`
 
 ```swift
 .onAppear {
@@ -104,7 +104,7 @@ func updateBulk(_ sessions: [StoredScheduledSession])
 ```
 
 ### macOS App
-**Location**: `Platforms/macOS/App/RootsApp.swift`
+**Location**: `Platforms/macOS/App/ItoriApp.swift`
 
 ```swift
 .task {
@@ -134,7 +134,7 @@ func updateBulk(_ sessions: [StoredScheduledSession])
 
 **Run Tests**:
 ```bash
-xcodebuild test -scheme Roots -destination 'platform=macOS'
+xcodebuild test -scheme Itori -destination 'platform=macOS'
 ```
 
 ---
@@ -328,10 +328,10 @@ SharedCore/State/PlannerStore.swift
   + Added addToOverflow() method
   + Added updateBulk() method
 
-Platforms/iOS/App/RootsIOSApp.swift
+Platforms/iOS/App/ItoriIOSApp.swift
   + Start monitoring in onAppear
 
-Platforms/macOS/App/RootsApp.swift
+Platforms/macOS/App/ItoriApp.swift
   + Start monitoring in task block
 ```
 

@@ -300,7 +300,7 @@ Each category README documents:
 
 All fixtures must pass before merge:
 ```bash
-xcodebuild test -scheme Roots -only-testing:FixtureBasedTests
+xcodebuild test -scheme Itori -only-testing:FixtureBasedTests
 ```
 
 ### Golden Test Gating

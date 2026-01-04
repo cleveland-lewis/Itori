@@ -2,7 +2,7 @@
 
 ## Status: CRITICAL SYSTEM INVARIANT
 
-This document defines the **canonical, non-negotiable invariant** for LLM provider usage in Roots.
+This document defines the **canonical, non-negotiable invariant** for LLM provider usage in Itori.
 
 ---
 
@@ -194,7 +194,7 @@ Before each release:
 
 ### 1. Build Release Configuration
 ```bash
-xcodebuild -scheme Roots -configuration Release build
+xcodebuild -scheme Itori -configuration Release build
 ```
 
 ### 2. Disable LLM Toggle

@@ -232,7 +232,7 @@ Added comprehensive Chinese translations (Simplified & Traditional) for all new 
 1. [ ] Open System Settings → Language & Region
 2. [ ] Add Chinese, Simplified
 3. [ ] Drag to top of list
-4. [ ] Restart Roots app
+4. [ ] Restart Itori app
 5. [ ] Verify Dashboard shows: "今日概览", "状态", etc.
 6. [ ] Verify Courses shows: "课程列表", "新建课程", etc.
 7. [ ] Verify Calendar shows: "日历性能", "事件: N", etc.
@@ -241,7 +241,7 @@ Added comprehensive Chinese translations (Simplified & Traditional) for all new 
 1. [ ] Open System Settings → Language & Region
 2. [ ] Add Chinese, Traditional
 3. [ ] Drag to top of list
-4. [ ] Restart Roots app
+4. [ ] Restart Itori app
 5. [ ] Verify Dashboard shows: "今日概覽", "狀態", etc.
 6. [ ] Verify Courses shows: "課程清單", "新增課程", etc.
 7. [ ] Verify Calendar shows: "日曆效能", "事件: N", etc.
@@ -262,7 +262,7 @@ Added comprehensive Chinese translations (Simplified & Traditional) for all new 
 
 ```bash
 # Close Xcode
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp*
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp*
 
 # Reopen Xcode
 # Product → Clean Build Folder (Shift+Cmd+K)
@@ -378,7 +378,7 @@ If you want 100% Chinese coverage:
 
 🎉 **Chinese Localization Complete!**
 
-With **132 new translations** (66 per language), Roots now has:
+With **132 new translations** (66 per language), Itori now has:
 - ✅ Complete Chinese support for all major features
 - ✅ Regional variants (Simplified & Traditional)
 - ✅ Professional quality translations

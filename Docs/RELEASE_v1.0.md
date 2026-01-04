@@ -1,4 +1,4 @@
-# Roots 1.0 Scope
+# Itori 1.0 Scope
 
 ## Blockers (must be done before App Store)
 - [ ] Courses: create/edit/delete persisted

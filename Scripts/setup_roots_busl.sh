@@ -8,7 +8,7 @@ cat > LICENSE << 'EOF'
 Business Source License 1.1
 
 Licensor: Cleveland Lewis
-Licensed Work: Roots (this repository)
+Licensed Work: Itori (this repository)
 Change Date: 2029-01-01
 Change License: Apache 2.0
 
@@ -75,7 +75,7 @@ echo "Local .git directory removed."
 
 git init
 git add .
-git commit -m "Initial commit: Roots under Business Source License 1.1"
+git commit -m "Initial commit: Itori under Business Source License 1.1"
 git branch -M main
 
 git remote add origin git@github.com:YOUR_GITHUB_USERNAME/REPO_NAME.git

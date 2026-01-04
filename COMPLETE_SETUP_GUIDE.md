@@ -338,7 +338,7 @@ Users will now get:
 - `Platforms/iOS/Scenes/Settings/Categories/IOSIntelligentSchedulingSettingsView.swift`
 
 **Modified Files (already saved):**
-- `Platforms/iOS/App/RootsIOSApp.swift`
+- `Platforms/iOS/App/ItoriIOSApp.swift`
 - `Platforms/iOS/Scenes/Settings/SettingsCategory.swift`
 
 **Documentation:**

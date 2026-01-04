@@ -152,10 +152,10 @@
   - File: `Shared/TimerLiveActivityAttributes.swift`
   - Test: Total cycles display
 - [ ] Update Live Activity UI
-  - File: `RootsTimerWidget/TimerLiveActivity.swift`
+  - File: `ItoriTimerWidget/TimerLiveActivity.swift`
   - Test: New fields render correctly
 - [ ] Test Dynamic Island
-  - File: `RootsTimerWidget/TimerLiveActivity.swift`
+  - File: `ItoriTimerWidget/TimerLiveActivity.swift`
   - Device: iPhone 14 Pro or later
   - Test: Shows in Dynamic Island
 - [ ] Test Lock Screen widget
@@ -290,7 +290,7 @@
 
 ### 5.1 Unit Tests
 - [ ] Create TimerAlarmSchedulerTests.swift
-  - File: NEW `Tests/Unit/RootsTests/TimerAlarmSchedulerTests.swift`
+  - File: NEW `Tests/Unit/ItoriTests/TimerAlarmSchedulerTests.swift`
   - Test: File created
 - [ ] Test alarm scheduling
   - Method: `testAlarmScheduling()`
@@ -305,7 +305,7 @@
   - Method: `testFallbackWhenUnauthorized()`
   - Test: Passes
 - [ ] Create LiveActivityManagerTests.swift
-  - File: NEW `Tests/Unit/RootsTests/LiveActivityManagerTests.swift`
+  - File: NEW `Tests/Unit/ItoriTests/LiveActivityManagerTests.swift`
 - [ ] Test activity start
   - Test: Passes
 - [ ] Test activity update
@@ -315,7 +315,7 @@
 - [ ] Test update throttling
   - Test: Passes
 - [ ] Create TaskReminderTests.swift
-  - File: NEW `Tests/Unit/RootsTests/TaskReminderTests.swift`
+  - File: NEW `Tests/Unit/ItoriTests/TaskReminderTests.swift`
 - [ ] Test reminder scheduling
   - Test: Passes
 - [ ] Test reminder cancellation
@@ -325,7 +325,7 @@
 
 ### 5.2 UI Tests
 - [ ] Create TimerLiveActivityUITests.swift
-  - File: NEW `Tests/RootsUITests/TimerLiveActivityUITests.swift`
+  - File: NEW `Tests/ItoriUITests/TimerLiveActivityUITests.swift`
 - [ ] Test Live Activity appearance
   - Method: `testLiveActivityAppearance()`
   - Test: Passes
@@ -336,7 +336,7 @@
   - Method: `testLiveActivityDismissal()`
   - Test: Passes
 - [ ] Create TaskAlarmUITests.swift
-  - File: NEW `Tests/RootsUITests/TaskAlarmUITests.swift`
+  - File: NEW `Tests/ItoriUITests/TaskAlarmUITests.swift`
 - [ ] Test alarm setting
   - Method: `testTaskAlarmSetting()`
   - Test: Passes

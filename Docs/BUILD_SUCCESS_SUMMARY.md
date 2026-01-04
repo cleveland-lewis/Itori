@@ -29,10 +29,10 @@
 ### 3. Glass Sidebar Implementation
 **New Files Created**:
 - `SharedCore/DesignSystem/Components/GlassPanel.swift`
-- `Platforms/macOS/PlatformAdapters/RootsSidebarShell.swift`
+- `Platforms/macOS/PlatformAdapters/ItoriSidebarShell.swift`
 
 **Updated Files**:
-- `Platforms/macOS/App/RootsApp.swift` - Now uses `RootsSidebarShell` instead of `ContentView`
+- `Platforms/macOS/App/ItoriApp.swift` - Now uses `ItoriSidebarShell` instead of `ContentView`
 - `Platforms/macOS/Scenes/RootTab.swift` - Cleaned up to avoid duplicate extensions
 
 **Features**:
@@ -57,7 +57,7 @@
 - ⚠️ Minor warnings about actor isolation (non-blocking)
 - ⚠️ AccentColor warning in SF Symbols icon (cosmetic, ignorable)
 
-### Target: Roots (macOS)
+### Target: Itori (macOS)
 - **Configuration**: Debug
 - **Platform**: macOS
 - **Architecture**: arm64
@@ -68,7 +68,7 @@
 ### Sidebar Layout
 ```
 ┌─────────────────────┐
-│ 🍃 Roots           │
+│ 🍃 Itori           │
 ├─────────────────────┤
 │ ▪ Dashboard        │
 │ ▪ Calendar         │
@@ -94,8 +94,8 @@
 
 1. **Open in Xcode**:
    ```bash
-   cd /Users/clevelandlewis/Desktop/Roots
-   open RootsApp.xcodeproj
+   cd /Users/clevelandlewis/Desktop/Itori
+   open ItoriApp.xcodeproj
    ```
 
 2. **Build**: Product → Build (⌘B)
@@ -117,8 +117,8 @@
 
 ### Glass Sidebar (New Design)
 4. `SharedCore/DesignSystem/Components/GlassPanel.swift` - **NEW**
-5. `Platforms/macOS/PlatformAdapters/RootsSidebarShell.swift` - **NEW**
-6. `Platforms/macOS/App/RootsApp.swift` - Uses new shell
+5. `Platforms/macOS/PlatformAdapters/ItoriSidebarShell.swift` - **NEW**
+6. `Platforms/macOS/App/ItoriApp.swift` - Uses new shell
 7. `Platforms/macOS/Scenes/RootTab.swift` - Cleaned up
 
 ### Total Changes
@@ -149,12 +149,12 @@
 4. Content will appear in glass panel on the right
 
 ### To Revert to Old UI (if needed)
-1. Open `Platforms/macOS/App/RootsApp.swift`
-2. Change line 127 from `RootsSidebarShell()` back to `ContentView()`
+1. Open `Platforms/macOS/App/ItoriApp.swift`
+2. Change line 127 from `ItoriSidebarShell()` back to `ContentView()`
 3. Rebuild
 
 ### To Customize
-- **Sidebar width**: Change `.frame(width: 260)` in `RootsSidebarShell.swift`
+- **Sidebar width**: Change `.frame(width: 260)` in `ItoriSidebarShell.swift`
 - **Glass effect**: Change `material: .hudWindow` to other NSVisualEffectView materials
 - **Corner radius**: Change `cornerRadius: 18` in GlassPanel call
 
@@ -163,7 +163,7 @@
 - [x] App builds successfully
 - [x] No blocking errors
 - [x] Glass sidebar files created
-- [x] RootsApp.swift updated
+- [x] ItoriApp.swift updated
 - [x] Protocol conformance fixed
 - [x] LoadableViewModel test fixed
 - [x] All warnings documented

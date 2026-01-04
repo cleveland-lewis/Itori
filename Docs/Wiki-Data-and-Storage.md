@@ -1,13 +1,13 @@
 # Data and Storage
 
-This page explains how Roots handles user data, including storage locations, synchronization, and backup options.
+This page explains how Itori handles user data, including storage locations, synchronization, and backup options.
 
 ## Local Storage
 
 All user data is stored locally on the device by default.
 
 ### Storage Location
-- **macOS:** Application container within `~/Library/Application Support/Roots/`
+- **macOS:** Application container within `~/Library/Application Support/Itori/`
 - **iOS/iPadOS:** Sandboxed application container managed by the system
 - **watchOS:** Limited local cache; relies on companion device for full data
 

@@ -484,7 +484,7 @@ return NSLocalizedString("assignments.parse.unknown_source", comment: "")
 
 ```bash
 # Close Xcode
-rm -rf ~/Library/Developer/Xcode/DerivedData/RootsApp*
+rm -rf ~/Library/Developer/Xcode/DerivedData/ItoriApp*
 
 # Reopen Xcode
 # Product → Clean Build Folder (Shift+Cmd+K)
@@ -573,7 +573,7 @@ With **154 assignment keys** in English and **full Chinese translations**, the A
 
 **All 5 major pages (Planner, Dashboard, Calendar, Courses, Assignments) now have EXCELLENT localization status!** 🎊
 
-The Roots app is **production-ready for international release** with comprehensive localization across all core features!
+The Itori app is **production-ready for international release** with comprehensive localization across all core features!
 
 ---
 

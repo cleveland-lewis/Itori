@@ -1,7 +1,7 @@
-# Animation Guidelines for Roots
+# Animation Guidelines for Itori
 
 ## Overview
-This document defines the standardized animation system for Roots, ensuring consistent, smooth, and accessible transitions throughout the app.
+This document defines the standardized animation system for Itori, ensuring consistent, smooth, and accessible transitions throughout the app.
 
 ## Standardized Animation Tokens
 

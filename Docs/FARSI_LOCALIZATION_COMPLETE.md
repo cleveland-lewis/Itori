@@ -8,7 +8,7 @@
 
 ## Summary
 
-Successfully implemented comprehensive Farsi/Persian (فارسی) localization with Right-to-Left (RTL) support for the Roots app. 1,207 out of 1,232 UI strings have been translated using Google Translate API.
+Successfully implemented comprehensive Farsi/Persian (فارسی) localization with Right-to-Left (RTL) support for the Itori app. 1,207 out of 1,232 UI strings have been translated using Google Translate API.
 
 ---
 
@@ -257,7 +257,7 @@ For proper Farsi plurals, add to `.stringsdict`:
 ### 1. Technical Terms
 
 Some technical terms kept in English:
-- **Roots** (app name)
+- **Itori** (app name)
 - **Debugger** (technical tool)
 - **LLM** (technical acronym)
 - **API** (technical term)
@@ -285,7 +285,7 @@ Some translations may need refinement:
 
 ### Add Farsi Language
 
-1. Open `RootsApp.xcodeproj`
+1. Open `ItoriApp.xcodeproj`
 2. Select project root
 3. **Info** tab → **Localizations**
 4. Click **+** → Add **Persian (fa)**

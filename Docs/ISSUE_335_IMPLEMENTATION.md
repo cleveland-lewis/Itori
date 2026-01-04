@@ -277,19 +277,19 @@ let bad = builders.buildInvalidJSON(type: .trailingComma)
 
 ### Full Suite
 ```bash
-xcodebuild test -scheme Roots -destination 'platform=macOS'
+xcodebuild test -scheme Itori -destination 'platform=macOS'
 ```
 
 ### Specific Tests
 ```bash
 # Unit tests
-xcodebuild test -scheme Roots -only-testing:RootsTests/BlueprintDeterminismTests
+xcodebuild test -scheme Itori -only-testing:ItoriTests/BlueprintDeterminismTests
 
 # Property tests
-xcodebuild test -scheme Roots -only-testing:RootsTests/PropertyBasedValidatorTests
+xcodebuild test -scheme Itori -only-testing:ItoriTests/PropertyBasedValidatorTests
 
 # Integration
-xcodebuild test -scheme Roots -only-testing:RootsTests/HundredRunIntegrationTests
+xcodebuild test -scheme Itori -only-testing:ItoriTests/HundredRunIntegrationTests
 ```
 
 ### From Xcode

@@ -1,6 +1,6 @@
 # Display Title Fallback Rules
 
-Comprehensive specification of display title generation with fallback strategies for all persisted entities in Roots.
+Comprehensive specification of display title generation with fallback strategies for all persisted entities in Itori.
 
 **Version:** 1.0  
 **Last Updated:** 2025-12-16  

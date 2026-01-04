@@ -243,8 +243,8 @@ syncManager.$syncStatus.sink { status in
 ```
 SharedCore/
 ├── Persistence/
-│   ├── Roots.xcdatamodeld/
-│   │   └── Roots.xcdatamodel/contents (Updated)
+│   ├── Itori.xcdatamodeld/
+│   │   └── Itori.xcdatamodel/contents (Updated)
 │   ├── PersistenceController.swift (Existing)
 │   ├── SyncMonitor.swift (Existing)
 │   ├── PersistenceMigrationManager.swift (New)

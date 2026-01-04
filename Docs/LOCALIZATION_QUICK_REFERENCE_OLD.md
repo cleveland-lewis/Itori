@@ -15,7 +15,7 @@
 ### Export Single Language
 ```bash
 xcodebuild -exportLocalizations \
-  -project RootsApp.xcodeproj \
+  -project ItoriApp.xcodeproj \
   -localizationPath ./Localizations \
   -exportLanguage [LANG_CODE] \
   -sdk macosx
@@ -24,7 +24,7 @@ xcodebuild -exportLocalizations \
 ### Import Single Language
 ```bash
 xcodebuild -importLocalizations \
-  -project RootsApp.xcodeproj \
+  -project ItoriApp.xcodeproj \
   -localizationPath ./Localizations/[LANG_CODE].xcloc
 ```
 

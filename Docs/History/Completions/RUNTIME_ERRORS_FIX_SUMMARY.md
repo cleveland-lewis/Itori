@@ -57,10 +57,10 @@ if nsError.domain == "UNErrorDomain" && nsError.code == 1 {
 SwiftUI's `WindowGroup` doesn't automatically provide NSCoding support for macOS window restoration. When macOS tried to restore windows on app relaunch, it couldn't find the appropriate class.
 
 **Files Modified:**
-- `macOSApp/App/RootsApp.swift`
+- `macOSApp/App/ItoriApp.swift`
 
 **Solution:**
-1. Added an `AppDelegate` class directly in RootsApp.swift that disables window restoration in init():
+1. Added an `AppDelegate` class directly in ItoriApp.swift that disables window restoration in init():
 ```swift
 class AppDelegate: NSObject, NSApplicationDelegate {
     override init() {
@@ -82,7 +82,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 2. Integrated AppDelegate into SwiftUI app:
 ```swift
 @main
-struct RootsApp: App {
+struct ItoriApp: App {
     #if os(macOS)
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     #endif
@@ -159,7 +159,7 @@ fence tx observer 1540f timed out after 0.600000
 ### Modified:
 - `SharedCore/Services/FeatureServices/NotificationManager.swift` - Silent error handling for UNErrorDomain error 1
 - `SharedCore/Services/FeatureServices/TimerManager.swift` - Silent error handling for notification permissions
-- `macOSApp/App/RootsApp.swift` - Added AppDelegate integration and window identifier
+- `macOSApp/App/ItoriApp.swift` - Added AppDelegate integration and window identifier
 
 ### Created:
 - `RUNTIME_WARNINGS_EXPLAINED.md` - Comprehensive documentation of all runtime warnings

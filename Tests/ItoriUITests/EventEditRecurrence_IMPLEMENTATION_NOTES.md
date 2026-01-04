@@ -100,7 +100,7 @@ For integration tests that interact with system calendar:
 
 #### Phase 5: EventKit Integration Tests (4-6 hours)
 1. Create EventKit test harness
-2. Implement `testRoundTripCreateInRoots()`
+2. Implement `testRoundTripCreateInItori()`
 3. Add permission handling
 4. Mark as conditional/manual if needed
 5. Document manual test procedures
@@ -115,12 +115,12 @@ For integration tests that interact with system calendar:
 ### Test Execution
 
 #### Automated Tests (CI-friendly)
-Run with: `xcodebuild test -scheme Roots -destination 'platform=macOS'`
+Run with: `xcodebuild test -scheme Itori -destination 'platform=macOS'`
 
 #### Manual Tests (EventKit integration)
 1. Run with calendar permissions granted
 2. Follow manual test checklist for Apple Calendar integration
-3. Verify changes sync between Roots and System Calendar
+3. Verify changes sync between Itori and System Calendar
 
 ### Notes
 - Tests use `XCTFail("Test not yet implemented...")` to mark incomplete tests

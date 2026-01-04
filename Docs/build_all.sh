@@ -6,12 +6,12 @@ set -e
 
 cd "$(dirname "$0")"
 
-echo "🔨 Building Roots - macOS and iOS"
+echo "🔨 Building Itori - macOS and iOS"
 echo ""
 
 # macOS Build
 echo "📦 Building macOS target..."
-xcodebuild -scheme Roots \
+xcodebuild -scheme Itori \
   -destination 'platform=macOS' \
   build \
   2>&1 | tee build_macos.log | grep -E "BUILD|error:" | tail -5
@@ -27,7 +27,7 @@ echo ""
 
 # iOS Build  
 echo "📱 Building iOS target..."
-xcodebuild -scheme Roots \
+xcodebuild -scheme Itori \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
   build \
   2>&1 | tee build_ios.log | grep -E "BUILD|error:" | tail -5

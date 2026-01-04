@@ -31,7 +31,7 @@ You may NOT:
 
 This software is licensed under a **Proprietary Source-Available License**.
 
-See: [LICENSE](https://github.com/cleveland-lewis/Roots/blob/main/LICENSE)
+See: [LICENSE](https://github.com/cleveland-lewis/Itori/blob/main/LICENSE)
 
 All rights reserved. No permission is granted to use, modify, or distribute this software.
 
@@ -40,9 +40,9 @@ All rights reserved. No permission is granted to use, modify, or distribute this
 ### If You Want to Report a Security Issue
 
 Use private security advisories:  
-👉 https://github.com/cleveland-lewis/Roots/security/advisories/new
+👉 https://github.com/cleveland-lewis/Itori/security/advisories/new
 
-See: [SECURITY.md](https://github.com/cleveland-lewis/Roots/blob/main/SECURITY.md)
+See: [SECURITY.md](https://github.com/cleveland-lewis/Itori/blob/main/SECURITY.md)
 
 ---
 

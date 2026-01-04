@@ -2,7 +2,7 @@
 
 ## ✅ Integration Complete!
 
-Successfully integrated Apple HIG-compliant components into the Roots macOS dashboard.
+Successfully integrated Apple HIG-compliant components into the Itori macOS dashboard.
 
 ## Changes Made
 
@@ -44,8 +44,8 @@ ScrollView {
 ### 2. Today Card Redesigned
 
 **Before:**
-- Custom RootsCard component
-- Custom RootsLiquidButtonStyle
+- Custom ItoriCard component
+- Custom ItoriLiquidButtonStyle
 - Custom text styles (.rootsBody())
 - No quick actions
 
@@ -177,7 +177,7 @@ DashboardEmptyState(
 - **After:** System .headline, .body, .subheadline, .caption
 
 ### Buttons
-- **Before:** RootsLiquidButtonStyle
+- **Before:** ItoriLiquidButtonStyle
 - **After:** .borderedProminent (primary), .bordered (secondary)
 
 ### States
@@ -255,7 +255,7 @@ DashboardEmptyState(
 
 ### Short Term
 - [ ] Update remaining cards (events, assignments, energy, study hours)
-- [ ] Replace RootsCard with DashboardCard everywhere
+- [ ] Replace ItoriCard with DashboardCard everywhere
 - [ ] Add context menus for quick actions
 - [ ] Implement keyboard shortcuts
 

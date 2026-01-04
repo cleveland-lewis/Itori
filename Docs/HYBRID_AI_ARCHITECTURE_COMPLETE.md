@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-The hybrid AI architecture for Roots has been fully implemented with:
+The hybrid AI architecture for Itori has been fully implemented with:
 1. ✅ Apple Intelligence as primary on-device provider
 2. ✅ Optional user-enabled providers (BYO: OpenAI, Anthropic, Custom)
 3. ✅ Platform-optimized local offline fallbacks
@@ -298,7 +298,7 @@ Update UI status
 ```
 
 **Storage Locations:**
-- macOS: `~/Library/Application Support/Roots/Models/macOS/`
+- macOS: `~/Library/Application Support/Itori/Models/macOS/`
 - iOS: `Documents/Models/iOS/`
 
 ---
@@ -641,7 +641,7 @@ The hybrid AI architecture is **fully implemented and production-ready**. All ac
 ✅ Model downloads with progress  
 ✅ Full observability  
 
-The architecture provides a solid foundation for all AI features in Roots, with clear provider boundaries, explicit routing, and complete user control over privacy and network usage.
+The architecture provides a solid foundation for all AI features in Itori, with clear provider boundaries, explicit routing, and complete user control over privacy and network usage.
 
 ---
 

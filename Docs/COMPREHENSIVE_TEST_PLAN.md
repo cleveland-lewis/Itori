@@ -1,8 +1,8 @@
-# Comprehensive Roots App Test Plan
+# Comprehensive Itori App Test Plan
 ## Test Date: December 29, 2025
 
 ### Test Objective
-Verify complete end-to-end functionality of the Roots study planning system including:
+Verify complete end-to-end functionality of the Itori study planning system including:
 1. Academic structure setup (semesters & courses)
 2. Assignment creation across multiple types
 3. Automatic plan generation

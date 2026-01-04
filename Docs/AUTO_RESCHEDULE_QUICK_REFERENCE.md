@@ -118,12 +118,12 @@ if let provenance = session.aiProvenance,
 ### Unit Tests
 ```bash
 # Run auto-reschedule tests only
-xcodebuild test -scheme Roots \
+xcodebuild test -scheme Itori \
   -destination 'platform=macOS' \
-  -only-testing:RootsTests/AutoRescheduleTests
+  -only-testing:ItoriTests/AutoRescheduleTests
 
 # All tests
-xcodebuild test -scheme Roots -destination 'platform=macOS'
+xcodebuild test -scheme Itori -destination 'platform=macOS'
 ```
 
 ### Manual Testing
@@ -237,7 +237,7 @@ settings.autoReschedulePushLowerPriority = false
 ## Integration Points
 
 ### Called from:
-1. **App Launch** (`RootsIOSApp.swift`, `RootsApp.swift`):
+1. **App Launch** (`ItoriIOSApp.swift`, `ItoriApp.swift`):
    ```swift
    MissedEventDetectionService.shared.startMonitoring()
    ```
@@ -352,10 +352,10 @@ guard session.type != .breakTime else { return }
 
 ```bash
 # Build
-xcodebuild -scheme Roots -destination 'platform=macOS' build
+xcodebuild -scheme Itori -destination 'platform=macOS' build
 
 # Test
-xcodebuild test -scheme Roots -destination 'platform=macOS'
+xcodebuild test -scheme Itori -destination 'platform=macOS'
 
 # Find usages
 grep -r "MissedEventDetectionService" --include="*.swift"
@@ -364,7 +364,7 @@ grep -r "MissedEventDetectionService" --include="*.swift"
 log show --predicate 'subsystem contains "MissedEventDetection"' --last 1h
 
 # Clear history (manual)
-rm ~/Library/Application\ Support/RootsPlanner/reschedule-history.json
+rm ~/Library/Application\ Support/ItoriPlanner/reschedule-history.json
 ```
 
 ---

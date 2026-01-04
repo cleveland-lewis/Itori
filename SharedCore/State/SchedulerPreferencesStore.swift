@@ -6,7 +6,7 @@ final class SchedulerPreferencesStore {
 
     private let fileURL: URL? = {
         guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return nil }
-        let appDir = dir.appendingPathComponent("Roots", isDirectory: true)
+        let appDir = dir.appendingPathComponent("Itori", isDirectory: true)
         try? FileManager.default.createDirectory(at: appDir, withIntermediateDirectories: true)
         return appDir.appendingPathComponent("scheduler_prefs.json")
     }()

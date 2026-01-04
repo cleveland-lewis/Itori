@@ -29,14 +29,14 @@ WHY THIS IS OK:
 
 PLATFORM CHECKS ALREADY IN PLACE:
 ──────────────────────────────────
-✅ RootsIOSApp.swift wrapped in #if os(iOS)
+✅ ItoriIOSApp.swift wrapped in #if os(iOS)
 ✅ BackgroundTasks import iOS-only
 ✅ IOSIntelligentSchedulingSettingsView iOS-only
 ✅ Services are cross-platform compatible
 
 TO BUILD macOS:
 ───────────────
-1. In Xcode, select "Roots macOS" scheme
+1. In Xcode, select "Itori macOS" scheme
 2. Select "My Mac" as destination
 3. Cmd+B to build
 4. Should succeed!

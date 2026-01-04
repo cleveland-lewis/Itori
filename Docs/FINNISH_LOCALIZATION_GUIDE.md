@@ -1,7 +1,7 @@
 # Finnish Localization Implementation Guide
 
 ## Summary
-Finnish (fi) language localization structure has been added to the Roots app. Translation is ready to be completed using the free Google Translate API via the `googletrans` Python library.
+Finnish (fi) language localization structure has been added to the Itori app. Translation is ready to be completed using the free Google Translate API via the `googletrans` Python library.
 
 ## Files Created
 
@@ -20,7 +20,7 @@ Finnish (fi) language localization structure has been added to the Roots app. Tr
 Run the automated script that handles multiple translation rounds:
 
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 chmod +x run_finnish_translation.sh
 ./run_finnish_translation.sh
 ```
@@ -35,7 +35,7 @@ This will:
 Run the translation script directly (can be run multiple times):
 
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 python3 translate_finnish.py
 ```
 
@@ -43,7 +43,7 @@ Repeat this command 3-5 times to maximize coverage and handle any rate-limited f
 
 ### Option 3: Step-by-step
 ```bash
-cd /Users/clevelandlewis/Desktop/Roots
+cd /Users/clevelandlewis/Desktop/Itori
 
 # Round 1
 python3 translate_finnish.py

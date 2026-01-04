@@ -4,7 +4,7 @@
 # Simple HTTP server for testing model downloads locally
 
 echo "════════════════════════════════════════════════════"
-echo "  Roots Model Download Test Server"
+echo "  Itori Model Download Test Server"
 echo "════════════════════════════════════════════════════"
 echo ""
 
@@ -45,7 +45,7 @@ echo "Model URLs:"
 echo "  macOS: http://localhost:$PORT/models/roots-macos-standard-v1.mlmodel"
 echo "  iOS:   http://localhost:$PORT/models/roots-ios-lite-v1.mlmodel"
 echo ""
-echo "To test in Roots app:"
+echo "To test in Itori app:"
 echo "  1. In Xcode, set ModelConfig.useTestingURLs = true"
 echo "  2. Run the app"
 echo "  3. Go to Settings → AI"

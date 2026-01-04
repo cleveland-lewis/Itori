@@ -9,7 +9,7 @@
 
 ### ✅ Issue #354 - CLOSED
 **Title**: Scheduler Determinism Tests  
-**Link**: https://github.com/cleveland-lewis/Roots/issues/354  
+**Link**: https://github.com/cleveland-lewis/Itori/issues/354  
 **Status**: ✅ CLOSED with comprehensive summary
 
 **Deliverables**:
@@ -21,7 +21,7 @@
 
 ### ⏳ Issue #396 - IN PROGRESS (75%)
 **Title**: Build Errors (actor isolation + switches)  
-**Link**: https://github.com/cleveland-lewis/Roots/issues/396  
+**Link**: https://github.com/cleveland-lewis/Itori/issues/396  
 **Status**: ⏳ PENDING BUILD VERIFICATION
 
 **Completed**:
@@ -34,7 +34,7 @@
 
 ### ✅ Issue #390 - CLOSED
 **Title**: Global AI Privacy Kill Switch  
-**Link**: https://github.com/cleveland-lewis/Roots/issues/390  
+**Link**: https://github.com/cleveland-lewis/Itori/issues/390  
 **Status**: ✅ CLOSED with verification and tests
 
 **Deliverables**:

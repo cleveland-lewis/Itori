@@ -5,7 +5,7 @@
 
 ## What Was Created
 
-I've created a comprehensive test suite that validates **all major algorithms** throughout the Roots app. This single test file provides complete coverage of computational logic across the entire application.
+I've created a comprehensive test suite that validates **all major algorithms** throughout the Itori app. This single test file provides complete coverage of computational logic across the entire application.
 
 ## Files Created
 
@@ -124,19 +124,19 @@ Every assignment type has dedicated test coverage:
 
 ### Run All Algorithm Tests
 ```bash
-xcodebuild test -scheme Roots \
-  -only-testing:RootsTests/ComprehensiveAlgorithmTests
+xcodebuild test -scheme Itori \
+  -only-testing:ItoriTests/ComprehensiveAlgorithmTests
 ```
 
 ### Run Specific Categories
 ```bash
 # Plan engine tests only
-xcodebuild test -scheme Roots \
-  -only-testing:RootsTests/ComprehensiveAlgorithmTests/testAssignmentPlanEngine*
+xcodebuild test -scheme Itori \
+  -only-testing:ItoriTests/ComprehensiveAlgorithmTests/testAssignmentPlanEngine*
 
 # Performance tests only
-xcodebuild test -scheme Roots \
-  -only-testing:RootsTests/ComprehensiveAlgorithmTests/testPerformance*
+xcodebuild test -scheme Itori \
+  -only-testing:ItoriTests/ComprehensiveAlgorithmTests/testPerformance*
 ```
 
 ### Expected Output
@@ -193,7 +193,7 @@ All algorithms use efficient data structures:
 - Can run independently or as part of full suite
 
 ### ⚠️ Pending
-- Build issues in unrelated files (RootsInsightsEngine.swift)
+- Build issues in unrelated files (ItoriInsightsEngine.swift)
 - Once resolved, all tests can execute
 
 ## Documentation
@@ -275,7 +275,7 @@ The **Comprehensive Algorithm Test Suite** provides:
 ✅ **Robustness testing** for boundary conditions  
 ✅ **Professional documentation** for maintenance  
 
-This test suite ensures that every algorithm in Roots works correctly, performs efficiently, and handles edge cases gracefully. It serves as both quality assurance and living documentation of the app's computational logic.
+This test suite ensures that every algorithm in Itori works correctly, performs efficiently, and handles edge cases gracefully. It serves as both quality assurance and living documentation of the app's computational logic.
 
 ---
 
@@ -302,8 +302,8 @@ This test suite ensures that every algorithm in Roots works correctly, performs 
 
 2. **Run Tests** (once build issues resolved):
    ```bash
-   xcodebuild test -scheme Roots \
-     -only-testing:RootsTests/ComprehensiveAlgorithmTests
+   xcodebuild test -scheme Itori \
+     -only-testing:ItoriTests/ComprehensiveAlgorithmTests
    ```
 
 3. **See Results**:

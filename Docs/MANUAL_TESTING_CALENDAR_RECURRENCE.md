@@ -2,22 +2,22 @@
 
 ## Issue #29: Manual Test Steps for Recurrence/Alerts Round-Trip Behavior
 
-This document provides step-by-step manual test procedures to verify that event recurrence and alerts correctly sync between Roots and Apple Calendar.
+This document provides step-by-step manual test procedures to verify that event recurrence and alerts correctly sync between Itori and Apple Calendar.
 
 ---
 
 ## Prerequisites
 
 ### Before Testing
-- [ ] Grant Roots calendar access in System Settings
-- [ ] Create a test calendar in Apple Calendar app (recommended: "Roots Test Calendar")
-- [ ] Ensure Roots is configured to use the test calendar
+- [ ] Grant Itori calendar access in System Settings
+- [ ] Create a test calendar in Apple Calendar app (recommended: "Itori Test Calendar")
+- [ ] Ensure Itori is configured to use the test calendar
 - [ ] Clear any existing test events from previous sessions
 
 ### Test Environment
 - macOS 14.0 or later
 - Apple Calendar app installed
-- Roots app with calendar permissions granted
+- Itori app with calendar permissions granted
 
 ---
 
@@ -27,7 +27,7 @@ This document provides step-by-step manual test procedures to verify that event 
 **Objective:** Verify daily recurring events persist correctly
 
 **Steps:**
-1. Open Roots → Calendar page
+1. Open Itori → Calendar page
 2. Create new event:
    - Title: "Daily Test Event"
    - Start: Today at 2:00 PM
@@ -54,7 +54,7 @@ This document provides step-by-step manual test procedures to verify that event 
 **Objective:** Verify weekly recurrence on one day
 
 **Steps:**
-1. In Roots, create event:
+1. In Itori, create event:
    - Title: "Weekly Monday Meeting"
    - Start: Next Monday at 10:00 AM
    - End: Next Monday at 11:00 AM
@@ -79,7 +79,7 @@ This document provides step-by-step manual test procedures to verify that event 
 **Objective:** Verify weekly recurrence on Mon/Wed/Fri
 
 **Steps:**
-1. In Roots, create event:
+1. In Itori, create event:
    - Title: "MWF Workout"
    - Start: Next Monday at 6:00 AM
    - End: Next Monday at 7:00 AM
@@ -104,7 +104,7 @@ This document provides step-by-step manual test procedures to verify that event 
 **Objective:** Verify "end after N" works correctly
 
 **Steps:**
-1. In Roots, create event:
+1. In Itori, create event:
    - Title: "10-Day Challenge"
    - Start: Tomorrow at 8:00 AM
    - End: Tomorrow at 9:00 AM
@@ -129,7 +129,7 @@ This document provides step-by-step manual test procedures to verify that event 
 **Objective:** Verify "end by specific date" works
 
 **Steps:**
-1. In Roots, create event:
+1. In Itori, create event:
    - Title: "Spring Term Class"
    - Start: Today at 1:00 PM
    - End: Today at 2:00 PM
@@ -156,7 +156,7 @@ This document provides step-by-step manual test procedures to verify that event 
 **Objective:** Verify single alert preservation
 
 **Steps:**
-1. In Roots, create event:
+1. In Itori, create event:
    - Title: "Dentist Appointment"
    - Start: Tomorrow at 10:00 AM
    - End: Tomorrow at 11:00 AM
@@ -179,7 +179,7 @@ This document provides step-by-step manual test procedures to verify that event 
 **Objective:** Verify multiple alerts work
 
 **Steps:**
-1. In Roots, create event:
+1. In Itori, create event:
    - Title: "Important Presentation"
    - Start: Tomorrow at 2:00 PM
    - End: Tomorrow at 3:00 PM
@@ -205,7 +205,7 @@ This document provides step-by-step manual test procedures to verify that event 
 **Objective:** Verify events can have no alerts
 
 **Steps:**
-1. In Roots, create event:
+1. In Itori, create event:
    - Title: "Flexible Task"
    - Start: Tomorrow at 3:00 PM
    - End: Tomorrow at 4:00 PM
@@ -225,7 +225,7 @@ This document provides step-by-step manual test procedures to verify that event 
 **Objective:** Verify recurrence and alerts work together
 
 **Steps:**
-1. In Roots, create event:
+1. In Itori, create event:
    - Title: "Weekly Team Standup"
    - Start: Next Monday at 9:00 AM
    - End: Next Monday at 9:30 AM
@@ -253,7 +253,7 @@ This document provides step-by-step manual test procedures to verify that event 
 **Objective:** Verify daily + end date + alert
 
 **Steps:**
-1. In Roots, create event:
+1. In Itori, create event:
    - Title: "Morning Medication"
    - Start: Tomorrow at 8:00 AM
    - End: Tomorrow at 8:05 AM
@@ -272,29 +272,29 @@ This document provides step-by-step manual test procedures to verify that event 
 
 ## Test Suite 4: Round-Trip Editing
 
-### Test 4.1: Create in Roots, Edit in Apple Calendar
-**Objective:** Verify edits in Apple Calendar sync back to Roots
+### Test 4.1: Create in Itori, Edit in Apple Calendar
+**Objective:** Verify edits in Apple Calendar sync back to Itori
 
 **Steps:**
-1. In Roots, create weekly recurring event with 1 alert
+1. In Itori, create weekly recurring event with 1 alert
 2. Save and verify in Apple Calendar
 3. In Apple Calendar:
    - Open event → Edit
    - Change alert to "2 hours before"
    - Add second alert: "1 day before"
    - Save
-4. Return to Roots
+4. Return to Itori
 5. Refresh/navigate to event
 
 **Expected Results:**
-- ✅ Roots shows updated alert times
-- ✅ Both alerts appear in Roots
+- ✅ Itori shows updated alert times
+- ✅ Both alerts appear in Itori
 - ✅ No data loss
 
 ---
 
-### Test 4.2: Create in Apple Calendar, View in Roots
-**Objective:** Verify Roots correctly reads Apple Calendar events
+### Test 4.2: Create in Apple Calendar, View in Itori
+**Objective:** Verify Itori correctly reads Apple Calendar events
 
 **Steps:**
 1. In Apple Calendar, create new event:
@@ -303,23 +303,23 @@ This document provides step-by-step manual test procedures to verify that event 
    - End: After 5 times
    - Alert: 30 minutes before
 2. Save
-3. Open Roots → Navigate to calendar
+3. Open Itori → Navigate to calendar
 4. Find the event
 
 **Expected Results:**
-- ✅ Event appears in Roots
+- ✅ Event appears in Itori
 - ✅ Recurrence pattern visible
 - ✅ Alert time correct
-- ✅ Can open/edit in Roots
+- ✅ Can open/edit in Itori
 
 ---
 
-### Test 4.3: Edit Recurring Event in Roots (Single vs All)
+### Test 4.3: Edit Recurring Event in Itori (Single vs All)
 **Objective:** Verify edit scope options work
 
 **Steps:**
 1. Create weekly recurring event (4 occurrences)
-2. Open second occurrence in Roots
+2. Open second occurrence in Itori
 3. Edit title, save
 4. When prompted "This Event" vs "All Future Events":
    - Choose "This Event"
@@ -337,10 +337,10 @@ This document provides step-by-step manual test procedures to verify that event 
 
 **Steps:**
 1. Create daily recurring event (7 days)
-2. Delete 3rd occurrence in Roots → "This Event Only"
+2. Delete 3rd occurrence in Itori → "This Event Only"
 3. Check Apple Calendar
 4. Delete 5th occurrence in Apple Calendar
-5. Check Roots
+5. Check Itori
 
 **Expected Results:**
 - ✅ Days 3 and 5 missing
@@ -415,9 +415,9 @@ This document provides step-by-step manual test procedures to verify that event 
    - Title, location, notes, URL
    - Recurrence
    - 2 alerts
-   - Category (Roots-specific)
+   - Category (Itori-specific)
 2. Edit in Apple Calendar (change time only)
-3. View in Roots
+3. View in Itori
 
 **Expected Results:**
 - ✅ All original fields present
@@ -428,13 +428,13 @@ This document provides step-by-step manual test procedures to verify that event 
 ---
 
 ### Test 6.2: Category Preservation
-**Objective:** Verify Roots category survives round-trip
+**Objective:** Verify Itori category survives round-trip
 
 **Steps:**
-1. In Roots, create "Exam" category event
+1. In Itori, create "Exam" category event
 2. Add recurrence and alerts
 3. Edit in Apple Calendar (minor change)
-4. Return to Roots
+4. Return to Itori
 
 **Expected Results:**
 - ✅ Category still shows "Exam"
@@ -465,7 +465,7 @@ This document provides step-by-step manual test procedures to verify that event 
 **Objective:** Measure sync time
 
 **Steps:**
-1. Create event in Roots
+1. Create event in Itori
 2. Note timestamp
 3. Check Apple Calendar
 4. Note when event appears
@@ -483,12 +483,12 @@ This document provides step-by-step manual test procedures to verify that event 
 
 **Event not syncing:**
 1. Check calendar permissions in System Settings
-2. Verify Roots is using correct calendar
+2. Verify Itori is using correct calendar
 3. Try manual refresh in both apps
 4. Check Console.app for errors
 
 **Recurrence pattern incorrect:**
-1. Verify recurrence settings in Roots match intent
+1. Verify recurrence settings in Itori match intent
 2. Check interval value
 3. Confirm day selections
 4. Review end condition

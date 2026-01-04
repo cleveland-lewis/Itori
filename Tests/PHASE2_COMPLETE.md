@@ -124,12 +124,12 @@
 
 All 15 test files ready at:
 ```
-/Users/clevelandlewis/Desktop/Roots/Tests/Unit/RootsTests/
+/Users/clevelandlewis/Desktop/Itori/Tests/Unit/ItoriTests/
 ```
 
 ### Integration Steps
 1. Open Xcode project
-2. Add 15 test files to RootsTests target
+2. Add 15 test files to ItoriTests target
 3. Build (⌘ + B)
 4. Run tests (⌘ + U)
 5. Measure coverage

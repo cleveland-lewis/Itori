@@ -1290,7 +1290,11 @@ final class AppSettingsModel: ObservableObject, Codable {
             print("[AppSettings] Performing one-time migration: clearing old settings format")
             UserDefaults.standard.removeObject(forKey: key)
             UserDefaults.standard.set(true, forKey: migrationKey)
-            return AppSettingsModel()
+            UserDefaults.standard.synchronize() // Force save the migration flag
+            print("[AppSettings] Migration flag saved, creating new instance")
+            let newInstance = AppSettingsModel()
+            print("[AppSettings] New instance created successfully")
+            return newInstance
         }
         
         guard let data = UserDefaults.standard.data(forKey: key) else {

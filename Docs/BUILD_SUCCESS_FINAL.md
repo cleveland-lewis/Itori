@@ -54,10 +54,10 @@ error: type 'EKCalendarType' has no member 'holiday'
 ### Commands
 ```bash
 # macOS
-xcodebuild -scheme Roots -destination 'platform=macOS' build
+xcodebuild -scheme Itori -destination 'platform=macOS' build
 
 # iOS  
-xcodebuild -scheme Roots -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
+xcodebuild -scheme Itori -destination 'platform=iOS Simulator,name=iPhone 17 Pro' build
 
 # Both
 ./build_all.sh

@@ -1,6 +1,6 @@
 //
 //  TaskCheckboxRow.swift
-//  Roots (iOS)
+//  Itori (iOS)
 //
 //  Phase 4.3: Task checkbox row with alarm indicator
 //

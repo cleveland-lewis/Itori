@@ -1,6 +1,6 @@
 //
 //  SemanticColors+macOS.swift
-//  Roots
+//  Itori
 //
 //  Semantic color mappings for HIG compliance
 //  Created: 2026-01-03

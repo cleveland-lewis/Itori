@@ -425,7 +425,7 @@ guard AppSettingsModel.shared.featureAlertsEnabled else { return }
 xcrun simctl push <device> com.yourcompany.roots notification.json
 
 # Deny permissions
-# Settings → Notifications → Roots → Toggle off
+# Settings → Notifications → Itori → Toggle off
 ```
 
 **Physical Device**:
@@ -437,5 +437,5 @@ xcrun simctl push <device> com.yourcompany.roots notification.json
 ## References
 
 - Apple Documentation: [Asking Permission to Use Notifications](https://developer.apple.com/documentation/usernotifications/asking_permission_to_use_notifications)
-- Issue #351: https://github.com/cleveland-lewis/Roots/issues/351
+- Issue #351: https://github.com/cleveland-lewis/Itori/issues/351
 - UNErrorDomain 1: Common error when permissions are denied

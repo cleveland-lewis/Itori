@@ -171,7 +171,7 @@ await Task.sleep(0.5s)
    - Deferred GPA computation
 
 ### iOS
-2. **Platforms/iOS/App/RootsIOSApp.swift**
+2. **Platforms/iOS/App/ItoriIOSApp.swift**
    - Implemented tiered service initialization
    - Tier 1: Core services (immediate)
    - Tier 2: Non-essential services (delayed)
@@ -452,7 +452,7 @@ Impact:
 
 Files: 2 changed
 - SharedCore/State/CoursesStore.swift
-- Platforms/iOS/App/RootsIOSApp.swift
+- Platforms/iOS/App/ItoriIOSApp.swift
 
 Testing: Profile with Instruments Time Profiler
 ```

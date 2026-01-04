@@ -29,7 +29,7 @@ class BaseTestCase: XCTestCase {
         try super.setUpWithError()
         
         // Create isolated test defaults
-        let suiteName = "com.roots.test.\(UUID().uuidString)"
+        let suiteName = "com.itori.test.\(UUID().uuidString)"
         testDefaults = UserDefaults(suiteName: suiteName)
         
         // Set up calendar for consistent date handling

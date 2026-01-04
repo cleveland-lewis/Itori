@@ -159,13 +159,13 @@ final class NotificationManager: ObservableObject {
 
         switch status {
         case .started:
-            content.title = "Roots Refresh Starting"
+            content.title = "Itori Refresh Starting"
             content.body = "Refreshing calendar and scheduling tasks."
         case .completed:
-            content.title = "Roots Refresh Complete"
+            content.title = "Itori Refresh Complete"
             content.body = "Calendar and planner are up to date."
         case .failed(let reason):
-            content.title = "Roots Refresh Failed"
+            content.title = "Itori Refresh Failed"
             content.body = reason
         }
 
@@ -557,7 +557,7 @@ final class NotificationManager: ObservableObject {
         }
         
         content.body = bodyParts.isEmpty ?
-            NSLocalizedString("notification.daily_overview.default", comment: "Open Roots to see today's plan") :
+            NSLocalizedString("notification.daily_overview.default", comment: "Open Itori to see today's plan") :
             bodyParts.joined(separator: " • ")
         content.sound = .default
         
@@ -620,7 +620,7 @@ final class NotificationManager: ObservableObject {
     func sendTestNotification() {
         let content = UNMutableNotificationContent()
         content.title = "Test Notification"
-        content.body = "This is a test notification from Roots (5 seconds)"
+        content.body = "This is a test notification from Itori (5 seconds)"
         content.sound = .default
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)

@@ -5,7 +5,7 @@
 
 set -e
 
-PROJECT_FILE="RootsApp.xcodeproj/project.pbxproj"
+PROJECT_FILE="ItoriApp.xcodeproj/project.pbxproj"
 
 # Colors
 GREEN='\033[0;32m'
@@ -68,7 +68,7 @@ if ! grep -q "Begin PBXContainerItemProxy section" "$TEMP_FILE"; then
 			containerPortal = $PROJECT_UUID /* Project object */;\\
 			proxyType = 1;\\
 			remoteGlobalIDString = $WATCH_TARGET_UUID;\\
-			remoteInfo = RootsWatch;\\
+			remoteInfo = ItoriWatch;\\
 		};\\
 /* End PBXContainerItemProxy section */\\
 \\
@@ -82,7 +82,7 @@ else
 			containerPortal = $PROJECT_UUID /* Project object */;\\
 			proxyType = 1;\\
 			remoteGlobalIDString = $WATCH_TARGET_UUID;\\
-			remoteInfo = RootsWatch;\\
+			remoteInfo = ItoriWatch;\\
 		};
 " "$TEMP_FILE"
     rm -f "$TEMP_FILE.tmp"
@@ -91,7 +91,7 @@ fi
 # 2. Add PBXBuildFile for watch product
 echo -e "${YELLOW}➕ Adding PBXBuildFile for watch app${NC}"
 sed -i.tmp "/Begin PBXBuildFile section/a\\
-		$BUILD_FILE_UUID /* RootsWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = $WATCH_PRODUCT_UUID /* RootsWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		$BUILD_FILE_UUID /* ItoriWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = $WATCH_PRODUCT_UUID /* ItoriWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 " "$TEMP_FILE"
 rm -f "$TEMP_FILE.tmp"
 
@@ -106,7 +106,7 @@ if ! grep -q "Begin PBXCopyFilesBuildPhase section" "$TEMP_FILE"; then
 			dstPath = \"\$(CONTENTS_FOLDER_PATH)/Watch\";\\
 			dstSubfolderSpec = 16;\\
 			files = (\\
-				$BUILD_FILE_UUID /* RootsWatch.app in Embed Watch Content */,\\
+				$BUILD_FILE_UUID /* ItoriWatch.app in Embed Watch Content */,\\
 			);\\
 			name = \"Embed Watch Content\";\\
 			runOnlyForDeploymentPostprocessing = 0;\\
@@ -124,7 +124,7 @@ else
 			dstPath = \"\$(CONTENTS_FOLDER_PATH)/Watch\";\\
 			dstSubfolderSpec = 16;\\
 			files = (\\
-				$BUILD_FILE_UUID /* RootsWatch.app in Embed Watch Content */,\\
+				$BUILD_FILE_UUID /* ItoriWatch.app in Embed Watch Content */,\\
 			);\\
 			name = \"Embed Watch Content\";\\
 			runOnlyForDeploymentPostprocessing = 0;\\
@@ -140,7 +140,7 @@ if ! grep -q "Begin PBXTargetDependency section" "$TEMP_FILE"; then
 /* Begin PBXTargetDependency section */\\
 		$TARGET_DEP_UUID /* PBXTargetDependency */ = {\\
 			isa = PBXTargetDependency;\\
-			target = $WATCH_TARGET_UUID /* RootsWatch */;\\
+			target = $WATCH_TARGET_UUID /* ItoriWatch */;\\
 			targetProxy = $CONTAINER_PROXY_UUID /* PBXContainerItemProxy */;\\
 		};\\
 /* End PBXTargetDependency section */\\
@@ -152,7 +152,7 @@ else
     sed -i.tmp "/Begin PBXTargetDependency section/a\\
 		$TARGET_DEP_UUID /* PBXTargetDependency */ = {\\
 			isa = PBXTargetDependency;\\
-			target = $WATCH_TARGET_UUID /* RootsWatch */;\\
+			target = $WATCH_TARGET_UUID /* ItoriWatch */;\\
 			targetProxy = $CONTAINER_PROXY_UUID /* PBXContainerItemProxy */;\\
 		};
 " "$TEMP_FILE"
@@ -162,15 +162,15 @@ fi
 # 5. Add Copy Files phase to iOS target's buildPhases
 echo -e "${YELLOW}🔧 Adding Embed Watch Content to iOS target buildPhases${NC}"
 # Find the iOS target's buildPhases and add our copy phase
-sed -i.tmp "/$IOS_TARGET_UUID \/\* Roots \*\/ = {/,/buildPhases = (/,/);/{
+sed -i.tmp "/$IOS_TARGET_UUID \/\* Itori \*\/ = {/,/buildPhases = (/,/);/{
     /1AD7D4322EDD328800D403F3 \/\* Resources \*\//a\\
 				$COPY_FILES_UUID /* Embed Watch Content */,
 }" "$TEMP_FILE"
 rm -f "$TEMP_FILE.tmp"
 
 # 6. Add target dependency to iOS target's dependencies
-echo -e "${YELLOW}🔗 Adding RootsWatch dependency to iOS target${NC}"
-sed -i.tmp "/$IOS_TARGET_UUID \/\* Roots \*\/ = {/,/dependencies = (/,/);/{
+echo -e "${YELLOW}🔗 Adding ItoriWatch dependency to iOS target${NC}"
+sed -i.tmp "/$IOS_TARGET_UUID \/\* Itori \*\/ = {/,/dependencies = (/,/);/{
     /dependencies = (/a\\
 				$TARGET_DEP_UUID /* PBXTargetDependency */,
 }" "$TEMP_FILE"
@@ -184,7 +184,7 @@ echo ""
 echo -e "${GREEN}✅ Successfully configured watchOS companion app embedding!${NC}"
 echo ""
 echo "Next steps:"
-echo "  1. Open Xcode: open RootsApp.xcodeproj"
+echo "  1. Open Xcode: open ItoriApp.xcodeproj"
 echo "  2. Clean build folder: Shift+Cmd+K"
 echo "  3. Build iOS app: Cmd+B"
 echo "  4. Run on simulator: Cmd+R"
@@ -192,9 +192,9 @@ echo ""
 echo "The watchOS app will now install automatically with the iOS app."
 echo ""
 echo "To verify:"
-echo "  - Select 'Roots' target → 'Build Phases'"
+echo "  - Select 'Itori' target → 'Build Phases'"
 echo "  - Look for 'Embed Watch Content' phase"
-echo "  - It should contain 'RootsWatch.app'"
+echo "  - It should contain 'ItoriWatch.app'"
 echo ""
 echo "If something goes wrong, restore backup:"
 echo "  cp \"$BACKUP_FILE\" \"$PROJECT_FILE\""

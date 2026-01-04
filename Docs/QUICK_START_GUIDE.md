@@ -22,11 +22,11 @@ Drag these files into your Xcode project:
 
 ### Step 2: Initialize in App (1 min)
 
-Add to `RootsIOSApp.swift` (or your main app file):
+Add to `ItoriIOSApp.swift` (or your main app file):
 
 ```swift
 @main
-struct RootsIOSApp: App {
+struct ItoriIOSApp: App {
     init() {
         // Add this
         Task { @MainActor in

@@ -1,6 +1,6 @@
 //
 //  TaskAlarmScheduling.swift
-//  Roots (iOS)
+//  Itori (iOS)
 //
 //  Phase 4.2: Task alarm scheduling protocol
 //

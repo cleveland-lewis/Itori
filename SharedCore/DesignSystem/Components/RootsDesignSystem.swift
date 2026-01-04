@@ -1,7 +1,7 @@
 import SwiftUI
 
 // Design system tokens for spacing and radii
-// Note: RootsSpacing and RootsRadius are defined in Roots/DesignTokensCompat.swift to avoid redeclaration
+// Note: ItoriSpacing and ItoriRadius are defined in Itori/DesignTokensCompat.swift to avoid redeclaration
 
 // MARK: - Responsive Grid
 

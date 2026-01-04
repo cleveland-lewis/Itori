@@ -24,7 +24,7 @@ public actor AIRateLimiter {
     private var globalRequests: [(portID: String, timestamp: Date)] = []
     private var portRequests: [String: [Date]] = [:] // portID -> timestamps
     
-    private let logger = Logger(subsystem: "com.roots.app", category: "AIRateLimit")
+    private let logger = Logger(subsystem: "com.itori.app", category: "AIRateLimit")
     
     public init(
         globalRequestsPerMinute: Int = 30,

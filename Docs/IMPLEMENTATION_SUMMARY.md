@@ -109,11 +109,11 @@ Add all 4 Swift files to your Xcode project with proper target membership:
 - IOSIntelligentSchedulingSettingsView.swift → iOS target
 
 ### 2. Initialize in App Startup
-Add to `RootsIOSApp.swift` or equivalent:
+Add to `ItoriIOSApp.swift` or equivalent:
 
 ```swift
 @main
-struct RootsIOSApp: App {
+struct ItoriIOSApp: App {
     @StateObject private var schedulingCoordinator = IntelligentSchedulingCoordinator.shared
     
     init() {

@@ -7,7 +7,7 @@
 
 ## Root Cause
 1. **Duplicate Localizable.xcstrings**: There was a `Localizable.xcstrings` file in the project root AND in `SharedCore/DesignSystem/`, both being included in the build
-2. **Duplicate Core Data model reference**: The `Roots.xcdatamodeld` was explicitly added to Resources phase AND automatically included via PBXFileSystemSynchronizedRootGroup
+2. **Duplicate Core Data model reference**: The `Itori.xcdatamodeld` was explicitly added to Resources phase AND automatically included via PBXFileSystemSynchronizedRootGroup
 
 ## Fix Applied
 1. Removed the duplicate root-level `Localizable.xcstrings` file
@@ -51,7 +51,7 @@ All pages are now properly localized in:
 ## Verification
 ```bash
 # Build succeeds
-xcodebuild -project RootsApp.xcodeproj -scheme Roots -destination 'platform=iOS Simulator,name=iPhone 17' build
+xcodebuild -project ItoriApp.xcodeproj -scheme Itori -destination 'platform=iOS Simulator,name=iPhone 17' build
 # Result: BUILD SUCCEEDED
 ```
 

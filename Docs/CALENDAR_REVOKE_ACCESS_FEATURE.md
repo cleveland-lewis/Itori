@@ -50,7 +50,7 @@ Added localization keys:
 "settings.calendar.revoke_access" = "Revoke Calendar Access";
 "settings.calendar.revoke_access.footer" = "Remove calendar access and clear all synced events. You'll need to manually revoke permission in iOS Settings.";
 "settings.calendar.revoke_access.confirm.title" = "Revoke Calendar Access?";
-"settings.calendar.revoke_access.confirm.message" = "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Roots > Calendars.";
+"settings.calendar.revoke_access.confirm.message" = "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Itori > Calendars.";
 "settings.calendar.revoke_access.confirm.button" = "Revoke Access";
 ```
 
@@ -73,7 +73,7 @@ Added localization keys:
 
 - **Platform:** iOS/iPadOS only (uses iOS-specific calendar settings UI)
 - **Shared Code:** DeviceCalendarManager is in SharedCore but revoke method is safe for macOS (macOS uses different settings UI)
-- **Permission System:** iOS doesn't allow apps to programmatically revoke calendar permissions; users must do this manually in Settings > Roots > Calendars
+- **Permission System:** iOS doesn't allow apps to programmatically revoke calendar permissions; users must do this manually in Settings > Itori > Calendars
 - **Data Clearing:** The revoke action clears all in-memory and cached calendar data immediately
 - **Re-authorization:** After revoke, user can tap "Request Access" again to grant permission
 

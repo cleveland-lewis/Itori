@@ -1029,7 +1029,7 @@ autoRescheduleMaxPushCount = 5
 - ⭐ `AutoRescheduleEngine` - Rescheduling logic
 
 ### External Dependencies
-- None (uses only Foundation + existing Roots architecture)
+- None (uses only Foundation + existing Itori architecture)
 
 ---
 
@@ -1149,19 +1149,19 @@ LOG_UI(.error, "AutoReschedule", "Rescheduling failed: \(error)")
 ```markdown
 # Auto-Reschedule
 
-Roots can automatically reschedule tasks you miss, keeping your schedule up-to-date.
+Itori can automatically reschedule tasks you miss, keeping your schedule up-to-date.
 
 ## How It Works
-When you don't complete a task by its scheduled end time, Roots will:
+When you don't complete a task by its scheduled end time, Itori will:
 1. Try to find a free slot later today
 2. Push lower-priority tasks if needed
 3. Move to tomorrow if today is full
 
 ## Settings
 - **Enable Auto-Reschedule**: Turn the feature on/off
-- **Allow Pushing**: Let Roots move lower-priority tasks
+- **Allow Pushing**: Let Itori move lower-priority tasks
 - **Max Tasks to Push**: Limit how many tasks can be moved
-- **Check Interval**: How often Roots checks for missed tasks
+- **Check Interval**: How often Itori checks for missed tasks
 
 ## Visual Indicators
 - 🔄 icon means task was auto-rescheduled
@@ -1257,7 +1257,7 @@ Platforms/iOS/Scenes/Settings/Categories/IOSPlannerSettingsView.swift
 
 ## Conclusion
 
-This implementation plan provides a comprehensive, production-ready approach to auto-rescheduling missed events. The design leverages existing Roots architecture (PlannerEngine, AIScheduler, PlannerStore) while adding two focused new components for detection and rescheduling logic.
+This implementation plan provides a comprehensive, production-ready approach to auto-rescheduling missed events. The design leverages existing Itori architecture (PlannerEngine, AIScheduler, PlannerStore) while adding two focused new components for detection and rescheduling logic.
 
 Key strengths:
 - ✅ **Minimal changes** to existing code

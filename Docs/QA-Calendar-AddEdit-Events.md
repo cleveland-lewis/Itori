@@ -11,8 +11,8 @@ This checklist covers manual testing of the Add Event and Edit Event sheets, inc
 
 ## Prerequisites
 
-- [ ] Roots app installed and running on macOS
-- [ ] Calendar permissions granted to Roots
+- [ ] Itori app installed and running on macOS
+- [ ] Calendar permissions granted to Itori
 - [ ] Apple Calendar app available for round-trip testing
 - [ ] At least one calendar available in the system
 
@@ -22,7 +22,7 @@ This checklist covers manual testing of the Add Event and Edit Event sheets, inc
 
 ### 1.1 Basic Event Creation
 **Steps:**
-1. Open Roots app and navigate to Calendar page
+1. Open Itori app and navigate to Calendar page
 2. Click on any empty date cell in the month view
 3. Click "Add Event" or use quick-add button
 4. Fill in the following fields:
@@ -240,14 +240,14 @@ This checklist covers manual testing of the Add Event and Edit Event sheets, inc
 
 ## Test Suite 6: Apple Calendar Round-Trip
 
-### 6.1 Create in Roots → Verify in Apple Calendar
+### 6.1 Create in Itori → Verify in Apple Calendar
 **Steps:**
-1. Create event in Roots:
-   - Title: "Roots to Apple Test"
+1. Create event in Itori:
+   - Title: "Itori to Apple Test"
    - Category: "Meeting"
    - Date: Tomorrow 3:00 PM - 4:00 PM
    - Location: "Conference Room"
-   - Notes: "Created in Roots app"
+   - Notes: "Created in Itori app"
    - Recurrence: Weekly, every 1 week, for 3 occurrences
    - Alert: 30 minutes before
 2. Save
@@ -256,17 +256,17 @@ This checklist covers manual testing of the Add Event and Edit Event sheets, inc
 
 **Expected Results:**
 - [ ] Event appears in Apple Calendar
-- [ ] Title is "Roots to Apple Test" (no category prefix)
+- [ ] Title is "Itori to Apple Test" (no category prefix)
 - [ ] Time shows 3:00 PM - 4:00 PM
 - [ ] Location shows "Conference Room"
-- [ ] Notes show "Created in Roots app"
+- [ ] Notes show "Created in Itori app"
 - [ ] Recurrence pattern shows "Weekly, every 1 week"
 - [ ] Alert shows "30 minutes before"
 - [ ] Total of 3 occurrences visible
 
-### 6.2 Edit in Apple Calendar → Verify in Roots
+### 6.2 Edit in Apple Calendar → Verify in Itori
 **Steps:**
-1. In Apple Calendar, find the event "Roots to Apple Test"
+1. In Apple Calendar, find the event "Itori to Apple Test"
 2. Double-click to edit
 3. Modify:
    - Title: "Apple Edited Event"
@@ -274,12 +274,12 @@ This checklist covers manual testing of the Add Event and Edit Event sheets, inc
    - Location: "Board Room"
    - Add second alert: 1 hour before
 4. Save in Apple Calendar
-5. Return to Roots app
+5. Return to Itori app
 6. Refresh calendar view (or wait for auto-sync)
 7. Find and open the event
 
 **Expected Results:**
-- [ ] Roots shows updated title "Apple Edited Event"
+- [ ] Itori shows updated title "Apple Edited Event"
 - [ ] Time shows 4:00 PM - 5:00 PM
 - [ ] Location shows "Board Room"
 - [ ] Original notes preserved
@@ -287,7 +287,7 @@ This checklist covers manual testing of the Add Event and Edit Event sheets, inc
 - [ ] Recurrence pattern unchanged
 - [ ] Category preserved (if stored separately)
 
-### 6.3 Create in Apple Calendar → Verify in Roots
+### 6.3 Create in Apple Calendar → Verify in Itori
 **Steps:**
 1. In Apple Calendar, create new event:
    - Title: "Apple Native Event"
@@ -295,11 +295,11 @@ This checklist covers manual testing of the Add Event and Edit Event sheets, inc
    - Location: "Home Office"
    - Recurrence: Daily, for 5 occurrences
 2. Save
-3. Switch to Roots app
+3. Switch to Itori app
 4. Navigate to next week's date
 
 **Expected Results:**
-- [ ] Event appears in Roots calendar
+- [ ] Event appears in Itori calendar
 - [ ] Title shows "Apple Native Event"
 - [ ] Time shows 10:00 AM - 11:00 AM
 - [ ] Location shows "Home Office"
@@ -307,9 +307,9 @@ This checklist covers manual testing of the Add Event and Edit Event sheets, inc
 - [ ] All 5 occurrences visible
 - [ ] Category auto-detected as "Other" or parsed from title
 
-### 6.4 Delete in Roots → Verify in Apple Calendar
+### 6.4 Delete in Itori → Verify in Apple Calendar
 **Steps:**
-1. In Roots, find a recurring event
+1. In Itori, find a recurring event
 2. Click to open event details
 3. Click "Delete"
 4. Select "All events" (delete entire series)
@@ -321,14 +321,14 @@ This checklist covers manual testing of the Add Event and Edit Event sheets, inc
 - [ ] No orphaned occurrences remain
 - [ ] Deletion syncs within reasonable time (~1-2 min)
 
-### 6.5 Delete in Apple Calendar → Verify in Roots
+### 6.5 Delete in Apple Calendar → Verify in Itori
 **Steps:**
 1. In Apple Calendar, delete an event
-2. Return to Roots
+2. Return to Itori
 3. Refresh calendar view
 
 **Expected Results:**
-- [ ] Event removed from Roots calendar
+- [ ] Event removed from Itori calendar
 - [ ] Left sidebar no longer shows the event
 - [ ] Month view cell no longer displays the event
 - [ ] Deletion syncs within reasonable time
@@ -486,8 +486,8 @@ Run this subset after any changes to event management code:
 - [ ] All-day toggle → works both ways
 - [ ] Weekly recurrence with weekdays → correct days only
 - [ ] One alert → notification fires
-- [ ] Create in Roots → appears in Apple Calendar
-- [ ] Edit in Apple Calendar → updates in Roots
+- [ ] Create in Itori → appears in Apple Calendar
+- [ ] Edit in Apple Calendar → updates in Itori
 - [ ] Delete in either app → syncs correctly
 
 ---

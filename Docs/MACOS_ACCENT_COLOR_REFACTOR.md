@@ -63,7 +63,7 @@ extension View {
 
 ## Global Application Pattern
 
-The app already applies accent color globally in `RootsApp.swift`:
+The app already applies accent color globally in `ItoriApp.swift`:
 
 ```swift
 ContentView()
@@ -248,7 +248,7 @@ Picker("Mode", selection: $mode) { }
 ```swift
 Picker("Mode", selection: $mode) { }
     .pickerStyle(.segmented)
-    // Inherits from global .tint() in RootsApp
+    // Inherits from global .tint() in ItoriApp
 ```
 
 ## Comprehensive Checklist

@@ -1,7 +1,7 @@
 # Multiwindow Detail
 
 ## Overview
-- Roots registers four dedicated `WindowGroup` scenes (`assignmentDetail`, `courseDetail`, `plannerDay`, `timerSession`) that share the same stores as the main app window.
+- Itori registers four dedicated `WindowGroup` scenes (`assignmentDetail`, `courseDetail`, `plannerDay`, `timerSession`) that share the same stores as the main app window.
 - Each scene has its own `SceneStorage` key (e.g., `roots.scene.assignmentDetail.assignmentId`) so the selected entity stays pinned to a given window.
 
 ## Purpose

@@ -69,7 +69,7 @@ private func setupPeriodicSync() {
 
 #### Lifecycle Sync
 ```swift
-// In RootsWatchApp
+// In ItoriWatchApp
 @Environment(\.scenePhase) private var scenePhase
 
 .onChange(of: scenePhase) { oldPhase, newPhase in
@@ -362,7 +362,7 @@ private let syncInterval: TimeInterval = 30.0  // was 15
   - Added deinit cleanup
   - Made requestFullSync() public
 
-- ✅ `Platforms/watchOS/App/RootsWatchApp.swift`
+- ✅ `Platforms/watchOS/App/ItoriWatchApp.swift`
   - Added scenePhase monitoring
   - Syncs on app foreground
 
