@@ -450,8 +450,8 @@ public final class AIEngine: Sendable {
                 "port": P.id.rawValue,
                 "duration": String(format: "%.3fs", executionDuration),
                 "outputSize": "\(outJSON.count) bytes",
-                "modelUsed": diag.modelUsed ?? "unknown",
-                "tokensUsed": diag.tokensUsed.map { "\($0)" } ?? "unknown",
+                "latency": diag.latencyMs.map { "\($0)ms" } ?? "unknown",
+                "reasonCodes": diag.reasonCodes.joined(separator: ", "),
                 "success": "true"
             ])
             

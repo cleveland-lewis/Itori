@@ -1,5 +1,8 @@
 import Foundation
 import Combine
+#if canImport(UserNotifications)
+import UserNotifications
+#endif
 
 // MARK: - Grade Trend Models
 
@@ -221,7 +224,8 @@ final class GradeMonitoringService: ObservableObject {
         gradeChange: Double
     ) -> StudyTimeRecommendation? {
         
-        guard let course = coursesStore.courses.first(where: { $0.id == courseId }) else {
+        guard let coursesStore = coursesStore,
+              let course = coursesStore.courses.first(where: { $0.id == courseId }) else {
             return nil
         }
         
@@ -243,7 +247,7 @@ final class GradeMonitoringService: ObservableObject {
         return StudyTimeRecommendation(
             id: UUID(),
             courseId: courseId,
-            courseName: course.courseCode ?? course.name,
+            courseName: course.code,
             currentWeeklyHours: currentHours,
             suggestedWeeklyHours: suggestedHours,
             additionalHours: additionalHours,
@@ -256,6 +260,7 @@ final class GradeMonitoringService: ObservableObject {
     // MARK: - Notifications
     
     private func sendStudyTimeNotification(recommendation: StudyTimeRecommendation) async {
+        #if canImport(UserNotifications)
         let content = UNMutableNotificationContent()
         content.title = "📚 Study Time Recommendation"
         content.body = """
@@ -279,6 +284,7 @@ final class GradeMonitoringService: ObservableObject {
         } catch {
             LOG_NOTIFICATIONS(.error, "GradeMonitoring", "Failed to send notification: \(error)")
         }
+        #endif
     }
     
     // MARK: - Grade Observer

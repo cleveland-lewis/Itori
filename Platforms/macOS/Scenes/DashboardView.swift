@@ -1528,8 +1528,10 @@ struct DashboardView: View {
         }
     }
 
-    private enum EnergyLevel {
-        case high, medium, low
+    private enum EnergyLevel: String {
+        case high = "High"
+        case medium = "Medium"
+        case low = "Low"
     }
 }
 

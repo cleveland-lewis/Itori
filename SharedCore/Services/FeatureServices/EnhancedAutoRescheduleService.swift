@@ -412,6 +412,11 @@ final class EnhancedAutoRescheduleService: ObservableObject {
     @Published private(set) var rescheduleNotifications: [RescheduleNotification] = []
     @Published private(set) var lastCheckTime: Date?
     
+    // Stub properties
+    var checkInterval: TimeInterval = 300 // 5 minutes
+    var workHoursStart: Int = 8
+    var workHoursEnd: Int = 22
+    
     struct RescheduleNotification: Identifiable, Codable {
         let id: UUID
         let assignmentId: UUID
@@ -427,6 +432,22 @@ final class EnhancedAutoRescheduleService: ObservableObject {
     }
     
     private init() {}
+    
+    func startAutoCheck() {
+        // Disabled - needs API update
+    }
+    
+    func stopAutoCheck() {
+        // Disabled - needs API update
+    }
+    
+    func checkAndRescheduleOverdueTasks() async {
+        // Disabled - needs API update
+    }
+    
+    func clearNotification(id: UUID) {
+        // Disabled - needs API update
+    }
     
     func checkForRescheduling(assignmentsStore: AssignmentsStore, coursesStore: CoursesStore?) async {
         // Disabled - needs API update

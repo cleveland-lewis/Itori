@@ -427,3 +427,14 @@ func LOG_AI(_ severity: LogSeverity = .info,
            line: UInt = #line) {
     Diagnostics.shared.log(severity, subsystem: .ai, category: category, message: message(), metadata: metadata, file: file, function: function, line: line)
 }
+
+func LOG_DEV(_ severity: LogSeverity = .debug,
+            _ category: String,
+            _ message: @autoclosure () -> String,
+            metadata: [String: String]? = nil,
+            file: StaticString = #fileID,
+            function: StaticString = #function,
+            line: UInt = #line) {
+    // LOG_DEV logs when developer mode is enabled - uses AI subsystem for now
+    Diagnostics.shared.log(severity, subsystem: .ai, category: category, message: message(), metadata: metadata, file: file, function: function, line: line)
+}

@@ -216,10 +216,6 @@ final class CoursesStore: ObservableObject {
         recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
 
-    func courses(in semester: Semester) -> [Course] {
-        courses.filter { $0.semesterId == semester.id }
-    }
-
     /// All courses across active semesters (respecting activeSemesterIds)
     var activeCourses: [Course] {
         if activeSemesterIds.isEmpty {
@@ -406,8 +402,8 @@ final class CoursesStore: ObservableObject {
         )
         do {
             let data = try JSONEncoder().encode(snapshot)
-            try data.write(to: storageURL, options: [.atomic, .completeFileProtection])
-            try data.write(to: cacheURL, options: [.atomic, .completeFileProtection])
+            try data.write(to: storageURL, options: [Data.WritingOptions.atomic, Data.WritingOptions.completeFileProtection])
+            try data.write(to: cacheURL, options: [Data.WritingOptions.atomic, Data.WritingOptions.completeFileProtection])
             LOG_PERSISTENCE(.debug, "CoursesSave", "Persisted courses data", metadata: ["semesters": "\(semesters.count)", "courses": "\(courses.count)", "activeSemesters": "\(activeSemesterIds.count)", "size": "\(data.count)"])
             
             // Queue for iCloud sync if online and enabled
@@ -878,7 +874,8 @@ extension CoursesStore {
                 courses: self.courses,
                 outlineNodes: self.outlineNodes,
                 courseFiles: self.courseFiles,
-                currentSemesterId: self.currentSemesterId
+                currentSemesterId: self.currentSemesterId,
+                activeSemesterIds: self.activeSemesterIds
             )
             do {
                 let data = try JSONEncoder().encode(snapshot)
