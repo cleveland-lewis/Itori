@@ -43,7 +43,7 @@ def batch_translate_remaining(file_path):
             continue
         
         # Skip brand names and technical terms
-        skip_keywords = ['Roots', 'Ollama', 'OpenAI', 'ChatGPT', 'API', 'LLM', 'JSON', 'HTTP']
+        skip_keywords = ['Itori', 'Ollama', 'OpenAI', 'ChatGPT', 'API', 'LLM', 'JSON', 'HTTP']
         if any(keyword in source_text for keyword in skip_keywords) and len(source_text) < 30:
             # Keep technical terms but mark translated
             fa_entry['stringUnit']['value'] = source_text

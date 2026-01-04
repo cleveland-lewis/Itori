@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# pre-commit hook for Roots
+# pre-commit hook for Itori
 # Ensures tests pass before committing
 #
 # Install: cp Scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
@@ -83,7 +83,7 @@ fi
 echo "🧪 Running unit tests..."
 
 if xcodebuild test \
-    -scheme Roots \
+    -scheme Itori \
     -destination 'platform=macOS' \
     -only-testing:ItoriTests \
     -quiet 2>&1 | tee /tmp/test_output.log | grep -E "Test Suite|FAILED|PASSED"; then

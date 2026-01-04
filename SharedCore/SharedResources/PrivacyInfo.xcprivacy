@@ -12,6 +12,6 @@
     <array/>
 
     <key>NSPrivacyPolicyText</key>
-    <string>Roots stores user data locally on-device and does not send data to third-party servers; cloud sync (if enabled) uses the user\'s iCloud account.</string>
+    <string>Itori stores user data locally on-device and does not send data to third-party servers; cloud sync (if enabled) uses the user\'s iCloud account.</string>
 </dict>
 </plist>

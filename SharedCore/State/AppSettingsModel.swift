@@ -1283,20 +1283,6 @@ final class AppSettingsModel: ObservableObject, Codable {
         print("[AppSettings] Starting load...")
         let key = "roots.settings.appsettings"
         
-        // TEMPORARY: Clear any saved settings to avoid decode crash after recent changes
-        // Remove this after a few releases
-        let migrationKey = "roots.settings.migrated.v2026.01"
-        if !UserDefaults.standard.bool(forKey: migrationKey) {
-            print("[AppSettings] Performing one-time migration: clearing old settings format")
-            UserDefaults.standard.removeObject(forKey: key)
-            UserDefaults.standard.set(true, forKey: migrationKey)
-            UserDefaults.standard.synchronize() // Force save the migration flag
-            print("[AppSettings] Migration flag saved, creating new instance")
-            let newInstance = AppSettingsModel()
-            print("[AppSettings] New instance created successfully")
-            return newInstance
-        }
-        
         guard let data = UserDefaults.standard.data(forKey: key) else {
             print("[AppSettings] No saved data found, creating new instance")
             return AppSettingsModel()
@@ -1530,7 +1516,15 @@ final class AppSettingsModel: ObservableObject, Codable {
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        accentColorRaw = try container.decodeIfPresent(String.self, forKey: .accentColorRaw) ?? AppAccentColor.multicolor.rawValue
+        
+        // Wrap all decoding in a do-catch to prevent crashes from incompatible data
+        do {
+            accentColorRaw = try container.decodeIfPresent(String.self, forKey: .accentColorRaw) ?? AppAccentColor.multicolor.rawValue
+        } catch {
+            print("[AppSettings] Failed to decode accentColorRaw, using default")
+            accentColorRaw = AppAccentColor.multicolor.rawValue
+        }
+        
         customAccentEnabledStorage = try container.decodeIfPresent(Bool.self, forKey: .customAccentEnabledStorage) ?? false
         customAccentRed = try container.decodeIfPresent(Double.self, forKey: .customAccentRed) ?? 0
         customAccentGreen = try container.decodeIfPresent(Double.self, forKey: .customAccentGreen) ?? 122 / 255

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<model name="Roots" userDefinedModelVersionIdentifier="v1" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24553" systemVersion="24F74" minimumToolsVersion="Xcode 13.0" sourceLanguage="Swift">
+<model name="Itori" userDefinedModelVersionIdentifier="v1" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24553" systemVersion="24F74" minimumToolsVersion="Xcode 13.0" sourceLanguage="Swift">
     <entity name="Semester" representedClassName="SemesterMO" syncable="YES" codeGenerationType="class">
         <attribute name="academicYear" optional="YES" attributeType="String"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>

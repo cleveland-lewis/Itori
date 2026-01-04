@@ -68,7 +68,7 @@ def translate_finnish(file_path, max_translations=1500):
             continue
         
         # Skip English-only strings (brand names, technical terms)
-        if key.startswith('app.name') or 'Roots' in source_text:
+        if key.startswith('app.name') or 'Itori' in source_text:
             fi_entry['stringUnit']['value'] = source_text
             fi_entry['stringUnit']['state'] = 'translated'
             skipped_count += 1

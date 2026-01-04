@@ -68,7 +68,7 @@ def translate_farsi(file_path, max_translations=1500):
             continue
         
         # Skip English-only strings (brand names, technical terms)
-        if key.startswith('app.name') or 'Roots' in source_text:
+        if key.startswith('app.name') or 'Itori' in source_text:
             fa_entry['stringUnit']['value'] = source_text
             fa_entry['stringUnit']['state'] = 'translated'
             skipped_count += 1
