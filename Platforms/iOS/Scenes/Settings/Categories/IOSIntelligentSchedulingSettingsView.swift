@@ -483,4 +483,5 @@ struct RescheduleNotificationRow: View {
         IOSIntelligentSchedulingSettingsView()
     }
 }
+
 #endif
