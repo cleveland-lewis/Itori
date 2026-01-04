@@ -283,6 +283,7 @@ struct IOSPlannerView: View {
         case .reading: return .reading
         case .review: return .review
         case .project: return .project
+        case .study: return .review
         }
     }
 
@@ -1337,12 +1338,13 @@ struct IOSTaskDetailView: View {
         case .reading: return "Reading"
         case .review: return "Review"
         case .project: return "Project"
+        case .study: return "Study"
         }
     }
     
     private func timeEstimateLabel(_ type: TaskType) -> String {
         switch type {
-        case .exam, .quiz:
+        case .exam, .quiz, .study:
             return "Estimated Study Time"
         case .homework, .reading, .project, .review:
             return "Estimated Work Time"
@@ -2008,7 +2010,7 @@ struct IOSTaskEditorView: View {
     
     private func timeEstimateLabel(_ type: TaskType) -> String {
         switch type {
-        case .exam, .quiz:
+        case .exam, .quiz, .study:
             return "Estimated Study Time"
         case .homework, .reading, .project, .review:
             return "Estimated Work Time"

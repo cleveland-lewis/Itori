@@ -343,6 +343,7 @@ struct IOSAssignmentPlansView: View {
         case .reading: assignmentCategory = .reading
         case .review: assignmentCategory = .review
         case .project: assignmentCategory = .project
+        case .study: assignmentCategory = .review
         }
         
         return Assignment(

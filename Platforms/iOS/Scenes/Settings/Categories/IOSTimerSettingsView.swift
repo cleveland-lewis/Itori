@@ -182,7 +182,7 @@ struct AlarmKitSettingsRow: View {
                     
                     Text(NSLocalizedString("settings.timer.alarmkit.requires", comment: "Requires iOS 26.0 or later"))
                         .font(.caption)
-                        .foregroundColor(.tertiary)
+                        .foregroundColor(Color(.tertiaryLabel))
                 }
             }
         }

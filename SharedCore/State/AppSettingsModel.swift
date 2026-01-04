@@ -1114,27 +1114,27 @@ final class AppSettingsModel: ObservableObject, Codable {
             if enableICloudSync {
                 let cloudValue = NSUbiquitousKeyValueStore.default.object(forKey: "roots.settings.energySelectionConfirmed") as? Bool
                 if let cloudValue = cloudValue {
-                    LOG_DEV(OSLogType.debug, "EnergySync", "Reading energySelectionConfirmed from iCloud", metadata: ["cloudValue": "\(cloudValue)", "localValue": "\(energySelectionConfirmedStorage)"])
+                    LOG_DEV(LogSeverity.debug, "EnergySync", "Reading energySelectionConfirmed from iCloud", metadata: ["cloudValue": "\(cloudValue)", "localValue": "\(energySelectionConfirmedStorage)"])
                     // Update local if different
                     if cloudValue != energySelectionConfirmedStorage {
-                        LOG_DEV(OSLogType.info, "EnergySync", "Syncing energySelectionConfirmed to local", metadata: ["from": "\(energySelectionConfirmedStorage)", "to": "\(cloudValue)"])
+                        LOG_DEV(LogSeverity.info, "EnergySync", "Syncing energySelectionConfirmed to local", metadata: ["from": "\(energySelectionConfirmedStorage)", "to": "\(cloudValue)"])
                         energySelectionConfirmedStorage = cloudValue
                     }
                     return cloudValue
                 }
-                LOG_DEV(OSLogType.debug, "EnergySync", "No iCloud energySelectionConfirmed, using local", metadata: ["localValue": "\(energySelectionConfirmedStorage)"])
+                LOG_DEV(LogSeverity.debug, "EnergySync", "No iCloud energySelectionConfirmed, using local", metadata: ["localValue": "\(energySelectionConfirmedStorage)"])
             }
             return energySelectionConfirmedStorage 
         }
         set { 
-            LOG_DEV(OSLogType.info, "EnergySync", "Setting energySelectionConfirmed", metadata: ["oldValue": "\(energySelectionConfirmedStorage)", "newValue": "\(newValue)", "iCloudEnabled": "\(enableICloudSync)"])
+            LOG_DEV(LogSeverity.info, "EnergySync", "Setting energySelectionConfirmed", metadata: ["oldValue": "\(energySelectionConfirmedStorage)", "newValue": "\(newValue)", "iCloudEnabled": "\(enableICloudSync)"])
             energySelectionConfirmedStorage = newValue
             // Sync to iCloud if enabled
             if enableICloudSync {
-                LOG_DEV(OSLogType.debug, "EnergySync", "Writing energySelectionConfirmed to iCloud", metadata: ["value": "\(newValue)"])
+                LOG_DEV(LogSeverity.debug, "EnergySync", "Writing energySelectionConfirmed to iCloud", metadata: ["value": "\(newValue)"])
                 NSUbiquitousKeyValueStore.default.set(newValue, forKey: "roots.settings.energySelectionConfirmed")
                 let syncResult = NSUbiquitousKeyValueStore.default.synchronize()
-                LOG_DEV(OSLogType.debug, "EnergySync", "iCloud synchronize() called", metadata: ["success": "\(syncResult)"])
+                LOG_DEV(LogSeverity.debug, "EnergySync", "iCloud synchronize() called", metadata: ["success": "\(syncResult)"])
             }
         }
     }
@@ -1324,7 +1324,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         ) { [weak self] notification in
             guard let self = self else { return }
             
-            LOG_DEV(OSLogType.info, "EnergySync", "🔔 Received iCloud change notification", metadata: ["timestamp": "\(Date())"])
+            LOG_DEV(LogSeverity.info, "EnergySync", "🔔 Received iCloud change notification", metadata: ["timestamp": "\(Date())"])
             
             // Get change reason
             if let reason = notification.userInfo?[NSUbiquitousKeyValueStoreChangeReasonKey] as? Int {
@@ -1341,12 +1341,12 @@ final class AppSettingsModel: ObservableObject, Codable {
                 default:
                     reasonString = "Unknown (\(reason))"
                 }
-                LOG_DEV(.debug, "EnergySync", "Change reason: \(reasonString)")
+                LOG_DEV(.debug as DeveloperLogLevel, "EnergySync", "Change reason: \(reasonString)")
             }
             
             // Get changed keys
             if let changedKeys = notification.userInfo?[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String] {
-                LOG_DEV(.info, "EnergySync", "Changed keys from iCloud", metadata: ["keys": changedKeys.joined(separator: ", ")])
+                LOG_DEV(.info as DeveloperLogLevel, "EnergySync", "Changed keys from iCloud", metadata: ["keys": changedKeys.joined(separator: ", ")])
                 
                 for key in changedKeys {
                     switch key {
@@ -1354,7 +1354,7 @@ final class AppSettingsModel: ObservableObject, Codable {
                         if let cloudValue = NSUbiquitousKeyValueStore.default.string(forKey: key) {
                             let oldValue = self.defaultEnergyLevelStorage
                             if cloudValue != oldValue {
-                                LOG_DEV(.info, "EnergySync", "⚡️ Energy level changed from another device", metadata: [
+                                LOG_DEV(.info as DeveloperLogLevel, "EnergySync", "⚡️ Energy level changed from another device", metadata: [
                                     "oldValue": oldValue,
                                     "newValue": cloudValue,
                                     "willTriggerRecompute": "true"
@@ -1363,39 +1363,39 @@ final class AppSettingsModel: ObservableObject, Codable {
                                 self.objectWillChange.send()
                                 
                                 // Log that planner should recompute
-                                LOG_DEV(.info, "EnergySync", "Triggering planner recompute due to energy change")
+                                LOG_DEV(.info as DeveloperLogLevel, "EnergySync", "Triggering planner recompute due to energy change")
                             } else {
-                                LOG_DEV(.debug, "EnergySync", "Energy level unchanged", metadata: ["value": cloudValue])
+                                LOG_DEV(.debug as DeveloperLogLevel, "EnergySync", "Energy level unchanged", metadata: ["value": cloudValue])
                             }
                         } else {
-                            LOG_DEV(.warn, "EnergySync", "Energy level key changed but no value in iCloud")
+                            LOG_DEV(.warning as DeveloperLogLevel, "EnergySync", "Energy level key changed but no value in iCloud")
                         }
                         
                     case "roots.settings.energySelectionConfirmed":
                         let cloudValue = NSUbiquitousKeyValueStore.default.bool(forKey: key)
                         let oldValue = self.energySelectionConfirmedStorage
                         if cloudValue != oldValue {
-                            LOG_DEV(.info, "EnergySync", "Energy selection confirmed changed from another device", metadata: [
+                            LOG_DEV(.info as DeveloperLogLevel, "EnergySync", "Energy selection confirmed changed from another device", metadata: [
                                 "oldValue": "\(oldValue)",
                                 "newValue": "\(cloudValue)"
                             ])
                             self.energySelectionConfirmedStorage = cloudValue
                             self.objectWillChange.send()
                         } else {
-                            LOG_DEV(.debug, "EnergySync", "Energy selection confirmed unchanged", metadata: ["value": "\(cloudValue)"])
+                            LOG_DEV(.debug as DeveloperLogLevel, "EnergySync", "Energy selection confirmed unchanged", metadata: ["value": "\(cloudValue)"])
                         }
                         
                     default:
-                        LOG_DEV(.debug, "EnergySync", "Ignoring non-energy key change", metadata: ["key": key])
+                        LOG_DEV(.debug as DeveloperLogLevel, "EnergySync", "Ignoring non-energy key change", metadata: ["key": key])
                         break
                     }
                 }
             } else {
-                LOG_DEV(.warn, "EnergySync", "No changed keys in notification userInfo")
+                LOG_DEV(.warning as DeveloperLogLevel, "EnergySync", "No changed keys in notification userInfo")
             }
         }
         
-        LOG_DEV(.debug, "EnergySync", "iCloud observer registered successfully")
+        LOG_DEV(.debug as DeveloperLogLevel, "EnergySync", "iCloud observer registered successfully")
     }
 
     func encode(to encoder: Encoder) throws {

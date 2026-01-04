@@ -147,7 +147,7 @@ extension Notification.Name {
     public static let nextDay = Notification.Name("app.keyboard.nextDay")
     public static let previousWeek = Notification.Name("app.keyboard.previousWeek")
     public static let nextWeek = Notification.Name("app.keyboard.nextWeek")
-    public static let goToToday = Notification.Name("app.keyboard.goToToday")
+    // goToToday is defined in Notification+Names.swift for cross-platform use
     public static let focusSearch = Notification.Name("app.keyboard.focusSearch")
     
     #if DEBUG

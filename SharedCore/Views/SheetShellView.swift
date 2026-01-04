@@ -283,13 +283,13 @@ class PrewarmCoordinator {
     ) async {
         // Compute expensive derived data
         let activeCourses = coursesStore.activeCourses
-        let upcomingTasks = assignmentsStore.upcomingTasks
+        // let upcomingTasks = assignmentsStore.upcomingAssignments
         
         // Cache counts for dashboard
-        let _ = upcomingTasks.count
+        // let _ = upcomingTasks.count
         let _ = activeCourses.count
         
-        LOG_UI(.debug, "Prewarm", "View state prewarmed: \(activeCourses.count) courses, \(upcomingTasks.count) tasks")
+        LOG_UI(.debug, "Prewarm", "View state prewarmed: \(activeCourses.count) courses")
     }
 }
 

@@ -1,4 +1,7 @@
 import Foundation
+import OSLog
+
+fileprivate let aiLogger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "AIEngine", category: "AIEngine")
 
 public final class AIEngine: Sendable {
     public static let shared = AIEngine()
@@ -42,7 +45,7 @@ public final class AIEngine: Sendable {
     public func request<P: AIPort>(
         _ portType: P.Type,
         input: P.Input,
-        context: AIRequestContext = .init()
+        context: AIRequestContext = AIRequestContext()
     ) async throws -> AIResult<P.Output> {
         // Enforce integration pattern
         guard AIIntegrationEnforcement.validateCaller() else {
@@ -92,11 +95,7 @@ public final class AIEngine: Sendable {
         // If enableLLMAssistance is OFF, skip all provider logic and use fallback only
         if !AppSettingsModel.shared.enableLLMAssistance {
             // Developer Mode: Log LLM suppression
-            LOG_DEV(.info, "LLM", "🚫 LLM assistance disabled - using fallback only", metadata: [
-                "port": P.id.rawValue,
-                "trigger": context.requestID.uuidString,
-                "reason": "user_setting_disabled"
-            ])
+            aiLogger.info("LLM | 🚫 LLM assistance disabled - using fallback only | port=\(P.id.rawValue) trigger=\(context.requestID.uuidString) reason=user_setting_disabled")
             
             let inputHash = try Self.computeInputHash(
                 for: input,
@@ -120,10 +119,7 @@ public final class AIEngine: Sendable {
 
             // Execute fallback-only path (no provider selection, no network)
             guard P.supportsDeterministicFallback && fallback.canFallback(for: P.id) else {
-                LOG_DEV(.error, "LLM", "❌ No fallback available for port", metadata: [
-                    "port": P.id.rawValue,
-                    "supportsFallback": "\(P.supportsDeterministicFallback)"
-                ])
+                aiLogger.error("LLM | ❌ No fallback available for port | port=\(P.id.rawValue) supportsFallback=\(String(describing: P.supportsDeterministicFallback))")
                 throw AIEngineError.policyDenied(reason: "llm_disabled_no_fallback:\(P.id.rawValue)")
             }
 
@@ -133,10 +129,7 @@ public final class AIEngine: Sendable {
             var result = try await fallback.executeFallback(P.self, input: input, context: context)
             let fallbackDuration = Date().timeIntervalSince(fallbackStart)
             
-            LOG_DEV(.debug, "LLM", "Fallback completed (LLM disabled)", metadata: [
-                "port": P.id.rawValue,
-                "duration": String(format: "%.3fs", fallbackDuration)
-            ])
+            aiLogger.debug("LLM | Fallback completed (LLM disabled) | port=\(P.id.rawValue) duration=\(String(format: "%.3fs", fallbackDuration))")
             
             result = result.withMetadata(
                 AIResultMetadata(
@@ -192,7 +185,7 @@ public final class AIEngine: Sendable {
                 input: input,
                 context: context,
                 inputHash: inputHash,
-                &usedFallback
+                usedFallback: &usedFallback
             )
 
         case .providerFirst:
@@ -204,7 +197,7 @@ public final class AIEngine: Sendable {
                     inputHash: inputHash,
                     privacyRedacted: privacyRedacted,
                     redactionDelta: &redactionDelta,
-                    &validationFailed
+                    validationFailed: &validationFailed
                 )
             } catch {
                 if P.supportsDeterministicFallback && fallback.canFallback(for: P.id) {
@@ -298,27 +291,19 @@ public final class AIEngine: Sendable {
         input: P.Input,
         context: AIRequestContext,
         inputHash: String,
-        _ usedFallback: inout Bool
+        usedFallback: inout Bool
     ) async throws -> AIResult<P.Output> {
         // Use fallback immediately
         usedFallback = true
         
         // Developer Mode: Log fallback execution
-        LOG_DEV(.info, "LLM", "🔄 Using deterministic fallback (no LLM)", metadata: [
-            "port": P.id.rawValue,
-            "reason": "fallback-first strategy",
-            "trigger": context.requestID.uuidString
-        ])
+        aiLogger.info("LLM | 🔄 Using deterministic fallback (no LLM) | port=\(P.id.rawValue) reason=fallback-first strategy trigger=\(context.requestID.uuidString)")
         
         let fallbackStart = Date()
         let result = try await fallback.executeFallback(P.self, input: input, context: context)
         let fallbackDuration = Date().timeIntervalSince(fallbackStart)
         
-        LOG_DEV(.debug, "LLM", "Fallback completed", metadata: [
-            "port": P.id.rawValue,
-            "duration": String(format: "%.3fs", fallbackDuration),
-            "deterministic": "true"
-        ])
+        aiLogger.debug("LLM | Fallback completed | port=\(P.id.rawValue) duration=\(String(format: "%.3fs", fallbackDuration)) deterministic=true")
         
         // Optionally enhance with provider in background (not implemented yet)
         // This would update future defaults without blocking current response
@@ -346,7 +331,7 @@ public final class AIEngine: Sendable {
         inputHash: String,
         privacyRedacted: Data,
         redactionDelta: inout Double,
-        _ validationFailed: inout Bool
+        validationFailed: inout Bool
     ) async throws -> AIResult<P.Output> {
         let preference = P.preferredProviders
         let orderedProviders = providers.sorted {
@@ -399,7 +384,7 @@ public final class AIEngine: Sendable {
             // CANARY: Runtime invariant check (DEBUG-only)
             // This should NEVER fire if _executeWithGuards properly enforces the kill-switch
             if !AppSettingsModel.shared.enableLLMAssistance {
-                let counters = await AIEngine.healthMonitor.getLLMCounters()
+                let counters = AIEngine.healthMonitor.getLLMCounters()
                 assertionFailure("""
                     ═══════════════════════════════════════════════════════════════
                     CRITICAL INVARIANT VIOLATION DETECTED
@@ -429,14 +414,7 @@ public final class AIEngine: Sendable {
             #endif
             
             // Developer Mode: Log LLM execution start
-            LOG_DEV(.info, "LLM", "🤖 Starting LLM request", metadata: [
-                "provider": provider.id.rawValue,
-                "port": P.id.rawValue,
-                "trigger": context.requestID.uuidString,
-                "privacy": "\(context.privacy)",
-                "inputSize": "\(finalInput.count) bytes",
-                "timestamp": "\(Date())"
-            ])
+            aiLogger.info("LLM | 🤖 Starting LLM request | provider=\(provider.id.rawValue) port=\(P.id.rawValue) trigger=\(context.requestID.uuidString) privacy=\(String(describing: context.privacy)) inputSize=\(finalInput.count) bytes timestamp=\(String(describing: Date()))")
             
             (outJSON, diag) = try await budget.execute {
                 try await provider.execute(port: P.id, inputJSON: finalInput, context: context)
@@ -445,35 +423,18 @@ public final class AIEngine: Sendable {
             let executionDuration = Date().timeIntervalSince(start)
             
             // Developer Mode: Log LLM execution completion  
-            LOG_DEV(.info, "LLM", "✅ LLM request completed", metadata: [
-                "provider": provider.id.rawValue,
-                "port": P.id.rawValue,
-                "duration": String(format: "%.3fs", executionDuration),
-                "outputSize": "\(outJSON.count) bytes",
-                "latency": diag.latencyMs.map { "\($0)ms" } ?? "unknown",
-                "reasonCodes": diag.reasonCodes.joined(separator: ", "),
-                "success": "true"
-            ])
+            aiLogger.info("LLM | ✅ LLM request completed | provider=\(provider.id.rawValue) port=\(P.id.rawValue) duration=\(String(format: "%.3fs", executionDuration)) outputSize=\(outJSON.count) bytes latency=\(diag.latencyMs.map { "\($0)ms" } ?? "unknown") reasonCodes=\(diag.reasonCodes.joined(separator: ", ")) success=true")
             
             // Developer Mode: Log output preview (first 200 chars)
             if let outputString = String(data: outJSON, encoding: .utf8) {
                 let preview = String(outputString.prefix(200))
-                LOG_DEV(.debug, "LLM", "Output preview", metadata: [
-                    "provider": provider.id.rawValue,
-                    "preview": preview + (outputString.count > 200 ? "..." : "")
-                ])
+                aiLogger.debug("LLM | Output preview | provider=\(provider.id.rawValue) preview=\(preview + (outputString.count > 200 ? "..." : ""))")
             }
         } catch {
             let executionDuration = Date().timeIntervalSince(start)
             
             // Developer Mode: Log LLM execution failure
-            LOG_DEV(.error, "LLM", "❌ LLM request failed", metadata: [
-                "provider": provider.id.rawValue,
-                "port": P.id.rawValue,
-                "duration": String(format: "%.3fs", executionDuration),
-                "error": "\(error)",
-                "willRetry": "false"
-            ])
+            aiLogger.error("LLM | ❌ LLM request failed | provider=\(provider.id.rawValue) port=\(P.id.rawValue) duration=\(String(format: "%.3fs", executionDuration)) error=\(String(describing: error)) willRetry=false")
             
             providerReliability.recordProviderFailure(provider.id.rawValue)
             throw error
@@ -620,7 +581,7 @@ extension AIEngine {
     func replay<P: AIPort>(
         _ portType: P.Type,
         index: Int = 0,
-        context: AIRequestContext = .init()
+        context: AIRequestContext = AIRequestContext()
     ) async throws -> AIPortReplayResult? {
         guard let record = AIEngine.replayStore.record(for: P.id, index: index) else {
             return nil
@@ -702,3 +663,4 @@ private extension AIResult {
         )
     }
 }
+

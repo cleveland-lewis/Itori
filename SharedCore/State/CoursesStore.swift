@@ -199,7 +199,7 @@ final class CoursesStore: ObservableObject {
                 }
                 // Fallback to most recent non-archived, non-deleted semester
                 else if let mostRecent = self.semesters
-                    .filter({ !$0.isArchived && !$0.isDeleted })
+                    .filter({ !$0.isArchived && !self.isDeleted(semesterId: $0.id) })
                     .sorted(by: { $0.startDate > $1.startDate })
                     .first {
                     self.activeSemesterIds = [mostRecent.id]
@@ -222,7 +222,7 @@ final class CoursesStore: ObservableObject {
         
         // PHASE 2: Compute GPA async after UI is interactive
         Task.detached(priority: .utility) { [weak self] in
-            await Task.sleep(nanoseconds: 500_000_000) // 0.5s delay
+            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5s delay
             guard let self = self else { return }
             let tasks = await AssignmentsStore.shared.tasks
             let gradedCourses = await self.courses.filter { !$0.isArchived }
@@ -254,7 +254,7 @@ final class CoursesStore: ObservableObject {
     
     /// Check if a semester is soft-deleted
     private func isDeleted(semesterId: UUID) -> Bool {
-        return semesters.first(where: { $0.id == semesterId })?.isDeleted ?? false
+        return semesters.first(where: { $0.id == semesterId })?.deletedAt != nil
     }
 
     // Legacy single semester support

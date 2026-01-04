@@ -173,7 +173,7 @@ struct RootsIOSApp: App {
         await withTaskGroup(of: Void.self) { group in
             // Reset coordinator (affects app state)
             group.addTask {
-                ResetCoordinator.shared.start(appModel: AppModel.shared)
+                await ResetCoordinator.shared.start(appModel: AppModel.shared)
                 LOG_LIFECYCLE(.debug, "Tier1", "ResetCoordinator initialized")
             }
             
@@ -212,7 +212,7 @@ struct RootsIOSApp: App {
             
             // Planner sync
             group.addTask {
-                PlannerSyncCoordinator.shared.start(
+                await PlannerSyncCoordinator.shared.start(
                     assignmentsStore: .shared,
                     plannerStore: .shared,
                     settings: .shared
@@ -222,7 +222,7 @@ struct RootsIOSApp: App {
             
             // Missed event detection
             group.addTask {
-                MissedEventDetectionService.shared.startMonitoring()
+                await MissedEventDetectionService.shared.startMonitoring()
                 LOG_LIFECYCLE(.debug, "Tier2", "MissedEventDetection initialized")
             }
             
@@ -235,7 +235,7 @@ struct RootsIOSApp: App {
             
             // Intelligent scheduling
             group.addTask {
-                IntelligentSchedulingCoordinator.shared.start()
+                await IntelligentSchedulingCoordinator.shared.start()
                 LOG_LIFECYCLE(.debug, "Tier2", "IntelligentScheduling initialized")
             }
         }

@@ -22,4 +22,5 @@ extension Notification.Name {
     // Navigation
     static let navigatePrevious = Notification.Name("navigatePrevious")
     static let navigateNext = Notification.Name("navigateNext")
+    static let goToToday = Notification.Name("goToToday")
 }

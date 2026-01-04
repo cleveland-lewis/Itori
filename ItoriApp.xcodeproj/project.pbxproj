@@ -29,13 +29,6 @@
 			remoteGlobalIDString = 1AD7D4332EDD328800D403F3;
 			remoteInfo = Roots;
 		};
-		A3D4E93275A547E499CA3B3F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1AD7D42C2EDD328800D403F3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A3D4E93275A547E499CA3B3E;
-			remoteInfo = RootsWatch;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -186,7 +179,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				A3D4E93275A547E499CA3B40 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				1AD7D46B2EDD328800D403F3 /* SharedCore */,
@@ -413,11 +405,6 @@
 			isa = PBXTargetDependency;
 			target = 1AD7D4332EDD328800D403F3 /* Roots */;
 			targetProxy = 1AD7D44E2EDD328A00D403F3 /* PBXContainerItemProxy */;
-		};
-		A3D4E93275A547E499CA3B40 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = A3D4E93275A547E499CA3B3E /* RootsWatch */;
-			targetProxy = A3D4E93275A547E499CA3B3F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

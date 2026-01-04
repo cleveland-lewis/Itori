@@ -195,5 +195,5 @@ extension Notification.Name {
     static let showItemInfo = Notification.Name("showItemInfo")
     static let switchToTab = Notification.Name("switchToTab")
     static let focusSearchField = Notification.Name("focusSearchField")
-    // goToToday, navigatePrevious, navigateNext already defined in KeyboardNavigation.swift
+    // Navigation notifications used by the Go menu
 }

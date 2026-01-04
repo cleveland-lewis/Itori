@@ -183,7 +183,7 @@ struct Course: Identifiable, Codable, Hashable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, title, code, semesterId, colorHex, isArchived, courseType, instructor, location, credits, creditType, meetingTimes, syllabus, notes, attachments, deletedAt
+        case id, title, code, semesterId, colorHex, isArchived, courseType, instructor, location, credits, creditType, meetingTimes, syllabus, notes, attachments
     }
 
     init(from decoder: Decoder) throws {
@@ -203,7 +203,6 @@ struct Course: Identifiable, Codable, Hashable {
         syllabus = try container.decodeIfPresent(String.self, forKey: .syllabus)
         notes = try container.decodeIfPresent(String.self, forKey: .notes)
         attachments = try container.decodeIfPresent([Attachment].self, forKey: .attachments) ?? []
-        deletedAt = try container.decodeIfPresent(Date.self, forKey: .deletedAt)
     }
     
     /// Get display name based on user's preference
@@ -387,3 +386,4 @@ struct CourseFile: Identifiable, Codable, Hashable {
         return URL(fileURLWithPath: urlString)
     }
 }
+

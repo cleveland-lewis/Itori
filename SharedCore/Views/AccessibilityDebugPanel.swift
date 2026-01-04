@@ -440,7 +440,11 @@ private struct FilterChip: View {
                 .font(.caption.bold())
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
-                .background(isSelected ? color.opacity(0.2) : .secondaryBackground)
+                #if os(iOS)
+                .background(isSelected ? color.opacity(0.2) : Color(.secondarySystemBackground))
+                #else
+                .background(isSelected ? color.opacity(0.2) : Color(NSColor.controlBackgroundColor))
+                #endif
                 .foregroundColor(isSelected ? color : .primary)
                 .cornerRadius(16)
         }
