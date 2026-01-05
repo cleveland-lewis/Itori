@@ -68,7 +68,7 @@ final class DesignSystemConsistencyTests: XCTestCase {
     
     func testFontSizeConsistency() {
         // Font sizes should follow Apple's type scale
-        let validSizes: Set<CGFloat> = [10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 22, 24, 28, 32, 34, 36, 40, 48]
+        let _: Set<CGFloat> = [10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 22, 24, 28, 32, 34, 36, 40, 48]
         
         // Test common font sizes used in the app
         let largeTitle = Font.largeTitle

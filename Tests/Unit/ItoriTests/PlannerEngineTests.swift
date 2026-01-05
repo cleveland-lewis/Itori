@@ -87,8 +87,8 @@ final class PlannerEngineTests: XCTestCase {
             ScheduledSession(id: UUID(), session: session2, start: session2Start, end: session2Start.addingTimeInterval(60*60))
         ]
         
-        let result = (scheduled: scheduled, overflow: [PlannerSession]())
-        let energyProfile = createDefaultEnergyProfile()
+        _ = (scheduled: scheduled, overflow: [PlannerSession]())
+        _ = createDefaultEnergyProfile()
         
         // When: applying break insertion (internal method simulation)
         // Note: This test checks the logic exists; actual testing requires setting to be ON

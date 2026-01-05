@@ -121,7 +121,7 @@ final class StudyHoursTrackerTests: XCTestCase {
     // MARK: - Decimal Hours Tests
     
     func testDecimalHourConversions() {
-        var totals = StudyHoursTotals(todayMinutes: 90, weekMinutes: 180, monthMinutes: 360)
+        let totals = StudyHoursTotals(todayMinutes: 90, weekMinutes: 180, monthMinutes: 360)
         
         XCTAssertEqual(totals.todayHours, 1.5, accuracy: 0.01)
         XCTAssertEqual(totals.weekHours, 3.0, accuracy: 0.01)

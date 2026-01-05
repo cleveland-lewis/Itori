@@ -222,15 +222,9 @@ enum AppAccentColor: String, CaseIterable, Identifiable {
 final class AppSettingsModel: ObservableObject, Codable {
     /// Shared singleton used across the app. Loaded from persisted storage when available.
     static let shared: AppSettingsModel = {
-        do {
-            let model = AppSettingsModel.load()
-            print("[AppSettings] ✅ Singleton initialized successfully")
-            return model
-        } catch {
-            print("[AppSettings] ❌ CRITICAL: Load failed with error: \(error)")
-            print("[AppSettings] Creating fallback instance")
-            return AppSettingsModel()
-        }
+        let model = AppSettingsModel.load()
+        print("[AppSettings] ✅ Singleton initialized successfully")
+        return model
     }()
     
     // MARK: - Performance optimization
