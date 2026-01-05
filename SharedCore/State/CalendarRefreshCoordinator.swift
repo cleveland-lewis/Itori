@@ -26,7 +26,7 @@ final class CalendarRefreshCoordinator: ObservableObject {
     private let calendarManager = CalendarManager.shared
     private let deviceCalendar = DeviceCalendarManager.shared
     private let authManager = CalendarAuthorizationManager.shared
-    private let settings = AppSettingsModel.shared
+    private var settings: AppSettingsModel { AppSettingsModel.shared }
     private let assignmentsStore = AssignmentsStore.shared
 
     private let autoScheduleTagPrefix = "[RootsAutoSchedule:"
