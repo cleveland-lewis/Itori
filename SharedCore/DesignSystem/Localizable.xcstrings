@@ -115032,6 +115032,12 @@
             "state": "translated",
             "value": "settings.planner.energy_tracking.detail"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.energy_tracking.detail"
+          }
         }
       }
     },
@@ -115135,6 +115141,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.horizon"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.planner.horizon"
@@ -115246,6 +115258,12 @@
             "state": "translated",
             "value": "settings.planner.horizon.1_month"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.horizon.1_month"
+          }
         }
       }
     },
@@ -115349,6 +115367,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.horizon.1_week"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.planner.horizon.1_week"
@@ -115460,6 +115484,12 @@
             "state": "translated",
             "value": "settings.planner.horizon.2_weeks"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.horizon.2_weeks"
+          }
         }
       }
     },
@@ -115563,6 +115593,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.intelligence.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.planner.intelligence.header"
@@ -115674,6 +115710,12 @@
             "state": "translated",
             "value": "settings.planner.scheduling.footer"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.scheduling.footer"
+          }
         }
       }
     },
@@ -115777,6 +115819,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.scheduling.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.planner.scheduling.header"
@@ -115888,6 +115936,12 @@
             "state": "translated",
             "value": "settings.planner.track_hours"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.track_hours"
+          }
         }
       }
     },
@@ -115991,6 +116045,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.track_hours.detail"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.planner.track_hours.detail"
@@ -116102,6 +116162,12 @@
             "state": "translated",
             "value": "settings.planner.tracking.header"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.tracking.header"
+          }
         }
       }
     },
@@ -116205,6 +116271,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.privacy.clear_logs"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.privacy.clear_logs"
@@ -116316,6 +116388,12 @@
             "state": "translated",
             "value": "settings.privacy.clear_logs.confirm.action"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.privacy.clear_logs.confirm.action"
+          }
         }
       }
     },
@@ -116419,6 +116497,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.privacy.clear_logs.confirm.message"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.privacy.clear_logs.confirm.message"
@@ -116530,6 +116614,12 @@
             "state": "translated",
             "value": "settings.privacy.clear_logs.confirm.title"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.privacy.clear_logs.confirm.title"
+          }
         }
       }
     },
@@ -116633,6 +116723,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.privacy.data.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.privacy.data.header"
@@ -116744,6 +116840,12 @@
             "state": "translated",
             "value": "settings.privacy.diagnostics.header"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.privacy.diagnostics.header"
+          }
         }
       }
     },
@@ -116847,6 +116949,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.privacy.icloud_sync"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.privacy.icloud_sync"
@@ -116958,6 +117066,12 @@
             "state": "translated",
             "value": "settings.privacy.icloud_sync.detail"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.privacy.icloud_sync.detail"
+          }
         }
       }
     },
@@ -117061,6 +117175,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.privacy.local_only.footer"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.privacy.local_only.footer"
@@ -117172,6 +117292,12 @@
             "state": "translated",
             "value": "settings.privacy.permissions"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.privacy.permissions"
+          }
         }
       }
     },
@@ -117275,6 +117401,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.privacy.permissions.footer"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.privacy.permissions.footer"
@@ -117386,6 +117518,12 @@
             "state": "translated",
             "value": "settings.privacy.permissions.header"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.privacy.permissions.header"
+          }
         }
       }
     },
@@ -117489,6 +117627,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.backup.footer"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.storage.backup.footer"
@@ -117600,6 +117744,12 @@
             "state": "translated",
             "value": "settings.storage.backup.header"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.backup.header"
+          }
         }
       }
     },
@@ -117703,6 +117853,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.clear_cache"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.storage.clear_cache"
@@ -117814,6 +117970,12 @@
             "state": "translated",
             "value": "settings.storage.clear_cache.confirm.action"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.clear_cache.confirm.action"
+          }
         }
       }
     },
@@ -117917,6 +118079,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.clear_cache.confirm.message"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.storage.clear_cache.confirm.message"
@@ -118028,6 +118196,12 @@
             "state": "translated",
             "value": "settings.storage.clear_cache.confirm.title"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.clear_cache.confirm.title"
+          }
         }
       }
     },
@@ -118131,6 +118305,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.export"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.storage.export"
@@ -118242,6 +118422,12 @@
             "state": "translated",
             "value": "settings.storage.export.button"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.export.button"
+          }
         }
       }
     },
@@ -118345,6 +118531,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.export.error.message"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.storage.export.error.message"
@@ -118456,6 +118648,12 @@
             "state": "translated",
             "value": "settings.storage.export.error.title"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.export.error.title"
+          }
         }
       }
     },
@@ -118559,6 +118757,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.export.message"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.storage.export.message"
@@ -118670,6 +118874,12 @@
             "state": "translated",
             "value": "settings.storage.export.title"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.export.title"
+          }
         }
       }
     },
@@ -118773,6 +118983,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.info.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.storage.info.header"
@@ -118884,6 +119100,12 @@
             "state": "translated",
             "value": "settings.storage.location"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.location"
+          }
         }
       }
     },
@@ -118987,6 +119209,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.location.local"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.storage.location.local"
@@ -119098,6 +119326,12 @@
             "state": "translated",
             "value": "settings.storage.maintenance.footer"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.maintenance.footer"
+          }
         }
       }
     },
@@ -119201,6 +119435,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.maintenance.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.storage.maintenance.header"
@@ -119312,6 +119552,12 @@
             "state": "translated",
             "value": "settings.storage.used"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.storage.used"
+          }
         }
       }
     },
@@ -119415,6 +119661,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.alarmkit"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.timer.alarmkit"
@@ -119526,6 +119778,12 @@
             "state": "translated",
             "value": "settings.timer.alarmkit.detail"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.alarmkit.detail"
+          }
         }
       }
     },
@@ -119629,6 +119887,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.alerts"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.timer.alerts"
@@ -119740,6 +120004,12 @@
             "state": "translated",
             "value": "settings.timer.alerts.detail"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.alerts.detail"
+          }
         }
       }
     },
@@ -119847,6 +120117,12 @@
             "state": "translated",
             "value": "settings.timer.alerts.footer"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.alerts.footer"
+          }
         }
       }
     },
@@ -119950,6 +120226,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.alerts.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.timer.alerts.header"
@@ -120067,6 +120349,12 @@
             "state": "translated",
             "value": "settings.timer.display"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.display"
+          }
         }
       }
     },
@@ -120170,6 +120458,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.focus_duration"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.timer.focus_duration"
@@ -120281,6 +120575,12 @@
             "state": "translated",
             "value": "settings.timer.iterations"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.iterations"
+          }
         }
       }
     },
@@ -120384,6 +120684,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.long_break"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.timer.long_break"
@@ -120495,6 +120801,12 @@
             "state": "translated",
             "value": "settings.timer.pomodoro_alerts"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.pomodoro_alerts"
+          }
         }
       }
     },
@@ -120598,6 +120910,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.pomodoro_alerts.detail"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.timer.pomodoro_alerts.detail"
@@ -120709,6 +121027,12 @@
             "state": "translated",
             "value": "settings.timer.pomodoro.header"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.pomodoro.header"
+          }
         }
       }
     },
@@ -120812,6 +121136,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.short_break"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.timer.short_break"
@@ -120923,6 +121253,12 @@
             "state": "translated",
             "value": "settings.timer.timer_duration"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.timer.timer_duration"
+          }
         }
       }
     },
@@ -121019,6 +121355,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Animations"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Show Animations"
@@ -121123,6 +121465,12 @@
             "state": "translated",
             "value": "Show Answer"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Answer"
+          }
         }
       }
     },
@@ -121219,6 +121567,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Sidebar"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Show Sidebar"
@@ -121325,6 +121679,12 @@
             "state": "translated",
             "value": "Simulate Accessibility Features"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simulate Accessibility Features"
+          }
         }
       }
     },
@@ -121421,6 +121781,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Source: %@"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Source: %@"
@@ -121525,6 +121891,12 @@
             "state": "translated",
             "value": "Stack Trace"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stack Trace"
+          }
         }
       }
     },
@@ -121621,6 +121993,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standard (A-F)"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Standard (A-F)"
@@ -121731,6 +122109,12 @@
             "state": "translated",
             "value": "Start"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start"
+          }
         }
       }
     },
@@ -121831,6 +122215,12 @@
             "state": "translated",
             "value": "Start date"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start date"
+          }
         }
       }
     },
@@ -121927,6 +122317,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starts"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Starts"
@@ -122037,6 +122433,12 @@
             "state": "translated",
             "value": "Statistics"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Statistics"
+          }
         }
       }
     },
@@ -122143,6 +122545,12 @@
             "state": "translated",
             "value": "Status"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status"
+          }
         }
       }
     },
@@ -122239,6 +122647,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status:"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Status:"
@@ -122343,6 +122757,12 @@
             "state": "translated",
             "value": "Status: %@"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status: %@"
+          }
         }
       }
     },
@@ -122439,6 +122859,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Storage & Sync"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Storage & Sync"
@@ -122543,6 +122969,12 @@
             "state": "translated",
             "value": "Storage info unavailable"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Storage info unavailable"
+          }
         }
       }
     },
@@ -122639,6 +123071,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strengthen borders and text contrast"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Strengthen borders and text contrast"
@@ -122743,6 +123181,12 @@
             "state": "translated",
             "value": "Student"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Student"
+          }
         }
       }
     },
@@ -122843,6 +123287,12 @@
             "state": "translated",
             "value": "Study Coach"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Study Coach"
+          }
         }
       }
     },
@@ -122939,6 +123389,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Study Materials"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Study Materials"
@@ -123049,6 +123505,12 @@
             "state": "translated",
             "value": "Study Mode"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Study Mode"
+          }
         }
       }
     },
@@ -123149,6 +123611,12 @@
             "state": "translated",
             "value": "Study Now"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Study Now"
+          }
         }
       }
     },
@@ -123245,6 +123713,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Study Options"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Study Options"
@@ -123355,6 +123829,12 @@
             "state": "translated",
             "value": "Study Session"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Study Session"
+          }
         }
       }
     },
@@ -123451,6 +123931,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Study Session Defaults"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Study Session Defaults"
@@ -123555,6 +124041,12 @@
             "state": "translated",
             "value": "Study Summary"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Study Summary"
+          }
         }
       }
     },
@@ -123651,6 +124143,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Study time today:"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Study time today:"
@@ -123755,6 +124253,12 @@
             "state": "translated",
             "value": "Subsystem Toggles"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subsystem Toggles"
+          }
         }
       }
     },
@@ -123851,6 +124355,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Switch between different profiles for work, school, or personal use"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Switch between different profiles for work, school, or personal use"
@@ -123961,6 +124471,12 @@
             "state": "translated",
             "value": "Syllabus"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Syllabus"
+          }
         }
       }
     },
@@ -124057,6 +124573,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync tasks with Apple Reminders"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Sync tasks with Apple Reminders"
@@ -124161,6 +124683,12 @@
             "state": "translated",
             "value": "System Calendar"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System Calendar"
+          }
         }
       }
     },
@@ -124257,6 +124785,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tab Bar Pages"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Tab Bar Pages"
@@ -124361,6 +124895,12 @@
             "state": "translated",
             "value": "Target %"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target %"
+          }
         }
       }
     },
@@ -124457,6 +124997,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target %@%%"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Target %@%%"
@@ -124561,6 +125107,12 @@
             "state": "translated",
             "value": "Targets help scenario calculations and visual indicators. This does not affect official grades."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Targets help scenario calculations and visual indicators. This does not affect official grades."
+          }
         }
       }
     },
@@ -124657,6 +125209,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Task Dependencies"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Task Dependencies"
@@ -124761,6 +125319,12 @@
             "state": "translated",
             "value": "Task Order"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Task Order"
+          }
         }
       }
     },
@@ -124857,6 +125421,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Task Order Enforced"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Task Order Enforced"
@@ -124961,6 +125531,12 @@
             "state": "translated",
             "value": "Tasks must be completed in sequence. Drag to reorder."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tasks must be completed in sequence. Drag to reorder."
+          }
         }
       }
     },
@@ -125061,6 +125637,12 @@
             "state": "translated",
             "value": "Tasks without a due date stay in the Unscheduled section."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tasks without a due date stay in the Unscheduled section."
+          }
         }
       }
     },
@@ -125157,6 +125739,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperature: %.2f"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Temperature: %.2f"
@@ -125267,6 +125855,12 @@
             "state": "translated",
             "value": "Term"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Term"
+          }
         }
       }
     },
@@ -125363,6 +125957,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Test and preview accessibility features without changing system settings"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Test and preview accessibility features without changing system settings"

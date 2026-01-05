@@ -34,7 +34,7 @@ final class TimerPageViewModel: ObservableObject {
     private var timerCancellable: AnyCancellable?
     private var clockCancellable: AnyCancellable?
     private var hasRequestedNotificationPermission = false
-    var alarmScheduler: TimerAlarmScheduling?
+    // Alarm scheduler removed (deferred to v1.1)
     private let persistenceQueue = DispatchQueue(label: "timer.persistence.queue", qos: .utility)
     private let persistence = PersistenceController.shared
 
@@ -161,25 +161,6 @@ final class TimerPageViewModel: ObservableObject {
         
         scheduleCompletionNotification()
         
-        // Phase 2.2: Schedule AlarmKit alarm (iOS/iPadOS only, non-stopwatch)
-        if let scheduler = alarmScheduler, currentMode != .stopwatch, let duration = planned {
-            let title = NSLocalizedString("timer.alarm.complete", comment: "Timer Complete")
-            let body: String
-            if currentMode == .pomodoro {
-                body = isOnBreak ? 
-                    NSLocalizedString("timer.alarm.break_finished", comment: "Break finished") :
-                    NSLocalizedString("timer.alarm.work_finished", comment: "Work session finished")
-            } else {
-                body = NSLocalizedString("timer.alarm.timer_finished", comment: "Timer finished")
-            }
-            scheduler.scheduleTimerEnd(
-                id: session.id.uuidString,
-                fireIn: duration,
-                title: title,
-                body: body
-            )
-        }
-        
         persistState()
     }
 
@@ -196,11 +177,6 @@ final class TimerPageViewModel: ObservableObject {
         }
         
         cancelCompletionNotification()
-        
-        // Phase 2.2: Cancel AlarmKit alarm when paused
-        if let scheduler = alarmScheduler {
-            scheduler.cancelTimer(id: s.id.uuidString)
-        }
         
         persistState()
     }
