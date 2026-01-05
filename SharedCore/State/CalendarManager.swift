@@ -17,9 +17,9 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     nonisolated let objectWillChange = ObservableObjectPublisher()
 
     static let shared = CalendarManager()
-    private var deviceManager = DeviceCalendarManager.shared
+    private lazy var deviceManager = DeviceCalendarManager.shared
     private var store: EKEventStore { deviceManager.store }
-    private let authManager = CalendarAuthorizationManager.shared
+    private lazy var authManager = CalendarAuthorizationManager.shared
 
     // Persistent selection
     @AppStorage("selectedCalendarID") var selectedCalendarID: String = ""
