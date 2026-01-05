@@ -211,3 +211,25 @@ This is sufficient for v1.0 given comprehensive production hardening in Phase 1-
 **Status:** Tests disabled, manual QA required  
 **Blocker:** No (v1.0 can ship)  
 **Fix Planned:** v1.1
+
+---
+
+## Update: 2026-01-05 (Post-Fix)
+
+**Fixes Applied:**
+1. ✅ **AppSettingsModel dispatch deadlock** (FIXED in commit 5f13ad1d)
+   - Removed async + semaphore pattern that caused recursive lock during static init
+   - App now launches successfully without crash
+   
+2. ⏳ **Test suite recursive lock** (REMAINS - documented)
+   - Same root cause: 21 @MainActor singletons + circular dependencies
+   - Requires nonisolated init pattern (planned for v1.1)
+
+**Test Run Results:**
+- Error: Still "BUG IN CLIENT OF LIBDISPATCH: trying to lock recursively"
+- App builds: ✅ iOS + macOS Release clean
+- App launches: ✅ No crash (AppSettingsModel fix confirmed working)
+- Tests: ❌ Still crash (other @MainActor singletons cause same issue)
+
+**Conclusion:**  
+The app works. Tests need architectural fix (v1.1). Manual QA sufficient for v1.0.
