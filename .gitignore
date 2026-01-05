@@ -159,3 +159,10 @@ project.pbxproj.backup
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Production prep: prevent backup file recurrence
+*.backup
+*.orig
+*.bak
+*.tmp
+*~
