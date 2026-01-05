@@ -9,6 +9,7 @@ struct IOSStorageSettingsView: View {
     @State private var storageLocation: String = ""
     @State private var showingClearCacheConfirmation = false
     @State private var showingExportSheet = false
+    @State private var shareItem: ShareItem?
     @State private var isExporting = false
     @State private var exportError: String?
     @State private var statusLabel: String = "Disconnected"
@@ -126,6 +127,11 @@ struct IOSStorageSettingsView: View {
         }
         .sheet(isPresented: $showingExportSheet) {
             exportView
+        }
+        .sheet(item: $shareItem) { item in
+            ShareSheet(items: [item.url]) {
+                try? FileManager.default.removeItem(at: item.url)
+            }
         }
         .alert(NSLocalizedString("settings.storage.export.error.title", comment: "Export Failed"), isPresented: Binding(
             get: { exportError != nil },
@@ -267,11 +273,11 @@ struct IOSStorageSettingsView: View {
         do {
             let data = try JSONEncoder().encode(payload)
             let targetURL = FileManager.default.temporaryDirectory
-                .appendingPathComponent("roots-data-export-\(Int(Date().timeIntervalSince1970)).json")
+                .appendingPathComponent("itori-data-export-\(Int(Date().timeIntervalSince1970)).json")
             try data.write(to: targetURL, options: .atomic)
             exportError = nil
             showingExportSheet = false
-            await presentShareSheet(with: targetURL)
+            shareItem = ShareItem(url: targetURL)
         } catch {
             exportError = error.localizedDescription
         }
@@ -288,33 +294,24 @@ private struct StorageDataExport: Codable {
     let settings: AppSettingsModel
 }
 
-@MainActor
-private func presentShareSheet(with url: URL) {
-    guard let viewController = UIApplication.shared.topViewController() else { return }
-    let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-    activityController.completionWithItemsHandler = { _, _, _, _ in
-        try? FileManager.default.removeItem(at: url)
-    }
-    viewController.present(activityController, animated: true)
+private struct ShareItem: Identifiable {
+    let id = UUID()
+    let url: URL
 }
 
-private extension UIApplication {
-    func topViewController(base: UIViewController? = UIApplication.shared.connectedScenes
-        .compactMap { $0 as? UIWindowScene }
-        .flatMap { $0.windows }
-        .first { $0.isKeyWindow }?
-        .rootViewController) -> UIViewController? {
-        if let nav = base as? UINavigationController {
-            return topViewController(base: nav.visibleViewController)
+private struct ShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+    let completion: () -> Void
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        let controller = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        controller.completionWithItemsHandler = { _, _, _, _ in
+            completion()
         }
-        if let tab = base as? UITabBarController {
-            return topViewController(base: tab.selectedViewController)
-        }
-        if let presented = base?.presentedViewController {
-            return topViewController(base: presented)
-        }
-        return base
+        return controller
     }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 extension FileManager {

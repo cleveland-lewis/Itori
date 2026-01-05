@@ -8,18 +8,18 @@ import CoreML
 /// Target: 100-200MB model optimized for mobile
 public final class LocalModelProvider_iOS: AIProvider {
     public let name = "Local Model (iOS Lite)"
+    private let maxPromptCharacters = 2000
     
     public var capabilities: AICapabilities {
         AICapabilities(
             isOffline: true,
             supportsTools: false,
             supportsSchema: true,
-            maxContextLength: 2048,
+            maxContextLength: 1024,
             supportedTasks: [
                 .intentToAction,
                 .summarize,
-                .rewrite,
-                .textCompletion
+                .rewrite
             ],
             estimatedLatency: 2.0
         )
@@ -35,6 +35,12 @@ public final class LocalModelProvider_iOS: AIProvider {
         schema: [String: Any]?,
         temperature: Double
     ) async throws -> AIProviderResult {
+        guard capabilities.supportedTasks.contains(task) else {
+            throw AIError.generationFailed("Task not supported on iOS Lite model")
+        }
+        if prompt.count > maxPromptCharacters {
+            throw AIError.contextTooLong(prompt.count, maxPromptCharacters)
+        }
         guard let modelURL = await modelURL() else {
             LOG_AI(.info, "LocalModel", "No CoreML model available for iOS")
             throw AIError.providerUnavailable("Local CoreML model not available")
@@ -58,7 +64,7 @@ public final class LocalModelProvider_iOS: AIProvider {
             latencyMs: latency,
             tokenCount: nil,
             cached: false,
-            structuredData: schema != nil ? ["local": true, "platform": "iOS"] : nil
+            structuredData: schema != nil ? ["local": true, "platform": "iOS", "throttled": true] : nil
         )
     }
     

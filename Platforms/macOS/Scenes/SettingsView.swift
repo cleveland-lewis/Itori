@@ -15,19 +15,19 @@ struct SettingsView: View {
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("General")) {
-                    Toggle("Use 24-hour time", isOn: $settings.use24HourTime)
-                    Toggle("High Contrast Mode", isOn: $settings.highContrastMode)
+                Section(header: Text(NSLocalizedString("settings.general", value: "General", comment: "General"))) {
+                    Toggle(NSLocalizedString("settings.toggle.use.24hour.time", value: "Use 24-hour time", comment: "Use 24-hour time"), isOn: $settings.use24HourTime)
+                    Toggle(NSLocalizedString("settings.toggle.high.contrast.mode", value: "High Contrast Mode", comment: "High Contrast Mode"), isOn: $settings.highContrastMode)
                 }
 
-                Section(header: Text("Academic")) {
+                Section(header: Text(NSLocalizedString("settings.academic", value: "Academic", comment: "Academic"))) {
                     // Note: Courses & Semesters management now handled via SettingsRootView
                     // NavigationLink(destination: CoursesSettingsView().environmentObject(coursesStore)) {
-                    //     Label("Courses & Semesters", systemImage: "book.closed")
+                    //     Label(NSLocalizedString("settings.label.courses.semesters", value: "Courses & Semesters", comment: "Courses & Semesters"), systemImage: "book.closed")
                     // }
                 }
 
-                Section(header: Text("Workday")) {
+                Section(header: Text(NSLocalizedString("settings.workday", value: "Workday", comment: "Workday"))) {
                     DatePicker("Start", selection: Binding(
                         get: { settings.date(from: settings.defaultWorkdayStart) },
                         set: { settings.defaultWorkdayStart = settings.components(from: $0) }
@@ -38,13 +38,13 @@ struct SettingsView: View {
                     ), displayedComponents: [.hourAndMinute])
                 }
 
-                Section(header: Text("Advanced")) {
+                Section(header: Text(NSLocalizedString("settings.advanced", value: "Advanced", comment: "Advanced"))) {
                     NavigationLink(destination: DebugSettingsView(selectedMaterial: $selectedMaterial)) {
-                        Label("Developer", systemImage: "hammer")
+                        Label(NSLocalizedString("settings.label.developer", value: "Developer", comment: "Developer"), systemImage: "hammer")
                     }
                 }
 
-                Section(header: Text("Design")) {
+                Section(header: Text(NSLocalizedString("settings.design", value: "Design", comment: "Design"))) {
                     Picker("Material", selection: $selectedMaterial) {
                         ForEach(DesignSystem.materials, id: \.id) { token in
                             Text(token.name).tag(token as DesignMaterial)
@@ -62,10 +62,10 @@ struct SettingsView: View {
                         )
                         showingHealthCheck = true
                     } label: {
-                        Label("Run Health Check", systemImage: "stethoscope")
+                        Label(NSLocalizedString("settings.label.run.health.check", value: "Run Health Check", comment: "Run Health Check"), systemImage: "stethoscope")
                     }
                 } footer: {
-                    Text("Runs a quick self-diagnostic across data, permissions, and local files.")
+                    Text(NSLocalizedString("settings.runs.a.quick.selfdiagnostic.across", value: "Runs a quick self-diagnostic across data, permissions, and local files.", comment: "Runs a quick self-diagnostic across data, permissi..."))
                 }
             }
             #if os(iOS)
@@ -88,7 +88,7 @@ struct SettingsView: View {
             Button("OK", role: .cancel) { }
         } message: { report in
             if report.issues.isEmpty {
-                Text("All systems look healthy.")
+                Text(NSLocalizedString("settings.all.systems.look.healthy", value: "All systems look healthy.", comment: "All systems look healthy."))
             } else {
                 Text(report.formattedSummary)
             }
@@ -108,12 +108,12 @@ private struct DebugSettingsView: View {
 
     var body: some View {
         Form {
-            Toggle("Enable verbose logging", isOn: .constant(false))
-            Button("Reset demo data") { }
+            Toggle(NSLocalizedString("settings.toggle.enable.verbose.logging", value: "Enable verbose logging", comment: "Enable verbose logging"), isOn: .constant(false))
+            Button(NSLocalizedString("settings.button.reset.demo.data", value: "Reset demo data", comment: "Reset demo data")) { }
 
-            Section(header: Text("Design debug")) {
+            Section(header: Text(NSLocalizedString("settings.design.debug", value: "Design debug", comment: "Design debug"))) {
                 HStack {
-                    Text("Selected material")
+                    Text(NSLocalizedString("settings.selected.material", value: "Selected material", comment: "Selected material"))
                     Spacer()
                     Text(selectedMaterial.name)
                         .foregroundStyle(.secondary)

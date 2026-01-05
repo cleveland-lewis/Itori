@@ -2,7 +2,8 @@ import Foundation
 
 enum DebugLogger {
     static func log(_ message: String) {
-        guard AppSettingsModel.shared.devModeDataLogging else { return }
+        // Requires both dev mode enabled AND data logging enabled
+        guard AppSettingsModel.shared.devModeEnabled && AppSettingsModel.shared.devModeDataLogging else { return }
         Swift.print(message)
     }
 }

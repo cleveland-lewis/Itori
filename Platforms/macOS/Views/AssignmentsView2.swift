@@ -13,7 +13,7 @@ struct AssignmentsView2: View {
                     Button(action: { showingAddSheet = true }) {
                             HStack(spacing: 6) {
                                 Image(systemName: "plus")
-                                Text("Add Assignment")
+                                Text(NSLocalizedString("assignments2.add.assignment", value: "Add Assignment", comment: "Add Assignment"))
                             }
                         }
                         .buttonStyle(.borderedProminent)
@@ -26,7 +26,7 @@ struct AssignmentsView2: View {
                             VStack(spacing: DesignSystem.Spacing.small) {
                                 Image(systemName: "tray")
                                     .imageScale(.large)
-                                Text("Assignments")
+                                Text(NSLocalizedString("assignments2.assignments", value: "Assignments", comment: "Assignments"))
                                     .font(DesignSystem.Typography.title)
                                 Text(DesignSystem.emptyStateMessage)
                                     .font(DesignSystem.Typography.body)

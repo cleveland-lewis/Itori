@@ -16,12 +16,12 @@ struct GradesView: View {
 
                     LazyVStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
                         // Overall Status
-                        Section(header: Text("Overall Status").font(DesignSystem.Typography.body)) {
+                        Section(header: Text(NSLocalizedString("grades.overall.status", value: "Overall Status", comment: "Overall Status")).font(DesignSystem.Typography.body)) {
                             AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "chart.bar")
                                         .imageScale(.large)
-                                    Text("Overall Status")
+                                    Text(NSLocalizedString("grades.overall.status", value: "Overall Status", comment: "Overall Status"))
                                         .font(DesignSystem.Typography.title)
                                     Text(DesignSystem.emptyStateMessage)
                                         .font(DesignSystem.Typography.body)
@@ -31,12 +31,12 @@ struct GradesView: View {
                         }
 
                         // By Course
-                        Section(header: Text("By Course").font(DesignSystem.Typography.body)) {
+                        Section(header: Text(NSLocalizedString("grades.by.course", value: "By Course", comment: "By Course")).font(DesignSystem.Typography.body)) {
                             AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "list.bullet")
                                         .imageScale(.large)
-                                    Text("By Course")
+                                    Text(NSLocalizedString("grades.by.course", value: "By Course", comment: "By Course"))
                                         .font(DesignSystem.Typography.title)
                                     Text(DesignSystem.emptyStateMessage)
                                         .font(DesignSystem.Typography.body)
@@ -46,12 +46,12 @@ struct GradesView: View {
                         }
 
                         // Grade Components
-                        Section(header: Text("Grade Components").font(DesignSystem.Typography.body)) {
+                        Section(header: Text(NSLocalizedString("grades.grade.components", value: "Grade Components", comment: "Grade Components")).font(DesignSystem.Typography.body)) {
                             AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "list.bullet.rectangle")
                                         .imageScale(.large)
-                                    Text("Grade Components")
+                                    Text(NSLocalizedString("grades.grade.components", value: "Grade Components", comment: "Grade Components"))
                                         .font(DesignSystem.Typography.title)
                                     Text(DesignSystem.emptyStateMessage)
                                         .font(DesignSystem.Typography.body)
@@ -61,12 +61,12 @@ struct GradesView: View {
                         }
 
                         // Trends & Analytics
-                        Section(header: Text("Trends & Analytics").font(DesignSystem.Typography.body)) {
+                        Section(header: Text(NSLocalizedString("grades.trends.analytics", value: "Trends & Analytics", comment: "Trends & Analytics")).font(DesignSystem.Typography.body)) {
                             AppCard {
                                 VStack(spacing: DesignSystem.Spacing.small) {
                                     Image(systemName: "chart.line.uptrend.xyaxis")
                                         .imageScale(.large)
-                                    Text("Trends & Analytics")
+                                    Text(NSLocalizedString("grades.trends.analytics", value: "Trends & Analytics", comment: "Trends & Analytics"))
                                         .font(DesignSystem.Typography.title)
                                     Text(DesignSystem.emptyStateMessage)
                                         .font(DesignSystem.Typography.body)

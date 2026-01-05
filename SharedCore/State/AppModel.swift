@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 
+@MainActor
 final class AppModel: ObservableObject {
     static let shared = AppModel()
 

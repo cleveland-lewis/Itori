@@ -247,7 +247,7 @@ struct ParsedAssignmentRow: View {
     
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
-            Toggle("", isOn: .init(
+            Toggle(NSLocalizedString("parsedassignmentsreview.toggle.", value: "", comment: ""), isOn: .init(
                 get: { isApproved },
                 set: { _ in onToggleApproval() }
             ))

@@ -359,7 +359,7 @@ final class CalendarRecurrenceTests: XCTestCase {
     func testCategoryEncodingInNotes() {
         // Test that category is properly encoded in notes
         let userNotes = "Remember to bring textbook"
-        let category = EventCategory.study
+        _ = EventCategory.study
         let expectedPattern = "[RootsCategory:Study]"
         
         // Simulate encoding

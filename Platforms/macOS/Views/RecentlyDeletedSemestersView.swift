@@ -13,7 +13,7 @@ struct RecentlyDeletedSemestersView: View {
                         Image(systemName: "tray.full")
                             .font(DesignSystem.Typography.body)
                             .foregroundStyle(.tertiary)
-                        Text("No recently deleted semesters.")
+                        Text(NSLocalizedString("recentlydeletedsemesters.no.recently.deleted.semesters", value: "No recently deleted semesters.", comment: "No recently deleted semesters."))
                             .foregroundStyle(.secondary)
                     }
                     .padding(.vertical, 24)
@@ -29,7 +29,7 @@ struct RecentlyDeletedSemestersView: View {
                             .foregroundStyle(.secondary)
 
                         HStack(spacing: 12) {
-                            Button("Recover") {
+                            Button(NSLocalizedString("recentlydeletedsemesters.button.recover", value: "Recover", comment: "Recover")) {
                                 coursesStore.recoverSemester(semester.id)
                             }
                             .buttonStyle(.borderedProminent)

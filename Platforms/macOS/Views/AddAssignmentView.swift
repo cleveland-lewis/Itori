@@ -119,14 +119,14 @@ struct AddAssignmentView: View {
 
                     // Timing
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("TIMING")
+                        Text(NSLocalizedString("addassignment.timing", value: "TIMING", comment: "TIMING"))
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.secondary)
 
                         RootsCard(compact: true) {
                             VStack(alignment: .leading, spacing: 12) {
                                 HStack {
-                                    Text("Due Date")
+                                    Text(NSLocalizedString("addassignment.due.date", value: "Due Date", comment: "Due Date"))
                                     Spacer()
                                     DatePicker("", selection: $due, displayedComponents: [.date, .hourAndMinute])
                                         .datePickerStyle(.field)
@@ -135,7 +135,7 @@ struct AddAssignmentView: View {
 
                                 VStack(alignment: .leading, spacing: 4) {
                                     HStack {
-                                        Text("Estimated")
+                                        Text(NSLocalizedString("addassignment.estimated", value: "Estimated", comment: "Estimated"))
                                         
                                         Spacer()
                                         
@@ -151,22 +151,22 @@ struct AddAssignmentView: View {
                                 
                                 HStack {
                                     VStack(alignment: .trailing, spacing: 2) {
-                                        Text("Lock")
+                                        Text(NSLocalizedString("addassignment.lock", value: "Lock", comment: "Lock"))
                                             .font(.body)
-                                        Text("Lock work to due date")
+                                        Text(NSLocalizedString("addassignment.lock.work.to.due.date", value: "Lock work to due date", comment: "Lock work to due date"))
                                             .font(.caption)
                                             .foregroundStyle(.secondary)
                                     }
                                     
                                     Spacer()
                                     
-                                    Toggle("", isOn: $lockToDueDate)
+                                    Toggle(NSLocalizedString("addassignment.toggle.", value: "", comment: ""), isOn: $lockToDueDate)
                                         .labelsHidden()
                                 }
 
                                 VStack(alignment: .leading, spacing: 8) {
                                     HStack {
-                                        Text("Repeat")
+                                        Text(NSLocalizedString("addassignment.repeat", value: "Repeat", comment: "Repeat"))
                                         Spacer()
                                         Picker("", selection: recurrenceSelection) {
                                             ForEach(RecurrenceSelection.allCases) { option in
@@ -183,9 +183,9 @@ struct AddAssignmentView: View {
                                         }
 
                                         Picker("End", selection: $recurrenceEndOption) {
-                                            Text("Never").tag(RecurrenceEndOption.never)
-                                            Text("On Date").tag(RecurrenceEndOption.onDate)
-                                            Text("After").tag(RecurrenceEndOption.afterOccurrences)
+                                            Text(NSLocalizedString("addassignment.never", value: "Never", comment: "Never")).tag(RecurrenceEndOption.never)
+                                            Text(NSLocalizedString("addassignment.on.date", value: "On Date", comment: "On Date")).tag(RecurrenceEndOption.onDate)
+                                            Text(NSLocalizedString("addassignment.after", value: "After", comment: "After")).tag(RecurrenceEndOption.afterOccurrences)
                                         }
                                         .pickerStyle(.menu)
 
@@ -197,18 +197,18 @@ struct AddAssignmentView: View {
                                             }
                                         }
 
-                                        Toggle("Skip weekends", isOn: $skipWeekends)
-                                        Toggle("Skip holidays", isOn: $skipHolidays)
+                                        Toggle(NSLocalizedString("addassignment.toggle.skip.weekends", value: "Skip weekends", comment: "Skip weekends"), isOn: $skipWeekends)
+                                        Toggle(NSLocalizedString("addassignment.toggle.skip.holidays", value: "Skip holidays", comment: "Skip holidays"), isOn: $skipHolidays)
 
                                         if skipHolidays {
                                             Picker("Holiday Source", selection: $holidaySource) {
-                                                Text("System Calendar").tag(RecurrenceRule.HolidaySource.deviceCalendar)
-                                                Text("None").tag(RecurrenceRule.HolidaySource.none)
+                                                Text(NSLocalizedString("addassignment.system.calendar", value: "System Calendar", comment: "System Calendar")).tag(RecurrenceRule.HolidaySource.deviceCalendar)
+                                                Text(NSLocalizedString("addassignment.none", value: "None", comment: "None")).tag(RecurrenceRule.HolidaySource.none)
                                             }
                                             .pickerStyle(.menu)
 
                                             if !holidaySourceAvailable && holidaySource == .deviceCalendar {
-                                                Text("No holiday source configured.")
+                                                Text(NSLocalizedString("addassignment.no.holiday.source.configured", value: "No holiday source configured.", comment: "No holiday source configured."))
                                                     .font(.caption)
                                                     .foregroundStyle(.secondary)
                                             }
@@ -221,14 +221,14 @@ struct AddAssignmentView: View {
 
                     // Details
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("DETAILS")
+                        Text(NSLocalizedString("addassignment.details", value: "DETAILS", comment: "DETAILS"))
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.secondary)
 
                         RootsCard(compact: true) {
                             HStack(spacing: 12) {
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text("Urgency").font(.caption).foregroundStyle(.secondary)
+                                    Text(NSLocalizedString("addassignment.urgency", value: "Urgency", comment: "Urgency")).font(.caption).foregroundStyle(.secondary)
                                     Picker("", selection: $urgency) {
                                         ForEach(AssignmentUrgency.allCases) { u in
                                             Text(u.rawValue.capitalized).tag(u)
@@ -237,13 +237,13 @@ struct AddAssignmentView: View {
                                     .pickerStyle(.menu)
                                 }
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text("Weight %").font(.caption).foregroundStyle(.secondary)
+                                    Text(NSLocalizedString("addassignment.weight", value: "Weight %", comment: "Weight %")).font(.caption).foregroundStyle(.secondary)
                                     TextField("0", value: $weightPercent, formatter: weightFormatter)
                                         .textFieldStyle(.roundedBorder)
                                         .frame(width: 80)
                                 }
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text("Status").font(.caption).foregroundStyle(.secondary)
+                                    Text(NSLocalizedString("addassignment.status", value: "Status", comment: "Status")).font(.caption).foregroundStyle(.secondary)
                                     Picker("", selection: $status) {
                                         ForEach(AssignmentStatus.allCases) { s in
                                             Text(s.label).tag(s)
@@ -258,7 +258,7 @@ struct AddAssignmentView: View {
 
                     // Notes
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("NOTES")
+                        Text(NSLocalizedString("addassignment.notes", value: "NOTES", comment: "NOTES"))
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.secondary)
                         TextEditor(text: $notes)
@@ -269,7 +269,7 @@ struct AddAssignmentView: View {
 
                     // Attachments
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("ATTACHMENTS")
+                        Text(NSLocalizedString("addassignment.attachments", value: "ATTACHMENTS", comment: "ATTACHMENTS"))
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.secondary)
                         AttachmentListView(attachments: $attachments, courseId: selectedCourseId)
@@ -277,7 +277,7 @@ struct AddAssignmentView: View {
 
                     // Footer buttons
                     HStack {
-                        Button("Cancel") {
+                        Button(NSLocalizedString("addassignment.button.cancel", value: "Cancel", comment: "Cancel")) {
                             if hasUnsavedChanges {
                                 showDiscardDialog = true
                             } else {
@@ -288,7 +288,7 @@ struct AddAssignmentView: View {
 
                         Spacer()
 
-                        Button("Save") {
+                        Button(NSLocalizedString("addassignment.button.save", value: "Save", comment: "Save")) {
                             saveTask()
                         }
                         .buttonStyle(.glassBlueProminent)
@@ -329,7 +329,7 @@ struct AddAssignmentView: View {
             isPresented: $showDiscardDialog,
             titleVisibility: .visible
         ) {
-            Button("Save and Close") {
+            Button(NSLocalizedString("addassignment.button.save.and.close", value: "Save and Close", comment: "Save and Close")) {
                 saveTask()
             }
             Button("Discard Changes", role: .destructive) {
@@ -337,7 +337,7 @@ struct AddAssignmentView: View {
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("You have unsaved changes. Save before closing to avoid losing them.")
+            Text(NSLocalizedString("addassignment.you.have.unsaved.changes.save", value: "You have unsaved changes. Save before closing to avoid losing them.", comment: "You have unsaved changes. Save before closing to a..."))
         }
     }
 
@@ -356,7 +356,7 @@ struct AddAssignmentView: View {
                 } label: {
                     HStack {
                         Image(systemName: "plus")
-                        Text("Add Course")
+                        Text(NSLocalizedString("addassignment.add.course", value: "Add Course", comment: "Add Course"))
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -364,7 +364,7 @@ struct AddAssignmentView: View {
             } else {
                 Picker("Course", selection: $selectedCourseId) {
                     // Add "Personal (No Course)" option
-                    Text("Personal (No Course)")
+                    Text(NSLocalizedString("addassignment.personal.no.course", value: "Personal (No Course)", comment: "Personal (No Course)"))
                         .tag(Optional<UUID>(nil))
                     
                     Divider()

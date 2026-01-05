@@ -184,6 +184,11 @@ public final class AIRouter: ObservableObject {
             return apple
         }
 
+        #if os(iOS) || os(iPadOS)
+        // Ensure the lite model download is queued if Apple Intelligence is unavailable.
+        triggerLiteDownloadIfNeeded()
+        #endif
+
         let appleAvailability = AppleIntelligenceProvider.availability()
         LOG_AI(.info, "AIRouter", "Apple Intelligence unavailable", metadata: ["reason": appleAvailability.reason])
 
@@ -204,6 +209,21 @@ public final class AIRouter: ObservableObject {
         // 4. Final fallback
         throw AIError.providerUnavailable("No available AI provider")
     }
+
+    #if os(iOS) || os(iPadOS)
+    private func triggerLiteDownloadIfNeeded() {
+        if LocalModelManager.shared.isModelDownloaded(.iOSLite) || LocalModelManager.shared.isDownloading(.iOSLite) {
+            return
+        }
+        Task {
+            do {
+                try await LocalModelManager.shared.downloadModel(.iOSLite)
+            } catch {
+                LOG_AI(.error, "AIRouter", "Failed to download iOS lite model", metadata: ["error": error.localizedDescription])
+            }
+        }
+    }
+    #endif
     
     /// Select platform-appropriate local provider
     private func selectLocalProvider() async throws -> AIProvider {

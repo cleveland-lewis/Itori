@@ -18,7 +18,7 @@ enum DeveloperLogLevel {
 ///   - file: The source file (automatically captured)
 ///   - function: The function name (automatically captured)
 ///   - line: The line number (automatically captured)
-func LOG_DEV(
+func LOG_DEV_LEGACY(
     _ level: DeveloperLogLevel,
     _ category: String,
     _ message: String,

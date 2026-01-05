@@ -22,7 +22,7 @@ struct MainThreadDebuggerView: View {
                             .font(.title)
                             .foregroundColor(.green)
                         
-                        Text("Debugger Activated")
+                        Text(NSLocalizedString("mainthreaddebugger.debugger.activated", value: "Debugger Activated", comment: "Debugger Activated"))
                             .font(.headline)
                     }
                     .padding(.horizontal, 24)
@@ -41,7 +41,7 @@ struct MainThreadDebuggerView: View {
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button(action: { dismiss() }) {
-                    Label("Back", systemImage: "chevron.left")
+                    Label(NSLocalizedString("mainthreaddebugger.label.back", value: "Back", comment: "Back"), systemImage: "chevron.left")
                 }
             }
         }
@@ -51,7 +51,7 @@ struct MainThreadDebuggerView: View {
         VStack(spacing: 0) {
             // Header with controls
             HStack {
-                Toggle("Enable Main Thread Debugger", isOn: Binding(
+                Toggle(NSLocalizedString("mainthreaddebugger.toggle.enable.main.thread.debugger", value: "Enable Main Thread Debugger", comment: "Enable Main Thread Debugger"), isOn: Binding(
                     get: { 
                         DebugLogger.log("🔍 Toggle GET called - debugger.isEnabled = \(debugger.isEnabled)")
                         return debugger.isEnabled 
@@ -78,17 +78,17 @@ struct MainThreadDebuggerView: View {
                 
                 HStack(spacing: 12) {
                     // TEST BUTTON - to verify enable() works
-                    Button("Test Enable") {
+                    Button(NSLocalizedString("mainthreaddebugger.button.test.enable", value: "Test Enable", comment: "Test Enable")) {
                         DebugLogger.log("🔍 TEST BUTTON clicked - manually calling enable()")
                         MainThreadDebugger.shared.enable()
                     }
                     .buttonStyle(.borderedProminent)
                     
-                    Toggle("Auto-scroll", isOn: $autoScroll)
+                    Toggle(NSLocalizedString("mainthreaddebugger.toggle.autoscroll", value: "Auto-scroll", comment: "Auto-scroll"), isOn: $autoScroll)
                         .font(.caption)
                     
                     Button(action: { debugger.clearEvents() }) {
-                        Label("Clear", systemImage: "trash")
+                        Label(NSLocalizedString("mainthreaddebugger.label.clear", value: "Clear", comment: "Clear"), systemImage: "trash")
                     }
                     .disabled(!debugger.isEnabled)
                 }
@@ -112,10 +112,10 @@ struct MainThreadDebuggerView: View {
                         .font(.system(size: 48))
                         .foregroundStyle(.secondary)
                     
-                    Text("Main Thread Debugger Disabled")
+                    Text(NSLocalizedString("mainthreaddebugger.main.thread.debugger.disabled", value: "Main Thread Debugger Disabled", comment: "Main Thread Debugger Disabled"))
                         .font(.headline)
                     
-                    Text("Enable the debugger to track main thread blocks, long operations, and performance issues.")
+                    Text(NSLocalizedString("mainthreaddebugger.enable.the.debugger.to.track", value: "Enable the debugger to track main thread blocks, long operations, and performance issues.", comment: "Enable the debugger to track main thread blocks, l..."))
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
@@ -142,7 +142,7 @@ struct MainThreadDebuggerView: View {
                             .font(.title)
                             .foregroundColor(.green)
                         
-                        Text("Debugger Activated")
+                        Text(NSLocalizedString("mainthreaddebugger.debugger.activated", value: "Debugger Activated", comment: "Debugger Activated"))
                             .font(.headline)
                     }
                     .padding(.horizontal, 24)
@@ -209,7 +209,7 @@ struct MainThreadDebuggerView: View {
                     Text("Events (\(debugger.events.count))")
                         .font(.headline)
                     Spacer()
-                    Text("Last 500 events")
+                    Text(NSLocalizedString("mainthreaddebugger.last.500.events", value: "Last 500 events", comment: "Last 500 events"))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -247,7 +247,7 @@ struct MainThreadDebuggerView: View {
                     .frame(minWidth: 300)
             } else {
                 VStack {
-                    Text("Select an event to view details")
+                    Text(NSLocalizedString("mainthreaddebugger.select.an.event.to.view.details", value: "Select an event to view details", comment: "Select an event to view details"))
                         .foregroundColor(.secondary)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -298,7 +298,7 @@ struct MainThreadDebuggerView: View {
                 
                 // Message
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Message")
+                    Text(NSLocalizedString("mainthreaddebugger.message", value: "Message", comment: "Message"))
                         .font(.headline)
                     Text(event.message)
                         .font(.body)
@@ -307,7 +307,7 @@ struct MainThreadDebuggerView: View {
                 
                 // Thread Info
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Thread")
+                    Text(NSLocalizedString("mainthreaddebugger.thread", value: "Thread", comment: "Thread"))
                         .font(.headline)
                     Text(event.threadInfo)
                         .font(.body)
@@ -317,7 +317,7 @@ struct MainThreadDebuggerView: View {
                 // Stack Trace
                 if !event.stackTrace.isEmpty {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Stack Trace")
+                        Text(NSLocalizedString("mainthreaddebugger.stack.trace", value: "Stack Trace", comment: "Stack Trace"))
                             .font(.headline)
                         
                         VStack(alignment: .leading, spacing: 2) {

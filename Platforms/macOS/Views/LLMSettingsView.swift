@@ -71,7 +71,7 @@ struct LLMSettingsView: View {
                     
                     Spacer()
                     
-                    Button("Test Connection") {
+                    Button(NSLocalizedString("settings.button.test.connection", value: "Test Connection", comment: "Test Connection")) {
                         testConnection()
                     }
                     .disabled(isTestingConnection)
@@ -84,7 +84,7 @@ struct LLMSettingsView: View {
                 
                 switch config.type {
                 case .mock:
-                    Text("Mock backend - no configuration needed")
+                    Text(NSLocalizedString("settings.mock.backend.no.configuration.needed", value: "Mock backend - no configuration needed", comment: "Mock backend - no configuration needed"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     
@@ -127,13 +127,13 @@ struct LLMSettingsView: View {
             
             Section {
                 HStack {
-                    Button("Reset to Defaults") {
+                    Button(NSLocalizedString("settings.button.reset.to.defaults", value: "Reset to Defaults", comment: "Reset to Defaults")) {
                         resetToDefaults()
                     }
                     
                     Spacer()
                     
-                    Button("Save Configuration") {
+                    Button(NSLocalizedString("settings.button.save.configuration", value: "Save Configuration", comment: "Save Configuration")) {
                         saveConfiguration()
                     }
                     .buttonStyle(.borderedProminent)
@@ -148,10 +148,10 @@ struct LLMSettingsView: View {
     
     private var mlxSettings: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("MLX Configuration")
+            Text(NSLocalizedString("settings.mlx.configuration", value: "MLX Configuration", comment: "MLX Configuration"))
                 .font(.headline)
             
-            Text("MLX models are loaded from the Hugging Face hub or local cache")
+            Text(NSLocalizedString("settings.mlx.models.are.loaded.from", value: "MLX models are loaded from the Hugging Face hub or local cache", comment: "MLX models are loaded from the Hugging Face hub or..."))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             
@@ -161,12 +161,12 @@ struct LLMSettingsView: View {
                     set: { config.mlxModelPath = $0 }
                 ))
             } else {
-                Button("Set Custom Model Path") {
+                Button(NSLocalizedString("settings.button.set.custom.model.path", value: "Set Custom Model Path", comment: "Set Custom Model Path")) {
                     config.mlxModelPath = ""
                 }
             }
             
-            Text("Common MLX models:")
+            Text(NSLocalizedString("settings.common.mlx.models", value: "Common MLX models:", comment: "Common MLX models:"))
                 .font(.caption.bold())
             
             ForEach([
@@ -186,7 +186,7 @@ struct LLMSettingsView: View {
     
     private var ollamaSettings: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Ollama Configuration")
+            Text(NSLocalizedString("settings.ollama.configuration", value: "Ollama Configuration", comment: "Ollama Configuration"))
                 .font(.headline)
             
             TextField("Ollama Host", text: Binding(
@@ -195,7 +195,7 @@ struct LLMSettingsView: View {
             ))
             .help("Ollama server address")
             
-            Text("Common Ollama models:")
+            Text(NSLocalizedString("settings.common.ollama.models", value: "Common Ollama models:", comment: "Common Ollama models:"))
                 .font(.caption.bold())
             
             ForEach([
@@ -216,7 +216,7 @@ struct LLMSettingsView: View {
     
     private var openAISettings: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("OpenAI-Compatible LLM API Configuration")
+            Text(NSLocalizedString("settings.openaicompatible.llm.api.configuration", value: "OpenAI-Compatible LLM API Configuration", comment: "OpenAI-Compatible LLM API Configuration"))
                 .font(.headline)
             
             TextField("API Endpoint", text: Binding(
@@ -231,7 +231,7 @@ struct LLMSettingsView: View {
             ))
             .help("Your API key")
             
-            Text("Works with OpenAI, Azure OpenAI, LM Studio, and other compatible LLM APIs")
+            Text(NSLocalizedString("settings.works.with.openai.azure.openai", value: "Works with OpenAI, Azure OpenAI, LM Studio, and other compatible LLM APIs", comment: "Works with OpenAI, Azure OpenAI, LM Studio, and ot..."))
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

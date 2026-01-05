@@ -53,7 +53,7 @@ struct ActivityEditorView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section(header: Text("Details")) {
+                Section(header: Text(NSLocalizedString("activityeditor.details", value: "Details", comment: "Details"))) {
                     TextField("Name", text: $draft.name)
                     TextField("Emoji", text: $emoji)
                         .frame(width: 80)
@@ -66,23 +66,23 @@ struct ActivityEditorView: View {
                         .lineLimit(2...4)
                 }
 
-                Section(header: Text("Links")) {
+                Section(header: Text(NSLocalizedString("activityeditor.links", value: "Links", comment: "Links"))) {
                     Picker("Course", selection: Binding(get: { selectedCourseID }, set: { selectedCourseID = $0 })) {
-                        Text("None").tag(UUID?.none)
+                        Text(NSLocalizedString("activityeditor.none", value: "None", comment: "None")).tag(UUID?.none)
                         ForEach(mockCourses.sorted(by: { $0.value < $1.value }), id: \.key) { id, name in
                             Text(name).tag(Optional(id))
                         }
                     }
 
                     Picker("Assignment", selection: Binding(get: { selectedAssignmentID }, set: { selectedAssignmentID = $0 })) {
-                        Text("None").tag(UUID?.none)
+                        Text(NSLocalizedString("activityeditor.none", value: "None", comment: "None")).tag(UUID?.none)
                         ForEach(mockAssignments.sorted(by: { $0.value < $1.value }), id: \.key) { id, name in
                             Text(name).tag(Optional(id))
                         }
                     }
 
                     Picker("Collection", selection: Binding(get: { selectedCollectionID }, set: { selectedCollectionID = $0 })) {
-                        Text("None").tag(UUID?.none)
+                        Text(NSLocalizedString("activityeditor.none", value: "None", comment: "None")).tag(UUID?.none)
                         ForEach(collections) { collection in
                             Text(collection.name).tag(Optional(collection.id))
                         }
@@ -95,10 +95,10 @@ struct ActivityEditorView: View {
 #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismissView() }
+                    Button(NSLocalizedString("activityeditor.button.cancel", value: "Cancel", comment: "Cancel")) { dismissView() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { save() }
+                    Button(NSLocalizedString("activityeditor.button.save", value: "Save", comment: "Save")) { save() }
                     .buttonStyle(LegacyGlassProminentButtonStyle())
                 }
             }

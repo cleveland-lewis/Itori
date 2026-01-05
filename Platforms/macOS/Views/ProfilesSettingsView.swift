@@ -88,79 +88,79 @@ struct ProfilesSettingsView: View {
                 }
 
             } header: {
-                Text("Study Session Defaults")
+                Text(NSLocalizedString("settings.study.session.defaults", value: "Study Session Defaults", comment: "Study Session Defaults"))
             } footer: {
-                Text("These settings determine your default study session configuration. You can adjust them for individual sessions.")
+                Text(NSLocalizedString("settings.these.settings.determine.your.default", value: "These settings determine your default study session configuration. You can adjust them for individual sessions.", comment: "These settings determine your default study sessio..."))
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
             }
 
             Section {
-                Toggle("Enable Study Coach", isOn: $settings.enableStudyCoach)
+                Toggle(NSLocalizedString("settings.toggle.enable.study.coach", value: "Enable Study Coach", comment: "Enable Study Coach"), isOn: $settings.enableStudyCoach)
                     .onChange(of: settings.enableStudyCoach) { _, _ in
                         settings.save()
                     }
 
-                Toggle("Smart Notifications", isOn: $settings.smartNotifications)
+                Toggle(NSLocalizedString("settings.toggle.smart.notifications", value: "Smart Notifications", comment: "Smart Notifications"), isOn: $settings.smartNotifications)
                     .onChange(of: settings.smartNotifications) { _, _ in
                         settings.save()
                         NotificationManager.shared.updateSmartNotificationSchedules()
                     }
 
-                Toggle("Auto-Schedule Breaks", isOn: $settings.autoScheduleBreaks)
+                Toggle(NSLocalizedString("settings.toggle.autoschedule.breaks", value: "Auto-Schedule Breaks", comment: "Auto-Schedule Breaks"), isOn: $settings.autoScheduleBreaks)
                     .onChange(of: settings.autoScheduleBreaks) { _, _ in
                         settings.save()
                     }
             } header: {
-                Text("Study Coach")
+                Text(NSLocalizedString("settings.study.coach", value: "Study Coach", comment: "Study Coach"))
             } footer: {
-                Text("The Study Coach helps you maintain focus and suggests optimal study patterns based on your energy levels.")
+                Text(NSLocalizedString("settings.the.study.coach.helps.you", value: "The Study Coach helps you maintain focus and suggests optimal study patterns based on your energy levels.", comment: "The Study Coach helps you maintain focus and sugge..."))
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
             }
 
             Section {
-                Toggle("Track Study Hours", isOn: $settings.trackStudyHours)
+                Toggle(NSLocalizedString("settings.toggle.track.study.hours", value: "Track Study Hours", comment: "Track Study Hours"), isOn: $settings.trackStudyHours)
                     .onChange(of: settings.trackStudyHours) { _, _ in
                         settings.save()
                     }
 
-                Toggle("Show Productivity Insights", isOn: $settings.showProductivityInsights)
+                Toggle(NSLocalizedString("settings.toggle.show.productivity.insights", value: "Show Productivity Insights", comment: "Show Productivity Insights"), isOn: $settings.showProductivityInsights)
                     .onChange(of: settings.showProductivityInsights) { _, _ in
                         settings.save()
                     }
 
-                Toggle("Weekly Summary Notifications", isOn: $settings.weeklySummaryNotifications)
+                Toggle(NSLocalizedString("settings.toggle.weekly.summary.notifications", value: "Weekly Summary Notifications", comment: "Weekly Summary Notifications"), isOn: $settings.weeklySummaryNotifications)
                     .onChange(of: settings.weeklySummaryNotifications) { _, _ in
                         settings.save()
                         NotificationManager.shared.updateSmartNotificationSchedules()
                     }
             } header: {
-                Text("Productivity Tracking")
+                Text(NSLocalizedString("settings.productivity.tracking", value: "Productivity Tracking", comment: "Productivity Tracking"))
             }
 
             Section {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Cognitive Preferences")
+                    Text(NSLocalizedString("settings.cognitive.preferences", value: "Cognitive Preferences", comment: "Cognitive Preferences"))
                         .font(.subheadline.weight(.semibold))
 
-                    Toggle("Prefer Morning Study Sessions", isOn: $settings.preferMorningSessions)
+                    Toggle(NSLocalizedString("settings.toggle.prefer.morning.study.sessions", value: "Prefer Morning Study Sessions", comment: "Prefer Morning Study Sessions"), isOn: $settings.preferMorningSessions)
                         .onChange(of: settings.preferMorningSessions) { _, _ in
                             settings.save()
                         }
 
-                    Toggle("Prefer Evening Study Sessions", isOn: $settings.preferEveningSessions)
+                    Toggle(NSLocalizedString("settings.toggle.prefer.evening.study.sessions", value: "Prefer Evening Study Sessions", comment: "Prefer Evening Study Sessions"), isOn: $settings.preferEveningSessions)
                         .onChange(of: settings.preferEveningSessions) { _, _ in
                             settings.save()
                         }
 
-                    Toggle("Enable Deep Work Mode", isOn: $settings.enableDeepWorkMode)
+                    Toggle(NSLocalizedString("settings.toggle.enable.deep.work.mode", value: "Enable Deep Work Mode", comment: "Enable Deep Work Mode"), isOn: $settings.enableDeepWorkMode)
                         .onChange(of: settings.enableDeepWorkMode) { _, _ in
                             settings.save()
                         }
                 }
             } footer: {
-                Text("Customize your study preferences based on your peak productivity times.")
+                Text(NSLocalizedString("settings.customize.your.study.preferences.based", value: "Customize your study preferences based on your peak productivity times.", comment: "Customize your study preferences based on your pea..."))
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
             }

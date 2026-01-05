@@ -111,7 +111,7 @@ final class DragDropTypesTests: XCTestCase {
         XCTAssertEqual(plainText, "Independent Study")
     }
     
-    func testWindowStateEncoding() {
+    @MainActor func testWindowStateEncoding() {
         // Given
         let assignmentId = UUID().uuidString
         let state = WindowState(
@@ -135,7 +135,7 @@ final class DragDropTypesTests: XCTestCase {
         XCTAssertEqual(decoded?.displayTitle, "Math Homework")
     }
     
-    func testWindowStateHash() {
+    @MainActor func testWindowStateHash() {
         // Given
         let id1 = UUID().uuidString
         let state1 = WindowState(windowId: .assignmentDetail, entityId: id1)
@@ -147,3 +147,4 @@ final class DragDropTypesTests: XCTestCase {
         XCTAssertNotEqual(state1, state3) // Different window type
     }
 }
+

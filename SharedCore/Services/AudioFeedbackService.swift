@@ -7,7 +7,7 @@ final class AudioFeedbackService {
     static let shared = AudioFeedbackService()
     
     private var audioPlayers: [String: AVAudioPlayer] = [:]
-    private let settings = AppSettingsModel.shared
+    private var settings: AppSettingsModel { AppSettingsModel.shared }
     
     // Keep strong references to audio engines during playback
     private var activeEngines: [UUID: AVAudioEngine] = [:]

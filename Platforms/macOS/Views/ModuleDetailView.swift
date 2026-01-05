@@ -16,7 +16,7 @@ struct ModuleDetailView: View {
                 // Header with back button
                 HStack {
                     Button(action: onBack) {
-                        Label("Back", systemImage: "chevron.left")
+                        Label(NSLocalizedString("moduledetail.label.back", value: "Back", comment: "Back"), systemImage: "chevron.left")
                             .font(.body)
                     }
                     .buttonStyle(.plain)
@@ -53,7 +53,7 @@ struct ModuleDetailView: View {
                         .padding(.vertical, 4)
                     
                     HStack(spacing: 16) {
-                        Label("Created", systemImage: "calendar")
+                        Label(NSLocalizedString("moduledetail.label.created", value: "Created", comment: "Created"), systemImage: "calendar")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Text(module.createdAt, style: .date)
@@ -61,7 +61,7 @@ struct ModuleDetailView: View {
                         
                         Spacer()
                         
-                        Label("\(files.count) files", systemImage: "doc")
+                        Label(NSLocalizedString("moduledetail.label.filescount.files", value: "\(files.count) files", comment: "\(files.count) files"), systemImage: "doc")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -72,13 +72,13 @@ struct ModuleDetailView: View {
                 // Files section
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
-                        Text("Module Files")
+                        Text(NSLocalizedString("moduledetail.module.files", value: "Module Files", comment: "Module Files"))
                             .font(.headline.weight(.semibold))
                         
                         Spacer()
                         
                         Button(action: onAddFiles) {
-                            Label("Add Files", systemImage: "plus")
+                            Label(NSLocalizedString("moduledetail.label.add.files", value: "Add Files", comment: "Add Files"), systemImage: "plus")
                                 .font(.caption.weight(.medium))
                         }
                         .buttonStyle(.bordered)
@@ -92,10 +92,10 @@ struct ModuleDetailView: View {
                                 .font(.system(size: 48))
                                 .foregroundStyle(.tertiary)
                             
-                            Text("No files attached")
+                            Text(NSLocalizedString("moduledetail.no.files.attached", value: "No files attached", comment: "No files attached"))
                                 .font(.subheadline.weight(.medium))
                             
-                            Text("Add files to this module to keep them organized")
+                            Text(NSLocalizedString("moduledetail.add.files.to.this.module.to.keep.them.organized", value: "Add files to this module to keep them organized", comment: "Add files to this module to keep them organized"))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .multilineTextAlignment(.center)

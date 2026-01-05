@@ -11,18 +11,18 @@ struct StorageSettingsView: View {
     var body: some View {
         Form {
             Section {
-                Text("Storage & Sync")
+                Text(NSLocalizedString("settings.storage.sync", value: "Storage & Sync", comment: "Storage & Sync"))
                     .font(.title2)
                     .bold()
                     .padding(.bottom, 4)
                 
-                Text("Manage data storage and iCloud synchronization.")
+                Text(NSLocalizedString("settings.manage.data.storage.and.icloud.synchronization", value: "Manage data storage and iCloud synchronization.", comment: "Manage data storage and iCloud synchronization."))
                     .foregroundStyle(.secondary)
             }
             .listRowBackground(Color.clear)
             
             Section("iCloud Sync") {
-                Toggle("Enable iCloud Sync", isOn: $settings.enableICloudSync)
+                Toggle(NSLocalizedString("settings.toggle.enable.icloud.sync", value: "Enable iCloud Sync", comment: "Enable iCloud Sync"), isOn: $settings.enableICloudSync)
                     .onChange(of: settings.enableICloudSync) { _, newValue in
                         settings.save()
                         statusLabel = "Syncing"
@@ -44,16 +44,16 @@ struct StorageSettingsView: View {
             
             Section("Storage Usage") {
                 HStack {
-                    Text("Local Database")
+                    Text(NSLocalizedString("settings.local.database", value: "Local Database", comment: "Local Database"))
                     Spacer()
-                    Text("Storage info unavailable")
+                    Text(NSLocalizedString("settings.storage.info.unavailable", value: "Storage info unavailable", comment: "Storage info unavailable"))
                         .foregroundStyle(.secondary)
                 }
                 
                 HStack {
-                    Text("Cache")
+                    Text(NSLocalizedString("settings.cache", value: "Cache", comment: "Cache"))
                     Spacer()
-                    Button("Clear Cache") {
+                    Button(NSLocalizedString("settings.button.clear.cache", value: "Clear Cache", comment: "Clear Cache")) {
                         // Clear any cached data
                         UserDefaults.standard.removeObject(forKey: "debug.logs")
                         UserDefaults.standard.removeObject(forKey: "analytics.events")

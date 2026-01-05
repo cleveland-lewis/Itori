@@ -402,7 +402,7 @@ struct AccessibilityDebugPanel: View {
     }
     
     private func exportReport() {
-        // TODO: Export audit results as JSON/PDF
+        // Deferred: export audit results
         print("Exporting audit report...")
     }
 }

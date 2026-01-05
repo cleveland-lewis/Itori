@@ -40,4 +40,8 @@ enum AppPage: String, CaseIterable, Identifiable {
         case .practice:    return "list.clipboard"
         }
     }
+    
+    static func from(_ rootTab: RootTab) -> AppPage {
+        AppPage(rawValue: rootTab.rawValue) ?? .dashboard
+    }
 }

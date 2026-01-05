@@ -8,24 +8,24 @@ struct PrivacySettingsView: View {
     var body: some View {
         Form {
             Section {
-                Text("Privacy & Security")
+                Text(NSLocalizedString("settings.privacy.security", value: "Privacy & Security", comment: "Privacy & Security"))
                     .font(.title2)
                     .bold()
                     .padding(.bottom, 4)
                 
-                Text("Control how Itori uses your data and manages privacy-sensitive features.")
+                Text(NSLocalizedString("settings.control.how.itori.uses.your", value: "Control how Itori uses your data and manages privacy-sensitive features.", comment: "Control how Itori uses your data and manages priva..."))
                     .foregroundStyle(.secondary)
             }
             .listRowBackground(Color.clear)
             
             Section("LLM Settings") {
-                Text("LLM configuration has been moved to the LLM settings page.")
+                Text(NSLocalizedString("settings.llm.configuration.has.been.moved", value: "LLM configuration has been moved to the LLM settings page.", comment: "LLM configuration has been moved to the LLM settin..."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             
             Section("Data Storage") {
-                Text("Manage iCloud sync in Storage settings.")
+                Text(NSLocalizedString("settings.manage.icloud.sync.in.storage.settings", value: "Manage iCloud sync in Storage settings.", comment: "Manage iCloud sync in Storage settings."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -36,11 +36,11 @@ struct PrivacySettingsView: View {
                 } label: {
                     HStack {
                         Image(systemName: "trash")
-                        Text("Clear Debug Logs")
+                        Text(NSLocalizedString("settings.clear.debug.logs", value: "Clear Debug Logs", comment: "Clear Debug Logs"))
                     }
                 }
                 
-                Text("Clear all debug logs and analytics data stored on your device.")
+                Text(NSLocalizedString("settings.clear.all.debug.logs.and", value: "Clear all debug logs and analytics data stored on your device.", comment: "Clear all debug logs and analytics data stored on ..."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -51,7 +51,7 @@ struct PrivacySettingsView: View {
                 } label: {
                     HStack {
                         Image(systemName: "hand.raised")
-                        Text("Manage Permissions")
+                        Text(NSLocalizedString("settings.manage.permissions", value: "Manage Permissions", comment: "Manage Permissions"))
                         Spacer()
                         Image(systemName: "arrow.up.forward")
                             .font(.caption)
@@ -59,7 +59,7 @@ struct PrivacySettingsView: View {
                     }
                 }
                 
-                Text("Open System Settings to manage calendar, notifications, and other permissions.")
+                Text(NSLocalizedString("settings.open.system.settings.to.manage", value: "Open System Settings to manage calendar, notifications, and other permissions.", comment: "Open System Settings to manage calendar, notificat..."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

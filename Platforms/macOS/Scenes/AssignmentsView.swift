@@ -123,7 +123,7 @@ struct AssignmentsView: View {
                     // NEW: Personal Tasks Section
                     if filter == .all || filter == .personal {
                         Section(header: HStack {
-                            Text("Personal Tasks")
+                            Text(NSLocalizedString("assignments.personal.tasks", value: "Personal Tasks", comment: "Personal Tasks"))
                                 .font(DesignSystem.Typography.body)
                             Image(systemName: "person.fill")
                                 .font(.caption)
@@ -135,9 +135,9 @@ struct AssignmentsView: View {
                                     VStack(spacing: DesignSystem.Spacing.small) {
                                         Image(systemName: "person.crop.circle")
                                             .imageScale(.large)
-                                        Text("Personal Tasks")
+                                        Text(NSLocalizedString("assignments.personal.tasks", value: "Personal Tasks", comment: "Personal Tasks"))
                                             .font(DesignSystem.Typography.title)
-                                        Text("Create personal tasks not tied to any course")
+                                        Text(NSLocalizedString("assignments.create.personal.tasks.not.tied.to.any.course", value: "Create personal tasks not tied to any course", comment: "Create personal tasks not tied to any course"))
                                             .font(DesignSystem.Typography.body)
                                             .foregroundStyle(.secondary)
                                     }

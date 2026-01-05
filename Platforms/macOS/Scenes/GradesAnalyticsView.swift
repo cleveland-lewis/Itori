@@ -54,10 +54,10 @@ struct GradesAnalyticsView: View {
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Grade Analytics")
+                Text(NSLocalizedString("gradesanalytics.grade.analytics", value: "Grade Analytics", comment: "Grade Analytics"))
                     .font(.title.bold())
                 
-                Text("Visualize your academic performance")
+                Text(NSLocalizedString("gradesanalytics.visualize.your.academic.performance", value: "Visualize your academic performance", comment: "Visualize your academic performance"))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -86,17 +86,17 @@ struct GradesAnalyticsView: View {
                 .symbolRenderingMode(.hierarchical)
             
             VStack(alignment: .leading, spacing: 2) {
-                Text("What-If Mode Active")
+                Text(NSLocalizedString("gradesanalytics.whatif.mode.active", value: "What-If Mode Active", comment: "What-If Mode Active"))
                     .font(.subheadline.weight(.semibold))
                 
-                Text("Hypothetical grades won't be saved")
+                Text(NSLocalizedString("gradesanalytics.hypothetical.grades.wont.be.saved", value: "Hypothetical grades won't be saved", comment: "Hypothetical grades won't be saved"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             
             Spacer()
             
-            Button("Reset") {
+            Button(NSLocalizedString("gradesanalytics.button.reset", value: "Reset", comment: "Reset")) {
                 resetWhatIfMode()
             }
             .buttonStyle(.bordered)
@@ -123,13 +123,13 @@ struct GradesAnalyticsView: View {
     
     private var filterControls: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Filters")
+            Text(NSLocalizedString("gradesanalytics.filters", value: "Filters", comment: "Filters"))
                 .font(.headline)
             
             HStack(spacing: 12) {
                 // Course Filter
                 Menu {
-                    Button("All Courses") {
+                    Button(NSLocalizedString("gradesanalytics.button.all.courses", value: "All Courses", comment: "All Courses")) {
                         selectedCourseId = nil
                     }
                     
@@ -177,7 +177,7 @@ struct GradesAnalyticsView: View {
                 
                 // Weighted Toggle
                 Toggle(isOn: $showWeightedGPA) {
-                    Label("Weighted", systemImage: "scalemass")
+                    Label(NSLocalizedString("gradesanalytics.label.weighted", value: "Weighted", comment: "Weighted"), systemImage: "scalemass")
                 }
                 .toggleStyle(.button)
                 .controlSize(.regular)
@@ -191,7 +191,7 @@ struct GradesAnalyticsView: View {
                         whatIfAssignments = [:]
                     }
                 } label: {
-                    Label("What-If Mode", systemImage: "wand.and.stars")
+                    Label(NSLocalizedString("gradesanalytics.label.whatif.mode", value: "What-If Mode", comment: "What-If Mode"), systemImage: "wand.and.stars")
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(whatIfMode ? Color.accentColor : .secondary)
@@ -200,7 +200,7 @@ struct GradesAnalyticsView: View {
                 Button {
                     showRiskBreakdown.toggle()
                 } label: {
-                    Label("Risk Analysis", systemImage: "exclamationmark.triangle")
+                    Label(NSLocalizedString("gradesanalytics.label.risk.analysis", value: "Risk Analysis", comment: "Risk Analysis"), systemImage: "exclamationmark.triangle")
                 }
                 .buttonStyle(.bordered)
             }
@@ -360,7 +360,7 @@ struct GradesAnalyticsView: View {
                 VStack(spacing: 4) {
                     Text("\(data.first(where: { $0.status == "Completed" })?.count ?? 0)")
                         .font(.title.bold())
-                    Text("Completed")
+                    Text(NSLocalizedString("gradesanalytics.completed", value: "Completed", comment: "Completed"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -465,7 +465,7 @@ struct GradesAnalyticsView: View {
     private var riskBreakdownSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Text("Risk Analysis")
+                Text(NSLocalizedString("gradesanalytics.risk.analysis", value: "Risk Analysis", comment: "Risk Analysis"))
                     .font(.title3.bold())
                 
                 Spacer()

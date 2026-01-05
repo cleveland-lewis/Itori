@@ -25,12 +25,12 @@ struct AssignmentRow: View {
             Button {
                 SceneActivationHelper.openAssignmentWindow(for: task)
             } label: {
-                Label("Open in New Window", systemImage: "doc.on.doc")
+                Label(NSLocalizedString("ui.label.open.in.new.window", value: "Open in New Window", comment: "Open in New Window"), systemImage: "doc.on.doc")
             }
-            Button("Edit") {
-                // TODO: wire edit
+            Button(NSLocalizedString("ui.button.edit", value: "Edit", comment: "Edit")) {
+                SceneActivationHelper.openAssignmentWindow(for: task)
             }
-            Button("Delete") {
+            Button(NSLocalizedString("ui.button.delete", value: "Delete", comment: "Delete")) {
                 AssignmentsStore.shared.removeTask(id: task.id)
             }
         }

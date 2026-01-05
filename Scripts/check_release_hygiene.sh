@@ -32,6 +32,68 @@ else
     echo -e "${GREEN}✅ No TODO strings in UI${NC}"
 fi
 
+# Check 1b: .orig files from merge conflicts
+echo "🔀 Checking for .orig files..."
+ORIG_FILES=$(find Platforms/ SharedCore/ Shared/ \( -name "*.orig" \) 2>/dev/null || true)
+
+if [ -n "$ORIG_FILES" ]; then
+    echo -e "${RED}❌ Found .orig files (merge conflict residue):${NC}"
+    echo "$ORIG_FILES"
+    ERRORS=$((ERRORS + 1))
+    echo ""
+else
+    echo -e "${GREEN}✅ No .orig files found${NC}"
+fi
+
+# Check 1c: Merge conflict markers
+echo "🔀 Checking for conflict markers..."
+CONFLICT_MARKERS=$(grep -r -n "^<<<<<<< \|^=======$\|^>>>>>>> " --include="*.swift" Platforms/ SharedCore/ Shared/ 2>/dev/null || true)
+
+if [ -n "$CONFLICT_MARKERS" ]; then
+    echo -e "${RED}❌ Found unresolved merge conflicts:${NC}"
+    echo "$CONFLICT_MARKERS"
+    ERRORS=$((ERRORS + 1))
+    echo ""
+else
+    echo -e "${GREEN}✅ No conflict markers found${NC}"
+fi
+
+# Check 1d: Force unwraps in critical paths
+echo "⚠️  Checking for force unwraps in UI/State..."
+FORCE_UNWRAPS=$(grep -r "!" --include="*.swift" SharedCore/Views/ SharedCore/State/ Platforms/*/Scenes/ 2>/dev/null | \
+    grep -v "!=" | \
+    grep -v "// swiftlint:disable:next force_unwrapping" | \
+    grep -v "Test" | \
+    grep -v "_Deprecated" | \
+    grep -E '\!\s*(\.|$|\))' || true)
+
+FORCE_UNWRAP_COUNT=$(echo "$FORCE_UNWRAPS" | grep -v "^$" | wc -l || echo "0")
+if [ "$FORCE_UNWRAP_COUNT" -gt 0 ]; then
+    echo -e "${YELLOW}⚠️  Warning: Found $FORCE_UNWRAP_COUNT force unwrap(s) in critical paths${NC}"
+    echo "   (Review each for safety - not all are bugs)"
+    WARNINGS=$((WARNINGS + 1))
+    echo ""
+else
+    echo -e "${GREEN}✅ No force unwraps in critical paths${NC}"
+fi
+
+# Check 1e: Raw TODOs without issue tracking
+echo "📋 Checking for untracked TODOs..."
+RAW_TODOS=$(grep -r "// TODO:" --include="*.swift" Platforms/ SharedCore/ Shared/ 2>/dev/null | \
+    grep -v "TODO(#" | \
+    grep -v "Test" | \
+    grep -v "_Deprecated" || true)
+
+RAW_TODO_COUNT=$(echo "$RAW_TODOS" | grep -v "^$" | wc -l || echo "0")
+if [ "$RAW_TODO_COUNT" -gt 0 ]; then
+    echo -e "${YELLOW}⚠️  Warning: Found $RAW_TODO_COUNT untracked TODO(s)${NC}"
+    echo "   (Use format: TODO(#123): description)"
+    WARNINGS=$((WARNINGS + 1))
+    echo ""
+else
+    echo -e "${GREEN}✅ All TODOs are tracked${NC}"
+fi
+
 # Check 2: Backup files
 echo "📦 Checking for backup files..."
 BACKUP_FILES=$(find . \( -name "*.backup" -o -name "*.bak" -o -name "*.bak*" \) \

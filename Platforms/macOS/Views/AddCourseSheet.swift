@@ -13,20 +13,20 @@ struct AddCourseSheet: View {
         VStack {
             AppCard {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("New Course")
+                    Text(NSLocalizedString("ui.new.course", value: "New Course", comment: "New Course"))
                         .font(.title3.bold())
 
                     TextField("Biology 101", text: $title)
                     TextField("e.g. BIO 101", text: $code)
 
-                    Text("Semester")
+                    Text(NSLocalizedString("ui.semester", value: "Semester", comment: "Semester"))
                     SemesterPicker(selectedSemesterId: $semesterId)
                         .environmentObject(coursesStore)
 
                     HStack {
                         Spacer()
-                        Button("Cancel") { dismiss() }
-                        Button("Save") {
+                        Button(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel")) { dismiss() }
+                        Button(NSLocalizedString("ui.button.save", value: "Save", comment: "Save")) {
                             guard !title.trimmingCharacters(in: .whitespaces).isEmpty else { return }
                             guard let semId = semesterId ?? coursesStore.currentSemesterId,
                                   let sem = coursesStore.semesters.first(where: { $0.id == semId }) else { return }

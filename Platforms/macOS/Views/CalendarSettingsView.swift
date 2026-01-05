@@ -14,7 +14,7 @@ struct CalendarSettingsView: View {
     var body: some View {
         Form {
             Section("Calendar Sync") {
-                Toggle("Enable Calendar Sync", isOn: Binding(
+                Toggle(NSLocalizedString("settings.toggle.enable.calendar.sync", value: "Enable Calendar Sync", comment: "Enable Calendar Sync"), isOn: Binding(
                     get: { isAuthorized },
                     set: { newValue in
                         if newValue {
@@ -27,16 +27,16 @@ struct CalendarSettingsView: View {
                 .toggleStyle(.switch)
 
                 HStack {
-                    Text("Status:")
+                    Text(NSLocalizedString("settings.status", value: "Status:", comment: "Status:"))
                         .foregroundStyle(.secondary)
                     if isAuthorized {
-                        Text("Connected").foregroundStyle(.green)
+                        Text(NSLocalizedString("settings.connected", value: "Connected", comment: "Connected")).foregroundStyle(.green)
                     } else if calendarManager.isCalendarAccessDenied {
-                        Text("Access Denied").foregroundStyle(.red)
-                        Button("Open Settings") { calendarManager.openSystemPrivacySettings() }
+                        Text(NSLocalizedString("settings.access.denied", value: "Access Denied", comment: "Access Denied")).foregroundStyle(.red)
+                        Button(NSLocalizedString("settings.button.open.settings", value: "Open Settings", comment: "Open Settings")) { calendarManager.openSystemPrivacySettings() }
                             .buttonStyle(.link)
                     } else {
-                        Text("Not Connected").foregroundStyle(.secondary)
+                        Text(NSLocalizedString("settings.not.connected", value: "Not Connected", comment: "Not Connected")).foregroundStyle(.secondary)
                     }
                 }
                 .font(DesignSystem.Typography.caption)
@@ -45,7 +45,7 @@ struct CalendarSettingsView: View {
             if isAuthorized {
                 Section("School Calendar") {
                     Picker("School Calendar", selection: Binding(get: { calendarManager.selectedCalendarID.isEmpty ? nil : calendarManager.selectedCalendarID }, set: { calendarManager.selectedCalendarID = $0 ?? "" })) {
-                        Text("Select a Calendar").tag(String?.none)
+                        Text(NSLocalizedString("settings.select.a.calendar", value: "Select a Calendar", comment: "Select a Calendar")).tag(String?.none)
                         ForEach(calendarManager.availableCalendars, id: \.calendarIdentifier) { cal in
                             HStack {
                                 if let cgColor = cal.cgColor, let nsColor = NSColor(cgColor: cgColor) {
@@ -63,7 +63,7 @@ struct CalendarSettingsView: View {
                         _Concurrency.Task { await calendarManager.refreshAll() }
                     }
 
-                    Text("Select the calendar used for school/academic events.")
+                    Text(NSLocalizedString("settings.select.the.calendar.used.for.schoolacademic.events", value: "Select the calendar used for school/academic events.", comment: "Select the calendar used for school/academic event..."))
                         .font(DesignSystem.Typography.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -83,20 +83,20 @@ struct CalendarSettingsView: View {
                             _Concurrency.Task { await calendarManager.refreshAll() }
                         }
                     )) {
-                        Text("1 Week").tag(0)
-                        Text("2 Weeks").tag(1)
-                        Text("1 Month").tag(2)
-                        Text("2 Months").tag(3)
+                        Text(NSLocalizedString("settings.1.week", value: "1 Week", comment: "1 Week")).tag(0)
+                        Text(NSLocalizedString("settings.2.weeks", value: "2 Weeks", comment: "2 Weeks")).tag(1)
+                        Text(NSLocalizedString("settings.1.month", value: "1 Month", comment: "1 Month")).tag(2)
+                        Text(NSLocalizedString("settings.2.months", value: "2 Months", comment: "2 Months")).tag(3)
                     }
                     .pickerStyle(.menu)
                     
-                    Text("How far ahead to scan for events when refreshing.")
+                    Text(NSLocalizedString("settings.how.far.ahead.to.scan.for.events.when.refreshing", value: "How far ahead to scan for events when refreshing.", comment: "How far ahead to scan for events when refreshing."))
                         .font(DesignSystem.Typography.caption)
                         .foregroundStyle(.secondary)
                 }
                 
                 Section("Calendar View Filter") {
-                    Toggle("Show Only School Calendar", isOn: $settings.showOnlySchoolCalendar)
+                    Toggle(NSLocalizedString("settings.toggle.show.only.school.calendar", value: "Show Only School Calendar", comment: "Show Only School Calendar"), isOn: $settings.showOnlySchoolCalendar)
                         .toggleStyle(.switch)
                         .onChange(of: settings.showOnlySchoolCalendar) { _, _ in
                             settings.save()
@@ -111,7 +111,7 @@ struct CalendarSettingsView: View {
                 AssignmentSyncSection()
                 
                 Section("Calendar Picker Lock") {
-                    Toggle("Lock Calendar Picker to School", isOn: $settings.lockCalendarPickerToSchool)
+                    Toggle(NSLocalizedString("settings.toggle.lock.calendar.picker.to.school", value: "Lock Calendar Picker to School", comment: "Lock Calendar Picker to School"), isOn: $settings.lockCalendarPickerToSchool)
                         .toggleStyle(.switch)
                         .onChange(of: settings.lockCalendarPickerToSchool) { _, _ in
                             settings.save()
@@ -126,12 +126,12 @@ struct CalendarSettingsView: View {
         .formStyle(.grouped)
         .navigationTitle("Calendar")
         .alert("Disable Calendar Sync", isPresented: $showingRevokeAlert) {
-            Button("Open System Settings") {
+            Button(NSLocalizedString("settings.button.open.system.settings", value: "Open System Settings", comment: "Open System Settings")) {
                 calendarManager.openSystemPrivacySettings()
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("To disconnect Itori from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars.")
+            Text(NSLocalizedString("settings.to.disconnect.itori.from.your", value: "To disconnect Itori from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars.", comment: "To disconnect Itori from your Calendar, please rev..."))
         }
         .onAppear {
             _Concurrency.Task { await calendarManager.refreshAuthStatus() }
@@ -163,7 +163,7 @@ struct AssignmentSyncSection: View {
     
     var body: some View {
         Section("Assignment Sync") {
-            Toggle("Sync Assignments to Calendar", isOn: Binding(
+            Toggle(NSLocalizedString("settings.toggle.sync.assignments.to.calendar", value: "Sync Assignments to Calendar", comment: "Sync Assignments to Calendar"), isOn: Binding(
                 get: { syncManager.isSyncEnabled },
                 set: { newValue in
                     handleToggleChange(newValue)
@@ -171,14 +171,14 @@ struct AssignmentSyncSection: View {
             ))
             .toggleStyle(.switch)
             
-            Text("Automatically create calendar events for your assignments.")
+            Text(NSLocalizedString("settings.automatically.create.calendar.events.for", value: "Automatically create calendar events for your assignments.", comment: "Automatically create calendar events for your assi..."))
                 .font(DesignSystem.Typography.caption)
                 .foregroundStyle(.secondary)
             
             if syncManager.isSyncEnabled {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text("Last Sync:")
+                        Text(NSLocalizedString("settings.last.sync", value: "Last Sync:", comment: "Last Sync:"))
                             .font(DesignSystem.Typography.caption)
                             .foregroundStyle(.secondary)
                         if let lastSync = syncManager.lastSyncDate {
@@ -186,7 +186,7 @@ struct AssignmentSyncSection: View {
                                 .font(DesignSystem.Typography.caption)
                                 .foregroundStyle(.secondary)
                         } else {
-                            Text("Never")
+                            Text(NSLocalizedString("settings.never", value: "Never", comment: "Never"))
                                 .font(DesignSystem.Typography.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -202,7 +202,7 @@ struct AssignmentSyncSection: View {
                         }
                     }
                     
-                    Button("Sync Now") {
+                    Button(NSLocalizedString("settings.button.sync.now", value: "Sync Now", comment: "Sync Now")) {
                         Task {
                             await syncManager.performFullSync()
                         }
@@ -214,7 +214,7 @@ struct AssignmentSyncSection: View {
             }
         }
         .alert("Calendar Permission Required", isPresented: $showingPermissionAlert) {
-            Button("Grant Access") {
+            Button(NSLocalizedString("settings.button.grant.access", value: "Grant Access", comment: "Grant Access")) {
                 Task {
                     let granted = await syncManager.requestPermissionsIfNeeded()
                     if granted {
@@ -224,7 +224,7 @@ struct AssignmentSyncSection: View {
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("Itori needs access to your calendar to sync assignments. You can grant this in System Settings if you previously denied access.")
+            Text(NSLocalizedString("settings.itori.needs.access.to.your", value: "Itori needs access to your calendar to sync assignments. You can grant this in System Settings if you previously denied access.", comment: "Itori needs access to your calendar to sync assign..."))
         }
     }
     

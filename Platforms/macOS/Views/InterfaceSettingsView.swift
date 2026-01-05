@@ -37,22 +37,22 @@ struct InterfaceSettingsView: View {
     var body: some View {
         Form {
             Section("Accessibility") {
-                Toggle("Reduce Motion", isOn: $preferences.reduceMotion)
+                Toggle(NSLocalizedString("settings.toggle.reduce.motion", value: "Reduce Motion", comment: "Reduce Motion"), isOn: $preferences.reduceMotion)
                     .onChange(of: preferences.reduceMotion) { _, _ in /* AppStorage persists */ }
 
-                Toggle("Increase Contrast", isOn: $preferences.highContrast)
+                Toggle(NSLocalizedString("settings.toggle.increase.contrast", value: "Increase Contrast", comment: "Increase Contrast"), isOn: $preferences.highContrast)
                     .onChange(of: preferences.highContrast) { _, _ in /* AppStorage persists */ }
 
-                Toggle("Reduce Transparency", isOn: $preferences.reduceTransparency)
+                Toggle(NSLocalizedString("settings.toggle.reduce.transparency", value: "Reduce Transparency", comment: "Reduce Transparency"), isOn: $preferences.reduceTransparency)
                     .onChange(of: preferences.reduceTransparency) { _, _ in /* AppStorage persists */ }
             }
 
             Section("Appearance") {
                 VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                    Text("Material Intensity")
+                    Text(NSLocalizedString("settings.material.intensity", value: "Material Intensity", comment: "Material Intensity"))
 
                     HStack {
-                        Text("Low")
+                        Text(NSLocalizedString("settings.low", value: "Low", comment: "Low"))
                             .font(DesignSystem.Typography.caption)
                             .foregroundStyle(.secondary)
 
@@ -63,7 +63,7 @@ struct InterfaceSettingsView: View {
                                 settings.save()
                             }
 
-                        Text("High")
+                        Text(NSLocalizedString("settings.high", value: "High", comment: "High"))
                             .font(DesignSystem.Typography.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -90,39 +90,39 @@ struct InterfaceSettingsView: View {
                         preferences.tabBarMode = newValue
                     }
                 )) {
-                    Text("Icons").tag(TabBarMode.iconsOnly)
-                    Text("Text").tag(TabBarMode.textOnly)
-                    Text("Icons & Text").tag(TabBarMode.iconsAndText)
+                    Text(NSLocalizedString("settings.icons", value: "Icons", comment: "Icons")).tag(TabBarMode.iconsOnly)
+                    Text(NSLocalizedString("settings.text", value: "Text", comment: "Text")).tag(TabBarMode.textOnly)
+                    Text(NSLocalizedString("settings.icons.text", value: "Icons & Text", comment: "Icons & Text")).tag(TabBarMode.iconsAndText)
                 }
 
-                Toggle("Sidebar", isOn: $settings.showSidebarByDefault)
+                Toggle(NSLocalizedString("settings.toggle.sidebar", value: "Sidebar", comment: "Sidebar"), isOn: $settings.showSidebarByDefault)
                     .onChange(of: settings.showSidebarByDefault) { _, _ in settings.save() }
 
-                Toggle("Compact Density", isOn: $settings.compactMode)
+                Toggle(NSLocalizedString("settings.toggle.compact.density", value: "Compact Density", comment: "Compact Density"), isOn: $settings.compactMode)
                     .onChange(of: settings.compactMode) { _, _ in settings.save() }
             }
 
             Section {
-                Toggle("Show Animations", isOn: $settings.showAnimations)
+                Toggle(NSLocalizedString("settings.toggle.show.animations", value: "Show Animations", comment: "Show Animations"), isOn: $settings.showAnimations)
                     .onChange(of: settings.showAnimations) { _, _ in settings.save() }
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Toggle("Enable Haptic Feedback", isOn: $settings.enableHaptics)
+                    Toggle(NSLocalizedString("settings.toggle.enable.haptic.feedback", value: "Enable Haptic Feedback", comment: "Enable Haptic Feedback"), isOn: $settings.enableHaptics)
                         .onChange(of: settings.enableHaptics) { _, _ in settings.save() }
                     
                     if preferences.reduceMotion {
-                        Text("Haptic feedback is disabled when Reduce Motion is enabled")
+                        Text(NSLocalizedString("settings.haptic.feedback.is.disabled.when", value: "Haptic feedback is disabled when Reduce Motion is enabled", comment: "Haptic feedback is disabled when Reduce Motion is ..."))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                 }
 
-                Toggle("Show Tooltips", isOn: $settings.showTooltips)
+                Toggle(NSLocalizedString("settings.toggle.show.tooltips", value: "Show Tooltips", comment: "Show Tooltips"), isOn: $settings.showTooltips)
                     .onChange(of: settings.showTooltips) { _, _ in settings.save() }
             } header: {
-                Text("Interactions")
+                Text(NSLocalizedString("settings.interactions", value: "Interactions", comment: "Interactions"))
             } footer: {
-                Text("Haptic feedback respects accessibility settings")
+                Text(NSLocalizedString("settings.haptic.feedback.respects.accessibility.settings", value: "Haptic feedback respects accessibility settings", comment: "Haptic feedback respects accessibility settings"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

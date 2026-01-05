@@ -24,7 +24,7 @@ struct AddExamPopup: View {
                 TextField("Exam Title", text: $title)
 
                 Picker("Course", selection: Binding(get: { selectedCourseId }, set: { selectedCourseId = $0 })) {
-                    Text("Select course").tag(Optional<UUID>(nil))
+                    Text(NSLocalizedString("ui.select.course", value: "Select course", comment: "Select course")).tag(Optional<UUID>(nil))
                     ForEach(coursesStore.courses) { c in
                         Text(c.title).tag(Optional(c.id))
                     }
@@ -37,9 +37,9 @@ struct AddExamPopup: View {
                     Slider(value: $weight, in: 0...100, step: 1)
                 }
 
-                Section(header: Text("Study Materials")) {
+                Section(header: Text(NSLocalizedString("ui.study.materials", value: "Study Materials", comment: "Study Materials"))) {
                     Button(action: { showImporter = true }) {
-                        HStack { Image(systemName: "tray.and.arrow.up"); Text("Upload Syllabus / Practice Test") }
+                        HStack { Image(systemName: "tray.and.arrow.up"); Text(NSLocalizedString("ui.upload.syllabus.practice.test", value: "Upload Syllabus / Practice Test", comment: "Upload Syllabus / Practice Test")) }
                     }
                     .buttonStyle(RootsLiquidButtonStyle())
                     .fileImporter(isPresented: $showImporter, allowedContentTypes: [.pdf, .image]) { result in
@@ -60,17 +60,17 @@ struct AddExamPopup: View {
                         }
                     }
 
-                    Toggle("Generate Study Guide", isOn: $generateStudyGuide)
+                    Toggle(NSLocalizedString("ui.toggle.generate.study.guide", value: "Generate Study Guide", comment: "Generate Study Guide"), isOn: $generateStudyGuide)
                         .disabled(uploadedURLs.isEmpty)
 
-                    Toggle("Create Flashcard Deck", isOn: $createFlashcardDeck)
+                    Toggle(NSLocalizedString("ui.toggle.create.flashcard.deck", value: "Create Flashcard Deck", comment: "Create Flashcard Deck"), isOn: $createFlashcardDeck)
                         .disabled(uploadedURLs.isEmpty)
                 }
 
                 HStack {
                     Spacer()
-                    Button("Cancel") { dismiss() }
-                    Button("Save") {
+                    Button(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel")) { dismiss() }
+                    Button(NSLocalizedString("ui.button.save", value: "Save", comment: "Save")) {
                         saveExam()
                         dismiss()
                     }

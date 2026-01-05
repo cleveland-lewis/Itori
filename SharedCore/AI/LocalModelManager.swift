@@ -214,7 +214,7 @@ public final class LocalModelManager: ObservableObject {
             throw AIError.generationFailed("Model file size mismatch: expected ~\(type.estimatedSize), got \(size / 1024 / 1024)MB")
         }
         
-        // TODO: Add checksum verification when we have actual model files
+        // Deferred: model file checksum verification
         // For now, size check is sufficient
         
         LOG_AI(.info, "LocalModelManager", "Model verified", metadata: [

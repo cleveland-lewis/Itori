@@ -90,7 +90,7 @@ struct DeckDetailView: View {
                 
                 HStack(spacing: 12) {
                     if dueCards.count > 0 {
-                        Label("\(dueCards.count) due", systemImage: "clock.fill")
+                        Label(NSLocalizedString("deckdetail.label.duecardscount.due", value: "\(dueCards.count) due", comment: "\(dueCards.count) due"), systemImage: "clock.fill")
                             .font(.subheadline)
                             .foregroundStyle(.orange)
                     }
@@ -108,7 +108,7 @@ struct DeckDetailView: View {
                 Button {
                     showingStudySession = true
                 } label: {
-                    Label("Study", systemImage: "brain.head.profile")
+                    Label(NSLocalizedString("deckdetail.label.study", value: "Study", comment: "Study"), systemImage: "brain.head.profile")
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(dueCards.isEmpty && newCards.isEmpty)
@@ -193,17 +193,17 @@ struct DeckDetailView: View {
                 .font(.system(size: 48))
                 .foregroundStyle(.tertiary)
             
-            Text("No Cards Yet")
+            Text(NSLocalizedString("deckdetail.no.cards.yet", value: "No Cards Yet", comment: "No Cards Yet"))
                 .font(.headline)
             
-            Text("Add your first flashcard to start studying")
+            Text(NSLocalizedString("deckdetail.add.your.first.flashcard.to.start.studying", value: "Add your first flashcard to start studying", comment: "Add your first flashcard to start studying"))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             
             Button {
                 showingAddCard = true
             } label: {
-                Label("Add Card", systemImage: "plus")
+                Label(NSLocalizedString("deckdetail.label.add.card", value: "Add Card", comment: "Add Card"), systemImage: "plus")
             }
             .buttonStyle(.borderedProminent)
         }
@@ -357,7 +357,7 @@ struct FlashcardRowView: View {
             Button {
                 showingEdit = true
             } label: {
-                Label("Edit Card", systemImage: "pencil")
+                Label(NSLocalizedString("deckdetail.label.edit.card", value: "Edit Card", comment: "Edit Card"), systemImage: "pencil")
             }
             
             Divider()
@@ -365,7 +365,7 @@ struct FlashcardRowView: View {
             Button(role: .destructive) {
                 deleteCard()
             } label: {
-                Label("Delete Card", systemImage: "trash")
+                Label(NSLocalizedString("deckdetail.label.delete.card", value: "Delete Card", comment: "Delete Card"), systemImage: "trash")
             }
         }
         .sheet(isPresented: $showingEdit) {

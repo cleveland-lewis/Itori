@@ -211,7 +211,7 @@ final class LocalizationComprehensiveTests: XCTestCase {
             (5, "5 tasks due"),
         ]
         
-        for (count, expectedPattern) in testCases {
+        for (count, _) in testCases {
             let result = String.localizedStringWithFormat(
                 NSLocalizedString("tasks_due_count", comment: ""),
                 count
@@ -369,7 +369,7 @@ final class LocalizationComprehensiveTests: XCTestCase {
         ]
         
         for locale in rtlLocales {
-            let isRTL = Locale.characterDirection(forLanguage: locale.languageCode ?? "") == .rightToLeft
+            let isRTL = locale.language.characterDirection == .rightToLeft
             XCTAssertTrue(isRTL, "Locale \(locale.identifier) should be RTL")
         }
         
@@ -380,7 +380,7 @@ final class LocalizationComprehensiveTests: XCTestCase {
         ]
         
         for locale in ltrLocales {
-            let isLTR = Locale.characterDirection(forLanguage: locale.languageCode ?? "") == .leftToRight
+            let isLTR = locale.language.characterDirection == .leftToRight
             XCTAssertTrue(isLTR, "Locale \(locale.identifier) should be LTR")
         }
     }
@@ -418,3 +418,4 @@ final class LocalizationComprehensiveTests: XCTestCase {
             "Negative number should show minus sign")
     }
 }
+

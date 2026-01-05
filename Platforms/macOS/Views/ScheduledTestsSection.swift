@@ -68,7 +68,7 @@ private struct ScheduledTestRow: View {
                     }
                     
                     if let duration = test.estimatedMinutes {
-                        Label("\(duration) min", systemImage: "clock")
+                        Label(NSLocalizedString("ui.label.duration.min", value: "\(duration) min", comment: "\(duration) min"), systemImage: "clock")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -114,18 +114,18 @@ private struct ScheduledTestRow: View {
         }
         .contextMenu {
             if canStart {
-                Button("Start Test") {
+                Button(NSLocalizedString("ui.button.start.test", value: "Start Test", comment: "Start Test")) {
                     onStart()
                 }
             }
             
-            Button("View Details") {
+            Button(NSLocalizedString("ui.button.view.details", value: "View Details", comment: "View Details")) {
                 // Could open a detail sheet if implemented
             }
             
             Divider()
             
-            Button("Edit Schedule") {
+            Button(NSLocalizedString("ui.button.edit.schedule", value: "Edit Schedule", comment: "Edit Schedule")) {
                 // Could open an edit sheet if implemented
             }
             

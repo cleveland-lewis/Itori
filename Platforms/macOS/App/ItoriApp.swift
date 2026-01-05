@@ -88,32 +88,24 @@ struct ItoriApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
-            AssignmentPlan.self,
-            PlanStep.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
-            LOG_CORE(.error, "ModelContainer", "CRITICAL: Could not create ModelContainer: \(error.localizedDescription)")
+            LOG_DATA(.error, "ModelContainer", "CRITICAL: Could not create ModelContainer: \(error.localizedDescription)")
             // Fallback to in-memory container
-            LOG_CORE(.info, "ModelContainer", "Using in-memory ModelContainer as fallback")
+            LOG_DATA(.info, "ModelContainer", "Using in-memory ModelContainer as fallback")
             let memoryConfig = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
             do {
                 return try ModelContainer(for: schema, configurations: [memoryConfig])
             } catch {
-                LOG_CORE(.error, "ModelContainer", "CRITICAL: In-memory ModelContainer also failed: \(error.localizedDescription)")
-                // Last resort - minimal container
+                LOG_DATA(.error, "ModelContainer", "CRITICAL: In-memory ModelContainer also failed: \(error.localizedDescription)")
+                // Last resort - minimal container (force unwrap - if this fails, app cannot function)
                 let minimalSchema = Schema([Item.self])
                 let minimalConfig = ModelConfiguration(schema: minimalSchema, isStoredInMemoryOnly: true)
-                do {
-                    return try ModelContainer(for: minimalSchema, configurations: [minimalConfig])
-                } catch {
-                    LOG_CORE(.error, "ModelContainer", "CRITICAL: Minimal container failed - app will be degraded")
-                    // Return empty container - app will have limited functionality
-                    return try! ModelContainer(for: minimalSchema, configurations: [minimalConfig])
-                }
+                return try! ModelContainer(for: minimalSchema, configurations: [minimalConfig])
             }
         }
     }()
@@ -173,7 +165,7 @@ struct ItoriApp: App {
                         BackgroundRefreshManager.shared.scheduleNext()
 #endif
                         await calendarManager.checkPermissionsOnStartup()
-                        // TODO: Re-enable planner sync when function is available
+                        // Deferred: planner sync integration
                         // await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
                         timerManager.checkNotificationPermissions()
                         
@@ -307,7 +299,7 @@ struct ItoriApp: App {
             LOG_LIFECYCLE(.info, "ScenePhase", "App became active, refreshing calendar")
             _Concurrency.Task {
                 await calendarManager.checkPermissionsOnStartup()
-                // TODO: Re-enable planner sync when function is available
+                // Deferred: planner sync integration
                 // await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
             }
             NotificationManager.shared.clearBadge()

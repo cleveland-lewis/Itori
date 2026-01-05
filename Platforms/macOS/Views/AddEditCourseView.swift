@@ -45,13 +45,13 @@ struct AddEditCourseView: View {
 
                 ColorPicker("Color", selection: $color)
 
-                Toggle("Archived (placeholder)", isOn: $isArchived)
+                Toggle(NSLocalizedString("addeditcourse.toggle.archived.placeholder", value: "Archived (placeholder)", comment: "Archived (placeholder)"), isOn: $isArchived)
             }
             .formStyle(.grouped)
 
             // Course Materials Section
             VStack(alignment: .leading, spacing: 12) {
-                Text("Course Materials")
+                Text(NSLocalizedString("addeditcourse.course.materials", value: "Course Materials", comment: "Course Materials"))
                     .font(DesignSystem.Typography.subHeader)
 
                 AttachmentListView(attachments: $attachments, courseId: nil)
@@ -59,7 +59,7 @@ struct AddEditCourseView: View {
             .padding(.vertical, 8)
 
             HStack {
-                Button("Cancel") {
+                Button(NSLocalizedString("addeditcourse.button.cancel", value: "Cancel", comment: "Cancel")) {
                     if hasUnsavedChanges {
                         showDiscardDialog = true
                     } else {
@@ -67,7 +67,7 @@ struct AddEditCourseView: View {
                     }
                 }
                 Spacer()
-                Button("Save") {
+                Button(NSLocalizedString("addeditcourse.button.save", value: "Save", comment: "Save")) {
                     saveCourse()
                 }
                 .keyboardShortcut(.defaultAction)
@@ -81,7 +81,7 @@ struct AddEditCourseView: View {
             isPresented: $showDiscardDialog,
             titleVisibility: .visible
         ) {
-            Button("Save and Close") {
+            Button(NSLocalizedString("addeditcourse.button.save.and.close", value: "Save and Close", comment: "Save and Close")) {
                 saveCourse()
             }
             Button("Discard Changes", role: .destructive) {
@@ -89,7 +89,7 @@ struct AddEditCourseView: View {
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("You have unsaved edits. Save before closing to avoid losing them.")
+            Text(NSLocalizedString("addeditcourse.you.have.unsaved.edits.save", value: "You have unsaved edits. Save before closing to avoid losing them.", comment: "You have unsaved edits. Save before closing to avo..."))
         }
         .onAppear {
             if case .edit(let existing) = mode {

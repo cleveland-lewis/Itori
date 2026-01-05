@@ -3,6 +3,7 @@ import Combine
 import Network
 import EventKit
 
+@MainActor
 final class AssignmentsStore: ObservableObject {
     static let shared = AssignmentsStore()
     static var holidayCheckerOverride: ((Date, RecurrenceRule.HolidaySource) -> Bool)?
@@ -574,14 +575,18 @@ final class AssignmentsStore: ObservableObject {
     private func setupNetworkMonitoring() {
         pathMonitor = NWPathMonitor()
         pathMonitor?.pathUpdateHandler = { [weak self] path in
-            let wasOnline = self?.isOnline ?? false
-            self?.isOnline = path.status == .satisfied
-            
-            // When coming back online, sync pending changes
-            if !wasOnline && (self?.isOnline ?? false) {
-                DebugLogger.log("📡 Network restored - syncing pending changes")
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    self?.syncPendingChanges()
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                let wasOnline = self.isOnline
+                self.isOnline = path.status == .satisfied
+                
+                // When coming back online, sync pending changes
+                if !wasOnline && self.isOnline {
+                    DebugLogger.log("📡 Network restored - syncing pending changes")
+                    Task {
+                        try? await Task.sleep(nanoseconds: 2_000_000_000)
+                        await self.syncPendingChanges()
+                    }
                 }
             }
         }

@@ -192,7 +192,7 @@ struct GradesPageView: View {
                 Button {
                     showAddGradeSheet = true
                 } label: {
-                    Label("Add Grade", systemImage: "plus.circle")
+                    Label(NSLocalizedString("grades.label.add.grade", value: "Add Grade", comment: "Add Grade"), systemImage: "plus.circle")
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
@@ -205,7 +205,7 @@ struct GradesPageView: View {
                     // Placeholder: open analytics window
                     DebugLogger.log("Analytics tapped")
                 } label: {
-                    Label("Analytics", systemImage: "chart.bar.xaxis")
+                    Label(NSLocalizedString("grades.label.analytics", value: "Analytics", comment: "Analytics"), systemImage: "chart.bar.xaxis")
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
@@ -623,9 +623,9 @@ struct CourseGradeRow: View {
         }
         .buttonStyle(.plain)
         .contextMenu {
-            Button("Edit Target") { onEditTarget() }
+            Button(NSLocalizedString("grades.button.edit.target", value: "Edit Target", comment: "Edit Target")) { onEditTarget() }
             if let onEditCourse = onEditCourse {
-                Button("Edit Course") { onEditCourse() }
+                Button(NSLocalizedString("grades.button.edit.course", value: "Edit Course", comment: "Edit Course")) { onEditCourse() }
             }
         }
     }
@@ -696,7 +696,7 @@ struct GradeDetailCard: View {
             HStack(spacing: 8) {
                 if let current = course.currentPercentage {
                     Text("Current: \(String(format: "%.1f", current))%")
-                } else { Text("Current: —") }
+                } else { Text(NSLocalizedString("grades.current", value: "Current: —", comment: "Current: —")) }
                 if let target = course.targetPercentage {
                     Text("· Target: \(Int(target))%")
                 }
@@ -705,7 +705,7 @@ struct GradeDetailCard: View {
             .font(.caption)
             .foregroundColor(.secondary)
 
-            Button("Edit target") {
+            Button(NSLocalizedString("grades.button.edit.target", value: "Edit target", comment: "Edit target")) {
                 onEditTarget(course)
             }
             .buttonStyle(.borderedProminent)
@@ -725,7 +725,7 @@ struct GradeDetailCard: View {
                             Text("\(Int(earned))%")
                                 .font(.caption.weight(.semibold))
                         } else {
-                            Text("No data yet")
+                            Text(NSLocalizedString("grades.no.data.yet", value: "No data yet", comment: "No data yet"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -755,10 +755,10 @@ struct GradeDetailCard: View {
 
     private func whatIf(_ detail: CourseGradeDetail) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("What-If Scenario")
+            Text(NSLocalizedString("grades.whatif.scenario", value: "What-If Scenario", comment: "What-If Scenario"))
                 .font(.subheadline.weight(.semibold))
             Slider(value: $whatIfInput, in: 50...100, step: 1) {
-                Text("Expected average on remaining work")
+                Text(NSLocalizedString("grades.expected.average.on.remaining.work", value: "Expected average on remaining work", comment: "Expected average on remaining work"))
             }
             Text("If you score \(Int(whatIfInput))% on remaining work, your projected final grade is \(String(format: "%.1f", projectedGrade(detail)))%.")
                 .font(.footnote)
@@ -780,7 +780,7 @@ struct GradeDetailCard: View {
 
     private func notes(_ detail: CourseGradeDetail) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Notes")
+            Text(NSLocalizedString("grades.notes", value: "Notes", comment: "Notes"))
                 .font(.subheadline.weight(.semibold))
             TextEditor(text: Binding(
                 get: { detail.notes },
@@ -823,7 +823,7 @@ struct EditTargetGradeSheet: View {
             Form {
                 Section("Target") {
                     Slider(value: $targetPercent, in: 0...100, step: 1) {
-                        Text("Target %")
+                        Text(NSLocalizedString("grades.target", value: "Target %", comment: "Target %"))
                     }
                     Text("\(Int(targetPercent))%")
                         .font(.headline)
@@ -847,7 +847,7 @@ struct EditTargetGradeSheet: View {
                         }
 
                         Button { components.append(GradeComponent(id: UUID(), name: "New", weightPercent: 0, earnedPercent: nil)) } label: {
-                            Label("Add Component", systemImage: "plus")
+                            Label(NSLocalizedString("grades.label.add.component", value: "Add Component", comment: "Add Component"), systemImage: "plus")
                         }
                     }
                 }
@@ -862,7 +862,7 @@ struct EditTargetGradeSheet: View {
                 }
 
                 Section {
-                    Text("Targets help scenario calculations and visual indicators. This does not affect official grades.")
+                    Text(NSLocalizedString("grades.targets.help.scenario.calculations.and", value: "Targets help scenario calculations and visual indicators. This does not affect official grades.", comment: "Targets help scenario calculations and visual indi..."))
                         .font(.footnote)
                         .foregroundColor(.secondary)
                 }
@@ -870,10 +870,10 @@ struct EditTargetGradeSheet: View {
             .navigationTitle("Edit Target for \(course.courseCode)")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button(NSLocalizedString("grades.button.cancel", value: "Cancel", comment: "Cancel")) { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button(NSLocalizedString("grades.button.save", value: "Save", comment: "Save")) {
                         onSave(targetPercent, letter, components)
                         dismiss()
                     }

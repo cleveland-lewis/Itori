@@ -14,10 +14,10 @@ struct PlannerSettingsView: View {
                 .toggleStyle(.switch)
                 .onChange(of: settings.enableAIPlanner) { _, _ in settings.save() }
 
-                Toggle("Show Energy Panel", isOn: $settings.showEnergyPanel)
+                Toggle(NSLocalizedString("settings.toggle.show.energy.panel", value: "Show Energy Panel", comment: "Show Energy Panel"), isOn: $settings.showEnergyPanel)
                     .toggleStyle(.switch)
                     .onChange(of: settings.showEnergyPanel) { _, _ in settings.save() }
-                Text("Turning off Energy Panel will make the planning algorithm default to medium energy for all days.")
+                Text(NSLocalizedString("settings.turning.off.energy.panel.will", value: "Turning off Energy Panel will make the planning algorithm default to medium energy for all days.", comment: "Turning off Energy Panel will make the planning al..."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
 

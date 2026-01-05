@@ -47,7 +47,7 @@ struct DayDetailSidebar: View {
 
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("SELECTED DATE")
+            Text(NSLocalizedString("ui.selected.date", value: "SELECTED DATE", comment: "SELECTED DATE"))
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
                 .textCase(.uppercase)

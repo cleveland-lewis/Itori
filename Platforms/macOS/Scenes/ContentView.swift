@@ -281,25 +281,25 @@ struct ContentView: View {
         // Keyboard shortcut: New assignment
         NotificationCenter.default.addObserver(forName: .createNewAssignment, object: nil, queue: .main) { _ in
             LOG_UI(.info, "KeyboardShortcut", "New Assignment (⌘T)")
-            // TODO: Show new assignment sheet
+            // Deferred: Keyboard shortcut wiring (see BACKLOG.md)
         }
         
         // Keyboard shortcut: New course
         NotificationCenter.default.addObserver(forName: .createNewCourse, object: nil, queue: .main) { _ in
             LOG_UI(.info, "KeyboardShortcut", "New Course (⌘⇧N)")
-            // TODO: Show new course sheet
+            // Deferred: Keyboard shortcut wiring (see BACKLOG.md)
         }
         
         // Keyboard shortcut: New deck
         NotificationCenter.default.addObserver(forName: .createNewDeck, object: nil, queue: .main) { _ in
             LOG_UI(.info, "KeyboardShortcut", "New Deck (⌘⇧D)")
-            // TODO: Show new deck sheet
+            // Deferred: Keyboard shortcut wiring (see BACKLOG.md)
         }
         
         // Keyboard shortcut: Focus search
         NotificationCenter.default.addObserver(forName: .focusSearchField, object: nil, queue: .main) { _ in
             LOG_UI(.info, "KeyboardShortcut", "Focus Search (⌘F)")
-            // TODO: Focus search field in current view
+            // Deferred: Keyboard shortcut wiring (see BACKLOG.md)
         }
         
         NotificationCenter.default.addObserver(forName: .addGradeRequested, object: nil, queue: .main) { _ in

@@ -16,10 +16,10 @@ struct CoursesSettingsView: View {
                             Image(systemName: "book.closed")
                                 .font(DesignSystem.Typography.body)
                                 .foregroundStyle(.tertiary)
-                            Text("No active courses")
+                            Text(NSLocalizedString("settings.no.active.courses", value: "No active courses", comment: "No active courses"))
                                 .font(DesignSystem.Typography.subHeader)
                                 .foregroundStyle(.secondary)
-                            Button("Add Your First Course") {
+                            Button(NSLocalizedString("settings.button.add.your.first.course", value: "Add Your First Course", comment: "Add Your First Course")) {
                                 showingAddCourse = true
                             }
                             .buttonStyle(.borderedProminent)
@@ -38,18 +38,18 @@ struct CoursesSettingsView: View {
                 }
             } header: {
                 HStack {
-                    Text("Active Courses")
+                    Text(NSLocalizedString("settings.active.courses", value: "Active Courses", comment: "Active Courses"))
                     Spacer()
                     Button {
                         showingAddCourse = true
                     } label: {
-                        Label("Add Course", systemImage: "plus")
+                        Label(NSLocalizedString("settings.label.add.course", value: "Add Course", comment: "Add Course"), systemImage: "plus")
                             .font(DesignSystem.Typography.caption)
                     }
                     .buttonStyle(.borderless)
                 }
             } footer: {
-                Text("Manage your current courses. Archived courses are hidden from the main interface but remain accessible.")
+                Text(NSLocalizedString("settings.manage.your.current.courses.archived", value: "Manage your current courses. Archived courses are hidden from the main interface but remain accessible.", comment: "Manage your current courses. Archived courses are ..."))
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
             }
@@ -78,13 +78,13 @@ struct CoursesSettingsView: View {
                     Image(systemName: "calendar.badge.exclamationmark")
                         .font(DesignSystem.Typography.body)
                         .foregroundStyle(.orange)
-                    Text("No Active Semester")
+                    Text(NSLocalizedString("settings.no.active.semester", value: "No Active Semester", comment: "No Active Semester"))
                         .font(DesignSystem.Typography.subHeader)
-                    Text("Please create a semester first in the Semesters section.")
+                    Text(NSLocalizedString("settings.please.create.a.semester.first", value: "Please create a semester first in the Semesters section.", comment: "Please create a semester first in the Semesters se..."))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
-                    Button("Go to Semesters") {
+                    Button(NSLocalizedString("settings.button.go.to.semesters", value: "Go to Semesters", comment: "Go to Semesters")) {
                         showingAddCourse = false
                         // Navigate to semesters section
                     }
@@ -123,7 +123,7 @@ struct CourseSettingsRow: View {
                         .foregroundStyle(.primary)
 
                     if course.isArchived {
-                        Text("ARCHIVED")
+                        Text(NSLocalizedString("settings.archived", value: "ARCHIVED", comment: "ARCHIVED"))
                             .font(.caption2.weight(.bold))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 6)

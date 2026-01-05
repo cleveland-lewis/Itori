@@ -222,7 +222,9 @@ enum AppAccentColor: String, CaseIterable, Identifiable {
 final class AppSettingsModel: ObservableObject, Codable {
     /// Shared singleton used across the app. Loaded from persisted storage when available.
     static let shared: AppSettingsModel = {
-        return AppSettingsModel.load()
+        let model = AppSettingsModel.load()
+        print("[AppSettings] ✅ Singleton initialized successfully")
+        return model
     }()
     
     // MARK: - Performance optimization
@@ -286,6 +288,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         case showAnimationsStorage
         case enableHapticsStorage
         case showTooltipsStorage
+        case showSampleDataStorage
         case defaultEnergyLevelStorage
         case energySelectionConfirmedStorage
     }
@@ -379,10 +382,10 @@ final class AppSettingsModel: ObservableObject, Codable {
     var animationSoftnessStorage: Double = 0.42
     var typographyModeRaw: String = TypographyMode.system.rawValue
     @AppStorage(Keys.devModeEnabled) var devModeEnabledStorage: Bool = false
-    @AppStorage(Keys.devModeUILogging) var devModeUILoggingStorage: Bool = false
-    @AppStorage(Keys.devModeDataLogging) var devModeDataLoggingStorage: Bool = false
-    @AppStorage(Keys.devModeSchedulerLogging) var devModeSchedulerLoggingStorage: Bool = false
-    @AppStorage(Keys.devModePerformance) var devModePerformanceStorage: Bool = false
+    @AppStorage(Keys.devModeUILogging) var devModeUILoggingStorage: Bool = true
+    @AppStorage(Keys.devModeDataLogging) var devModeDataLoggingStorage: Bool = true
+    @AppStorage(Keys.devModeSchedulerLogging) var devModeSchedulerLoggingStorage: Bool = true
+    @AppStorage(Keys.devModePerformance) var devModePerformanceStorage: Bool = true
     var enableICloudSyncStorage: Bool = true
     @AppStorage("roots.settings.suppressICloudRestore") var suppressICloudRestoreStorage: Bool = false
     var enableSpotlightIndexingStorage: Bool = false
@@ -425,6 +428,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage("roots.settings.showAnimations") var showAnimationsStorage: Bool = true
     @AppStorage("roots.settings.enableHaptics") var enableHapticsStorage: Bool = true
     @AppStorage("roots.settings.showTooltips") var showTooltipsStorage: Bool = true
+    @AppStorage("roots.settings.showSampleData") var showSampleDataStorage: Bool = false
 
     // Profile/Study Coach Settings
     @AppStorage("roots.settings.defaultFocusDuration") var defaultFocusDurationStorage: Int = 25
@@ -493,7 +497,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage("roots.settings.calendarAccessGranted") var calendarAccessGranted: Bool = true
     
     // Starred tabs for iOS (max 5) - stored as comma-separated string
-    @AppStorage("roots.settings.starredTabsString") private var starredTabsString: String = "dashboard,calendar,timer,assignments,settings"
+    @AppStorage("roots.settings.starredTabsString") private var starredTabsString: String = "dashboard,calendar,timer,assignments"
     
     var starredTabsRaw: [String] {
         get {
@@ -1062,6 +1066,11 @@ final class AppSettingsModel: ObservableObject, Codable {
         set { showTooltipsStorage = newValue }
     }
 
+    var showSampleData: Bool {
+        get { showSampleDataStorage }
+        set { showSampleDataStorage = newValue }
+    }
+
     // Profile/Study Coach Settings
     var defaultFocusDuration: Int {
         get { defaultFocusDurationStorage }
@@ -1079,31 +1088,31 @@ final class AppSettingsModel: ObservableObject, Codable {
             if enableICloudSync {
                 let cloudValue = NSUbiquitousKeyValueStore.default.string(forKey: "roots.settings.defaultEnergyLevel")
                 if let cloudValue = cloudValue, !cloudValue.isEmpty {
-                    LOG_DEV(LogSeverity.debug, "EnergySync", "Reading energy from iCloud", metadata: ["cloudValue": cloudValue, "localValue": defaultEnergyLevelStorage])
+                    LOG_DEV(.debug, "EnergySync", "Reading energy from iCloud", metadata: ["cloudValue": cloudValue, "localValue": defaultEnergyLevelStorage])
                     // Update local if different
                     if cloudValue != defaultEnergyLevelStorage {
-                        LOG_DEV(LogSeverity.info, "EnergySync", "Syncing iCloud value to local storage", metadata: ["from": defaultEnergyLevelStorage, "to": cloudValue])
+                        LOG_DEV(.info, "EnergySync", "Syncing iCloud value to local storage", metadata: ["from": defaultEnergyLevelStorage, "to": cloudValue])
                         defaultEnergyLevelStorage = cloudValue
                     }
                     return cloudValue
                 }
-                LOG_DEV(LogSeverity.debug, "EnergySync", "No iCloud value found, using local", metadata: ["localValue": defaultEnergyLevelStorage])
+                LOG_DEV(.debug, "EnergySync", "No iCloud value found, using local", metadata: ["localValue": defaultEnergyLevelStorage])
             } else {
-                LOG_DEV(LogSeverity.debug, "EnergySync", "iCloud sync disabled, using local only", metadata: ["localValue": defaultEnergyLevelStorage])
+                LOG_DEV(.debug, "EnergySync", "iCloud sync disabled, using local only", metadata: ["localValue": defaultEnergyLevelStorage])
             }
             return defaultEnergyLevelStorage 
         }
         set { 
-            LOG_DEV(LogSeverity.info, "EnergySync", "Setting energy level", metadata: ["oldValue": defaultEnergyLevelStorage, "newValue": newValue, "iCloudEnabled": "\(enableICloudSync)"])
+            LOG_DEV(.info, "EnergySync", "Setting energy level", metadata: ["oldValue": defaultEnergyLevelStorage, "newValue": newValue, "iCloudEnabled": "\(enableICloudSync)"])
             defaultEnergyLevelStorage = newValue
             // Sync to iCloud if enabled
             if enableICloudSync {
-                LOG_DEV(LogSeverity.debug, "EnergySync", "Writing energy to iCloud", metadata: ["value": newValue])
+                LOG_DEV(.debug, "EnergySync", "Writing energy to iCloud", metadata: ["value": newValue])
                 NSUbiquitousKeyValueStore.default.set(newValue, forKey: "roots.settings.defaultEnergyLevel")
                 let syncResult = NSUbiquitousKeyValueStore.default.synchronize()
-                LOG_DEV(LogSeverity.debug, "EnergySync", "iCloud synchronize() called", metadata: ["success": "\(syncResult)"])
+                LOG_DEV(.debug, "EnergySync", "iCloud synchronize() called", metadata: ["success": "\(syncResult)"])
             } else {
-                LOG_DEV(LogSeverity.debug, "EnergySync", "Skipped iCloud write (sync disabled)")
+                LOG_DEV(.debug, "EnergySync", "Skipped iCloud write (sync disabled)")
             }
         }
     }
@@ -1114,27 +1123,27 @@ final class AppSettingsModel: ObservableObject, Codable {
             if enableICloudSync {
                 let cloudValue = NSUbiquitousKeyValueStore.default.object(forKey: "roots.settings.energySelectionConfirmed") as? Bool
                 if let cloudValue = cloudValue {
-                    LOG_DEV(LogSeverity.debug, "EnergySync", "Reading energySelectionConfirmed from iCloud", metadata: ["cloudValue": "\(cloudValue)", "localValue": "\(energySelectionConfirmedStorage)"])
+                    LOG_DEV(.debug, "EnergySync", "Reading energySelectionConfirmed from iCloud", metadata: ["cloudValue": "\(cloudValue)", "localValue": "\(energySelectionConfirmedStorage)"])
                     // Update local if different
                     if cloudValue != energySelectionConfirmedStorage {
-                        LOG_DEV(LogSeverity.info, "EnergySync", "Syncing energySelectionConfirmed to local", metadata: ["from": "\(energySelectionConfirmedStorage)", "to": "\(cloudValue)"])
+                        LOG_DEV(.info, "EnergySync", "Syncing energySelectionConfirmed to local", metadata: ["from": "\(energySelectionConfirmedStorage)", "to": "\(cloudValue)"])
                         energySelectionConfirmedStorage = cloudValue
                     }
                     return cloudValue
                 }
-                LOG_DEV(LogSeverity.debug, "EnergySync", "No iCloud energySelectionConfirmed, using local", metadata: ["localValue": "\(energySelectionConfirmedStorage)"])
+                LOG_DEV(.debug, "EnergySync", "No iCloud energySelectionConfirmed, using local", metadata: ["localValue": "\(energySelectionConfirmedStorage)"])
             }
             return energySelectionConfirmedStorage 
         }
         set { 
-            LOG_DEV(LogSeverity.info, "EnergySync", "Setting energySelectionConfirmed", metadata: ["oldValue": "\(energySelectionConfirmedStorage)", "newValue": "\(newValue)", "iCloudEnabled": "\(enableICloudSync)"])
+            LOG_DEV(.info, "EnergySync", "Setting energySelectionConfirmed", metadata: ["oldValue": "\(energySelectionConfirmedStorage)", "newValue": "\(newValue)", "iCloudEnabled": "\(enableICloudSync)"])
             energySelectionConfirmedStorage = newValue
             // Sync to iCloud if enabled
             if enableICloudSync {
-                LOG_DEV(LogSeverity.debug, "EnergySync", "Writing energySelectionConfirmed to iCloud", metadata: ["value": "\(newValue)"])
+                LOG_DEV(.debug, "EnergySync", "Writing energySelectionConfirmed to iCloud", metadata: ["value": "\(newValue)"])
                 NSUbiquitousKeyValueStore.default.set(newValue, forKey: "roots.settings.energySelectionConfirmed")
                 let syncResult = NSUbiquitousKeyValueStore.default.synchronize()
-                LOG_DEV(LogSeverity.debug, "EnergySync", "iCloud synchronize() called", metadata: ["success": "\(syncResult)"])
+                LOG_DEV(.debug, "EnergySync", "iCloud synchronize() called", metadata: ["success": "\(syncResult)"])
             }
         }
     }
@@ -1279,46 +1288,110 @@ final class AppSettingsModel: ObservableObject, Codable {
     }
 
     // MARK: - Persistence helpers
+    
+    // Version tracking for settings schema
+    private static let settingsSchemaVersion = 3 // Increment when adding/removing properties
+    private static let schemaVersionKey = "roots.settings.schemaVersion"
+    
     static func load() -> AppSettingsModel {
-        print("[AppSettings] Starting load...")
-        let key = "roots.settings.appsettings"
+        // Note: Can't use LOG_SETTINGS here as it accesses AppSettingsModel.shared which may not be initialized
+        let devMode = UserDefaults.standard.bool(forKey: Keys.devModeEnabled)
+        if devMode {
+            print("[AppSettings] Starting load...")
+        }
         
-        guard let data = UserDefaults.standard.data(forKey: key) else {
-            print("[AppSettings] No saved data found, creating new instance")
+        // Check schema version
+        let savedVersion = UserDefaults.standard.integer(forKey: schemaVersionKey)
+        if savedVersion != 0 && savedVersion != settingsSchemaVersion {
+            print("[AppSettings] Schema version changed (\(savedVersion) → \(settingsSchemaVersion)), clearing old settings")
+            UserDefaults.standard.removeObject(forKey: "roots.settings.appsettings")
+            UserDefaults.standard.set(settingsSchemaVersion, forKey: schemaVersionKey)
             return AppSettingsModel()
         }
         
-        print("[AppSettings] Found saved data (\(data.count) bytes), attempting to decode...")
+        // Set current version if not set
+        if savedVersion == 0 {
+            UserDefaults.standard.set(settingsSchemaVersion, forKey: schemaVersionKey)
+        }
+        
+        let key = "roots.settings.appsettings"
+        
+        guard let data = UserDefaults.standard.data(forKey: key) else {
+            if devMode {
+                print("[AppSettings] No saved data found, creating new instance")
+            }
+            return AppSettingsModel()
+        }
+        
+        if devMode {
+            print("[AppSettings] Found saved data (\(data.count) bytes), attempting to decode...")
+        }
         let decoder = JSONDecoder()
         
-        do {
-            print("[AppSettings] About to call decoder.decode()...")
-            let decoded = try decoder.decode(AppSettingsModel.self, from: data)
-            print("[AppSettings] Successfully decoded from UserDefaults")
+        // Add timeout protection for decode operation
+        let decodeResult: AppSettingsModel? = {
+            let semaphore = DispatchSemaphore(value: 0)
+            var result: AppSettingsModel?
+            var decodeError: Error?
+            
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    if devMode {
+                        print("[AppSettings] About to call decoder.decode()...")
+                    }
+                    let decoded = try decoder.decode(AppSettingsModel.self, from: data)
+                    if devMode {
+                        print("[AppSettings] Successfully decoded from UserDefaults")
+                    }
+                    result = decoded
+                } catch {
+                    decodeError = error
+                }
+                semaphore.signal()
+            }
+            
+            // Wait max 5 seconds for decode
+            let timeout = DispatchTime.now() + .seconds(5)
+            if semaphore.wait(timeout: timeout) == .timedOut {
+                print("[AppSettings] ⚠️ Decode timeout after 5 seconds - data may be corrupted (size: \(data.count) bytes)")
+                return nil
+            }
+            
+            if let error = decodeError {
+                if let decodingError = error as? DecodingError {
+                    print("[AppSettings] ⚠️ DecodingError: \(decodingError)")
+                    if devMode {
+                        switch decodingError {
+                        case .keyNotFound(let key, let context):
+                            print("  - Missing key: \(key.stringValue) at \(context.codingPath)")
+                        case .typeMismatch(let type, let context):
+                            print("  - Type mismatch for \(type) at \(context.codingPath)")
+                        case .valueNotFound(let type, let context):
+                            print("  - Value not found for \(type) at \(context.codingPath)")
+                        case .dataCorrupted(let context):
+                            print("  - Data corrupted at \(context.codingPath)")
+                        @unknown default:
+                            print("  - Unknown decoding error")
+                        }
+                    }
+                } else {
+                    print("[AppSettings] ⚠️ Unexpected error: \(error)")
+                }
+                return nil
+            }
+            
+            return result
+        }()
+        
+        if let decoded = decodeResult {
             // Set up iCloud observer for decoded instance
             decoded.setupICloudObserver()
             return decoded
-        } catch let error as DecodingError {
-            print("[AppSettings] ⚠️ DecodingError: \(error)")
-            switch error {
-            case .keyNotFound(let key, let context):
-                print("  - Missing key: \(key.stringValue) at \(context.codingPath)")
-            case .typeMismatch(let type, let context):
-                print("  - Type mismatch for \(type) at \(context.codingPath)")
-            case .valueNotFound(let type, let context):
-                print("  - Value not found for \(type) at \(context.codingPath)")
-            case .dataCorrupted(let context):
-                print("  - Data corrupted at \(context.codingPath)")
-            @unknown default:
-                print("  - Unknown decoding error")
-            }
-            print("[AppSettings] Clearing incompatible data and creating fresh instance")
-            UserDefaults.standard.removeObject(forKey: key)
-        } catch {
-            print("[AppSettings] ⚠️ Unexpected error: \(error)")
-            print("[AppSettings] Clearing data and creating fresh instance")
-            UserDefaults.standard.removeObject(forKey: key)
         }
+        
+        // Decode failed or timed out - clear and create fresh
+        print("[AppSettings] Clearing incompatible/corrupted data and creating fresh instance")
+        UserDefaults.standard.removeObject(forKey: key)
         
         return AppSettingsModel()
     }
@@ -1337,29 +1410,39 @@ final class AppSettingsModel: ObservableObject, Codable {
                 if let data = try? encoder.encode(self) {
                     UserDefaults.standard.set(data, forKey: key)
                 }
-            } catch {
+            } catch is CancellationError {
                 // Task was cancelled (user toggled again), ignore
+            } catch {
+                // Should not happen, but handle gracefully
             }
         }
     }
 
     // Codable
     init() {
-        print("[AppSettings] init() started")
-        print("[AppSettings] About to access UserDefaults")
-        // UserDefaults.standard.removeObject(forKey: "roots.settings.userName")
-        print("[AppSettings] UserDefaults access completed (removeObject commented out)")
-        
-        // Note: Can't use LOG_DEV here as it accesses AppSettingsModel.shared which is being initialized
-        print("[EnergySync] Initializing AppSettingsModel with iCloud observer")
-        
-        print("[AppSettings] About to call setupICloudObserver()")
+        let devMode = UserDefaults.standard.bool(forKey: Keys.devModeEnabled)
+        if devMode {
+            print("[AppSettings] init() started")
+            print("[AppSettings] About to access UserDefaults")
+            // UserDefaults.standard.removeObject(forKey: "roots.settings.userName")
+            print("[AppSettings] UserDefaults access completed (removeObject commented out)")
+            
+            // Note: Can't use LOG_DEV here as it accesses AppSettingsModel.shared which is being initialized
+            print("[EnergySync] Initializing AppSettingsModel with iCloud observer")
+            
+            print("[AppSettings] About to call setupICloudObserver()")
+        }
         setupICloudObserver()
-        print("[AppSettings] init() completed successfully")
+        if devMode {
+            print("[AppSettings] init() completed successfully")
+        }
     }
     
     private func setupICloudObserver() {
-        print("[AppSettings] setupICloudObserver() started")
+        let devMode = UserDefaults.standard.bool(forKey: Keys.devModeEnabled)
+        if devMode {
+            print("[AppSettings] setupICloudObserver() started")
+        }
         // Observe iCloud changes for energy settings
         NotificationCenter.default.addObserver(
             forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
@@ -1368,7 +1451,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         ) { [weak self] notification in
             guard let self = self else { return }
             
-            LOG_DEV(.info as DeveloperLogLevel, "EnergySync", "🔔 Received iCloud change notification", metadata: ["timestamp": "\(Date())"])
+            LOG_DEV(.info, "EnergySync", "🔔 Received iCloud change notification", metadata: ["timestamp": "\(Date())"])
             
             // Get change reason
             if let reason = notification.userInfo?[NSUbiquitousKeyValueStoreChangeReasonKey] as? Int {
@@ -1385,12 +1468,12 @@ final class AppSettingsModel: ObservableObject, Codable {
                 default:
                     reasonString = "Unknown (\(reason))"
                 }
-                LOG_DEV(.debug as DeveloperLogLevel, "EnergySync", "Change reason: \(reasonString)")
+                LOG_DEV(.debug, "EnergySync", "Change reason: \(reasonString)")
             }
             
             // Get changed keys
             if let changedKeys = notification.userInfo?[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String] {
-                LOG_DEV(.info as DeveloperLogLevel, "EnergySync", "Changed keys from iCloud", metadata: ["keys": changedKeys.joined(separator: ", ")])
+                LOG_DEV(.info, "EnergySync", "Changed keys from iCloud", metadata: ["keys": changedKeys.joined(separator: ", ")])
                 
                 for key in changedKeys {
                     switch key {
@@ -1398,7 +1481,7 @@ final class AppSettingsModel: ObservableObject, Codable {
                         if let cloudValue = NSUbiquitousKeyValueStore.default.string(forKey: key) {
                             let oldValue = self.defaultEnergyLevelStorage
                             if cloudValue != oldValue {
-                                LOG_DEV(.info as DeveloperLogLevel, "EnergySync", "⚡️ Energy level changed from another device", metadata: [
+                                LOG_DEV(.info, "EnergySync", "⚡️ Energy level changed from another device", metadata: [
                                     "oldValue": oldValue,
                                     "newValue": cloudValue,
                                     "willTriggerRecompute": "true"
@@ -1407,39 +1490,42 @@ final class AppSettingsModel: ObservableObject, Codable {
                                 self.objectWillChange.send()
                                 
                                 // Log that planner should recompute
-                                LOG_DEV(.info as DeveloperLogLevel, "EnergySync", "Triggering planner recompute due to energy change")
+                                LOG_DEV(.info, "EnergySync", "Triggering planner recompute due to energy change")
                             } else {
-                                LOG_DEV(.debug as DeveloperLogLevel, "EnergySync", "Energy level unchanged", metadata: ["value": cloudValue])
+                                LOG_DEV(.debug, "EnergySync", "Energy level unchanged", metadata: ["value": cloudValue])
                             }
                         } else {
-                            LOG_DEV(.warning as DeveloperLogLevel, "EnergySync", "Energy level key changed but no value in iCloud")
+                            LOG_DEV(.info, "EnergySync", "Energy level key changed but no value in iCloud")
                         }
                         
                     case "roots.settings.energySelectionConfirmed":
                         let cloudValue = NSUbiquitousKeyValueStore.default.bool(forKey: key)
                         let oldValue = self.energySelectionConfirmedStorage
                         if cloudValue != oldValue {
-                            LOG_DEV(.info as DeveloperLogLevel, "EnergySync", "Energy selection confirmed changed from another device", metadata: [
+                            LOG_DEV(.info, "EnergySync", "Energy selection confirmed changed from another device", metadata: [
                                 "oldValue": "\(oldValue)",
                                 "newValue": "\(cloudValue)"
                             ])
                             self.energySelectionConfirmedStorage = cloudValue
                             self.objectWillChange.send()
                         } else {
-                            LOG_DEV(.debug as DeveloperLogLevel, "EnergySync", "Energy selection confirmed unchanged", metadata: ["value": "\(cloudValue)"])
+                            LOG_DEV(.debug, "EnergySync", "Energy selection confirmed unchanged", metadata: ["value": "\(cloudValue)"])
                         }
                         
                     default:
-                        LOG_DEV(.debug as DeveloperLogLevel, "EnergySync", "Ignoring non-energy key change", metadata: ["key": key])
+                        LOG_DEV(.debug, "EnergySync", "Ignoring non-energy key change", metadata: ["key": key])
                         break
                     }
                 }
             } else {
-                LOG_DEV(.warning as DeveloperLogLevel, "EnergySync", "No changed keys in notification userInfo")
+                LOG_DEV(.info, "EnergySync", "No changed keys in notification userInfo")
             }
         }
         
-        print("[AppSettings] setupICloudObserver() completed successfully")
+        let devModeAfterObserver = UserDefaults.standard.bool(forKey: Keys.devModeEnabled)
+        if devModeAfterObserver {
+            print("[AppSettings] setupICloudObserver() completed successfully")
+        }
     }
 
     func encode(to encoder: Encoder) throws {
@@ -1510,6 +1596,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(showAnimationsStorage, forKey: .showAnimationsStorage)
         try container.encode(enableHapticsStorage, forKey: .enableHapticsStorage)
         try container.encode(showTooltipsStorage, forKey: .showTooltipsStorage)
+        try container.encode(showSampleDataStorage, forKey: .showSampleDataStorage)
         try container.encode(defaultEnergyLevelStorage, forKey: .defaultEnergyLevelStorage)
         try container.encode(energySelectionConfirmedStorage, forKey: .energySelectionConfirmedStorage)
     }
@@ -1521,7 +1608,10 @@ final class AppSettingsModel: ObservableObject, Codable {
         do {
             accentColorRaw = try container.decodeIfPresent(String.self, forKey: .accentColorRaw) ?? AppAccentColor.multicolor.rawValue
         } catch {
-            print("[AppSettings] Failed to decode accentColorRaw, using default")
+            // Only log in developer mode - this is not a critical error
+            if UserDefaults.standard.bool(forKey: Keys.devModeEnabled) {
+                print("[AppSettings] Failed to decode accentColorRaw, using default")
+            }
             accentColorRaw = AppAccentColor.multicolor.rawValue
         }
         
@@ -1544,10 +1634,10 @@ final class AppSettingsModel: ObservableObject, Codable {
         animationSoftnessStorage = try container.decodeIfPresent(Double.self, forKey: .animationSoftnessStorage) ?? 0.42
         typographyModeRaw = try container.decodeIfPresent(String.self, forKey: .typographyModeRaw) ?? TypographyMode.system.rawValue
         devModeEnabledStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeEnabledStorage) ?? false
-        devModeUILoggingStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeUILoggingStorage) ?? false
-        devModeDataLoggingStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeDataLoggingStorage) ?? false
-        devModeSchedulerLoggingStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeSchedulerLoggingStorage) ?? false
-        devModePerformanceStorage = try container.decodeIfPresent(Bool.self, forKey: .devModePerformanceStorage) ?? false
+        devModeUILoggingStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeUILoggingStorage) ?? true
+        devModeDataLoggingStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeDataLoggingStorage) ?? true
+        devModeSchedulerLoggingStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeSchedulerLoggingStorage) ?? true
+        devModePerformanceStorage = try container.decodeIfPresent(Bool.self, forKey: .devModePerformanceStorage) ?? true
         enableICloudSyncStorage = try container.decodeIfPresent(Bool.self, forKey: .enableICloudSyncStorage) ?? true
         suppressICloudRestoreStorage = try container.decodeIfPresent(Bool.self, forKey: .suppressICloudRestoreStorage) ?? false
         enableFlashcardsStorage = try container.decodeIfPresent(Bool.self, forKey: .enableFlashcardsStorage) ?? true
@@ -1594,6 +1684,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         showAnimationsStorage = try container.decodeIfPresent(Bool.self, forKey: .showAnimationsStorage) ?? true
         enableHapticsStorage = try container.decodeIfPresent(Bool.self, forKey: .enableHapticsStorage) ?? true
         showTooltipsStorage = try container.decodeIfPresent(Bool.self, forKey: .showTooltipsStorage) ?? true
+        showSampleDataStorage = try container.decodeIfPresent(Bool.self, forKey: .showSampleDataStorage) ?? false
         defaultEnergyLevelStorage = try container.decodeIfPresent(String.self, forKey: .defaultEnergyLevelStorage) ?? "Medium"
         energySelectionConfirmedStorage = try container.decodeIfPresent(Bool.self, forKey: .energySelectionConfirmedStorage) ?? false
     }
@@ -1715,3 +1806,4 @@ final class AppSettingsModel: ObservableObject, Codable {
         save()
     }
 }
+

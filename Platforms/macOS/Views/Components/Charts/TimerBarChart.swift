@@ -81,7 +81,7 @@ struct TimerBarChart: View {
         }
         .frame(height: 220)
         #else
-        Text("Charts framework unavailable")
+        Text(NSLocalizedString("ui.charts.framework.unavailable", value: "Charts framework unavailable", comment: "Charts framework unavailable"))
             .font(DesignSystem.Typography.caption)
             .foregroundStyle(.secondary)
         #endif

@@ -99,7 +99,7 @@ struct GeneralSettingsView: View {
             }
 
             Section("Display") {
-                Toggle("24-Hour Time", isOn: $settings.use24HourTime)
+                Toggle(NSLocalizedString("settings.toggle.24hour.time", value: "24-Hour Time", comment: "24-Hour Time"), isOn: $settings.use24HourTime)
                     .onChange(of: settings.use24HourTime) { _, _ in settings.save() }
             }
 
@@ -116,7 +116,7 @@ struct GeneralSettingsView: View {
             }
             
             Section("Auto-Reschedule") {
-                Toggle("Enable Auto-Reschedule", isOn: Binding(
+                Toggle(NSLocalizedString("settings.toggle.enable.autoreschedule", value: "Enable Auto-Reschedule", comment: "Enable Auto-Reschedule"), isOn: Binding(
                     get: { settings.enableAutoReschedule },
                     set: { newValue in
                         settings.enableAutoReschedule = newValue
@@ -132,7 +132,7 @@ struct GeneralSettingsView: View {
                 
                 if settings.enableAutoReschedule {
                     HStack {
-                        Text("Check Interval")
+                        Text(NSLocalizedString("settings.check.interval", value: "Check Interval", comment: "Check Interval"))
                         Spacer()
                         Stepper(value: Binding(
                             get: { settings.autoRescheduleCheckInterval },
@@ -150,7 +150,7 @@ struct GeneralSettingsView: View {
                         }
                     }
                     
-                    Toggle("Allow Pushing Lower Priority Tasks", isOn: Binding(
+                    Toggle(NSLocalizedString("settings.toggle.allow.pushing.lower.priority.tasks", value: "Allow Pushing Lower Priority Tasks", comment: "Allow Pushing Lower Priority Tasks"), isOn: Binding(
                         get: { settings.autoReschedulePushLowerPriority },
                         set: { settings.autoReschedulePushLowerPriority = $0; settings.save() }
                     ))
@@ -158,7 +158,7 @@ struct GeneralSettingsView: View {
                     
                     if settings.autoReschedulePushLowerPriority {
                         HStack {
-                            Text("Max Tasks to Push")
+                            Text(NSLocalizedString("settings.max.tasks.to.push", value: "Max Tasks to Push", comment: "Max Tasks to Push"))
                             Spacer()
                             Stepper(value: Binding(
                                 get: { settings.autoRescheduleMaxPushCount },
@@ -186,7 +186,7 @@ struct GeneralSettingsView: View {
                     resetInput = ""
                     showResetSheet = true
                 } label: {
-                    Text("Reset All Data")
+                    Text(NSLocalizedString("settings.reset.all.data", value: "Reset All Data", comment: "Reset All Data"))
                         .fontWeight(.semibold)
                 }
             }
@@ -201,16 +201,16 @@ struct GeneralSettingsView: View {
         .sheet(isPresented: $showResetSheet) {
             VStack(spacing: 18) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Reset All Data")
+                    Text(NSLocalizedString("settings.reset.all.data", value: "Reset All Data", comment: "Reset All Data"))
                         .font(.title2.weight(.bold))
-                    Text("This will remove all app data including courses, assignments, settings, and cached sessions. This action cannot be undone.")
+                    Text(NSLocalizedString("settings.this.will.remove.all.app", value: "This will remove all app data including courses, assignments, settings, and cached sessions. This action cannot be undone.", comment: "This will remove all app data including courses, a..."))
                         .font(.callout)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Type the code to confirm")
+                    Text(NSLocalizedString("settings.type.the.code.to.confirm", value: "Type the code to confirm", comment: "Type the code to confirm"))
                         .font(.headline.weight(.semibold))
                     HStack {
                         Text(resetCode)
@@ -247,10 +247,10 @@ struct GeneralSettingsView: View {
                 }
 
                 HStack(spacing: 12) {
-                    Button("Cancel") { showResetSheet = false }
+                    Button(NSLocalizedString("settings.button.cancel", value: "Cancel", comment: "Cancel")) { showResetSheet = false }
                         .buttonStyle(.bordered)
                     Spacer()
-                    Button("Reset Now") {
+                    Button(NSLocalizedString("settings.button.reset.now", value: "Reset Now", comment: "Reset Now")) {
                         performReset()
                     }
                     .buttonStyle(.borderedProminent)

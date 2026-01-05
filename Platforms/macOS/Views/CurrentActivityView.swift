@@ -7,7 +7,7 @@ struct CurrentActivityView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Current Activity")
+            Text(NSLocalizedString("currentactivity.current.activity", value: "Current Activity", comment: "Current Activity"))
                 .font(DesignSystem.Typography.subHeader)
             content
         }
@@ -51,10 +51,10 @@ struct CurrentActivityView: View {
                 }
             } else {
                 VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                    Text("No activity selected")
+                    Text(NSLocalizedString("currentactivity.no.activity.selected", value: "No activity selected", comment: "No activity selected"))
                         .font(.title3.weight(.semibold))
                     Button(action: onChoose) {
-                        Label("Choose Activity", systemImage: "plus")
+                        Label(NSLocalizedString("currentactivity.label.choose.activity", value: "Choose Activity", comment: "Choose Activity"), systemImage: "plus")
                     }
                     .buttonStyle(LegacyGlassProminentButtonStyle())
                 }

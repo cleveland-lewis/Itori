@@ -51,7 +51,7 @@ struct StudySessionView: View {
     private var headerView: some View {
         VStack(spacing: 12) {
             HStack {
-                Text("Study Session")
+                Text(NSLocalizedString("studysession.study.session", value: "Study Session", comment: "Study Session"))
                     .font(.headline)
                 
                 Spacer()
@@ -122,7 +122,7 @@ struct StudySessionView: View {
                                 showingAnswer = true
                             }
                         } label: {
-                            Text("Show Answer")
+                            Text(NSLocalizedString("studysession.show.answer", value: "Show Answer", comment: "Show Answer"))
                                 .font(.headline)
                                 .frame(minWidth: 200)
                         }
@@ -188,7 +188,7 @@ struct StudySessionView: View {
                 .font(.system(size: 64))
                 .foregroundStyle(.green)
             
-            Text("Session Complete!")
+            Text(NSLocalizedString("studysession.session.complete", value: "Session Complete!", comment: "Session Complete!"))
                 .font(.title.bold())
             
             Text("You studied \(cardsStudied) cards")
@@ -198,13 +198,13 @@ struct StudySessionView: View {
             Spacer()
             
             HStack(spacing: 12) {
-                Button("Done") {
+                Button(NSLocalizedString("studysession.button.done", value: "Done", comment: "Done")) {
                     dismiss()
                 }
                 .buttonStyle(.bordered)
                 .keyboardShortcut(.defaultAction)
                 
-                Button("Study Again") {
+                Button(NSLocalizedString("studysession.button.study.again", value: "Study Again", comment: "Study Again")) {
                     startSession()
                 }
                 .buttonStyle(.borderedProminent)
@@ -220,14 +220,14 @@ struct StudySessionView: View {
                 .font(.system(size: 48))
                 .foregroundStyle(.tertiary)
             
-            Text("No Cards to Study")
+            Text(NSLocalizedString("studysession.no.cards.to.study", value: "No Cards to Study", comment: "No Cards to Study"))
                 .font(.headline)
             
-            Text("All cards are up to date!")
+            Text(NSLocalizedString("studysession.all.cards.are.up.to.date", value: "All cards are up to date!", comment: "All cards are up to date!"))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             
-            Button("Done") {
+            Button(NSLocalizedString("studysession.button.done", value: "Done", comment: "Done")) {
                 dismiss()
             }
             .buttonStyle(.borderedProminent)

@@ -10,12 +10,12 @@ struct IntegrationsSettingsView: View {
     var body: some View {
         Form {
             Section {
-                Text("Integrations")
+                Text(NSLocalizedString("settings.integrations", value: "Integrations", comment: "Integrations"))
                     .font(.title2)
                     .bold()
                     .padding(.bottom, 4)
                 
-                Text("Manage app capabilities that require permissions or connect to external services.")
+                Text(NSLocalizedString("settings.manage.app.capabilities.that.require", value: "Manage app capabilities that require permissions or connect to external services.", comment: "Manage app capabilities that require permissions o..."))
                     .foregroundStyle(.secondary)
             }
             .listRowBackground(Color.clear)
@@ -200,7 +200,7 @@ struct IntegrationCard: View {
             HStack(spacing: 12) {
                 // Toggle (if applicable)
                 if showOpenSettings || status != .denied {
-                    Toggle("Enabled", isOn: $isEnabled)
+                    Toggle(NSLocalizedString("settings.toggle.enabled", value: "Enabled", comment: "Enabled"), isOn: $isEnabled)
                         .toggleStyle(.switch)
                         .disabled(status == .denied)
                 }
@@ -212,7 +212,7 @@ struct IntegrationCard: View {
                     Button {
                         openSettings()
                     } label: {
-                        Label("Open System Settings", systemImage: "gear")
+                        Label(NSLocalizedString("settings.label.open.system.settings", value: "Open System Settings", comment: "Open System Settings"), systemImage: "gear")
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.accentColor)
@@ -225,7 +225,7 @@ struct IntegrationCard: View {
                     Image(systemName: "info.circle")
                         .foregroundStyle(.orange)
                     
-                    Text("Permission denied. Please enable in System Settings to use this feature.")
+                    Text(NSLocalizedString("settings.permission.denied.please.enable.in", value: "Permission denied. Please enable in System Settings to use this feature.", comment: "Permission denied. Please enable in System Setting..."))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

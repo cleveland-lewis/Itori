@@ -66,7 +66,7 @@ struct MenuBarView: View {
                     Image(systemName: "checkmark.circle")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    Text("Assignments left today:")
+                    Text(NSLocalizedString("menubar.assignments.left.today", value: "Assignments left today:", comment: "Assignments left today:"))
                         .font(.subheadline)
                     Spacer()
                     Text("\(assignmentsLeftToday)")
@@ -78,7 +78,7 @@ struct MenuBarView: View {
                     Image(systemName: "clock")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    Text("Study time today:")
+                    Text(NSLocalizedString("menubar.study.time.today", value: "Study time today:", comment: "Study time today:"))
                         .font(.subheadline)
                     Spacer()
                     Text(totalStudyTimeToday)
@@ -91,7 +91,7 @@ struct MenuBarView: View {
                         Image(systemName: "circle.fill")
                             .font(.caption)
                             .foregroundColor(Color(activity.colorTag.color))
-                        Text("Activity:")
+                        Text(NSLocalizedString("menubar.activity", value: "Activity:", comment: "Activity:"))
                             .font(.subheadline)
                         Spacer()
                         Text(activity.name)
@@ -114,7 +114,7 @@ struct MenuBarView: View {
                 }
                 .buttonStyle(.borderedProminent)
 
-                Button("End") {
+                Button(NSLocalizedString("menubar.button.end", value: "End", comment: "End")) {
                     NotificationCenter.default.post(name: .timerEndRequested, object: nil)
                 }
                 .buttonStyle(.bordered)

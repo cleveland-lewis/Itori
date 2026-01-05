@@ -2,6 +2,7 @@ import Foundation
 import Combine
 
 /// Manages persistent storage and retrieval of assignment plans
+@MainActor
 final class AssignmentPlanStore: ObservableObject {
     static let shared = AssignmentPlanStore()
     

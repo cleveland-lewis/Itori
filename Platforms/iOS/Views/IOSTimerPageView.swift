@@ -724,7 +724,16 @@ struct IOSTimerPageView: View {
                     .padding(.leading, 28)
             } else {
                 ForEach(tasksDueToday) { task in
-                    TaskCheckboxRow(task: task, onToggle: { toggleTaskCompletion($0) })
+                    HStack {
+                        Text(task.title)
+                        Spacer()
+                        if let due = task.due {
+                            Text(due, style: .time)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 4)
                 }
             }
         }
@@ -755,7 +764,16 @@ struct IOSTimerPageView: View {
                     .padding(.leading, 28)
             } else {
                 ForEach(tasksDueThisWeek) { task in
-                    TaskCheckboxRow(task: task, onToggle: { toggleTaskCompletion($0) })
+                    HStack {
+                        Text(task.title)
+                        Spacer()
+                        if let due = task.due {
+                            Text(due, style: .date)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .padding(.vertical, 4)
                 }
             }
         }
@@ -843,18 +861,13 @@ private struct TimerSyncModifiers: ViewModifier {
             .modifier(TimerLiveActivitySync(viewModel: viewModel, syncLiveActivity: syncLiveActivity))
             .modifier(TimerDurationSync(viewModel: viewModel, settings: settings))
             .onAppear {
-                if viewModel.alarmScheduler == nil {
-                    viewModel.alarmScheduler = IOSTimerAlarmScheduler()
-                }
+                // Alarm scheduler removed (deferred to v1.1)
                 syncSettingsFromApp()
             }
     }
 
     private func requestAlarmAuthorization() async -> Bool {
-        guard let scheduler = viewModel.alarmScheduler as? IOSTimerAlarmScheduler else { return false }
-        if #available(iOS 17.0, *) {
-            return await scheduler.requestAuthorizationIfNeeded()
-        }
+        // Alarm scheduler removed (deferred to v1.1)
         return false
     }
 }

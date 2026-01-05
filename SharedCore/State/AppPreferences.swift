@@ -5,7 +5,7 @@ import Combine
 final class AppPreferences: ObservableObject {
     nonisolated let objectWillChange = ObservableObjectPublisher()
 
-    private let settings = AppSettingsModel.shared
+    private var settings: AppSettingsModel { AppSettingsModel.shared }
     private var cancellables = Set<AnyCancellable>()
 
     // Interaction

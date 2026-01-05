@@ -51,7 +51,7 @@ struct TaskDependencyEditorView: View {
     private var headerView: some View {
         HStack(spacing: DesignSystem.Layout.spacing.medium) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Task Dependencies")
+                Text(NSLocalizedString("taskdependencyeditor.task.dependencies", value: "Task Dependencies", comment: "Task Dependencies"))
                     .font(.title2.weight(.semibold))
                 Text(assignmentTitle)
                     .font(.subheadline)
@@ -65,14 +65,14 @@ struct TaskDependencyEditorView: View {
                     get: { plan.sequenceEnforcementEnabled },
                     set: { _ in toggleEnforcement() }
                 )) {
-                    Label("Enforce Task Order", systemImage: "arrow.right.circle")
+                    Label(NSLocalizedString("taskdependencyeditor.label.enforce.task.order", value: "Enforce Task Order", comment: "Enforce Task Order"), systemImage: "arrow.right.circle")
                         .font(.subheadline.weight(.medium))
                 }
                 .toggleStyle(.switch)
                 .help("When enabled, tasks must be completed in order")
             }
             
-            Button("Done") {
+            Button(NSLocalizedString("taskdependencyeditor.button.done", value: "Done", comment: "Done")) {
                 dismiss()
             }
             .keyboardShortcut(.defaultAction)
@@ -92,7 +92,7 @@ struct TaskDependencyEditorView: View {
                 
                 // Task list
                 VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                    Text("Task Order")
+                    Text(NSLocalizedString("taskdependencyeditor.task.order", value: "Task Order", comment: "Task Order"))
                         .font(.headline)
                         .padding(.horizontal, DesignSystem.Layout.padding.window)
                     
@@ -115,16 +115,16 @@ struct TaskDependencyEditorView: View {
                 .foregroundStyle(.blue)
             
             VStack(alignment: .leading, spacing: 2) {
-                Text("Task Order Enforced")
+                Text(NSLocalizedString("taskdependencyeditor.task.order.enforced", value: "Task Order Enforced", comment: "Task Order Enforced"))
                     .font(.subheadline.weight(.semibold))
-                Text("Tasks must be completed in sequence. Drag to reorder.")
+                Text(NSLocalizedString("taskdependencyeditor.tasks.must.be.completed.in", value: "Tasks must be completed in sequence. Drag to reorder.", comment: "Tasks must be completed in sequence. Drag to reord..."))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             
             Spacer()
             
-            Button("Clear Dependencies") {
+            Button(NSLocalizedString("taskdependencyeditor.button.clear.dependencies", value: "Clear Dependencies", comment: "Clear Dependencies")) {
                 clearDependencies()
             }
             .buttonStyle(.bordered)
@@ -181,16 +181,16 @@ struct TaskDependencyEditorView: View {
                     .font(.body.weight(.medium))
                 
                 HStack(spacing: 12) {
-                    Label("\(step.estimatedMinutes) min", systemImage: "clock")
+                    Label(NSLocalizedString("taskdependencyeditor.label.stepestimatedminutes.min", value: "\(step.estimatedMinutes) min", comment: "\(step.estimatedMinutes) min"), systemImage: "clock")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     
                     if step.isCompleted {
-                        Label("Completed", systemImage: "checkmark.circle.fill")
+                        Label(NSLocalizedString("taskdependencyeditor.label.completed", value: "Completed", comment: "Completed"), systemImage: "checkmark.circle.fill")
                             .font(.caption)
                             .foregroundStyle(.green)
                     } else if plan.isStepBlocked(step) {
-                        Label("Blocked", systemImage: "lock.fill")
+                        Label(NSLocalizedString("taskdependencyeditor.label.blocked", value: "Blocked", comment: "Blocked"), systemImage: "lock.fill")
                             .font(.caption)
                             .foregroundStyle(.orange)
                     }
@@ -215,7 +215,7 @@ struct TaskDependencyEditorView: View {
     
     private var infoSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("How Dependencies Work")
+            Text(NSLocalizedString("taskdependencyeditor.how.dependencies.work", value: "How Dependencies Work", comment: "How Dependencies Work"))
                 .font(.headline)
             
             VStack(alignment: .leading, spacing: 8) {
@@ -247,9 +247,9 @@ struct TaskDependencyEditorView: View {
             Image(systemName: "list.bullet.clipboard")
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
-            Text("No Tasks in Plan")
+            Text(NSLocalizedString("taskdependencyeditor.no.tasks.in.plan", value: "No Tasks in Plan", comment: "No Tasks in Plan"))
                 .font(.title3.weight(.semibold))
-            Text("Create a plan for this assignment to manage task dependencies")
+            Text(NSLocalizedString("taskdependencyeditor.create.a.plan.for.this", value: "Create a plan for this assignment to manage task dependencies", comment: "Create a plan for this assignment to manage task d..."))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -262,9 +262,9 @@ struct TaskDependencyEditorView: View {
             Image(systemName: "calendar.badge.exclamationmark")
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
-            Text("No Plan Found")
+            Text(NSLocalizedString("taskdependencyeditor.no.plan.found", value: "No Plan Found", comment: "No Plan Found"))
                 .font(.title3.weight(.semibold))
-            Text("Create an assignment plan to enable task dependencies")
+            Text(NSLocalizedString("taskdependencyeditor.create.an.assignment.plan.to", value: "Create an assignment plan to enable task dependencies", comment: "Create an assignment plan to enable task dependenc..."))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

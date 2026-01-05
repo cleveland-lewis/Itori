@@ -76,7 +76,7 @@ final class FileParsingService: ObservableObject {
     
     func updateFileCategory(_ file: CourseFile, newCategory: FileCategory) async {
         // Update the file's category in the store
-        // TODO: Restore CourseFileStore integration
+        // Deferred: CourseFileStore integration
         // await MainActor.run {
         //     CourseFileStore.shared.updateCategory(fileId: file.id, category: newCategory)
         // }
@@ -342,7 +342,7 @@ final class FileParsingService: ObservableObject {
     // MARK: - Auto-Scheduling
     
     private func scheduleItems(from results: ParseResults, courseId: UUID, fingerprint: String) async {
-        // TODO: Restore scheduling once AppTask interface is stabilized
+        // Deferred: AppTask scheduling integration
         DebugLogger.log("📅 FileParsingService: Auto-scheduling temporarily disabled - needs AppTask refactor")
     }
     
@@ -358,7 +358,7 @@ final class FileParsingService: ObservableObject {
     }
     
     private func updateFileParseStatus(_ fileId: UUID, status: ParseStatus, error: String?) async {
-        // TODO: Restore CourseFileStore integration
+        // Deferred: CourseFileStore integration
         // await MainActor.run {
         //     CourseFileStore.shared.updateParseStatus(fileId: fileId, status: status, error: error)
         // }

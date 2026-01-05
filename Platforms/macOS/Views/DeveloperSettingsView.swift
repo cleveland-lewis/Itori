@@ -9,19 +9,19 @@ struct DeveloperSettingsView: View {
         Form {
             Section {
                 VStack(alignment: .leading, spacing: 8) {
-                    Toggle("Developer Mode", isOn: $settings.devModeEnabled)
+                    Toggle(NSLocalizedString("settings.toggle.developer.mode", value: "Developer Mode", comment: "Developer Mode"), isOn: $settings.devModeEnabled)
                         .font(.headline)
                         .onChange(of: settings.devModeEnabled) { _, _ in
                             settings.save()
                         }
                     
-                    Text("When enabled, the app emits structured debug logging to the Xcode console. This helps with debugging, triage, and understanding app behavior at runtime.")
+                    Text(NSLocalizedString("settings.when.enabled.the.app.emits", value: "When enabled, the app emits structured debug logging to the Xcode console. This helps with debugging, triage, and understanding app behavior at runtime.", comment: "When enabled, the app emits structured debug loggi..."))
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             } header: {
-                Text("Debug Logging")
+                Text(NSLocalizedString("settings.debug.logging", value: "Debug Logging", comment: "Debug Logging"))
             }
             
             if diagnostics.isDeveloperModeEnabled {
@@ -31,18 +31,18 @@ struct DeveloperSettingsView: View {
                             Image(systemName: "ant.circle.fill")
                                 .foregroundColor(.red)
                             VStack(alignment: .leading, spacing: 2) {
-                                Text("Main Thread Debugger")
+                                Text(NSLocalizedString("settings.main.thread.debugger", value: "Main Thread Debugger", comment: "Main Thread Debugger"))
                                     .font(.headline)
-                                Text("Track UI freezes and performance issues")
+                                Text(NSLocalizedString("settings.track.ui.freezes.and.performance.issues", value: "Track UI freezes and performance issues", comment: "Track UI freezes and performance issues"))
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
                         }
                     }
                 } header: {
-                    Text("Performance Debugging")
+                    Text(NSLocalizedString("settings.performance.debugging", value: "Performance Debugging", comment: "Performance Debugging"))
                 } footer: {
-                    Text("Advanced tool to detect main thread blocks, long operations, and memory issues.")
+                    Text(NSLocalizedString("settings.advanced.tool.to.detect.main", value: "Advanced tool to detect main thread blocks, long operations, and memory issues.", comment: "Advanced tool to detect main thread blocks, long o..."))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -54,41 +54,41 @@ struct DeveloperSettingsView: View {
                             Image(systemName: "shield.lefthalf.filled")
                                 .foregroundColor(.blue)
                             VStack(alignment: .leading, spacing: 2) {
-                                Text("Auto-Reschedule Counters")
+                                Text(NSLocalizedString("settings.autoreschedule.counters", value: "Auto-Reschedule Counters", comment: "Auto-Reschedule Counters"))
                                     .font(.headline)
-                                Text("Verify invariant enforcement and suppressions")
+                                Text(NSLocalizedString("settings.verify.invariant.enforcement.and.suppressions", value: "Verify invariant enforcement and suppressions", comment: "Verify invariant enforcement and suppressions"))
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
                         }
                     }
                 } header: {
-                    Text("Auto-Reschedule Debugging")
+                    Text(NSLocalizedString("settings.autoreschedule.debugging", value: "Auto-Reschedule Debugging", comment: "Auto-Reschedule Debugging"))
                 }
                 #endif
                 
                 Section {
                     VStack(alignment: .leading, spacing: 12) {
-                        Toggle("UI Logging", isOn: $settings.devModeUILogging)
+                        Toggle(NSLocalizedString("settings.toggle.ui.logging", value: "UI Logging", comment: "UI Logging"), isOn: $settings.devModeUILogging)
                             .onChange(of: settings.devModeUILogging) { _, _ in settings.save() }
-                        Toggle("Data & Sync Logging", isOn: $settings.devModeDataLogging)
+                        Toggle(NSLocalizedString("settings.toggle.data.sync.logging", value: "Data & Sync Logging", comment: "Data & Sync Logging"), isOn: $settings.devModeDataLogging)
                             .onChange(of: settings.devModeDataLogging) { _, _ in settings.save() }
-                        Toggle("Scheduler & Planner Logging", isOn: $settings.devModeSchedulerLogging)
+                        Toggle(NSLocalizedString("settings.toggle.scheduler.planner.logging", value: "Scheduler & Planner Logging", comment: "Scheduler & Planner Logging"), isOn: $settings.devModeSchedulerLogging)
                             .onChange(of: settings.devModeSchedulerLogging) { _, _ in settings.save() }
-                        Toggle("Performance Warnings", isOn: $settings.devModePerformance)
+                        Toggle(NSLocalizedString("settings.toggle.performance.warnings", value: "Performance Warnings", comment: "Performance Warnings"), isOn: $settings.devModePerformance)
                             .onChange(of: settings.devModePerformance) { _, _ in settings.save() }
                     }
                 } header: {
-                    Text("Subsystem Toggles")
+                    Text(NSLocalizedString("settings.subsystem.toggles", value: "Subsystem Toggles", comment: "Subsystem Toggles"))
                 } footer: {
-                    Text("Fine-tune which subsystems emit debug logs. Errors and warnings are always logged.")
+                    Text(NSLocalizedString("settings.finetune.which.subsystems.emit.debug", value: "Fine-tune which subsystems emit debug logs. Errors and warnings are always logged.", comment: "Fine-tune which subsystems emit debug logs. Errors..."))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
                 
                 Section {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Active Subsystems")
+                        Text(NSLocalizedString("settings.active.subsystems", value: "Active Subsystems", comment: "Active Subsystems"))
                             .font(.headline)
                         
                         ScrollView {
@@ -111,9 +111,9 @@ struct DeveloperSettingsView: View {
                         .cornerRadius(6)
                     }
                 } header: {
-                    Text("Available Subsystems")
+                    Text(NSLocalizedString("settings.available.subsystems", value: "Available Subsystems", comment: "Available Subsystems"))
                 } footer: {
-                    Text("All subsystems are actively logging when Developer Mode is enabled.")
+                    Text(NSLocalizedString("settings.all.subsystems.are.actively.logging", value: "All subsystems are actively logging when Developer Mode is enabled.", comment: "All subsystems are actively logging when Developer..."))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -123,7 +123,7 @@ struct DeveloperSettingsView: View {
                         Text("Recent Events: \(diagnostics.recentEvents.count)")
                             .font(.headline)
                         
-                        Button("Clear Event Buffer") {
+                        Button(NSLocalizedString("settings.button.clear.event.buffer", value: "Clear Event Buffer", comment: "Clear Event Buffer")) {
                             diagnostics.clearBuffer()
                         }
                         
@@ -158,9 +158,9 @@ struct DeveloperSettingsView: View {
                         }
                     }
                 } header: {
-                    Text("Event Buffer (Last 50)")
+                    Text(NSLocalizedString("settings.event.buffer.last.50", value: "Event Buffer (Last 50)", comment: "Event Buffer (Last 50)"))
                 } footer: {
-                    Text("View recent log events. Full logs are available in Console.app filtered by subsystem 'com.itori.app'.")
+                    Text(NSLocalizedString("settings.view.recent.log.events.full", value: "View recent log events. Full logs are available in Console.app filtered by subsystem 'com.itori.app'.", comment: "View recent log events. Full logs are available in..."))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -168,7 +168,7 @@ struct DeveloperSettingsView: View {
             
             Section {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Privacy & Safety")
+                    Text(NSLocalizedString("settings.privacy.safety", value: "Privacy & Safety", comment: "Privacy & Safety"))
                         .font(.headline)
                     
                     VStack(alignment: .leading, spacing: 4) {
@@ -199,7 +199,7 @@ struct DeveloperSettingsView: View {
     
     private func bulletPoint(_ text: String) -> some View {
         HStack(alignment: .top, spacing: 4) {
-            Text("•")
+            Text(NSLocalizedString("settings.", value: "•", comment: "•"))
             Text(text)
         }
     }

@@ -27,10 +27,10 @@ struct SemestersSettingsView: View {
                             Image(systemName: "calendar")
                                 .font(DesignSystem.Typography.body)
                                 .foregroundStyle(.tertiary)
-                            Text("No semesters defined")
+                            Text(NSLocalizedString("settings.no.semesters.defined", value: "No semesters defined", comment: "No semesters defined"))
                                 .font(DesignSystem.Typography.subHeader)
                                 .foregroundStyle(.secondary)
-                            Button("Create Your First Semester") {
+                            Button(NSLocalizedString("settings.button.create.your.first.semester", value: "Create Your First Semester", comment: "Create Your First Semester")) {
                                 showingAddSemester = true
                             }
                             .buttonStyle(.borderedProminent)
@@ -50,18 +50,18 @@ struct SemestersSettingsView: View {
                 }
             } header: {
                 HStack {
-                    Text("Active Semesters")
+                    Text(NSLocalizedString("settings.active.semesters", value: "Active Semesters", comment: "Active Semesters"))
                     Spacer()
                     Button {
                         showingAddSemester = true
                     } label: {
-                        Label("Add Semester", systemImage: "plus")
+                        Label(NSLocalizedString("settings.label.add.semester", value: "Add Semester", comment: "Add Semester"), systemImage: "plus")
                             .font(DesignSystem.Typography.caption)
                     }
                     .buttonStyle(.borderless)
                 }
             } footer: {
-                Text("Manage your academic semesters. The current semester is used for new courses and appears in the main interface.")
+                Text(NSLocalizedString("settings.manage.your.academic.semesters.the", value: "Manage your academic semesters. The current semester is used for new courses and appears in the main interface.", comment: "Manage your academic semesters. The current semest..."))
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
             }
@@ -115,7 +115,7 @@ struct SemesterSettingsRow: View {
                         .foregroundStyle(.primary)
 
                     if semester.isCurrent {
-                        Text("CURRENT")
+                        Text(NSLocalizedString("settings.current", value: "CURRENT", comment: "CURRENT"))
                             .font(.caption2.weight(.bold))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 6)
@@ -124,7 +124,7 @@ struct SemesterSettingsRow: View {
                     }
 
                     if semester.isArchived {
-                        Text("ARCHIVED")
+                        Text(NSLocalizedString("settings.archived", value: "ARCHIVED", comment: "ARCHIVED"))
                             .font(.caption2.weight(.bold))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 6)
@@ -138,7 +138,7 @@ struct SemesterSettingsRow: View {
                         .font(DesignSystem.Typography.caption)
                         .foregroundStyle(.secondary)
 
-                    Text("•")
+                    Text(NSLocalizedString("settings.", value: "•", comment: "•"))
                         .foregroundStyle(.tertiary)
 
                     Text(semester.semesterTerm.rawValue)
@@ -146,7 +146,7 @@ struct SemesterSettingsRow: View {
                         .foregroundStyle(.secondary)
 
                     if let program = semester.gradProgram {
-                        Text("•")
+                        Text(NSLocalizedString("settings.", value: "•", comment: "•"))
                             .foregroundStyle(.tertiary)
 
                         Text(program.rawValue)

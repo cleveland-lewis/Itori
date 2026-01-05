@@ -34,7 +34,7 @@ struct TodayStudyStackedBarChart: View {
         let slices = buildSlices()
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
-                Text("Today")
+                Text(NSLocalizedString("ui.today", value: "Today", comment: "Today"))
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                 Spacer()
@@ -91,7 +91,7 @@ struct TodayStudyStackedBarChart: View {
                 }
                 .frame(height: 28)
                 if slices.isEmpty {
-                    Text("No study tracked today")
+                    Text(NSLocalizedString("ui.no.study.tracked.today", value: "No study tracked today", comment: "No study tracked today"))
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }

@@ -9,11 +9,11 @@ struct ActivityListView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Activities")
+                Text(NSLocalizedString("activitylist.activities", value: "Activities", comment: "Activities"))
                     .font(DesignSystem.Typography.subHeader)
                 Spacer()
                 Button(action: onAdd) {
-                    Label("New", systemImage: "plus")
+                    Label(NSLocalizedString("activitylist.label.new", value: "New", comment: "New"), systemImage: "plus")
                 }
                 .buttonStyle(GlassButtonStyle())
             }
@@ -36,7 +36,7 @@ struct ActivityListView: View {
                 viewModel.addCollection(newCollection)
                 viewModel.selectedCollectionID = newCollection.id
             } label: {
-                Label("Add Collection", systemImage: "folder.badge.plus")
+                Label(NSLocalizedString("activitylist.label.add.collection", value: "Add Collection", comment: "Add Collection"), systemImage: "folder.badge.plus")
                     .font(.footnote.weight(.semibold))
             }
             .buttonStyle(GlassButtonStyle())

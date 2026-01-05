@@ -55,7 +55,7 @@ struct VersionDropdownView: View {
                                 HStack(spacing: 6) {
                                     Image(systemName: "checkmark.circle.fill")
                                         .foregroundStyle(.green)
-                                    Text("Up to date")
+                                    Text(NSLocalizedString("versiondropdown.up.to.date", value: "Up to date", comment: "Up to date"))
                                         .font(.caption)
                                 }
                             case .updateAvailable(let version):
@@ -88,7 +88,7 @@ struct VersionDropdownView: View {
                                     Image(systemName: "arrow.clockwise")
                                         .font(.caption)
                                 }
-                                Text("Check for Updates")
+                                Text(NSLocalizedString("versiondropdown.check.for.updates", value: "Check for Updates", comment: "Check for Updates"))
                                     .font(.caption)
                             }
                             .frame(maxWidth: .infinity)
@@ -101,7 +101,7 @@ struct VersionDropdownView: View {
                             HStack(spacing: 4) {
                                 Image(systemName: "doc.text")
                                     .font(.caption)
-                                Text("Release Notes")
+                                Text(NSLocalizedString("versiondropdown.release.notes", value: "Release Notes", comment: "Release Notes"))
                                     .font(.caption)
                             }
                             .frame(maxWidth: .infinity)
@@ -111,7 +111,7 @@ struct VersionDropdownView: View {
                     }
                     
                     // Additional info
-                    Text("© 2026 Itori. All rights reserved.")
+                    Text(NSLocalizedString("versiondropdown.2026.itori.all.rights.reserved", value: "© 2026 Itori. All rights reserved.", comment: "© 2026 Itori. All rights reserved."))
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                         .frame(maxWidth: .infinity, alignment: .center)
