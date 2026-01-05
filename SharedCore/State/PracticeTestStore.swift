@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import SwiftUI
 
+@MainActor
 final class PracticeTestStore: ObservableObject {
     static let shared = PracticeTestStore()
     @Published var tests: [PracticeTest] = []

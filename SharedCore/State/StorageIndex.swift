@@ -35,6 +35,7 @@ enum StorageSortOption: String, CaseIterable, Identifiable {
     }
 }
 
+@MainActor
 final class StorageIndex: ObservableObject {
     @Published private(set) var entries: [UUID: StorageIndexEntry] = [:]
 

@@ -17,11 +17,11 @@ final class FocusManager: ObservableObject {
     @Published var sessions: [LocalTimerSession] = []
     
     private var timerCancellable: AnyCancellable?
-    @Published private(set) lazy var settings: AppSettingsModel = AppSettingsModel.shared
+    @Published var settings: AppSettingsModel
     private let audioService = AudioFeedbackService.shared
     
     init() {
-        _ = settings // Initialize lazy property
+        self.settings = AppSettingsModel.shared
         pomodoroSessions = settings.pomodoroIterations
     }
 
