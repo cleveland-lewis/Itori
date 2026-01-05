@@ -221,7 +221,7 @@ enum AppAccentColor: String, CaseIterable, Identifiable {
 
 final class AppSettingsModel: ObservableObject, Codable {
     /// Shared singleton used across the app. Loaded from persisted storage when available.
-    private static var _shared: AppSettingsModel?
+    nonisolated(unsafe) private static var _shared: AppSettingsModel?
     private static let lock = NSLock()
     
     nonisolated(unsafe) static var shared: AppSettingsModel {

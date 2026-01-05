@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - Environment Key
 
 private struct InterfacePreferencesKey: EnvironmentKey {
-    nonisolated(unsafe) static let defaultValue: InterfacePreferences = .default
+    static let defaultValue: InterfacePreferences = .default
 }
 
 extension EnvironmentValues {

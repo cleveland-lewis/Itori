@@ -249,7 +249,7 @@ private struct FileRow: View {
                 
                 Divider()
                 
-                if file.parseStatus == .failed, let error = file.parseError {
+                if file.parseStatus == .failed, let _ = file.parseError {
                     Button(action: { 
                         showErrorAlert = true
                     }) {

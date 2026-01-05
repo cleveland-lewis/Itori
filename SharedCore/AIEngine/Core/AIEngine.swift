@@ -104,7 +104,7 @@ public final class AIEngine: Sendable {
             )
 
             AIEngine.healthMonitor.recordLLMSuppression(reason: "llm_toggle_disabled")
-            AIEngine.auditLog.log(AIAuditEntry(
+            await AIEngine.auditLog.log(AIAuditEntry(
                 timestamp: Date(),
                 requestID: context.requestID,
                 portID: P.id.rawValue,
@@ -355,7 +355,7 @@ public final class AIEngine: Sendable {
         
         // Log audit event for provider attempt
         let requestID = UUID()
-        AIEngine.auditLog.log(AIAuditEntry(
+        await AIEngine.auditLog.log(AIAuditEntry(
             timestamp: Date(),
             requestID: requestID,
             portID: P.id.rawValue,

@@ -194,8 +194,8 @@ struct GeneralSettingsView: View {
         .formStyle(.grouped)
         .navigationTitle("General")
         .onAppear {
-            startOfWeek = StartOfWeek(rawValue: settings.startOfWeek ?? "Sunday") ?? .sunday
-            defaultView = DefaultView(rawValue: settings.defaultView ?? "Dashboard") ?? .dashboard
+            startOfWeek = StartOfWeek(rawValue: settings.startOfWeek) ?? .sunday
+            defaultView = DefaultView(rawValue: settings.defaultView) ?? .dashboard
             plannerLookahead = PlannerLookahead(rawValue: settings.plannerHorizon) ?? .twoWeeks
         }
         .sheet(isPresented: $showResetSheet) {

@@ -1638,7 +1638,7 @@ private struct EventDetailView: View {
 
             Spacer()
 
-            if let identifier = item.ekIdentifier {
+            if item.ekIdentifier != nil {
                 if !item.canEdit {
                     Divider()
                     HStack(spacing: 8) {

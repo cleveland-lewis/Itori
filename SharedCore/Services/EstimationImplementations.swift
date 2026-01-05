@@ -122,7 +122,7 @@ public class DefaultEffortProfileEstimator: EstimateEffortProfilePort {
         let type = courseType.lowercased()
         let profile = defaultProfiles[type] ?? (1.0, 150)
         
-        let adjustedMinutes = profile.baseMinutes * credits
+        _ = profile.baseMinutes * credits
         
         return EffortProfile(
             courseType: courseType,
@@ -134,7 +134,7 @@ public class DefaultEffortProfileEstimator: EstimateEffortProfilePort {
     public func updateEffortProfile(courseId: String, actualMinutes: Int, category: String) {
         // Update learned profile based on actual completion time
         // This would persist to UserDefaults or Core Data in production
-        if var existing = learnedProfiles[courseId] {
+        if let existing = learnedProfiles[courseId] {
             let newBase = (existing.baseMinutesPerCredit + actualMinutes) / 2
             learnedProfiles[courseId] = EffortProfile(
                 courseType: existing.courseType,

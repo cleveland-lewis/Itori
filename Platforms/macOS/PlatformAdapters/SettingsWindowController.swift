@@ -109,7 +109,7 @@ final class SettingsWindowController: NSWindowController {
         self.coordinator = coordinator
 
         // Capture initial values without touching self
-        let initialPane = coordinator.selectedSection
+        _ = coordinator.selectedSection
 
         // Build binding and views without referencing self
         let selectionBinding = Binding<SettingsToolbarIdentifier>(

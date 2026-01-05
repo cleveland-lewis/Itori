@@ -110,7 +110,7 @@ final class PersistenceController {
         }
 
         // Final fallback: in-memory store
-        if let error = loadError {
+        if loadError != nil {
             LOG_DATA(.error, "Persistence", "Using in-memory store as final fallback.")
             isCloudKitEnabled = false
             

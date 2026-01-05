@@ -256,7 +256,7 @@ final class TimerPageViewModel: ObservableObject {
 
 #if DEBUG
     func debugAdvance(seconds: TimeInterval) {
-        guard var session = currentSession else { return }
+        guard let session = currentSession else { return }
         sessionElapsed += seconds
         if let planned = session.plannedDuration {
             sessionRemaining = max(planned - sessionElapsed, 0)

@@ -261,7 +261,7 @@ final class CalendarRefreshCoordinator: ObservableObject {
         var additions: [ProposedBlock] = []
         var moved: [MovedBlock] = []
         var resized: [ResizedBlock] = []
-        var conflicts: [ScheduleConflict] = proposed.conflicts
+        let conflicts: [ScheduleConflict] = proposed.conflicts
         var scheduledTags: Set<String> = []
 
         for block in proposed.addedBlocks {

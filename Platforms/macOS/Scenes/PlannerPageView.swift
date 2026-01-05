@@ -1086,7 +1086,7 @@ private extension PlannerPageView {
 }
 
 private extension PlannerPageView {
-    @discardableResult
+    
     func moveBlock(id: UUID, to hourDate: Date, minuteOffset: Int) {
         guard let stored = plannerStore.scheduled.first(where: { $0.id == id }) else { return }
         guard !stored.isLocked else { return }

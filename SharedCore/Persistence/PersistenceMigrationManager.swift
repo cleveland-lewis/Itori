@@ -101,7 +101,7 @@ final class PersistenceMigrationManager {
         workload: [String: Any]?,
         recommendations: [String: Any]?
     ) async throws -> UUID {
-        var analysisData: [String: Any] = [
+        let analysisData: [String: Any] = [
             "assignments": assignments
         ]
         

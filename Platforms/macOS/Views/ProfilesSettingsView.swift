@@ -209,7 +209,7 @@ struct ProfilesSettingsView: View {
         }
 
         // Energy Level
-        energyLevel = EnergyLevel(rawValue: settings.defaultEnergyLevel ?? "Medium") ?? .medium
+        energyLevel = EnergyLevel(rawValue: settings.defaultEnergyLevel) ?? .medium
     }
 }
 

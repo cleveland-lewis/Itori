@@ -142,7 +142,7 @@ public final class LocalModelManager: ObservableObject {
         }
         
         let expectedLength = httpResponse.expectedContentLength
-        var downloadedLength: Int64 = 0
+        var _: Int64 = 0
         
         // Create destination file
         guard let fileHandle = FileHandle(forWritingAtPath: destinationURL.path) ??

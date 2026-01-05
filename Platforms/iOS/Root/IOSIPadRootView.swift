@@ -68,7 +68,7 @@ struct IOSIPadRootView: View {
         case .planner:
             IOSPlannerView()
         case .grades:
-            IOSPlaceholderView(title: page.title, subtitle: "Grade insights are available on macOS.")
+            IOSGradesView()
         case .timer:
             IOSTimerPageView()
         default:

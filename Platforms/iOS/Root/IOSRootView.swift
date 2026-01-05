@@ -289,6 +289,8 @@ struct IOSRootView: View {
             IOSAssignmentsView()
         case .courses:
             IOSCoursesView()
+        case .grades:
+            IOSGradesView()
         case .timer:
             IOSTimerPageView()
         case .flashcards:
@@ -313,6 +315,8 @@ struct IOSRootView: View {
             IOSAssignmentsView()
         case .courses:
             IOSCoursesView()
+        case .grades:
+            IOSGradesView()
         case .timer:
             IOSTimerPageView()
         case .flashcards:

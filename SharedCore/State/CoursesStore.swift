@@ -92,7 +92,7 @@ final class CoursesStore: ObservableObject {
             guard let self = self else { return nil }
             
             let startTime = CFAbsoluteTimeGetCurrent()
-            LOG_PERSISTENCE(.debug, "CoursesLoad", "Starting off-main data load")
+            await LOG_PERSISTENCE(.debug, "CoursesLoad", "Starting off-main data load")
             
             // Step 1: Load cache (fast path)
             var semesters: [Semester] = []
@@ -113,9 +113,9 @@ final class CoursesStore: ObservableObject {
                     courseFiles = decoded.courseFiles
                     currentSemesterId = decoded.currentSemesterId
                     activeSemesterIds = decoded.activeSemesterIds.map { Set($0) } ?? (currentSemesterId.map { [$0] } ?? [])
-                    LOG_PERSISTENCE(.debug, "CoursesCache", "Loaded cache off-main", metadata: ["semesters": "\(semesters.count)"])
+                    await LOG_PERSISTENCE(.debug, "CoursesCache", "Loaded cache off-main", metadata: ["semesters": "\(semesters.count)"])
                 } catch {
-                    LOG_PERSISTENCE(.error, "CoursesCache", "Cache load failed: \(error.localizedDescription)")
+                    await LOG_PERSISTENCE(.error, "CoursesCache", "Cache load failed: \(error.localizedDescription)")
                 }
             }
             
@@ -130,9 +130,9 @@ final class CoursesStore: ObservableObject {
                     courseFiles = decoded.courseFiles
                     currentSemesterId = decoded.currentSemesterId
                     activeSemesterIds = decoded.activeSemesterIds.map { Set($0) } ?? (currentSemesterId.map { [$0] } ?? [])
-                    LOG_PERSISTENCE(.debug, "CoursesLoad", "Loaded main storage off-main", metadata: ["semesters": "\(semesters.count)"])
+                    await LOG_PERSISTENCE(.debug, "CoursesLoad", "Loaded main storage off-main", metadata: ["semesters": "\(semesters.count)"])
                 } catch {
-                    LOG_PERSISTENCE(.error, "CoursesLoad", "Storage load failed: \(error.localizedDescription)")
+                    await LOG_PERSISTENCE(.error, "CoursesLoad", "Storage load failed: \(error.localizedDescription)")
                 }
             }
             
@@ -148,17 +148,17 @@ final class CoursesStore: ObservableObject {
                 if let currentId = currentSemesterId, expiredIds.contains(currentId) {
                     currentSemesterId = nil
                 }
-                LOG_PERSISTENCE(.debug, "CoursesCleanup", "Cleaned \(expiredIds.count) expired items off-main")
+                await LOG_PERSISTENCE(.debug, "CoursesCleanup", "Cleaned \(expiredIds.count) expired items off-main")
             }
             
             // Step 4: Compute GPA off-main (expensive!)
-            let gradedCourses = courses.filter { !$0.isArchived }
+            _ = courses.filter { !$0.isArchived }
             // Note: GPA calculation needs tasks, but we'll defer that to avoid circular dependency
             // For now, compute basic GPA structure
             let gpa = 0.0  // Will be computed properly on main thread after merge
             
             let elapsed = (CFAbsoluteTimeGetCurrent() - startTime) * 1000
-            LOG_PERSISTENCE(.info, "CoursesLoad", "Off-main load complete in \(Int(elapsed))ms")
+            await LOG_PERSISTENCE(.info, "CoursesLoad", "Off-main load complete in \(Int(elapsed))ms")
             
             return InitialCoursesSnapshot(
                 semesters: semesters,
@@ -226,7 +226,7 @@ final class CoursesStore: ObservableObject {
             guard let self = self else { return }
             let tasks = await AssignmentsStore.shared.tasks
             let gradedCourses = await self.courses.filter { !$0.isArchived }
-            let gpa = GradeCalculator.calculateGPA(courses: gradedCourses, tasks: tasks)
+            let gpa = await GradeCalculator.calculateGPA(courses: gradedCourses, tasks: tasks)
             await MainActor.run {
                 self.currentGPA = gpa
                 LOG_PERSISTENCE(.debug, "CoursesGPA", "GPA computed async: \(gpa)")
@@ -1046,10 +1046,10 @@ extension CoursesStore {
             do {
                 let data = try Data(contentsOf: url)
                 let decoded = try JSONDecoder().decode(PersistedData.self, from: data)
-                LOG_PERSISTENCE(.debug, "CoursesiCloud", "Decoded iCloud data off-main")
+                await LOG_PERSISTENCE(.debug, "CoursesiCloud", "Decoded iCloud data off-main")
                 return decoded
             } catch {
-                LOG_PERSISTENCE(.error, "CoursesiCloud", "iCloud load failed: \(error.localizedDescription)")
+                await LOG_PERSISTENCE(.error, "CoursesiCloud", "iCloud load failed: \(error.localizedDescription)")
                 return nil
             }
         }.value

@@ -1,5 +1,5 @@
 import Foundation
-import AVFoundation
+@preconcurrency import AVFoundation
 
 /// Manages audio feedback for timer events
 @MainActor
@@ -159,7 +159,7 @@ final class AudioFeedbackService {
                 
                 // Smooth envelope for each segment
                 let localFrame = frame - startFrame
-                let segmentProgress = Double(localFrame) / Double(segmentFrames)
+                _ = Double(localFrame) / Double(segmentFrames)
                 let fadeInLength = min(segmentFrames / 8, 500)
                 let fadeOutLength = min(segmentFrames / 6, 800)
                 

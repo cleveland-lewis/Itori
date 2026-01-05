@@ -510,7 +510,7 @@ final class PlannerStore: ObservableObject {
         pathMonitor?.pathUpdateHandler = { [weak self] path in
             Task { @MainActor [weak self] in
                 self?.isOnline = path.status == .satisfied
-                if path.status == .satisfied, let self = self, self.isSyncEnabled, let url = self.iCloudURL {
+                if path.status == .satisfied, let self = self, self.isSyncEnabled, let _ = self.iCloudURL {
                     // Sync on reconnection
                     if let data = try? JSONEncoder().encode(Persisted(scheduled: self.scheduled, overflow: self.overflow)) {
                         self.saveToiCloud(data: data)

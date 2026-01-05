@@ -10,7 +10,7 @@ struct LocalizationManager {
     /// Never returns the key itself - always returns human-readable text
     static func string(_ key: String, comment: String = "") -> String {
         // Try main bundle first
-        var localized = NSLocalizedString(key, bundle: .main, comment: comment)
+        let localized = NSLocalizedString(key, bundle: .main, comment: comment)
         
         // If localization failed, it returns the key itself
         if localized == key {
