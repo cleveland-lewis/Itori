@@ -92899,6 +92899,12 @@
             "state": "translated",
             "value": "practice.results.performance.good"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.results.performance.good"
+          }
         }
       }
     },
@@ -93002,6 +93008,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.results.performance.keep_practicing"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "practice.results.performance.keep_practicing"
@@ -93113,6 +93125,12 @@
             "state": "translated",
             "value": "practice.results.performance.needs_improvement"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.results.performance.needs_improvement"
+          }
         }
       }
     },
@@ -93216,6 +93234,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.results.question_number"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "practice.results.question_number"
@@ -93327,6 +93351,12 @@
             "state": "translated",
             "value": "practice.results.question_prefix"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.results.question_prefix"
+          }
         }
       }
     },
@@ -93430,6 +93460,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.results.review_questions"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "practice.results.review_questions"
@@ -93541,6 +93577,12 @@
             "state": "translated",
             "value": "practice.results.status.correct"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.results.status.correct"
+          }
         }
       }
     },
@@ -93644,6 +93686,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.results.status.incorrect"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "practice.results.status.incorrect"
@@ -93755,6 +93803,12 @@
             "state": "translated",
             "value": "practice.results.title"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.results.title"
+          }
         }
       }
     },
@@ -93858,6 +93912,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.results.your_answer"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "practice.results.your_answer"
@@ -93969,6 +94029,12 @@
             "state": "translated",
             "value": "practice.taking.answer.explanation_help"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.taking.answer.explanation_help"
+          }
         }
       }
     },
@@ -94072,6 +94138,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.taking.answer.your_answer"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "practice.taking.answer.your_answer"
@@ -94183,6 +94255,12 @@
             "state": "translated",
             "value": "practice.taking.answer.your_explanation"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.taking.answer.your_explanation"
+          }
         }
       }
     },
@@ -94286,6 +94364,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.taking.question_number"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "practice.taking.question_number"
@@ -94397,6 +94481,12 @@
             "state": "translated",
             "value": "practice.taking.status.answered"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.taking.status.answered"
+          }
         }
       }
     },
@@ -94500,6 +94590,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.taking.status.not_answered"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "practice.taking.status.not_answered"
@@ -94611,6 +94707,12 @@
             "state": "translated",
             "value": "practice.taking.submit_confirm.cancel"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.taking.submit_confirm.cancel"
+          }
         }
       }
     },
@@ -94714,6 +94816,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.taking.submit_confirm.complete"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "practice.taking.submit_confirm.complete"
@@ -94825,6 +94933,12 @@
             "state": "translated",
             "value": "practice.taking.submit_confirm.partial"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.taking.submit_confirm.partial"
+          }
         }
       }
     },
@@ -94928,6 +95042,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.taking.submit_confirm.submit"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "practice.taking.submit_confirm.submit"
@@ -95039,6 +95159,12 @@
             "state": "translated",
             "value": "practice.taking.submit_confirm.title"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.taking.submit_confirm.title"
+          }
         }
       }
     },
@@ -95135,6 +95261,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previous: %@"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Previous: %@"
@@ -95245,6 +95377,12 @@
             "state": "translated",
             "value": "Priority"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Priority"
+          }
         }
       }
     },
@@ -95341,6 +95479,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy & Safety"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Privacy & Safety"
@@ -95445,6 +95589,12 @@
             "state": "translated",
             "value": "Privacy & Security"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy & Security"
+          }
         }
       }
     },
@@ -95541,6 +95691,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Productivity Tracking"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Productivity Tracking"
@@ -95645,6 +95801,12 @@
             "state": "translated",
             "value": "Profile Management"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profile Management"
+          }
         }
       }
     },
@@ -95745,6 +95907,12 @@
             "state": "translated",
             "value": "Profile management coming soon"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profile management coming soon"
+          }
         }
       }
     },
@@ -95841,6 +96009,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profile Type"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Profile Type"
@@ -95951,6 +96125,12 @@
             "state": "translated",
             "value": "Project"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Project"
+          }
         }
       }
     },
@@ -96051,6 +96231,12 @@
             "state": "translated",
             "value": "Provide tactile feedback for interactions"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Provide tactile feedback for interactions"
+          }
         }
       }
     },
@@ -96147,6 +96333,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pushed %@ task(s)"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Pushed %@ task(s)"
@@ -96257,6 +96449,12 @@
             "state": "translated",
             "value": "Question"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Question"
+          }
         }
       }
     },
@@ -96359,6 +96557,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quick Actions"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Quick Actions"
@@ -96469,6 +96673,12 @@
             "state": "translated",
             "value": "Quiz"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quiz"
+          }
         }
       }
     },
@@ -96565,6 +96775,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Range: %@"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Range: %@"
@@ -96675,6 +96891,12 @@
             "state": "translated",
             "value": "Reading"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading"
+          }
         }
       }
     },
@@ -96775,6 +96997,12 @@
             "state": "translated",
             "value": "Receive a daily summary of your schedule and tasks"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Receive a daily summary of your schedule and tasks"
+          }
         }
       }
     },
@@ -96871,6 +97099,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Receive encouraging notifications throughout the day"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Receive encouraging notifications throughout the day"
@@ -96981,6 +97215,12 @@
             "state": "translated",
             "value": "Recent"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent"
+          }
         }
       }
     },
@@ -97077,6 +97317,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent Events: %@"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Recent Events: %@"
@@ -97181,6 +97427,12 @@
             "state": "translated",
             "value": "Recent Sessions"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recent Sessions"
+          }
         }
       }
     },
@@ -97277,6 +97529,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reduce Motion"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Reduce Motion"
@@ -97381,6 +97639,12 @@
             "state": "translated",
             "value": "Reduce Motion: %@"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reduce Motion: %@"
+          }
         }
       }
     },
@@ -97477,6 +97741,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reduce Transparency"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Reduce Transparency"
@@ -97581,6 +97851,12 @@
             "state": "translated",
             "value": "Reduce Transparency: %@"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reduce Transparency: %@"
+          }
         }
       }
     },
@@ -97681,6 +97957,12 @@
             "state": "translated",
             "value": "Remind me:"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remind me:"
+          }
         }
       }
     },
@@ -97777,6 +98059,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reminders integration settings"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Reminders integration settings"
@@ -97887,6 +98175,12 @@
             "state": "translated",
             "value": "Repeat"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeat"
+          }
         }
       }
     },
@@ -97983,6 +98277,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Replace translucent backgrounds with opaque colors"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Replace translucent backgrounds with opaque colors"
@@ -98087,6 +98387,12 @@
             "state": "translated",
             "value": "Required"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Required"
+          }
         }
       }
     },
@@ -98187,6 +98493,12 @@
             "state": "translated",
             "value": "Reset All Data"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset All Data"
+          }
         }
       }
     },
@@ -98283,6 +98595,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reset All Settings"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Reset All Settings"
@@ -98393,6 +98711,12 @@
             "state": "translated",
             "value": "Review"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review"
+          }
         }
       }
     },
@@ -98489,6 +98813,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reviewed %@ cards"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Reviewed %@ cards"
@@ -98593,6 +98923,12 @@
             "state": "translated",
             "value": "Risk Analysis"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Risk Analysis"
+          }
         }
       }
     },
@@ -98689,6 +99025,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runs a quick self-diagnostic across data, permissions, and local files."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Runs a quick self-diagnostic across data, permissions, and local files."
@@ -98793,6 +99135,12 @@
             "state": "translated",
             "value": "Sample Card"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sample Card"
+          }
         }
       }
     },
@@ -98889,6 +99237,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save Semester"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Save Semester"
@@ -98993,6 +99347,12 @@
             "state": "translated",
             "value": "Schedule suggestions ready"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schedule suggestions ready"
+          }
         }
       }
     },
@@ -99089,6 +99449,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scheduled Tests"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Scheduled Tests"
@@ -99193,6 +99559,12 @@
             "state": "translated",
             "value": "Select a Calendar"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select a Calendar"
+          }
         }
       }
     },
@@ -99289,6 +99661,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select a Course"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Select a Course"
@@ -99395,6 +99773,12 @@
             "state": "translated",
             "value": "Select a List"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select a List"
+          }
         }
       }
     },
@@ -99491,6 +99875,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select an event to view details"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Select an event to view details"
@@ -99597,6 +99987,12 @@
             "state": "translated",
             "value": "Select course"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select course"
+          }
         }
       }
     },
@@ -99693,6 +100089,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select the calendar used for school/academic events."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Select the calendar used for school/academic events."
@@ -99797,6 +100199,12 @@
             "state": "translated",
             "value": "Select up to %@ actions."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select up to %@ actions."
+          }
         }
       }
     },
@@ -99893,6 +100301,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select up to 5 pages to show in the tab bar. All pages remain accessible via the menu."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Select up to 5 pages to show in the tab bar. All pages remain accessible via the menu."
@@ -99997,6 +100411,12 @@
             "state": "translated",
             "value": "SELECTED DATE"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SELECTED DATE"
+          }
         }
       }
     },
@@ -100097,6 +100517,12 @@
             "state": "translated",
             "value": "Selected material"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selected material"
+          }
         }
       }
     },
@@ -100187,6 +100613,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selected: %@"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Selected: %@"
@@ -100297,6 +100729,12 @@
             "state": "translated",
             "value": "Selected: %@ • %@ today"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selected: %@ • %@ today"
+          }
         }
       }
     },
@@ -100403,6 +100841,12 @@
             "state": "translated",
             "value": "Semester"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semester"
+          }
         }
       }
     },
@@ -100499,6 +100943,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semester Management"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Semester Management"
@@ -100603,6 +101053,12 @@
             "state": "translated",
             "value": "Semester management coming soon"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semester management coming soon"
+          }
         }
       }
     },
@@ -100703,6 +101159,12 @@
             "state": "translated",
             "value": "Session Complete!"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Session Complete!"
+          }
         }
       }
     },
@@ -100799,6 +101261,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Session: %@"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Session: %@"
@@ -100910,6 +101378,12 @@
             "state": "translated",
             "value": "settings.accessibility.guidance.header"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.accessibility.guidance.header"
+          }
         }
       }
     },
@@ -101013,6 +101487,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.accessibility.haptics"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.accessibility.haptics"
@@ -101124,6 +101604,12 @@
             "state": "translated",
             "value": "settings.accessibility.haptics.detail"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.accessibility.haptics.detail"
+          }
         }
       }
     },
@@ -101227,6 +101713,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.accessibility.high_contrast"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.accessibility.high_contrast"
@@ -101338,6 +101830,12 @@
             "state": "translated",
             "value": "settings.accessibility.high_contrast.detail"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.accessibility.high_contrast.detail"
+          }
         }
       }
     },
@@ -101441,6 +101939,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.accessibility.interaction.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.accessibility.interaction.header"
@@ -101552,6 +102056,12 @@
             "state": "translated",
             "value": "settings.accessibility.reduce_motion"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.accessibility.reduce_motion"
+          }
         }
       }
     },
@@ -101655,6 +102165,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.accessibility.reduce_motion.detail"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.accessibility.reduce_motion.detail"
@@ -101766,6 +102282,12 @@
             "state": "translated",
             "value": "settings.accessibility.reduce_transparency"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.accessibility.reduce_transparency"
+          }
         }
       }
     },
@@ -101869,6 +102391,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.accessibility.reduce_transparency.detail"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.accessibility.reduce_transparency.detail"
@@ -101980,6 +102508,12 @@
             "state": "translated",
             "value": "settings.accessibility.tooltips"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.accessibility.tooltips"
+          }
         }
       }
     },
@@ -102083,6 +102617,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.accessibility.tooltips.detail"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.accessibility.tooltips.detail"
@@ -102194,6 +102734,12 @@
             "state": "translated",
             "value": "settings.accessibility.visual.header"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.accessibility.visual.header"
+          }
         }
       }
     },
@@ -102297,6 +102843,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.appearance.animations"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.appearance.animations"
@@ -102408,6 +102960,12 @@
             "state": "translated",
             "value": "settings.appearance.animations.detail"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.appearance.animations.detail"
+          }
         }
       }
     },
@@ -102511,6 +103069,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.appearance.card_radius"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.appearance.card_radius"
@@ -102622,6 +103186,12 @@
             "state": "translated",
             "value": "settings.appearance.effects.header"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.appearance.effects.header"
+          }
         }
       }
     },
@@ -102725,6 +103295,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.appearance.glass_effects"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.appearance.glass_effects"
@@ -102836,6 +103412,12 @@
             "state": "translated",
             "value": "settings.appearance.glass_effects.detail"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.appearance.glass_effects.detail"
+          }
         }
       }
     },
@@ -102939,6 +103521,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.appearance.style.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.appearance.style.header"
@@ -103050,6 +103638,12 @@
             "state": "translated",
             "value": "settings.appearance.theme"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.appearance.theme"
+          }
         }
       }
     },
@@ -103153,6 +103747,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.appearance.theme.auto"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.appearance.theme.auto"
@@ -103264,6 +103864,12 @@
             "state": "translated",
             "value": "settings.appearance.theme.dark"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.appearance.theme.dark"
+          }
         }
       }
     },
@@ -103367,6 +103973,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.appearance.theme.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.appearance.theme.header"
@@ -103478,6 +104090,12 @@
             "state": "translated",
             "value": "settings.appearance.theme.light"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.appearance.theme.light"
+          }
         }
       }
     },
@@ -103585,6 +104203,12 @@
             "state": "translated",
             "value": "settings.appearance.theme.system"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.appearance.theme.system"
+          }
         }
       }
     },
@@ -103682,6 +104306,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.lock_picker"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.calendar.lock_picker"
@@ -103787,6 +104417,12 @@
             "state": "translated",
             "value": "settings.calendar.lock_picker.disabled"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.lock_picker.disabled"
+          }
         }
       }
     },
@@ -103884,6 +104520,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.lock_picker.enabled"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.calendar.lock_picker.enabled"
@@ -103995,6 +104637,12 @@
             "state": "translated",
             "value": "settings.calendar.not_authorized.message"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.not_authorized.message"
+          }
         }
       }
     },
@@ -104102,6 +104750,12 @@
             "state": "translated",
             "value": "settings.calendar.not_authorized.title"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.not_authorized.title"
+          }
         }
       }
     },
@@ -104199,6 +104853,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.picker_lock.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.calendar.picker_lock.header"
@@ -104310,6 +104970,12 @@
             "state": "translated",
             "value": "settings.calendar.range.1_month"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.range.1_month"
+          }
         }
       }
     },
@@ -104413,6 +105079,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.range.1_week"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.calendar.range.1_week"
@@ -104524,6 +105196,12 @@
             "state": "translated",
             "value": "settings.calendar.range.2_months"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.range.2_months"
+          }
         }
       }
     },
@@ -104627,6 +105305,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.range.2_weeks"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.calendar.range.2_weeks"
@@ -104738,6 +105422,12 @@
             "state": "translated",
             "value": "settings.calendar.refresh_range"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.refresh_range"
+          }
         }
       }
     },
@@ -104841,6 +105531,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.request_access"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.calendar.request_access"
@@ -104952,6 +105648,12 @@
             "state": "translated",
             "value": "settings.calendar.revoke_access"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.revoke_access"
+          }
         }
       }
     },
@@ -105055,6 +105757,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.revoke_access.confirm.button"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.calendar.revoke_access.confirm.button"
@@ -105166,6 +105874,12 @@
             "state": "translated",
             "value": "settings.calendar.revoke_access.confirm.message"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.revoke_access.confirm.message"
+          }
         }
       }
     },
@@ -105269,6 +105983,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.revoke_access.confirm.title"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.calendar.revoke_access.confirm.title"
@@ -105380,6 +106100,12 @@
             "state": "translated",
             "value": "settings.calendar.revoke_access.footer"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.revoke_access.footer"
+          }
         }
       }
     },
@@ -105483,6 +106209,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.scheduling.footer"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.calendar.scheduling.footer"
@@ -105594,6 +106326,12 @@
             "state": "translated",
             "value": "settings.calendar.scheduling.header"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.scheduling.header"
+          }
         }
       }
     },
@@ -105697,6 +106435,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.school_calendar.footer"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.calendar.school_calendar.footer"
@@ -105808,6 +106552,12 @@
             "state": "translated",
             "value": "settings.calendar.school_calendar.header"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.school_calendar.header"
+          }
         }
       }
     },
@@ -105905,6 +106655,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.school_calendar.label"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.calendar.school_calendar.label"
@@ -106010,6 +106766,12 @@
             "state": "translated",
             "value": "settings.calendar.select_calendar"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.select_calendar"
+          }
         }
       }
     },
@@ -106107,6 +106869,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.show_only_school"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.calendar.show_only_school"
@@ -106212,6 +106980,12 @@
             "state": "translated",
             "value": "settings.calendar.show_only_school.disabled"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.show_only_school.disabled"
+          }
         }
       }
     },
@@ -106313,6 +107087,12 @@
             "state": "translated",
             "value": "settings.calendar.show_only_school.enabled"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.show_only_school.enabled"
+          }
         }
       }
     },
@@ -106410,6 +107190,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.calendar.view_filter.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.calendar.view_filter.header"
@@ -106521,6 +107307,12 @@
             "state": "translated",
             "value": "settings.category.accessibility"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.accessibility"
+          }
         }
       }
     },
@@ -106624,6 +107416,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.appearance"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.category.appearance"
@@ -106735,6 +107533,12 @@
             "state": "translated",
             "value": "settings.category.calendar"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.calendar"
+          }
         }
       }
     },
@@ -106802,6 +107606,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.courses"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.category.courses"
@@ -106913,6 +107723,12 @@
             "state": "translated",
             "value": "settings.category.courses_planner"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.courses_planner"
+          }
         }
       }
     },
@@ -107014,6 +107830,12 @@
             "state": "translated",
             "value": "settings.category.developer"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.developer"
+          }
         }
       }
     },
@@ -107111,6 +107933,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.flashcards"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.category.flashcards"
@@ -107222,6 +108050,12 @@
             "state": "translated",
             "value": "settings.category.general"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.general"
+          }
         }
       }
     },
@@ -107319,6 +108153,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.integrations"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.category.integrations"
@@ -107430,6 +108270,12 @@
             "state": "translated",
             "value": "settings.category.interface"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.interface"
+          }
         }
       }
     },
@@ -107537,6 +108383,12 @@
             "state": "translated",
             "value": "settings.category.notifications"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.notifications"
+          }
         }
       }
     },
@@ -107634,6 +108486,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.planner"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.category.planner"
@@ -107745,6 +108603,12 @@
             "state": "translated",
             "value": "settings.category.privacy"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.privacy"
+          }
         }
       }
     },
@@ -107842,6 +108706,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.profiles"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.category.profiles"
@@ -107947,6 +108817,12 @@
             "state": "translated",
             "value": "settings.category.reminders"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.reminders"
+          }
         }
       }
     },
@@ -108044,6 +108920,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.semesters"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.category.semesters"
@@ -108155,6 +109037,12 @@
             "state": "translated",
             "value": "settings.category.storage"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.storage"
+          }
         }
       }
     },
@@ -108258,6 +109146,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.category.timer"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.category.timer"
@@ -108369,6 +109263,12 @@
             "state": "translated",
             "value": "settings.courses.display"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.courses.display"
+          }
         }
       }
     },
@@ -108466,6 +109366,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.courses.display.both"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.courses.display.both"
@@ -108577,6 +109483,12 @@
             "state": "translated",
             "value": "settings.courses.display.code"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.courses.display.code"
+          }
         }
       }
     },
@@ -108680,6 +109592,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.courses.display.footer"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.courses.display.footer"
@@ -108791,6 +109709,12 @@
             "state": "translated",
             "value": "settings.courses.display.header"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.courses.display.header"
+          }
         }
       }
     },
@@ -108898,6 +109822,12 @@
             "state": "translated",
             "value": "settings.courses.display.name"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.courses.display.name"
+          }
         }
       }
     },
@@ -109001,6 +109931,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.general.display.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.general.display.header"
@@ -109118,6 +110054,12 @@
             "state": "translated",
             "value": "settings.general.high_contrast"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.general.high_contrast"
+          }
         }
       }
     },
@@ -109221,6 +110163,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.general.high_contrast.detail"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.general.high_contrast.detail"
@@ -109338,6 +110286,12 @@
             "state": "translated",
             "value": "settings.general.use_24h"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.general.use_24h"
+          }
         }
       }
     },
@@ -109441,6 +110395,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.general.use_24h.detail"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.general.use_24h.detail"
@@ -109552,6 +110512,12 @@
             "state": "translated",
             "value": "settings.general.workday_end"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.general.workday_end"
+          }
         }
       }
     },
@@ -109655,6 +110621,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.general.workday_start"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.general.workday_start"
@@ -109766,6 +110738,12 @@
             "state": "translated",
             "value": "settings.general.workday.footer"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.general.workday.footer"
+          }
         }
       }
     },
@@ -109869,6 +110847,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.general.workday.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.general.workday.header"
@@ -109980,6 +110964,12 @@
             "state": "translated",
             "value": "settings.notifications.affirmations"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.affirmations"
+          }
         }
       }
     },
@@ -110083,6 +111073,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.affirmations.detail"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.affirmations.detail"
@@ -110194,6 +111190,12 @@
             "state": "translated",
             "value": "settings.notifications.assignments"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.assignments"
+          }
         }
       }
     },
@@ -110297,6 +111299,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.assignments.detail"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.assignments.detail"
@@ -110408,6 +111416,12 @@
             "state": "translated",
             "value": "settings.notifications.daily_overview"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.daily_overview"
+          }
         }
       }
     },
@@ -110511,6 +111525,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.daily_overview.detail"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.daily_overview.detail"
@@ -110622,6 +111642,12 @@
             "state": "translated",
             "value": "settings.notifications.debug.header"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.debug.header"
+          }
         }
       }
     },
@@ -110725,6 +111751,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.debug.print"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.debug.print"
@@ -110836,6 +111868,12 @@
             "state": "translated",
             "value": "settings.notifications.debug.test"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.debug.test"
+          }
         }
       }
     },
@@ -110939,6 +111977,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.disabled.message"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.disabled.message"
@@ -111050,6 +112094,12 @@
             "state": "translated",
             "value": "settings.notifications.disabled.title"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.disabled.title"
+          }
         }
       }
     },
@@ -111153,6 +112203,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.enable"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.enable"
@@ -111264,6 +112320,12 @@
             "state": "translated",
             "value": "settings.notifications.enable.detail"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.enable.detail"
+          }
         }
       }
     },
@@ -111367,6 +112429,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.general.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.general.header"
@@ -111478,6 +112546,12 @@
             "state": "translated",
             "value": "settings.notifications.lead_time"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.lead_time"
+          }
         }
       }
     },
@@ -111581,6 +112655,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.lead_time.1_day"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.lead_time.1_day"
@@ -111692,6 +112772,12 @@
             "state": "translated",
             "value": "settings.notifications.lead_time.1_hour"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.lead_time.1_hour"
+          }
         }
       }
     },
@@ -111795,6 +112881,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.lead_time.2_days"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.lead_time.2_days"
@@ -111906,6 +112998,12 @@
             "state": "translated",
             "value": "settings.notifications.lead_time.2_hours"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.lead_time.2_hours"
+          }
         }
       }
     },
@@ -112009,6 +113107,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.lead_time.6_hours"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.lead_time.6_hours"
@@ -112120,6 +113224,12 @@
             "state": "translated",
             "value": "settings.notifications.lead_time.12_hours"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.lead_time.12_hours"
+          }
         }
       }
     },
@@ -112223,6 +113333,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.lead_time.15_min"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.lead_time.15_min"
@@ -112334,6 +113450,12 @@
             "state": "translated",
             "value": "settings.notifications.lead_time.30_min"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.lead_time.30_min"
+          }
         }
       }
     },
@@ -112437,6 +113559,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.motivation.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.motivation.header"
@@ -112548,6 +113676,12 @@
             "state": "translated",
             "value": "settings.notifications.open_settings"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.open_settings"
+          }
         }
       }
     },
@@ -112651,6 +113785,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.overview_time"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.overview_time"
@@ -112762,6 +113902,12 @@
             "state": "translated",
             "value": "settings.notifications.permission.denied.message"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.permission.denied.message"
+          }
         }
       }
     },
@@ -112865,6 +114011,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.permission.denied.title"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.permission.denied.title"
@@ -112976,6 +114128,12 @@
             "state": "translated",
             "value": "settings.notifications.permission.open_settings"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.permission.open_settings"
+          }
         }
       }
     },
@@ -113079,6 +114237,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.reminders.header"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.notifications.reminders.header"
@@ -113190,6 +114354,12 @@
             "state": "translated",
             "value": "settings.notifications.summaries.header"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.notifications.summaries.header"
+          }
         }
       }
     },
@@ -113293,6 +114463,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.ai"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.planner.ai"
@@ -113404,6 +114580,12 @@
             "state": "translated",
             "value": "settings.planner.ai.detail"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.ai.detail"
+          }
         }
       }
     },
@@ -113507,6 +114689,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.auto_breaks"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.planner.auto_breaks"
@@ -113618,6 +114806,12 @@
             "state": "translated",
             "value": "settings.planner.auto_breaks.detail"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.auto_breaks.detail"
+          }
         }
       }
     },
@@ -113721,6 +114915,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "settings.planner.energy_tracking"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "settings.planner.energy_tracking"

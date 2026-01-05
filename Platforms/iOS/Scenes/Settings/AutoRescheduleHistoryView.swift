@@ -203,7 +203,7 @@ struct HistoryRow: View {
         )
     ]
     
-    return NavigationStack {
+    NavigationStack {
         AutoRescheduleHistoryView()
             .navigationTitle("Reschedule History")
             .navigationBarTitleDisplayMode(.inline)
