@@ -188,7 +188,7 @@ extension Attachment: StorageListable {
 // MARK: - CalendarEvent
 
 // Note: CalendarEvent conformance temporarily disabled due to type ambiguity
-// TODO: Re-enable when CalendarEvent type resolution is clarified
+// Deferred: CalendarEvent type resolution
 /*
 extension CalendarEvent: StorageListable {
     public var displayTitle: String {

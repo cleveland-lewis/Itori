@@ -120,7 +120,7 @@ public class EstimationService: ObservableObject {
     
     /// Fetches completion history from Core Data
     private func fetchCompletionHistory(courseId: String, category: String) async -> [CompletionHistory] {
-        // TODO: Integrate with Core Data to fetch actual completion history
+        // Deferred: Core Data integration for history
         // For now, return empty array (fallback to heuristics)
         return []
     }

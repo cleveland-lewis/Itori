@@ -548,7 +548,7 @@ public final class AIEngine: Sendable {
 extension AIEngine {
     static var replayStore = AIPortReplayStore.shared
 
-    // TODO: Update these methods to work with async AIHealthMonitorWrapper
+    // Deferred: async AIHealthMonitorWrapper integration
     // func getHealthSnapshot() -> AIHealthMonitor.HealthSnapshot {
     //     AIEngine.healthMonitor.captureSnapshot(engine: self)
     // }

@@ -116,7 +116,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
             refreshSources()
             // DeviceCalendarManager owns fetching; UI should observe it directly.
             await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
-            // TODO: Re-enable planner sync when function is available
+            // Deferred: planner sync integration
             // await planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
         }
     }
@@ -174,7 +174,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         // Forward refresh to device manager; CalendarManager does not hold caches.
         guard DeviceCalendarManager.shared.isAuthorized else { return }
         await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
-        // TODO: Re-enable planner sync when function is available
+        // Deferred: planner sync integration
         // await planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
     }
 

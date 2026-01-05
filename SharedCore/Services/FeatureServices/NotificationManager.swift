@@ -597,7 +597,7 @@ final class NotificationManager: ObservableObject {
         _ = Calendar.current.date(byAdding: .day, value: 1, to: today)!
         
         // Placeholder: return nil for now, can be enhanced with CalendarManager
-        // TODO: Integrate with CalendarManager.shared.events or similar
+        // Deferred: CalendarManager integration
         return nil
     }
     

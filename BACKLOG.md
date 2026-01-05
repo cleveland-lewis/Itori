@@ -64,3 +64,14 @@ Features and improvements deferred from v1.0.
 ---
 
 **Note:** This file tracks deferred work, not bugs. File bugs as GitHub issues.
+
+### Keyboard Shortcuts (macOS)
+- Wire ⌘T to show new assignment sheet
+- Wire ⌘⇧N to show new course sheet
+- Wire ⌘⇧D to show new deck sheet
+- Wire ⌘F to focus search field
+
+### UI Polish
+- Course outline deletion confirmation alerts
+- Batch review sheet (restore after FileParsingService stabilization)
+

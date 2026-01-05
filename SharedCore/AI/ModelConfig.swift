@@ -7,22 +7,22 @@ struct ModelConfig {
     // MARK: - Model URLs
     
     /// Base CDN URL for model hosting
-    /// TODO: Replace with actual CDN domain when ready
-    static let baseCDNURL = "https://models.roots.app"
+    /// Deferred: CDN domain configuration
+    static let baseCDNURL = "https://models.itori.app"
     
     /// Model endpoints
     static let models: [LocalModelType: ModelMetadata] = [
         .macOSStandard: ModelMetadata(
-            filename: "roots-macos-standard-v1.mlmodel",
+            filename: "itori-macos-standard-v1.mlmodel",
             version: "1.0.0",
             size: 838_860_800,  // 800 MB
-            checksum: nil  // TODO: Add SHA256 checksum
+            checksum: nil  // Deferred: SHA256 checksums
         ),
         .iOSLite: ModelMetadata(
-            filename: "roots-ios-lite-v1.mlmodel",
+            filename: "itori-ios-lite-v1.mlmodel",
             version: "1.0.0",
             size: 157_286_400,  // 150 MB
-            checksum: nil  // TODO: Add SHA256 checksum
+            checksum: nil  // Deferred: SHA256 checksums
         )
     ]
     

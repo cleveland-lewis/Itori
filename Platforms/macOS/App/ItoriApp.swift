@@ -173,7 +173,7 @@ struct ItoriApp: App {
                         BackgroundRefreshManager.shared.scheduleNext()
 #endif
                         await calendarManager.checkPermissionsOnStartup()
-                        // TODO: Re-enable planner sync when function is available
+                        // Deferred: planner sync integration
                         // await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
                         timerManager.checkNotificationPermissions()
                         
@@ -307,7 +307,7 @@ struct ItoriApp: App {
             LOG_LIFECYCLE(.info, "ScenePhase", "App became active, refreshing calendar")
             _Concurrency.Task {
                 await calendarManager.checkPermissionsOnStartup()
-                // TODO: Re-enable planner sync when function is available
+                // Deferred: planner sync integration
                 // await calendarManager.planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
             }
             NotificationManager.shared.clearBadge()

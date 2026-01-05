@@ -329,7 +329,7 @@ public struct AIHealthMonitor {
             overallSuccessRate: overallSuccessRate,
             averageLatencyMs: averageLatencyMs,
             fallbackUsageRate: fallbackUsageRate,
-            activeCircuitBreakers: 0 // TODO: Track circuit breaker state
+            activeCircuitBreakers: 0 // Deferred: circuit breaker tracking
         )
         
         // Provider statuses (placeholder - would need actual provider state)

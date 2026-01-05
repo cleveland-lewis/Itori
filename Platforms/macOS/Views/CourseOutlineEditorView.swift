@@ -161,10 +161,6 @@ private struct OutlineNodeRow: View {
                 }
                 
                 Button(role: .destructive) {
-                    let count = coursesStore.countSubtreeNodes(node.id)
-                    if count > 1 {
-                        // TODO: Show confirmation alert
-                    }
                     coursesStore.deleteSubtree(node.id)
                 } label: {
                     Label(NSLocalizedString("courseoutlineeditor.label.delete", value: "Delete", comment: "Delete"), systemImage: "trash")
