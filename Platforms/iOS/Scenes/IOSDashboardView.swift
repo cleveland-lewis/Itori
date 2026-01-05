@@ -84,35 +84,21 @@ struct IOSDashboardView: View {
     private var heroHeader: some View {
         ZStack(alignment: .bottomLeading) {
             RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color(red: 0.14, green: 0.24, blue: 0.32),
-                            Color(red: 0.08, green: 0.18, blue: 0.26)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 26, style: .continuous)
-                        .stroke(Color.white.opacity(0.12), lineWidth: 1)
-                )
+                .fill(.thickMaterial)
 
             VStack(alignment: .leading, spacing: 10) {
                 Text(greeting)
                     .font(.largeTitle.weight(.bold))
-                    .foregroundStyle(.white)
                 Text(formattedDate)
                     .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.75))
+                    .foregroundStyle(.secondary)
 
                 HStack(spacing: 10) {
                     Label("\(todayEventCount) events", systemImage: "calendar")
                     Label("\(todayTaskCount) tasks", systemImage: "checkmark.circle")
                 }
                 .font(.footnote.weight(.semibold))
-                .foregroundStyle(.white.opacity(0.85))
+                .foregroundStyle(.secondary)
                 .padding(.top, 4)
             }
             .padding(20)
@@ -145,7 +131,7 @@ struct IOSDashboardView: View {
                     .foregroundStyle(isSelected ? Color.white : Color.primary)
                     .background(
                         RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .fill(isSelected ? Color.accentColor : Color.white.opacity(0.7))
+                            .fill(isSelected ? Color.accentColor : .regularMaterial)
                     )
                 }
                 .buttonStyle(.plain)

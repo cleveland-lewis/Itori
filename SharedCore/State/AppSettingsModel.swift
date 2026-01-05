@@ -1390,22 +1390,10 @@ final class AppSettingsModel: ObservableObject, Codable {
 
     // Codable
     init() {
-        let devMode = UserDefaults.standard.bool(forKey: Keys.devModeEnabled)
-        if devMode {
-            print("[AppSettings] init() started")
-            print("[AppSettings] About to access UserDefaults")
-            // UserDefaults.standard.removeObject(forKey: "roots.settings.userName")
-            print("[AppSettings] UserDefaults access completed (removeObject commented out)")
-            
-            // Note: Can't use LOG_DEV here as it accesses AppSettingsModel.shared which is being initialized
-            print("[EnergySync] Initializing AppSettingsModel with iCloud observer")
-            
-            print("[AppSettings] About to call setupICloudObserver()")
-        }
-        setupICloudObserver()
-        if devMode {
-            print("[AppSettings] init() completed successfully")
-        }
+        print("[AppSettings] init() started")
+        // TEMP: Disabled iCloud observer setup to isolate recursive lock issue
+        // setupICloudObserver()
+        print("[AppSettings] init() completed (iCloud observer disabled for debugging)")
     }
     
     private func setupICloudObserver() {
@@ -1421,7 +1409,9 @@ final class AppSettingsModel: ObservableObject, Codable {
         ) { [weak self] notification in
             guard let self = self else { return }
             
-            LOG_DEV(.info, "EnergySync", "🔔 Received iCloud change notification", metadata: ["timestamp": "\(Date())"])
+            // TEMP: LOG_DEV disabled to prevent recursive MainActor lock during app init
+            // LOG_DEV accesses Diagnostics.shared which has @MainActor properties
+            print("[EnergySync] 🔔 Received iCloud change notification at \(Date())")
             
             // Get change reason
             if let reason = notification.userInfo?[NSUbiquitousKeyValueStoreChangeReasonKey] as? Int {
@@ -1438,12 +1428,12 @@ final class AppSettingsModel: ObservableObject, Codable {
                 default:
                     reasonString = "Unknown (\(reason))"
                 }
-                LOG_DEV(.debug, "EnergySync", "Change reason: \(reasonString)")
+                print("[EnergySync] Change reason: \(reasonString)")
             }
             
             // Get changed keys
             if let changedKeys = notification.userInfo?[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String] {
-                LOG_DEV(.info, "EnergySync", "Changed keys from iCloud", metadata: ["keys": changedKeys.joined(separator: ", ")])
+                print("[EnergySync] Changed keys from iCloud: \(changedKeys.joined(separator: ", "))")
                 
                 for key in changedKeys {
                     switch key {
@@ -1451,44 +1441,36 @@ final class AppSettingsModel: ObservableObject, Codable {
                         if let cloudValue = NSUbiquitousKeyValueStore.default.string(forKey: key) {
                             let oldValue = self.defaultEnergyLevelStorage
                             if cloudValue != oldValue {
-                                LOG_DEV(.info, "EnergySync", "⚡️ Energy level changed from another device", metadata: [
-                                    "oldValue": oldValue,
-                                    "newValue": cloudValue,
-                                    "willTriggerRecompute": "true"
-                                ])
+                                print("[EnergySync] ⚡️ Energy level changed from another device: \(oldValue) → \(cloudValue)")
                                 self.defaultEnergyLevelStorage = cloudValue
                                 self.objectWillChange.send()
                                 
-                                // Log that planner should recompute
-                                LOG_DEV(.info, "EnergySync", "Triggering planner recompute due to energy change")
+                                print("[EnergySync] Triggering planner recompute due to energy change")
                             } else {
-                                LOG_DEV(.debug, "EnergySync", "Energy level unchanged", metadata: ["value": cloudValue])
+                                print("[EnergySync] Energy level unchanged: \(cloudValue)")
                             }
                         } else {
-                            LOG_DEV(.info, "EnergySync", "Energy level key changed but no value in iCloud")
+                            print("[EnergySync] Energy level key changed but no value in iCloud")
                         }
                         
                     case "roots.settings.energySelectionConfirmed":
                         let cloudValue = NSUbiquitousKeyValueStore.default.bool(forKey: key)
                         let oldValue = self.energySelectionConfirmedStorage
                         if cloudValue != oldValue {
-                            LOG_DEV(.info, "EnergySync", "Energy selection confirmed changed from another device", metadata: [
-                                "oldValue": "\(oldValue)",
-                                "newValue": "\(cloudValue)"
-                            ])
+                            print("[EnergySync] Energy selection confirmed changed from another device: \(oldValue) → \(cloudValue)")
                             self.energySelectionConfirmedStorage = cloudValue
                             self.objectWillChange.send()
                         } else {
-                            LOG_DEV(.debug, "EnergySync", "Energy selection confirmed unchanged", metadata: ["value": "\(cloudValue)"])
+                            print("[EnergySync] Energy selection confirmed unchanged: \(cloudValue)")
                         }
                         
                     default:
-                        LOG_DEV(.debug, "EnergySync", "Ignoring non-energy key change", metadata: ["key": key])
+                        print("[EnergySync] Ignoring non-energy key change: \(key)")
                         break
                     }
                 }
             } else {
-                LOG_DEV(.info, "EnergySync", "No changed keys in notification userInfo")
+                print("[EnergySync] No changed keys in notification userInfo")
             }
         }
         

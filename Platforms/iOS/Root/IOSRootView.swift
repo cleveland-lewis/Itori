@@ -162,7 +162,7 @@ struct IOSRootView: View {
                 }
             }
         }
-        .toolbarBackground(.hidden, for: .navigationBar)
+        .toolbarBackground(.automatic, for: .navigationBar)
         .sheet(isPresented: $showMoreMenu) {
             moreMenuSheet
         }

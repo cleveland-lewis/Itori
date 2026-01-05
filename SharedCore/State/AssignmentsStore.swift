@@ -3,7 +3,8 @@ import Combine
 import Network
 import EventKit
 
-@MainActor
+// TEMP: @MainActor removed to prevent recursive lock during static initialization
+// TODO: Restore @MainActor and implement proper lazy initialization in v1.1
 final class AssignmentsStore: ObservableObject {
     static let shared = AssignmentsStore()
     static var holidayCheckerOverride: ((Date, RecurrenceRule.HolidaySource) -> Bool)?

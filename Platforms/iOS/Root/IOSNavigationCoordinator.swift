@@ -51,7 +51,7 @@ struct IOSNavigationChrome<TrailingContent: View>: ViewModifier {
         return content
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(.hidden, for: .navigationBar)
+            .toolbarBackground(.automatic, for: .navigationBar)
             .toolbar {
                 // On iPad (regular width), show trailing content in toolbar
                 // On iPhone (compact width), show in toolbar
