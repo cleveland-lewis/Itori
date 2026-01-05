@@ -175,34 +175,8 @@ struct HistoryRow: View {
 }
 
 #Preview("With History") {
-    let engine = AutoRescheduleEngine.shared
-    // Add some mock history for preview
-    let now = Date()
-    engine.rescheduleHistory = [
-        AutoRescheduleEngine.RescheduleOperation(
-            id: UUID(),
-            sessionId: UUID(),
-            originalStart: now.addingTimeInterval(-7200),
-            originalEnd: now.addingTimeInterval(-3600),
-            newStart: now.addingTimeInterval(3600),
-            newEnd: now.addingTimeInterval(7200),
-            strategy: .sameDaySlot,
-            pushedSessions: [],
-            timestamp: now
-        ),
-        AutoRescheduleEngine.RescheduleOperation(
-            id: UUID(),
-            sessionId: UUID(),
-            originalStart: now.addingTimeInterval(-86400 - 7200),
-            originalEnd: now.addingTimeInterval(-86400 - 3600),
-            newStart: now.addingTimeInterval(-86400 + 3600),
-            newEnd: now.addingTimeInterval(-86400 + 7200),
-            strategy: .sameDayPushed,
-            pushedSessions: [UUID(), UUID()],
-            timestamp: now.addingTimeInterval(-86400)
-        )
-    ]
-    
+    // Note: Preview data assignment removed (setter inaccessible in Release)
+    // To test with data, use the app in Debug mode
     NavigationStack {
         AutoRescheduleHistoryView()
             .navigationTitle("Reschedule History")

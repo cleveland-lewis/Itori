@@ -136823,6 +136823,12 @@
             "state": "translated",
             "value": "assignments.plan.solve_set"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "assignments.plan.solve_set"
+          }
         }
       }
     },
@@ -136866,6 +136872,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "assignments.row.category_label"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "assignments.row.category_label"
@@ -136917,6 +136929,12 @@
             "state": "translated",
             "value": "assignments.category.homework"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "assignments.category.homework"
+          }
         }
       }
     },
@@ -136960,6 +136978,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "assignments.row.estimated_minutes"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "assignments.row.estimated_minutes"
@@ -137011,6 +137035,12 @@
             "state": "translated",
             "value": "assignments.row.due"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "assignments.row.due"
+          }
         }
       }
     },
@@ -137054,6 +137084,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "assignments.status.not_started"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "assignments.status.not_started"
@@ -137105,6 +137141,12 @@
             "state": "translated",
             "value": "assignments.action.add_grade"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "assignments.action.add_grade"
+          }
         }
       }
     },
@@ -137148,6 +137190,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.status.scheduled"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "practice.status.scheduled"
@@ -137199,6 +137247,12 @@
             "state": "translated",
             "value": "practice.status.completed"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.status.completed"
+          }
         }
       }
     },
@@ -137242,6 +137296,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.status.missed"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "practice.status.missed"
@@ -137293,6 +137353,12 @@
             "state": "translated",
             "value": "practice.status.archived"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "practice.status.archived"
+          }
         }
       }
     },
@@ -137306,6 +137372,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.notification.pomodoro_complete"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.notification.pomodoro_complete"
@@ -137327,6 +137399,12 @@
             "state": "translated",
             "value": "timer.notification.break_over"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.notification.break_over"
+          }
         }
       }
     },
@@ -137340,6 +137418,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.notification.work_over"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.notification.work_over"
@@ -137361,6 +137445,12 @@
             "state": "translated",
             "value": "timer.notification.timer_finished"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.notification.timer_finished"
+          }
         }
       }
     },
@@ -137374,6 +137464,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.notification.check_progress"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.notification.check_progress"
@@ -137394,6 +137490,12 @@
             "state": "translated",
             "value": "timer.tasks.title"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.title"
+          }
         }
       }
     },
@@ -137406,6 +137508,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.dueToday"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.tasks.dueToday"
@@ -137426,6 +137534,12 @@
             "state": "translated",
             "value": "timer.tasks.dueThisWeek"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.dueThisWeek"
+          }
         }
       }
     },
@@ -137438,6 +137552,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.noDueToday"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.tasks.noDueToday"
@@ -137458,6 +137578,12 @@
             "state": "translated",
             "value": "timer.tasks.noDueThisWeek"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.noDueThisWeek"
+          }
         }
       }
     },
@@ -137470,6 +137596,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.today"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.tasks.today"
@@ -137490,6 +137622,12 @@
             "state": "translated",
             "value": "timer.tasks.tomorrow"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.tomorrow"
+          }
         }
       }
     },
@@ -137502,6 +137640,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.due"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.tasks.due"
@@ -137522,6 +137666,12 @@
             "state": "translated",
             "value": "timer.tasks.status"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.status"
+          }
         }
       }
     },
@@ -137534,6 +137684,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.alarm.title"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.tasks.alarm.title"
@@ -137554,6 +137710,12 @@
             "state": "translated",
             "value": "timer.tasks.alarm.enabled"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.alarm.enabled"
+          }
         }
       }
     },
@@ -137566,6 +137728,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.alarm.time"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.tasks.alarm.time"
@@ -137586,6 +137754,12 @@
             "state": "translated",
             "value": "timer.tasks.alarm.when"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.alarm.when"
+          }
         }
       }
     },
@@ -137598,6 +137772,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.alarm.sound"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.tasks.alarm.sound"
@@ -137618,6 +137798,12 @@
             "state": "translated",
             "value": "timer.tasks.alarm.sound.default"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.alarm.sound.default"
+          }
         }
       }
     },
@@ -137630,6 +137816,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.alarm.quick.1hour"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.tasks.alarm.quick.1hour"
@@ -137650,6 +137842,12 @@
             "state": "translated",
             "value": "timer.tasks.alarm.quick.morning"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.alarm.quick.morning"
+          }
         }
       }
     },
@@ -137662,6 +137860,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.alarm.quick.dayBefore"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.tasks.alarm.quick.dayBefore"
@@ -137682,6 +137886,12 @@
             "state": "translated",
             "value": "timer.tasks.alarm.quick.custom"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.alarm.quick.custom"
+          }
         }
       }
     },
@@ -137694,6 +137904,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.tasks.alarm.error"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.tasks.alarm.error"
@@ -137714,6 +137930,12 @@
             "state": "translated",
             "value": "task.alarm.title"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "task.alarm.title"
+          }
         }
       }
     },
@@ -137726,6 +137948,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "task.alarm.error.notAuthorized"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "task.alarm.error.notAuthorized"
@@ -137746,6 +137974,12 @@
             "state": "translated",
             "value": "task.alarm.error.invalidDate"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "task.alarm.error.invalidDate"
+          }
         }
       }
     },
@@ -137758,6 +137992,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "task.alarm.error.schedulingFailed"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "task.alarm.error.schedulingFailed"
@@ -137870,6 +138110,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Allowed hours: %d:00–%d:00"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Allowed hours: %d:00–%d:00"
