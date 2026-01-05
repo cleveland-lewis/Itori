@@ -102,16 +102,10 @@ struct ItoriApp: App {
                 return try ModelContainer(for: schema, configurations: [memoryConfig])
             } catch {
                 LOG_DATA(.error, "ModelContainer", "CRITICAL: In-memory ModelContainer also failed: \(error.localizedDescription)")
-                // Last resort - minimal container
+                // Last resort - minimal container (force unwrap - if this fails, app cannot function)
                 let minimalSchema = Schema([Item.self])
                 let minimalConfig = ModelConfiguration(schema: minimalSchema, isStoredInMemoryOnly: true)
-                do {
-                    return try ModelContainer(for: minimalSchema, configurations: [minimalConfig])
-                } catch {
-                    LOG_DATA(.error, "ModelContainer", "CRITICAL: Minimal container failed - app will be degraded")
-                    // Return empty container - app will have limited functionality
-                    return try! ModelContainer(for: minimalSchema, configurations: [minimalConfig])
-                }
+                return try! ModelContainer(for: minimalSchema, configurations: [minimalConfig])
             }
         }
     }()
