@@ -222,7 +222,15 @@ enum AppAccentColor: String, CaseIterable, Identifiable {
 final class AppSettingsModel: ObservableObject, Codable {
     /// Shared singleton used across the app. Loaded from persisted storage when available.
     static let shared: AppSettingsModel = {
-        return AppSettingsModel.load()
+        do {
+            let model = AppSettingsModel.load()
+            print("[AppSettings] ✅ Singleton initialized successfully")
+            return model
+        } catch {
+            print("[AppSettings] ❌ CRITICAL: Load failed with error: \(error)")
+            print("[AppSettings] Creating fallback instance")
+            return AppSettingsModel()
+        }
     }()
     
     // MARK: - Performance optimization
@@ -286,6 +294,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         case showAnimationsStorage
         case enableHapticsStorage
         case showTooltipsStorage
+        case showSampleDataStorage
         case defaultEnergyLevelStorage
         case energySelectionConfirmedStorage
     }
@@ -425,6 +434,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage("roots.settings.showAnimations") var showAnimationsStorage: Bool = true
     @AppStorage("roots.settings.enableHaptics") var enableHapticsStorage: Bool = true
     @AppStorage("roots.settings.showTooltips") var showTooltipsStorage: Bool = true
+    @AppStorage("roots.settings.showSampleData") var showSampleDataStorage: Bool = false
 
     // Profile/Study Coach Settings
     @AppStorage("roots.settings.defaultFocusDuration") var defaultFocusDurationStorage: Int = 25
@@ -1062,6 +1072,11 @@ final class AppSettingsModel: ObservableObject, Codable {
         set { showTooltipsStorage = newValue }
     }
 
+    var showSampleData: Bool {
+        get { showSampleDataStorage }
+        set { showSampleDataStorage = newValue }
+    }
+
     // Profile/Study Coach Settings
     var defaultFocusDuration: Int {
         get { defaultFocusDurationStorage }
@@ -1281,7 +1296,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     // MARK: - Persistence helpers
     
     // Version tracking for settings schema
-    private static let settingsSchemaVersion = 2 // Increment when adding/removing properties
+    private static let settingsSchemaVersion = 3 // Increment when adding/removing properties
     private static let schemaVersionKey = "roots.settings.schemaVersion"
     
     static func load() -> AppSettingsModel {
@@ -1344,7 +1359,7 @@ final class AppSettingsModel: ObservableObject, Codable {
             // Wait max 5 seconds for decode
             let timeout = DispatchTime.now() + .seconds(5)
             if semaphore.wait(timeout: timeout) == .timedOut {
-                print("[AppSettings] ⚠️ Decode timeout after 5 seconds - data may be corrupted")
+                print("[AppSettings] ⚠️ Decode timeout after 5 seconds - data may be corrupted (size: \(data.count) bytes)")
                 return nil
             }
             
@@ -1401,8 +1416,10 @@ final class AppSettingsModel: ObservableObject, Codable {
                 if let data = try? encoder.encode(self) {
                     UserDefaults.standard.set(data, forKey: key)
                 }
-            } catch {
+            } catch is CancellationError {
                 // Task was cancelled (user toggled again), ignore
+            } catch {
+                // Should not happen, but handle gracefully
             }
         }
     }
@@ -1585,6 +1602,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(showAnimationsStorage, forKey: .showAnimationsStorage)
         try container.encode(enableHapticsStorage, forKey: .enableHapticsStorage)
         try container.encode(showTooltipsStorage, forKey: .showTooltipsStorage)
+        try container.encode(showSampleDataStorage, forKey: .showSampleDataStorage)
         try container.encode(defaultEnergyLevelStorage, forKey: .defaultEnergyLevelStorage)
         try container.encode(energySelectionConfirmedStorage, forKey: .energySelectionConfirmedStorage)
     }
@@ -1672,6 +1690,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         showAnimationsStorage = try container.decodeIfPresent(Bool.self, forKey: .showAnimationsStorage) ?? true
         enableHapticsStorage = try container.decodeIfPresent(Bool.self, forKey: .enableHapticsStorage) ?? true
         showTooltipsStorage = try container.decodeIfPresent(Bool.self, forKey: .showTooltipsStorage) ?? true
+        showSampleDataStorage = try container.decodeIfPresent(Bool.self, forKey: .showSampleDataStorage) ?? false
         defaultEnergyLevelStorage = try container.decodeIfPresent(String.self, forKey: .defaultEnergyLevelStorage) ?? "Medium"
         energySelectionConfirmedStorage = try container.decodeIfPresent(Bool.self, forKey: .energySelectionConfirmedStorage) ?? false
     }
