@@ -19,7 +19,7 @@ struct SemesterPickerView: View {
                     HStack {
                         Text(semester.name)
                         Spacer()
-                        if coursesStore.activeSemesterIds.contains(semester.id) {
+                        if coursesStore.currentSemesterId == semester.id {
                             Image(systemName: "checkmark")
                         }
                     }
@@ -44,13 +44,13 @@ struct SemesterPickerView: View {
                 Image(systemName: "calendar")
                     .font(.system(size: 14))
                 
-                if coursesStore.activeSemesterIds.isEmpty {
+                if coursesStore.currentSemesterId == nil {
                     Text("No Active Semester")
-                } else if coursesStore.activeSemesterIds.count == 1,
-                          let semester = coursesStore.activeSemesters.first {
+                } else if coursesStore.currentSemesterId != nil,
+                          let semester = coursesStore.currentSemester {
                     Text(semester.name)
                 } else {
-                    Text("\(coursesStore.activeSemesterIds.count) Semesters")
+                    Text("1 Semester")
                 }
                 
                 Image(systemName: "chevron.down")
@@ -76,7 +76,7 @@ struct CompactSemesterPicker: View {
                 } label: {
                     HStack {
                         Text(semester.name)
-                        if coursesStore.activeSemesterIds.contains(semester.id) {
+                        if coursesStore.currentSemesterId == semester.id {
                             Image(systemName: "checkmark")
                         }
                     }
@@ -84,11 +84,11 @@ struct CompactSemesterPicker: View {
             }
         } label: {
             Label {
-                if coursesStore.activeSemesterIds.count == 1,
-                   let semester = coursesStore.activeSemesters.first {
+                if coursesStore.currentSemesterId != nil,
+                   let semester = coursesStore.currentSemester {
                     Text(semester.name)
-                } else if coursesStore.activeSemesterIds.count > 1 {
-                    Text("\(coursesStore.activeSemesterIds.count) Active")
+                } else if false /* multi-semester removed */ {
+                    Text("1 Semester")
                 } else {
                     Text("Select Semester")
                 }

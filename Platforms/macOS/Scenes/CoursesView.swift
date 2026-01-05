@@ -40,7 +40,7 @@ struct CoursesView: View {
                             // NEW: Use multi-select semester picker
                             SemesterPickerView()
                             
-                            if coursesStore.activeSemesterIds.isEmpty {
+                            if coursesStore.currentSemesterId == nil {
                                 Text(NSLocalizedString("courses.select.one.or.more.semesters.to.view.courses", value: "Select one or more semesters to view courses", comment: "Select one or more semesters to view courses"))
                                     .font(.callout)
                                     .foregroundStyle(.secondary)

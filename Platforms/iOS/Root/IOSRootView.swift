@@ -421,7 +421,7 @@ struct IOSRootView: View {
                 currentSemesterId: defaults.semesterId ?? coursesStore.currentSemesterId,
                 defaults: .init(title: defaults.title, code: defaults.code, semesterId: defaults.semesterId),
                 onSave: { draft in
-                    guard let semester = coursesStore.activeSemesters.first(where: { $0.id == draft.semesterId }) else { return }
+                    guard let semester = coursesStore.semesters.first(where: { $0.id == draft.semesterId }) else { return }
                     coursesStore.addCourse(title: draft.title, code: draft.code, to: semester)
                     toastRouter.show(NSLocalizedString("ios.toast.course_added", comment: "Course added"))
                 }
