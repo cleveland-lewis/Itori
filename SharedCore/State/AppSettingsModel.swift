@@ -1806,3 +1806,4 @@ final class AppSettingsModel: ObservableObject, Codable {
         save()
     }
 }
+

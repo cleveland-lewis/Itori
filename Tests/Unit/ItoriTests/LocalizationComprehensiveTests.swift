@@ -369,7 +369,7 @@ final class LocalizationComprehensiveTests: XCTestCase {
         ]
         
         for locale in rtlLocales {
-            let isRTL = Locale.characterDirection(forLanguage: locale.language.languageCode.identifier ?? "") == .rightToLeft
+            let isRTL = locale.language.characterDirection == .rightToLeft
             XCTAssertTrue(isRTL, "Locale \(locale.identifier) should be RTL")
         }
         
@@ -380,7 +380,7 @@ final class LocalizationComprehensiveTests: XCTestCase {
         ]
         
         for locale in ltrLocales {
-            let isLTR = Locale.characterDirection(forLanguage: locale.language.languageCode.identifier ?? "") == .leftToRight
+            let isLTR = locale.language.characterDirection == .leftToRight
             XCTAssertTrue(isLTR, "Locale \(locale.identifier) should be LTR")
         }
     }
@@ -418,3 +418,4 @@ final class LocalizationComprehensiveTests: XCTestCase {
             "Negative number should show minus sign")
     }
 }
+
