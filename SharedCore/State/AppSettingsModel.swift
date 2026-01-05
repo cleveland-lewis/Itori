@@ -1328,72 +1328,42 @@ final class AppSettingsModel: ObservableObject, Codable {
         }
         let decoder = JSONDecoder()
         
-        // Add timeout protection for decode operation
-        let decodeResult: AppSettingsModel? = {
-            let semaphore = DispatchSemaphore(value: 0)
-            var result: AppSettingsModel?
-            var decodeError: Error?
-            
-            DispatchQueue.global(qos: .userInitiated).async {
-                do {
-                    if devMode {
-                        print("[AppSettings] About to call decoder.decode()...")
-                    }
-                    let decoded = try decoder.decode(AppSettingsModel.self, from: data)
-                    if devMode {
-                        print("[AppSettings] Successfully decoded from UserDefaults")
-                    }
-                    result = decoded
-                } catch {
-                    decodeError = error
-                }
-                semaphore.signal()
+        // Decode synchronously during static initialization to avoid dispatch deadlock
+        do {
+            if devMode {
+                print("[AppSettings] About to call decoder.decode()...")
             }
-            
-            // Wait max 5 seconds for decode
-            let timeout = DispatchTime.now() + .seconds(5)
-            if semaphore.wait(timeout: timeout) == .timedOut {
-                print("[AppSettings] ⚠️ Decode timeout after 5 seconds - data may be corrupted (size: \(data.count) bytes)")
-                return nil
+            let decoded = try decoder.decode(AppSettingsModel.self, from: data)
+            if devMode {
+                print("[AppSettings] Successfully decoded from UserDefaults")
             }
-            
-            if let error = decodeError {
-                if let decodingError = error as? DecodingError {
-                    print("[AppSettings] ⚠️ DecodingError: \(decodingError)")
-                    if devMode {
-                        switch decodingError {
-                        case .keyNotFound(let key, let context):
-                            print("  - Missing key: \(key.stringValue) at \(context.codingPath)")
-                        case .typeMismatch(let type, let context):
-                            print("  - Type mismatch for \(type) at \(context.codingPath)")
-                        case .valueNotFound(let type, let context):
-                            print("  - Value not found for \(type) at \(context.codingPath)")
-                        case .dataCorrupted(let context):
-                            print("  - Data corrupted at \(context.codingPath)")
-                        @unknown default:
-                            print("  - Unknown decoding error")
-                        }
-                    }
-                } else {
-                    print("[AppSettings] ⚠️ Unexpected error: \(error)")
-                }
-                return nil
-            }
-            
-            return result
-        }()
-        
-        if let decoded = decodeResult {
-            // Set up iCloud observer for decoded instance
-            decoded.setupICloudObserver()
             return decoded
+        } catch {
+            if let decodingError = error as? DecodingError {
+                print("[AppSettings] ⚠️ DecodingError: \(decodingError)")
+                if devMode {
+                    switch decodingError {
+                    case .keyNotFound(let key, let context):
+                        print("  - Missing key: \(key.stringValue) at \(context.codingPath)")
+                    case .typeMismatch(let type, let context):
+                        print("  - Type mismatch for \(type) at \(context.codingPath)")
+                    case .valueNotFound(let type, let context):
+                        print("  - Value not found for \(type) at \(context.codingPath)")
+                    case .dataCorrupted(let context):
+                        print("  - Data corrupted at \(context.codingPath)")
+                    @unknown default:
+                        print("  - Unknown decoding error")
+                    }
+                }
+            } else {
+                print("[AppSettings] ⚠️ Unexpected error: \(error)")
+            }
+            
+            // Decode failed - clear and create fresh
+            print("[AppSettings] Clearing incompatible/corrupted data and creating fresh instance")
+            UserDefaults.standard.removeObject(forKey: key)
+            return AppSettingsModel()
         }
-        
-        // Decode failed or timed out - clear and create fresh
-        print("[AppSettings] Clearing incompatible/corrupted data and creating fresh instance")
-        UserDefaults.standard.removeObject(forKey: key)
-        
-        return AppSettingsModel()
     }
 
     func save() {
