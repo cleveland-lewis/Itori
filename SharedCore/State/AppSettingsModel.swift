@@ -221,11 +221,23 @@ enum AppAccentColor: String, CaseIterable, Identifiable {
 
 final class AppSettingsModel: ObservableObject, Codable {
     /// Shared singleton used across the app. Loaded from persisted storage when available.
-    static let shared: AppSettingsModel = {
+    private static var _shared: AppSettingsModel?
+    private static let lock = NSLock()
+    
+    nonisolated(unsafe) static var shared: AppSettingsModel {
+        if let existing = _shared {
+            return existing
+        }
+        lock.lock()
+        defer { lock.unlock() }
+        if let existing = _shared {
+            return existing
+        }
         let model = AppSettingsModel.load()
         print("[AppSettings] ✅ Singleton initialized successfully")
+        _shared = model
         return model
-    }()
+    }
     
     // MARK: - Performance optimization
     private var saveDebouncer: Task<Void, Never>?
