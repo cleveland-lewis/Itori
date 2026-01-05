@@ -126067,6 +126067,12 @@
             "state": "translated",
             "value": "Testing: TextEditor with custom Binding (CRITICAL)"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Testing: TextEditor with custom Binding (CRITICAL)"
+          }
         }
       }
     },
@@ -126173,6 +126179,12 @@
             "state": "translated",
             "value": "Text"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Text"
+          }
         }
       }
     },
@@ -126269,6 +126281,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Study Coach helps you maintain focus and suggests optimal study patterns based on your energy levels."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "The Study Coach helps you maintain focus and suggests optimal study patterns based on your energy levels."
@@ -126375,6 +126393,12 @@
             "state": "translated",
             "value": "These counters must remain zero when Auto-Reschedule is OFF. Only 'Suppressed' should increment."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These counters must remain zero when Auto-Reschedule is OFF. Only 'Suppressed' should increment."
+          }
         }
       }
     },
@@ -126471,6 +126495,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These settings determine your default study session configuration. You can adjust them for individual sessions."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "These settings determine your default study session configuration. You can adjust them for individual sessions."
@@ -126575,6 +126605,12 @@
             "state": "translated",
             "value": "These settings help improve readability and reduce visual complexity."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "These settings help improve readability and reduce visual complexity."
+          }
         }
       }
     },
@@ -126671,6 +126707,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This can't be undone."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "This can't be undone."
@@ -126775,6 +126817,12 @@
             "state": "translated",
             "value": "This card demonstrates material effects"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This card demonstrates material effects"
+          }
         }
       }
     },
@@ -126871,6 +126919,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This panel shows provider invocation counters to verify that the 'Enable LLM Assistance' toggle enforcement is airtight."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "This panel shows provider invocation counters to verify that the 'Enable LLM Assistance' toggle enforcement is airtight."
@@ -126981,6 +127035,12 @@
             "state": "translated",
             "value": "This Week"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This Week"
+          }
         }
       }
     },
@@ -127077,6 +127137,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This will disable all LLM-powered features including Apple Intelligence, local models, and custom providers. Parsing and planning will use deterministic algorithms only.\n\nYou can re-enable LLM assistance at any time."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "This will disable all LLM-powered features including Apple Intelligence, local models, and custom providers. Parsing and planning will use deterministic algorithms only.\n\nYou can re-enable LLM assistance at any time."
@@ -127181,6 +127247,12 @@
             "state": "translated",
             "value": "This will move the semester to Recently Deleted. You can recover it within 30 days."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This will move the semester to Recently Deleted. You can recover it within 30 days."
+          }
         }
       }
     },
@@ -127277,6 +127349,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This will permanently delete \"%@\" and all its cards. This action cannot be undone."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "This will permanently delete \"%@\" and all its cards. This action cannot be undone."
@@ -127381,6 +127459,12 @@
             "state": "translated",
             "value": "This will permanently delete all reschedule history. This cannot be undone."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This will permanently delete all reschedule history. This cannot be undone."
+          }
         }
       }
     },
@@ -127477,6 +127561,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This will remove all app data including courses, assignments, settings, and cached sessions. This action cannot be undone."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "This will remove all app data including courses, assignments, settings, and cached sessions. This action cannot be undone."
@@ -127581,6 +127671,12 @@
             "state": "translated",
             "value": "This will reset all settings to their default values"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This will reset all settings to their default values"
+          }
         }
       }
     },
@@ -127677,6 +127773,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This will reset all settings to their default values. This action cannot be undone."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "This will reset all settings to their default values. This action cannot be undone."
@@ -127787,6 +127889,12 @@
             "state": "translated",
             "value": "Thread"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thread"
+          }
         }
       }
     },
@@ -127883,6 +127991,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time & Effort"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Time & Effort"
@@ -128000,6 +128114,12 @@
             "state": "translated",
             "value": "time.am"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "time.am"
+          }
         }
       }
     },
@@ -128109,6 +128229,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "time.minutes"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "time.minutes"
@@ -128226,6 +128352,12 @@
             "state": "translated",
             "value": "time.pm"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "time.pm"
+          }
         }
       }
     },
@@ -128322,6 +128454,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timeout: %@s"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Timeout: %@s"
@@ -128439,6 +128577,12 @@
             "state": "translated",
             "value": "timer.action.start"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.action.start"
+          }
         }
       }
     },
@@ -128547,6 +128691,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.context.add_assignment"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.context.add_assignment"
@@ -128663,6 +128813,12 @@
             "state": "translated",
             "value": "timer.context.add_grade"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.context.add_grade"
+          }
         }
       }
     },
@@ -128771,6 +128927,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.context.end_clock"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.context.end_clock"
@@ -128887,6 +129049,12 @@
             "state": "translated",
             "value": "timer.context.go_to_planner"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.context.go_to_planner"
+          }
         }
       }
     },
@@ -128995,6 +129163,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.context.refresh_calendar"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.context.refresh_calendar"
@@ -129111,6 +129285,12 @@
             "state": "translated",
             "value": "timer.context.start_clock"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.context.start_clock"
+          }
         }
       }
     },
@@ -129219,6 +129399,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.context.stop_clock"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.context.stop_clock"
@@ -129336,6 +129522,12 @@
             "state": "translated",
             "value": "timer.debug.label"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.debug.label"
+          }
         }
       }
     },
@@ -129448,6 +129640,12 @@
             "state": "translated",
             "value": "timer.display.analog"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.display.analog"
+          }
         }
       }
     },
@@ -129556,6 +129754,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.display.digital"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.display.digital"
@@ -129673,6 +129877,12 @@
             "state": "translated",
             "value": "timer.focus.message"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.focus.message"
+          }
         }
       }
     },
@@ -129782,6 +129992,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.focus.no_linked_tasks"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.focus.no_linked_tasks"
@@ -129899,6 +130115,12 @@
             "state": "translated",
             "value": "timer.focus.window_title"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.focus.window_title"
+          }
         }
       }
     },
@@ -130008,6 +130230,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.label.activities"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.label.activities"
@@ -130125,6 +130353,12 @@
             "state": "translated",
             "value": "timer.label.activity"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.label.activity"
+          }
         }
       }
     },
@@ -130234,6 +130468,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.label.all_activities"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.label.all_activities"
@@ -130351,6 +130591,12 @@
             "state": "translated",
             "value": "timer.label.current_activity"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.label.current_activity"
+          }
         }
       }
     },
@@ -130460,6 +130706,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.label.no_activity"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.label.no_activity"
@@ -130577,6 +130829,12 @@
             "state": "translated",
             "value": "timer.label.no_activity_short"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.label.no_activity_short"
+          }
         }
       }
     },
@@ -130686,6 +130944,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.label.none"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.label.none"
@@ -130803,6 +131067,12 @@
             "state": "translated",
             "value": "timer.label.notes"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.label.notes"
+          }
         }
       }
     },
@@ -130912,6 +131182,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.label.pinned"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "timer.label.pinned"
@@ -131029,6 +131305,12 @@
             "state": "translated",
             "value": "timer.label.search"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.label.search"
+          }
         }
       }
     },
@@ -131142,6 +131424,12 @@
             "state": "translated",
             "value": "timer.stats.study_summary"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "timer.stats.study_summary"
+          }
         }
       }
     },
@@ -131242,6 +131530,12 @@
             "state": "translated",
             "value": "TIMING"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TIMING"
+          }
         }
       }
     },
@@ -131338,6 +131632,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title / body / caption"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Title / body / caption"
@@ -131536,6 +131836,12 @@
             "state": "translated",
             "value": "To disconnect Itori from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To disconnect Itori from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars."
+          }
         }
       }
     },
@@ -131632,6 +131938,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To disconnect Itori from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "To disconnect Itori from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders."
@@ -131742,6 +132054,12 @@
             "state": "translated",
             "value": "Today"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today"
+          }
         }
       }
     },
@@ -131838,6 +132156,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today: %@"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Today: %@"
@@ -131942,6 +132266,12 @@
             "state": "translated",
             "value": "Today's Plan"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today's Plan"
+          }
         }
       }
     },
@@ -132038,6 +132368,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tooltips: %@"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Tooltips: %@"
@@ -132148,6 +132484,12 @@
             "state": "translated",
             "value": "Total"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total"
+          }
         }
       }
     },
@@ -132238,6 +132580,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total Cards"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Total Cards"
@@ -132342,6 +132690,12 @@
             "state": "translated",
             "value": "Total: %@m"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total: %@m"
+          }
         }
       }
     },
@@ -132438,6 +132792,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Track UI freezes and performance issues"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Track UI freezes and performance issues"
@@ -132542,6 +132902,12 @@
             "state": "translated",
             "value": "Trends & Analytics"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trends & Analytics"
+          }
         }
       }
     },
@@ -132638,6 +133004,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn flashcard system on or off"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Turn flashcard system on or off"
@@ -132742,6 +133114,12 @@
             "state": "translated",
             "value": "Turn flashcards on or off across the app. Disabling hides related UI and study flows."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn flashcards on or off across the app. Disabling hides related UI and study flows."
+          }
         }
       }
     },
@@ -132838,6 +133216,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turning off Energy Panel will make the planning algorithm default to medium energy for all days."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Turning off Energy Panel will make the planning algorithm default to medium energy for all days."
@@ -132942,6 +133326,12 @@
             "state": "translated",
             "value": "Type the code to confirm"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type the code to confirm"
+          }
         }
       }
     },
@@ -133038,6 +133428,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Typography"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Typography"
@@ -133142,6 +133538,12 @@
             "state": "translated",
             "value": "Upcoming Deadlines"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upcoming Deadlines"
+          }
         }
       }
     },
@@ -133238,6 +133640,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated %@"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Updated %@"
@@ -133342,6 +133750,12 @@
             "state": "translated",
             "value": "Updated: %@"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updated: %@"
+          }
         }
       }
     },
@@ -133438,6 +133852,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload Syllabus / Practice Test"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Upload Syllabus / Practice Test"
@@ -133542,6 +133962,12 @@
             "state": "translated",
             "value": "Urgency"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Urgency"
+          }
         }
       }
     },
@@ -133638,6 +134064,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use “Open in New Window” from the Assignments list to create a dedicated window."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Use “Open in New Window” from the Assignments list to create a dedicated window."
@@ -133742,6 +134174,12 @@
             "state": "translated",
             "value": "Use “Open in New Window” from the Courses list to inspect a course without losing your place."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use “Open in New Window” from the Courses list to inspect a course without losing your place."
+          }
         }
       }
     },
@@ -133838,6 +134276,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use denser layout with less spacing"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Use denser layout with less spacing"
@@ -133942,6 +134386,12 @@
             "state": "translated",
             "value": "Use the Courses page to add, edit, and organize your academic schedule."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use the Courses page to add, edit, and organize your academic schedule."
+          }
         }
       }
     },
@@ -134038,6 +134488,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verify invariant enforcement and suppressions"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Verify invariant enforcement and suppressions"
@@ -134142,6 +134598,12 @@
             "state": "translated",
             "value": "View History"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View History"
+          }
         }
       }
     },
@@ -134238,6 +134700,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View recent log events. Full logs are available in Console.app filtered by subsystem 'com.itori.app'."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "View recent log events. Full logs are available in Console.app filtered by subsystem 'com.itori.app'."
@@ -134342,6 +134810,12 @@
             "state": "translated",
             "value": "Visualize your academic performance"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visualize your academic performance"
+          }
         }
       }
     },
@@ -134438,6 +134912,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We’ll show assignment progress and study time once this course has data."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "We’ll show assignment progress and study time once this course has data."
@@ -134542,6 +135022,12 @@
             "state": "translated",
             "value": "Weight %"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weight %"
+          }
         }
       }
     },
@@ -134638,6 +135124,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weight: %@%%"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Weight: %@%%"
@@ -134748,6 +135240,12 @@
             "state": "translated",
             "value": "Weighted %@%% • %@ courses"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weighted %@%% • %@ courses"
+          }
         }
       }
     },
@@ -134844,6 +135342,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What-If Mode Active"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "What-If Mode Active"
@@ -134948,6 +135452,12 @@
             "state": "translated",
             "value": "What-If Scenario"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What-If Scenario"
+          }
         }
       }
     },
@@ -135048,6 +135558,12 @@
             "state": "translated",
             "value": "When enabled, the app emits structured debug logging to the Xcode console. This helps with debugging, triage, and understanding app behavior at runtime."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When enabled, the app emits structured debug logging to the Xcode console. This helps with debugging, triage, and understanding app behavior at runtime."
+          }
         }
       }
     },
@@ -135138,6 +135654,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When tasks are automatically rescheduled, they'll appear here"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "When tasks are automatically rescheduled, they'll appear here"
@@ -135236,6 +135758,12 @@
             "state": "translated",
             "value": "Workday"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Workday"
+          }
         }
       }
     },
@@ -135326,6 +135854,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Workload Forecast"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Workload Forecast"
@@ -135424,6 +135958,12 @@
             "state": "translated",
             "value": "Works with OpenAI, Azure OpenAI, LM Studio, and other compatible LLM APIs"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Works with OpenAI, Azure OpenAI, LM Studio, and other compatible LLM APIs"
+          }
         }
       }
     },
@@ -135514,6 +136054,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Worth %@%% of grade"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Worth %@%% of grade"
@@ -135612,6 +136158,12 @@
             "state": "translated",
             "value": "Would you like to start '%@' now? This will create a new test attempt."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Would you like to start '%@' now? This will create a new test attempt."
+          }
         }
       }
     },
@@ -135702,6 +136254,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Year: %.2f"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "Year: %.2f"
@@ -135800,6 +136358,12 @@
             "state": "translated",
             "value": "You have unsaved changes. Save before closing to avoid losing them."
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have unsaved changes. Save before closing to avoid losing them."
+          }
         }
       }
     },
@@ -135890,6 +136454,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have unsaved edits. Save before closing to avoid losing them."
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "You have unsaved edits. Save before closing to avoid losing them."
@@ -135988,6 +136558,12 @@
             "state": "translated",
             "value": "You studied %@ cards"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You studied %@ cards"
+          }
         }
       }
     },
@@ -136030,6 +136606,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "calendar.week.previous"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "calendar.week.previous"
@@ -136081,6 +136663,12 @@
             "state": "translated",
             "value": "calendar.week.next"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "calendar.week.next"
+          }
         }
       },
       "comment": "Button to navigate to next week"
@@ -136128,6 +136716,12 @@
             "state": "translated",
             "value": "calendar.week.this_week"
           }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "calendar.week.this_week"
+          }
         }
       },
       "comment": "Button to jump to current week"
@@ -136171,6 +136765,12 @@
           }
         },
         "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "calendar.week.range"
+          }
+        },
+        "he": {
           "stringUnit": {
             "state": "translated",
             "value": "calendar.week.range"

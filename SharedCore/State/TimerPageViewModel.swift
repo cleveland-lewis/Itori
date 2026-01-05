@@ -197,23 +197,6 @@ final class TimerPageViewModel: ObservableObject {
         scheduleCompletionNotification()
         
         // Phase 2.2: Reschedule AlarmKit alarm with remaining time
-        if let scheduler = alarmScheduler, currentMode != .stopwatch, sessionRemaining > 0 {
-            let title = NSLocalizedString("timer.alarm.complete", comment: "Timer Complete")
-            let body: String
-            if currentMode == .pomodoro {
-                body = isOnBreak ?
-                    NSLocalizedString("timer.alarm.break_finished", comment: "Break finished") :
-                    NSLocalizedString("timer.alarm.work_finished", comment: "Work session finished")
-            } else {
-                body = NSLocalizedString("timer.alarm.timer_resumed", comment: "Timer resumed")
-            }
-            scheduler.scheduleTimerEnd(
-                id: s.id.uuidString,
-                fireIn: sessionRemaining,
-                title: title,
-                body: body
-            )
-        }
         
         persistState()
     }
@@ -267,9 +250,6 @@ final class TimerPageViewModel: ObservableObject {
         cancelCompletionNotification()
         
         // Phase 2.2: Cancel AlarmKit alarm when session ends
-        if let scheduler = alarmScheduler {
-            scheduler.cancelTimer(id: s.id.uuidString)
-        }
         
         persistState()
     }
@@ -391,19 +371,6 @@ final class TimerPageViewModel: ObservableObject {
         }
         
         // Phase 2.4: Use AlarmKit if available and enabled, otherwise fall back to notifications
-        if let scheduler = alarmScheduler, scheduler.isEnabled {
-            // Use AlarmKit (iOS 26+ only when authorized)
-            scheduler.scheduleTimerEnd(
-                id: "RootsTimerCompletion",
-                fireIn: remaining,
-                title: title,
-                body: body
-            )
-            LOG_UI(.info, "Timer", "Scheduled AlarmKit alarm for completion in \(remaining)s")
-        } else {
-            // Fall back to standard notifications (all iOS versions, or when AlarmKit unavailable/disabled)
-            scheduleStandardNotification(remaining: remaining, title: title, body: body)
-        }
     }
     
     private func scheduleStandardNotification(remaining: TimeInterval, title: String, body: String) {
@@ -428,7 +395,6 @@ final class TimerPageViewModel: ObservableObject {
 
     private func cancelCompletionNotification() {
         // Cancel both AlarmKit and standard notifications to avoid duplicates
-        alarmScheduler?.cancelTimer(id: "RootsTimerCompletion")
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["RootsTimerCompletion"])
     }
 
