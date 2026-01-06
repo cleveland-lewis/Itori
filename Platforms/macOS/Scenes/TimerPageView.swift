@@ -207,7 +207,7 @@ struct TimerPageView: View {
     
     private var activitiesColumn: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.medium) {
-            HStack {
+            HStack(alignment: .firstTextBaseline) {
                 Text(NSLocalizedString("timer.label.activities", value: "Activities", comment: "Activities"))
                     .font(DesignSystem.Typography.subHeader)
                 Spacer()
@@ -257,7 +257,7 @@ struct TimerPageView: View {
             Text(NSLocalizedString("timer.stats.study_summary", value: "Study summary", comment: "Study summary"))
                     .font(DesignSystem.Typography.subHeader)
                 Spacer()
-                Picker("Range", selection: $studyRange) {
+                Picker("", selection: $studyRange) {
                     ForEach(StudyTimeRange.allCases) { range in
                         Text(range.label).tag(range)
                     }
@@ -534,22 +534,122 @@ struct TimerPageView: View {
     @State private var showingModeMenu = false
     
     private var timerCoreCard: some View {
-        GlassClockCard(cornerRadius: cardCorner) {
+        GlassClockCard(cornerRadius: cardCorner, paddingAmount: 20) {
             VStack(spacing: 16) {
-                // Top bar with expand button and mode menu
-                HStack(alignment: .center) {
-                    Button(action: openFocusWindow) {
-                        Image(systemName: "arrow.up.left.and.arrow.down.right")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .padding(8)
-                            .contentShape(Rectangle())
+                // Activity pill - shows only when activity is selected, with bounce animation
+                if let activity = currentActivity {
+                    HStack(spacing: 8) {
+                        Circle()
+                            .fill(Color.blue)
+                            .frame(width: 8, height: 8)
+                        Text(activity.name)
+                            .font(DesignSystem.Typography.caption.weight(.medium))
+                            .foregroundStyle(.primary)
+                        if let course = activity.courseCode {
+                            Text(NSLocalizedString("timer.", value: "•", comment: "•"))
+                                .foregroundStyle(.secondary)
+                            Text(course)
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
-                    .buttonStyle(.plain)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(
+                        Capsule()
+                            .fill(.accentQuaternary)
+                    )
+                    .transition(.scale.combined(with: .opacity))
+                    .animation(.spring(response: 0.4, dampingFraction: 0.6), value: selectedActivityID)
+                } else {
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.circle")
+                            .font(.caption)
+                        Text(NSLocalizedString("timer.label.no_activity_selected", value: "No activity selected", comment: "No activity selected"))
+                            .font(DesignSystem.Typography.caption)
+                    }
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(
+                        Capsule()
+                            .fill(Color.secondary.opacity(0.1))
+                    )
+                }
+                
+                if isRunning {
+                    clockGlassContainer {
+                        clockDisplayContent(isRunningState: true)
+                    }
+                    .overlay(alignment: .topLeading) {
+                        Button(action: openFocusWindow) {
+                            Image(systemName: "arrow.up.left.and.arrow.down.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .padding(8)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .padding(12)
+                    }
                     
-                    Spacer()
+                    // POMODORO CIRCLES - FIXED VERSION
+                    Group {
+                        if mode == .pomodoro {
+                            HStack(spacing: 8) {
+                                ForEach(Array(0..<max(1, settings.pomodoroIterations)), id: \.self) { index in
+                                    Circle()
+                                        .fill(index < completedPomodoroSessions ? Color.accentColor : Color.secondary.opacity(0.3))
+                                        .frame(width: 8, height: 8)
+                                }
+                            }
+                            .id(settings.pomodoroIterations)
+                        } else {
+                            Color.clear.frame(height: 8)
+                        }
+                    }
+                    .frame(height: 12)
+                    .padding(.bottom, 4)
                     
-                    if !isRunning {
+                    HStack(spacing: 18) {
+                        Button(action: pauseTimer) {
+                            Label {
+                                Text(NSLocalizedString("timer.pause", value: "Pause", comment: "Pause button"))
+                            } icon: {
+                                Image(systemName: "pause.fill")
+                            }
+                            .font(.title2)
+                        }
+                        .buttonStyle(.bordered)
+                        .help("Pause the timer (it can be resumed)")
+                        
+                        Button(action: resetTimer) {
+                            Label {
+                                Text(NSLocalizedString("timer.stop", value: "Stop", comment: "Stop button"))
+                            } icon: {
+                                Image(systemName: "stop.fill")
+                            }
+                            .font(.title2)
+                        }
+                        .buttonStyle(.bordered)
+                        .help("Stop and reset the timer")
+                    }
+                } else {
+                    clockGlassContainer {
+                        clockDisplayContent(isRunningState: false)
+                    }
+                    .overlay(alignment: .topLeading) {
+                        Button(action: openFocusWindow) {
+                            Image(systemName: "arrow.up.left.and.arrow.down.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .padding(8)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .padding(12)
+                    }
+                    .overlay(alignment: .topTrailing) {
                         Button(action: { showingModeMenu = true }) {
                             Image(systemName: "ellipsis.circle")
                                 .font(.title2)
@@ -558,6 +658,7 @@ struct TimerPageView: View {
                                 .contentShape(Circle())
                         }
                         .buttonStyle(.plain)
+                        .padding(12)
                         .popover(isPresented: $showingModeMenu, arrowEdge: .bottom) {
                             VStack(alignment: .leading, spacing: 8) {
                                 // Timer Mode section
@@ -646,90 +747,6 @@ struct TimerPageView: View {
                             .frame(minWidth: 180)
                         }
                     }
-                }
-                .frame(height: 36)
-                
-                // Activity pill - shows only when activity is selected, with bounce animation
-                if let activity = currentActivity {
-                    HStack(spacing: 8) {
-                        Circle()
-                            .fill(Color.blue)
-                            .frame(width: 8, height: 8)
-                        Text(activity.name)
-                            .font(DesignSystem.Typography.caption.weight(.medium))
-                            .foregroundStyle(.primary)
-                        if let course = activity.courseCode {
-                            Text(NSLocalizedString("timer.", value: "•", comment: "•"))
-                                .foregroundStyle(.secondary)
-                            Text(course)
-                                .font(DesignSystem.Typography.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(
-                        Capsule()
-                            .fill(.accentQuaternary)
-                    )
-                    .transition(.scale.combined(with: .opacity))
-                    .animation(.spring(response: 0.4, dampingFraction: 0.6), value: selectedActivityID)
-                } else {
-                    HStack(spacing: 8) {
-                        Image(systemName: "exclamationmark.circle")
-                            .font(.caption)
-                        Text(NSLocalizedString("timer.label.no_activity_selected", value: "No activity selected", comment: "No activity selected"))
-                            .font(DesignSystem.Typography.caption)
-                    }
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(
-                        Capsule()
-                            .fill(Color.secondary.opacity(0.1))
-                    )
-                }
-                
-                if isRunning {
-                    clockGlassContainer {
-                        clockDisplayContent(isRunningState: true)
-                    }
-                    
-                    // POMODORO CIRCLES - FIXED VERSION
-                    Group {
-                        if mode == .pomodoro {
-                            HStack(spacing: 8) {
-                                ForEach(Array(0..<max(1, settings.pomodoroIterations)), id: \.self) { index in
-                                    Circle()
-                                        .fill(index < completedPomodoroSessions ? Color.accentColor : Color.secondary.opacity(0.3))
-                                        .frame(width: 8, height: 8)
-                                }
-                            }
-                            .id(settings.pomodoroIterations)
-                        } else {
-                            Color.clear.frame(height: 8)
-                        }
-                    }
-                    .frame(height: 12)
-                    .padding(.bottom, 4)
-                    
-                    HStack(spacing: 18) {
-                        Button(action: pauseTimer) {
-                            Image(systemName: "pause.fill")
-                                .font(.title2)
-                        }
-                        .buttonStyle(.bordered)
-                        
-                        Button(action: resetTimer) {
-                            Image(systemName: "stop.fill")
-                                .font(.title2)
-                        }
-                        .buttonStyle(.bordered)
-                    }
-                } else {
-                    clockGlassContainer {
-                        clockDisplayContent(isRunningState: false)
-                    }
                     
                     // POMODORO CIRCLES - FIXED VERSION
                     Group {
@@ -755,9 +772,6 @@ struct TimerPageView: View {
                         .padding(.top, 4)
                 }
                 
-                Text(NSLocalizedString("timer.focus.message", comment: "Focus message"))
-                    .font(DesignSystem.Typography.caption)
-                    .foregroundColor(.secondary)
             }
         }
     }
@@ -839,8 +853,7 @@ struct TimerPageView: View {
     }
     
     private var clockTimeForAnalog: TimeInterval {
-        guard isRunning else { return 0 }
-        
+        // Show elapsed time even when paused
         switch mode {
         case .stopwatch:
             return elapsedSeconds
@@ -882,7 +895,10 @@ struct TimerPageView: View {
     }
     
     private func pauseTimer() {
+        guard isRunning else { return }
         isRunning = false
+        // Timer state (remainingSeconds/elapsedSeconds) should NOT be modified
+        // They will resume from where they left off when startTimer() is called again
     }
     
     private func resetTimer() {
@@ -1245,7 +1261,8 @@ private struct FocusWindowView: View {
                             accentColor: accentColor,
                             dialSize: 118
                         )
-                        .frame(height: 240)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 240, alignment: .center)
                     } else {
                         GeometryReader { proxy in
                             let base = min(proxy.size.width, proxy.size.height)

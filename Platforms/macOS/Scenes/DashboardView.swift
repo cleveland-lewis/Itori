@@ -37,6 +37,7 @@ struct DashboardView: View {
     private let cardSpacing: CGFloat = DesignSystem.Spacing.large
     private let contentPadding: CGFloat = RootsSpacing.pagePadding
     private let bottomDockClearancePadding: CGFloat = 100
+    private let cardMinHeight: CGFloat = 220
     
     private var shouldShowProductivityInsights: Bool {
         settings.trackStudyHours && settings.showProductivityInsights
@@ -61,11 +62,14 @@ struct DashboardView: View {
                                 if shouldShowEnergyCard {
                                     energyCard
                                         .animateEntry(isLoaded: isLoaded, index: 1)
+                                        .frame(minHeight: cardMinHeight)
                                 }
-                                workRemainingCard
+                                plannerTodayCard
                                     .animateEntry(isLoaded: isLoaded, index: 2)
+                                    .frame(minHeight: cardMinHeight)
                                 calendarCard
                                     .animateEntry(isLoaded: isLoaded, index: 3)
+                                    .frame(minHeight: cardMinHeight)
                             }
                         } else {
                             HStack(alignment: .top, spacing: cardSpacing) {
@@ -74,15 +78,18 @@ struct DashboardView: View {
                                         energyCard
                                             .animateEntry(isLoaded: isLoaded, index: 1)
                                             .frame(maxWidth: .infinity)
+                                            .frame(minHeight: cardMinHeight)
                                     }
-                                    workRemainingCard
+                                    plannerTodayCard
                                         .animateEntry(isLoaded: isLoaded, index: 2)
                                         .frame(maxWidth: .infinity)
+                                        .frame(minHeight: cardMinHeight)
                                 }
 
                                 calendarCard
                                     .animateEntry(isLoaded: isLoaded, index: 3)
                                     .frame(maxWidth: .infinity)
+                                    .frame(minHeight: cardMinHeight)
                             }
                         }
                     }
@@ -95,17 +102,21 @@ struct DashboardView: View {
                             VStack(spacing: cardSpacing) {
                                 workloadCard
                                     .animateEntry(isLoaded: isLoaded, index: 4)
+                                    .frame(minHeight: cardMinHeight)
                                 assignmentsCard
                                     .animateEntry(isLoaded: isLoaded, index: 5)
+                                    .frame(minHeight: cardMinHeight)
                             }
                         } else {
                             HStack(alignment: .top, spacing: cardSpacing) {
                                 workloadCard
                                     .animateEntry(isLoaded: isLoaded, index: 4)
                                     .frame(maxWidth: .infinity)
+                                    .frame(minHeight: cardMinHeight)
                                 assignmentsCard
                                     .animateEntry(isLoaded: isLoaded, index: 5)
                                     .frame(maxWidth: .infinity)
+                                    .frame(minHeight: cardMinHeight)
                             }
                         }
                     }
@@ -118,9 +129,11 @@ struct DashboardView: View {
                                 if shouldShowProductivityInsights {
                                     studyHoursCard
                                         .animateEntry(isLoaded: isLoaded, index: 6)
+                                        .frame(minHeight: cardMinHeight)
                                 }
-                                plannerTodayCard
+                                workRemainingCard
                                     .animateEntry(isLoaded: isLoaded, index: 7)
+                                    .frame(minHeight: cardMinHeight)
                             }
                         } else {
                             HStack(alignment: .top, spacing: cardSpacing) {
@@ -128,11 +141,13 @@ struct DashboardView: View {
                                     studyHoursCard
                                         .animateEntry(isLoaded: isLoaded, index: 6)
                                         .frame(maxWidth: .infinity)
+                                        .frame(minHeight: cardMinHeight)
                                 }
 
-                                plannerTodayCard
+                                workRemainingCard
                                     .animateEntry(isLoaded: isLoaded, index: 7)
                                     .frame(maxWidth: .infinity)
+                                    .frame(minHeight: cardMinHeight)
                             }
                         }
                     }
@@ -143,6 +158,7 @@ struct DashboardView: View {
                         gradeWidgetCard
                             .frame(maxWidth: .infinity)
                             .animateEntry(isLoaded: isLoaded, index: 8)
+                            .frame(minHeight: cardMinHeight)
                     }
                     .padding(.bottom, cardSpacing)
 
@@ -156,6 +172,7 @@ struct DashboardView: View {
                 .frame(maxWidth: min(proxy.size.width, 1400))
                 .frame(maxWidth: .infinity)  // Center the constrained content
                 .padding(.horizontal, responsivePadding(for: proxy.size.width))
+                .frame(minHeight: max(proxy.size.height - bottomDockClearancePadding, 0))
             }
         }
         .background(.primaryBackground)
@@ -1264,9 +1281,12 @@ struct DashboardView: View {
         ) {
             let sessions = plannerSessionsToday
             if sessions.isEmpty {
-                Text(NSLocalizedString("dashboard.planner.no_tasks", comment: ""))
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.secondary)
+                DashboardEmptyState(
+                    title: NSLocalizedString("dashboard.planner.no_tasks", comment: ""),
+                    systemImage: "calendar.badge.clock",
+                    description: NSLocalizedString("dashboard.planner.no_tasks.description", value: "Your planner will show today's sessions here.", comment: "")
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             } else {
                 VStack(alignment: .leading, spacing: 10) {
                     ForEach(sessions.prefix(4), id: \.id) { session in
@@ -1312,9 +1332,6 @@ struct DashboardView: View {
 
     private var gradeWidgetHeader: some View {
         HStack {
-            Text(NSLocalizedString("dashboard.grades.filter_label", value: "View", comment: "Label for grade view filter"))
-                .font(.caption2.weight(.semibold))
-                .foregroundStyle(.secondary)
             Spacer()
             Picker("Grade view", selection: $gradeWidgetMode) {
                 ForEach(GradeWidgetMode.allCases) { mode in
@@ -1478,13 +1495,12 @@ struct DashboardView: View {
         ) {
             let snapshot = remainingWorkSnapshot
             if snapshot.plannedMinutes <= 0 {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(NSLocalizedString("—", value: "—", comment: ""))
-                        .font(.system(size: 36, weight: .bold))
-                    Text(NSLocalizedString("dashboard.planner.no_plan_time", comment: ""))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+                DashboardEmptyState(
+                    title: NSLocalizedString("dashboard.planner.no_plan_time", comment: ""),
+                    systemImage: "chart.bar.xaxis",
+                    description: NSLocalizedString("dashboard.planner.no_plan_time.description", value: "Once your planner is scheduled, progress shows here.", comment: "")
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
             } else {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(verbatim: "\(snapshot.remainingPercent)%")

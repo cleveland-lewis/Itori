@@ -90,8 +90,8 @@ final class GradesStore: ObservableObject {
         // Step 3: Load from iCloud if needed (deferred)
         await Task.detached(priority: .utility) { [weak self] in
             guard let self = self else { return }
-            await self.loadFromiCloudIfEnabled()
             await MainActor.run {
+                self.loadFromiCloudIfEnabled()
                 self.setupiCloudMonitoring()
             }
         }.value
@@ -193,18 +193,18 @@ final class GradesStore: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            Task { @MainActor [weak self] in
-                guard let self = self else { return }
-                if self.isSyncEnabled {
-                    self.setupiCloudMonitoring()
-                    self.loadFromiCloudIfEnabled()
-                } else {
-                    self.iCloudMonitor?.invalidate()
-                    self.iCloudMonitor = nil
+                Task { @MainActor [weak self] in
+                    guard let self = self else { return }
+                    if self.isSyncEnabled {
+                        self.setupiCloudMonitoring()
+                        self.loadFromiCloudIfEnabled()
+                    } else {
+                        self.iCloudMonitor?.invalidate()
+                        self.iCloudMonitor = nil
+                    }
                 }
             }
         }
-    }
     
     private func loadFromiCloudIfEnabled() {
         guard isSyncEnabled else { return }

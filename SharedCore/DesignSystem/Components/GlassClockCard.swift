@@ -4,12 +4,13 @@ import SwiftUI
 struct GlassClockCard<Content: View>: View {
     @Environment(\.colorScheme) private var colorScheme
     var cornerRadius: CGFloat = DesignSystem.Layout.cornerRadiusLarge
+    var paddingAmount: CGFloat = DesignSystem.Layout.padding.card
     var content: () -> Content
     
     var body: some View {
         #if os(macOS)
         content()
-            .padding(DesignSystem.Layout.padding.card)
+            .padding(paddingAmount)
             .background(DesignSystem.Materials.card, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
@@ -18,7 +19,7 @@ struct GlassClockCard<Content: View>: View {
             )
         #else
         content()
-            .padding(DesignSystem.Layout.padding.card)
+            .padding(paddingAmount)
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)

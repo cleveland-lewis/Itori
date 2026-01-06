@@ -45,7 +45,7 @@ final class AssignmentsStore: ObservableObject {
         // Step 3: Load from iCloud if needed (deferred)
         await Task.detached(priority: .utility) { [weak self] in
             guard let self = self else { return }
-            await self.loadFromiCloudIfEnabled()
+            self.loadFromiCloudIfEnabled()
             await MainActor.run {
                 self.setupiCloudMonitoring()
             }
