@@ -2,6 +2,7 @@
 import AppKit
 
 enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
+    case subscription
     case general
     case calendar
     case reminders
@@ -12,6 +13,7 @@ enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
     case profiles
     case timer
     case flashcards
+    case practice
     case ai
     case integrations
     case notifications
@@ -23,6 +25,7 @@ enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
+        case .subscription: return "Subscription"
         case .general: return "General"
         case .calendar: return "Calendar"
         case .reminders: return "Reminders"
@@ -33,6 +36,7 @@ enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
         case .profiles: return "Profile"
         case .timer: return "Timer"
         case .flashcards: return "Flashcards"
+        case .practice: return "Practice"
         case .ai: return "LLM"
         case .integrations: return "Integrations"
         case .notifications: return "Notifications"
@@ -44,6 +48,7 @@ enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
 
     var systemImageName: String {
         switch self {
+        case .subscription: return "sparkles"
         case .general: return "gearshape"
         case .calendar: return "calendar"
         case .reminders: return "list.bullet.rectangle"
@@ -54,6 +59,7 @@ enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
         case .profiles: return "person.crop.circle"
         case .timer: return "timer"
         case .flashcards: return "rectangle.stack.badge.person.crop"
+        case .practice: return "pencil.and.list.clipboard"
         case .ai: return "cpu.fill"
         case .integrations: return "arrow.triangle.2.circlepath.circle"
         case .notifications: return "bell.badge"

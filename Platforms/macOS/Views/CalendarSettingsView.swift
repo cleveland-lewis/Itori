@@ -129,7 +129,7 @@ struct CalendarSettingsView: View {
             Button(NSLocalizedString("settings.button.open.system.settings", value: "Open System Settings", comment: "Open System Settings")) {
                 calendarManager.openSystemPrivacySettings()
             }
-            Button("Cancel", role: .cancel) { }
+            Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) { }
         } message: {
             Text(NSLocalizedString("settings.to.disconnect.itori.from.your", value: "To disconnect Itori from your Calendar, please revoke access in System Settings > Privacy & Security > Calendars.", comment: "To disconnect Itori from your Calendar, please rev..."))
         }
@@ -196,7 +196,7 @@ struct AssignmentSyncSection: View {
                         HStack {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .foregroundStyle(.orange)
-                            Text("\(syncManager.syncErrors.count) sync errors")
+                            Text(verbatim: "\(syncManager.syncErrors.count) sync errors")
                                 .font(DesignSystem.Typography.caption)
                                 .foregroundStyle(.orange)
                         }
@@ -222,7 +222,7 @@ struct AssignmentSyncSection: View {
                     }
                 }
             }
-            Button("Cancel", role: .cancel) { }
+            Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) { }
         } message: {
             Text(NSLocalizedString("settings.itori.needs.access.to.your", value: "Itori needs access to your calendar to sync assignments. You can grant this in System Settings if you previously denied access.", comment: "Itori needs access to your calendar to sync assign..."))
         }

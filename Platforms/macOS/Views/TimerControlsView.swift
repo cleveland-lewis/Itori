@@ -114,7 +114,7 @@ struct TimerControlsView: View {
             HStack {
                 Slider(value: Binding(get: { duration.wrappedValue / 60 }, set: { duration.wrappedValue = $0 * 60 }), in: 5...120, step: 5)
                     .disabled(isDisabled)
-                Text("\(Int(duration.wrappedValue / 60))m")
+                Text(verbatim: "\(Int(duration.wrappedValue / 60))m")
                     .font(.caption.monospacedDigit())
                     .foregroundColor(.secondary)
                     .frame(width: 44)

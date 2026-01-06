@@ -314,6 +314,7 @@ final class AutoRescheduleEngine: ObservableObject {
             case .homework: return 0.7
             case .reading: return 0.6
             case .review: return 0.5
+            case .practiceTest: return 0.85
             }
         }()
         

@@ -16,7 +16,7 @@ struct WatchRootView: View {
                 WatchTimerView()
             }
             .tabItem {
-                Label("Timer", systemImage: "timer")
+                Label(NSLocalizedString("Timer", value: "Timer", comment: ""), systemImage: "timer")
             }
             
             // Tasks Tab
@@ -24,7 +24,7 @@ struct WatchRootView: View {
                 WatchTasksView()
             }
             .tabItem {
-                Label("Tasks", systemImage: "checkmark.circle")
+                Label(NSLocalizedString("Tasks", value: "Tasks", comment: ""), systemImage: "checkmark.circle")
             }
             
             // Settings Tab
@@ -32,7 +32,7 @@ struct WatchRootView: View {
                 WatchSettingsView()
             }
             .tabItem {
-                Label("Settings", systemImage: "gear")
+                Label(NSLocalizedString("Settings", value: "Settings", comment: ""), systemImage: "gear")
             }
         }
         .environmentObject(syncManager)

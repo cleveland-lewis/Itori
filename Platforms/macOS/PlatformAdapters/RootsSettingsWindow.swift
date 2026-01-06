@@ -18,6 +18,7 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     case profiles
     case timer
     case flashcards
+    case practice
     case ai
     case integrations
     case notifications
@@ -45,6 +46,7 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         case .profiles: return "person.text.rectangle"
         case .timer: return "timer"
         case .flashcards: return "rectangle.stack"
+        case .practice: return "pencil.and.list.clipboard"
         case .ai: return "brain"
         case .integrations: return "puzzlepiece.extension"
         case .notifications: return "bell.badge"
@@ -73,6 +75,8 @@ struct SettingsRootView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 switch selection {
+                case .subscription:
+                    MacOSSubscriptionView()
                 case .general:
                     GeneralSettingsView()
                 case .calendar:
@@ -93,6 +97,8 @@ struct SettingsRootView: View {
                     TimerSettingsView()
                 case .flashcards:
                     FlashcardSettingsView()
+                case .practice:
+                    PracticeSettingsView()
                 case .ai:
                     AISettingsView()
                 case .integrations:
@@ -253,7 +259,7 @@ private struct SettingsDetail: View {
                 AccountsSettingsView(accentColor: accentColor)
             default:
                 // Legacy view - unimplemented sections use new SettingsRootView
-                Text("Use new Settings window for \(selection.title)")
+                Text(verbatim: "Use new Settings window for \(selection.title)")
                     .foregroundStyle(.secondary)
             }
         }
@@ -283,7 +289,7 @@ private struct SettingsBreadcrumbView: View {
                 .buttonStyle(.plain)
                 .disabled(activeIndex == 0)
 
-                Text(">")
+                Text(NSLocalizedString("settings.", value: ">", comment: ">"))
                     .rootsCaption()
                     .foregroundColor(RootsColor.textSecondary)
 
@@ -371,18 +377,18 @@ private struct LegacyGeneralSettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.large) {
-                Text("General")
+                Text(NSLocalizedString("settings.general", value: "General", comment: "General"))
                     .font(.title2.weight(.semibold))
 
                 SettingsGroup(title: "Interaction", accent: accentColor) {
                     VStack(alignment: .leading, spacing: 12) {
                         SettingsRow(title: "Enable hover wiggle", description: nil) {
-                            Toggle("", isOn: $settings.wiggleOnHover)
+                            Toggle(NSLocalizedString("settings.toggle.", value: "", comment: ""), isOn: $settings.wiggleOnHover)
                                 .labelsHidden()
                                 .onChange(of: settings.wiggleOnHover) { _, _ in settings.save() }
                         }
                         SettingsRow(title: "Keep glass accents active", description: "Prevents cards from desaturating when idle.") {
-                            Toggle("", isOn: $settings.enableGlassEffects)
+                            Toggle(NSLocalizedString("settings.toggle.", value: "", comment: ""), isOn: $settings.enableGlassEffects)
                                 .labelsHidden()
                                 .onChange(of: settings.enableGlassEffects) { _, _ in settings.save() }
                         }
@@ -393,9 +399,9 @@ private struct LegacyGeneralSettingsView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         SettingsRow(title: "Tab bar mode", description: nil) {
                             Picker("", selection: $settings.tabBarMode) {
-                                Text("Icons").tag(TabBarMode.iconsOnly)
-                                Text("Text").tag(TabBarMode.textOnly)
-                                Text("Icons & Text").tag(TabBarMode.iconsAndText)
+                                Text(NSLocalizedString("settings.icons", value: "Icons", comment: "Icons")).tag(TabBarMode.iconsOnly)
+                                Text(NSLocalizedString("settings.text", value: "Text", comment: "Text")).tag(TabBarMode.textOnly)
+                                Text(NSLocalizedString("settings.icons.text", value: "Icons & Text", comment: "Icons & Text")).tag(TabBarMode.iconsAndText)
                             }
                             .pickerStyle(.segmented)
                             .labelsHidden()
@@ -403,9 +409,9 @@ private struct LegacyGeneralSettingsView: View {
 
                         SettingsRow(title: "Sidebar behavior", description: "Automatic keeps the sidebar responsive to window size while still letting it stay pinned when you want it.") {
                             Picker("", selection: $settings.sidebarBehavior) {
-                                Text("Auto-collapse").tag(SidebarBehavior.automatic)
-                                Text("Always visible").tag(SidebarBehavior.expanded)
-                                Text("Always hidden").tag(SidebarBehavior.compact)
+                                Text(NSLocalizedString("settings.autocollapse", value: "Auto-collapse", comment: "Auto-collapse")).tag(SidebarBehavior.automatic)
+                                Text(NSLocalizedString("settings.always.visible", value: "Always visible", comment: "Always visible")).tag(SidebarBehavior.expanded)
+                                Text(NSLocalizedString("settings.always.hidden", value: "Always hidden", comment: "Always hidden")).tag(SidebarBehavior.compact)
                             }
                             .pickerStyle(.segmented)
                             .labelsHidden()
@@ -439,13 +445,13 @@ private struct AppearanceSettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.large) {
-                Text("Appearance")
+                Text(NSLocalizedString("settings.appearance", value: "Appearance", comment: "Appearance"))
                     .font(.title2.weight(.semibold))
 
                 SettingsGroup(title: "Theme", accent: accentColor) {
                     VStack(alignment: .leading, spacing: 12) {
                         SettingsRow(title: "Follow system appearance", description: nil) {
-                            Toggle("", isOn: Binding(get: { settings.interfaceStyle == .system }, set: { newValue in
+                            Toggle(NSLocalizedString("settings.toggle.", value: "", comment: ""), isOn: Binding(get: { settings.interfaceStyle == .system }, set: { newValue in
                                 settings.interfaceStyle = newValue ? .system : .light
                             }))
                             .labelsHidden()
@@ -505,21 +511,21 @@ private struct LegacyInterfaceSettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.large) {
-                Text("Interface")
+                Text(NSLocalizedString("settings.interface", value: "Interface", comment: "Interface"))
                     .font(.title2.weight(.semibold))
 
                 SettingsGroup(title: "Display", accent: accentColor) {
                     VStack(alignment: .leading, spacing: 12) {
                         SettingsRow(title: "Show hover wiggle on cards", description: nil) {
-                            Toggle("", isOn: $settings.wiggleOnHover)
+                            Toggle(NSLocalizedString("settings.toggle.", value: "", comment: ""), isOn: $settings.wiggleOnHover)
                                 .labelsHidden()
                         }
                         SettingsRow(title: "Use compact mode for Dashboard", description: nil) {
-                            Toggle("", isOn: $settings.highContrastMode)
+                            Toggle(NSLocalizedString("settings.toggle.", value: "", comment: ""), isOn: $settings.highContrastMode)
                                 .labelsHidden()
                         }
                         SettingsRow(title: "Use 24-hour time", description: nil) {
-                            Toggle("", isOn: $settings.use24HourTime)
+                            Toggle(NSLocalizedString("settings.toggle.", value: "", comment: ""), isOn: $settings.use24HourTime)
                                 .labelsHidden()
                         }
                     }
@@ -541,23 +547,23 @@ private struct AccountsSettingsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text("Accounts")
+            Text(NSLocalizedString("settings.accounts", value: "Accounts", comment: "Accounts"))
                 .font(.title2.weight(.semibold))
 
             SettingsGroup(title: "Primary Account", accent: accentColor) {
                 HStack {
-                    Text("Email")
+                    Text(NSLocalizedString("settings.email", value: "Email", comment: "Email"))
                     Spacer()
-                    Text("Not set")
+                    Text(NSLocalizedString("settings.not.set", value: "Not set", comment: "Not set"))
                         .foregroundColor(.secondary)
                 }
-                Button("Manage…") { }
+                Button(NSLocalizedString("settings.button.manage", value: "Manage…", comment: "Manage…")) { }
                     .buttonStyle(.borderedProminent)
                     .tint(accentColor)
             }
 
             SettingsGroup(title: "Sync", accent: accentColor) {
-                Text("Manage iCloud sync in Storage settings.")
+                Text(NSLocalizedString("settings.manage.icloud.sync.in.storage.settings", value: "Manage iCloud sync in Storage settings.", comment: "Manage iCloud sync in Storage settings."))
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }
@@ -574,16 +580,16 @@ private struct LegacyCoursesSettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.large) {
-                Text("Courses")
+                Text(NSLocalizedString("settings.courses", value: "Courses", comment: "Courses"))
                     .font(.title2.weight(.semibold))
 
                 SettingsGroup(title: "Course Management", accent: accentColor) {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Manage all your courses, semesters, and academic settings from the Courses page.")
+                        Text(NSLocalizedString("settings.manage.all.your.courses.semesters", value: "Manage all your courses, semesters, and academic settings from the Courses page.", comment: "Manage all your courses, semesters, and academic s..."))
                             .rootsBody()
                             .foregroundColor(.secondary)
 
-                        Text("Use the Courses page to add, edit, and organize your academic schedule.")
+                        Text(NSLocalizedString("settings.use.the.courses.page.to", value: "Use the Courses page to add, edit, and organize your academic schedule.", comment: "Use the Courses page to add, edit, and organize yo..."))
                             .font(.footnote)
                             .foregroundColor(.secondary)
                     }
@@ -595,16 +601,16 @@ private struct LegacyCoursesSettingsView: View {
                             Picker("", selection: Binding(get: {
                                 "standard"
                             }, set: { _ in })) {
-                                Text("Standard (A-F)").tag("standard")
-                                Text("Percentage").tag("percentage")
-                                Text("Points").tag("points")
+                                Text(NSLocalizedString("settings.standard.af", value: "Standard (A-F)", comment: "Standard (A-F)")).tag("standard")
+                                Text(NSLocalizedString("settings.percentage", value: "Percentage", comment: "Percentage")).tag("percentage")
+                                Text(NSLocalizedString("settings.points", value: "Points", comment: "Points")).tag("points")
                             }
                             .pickerStyle(.segmented)
                             .labelsHidden()
                         }
 
                         SettingsRow(title: "Show course codes", description: "Display course codes in sidebar lists.") {
-                            Toggle("", isOn: $settings.wiggleOnHover) // placeholder
+                            Toggle(NSLocalizedString("settings.toggle.", value: "", comment: ""), isOn: $settings.wiggleOnHover) // placeholder
                                 .labelsHidden()
                         }
                     }

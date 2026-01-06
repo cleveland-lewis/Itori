@@ -8,39 +8,40 @@ struct CalendarDayCell: View {
     let eventCount: Int
     let calendar: Calendar
 
-    @EnvironmentObject private var settings: AppSettingsModel
-    @State private var isPressed = false
-
     var body: some View {
         let isToday = calendar.isDateInToday(date)
         let a11yContent = VoiceOverLabels.dateCell(date: date, eventCount: eventCount)
 
-        ZStack(alignment: .topTrailing) {
-            Color.clear
-            
-            Text(dayString)
-                .font(DesignSystem.Typography.body)
-                .frame(minWidth: 28, minHeight: 28)
-                .padding(4)
-                .foregroundColor(textColor(isToday: isToday))
-                .background(
-                    Circle()
-                        .fill(backgroundFill(isToday: isToday))
-                )
-                .overlay(
-                    Circle()
-                        .strokeBorder(isToday && !isSelected ? Color.accentColor.opacity(0.5) : Color.clear, lineWidth: 1.5)
-                )
-                .padding(8)
+        ZStack(alignment: .topLeading) {
+            if isSelected {
+                Color.accentColor.opacity(0.15)
+            }
+
+            VStack(alignment: .leading, spacing: 0) {
+                Text(dayString)
+                    .font(.system(size: 12, weight: isToday ? .semibold : .regular))
+                    .foregroundColor(textColor(isToday: isToday))
+                    .padding(6)
+                    .background(
+                        Group {
+                            if isToday && !isSelected {
+                                Circle()
+                                    .fill(Color.red)
+                                    .frame(width: 20, height: 20)
+                            }
+                        }
+                    )
+
+                Spacer(minLength: 0)
+
+                if eventCount > 0 {
+                    EventDensityBar(level: densityLevel(for: eventCount))
+                        .padding(.leading, 6)
+                        .padding(.bottom, 6)
+                }
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-        .scaleEffect(isPressed ? 0.92 : 1.0)
-        .animation(.easeInOut(duration: DesignSystem.Motion.instant), value: isPressed)
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { _ in isPressed = true }
-                .onEnded { _ in isPressed = false }
-        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .voiceOver(a11yContent)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
@@ -55,19 +56,9 @@ struct CalendarDayCell: View {
         } else if !isInCurrentMonth {
             return .secondary.opacity(0.5)
         } else if isToday {
-            return .accentColor
+            return .white
         } else {
             return .primary
-        }
-    }
-
-    private func backgroundFill(isToday: Bool) -> Color {
-        if isSelected {
-            return .accentColor
-        } else if isToday {
-            return .accentColor.opacity(0.12)
-        } else {
-            return .clear
         }
     }
 

@@ -144,7 +144,7 @@ private struct MiniDayCell: View {
                     .fill(Color.accentColor)
             }
             
-            Text("\(dayNumber)")
+            Text(verbatim: "\(dayNumber)")
                 .font(.caption2)
                 .foregroundStyle(isToday ? .white : .primary)
             

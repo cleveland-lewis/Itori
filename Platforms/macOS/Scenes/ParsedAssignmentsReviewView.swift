@@ -120,7 +120,7 @@ struct ParsedAssignmentsReviewView: View {
             Divider()
             
             HStack {
-                Text("\(approvedIds.count) of \(parsedItems.count) approved")
+                Text(verbatim: "\(approvedIds.count) of \(parsedItems.count) approved")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 
@@ -286,13 +286,13 @@ struct ParsedAssignmentRow: View {
                 }
                 
                 if let anchor = assignment.provenanceAnchor {
-                    Text("Source: \(anchor)")
+                    Text(verbatim: "Source: \(anchor)")
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                         .lineLimit(1)
                 }
                 
-                Text("From: \(provenance)")
+                Text(verbatim: "From: \(provenance)")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
             }

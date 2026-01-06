@@ -84,10 +84,10 @@ struct AddEditCourseView: View {
             Button(NSLocalizedString("addeditcourse.button.save.and.close", value: "Save and Close", comment: "Save and Close")) {
                 saveCourse()
             }
-            Button("Discard Changes", role: .destructive) {
+            Button(NSLocalizedString("Discard Changes", value: "Discard Changes", comment: ""), role: .destructive) {
                 dismiss()
             }
-            Button("Cancel", role: .cancel) { }
+            Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) { }
         } message: {
             Text(NSLocalizedString("addeditcourse.you.have.unsaved.edits.save", value: "You have unsaved edits. Save before closing to avoid losing them.", comment: "You have unsaved edits. Save before closing to avo..."))
         }

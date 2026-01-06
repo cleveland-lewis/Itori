@@ -1,0 +1,177 @@
+===================================
+Itori Localization Audit
+===================================
+
+Generated: Tue Jan  6 15:48:58 EST 2026
+
+## 1. HARDCODED STRINGS IN TEXT() CALLS
+========================================
+
+### Text(...) instances:
+
+
+Total Text() instances with potential hardcoded strings:
+       0
+
+
+## 2. STRINGS ALREADY LOCALIZED
+================================
+
+### NSLocalizedString usage:
+
+Platforms/macOS/Scenes/PlannerSettingsView.swift:17:                Toggle(NSLocalizedString("settings.toggle.show.energy.panel", value: "Show Energy Panel", comment: "Show Energy Panel"), isOn: $settings.showEnergyPanel)
+Platforms/macOS/Scenes/PlannerSettingsView.swift:20:                Text(NSLocalizedString("settings.turning.off.energy.panel.will", value: "Turning off Energy Panel will make the planning algorithm default to medium energy for all days.", comment: "Turning off Energy Panel will make the planning al..."))
+Platforms/macOS/Scenes/PlannerSettingsView.swift:28:                    Text(NSLocalizedString("planner.settings.horizon.one_week", value: "planner.settings.horizon.one_week", comment: "")).tag("1w")
+Platforms/macOS/Scenes/PlannerSettingsView.swift:29:                    Text(NSLocalizedString("planner.settings.horizon.two_weeks", value: "planner.settings.horizon.two_weeks", comment: "")).tag("2w")
+Platforms/macOS/Scenes/PlannerSettingsView.swift:30:                    Text(NSLocalizedString("planner.settings.horizon.one_month", value: "planner.settings.horizon.one_month", comment: "")).tag("1m")
+Platforms/macOS/Scenes/PlannerSettingsView.swift:31:                    Text(NSLocalizedString("planner.settings.horizon.two_months", value: "planner.settings.horizon.two_months", comment: "")).tag("2m")
+Platforms/macOS/Scenes/DashboardView.swift:381:            Text(NSLocalizedString("dashboard.energy_level", comment: ""))
+Platforms/macOS/Scenes/DashboardView.swift:385:                energyButton(NSLocalizedString("dashboard.energy.high", comment: ""), level: .high)
+Platforms/macOS/Scenes/DashboardView.swift:386:                energyButton(NSLocalizedString("dashboard.energy.medium", comment: ""), level: .medium)
+Platforms/macOS/Scenes/DashboardView.swift:387:                energyButton(NSLocalizedString("dashboard.energy.low", comment: ""), level: .low)
+Platforms/macOS/Scenes/DashboardView.swift:394:            title: NSLocalizedString("dashboard.section.todays_overview", comment: ""),
+Platforms/macOS/Scenes/DashboardView.swift:403:                        Text(NSLocalizedString("dashboard.due_today", comment: ""))
+Platforms/macOS/Scenes/DashboardView.swift:419:                        Text(NSLocalizedString("dashboard.events_today", comment: ""))
+Platforms/macOS/Scenes/DashboardView.swift:435:                        Text(NSLocalizedString("dashboard.active_assignments", comment: ""))
+Platforms/macOS/Scenes/DashboardView.swift:454:            title: NSLocalizedString("dashboard.section.status", comment: ""),
+Platforms/macOS/Scenes/DashboardView.swift:458:                Text(NSLocalizedString("dashboard.today_focus", comment: ""))
+Platforms/macOS/Scenes/DashboardView.swift:466:                    NSLocalizedString("tasks_due_today", comment: ""),
+Platforms/macOS/Scenes/DashboardView.swift:473:                    NSLocalizedString("events_scheduled", comment: ""),
+Platforms/macOS/Scenes/DashboardView.swift:479:                Button(NSLocalizedString("dashboard.button.open_assignments", comment: "")) {
+Platforms/macOS/Scenes/DashboardView.swift:494:            title: NSLocalizedString("dashboard.section.weekly_workload", comment: ""),
+Platforms/macOS/Scenes/DashboardView.swift:505:            title: NSLocalizedString("dashboard.section.study_time_trend", comment: ""),
+Platforms/macOS/Scenes/DashboardView.swift:512:                    title: NSLocalizedString("dashboard.empty.no_study_data", comment: ""),
+Platforms/macOS/Scenes/DashboardView.swift:528:            Text(NSLocalizedString("dashboard.calendar.connect_message", comment: ""))
+Platforms/macOS/Scenes/DashboardView.swift:533:            Button(NSLocalizedString("dashboard.button.connect_calendar", comment: "")) {
+Platforms/macOS/Scenes/DashboardView.swift:551:            Text(NSLocalizedString("dashboard.calendar.access_denied_message", comment: ""))
+Platforms/macOS/Scenes/DashboardView.swift:555:            Button(NSLocalizedString("dashboard.button.open_settings", comment: "")) {
+Platforms/macOS/Scenes/DashboardView.swift:567:            title: NSLocalizedString("dashboard.section.energy_checkin", comment: ""),
+Platforms/macOS/Scenes/DashboardView.swift:571:                Text(NSLocalizedString("dashboard.energy.prompt", comment: ""))
+Platforms/macOS/Scenes/DashboardView.swift:576:                    energyButton(NSLocalizedString("dashboard.energy.high", comment: ""), level: .high)
+Platforms/macOS/Scenes/DashboardView.swift:577:                    energyButton(NSLocalizedString("dashboard.energy.medium", comment: ""), level: .medium)
+Platforms/macOS/Scenes/DashboardView.swift:578:                    energyButton(NSLocalizedString("dashboard.energy.low", comment: ""), level: .low)
+Platforms/macOS/Scenes/DashboardView.swift:589:            title: NSLocalizedString("dashboard.section.upcoming_events", comment: ""),
+Platforms/macOS/Scenes/DashboardView.swift:594:                    title: NSLocalizedString("dashboard.empty.no_events", comment: ""),
+Platforms/macOS/Scenes/DashboardView.swift:615:            .help(NSLocalizedString("dashboard.help.add_event", comment: ""))
+Platforms/macOS/Scenes/DashboardView.swift:622:                        Text(String(format: NSLocalizedString("dashboard.calendar.view_all_events", comment: ""), events.count))
+Platforms/macOS/Scenes/DashboardView.swift:653:                        Text(NSLocalizedString("·", value: "·", comment: ""))
+Platforms/macOS/Scenes/DashboardView.swift:683:                Label(NSLocalizedString("View Details", value: "View Details", comment: ""), systemImage: "eye")
+Platforms/macOS/Scenes/DashboardView.swift:692:                Label(NSLocalizedString("Edit Event", value: "Edit Event", comment: ""), systemImage: "pencil")
+Platforms/macOS/Scenes/DashboardView.swift:701:                Label(NSLocalizedString("Delete Event", value: "Delete Event", comment: ""), systemImage: "trash")
+Platforms/macOS/Scenes/DashboardView.swift:708:            title: NSLocalizedString("dashboard.section.upcoming_assignments", comment: ""),
+Platforms/macOS/Scenes/DashboardView.swift:720:                        Text(NSLocalizedString("No upcoming assignments", value: "No upcoming assignments", comment: ""))
+Platforms/macOS/Scenes/DashboardView.swift:722:                        Text(NSLocalizedString("Add an assignment to see it here", value: "Add an assignment to see it here", comment: ""))
+Platforms/macOS/Scenes/DashboardView.swift:727:                    Button(NSLocalizedString("Add Assignment", value: "Add Assignment", comment: "")) {
+Platforms/macOS/Scenes/DashboardView.swift:746:                Label(NSLocalizedString("Add Assignment", value: "Add Assignment", comment: ""), systemImage: "plus")
+Platforms/macOS/Scenes/DashboardView.swift:759:                    dashboardButtonLabel(title: NSLocalizedString("dashboard.button.view_all", comment: ""), systemImage: "arrow.right", trailingIcon: true)
+Platforms/macOS/Scenes/DashboardView.swift:1126:                    Label(NSLocalizedString("Mark Complete", value: "Mark Complete", comment: ""), systemImage: "checkmark.circle")
+Platforms/macOS/Scenes/DashboardView.swift:1136:                Label(NSLocalizedString("View Details", value: "View Details", comment: ""), systemImage: "eye")
+Platforms/macOS/Scenes/DashboardView.swift:1143:                Label(NSLocalizedString("Edit Assignment", value: "Edit Assignment", comment: ""), systemImage: "pencil")
+Platforms/macOS/Scenes/DashboardView.swift:1154:                Label(NSLocalizedString("Delete Assignment", value: "Delete Assignment", comment: ""), systemImage: "trash")
+Platforms/macOS/Scenes/DashboardView.swift:1169:            title: NSLocalizedString("dashboard.section.today", comment: ""),
+
+Total NSLocalizedString instances:
+    2055
+
+
+## 3. LABEL() CALLS WITH HARDCODED STRINGS
+===========================================
+
+
+Total Label() instances:
+       0
+
+
+## 4. BUTTON() CALLS WITH HARDCODED STRINGS
+============================================
+
+
+Total Button() instances:
+       0
+
+
+## 5. FILES BY SECTION (Priority Order)
+========================================
+
+### Dashboard:
+Platforms/macOS/Scenes/DashboardView.swift
+Platforms/macOS/Scenes/CoursesDashboardRootView.swift
+
+### Calendar:
+Platforms/macOS/Views/CalendarDayView.swift
+Platforms/macOS/Views/CalendarDayCell.swift
+Platforms/macOS/Views/CalendarGrid.swift
+Platforms/macOS/Views/CalendarWeekView.swift
+Platforms/macOS/Views/Components/Calendar/CalendarStatsRow.swift
+Platforms/macOS/Views/CalendarPageView.swift
+Platforms/macOS/Views/CalendarSettingsView.swift
+Platforms/macOS/Views/CalendarYearView.swift
+
+### Assignments:
+Platforms/macOS/Scenes/AssignmentsPageView.swift
+Platforms/macOS/Scenes/AssignmentsView.swift
+Platforms/macOS/Scenes/Shared/AssignmentDetailWindowView.swift
+Platforms/macOS/Scenes/Shared/AssignmentSceneContent.swift
+Platforms/macOS/Scenes/ParsedAssignmentsReviewView.swift
+Platforms/macOS/Views/AssignmentsDueTodayCompactList.swift
+Platforms/macOS/Views/AddAssignmentView.swift
+Platforms/macOS/Views/AssignmentsView2.swift
+Platforms/macOS/Views/AssignmentRow.swift
+
+### Timer:
+Platforms/macOS/Scenes/TimerPageView_Simple.swift
+Platforms/macOS/Scenes/TimerPageView.swift
+Platforms/macOS/Views/TimerRightPane.swift
+Platforms/macOS/Views/TimerView.swift
+Platforms/macOS/Views/TimerSettingsView.swift
+Platforms/macOS/Views/Components/Charts/TimerBarChart.swift
+Platforms/macOS/Views/Components/Clock/TripleDialTimer.swift
+Platforms/macOS/Views/TimerHeaderView.swift
+Platforms/macOS/Views/TimerControlsView.swift
+Platforms/macOS/Views/TimerGraphsView.swift
+
+### Settings:
+Platforms/macOS/Scenes/PlannerSettingsView.swift
+Platforms/macOS/Scenes/SettingsView.swift
+Platforms/macOS/Scenes/CoursesSettingsView.swift
+Platforms/macOS/Views/RemindersSettingsView.swift
+Platforms/macOS/Views/StorageSettingsView.swift
+Platforms/macOS/Views/IntegrationsSettingsView.swift
+Platforms/macOS/Views/AISettingsView.swift
+Platforms/macOS/Views/SettingsPane_Interface+Tabs.swift
+Platforms/macOS/Views/ProfilesSettingsView.swift
+Platforms/macOS/Views/InterfaceSettingsView.swift
+Platforms/macOS/Views/TimerSettingsView.swift
+Platforms/macOS/Views/NotificationsSettingsView.swift
+Platforms/macOS/Views/GeneralSettingsView.swift
+Platforms/macOS/Views/SemestersSettingsView.swift
+Platforms/macOS/Views/PrivacySettingsView.swift
+Platforms/macOS/Views/CalendarSettingsView.swift
+Platforms/macOS/Views/DeveloperSettingsView.swift
+Platforms/macOS/Views/LLMSettingsView.swift
+Platforms/macOS/Views/PracticeSettingsView.swift
+
+
+## 6. SUMMARY
+=============
+
+Hardcoded Text() calls:             0
+Already localized:               2055
+Hardcoded Label() calls:            0
+Hardcoded Button() calls:           0
+
+Total strings needing work:  0
+
+
+## 7. RECOMMENDED PRIORITY
+==========================
+
+1. Dashboard (high visibility, user entry point)
+2. Calendar (core feature)
+3. Assignments (core feature)
+4. Timer/Focus (core feature)
+5. Settings (lower priority)
+
+===================================
+Audit Complete!
+===================================

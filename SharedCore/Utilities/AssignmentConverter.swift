@@ -12,6 +12,7 @@ struct AssignmentConverter {
             id: assignment.id,
             title: assignment.title,
             courseId: assignment.courseId,
+            moduleIds: assignment.moduleIds,
             due: assignment.dueDate,
             estimatedMinutes: assignment.estimatedMinutes,
             minBlockMinutes: 20,
@@ -44,6 +45,7 @@ struct AssignmentConverter {
         return Assignment(
             id: task.id,
             courseId: task.courseId,
+            moduleIds: task.moduleIds,
             title: task.title,
             dueDate: task.due ?? Date(),
             dueTimeMinutes: task.dueTimeMinutes,
@@ -70,6 +72,7 @@ struct AssignmentConverter {
         case .quiz: return .quiz
         case .review: return .review
         case .project: return .project
+        case .practiceTest: return .practiceTest
         }
     }
     
@@ -82,24 +85,24 @@ struct AssignmentConverter {
         case .review: return .review
         case .project: return .project
         case .study: return .review
+        case .practiceTest: return .practiceTest
         }
     }
     
     private static func importanceFromUrgency(_ urgency: AssignmentUrgency) -> Double {
         switch urgency {
-        case .low: return 0.25
-        case .medium: return 0.5
-        case .high: return 0.75
-        case .critical: return 1.0
+        case .low: return 0.3
+        case .medium: return 0.6
+        case .high: return 0.85
+        case .critical: return 0.85
         }
     }
     
     private static func urgencyFromImportance(_ importance: Double) -> AssignmentUrgency {
         switch importance {
-        case ..<0.3: return .low
-        case ..<0.6: return .medium
-        case ..<0.85: return .high
-        default: return .critical
+        case ..<0.4: return .low
+        case ..<0.7: return .medium
+        default: return .high
         }
     }
 }

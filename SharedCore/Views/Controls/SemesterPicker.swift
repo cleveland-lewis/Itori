@@ -8,7 +8,7 @@ struct SemesterPicker: View {
         Menu {
             // Recent section
             if !coursesStore.semesters.isEmpty {
-                Section(header: Text("Recent")) {
+                Section(header: Text(NSLocalizedString("ui.recent", value: "Recent", comment: "Recent"))) {
                     ForEach(Array(coursesStore.semesters.sorted { $0.startDate > $1.startDate }.prefix(2))) { sem in
                         Button(sem.name) {
                             selectedSemesterId = sem.id
@@ -16,7 +16,7 @@ struct SemesterPicker: View {
                     }
                 }
 
-                Section(header: Text("All")) {
+                Section(header: Text(NSLocalizedString("ui.all", value: "All", comment: "All"))) {
                     ForEach(coursesStore.semesters.sorted { $0.startDate > $1.startDate }) { sem in
                         Button(sem.name) {
                             selectedSemesterId = sem.id
@@ -24,7 +24,7 @@ struct SemesterPicker: View {
                     }
                 }
             } else {
-                Button("No semesters") {}
+                Button(NSLocalizedString("ui.button.no.semesters", value: "No semesters", comment: "No semesters")) {}
             }
         } label: {
             HStack {

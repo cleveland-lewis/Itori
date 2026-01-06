@@ -3,6 +3,44 @@ import SwiftUI
 import Combine
 import Network
 
+private struct CoursesPersistedData: Codable {
+    var semesters: [Semester]
+    var courses: [Course]
+    var outlineNodes: [CourseOutlineNode]
+    var courseFiles: [CourseFile]
+    var currentSemesterId: UUID?
+    var activeSemesterIds: [UUID]?  // New: multi-semester support
+    
+    // Custom decoding to handle backward compatibility
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        semesters = try container.decode([Semester].self, forKey: .semesters)
+        courses = try container.decode([Course].self, forKey: .courses)
+        // Provide default empty array if outlineNodes is missing (backward compatibility)
+        outlineNodes = try container.decodeIfPresent([CourseOutlineNode].self, forKey: .outlineNodes) ?? []
+        courseFiles = try container.decodeIfPresent([CourseFile].self, forKey: .courseFiles) ?? []
+        currentSemesterId = try container.decodeIfPresent(UUID.self, forKey: .currentSemesterId)
+        activeSemesterIds = try container.decodeIfPresent([UUID].self, forKey: .activeSemesterIds)
+    }
+    
+    // Memberwise init for encoding
+    init(
+        semesters: [Semester],
+        courses: [Course],
+        outlineNodes: [CourseOutlineNode],
+        courseFiles: [CourseFile],
+        currentSemesterId: UUID?,
+        activeSemesterIds: Set<UUID>
+    ) {
+        self.semesters = semesters
+        self.courses = courses
+        self.outlineNodes = outlineNodes
+        self.courseFiles = courseFiles
+        self.currentSemesterId = currentSemesterId
+        self.activeSemesterIds = Array(activeSemesterIds)
+    }
+}
+
 @MainActor
 final class CoursesStore: ObservableObject {
     static weak var shared: CoursesStore?
@@ -74,6 +112,12 @@ final class CoursesStore: ObservableObject {
         self.cacheURL = cacheFolder.appendingPathComponent("courses_cache.json")
 
         // OPTIMIZATION: Setup only - defer actual data loading
+        // Skip slow initialization during tests
+        guard !TestMode.isRunningTests else {
+            CoursesStore.shared = self
+            return
+        }
+        
         setupNetworkMonitoring()
         observeICloudToggle()
         CoursesStore.shared = self
@@ -106,7 +150,7 @@ final class CoursesStore: ObservableObject {
             if FileManager.default.fileExists(atPath: self.cacheURL.path) {
                 do {
                     let data = try Data(contentsOf: self.cacheURL)
-                    let decoded = try JSONDecoder().decode(PersistedData.self, from: data)
+                    let decoded = try JSONDecoder().decode(CoursesPersistedData.self, from: data)
                     semesters = decoded.semesters
                     courses = decoded.courses
                     outlineNodes = decoded.outlineNodes
@@ -123,7 +167,7 @@ final class CoursesStore: ObservableObject {
             if FileManager.default.fileExists(atPath: self.storageURL.path) {
                 do {
                     let data = try Data(contentsOf: self.storageURL)
-                    let decoded = try JSONDecoder().decode(PersistedData.self, from: data)
+                    let decoded = try JSONDecoder().decode(CoursesPersistedData.self, from: data)
                     semesters = decoded.semesters
                     courses = decoded.courses
                     outlineNodes = decoded.outlineNodes
@@ -472,37 +516,6 @@ final class CoursesStore: ObservableObject {
 
     // MARK: - Persistence
 
-    private struct PersistedData: Codable {
-        var semesters: [Semester]
-        var courses: [Course]
-        var outlineNodes: [CourseOutlineNode]
-        var courseFiles: [CourseFile]
-        var currentSemesterId: UUID?
-        var activeSemesterIds: [UUID]?  // New: multi-semester support
-        
-        // Custom decoding to handle backward compatibility
-        init(from decoder: Decoder) throws {
-            let container = try decoder.container(keyedBy: CodingKeys.self)
-            semesters = try container.decode([Semester].self, forKey: .semesters)
-            courses = try container.decode([Course].self, forKey: .courses)
-            // Provide default empty array if outlineNodes is missing (backward compatibility)
-            outlineNodes = try container.decodeIfPresent([CourseOutlineNode].self, forKey: .outlineNodes) ?? []
-            courseFiles = try container.decodeIfPresent([CourseFile].self, forKey: .courseFiles) ?? []
-            currentSemesterId = try container.decodeIfPresent(UUID.self, forKey: .currentSemesterId)
-            activeSemesterIds = try container.decodeIfPresent([UUID].self, forKey: .activeSemesterIds)
-        }
-        
-        // Memberwise init for encoding
-        init(semesters: [Semester], courses: [Course], outlineNodes: [CourseOutlineNode], courseFiles: [CourseFile], currentSemesterId: UUID?, activeSemesterIds: Set<UUID>) {
-            self.semesters = semesters
-            self.courses = courses
-            self.outlineNodes = outlineNodes
-            self.courseFiles = courseFiles
-            self.currentSemesterId = currentSemesterId
-            self.activeSemesterIds = Array(activeSemesterIds)
-        }
-    }
-
     private func load() {
         guard FileManager.default.fileExists(atPath: storageURL.path) else {
             LOG_PERSISTENCE(.info, "CoursesLoad", "No persisted courses data found")
@@ -510,7 +523,7 @@ final class CoursesStore: ObservableObject {
         }
         do {
             let data = try Data(contentsOf: storageURL)
-            let decoded = try JSONDecoder().decode(PersistedData.self, from: data)
+            let decoded = try JSONDecoder().decode(CoursesPersistedData.self, from: data)
             self.semesters = decoded.semesters
             self.courses = decoded.courses
             self.outlineNodes = decoded.outlineNodes
@@ -540,7 +553,7 @@ final class CoursesStore: ObservableObject {
         }
         do {
             let data = try Data(contentsOf: cacheURL)
-            let decoded = try JSONDecoder().decode(PersistedData.self, from: data)
+            let decoded = try JSONDecoder().decode(CoursesPersistedData.self, from: data)
             self.semesters = decoded.semesters
             self.courses = decoded.courses
             self.outlineNodes = decoded.outlineNodes
@@ -563,7 +576,7 @@ final class CoursesStore: ObservableObject {
     private func persist() {
         guard !isLoadingFromDisk else { return }
         
-        let snapshot = PersistedData(
+        let snapshot = CoursesPersistedData(
             semesters: semesters,
             courses: courses,
             outlineNodes: outlineNodes,
@@ -1001,7 +1014,7 @@ extension CoursesStore {
     private func setupNetworkMonitoring() {
         pathMonitor = NWPathMonitor()
         pathMonitor?.pathUpdateHandler = { [weak self] path in
-            Task { @MainActor in
+            Task { @MainActor [weak self] in
                 self?.isOnline = path.status == .satisfied
             }
         }
@@ -1010,8 +1023,10 @@ extension CoursesStore {
     
     private func setupiCloudMonitoring() {
         iCloudMonitor = Timer.scheduledTimer(withTimeInterval: 300, repeats: true) { [weak self] _ in
-            guard let self = self, self.isSyncEnabled else { return }
-            self.loadFromiCloud()
+            Task { @MainActor [weak self] in
+                guard let self = self, self.isSyncEnabled else { return }
+                self.loadFromiCloud()
+            }
         }
     }
     
@@ -1021,9 +1036,11 @@ extension CoursesStore {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            guard let self = self else { return }
-            if self.isSyncEnabled {
-                self.loadFromiCloud()
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                if self.isSyncEnabled {
+                    self.loadFromiCloud()
+                }
             }
         }
     }
@@ -1042,10 +1059,10 @@ extension CoursesStore {
         guard FileManager.default.fileExists(atPath: url.path) else { return }
         
         // Load and decode off-main
-        let cloudData = await Task.detached(priority: .utility) { () -> PersistedData? in
+        let cloudData = await Task.detached(priority: .utility) { () -> CoursesPersistedData? in
             do {
                 let data = try Data(contentsOf: url)
-                let decoded = try JSONDecoder().decode(PersistedData.self, from: data)
+                let decoded = try JSONDecoder().decode(CoursesPersistedData.self, from: data)
                 await LOG_PERSISTENCE(.debug, "CoursesiCloud", "Decoded iCloud data off-main")
                 return decoded
             } catch {
@@ -1075,21 +1092,21 @@ extension CoursesStore {
     private func saveToiCloud() {
         guard isSyncEnabled else { return }
         guard let url = iCloudURL else { return }
-        
-        DispatchQueue.global(qos: .utility).async { [weak self] in
-            guard let self = self else { return }
-            let snapshot = PersistedData(
-                semesters: self.semesters,
-                courses: self.courses,
-                outlineNodes: self.outlineNodes,
-                courseFiles: self.courseFiles,
-                currentSemesterId: self.currentSemesterId,
-                activeSemesterIds: self.activeSemesterIds
-            )
+
+        let snapshot = CoursesPersistedData(
+            semesters: semesters,
+            courses: courses,
+            outlineNodes: outlineNodes,
+            courseFiles: courseFiles,
+            currentSemesterId: currentSemesterId,
+            activeSemesterIds: activeSemesterIds
+        )
+
+        DispatchQueue.global(qos: .utility).async {
             do {
                 let data = try JSONEncoder().encode(snapshot)
                 try data.write(to: url, options: .atomic)
-                LOG_PERSISTENCE(.info, "CoursesiCloud", "Synced courses to iCloud", metadata: ["semesters": "\(self.semesters.count)", "courses": "\(self.courses.count)"])
+                LOG_PERSISTENCE(.info, "CoursesiCloud", "Synced courses to iCloud", metadata: ["semesters": "\(snapshot.semesters.count)", "courses": "\(snapshot.courses.count)"])
             } catch {
                 LOG_PERSISTENCE(.error, "CoursesiCloud", "iCloud sync failed: \(error.localizedDescription)")
             }
@@ -1103,7 +1120,7 @@ extension CoursesStore {
         do {
             isLoadingFromDisk = true
             let data = try Data(contentsOf: url)
-            let decoded = try JSONDecoder().decode(PersistedData.self, from: data)
+            let decoded = try JSONDecoder().decode(CoursesPersistedData.self, from: data)
             
             self.semesters = decoded.semesters
             self.courses = decoded.courses

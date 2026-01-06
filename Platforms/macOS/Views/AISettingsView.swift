@@ -189,7 +189,7 @@ struct AISettingsView: View {
                 #endif
                 
                 providerRow(
-                    name: "BYO Provider",
+                    name: "External Provider",
                     icon: "network",
                     available: checkBYOProvider(),
                     description: byoProviderDescription()
@@ -295,7 +295,7 @@ struct AISettingsView: View {
     private var byoProviderSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Text(NSLocalizedString("settings.llm.byo.title", value: "Bring Your Own Provider", comment: "BYO provider section title"))
+                Text(NSLocalizedString("settings.llm.byo.title", value: "External Provider", comment: "BYO provider section title"))
                     .font(.headline)
                 
                 Spacer()
@@ -308,7 +308,7 @@ struct AISettingsView: View {
             
             if checkBYOProvider() {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text(NSLocalizedString("settings.llm.byo.configured", value: "✓ BYO provider configured", comment: "BYO configured status"))
+                    Text(NSLocalizedString("settings.llm.byo.configured", value: "✓ External provider configured", comment: "BYO configured status"))
                         .font(.caption)
                         .foregroundStyle(.green)
                     
@@ -323,7 +323,7 @@ struct AISettingsView: View {
                         .fill(.secondaryBackground)
                 )
             } else {
-                Text(NSLocalizedString("settings.llm.byo.description", value: "Configure your own AI provider (OpenAI, Anthropic, or custom API)", comment: "BYO provider description"))
+                Text(NSLocalizedString("settings.llm.byo.description", value: "Configure an external AI provider (OpenAI, Anthropic, or custom API)", comment: "BYO provider description"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -332,7 +332,7 @@ struct AISettingsView: View {
     
     private var byoConfigurationSheet: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text(NSLocalizedString("settings.llm.byo.configure.title", value: "Configure BYO Provider", comment: "BYO configuration sheet title"))
+            Text(NSLocalizedString("settings.llm.byo.configure.title", value: "Configure External Provider", comment: "BYO configuration sheet title"))
                 .font(.title2.weight(.semibold))
             
             Picker(NSLocalizedString("settings.llm.byo.provider.type", value: "Provider Type", comment: "Provider type picker label"), selection: $byoType) {
@@ -359,19 +359,19 @@ struct AISettingsView: View {
             }
             
             HStack {
-                Button("Cancel") {
+                Button(NSLocalizedString("Cancel", value: "Cancel", comment: "")) {
                     showingBYOConfig = false
                     connectionResult = nil
                 }
                 
                 Spacer()
                 
-                Button("Test Connection") {
+                Button(NSLocalizedString("Test Connection", value: "Test Connection", comment: "")) {
                     testBYOConnection()
                 }
                 .disabled(byoAPIKey.isEmpty || testingConnection)
                 
-                Button("Save") {
+                Button(NSLocalizedString("Save", value: "Save", comment: "")) {
                     saveBYOProvider()
                 }
                 .buttonStyle(.borderedProminent)
@@ -419,7 +419,7 @@ struct AISettingsView: View {
                                 Text(event.provider)
                                     .font(.caption.weight(.medium))
                                 
-                                Text("\(event.task.displayName) • \(event.latencyMs)ms")
+                                Text(verbatim: "\(event.task.displayName) • \(event.latencyMs)ms")
                                     .font(.caption2)
                                     .foregroundStyle(.secondary)
                             }

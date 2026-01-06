@@ -44,7 +44,7 @@ struct AssignmentsDueTodayCompactList: View {
                                     .font(.subheadline)
                                     .lineLimit(1)
                                 if let cid = task.courseId {
-                                    Text("Course: \(cid.uuidString.prefix(6))")
+                                    Text(verbatim: "Course: \(cid.uuidString.prefix(6))")
                                         .font(.caption2)
                                         .foregroundColor(.secondary)
                                 } else if let due = task.due {

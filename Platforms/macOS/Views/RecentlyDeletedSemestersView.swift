@@ -24,7 +24,7 @@ struct RecentlyDeletedSemestersView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(semester.name)
                             .font(DesignSystem.Typography.subHeader)
-                        Text("\(semester.startDate.formatted(date: .abbreviated, time: .omitted)) – \(semester.endDate.formatted(date: .abbreviated, time: .omitted))")
+                        Text(verbatim: "\(semester.startDate.formatted(date: .abbreviated, time: .omitted)) – \(semester.endDate.formatted(date: .abbreviated, time: .omitted))")
                             .font(DesignSystem.Typography.caption)
                             .foregroundStyle(.secondary)
 
@@ -34,7 +34,7 @@ struct RecentlyDeletedSemestersView: View {
                             }
                             .buttonStyle(.borderedProminent)
 
-                            Button("Delete Immediately", role: .destructive) {
+                            Button(NSLocalizedString("Delete Immediately", value: "Delete Immediately", comment: ""), role: .destructive) {
                                 coursesStore.permanentlyDeleteSemester(semester.id)
                             }
                             .buttonStyle(.bordered)

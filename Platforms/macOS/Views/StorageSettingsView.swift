@@ -33,7 +33,7 @@ struct StorageSettingsView: View {
                         )
                     }
                 
-                Text("Status: \(statusLabel)")
+                Text(verbatim: "Status: \(statusLabel)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
 

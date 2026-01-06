@@ -68,7 +68,7 @@ struct AttachmentListView: View {
             Button {
                 attachments.append(Attachment(name: "New Attachment"))
             } label: {
-                Label("Add Attachment", systemImage: "plus")
+                Label(NSLocalizedString("ui.label.add.attachment", value: "Add Attachment", comment: "Add Attachment"), systemImage: "plus")
             }
         }
     }
@@ -143,7 +143,7 @@ struct RootsFanOutMenu: View {
 
 struct FlashcardDashboard: View {
     var body: some View {
-        Text("Flashcards")
+        Text(NSLocalizedString("ui.flashcards", value: "Flashcards", comment: "Flashcards"))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
@@ -236,10 +236,10 @@ struct AddEventPopup: View {
         VStack(spacing: 0) {
             // Title bar matching Apple Calendar style
             HStack {
-                Text("New Event")
+                Text(NSLocalizedString("ui.new.event", value: "New Event", comment: "New Event"))
                     .font(.headline)
                 Spacer()
-                Button("Cancel") {
+                Button(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel")) {
                     dismiss()
                 }
                 .buttonStyle(.plain)
@@ -293,7 +293,7 @@ struct AddEventPopup: View {
                             Image(systemName: "clock")
                                 .foregroundColor(.secondary)
                                 .frame(width: 20)
-                            Text("All-day")
+                            Text(NSLocalizedString("ui.allday", value: "All-day", comment: "All-day"))
                         }
                     }
                     .toggleStyle(.switch)
@@ -308,7 +308,7 @@ struct AddEventPopup: View {
                         Image(systemName: "calendar")
                             .foregroundColor(.secondary)
                             .frame(width: 20)
-                        Text("Starts")
+                        Text(NSLocalizedString("ui.starts", value: "Starts", comment: "Starts"))
                             .frame(width: 60, alignment: .leading)
                         DatePicker("", selection: $startDate, displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute])
                             .labelsHidden()
@@ -324,7 +324,7 @@ struct AddEventPopup: View {
                     HStack(spacing: 12) {
                         Spacer()
                             .frame(width: 20)
-                        Text("Ends")
+                        Text(NSLocalizedString("ui.ends", value: "Ends", comment: "Ends"))
                             .frame(width: 60, alignment: .leading)
                         DatePicker("", selection: $endDate, displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute])
                             .labelsHidden()
@@ -341,7 +341,7 @@ struct AddEventPopup: View {
                         Image(systemName: "repeat")
                             .foregroundColor(.secondary)
                             .frame(width: 20)
-                        Text("Repeat")
+                        Text(NSLocalizedString("ui.repeat", value: "Repeat", comment: "Repeat"))
                             .frame(width: 60, alignment: .leading)
                         Picker("", selection: $recurrence) {
                             ForEach(CalendarManager.RecurrenceOption.allCases, id: \.self) { opt in
@@ -398,7 +398,7 @@ struct AddEventPopup: View {
                         Image(systemName: "tag")
                             .foregroundColor(.secondary)
                             .frame(width: 20)
-                        Text("Category")
+                        Text(NSLocalizedString("ui.category", value: "Category", comment: "Category"))
                             .frame(width: 60, alignment: .leading)
                         Picker("", selection: Binding(get: { category }, set: { v in category = v; userSelectedCategory = true })) {
                             ForEach(EventCategory.allCases) { c in
@@ -426,12 +426,12 @@ struct AddEventPopup: View {
             // Bottom action buttons matching Apple style
             HStack(spacing: 12) {
                 Spacer()
-                Button("Cancel") {
+                Button(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel")) {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
                 
-                Button("Add") {
+                Button(NSLocalizedString("ui.button.add", value: "Add", comment: "Add")) {
                     createEvent()
                 }
                 .buttonStyle(.borderedProminent)
@@ -551,7 +551,7 @@ struct AddEventPopup: View {
 }
 
 // Backwards compatibility alias
-//struct AddEventPopup: View { var body: some View { Text("Add Event") } }
+//struct AddEventPopup: View { var body: some View { Text(NSLocalizedString("ui.add.event", value: "Add Event", comment: "Add Event")) } }
 
 // Grades + analytics shells
 struct GPABreakdownCard: View {
@@ -563,12 +563,12 @@ struct GPABreakdownCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("GPA Overview")
+            Text(NSLocalizedString("ui.gpa.overview", value: "GPA Overview", comment: "GPA Overview"))
                 .font(.headline)
-            Text("Current: \(currentGPA, specifier: "%.2f")")
-            Text("Year: \(academicYearGPA, specifier: "%.2f")")
-            Text("Cumulative: \(cumulativeGPA, specifier: "%.2f")")
-            Text("Courses: \(courseCount)")
+            Text(String(format: NSLocalizedString("grades.summary.current", value: "Current: %.2f", comment: "Current GPA"), currentGPA))
+            Text(String(format: NSLocalizedString("grades.summary.year", value: "Year: %.2f", comment: "Academic year GPA"), academicYearGPA))
+            Text(String(format: NSLocalizedString("grades.summary.cumulative", value: "Cumulative: %.2f", comment: "Cumulative GPA"), cumulativeGPA))
+            Text(verbatim: "Courses: \(courseCount)")
             if isLoading {
                 ProgressView().progressViewStyle(.circular)
             }
@@ -587,15 +587,15 @@ struct AddGradeSheet: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            Text("Add Grade")
+            Text(NSLocalizedString("ui.add.grade", value: "Add Grade", comment: "Add Grade"))
                 .font(.headline)
             if let first = assignments.first {
-                Button("Save Sample Grade") {
+                Button(NSLocalizedString("ui.button.save.sample.grade", value: "Save Sample Grade", comment: "Save Sample Grade")) {
                     onSave(first)
                 }
                 .buttonStyle(.borderedProminent)
             } else {
-                Text("No assignments available yet.")
+                Text(NSLocalizedString("ui.no.assignments.available.yet", value: "No assignments available yet.", comment: "No assignments available yet."))
                     .foregroundStyle(.secondary)
             }
         }
@@ -614,8 +614,8 @@ struct CategoryPieChart: View {
 
     var body: some View {
         VStack {
-            Text("Category Chart")
-            Text("Range: \(label(for: initialRange))")
+            Text(NSLocalizedString("ui.category.chart", value: "Category Chart", comment: "Category Chart"))
+            Text(verbatim: "Range: \(label(for: initialRange))")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
@@ -635,8 +635,8 @@ struct StudyHistoryBarChart: View {
 
     var body: some View {
         VStack {
-            Text("History Chart")
-            Text("Range: \(label(for: initialRange))")
+            Text(NSLocalizedString("ui.history.chart", value: "History Chart", comment: "History Chart"))
+            Text(verbatim: "Range: \(label(for: initialRange))")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }

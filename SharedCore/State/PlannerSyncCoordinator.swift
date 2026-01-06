@@ -90,6 +90,7 @@ final class PlannerSyncCoordinator: ObservableObject {
         let energy = SchedulerPreferencesStore.shared.energyProfileForPlanning(settings: settings)
         let scheduledResult = PlannerEngine.scheduleSessionsWithStrategy(sessions, settings: StudyPlanSettings(), energyProfile: energy)
         plannerStore.persist(scheduled: scheduledResult.scheduled, overflow: scheduledResult.overflow)
+        syncPlannerCalendar(for: scheduledResult.scheduled)
     }
 
     private func filterPlannerTasks(_ tasks: [PlannerTaskDTO]) -> [PlannerTaskDTO] {
@@ -134,6 +135,12 @@ final class PlannerSyncCoordinator: ObservableObject {
         Task { await CalendarManager.shared.syncPlannerSessionsToCalendar(in: start...end) }
     }
 
+    private func syncPlannerCalendar(for scheduled: [ScheduledSession]) {
+        guard let start = scheduled.map({ $0.start }).min(),
+              let end = scheduled.map({ $0.end }).max() else { return }
+        Task { await CalendarManager.shared.syncPlannerSessionsToCalendar(in: start...end) }
+    }
+
     private static func urgency(from value: Double) -> AssignmentUrgency {
         switch value {
         case ..<0.3: return .low
@@ -151,6 +158,7 @@ final class PlannerSyncCoordinator: ObservableObject {
         case .reading: return .reading
         case .review: return .review
         case .study: return .review
+        case .practiceTest: return .practiceTest
         }
     }
 }

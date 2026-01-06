@@ -40,8 +40,57 @@ struct TimerPageView: View {
     @State private var cachedFilteredActivities: [LocalTimerActivity] = []
     @State private var searchText: String = ""
     @State private var selectedCollection: String = "All"
-    
+
     @State private var activityNotes: [UUID: String] = [:]
+
+    @State private var taskSearchText: String = ""
+    @State private var taskDateFilter: TaskDateFilter = .today
+    @State private var taskStatusFilter: TaskStatusFilter = .due
+    @State private var studyRange: StudyTimeRange = .thisWeek
+    @State private var customRangeStart: Date = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
+    @State private var customRangeEnd: Date = Date()
+
+    private enum TaskDateFilter: String, CaseIterable, Identifiable {
+        case today, tomorrow, month, all
+
+        var id: String { rawValue }
+        var label: String {
+            switch self {
+            case .today: return "Today"
+            case .tomorrow: return "Tomorrow"
+            case .month: return "Month"
+            case .all: return "All"
+            }
+        }
+    }
+
+    private enum TaskStatusFilter: String, CaseIterable, Identifiable {
+        case due, inProgress, completed
+
+        var id: String { rawValue }
+        var label: String {
+            switch self {
+            case .due: return "Due"
+            case .inProgress: return "In Progress"
+            case .completed: return "Completed"
+            }
+        }
+    }
+
+    enum StudyTimeRange: String, CaseIterable, Identifiable {
+        case today, thisWeek, thisMonth, allTime, custom
+
+        var id: String { rawValue }
+        var label: String {
+            switch self {
+            case .today: return "Today"
+            case .thisWeek: return "This Week"
+            case .thisMonth: return "This Month"
+            case .allTime: return "All Time"
+            case .custom: return "Date Range"
+            }
+        }
+    }
     
     private var pinnedActivities: [LocalTimerActivity] {
         cachedPinnedActivities
@@ -56,7 +105,9 @@ struct TimerPageView: View {
         
         let query = searchText.lowercased()
         cachedFilteredActivities = activities.filter { activity in
+            // Only show planner-created activities (those with assignmentTitle)
             (!activity.isPinned) &&
+            (activity.assignmentTitle != nil) &&
             (selectedCollection == "All" || activity.category.lowercased().contains(selectedCollection.lowercased())) &&
             (query.isEmpty || activity.name.lowercased().contains(query) || activity.category.lowercased().contains(query))
         }
@@ -157,17 +208,34 @@ struct TimerPageView: View {
     private var activitiesColumn: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.medium) {
             HStack {
-                Text(NSLocalizedString("timer.label.activities", comment: "Activities"))
+                Text(NSLocalizedString("timer.label.activities", value: "Activities", comment: "Activities"))
                     .font(DesignSystem.Typography.subHeader)
                 Spacer()
+                Menu {
+                    ForEach(TaskDateFilter.allCases) { filter in
+                        Button(filter.label) { taskDateFilter = filter }
+                    }
+                } label: {
+                    Label(taskDateFilter.label, systemImage: "calendar")
+                }
+                .menuStyle(.borderlessButton)
+                .fixedSize()
+
+                Menu {
+                    ForEach(TaskStatusFilter.allCases) { filter in
+                        Button(filter.label) { taskStatusFilter = filter }
+                    }
+                } label: {
+                    Label(taskStatusFilter.label, systemImage: "line.3.horizontal.decrease.circle")
+                }
+                .menuStyle(.borderlessButton)
+                .fixedSize()
             }
-            
-            collectionsFilter
-            
-            TextField(NSLocalizedString("timer.label.search", comment: "Search"), text: $searchText)
+
+            TextField(NSLocalizedString("timer.label.search", value: "Search", comment: "Search"), text: $taskSearchText)
                 .textFieldStyle(.roundedBorder)
-            
-            activityList
+
+            taskList
         }
         .padding(cardPadding)
         .glassCard(cornerRadius: cardCorner)
@@ -179,57 +247,34 @@ struct TimerPageView: View {
     
     private var studySummaryCard: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.medium) {
-            Text(NSLocalizedString("timer.stats.study_summary", comment: "Study summary"))
-                .font(DesignSystem.Typography.subHeader)
-            
-            // Check if there's data to display
-            let todayTasks = tasksDueToday()
-            let weekTasks = tasksDueThisWeek()
-            let hasData = !todayTasks.isEmpty || !weekTasks.isEmpty
-            
-            if !hasData {
-                // No data state
-                VStack(spacing: 8) {
-                    Image(systemName: "chart.bar")
-                        .font(.largeTitle)
-                        .foregroundStyle(.tertiary)
-                    Text(NSLocalizedString("timer.stats.no_data", comment: "No data available"))
-                        .font(DesignSystem.Typography.body)
-                        .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            } else {
-                // Data available
-                VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.medium) {
-                    // Tasks Due Today Section
-                    if !todayTasks.isEmpty {
-                        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                            Text(NSLocalizedString("timer.tasks.due_today", comment: "Tasks Due Today"))
-                                .font(DesignSystem.Typography.body.weight(.semibold))
-                            
-                            ForEach(todayTasks, id: \.id) { task in
-                                taskCheckboxRow(task)
-                            }
-                        }
-                    }
-                    
-                    if !todayTasks.isEmpty && !weekTasks.isEmpty {
-                        Divider()
-                    }
-                    
-                    // Tasks Due This Week Section
-                    if !weekTasks.isEmpty {
-                        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                            Text(NSLocalizedString("timer.tasks.due_this_week", comment: "Tasks Due This Week"))
-                                .font(DesignSystem.Typography.body.weight(.semibold))
-                            
-                            ForEach(weekTasks, id: \.id) { task in
-                                taskCheckboxRow(task)
-                            }
-                        }
+            HStack {
+            Text(NSLocalizedString("timer.stats.study_summary", value: "Study summary", comment: "Study summary"))
+                    .font(DesignSystem.Typography.subHeader)
+                Spacer()
+                Picker("Range", selection: $studyRange) {
+                    ForEach(StudyTimeRange.allCases) { range in
+                        Text(range.label).tag(range)
                     }
                 }
+                .pickerStyle(.segmented)
+                .frame(maxWidth: 420)
             }
+
+            if studyRange == .custom {
+                HStack(spacing: 12) {
+                    DatePicker("From", selection: $customRangeStart, displayedComponents: .date)
+                    DatePicker("To", selection: $customRangeEnd, displayedComponents: .date)
+                }
+                .font(.caption)
+            }
+
+            StudyTimeGraphView(
+                sessions: sessions,
+                range: studyRange,
+                customStart: customRangeStart,
+                customEnd: customRangeEnd
+            )
+            .frame(maxWidth: .infinity, minHeight: 260)
         }
         .frame(maxWidth: .infinity, minHeight: 400, alignment: .topLeading)
         .padding(cardPadding)
@@ -265,7 +310,7 @@ struct TimerPageView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 8) {
                 if !cachedPinnedActivities.isEmpty {
-                    Text(NSLocalizedString("timer.label.pinned", comment: "Pinned"))
+                    Text(NSLocalizedString("timer.label.pinned", value: "Pinned", comment: "Pinned"))
                         .font(DesignSystem.Typography.caption)
                         .foregroundColor(.secondary)
                     
@@ -274,7 +319,7 @@ struct TimerPageView: View {
                     }
                 }
                 
-                Text(NSLocalizedString("timer.label.all_activities", comment: "All activities"))
+                Text(NSLocalizedString("timer.label.all_activities", value: "All activities", comment: "All activities"))
                     .font(DesignSystem.Typography.caption)
                     .foregroundColor(.secondary)
                 
@@ -283,6 +328,109 @@ struct TimerPageView: View {
                 }
             }
             .padding(.horizontal, 4)
+        }
+    }
+
+    private var taskList: some View {
+        let tasks = filteredTasks()
+        return ScrollView {
+            VStack(alignment: .leading, spacing: 8) {
+                if tasks.isEmpty {
+                    VStack(spacing: 8) {
+                        Image(systemName: "checklist")
+                            .font(.title2)
+                            .foregroundStyle(.tertiary)
+                        Text(NSLocalizedString("timer.tasks.empty.filtered", value: "No tasks match this filter.", comment: "Empty state for filtered tasks list"))
+                            .font(DesignSystem.Typography.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 160)
+                } else {
+                    ForEach(tasks, id: \.id) { task in
+                        taskRow(task)
+                    }
+                }
+            }
+            .padding(.horizontal, 4)
+        }
+    }
+
+    private func taskRow(_ task: AppTask) -> some View {
+        Button(action: { toggleTaskCompletion(task) }) {
+            HStack(alignment: .top, spacing: 8) {
+                Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(task.isCompleted ? .green : .secondary)
+                    .font(.body)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(task.title)
+                        .font(DesignSystem.Typography.body)
+                        .foregroundColor(task.isCompleted ? .secondary : .primary)
+                        .strikethrough(task.isCompleted)
+                        .lineLimit(2)
+
+                    if let due = task.due {
+                        Text(due, style: .date)
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    } else {
+                        Text(NSLocalizedString("timer.tasks.no_due_date", value: "No due date", comment: "Task row placeholder for missing due date"))
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                Spacer()
+            }
+            .padding(8)
+            .background(task.isCompleted ? .secondaryBackground.opacity(0.3) : .secondaryBackground)
+            .cornerRadius(8)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func filteredTasks() -> [AppTask] {
+        let calendar = Calendar.current
+        let now = Date()
+        let todayStart = calendar.startOfDay(for: now)
+        let tomorrowStart = calendar.date(byAdding: .day, value: 1, to: todayStart) ?? now
+        let dayAfterStart = calendar.date(byAdding: .day, value: 2, to: todayStart) ?? now
+
+        return assignmentsStore.tasks.filter { task in
+            let matchesSearch: Bool = {
+                let query = taskSearchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                guard !query.isEmpty else { return true }
+                return task.title.lowercased().contains(query)
+            }()
+
+            guard matchesSearch else { return false }
+
+            let matchesDate: Bool = {
+                guard let due = task.due else { return taskDateFilter == .all }
+                switch taskDateFilter {
+                case .today:
+                    return due >= todayStart && due < tomorrowStart
+                case .tomorrow:
+                    return due >= tomorrowStart && due < dayAfterStart
+                case .month:
+                    return calendar.isDate(due, equalTo: now, toGranularity: .month)
+                case .all:
+                    return true
+                }
+            }()
+
+            guard matchesDate else { return false }
+
+            switch taskStatusFilter {
+            case .completed:
+                return task.isCompleted
+            case .due:
+                return !task.isCompleted && task.due != nil
+            case .inProgress:
+                return !task.isCompleted && (task.due == nil || (task.due ?? now) > now)
+            }
+        }
+        .sorted { (lhs, rhs) in
+            (lhs.due ?? Date.distantFuture) < (rhs.due ?? Date.distantFuture)
         }
     }
     
@@ -524,7 +672,7 @@ struct TimerPageView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "exclamationmark.circle")
                             .font(.caption)
-                        Text(NSLocalizedString("timer.label.no_activity_selected", comment: "No activity selected"))
+                        Text(NSLocalizedString("timer.label.no_activity_selected", value: "No activity selected", comment: "No activity selected"))
                             .font(DesignSystem.Typography.caption)
                     }
                     .foregroundStyle(.secondary)
@@ -649,9 +797,10 @@ struct TimerPageView: View {
                 // Triple dial analog display
                 TripleDialTimer(
                     totalSeconds: clockTimeForAnalog,
-                    accentColor: .accentColor
+                    accentColor: .accentColor,
+                    dialSize: 118
                 )
-                .frame(height: 200)
+                .frame(height: 260)
             } else {
                 // Digital display
                 if mode == .pomodoro {
@@ -672,7 +821,7 @@ struct TimerPageView: View {
                         .monospacedDigit()
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 }
-                .frame(height: 200)
+                .frame(height: 220)
             }
         }
         .padding(.vertical, 12)
@@ -828,7 +977,7 @@ struct TimerPageView: View {
     private var bottomSummary: some View {
         HStack {
             if let activity = currentActivity {
-                Text("Selected: \(activity.name) • \(formattedDuration(activity.todayTrackedSeconds)) today")
+                Text(String(format: NSLocalizedString("timer.selected_activity.today", value: "Selected: %@ • %@ today", comment: "Selected activity summary with today's time"), activity.name, formattedDuration(activity.todayTrackedSeconds)))
                     .font(DesignSystem.Typography.caption)
                     .foregroundColor(.secondary)
             }
@@ -908,6 +1057,133 @@ struct TimerPageView: View {
     }
 }
 
+private struct StudyTimeGraphView: View {
+    let sessions: [LocalTimerSession]
+    let range: TimerPageView.StudyTimeRange
+    let customStart: Date
+    let customEnd: Date
+
+    private struct StudyTimePoint: Identifiable {
+        let id = UUID()
+        let label: String
+        let value: Double
+    }
+
+    var body: some View {
+        let points = buildPoints()
+        let maxValue = points.map(\.value).max() ?? 0
+
+        if points.isEmpty || maxValue == 0 {
+            VStack(spacing: 8) {
+                Image(systemName: "chart.bar")
+                    .font(.largeTitle)
+                    .foregroundStyle(.tertiary)
+                Text(NSLocalizedString("timer.study_time.empty", value: "No study time yet", comment: "Empty state for study time graph"))
+                    .font(DesignSystem.Typography.body)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            GeometryReader { proxy in
+                let height = proxy.size.height - 28
+                HStack(alignment: .bottom, spacing: 6) {
+                    ForEach(points) { point in
+                        VStack(spacing: 6) {
+                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                                .fill(Color.accentColor.opacity(0.7))
+                                .frame(height: max(2, (point.value / maxValue) * height))
+                            Text(point.label)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            }
+        }
+    }
+
+    private func buildPoints() -> [StudyTimePoint] {
+        let calendar = Calendar.current
+        let now = Date()
+
+        switch range {
+        case .today:
+            let total = totalDuration(in: calendar.startOfDay(for: now)...endOfDay(for: now, calendar: calendar))
+            return [StudyTimePoint(label: "Today", value: total)]
+        case .thisWeek:
+            let start = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)) ?? calendar.startOfDay(for: now)
+            return (0..<7).compactMap { offset in
+                guard let day = calendar.date(byAdding: .day, value: offset, to: start) else { return nil }
+                let label = calendar.shortWeekdaySymbols[(calendar.component(.weekday, from: day) - 1 + 7) % 7]
+                let value = totalDuration(in: calendar.startOfDay(for: day)...endOfDay(for: day, calendar: calendar))
+                return StudyTimePoint(label: label, value: value)
+            }
+        case .thisMonth:
+            guard let monthRange = calendar.range(of: .day, in: .month, for: now),
+                  let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: now)) else { return [] }
+            return monthRange.compactMap { day in
+                guard let date = calendar.date(byAdding: .day, value: day - 1, to: monthStart) else { return nil }
+                let value = totalDuration(in: calendar.startOfDay(for: date)...endOfDay(for: date, calendar: calendar))
+                return StudyTimePoint(label: "\(day)", value: value)
+            }
+        case .allTime:
+            let start = calendar.date(byAdding: .month, value: -11, to: calendar.startOfDay(for: now)) ?? calendar.startOfDay(for: now)
+            return (0..<12).compactMap { offset in
+                guard let month = calendar.date(byAdding: .month, value: offset, to: start) else { return nil }
+                let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: month)) ?? month
+                let monthEnd = calendar.date(byAdding: .month, value: 1, to: monthStart) ?? monthStart
+                let label = DateFormatter.cachedShortMonth.string(from: monthStart)
+                let value = totalDuration(in: monthStart...monthEnd)
+                return StudyTimePoint(label: label, value: value)
+            }
+        case .custom:
+            let start = calendar.startOfDay(for: customStart)
+            let end = endOfDay(for: customEnd, calendar: calendar)
+            let dayCount = calendar.dateComponents([.day], from: start, to: end).day ?? 0
+            if dayCount > 14 {
+                let weeks = max(1, dayCount / 7)
+                return (0..<weeks).compactMap { index in
+                    guard let weekStart = calendar.date(byAdding: .day, value: index * 7, to: start) else { return nil }
+                    let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStart) ?? weekStart
+                    let label = "W\(index + 1)"
+                    let value = totalDuration(in: weekStart...weekEnd)
+                    return StudyTimePoint(label: label, value: value)
+                }
+            }
+            return (0...dayCount).compactMap { offset in
+                guard let day = calendar.date(byAdding: .day, value: offset, to: start) else { return nil }
+                let label = "\(calendar.component(.day, from: day))"
+                let value = totalDuration(in: calendar.startOfDay(for: day)...endOfDay(for: day, calendar: calendar))
+                return StudyTimePoint(label: label, value: value)
+            }
+        }
+    }
+
+    private func totalDuration(in range: ClosedRange<Date>) -> Double {
+        sessions.reduce(0) { partial, session in
+            let end = session.endDate ?? session.startDate.addingTimeInterval(session.duration)
+            let overlaps = session.startDate <= range.upperBound && end >= range.lowerBound
+            return overlaps ? partial + session.workSeconds : partial
+        }
+    }
+
+    private func endOfDay(for date: Date, calendar: Calendar) -> Date {
+        let start = calendar.startOfDay(for: date)
+        return calendar.date(byAdding: .day, value: 1, to: start) ?? date
+    }
+}
+
+private extension DateFormatter {
+    static let cachedShortMonth: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM"
+        return formatter
+    }()
+}
+
 private struct FocusWindowView: View {
     @Binding var mode: LocalTimerMode
     @Binding var remainingSeconds: TimeInterval
@@ -955,9 +1231,10 @@ private struct FocusWindowView: View {
                     if settings.isTimerAnalog {
                         TripleDialTimer(
                             totalSeconds: clockTime,
-                            accentColor: accentColor
+                            accentColor: accentColor,
+                            dialSize: 118
                         )
-                        .frame(height: 200)
+                        .frame(height: 240)
                     } else {
                         GeometryReader { proxy in
                             let base = min(proxy.size.width, proxy.size.height)
@@ -982,7 +1259,7 @@ private struct FocusWindowView: View {
                         .accessibilityElement(children: .ignore)
                         .accessibilityLabelWithTooltip("\(completedPomodoroSessions) of \(pomodoroSessions) completed")
                     } else {
-                        Text("\(mode.label) running")
+                        Text(verbatim: "\(mode.label) running")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -1030,7 +1307,7 @@ private struct FocusWindowView: View {
 
     private var activityCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(NSLocalizedString("timer.label.current_activity", comment: "Current activity"))
+            Text(NSLocalizedString("timer.label.current_activity", value: "Current activity", comment: "Current activity"))
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
 
@@ -1076,7 +1353,7 @@ private struct FocusWindowView: View {
                     }
                 }
             } else {
-                Text(NSLocalizedString("timer.label.no_activity_short", comment: "No activity"))
+                Text(NSLocalizedString("timer.label.no_activity_short", value: "No activity", comment: "No activity"))
                     .font(.body)
                     .foregroundStyle(.secondary)
             }

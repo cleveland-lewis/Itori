@@ -30,7 +30,7 @@ struct ChartViewVerticalStacked: View {
                 if let hovered = hoveredPoint {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(hovered.category).font(DesignSystem.Typography.caption).bold()
-                        Text("\(Int(hovered.minutes)) minutes · \(hovered.rangeLabel)").font(.caption2)
+                        Text(verbatim: "\(Int(hovered.minutes)) minutes · \(hovered.rangeLabel)").font(.caption2)
                     }
                     .padding(DesignSystem.Layout.spacing.small)
                     .background(Color(.windowBackgroundColor).opacity(0.95))

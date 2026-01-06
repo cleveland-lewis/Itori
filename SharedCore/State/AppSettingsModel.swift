@@ -278,6 +278,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         case dailyOverviewIncludeYesterdayCompletedStorage
         case dailyOverviewIncludeYesterdayStudyTimeStorage
         case dailyOverviewIncludeMotivationStorage
+        case practiceTestTimeMultiplierStorage
         case showOnlySchoolCalendarStorage
         case lockCalendarPickerToSchoolStorage
         case selectedSchoolCalendarID
@@ -495,6 +496,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage("roots.settings.dailyOverviewIncludeYesterdayCompleted") var dailyOverviewIncludeYesterdayCompletedStorage: Bool = true
     @AppStorage("roots.settings.dailyOverviewIncludeYesterdayStudyTime") var dailyOverviewIncludeYesterdayStudyTimeStorage: Bool = true
     @AppStorage("roots.settings.dailyOverviewIncludeMotivation") var dailyOverviewIncludeMotivationStorage: Bool = true
+    @AppStorage("roots.settings.practiceTestTimeMultiplier") var practiceTestTimeMultiplierStorage: Double = 1.0
 
     // Calendar UI filter setting
     @AppStorage("roots.settings.showOnlySchoolCalendar") var showOnlySchoolCalendarStorage: Bool = false
@@ -657,6 +659,11 @@ final class AppSettingsModel: ObservableObject, Codable {
                 starredTabsRaw = tabs
             }
         }
+    }
+
+    var practiceTestTimeMultiplier: Double {
+        get { practiceTestTimeMultiplierStorage }
+        set { practiceTestTimeMultiplierStorage = newValue }
     }
 
     /// Derived convenience: visible tabs minus flashcards if disabled
@@ -1545,6 +1552,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(dailyOverviewIncludeYesterdayCompletedStorage, forKey: .dailyOverviewIncludeYesterdayCompletedStorage)
         try container.encode(dailyOverviewIncludeYesterdayStudyTimeStorage, forKey: .dailyOverviewIncludeYesterdayStudyTimeStorage)
         try container.encode(dailyOverviewIncludeMotivationStorage, forKey: .dailyOverviewIncludeMotivationStorage)
+        try container.encode(practiceTestTimeMultiplierStorage, forKey: .practiceTestTimeMultiplierStorage)
         try container.encode(showOnlySchoolCalendarStorage, forKey: .showOnlySchoolCalendarStorage)
         try container.encode(lockCalendarPickerToSchoolStorage, forKey: .lockCalendarPickerToSchoolStorage)
         try container.encodeIfPresent(selectedSchoolCalendarID, forKey: .selectedSchoolCalendarID)
@@ -1632,6 +1640,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         dailyOverviewIncludeYesterdayCompletedStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewIncludeYesterdayCompletedStorage) ?? true
         dailyOverviewIncludeYesterdayStudyTimeStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewIncludeYesterdayStudyTimeStorage) ?? true
         dailyOverviewIncludeMotivationStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewIncludeMotivationStorage) ?? true
+        practiceTestTimeMultiplierStorage = try container.decodeIfPresent(Double.self, forKey: .practiceTestTimeMultiplierStorage) ?? 1.0
         showOnlySchoolCalendarStorage = try container.decodeIfPresent(Bool.self, forKey: .showOnlySchoolCalendarStorage) ?? false
         lockCalendarPickerToSchoolStorage = try container.decodeIfPresent(Bool.self, forKey: .lockCalendarPickerToSchoolStorage) ?? false
         selectedSchoolCalendarID = try container.decodeIfPresent(String.self, forKey: .selectedSchoolCalendarID) ?? ""
@@ -1770,4 +1779,3 @@ final class AppSettingsModel: ObservableObject, Codable {
         save()
     }
 }
-

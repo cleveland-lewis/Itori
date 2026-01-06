@@ -69,8 +69,7 @@ private enum IOSNavigationChromeData {
         .assignments,
         .courses,
         .calendar,
-        .timer,
-        .practice
+        .timer
     ]
 }
 #endif

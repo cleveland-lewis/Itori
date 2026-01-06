@@ -120,7 +120,7 @@ struct DeveloperSettingsView: View {
 
                 Section {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Recent Events: \(diagnostics.recentEvents.count)")
+                        Text(verbatim: "Recent Events: \(diagnostics.recentEvents.count)")
                             .font(.headline)
                         
                         Button(NSLocalizedString("settings.button.clear.event.buffer", value: "Clear Event Buffer", comment: "Clear Event Buffer")) {
@@ -138,7 +138,7 @@ struct DeveloperSettingsView: View {
                                                 .foregroundColor(colorForSeverity(event.severity))
                                                 .frame(width: 50, alignment: .leading)
                                             
-                                            Text("[\(event.subsystem.rawValue)]")
+                                            Text(verbatim: "[\(event.subsystem.rawValue)]")
                                                 .font(.caption2)
                                                 .monospaced()
                                                 .foregroundColor(.secondary)

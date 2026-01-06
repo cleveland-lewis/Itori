@@ -7,7 +7,7 @@ import SwiftUI
 // These types are available on all platforms (macOS, iOS, watchOS)
 
 public enum AssignmentCategory: String, CaseIterable, Codable, Identifiable {
-    case reading, exam, homework, quiz, review, project
+    case reading, exam, homework, quiz, review, project, practiceTest
     
     public var id: String { rawValue }
     
@@ -19,6 +19,7 @@ public enum AssignmentCategory: String, CaseIterable, Codable, Identifiable {
         case .homework: return "Homework"
         case .reading: return "Reading"
         case .review: return "Review"
+        case .practiceTest: return "Practice Test"
         }
     }
 }
@@ -88,6 +89,7 @@ public struct PlanStepStub: Codable, Hashable, Identifiable {
 public struct Assignment: Identifiable, Codable, Hashable {
     public let id: UUID
     public var courseId: UUID?
+    public var moduleIds: [UUID]
     public var title: String
     public var dueDate: Date
     public var dueTimeMinutes: Int?
@@ -107,6 +109,7 @@ public struct Assignment: Identifiable, Codable, Hashable {
     public init(
         id: UUID = UUID(),
         courseId: UUID? = nil,
+        moduleIds: [UUID] = [],
         title: String = "",
         dueDate: Date = Date(),
         dueTimeMinutes: Int? = nil,
@@ -123,6 +126,7 @@ public struct Assignment: Identifiable, Codable, Hashable {
     ) {
         self.id = id
         self.courseId = courseId
+        self.moduleIds = moduleIds
         self.title = title
         self.dueDate = Calendar.current.startOfDay(for: dueDate)
         self.dueTimeMinutes = dueTimeMinutes
@@ -141,6 +145,7 @@ public struct Assignment: Identifiable, Codable, Hashable {
     private enum CodingKeys: String, CodingKey {
         case id
         case courseId
+        case moduleIds
         case title
         case dueDate
         case dueTimeMinutes
@@ -160,6 +165,7 @@ public struct Assignment: Identifiable, Codable, Hashable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
         courseId = try container.decodeIfPresent(UUID.self, forKey: .courseId)
+        moduleIds = try container.decodeIfPresent([UUID].self, forKey: .moduleIds) ?? []
         title = try container.decode(String.self, forKey: .title)
         let decodedDue = try container.decode(Date.self, forKey: .dueDate)
         let decodedDueTimeMinutes = try container.decodeIfPresent(Int.self, forKey: .dueTimeMinutes)
@@ -187,6 +193,7 @@ public struct Assignment: Identifiable, Codable, Hashable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
         try container.encodeIfPresent(courseId, forKey: .courseId)
+        try container.encode(moduleIds, forKey: .moduleIds)
         try container.encode(title, forKey: .title)
         try container.encode(dueDate, forKey: .dueDate)
         try container.encodeIfPresent(dueTimeMinutes, forKey: .dueTimeMinutes)
@@ -249,6 +256,7 @@ extension Assignment {
             case .homework: return 0.6
             case .reading: return 0.5
             case .review: return 0.4
+            case .practiceTest: return 0.7
             }
         }()
         

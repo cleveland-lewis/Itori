@@ -6,13 +6,13 @@ import AppKit
 struct SettingsPane_Accounts: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("Account management will arrive in a future update.")
+            Text(NSLocalizedString("settings.account.management.will.arrive.in.a.future.update", value: "Account management will arrive in a future update.", comment: "Account management will arrive in a future update."))
                 .rootsSectionHeader()
 
-            Text("Keep your profile, backups, and school-wide settings in their respective sections. Itori will link here when account syncing is available.")
+            Text(NSLocalizedString("settings.keep.your.profile.backups.and", value: "Keep your profile, backups, and school-wide settings in their respective sections. Itori will link here when account syncing is available.", comment: "Keep your profile, backups, and school-wide settin..."))
                 .rootsBodySecondary()
 
-            Button("Open System Settings…", action: openSystemSettings)
+            Button(NSLocalizedString("Open System Settings…", value: "Open System Settings…", comment: ""), action: openSystemSettings)
                 .controlSize(.regular)
         }
         .padding(.top, 4)

@@ -15,59 +15,10 @@ struct IOSInterfaceSettingsView: View {
     
     var body: some View {
         List {
-            // Accessibility Section
-            Section {
-                Toggle(isOn: $preferences.reduceMotion) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Reduce Motion")
-                        Text("Minimize animations throughout the app")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                .onChange(of: preferences.reduceMotion) { _, newValue in
-                    settings.reduceMotionStorage = newValue
-                    settings.save()
-                }
-                .prefsListRowInsets()
-                
-                Toggle(isOn: $preferences.highContrast) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Increase Contrast")
-                        Text("Strengthen borders and text contrast")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                .onChange(of: preferences.highContrast) { _, newValue in
-                    settings.increaseContrastStorage = newValue
-                    settings.save()
-                }
-                .prefsListRowInsets()
-                
-                Toggle(isOn: $preferences.reduceTransparency) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Reduce Transparency")
-                        Text("Replace translucent backgrounds with opaque colors")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                .onChange(of: preferences.reduceTransparency) { _, newValue in
-                    settings.reduceTransparencyStorage = newValue
-                    settings.save()
-                }
-                .prefsListRowInsets()
-            } header: {
-                Text("Accessibility")
-            } footer: {
-                Text("These settings help improve readability and reduce visual complexity.")
-            }
-            
             // Appearance Section
             Section {
                 // Appearance Style Picker
-                Picker("Appearance", selection: $settings.interfaceStyle) {
+                Picker(NSLocalizedString("settings.interface.appearance.picker", value: "Appearance", comment: "Appearance picker"), selection: $settings.interfaceStyle) {
                     ForEach(InterfaceStyle.allCases.filter { $0 != .auto }) { style in
                         Text(style.label).tag(style)
                     }
@@ -77,34 +28,8 @@ struct IOSInterfaceSettingsView: View {
                 }
                 .prefsListRowInsets()
                 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Material Intensity")
-                    
-                    HStack {
-                        Text("Low")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        
-                        Slider(value: $glassIntensity, in: 0...1)
-                            .onChange(of: glassIntensity) { _, newValue in
-                                preferences.glassIntensity = newValue
-                                settings.glassIntensityStorage = newValue
-                                settings.save()
-                            }
-                        
-                        Text("High")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    Text("Adjust the visual intensity of glass and material effects")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                .padding(.vertical, 4)
-                .prefsListRowInsets()
             } header: {
-                Text("Appearance")
+                Text(NSLocalizedString("settings.interface.appearance.header", value: "Appearance", comment: "Appearance header"))
             }
             
             // Tab Bar Pages Section
@@ -130,7 +55,7 @@ struct IOSInterfaceSettingsView: View {
                             Text(tab.title)
                             if isRequired {
                                 Spacer()
-                                Text("Required")
+                                Text(NSLocalizedString("settings.interface.tabs.required", value: "Required", comment: "Required tab label"))
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -145,12 +70,12 @@ struct IOSInterfaceSettingsView: View {
                     ))
                 }
             } header: {
-                Text("Tab Bar Pages")
+                Text(NSLocalizedString("settings.interface.tabs.header", value: "Tab Bar Pages", comment: "Tab bar pages header"))
             } footer: {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Select up to 5 pages to show in the tab bar. All pages remain accessible via the menu.")
+                    Text(NSLocalizedString("settings.interface.tabs.footer", value: "Select up to 5 pages to show in the tab bar. All pages remain accessible via the menu.", comment: "Tab bar pages footer"))
                     if settings.starredTabs.count >= 5 {
-                        Text("Maximum of 5 tabs reached. Disable a tab to enable another.")
+                        Text(NSLocalizedString("settings.interface.tabs.max_reached", value: "Maximum of 5 tabs reached. Disable a tab to enable another.", comment: "Tab bar max reached"))
                             .foregroundColor(.orange)
                     }
                 }
@@ -161,8 +86,8 @@ struct IOSInterfaceSettingsView: View {
                 if isPad {
                     Toggle(isOn: $settings.showSidebarByDefaultStorage) {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Show Sidebar")
-                            Text("Always display the navigation sidebar on iPad")
+                            Text(NSLocalizedString("settings.interface.layout.sidebar", value: "Show Sidebar", comment: "Show sidebar"))
+                            Text(NSLocalizedString("settings.interface.layout.sidebar.detail", value: "Always display the navigation sidebar on iPad", comment: "Show sidebar detail"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -180,8 +105,8 @@ struct IOSInterfaceSettingsView: View {
                 
                 Toggle(isOn: $settings.compactModeStorage) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Compact Mode")
-                        Text("Use denser layout with less spacing")
+                        Text(NSLocalizedString("settings.interface.layout.compact", value: "Compact Mode", comment: "Compact mode"))
+                        Text(NSLocalizedString("settings.interface.layout.compact.detail", value: "Use denser layout with less spacing", comment: "Compact mode detail"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -198,8 +123,8 @@ struct IOSInterfaceSettingsView: View {
                 
                 Toggle(isOn: $settings.largeTapTargetsStorage) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Large Tap Targets")
-                        Text("Increase button and control sizes for easier tapping")
+                        Text(NSLocalizedString("settings.interface.layout.large_taps", value: "Large Tap Targets", comment: "Large tap targets"))
+                        Text(NSLocalizedString("settings.interface.layout.large_taps.detail", value: "Increase button and control sizes for easier tapping", comment: "Large tap targets detail"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -214,17 +139,17 @@ struct IOSInterfaceSettingsView: View {
                     trailing: 16
                 ))
             } header: {
-                Text("Layout")
+                Text(NSLocalizedString("settings.interface.layout.header", value: "Layout", comment: "Layout header"))
             } footer: {
-                Text("Layout changes apply immediately to all screens.")
+                Text(NSLocalizedString("settings.interface.layout.footer", value: "Layout changes apply immediately to all screens.", comment: "Layout footer"))
             }
             
             // Interactions Section
             Section {
                 Toggle(isOn: $settings.showAnimationsStorage) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Show Animations")
-                        Text("Enable optional UI animations (still respects Reduce Motion)")
+                        Text(NSLocalizedString("settings.interface.interactions.animations", value: "Show Animations", comment: "Show animations"))
+                        Text(NSLocalizedString("settings.interface.interactions.animations.detail", value: "Enable optional UI animations (still respects Reduce Motion)", comment: "Show animations detail"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -236,8 +161,8 @@ struct IOSInterfaceSettingsView: View {
                 
                 Toggle(isOn: $settings.enableHapticsStorage) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Enable Haptic Feedback")
-                        Text("Provide tactile feedback for interactions")
+                        Text(NSLocalizedString("settings.interface.interactions.haptics", value: "Enable Haptic Feedback", comment: "Enable haptics"))
+                        Text(NSLocalizedString("settings.interface.interactions.haptics.detail", value: "Provide tactile feedback for interactions", comment: "Enable haptics detail"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -247,13 +172,13 @@ struct IOSInterfaceSettingsView: View {
                 }
                 .prefsListRowInsets()
             } header: {
-                Text("Interactions")
+                Text(NSLocalizedString("settings.interface.interactions.header", value: "Interactions", comment: "Interactions header"))
             } footer: {
-                Text("Haptic feedback and animations respect accessibility settings.")
+                Text(NSLocalizedString("settings.interface.interactions.footer", value: "Haptic feedback and animations respect accessibility settings.", comment: "Interactions footer"))
             }
         }
         .listStyle(.insetGrouped)
-        .navigationTitle("Interface")
+        .navigationTitle(NSLocalizedString("settings.category.interface", comment: "Interface"))
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             glassIntensity = preferences.glassIntensity

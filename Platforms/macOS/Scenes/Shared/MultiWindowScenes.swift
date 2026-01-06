@@ -29,7 +29,7 @@ struct CourseSceneContent: View {
         NavigationStack {
             if let course = course {
                 List {
-                    Section(header: Text("Course Details")) {
+                    Section(header: Text(NSLocalizedString("ui.course.details", value: "Course Details", comment: "Course Details"))) {
                         infoRow(label: "Code", value: course.code.isEmpty ? "Not set" : course.code)
                         infoRow(label: "Title", value: course.title)
                         infoRow(label: "Semester", value: semester?.name ?? "Not set")
@@ -44,9 +44,9 @@ struct CourseSceneContent: View {
                         }
                     }
 
-                    Section(header: Text("Assignments")) {
+                    Section(header: Text(NSLocalizedString("ui.assignments", value: "Assignments", comment: "Assignments"))) {
                         if assignmentsForCourse.isEmpty {
-                            Text("No assignments recorded for this course.")
+                            Text(NSLocalizedString("ui.no.assignments.recorded.for.this.course", value: "No assignments recorded for this course.", comment: "No assignments recorded for this course."))
                                 .foregroundStyle(.secondary)
                         } else {
                             ForEach(assignmentsForCourse, id: \.id) { assignment in
@@ -92,9 +92,9 @@ struct CourseSceneContent: View {
             Image(systemName: "book.closed")
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
-            Text("Open a course in a new window to see details here.")
+            Text(NSLocalizedString("ui.open.a.course.in.a.new.window.to.see.details.here", value: "Open a course in a new window to see details here.", comment: "Open a course in a new window to see details here."))
                 .font(.title3.weight(.medium))
-            Text("Use “Open in New Window” from the Courses list to inspect a course without losing your place.")
+            Text(NSLocalizedString("ui.use.open.in.new.window", value: "Use “Open in New Window” from the Courses list to inspect a course without losing your place.", comment: "Use “Open in New Window” from the Courses list to ..."))
                 .font(.callout)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
@@ -134,7 +134,7 @@ struct PlannerSceneContent: View {
         NavigationStack {
             List {
                 if sessions.isEmpty {
-                    Text("No planner blocks on \(formattedDate(selectedDate)).")
+                    Text(verbatim: "No planner blocks on \(formattedDate(selectedDate)).")
                         .foregroundStyle(.secondary)
                 } else {
                     ForEach(sessions) { session in
@@ -147,7 +147,7 @@ struct PlannerSceneContent: View {
                                     .foregroundStyle(.secondary)
                             }
                             Spacer()
-                            Text("\(session.estimatedMinutes) min")
+                            Text(verbatim: "\(session.estimatedMinutes) min")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }

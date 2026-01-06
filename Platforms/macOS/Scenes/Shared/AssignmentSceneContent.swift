@@ -22,8 +22,14 @@ struct AssignmentSceneContent: View {
                     courses: coursesStore.courses,
                     onToggleCompletion: {
                         var updated = task
+                        let wasCompleted = updated.isCompleted
                         updated.isCompleted.toggle()
                         assignmentsStore.updateTask(updated)
+                        
+                        // Play completion sound if task was just completed
+                        if !wasCompleted && updated.isCompleted {
+                            AudioFeedbackService.shared.playTimerEnd()
+                        }
                     },
                     onDelete: {
                         assignmentsStore.removeTask(id: task.id)
@@ -33,7 +39,7 @@ struct AssignmentSceneContent: View {
                 .navigationTitle(task.title)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Close") {
+                        Button(NSLocalizedString("ui.button.close", value: "Close", comment: "Close")) {
                             dismiss()
                         }
                     }
@@ -57,9 +63,9 @@ struct AssignmentSceneContent: View {
             Image(systemName: "doc.text.magnifyingglass")
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
-            Text("Assignment detail will appear here.")
+            Text(NSLocalizedString("ui.assignment.detail.will.appear.here", value: "Assignment detail will appear here.", comment: "Assignment detail will appear here."))
                 .font(.title3.weight(.semibold))
-            Text("Use “Open in New Window” from the Assignments list to create a dedicated window.")
+            Text(NSLocalizedString("ui.use.open.in.new.window", value: "Use “Open in New Window” from the Assignments list to create a dedicated window.", comment: "Use “Open in New Window” from the Assignments list..."))
                 .font(.callout)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)

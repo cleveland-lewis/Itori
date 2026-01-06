@@ -40,7 +40,7 @@ struct TodayStudyStackedBarChart: View {
                 Spacer()
                 let total = slices.reduce(0) { $0 + $1.minutes }
                 if total > 0 {
-                    Text("Total: \(Int(total))m")
+                    Text(verbatim: "Total: \(Int(total))m")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -71,7 +71,7 @@ struct TodayStudyStackedBarChart: View {
                             Circle().fill(s.color).frame(width: 8, height: 8)
                             Text(s.courseName)
                                 .font(.caption2)
-                            Text("\(Int(s.minutes))m")
+                            Text(verbatim: "\(Int(s.minutes))m")
                                 .font(.caption2).foregroundColor(.secondary)
                         }
                     }

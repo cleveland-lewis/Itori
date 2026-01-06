@@ -87,7 +87,7 @@ class MockLLMBackend: LLMBackend {
             templateType: templateType
         )
         
-        let correctIndex = Int.random(in: 0...3)
+        let correctIndex = Int.random(in: 0...4)
         
         return """
         {
@@ -120,7 +120,8 @@ class MockLLMBackend: LLMBackend {
                 "A fundamental principle that forms the basis of \(topic)",
                 "An advanced technique used only in specialized applications",
                 "A deprecated approach that is no longer recommended",
-                "An alternative methodology with limited practical use"
+                "An alternative methodology with limited practical use",
+                "A foundational idea that connects \(topic) to broader theories"
             ]
             
         case "cause_effect":
@@ -129,7 +130,8 @@ class MockLLMBackend: LLMBackend {
                 "Enhanced understanding and practical application capabilities",
                 "Reduced flexibility in problem-solving approaches",
                 "Increased complexity without tangible benefits",
-                "Limited applicability to real-world scenarios"
+                "Limited applicability to real-world scenarios",
+                "Improved consistency in results across similar scenarios"
             ]
             
         case "scenario_change":
@@ -138,7 +140,8 @@ class MockLLMBackend: LLMBackend {
                 "The results would align more closely with theoretical expectations",
                 "The system would become less predictable and harder to control",
                 "There would be no significant change in outcomes",
-                "The approach would contradict established best practices"
+                "The approach would contradict established best practices",
+                "The conclusions would shift toward alternative interpretations"
             ]
             
         case "data_interpretation":
@@ -147,7 +150,8 @@ class MockLLMBackend: LLMBackend {
                 "The data demonstrates clear patterns consistent with \(topic) theory",
                 "The data shows inconsistencies that contradict current understanding",
                 "The data is insufficient to draw meaningful conclusions",
-                "The data supports alternative explanations over \(topic)"
+                "The data supports alternative explanations over \(topic)",
+                "The data indicates a partial alignment with \(topic)"
             ]
             
         case "compare_contrast":
@@ -156,7 +160,8 @@ class MockLLMBackend: LLMBackend {
                 "\(topic) provides unique insights while building on foundational concepts",
                 "\(topic) completely replaces all previous approaches",
                 "\(topic) is largely redundant with existing methods",
-                "\(topic) contradicts most established principles"
+                "\(topic) contradicts most established principles",
+                "\(topic) complements related approaches without replacing them"
             ]
             
         default:
@@ -165,7 +170,8 @@ class MockLLMBackend: LLMBackend {
                 "It represents an important concept in the field",
                 "It is rarely used in practice",
                 "It has been completely superseded",
-                "It only applies in theoretical contexts"
+                "It only applies in theoretical contexts",
+                "It offers practical guidance for applied problems"
             ]
         }
         

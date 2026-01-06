@@ -300,7 +300,7 @@ private struct FileRow: View {
         //     }
         // }
         .alert("Parse Error", isPresented: $showErrorAlert) {
-            Button("OK", role: .cancel) {}
+            Button(NSLocalizedString("OK", value: "OK", comment: ""), role: .cancel) {}
         } message: {
             Text(file.parseError ?? "Unknown error")
         }

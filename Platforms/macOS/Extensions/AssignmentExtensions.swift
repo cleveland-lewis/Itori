@@ -32,6 +32,7 @@ extension AssignmentCategory {
         case .homework, .homework: return "assignments.category.homework".localized
         case .reading: return "assignments.category.reading".localized
         case .review: return "assignments.category.review".localized
+        case .practiceTest: return "assignments.category.practice_test".localized
         }
     }
 }

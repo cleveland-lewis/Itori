@@ -42,7 +42,7 @@ struct IOSPracticeTestResultsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") {
+                    Button(NSLocalizedString("iospracticetestresults.button.done", value: "Done", comment: "Done")) {
                         dismiss()
                         store.clearCurrentTest()
                     }
@@ -58,11 +58,11 @@ struct IOSPracticeTestResultsView: View {
         VStack(spacing: 16) {
             // Large score display
             VStack(spacing: 8) {
-                Text("\(Int(scorePercentage * 100))%")
+                Text(verbatim: "\(Int(scorePercentage * 100))%")
                     .font(.system(size: 72, weight: .bold, design: .rounded))
                     .foregroundStyle(scoreColor)
                 
-                Text("\(test.correctCount) out of \(test.questions.count) correct")
+                Text(verbatim: "\(test.correctCount) out of \(test.questions.count) correct")
                     .font(.headline)
                     .foregroundStyle(.secondary)
             }
@@ -100,7 +100,7 @@ struct IOSPracticeTestResultsView: View {
     
     private var statisticsSection: some View {
         VStack(spacing: 12) {
-            Text("Test Details")
+            Text(NSLocalizedString("iospracticetestresults.test.details", value: "Test Details", comment: "Test Details"))
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
@@ -139,7 +139,7 @@ struct IOSPracticeTestResultsView: View {
     
     private var questionsReview: some View {
         VStack(spacing: 12) {
-            Text("Review Questions")
+            Text(NSLocalizedString("iospracticetestresults.review.questions", value: "Review Questions", comment: "Review Questions"))
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
@@ -167,7 +167,7 @@ struct IOSPracticeTestResultsView: View {
             } label: {
                 HStack(spacing: 12) {
                     // Question number badge
-                    Text("\(index)")
+                    Text(verbatim: "\(index)")
                         .font(.headline.bold())
                         .frame(width: 40, height: 40)
                         .background(
@@ -225,7 +225,7 @@ struct IOSPracticeTestResultsView: View {
                 
                 // Explanation
                 VStack(alignment: .leading, spacing: 8) {
-                    Label("Explanation", systemImage: "lightbulb")
+                    Label(NSLocalizedString("iospracticetestresults.label.explanation", value: "Explanation", comment: "Explanation"), systemImage: "lightbulb")
                         .font(.subheadline.bold())
                         .foregroundStyle(.blue)
                     

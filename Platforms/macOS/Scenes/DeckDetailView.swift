@@ -95,7 +95,7 @@ struct DeckDetailView: View {
                             .foregroundStyle(.orange)
                     }
                     
-                    Text("\(currentDeck?.cards.count ?? 0) cards")
+                    Text(verbatim: "\(currentDeck?.cards.count ?? 0) cards")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -172,7 +172,7 @@ struct DeckDetailView: View {
                     .font(.headline)
                     .foregroundStyle(color)
                 
-                Text("\(cards.count)")
+                Text(verbatim: "\(cards.count)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 
@@ -309,13 +309,13 @@ struct FlashcardRowView: View {
                 
                 HStack(spacing: 8) {
                     if card.repetition > 0 {
-                        Text("Interval: \(card.interval)d")
+                        Text(verbatim: "Interval: \(card.interval)d")
                             .font(.caption2)
                             .foregroundStyle(.tertiary)
                     }
                     
                     if let lastReviewed = card.lastReviewed {
-                        Text("Last: \(lastReviewed, style: .relative)")
+                        Text(String(format: NSLocalizedString("macos.flashcard.last_reviewed_relative", value: "Last: %@", comment: "Last reviewed time relative"), lastReviewed.formatted(.relative(presentation: .numeric))))
                             .font(.caption2)
                             .foregroundStyle(.tertiary)
                     }

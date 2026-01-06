@@ -79,6 +79,15 @@ enum AssignmentPlanEngine {
                 settings: settings
             )
             
+        case .practiceTest:
+            return generatePracticeTestSteps(
+                assignmentId: assignment.id,
+                title: assignment.title,
+                totalMinutes: totalMinutes,
+                dueDate: dueDate,
+                settings: settings
+            )
+            
         case .project:
             if !assignment.plan.isEmpty {
                 return convertExistingPlan(
@@ -380,6 +389,28 @@ enum AssignmentPlanEngine {
         }
         
         return steps
+    }
+    
+    // MARK: - Practice Test Plan
+    
+    private static func generatePracticeTestSteps(
+        assignmentId: UUID,
+        title: String,
+        totalMinutes: Int,
+        dueDate: Date,
+        settings: PlanGenerationSettings
+    ) -> [PlanStep] {
+        let planId = UUID()
+        let step = PlanStep(
+            planId: planId,
+            title: "Practice Test: \(title)",
+            estimatedDuration: TimeInterval(totalMinutes * 60),
+            recommendedStartDate: Calendar.current.date(byAdding: .day, value: -1, to: dueDate),
+            dueBy: dueDate,
+            sequenceIndex: 0,
+            stepType: .practice
+        )
+        return [step]
     }
     
     // MARK: - Project Plan

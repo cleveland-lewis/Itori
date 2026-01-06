@@ -9,13 +9,28 @@ struct SettingsRootView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(SettingsCategory.allCases) { category in
-                    NavigationLink(destination: category.destinationView()) {
+                // Subscription section at top
+                Section {
+                    NavigationLink {
+                        IOSSubscriptionView()
+                    } label: {
                         Label {
-                            Text(category.title)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(NSLocalizedString("settings.itori.premium", value: "Itori Premium", comment: "Itori Premium"))
+                                    .font(.body.weight(.semibold))
+                                Text(NSLocalizedString("settings.unlock.all.features", value: "Unlock all features", comment: "Unlock all features"))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         } icon: {
-                            Image(systemName: category.systemImage)
-                                .foregroundColor(.accentColor)
+                            Image(systemName: "sparkles")
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        colors: [.blue, .purple],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
                                 .frame(width: 28, height: 28)
                         }
                     }
@@ -25,6 +40,26 @@ struct SettingsRootView: View {
                         bottom: layoutMetrics.listRowVerticalPadding,
                         trailing: 16
                     ))
+                }
+                
+                Section {
+                    ForEach(SettingsCategory.allCases) { category in
+                        NavigationLink(destination: category.destinationView()) {
+                            Label {
+                                Text(category.title)
+                            } icon: {
+                                Image(systemName: category.systemImage)
+                                    .foregroundColor(.accentColor)
+                                    .frame(width: 28, height: 28)
+                            }
+                        }
+                        .listRowInsets(EdgeInsets(
+                            top: layoutMetrics.listRowVerticalPadding,
+                            leading: 16,
+                            bottom: layoutMetrics.listRowVerticalPadding,
+                            trailing: 16
+                        ))
+                    }
                 }
             }
             .listStyle(.insetGrouped)

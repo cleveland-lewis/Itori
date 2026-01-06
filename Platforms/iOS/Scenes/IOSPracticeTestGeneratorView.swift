@@ -26,12 +26,12 @@ struct IOSPracticeTestGeneratorView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") {
+                    Button(NSLocalizedString("iospracticetestgenerator.button.cancel", value: "Cancel", comment: "Cancel")) {
                         dismiss()
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Generate") {
+                    Button(NSLocalizedString("iospracticetestgenerator.button.generate", value: "Generate", comment: "Generate")) {
                         generateTest()
                     }
                     .disabled(!canGenerate)
@@ -46,19 +46,19 @@ struct IOSPracticeTestGeneratorView: View {
     private var courseSelectionSection: some View {
         Section {
             if coursesStore.courses.isEmpty {
-                Text("No courses available. Please add a course first.")
+                Text(NSLocalizedString("iospracticetestgenerator.no.courses.available.please.add.a.course.first", value: "No courses available. Please add a course first.", comment: "No courses available. Please add a course first."))
                     .foregroundStyle(.secondary)
                     .font(.callout)
             } else {
                 Picker("Course", selection: $selectedCourse) {
-                    Text("Select a course").tag(nil as Course?)
+                    Text(NSLocalizedString("iospracticetestgenerator.select.a.course", value: "Select a course", comment: "Select a course")).tag(nil as Course?)
                     ForEach(coursesStore.courses) { course in
                         Text(course.code.isEmpty ? course.title : course.code).tag(course as Course?)
                     }
                 }
             }
         } header: {
-            Text("Course")
+            Text(NSLocalizedString("iospracticetestgenerator.course", value: "Course", comment: "Course"))
         }
     }
     
@@ -86,15 +86,15 @@ struct IOSPracticeTestGeneratorView: View {
                 TextField("Add topic", text: $customTopic)
                     .onSubmit(addCustomTopic)
                 
-                Button("Add") {
+                Button(NSLocalizedString("iospracticetestgenerator.button.add", value: "Add", comment: "Add")) {
                     addCustomTopic()
                 }
                 .disabled(customTopic.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         } header: {
-            Text("Topics (Optional)")
+            Text(NSLocalizedString("iospracticetestgenerator.topics.optional", value: "Topics (Optional)", comment: "Topics (Optional)"))
         } footer: {
-            Text("Specify topics to focus on, or leave blank for general practice")
+            Text(NSLocalizedString("iospracticetestgenerator.specify.topics.to.focus.on", value: "Specify topics to focus on, or leave blank for general practice", comment: "Specify topics to focus on, or leave blank for gen..."))
         }
     }
     
@@ -119,11 +119,11 @@ struct IOSPracticeTestGeneratorView: View {
             // Question Count
             Picker("Number of Questions", selection: $questionCount) {
                 ForEach(questionCountOptions, id: \.self) { count in
-                    Text("\(count)").tag(count)
+                    Text(verbatim: "\(count)").tag(count)
                 }
             }
         } header: {
-            Text("Test Settings")
+            Text(NSLocalizedString("iospracticetestgenerator.test.settings", value: "Test Settings", comment: "Test Settings"))
         }
     }
     
@@ -132,15 +132,15 @@ struct IOSPracticeTestGeneratorView: View {
     private var infoSection: some View {
         Section {
             VStack(alignment: .leading, spacing: 8) {
-                Label("Multiple Choice Only", systemImage: "list.bullet.circle")
+                Label(NSLocalizedString("iospracticetestgenerator.label.multiple.choice.only", value: "Multiple Choice Only", comment: "Multiple Choice Only"), systemImage: "list.bullet.circle")
                     .font(.subheadline.bold())
-                Text("Test will contain \(questionCount) multiple-choice questions with 5 answer choices (A-E)")
+                Text(verbatim: "Test will contain \(questionCount) multiple-choice questions with 5 answer choices (A-E)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             .padding(.vertical, 4)
         } header: {
-            Text("Format")
+            Text(NSLocalizedString("iospracticetestgenerator.format", value: "Format", comment: "Format"))
         }
     }
     

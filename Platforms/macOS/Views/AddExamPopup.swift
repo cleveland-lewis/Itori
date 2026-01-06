@@ -33,7 +33,7 @@ struct AddExamPopup: View {
                 DatePicker("Date & Time", selection: $date)
 
                 VStack(alignment: .leading) {
-                    Text("Worth \(Int(weight))% of grade")
+                    Text(verbatim: "Worth \(Int(weight))% of grade")
                     Slider(value: $weight, in: 0...100, step: 1)
                 }
 

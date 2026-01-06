@@ -21,21 +21,21 @@ struct WatchSettingsView: View {
             Section("Timer") {
                 // Display Style
                 Picker("Display", selection: $displayStyle) {
-                    Text("Digital").tag("digital")
-                    Text("Analog").tag("analog")
+                    Text(NSLocalizedString("Digital", value: "Digital", comment: "")).tag("digital")
+                    Text(NSLocalizedString("Analog", value: "Analog", comment: "")).tag("analog")
                 }
                 
                 // Default Mode (disabled if session active)
                 VStack(alignment: .leading, spacing: 4) {
                     Picker("Default Mode", selection: $defaultTimerMode) {
-                        Text("Pomodoro").tag("pomodoro")
-                        Text("Timer").tag("timer")
-                        Text("Stopwatch").tag("stopwatch")
+                        Text(NSLocalizedString("Pomodoro", value: "Pomodoro", comment: "")).tag("pomodoro")
+                        Text(NSLocalizedString("Timer", value: "Timer", comment: "")).tag("timer")
+                        Text(NSLocalizedString("Stopwatch", value: "Stopwatch", comment: "")).tag("stopwatch")
                     }
                     .disabled(hasActiveSession)
                     
                     if hasActiveSession {
-                        Text("Stop timer to change mode")
+                        Text(NSLocalizedString("Stop timer to change mode", value: "Stop timer to change mode", comment: ""))
                             .font(.caption2)
                             .foregroundColor(.secondary)
                     }
@@ -47,7 +47,7 @@ struct WatchSettingsView: View {
                 NavigationLink {
                     TasksSettingsView()
                 } label: {
-                    Label("Task Options", systemImage: "checkmark.circle")
+                    Label(NSLocalizedString("Task Options", value: "Task Options", comment: ""), systemImage: "checkmark.circle")
                 }
             }
             
@@ -56,21 +56,21 @@ struct WatchSettingsView: View {
                 NavigationLink {
                     PlannerSettingsView()
                 } label: {
-                    Label("Planner Options", systemImage: "calendar")
+                    Label(NSLocalizedString("Planner Options", value: "Planner Options", comment: ""), systemImage: "calendar")
                 }
             }
             
             // Sync Status
             Section("Sync") {
                 HStack {
-                    Text("Status")
+                    Text(NSLocalizedString("Status", value: "Status", comment: ""))
                     Spacer()
                     if syncManager.isConnected {
-                        Label("Connected", systemImage: "checkmark.circle.fill")
+                        Label(NSLocalizedString("Connected", value: "Connected", comment: ""), systemImage: "checkmark.circle.fill")
                             .foregroundColor(.green)
                             .font(.caption)
                     } else {
-                        Label("Disconnected", systemImage: "xmark.circle.fill")
+                        Label(NSLocalizedString("Disconnected", value: "Disconnected", comment: ""), systemImage: "xmark.circle.fill")
                             .foregroundColor(.red)
                             .font(.caption)
                     }
@@ -78,7 +78,7 @@ struct WatchSettingsView: View {
                 
                 if let lastSync = syncManager.lastSyncDate {
                     HStack {
-                        Text("Last Sync")
+                        Text(NSLocalizedString("Last Sync", value: "Last Sync", comment: ""))
                         Spacer()
                         Text(lastSync, style: .relative)
                             .font(.caption)
@@ -90,7 +90,7 @@ struct WatchSettingsView: View {
             // App Info
             Section {
                 HStack {
-                    Text("Version")
+                    Text(NSLocalizedString("Version", value: "Version", comment: ""))
                     Spacer()
                     Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
                         .foregroundColor(.secondary)
@@ -115,7 +115,7 @@ private struct TasksSettingsView: View {
             }
             
             Section {
-                Text("Control which tasks appear on your watch.")
+                Text(NSLocalizedString("Control which tasks appear on your watch.", value: "Control which tasks appear on your watch.", comment: ""))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -137,7 +137,7 @@ private struct PlannerSettingsView: View {
             }
             
             Section {
-                Text("Control your planner view on watch.")
+                Text(NSLocalizedString("Control your planner view on watch.", value: "Control your planner view on watch.", comment: ""))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

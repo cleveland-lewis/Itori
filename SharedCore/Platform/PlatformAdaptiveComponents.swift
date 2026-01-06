@@ -23,7 +23,7 @@ struct AdaptiveNavigationContainer<Content: View>: View {
             NavigationSplitView {
                 content
             } detail: {
-                Text("Select an item")
+                Text(NSLocalizedString("Select an item", value: "Select an item", comment: ""))
                     .foregroundColor(.secondary)
             }
         case .sidebar:
@@ -31,7 +31,7 @@ struct AdaptiveNavigationContainer<Content: View>: View {
             NavigationSplitView {
                 content
             } detail: {
-                Text("Select an item")
+                Text(NSLocalizedString("Select an item", value: "Select an item", comment: ""))
                     .foregroundColor(.secondary)
             }
         }

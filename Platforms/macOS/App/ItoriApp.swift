@@ -46,7 +46,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 struct ItoriApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-    private let appAccentColor: Color = .blue
+    // Use system accent color instead of hardcoded blue
+    private let appAccentColor: Color = .accentColor
 
     @StateObject private var coursesStore: CoursesStore
     @StateObject private var appSettings = AppSettingsModel.shared

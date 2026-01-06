@@ -129,7 +129,7 @@ private struct ScheduledTestRow: View {
                 // Could open an edit sheet if implemented
             }
             
-            Button("Delete Test", role: .destructive) {
+            Button(NSLocalizedString("Delete Test", value: "Delete Test", comment: ""), role: .destructive) {
                 // Could trigger deletion
             }
         }

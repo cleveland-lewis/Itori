@@ -55,6 +55,22 @@ class Feedback {
     // MARK: - Sound Playback
     
     private func playSound(for type: FeedbackType) {
+        // Use AudioFeedbackService for timer and task completion sounds
+        switch type {
+        case .taskCompleted, .success:
+            AudioFeedbackService.shared.playTimerEnd()
+            return
+        case .timerStart:
+            AudioFeedbackService.shared.playTimerStart()
+            return
+        case .timerStop:
+            AudioFeedbackService.shared.playTimerPause()
+            return
+        default:
+            break
+        }
+        
+        // Original sound system for other feedback types
         let soundName = soundFileName(for: type)
         
         // Try to play from preloaded cache

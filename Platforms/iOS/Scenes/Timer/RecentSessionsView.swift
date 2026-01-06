@@ -63,7 +63,7 @@ struct RecentSessionsView: View {
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }
+                    Button(NSLocalizedString("recentsessions.button.done", value: "Done", comment: "Done")) { dismiss() }
                 }
             }
             .sheet(item: $editingSession) { session in
@@ -73,17 +73,17 @@ struct RecentSessionsView: View {
                 filtersSheet
             }
             .alert("Delete Session?", isPresented: $showDeleteConfirm) {
-                Button("Cancel", role: .cancel) {
+                Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) {
                     sessionToDelete = nil
                 }
-                Button("Delete", role: .destructive) {
+                Button(NSLocalizedString("Delete", value: "Delete", comment: ""), role: .destructive) {
                     if let session = sessionToDelete {
                         viewModel.deleteSessions(ids: [session.id])
                     }
                     sessionToDelete = nil
                 }
             } message: {
-                Text("This can't be undone.")
+                Text(NSLocalizedString("recentsessions.this.cant.be.undone", value: "This can't be undone.", comment: "This can't be undone."))
             }
         }
     }
@@ -152,7 +152,7 @@ struct RecentSessionsView: View {
                         selectedActivityFilter = nil
                     } label: {
                         HStack {
-                            Text("All Activities")
+                            Text(NSLocalizedString("recentsessions.all.activities", value: "All Activities", comment: "All Activities"))
                             Spacer()
                             if selectedActivityFilter == nil {
                                 Image(systemName: "checkmark")
@@ -182,7 +182,7 @@ struct RecentSessionsView: View {
                 
                 if selectedActivityFilter != nil || selectedDateRange != .all {
                     Section {
-                        Button("Clear Filters") {
+                        Button(NSLocalizedString("recentsessions.button.clear.filters", value: "Clear Filters", comment: "Clear Filters")) {
                             selectedActivityFilter = nil
                             selectedDateRange = .all
                         }
@@ -193,7 +193,7 @@ struct RecentSessionsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") {
+                    Button(NSLocalizedString("recentsessions.button.done", value: "Done", comment: "Done")) {
                         showingFilters = false
                     }
                 }
@@ -353,7 +353,7 @@ private struct SessionRow: View {
                         Button {
                             onEdit()
                         } label: {
-                            Label("Edit", systemImage: "pencil")
+                            Label(NSLocalizedString("recentsessions.label.edit", value: "Edit", comment: "Edit"), systemImage: "pencil")
                         }
                         
                         Divider()
@@ -361,7 +361,7 @@ private struct SessionRow: View {
                         Button(role: .destructive) {
                             onDelete()
                         } label: {
-                            Label("Delete", systemImage: "trash")
+                            Label(NSLocalizedString("recentsessions.label.delete", value: "Delete", comment: "Delete"), systemImage: "trash")
                         }
                     } label: {
                         Image(systemName: "ellipsis.circle")

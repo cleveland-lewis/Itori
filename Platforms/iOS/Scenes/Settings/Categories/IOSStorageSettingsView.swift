@@ -5,14 +5,14 @@ import UIKit
 
 struct IOSStorageSettingsView: View {
     @EnvironmentObject var settings: AppSettingsModel
-    @State private var storageSize: String = "Calculating..."
+    @State private var storageSize: String = NSLocalizedString("settings.storage.calculating", value: "Calculating...", comment: "Storage size calculating")
     @State private var storageLocation: String = ""
     @State private var showingClearCacheConfirmation = false
     @State private var showingExportSheet = false
     @State private var shareItem: ShareItem?
     @State private var isExporting = false
     @State private var exportError: String?
-    @State private var statusLabel: String = "Disconnected"
+    @State private var statusLabel: String = NSLocalizedString("settings.storage.status.disconnected", value: "Disconnected", comment: "Storage status disconnected")
     @State private var syncTimeoutWorkItem: DispatchWorkItem?
     
     var body: some View {
@@ -50,21 +50,21 @@ struct IOSStorageSettingsView: View {
                 }
                 .onChange(of: settings.enableICloudSync) { _, newValue in
                     settings.save()
-                    statusLabel = "Syncing"
+                    statusLabel = NSLocalizedString("settings.storage.status.syncing", value: "Syncing", comment: "Storage status syncing")
                     scheduleSyncTimeout()
                     NotificationCenter.default.post(
                         name: .iCloudSyncSettingChanged,
                         object: newValue
                     )
                 }
-                Text("Status: \(statusLabel)")
+                Text(String(format: NSLocalizedString("settings.storage.status.label", value: "Status: %@", comment: "Storage status label"), statusLabel))
                     .font(.caption2)
                     .foregroundColor(.secondary)
             } header: {
                 Text(NSLocalizedString("settings.privacy.data.header", comment: "Data Storage"))
             } footer: {
                 if PersistenceController.shared.isCloudKitEnabled {
-                    Text("iCloud is connected and protected by native iCloud protections")
+                    Text(NSLocalizedString("settings.storage.icloud.connected", value: "iCloud is connected and protected by native iCloud protections", comment: "iCloud connected footer"))
                 } else {
                     Text(NSLocalizedString("settings.privacy.local_only.footer", comment: "All your data stays on this device. No cloud sync or external services are used."))
                 }
@@ -117,7 +117,9 @@ struct IOSStorageSettingsView: View {
         .onAppear {
             calculateStorageSize()
             updateStorageLocation()
-            statusLabel = settings.enableICloudSync ? "Syncing" : "Disconnected"
+            statusLabel = settings.enableICloudSync
+                ? NSLocalizedString("settings.storage.status.syncing", value: "Syncing", comment: "Storage status syncing")
+                : NSLocalizedString("settings.storage.status.disconnected", value: "Disconnected", comment: "Storage status disconnected")
         }
         .onReceive(NotificationCenter.default.publisher(for: .iCloudSyncStatusChanged)) { notification in
             let enabled = notification.object as? Bool ?? false
@@ -137,29 +139,31 @@ struct IOSStorageSettingsView: View {
             get: { exportError != nil },
             set: { if !$0 { exportError = nil } }
         )) {
-            Button("OK", role: .cancel) { exportError = nil }
+            Button(NSLocalizedString("common.ok", value: "OK", comment: "OK"), role: .cancel) { exportError = nil }
         } message: {
             Text(exportError ?? NSLocalizedString("settings.storage.export.error.message", comment: "Unable to create the export file right now."))
         }
     }
 
     private func statusLabelFor(enabled: Bool, reason: String?) -> String {
-        if enabled { return "Connected" }
+        if enabled {
+            return NSLocalizedString("settings.storage.status.connected", value: "Connected", comment: "Storage status connected")
+        }
         let text = reason?.lowercased() ?? ""
         if text.contains("error") || text.contains("failed") {
-            return "Error"
+            return NSLocalizedString("settings.storage.status.error", value: "Error", comment: "Storage status error")
         }
         if text.contains("connecting") || text.contains("syncing") {
-            return "Syncing"
+            return NSLocalizedString("settings.storage.status.syncing", value: "Syncing", comment: "Storage status syncing")
         }
-        return "Disconnected"
+        return NSLocalizedString("settings.storage.status.disconnected", value: "Disconnected", comment: "Storage status disconnected")
     }
 
     private func scheduleSyncTimeout() {
         syncTimeoutWorkItem?.cancel()
         let workItem = DispatchWorkItem {
-            if statusLabel == "Syncing" {
-                statusLabel = "Taking longer than usual"
+            if statusLabel == NSLocalizedString("settings.storage.status.syncing", value: "Syncing", comment: "Storage status syncing") {
+                statusLabel = NSLocalizedString("settings.storage.status.slow", value: "Taking longer than usual", comment: "Storage status slow")
             }
         }
         syncTimeoutWorkItem = workItem
@@ -256,7 +260,7 @@ struct IOSStorageSettingsView: View {
 
         let assignments = AssignmentsStore.shared.tasks
         guard let coursesStore = CoursesStore.shared else {
-            exportError = "Unable to gather course data for export."
+            exportError = NSLocalizedString("settings.storage.export.error.data", value: "Unable to gather course data for export.", comment: "Export data error")
             return
         }
 

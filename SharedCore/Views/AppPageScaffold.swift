@@ -94,7 +94,7 @@ struct AppPageScaffold<Content: View>: View {
                 }
             }
             Section("Settings") {
-                Button("Open Settings") {
+                Button(NSLocalizedString("ui.button.open.settings", value: "Open Settings", comment: "Open Settings")) {
                     onSettings()
                 }
                 .keyboardShortcut(",", modifiers: [.command])
@@ -139,11 +139,11 @@ struct AppPageScaffold<Content: View>: View {
         Group {
             if settings.showEnergyPanel && settings.energySelectionConfirmed {
                 Menu {
-                    Button("High") { setEnergy("High") }
-                    Button("Medium") { setEnergy("Medium") }
-                    Button("Low") { setEnergy("Low") }
+                    Button(NSLocalizedString("ui.button.high", value: "High", comment: "High")) { setEnergy("High") }
+                    Button(NSLocalizedString("ui.button.medium", value: "Medium", comment: "Medium")) { setEnergy("Medium") }
+                    Button(NSLocalizedString("ui.button.low", value: "Low", comment: "Low")) { setEnergy("Low") }
                 } label: {
-                    Text("Energy: \(settings.defaultEnergyLevel)")
+                    Text(verbatim: "Energy: \(settings.defaultEnergyLevel)")
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundColor(.primary)
                         .padding(.horizontal, 12)

@@ -35,7 +35,7 @@ struct DesignShell<Content: View>: View {
                 .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Corners.medium, style: .continuous))
                 .frame(minHeight: DesignSystem.Cards.defaultHeight)
 
-            Text("Updated: \(timestamp.formatted(.iso8601))")
+            Text(verbatim: "Updated: \(timestamp.formatted(.iso8601))")
                 .font(DesignSystem.Typography.caption)
                 .foregroundStyle(.secondary)
         }
@@ -49,7 +49,7 @@ struct DesignShell<Content: View>: View {
         DesignShell(selectedMaterial: binding, timestamp: Date(timeIntervalSince1970: 1760000000)) {
             Image(systemName: "cube.fill")
                 .imageScale(.large)
-            Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+            Text(NSLocalizedString("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", comment: ""))
                 .foregroundStyle(.primary)
         }
         .padding(DesignSystem.Layout.padding.card)

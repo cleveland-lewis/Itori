@@ -4,6 +4,7 @@ import SwiftUI
 struct TripleDialTimer: View {
     let totalSeconds: TimeInterval
     let accentColor: Color
+    var dialSize: CGFloat = 112
     
     private var timeComponents: (hours: Int, minutes: Int, seconds: Int) {
         let total = Int(totalSeconds)
@@ -14,13 +15,14 @@ struct TripleDialTimer: View {
     }
     
     var body: some View {
-        HStack(spacing: 24) {
+        HStack(spacing: 28) {
             // Hours dial (far left) - 12 hour max
             SingleDial(
                 value: timeComponents.hours,
                 maxValue: 12,
                 label: "Hours",
-                accentColor: accentColor
+                accentColor: accentColor,
+                dialSize: dialSize
             )
             
             // Minutes dial (center) - 60 minutes max
@@ -28,7 +30,8 @@ struct TripleDialTimer: View {
                 value: timeComponents.minutes,
                 maxValue: 60,
                 label: "Minutes",
-                accentColor: accentColor
+                accentColor: accentColor,
+                dialSize: dialSize
             )
             
             // Seconds dial (far right) - 60 seconds max
@@ -36,10 +39,11 @@ struct TripleDialTimer: View {
                 value: timeComponents.seconds,
                 maxValue: 60,
                 label: "Seconds",
-                accentColor: accentColor
+                accentColor: accentColor,
+                dialSize: dialSize
             )
         }
-        .padding(.vertical, 20)
+        .padding(.vertical, 16)
     }
 }
 
@@ -49,6 +53,7 @@ private struct SingleDial: View {
     let maxValue: Int
     let label: String
     let accentColor: Color
+    let dialSize: CGFloat
     @Environment(\.colorScheme) private var colorScheme
     
     private var progress: Double {
@@ -61,12 +66,15 @@ private struct SingleDial: View {
     }
     
     var body: some View {
-        VStack(spacing: 8) {
+        let tickOffset = -(dialSize / 2 - 8)
+        let handLength = dialSize * 0.34
+
+        VStack(spacing: 6) {
             ZStack {
                 // Background circle
                 Circle()
                     .stroke(Color.primary.opacity(0.1), lineWidth: 2)
-                    .frame(width: 80, height: 80)
+                    .frame(width: dialSize, height: dialSize)
                 
                 // Progress arc
                 Circle()
@@ -75,7 +83,7 @@ private struct SingleDial: View {
                         accentColor,
                         style: StrokeStyle(lineWidth: 3, lineCap: .round)
                     )
-                    .frame(width: 80, height: 80)
+                    .frame(width: dialSize, height: dialSize)
                     .rotationEffect(.degrees(-90))
                 
                 // Tick marks
@@ -84,29 +92,28 @@ private struct SingleDial: View {
                     Capsule()
                         .fill(Color.primary.opacity(isMajor ? 0.4 : 0.2))
                         .frame(width: isMajor ? 1.5 : 1, height: isMajor ? 6 : 4)
-                        .offset(y: -36)
+                        .offset(y: tickOffset)
                         .rotationEffect(.degrees(Double(index) * tickAngle))
                 }
                 
                 // Hand
                 Capsule()
                     .fill(accentColor)
-                    .frame(width: 2, height: 28)
-                    .offset(y: -14)
+                    .frame(width: 2, height: handLength)
+                    .offset(y: -(handLength / 2))
                     .rotationEffect(.degrees(angle))
                 
                 // Center dot
                 Circle()
                     .fill(accentColor)
                     .frame(width: 6, height: 6)
-                
-                // Value text
-                Text("\(value)")
-                    .font(.system(size: 20, weight: .medium, design: .rounded))
-                    .monospacedDigit()
-                    .foregroundStyle(.primary)
             }
             
+            Text(verbatim: "\(value)")
+                .font(.system(size: 18, weight: .semibold, design: .rounded))
+                .monospacedDigit()
+                .foregroundStyle(.primary)
+
             // Label
             Text(label)
                 .font(.caption2)

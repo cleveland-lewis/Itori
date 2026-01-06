@@ -62,7 +62,7 @@ struct CalendarWeekView: View {
                         .foregroundStyle(.secondary)
                         .textCase(.uppercase)
                     
-                    Text("\(calendar.component(.day, from: day))")
+                    Text(verbatim: "\(calendar.component(.day, from: day))")
                         .font(.title3.weight(calendar.isDateInToday(day) ? .bold : .regular))
                         .foregroundStyle(calendar.isDateInToday(day) ? Color.accentColor : Color.primary)
                         .frame(width: 32, height: 32)

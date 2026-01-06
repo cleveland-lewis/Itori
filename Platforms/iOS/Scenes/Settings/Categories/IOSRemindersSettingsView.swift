@@ -8,16 +8,16 @@ struct IOSRemindersSettingsView: View {
     var body: some View {
         List {
             Section {
-                Text("Reminders integration settings")
+                Text(NSLocalizedString("settings.reminders.integration.body", value: "Reminders integration settings", comment: "Reminders integration body"))
                     .foregroundColor(.secondary)
             } header: {
-                Text("Integration")
+                Text(NSLocalizedString("settings.reminders.integration.header", value: "Integration", comment: "Reminders integration header"))
             } footer: {
-                Text("Sync tasks with Apple Reminders")
+                Text(NSLocalizedString("settings.reminders.integration.footer", value: "Sync tasks with Apple Reminders", comment: "Reminders integration footer"))
             }
         }
         .listStyle(.insetGrouped)
-        .navigationTitle("Reminders")
+        .navigationTitle(NSLocalizedString("settings.category.reminders", comment: "Reminders"))
         .navigationBarTitleDisplayMode(.inline)
     }
 }

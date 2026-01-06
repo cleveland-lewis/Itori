@@ -19,7 +19,7 @@ struct AssignmentDetailWindowView: View {
                 }
             }
 
-            Section(header: Text("Details")) {
+            Section(header: Text(NSLocalizedString("assignmentdetailwindow.details", value: "Details", comment: "Details"))) {
                 DetailRow(label: "Title", value: task.title)
                 if let courseLabel = courseLabel {
                     DetailRow(label: "Course", value: courseLabel)
@@ -32,7 +32,7 @@ struct AssignmentDetailWindowView: View {
                 }
             }
 
-            Section(header: Text("Time & Effort")) {
+            Section(header: Text(NSLocalizedString("assignmentdetailwindow.time.effort", value: "Time & Effort", comment: "Time & Effort"))) {
                 DetailRow(label: timeEstimateLabel(task.type), value: "\(task.estimatedMinutes) min")
                 DetailRow(label: "Priority", value: priorityLabel(task.importance))
             }
@@ -40,7 +40,7 @@ struct AssignmentDetailWindowView: View {
             if let earned = task.gradeEarnedPoints,
                let possible = task.gradePossiblePoints,
                possible > 0 {
-                Section(header: Text("Grade")) {
+                Section(header: Text(NSLocalizedString("assignmentdetailwindow.grade", value: "Grade", comment: "Grade"))) {
                     let gradePercent = (earned / possible) * 100
                     DetailRow(label: "Score", value: String(format: "%.1f%% (%.1f/%.1f)", gradePercent, earned, possible))
                     if let weight = task.gradeWeightPercent {
@@ -51,7 +51,7 @@ struct AssignmentDetailWindowView: View {
 
             Section {
                 Button(role: .destructive, action: onDelete) {
-                    Label("Delete Assignment", systemImage: "trash")
+                    Label(NSLocalizedString("assignmentdetailwindow.label.delete.assignment", value: "Delete Assignment", comment: "Delete Assignment"), systemImage: "trash")
                 }
             }
         }
@@ -90,6 +90,7 @@ struct AssignmentDetailWindowView: View {
         case .review: return "Review"
         case .study: return "Study"
         case .project: return "Project"
+        case .practiceTest: return "Practice Test"
         }
     }
 
@@ -99,16 +100,16 @@ struct AssignmentDetailWindowView: View {
             return "Estimated Study Time"
         case .homework, .reading, .project, .review, .study:
             return "Estimated Work Time"
+        case .practiceTest:
+            return "Estimated Test Time"
         }
     }
 
     private func priorityLabel(_ value: Double) -> String {
         switch value {
-        case ..<0.3: return "Lowest"
-        case ..<0.5: return "Low"
+        case ..<0.4: return "Low"
         case ..<0.7: return "Medium"
-        case ..<0.9: return "High"
-        default: return "Urgent"
+        default: return "High"
         }
     }
 

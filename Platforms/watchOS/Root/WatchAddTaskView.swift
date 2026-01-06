@@ -41,7 +41,7 @@ struct WatchAddTaskView: View {
                         ProgressView()
                             .frame(maxWidth: .infinity)
                     } else {
-                        Text("Add Task")
+                        Text(NSLocalizedString("Add Task", value: "Add Task", comment: ""))
                             .frame(maxWidth: .infinity)
                     }
                 }

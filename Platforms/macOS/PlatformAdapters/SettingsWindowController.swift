@@ -73,6 +73,7 @@ struct SystemStyleSettingsView: View {
     @ViewBuilder
     private func contentForCategory(_ category: SettingsToolbarIdentifier) -> some View {
         switch category {
+        case .subscription: MacOSSubscriptionView()
         case .general: GeneralSettingsView()
         case .calendar: CalendarSettingsView()
         case .reminders: RemindersSettingsView()
@@ -83,6 +84,7 @@ struct SystemStyleSettingsView: View {
         case .profiles: ProfilesSettingsView()
         case .timer: TimerSettingsView()
         case .flashcards: FlashcardSettingsView()
+        case .practice: PracticeSettingsView()
         case .ai: AISettingsView()
         case .integrations: IntegrationsSettingsView()
         case .notifications: NotificationsSettingsView()

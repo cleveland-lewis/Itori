@@ -23,7 +23,7 @@ struct WatchTasksView: View {
             // Add Task Button
             Section {
                 NavigationLink(destination: WatchAddTaskView()) {
-                    Label("Add Task", systemImage: "plus.circle.fill")
+                    Label(NSLocalizedString("Add Task", value: "Add Task", comment: ""), systemImage: "plus.circle.fill")
                         .foregroundColor(.blue)
                 }
             }
@@ -53,7 +53,7 @@ struct WatchTasksView: View {
                         Image(systemName: "checkmark.circle")
                             .font(.system(size: 40))
                             .foregroundColor(.gray)
-                        Text("No tasks")
+                        Text(NSLocalizedString("No tasks", value: "No tasks", comment: ""))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }

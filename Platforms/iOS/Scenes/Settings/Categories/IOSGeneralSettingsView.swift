@@ -18,22 +18,6 @@ struct IOSGeneralSettingsView: View {
     var body: some View {
         List {
             Section {
-                Toggle(isOn: binding(for: \.isSchoolModeStorage)) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(settings.isSchoolMode ? "School Mode" : "Self-Study Mode")
-                            .font(.body.weight(.medium))
-                        Text(settings.isSchoolMode 
-                             ? "Organize studies with courses, semesters, and assignments" 
-                             : "Study independently without course structure")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-            } header: {
-                Text("Study Mode")
-            }
-            
-            Section {
                 Toggle(isOn: binding(for: \.use24HourTimeStorage)) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(NSLocalizedString("settings.general.use_24h", comment: "Use 24-Hour Time"))
@@ -85,12 +69,12 @@ struct IOSGeneralSettingsView: View {
                 Text(NSLocalizedString("settings.general.display.header", comment: "Display"))
             }
 
-            Section("Reset Data") {
+            Section(NSLocalizedString("settings.general.reset.header", value: "Reset Data", comment: "Reset data header")) {
                 Button(role: .destructive) {
                     resetInput = ""
                     showResetSheet = true
                 } label: {
-                    Text("Reset All Data")
+                    Text(NSLocalizedString("settings.general.reset.action", value: "Reset All Data", comment: "Reset all data"))
                         .fontWeight(.semibold)
                 }
             }
@@ -101,16 +85,16 @@ struct IOSGeneralSettingsView: View {
         .sheet(isPresented: $showResetSheet) {
             VStack(spacing: 18) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Reset All Data")
+                    Text(NSLocalizedString("settings.general.reset.title", value: "Reset All Data", comment: "Reset all data title"))
                         .font(.title2.weight(.bold))
-                    Text("This will remove all app data including courses, assignments, settings, and cached sessions. This action cannot be undone.")
+                    Text(NSLocalizedString("settings.general.reset.message", value: "This will remove all app data including courses, assignments, settings, and cached sessions. This action cannot be undone.", comment: "Reset all data message"))
                         .font(.callout)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Type the code to confirm")
+                    Text(NSLocalizedString("settings.general.reset.code.prompt", value: "Type the code to confirm", comment: "Reset confirmation prompt"))
                         .font(.headline.weight(.semibold))
                     HStack {
                         Text(resetCode)
@@ -133,24 +117,26 @@ struct IOSGeneralSettingsView: View {
                                 didCopyResetCode = false
                             }
                         } label: {
-                            Text(didCopyResetCode ? "Copied" : "Copy")
+                            Text(didCopyResetCode
+                                 ? NSLocalizedString("common.copied", value: "Copied", comment: "Copied")
+                                 : NSLocalizedString("common.copy", value: "Copy", comment: "Copy"))
                                 .font(.caption.weight(.semibold))
                         }
                         .buttonStyle(.bordered)
                         .controlSize(.small)
                         Spacer()
                     }
-                    TextField("Enter code exactly", text: $resetInput)
+                    TextField(NSLocalizedString("settings.general.reset.code.placeholder", value: "Enter code exactly", comment: "Reset code placeholder"), text: $resetInput)
                         .textFieldStyle(.roundedBorder)
                         .font(.system(.body, design: .monospaced))
                         .disableAutocorrection(true)
                 }
 
                 HStack(spacing: 12) {
-                    Button("Cancel") { showResetSheet = false }
+                    Button(NSLocalizedString("common.cancel", comment: "Cancel")) { showResetSheet = false }
                         .buttonStyle(.bordered)
                     Spacer()
-                    Button("Reset Now") {
+                    Button(NSLocalizedString("settings.general.reset.confirm", value: "Reset Now", comment: "Reset now")) {
                         performReset()
                     }
                     .buttonStyle(.borderedProminent)

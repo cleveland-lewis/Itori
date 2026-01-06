@@ -343,6 +343,7 @@ class AssignmentDetector {
         case .project: return 120
         case .exam: return 180
         case .quiz: return 30
+        case .practiceTest: return 50
         }
     }
     

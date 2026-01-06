@@ -69,7 +69,7 @@ struct MenuBarView: View {
                     Text(NSLocalizedString("menubar.assignments.left.today", value: "Assignments left today:", comment: "Assignments left today:"))
                         .font(.subheadline)
                     Spacer()
-                    Text("\(assignmentsLeftToday)")
+                    Text(verbatim: "\(assignmentsLeftToday)")
                         .font(.subheadline)
                         .bold()
                 }

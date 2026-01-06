@@ -138,10 +138,14 @@ extension View {
 
 private struct PreferencesCardMaterialModifier: ViewModifier {
     @Environment(\.interfacePreferences) private var prefs
+    @Environment(\.colorScheme) private var colorScheme
     let cornerRadius: CGFloat?
     
     func body(content: Content) -> some View {
         let radius = cornerRadius ?? prefs.cornerRadius.card
+        let depthTint = colorScheme == .dark
+            ? Color.white.opacity(0.04)
+            : Color.black.opacity(0.04)
         
         return Group {
             switch prefs.materials.cardMaterial {
@@ -154,6 +158,10 @@ private struct PreferencesCardMaterialModifier: ViewModifier {
                 )
             }
         }
+        .overlay(
+            RoundedRectangle(cornerRadius: radius, style: .continuous)
+                .fill(depthTint)
+        )
     }
 }
 

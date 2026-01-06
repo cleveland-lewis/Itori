@@ -45,7 +45,11 @@ struct CoursesDashboardDetail: View {
                 .foregroundStyle(.secondary)
 
                 HStack(spacing: 16) {
-                    Label("\(course.credits, specifier: "%.1f") Credits", systemImage: "book.fill")
+                    Label {
+                        Text(String(format: NSLocalizedString("course.credits", value: "%.1f Credits", comment: "Course credits"), course.credits))
+                    } icon: {
+                        Image(systemName: "book.fill")
+                    }
                     Label(course.term, systemImage: "calendar")
                 }
                 .font(DesignSystem.Typography.body)
@@ -87,7 +91,7 @@ struct CoursesDashboardDetail: View {
                     .font(DesignSystem.Typography.body)
                     .foregroundStyle(.primary)
 
-                Text("Current Grade")
+                Text(NSLocalizedString("ui.current.grade", value: "Current Grade", comment: "Current Grade"))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -99,7 +103,7 @@ struct CoursesDashboardDetail: View {
     private var meetingsCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Label("Meetings", systemImage: "clock.fill")
+                Label(NSLocalizedString("ui.label.meetings", value: "Meetings", comment: "Meetings"), systemImage: "clock.fill")
                     .font(DesignSystem.Typography.body)
                     .foregroundStyle(.primary)
 
@@ -107,7 +111,7 @@ struct CoursesDashboardDetail: View {
             }
 
             if course.meetings.isEmpty {
-                Text("No scheduled meetings")
+                Text(NSLocalizedString("ui.no.scheduled.meetings", value: "No scheduled meetings", comment: "No scheduled meetings"))
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -137,7 +141,7 @@ struct CoursesDashboardDetail: View {
                 HStack(spacing: 4) {
                     Image(systemName: "calendar.badge.plus")
                         .font(DesignSystem.Typography.body)
-                    Text("Add to Calendar")
+                    Text(NSLocalizedString("ui.add.to.calendar", value: "Add to Calendar", comment: "Add to Calendar"))
                         .font(DesignSystem.Typography.body)
                 }
                 .foregroundStyle(Color.accentColor)
@@ -153,7 +157,7 @@ struct CoursesDashboardDetail: View {
 
     private var syllabusCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Syllabus Breakdown", systemImage: "chart.bar.fill")
+            Label(NSLocalizedString("ui.label.syllabus.breakdown", value: "Syllabus Breakdown", comment: "Syllabus Breakdown"), systemImage: "chart.bar.fill")
                 .font(DesignSystem.Typography.body)
                 .foregroundStyle(.primary)
 
@@ -218,7 +222,7 @@ struct CoursesDashboardDetail: View {
 
     private var secondaryPanel: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Course Overview")
+            Text(NSLocalizedString("ui.course.overview", value: "Course Overview", comment: "Course Overview"))
                 .font(DesignSystem.Typography.body)
                 .foregroundStyle(.primary)
 
@@ -239,7 +243,7 @@ struct CoursesDashboardDetail: View {
 
     private var analyticsColumn: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Analytics", systemImage: "chart.xyaxis.line")
+            Label(NSLocalizedString("ui.label.analytics", value: "Analytics", comment: "Analytics"), systemImage: "chart.xyaxis.line")
                 .font(DesignSystem.Typography.body)
                 .foregroundStyle(.primary)
 
@@ -275,9 +279,9 @@ struct CoursesDashboardDetail: View {
                 }
             } else {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("No analytics yet.")
+                    Text(NSLocalizedString("ui.no.analytics.yet", value: "No analytics yet.", comment: "No analytics yet."))
                         .font(.subheadline.weight(.semibold))
-                    Text("We’ll show assignment progress and study time once this course has data.")
+                    Text(NSLocalizedString("ui.well.show.assignment.progress.and", value: "We’ll show assignment progress and study time once this course has data.", comment: "We’ll show assignment progress and study time once..."))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -317,7 +321,7 @@ struct CoursesDashboardDetail: View {
 
     private var instructorNotesColumn: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Instructor Notes", systemImage: "note.text")
+            Label(NSLocalizedString("ui.label.instructor.notes", value: "Instructor Notes", comment: "Instructor Notes"), systemImage: "note.text")
                 .font(DesignSystem.Typography.body)
                 .foregroundStyle(.primary)
 
@@ -327,7 +331,7 @@ struct CoursesDashboardDetail: View {
                     .foregroundStyle(.secondary)
                     .lineSpacing(4)
             } else {
-                Text("No notes available")
+                Text(NSLocalizedString("ui.no.notes.available", value: "No notes available", comment: "No notes available"))
                     .font(DesignSystem.Typography.body)
                     .foregroundStyle(.tertiary)
                     .italic()
@@ -340,12 +344,12 @@ struct CoursesDashboardDetail: View {
 
     private var deadlinesColumn: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label("Upcoming Deadlines", systemImage: "calendar.badge.exclamationmark")
+            Label(NSLocalizedString("ui.label.upcoming.deadlines", value: "Upcoming Deadlines", comment: "Upcoming Deadlines"), systemImage: "calendar.badge.exclamationmark")
                 .font(DesignSystem.Typography.body)
                 .foregroundStyle(.primary)
 
             if course.upcomingDeadlines.isEmpty {
-                Text("No upcoming deadlines")
+                Text(NSLocalizedString("ui.no.upcoming.deadlines", value: "No upcoming deadlines", comment: "No upcoming deadlines"))
                     .font(DesignSystem.Typography.body)
                     .foregroundStyle(.tertiary)
                     .italic()

@@ -10,25 +10,25 @@ struct IOSFlashcardsSettingsView: View {
             Section {
                 Toggle(isOn: binding(for: \.enableFlashcards)) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Enable Flashcards")
-                        Text("Turn flashcard system on or off")
+                        Text(NSLocalizedString("settings.flashcards.enable", value: "Enable Flashcards", comment: "Enable flashcards"))
+                        Text(NSLocalizedString("settings.flashcards.enable.detail", value: "Turn flashcard system on or off", comment: "Enable flashcards detail"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
                 }
             } header: {
-                Text("Flashcard System")
+                Text(NSLocalizedString("settings.flashcards.system.header", value: "Flashcard System", comment: "Flashcard system header"))
             }
             
             Section {
-                Text("Daily limits and study options")
+                Text(NSLocalizedString("settings.flashcards.study.body", value: "Daily limits and study options", comment: "Flashcards study body"))
                     .foregroundColor(.secondary)
             } header: {
-                Text("Study Options")
+                Text(NSLocalizedString("settings.flashcards.study.header", value: "Study Options", comment: "Flashcards study header"))
             }
         }
         .listStyle(.insetGrouped)
-        .navigationTitle("Flashcards")
+        .navigationTitle(NSLocalizedString("settings.category.flashcards", comment: "Flashcards"))
         .navigationBarTitleDisplayMode(.inline)
     }
     

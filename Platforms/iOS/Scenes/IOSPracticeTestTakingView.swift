@@ -48,13 +48,13 @@ struct IOSPracticeTestTakingView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Exit") {
+                    Button(NSLocalizedString("iospracticetesttaking.button.exit", value: "Exit", comment: "Exit")) {
                         dismiss()
                         store.clearCurrentTest()
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Submit") {
+                    Button(NSLocalizedString("iospracticetesttaking.button.submit", value: "Submit", comment: "Submit")) {
                         showingSubmitConfirmation = true
                     }
                     .disabled(userAnswers.count < test.questions.count)
@@ -62,15 +62,15 @@ struct IOSPracticeTestTakingView: View {
                 }
             }
             .alert("Submit Test?", isPresented: $showingSubmitConfirmation) {
-                Button("Cancel", role: .cancel) { }
-                Button("Submit", role: .destructive) {
+                Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) { }
+                Button(NSLocalizedString("Submit", value: "Submit", comment: ""), role: .destructive) {
                     submitTest()
                 }
             } message: {
                 if userAnswers.count < test.questions.count {
-                    Text("You have answered \(userAnswers.count) out of \(test.questions.count) questions. Unanswered questions will be marked incorrect.")
+                    Text(verbatim: "You have answered \(userAnswers.count) out of \(test.questions.count) questions. Unanswered questions will be marked incorrect.")
                 } else {
-                    Text("Are you sure you want to submit? You cannot change your answers after submission.")
+                    Text(NSLocalizedString("iospracticetesttaking.are.you.sure.you.want", value: "Are you sure you want to submit? You cannot change your answers after submission.", comment: "Are you sure you want to submit? You cannot change..."))
                 }
             }
         }
@@ -87,12 +87,12 @@ struct IOSPracticeTestTakingView: View {
     private var progressHeader: some View {
         VStack(spacing: 12) {
             HStack {
-                Text("Question \(currentQuestionIndex + 1) of \(test.questions.count)")
+                Text(verbatim: "Question \(currentQuestionIndex + 1) of \(test.questions.count)")
                     .font(.subheadline.bold())
                 
                 Spacer()
                 
-                Text("\(userAnswers.count) answered")
+                Text(verbatim: "\(userAnswers.count) answered")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -195,7 +195,7 @@ struct IOSPracticeTestTakingView: View {
                         currentQuestionIndex -= 1
                     }
                 } label: {
-                    Label("Previous", systemImage: "chevron.left")
+                    Label(NSLocalizedString("iospracticetesttaking.label.previous", value: "Previous", comment: "Previous"), systemImage: "chevron.left")
                         .frame(maxWidth: .infinity)
                         .padding()
                         .background(
@@ -212,7 +212,7 @@ struct IOSPracticeTestTakingView: View {
                         currentQuestionIndex += 1
                     }
                 } label: {
-                    Label("Next", systemImage: "chevron.right")
+                    Label(NSLocalizedString("iospracticetesttaking.label.next", value: "Next", comment: "Next"), systemImage: "chevron.right")
                         .labelStyle(.titleAndIcon)
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -233,9 +233,9 @@ struct IOSPracticeTestTakingView: View {
             Image(systemName: "questionmark.circle")
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
-            Text("No questions available")
+            Text(NSLocalizedString("iospracticetesttaking.no.questions.available", value: "No questions available", comment: "No questions available"))
                 .font(.title3.bold())
-            Text("Something went wrong loading the test")
+            Text(NSLocalizedString("iospracticetesttaking.something.went.wrong.loading.the.test", value: "Something went wrong loading the test", comment: "Something went wrong loading the test"))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }

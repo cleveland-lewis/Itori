@@ -71,13 +71,13 @@ struct StudySessionView: View {
                 .progressViewStyle(.linear)
             
             HStack {
-                Text("\(currentIndex + 1) / \(currentCards.count)")
+                Text(verbatim: "\(currentIndex + 1) / \(currentCards.count)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 
                 Spacer()
                 
-                Text("\(cardsStudied) studied")
+                Text(verbatim: "\(cardsStudied) studied")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -191,7 +191,7 @@ struct StudySessionView: View {
             Text(NSLocalizedString("studysession.session.complete", value: "Session Complete!", comment: "Session Complete!"))
                 .font(.title.bold())
             
-            Text("You studied \(cardsStudied) cards")
+            Text(verbatim: "You studied \(cardsStudied) cards")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             

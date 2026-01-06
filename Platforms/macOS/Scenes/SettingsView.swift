@@ -85,7 +85,7 @@ struct SettingsView: View {
         }
         .background(DesignSystem.Colors.appBackground)
         .alert("Health Check", isPresented: $showingHealthCheck, presenting: diagnosticReport) { _ in
-            Button("OK", role: .cancel) { }
+            Button(NSLocalizedString("OK", value: "OK", comment: ""), role: .cancel) { }
         } message: { report in
             if report.issues.isEmpty {
                 Text(NSLocalizedString("settings.all.systems.look.healthy", value: "All systems look healthy.", comment: "All systems look healthy."))

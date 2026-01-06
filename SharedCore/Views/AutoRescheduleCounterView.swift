@@ -13,9 +13,9 @@ struct AutoRescheduleCounterView: View {
     var body: some View {
         Form {
             Section {
-                Text("Auto-Reschedule Invariant Counters")
+                Text(NSLocalizedString("autoreschedulecounter.autoreschedule.invariant.counters", value: "Auto-Reschedule Invariant Counters", comment: "Auto-Reschedule Invariant Counters"))
                     .font(.headline)
-                Text("These counters must remain zero when Auto-Reschedule is OFF. Only 'Suppressed' should increment.")
+                Text(NSLocalizedString("autoreschedulecounter.these.counters.must.remain.zero", value: "These counters must remain zero when Auto-Reschedule is OFF. Only 'Suppressed' should increment.", comment: "These counters must remain zero when Auto-Reschedu..."))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -32,7 +32,7 @@ struct AutoRescheduleCounterView: View {
             Section("Invariant Status") {
                 let enabled = AppSettingsModel.shared.enableAutoReschedule
                 HStack {
-                    Text("Auto-Reschedule Enabled:")
+                    Text(NSLocalizedString("autoreschedulecounter.autoreschedule.enabled", value: "Auto-Reschedule Enabled:", comment: "Auto-Reschedule Enabled:"))
                     Spacer()
                     Text(enabled ? "YES" : "NO")
                         .foregroundColor(enabled ? .green : .red)
@@ -47,7 +47,7 @@ struct AutoRescheduleCounterView: View {
 
                 if let lastReason = counters.lastSuppressionReason {
                     HStack {
-                        Text("Last Suppression:")
+                        Text(NSLocalizedString("autoreschedulecounter.last.suppression", value: "Last Suppression:", comment: "Last Suppression:"))
                         Spacer()
                         Text(lastReason)
                             .font(.caption.monospaced())
@@ -57,8 +57,8 @@ struct AutoRescheduleCounterView: View {
             }
 
             Section("Actions") {
-                Button("Refresh Counters") { refreshCounters() }
-                Button("Reset Counters") {
+                Button(NSLocalizedString("autoreschedulecounter.button.refresh.counters", value: "Refresh Counters", comment: "Refresh Counters")) { refreshCounters() }
+                Button(NSLocalizedString("autoreschedulecounter.button.reset.counters", value: "Reset Counters", comment: "Reset Counters")) {
                     AutoRescheduleActivityCounter.shared.reset()
                     refreshCounters()
                 }
@@ -83,7 +83,7 @@ struct AutoRescheduleCounterView: View {
         HStack {
             Text(title)
             Spacer()
-            Text("\(value)")
+            Text(verbatim: "\(value)")
                 .fontWeight(.bold)
                 .foregroundColor(critical && value > 0 && !AppSettingsModel.shared.enableAutoReschedule ? .red : .primary)
         }

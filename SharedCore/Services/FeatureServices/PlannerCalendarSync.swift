@@ -51,21 +51,19 @@ enum PlannerCalendarSync {
         let formatter = dayKeyFormatter(timeZone: timeZone)
 
         var blocks: [PlannerCalendarBlock] = []
-        var currentKind: String?
         var currentDayKey: String?
         var currentStart: Date?
         var currentEnd: Date?
         var currentSessions: [StoredScheduledSession] = []
 
         func flush() {
-            guard let kind = currentKind,
-                  let dayKey = currentDayKey,
+            guard let dayKey = currentDayKey,
                   let start = currentStart,
                   let end = currentEnd else { return }
-            let notes = buildNotes(kind: kind, dayKey: dayKey, start: start, end: end, sessions: currentSessions, calendar: calendar, timeZone: timeZone)
-            let blockId = blockIdFor(kind: kind, dayKey: dayKey, start: start, end: end, sessions: currentSessions, calendar: calendar, timeZone: timeZone)
-            blocks.append(PlannerCalendarBlock(id: blockId, title: kind, start: start, end: end, notes: notes, dayKey: dayKey))
-            currentKind = nil
+            let title = calendarTitle(for: currentSessions)
+            let notes = buildNotes(kind: title, dayKey: dayKey, start: start, end: end, sessions: currentSessions, calendar: calendar, timeZone: timeZone)
+            let blockId = blockIdFor(kind: title, dayKey: dayKey, start: start, end: end, sessions: currentSessions, calendar: calendar, timeZone: timeZone)
+            blocks.append(PlannerCalendarBlock(id: blockId, title: title, start: start, end: end, notes: notes, dayKey: dayKey))
             currentDayKey = nil
             currentStart = nil
             currentEnd = nil
@@ -73,12 +71,10 @@ enum PlannerCalendarSync {
         }
 
         for session in ordered {
-            let kind = genericCalendarTitle(for: session)
             let start = session.start
             let end = session.end
             let dayKey = formatter.string(from: start)
-            if currentKind == nil {
-                currentKind = kind
+            if currentDayKey == nil {
                 currentDayKey = dayKey
                 currentStart = start
                 currentEnd = end
@@ -88,7 +84,6 @@ enum PlannerCalendarSync {
 
             if currentDayKey != dayKey {
                 flush()
-                currentKind = kind
                 currentDayKey = dayKey
                 currentStart = start
                 currentEnd = end
@@ -96,14 +91,12 @@ enum PlannerCalendarSync {
                 continue
             }
 
-            let sameKind = currentKind == kind
             let gap = start.timeIntervalSince(currentEnd ?? start)
-            if sameKind && gap >= 0 && gap <= gapThreshold {
+            if gap >= 0 && gap <= gapThreshold {
                 currentEnd = max(currentEnd ?? end, end)
                 currentSessions.append(session)
             } else {
                 flush()
-                currentKind = kind
                 currentStart = start
                 currentEnd = end
                 currentSessions = [session]
@@ -196,18 +189,45 @@ enum PlannerCalendarSync {
         timeZone: TimeZone
     ) -> String {
         let tasksById = Dictionary(uniqueKeysWithValues: AssignmentsStore.shared.tasks.map { ($0.id, $0) })
-        let tasks = sessions.map { session -> String in
-            let duration = max(0, Int(session.end.timeIntervalSince(session.start) / 60))
-            let status: String
-            if let assignmentId = session.assignmentId, let task = tasksById[assignmentId] {
-                status = task.isCompleted ? "[x]" : "[ ]"
+        let orderedSessions = sessions.sorted { $0.start < $1.start }
+        var seenKeys = Set<String>()
+        var dueItems: [String] = []
+        var completedItems: [String] = []
+        let dueFormatter = LocaleFormatters.dateAndTime
+
+        for session in orderedSessions {
+            let assignmentId = session.assignmentId
+            let key = assignmentId?.uuidString ?? session.id.uuidString
+            guard !seenKeys.contains(key) else { continue }
+            seenKeys.insert(key)
+
+            let title: String
+            let dueDate: Date
+            let isCompleted: Bool
+
+            if let assignmentId, let task = tasksById[assignmentId] {
+                title = task.title
+                dueDate = task.effectiveDueDateTime ?? task.due ?? session.dueDate
+                isCompleted = task.isCompleted
             } else {
-                status = "[?]"
+                title = session.title
+                dueDate = session.dueDate
+                isCompleted = false
             }
-            return "- \(status) \(session.title): \(durationString(minutes: duration))"
+
+            if isCompleted {
+                completedItems.append("- \(title)")
+            } else {
+                let dueText = dueFormatter.string(from: dueDate)
+                dueItems.append("- \(title) (Due: \(dueText))")
+            }
         }
+
+        let dueHeader = NSLocalizedString("planner.calendar.notes.due", value: "Due:", comment: "Planner calendar notes due section")
+        let completedHeader = NSLocalizedString("planner.calendar.notes.completed", value: "Completed:", comment: "Planner calendar notes completed section")
         let metadata = metadataBlock(kind: kind, dayKey: dayKey, start: start, end: end, sessions: sessions, calendar: calendar, timeZone: timeZone)
-        return (["Planned Tasks"] + tasks + ["", metadata]).joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
+        let lines = [dueHeader] + dueItems + ["", completedHeader] + completedItems + ["", metadata]
+        return lines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private static func metadataBlock(
@@ -256,21 +276,22 @@ enum PlannerCalendarSync {
         return sha256(payload)
     }
 
-    private static func genericCalendarTitle(for session: StoredScheduledSession) -> String {
-        switch session.category {
-        case .homework:
-            return "Homework"
-        case .reading:
-            return "Reading"
-        case .review:
-            return "Review"
-        case .exam, .quiz:
-            return "Studying"
-        case .project:
-            return "Homework"
-        case .none:
-            return "Studying"
+    private static func calendarTitle(for sessions: [StoredScheduledSession]) -> String {
+        let categories = Set(sessions.compactMap { $0.category })
+        if categories.count == 1, let category = categories.first {
+            let base: String
+            switch category {
+            case .homework: base = "Homework"
+            case .reading: base = "Reading"
+            case .review: base = "Review"
+            case .exam: base = "Exam"
+            case .quiz: base = "Quiz"
+            case .project: base = "Project"
+            case .practiceTest: base = "Practice Test"
+            }
+            return "\(base) Session"
         }
+        return "Coursework Session"
     }
 
     private static func durationString(minutes: Int) -> String {

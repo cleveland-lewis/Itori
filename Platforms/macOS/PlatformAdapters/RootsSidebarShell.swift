@@ -24,32 +24,60 @@ struct RootsSidebarShell: View {
 
             // Main content area
             VStack(spacing: 0) {
-                // Show toggle button only when sidebar is hidden
-                if !sidebarVisible {
-                    HStack {
-                        Button(action: {
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                                sidebarVisible.toggle()
+                // Toolbar with quick add and energy indicator
+                HStack(spacing: 12) {
+                    HStack(spacing: 8) {
+                        Menu {
+                            Button(action: {
+                                NotificationCenter.default.post(name: .addAssignmentRequested, object: nil)
+                            }) {
+                                Label(NSLocalizedString("ui.label.assignment", value: "Assignment", comment: "Assignment"), systemImage: "doc.text")
                             }
-                        }) {
-                            Image(systemName: "sidebar.left")
-                                .font(.body)
-                                .foregroundStyle(.secondary)
-                                .frame(width: 32, height: 32)
-                                .background(
-                                    Circle()
-                                        .fill(DesignSystem.Materials.hud.opacity(0.5))
-                                )
+                            
+                            Button(action: {
+                                NotificationCenter.default.post(name: .addEventRequested, object: nil)
+                            }) {
+                                Label(NSLocalizedString("ui.label.event", value: "Event", comment: "Event"), systemImage: "calendar.badge.plus")
+                            }
+                            
+                            Button(action: {
+                                NotificationCenter.default.post(name: .addCourseRequested, object: nil)
+                            }) {
+                                Label(NSLocalizedString("ui.label.course", value: "Course", comment: "Course"), systemImage: "books.vertical")
+                            }
+                            
+                            Divider()
+                            
+                            Button(action: {
+                                NotificationCenter.default.post(name: .addGradeRequested, object: nil)
+                            }) {
+                                Label(NSLocalizedString("ui.label.grade", value: "Grade", comment: "Grade"), systemImage: "chart.bar")
+                            }
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.body.weight(.semibold))
+                                .foregroundStyle(.primary)
+                                .frame(width: 24, height: 24)
                         }
                         .buttonStyle(.plain)
-                        .help("Show Sidebar")
-                        .keyboardShortcut("s", modifiers: [.command, .control])
+                        .help("Quick Add")
+                        .menuStyle(.borderlessButton)
                         
-                        Spacer()
+                        Divider()
+                            .frame(height: 18)
+                            .overlay(Color.primary.opacity(0.12))
+                        
+                        EnergyIndicatorButton(settings: settings, showsBackground: false)
+                            .frame(width: 24, height: 24)
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 12)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(DesignSystem.Materials.hud.opacity(0.6), in: Capsule())
+                    
+                    Spacer()
                 }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 12)
                 
                 // Page content
                 currentPageView
@@ -272,6 +300,118 @@ struct SidebarItem: View {
         } else {
             return Color.clear
         }
+    }
+}
+
+// MARK: - Energy Indicator Button
+
+struct EnergyIndicatorButton: View {
+    @ObservedObject var settings: AppSettingsModel
+    var showsBackground: Bool = true
+    @State private var showPopover = false
+    
+    var body: some View {
+        Button(action: {
+            showPopover.toggle()
+        }) {
+            Image(systemName: energyIcon)
+                .font(.body)
+                .foregroundStyle(energyColor)
+                .frame(width: 32, height: 32)
+                .background(
+                    Group {
+                        if showsBackground {
+                            Circle()
+                                .fill(DesignSystem.Materials.hud.opacity(0.5))
+                        }
+                    }
+                )
+        }
+        .buttonStyle(.plain)
+        .help("Energy Level: \(settings.defaultEnergyLevel)")
+        .popover(isPresented: $showPopover) {
+            EnergyPickerPopover(settings: settings, showPopover: $showPopover)
+        }
+    }
+    
+    private var energyIcon: String {
+        switch settings.defaultEnergyLevel {
+        case "High":
+            return "bolt.fill"
+        case "Low":
+            return "bolt.slash"
+        default: // Medium
+            return "bolt"
+        }
+    }
+    
+    private var energyColor: Color {
+        switch settings.defaultEnergyLevel {
+        case "High":
+            return .green
+        case "Low":
+            return .orange
+        default: // Medium
+            return .yellow
+        }
+    }
+}
+
+struct EnergyPickerPopover: View {
+    @ObservedObject var settings: AppSettingsModel
+    @Binding var showPopover: Bool
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(NSLocalizedString("ui.energy.level", value: "Energy Level", comment: "Energy Level"))
+                .font(.headline)
+            
+            VStack(spacing: 8) {
+                energyOption(title: "High", icon: "bolt.fill", color: .green)
+                energyOption(title: "Medium", icon: "bolt", color: .yellow)
+                energyOption(title: "Low", icon: "bolt.slash", color: .orange)
+            }
+        }
+        .padding(16)
+        .frame(width: 200)
+    }
+    
+    private func energyOption(title: String, icon: String, color: Color) -> some View {
+        Button(action: {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                settings.defaultEnergyLevel = title
+                settings.energySelectionConfirmed = true
+            }
+            showPopover = false
+        }) {
+            HStack(spacing: 12) {
+                Image(systemName: icon)
+                    .font(.body)
+                    .foregroundStyle(color)
+                    .frame(width: 24)
+                
+                Text(title)
+                    .font(.body)
+                    .foregroundStyle(.primary)
+                
+                Spacer()
+                
+                if settings.defaultEnergyLevel == title {
+                    Image(systemName: "checkmark")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(settings.defaultEnergyLevel == title ? 
+                          color.opacity(0.15) : Color.clear)
+            )
+        }
+        .buttonStyle(.plain)
     }
 }
 

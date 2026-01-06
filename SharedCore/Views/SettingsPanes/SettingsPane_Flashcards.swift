@@ -11,7 +11,7 @@ struct FlashcardSettingsView: View {
             }
 
             Section {
-                Text("Turn flashcards on or off across the app. Disabling hides related UI and study flows.")
+                Text(NSLocalizedString("Turn flashcards on or off across the app. Disabling hides related UI and study flows.", value: "Turn flashcards on or off across the app. Disabling hides related UI and study flows.", comment: ""))
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
             }

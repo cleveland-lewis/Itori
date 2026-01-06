@@ -77,7 +77,7 @@ public struct AppLayout {
     
     #if os(iOS)
     public static let iOS = AppLayout(
-        overlayTopInset: 10,
+        overlayTopInset: 8,
         overlayTrailingInset: 16,
         headerHeight: 52,
         headerBottomSpacing: 12

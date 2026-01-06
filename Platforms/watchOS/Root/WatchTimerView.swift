@@ -57,14 +57,14 @@ struct WatchTimerView: View {
                         HStack {
                             Image(systemName: "lock.fill")
                                 .font(.caption2)
-                            Text("Mode locked during session")
+                            Text(NSLocalizedString("Mode locked during session", value: "Mode locked during session", comment: ""))
                                 .font(.caption2)
                         }
                         .foregroundColor(.secondary)
                         .padding(.horizontal)
                         
                         Button(action: stopTimer) {
-                            Label("Stop", systemImage: "stop.fill")
+                            Label(NSLocalizedString("Stop", value: "Stop", comment: ""), systemImage: "stop.fill")
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.borderedProminent)
@@ -75,9 +75,9 @@ struct WatchTimerView: View {
                     VStack(spacing: 12) {
                         // Mode Picker (only when no active session)
                         Picker("Mode", selection: $selectedMode) {
-                            Text("Pomodoro").tag(TimerMode.pomodoro)
-                            Text("Timer").tag(TimerMode.timer)
-                            Text("Stopwatch").tag(TimerMode.stopwatch)
+                            Text(NSLocalizedString("Pomodoro", value: "Pomodoro", comment: "")).tag(TimerMode.pomodoro)
+                            Text(NSLocalizedString("Timer", value: "Timer", comment: "")).tag(TimerMode.timer)
+                            Text(NSLocalizedString("Stopwatch", value: "Stopwatch", comment: "")).tag(TimerMode.stopwatch)
                         }
                         .pickerStyle(.segmented)
                         .padding(.horizontal)
@@ -91,7 +91,7 @@ struct WatchTimerView: View {
                         
                         // Start Button
                         Button(action: startTimer) {
-                            Label("Start", systemImage: "play.fill")
+                            Label(NSLocalizedString("Start", value: "Start", comment: ""), systemImage: "play.fill")
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.borderedProminent)
@@ -171,12 +171,12 @@ private struct AnalogTimerDisplay: View {
                     .rotationEffect(.degrees(-90))
                 
                 // Time display in center
-                Text("\(secondsRemaining / 60)")
+                Text(verbatim: "\(secondsRemaining / 60)")
                     .font(.system(size: 32, weight: .bold, design: .rounded))
                     .monospacedDigit()
             }
             
-            Text("minutes")
+            Text(NSLocalizedString("minutes", value: "minutes", comment: ""))
                 .font(.caption2)
                 .foregroundColor(.secondary)
         }

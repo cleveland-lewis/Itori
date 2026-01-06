@@ -8,17 +8,17 @@ struct IOSPlannerSettingsView: View {
     var body: some View {
         List {
             Section {
-                Text("Planner configuration settings")
+                Text(NSLocalizedString("settings.planner.body", value: "Planner configuration settings", comment: "Planner settings body"))
                     .foregroundColor(.secondary)
             } header: {
-                Text("Planning")
+                Text(NSLocalizedString("settings.planner.header", value: "Planning", comment: "Planner header"))
             } footer: {
-                Text("Configure how assignments are automatically scheduled")
+                Text(NSLocalizedString("settings.planner.footer", value: "Configure how assignments are automatically scheduled", comment: "Planner footer"))
             }
             
             // Auto-Reschedule Section
             Section {
-                Toggle("Enable Auto-Reschedule", isOn: Binding(
+                Toggle(NSLocalizedString("settings.planner.reschedule.enable", value: "Enable Auto-Reschedule", comment: "Enable auto-reschedule"), isOn: Binding(
                     get: { settings.enableAutoReschedule },
                     set: { newValue in
                         settings.enableAutoReschedule = newValue
@@ -35,9 +35,9 @@ struct IOSPlannerSettingsView: View {
                 if settings.enableAutoReschedule {
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
-                            Text("Check Interval")
+                            Text(NSLocalizedString("settings.planner.reschedule.interval", value: "Check Interval", comment: "Auto-reschedule check interval label"))
                             Spacer()
-                            Text("\(settings.autoRescheduleCheckInterval) min")
+                            Text(String(format: NSLocalizedString("settings.planner.reschedule.interval.value", value: "%d min", comment: "Auto-reschedule check interval value"), settings.autoRescheduleCheckInterval))
                                 .foregroundColor(.secondary)
                         }
                         Slider(
@@ -57,7 +57,7 @@ struct IOSPlannerSettingsView: View {
                         }
                     }
                     
-                    Toggle("Allow Pushing Lower Priority Tasks", isOn: Binding(
+                    Toggle(NSLocalizedString("settings.planner.reschedule.push_lower", value: "Allow Pushing Lower Priority Tasks", comment: "Allow pushing lower priority tasks"), isOn: Binding(
                         get: { settings.autoReschedulePushLowerPriority },
                         set: { settings.autoReschedulePushLowerPriority = $0; settings.save() }
                     ))
@@ -65,9 +65,9 @@ struct IOSPlannerSettingsView: View {
                     if settings.autoReschedulePushLowerPriority {
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
-                                Text("Max Tasks to Push")
+                                Text(NSLocalizedString("settings.planner.reschedule.max_push", value: "Max Tasks to Push", comment: "Max tasks to push label"))
                                 Spacer()
-                                Text("\(settings.autoRescheduleMaxPushCount)")
+                                Text(verbatim: "\(settings.autoRescheduleMaxPushCount)")
                                     .foregroundColor(.secondary)
                             }
                             Slider(
@@ -83,27 +83,27 @@ struct IOSPlannerSettingsView: View {
                     
                     NavigationLink {
                         AutoRescheduleHistoryView()
-                            .navigationTitle("Reschedule History")
+                            .navigationTitle(NSLocalizedString("settings.planner.reschedule.history.title", value: "Reschedule History", comment: "Reschedule history title"))
                             .navigationBarTitleDisplayMode(.inline)
                     } label: {
                         HStack {
-                            Text("View History")
+                            Text(NSLocalizedString("settings.planner.reschedule.history", value: "View History", comment: "View reschedule history"))
                             Spacer()
-                            Text("\(AutoRescheduleEngine.shared.rescheduleHistory.count)")
+                            Text(verbatim: "\(AutoRescheduleEngine.shared.rescheduleHistory.count)")
                                 .foregroundColor(.secondary)
                         }
                     }
                 }
             } header: {
-                Text("Auto-Reschedule")
+                Text(NSLocalizedString("settings.planner.reschedule.header", value: "Auto-Reschedule", comment: "Auto-reschedule header"))
             } footer: {
-                Text(settings.enableAutoReschedule 
-                     ? "Automatically reschedule missed tasks to available time slots. Tasks you've manually edited or locked will never be moved."
-                     : "When enabled, missed tasks are automatically rescheduled to keep your schedule up-to-date.")
+                Text(settings.enableAutoReschedule
+                     ? NSLocalizedString("settings.planner.reschedule.footer.enabled", value: "Automatically reschedule missed tasks to available time slots. Tasks you've manually edited or locked will never be moved.", comment: "Auto-reschedule footer enabled")
+                     : NSLocalizedString("settings.planner.reschedule.footer.disabled", value: "When enabled, missed tasks are automatically rescheduled to keep your schedule up-to-date.", comment: "Auto-reschedule footer disabled"))
             }
         }
         .listStyle(.insetGrouped)
-        .navigationTitle("Planner")
+        .navigationTitle(NSLocalizedString("settings.category.planner", comment: "Planner"))
         .navigationBarTitleDisplayMode(.inline)
     }
 }

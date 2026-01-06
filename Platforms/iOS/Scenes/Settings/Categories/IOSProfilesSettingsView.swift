@@ -8,35 +8,35 @@ struct IOSProfilesSettingsView: View {
         List {
             Section {
                 HStack {
-                    Text("Name")
+                    Text(NSLocalizedString("settings.profiles.current.name", value: "Name", comment: "Profile name label"))
                     Spacer()
-                    Text("Student")
+                    Text(NSLocalizedString("settings.profiles.current.name.value", value: "Student", comment: "Profile name value"))
                         .foregroundColor(.secondary)
                 }
                 
                 HStack {
-                    Text("Profile Type")
+                    Text(NSLocalizedString("settings.profiles.current.type", value: "Profile Type", comment: "Profile type label"))
                     Spacer()
-                    Text("Academic")
+                    Text(NSLocalizedString("settings.profiles.current.type.value", value: "Academic", comment: "Profile type value"))
                         .foregroundColor(.secondary)
                 }
             } header: {
-                Text("Current Profile")
+                Text(NSLocalizedString("settings.profiles.current.header", value: "Current Profile", comment: "Current profile header"))
             }
             
             Section {
-                NavigationLink("Manage Profiles") {
-                    Text("Profile management coming soon")
+                NavigationLink(NSLocalizedString("settings.profiles.manage", value: "Manage Profiles", comment: "Manage profiles")) {
+                    Text(NSLocalizedString("settings.profiles.manage.placeholder", value: "Profile management coming soon", comment: "Manage profiles placeholder"))
                         .foregroundColor(.secondary)
                 }
             } header: {
-                Text("Profile Management")
+                Text(NSLocalizedString("settings.profiles.manage.header", value: "Profile Management", comment: "Profile management header"))
             } footer: {
-                Text("Switch between different profiles for work, school, or personal use")
+                Text(NSLocalizedString("settings.profiles.manage.footer", value: "Switch between different profiles for work, school, or personal use", comment: "Profile management footer"))
             }
         }
         .listStyle(.insetGrouped)
-        .navigationTitle("Profiles")
+        .navigationTitle(NSLocalizedString("settings.category.profiles", comment: "Profiles"))
         .navigationBarTitleDisplayMode(.inline)
     }
 }

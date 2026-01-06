@@ -22,7 +22,7 @@ struct VersionDropdownView: View {
                 HStack(spacing: 8) {
                     Image(systemName: "info.circle")
                         .font(.caption)
-                    Text("Itori v\(appVersion)")
+                    Text(verbatim: "Itori v\(appVersion)")
                         .font(.caption)
                         .monospacedDigit()
                     Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
@@ -62,7 +62,7 @@ struct VersionDropdownView: View {
                                 HStack(spacing: 6) {
                                     Image(systemName: "arrow.down.circle.fill")
                                         .foregroundStyle(.blue)
-                                    Text("Update available: v\(version)")
+                                    Text(verbatim: "Update available: v\(version)")
                                         .font(.caption)
                                 }
                             case .error(let message):

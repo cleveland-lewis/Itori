@@ -506,10 +506,10 @@ struct OverallStatusCard: View {
             Text(NSLocalizedString("grades.section.overall_status", comment: "Overall status"))
                 .font(.subheadline.weight(.semibold))
 
-            Text("GPA \(String(format: "%.2f", gpa)) / \(String(format: "%.1f", gpaScale))")
+            Text(String(format: NSLocalizedString("grades.overview.gpa", value: "GPA %.2f / %.1f", comment: "GPA summary"), gpa, gpaScale))
                 .font(emphasize ? .title : .title2)
 
-            Text("Weighted \(String(format: "%.1f", overallPercent))% • \(courses.count) courses")
+            Text(String(format: NSLocalizedString("grades.overview.weighted", value: "Weighted %.1f%% • %d courses", comment: "Weighted overall summary"), overallPercent, courses.count))
                 .font(.footnote)
                 .foregroundColor(.secondary)
 
@@ -518,13 +518,13 @@ struct OverallStatusCard: View {
 
             HStack {
                 if let maxCourse = courses.max(by: { ($0.currentPercentage ?? 0) < ($1.currentPercentage ?? 0) }) {
-                    Text("Highest: \(maxCourse.courseCode) \(Int(maxCourse.currentPercentage ?? 0))%")
+                    Text(verbatim: "Highest: \(maxCourse.courseCode) \(Int(maxCourse.currentPercentage ?? 0))%")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
                 Spacer()
                 if let minCourse = courses.min(by: { ($0.currentPercentage ?? 0) < ($1.currentPercentage ?? 0) }) {
-                    Text("Lowest: \(minCourse.courseCode) \(Int(minCourse.currentPercentage ?? 0))%")
+                    Text(verbatim: "Lowest: \(minCourse.courseCode) \(Int(minCourse.currentPercentage ?? 0))%")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -579,18 +579,18 @@ struct CourseGradeRow: View {
                     .cornerRadius(2)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("\(course.courseCode) · \(course.courseTitle)")
+                    Text(verbatim: "\(course.courseCode) · \(course.courseTitle)")
                         .font(.caption.weight(.semibold))
                         .foregroundColor(.primary)
                         .lineLimit(1)
                     HStack(spacing: 6) {
                         if let pct = course.currentPercentage {
-                            Text("\(String(format: "%.1f", pct))%")
+                            Text(String(format: NSLocalizedString("grades.course.percent", value: "%.1f%%", comment: "Course percent"), pct))
                         } else {
                             Text(NSLocalizedString("grades.display.no_grade", comment: "No grade"))
                         }
-                        if let letter = course.letterGrade { Text("· \(letter)") }
-                        Text("· \(course.creditHours) credits")
+                        if let letter = course.letterGrade { Text(verbatim: "· \(letter)") }
+                        Text(String(format: NSLocalizedString("grades.course.credits", value: "· %d credits", comment: "Course credits"), course.creditHours))
                     }
                     .font(.caption)
                     .foregroundColor(.secondary)
@@ -602,7 +602,7 @@ struct CourseGradeRow: View {
                 VStack(alignment: .trailing, spacing: 6) {
                     ring
                     if let target = course.targetPercentage {
-                        Text("Target \(Int(target))%")
+                        Text(String(format: NSLocalizedString("grades.course.target", value: "Target %d%%", comment: "Target percent"), Int(target)))
                             .font(.caption2.weight(.semibold))
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)
@@ -641,10 +641,10 @@ struct CourseGradeRow: View {
                     .stroke(ringColor, style: StrokeStyle(lineWidth: 6, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                     .frame(width: 44, height: 44)
-                Text("\(Int(pct))%")
+                Text(verbatim: "\(Int(pct))%")
                     .font(.caption2.weight(.semibold))
             } else {
-                Text("—")
+                Text(NSLocalizedString("—", value: "—", comment: ""))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -684,10 +684,10 @@ struct GradeDetailCard: View {
     private func header(_ course: GradeCourseSummary) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text("Grade Components – \(course.courseCode)")
+                Text(String(format: NSLocalizedString("grades.detail.components.title", value: "Grade Components – %@", comment: "Grade components title"), course.courseCode))
                     .font(.subheadline.weight(.semibold))
                 Spacer()
-                Text("GPA Scale: \(String(format: "%.1f", gpaScale))")
+                Text(String(format: NSLocalizedString("grades.gpa_scale", value: "GPA Scale: %.1f", comment: "GPA scale label"), gpaScale))
                     .font(.footnote.weight(.semibold))
                     .foregroundColor(.secondary)
             }
@@ -695,12 +695,12 @@ struct GradeDetailCard: View {
                 .font(.headline)
             HStack(spacing: 8) {
                 if let current = course.currentPercentage {
-                    Text("Current: \(String(format: "%.1f", current))%")
+                    Text(String(format: NSLocalizedString("grades.current.percent", value: "Current: %.1f%%", comment: "Current percent"), current))
                 } else { Text(NSLocalizedString("grades.current", value: "Current: —", comment: "Current: —")) }
                 if let target = course.targetPercentage {
-                    Text("· Target: \(Int(target))%")
+                    Text(String(format: NSLocalizedString("grades.target.percent", value: "· Target: %d%%", comment: "Target percent"), Int(target)))
                 }
-                if let letter = course.letterGrade { Text("· \(letter)") }
+                if let letter = course.letterGrade { Text(verbatim: "· \(letter)") }
             }
             .font(.caption)
             .foregroundColor(.secondary)
@@ -722,7 +722,7 @@ struct GradeDetailCard: View {
                             .font(.caption.weight(.semibold))
                         Spacer()
                         if let earned = comp.earnedPercent {
-                            Text("\(Int(earned))%")
+                            Text(verbatim: "\(Int(earned))%")
                                 .font(.caption.weight(.semibold))
                         } else {
                             Text(NSLocalizedString("grades.no.data.yet", value: "No data yet", comment: "No data yet"))
@@ -730,7 +730,7 @@ struct GradeDetailCard: View {
                                 .foregroundColor(.secondary)
                         }
                     }
-                    Text("Weight: \(Int(comp.weightPercent))%")
+                    Text(String(format: NSLocalizedString("grades.component.weight", value: "Weight: %d%%", comment: "Component weight"), Int(comp.weightPercent)))
                         .font(.caption)
                         .foregroundColor(.secondary)
 
@@ -760,7 +760,7 @@ struct GradeDetailCard: View {
             Slider(value: $whatIfInput, in: 50...100, step: 1) {
                 Text(NSLocalizedString("grades.expected.average.on.remaining.work", value: "Expected average on remaining work", comment: "Expected average on remaining work"))
             }
-            Text("If you score \(Int(whatIfInput))% on remaining work, your projected final grade is \(String(format: "%.1f", projectedGrade(detail)))%.")
+            Text(String(format: NSLocalizedString("grades.whatif.summary", value: "If you score %d%% on remaining work, your projected final grade is %.1f%%.", comment: "What-if summary"), Int(whatIfInput), projectedGrade(detail)))
                 .font(.footnote)
                 .foregroundColor(.secondary)
         }
@@ -825,7 +825,7 @@ struct EditTargetGradeSheet: View {
                     Slider(value: $targetPercent, in: 0...100, step: 1) {
                         Text(NSLocalizedString("grades.target", value: "Target %", comment: "Target %"))
                     }
-                    Text("\(Int(targetPercent))%")
+                    Text(verbatim: "\(Int(targetPercent))%")
                         .font(.headline)
                 }
 
@@ -836,7 +836,7 @@ struct EditTargetGradeSheet: View {
                                 TextField("Name", text: Binding(get: { comp.name }, set: { comp.name = $0 }))
                                     .frame(width: 140)
                                 Stepper(value: Binding(get: { Int(comp.weightPercent) }, set: { comp.weightPercent = Double($0) }), in: 0...100) {
-                                    Text("\(Int(comp.weightPercent))%")
+                                    Text(verbatim: "\(Int(comp.weightPercent))%")
                                 }
                                 Slider(value: Binding(get: { comp.earnedPercent ?? 0 }, set: { comp.earnedPercent = $0 }), in: 0...100)
                                     .frame(maxWidth: 160)

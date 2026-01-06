@@ -101,14 +101,14 @@ struct LLMSettingsView: View {
             
             Section("Generation Parameters") {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Temperature: \(config.temperature, specifier: "%.2f")")
+                    Text(String(format: NSLocalizedString("llm.settings.temperature", value: "Temperature: %.2f", comment: "Temperature label"), config.temperature))
                         .font(.caption)
                     Slider(value: $config.temperature, in: 0...2, step: 0.1)
                 }
                 .help("Controls randomness: 0 = deterministic, 2 = very random")
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Max Tokens: \(config.maxTokens)")
+                    Text(verbatim: "Max Tokens: \(config.maxTokens)")
                         .font(.caption)
                     Slider(value: Binding(
                         get: { Double(config.maxTokens) },
@@ -118,7 +118,7 @@ struct LLMSettingsView: View {
                 .help("Maximum number of tokens to generate")
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Timeout: \(Int(config.timeout))s")
+                    Text(verbatim: "Timeout: \(Int(config.timeout))s")
                         .font(.caption)
                     Slider(value: $config.timeout, in: 10...300, step: 10)
                 }

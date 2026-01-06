@@ -47,11 +47,11 @@ struct DashboardView: View {
             let isNarrow = proxy.size.width < 980
             ScrollView(.vertical, showsIndicators: true) {
                 VStack(spacing: 0) {
-                    // ROW 1: STATUS STRIP (no card chrome)
-                    statusStrip
-                        .animateEntry(isLoaded: isLoaded, index: 0)
-                        .padding(.bottom, cardSpacing)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    // ROW 1: STATUS STRIP REMOVED - User requested removal of today summary
+                    // statusStrip
+                    //     .animateEntry(isLoaded: isLoaded, index: 0)
+                    //     .padding(.bottom, cardSpacing)
+                    //     .frame(maxWidth: .infinity, alignment: .leading)
 
                         // ROW 2: ANALYTICS
                         Group {
@@ -232,7 +232,7 @@ struct DashboardView: View {
     private func triggerNextAssignment() {
         let today = Calendar.current.startOfDay(for: Date())
         let upcoming = assignmentsStore.tasks
-            .filter { !$0.isCompleted }
+            .filter { !$0.isCompleted && $0.type != .practiceTest }
             .compactMap { task -> (task: AppTask, due: Date)? in
                 guard let due = task.due else { return nil }
                 return (task, due)
@@ -358,23 +358,14 @@ struct DashboardView: View {
     
     private var statusHeadline: String {
         let dueCount = tasksDueToday().count
-        let plannedCount = assignmentsStore.tasks.filter { !$0.isCompleted && AssignmentPlansStore.shared.plan(for: $0.id) != nil }.count
+        let plannedCount = assignmentsStore.tasks.filter { !$0.isCompleted && $0.type != .practiceTest && AssignmentPlansStore.shared.plan(for: $0.id) != nil }.count
         let scheduledMinutes = tasksDueToday().reduce(0) { $0 + $1.estimatedMinutes }
         
-        let dueText = String.localizedStringWithFormat(
-            NSLocalizedString("tasks_due_count", comment: ""),
-            dueCount
-        )
-        let plannedText = String.localizedStringWithFormat(
-            NSLocalizedString("assignments_planned", comment: ""),
-            plannedCount
-        )
-        let scheduledText = String.localizedStringWithFormat(
-            NSLocalizedString("minutes_scheduled", comment: ""),
-            scheduledMinutes
-        )
+        let dueText = DashboardLocalizations.tasksDueCount(dueCount)
+        let plannedText = DashboardLocalizations.assignmentsPlanned(plannedCount)
+        let scheduledText = DashboardLocalizations.minutesScheduled(scheduledMinutes)
         
-        return "\(NSLocalizedString("common.today", comment: "")): \(dueText) · \(plannedText) · \(scheduledText)"
+        return "\(CommonLocalizations.today): \(dueText) · \(plannedText) · \(scheduledText)"
     }
 
     private var shouldShowEnergyCard: Bool {
@@ -413,7 +404,7 @@ struct DashboardView: View {
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(.secondary)
                     }
-                    Text("\(tasksDueToday().count)")
+                    Text(verbatim: "\(tasksDueToday().count)")
                         .font(.system(size: 32, weight: .bold))
                         .contentTransition(.numericText())
                 }
@@ -429,7 +420,7 @@ struct DashboardView: View {
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(.secondary)
                     }
-                    Text("\(todaysCalendarEvents().count)")
+                    Text(verbatim: "\(todaysCalendarEvents().count)")
                         .font(.system(size: 32, weight: .bold))
                         .contentTransition(.numericText())
                 }
@@ -445,7 +436,7 @@ struct DashboardView: View {
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(.secondary)
                     }
-                    Text("\(assignmentsStore.tasks.filter { !$0.isCompleted }.count)")
+                    Text(verbatim: "\(assignmentsStore.tasks.filter { !$0.isCompleted && $0.type != .practiceTest }.count)")
                         .font(.system(size: 32, weight: .bold))
                         .contentTransition(.numericText())
                 }
@@ -469,7 +460,7 @@ struct DashboardView: View {
                     .foregroundStyle(.secondary)
 
                 let dueToday = tasksDueToday().count
-                Text("\(dueToday)")
+                Text(verbatim: "\(dueToday)")
                     .font(.system(size: 40, weight: .bold))
                 Text(String.localizedStringWithFormat(
                     NSLocalizedString("tasks_due_today", comment: ""),
@@ -659,7 +650,7 @@ struct DashboardView: View {
                         .foregroundStyle(.secondary)
                     
                     if let location = event.location {
-                        Text("·")
+                        Text(NSLocalizedString("·", value: "·", comment: ""))
                             .font(.caption)
                             .foregroundStyle(.tertiary)
                         Text(location)
@@ -689,7 +680,7 @@ struct DashboardView: View {
                 // View event details
                 appModel.selectedPage = .calendar
             } label: {
-                Label("View Details", systemImage: "eye")
+                Label(NSLocalizedString("View Details", value: "View Details", comment: ""), systemImage: "eye")
             }
             
             Divider()
@@ -698,7 +689,7 @@ struct DashboardView: View {
                 // Edit event
                 showAddEventSheet = true
             } label: {
-                Label("Edit Event", systemImage: "pencil")
+                Label(NSLocalizedString("Edit Event", value: "Edit Event", comment: ""), systemImage: "pencil")
             }
             
             Button(role: .destructive) {
@@ -707,7 +698,7 @@ struct DashboardView: View {
                     events.remove(at: index)
                 }
             } label: {
-                Label("Delete Event", systemImage: "trash")
+                Label(NSLocalizedString("Delete Event", value: "Delete Event", comment: ""), systemImage: "trash")
             }
         }
     }
@@ -719,18 +710,28 @@ struct DashboardView: View {
         ) {
             let items = upcomingAssignmentItems(limit: 6)
             if items.isEmpty {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text(NSLocalizedString("dashboard.assignments.no_upcoming", comment: ""))
-                        .font(.subheadline.weight(.semibold))
-                    Text(NSLocalizedString("dashboard.assignments.add_prompt", comment: ""))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Button(NSLocalizedString("dashboard.button.add_assignment", comment: "")) {
+                VStack(spacing: 16) {
+                    Image(systemName: "tray")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.secondary.opacity(0.5))
+                        .padding(.top, 12)
+                    
+                    VStack(spacing: 6) {
+                        Text(NSLocalizedString("No upcoming assignments", value: "No upcoming assignments", comment: ""))
+                            .font(.subheadline.weight(.semibold))
+                        Text(NSLocalizedString("Add an assignment to see it here", value: "Add an assignment to see it here", comment: ""))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    
+                    Button(NSLocalizedString("Add Assignment", value: "Add Assignment", comment: "")) {
                         showAddAssignmentSheet = true
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.small)
                 }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
             } else {
                 VStack(alignment: .leading, spacing: 12) {
                     ForEach(items) { item in
@@ -742,11 +743,13 @@ struct DashboardView: View {
             Button {
                 showAddAssignmentSheet = true
             } label: {
-                dashboardButtonLabel(title: NSLocalizedString("dashboard.button.add_assignment", comment: ""), systemImage: "plus")
+                Label(NSLocalizedString("Add Assignment", value: "Add Assignment", comment: ""), systemImage: "plus")
+                    .labelStyle(.titleOnly)
             }
-            .buttonStyle(.plain)
-            .font(.headline)
-            .help(NSLocalizedString("dashboard.help.add_assignment", comment: ""))
+            .buttonStyle(.borderless)
+            .controlSize(.small)
+            .foregroundStyle(.secondary)
+            .help("Add a new assignment")
         } footer: {
             let total = upcomingAssignmentItems(limit: nil).count
             if total > 6 {
@@ -797,6 +800,7 @@ struct DashboardView: View {
         case .exam: return .red.opacity(0.5)
         case .quiz: return .orange.opacity(0.5)
         case .review: return .purple.opacity(0.4)
+        case .practiceTest: return .pink.opacity(0.5)
         case .study:
             fallthrough
         case .project: return .teal.opacity(0.5)
@@ -922,6 +926,7 @@ struct DashboardView: View {
         let end = calendar.date(byAdding: .day, value: 6, to: start) ?? start
 
         let upcoming = assignmentsStore.tasks.filter { task in
+            guard task.type != .practiceTest else { return false }
             guard let due = task.due else { return false }
             return due >= start && due <= end && !task.isCompleted
         }
@@ -946,11 +951,20 @@ struct DashboardView: View {
 
     private func upcomingAssignments() -> [AppTask] {
         let now = Date()
+        let sevenDaysFromNow = Calendar.current.date(byAdding: .day, value: 7, to: now) ?? now
+        
         return assignmentsStore.tasks
-            .filter { !$0.isCompleted }
-            .compactMap { task -> AppTask? in
-                guard let due = task.effectiveDueDateTime else { return nil }
-                return due >= now ? task : nil
+            .filter { task in
+                // Only show assignments (homework, project, reading, exam, quiz)
+                guard task.type == .homework || task.type == .project || task.type == .reading || 
+                      task.type == .exam || task.type == .quiz else {
+                    return false
+                }
+                // Only incomplete assignments
+                guard !task.isCompleted else { return false }
+                // Only assignments with due dates in the next 7 days
+                guard let due = task.effectiveDueDateTime else { return false }
+                return due >= now && due <= sevenDaysFromNow
             }
             .sorted { lhs, rhs in
                 let leftDue = lhs.effectiveDueDateTime ?? Date.distantFuture
@@ -1065,6 +1079,7 @@ struct DashboardView: View {
         case .exam: return .red.opacity(0.7)
         case .quiz: return .orange.opacity(0.7)
         case .review: return .purple.opacity(0.6)
+        case .practiceTest: return .pink.opacity(0.6)
         case .study:
             fallthrough
         case .project: return .teal.opacity(0.7)
@@ -1108,7 +1123,7 @@ struct DashboardView: View {
                         tasks[index].isDone = true
                     }
                 } label: {
-                    Label("Mark Complete", systemImage: "checkmark.circle")
+                    Label(NSLocalizedString("Mark Complete", value: "Mark Complete", comment: ""), systemImage: "checkmark.circle")
                 }
                 
                 Divider()
@@ -1118,14 +1133,14 @@ struct DashboardView: View {
                 // View assignment details
                 appModel.selectedPage = .assignments
             } label: {
-                Label("View Details", systemImage: "eye")
+                Label(NSLocalizedString("View Details", value: "View Details", comment: ""), systemImage: "eye")
             }
             
             Button {
                 // Edit assignment
                 showAddAssignmentSheet = true
             } label: {
-                Label("Edit Assignment", systemImage: "pencil")
+                Label(NSLocalizedString("Edit Assignment", value: "Edit Assignment", comment: ""), systemImage: "pencil")
             }
             
             Divider()
@@ -1136,7 +1151,7 @@ struct DashboardView: View {
                     tasks.remove(at: index)
                 }
             } label: {
-                Label("Delete Assignment", systemImage: "trash")
+                Label(NSLocalizedString("Delete Assignment", value: "Delete Assignment", comment: ""), systemImage: "trash")
             }
         }
         .onTapGesture {
@@ -1173,13 +1188,13 @@ struct DashboardView: View {
 
     private var workRemainingCard: some View {
         DashboardCard(
-            title: NSLocalizedString("dashboard.section.todays_work", comment: ""),
+            title: DashboardLocalizations.sectionTodaysWork,
             isLoading: !isLoaded
         ) {
             let snapshot = remainingWorkSnapshot
             if snapshot.plannedMinutes <= 0 {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("—")
+                    Text(NSLocalizedString("—", value: "—", comment: ""))
                         .font(.system(size: 36, weight: .bold))
                     Text(NSLocalizedString("dashboard.planner.no_plan_time", comment: ""))
                         .font(.caption)
@@ -1187,7 +1202,7 @@ struct DashboardView: View {
                 }
             } else {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("\(snapshot.remainingPercent)%")
+                    Text(verbatim: "\(snapshot.remainingPercent)%")
                         .font(.system(size: 36, weight: .bold))
                     Text(String.localizedStringWithFormat(
                         NSLocalizedString("minutes_remaining", comment: ""),
@@ -1337,7 +1352,7 @@ struct DashboardView: View {
         let cal = Calendar.current
         // Returns ALL tasks due today, including personal tasks (courseId == nil)
         return assignmentsStore.tasks
-            .filter { !$0.isCompleted }
+            .filter { !$0.isCompleted && $0.type != .practiceTest }
             .filter { task in
                 guard let due = task.due else { return false }
                 return cal.isDateInToday(due)
@@ -1347,14 +1362,53 @@ struct DashboardView: View {
 
     private var plannerSessionsToday: [StoredScheduledSession] {
         let cal = Calendar.current
-        return plannerStore.scheduled
+        let scheduled = plannerStore.scheduled
             .filter { cal.isDateInToday($0.start) }
+        let scheduledIds = Set(scheduled.compactMap { $0.assignmentId })
+        let practiceSessions = practiceTestSessionsToday(excluding: scheduledIds)
+        return (scheduled + practiceSessions)
             .sorted {
                 if $0.start != $1.start {
                     return $0.start < $1.start
                 }
                 return $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
             }
+    }
+
+    private func practiceTestSessionsToday(excluding scheduledIds: Set<UUID>) -> [StoredScheduledSession] {
+        let cal = Calendar.current
+        let todayTasks = assignmentsStore.tasks.filter { task in
+            guard task.type == .practiceTest else { return false }
+            guard let due = task.due, cal.isDateInToday(due) else { return false }
+            return !scheduledIds.contains(task.id)
+        }
+
+        return todayTasks.compactMap { task in
+            guard let due = task.due else { return nil }
+            let start = task.effectiveDueDateTime ?? due
+            let end = cal.date(byAdding: .minute, value: max(15, task.estimatedMinutes), to: start) ?? start
+            return StoredScheduledSession(
+                id: UUID(),
+                assignmentId: task.id,
+                sessionIndex: 1,
+                sessionCount: 1,
+                title: task.title,
+                dueDate: due,
+                estimatedMinutes: task.estimatedMinutes,
+                isLockedToDueDate: task.locked,
+                category: .practiceTest,
+                start: start,
+                end: end,
+                type: .task,
+                isLocked: false,
+                isUserEdited: false,
+                userEditedAt: nil,
+                aiInputHash: nil,
+                aiComputedAt: nil,
+                aiConfidence: nil,
+                aiProvenance: nil
+            )
+        }
     }
 
     private func plannerSessionRow(_ session: StoredScheduledSession) -> some View {
@@ -1586,7 +1640,7 @@ private struct DashboardCalendarColumn: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
-            Text("dashboard.calendar.header".localized).rootsSectionHeader()
+            Text(NSLocalizedString("dashboard.calendar.header", value: "dashboard.calendar.header", comment: "")).rootsSectionHeader()
             Text(monthHeader(for: selectedDate)).rootsBodySecondary()
 
             LazyVGrid(columns: columns, spacing: DesignSystem.Layout.spacing.small) {
@@ -1779,11 +1833,11 @@ private struct DashboardTasksColumn: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
-            Text("dashboard.assignments.due_today".localized)
+            Text(NSLocalizedString("dashboard.assignments.due_today", value: "dashboard.assignments.due_today", comment: ""))
                 .rootsSectionHeader()
 
             if tasks.isEmpty {
-                Text("dashboard.assignments.empty".localized)
+                Text(NSLocalizedString("dashboard.assignments.empty", value: "dashboard.assignments.empty", comment: ""))
                     .rootsBodySecondary()
             } else {
                 ScrollView {
@@ -1808,11 +1862,11 @@ private struct DashboardEventsColumn: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
-            Text("dashboard.events.upcoming".localized)
+            Text(NSLocalizedString("dashboard.events.upcoming", value: "dashboard.events.upcoming", comment: ""))
                 .rootsSectionHeader()
 
             if events.isEmpty {
-                Text("dashboard.events.empty".localized)
+                Text(NSLocalizedString("dashboard.events.empty", value: "dashboard.events.empty", comment: ""))
                     .rootsBodySecondary()
             } else {
                 ScrollView {
@@ -1926,7 +1980,7 @@ struct StaticMonthCalendarView: View {
             weekdayHeader
             LazyVGrid(columns: columns, spacing: DesignSystem.Layout.spacing.small) {
                 ForEach(leadingBlanks, id: \.self) { _ in
-                    Text(" ")
+                    Text(NSLocalizedString(" ", value: " ", comment: ""))
                         .frame(maxWidth: .infinity, minHeight: 28)
                 }
                 ForEach(daysInMonth, id: \.self) { day in
@@ -1957,7 +2011,7 @@ struct StaticMonthCalendarView: View {
 
     private func dayView(_ day: Int) -> some View {
         let isToday = day == todayDay && isCurrentMonth
-        return Text("\(day)")
+        return Text(verbatim: "\(day)")
             .font(.caption.weight(.semibold))
             .frame(maxWidth: .infinity, minHeight: 32)
             .padding(DesignSystem.Spacing.xsmall)

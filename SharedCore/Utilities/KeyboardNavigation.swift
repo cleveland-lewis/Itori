@@ -66,58 +66,58 @@ public struct AppKeyboardCommands: Commands {
     
     public var body: some Commands {
         CommandGroup(after: .newItem) {
-            Button("Add Event...") {
+            Button(NSLocalizedString("ui.button.add.event", value: "Add Event...", comment: "Add Event...")) {
                 NotificationCenter.default.post(name: .addEvent, object: nil)
             }
             .keyboardShortcut("n", modifiers: [.command])
             
-            Button("Add Course...") {
+            Button(NSLocalizedString("ui.button.add.course", value: "Add Course...", comment: "Add Course...")) {
                 NotificationCenter.default.post(name: .addCourse, object: nil)
             }
             .keyboardShortcut("n", modifiers: [.command, .shift])
             
-            Button("Add Assignment...") {
+            Button(NSLocalizedString("ui.button.add.assignment", value: "Add Assignment...", comment: "Add Assignment...")) {
                 NotificationCenter.default.post(name: .addAssignment, object: nil)
             }
             .keyboardShortcut("a", modifiers: [.command])
         }
 
         CommandGroup(after: .textEditing) {
-            Button("Search...") {
+            Button(NSLocalizedString("ui.button.search", value: "Search...", comment: "Search...")) {
                 NotificationCenter.default.post(name: .focusSearch, object: nil)
             }
             .keyboardShortcut("f", modifiers: [.command])
         }
         
         CommandGroup(after: .sidebar) {
-            Button("Focus Mode") {
+            Button(NSLocalizedString("ui.button.focus.mode", value: "Focus Mode", comment: "Focus Mode")) {
                 NotificationCenter.default.post(name: .toggleFocusMode, object: nil)
             }
             .keyboardShortcut("f", modifiers: [.command, .option])
             
             Divider()
             
-            Button("Previous Day") {
+            Button(NSLocalizedString("ui.button.previous.day", value: "Previous Day", comment: "Previous Day")) {
                 NotificationCenter.default.post(name: .previousDay, object: nil)
             }
             .keyboardShortcut(.leftArrow, modifiers: [.command])
             
-            Button("Next Day") {
+            Button(NSLocalizedString("ui.button.next.day", value: "Next Day", comment: "Next Day")) {
                 NotificationCenter.default.post(name: .nextDay, object: nil)
             }
             .keyboardShortcut(.rightArrow, modifiers: [.command])
             
-            Button("Previous Week") {
+            Button(NSLocalizedString("ui.button.previous.week", value: "Previous Week", comment: "Previous Week")) {
                 NotificationCenter.default.post(name: .previousWeek, object: nil)
             }
             .keyboardShortcut(.leftArrow, modifiers: [.command, .option])
             
-            Button("Next Week") {
+            Button(NSLocalizedString("ui.button.next.week", value: "Next Week", comment: "Next Week")) {
                 NotificationCenter.default.post(name: .nextWeek, object: nil)
             }
             .keyboardShortcut(.rightArrow, modifiers: [.command, .option])
             
-            Button("Today") {
+            Button(NSLocalizedString("ui.button.today", value: "Today", comment: "Today")) {
                 NotificationCenter.default.post(name: .goToTodayNotification, object: nil)
             }
             .keyboardShortcut("t", modifiers: [.command])
@@ -125,7 +125,7 @@ public struct AppKeyboardCommands: Commands {
         
         #if DEBUG
         CommandGroup(after: .help) {
-            Button("Accessibility Debug...") {
+            Button(NSLocalizedString("ui.button.accessibility.debug", value: "Accessibility Debug...", comment: "Accessibility Debug...")) {
                 NotificationCenter.default.post(name: .showAccessibilityDebug, object: nil)
             }
             .keyboardShortcut("d", modifiers: [.command, .option, .shift])

@@ -165,7 +165,7 @@ struct TimerPageView_Simple: View {
                 // Activity detail panel WITH TextEditor
                 VStack(alignment: .leading, spacing: 12) {
                     if let activity = currentActivity {
-                        Text("Selected: \(activity.name)")
+                        Text(verbatim: "Selected: \(activity.name)")
                             .font(.headline)
                         
                         VStack(alignment: .leading, spacing: 8) {
@@ -277,7 +277,7 @@ struct TimerPageView_Simple: View {
                 Text(NSLocalizedString("timer_simple.study.summary", value: "Study Summary", comment: "Study Summary"))
                     .font(.headline)
                 
-                Text("Activities: \(activities.count)")
+                Text(verbatim: "Activities: \(activities.count)")
                     .font(.caption)
             }
             .frame(width: 420, alignment: .top)
@@ -427,7 +427,7 @@ struct TimerPageView_Simple: View {
                 .frame(height: 12)
                 .padding(.bottom, 4)
                 
-                Button("Start", action: startTimer)
+                Button(NSLocalizedString("Start", value: "Start", comment: ""), action: startTimer)
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
                     .padding(.top, 4)
@@ -493,13 +493,13 @@ struct TimerPageView_Simple: View {
         HStack {
             HStack(spacing: 6) {
                 Circle().fill(Color.accentColor).frame(width: 8, height: 8)
-                Text("Today: \(formattedDuration(totalToday))")
+                Text(verbatim: "Today: \(formattedDuration(totalToday))")
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }
             Spacer()
             if let activity = currentActivity {
-                Text("Selected: \(activity.name) • \(formattedDuration(activity.todayTrackedSeconds)) today")
+                Text(verbatim: "Selected: \(activity.name) • \(formattedDuration(activity.todayTrackedSeconds)) today")
                     .font(.footnote)
                     .foregroundColor(.secondary)
             }

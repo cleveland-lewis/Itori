@@ -30,8 +30,8 @@ struct SettingsPane_General: View {
                 .onChange(of: settings.sidebarBehavior) { _, _ in settings.save() }
 
                 Picker("Compact Density", selection: $settings.compactMode) {
-                    Text("Off").tag(false)
-                    Text("On").tag(true)
+                    Text(NSLocalizedString("Off", value: "Off", comment: "")).tag(false)
+                    Text(NSLocalizedString("On", value: "On", comment: "")).tag(true)
                 }
                 .onChange(of: settings.compactMode) { _, _ in settings.save() }
             }

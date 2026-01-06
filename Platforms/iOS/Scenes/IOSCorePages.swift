@@ -3,6 +3,7 @@ import SwiftUI
 import EventKit
 import EventKit
 import UIKit
+import Charts
 
 struct IOSPlannerView: View {
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
@@ -152,7 +153,7 @@ struct IOSPlannerView: View {
                 Button {
                     SceneActivationHelper.openPlannerWindow(for: selectedDate)
                 } label: {
-                    Label("Open in New Window", systemImage: "doc.on.doc")
+                    Label(NSLocalizedString("Open in New Window", value: "Open in New Window", comment: ""), systemImage: "doc.on.doc")
                 }
             }
         }
@@ -263,6 +264,7 @@ struct IOSPlannerView: View {
             return Assignment(
                 id: task.id,
                 courseId: task.courseId,
+                moduleIds: task.moduleIds,
                 title: task.title,
                 dueDate: due,
                 estimatedMinutes: task.estimatedMinutes,
@@ -284,6 +286,7 @@ struct IOSPlannerView: View {
         case .review: return .review
         case .project: return .project
         case .study: return .review
+        case .practiceTest: return .practiceTest
         }
     }
 
@@ -307,6 +310,7 @@ struct IOSPlannerView: View {
     private var filteredTasks: [AppTask] {
         let courseLookup = coursesStore.courses
         return assignmentsStore.tasks.filter { task in
+            if task.category == .practiceTest { return false }
             guard let courseId = task.courseId else {
                 return filterState.selectedCourseId == nil && filterState.selectedSemesterId == nil
             }
@@ -383,11 +387,11 @@ struct IOSAssignmentsView: View {
             }
             if assignmentsStore.tasks.isEmpty {
                 ContentUnavailableView {
-                    Label("No Tasks Yet", systemImage: "checkmark.circle")
+                    Label(NSLocalizedString("No Tasks Yet", value: "No Tasks Yet", comment: ""), systemImage: "checkmark.circle")
                 } description: {
-                    Text("Capture tasks and due dates here")
+                    Text(NSLocalizedString("Capture tasks and due dates here", value: "Capture tasks and due dates here", comment: ""))
                 } actions: {
-                    Button("Add First Task") {
+                    Button(NSLocalizedString("Add First Task", value: "Add First Task", comment: "")) {
                         showingEditor = true
                     }
                     .buttonStyle(.borderedProminent)
@@ -412,11 +416,11 @@ struct IOSAssignmentsView: View {
                             Text(task.title)
                                 .font(.body.weight(.medium))
                             if task.due != nil {
-                                Text("Due \(formatDueDisplay(for: task))")
+                                Text(verbatim: "Due \(formatDueDisplay(for: task))")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             } else {
-                                Text("No due date")
+                                Text(NSLocalizedString("No due date", value: "No due date", comment: ""))
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -442,12 +446,12 @@ struct IOSAssignmentsView: View {
                             Button {
                                 SceneActivationHelper.openAssignmentWindow(for: task)
                             } label: {
-                                Label("Open in New Window", systemImage: "doc.on.doc")
+                                Label(NSLocalizedString("Open in New Window", value: "Open in New Window", comment: ""), systemImage: "doc.on.doc")
                             }
                         }
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        Button("timer.context.go_to_planner".localized) {
+                        Button(NSLocalizedString("timer.context.go_to_planner", value: "timer.context.go_to_planner", comment: "")) {
                             openPlanner(for: task)
                         }
                         .tint(.accentColor)
@@ -496,6 +500,11 @@ struct IOSAssignmentsView: View {
         var updated = task
         updated.isCompleted.toggle()
         assignmentsStore.updateTask(updated)
+        
+        // Play completion sound if task was just completed
+        if updated.isCompleted {
+            AudioFeedbackService.shared.playTimerEnd()
+        }
     }
 
     private func openPlanner(for task: AppTask) {
@@ -604,12 +613,18 @@ struct IOSCoursesView: View {
                     filterState: filterState
                 )
             }
+
+            Section {
+                assignmentStatusCard
+                    .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                    .listRowBackground(Color.clear)
+            }
             if coursesStore.activeSemesters.isEmpty {
                 IOSInlineEmptyState(
                     title: "No semester yet",
                     subtitle: "Create a semester to organize courses."
                 )
-                Button("Create Semester") {
+                Button(NSLocalizedString("Create Semester", value: "Create Semester", comment: "")) {
                     showingSemesterEditor = true
                 }
             } else if coursesStore.activeCourses.isEmpty {
@@ -617,7 +632,7 @@ struct IOSCoursesView: View {
                     title: "No active courses",
                     subtitle: "Add a course to filter tasks and planner blocks."
                 )
-                Button("Add Course") {
+                Button(NSLocalizedString("Add Course", value: "Add Course", comment: "")) {
                     showingCourseEditor = true
                 }
             } else {
@@ -643,7 +658,7 @@ struct IOSCoursesView: View {
                                 Button {
                                     SceneActivationHelper.openCourseWindow(for: course)
                                 } label: {
-                                    Label("Open in New Window", systemImage: "doc.on.doc")
+                                    Label(NSLocalizedString("Open in New Window", value: "Open in New Window", comment: ""), systemImage: "doc.on.doc")
                                 }
                             }
                         }
@@ -704,10 +719,123 @@ struct IOSCoursesView: View {
         guard let payload else { return false }
         return DragDropHandler.reassignAssignment(payload, to: course.id, assignmentsStore: assignmentsStore)
     }
+
+    private var assignmentStatusCard: some View {
+        RootsCard(title: nil, subtitle: nil, icon: nil) {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Text(NSLocalizedString("Assignment Status", value: "Assignment Status", comment: ""))
+                        .font(.headline)
+                    Spacer()
+                }
+                assignmentStatusChart
+            }
+        }
+    }
+
+    private struct AssignmentStatusItem: Identifiable {
+        let id = UUID()
+        let status: String
+        let count: Int
+        let color: Color
+    }
+
+    private struct AssignmentLegendRow: Identifiable {
+        let id = UUID()
+        let label: String
+        let count: Int
+        let color: Color
+        let percentText: String?
+    }
+
+    private func assignmentStatusItems() -> [AssignmentStatusItem] {
+        let plans = AssignmentPlansStore.shared
+        let completed = assignmentsStore.tasks.filter { $0.isCompleted }.count
+        let inProgress = assignmentsStore.tasks.filter { task in
+            !task.isCompleted && plans.plan(for: task.id) != nil
+        }.count
+        let notStarted = assignmentsStore.tasks.filter { task in
+            !task.isCompleted && plans.plan(for: task.id) == nil
+        }.count
+
+        return [
+            AssignmentStatusItem(status: "Not Started", count: notStarted, color: .orange),
+            AssignmentStatusItem(status: "In Progress", count: inProgress, color: .yellow),
+            AssignmentStatusItem(status: "Completed", count: completed, color: .green)
+        ]
+    }
+
+    private func assignmentStatusLegend(total: Int) -> [AssignmentLegendRow] {
+        assignmentStatusItems().map { item in
+            let percentText: String?
+            if total > 0 {
+                let percent = Int((Double(item.count) / Double(total)) * 100)
+                percentText = "\(percent)%"
+            } else {
+                percentText = nil
+            }
+            return AssignmentLegendRow(
+                label: item.status,
+                count: item.count,
+                color: item.color,
+                percentText: percentText
+            )
+        }
+    }
+
+    private var assignmentStatusChart: some View {
+        let items = assignmentStatusItems()
+        let total = items.reduce(0) { $0 + $1.count }
+
+        return HStack(alignment: .center, spacing: 16) {
+            ZStack {
+                Chart(items) { item in
+                    SectorMark(
+                        angle: .value("Count", item.count),
+                        innerRadius: .ratio(0.6),
+                        angularInset: 1.5
+                    )
+                    .foregroundStyle(item.color.opacity(0.85))
+                }
+                .chartLegend(.hidden)
+
+                VStack(spacing: 2) {
+                    Text(verbatim: "\(total)")
+                        .font(.headline.weight(.bold))
+                    Text(NSLocalizedString("Total", value: "Total", comment: ""))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(width: 120, height: 120)
+
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(assignmentStatusLegend(total: total)) { item in
+                    HStack(spacing: 8) {
+                        Circle()
+                            .fill(item.color)
+                            .frame(width: 8, height: 8)
+                        Text(item.label)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text(verbatim: "\(item.count)")
+                            .font(.caption.weight(.semibold))
+                        if let percent = item.percentText {
+                            Text(percent)
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 struct IOSCalendarView: View {
     @EnvironmentObject private var deviceCalendar: DeviceCalendarManager
+    @EnvironmentObject private var settings: AppSettingsModel
     @ObservedObject private var calendarAuth = CalendarAuthorizationManager.shared
 
     var body: some View {
@@ -729,12 +857,19 @@ struct IOSCalendarView: View {
                             Task { _ = await deviceCalendar.requestFullAccessIfNeeded() }
                         }
                     )
+                } else if settings.selectedSchoolCalendarID.isEmpty {
+                    IOSInfoCard(
+                        title: "No school calendar selected",
+                        subtitle: "Select a calendar in Settings",
+                        systemImage: "calendar.badge.exclamationmark",
+                        detail: "Choose which calendar contains your school events."
+                    )
                 } else if upcomingEvents.isEmpty {
                     IOSInfoCard(
                         title: "Nothing scheduled",
-                        subtitle: "Your calendar is clear",
+                        subtitle: "Your school calendar is clear",
                         systemImage: "calendar",
-                        detail: "Add events quickly from the plus menu."
+                        detail: "No upcoming events in your selected school calendar."
                     )
                 } else {
                     ForEach(Array(upcomingEvents.prefix(8).enumerated()), id: \.offset) { index, event in
@@ -795,11 +930,11 @@ struct IOSPracticeView: View {
                                 )
                             
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Scheduled Tests")
+                                Text(NSLocalizedString("Scheduled Tests", value: "Scheduled Tests", comment: ""))
                                     .font(.headline)
                                     .foregroundStyle(.primary)
                                 
-                                Text("\(scheduledTestsStore.scheduledTests.filter { $0.status != .archived }.count) upcoming")
+                                Text(verbatim: "\(scheduledTestsStore.scheduledTests.filter { $0.status != .archived }.count) upcoming")
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
                             }
@@ -821,7 +956,7 @@ struct IOSPracticeView: View {
                     // Practice Tests Section
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            Text("Practice Tests")
+                            Text(NSLocalizedString("Practice Tests", value: "Practice Tests", comment: ""))
                                 .font(.headline)
                             Spacer()
                             Button {
@@ -871,9 +1006,9 @@ struct IOSPracticeView: View {
                 .scaleEffect(1.2)
             
             VStack(spacing: 4) {
-                Text("Generating Test")
+                Text(NSLocalizedString("Generating Test", value: "Generating Test", comment: ""))
                     .font(.headline)
-                Text("Creating questions with AI...")
+                Text(NSLocalizedString("Creating questions with AI...", value: "Creating questions with AI...", comment: ""))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -917,10 +1052,10 @@ struct IOSPracticeView: View {
                         .foregroundStyle(.green)
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Ready to Start")
+                        Text(NSLocalizedString("Ready to Start", value: "Ready to Start", comment: ""))
                             .font(.headline)
                             .foregroundStyle(.primary)
-                        Text("\(test.courseName)")
+                        Text(verbatim: "\(test.courseName)")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -929,7 +1064,7 @@ struct IOSPracticeView: View {
                 }
                 
                 HStack {
-                    Label("\(test.questionCount) questions", systemImage: "questionmark.circle")
+                    Label { Text(verbatim: "\(test.questionCount) questions") } icon: { Image(systemName: "questionmark.circle") }
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     
@@ -972,10 +1107,10 @@ struct IOSPracticeView: View {
                         .foregroundStyle(.orange)
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("In Progress")
+                        Text(NSLocalizedString("In Progress", value: "In Progress", comment: ""))
                             .font(.headline)
                             .foregroundStyle(.primary)
-                        Text("\(test.courseName)")
+                        Text(verbatim: "\(test.courseName)")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -987,7 +1122,7 @@ struct IOSPracticeView: View {
                     ProgressView(value: Double(test.answers.count), total: Double(test.questionCount))
                         .tint(.orange)
                     
-                    Text("\(test.answers.count)/\(test.questionCount)")
+                    Text(verbatim: "\(test.answers.count)/\(test.questionCount)")
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.secondary)
                 }
@@ -1021,17 +1156,17 @@ struct IOSPracticeView: View {
                         .foregroundStyle(scoreColor)
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Completed")
+                        Text(NSLocalizedString("Completed", value: "Completed", comment: ""))
                             .font(.headline)
                             .foregroundStyle(.primary)
-                        Text("\(test.courseName)")
+                        Text(verbatim: "\(test.courseName)")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
                     
                     Spacer()
                     
-                    Text("\(Int(score * 100))%")
+                    Text(verbatim: "\(Int(score * 100))%")
                         .font(.title2.bold())
                         .foregroundStyle(scoreColor)
                 }
@@ -1059,7 +1194,7 @@ struct IOSPracticeView: View {
                     .foregroundStyle(.red)
                 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Generation Failed")
+                    Text(NSLocalizedString("Generation Failed", value: "Generation Failed", comment: ""))
                         .font(.headline)
                         .foregroundStyle(.primary)
                     if let error = test.generationError {
@@ -1078,7 +1213,7 @@ struct IOSPracticeView: View {
                     await practiceStore.retryGeneration(testId: test.id)
                 }
             } label: {
-                Text("Retry")
+                Text(NSLocalizedString("Retry", value: "Retry", comment: ""))
                     .font(.subheadline.bold())
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 8)
@@ -1105,10 +1240,10 @@ struct IOSPracticeView: View {
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
             
-            Text("No Practice Tests Yet")
+            Text(NSLocalizedString("No Practice Tests Yet", value: "No Practice Tests Yet", comment: ""))
                 .font(.headline)
             
-            Text("Generate your first test to start practicing")
+            Text(NSLocalizedString("Generate your first test to start practicing", value: "Generate your first test to start practicing", comment: ""))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -1116,7 +1251,7 @@ struct IOSPracticeView: View {
             Button {
                 showingGenerateTest = true
             } label: {
-                Text("Generate Test")
+                Text(NSLocalizedString("Generate Test", value: "Generate Test", comment: ""))
                     .font(.subheadline.bold())
                     .padding(.horizontal, 20)
                     .padding(.vertical, 10)
@@ -1164,7 +1299,7 @@ struct IOSPracticeView: View {
             Spacer()
             
             if test.status == .submitted, let score = test.score {
-                Text("\(Int(score * 100))%")
+                Text(verbatim: "\(Int(score * 100))%")
                     .font(.subheadline.bold())
                     .foregroundStyle(.secondary)
             }
@@ -1183,7 +1318,7 @@ struct IOSPracticeView: View {
     
     private var statisticsCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Statistics")
+            Text(NSLocalizedString("Statistics", value: "Statistics", comment: ""))
                 .font(.headline)
             
             HStack(spacing: 16) {
@@ -1316,7 +1451,7 @@ struct IOSTaskDetailView: View {
                         HStack {
                             Image(systemName: "lock.fill")
                                 .foregroundStyle(.orange)
-                            Text("Locked to due date")
+                            Text(NSLocalizedString("Locked to due date", value: "Locked to due date", comment: ""))
                                 .font(.subheadline)
                         }
                     }
@@ -1340,7 +1475,7 @@ struct IOSTaskDetailView: View {
                     Button(role: .destructive) {
                         onDelete()
                     } label: {
-                        Label("Delete Assignment", systemImage: "trash")
+                        Label(NSLocalizedString("Delete Assignment", value: "Delete Assignment", comment: ""), systemImage: "trash")
                             .foregroundStyle(.red)
                     }
                 }
@@ -1350,12 +1485,12 @@ struct IOSTaskDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Close") {
+                    Button(NSLocalizedString("Close", value: "Close", comment: "")) {
                         dismiss()
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Edit") {
+                    Button(NSLocalizedString("Edit", value: "Edit", comment: "")) {
                         onEdit()
                     }
                     .font(.body.weight(.semibold))
@@ -1382,6 +1517,7 @@ struct IOSTaskDetailView: View {
         case .review: return "Review"
         case .project: return "Project"
         case .study: return "Study"
+        case .practiceTest: return "Practice Test"
         }
     }
     
@@ -1391,16 +1527,16 @@ struct IOSTaskDetailView: View {
             return "Estimated Study Time"
         case .homework, .reading, .project, .review:
             return "Estimated Work Time"
+        case .practiceTest:
+            return "Estimated Test Time"
         }
     }
     
     private func priorityLabel(_ value: Double) -> String {
         switch value {
-        case ..<0.3: return "Lowest"
-        case ..<0.5: return "Low"
+        case ..<0.4: return "Low"
         case ..<0.7: return "Medium"
-        case ..<0.9: return "High"
-        default: return "Urgent"
+        default: return "High"
         }
     }
 }
@@ -1539,43 +1675,35 @@ private struct IOSInfoRow: View {
 
 struct IOSTaskEditorView: View {
     enum Priority: Int, CaseIterable, Identifiable {
-        case lowest = 1
-        case low = 2
-        case medium = 3
-        case high = 4
-        case urgent = 5
+        case low = 1
+        case medium = 2
+        case high = 3
         
         var id: Int { rawValue }
         
         var label: String {
             switch self {
-            case .lowest: return "Lowest"
             case .low: return "Low"
             case .medium: return "Medium"
             case .high: return "High"
-            case .urgent: return "Urgent"
             }
         }
         
         // Convert to importance value (0...1) for planner algorithm
         var importanceValue: Double {
             switch self {
-            case .lowest: return 0.2
-            case .low: return 0.4
+            case .low: return 0.3
             case .medium: return 0.6
-            case .high: return 0.8
-            case .urgent: return 1.0
+            case .high: return 0.85
             }
         }
         
         // Create from importance value
         init(fromImportance importance: Double) {
             switch importance {
-            case ..<0.3: self = .lowest
-            case ..<0.5: self = .low
+            case ..<0.4: self = .low
             case ..<0.7: self = .medium
-            case ..<0.9: self = .high
-            default: self = .urgent
+            default: self = .high
             }
         }
     }
@@ -1588,6 +1716,7 @@ struct IOSTaskEditorView: View {
         var hasSpecificDueTime: Bool = false
         var estimatedMinutes: Int? = nil
         var courseId: UUID? = nil
+        var moduleIds: [UUID] = []
         var type: TaskType = .homework
         var priority: Priority = .medium
         var difficulty: Double = 0.6
@@ -1610,6 +1739,7 @@ struct IOSTaskEditorView: View {
                 self.hasSpecificDueTime = task.dueTimeMinutes != nil
                 self.estimatedMinutes = task.estimatedMinutes
                 self.courseId = task.courseId
+                self.moduleIds = task.moduleIds
                 self.type = task.type
                 self.priority = Priority(fromImportance: task.importance)
                 self.difficulty = task.difficulty
@@ -1646,6 +1776,7 @@ struct IOSTaskEditorView: View {
                 id: existing?.id ?? UUID(),
                 title: title,
                 courseId: courseId,
+                moduleIds: moduleIds,
                 due: hasDueDate ? dueDate : nil,
                 estimatedMinutes: resolvedMinutes,
                 minBlockMinutes: 15,
@@ -1730,6 +1861,7 @@ struct IOSTaskEditorView: View {
     }
 
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var coursesStore: CoursesStore
     @State private var draft: TaskDraft
     @State private var estimatedMinutesWasEdited = false
     @State private var lastEstimateSignature: EstimateSignature? = nil
@@ -1762,15 +1894,16 @@ struct IOSTaskEditorView: View {
                 Section("Basics") {
                     TextField("Title", text: $draft.title)
                     Picker("Type", selection: $draft.type) {
-                        Text("Homework").tag(TaskType.homework)
-                        Text("Quiz").tag(TaskType.quiz)
-                        Text("Exam").tag(TaskType.exam)
-                        Text("Reading").tag(TaskType.reading)
-                        Text("Review").tag(TaskType.review)
-                        Text("Project").tag(TaskType.project)
+                        Text(NSLocalizedString("Homework", value: "Homework", comment: "")).tag(TaskType.homework)
+                        Text(NSLocalizedString("Quiz", value: "Quiz", comment: "")).tag(TaskType.quiz)
+                        Text(NSLocalizedString("Exam", value: "Exam", comment: "")).tag(TaskType.exam)
+                        Text(NSLocalizedString("Reading", value: "Reading", comment: "")).tag(TaskType.reading)
+                        Text(NSLocalizedString("Review", value: "Review", comment: "")).tag(TaskType.review)
+                        Text(NSLocalizedString("Project", value: "Project", comment: "")).tag(TaskType.project)
+                        Text(NSLocalizedString("Practice Test", value: "Practice Test", comment: "")).tag(TaskType.practiceTest)
                     }
                     Picker("Course", selection: $draft.courseId) {
-                        Text("No Course").tag(UUID?.none)
+                        Text(NSLocalizedString("No Course", value: "No Course", comment: "")).tag(UUID?.none)
                         ForEach(courses) { course in
                             Text(course.code.isEmpty ? course.title : course.code)
                                 .tag(Optional(course.id))
@@ -1778,15 +1911,32 @@ struct IOSTaskEditorView: View {
                     }
                 }
 
+                Section("Modules") {
+                    if availableModules.isEmpty {
+                        Text(draft.courseId == nil ? "Select a course to choose modules." : "No modules added for this course yet.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        ForEach(availableModules) { module in
+                            Toggle(module.title, isOn: moduleBinding(module.id))
+                        }
+                    }
+                    if draft.type == .exam || draft.type == .quiz {
+                        Text(NSLocalizedString("Exams and quizzes require at least one module.", value: "Exams and quizzes require at least one module.", comment: ""))
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
                 Section("Schedule") {
-                    Toggle("Has Due Date", isOn: $draft.hasDueDate)
+                    Toggle(NSLocalizedString("ios.assignment.has_due_date", value: "Has Due Date", comment: "Has Due Date toggle"), isOn: $draft.hasDueDate)
                     if draft.hasDueDate {
                         DatePicker("Due Date", selection: $draft.dueDate, displayedComponents: .date)
-                        Toggle("Set specific time", isOn: $draft.hasSpecificDueTime)
+                        Toggle(NSLocalizedString("ios.assignment.set_specific_time", value: "Set specific time", comment: "Set specific time toggle"), isOn: $draft.hasSpecificDueTime)
                         if draft.hasSpecificDueTime {
                             DatePicker("Due Time", selection: dueTimeBinding, displayedComponents: .hourAndMinute)
                         } else {
-                            Text("No time set - assumed due at 11:59 PM unless you set a time.")
+                            Text(NSLocalizedString("No time set - assumed due at 11:59 PM unless you set a time.", value: "No time set - assumed due at 11:59 PM unless you set a time.", comment: ""))
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
                         }
@@ -1808,40 +1958,40 @@ struct IOSTaskEditorView: View {
                     .disabled(!draft.hasDueDate)
 
                     if !draft.hasDueDate {
-                        Text("Add a due date to enable recurrence.")
+                        Text(NSLocalizedString("Add a due date to enable recurrence.", value: "Add a due date to enable recurrence.", comment: ""))
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                     }
 
                     if draft.recurrenceEnabled {
                         Stepper(value: $draft.recurrenceInterval, in: 1...30) {
-                            Text("Every \(draft.recurrenceInterval) \(recurrenceUnitLabel)")
+                            Text(verbatim: "Every \(draft.recurrenceInterval) \(recurrenceUnitLabel)")
                         }
 
                         Picker("End", selection: $draft.recurrenceEndOption) {
-                            Text("Never").tag(RecurrenceEndOption.never)
-                            Text("On Date").tag(RecurrenceEndOption.onDate)
-                            Text("After").tag(RecurrenceEndOption.afterOccurrences)
+                            Text(NSLocalizedString("Never", value: "Never", comment: "")).tag(RecurrenceEndOption.never)
+                            Text(NSLocalizedString("On Date", value: "On Date", comment: "")).tag(RecurrenceEndOption.onDate)
+                            Text(NSLocalizedString("After", value: "After", comment: "")).tag(RecurrenceEndOption.afterOccurrences)
                         }
 
                         if draft.recurrenceEndOption == .onDate {
                             DatePicker("End Date", selection: $draft.recurrenceEndDate, displayedComponents: .date)
                         } else if draft.recurrenceEndOption == .afterOccurrences {
                             Stepper(value: $draft.recurrenceEndCount, in: 1...99) {
-                                Text("\(draft.recurrenceEndCount) occurrences")
+                                Text(verbatim: "\(draft.recurrenceEndCount) occurrences")
                             }
                         }
 
-                        Toggle("Skip weekends", isOn: $draft.skipWeekends)
-                        Toggle("Skip holidays", isOn: $draft.skipHolidays)
+                        Toggle(NSLocalizedString("ios.assignment.skip_weekends", value: "Skip weekends", comment: "Skip weekends toggle"), isOn: $draft.skipWeekends)
+                        Toggle(NSLocalizedString("ios.assignment.skip_holidays", value: "Skip holidays", comment: "Skip holidays toggle"), isOn: $draft.skipHolidays)
 
                         if draft.skipHolidays {
                             Picker("Holiday Source", selection: $draft.holidaySource) {
-                                Text("System Calendar").tag(RecurrenceRule.HolidaySource.deviceCalendar)
-                                Text("None").tag(RecurrenceRule.HolidaySource.none)
+                                Text(NSLocalizedString("System Calendar", value: "System Calendar", comment: "")).tag(RecurrenceRule.HolidaySource.deviceCalendar)
+                                Text(NSLocalizedString("None", value: "None", comment: "")).tag(RecurrenceRule.HolidaySource.none)
                             }
                             if !holidaySourceAvailable && draft.holidaySource == .deviceCalendar {
-                                Text("No holiday source configured.")
+                                Text(NSLocalizedString("No holiday source configured.", value: "No holiday source configured.", comment: ""))
                                     .font(.footnote)
                                     .foregroundStyle(.secondary)
                             }
@@ -1854,7 +2004,7 @@ struct IOSTaskEditorView: View {
                         PrioritySelectionView(selectedPriority: $draft.priority)
                     } label: {
                         HStack {
-                            Text("Priority")
+                            Text(NSLocalizedString("Priority", value: "Priority", comment: ""))
                             Spacer()
                             Text(draft.priority.label)
                                 .foregroundStyle(.secondary)
@@ -1865,12 +2015,12 @@ struct IOSTaskEditorView: View {
             .navigationTitle(task == nil ? "New \(itemLabel)" : "Edit \(itemLabel)")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") {
+                    Button(NSLocalizedString("Cancel", value: "Cancel", comment: "")) {
                         dismiss()
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
+                    Button(NSLocalizedString("Save", value: "Save", comment: "")) {
                         onSave(draft)
                         dismiss()
                     }
@@ -1909,13 +2059,20 @@ struct IOSTaskEditorView: View {
                     draft.dueTimeMinutes = nil
                 }
             }
+            .onChange(of: draft.courseId) { _ in
+                pruneModulesForCourse()
+            }
         }
     }
     
     private var isValid: Bool {
         let titleValid = !draft.title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
         let dateValid = !draft.hasDueDate || true  // dueDate always has value
-        return titleValid && dateValid
+        let modulesValid: Bool = {
+            guard draft.type == .exam || draft.type == .quiz else { return true }
+            return draft.courseId != nil && !draft.moduleIds.isEmpty
+        }()
+        return titleValid && dateValid && modulesValid
     }
     
     private var estimatedMinutesBinding: Binding<Int> {
@@ -1990,6 +2147,33 @@ struct IOSTaskEditorView: View {
         }
     }
 
+    private var availableModules: [CourseOutlineNode] {
+        guard let courseId = draft.courseId else { return [] }
+        return coursesStore.outlineNodes
+            .filter { $0.courseId == courseId && $0.type == .module }
+            .sorted { $0.sortIndex < $1.sortIndex }
+    }
+
+    private func moduleBinding(_ moduleId: UUID) -> Binding<Bool> {
+        Binding(
+            get: { draft.moduleIds.contains(moduleId) },
+            set: { isSelected in
+                if isSelected {
+                    if !draft.moduleIds.contains(moduleId) {
+                        draft.moduleIds.append(moduleId)
+                    }
+                } else {
+                    draft.moduleIds.removeAll { $0 == moduleId }
+                }
+            }
+        )
+    }
+
+    private func pruneModulesForCourse() {
+        let allowed = Set(availableModules.map { $0.id })
+        draft.moduleIds = draft.moduleIds.filter { allowed.contains($0) }
+    }
+
     private var holidaySourceAvailable: Bool {
         guard CalendarAuthorizationManager.shared.isAuthorized else { return false }
         let calendars = DeviceCalendarManager.shared.store.calendars(for: .event)
@@ -2053,7 +2237,7 @@ struct IOSTaskEditorView: View {
     
     private func timeEstimateLabel(_ type: TaskType) -> String {
         switch type {
-        case .exam, .quiz, .study:
+        case .exam, .quiz, .study, .practiceTest:
             return "Estimated Study Time"
         case .homework, .reading, .project, .review:
             return "Estimated Work Time"
@@ -2134,10 +2318,10 @@ struct IOSCourseEditorView: View {
             .navigationTitle("New Course")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") { dismiss() }
+                    Button(NSLocalizedString("Cancel", value: "Cancel", comment: "")) { dismiss() }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
+                    Button(NSLocalizedString("Save", value: "Save", comment: "")) {
                         if draft.semesterId == nil {
                             draft.semesterId = currentSemesterId ?? semesters.first?.id
                         }
@@ -2193,10 +2377,10 @@ struct IOSSemesterEditorView: View {
             .navigationTitle("New Semester")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") { dismiss() }
+                    Button(NSLocalizedString("Cancel", value: "Cancel", comment: "")) { dismiss() }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
+                    Button(NSLocalizedString("Save", value: "Save", comment: "")) {
                         onSave(draft)
                         dismiss()
                     }
@@ -2214,16 +2398,16 @@ private struct IOSPlanHelpView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Planner uses your assignment due dates to build a schedule of study blocks.")
-                    Text("Generate Plan to create time blocks for today and the next few days.")
-                    Text("Tasks without a due date stay in the Unscheduled section.")
+                    Text(NSLocalizedString("Planner uses your assignment due dates to build a schedule of study blocks.", value: "Planner uses your assignment due dates to build a schedule of study blocks.", comment: ""))
+                    Text(NSLocalizedString("Generate Plan to create time blocks for today and the next few days.", value: "Generate Plan to create time blocks for today and the next few days.", comment: ""))
+                    Text(NSLocalizedString("Tasks without a due date stay in the Unscheduled section.", value: "Tasks without a due date stay in the Unscheduled section.", comment: ""))
                 }
                 .padding(20)
             }
             .navigationTitle("How Planner Works")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }
+                    Button(NSLocalizedString("Done", value: "Done", comment: "")) { dismiss() }
                 }
             }
         }
@@ -2266,7 +2450,7 @@ private struct IOSPlannerBlockRow: View {
         .onTapGesture {
             onEdit()
         }
-        .accessibilityLabel("\(session.displayTitle), \(timeRange(start: session.start, end: session.end))")
+        .accessibilityLabel(Text(verbatim: "\(session.displayTitle), \(timeRange(start: session.start, end: session.end))"))
     }
 
     private func snappedMinutes(for deltaHeight: CGFloat) -> Int {
@@ -2339,10 +2523,10 @@ private struct IOSBlockEditorView: View {
                 Section("Timing") {
                     DatePicker("Start", selection: $start, displayedComponents: [.date, .hourAndMinute])
                     Stepper("Duration: \(durationMinutes) min", value: $durationMinutes, in: 15...240, step: 15)
-                    Toggle("Locked", isOn: $isLocked)
+                    Toggle(NSLocalizedString("ios.planner.block_locked", value: "Locked", comment: "Locked toggle"), isOn: $isLocked)
                 }
                 Section("Workday") {
-                    Text("Allowed hours: \(minHour):00–\(maxHour):00")
+                    Text(verbatim: "Allowed hours: \(minHour):00–\(maxHour):00")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -2350,10 +2534,10 @@ private struct IOSBlockEditorView: View {
             .navigationTitle("Edit Block")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") { dismiss() }
+                    Button(NSLocalizedString("Cancel", value: "Cancel", comment: "")) { dismiss() }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
+                    Button(NSLocalizedString("Save", value: "Save", comment: "")) {
                         let end = Calendar.current.date(byAdding: .minute, value: durationMinutes, to: start) ?? block.end
                         let updated = StoredScheduledSession(
                             id: block.id,
@@ -2392,7 +2576,7 @@ struct IOSFilterHeaderView: View {
     var body: some View {
         HStack(spacing: 12) {
             Menu {
-                Button("All Semesters") {
+                Button(NSLocalizedString("All Semesters", value: "All Semesters", comment: "")) {
                     filterState.setSemester(nil, availableCourseIds: availableCourseIds(for: nil))
                 }
                 ForEach(coursesStore.activeSemesters) { semester in
@@ -2405,7 +2589,7 @@ struct IOSFilterHeaderView: View {
             }
 
             Menu {
-                Button("All Courses") {
+                Button(NSLocalizedString("All Courses", value: "All Courses", comment: "")) {
                     filterState.selectedCourseId = nil
                 }
                 ForEach(availableCourses) { course in

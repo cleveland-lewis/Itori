@@ -358,7 +358,7 @@ struct GradesAnalyticsView: View {
             .frame(height: 200)
             .overlay {
                 VStack(spacing: 4) {
-                    Text("\(data.first(where: { $0.status == "Completed" })?.count ?? 0)")
+                    Text(verbatim: "\(data.first(where: { $0.status == "Completed" })?.count ?? 0)")
                         .font(.title.bold())
                     Text(NSLocalizedString("gradesanalytics.completed", value: "Completed", comment: "Completed"))
                         .font(.caption)
@@ -526,7 +526,7 @@ struct GradesAnalyticsView: View {
                     Text(level)
                         .font(.headline)
                     
-                    Text("(\(courses.count))")
+                    Text(verbatim: "(\(courses.count))")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }

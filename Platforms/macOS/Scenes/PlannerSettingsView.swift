@@ -25,10 +25,10 @@ struct PlannerSettingsView: View {
                     get: { settings.plannerHorizon },
                     set: { newValue in settings.plannerHorizon = newValue; settings.save() }
                 )) {
-                    Text("planner.settings.horizon.one_week".localized).tag("1w")
-                    Text("planner.settings.horizon.two_weeks".localized).tag("2w")
-                    Text("planner.settings.horizon.one_month".localized).tag("1m")
-                    Text("planner.settings.horizon.two_months".localized).tag("2m")
+                    Text(NSLocalizedString("planner.settings.horizon.one_week", value: "planner.settings.horizon.one_week", comment: "")).tag("1w")
+                    Text(NSLocalizedString("planner.settings.horizon.two_weeks", value: "planner.settings.horizon.two_weeks", comment: "")).tag("2w")
+                    Text(NSLocalizedString("planner.settings.horizon.one_month", value: "planner.settings.horizon.one_month", comment: "")).tag("1m")
+                    Text(NSLocalizedString("planner.settings.horizon.two_months", value: "planner.settings.horizon.two_months", comment: "")).tag("2m")
                 }
                 .pickerStyle(.segmented)
             }

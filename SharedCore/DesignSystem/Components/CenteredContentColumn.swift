@@ -78,7 +78,7 @@ public struct CenteredContentColumn<Content: View>: View {
                             .border(debugMode ? Color.red : Color.clear, width: 1)
                             .overlay(alignment: .topTrailing) {
                                 if debugMode {
-                                    Text("CCC: \(Int(contentWidth))pt")
+                                    Text(verbatim: "CCC: \(Int(contentWidth))pt")
                                         .font(.caption2)
                                         .foregroundColor(.red)
                                         .padding(4)

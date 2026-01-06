@@ -19,11 +19,11 @@ public struct EstimationInfoView: View {
                 confidenceIndicator
                 
                 // Duration display
-                Text("\(estimate.estimatedMinutes) min")
+                Text(verbatim: "\(estimate.estimatedMinutes) min")
                     .font(.headline)
                 
                 // Range
-                Text("(\(estimate.minMinutes)-\(estimate.maxMinutes))")
+                Text(verbatim: "(\(estimate.minMinutes)-\(estimate.maxMinutes))")
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
@@ -40,7 +40,7 @@ public struct EstimationInfoView: View {
             
             if isExpanded && showDetails {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Estimation Factors")
+                    Text(NSLocalizedString("Estimation Factors", value: "Estimation Factors", comment: ""))
                         .font(.caption.bold())
                         .foregroundColor(.secondary)
                     

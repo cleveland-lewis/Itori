@@ -42,10 +42,18 @@ public final class AIEngine: Sendable {
         )
     }
 
+    @MainActor
+    public func request<P: AIPort>(
+        _ portType: P.Type,
+        input: P.Input
+    ) async throws -> AIResult<P.Output> {
+        return try await request(portType, input: input, context: AIRequestContext())
+    }
+
     public func request<P: AIPort>(
         _ portType: P.Type,
         input: P.Input,
-        context: AIRequestContext = AIRequestContext()
+        context: AIRequestContext
     ) async throws -> AIResult<P.Output> {
         // Enforce integration pattern
         guard AIIntegrationEnforcement.validateCaller() else {
@@ -578,10 +586,18 @@ private extension AIEngine {
 
 #if DEBUG
 extension AIEngine {
+    @MainActor
+    func replay<P: AIPort>(
+        _ portType: P.Type,
+        index: Int = 0
+    ) async throws -> AIPortReplayResult? {
+        return try await replay(portType, index: index, context: AIRequestContext())
+    }
+
     func replay<P: AIPort>(
         _ portType: P.Type,
         index: Int = 0,
-        context: AIRequestContext = AIRequestContext()
+        context: AIRequestContext
     ) async throws -> AIPortReplayResult? {
         guard let record = AIEngine.replayStore.record(for: P.id, index: index) else {
             return nil
@@ -663,4 +679,3 @@ private extension AIResult {
         )
     }
 }
-

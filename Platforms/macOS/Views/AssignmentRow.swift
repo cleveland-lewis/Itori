@@ -16,7 +16,7 @@ struct AssignmentRow: View {
                 }
             }
             Spacer()
-            Text("\(task.estimatedMinutes) min")
+            Text(verbatim: "\(task.estimatedMinutes) min")
                 .font(DesignSystem.Typography.caption)
         }
         .padding(.vertical, DesignSystem.Spacing.small)

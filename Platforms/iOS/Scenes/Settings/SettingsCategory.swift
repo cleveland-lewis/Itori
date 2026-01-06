@@ -12,6 +12,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
     case profiles
     case timer
     case flashcards
+    case practice
     case integrations
     case notifications
     case intelligentScheduling
@@ -34,7 +35,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
         case .courses:
             return NSLocalizedString("settings.category.courses", comment: "Courses")
         case .semesters:
-            return NSLocalizedString("settings.category.semesters", comment: "Semesters")
+            return NSLocalizedString("settings.category.active_semesters", value: "Active Semesters", comment: "Active Semesters")
         case .interface:
             return NSLocalizedString("settings.category.interface", comment: "Interface")
         case .profiles:
@@ -43,6 +44,8 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
             return NSLocalizedString("settings.category.timer", comment: "Timer")
         case .flashcards:
             return NSLocalizedString("settings.category.flashcards", comment: "Flashcards")
+        case .practice:
+            return NSLocalizedString("settings.category.practice", value: "Practice", comment: "Practice")
         case .integrations:
             return NSLocalizedString("settings.category.integrations", comment: "Integrations")
         case .notifications:
@@ -70,6 +73,7 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
         case .profiles: return "person.crop.circle"
         case .timer: return "timer"
         case .flashcards: return "rectangle.stack.badge.person.crop"
+        case .practice: return "pencil.and.list.clipboard"
         case .integrations: return "arrow.triangle.2.circlepath.circle"
         case .notifications: return "bell.badge"
         case .intelligentScheduling: return "brain"
@@ -102,6 +106,8 @@ enum SettingsCategory: String, CaseIterable, Identifiable {
             IOSTimerSettingsView()
         case .flashcards:
             IOSFlashcardsSettingsView()
+        case .practice:
+            IOSPracticeSettingsView()
         case .integrations:
             IOSIntegrationsSettingsView()
         case .notifications:

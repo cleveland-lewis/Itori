@@ -176,16 +176,21 @@ final class PlannerStore: ObservableObject {
             self.iCloudConflictsURL = nil
         }
         
+        // Load local data
+        load()
+        isLoading = false
+        
+        // Skip slow initialization during tests
+        guard !TestMode.isRunningTests else {
+            return
+        }
+        
         // Load: iCloud first if enabled and available, then local
         setupNetworkMonitoring()
         if isSyncEnabled {
             loadFromiCloud()
             setupiCloudMonitoring()
         }
-        
-        // Always load local (as fallback or primary)
-        load()
-        isLoading = false
 
         observeICloudToggle()
     }
@@ -311,6 +316,7 @@ final class PlannerStore: ObservableObject {
         )
         scheduled[idx] = merged
         save()
+        syncCalendar(for: [merged])
     }
 
     func reset() {
@@ -329,6 +335,7 @@ final class PlannerStore: ObservableObject {
     func updateBulk(_ sessions: [StoredScheduledSession]) {
         self.scheduled = sessions
         save()
+        syncCalendar(for: sessions)
     }
 
     func resetAll() {
@@ -359,6 +366,12 @@ final class PlannerStore: ObservableObject {
         } catch {
             DebugLogger.log("❌ Failed to save planner locally: \(error)")
         }
+    }
+
+    private func syncCalendar(for sessions: [StoredScheduledSession]) {
+        guard let start = sessions.map({ $0.start }).min(),
+              let end = sessions.map({ $0.end }).max() else { return }
+        Task { await CalendarManager.shared.syncPlannerSessionsToCalendar(in: start...end) }
     }
 
     private func load() {
@@ -433,8 +446,10 @@ final class PlannerStore: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] notification in
-            guard let self = self, let enabled = notification.object as? Bool else { return }
-            self.handleICloudToggle(enabled: enabled)
+            guard let enabled = notification.object as? Bool else { return }
+            Task { @MainActor [weak self] in
+                self?.handleICloudToggle(enabled: enabled)
+            }
         }
     }
 

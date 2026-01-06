@@ -23,7 +23,7 @@ struct AddSessionSheet: View {
                 }
                 Section("Duration") {
                     Stepper(value: $durationMinutes, in: 0...480, step: 5) {
-                        Text("\(durationMinutes) min")
+                        Text(verbatim: "\(durationMinutes) min")
                     }
                 }
                 Section("Date & Time") {
@@ -31,7 +31,7 @@ struct AddSessionSheet: View {
                 }
                 Section("Activity") {
                     Picker("Activity", selection: $selectedActivityID) {
-                        Text("None").tag(UUID?.none)
+                        Text(NSLocalizedString("None", value: "None", comment: "")).tag(UUID?.none)
                         ForEach(viewModel.activities) { activity in
                             Text(activity.name).tag(Optional(activity.id))
                         }
@@ -43,10 +43,10 @@ struct AddSessionSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") { dismiss() }
+                    Button(NSLocalizedString("Cancel", value: "Cancel", comment: "")) { dismiss() }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") { saveSession() }
+                    Button(NSLocalizedString("Save", value: "Save", comment: "")) { saveSession() }
                         .disabled(shouldDisableSave)
                 }
             }

@@ -10,25 +10,14 @@ import BackgroundTasks
 @main
 struct ItoriIOSApp: App {
     @StateObject private var coursesStore: CoursesStore
-    @StateObject private var appSettings = AppSettingsModel.shared
     @StateObject private var settingsCoordinator: SettingsCoordinator
-    @StateObject private var gradesStore = GradesStore.shared
-    @StateObject private var plannerStore = PlannerStore.shared
-    @StateObject private var plannerCoordinator = PlannerCoordinator.shared
-    @StateObject private var assignmentPlansStore = AssignmentPlansStore.shared
     @StateObject private var sheetRouter = IOSSheetRouter()
     @StateObject private var toastRouter = IOSToastRouter()
     @StateObject private var filterState = IOSFilterState()
-    @StateObject private var appModel = AppModel.shared
-    @StateObject private var calendarManager = CalendarManager.shared
-    @StateObject private var deviceCalendar = DeviceCalendarManager.shared
-    @StateObject private var calendarRefresh = CalendarRefreshCoordinator.shared
     @StateObject private var timerManager = TimerManager()
     @StateObject private var focusManager = FocusManager()
     @StateObject private var preferences = AppPreferences()
-    @StateObject private var parsingStore = SyllabusParsingStore.shared
     @StateObject private var eventsCountStore = EventsCountStore()
-    @StateObject private var schedulingCoordinator = IntelligentSchedulingCoordinator.shared
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
@@ -49,31 +38,33 @@ struct ItoriIOSApp: App {
             IOSRootView()
                 .environmentObject(AssignmentsStore.shared)
                 .environmentObject(coursesStore)
-                .environmentObject(appSettings)
-                .environmentObject(appModel)
+                .environmentObject(AppSettingsModel.shared)
+                .environmentObject(AppModel.shared)
                 .environmentObject(settingsCoordinator)
                 .environmentObject(eventsCountStore)
-                .environmentObject(calendarManager)
+                .environmentObject(CalendarManager.shared)
                 .environmentObject(DeviceCalendarManager.shared)
                 .environmentObject(timerManager)
                 .environmentObject(focusManager)
                 .environmentObject(FlashcardManager.shared)
                 .environmentObject(preferences)
-                .environmentObject(gradesStore)
-                .environmentObject(plannerStore)
-                .environmentObject(plannerCoordinator)
-                .environmentObject(assignmentPlansStore)
-                .environmentObject(parsingStore)
-                .environmentObject(calendarRefresh)
+                .environmentObject(GradesStore.shared)
+                .environmentObject(PlannerStore.shared)
+                .environmentObject(PlannerCoordinator.shared)
+                .environmentObject(AssignmentPlansStore.shared)
+                .environmentObject(SyllabusParsingStore.shared)
+                .environmentObject(CalendarRefreshCoordinator.shared)
                 .environmentObject(sheetRouter)
                 .environmentObject(toastRouter)
                 .environmentObject(filterState)
-                .environmentObject(schedulingCoordinator)
+                .environmentObject(IntelligentSchedulingCoordinator.shared)
+                .tint(.accentColor)
                 .task {
                     // OPTIMIZATION: Defer non-essential initialization until after first frame
                     await initializeBackgroundServices()
                 }
                 .onAppear {
+                    let appSettings = AppSettingsModel.shared
                     preferences.highContrast = appSettings.highContrastMode
                     preferences.reduceTransparency = appSettings.increaseTransparency || !appSettings.enableGlassEffects
                     preferences.glassIntensity = appSettings.glassIntensity
@@ -106,19 +97,19 @@ struct ItoriIOSApp: App {
                         }
                     }
                 }
-                .onChange(of: appSettings.highContrastMode) { _, newValue in
+                .onChange(of: AppSettingsModel.shared.highContrastMode) { _, newValue in
                     preferences.highContrast = newValue
                 }
-                .onChange(of: appSettings.increaseTransparency) { _, newValue in
-                    preferences.reduceTransparency = newValue || !appSettings.enableGlassEffects
+                .onChange(of: AppSettingsModel.shared.increaseTransparency) { _, newValue in
+                    preferences.reduceTransparency = newValue || !AppSettingsModel.shared.enableGlassEffects
                 }
-                .onChange(of: appSettings.enableGlassEffects) { _, newValue in
-                    preferences.reduceTransparency = appSettings.increaseTransparency || !newValue
+                .onChange(of: AppSettingsModel.shared.enableGlassEffects) { _, newValue in
+                    preferences.reduceTransparency = AppSettingsModel.shared.increaseTransparency || !newValue
                 }
-                .onChange(of: appSettings.glassIntensity) { _, newValue in
+                .onChange(of: AppSettingsModel.shared.glassIntensity) { _, newValue in
                     preferences.glassIntensity = newValue
                 }
-                .onChange(of: appSettings.reduceMotion) { _, newValue in
+                .onChange(of: AppSettingsModel.shared.reduceMotion) { _, newValue in
                     preferences.reduceMotion = newValue
                     AnimationPolicy.shared.updateFromAppSettings()
                 }
@@ -135,11 +126,11 @@ struct ItoriIOSApp: App {
         }
         WindowGroup(id: WindowIdentifier.plannerDay.rawValue) {
             PlannerSceneContent()
-                .environmentObject(plannerStore)
+                .environmentObject(PlannerStore.shared)
         }
         WindowGroup(id: WindowIdentifier.timerSession.rawValue) {
             IOSTimerPageView()
-                .environmentObject(appSettings)
+                .environmentObject(AppSettingsModel.shared)
         }
     }
     

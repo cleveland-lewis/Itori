@@ -368,16 +368,16 @@ public struct FocusDebugOverlay: View {
     
     public var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Focus Debugger")
+            Text(NSLocalizedString("Focus Debugger", value: "Focus Debugger", comment: ""))
                 .font(.caption.bold())
-            Text("Current: \(coordinator.currentFocusArea.description)")
+            Text(verbatim: "Current: \(coordinator.currentFocusArea.description)")
                 .font(.caption2)
             if let previous = coordinator.previousFocusArea {
-                Text("Previous: \(previous.description)")
+                Text(verbatim: "Previous: \(previous.description)")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
-            Text("History: \(coordinator.focusHistory.count) items")
+            Text(verbatim: "History: \(coordinator.focusHistory.count) items")
                 .font(.caption2)
                 .foregroundStyle(.tertiary)
         }

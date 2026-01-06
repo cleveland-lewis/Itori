@@ -19,6 +19,8 @@ extension TaskType {
             return "task.type.project".localized
         case .study:
             return "task.type.study".localized
+        case .practiceTest:
+            return "task.type.practice_test".localized
         }
     }
 }
@@ -82,6 +84,31 @@ struct DashboardLocalizations {
     static let emptyCalendar = "dashboard.empty.calendar".localized
     static let emptyEvents = "dashboard.empty.events".localized
     static let emptyTasks = "dashboard.empty.tasks".localized
+    static let sectionTodaysWork = "dashboard.section.todays_work".localized
+    
+    static func tasksDueCount(_ count: Int) -> String {
+        if count == 0 {
+            return "No tasks due"
+        } else if count == 1 {
+            return "1 task due"
+        } else {
+            return "\(count) tasks due"
+        }
+    }
+    
+    static func assignmentsPlanned(_ count: Int) -> String {
+        if count == 0 {
+            return "No assignments planned"
+        } else if count == 1 {
+            return "1 assignment planned"
+        } else {
+            return "\(count) assignments planned"
+        }
+    }
+    
+    static func minutesScheduled(_ minutes: Int) -> String {
+        return "\(minutes) min scheduled"
+    }
 }
 
 // MARK: - Quick Add Localizations

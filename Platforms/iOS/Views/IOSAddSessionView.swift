@@ -48,7 +48,7 @@ struct IOSAddSessionView: View {
                 
                 Section("Activity") {
                     Picker("Link to Activity", selection: $selectedActivityID) {
-                        Text("None").tag(UUID?.none)
+                        Text(NSLocalizedString("None", value: "None", comment: "")).tag(UUID?.none)
                         ForEach(viewModel.activities) { activity in
                             Text(activity.name).tag(Optional(activity.id))
                         }
@@ -60,13 +60,13 @@ struct IOSAddSessionView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") {
+                    Button(NSLocalizedString("Cancel", value: "Cancel", comment: "")) {
                         onDismiss()
                     }
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
+                    Button(NSLocalizedString("Save", value: "Save", comment: "")) {
                         saveSession()
                     }
                     .disabled(!isValid)

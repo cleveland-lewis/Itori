@@ -66,11 +66,11 @@ struct CoursesDashboardSidebar: View {
 
     private var sidebarHeader: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Courses")
+            Text(NSLocalizedString("Courses", value: "Courses", comment: ""))
                 .font(DesignSystem.Typography.body)
                 .foregroundStyle(.primary)
 
-            Text("Fall 2025")
+            Text(NSLocalizedString("Fall 2025", value: "Fall 2025", comment: ""))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -94,7 +94,7 @@ struct CoursesDashboardSidebar: View {
             .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
 
             Picker("", selection: $selectedSemesterID) {
-                Text("All").tag(Optional<UUID>(nil))
+                Text(NSLocalizedString("All", value: "All", comment: "")).tag(Optional<UUID>(nil))
                 ForEach(semesters) { semester in
                     Text(semester.name).tag(Optional(semester.id))
                 }
@@ -112,7 +112,7 @@ struct CoursesDashboardSidebar: View {
                 HStack(spacing: 4) {
                     Image(systemName: "plus")
                         .font(DesignSystem.Typography.body)
-                    Text("New Course")
+                    Text(NSLocalizedString("New Course", value: "New Course", comment: ""))
                         .font(DesignSystem.Typography.body)
                 }
                 .frame(maxWidth: .infinity)
@@ -127,7 +127,7 @@ struct CoursesDashboardSidebar: View {
                 HStack(spacing: 4) {
                     Image(systemName: "pencil")
                         .font(DesignSystem.Typography.body)
-                    Text("Edit")
+                    Text(NSLocalizedString("Edit", value: "Edit", comment: ""))
                         .font(DesignSystem.Typography.body)
                 }
                 .frame(maxWidth: .infinity)

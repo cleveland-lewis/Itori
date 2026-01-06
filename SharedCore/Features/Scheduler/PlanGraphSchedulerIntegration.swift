@@ -2,6 +2,7 @@ import Foundation
 
 /// Integration layer between PlanGraph dependency management and AIScheduler
 /// Ensures blocked nodes are never scheduled and auto-unblocks on completion
+@MainActor
 struct PlanGraphSchedulerIntegration {
     
     // MARK: - Task Filtering

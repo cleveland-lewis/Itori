@@ -7,6 +7,7 @@ extension Notification.Name {
     static let navigateToTab = Notification.Name("navigateToTab")
     static let addAssignmentRequested = Notification.Name("addAssignmentRequested")
     static let addGradeRequested = Notification.Name("addGradeRequested")
+    // Note: addEventRequested and addCourseRequested are defined in KeyboardNavigation.swift
 
     // Timer actions
     static let timerStartRequested = Notification.Name("timerStartRequested")

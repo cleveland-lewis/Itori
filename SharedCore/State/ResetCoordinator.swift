@@ -9,9 +9,10 @@ final class ResetCoordinator {
 
     private init() {}
 
-    func start(appModel: AppModel = .shared) {
+    func start(appModel: AppModel? = nil) {
         guard cancellables.isEmpty else { return }
-        appModel.resetPublisher
+        let model = appModel ?? .shared
+        model.resetPublisher
             .sink { [weak self] in
                 self?.performReset()
             }

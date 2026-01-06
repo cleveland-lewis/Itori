@@ -53,45 +53,59 @@ struct IOSAppShell<Content: View>: View {
             bottom: 0,
             trailing: appLayout.overlayTrailingInset + 44 + buttonSpacing + 44
         )
-        let base = ZStack(alignment: .topLeading) {
+        
+        let contentView = ZStack(alignment: .top) {
+            // Content extends to top edge
+            content
+                .padding(.top, safeAreaInsets.top + 60)
+            
+            // Floating header title with glass effect
             VStack(spacing: 0) {
-                headerView
-                content
+                HStack {
+                    Text(title)
+                        .font(.title2.weight(.semibold))
+                        .foregroundColor(.primary)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .background(
+                            .ultraThinMaterial,
+                            in: RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        )
+                        .shadow(color: .black.opacity(0.06), radius: 8, y: 2)
+                    Spacer()
+                }
+                .padding(.top, safeAreaInsets.top + 8)
+                .padding(.horizontal, 16)
+                Spacer()
+            }
+            
+            // Floating buttons overlay with glass effect
+            if shouldShowButtons {
+                VStack {
+                    HStack {
+                        Spacer()
+                        topRightControls
+                            .padding(.top, safeAreaInsets.top + 8)
+                            .padding(.trailing, appLayout.overlayTrailingInset)
+                    }
+                    Spacer()
+                }
             }
         }
+        .ignoresSafeArea(edges: .top)
         .readSafeAreaInsets { safeAreaInsets = $0 }
         .environment(\.overlayInsets, overlayInsets)
         .interfacePreferences(interfacePreferences)
-        .overlay(alignment: .topTrailing) {
-            if shouldShowButtons {
-                topRightControls
-                    .padding(.top, safeAreaInsets.top + appLayout.overlayTopInset)
-                    .padding(.trailing, appLayout.overlayTrailingInset)
-                    .zIndex(1000)
-            }
-        }
         .sheet(isPresented: $showSettingsSheet) {
             SettingsRootView()
                 .environmentObject(settings)
         }
 
         if PlatformCapabilities.supportsHiddenNavigationBar {
-            base.toolbar(.hidden, for: .navigationBar)
+            contentView.toolbar(.hidden, for: .navigationBar)
         } else {
-            base
+            contentView
         }
-    }
-
-    private var headerView: some View {
-        HStack {
-            Text(title)
-                .font(.title2.weight(.semibold))
-                .foregroundColor(.primary)
-            Spacer()
-        }
-        .frame(height: appLayout.headerHeight)
-        .padding(.top, safeAreaInsets.top + appLayout.overlayTopInset)
-        .padding(.horizontal, 16)
     }
 
     private var topRightControls: some View {
@@ -106,7 +120,7 @@ struct IOSAppShell<Content: View>: View {
             // Energy Section - Top
             if settings.showEnergyPanel {
                 Section {
-                    Label("Energy: \(settings.defaultEnergyLevel)", systemImage: "bolt.circle")
+                    Label(NSLocalizedString("ui.label.energy.settingsdefaultenergylevel", value: "Energy: \(settings.defaultEnergyLevel)", comment: "Energy: \(settings.defaultEnergyLevel)"), systemImage: "bolt.circle")
                         .foregroundStyle(.secondary)
                     
                     Menu("Change Energy") {
@@ -114,9 +128,9 @@ struct IOSAppShell<Content: View>: View {
                             get: { settings.defaultEnergyLevel },
                             set: { setEnergy($0) }
                         )) {
-                            Text("High").tag("High")
-                            Text("Medium").tag("Medium")
-                            Text("Low").tag("Low")
+                            Text(NSLocalizedString("ui.high", value: "High", comment: "High")).tag("High")
+                            Text(NSLocalizedString("ui.medium", value: "Medium", comment: "Medium")).tag("Medium")
+                            Text(NSLocalizedString("ui.low", value: "Low", comment: "Low")).tag("Low")
                         }
                     }
                 }
@@ -152,7 +166,7 @@ struct IOSAppShell<Content: View>: View {
                 .background(.ultraThinMaterial, in: Circle())
                 .shadow(color: .black.opacity(0.12), radius: 6, y: 3)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(NoHighlightButtonStyle())
         .accessibilityLabel(NSLocalizedString("ios.menu.quick_add", comment: "Quick add"))
         .accessibilityHint("Opens quick add actions")
         .accessibilityIdentifier("Overlay.QuickAdd")
@@ -169,7 +183,7 @@ struct IOSAppShell<Content: View>: View {
                 .background(.ultraThinMaterial, in: Circle())
                 .shadow(color: .black.opacity(0.12), radius: 6, y: 3)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(NoHighlightButtonStyle())
         .accessibilityLabel(NSLocalizedString("ios.menu.settings", comment: "Settings"))
         .accessibilityHint("Opens settings")
         .accessibilityIdentifier("Overlay.Settings")
@@ -211,6 +225,7 @@ struct IOSAppShell<Content: View>: View {
         let sessions = assignments.flatMap { PlannerEngine.generateSessions(for: $0, settings: settings) }
         let result = PlannerEngine.scheduleSessionsWithStrategy(sessions, settings: settings, energyProfile: defaultEnergyProfile())
         plannerStore.persist(scheduled: result.scheduled, overflow: result.overflow)
+        syncPlannerCalendar(for: result.scheduled)
         toastRouter.show(NSLocalizedString("ios.toast.schedule_updated", comment: "Schedule updated"))
     }
 
@@ -261,7 +276,14 @@ struct IOSAppShell<Content: View>: View {
         case .review: return .review
         case .project: return .project
         case .study: return .homework // Map study to homework category
+        case .practiceTest: return .practiceTest
         }
+    }
+
+    private func syncPlannerCalendar(for scheduled: [ScheduledSession]) {
+        guard let start = scheduled.map({ $0.start }).min(),
+              let end = scheduled.map({ $0.end }).max() else { return }
+        Task { await CalendarManager.shared.syncPlannerSessionsToCalendar(in: start...end) }
     }
 
     private func urgency(for value: Double) -> AssignmentUrgency {
@@ -279,6 +301,12 @@ struct IOSAppShell<Content: View>: View {
             13: 0.5, 14: 0.55, 15: 0.65, 16: 0.7,
             17: 0.6, 18: 0.5, 19: 0.4, 20: 0.35
         ]
+    }
+}
+
+private struct NoHighlightButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
     }
 }
 #endif

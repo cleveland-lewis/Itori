@@ -48,7 +48,7 @@ struct IOSTimerSettingsView: View {
                     HStack {
                         Text(NSLocalizedString("settings.timer.iterations", comment: "Pomodoro Cycles"))
                         Spacer()
-                        Text("\(settings.pomodoroIterationsStorage)")
+                        Text(verbatim: "\(settings.pomodoroIterationsStorage)")
                             .foregroundColor(.secondary)
                     }
                 }

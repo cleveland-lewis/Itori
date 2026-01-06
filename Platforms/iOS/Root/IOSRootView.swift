@@ -20,6 +20,7 @@ struct IOSRootView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .automatic
     @State private var showMoreMenu = false
     @State private var moreMenuSelected = false
+    @State private var selectedMorePage: AppPage? = nil
     
     private enum TabSelection: Hashable {
         case tab(RootTab)
@@ -44,10 +45,8 @@ struct IOSRootView: View {
     private var starredTabs: [RootTab] {
         var tabs = settings.starredTabs
         
-        // Remove Practice tab on iPhone (compact width)
-        if horizontalSizeClass == .compact {
-            tabs.removeAll { $0 == .practice }
-        }
+        // Remove Practice tab from iOS (not supported on mobile)
+        tabs.removeAll { $0 == .practice }
         
         // Ensure at least Dashboard is present
         if tabs.isEmpty {
@@ -147,12 +146,16 @@ struct IOSRootView: View {
                 }
                 
                 // More menu tab (rightmost position)
-                Color.clear
+                IOSAppShell(title: moreTabTitle) {
+                    moreTabContent
+                }
                     .tag(TabSelection.more)
                     .tabItem {
                         Label(NSLocalizedString("iosroot.label.more", value: "More", comment: "More"), systemImage: "ellipsis.circle")
                     }
             }
+            .toolbarBackground(.hidden, for: .tabBar)
+            .toolbar(.visible, for: .tabBar)
             .navigationDestination(for: IOSNavigationTarget.self) { destination in
                 IOSAppShell(title: destinationTitle(for: destination), hideNavigationButtons: false) {
                     switch destination {
@@ -168,20 +171,39 @@ struct IOSRootView: View {
         }
         .onChange(of: selectedTabOrMore) { oldValue, newValue in
             if case .more = newValue {
-                showMoreMenu = true
-                // Reset to previous tab
-                Task { @MainActor in
-                    try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
-                    selectedTabOrMore = oldValue
+                // If tapping More while already in More tab, show the menu
+                if case .more = oldValue {
+                    showMoreMenu = true
+                } else if selectedMorePage == nil {
+                    // First time selecting More tab with no page selected
+                    showMoreMenu = false
+                } else {
+                    // Switching to More tab while a page is already selected
+                    showMoreMenu = false
                 }
             } else if case .tab(let tab) = newValue {
                 selectedTab = tab
+                // Clear selected more page when switching away from More tab
+                if case .more = oldValue {
+                    selectedMorePage = nil
+                }
             }
         }
         .onChange(of: settings.enableFlashcards) { _, enabled in
-            guard !enabled, selectedTab == .flashcards else { return }
-            selectedTab = .dashboard
-            selectedTabOrMore = .tab(.dashboard)
+            guard !enabled else { return }
+            
+            // If currently on flashcards tab, switch to dashboard
+            if selectedTab == .flashcards {
+                selectedTab = .dashboard
+                selectedTabOrMore = .tab(.dashboard)
+            }
+            
+            // If flashcards page is selected in More tab, clear it
+            if selectedMorePage == .flashcards {
+                selectedMorePage = nil
+            }
+            
+            // Clear navigation path to remove any flashcards page from stack
             navigation.path = NavigationPath()
         }
     }
@@ -296,7 +318,7 @@ struct IOSRootView: View {
         case .flashcards:
             IOSFlashcardsView()
         case .practice:
-            IOSPracticeView()
+            IOSPlaceholderView(title: "Practice Tests", subtitle: "Practice tests are only available on macOS.")
         default:
             IOSPlaceholderView(title: tab.title, subtitle: "This page is not available on iOS yet.")
         }
@@ -322,7 +344,7 @@ struct IOSRootView: View {
         case .flashcards:
             IOSFlashcardsView()
         case .practice:
-            IOSPracticeView()
+            IOSPlaceholderView(title: "Practice Tests", subtitle: "Practice tests are only available on macOS.")
         default:
             IOSPlaceholderView(title: page.title, subtitle: "This view is coming soon.")
         }
@@ -342,11 +364,8 @@ struct IOSRootView: View {
             List {
                 ForEach(nonStarredTabs, id: \.self) { tab in
                     Button {
+                        selectedMorePage = AppPage.from(tab)
                         showMoreMenu = false
-                        // Navigate to the selected tab
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            navigation.open(page: AppPage.from(tab), starredTabs: starredTabs)
-                        }
                     } label: {
                         HStack {
                             if let def = TabRegistry.definition(for: tab) {
@@ -377,6 +396,30 @@ struct IOSRootView: View {
                     }
                 }
             }
+        }
+    }
+
+    private var moreTabTitle: String {
+        selectedMorePage?.title ?? NSLocalizedString("iosroot.label.more", value: "More", comment: "More")
+    }
+
+    @ViewBuilder
+    private var moreTabContent: some View {
+        if let page = selectedMorePage {
+            pageView(for: page)
+        } else {
+            List {
+                ForEach(nonStarredTabs, id: \.self) { tab in
+                    Button {
+                        selectedMorePage = AppPage.from(tab)
+                    } label: {
+                        if let def = TabRegistry.definition(for: tab) {
+                            Label(def.title, systemImage: def.icon)
+                        }
+                    }
+                }
+            }
+            .listStyle(.insetGrouped)
         }
     }
     

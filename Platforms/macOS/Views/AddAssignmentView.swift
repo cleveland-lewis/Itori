@@ -11,6 +11,7 @@ struct AddAssignmentView: View {
     @State private var due: Date = Date()
     @State private var estimatedMinutes: Int = 60
     @State private var selectedCourseId: UUID? = nil
+    @State private var selectedModuleIds: Set<UUID> = []
     @State private var type: TaskType
     @State private var attachments: [Attachment] = []
     @State private var notes: String = ""
@@ -78,7 +79,12 @@ struct AddAssignmentView: View {
 
     private var isSaveDisabled: Bool {
         // Only require title - course is now optional for personal tasks
-        title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        let titleEmpty = title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        let modulesValid: Bool = {
+            guard type == .exam || type == .quiz else { return true }
+            return !selectedModuleIds.isEmpty
+        }()
+        return titleEmpty || !modulesValid
     }
 
     private var hasUnsavedChanges: Bool {
@@ -117,6 +123,26 @@ struct AddAssignmentView: View {
                         }
                     }
 
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(NSLocalizedString("Modules", value: "Modules", comment: ""))
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                        if availableModules.isEmpty {
+                            Text(selectedCourseId == nil ? "Select a course to choose modules." : "No modules added for this course yet.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        } else {
+                            ForEach(availableModules) { module in
+                                Toggle(module.title, isOn: moduleBinding(module.id))
+                            }
+                        }
+                        if type == .exam || type == .quiz {
+                            Text(NSLocalizedString("Exams and quizzes require at least one module.", value: "Exams and quizzes require at least one module.", comment: ""))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
                     // Timing
                     VStack(alignment: .leading, spacing: 10) {
                         Text(NSLocalizedString("addassignment.timing", value: "TIMING", comment: "TIMING"))
@@ -140,7 +166,7 @@ struct AddAssignmentView: View {
                                         Spacer()
                                         
                                         Stepper(value: $estimatedMinutes, in: 15...240, step: currentStepSize) {
-                                            Text("\(estimatedMinutes) min")
+                                            Text(verbatim: "\(estimatedMinutes) min")
                                         }
                                     }
                                     
@@ -179,7 +205,7 @@ struct AddAssignmentView: View {
 
                                     if recurrenceEnabled {
                                         Stepper(value: $recurrenceInterval, in: 1...30) {
-                                            Text("Every \(recurrenceInterval) \(recurrenceUnitLabel)")
+                                            Text(verbatim: "Every \(recurrenceInterval) \(recurrenceUnitLabel)")
                                         }
 
                                         Picker("End", selection: $recurrenceEndOption) {
@@ -193,7 +219,7 @@ struct AddAssignmentView: View {
                                             DatePicker("End Date", selection: $recurrenceEndDate, displayedComponents: .date)
                                         } else if recurrenceEndOption == .afterOccurrences {
                                             Stepper(value: $recurrenceEndCount, in: 1...99) {
-                                                Text("\(recurrenceEndCount) occurrences")
+                                                Text(verbatim: "\(recurrenceEndCount) occurrences")
                                             }
                                         }
 
@@ -323,6 +349,10 @@ struct AddAssignmentView: View {
         .onChange(of: coursesStore.currentSemesterCourses) { _, _ in
             preselectCourseIfNeeded()
         }
+        .onChange(of: selectedCourseId) { _, _ in
+            let allowed = Set(availableModules.map { $0.id })
+            selectedModuleIds = selectedModuleIds.filter { allowed.contains($0) }
+        }
         .interactiveDismissDisabled(hasUnsavedChanges)
         .confirmationDialog(
             "Discard changes?",
@@ -332,10 +362,10 @@ struct AddAssignmentView: View {
             Button(NSLocalizedString("addassignment.button.save.and.close", value: "Save and Close", comment: "Save and Close")) {
                 saveTask()
             }
-            Button("Discard Changes", role: .destructive) {
+            Button(NSLocalizedString("Discard Changes", value: "Discard Changes", comment: ""), role: .destructive) {
                 dismiss()
             }
-            Button("Cancel", role: .cancel) { }
+            Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) { }
         } message: {
             Text(NSLocalizedString("addassignment.you.have.unsaved.changes.save", value: "You have unsaved changes. Save before closing to avoid losing them.", comment: "You have unsaved changes. Save before closing to a..."))
         }
@@ -350,7 +380,7 @@ struct AddAssignmentView: View {
 
     private var coursePicker: some View {
         Group {
-            if coursesStore.currentSemesterCourses.isEmpty {
+            if coursesStore.activeCourses.isEmpty {
                 Button {
                     withAnimation(DesignSystem.Motion.standardSpring) { showingAddCourse = true }
                 } label: {
@@ -369,8 +399,8 @@ struct AddAssignmentView: View {
                     
                     Divider()
                     
-                    ForEach(coursesStore.currentSemesterCourses, id: \.id) { c in
-                        Text("\(c.code) · \(c.title)").tag(Optional(c.id))
+                    ForEach(coursesStore.activeCourses, id: \.id) { c in
+                        Text(verbatim: "\(c.code) · \(c.title)").tag(Optional(c.id))
                     }
                 }
                 .labelsHidden()
@@ -399,12 +429,13 @@ struct AddAssignmentView: View {
         case .homework: return "Homework"
         case .reading: return "Reading"
         case .review: return "Review"
+        case .practiceTest: return "Practice Test"
         case .study: return "Study"
         }
     }
 
     private func preselectCourseIfNeeded() {
-        if selectedCourseId == nil, let first = coursesStore.currentSemesterCourses.first {
+        if selectedCourseId == nil, let first = coursesStore.activeCourses.first {
             selectedCourseId = first.id
         }
     }
@@ -491,11 +522,13 @@ struct AddAssignmentView: View {
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         guard let courseId = selectedCourseId else { return }
+        if (type == .exam || type == .quiz) && selectedModuleIds.isEmpty { return }
 
         let task = AppTask(
             id: UUID(),
             title: trimmed,
             courseId: courseId,
+            moduleIds: Array(selectedModuleIds),
             due: due,
             estimatedMinutes: estimatedMinutes,
             minBlockMinutes: 20,
@@ -510,6 +543,26 @@ struct AddAssignmentView: View {
         )
         onSave(task)
         dismiss()
+    }
+
+    private var availableModules: [CourseOutlineNode] {
+        guard let courseId = selectedCourseId else { return [] }
+        return coursesStore.outlineNodes(for: courseId)
+            .filter { $0.type == .module }
+            .sorted { $0.sortIndex < $1.sortIndex }
+    }
+
+    private func moduleBinding(_ moduleId: UUID) -> Binding<Bool> {
+        Binding(
+            get: { selectedModuleIds.contains(moduleId) },
+            set: { isSelected in
+                if isSelected {
+                    selectedModuleIds.insert(moduleId)
+                } else {
+                    selectedModuleIds.remove(moduleId)
+                }
+            }
+        )
     }
 }
 #endif

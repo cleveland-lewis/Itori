@@ -165,17 +165,17 @@ struct SemesterEditorView: View {
             .buttonStyle(RootsLiquidButtonStyle())
 
             if let s = semesterToEdit {
-                Button("Delete Semester", role: .destructive) {
+                Button(NSLocalizedString("Delete Semester", value: "Delete Semester", comment: ""), role: .destructive) {
                     showDeleteAlert = true
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.red)
                 .opacity(0.8)
                 .confirmationDialog("Delete Semester?", isPresented: $showDeleteAlert) {
-                    Button("Delete", role: .destructive) {
+                    Button(NSLocalizedString("Delete", value: "Delete", comment: ""), role: .destructive) {
                         deleteSemester(id: s.id)
                     }
-                    Button("Cancel", role: .cancel) { }
+                    Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) { }
                 } message: {
                     Text(NSLocalizedString("semesteredit.this.will.move.the.semester", value: "This will move the semester to Recently Deleted. You can recover it within 30 days.", comment: "This will move the semester to Recently Deleted. Y..."))
                 }

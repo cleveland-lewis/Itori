@@ -14,6 +14,7 @@ enum TaskType: String, Hashable, CaseIterable, Codable {
     case reading
     case review
     case study
+    case practiceTest
 
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
@@ -50,6 +51,7 @@ struct AppTask: Codable, Equatable, Hashable {
     let id: UUID
     let title: String
     let courseId: UUID?
+    let moduleIds: [UUID]
     let due: Date?
     let dueTimeMinutes: Int?
     let estimatedMinutes: Int
@@ -84,10 +86,11 @@ struct AppTask: Codable, Equatable, Hashable {
     
     var isDeleted: Bool { deletedAt != nil }
 
-    init(id: UUID, title: String, courseId: UUID?, due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil, category: TaskType? = nil, dueTimeMinutes: Int? = nil, recurrence: RecurrenceRule? = nil, recurrenceSeriesID: UUID? = nil, recurrenceIndex: Int? = nil, calendarEventIdentifier: String? = nil, sourceUniqueKey: String? = nil, sourceFingerprint: String? = nil, notes: String? = nil, needsReview: Bool = false, alarmDate: Date? = nil, alarmEnabled: Bool = false, alarmSound: String? = nil, deletedAt: Date? = nil) {
+    init(id: UUID, title: String, courseId: UUID?, moduleIds: [UUID] = [], due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil, category: TaskType? = nil, dueTimeMinutes: Int? = nil, recurrence: RecurrenceRule? = nil, recurrenceSeriesID: UUID? = nil, recurrenceIndex: Int? = nil, calendarEventIdentifier: String? = nil, sourceUniqueKey: String? = nil, sourceFingerprint: String? = nil, notes: String? = nil, needsReview: Bool = false, alarmDate: Date? = nil, alarmEnabled: Bool = false, alarmSound: String? = nil, deletedAt: Date? = nil) {
         self.id = id
         self.title = title
         self.courseId = courseId
+        self.moduleIds = moduleIds
         self.due = due.map { Calendar.current.startOfDay(for: $0) }
         self.dueTimeMinutes = dueTimeMinutes
         self.estimatedMinutes = estimatedMinutes
@@ -121,6 +124,7 @@ struct AppTask: Codable, Equatable, Hashable {
         case id
         case title
         case courseId
+        case moduleIds
         case due
         case dueTimeMinutes
         case estimatedMinutes
@@ -156,6 +160,7 @@ struct AppTask: Codable, Equatable, Hashable {
         id = try container.decode(UUID.self, forKey: .id)
         title = try container.decode(String.self, forKey: .title)
         courseId = try container.decodeIfPresent(UUID.self, forKey: .courseId)
+        moduleIds = try container.decodeIfPresent([UUID].self, forKey: .moduleIds) ?? []
         let decodedDue = try container.decodeIfPresent(Date.self, forKey: .due)
         let decodedDueTimeMinutes = try container.decodeIfPresent(Int.self, forKey: .dueTimeMinutes)
         if let decodedDue {
@@ -208,6 +213,7 @@ struct AppTask: Codable, Equatable, Hashable {
         try container.encode(id, forKey: .id)
         try container.encode(title, forKey: .title)
         try container.encodeIfPresent(courseId, forKey: .courseId)
+        try container.encode(moduleIds, forKey: .moduleIds)
         try container.encodeIfPresent(due, forKey: .due)
         try container.encodeIfPresent(dueTimeMinutes, forKey: .dueTimeMinutes)
         try container.encode(estimatedMinutes, forKey: .estimatedMinutes)
@@ -246,6 +252,7 @@ struct AppTask: Codable, Equatable, Hashable {
             id: id,
             title: title,
             courseId: newCourseId,
+            moduleIds: moduleIds,
             due: due,
             estimatedMinutes: estimatedMinutes,
             minBlockMinutes: minBlockMinutes,
@@ -326,6 +333,7 @@ extension AppTask {
         id: UUID = UUID(),
         title: String,
         courseId: UUID? = nil,
+        moduleIds: [UUID] = [],
         due: Date? = nil,
         estimatedMinutes: Int = 60,
         type: TaskType = .homework,
@@ -337,6 +345,7 @@ extension AppTask {
             id: id,
             title: title,
             courseId: courseId,
+            moduleIds: moduleIds,
             due: due,
             estimatedMinutes: estimatedMinutes,
             minBlockMinutes: 20,
@@ -870,6 +879,7 @@ extension TaskType {
         case .exam: return 180
         case .quiz: return 30
         case .study: return 60
+        case .practiceTest: return 60
         }
     }
     
@@ -879,6 +889,7 @@ extension TaskType {
         case .reading, .review, .quiz: return 5
         case .homework, .study: return 10
         case .project, .exam: return 15
+        case .practiceTest: return 10
         }
     }
     
@@ -892,6 +903,7 @@ extension TaskType {
         case .reading: return .reading
         case .review: return .review
         case .study: return .review
+        case .practiceTest: return .practiceTest
         }
     }
 }

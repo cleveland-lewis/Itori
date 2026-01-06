@@ -76,7 +76,7 @@ struct PracticeTestTakingView: View {
             HStack(spacing: 16) {
                 // Progress indicator
                 HStack(spacing: 8) {
-                    Text("\(userAnswers.count)/\(test.questions.count)")
+                    Text(verbatim: "\(userAnswers.count)/\(test.questions.count)")
                         .font(.caption.monospacedDigit())
                     
                     ProgressView(value: progress)
@@ -126,7 +126,7 @@ struct PracticeTestTakingView: View {
             currentQuestionIndex = index
         } label: {
             HStack {
-                Text("\(index + 1)")
+                Text(verbatim: "\(index + 1)")
                     .font(.headline)
                     .frame(width: 32, height: 32)
                     .background(

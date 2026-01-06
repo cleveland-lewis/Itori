@@ -264,8 +264,14 @@ final class IOSWatchSyncCoordinator: NSObject, ObservableObject {
         }
         
         var task = store.tasks[taskIndex]
+        let wasCompleted = task.isCompleted
         task.isCompleted.toggle()
         store.updateTask(task)
+        
+        // Play completion sound if task was just completed
+        if !wasCompleted && task.isCompleted {
+            AudioFeedbackService.shared.playTimerEnd()
+        }
         
         IOSWatchSyncCoordinator.log("✓ Toggled task from watch: \(task.title)")
     }

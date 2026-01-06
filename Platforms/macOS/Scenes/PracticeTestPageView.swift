@@ -26,6 +26,7 @@ struct PracticeTestPageView: View {
                 testListView
             }
         }
+        .background(DesignSystem.Colors.appBackground)
         .practiceTestContextMenu(
             practiceStore: practiceStore,
             scheduledTestsStore: scheduledTestsStore,
@@ -41,7 +42,7 @@ struct PracticeTestPageView: View {
             get: { selectedScheduledTest != nil },
             set: { if !$0 { selectedScheduledTest = nil } }
         )) {
-            Button("Cancel", role: .cancel) {
+            Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) {
                 selectedScheduledTest = nil
             }
             Button(NSLocalizedString("common.button.start_now", comment: "")) {
@@ -51,7 +52,7 @@ struct PracticeTestPageView: View {
             }
         } message: {
             if let test = selectedScheduledTest {
-                Text("Would you like to start '\(test.title)' now? This will create a new test attempt.")
+                Text(verbatim: "Would you like to start '\(test.title)' now? This will create a new test attempt.")
             }
         }
     }
@@ -92,7 +93,7 @@ struct PracticeTestPageView: View {
                         .font(.title2.weight(.semibold))
                     
                     if !scheduledTestsStore.scheduledTests.filter({ $0.status != .archived }).isEmpty {
-                        Text("\(scheduledTestsStore.scheduledTests.filter({ $0.status != .archived }).count)")
+                        Text(verbatim: "\(scheduledTestsStore.scheduledTests.filter({ $0.status != .archived }).count)")
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 8)
@@ -241,7 +242,7 @@ struct PracticeTestPageView: View {
                             .font(.title3.bold())
                             .foregroundStyle(scoreColor(score))
                         
-                        Text("\(test.correctCount)/\(test.questions.count)")
+                        Text(verbatim: "\(test.correctCount)/\(test.questions.count)")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -283,7 +284,7 @@ struct PracticeTestPageView: View {
             
             Divider()
             
-            Button("Delete Test", role: .destructive) {
+            Button(NSLocalizedString("Delete Test", value: "Delete Test", comment: ""), role: .destructive) {
                 practiceStore.deleteTest(test.id)
             }
         }
@@ -329,7 +330,7 @@ struct PracticeTestPageView: View {
             Text(NSLocalizedString("practice.message.generating", comment: ""))
                 .font(.title2.bold())
             
-            Text("Creating \(test.questionCount) questions for \(test.courseName)")
+            Text(verbatim: "Creating \(test.questionCount) questions for \(test.courseName)")
                 .font(.body)
                 .foregroundStyle(.secondary)
             
@@ -372,6 +373,7 @@ struct PracticeTestPageView: View {
                     }
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(.accentColor)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -396,16 +398,17 @@ struct PracticeTestPageView: View {
         // Record the attempt
         _ = scheduledTestsStore.startTest(scheduledTest: scheduledTest)
         
-        // Create a practice test request based on scheduled test info
-        // In a real implementation, you might have a mapping or store additional metadata
-        // For now, create a simple test as a placeholder
         Task {
+            let topics = topicsForTest(scheduledTest)
             let request = PracticeTestRequest(
-                courseId: UUID(), // Would come from scheduled test metadata
+                courseId: scheduledTest.courseId ?? UUID(),
                 courseName: scheduledTest.subject,
-                topics: scheduledTest.unitName.map { [$0] } ?? [],
+                topics: topics,
                 difficulty: difficultyFromInt(scheduledTest.difficulty),
-                questionCount: (scheduledTest.estimatedMinutes ?? 30) / 3 // Rough estimate
+                questionCount: max(10, scheduledTest.questionCount),
+                includeMultipleChoice: true,
+                includeShortAnswer: false,
+                includeExplanation: false
             )
             
             await practiceStore.generateTest(request: request)
@@ -418,6 +421,25 @@ struct PracticeTestPageView: View {
         case 4...5: return .hard
         default: return .medium
         }
+    }
+
+    private func topicsForTest(_ test: ScheduledPracticeTest) -> [String] {
+        if !test.moduleIds.isEmpty {
+            return coursesStore.outlineNodes
+                .filter { node in
+                    guard test.moduleIds.contains(node.id) else { return false }
+                    if let courseId = test.courseId {
+                        return node.courseId == courseId
+                    }
+                    return true
+                }
+                .sorted { $0.sortIndex < $1.sortIndex }
+                .map { $0.title }
+        }
+        if let unitName = test.unitName, !unitName.isEmpty {
+            return [unitName]
+        }
+        return []
     }
 }
 

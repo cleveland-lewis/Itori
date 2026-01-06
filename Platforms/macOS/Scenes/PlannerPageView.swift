@@ -157,7 +157,7 @@ struct OverdueTaskRow: View {
 
                     HStack(spacing: 6) {
                         if let course = item.course { Text(course) }
-                        Text("·")
+                        Text(NSLocalizedString("·", value: "·", comment: ""))
                         Text(dueText(from: item.dueDate))
                     }
                     .font(DesignSystem.Typography.caption)
@@ -697,7 +697,7 @@ private extension PlannerPageView {
                     .font(DesignSystem.Typography.body)
                 Spacer()
                 if !unscheduledTasks.isEmpty {
-                    Text("\(unscheduledTasks.count)")
+                    Text(verbatim: "\(unscheduledTasks.count)")
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 10)
                         .padding(.vertical, 4)
@@ -779,7 +779,7 @@ private extension PlannerPageView {
                     .font(DesignSystem.Typography.body)
                 Spacer()
                 if !overdueTasks.isEmpty {
-                    Text("● \(overdueTasks.count)")
+                    Text(verbatim: "● \(overdueTasks.count)")
                         .font(.caption2.weight(.semibold))
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
@@ -1403,7 +1403,7 @@ struct NewTaskSheet: View {
                 Picker(NSLocalizedString("planner.task_sheet.field.course", comment: ""), selection: courseSelection) {
                     Text(NSLocalizedString("planner.task_sheet.field.course_none", comment: "")).tag(UUID?.none)
                     ForEach(availableCourses) { course in
-                        Text("\(course.code) · \(course.title)").tag(Optional(course.id))
+                        Text(verbatim: "\(course.code) · \(course.title)").tag(Optional(course.id))
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -1453,7 +1453,7 @@ struct NewTaskSheet: View {
                 VStack(alignment: .leading, spacing: 8) {
                     RootsFormRow(label: NSLocalizedString("planner.recurrence.form.interval", comment: "")) {
                         Stepper(value: $draft.recurrenceInterval, in: 1...30) {
-                            Text("Every \(draft.recurrenceInterval) \(recurrenceUnitLabel)")
+                            Text(verbatim: "Every \(draft.recurrenceInterval) \(recurrenceUnitLabel)")
                         }
                         .frame(maxWidth: 220, alignment: .leading)
                     }
@@ -1474,7 +1474,7 @@ struct NewTaskSheet: View {
                     } else if draft.recurrenceEndOption == .afterOccurrences {
                         RootsFormRow(label: "") {
                             Stepper(value: $draft.recurrenceEndCount, in: 1...99) {
-                                Text("\(draft.recurrenceEndCount) occurrences")
+                                Text(verbatim: "\(draft.recurrenceEndCount) occurrences")
                             }
                         }
                     }

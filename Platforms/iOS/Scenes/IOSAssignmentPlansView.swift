@@ -36,7 +36,7 @@ struct AssignmentPlanCard: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(assignment.title)
                     .font(.headline)
-                Text("Due \(formatDueDisplay(for: assignment))")
+                Text(verbatim: "Due \(formatDueDisplay(for: assignment))")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -61,9 +61,9 @@ struct AssignmentPlanCard: View {
     private func planSummary(_ plan: AssignmentPlan) -> some View {
         HStack(spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("\(plan.completedStepsCount)/\(plan.steps.count) steps")
+                Text(verbatim: "\(plan.completedStepsCount)/\(plan.steps.count) steps")
                     .font(.subheadline.weight(.semibold))
-                Text("\(plan.totalEstimatedMinutes) min total")
+                Text(verbatim: "\(plan.totalEstimatedMinutes) min total")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -88,11 +88,11 @@ struct AssignmentPlanCard: View {
     
     private var noPlanView: some View {
         VStack(spacing: 8) {
-            Text("No plan yet")
+            Text(NSLocalizedString("iosassignmentplans.no.plan.yet", value: "No plan yet", comment: "No plan yet"))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             
-            Button("Generate Plan") {
+            Button(NSLocalizedString("iosassignmentplans.button.generate.plan", value: "Generate Plan", comment: "Generate Plan")) {
                 onGeneratePlan()
             }
             .buttonStyle(.borderedProminent)
@@ -114,7 +114,7 @@ struct AssignmentPlanCard: View {
                 .frame(width: 44, height: 44)
                 .rotationEffect(.degrees(-90))
             
-            Text("\(Int(plan.progressPercentage))%")
+            Text(verbatim: "\(Int(plan.progressPercentage))%")
                 .font(.caption2.weight(.semibold))
         }
     }
@@ -160,19 +160,19 @@ struct PlanStepRow: View {
                     .foregroundStyle(step.isCompleted ? .secondary : .primary)
                 
                 HStack(spacing: 8) {
-                    Label("\(step.estimatedMinutes) min", systemImage: "clock")
+                    Label(NSLocalizedString("iosassignmentplans.label.stepestimatedminutes.min", value: "\(step.estimatedMinutes) min", comment: "\(step.estimatedMinutes) min"), systemImage: "clock")
                     
                     if let dueBy = step.dueBy {
                         Label(shortDate(dueBy), systemImage: "calendar")
                     }
                     
                     if step.isOverdue {
-                        Label("Overdue", systemImage: "exclamationmark.triangle")
+                        Label(NSLocalizedString("iosassignmentplans.label.overdue", value: "Overdue", comment: "Overdue"), systemImage: "exclamationmark.triangle")
                             .foregroundStyle(.red)
                     }
                     
                     if isBlocked {
-                        Label("Blocked", systemImage: "lock")
+                        Label(NSLocalizedString("iosassignmentplans.label.blocked", value: "Blocked", comment: "Blocked"), systemImage: "lock")
                             .foregroundStyle(.orange)
                     }
                 }
@@ -277,10 +277,10 @@ struct IOSAssignmentPlansView: View {
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Assignment Plans")
+                Text(NSLocalizedString("iosassignmentplans.assignment.plans", value: "Assignment Plans", comment: "Assignment Plans"))
                     .font(.title3.weight(.semibold))
                 if let lastRefresh = plansStore.lastRefreshDate {
-                    Text("Updated \(timeAgo(lastRefresh))")
+                    Text(verbatim: "Updated \(timeAgo(lastRefresh))")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -294,9 +294,9 @@ struct IOSAssignmentPlansView: View {
             Image(systemName: "list.bullet.clipboard")
                 .font(.system(size: 48))
                 .foregroundStyle(.secondary)
-            Text("No assignments")
+            Text(NSLocalizedString("iosassignmentplans.no.assignments", value: "No assignments", comment: "No assignments"))
                 .font(.headline)
-            Text("Add assignments to see their plans")
+            Text(NSLocalizedString("iosassignmentplans.add.assignments.to.see.their.plans", value: "Add assignments to see their plans", comment: "Add assignments to see their plans"))
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
@@ -334,6 +334,7 @@ struct IOSAssignmentPlansView: View {
     
     private func convertTaskToAssignment(_ task: AppTask) -> Assignment? {
         guard let due = task.due else { return nil }
+        guard task.category != .practiceTest else { return nil }
         
         let assignmentCategory: AssignmentCategory
         switch task.category {
@@ -344,11 +345,13 @@ struct IOSAssignmentPlansView: View {
         case .review: assignmentCategory = .review
         case .project: assignmentCategory = .project
         case .study: assignmentCategory = .review
+        case .practiceTest: assignmentCategory = .practiceTest
         }
         
         return Assignment(
             id: task.id,
             courseId: task.courseId,
+            moduleIds: task.moduleIds,
             title: task.title,
             dueDate: due,
             dueTimeMinutes: task.dueTimeMinutes,

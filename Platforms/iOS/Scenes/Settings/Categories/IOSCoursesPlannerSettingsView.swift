@@ -54,7 +54,7 @@ struct IOSCoursesPlannerSettingsView: View {
                             .foregroundColor(.secondary)
                     }
                 }
-                Text("Turning off Energy Panel will make the planning algorithm default to medium energy for all days.")
+                Text(NSLocalizedString("settings.planner.energy_panel.footer", value: "Turning off Energy Panel will make the planning algorithm default to medium energy for all days.", comment: "Energy panel footer"))
                     .font(.caption)
                     .foregroundColor(.secondary)
                 

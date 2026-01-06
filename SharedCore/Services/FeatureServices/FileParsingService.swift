@@ -336,6 +336,7 @@ final class FileParsingService: ObservableObject {
         case .quiz: return 30
         case .review: return 45
         case .project: return 180
+        case .practiceTest: return 50
         }
     }
     
@@ -354,6 +355,7 @@ final class FileParsingService: ObservableObject {
         case .quiz: return .quiz
         case .review: return .study
         case .project: return .project
+        case .practiceTest: return .practiceTest
         }
     }
     

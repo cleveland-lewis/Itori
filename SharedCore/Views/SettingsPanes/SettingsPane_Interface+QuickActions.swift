@@ -3,9 +3,9 @@ import SwiftUI
 extension SettingsPane_Interface {
     var quickActionsEditor: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Quick Actions")
+            Text(NSLocalizedString("settings.quick.actions", value: "Quick Actions", comment: "Quick Actions"))
                 .font(DesignSystem.Typography.subHeader)
-            Text("Configure the quick actions shown under the + button in the top-left of the app.")
+            Text(NSLocalizedString("settings.configure.the.quick.actions.shown", value: "Configure the quick actions shown under the + button in the top-left of the app.", comment: "Configure the quick actions shown under the + butt..."))
                 .font(DesignSystem.Typography.caption)
                 .foregroundColor(.secondary)
 
@@ -29,7 +29,7 @@ struct QuickActionsEditorView: View {
                         Image(systemName: action.systemImage)
                         Text(action.title)
                         Spacer()
-                        Toggle("", isOn: Binding(get: { isSelected }, set: { new in
+                        Toggle(NSLocalizedString("settings.toggle.", value: "", comment: ""), isOn: Binding(get: { isSelected }, set: { new in
                             guard new || isSelected else { return }
                             var cur = settings.quickActions
                             if new {
@@ -49,17 +49,17 @@ struct QuickActionsEditorView: View {
             .frame(height: 260)
 
             HStack {
-                Button("Restore Defaults") {
+                Button(NSLocalizedString("settings.button.restore.defaults", value: "Restore Defaults", comment: "Restore Defaults")) {
                     settings.quickActions = QuickAction.defaultSelection
                     settings.save()
                 }
                 .onChange(of: settings.quickActions) { _, _ in settings.save() }
-                Button("Add Custom Action") {
+                Button(NSLocalizedString("settings.button.add.custom.action", value: "Add Custom Action", comment: "Add Custom Action")) {
                     // placeholder: custom quick action creation UI may be added
                 }
                 Spacer()
             }
-            Text("Select up to \(maxSelection) actions.")
+            Text(verbatim: "Select up to \(maxSelection) actions.")
                 .font(DesignSystem.Typography.caption)
                 .foregroundColor(.secondary)
         }

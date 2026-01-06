@@ -1,5 +1,8 @@
 import Foundation
 @preconcurrency import AVFoundation
+#if os(macOS)
+import AppKit
+#endif
 
 /// Manages audio feedback for timer events
 @MainActor
@@ -34,22 +37,57 @@ final class AudioFeedbackService {
     /// Play timer start sound (pleasant upward tone)
     func playTimerStart() {
         guard settings.timerAlertsEnabled else { return }
-        // Pleasant C major chord arpeggio (C5 -> E5 -> G5)
-        playPleasantTone(frequencies: [523.25, 659.25, 783.99], duration: 0.5, volume: 0.25)
+        playAudioFile(named: "completion", extension: "mp3", volume: 0.6)
     }
     
     /// Play timer pause sound (gentle descending tone)
     func playTimerPause() {
         guard settings.timerAlertsEnabled else { return }
-        // Gentle G5 -> E5 descent
-        playPleasantTone(frequencies: [783.99, 659.25], duration: 0.4, volume: 0.22)
+        playAudioFile(named: "completion", extension: "mp3", volume: 0.5)
     }
     
     /// Play timer end sound (complete resolution)
     func playTimerEnd() {
         guard settings.timerAlertsEnabled else { return }
-        // Satisfying C major chord: C5 + E5 + G5 together
-        playChord(frequencies: [523.25, 659.25, 783.99], duration: 0.6, volume: 0.28)
+        playAudioFile(named: "completion", extension: "mp3", volume: 0.8)
+    }
+    
+    /// Play audio file from bundle
+    private func playAudioFile(named name: String, extension ext: String, volume: Float) {
+        guard let url = Bundle.main.url(forResource: name, withExtension: ext) else {
+            DebugLogger.log("Audio file not found: \(name).\(ext)")
+            // Fallback to system sound
+            #if os(iOS)
+            AudioServicesPlaySystemSound(1104)
+            #else
+            NSSound(named: "Glass")?.play()
+            #endif
+            return
+        }
+        
+        do {
+            let player = try AVAudioPlayer(contentsOf: url)
+            player.volume = volume
+            player.prepareToPlay()
+            player.play()
+            
+            // Store player to keep it alive during playback
+            let playerID = UUID().uuidString
+            audioPlayers[playerID] = player
+            
+            // Clean up after playback
+            DispatchQueue.main.asyncAfter(deadline: .now() + player.duration + 0.1) { [weak self] in
+                self?.audioPlayers.removeValue(forKey: playerID)
+            }
+        } catch {
+            DebugLogger.log("Failed to play audio file: \(error)")
+            // Fallback to system sound
+            #if os(iOS)
+            AudioServicesPlaySystemSound(1104)
+            #else
+            NSSound(named: "Glass")?.play()
+            #endif
+        }
     }
     
     /// Generate and play a simple sine wave tone

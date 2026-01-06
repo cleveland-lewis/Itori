@@ -173,13 +173,13 @@ struct PracticeTestGeneratorView: View {
                     Text(NSLocalizedString("practice.generator.question_count.label", comment: "Number of Questions"))
                         .font(.subheadline.bold())
                     Spacer()
-                    Text("\(questionCount)")
+                    Text(verbatim: "\(questionCount)")
                         .foregroundStyle(.secondary)
                 }
                 
                 Picker(NSLocalizedString("practice.generator.question_count.label", comment: "Question Count"), selection: $questionCount) {
                     ForEach(questionCountOptions, id: \.self) { count in
-                        Text("\(count)").tag(count)
+                        Text(verbatim: "\(count)").tag(count)
                     }
                 }
                 .pickerStyle(.segmented)

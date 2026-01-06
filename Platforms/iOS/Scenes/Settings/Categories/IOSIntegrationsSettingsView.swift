@@ -8,25 +8,25 @@ struct IOSIntegrationsSettingsView: View {
     var body: some View {
         List {
             Section {
-                Text("Calendar and Reminders integration options")
+                Text(NSLocalizedString("settings.integrations.apple.body", value: "Calendar and Reminders integration options", comment: "Apple services integrations body"))
                     .foregroundColor(.secondary)
             } header: {
-                Text("Apple Services")
+                Text(NSLocalizedString("settings.integrations.apple.header", value: "Apple Services", comment: "Apple services header"))
             }
             
             Section {
-                NavigationLink("Connected Services") {
-                    Text("No external services connected")
+                NavigationLink(NSLocalizedString("settings.integrations.external.connected", value: "Connected Services", comment: "Connected services")) {
+                    Text(NSLocalizedString("settings.integrations.external.empty", value: "No external services connected", comment: "No external services connected"))
                         .foregroundColor(.secondary)
                 }
             } header: {
-                Text("External Services")
+                Text(NSLocalizedString("settings.integrations.external.header", value: "External Services", comment: "External services header"))
             } footer: {
-                Text("Connect with third-party services for additional features")
+                Text(NSLocalizedString("settings.integrations.external.footer", value: "Connect with third-party services for additional features", comment: "External services footer"))
             }
         }
         .listStyle(.insetGrouped)
-        .navigationTitle("Integrations")
+        .navigationTitle(NSLocalizedString("settings.category.integrations", comment: "Integrations"))
         .navigationBarTitleDisplayMode(.inline)
     }
 }

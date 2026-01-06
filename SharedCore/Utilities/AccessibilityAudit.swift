@@ -349,7 +349,7 @@ struct AccessibilityInspector: ViewModifier {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Image(systemName: "accessibility")
-                Text("Accessibility Inspector")
+                Text(NSLocalizedString("Accessibility Inspector", value: "Accessibility Inspector", comment: ""))
                     .font(.caption.bold())
                 Spacer()
                 Button(action: { isInspecting = false }) {
@@ -360,12 +360,12 @@ struct AccessibilityInspector: ViewModifier {
             Divider()
             
             if let element = selectedElement {
-                Text("Selected: \(element)")
+                Text(verbatim: "Selected: \(element)")
                     .font(.caption2)
                 
                 ForEach(elementInfo.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
                     HStack(alignment: .top) {
-                        Text("\(key):")
+                        Text(verbatim: "\(key):")
                             .font(.caption2.bold())
                         Text(value)
                             .font(.caption2)
@@ -373,7 +373,7 @@ struct AccessibilityInspector: ViewModifier {
                     }
                 }
             } else {
-                Text("Tap an element to inspect")
+                Text(NSLocalizedString("Tap an element to inspect", value: "Tap an element to inspect", comment: ""))
                     .font(.caption2)
                     .foregroundColor(.secondary)
             }

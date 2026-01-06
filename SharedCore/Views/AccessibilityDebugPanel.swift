@@ -29,9 +29,9 @@ struct AccessibilityDebugPanel: View {
                 
                 // Tab Selection
                 Picker("View", selection: $selectedTab) {
-                    Text("Issues (\(auditEngine.totalIssues))").tag(0)
-                    Text("Live Testing").tag(1)
-                    Text("Settings").tag(2)
+                    Text(verbatim: "Issues (\(auditEngine.totalIssues))").tag(0)
+                    Text(NSLocalizedString("ui.live.testing", value: "Live Testing", comment: "Live Testing")).tag(1)
+                    Text(NSLocalizedString("ui.settings", value: "Settings", comment: "Settings")).tag(2)
                 }
                 .pickerStyle(.segmented)
                 .padding()
@@ -49,11 +49,11 @@ struct AccessibilityDebugPanel: View {
             #endif
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") { dismiss() }
+                    Button(NSLocalizedString("ui.button.close", value: "Close", comment: "Close")) { dismiss() }
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: { Task { await auditEngine.runFullAudit() } }) {
-                        Label("Scan", systemImage: "arrow.clockwise")
+                        Label(NSLocalizedString("ui.label.scan", value: "Scan", comment: "Scan"), systemImage: "arrow.clockwise")
                     }
                     .disabled(auditEngine.isScanning)
                 }
@@ -171,12 +171,12 @@ struct AccessibilityDebugPanel: View {
     private var scanningView: some View {
         VStack(spacing: 16) {
             ProgressView(value: auditEngine.scanProgress) {
-                Text("Scanning accessibility...")
+                Text(NSLocalizedString("ui.scanning.accessibility", value: "Scanning accessibility...", comment: "Scanning accessibility..."))
                     .font(.headline)
             }
             .progressViewStyle(.linear)
             
-            Text("\(Int(auditEngine.scanProgress * 100))% complete")
+            Text(verbatim: "\(Int(auditEngine.scanProgress * 100))% complete")
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
@@ -190,10 +190,10 @@ struct AccessibilityDebugPanel: View {
                 .font(.system(size: 60))
                 .foregroundColor(.green)
             
-            Text("No Issues Found")
+            Text(NSLocalizedString("ui.no.issues.found", value: "No Issues Found", comment: "No Issues Found"))
                 .font(.headline)
             
-            Text("Your app meets accessibility standards!")
+            Text(NSLocalizedString("ui.your.app.meets.accessibility.standards", value: "Your app meets accessibility standards!", comment: "Your app meets accessibility standards!"))
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -341,30 +341,30 @@ struct AccessibilityDebugPanel: View {
     private var settingsView: some View {
         Form {
             Section("Audit Configuration") {
-                Toggle("Auto-run on app launch", isOn: .constant(false))
-                Toggle("Show severity badges in UI", isOn: .constant(true))
-                Toggle("Enable accessibility logging", isOn: .constant(false))
+                Toggle(NSLocalizedString("ui.toggle.autorun.on.app.launch", value: "Auto-run on app launch", comment: "Auto-run on app launch"), isOn: .constant(false))
+                Toggle(NSLocalizedString("ui.toggle.show.severity.badges.in.ui", value: "Show severity badges in UI", comment: "Show severity badges in UI"), isOn: .constant(true))
+                Toggle(NSLocalizedString("ui.toggle.enable.accessibility.logging", value: "Enable accessibility logging", comment: "Enable accessibility logging"), isOn: .constant(false))
             }
             
             Section("WCAG Compliance Level") {
                 Picker("Target Level", selection: .constant("AA")) {
-                    Text("A - Minimum").tag("A")
-                    Text("AA - Standard").tag("AA")
-                    Text("AAA - Enhanced").tag("AAA")
+                    Text(NSLocalizedString("ui.a.minimum", value: "A - Minimum", comment: "A - Minimum")).tag("A")
+                    Text(NSLocalizedString("ui.aa.standard", value: "AA - Standard", comment: "AA - Standard")).tag("AA")
+                    Text(NSLocalizedString("ui.aaa.enhanced", value: "AAA - Enhanced", comment: "AAA - Enhanced")).tag("AAA")
                 }
             }
             
             Section("Ignored Issues") {
-                Text("No ignored issues")
+                Text(NSLocalizedString("ui.no.ignored.issues", value: "No ignored issues", comment: "No ignored issues"))
                     .foregroundColor(.secondary)
             }
             
             Section {
-                Button("Export Audit Report") {
+                Button(NSLocalizedString("ui.button.export.audit.report", value: "Export Audit Report", comment: "Export Audit Report")) {
                     exportReport()
                 }
                 
-                Button("Clear Audit Cache") {
+                Button(NSLocalizedString("ui.button.clear.audit.cache", value: "Clear Audit Cache", comment: "Clear Audit Cache")) {
                     // Clear cache
                 }
                 .foregroundColor(.red)
@@ -372,7 +372,7 @@ struct AccessibilityDebugPanel: View {
             
             Section("About") {
                 HStack {
-                    Text("Last Scan")
+                    Text(NSLocalizedString("ui.last.scan", value: "Last Scan", comment: "Last Scan"))
                     Spacer()
                     if let date = auditEngine.lastScanDate {
                         Text(date.formatted())
@@ -381,9 +381,9 @@ struct AccessibilityDebugPanel: View {
                 }
                 
                 HStack {
-                    Text("Total Issues")
+                    Text(NSLocalizedString("ui.total.issues", value: "Total Issues", comment: "Total Issues"))
                     Spacer()
-                    Text("\(auditEngine.totalIssues)")
+                    Text(verbatim: "\(auditEngine.totalIssues)")
                         .foregroundColor(.secondary)
                 }
             }
@@ -416,7 +416,7 @@ private struct StatBadge: View {
     
     var body: some View {
         VStack(spacing: 4) {
-            Text("\(count)")
+            Text(verbatim: "\(count)")
                 .font(.title2.bold())
                 .foregroundColor(severity.color)
             
@@ -548,19 +548,19 @@ private struct IssueDetailView: View {
                 // Actions
                 VStack(spacing: 12) {
                     Button(action: { /* Copy details */ }) {
-                        Label("Copy Details", systemImage: "doc.on.doc")
+                        Label(NSLocalizedString("ui.label.copy.details", value: "Copy Details", comment: "Copy Details"), systemImage: "doc.on.doc")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.bordered)
                     
                     Button(action: { /* Mark as fixed */ }) {
-                        Label("Mark as Fixed", systemImage: "checkmark.circle")
+                        Label(NSLocalizedString("ui.label.mark.as.fixed", value: "Mark as Fixed", comment: "Mark as Fixed"), systemImage: "checkmark.circle")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
                     
                     Button(action: { /* Ignore issue */ }) {
-                        Text("Ignore This Issue")
+                        Text(NSLocalizedString("ui.ignore.this.issue", value: "Ignore This Issue", comment: "Ignore This Issue"))
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.bordered)

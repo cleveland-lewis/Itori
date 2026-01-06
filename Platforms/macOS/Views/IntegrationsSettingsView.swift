@@ -52,36 +52,6 @@ struct IntegrationsSettingsView: View {
                 )
             }
             
-            // Spotlight / Search Integration
-            Section {
-                IntegrationCard(
-                    title: "Spotlight & Search",
-                    icon: "magnifyingglass",
-                    description: "Index courses, assignments, and notes for system-wide search",
-                    status: .notRequested,
-                    isEnabled: Binding(
-                        get: { settings.enableSpotlightIndexing },
-                        set: { settings.enableSpotlightIndexing = $0; settings.save() }
-                    ),
-                    showOpenSettings: false
-                )
-            }
-            
-            // Raycast Integration
-            Section {
-                IntegrationCard(
-                    title: "Raycast",
-                    icon: "command.square",
-                    description: "Quick actions and search integration with Raycast",
-                    status: .notRequested,
-                    isEnabled: Binding(
-                        get: { settings.enableRaycastIntegration },
-                        set: { settings.enableRaycastIntegration = $0; settings.save() }
-                    ),
-                    showOpenSettings: false
-                )
-            }
-            
         }
         .formStyle(.grouped)
         .navigationTitle("Integrations")

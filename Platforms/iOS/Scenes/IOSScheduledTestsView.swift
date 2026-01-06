@@ -5,6 +5,7 @@ import SwiftUI
 struct IOSScheduledTestsView: View {
     @StateObject private var store = ScheduledTestsStore.shared
     @StateObject private var practiceStore = PracticeTestStore.shared
+    @EnvironmentObject private var coursesStore: CoursesStore
     @State private var selectedTest: ScheduledPracticeTest?
     @State private var showingStartConfirmation = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -29,17 +30,17 @@ struct IOSScheduledTestsView: View {
             .navigationTitle("Scheduled Tests")
             .navigationBarTitleDisplayMode(.large)
             .alert("Start Test", isPresented: $showingStartConfirmation) {
-                Button("Cancel", role: .cancel) {
+                Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) {
                     selectedTest = nil
                 }
-                Button("Start") {
+                Button(NSLocalizedString("iosscheduledtests.button.start", value: "Start", comment: "Start")) {
                     if let test = selectedTest {
                         startTest(test)
                     }
                 }
             } message: {
                 if let test = selectedTest {
-                    Text("Start '\(test.title)' now? This will create a new test attempt.")
+                    Text(verbatim: "Start '\(test.title)' now? This will create a new test attempt.")
                 }
             }
         }
@@ -54,10 +55,10 @@ struct IOSScheduledTestsView: View {
                 .foregroundStyle(.secondary)
             
             VStack(spacing: 8) {
-                Text("No Scheduled Tests")
+                Text(NSLocalizedString("iosscheduledtests.no.scheduled.tests", value: "No Scheduled Tests", comment: "No Scheduled Tests"))
                     .font(.title2.weight(.semibold))
                 
-                Text("Practice tests you schedule will appear here")
+                Text(NSLocalizedString("iosscheduledtests.practice.tests.you.schedule.will.appear.here", value: "Practice tests you schedule will appear here", comment: "Practice tests you schedule will appear here"))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -92,12 +93,16 @@ struct IOSScheduledTestsView: View {
         
         // Create a practice test request
         Task {
+            let topics = topicsForTest(scheduledTest)
             let request = PracticeTestRequest(
-                courseId: UUID(),
+                courseId: scheduledTest.courseId ?? UUID(),
                 courseName: scheduledTest.subject,
-                topics: scheduledTest.unitName.map { [$0] } ?? [],
+                topics: topics,
                 difficulty: difficultyFromInt(scheduledTest.difficulty),
-                questionCount: (scheduledTest.estimatedMinutes ?? 30) / 3
+                questionCount: max(10, scheduledTest.questionCount),
+                includeMultipleChoice: true,
+                includeShortAnswer: false,
+                includeExplanation: false
             )
             
             await practiceStore.generateTest(request: request)
@@ -112,6 +117,25 @@ struct IOSScheduledTestsView: View {
         case 4...5: return .hard
         default: return .medium
         }
+    }
+
+    private func topicsForTest(_ test: ScheduledPracticeTest) -> [String] {
+        if !test.moduleIds.isEmpty {
+            return coursesStore.outlineNodes
+                .filter { node in
+                    guard test.moduleIds.contains(node.id) else { return false }
+                    if let courseId = test.courseId {
+                        return node.courseId == courseId
+                    }
+                    return true
+                }
+                .sorted { $0.sortIndex < $1.sortIndex }
+                .map { $0.title }
+        }
+        if let unitName = test.unitName, !unitName.isEmpty {
+            return [unitName]
+        }
+        return []
     }
 }
 
@@ -162,7 +186,7 @@ struct IOSScheduledTestRow: View {
                         .foregroundStyle(.secondary)
                     
                     if let duration = test.estimatedMinutes {
-                        Label("\(duration) min", systemImage: "timer")
+                        Label(NSLocalizedString("iosscheduledtests.label.duration.min", value: "\(duration) min", comment: "\(duration) min"), systemImage: "timer")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }

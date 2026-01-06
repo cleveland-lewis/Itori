@@ -123,9 +123,13 @@ struct ContentView: View {
             }
         }
         .onChange(of: settings.enableFlashcards) { _, enabled in
-            guard !enabled, selectedTab == .flashcards else { return }
-            selectedTab = .dashboard
-            appModel.selectedPage = .dashboard
+            guard !enabled else { return }
+            
+            // If currently on flashcards tab, switch to dashboard
+            if selectedTab == .flashcards {
+                selectedTab = .dashboard
+                appModel.selectedPage = .dashboard
+            }
         }
         #if os(macOS)
         .onKeyDown { event in
@@ -226,6 +230,7 @@ struct ContentView: View {
         case .homework: return .homework
         case .reading: return .reading
         case .review: return .review
+        case .practiceTest: return .practiceTest
         case .study:
             fallthrough
         case .project: return .project

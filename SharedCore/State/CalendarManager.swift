@@ -91,6 +91,12 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
 
     private init() {
         cacheURL = nil
+        
+        // Skip slow initialization during tests
+        guard !TestMode.isRunningTests else {
+            return
+        }
+        
         // Observe store changes via DeviceCalendarManager's store
         deviceManager.startObservingStoreChanges()
         // Also subscribe to notification to refresh local caches
@@ -210,8 +216,10 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
             authManager.logDeniedOnce(context: "syncPlannerSessionsToCalendar")
             return
         }
-        guard !selectedCalendarID.isEmpty else { return }
-        guard let targetCalendar = store.calendars(for: .event).first(where: { $0.calendarIdentifier == selectedCalendarID }) else { return }
+        let schoolCalendarId = AppSettingsModel.shared.selectedSchoolCalendarID
+        let targetCalendarId = schoolCalendarId.isEmpty ? selectedCalendarID : schoolCalendarId
+        guard !targetCalendarId.isEmpty else { return }
+        guard let targetCalendar = store.calendars(for: .event).first(where: { $0.calendarIdentifier == targetCalendarId }) else { return }
 
         let calendar = Calendar.current
         let sessions = PlannerStore.shared.scheduled
@@ -560,19 +568,27 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     func decodeNotesWithCategory(notes: String?) -> (userNotes: String, category: EventCategory?) {
         guard let notes = notes else { return ("", nil) }
         
-        let pattern = #"\[RootsCategory:(.*?)\]"#
-        if let regex = try? NSRegularExpression(pattern: pattern, options: []),
-           let match = regex.firstMatch(in: notes, options: [], range: NSRange(notes.startIndex..., in: notes)),
-           let categoryRange = Range(match.range(at: 1), in: notes) {
-            let categoryString = String(notes[categoryRange])
-            let category = EventCategory(rawValue: categoryString)
-            // Remove the category marker from displayed notes
-            let cleanNotes = notes.replacingOccurrences(of: pattern, with: "", options: .regularExpression)
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-            return (cleanNotes, category)
+        var workingNotes = notes
+        var category: EventCategory? = nil
+        
+        // Remove [RootsCategory:...] marker
+        let categoryPattern = #"\[RootsCategory:(.*?)\]"#
+        if let regex = try? NSRegularExpression(pattern: categoryPattern, options: []),
+           let match = regex.firstMatch(in: workingNotes, options: [], range: NSRange(workingNotes.startIndex..., in: workingNotes)),
+           let categoryRange = Range(match.range(at: 1), in: workingNotes) {
+            let categoryString = String(workingNotes[categoryRange])
+            category = EventCategory(rawValue: categoryString)
+            workingNotes = workingNotes.replacingOccurrences(of: categoryPattern, with: "", options: .regularExpression)
         }
         
-        return (notes, nil)
+        // Remove [RootsPlanner]...[/RootsPlanner] metadata blocks
+        let plannerPattern = #"\[RootsPlanner\][\s\S]*?\[/RootsPlanner\]"#
+        workingNotes = workingNotes.replacingOccurrences(of: plannerPattern, with: "", options: .regularExpression)
+        
+        // Clean up whitespace
+        let cleanNotes = workingNotes.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        return (cleanNotes, category)
     }
 }
 

@@ -365,7 +365,7 @@ struct StopwatchSubDialFace: View {
                 let angle = Double(mapped) / Double(maxValue) * 360.0 - 90.0
                 let radian = angle * .pi / 180.0
 
-                Text("\(numeral)")
+                Text(verbatim: "\(numeral)")
                     .font(.system(size: diameter * 0.095, weight: .regular, design: .rounded))
                     .foregroundStyle(Color.primary.opacity(0.62))
                     .frame(width: diameter * 0.22, height: diameter * 0.16, alignment: .center)

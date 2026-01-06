@@ -43,7 +43,7 @@ struct CalendarGrid: View {
     }
     
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 12) {
             weekdayHeader
             
             LazyVGrid(columns: columns, spacing: 0) {
@@ -75,7 +75,7 @@ struct CalendarGrid: View {
         return HStack(spacing: 0) {
             ForEach(ordered, id: \.self) { symbol in
                 Text(symbol.uppercased())
-                    .font(.caption.weight(.semibold))
+                    .font(.caption2.weight(.semibold))
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity)
             }
@@ -106,11 +106,14 @@ private struct GridDayCell: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Day number at top-left with ONLY today getting a small red circle
+            // Day number at top-right with ONLY today getting a small red circle
             HStack {
-                Text("\(dayNumber)")
-                    .font(.system(size: 13, weight: .regular))
+                Spacer()
+                
+                Text(verbatim: "\(dayNumber)")
+                    .font(.system(size: 12, weight: isToday ? .semibold : .regular))
                     .foregroundStyle(
+                        isSelected ? .white :
                         isToday ? .white :
                         .primary
                     )
@@ -118,18 +121,16 @@ private struct GridDayCell: View {
                     .background(
                         // CRITICAL: ONLY today gets a circle - small red circle behind date number
                         Group {
-                            if isToday {
+                            if isToday && !isSelected {
                                 Circle()
                                     .fill(Color.red)
-                                    .frame(width: 22, height: 22)
+                                    .frame(width: 20, height: 20)
                             }
                         }
                     )
-                
-                Spacer()
             }
             .padding(.top, 6)
-            .padding(.leading, 6)
+            .padding(.trailing, 6)
             
             // Event bars (horizontal colored bars, not dots+text)
             VStack(spacing: 2) {
@@ -138,7 +139,7 @@ private struct GridDayCell: View {
                 }
                 
                 if events.count > 3 {
-                    Text("+\(events.count - 3)")
+                    Text(verbatim: "+\(events.count - 3)")
                         .font(.system(size: 9))
                         .foregroundStyle(.secondary)
                         .padding(.leading, 4)
@@ -159,8 +160,8 @@ private struct GridDayCell: View {
                 }
             }
         )
-        .background(DesignSystem.Materials.surface)
-        .border(Color.primary.opacity(colorScheme == .dark ? 0.15 : 0.1), width: 0.5)  // Hairline border
+        .background(Color.clear)
+        .border(Color.primary.opacity(colorScheme == .dark ? 0.2 : 0.12), width: 0.5)  // Hairline border
         .contentShape(Rectangle())
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.15)) {
@@ -264,7 +265,7 @@ struct CalendarHeader: View {
                 }
                 .buttonStyle(.plain)
                 
-                Button("Today", action: onToday)
+                Button(NSLocalizedString("Today", value: "Today", comment: ""), action: onToday)
                     .buttonStyle(.bordered)
                 
                 Button(action: onNext) {

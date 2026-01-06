@@ -84,7 +84,6 @@ struct FloatingControls: View {
 
     private var allMenuPages: [AppPage] {
         [
-            .practice,
             .timer,
             .courses,
             .assignments,
@@ -133,6 +132,7 @@ struct FloatingControls: View {
         let sessions = assignments.flatMap { PlannerEngine.generateSessions(for: $0, settings: settings) }
         let result = PlannerEngine.scheduleSessionsWithStrategy(sessions, settings: settings, energyProfile: defaultEnergyProfile())
         plannerStore.persist(scheduled: result.scheduled, overflow: result.overflow)
+        syncPlannerCalendar(for: result.scheduled)
         toastRouter.show(NSLocalizedString("ios.toast.schedule_updated", comment: "Schedule updated"))
     }
 
@@ -183,7 +183,14 @@ struct FloatingControls: View {
         case .review: return .review
         case .project: return .project
         case .study: return .homework // Map study to homework category
+        case .practiceTest: return .practiceTest
         }
+    }
+
+    private func syncPlannerCalendar(for scheduled: [ScheduledSession]) {
+        guard let start = scheduled.map({ $0.start }).min(),
+              let end = scheduled.map({ $0.end }).max() else { return }
+        Task { await CalendarManager.shared.syncPlannerSessionsToCalendar(in: start...end) }
     }
 
     private func urgency(for value: Double) -> AssignmentUrgency {

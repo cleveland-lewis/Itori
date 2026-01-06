@@ -33,7 +33,7 @@ struct LayoutAlignmentGuide: View {
                 
                 // Label
                 HStack {
-                    Text("Content Start Line: \(Int(appLayout.topContentInset))pt")
+                    Text(verbatim: "Content Start Line: \(Int(appLayout.topContentInset))pt")
                         .font(.caption2.monospaced())
                         .foregroundColor(.white)
                         .padding(.horizontal, 8)

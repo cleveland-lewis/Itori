@@ -73,7 +73,7 @@ struct RemindersSettingsView: View {
             Button(NSLocalizedString("settings.button.open.system.settings", value: "Open System Settings", comment: "Open System Settings")) {
                 calendarManager.openSystemPrivacySettings()
             }
-            Button("Cancel", role: .cancel) { }
+            Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) { }
         } message: {
             Text(NSLocalizedString("settings.to.disconnect.itori.from.your", value: "To disconnect Itori from your Reminders, please revoke access in System Settings > Privacy & Security > Reminders.", comment: "To disconnect Itori from your Reminders, please re..."))
         }

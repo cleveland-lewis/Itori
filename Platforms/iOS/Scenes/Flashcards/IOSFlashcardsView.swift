@@ -52,10 +52,10 @@ struct IOSFlashcardsView: View {
                 .foregroundStyle(.secondary.opacity(0.5))
             
             VStack(spacing: 12) {
-                Text("No Flashcard Decks")
+                Text(NSLocalizedString("iosflashcards.no.flashcard.decks", value: "No Flashcard Decks", comment: "No Flashcard Decks"))
                     .font(.title2.weight(.bold))
                 
-                Text("Create your first deck to start studying with spaced repetition")
+                Text(NSLocalizedString("iosflashcards.create.your.first.deck.to", value: "Create your first deck to start studying with spaced repetition", comment: "Create your first deck to start studying with spac..."))
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -65,7 +65,7 @@ struct IOSFlashcardsView: View {
             Button {
                 showingAddDeck = true
             } label: {
-                Label("Create Deck", systemImage: "plus.circle.fill")
+                Label(NSLocalizedString("iosflashcards.label.create.deck", value: "Create Deck", comment: "Create Deck"), systemImage: "plus.circle.fill")
                     .font(.headline)
             }
             .buttonStyle(.borderedProminent)
@@ -111,7 +111,7 @@ struct DeckRowView: View {
                 Spacer()
                 
                 if dueCount > 0 {
-                    Text("\(dueCount)")
+                    Text(verbatim: "\(dueCount)")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.white)
                         .padding(.horizontal, 8)
@@ -121,12 +121,12 @@ struct DeckRowView: View {
             }
             
             HStack(spacing: 16) {
-                Label("\(deck.cards.count)", systemImage: "rectangle.stack")
+                Label(NSLocalizedString("iosflashcards.label.deckcardscount", value: "\(deck.cards.count)", comment: "\(deck.cards.count)"), systemImage: "rectangle.stack")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 
                 if dueCount > 0 {
-                    Label("Due now", systemImage: "clock")
+                    Label(NSLocalizedString("iosflashcards.label.due.now", value: "Due now", comment: "Due now"), systemImage: "clock")
                         .font(.caption)
                         .foregroundStyle(.orange)
                 }
@@ -150,31 +150,31 @@ struct IOSAddDeckSheet: View {
                 Section {
                     TextField("Deck Title", text: $title)
                 } header: {
-                    Text("Deck Name")
+                    Text(NSLocalizedString("iosflashcards.deck.name", value: "Deck Name", comment: "Deck Name"))
                 }
                 
                 Section {
                     Picker("Course (Optional)", selection: $selectedCourseId) {
-                        Text("None").tag(nil as UUID?)
+                        Text(NSLocalizedString("iosflashcards.none", value: "None", comment: "None")).tag(nil as UUID?)
                         ForEach(coursesStore.activeCourses) { course in
                             Text(course.title).tag(course.id as UUID?)
                         }
                     }
                 } header: {
-                    Text("Link to Course")
+                    Text(NSLocalizedString("iosflashcards.link.to.course", value: "Link to Course", comment: "Link to Course"))
                 }
             }
             .navigationTitle("New Deck")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(NSLocalizedString("iosflashcards.button.cancel", value: "Cancel", comment: "Cancel")) {
                         dismiss()
                     }
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Create") {
+                    Button(NSLocalizedString("iosflashcards.button.create", value: "Create", comment: "Create")) {
                         let _ = manager.createDeck(title: title, courseID: selectedCourseId)
                         dismiss()
                     }
@@ -211,9 +211,9 @@ struct IOSDeckDetailView: View {
                     } label: {
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Study Now")
+                                Text(NSLocalizedString("iosflashcards.study.now", value: "Study Now", comment: "Study Now"))
                                     .font(.headline)
-                                Text("\(dueCards.count) cards due")
+                                Text(verbatim: "\(dueCards.count) cards due")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -227,7 +227,7 @@ struct IOSDeckDetailView: View {
                     HStack {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundStyle(.green)
-                        Text("All caught up!")
+                        Text(NSLocalizedString("iosflashcards.all.caught.up", value: "All caught up!", comment: "All caught up!"))
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -235,20 +235,20 @@ struct IOSDeckDetailView: View {
             
             Section {
                 HStack {
-                    Text("Total Cards")
+                    Text(NSLocalizedString("iosflashcards.total.cards", value: "Total Cards", comment: "Total Cards"))
                     Spacer()
-                    Text("\(deck.cards.count)")
+                    Text(verbatim: "\(deck.cards.count)")
                         .foregroundStyle(.secondary)
                 }
                 
                 HStack {
-                    Text("Due Now")
+                    Text(NSLocalizedString("iosflashcards.due.now", value: "Due Now", comment: "Due Now"))
                     Spacer()
-                    Text("\(dueCards.count)")
+                    Text(verbatim: "\(dueCards.count)")
                         .foregroundColor(dueCards.isEmpty ? .secondary : .orange)
                 }
             } header: {
-                Text("Statistics")
+                Text(NSLocalizedString("iosflashcards.statistics", value: "Statistics", comment: "Statistics"))
             }
             
             Section {
@@ -264,7 +264,7 @@ struct IOSDeckDetailView: View {
                     deck = updatedDeck
                 }
             } header: {
-                Text("Cards")
+                Text(NSLocalizedString("iosflashcards.cards", value: "Cards", comment: "Cards"))
             }
         }
         .navigationTitle(deck.title)
@@ -302,7 +302,7 @@ struct CardRowView: View {
             
             HStack(spacing: 12) {
                 if isDue {
-                    Label("Due", systemImage: "clock")
+                    Label(NSLocalizedString("iosflashcards.label.due", value: "Due", comment: "Due"), systemImage: "clock")
                         .font(.caption)
                         .foregroundStyle(.orange)
                 } else {
@@ -342,14 +342,14 @@ struct IOSAddCardSheet: View {
                     TextField("Front", text: $frontText, axis: .vertical)
                         .lineLimit(3...6)
                 } header: {
-                    Text("Question")
+                    Text(NSLocalizedString("iosflashcards.question", value: "Question", comment: "Question"))
                 }
                 
                 Section {
                     TextField("Back", text: $backText, axis: .vertical)
                         .lineLimit(3...6)
                 } header: {
-                    Text("Answer")
+                    Text(NSLocalizedString("iosflashcards.answer", value: "Answer", comment: "Answer"))
                 }
                 
                 Section {
@@ -360,20 +360,20 @@ struct IOSAddCardSheet: View {
                     }
                     .pickerStyle(.segmented)
                 } header: {
-                    Text("Difficulty")
+                    Text(NSLocalizedString("iosflashcards.difficulty", value: "Difficulty", comment: "Difficulty"))
                 }
             }
             .navigationTitle("New Card")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(NSLocalizedString("iosflashcards.button.cancel", value: "Cancel", comment: "Cancel")) {
                         dismiss()
                     }
                 }
                 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
+                    Button(NSLocalizedString("iosflashcards.button.add", value: "Add", comment: "Add")) {
                         manager.addCard(to: deck.id, front: frontText, back: backText, difficulty: difficulty)
                         dismiss()
                     }
@@ -421,7 +421,7 @@ struct IOSCardDetailView: View {
             
             VStack(spacing: 12) {
                 HStack(spacing: 12) {
-                    Label("Difficulty", systemImage: "gauge")
+                    Label(NSLocalizedString("iosflashcards.label.difficulty", value: "Difficulty", comment: "Difficulty"), systemImage: "gauge")
                         .font(.caption)
                     Text(card.difficulty.rawValue.capitalized)
                         .font(.caption.weight(.semibold))
@@ -430,7 +430,7 @@ struct IOSCardDetailView: View {
                 
                 if let lastReviewed = card.lastReviewed {
                     HStack(spacing: 12) {
-                        Label("Last Reviewed", systemImage: "clock")
+                        Label(NSLocalizedString("iosflashcards.label.last.reviewed", value: "Last Reviewed", comment: "Last Reviewed"), systemImage: "clock")
                             .font(.caption)
                         Text(lastReviewed, style: .relative)
                             .font(.caption.weight(.semibold))
@@ -469,14 +469,14 @@ struct IOSStudySessionView: View {
                 } else if let card = currentCard {
                     studyCardView(card: card)
                 } else {
-                    Text("No cards to study")
+                    Text(NSLocalizedString("iosflashcards.no.cards.to.study", value: "No cards to study", comment: "No cards to study"))
                 }
             }
             .navigationTitle("Study Session")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") {
+                    Button(NSLocalizedString("iosflashcards.button.close", value: "Close", comment: "Close")) {
                         dismiss()
                     }
                 }
@@ -488,7 +488,7 @@ struct IOSStudySessionView: View {
         VStack(spacing: 24) {
             // Progress
             HStack {
-                Text("\(currentIndex + 1) / \(dueCards.count)")
+                Text(verbatim: "\(currentIndex + 1) / \(dueCards.count)")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.secondary)
                 
@@ -525,7 +525,7 @@ struct IOSStudySessionView: View {
                         showingBack = true
                     }
                 } label: {
-                    Label("Show Answer", systemImage: "eye")
+                    Label(NSLocalizedString("iosflashcards.label.show.answer", value: "Show Answer", comment: "Show Answer"), systemImage: "eye")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                 }
@@ -543,7 +543,7 @@ struct IOSStudySessionView: View {
     
     private func ratingButtons(card: Flashcard) -> some View {
         VStack(spacing: 12) {
-            Text("How well did you know this?")
+            Text(NSLocalizedString("iosflashcards.how.well.did.you.know.this", value: "How well did you know this?", comment: "How well did you know this?"))
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.secondary)
             
@@ -595,17 +595,17 @@ struct IOSStudySessionView: View {
                 .foregroundStyle(.green)
             
             VStack(spacing: 8) {
-                Text("Session Complete!")
+                Text(NSLocalizedString("iosflashcards.session.complete", value: "Session Complete!", comment: "Session Complete!"))
                     .font(.title.bold())
                 
-                Text("Reviewed \(dueCards.count) cards")
+                Text(verbatim: "Reviewed \(dueCards.count) cards")
                     .foregroundStyle(.secondary)
             }
             
             Button {
                 dismiss()
             } label: {
-                Text("Done")
+                Text(NSLocalizedString("iosflashcards.done", value: "Done", comment: "Done"))
                     .font(.headline)
                     .frame(maxWidth: .infinity)
             }

@@ -16,20 +16,20 @@ struct AutoRescheduleHistoryView: View {
         }
         .toolbar {
             if !engine.rescheduleHistory.isEmpty {
-                Button("Clear") {
+                Button(NSLocalizedString("settings.planner.reschedule.history.clear", value: "Clear", comment: "Clear history button")) {
                     showClearConfirmation = true
                 }
                 .confirmationDialog(
-                    "Clear Reschedule History",
+                    NSLocalizedString("settings.planner.reschedule.history.clear.title", value: "Clear Reschedule History", comment: "Clear history title"),
                     isPresented: $showClearConfirmation,
                     titleVisibility: .visible
                 ) {
-                    Button("Clear History", role: .destructive) {
+                    Button(NSLocalizedString("settings.planner.reschedule.history.clear.action", value: "Clear History", comment: "Clear history action"), role: .destructive) {
                         clearHistory()
                     }
-                    Button("Cancel", role: .cancel) {}
+                    Button(NSLocalizedString("common.cancel", comment: "Cancel"), role: .cancel) {}
                 } message: {
-                    Text("This will permanently delete all reschedule history. This cannot be undone.")
+                    Text(NSLocalizedString("settings.planner.reschedule.history.clear.message", value: "This will permanently delete all reschedule history. This cannot be undone.", comment: "Clear history message"))
                 }
             }
         }
@@ -41,11 +41,11 @@ struct AutoRescheduleHistoryView: View {
                 .font(.system(size: 60))
                 .foregroundColor(.secondary)
             
-            Text("No Reschedule History")
+            Text(NSLocalizedString("settings.planner.reschedule.history.empty.title", value: "No Reschedule History", comment: "Reschedule history empty title"))
                 .font(.title3)
                 .fontWeight(.semibold)
             
-            Text("When tasks are automatically rescheduled, they'll appear here")
+            Text(NSLocalizedString("settings.planner.reschedule.history.empty.body", value: "When tasks are automatically rescheduled, they'll appear here", comment: "Reschedule history empty body"))
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
@@ -82,9 +82,9 @@ struct AutoRescheduleHistoryView: View {
     private func formatDate(_ date: Date) -> String {
         let calendar = Calendar.current
         if calendar.isDateInToday(date) {
-            return "Today"
+            return NSLocalizedString("common.today", value: "Today", comment: "Today")
         } else if calendar.isDateInYesterday(date) {
-            return "Yesterday"
+            return NSLocalizedString("common.yesterday", value: "Yesterday", comment: "Yesterday")
         } else {
             let formatter = DateFormatter()
             formatter.dateStyle = .medium
@@ -130,7 +130,7 @@ struct HistoryRow: View {
                 .foregroundColor(.secondary)
                 
                 if !operation.pushedSessions.isEmpty {
-                    Text("Pushed \(operation.pushedSessions.count) task(s)")
+                Text(String(format: NSLocalizedString("settings.planner.reschedule.history.pushed", value: "Pushed %d task(s)", comment: "Pushed tasks count"), operation.pushedSessions.count))
                         .font(.caption)
                         .foregroundColor(.orange)
                 }

@@ -155,7 +155,7 @@ struct DashboardClockCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Label("Time", systemImage: "clock")
+                Label(NSLocalizedString("ui.label.time", value: "Time", comment: "Time"), systemImage: "clock")
                     .font(.headline)
                     .foregroundStyle(.primary)
                 

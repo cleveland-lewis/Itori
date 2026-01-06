@@ -46,11 +46,11 @@ struct AccessibilityDebugView: View {
     
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Accessibility Debug Tools")
+            Text(NSLocalizedString("accessibilitydebug.accessibility.debug.tools", value: "Accessibility Debug Tools", comment: "Accessibility Debug Tools"))
                 .font(.largeTitle)
                 .fontWeight(.bold)
             
-            Text("Test and preview accessibility features without changing system settings")
+            Text(NSLocalizedString("accessibilitydebug.test.and.preview.accessibility.features", value: "Test and preview accessibility features without changing system settings", comment: "Test and preview accessibility features without ch..."))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             
@@ -62,7 +62,7 @@ struct AccessibilityDebugView: View {
     
     private var currentStatusSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Current System Settings")
+            Text(NSLocalizedString("accessibilitydebug.current.system.settings", value: "Current System Settings", comment: "Current System Settings"))
                 .font(.headline)
             
             VStack(alignment: .leading, spacing: 8) {
@@ -105,19 +105,19 @@ struct AccessibilityDebugView: View {
     
     private var simulationSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Simulate Accessibility Features")
+            Text(NSLocalizedString("accessibilitydebug.simulate.accessibility.features", value: "Simulate Accessibility Features", comment: "Simulate Accessibility Features"))
                 .font(.headline)
             
-            Text("Note: These simulations are for preview only and don't affect actual system behavior")
+            Text(NSLocalizedString("accessibilitydebug.note.these.simulations.are.for", value: "Note: These simulations are for preview only and don't affect actual system behavior", comment: "Note: These simulations are for preview only and d..."))
                 .font(.caption)
                 .foregroundStyle(.secondary)
             
             VStack(alignment: .leading, spacing: 12) {
-                Toggle("Reduce Motion", isOn: $simulateReduceMotion)
-                Toggle("Reduce Transparency", isOn: $simulateReduceTransparency)
-                Toggle("Increase Contrast", isOn: $simulateIncreaseContrast)
-                Toggle("Differentiate Without Color", isOn: $simulateDifferentiateWithoutColor)
-                Toggle("VoiceOver Active", isOn: $simulateVoiceOver)
+                Toggle(NSLocalizedString("accessibilitydebug.toggle.reduce.motion", value: "Reduce Motion", comment: "Reduce Motion"), isOn: $simulateReduceMotion)
+                Toggle(NSLocalizedString("accessibilitydebug.toggle.reduce.transparency", value: "Reduce Transparency", comment: "Reduce Transparency"), isOn: $simulateReduceTransparency)
+                Toggle(NSLocalizedString("accessibilitydebug.toggle.increase.contrast", value: "Increase Contrast", comment: "Increase Contrast"), isOn: $simulateIncreaseContrast)
+                Toggle(NSLocalizedString("accessibilitydebug.toggle.differentiate.without.color", value: "Differentiate Without Color", comment: "Differentiate Without Color"), isOn: $simulateDifferentiateWithoutColor)
+                Toggle(NSLocalizedString("accessibilitydebug.toggle.voiceover.active", value: "VoiceOver Active", comment: "VoiceOver Active"), isOn: $simulateVoiceOver)
             }
             .padding(12)
             .background(
@@ -133,24 +133,24 @@ struct AccessibilityDebugView: View {
     
     private var previewSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Live Preview")
+            Text(NSLocalizedString("accessibilitydebug.live.preview", value: "Live Preview", comment: "Live Preview"))
                 .font(.headline)
             
             VStack(spacing: 16) {
                 // Button preview
                 HStack(spacing: 12) {
-                    Button("Standard Button") { }
+                    Button(NSLocalizedString("accessibilitydebug.button.standard.button", value: "Standard Button", comment: "Standard Button")) { }
                         .buttonStyle(.borderedProminent)
                     
-                    Button("Secondary Button") { }
+                    Button(NSLocalizedString("accessibilitydebug.button.secondary.button", value: "Secondary Button", comment: "Secondary Button")) { }
                         .buttonStyle(.bordered)
                 }
                 
                 // Card preview with glass effect
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Sample Card")
+                    Text(NSLocalizedString("accessibilitydebug.sample.card", value: "Sample Card", comment: "Sample Card"))
                         .font(.headline)
-                    Text("This card demonstrates material effects")
+                    Text(NSLocalizedString("accessibilitydebug.this.card.demonstrates.material.effects", value: "This card demonstrates material effects", comment: "This card demonstrates material effects"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -172,7 +172,7 @@ struct AccessibilityDebugView: View {
                 
                 // Animation preview
                 HStack {
-                    Text("Animation:")
+                    Text(NSLocalizedString("accessibilitydebug.animation", value: "Animation:", comment: "Animation:"))
                         .font(.subheadline)
                     
                     Text(simulateReduceMotion ? "Reduced/Disabled" : "Full animations")

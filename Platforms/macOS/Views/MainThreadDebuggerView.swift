@@ -206,7 +206,7 @@ struct MainThreadDebuggerView: View {
             // Events list
             VStack(spacing: 0) {
                 HStack {
-                    Text("Events (\(debugger.events.count))")
+                    Text(verbatim: "Events (\(debugger.events.count))")
                         .font(.headline)
                     Spacer()
                     Text(NSLocalizedString("mainthreaddebugger.last.500.events", value: "Last 500 events", comment: "Last 500 events"))
@@ -322,7 +322,7 @@ struct MainThreadDebuggerView: View {
                         
                         VStack(alignment: .leading, spacing: 2) {
                             ForEach(Array(event.stackTrace.enumerated()), id: \.offset) { index, frame in
-                                Text("\(index): \(frame)")
+                                Text(verbatim: "\(index): \(frame)")
                                     .font(.caption)
                                     .monospaced()
                                     .textSelection(.enabled)

@@ -90,7 +90,7 @@ struct SheetShellView<Content: View>: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
-            .accessibilityLabel("\(title), loading")
+            .accessibilityLabel(Text(verbatim: "\(title), loading"))
             .accessibilityHint("Content is loading")
         }
     }
@@ -125,7 +125,7 @@ struct SheetShellView<Content: View>: View {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .accessibilityLabel("\(title), loading")
+            .accessibilityLabel(Text(verbatim: "\(title), loading"))
             .accessibilityHint("Content is loading")
         }
         .frame(minWidth: 400, minHeight: 300)

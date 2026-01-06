@@ -18,9 +18,9 @@ struct IOSIntelligentSchedulingSettingsView: View {
                         .foregroundColor(.green)
                     
                     VStack(alignment: .leading) {
-                        Text("Intelligent Scheduling")
+                        Text(NSLocalizedString("settings.intelligent.title", value: "Intelligent Scheduling", comment: "Intelligent Scheduling title"))
                             .font(.headline)
-                        Text("Always Active")
+                        Text(NSLocalizedString("settings.intelligent.always_active", value: "Always Active", comment: "Always Active"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -28,9 +28,9 @@ struct IOSIntelligentSchedulingSettingsView: View {
                     Spacer()
                 }
             } header: {
-                Text("Status")
+                Text(NSLocalizedString("settings.intelligent.status.header", value: "Status", comment: "Status header"))
             } footer: {
-                Text("Intelligent scheduling is always enabled to provide continuous grade monitoring and task rescheduling.")
+                Text(NSLocalizedString("settings.intelligent.status.footer", value: "Intelligent scheduling is always enabled to provide continuous grade monitoring and task rescheduling.", comment: "Status footer"))
             }
             
             // MARK: - Grade Monitoring
@@ -39,26 +39,26 @@ struct IOSIntelligentSchedulingSettingsView: View {
                         HStack {
                             Image(systemName: "chart.line.uptrend.xyaxis")
                                 .foregroundColor(.blue)
-                            Text("Grade Monitoring")
+                            Text(NSLocalizedString("settings.intelligent.grade_monitoring.title", value: "Grade Monitoring", comment: "Grade monitoring title"))
                                 .font(.headline)
                             Spacer()
                             if gradeMonitor.isMonitoring {
-                                Text("Active")
+                                Text(NSLocalizedString("settings.intelligent.grade_monitoring.active", value: "Active", comment: "Active"))
                                     .font(.caption)
                                     .foregroundColor(.green)
                             }
                         }
                         
-                        Text("Detects grade changes and suggests study time adjustments")
+                        Text(NSLocalizedString("settings.intelligent.grade_monitoring.body", value: "Detects grade changes and suggests study time adjustments", comment: "Grade monitoring body"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
                     .padding(.vertical, 4)
                     
                     HStack {
-                        Text("Grade Change Threshold")
+                        Text(NSLocalizedString("settings.intelligent.grade_monitoring.threshold", value: "Grade Change Threshold", comment: "Grade change threshold"))
                         Spacer()
-                        Text("\(Int(settings.gradeChangeThreshold))%")
+                        Text(verbatim: "\(Int(settings.gradeChangeThreshold))%")
                             .foregroundColor(.secondary)
                     }
                     
@@ -67,12 +67,12 @@ struct IOSIntelligentSchedulingSettingsView: View {
                         in: 1...20,
                         step: 1
                     ) {
-                        Text("Threshold")
+                        Text(NSLocalizedString("settings.intelligent.grade_monitoring.threshold.label", value: "Threshold", comment: "Threshold label"))
                     } minimumValueLabel: {
-                        Text("1%")
+                        Text(NSLocalizedString("settings.intelligent.grade_monitoring.threshold.min", value: "1%", comment: "Threshold min"))
                             .font(.caption)
                     } maximumValueLabel: {
-                        Text("20%")
+                        Text(NSLocalizedString("settings.intelligent.grade_monitoring.threshold.max", value: "20%", comment: "Threshold max"))
                             .font(.caption)
                     }
                     
@@ -81,17 +81,17 @@ struct IOSIntelligentSchedulingSettingsView: View {
                             StudyRecommendationsView()
                         } label: {
                             HStack {
-                                Text("Active Recommendations")
+                                Text(NSLocalizedString("settings.intelligent.recommendations.active", value: "Active Recommendations", comment: "Active recommendations"))
                                 Spacer()
-                                Text("\(gradeMonitor.studyRecommendations.count)")
+                                Text(verbatim: "\(gradeMonitor.studyRecommendations.count)")
                                     .foregroundColor(.secondary)
                             }
                         }
                     }
                 } header: {
-                    Text("Grade Monitoring")
+                    Text(NSLocalizedString("settings.intelligent.grade_monitoring.header", value: "Grade Monitoring", comment: "Grade monitoring header"))
                 } footer: {
-                    Text("Monitors your grades and suggests additional study time when grades decline by the threshold percentage.")
+                    Text(NSLocalizedString("settings.intelligent.grade_monitoring.footer", value: "Monitors your grades and suggests additional study time when grades decline by the threshold percentage.", comment: "Grade monitoring footer"))
                 }
                 
                 // MARK: - Auto-Reschedule
@@ -100,7 +100,7 @@ struct IOSIntelligentSchedulingSettingsView: View {
                         HStack {
                             Image(systemName: "calendar.badge.clock")
                                 .foregroundColor(.orange)
-                            Text("Auto-Reschedule")
+                            Text(NSLocalizedString("settings.intelligent.reschedule.title", value: "Auto-Reschedule", comment: "Auto-reschedule title"))
                                 .font(.headline)
                             Spacer()
                             if autoReschedule.isProcessing {
@@ -109,7 +109,7 @@ struct IOSIntelligentSchedulingSettingsView: View {
                             }
                         }
                         
-                        Text("Automatically reschedules overdue tasks based on priority and available time")
+                        Text(NSLocalizedString("settings.intelligent.reschedule.body", value: "Automatically reschedules overdue tasks based on priority and available time", comment: "Auto-reschedule body"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -117,7 +117,7 @@ struct IOSIntelligentSchedulingSettingsView: View {
                     
                     if let lastCheck = autoReschedule.lastCheckTime {
                         HStack {
-                            Text("Last Check")
+                            Text(NSLocalizedString("settings.intelligent.reschedule.last_check", value: "Last Check", comment: "Last check label"))
                             Spacer()
                             Text(lastCheck, style: .relative)
                                 .foregroundColor(.secondary)
@@ -125,7 +125,7 @@ struct IOSIntelligentSchedulingSettingsView: View {
                         .font(.caption)
                     }
                     
-                    Picker("Work Hours Start", selection: Binding(
+                    Picker(NSLocalizedString("settings.intelligent.reschedule.work_start", value: "Work Hours Start", comment: "Work hours start"), selection: Binding(
                         get: { autoReschedule.workHoursStart },
                         set: { newValue in
                             coordinator.setWorkHours(
@@ -139,7 +139,7 @@ struct IOSIntelligentSchedulingSettingsView: View {
                         }
                     }
                     
-                    Picker("Work Hours End", selection: Binding(
+                    Picker(NSLocalizedString("settings.intelligent.reschedule.work_end", value: "Work Hours End", comment: "Work hours end"), selection: Binding(
                         get: { autoReschedule.workHoursEnd },
                         set: { newValue in
                             coordinator.setWorkHours(
@@ -160,7 +160,7 @@ struct IOSIntelligentSchedulingSettingsView: View {
                     } label: {
                         HStack {
                             Image(systemName: "arrow.clockwise")
-                            Text("Check Now")
+                            Text(NSLocalizedString("settings.intelligent.reschedule.check_now", value: "Check Now", comment: "Check now"))
                         }
                     }
                     
@@ -169,17 +169,17 @@ struct IOSIntelligentSchedulingSettingsView: View {
                             RescheduleNotificationsView()
                         } label: {
                             HStack {
-                                Text("Recent Reschedules")
+                                Text(NSLocalizedString("settings.intelligent.reschedule.recent", value: "Recent Reschedules", comment: "Recent reschedules"))
                                 Spacer()
-                                Text("\(autoReschedule.rescheduleNotifications.count)")
+                                Text(verbatim: "\(autoReschedule.rescheduleNotifications.count)")
                                     .foregroundColor(.secondary)
                             }
                         }
                     }
                 } header: {
-                    Text("Auto-Reschedule")
+                    Text(NSLocalizedString("settings.intelligent.reschedule.header", value: "Auto-Reschedule", comment: "Auto-reschedule header"))
                 } footer: {
-                    Text("Checks for overdue tasks hourly and automatically reschedules them to the next available time slot based on priority.")
+                    Text(NSLocalizedString("settings.intelligent.reschedule.footer", value: "Checks for overdue tasks hourly and automatically reschedules them to the next available time slot based on priority.", comment: "Auto-reschedule footer"))
                 }
                 
                 // MARK: - All Notifications
@@ -191,18 +191,18 @@ struct IOSIntelligentSchedulingSettingsView: View {
                             HStack {
                                 Image(systemName: "bell.badge")
                                     .foregroundColor(.red)
-                                Text("View All Notifications")
+                                Text(NSLocalizedString("settings.intelligent.notifications.view_all", value: "View All Notifications", comment: "View all notifications"))
                                 Spacer()
-                                Text("\(coordinator.allNotifications.count)")
+                                Text(verbatim: "\(coordinator.allNotifications.count)")
                                     .foregroundColor(.secondary)
                             }
                         }
                     } header: {
-                        Text("Notifications")
+                        Text(NSLocalizedString("settings.intelligent.notifications.header", value: "Notifications", comment: "Notifications header"))
                     }
                 }
         }
-        .navigationTitle("Intelligent Scheduling")
+        .navigationTitle(NSLocalizedString("settings.category.intelligentScheduling", comment: "Intelligent Scheduling"))
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingNotifications) {
             AllNotificationsView()
@@ -250,10 +250,10 @@ struct StudyRecommendationsView: View {
                     
                     HStack {
                         VStack(alignment: .leading) {
-                            Text("Current")
+                            Text(NSLocalizedString("settings.intelligent.recommendations.current", value: "Current", comment: "Current label"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
-                            Text("\(String(format: "%.1f", recommendation.currentWeeklyHours)) hrs/week")
+                            Text(String(format: NSLocalizedString("settings.intelligent.recommendations.hours_per_week", value: "%.1f hrs/week", comment: "Hours per week"), recommendation.currentWeeklyHours))
                                 .font(.callout)
                                 .fontWeight(.medium)
                         }
@@ -262,10 +262,10 @@ struct StudyRecommendationsView: View {
                             .foregroundColor(.secondary)
                         
                         VStack(alignment: .leading) {
-                            Text("Suggested")
+                            Text(NSLocalizedString("settings.intelligent.recommendations.suggested", value: "Suggested", comment: "Suggested label"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
-                            Text("\(String(format: "%.1f", recommendation.suggestedWeeklyHours)) hrs/week")
+                            Text(String(format: NSLocalizedString("settings.intelligent.recommendations.hours_per_week", value: "%.1f hrs/week", comment: "Hours per week"), recommendation.suggestedWeeklyHours))
                                 .font(.callout)
                                 .fontWeight(.medium)
                                 .foregroundColor(.green)
@@ -274,24 +274,26 @@ struct StudyRecommendationsView: View {
                         Spacer()
                         
                         VStack(alignment: .trailing) {
-                            Text("Additional")
+                            Text(NSLocalizedString("settings.intelligent.recommendations.additional", value: "Additional", comment: "Additional label"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
-                            Text("+\(String(format: "%.1f", recommendation.additionalHours)) hrs")
+                            Text(String(format: NSLocalizedString("settings.intelligent.recommendations.additional_hours", value: "+%.1f hrs", comment: "Additional hours"), recommendation.additionalHours))
                                 .font(.callout)
                                 .fontWeight(.bold)
                                 .foregroundColor(.orange)
                         }
                     }
                     
-                    Text("Recommended \(recommendation.timestamp, style: .relative)")
+                    (Text(NSLocalizedString("settings.intelligent.recommendations.recommended_prefix", value: "Recommended", comment: "Recommended prefix"))
+                        + Text(NSLocalizedString(" ", value: " ", comment: ""))
+                        + Text(recommendation.timestamp, style: .relative))
                         .font(.caption2)
                         .foregroundColor(.secondary)
                 }
                 .padding(.vertical, 4)
             }
         }
-        .navigationTitle("Study Recommendations")
+        .navigationTitle(NSLocalizedString("settings.intelligent.recommendations.title", value: "Study Recommendations", comment: "Study recommendations title"))
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -337,7 +339,7 @@ struct RescheduleNotificationsView: View {
                     
                     VStack(alignment: .leading, spacing: 4) {
                         HStack {
-                            Text("Old deadline:")
+                            Text(NSLocalizedString("settings.intelligent.reschedule.old_deadline", value: "Old deadline:", comment: "Old deadline label"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                             Text(notification.oldDueDate, style: .date)
@@ -345,7 +347,7 @@ struct RescheduleNotificationsView: View {
                         }
                         
                         HStack {
-                            Text("New deadline:")
+                            Text(NSLocalizedString("settings.intelligent.reschedule.new_deadline", value: "New deadline:", comment: "New deadline label"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                             Text(notification.newDueDate, style: .date)
@@ -355,7 +357,7 @@ struct RescheduleNotificationsView: View {
                         }
                         
                         HStack {
-                            Text("Start by:")
+                            Text(NSLocalizedString("settings.intelligent.reschedule.start_by", value: "Start by:", comment: "Start by label"))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                             Text(notification.suggestedStartTime, style: .date)
@@ -364,14 +366,16 @@ struct RescheduleNotificationsView: View {
                         }
                     }
                     
-                    Text("Rescheduled \(notification.timestamp, style: .relative)")
+                    (Text(NSLocalizedString("settings.intelligent.reschedule.rescheduled_prefix", value: "Rescheduled", comment: "Rescheduled prefix"))
+                        + Text(NSLocalizedString(" ", value: " ", comment: ""))
+                        + Text(notification.timestamp, style: .relative))
                         .font(.caption2)
                         .foregroundColor(.secondary)
                 }
                 .padding(.vertical, 4)
             }
         }
-        .navigationTitle("Recent Reschedules")
+        .navigationTitle(NSLocalizedString("settings.intelligent.reschedule.recent.title", value: "Recent Reschedules", comment: "Recent reschedules title"))
         .navigationBarTitleDisplayMode(.inline)
     }
     
@@ -403,11 +407,11 @@ struct AllNotificationsView: View {
                     }
                 }
             }
-            .navigationTitle("All Notifications")
+            .navigationTitle(NSLocalizedString("settings.intelligent.notifications.all", value: "All Notifications", comment: "All notifications title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
+                    Button(NSLocalizedString("common.done", comment: "Done")) {
                         dismiss()
                     }
                 }
@@ -425,7 +429,7 @@ struct StudyTimeNotificationRow: View {
             HStack {
                 Image(systemName: "book.fill")
                     .foregroundColor(.blue)
-                Text("Study Time Recommendation")
+                Text(NSLocalizedString("settings.intelligent.notifications.study_time", value: "Study Time Recommendation", comment: "Study time recommendation"))
                     .font(.caption)
                     .foregroundColor(.secondary)
                 Spacer()
@@ -440,7 +444,7 @@ struct StudyTimeNotificationRow: View {
             Text(recommendation.courseName)
                 .font(.headline)
             
-            Text("Increase study time by \(String(format: "%.1f", recommendation.additionalHours)) hours per week")
+            Text(String(format: NSLocalizedString("settings.intelligent.notifications.study_time.body", value: "Increase study time by %.1f hours per week", comment: "Study time recommendation body"), recommendation.additionalHours))
                 .font(.subheadline)
         }
         .padding(.vertical, 4)
@@ -456,7 +460,7 @@ struct RescheduleNotificationRow: View {
             HStack {
                 Image(systemName: "calendar.badge.clock")
                     .foregroundColor(.orange)
-                Text("Task Rescheduled")
+                Text(NSLocalizedString("settings.intelligent.notifications.rescheduled", value: "Task Rescheduled", comment: "Task rescheduled"))
                     .font(.caption)
                     .foregroundColor(.secondary)
                 Spacer()
@@ -471,7 +475,9 @@ struct RescheduleNotificationRow: View {
             Text(notification.assignmentTitle)
                 .font(.headline)
             
-            Text("New deadline: \(notification.newDueDate, style: .date)")
+            (Text(NSLocalizedString("settings.intelligent.reschedule.new_deadline", value: "New deadline:", comment: "New deadline label"))
+                + Text(NSLocalizedString(" ", value: " ", comment: ""))
+                + Text(notification.newDueDate, style: .date))
                 .font(.subheadline)
         }
         .padding(.vertical, 4)

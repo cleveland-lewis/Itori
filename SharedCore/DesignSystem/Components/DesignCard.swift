@@ -37,7 +37,7 @@ struct DesignCard_Previews: PreviewProvider {
             DesignCard(imageName: "Tahoe", material: .constant(binding.wrappedValue.material)) {
                 Image(systemName: "cube.fill")
                     .imageScale(.large)
-                Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")
+                Text(NSLocalizedString("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", comment: ""))
                     .foregroundStyle(.primary)
             }
             .frame(height: 260)

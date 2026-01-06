@@ -284,7 +284,7 @@ struct UpcomingAssignmentsCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if assignments.isEmpty {
-                Text("No upcoming assignments")
+                Text(NSLocalizedString("ui.no.upcoming.assignments", value: "No upcoming assignments", comment: "No upcoming assignments"))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -328,7 +328,7 @@ struct AssignmentRowCompact: View {
                             .foregroundStyle(.secondary)
                     }
                     
-                    Text("•")
+                    Text(NSLocalizedString("ui.", value: "•", comment: "•"))
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                     
@@ -341,7 +341,7 @@ struct AssignmentRowCompact: View {
             Spacer()
             
             if assignment.estimatedMinutes > 0 {
-                Text("\(assignment.estimatedMinutes)m")
+                Text(verbatim: "\(assignment.estimatedMinutes)m")
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(.tertiary)
             }
@@ -380,7 +380,7 @@ struct CalendarTimeCard: View {
                     }
                 } else {
                     HStack {
-                        Text("No upcoming events")
+                        Text(NSLocalizedString("ui.no.upcoming.events", value: "No upcoming events", comment: "No upcoming events"))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                         
@@ -404,7 +404,7 @@ struct EnergyActionsCard: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Energy Level")
+            Text(NSLocalizedString("ui.energy.level", value: "Energy Level", comment: "Energy Level"))
                 .font(.caption.weight(.medium))
                 .foregroundStyle(.secondary)
             
@@ -441,7 +441,7 @@ struct EnergyActionsCard: View {
     private var plannerButton: some View {
         Button(action: onOpenPlanner) {
             HStack {
-                Label("Open Planner", systemImage: "calendar.badge.plus")
+                Label(NSLocalizedString("ui.label.open.planner", value: "Open Planner", comment: "Open Planner"), systemImage: "calendar.badge.plus")
                     .font(.subheadline)
                 Spacer()
                 Image(systemName: "arrow.right")
@@ -478,7 +478,7 @@ struct DashboardCalendarEvent: Identifiable {
             DashboardCard(
                 title: "Assignments"
             ) {
-                Text("3 assignments due today")
+                Text(NSLocalizedString("ui.3.assignments.due.today", value: "3 assignments due today", comment: "3 assignments due today"))
                     .font(.body)
                     .foregroundStyle(.secondary)
             } header: {

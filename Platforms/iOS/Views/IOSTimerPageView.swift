@@ -267,7 +267,10 @@ struct IOSTimerPageView: View {
     }
     
     private var unpinnedActivities: [TimerActivity] {
-        filteredActivities.filter { !$0.isPinned }
+        // Only show activities linked to assignments (created by planner)
+        filteredActivities.filter { activity in
+            !activity.isPinned && activity.assignmentID != nil
+        }
     }
     
     private var activityList: some View {
@@ -312,8 +315,8 @@ struct IOSTimerPageView: View {
                         .font(.largeTitle)
                         .foregroundColor(.secondary)
                     Text(activitySearchText.isEmpty ? 
-                         NSLocalizedString("timer.activities.empty", comment: "No activities") :
-                         NSLocalizedString("timer.activities.no_results", comment: "No matching activities"))
+                         "No activities" :
+                         "No matching activities")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
@@ -494,7 +497,7 @@ struct IOSTimerPageView: View {
                     Image(systemName: "square.and.pencil")
                         .font(.largeTitle)
                         .foregroundColor(.secondary)
-                    Text(NSLocalizedString("timer.activity.select_to_add_notes", comment: "Select an activity to add notes"))
+                    Text(NSLocalizedString("Select an activity to add notes", value: "Select an activity to add notes", comment: ""))
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
@@ -517,7 +520,7 @@ struct IOSTimerPageView: View {
             } label: {
                 HStack {
                     Image(systemName: "clock.arrow.circlepath")
-                    Text("Recent Sessions")
+                    Text(NSLocalizedString("Recent Sessions", value: "Recent Sessions", comment: ""))
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -533,7 +536,7 @@ struct IOSTimerPageView: View {
             } label: {
                 HStack {
                     Image(systemName: "plus.circle")
-                    Text("Add Session")
+                    Text(NSLocalizedString("Add Session", value: "Add Session", comment: ""))
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -708,7 +711,7 @@ struct IOSTimerPageView: View {
                     .font(.subheadline.weight(.medium))
                 Spacer()
                 if !tasksDueToday.isEmpty {
-                    Text("\(tasksDueToday.count)")
+                    Text(verbatim: "\(tasksDueToday.count)")
                         .font(.caption.weight(.semibold))
                         .foregroundColor(.secondary)
                         .padding(.horizontal, 8)
@@ -748,7 +751,7 @@ struct IOSTimerPageView: View {
                     .font(.subheadline.weight(.medium))
                 Spacer()
                 if !tasksDueThisWeek.isEmpty {
-                    Text("\(tasksDueThisWeek.count)")
+                    Text(verbatim: "\(tasksDueThisWeek.count)")
                         .font(.caption.weight(.semibold))
                         .foregroundColor(.secondary)
                         .padding(.horizontal, 8)
@@ -809,6 +812,11 @@ struct IOSTimerPageView: View {
         var updatedTask = task
         updatedTask.isCompleted.toggle()
         assignmentsStore.updateTask(updatedTask)
+        
+        // Play completion sound if task was just completed
+        if updatedTask.isCompleted {
+            AudioFeedbackService.shared.playTimerEnd()
+        }
     }
 
 #if DEBUG
@@ -818,11 +826,11 @@ struct IOSTimerPageView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(NSLocalizedString("timer.debug.label", comment: "Debug"))
                         .font(.headline)
-                    Text("Session: \(sessionState.rawValue)")
+                    Text(verbatim: "Session: \(sessionState.rawValue)")
                         .accessibilityIdentifier("Timer.SessionState")
-                    Text("LiveActivity: \(liveActivityStatus)")
+                    Text(verbatim: "LiveActivity: \(liveActivityStatus)")
                         .accessibilityIdentifier("Timer.LiveActivityState")
-                    Button("Advance 10k") {
+                    Button(NSLocalizedString("Advance 10k", value: "Advance 10k", comment: "")) {
                         viewModel.debugAdvance(seconds: 10_000)
                     }
                     .buttonStyle(.bordered)

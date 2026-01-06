@@ -184,8 +184,8 @@ struct PracticeTestContextMenuModifier: ViewModifier {
                 .keyboardShortcut("2", modifiers: [.command, .option])
             }
             .alert("Clear All Tests", isPresented: $showDeleteConfirmation) {
-                Button("Cancel", role: .cancel) { }
-                Button("Clear All", role: .destructive) {
+                Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) { }
+                Button(NSLocalizedString("Clear All", value: "Clear All", comment: ""), role: .destructive) {
                     practiceStore.resetAll()
                 }
             } message: {

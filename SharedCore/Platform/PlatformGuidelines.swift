@@ -324,7 +324,7 @@ struct PlatformDebugView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Text("Platform Debug Info")
+                Text(NSLocalizedString("Platform Debug Info", value: "Platform Debug Info", comment: ""))
                     .font(.largeTitle)
                     .bold()
                 
@@ -338,19 +338,19 @@ struct PlatformDebugView: View {
     
     private var platformInfo: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Current Platform")
+            Text(NSLocalizedString("Current Platform", value: "Current Platform", comment: ""))
                 .font(.headline)
-            Text("Tier: \(String(describing: Platform.current))")
-            Text("Is Watch: \(Platform.isWatch.description)")
-            Text("Is Phone: \(Platform.isPhone.description)")
-            Text("Is Tablet: \(Platform.isTablet.description)")
-            Text("Is Desktop: \(Platform.isDesktop.description)")
+            Text(verbatim: "Tier: \(String(describing: Platform.current))")
+            Text(verbatim: "Is Watch: \(Platform.isWatch.description)")
+            Text(verbatim: "Is Phone: \(Platform.isPhone.description)")
+            Text(verbatim: "Is Tablet: \(Platform.isTablet.description)")
+            Text(verbatim: "Is Desktop: \(Platform.isDesktop.description)")
         }
     }
     
     private var capabilityMatrix: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Capabilities")
+            Text(NSLocalizedString("Capabilities", value: "Capabilities", comment: ""))
                 .font(.headline)
             
             Group {
@@ -368,12 +368,12 @@ struct PlatformDebugView: View {
     
     private var validationResults: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Validation")
+            Text(NSLocalizedString("Validation", value: "Validation", comment: ""))
                 .font(.headline)
             
             let errors = PlatformValidation.validate()
             if errors.isEmpty {
-                Text("✓ All platform rules validated")
+                Text(NSLocalizedString("✓ All platform rules validated", value: "✓ All platform rules validated", comment: ""))
                     .foregroundColor(.green)
             } else {
                 ForEach(errors, id: \.localizedDescription) { error in

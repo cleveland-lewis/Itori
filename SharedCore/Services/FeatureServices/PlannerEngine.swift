@@ -259,6 +259,8 @@ enum PlannerEngine {
                 let mins = (i < sessionCount) ? perSession : max(15, totalMinutes - perSession * (sessionCount - 1))
                 makeSession(title: "\(assignment.title) – Review \(i)/\(sessionCount)", index: i, count: sessionCount, minutes: mins)
             }
+        case .practiceTest:
+            makeSession(title: assignment.title, index: 1, count: 1, minutes: totalMinutes)
         case .project:
             if !assignment.plan.isEmpty {
                 let totalCount = assignment.plan.count
@@ -300,6 +302,8 @@ enum PlannerEngine {
             sessionCount = max(1, Int(ceil(Double(estimatedMinutes) / Double(settings.quizDefaultSessionMinutes))))
         case .review:
             sessionCount = max(1, Int(ceil(Double(estimatedMinutes) / Double(settings.quizDefaultSessionMinutes))))
+        case .practiceTest:
+            sessionCount = max(1, Int(ceil(Double(estimatedMinutes) / Double(settings.examDefaultSessionMinutes))))
         }
 
         let perSession = max(15, Int(ceil(Double(estimatedMinutes) / Double(sessionCount))))
@@ -345,6 +349,7 @@ enum PlannerEngine {
             case .homework: return 0.7
             case .reading: return 0.6
             case .review: return 0.65
+            case .practiceTest: return 0.85
             @unknown default: return 0.6
             }
         }()
@@ -430,6 +435,8 @@ enum PlannerEngine {
                 case .review:
                     let delta = session.importance == .high ? -3 : -2
                     return calendar.date(byAdding: .day, value: delta, to: end) ?? end
+                case .practiceTest:
+                    return calendar.date(byAdding: .day, value: -3, to: end) ?? end
                 case .project:
                     return calendar.date(byAdding: .day, value: -7, to: end) ?? end
                 @unknown default:
@@ -778,6 +785,7 @@ enum PlannerEngine {
         case .reading: return .reading
         case .review: return .review
         case .project: return .project
+        case .practiceTest: return .practiceTest
         @unknown default: return .homework
         }
     }

@@ -11,55 +11,55 @@ struct IOSDeveloperSettingsView: View {
             Section {
                 Toggle(isOn: binding(for: \.devModeEnabledStorage)) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Developer Mode")
-                        Text("Enable debugging features")
+                        Text(NSLocalizedString("settings.developer.mode", value: "Developer Mode", comment: "Developer mode toggle"))
+                        Text(NSLocalizedString("settings.developer.mode.detail", value: "Enable debugging features", comment: "Developer mode detail"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
                 }
             } header: {
-                Text("Debug Options")
+                Text(NSLocalizedString("settings.developer.debug.header", value: "Debug Options", comment: "Debug options header"))
             }
             
             Section {
                 HStack {
-                    Text("App Version")
+                    Text(NSLocalizedString("settings.developer.app_version", value: "App Version", comment: "App version label"))
                     Spacer()
-                    Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")
+                    Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? NSLocalizedString("settings.developer.unknown", value: "Unknown", comment: "Unknown value"))
                         .foregroundColor(.secondary)
                 }
                 
                 HStack {
-                    Text("Build Number")
+                    Text(NSLocalizedString("settings.developer.build_number", value: "Build Number", comment: "Build number label"))
                     Spacer()
-                    Text(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "Unknown")
+                    Text(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? NSLocalizedString("settings.developer.unknown", value: "Unknown", comment: "Unknown value"))
                         .foregroundColor(.secondary)
                 }
             } header: {
-                Text("App Info")
+                Text(NSLocalizedString("settings.developer.info.header", value: "App Info", comment: "App info header"))
             }
             
             Section {
                 Button(role: .destructive) {
                     showResetAlert = true
                 } label: {
-                    Text("Reset All Settings")
+                    Text(NSLocalizedString("settings.developer.reset", value: "Reset All Settings", comment: "Reset settings button"))
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
             } footer: {
-                Text("This will reset all settings to their default values")
+                Text(NSLocalizedString("settings.developer.reset.footer", value: "This will reset all settings to their default values", comment: "Reset settings footer"))
             }
         }
         .listStyle(.insetGrouped)
-        .navigationTitle("Developer")
+        .navigationTitle(NSLocalizedString("settings.category.developer", comment: "Developer"))
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Reset All Settings?", isPresented: $showResetAlert) {
-            Button("Cancel", role: .cancel) { }
-            Button("Reset", role: .destructive) {
+        .alert(NSLocalizedString("settings.developer.reset.confirm.title", value: "Reset All Settings?", comment: "Reset settings confirmation title"), isPresented: $showResetAlert) {
+            Button(NSLocalizedString("common.cancel", comment: "Cancel"), role: .cancel) { }
+            Button(NSLocalizedString("settings.developer.reset.confirm.action", value: "Reset", comment: "Reset settings confirmation action"), role: .destructive) {
                 // Reset functionality placeholder
             }
         } message: {
-            Text("This will reset all settings to their default values. This action cannot be undone.")
+            Text(NSLocalizedString("settings.developer.reset.confirm.message", value: "This will reset all settings to their default values. This action cannot be undone.", comment: "Reset settings confirmation message"))
         }
     }
     

@@ -16,13 +16,14 @@ final class PracticeTestStore: ObservableObject {
     private let storageKey = "practice_tests_v1"
     
     init(
-        llmService: LocalLLMService = LocalLLMService(),
+        llmService: LocalLLMService? = nil,
         algorithmicGenerator: AlgorithmicTestGenerator? = nil,
         useAlgorithmicGenerator: Bool = true
     ) {
-        self.llmService = llmService
+        let resolvedService = llmService ?? LocalLLMService()
+        self.llmService = resolvedService
         self.algorithmicGenerator = algorithmicGenerator ?? AlgorithmicTestGenerator(
-            llmService: llmService,
+            llmService: resolvedService,
             enableDevLogs: false // Set to true for debugging
         )
         self.useAlgorithmicGenerator = useAlgorithmicGenerator

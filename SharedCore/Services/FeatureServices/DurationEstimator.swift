@@ -71,6 +71,8 @@ struct DurationEstimator {
             
         case .quiz:
             return "Typically: 1 × \(estimatedMinutes)m within 24h of due"
+        case .practiceTest:
+            return "Typically: 1 × \(estimatedMinutes)m scheduled in the week before"
         }
     }
     
@@ -114,6 +116,7 @@ extension AssignmentCategory {
         case .project: return 120
         case .exam: return 180
         case .quiz: return 30
+        case .practiceTest: return 50
         }
     }
     
@@ -123,6 +126,7 @@ extension AssignmentCategory {
         case .reading, .review, .quiz: return 5
         case .homework: return 10
         case .project, .exam: return 15
+        case .practiceTest: return 10
         }
     }
 }
@@ -148,7 +152,8 @@ extension CourseType {
                 .review: 1.2,
                 .project: 1.2,
                 .exam: 1.2,
-                .quiz: 1.2
+                .quiz: 1.2,
+                .practiceTest: 1.2
             ]
             
         case .seminar:
@@ -158,7 +163,8 @@ extension CourseType {
                 .review: 1.2,
                 .project: 1.2,
                 .exam: 1.0,
-                .quiz: 1.0
+                .quiz: 1.0,
+                .practiceTest: 1.0
             ]
             
         case .lab:
@@ -168,7 +174,8 @@ extension CourseType {
                 .review: 1.0,
                 .project: 1.2,
                 .exam: 1.0,
-                .quiz: 1.0
+                .quiz: 1.0,
+                .practiceTest: 1.0
             ]
             
         default:

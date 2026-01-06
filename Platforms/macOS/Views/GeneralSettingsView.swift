@@ -55,17 +55,6 @@ struct GeneralSettingsView: View {
 
     var body: some View {
         Form {
-            Section("Study Mode") {
-                Toggle(settings.isSchoolMode ? "School Mode" : "Self-Study Mode", isOn: $settings.isSchoolMode)
-                    .onChange(of: settings.isSchoolMode) { _, _ in settings.save() }
-                
-                Text(settings.isSchoolMode 
-                     ? "Organize studies with courses, semesters, and assignments" 
-                     : "Study independently without course structure")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            
             Section("Preferences") {
                 Picker("Start of Week", selection: $startOfWeek) {
                     ForEach(StartOfWeek.allCases) { day in
@@ -145,7 +134,7 @@ struct GeneralSettingsView: View {
                                 }
                             }
                         ), in: 1...60) {
-                            Text("\(settings.autoRescheduleCheckInterval) min")
+                            Text(verbatim: "\(settings.autoRescheduleCheckInterval) min")
                                 .frame(minWidth: 60, alignment: .trailing)
                         }
                     }
@@ -167,7 +156,7 @@ struct GeneralSettingsView: View {
                                     settings.save()
                                 }
                             ), in: 0...5) {
-                                Text("\(settings.autoRescheduleMaxPushCount)")
+                                Text(verbatim: "\(settings.autoRescheduleMaxPushCount)")
                                     .frame(minWidth: 30, alignment: .trailing)
                             }
                         }

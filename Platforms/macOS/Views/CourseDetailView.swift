@@ -104,7 +104,7 @@ struct CourseDetailView: View {
             Text(draftCourse.title)
                 .font(.largeTitle.bold())
 
-            Text("\(draftCourse.code) · \(semester.name)")
+            Text(verbatim: "\(draftCourse.code) · \(semester.name)")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }

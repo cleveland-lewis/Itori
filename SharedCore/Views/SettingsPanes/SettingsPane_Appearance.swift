@@ -20,7 +20,7 @@ struct SettingsPane_Appearance: View {
                     }
                     .pickerStyle(.menu)
                     .onChange(of: settings.accentColorChoice) { _, _ in settings.save() }
-                    Toggle("Enable custom accent color", isOn: $settings.isCustomAccentEnabled)
+                    Toggle(NSLocalizedString("settings.toggle.enable.custom.accent.color", value: "Enable custom accent color", comment: "Enable custom accent color"), isOn: $settings.isCustomAccentEnabled)
                         .onChange(of: settings.isCustomAccentEnabled) { _, _ in settings.save() }
 
                     ColorPicker(
@@ -33,12 +33,12 @@ struct SettingsPane_Appearance: View {
                     .disabled(!settings.isCustomAccentEnabled)
                     .foregroundStyle(settings.isCustomAccentEnabled ? .primary : .secondary)
 
-                    Text("Custom colors override the built-in palette.")
+                    Text(NSLocalizedString("settings.custom.colors.override.the.builtin.palette", value: "Custom colors override the built-in palette.", comment: "Custom colors override the built-in palette."))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
             } label: {
-                Label("Accent", systemImage: "paintpalette")
+                Label(NSLocalizedString("settings.label.accent", value: "Accent", comment: "Accent"), systemImage: "paintpalette")
             }
 
             GroupBox {
@@ -51,12 +51,12 @@ struct SettingsPane_Appearance: View {
                     .pickerStyle(.segmented)
                     .onChange(of: settings.interfaceStyle) { _, _ in settings.save() }
 
-                    Text("Choose how Itori reacts to system appearance changes.")
+                    Text(NSLocalizedString("settings.choose.how.itori.reacts.to", value: "Choose how Itori reacts to system appearance changes.", comment: "Choose how Itori reacts to system appearance chang..."))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
             } label: {
-                Label("Interface", systemImage: "circle.lefthalf.fill")
+                Label(NSLocalizedString("settings.label.interface", value: "Interface", comment: "Interface"), systemImage: "circle.lefthalf.fill")
             }
 
             Spacer()

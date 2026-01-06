@@ -40,7 +40,7 @@ struct TaskDependencyEditorView: View {
         }
         .frame(minWidth: 600, minHeight: 400)
         .alert("Dependency Cycle Detected", isPresented: $showCycleAlert) {
-            Button("OK", role: .cancel) { }
+            Button(NSLocalizedString("OK", value: "OK", comment: ""), role: .cancel) { }
         } message: {
             Text(cycleMessage)
         }
@@ -160,7 +160,7 @@ struct TaskDependencyEditorView: View {
     private func taskRow(step: PlanStep, index: Int, plan: AssignmentPlan) -> some View {
         HStack(spacing: DesignSystem.Layout.spacing.medium) {
             // Sequence number
-            Text("\(index + 1)")
+            Text(verbatim: "\(index + 1)")
                 .font(.headline)
                 .foregroundStyle(.secondary)
                 .frame(width: 32, height: 32)

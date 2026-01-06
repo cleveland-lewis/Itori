@@ -33,37 +33,19 @@ struct IOSDashboardView: View {
         GeometryReader { proxy in
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
-                    heroHeader
+                    plannerTodayCard
                     quickStatsRow
-                    
+
+                    upcomingEventsCard
+
+                    upcomingAssignmentsCard
+
                     // Study hours card (Phase D)
                     if shouldShowProductivityInsights {
                         studyHoursCard
                     }
-                    
-                    upcomingEventsCard
 
-                    if isWideLayout {
-                        HStack(alignment: .top, spacing: 16) {
-                            assignmentStatusCard
-                            upcomingAssignmentsCard
-                        }
-                    } else {
-                        assignmentStatusCard
-                        upcomingAssignmentsCard
-                    }
-
-                    if isWideLayout {
-                        HStack(alignment: .top, spacing: 16) {
-                            plannerTodayCard
-                            workRemainingCard
-                        }
-                        calendarCard
-                    } else {
-                        plannerTodayCard
-                        workRemainingCard
-                        calendarCard
-                    }
+                    workRemainingCard
                 }
                 .frame(maxWidth: min(720, proxy.size.width - 32))
                 .frame(maxWidth: .infinity)
@@ -94,8 +76,8 @@ struct IOSDashboardView: View {
                     .foregroundStyle(.secondary)
 
                 HStack(spacing: 10) {
-                    Label("\(todayEventCount) events", systemImage: "calendar")
-                    Label("\(todayTaskCount) tasks", systemImage: "checkmark.circle")
+                    Label { Text(verbatim: "\(todayEventCount) events") } icon: { Image(systemName: "calendar") }
+                    Label { Text(verbatim: "\(todayTaskCount) tasks") } icon: { Image(systemName: "checkmark.circle") }
                 }
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(.secondary)
@@ -207,11 +189,17 @@ struct IOSDashboardView: View {
                             Task { _ = await deviceCalendar.requestFullAccessIfNeeded() }
                         }
                     )
+                } else if settings.selectedSchoolCalendarID.isEmpty {
+                    ContentUnavailableView {
+                        Label(NSLocalizedString("Select a School Calendar", value: "Select a School Calendar", comment: ""), systemImage: "calendar.badge.plus")
+                    } description: {
+                        Text(NSLocalizedString("Choose a school calendar in Settings → Calendar to see upcoming events.", value: "Choose a school calendar in Settings → Calendar to see upcoming events.", comment: ""))
+                    }
                 } else if upcomingEvents.isEmpty {
                     ContentUnavailableView {
-                        Label("No Events", systemImage: "calendar")
+                        Label(NSLocalizedString("No Events", value: "No Events", comment: ""), systemImage: "calendar")
                     } description: {
-                        Text("Your upcoming calendar events will appear here")
+                        Text(NSLocalizedString("Your upcoming calendar events will appear here", value: "Your upcoming calendar events will appear here", comment: ""))
                     }
                 } else {
                     VStack(alignment: .leading, spacing: 12) {
@@ -261,18 +249,28 @@ struct IOSDashboardView: View {
                 ))
 
                 if items.isEmpty {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("No upcoming assignments")
-                            .font(.subheadline.weight(.semibold))
-                        Text("Add an assignment to see it here.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Button("Add Assignment") {
+                    VStack(spacing: 16) {
+                        Image(systemName: "tray")
+                            .font(.system(size: 48))
+                            .foregroundStyle(.secondary.opacity(0.5))
+                            .padding(.top, 12)
+                        
+                        VStack(spacing: 6) {
+                            Text(NSLocalizedString("No upcoming assignments", value: "No upcoming assignments", comment: ""))
+                                .font(.subheadline.weight(.semibold))
+                            Text(NSLocalizedString("Add an assignment to see it here", value: "Add an assignment to see it here", comment: ""))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                        Button(NSLocalizedString("Add Assignment", value: "Add Assignment", comment: "")) {
                             presentAddAssignment()
                         }
                         .buttonStyle(.borderedProminent)
                         .controlSize(.small)
                     }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 20)
                 } else {
                     ForEach(items) { item in
                         upcomingAssignmentRow(item)
@@ -282,7 +280,7 @@ struct IOSDashboardView: View {
                 if upcomingAssignmentItems(limit: nil).count > 6 {
                     HStack {
                         Spacer()
-                        Button("View All") {
+                        Button(NSLocalizedString("View All", value: "View All", comment: "")) {
                             openAssignments()
                         }
                         .font(.caption.weight(.semibold))
@@ -298,10 +296,17 @@ struct IOSDashboardView: View {
         RootsCard(title: "Today", subtitle: "Planner", icon: "list.bullet.rectangle") {
             let sessions = plannerSessionsToday
             if sessions.isEmpty {
-                Text("No planned tasks today")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                VStack(spacing: 12) {
+                    Image(systemName: "calendar.badge.clock")
+                        .font(.system(size: 40))
+                        .foregroundStyle(.secondary.opacity(0.5))
+                    
+                    Text(NSLocalizedString("No planned tasks today", value: "No planned tasks today", comment: ""))
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
             } else {
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(sessions.prefix(4), id: \.id) { session in
@@ -316,26 +321,87 @@ struct IOSDashboardView: View {
         RootsCard(title: "Remaining", subtitle: "Today", icon: "chart.bar.fill") {
             let snapshot = remainingWorkSnapshot
             if snapshot.plannedMinutes <= 0 {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("—")
-                        .font(.system(size: 32, weight: .bold))
-                    Text("No plan time available yet")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                VStack(spacing: 12) {
+                    Image(systemName: "chart.bar")
+                        .font(.system(size: 40))
+                        .foregroundStyle(.secondary.opacity(0.5))
+                    
+                    VStack(spacing: 4) {
+                        Text(NSLocalizedString("No scheduled time", value: "No scheduled time", comment: ""))
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                        Text(NSLocalizedString("Plan your day to track progress", value: "Plan your day to track progress", comment: ""))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+            } else if snapshot.remainingMinutes == 0 {
+                // All tasks completed
+                VStack(spacing: 12) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 44))
+                        .foregroundStyle(.green)
+                    
+                    VStack(spacing: 4) {
+                        Text(verbatim: "\(completedSessionCount)/\(totalSessionCount) tasks completed")
+                            .font(.subheadline.weight(.semibold))
+                        Text(NSLocalizedString("All done for the day", value: "All done for the day", comment: ""))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+                
+                if !completedSessions.isEmpty {
+                    Divider()
+                        .padding(.vertical, 8)
+                    
+                    VStack(alignment: .leading, spacing: 6) {
+                        ForEach(completedSessions, id: \.id) { session in
+                            Text(session.displayTitle)
+                                .font(.caption)
+                                .strikethrough()
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
             } else {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("\(snapshot.remainingPercent)%")
+                    Text(verbatim: "\(snapshot.remainingPercent)%")
                         .font(.system(size: 32, weight: .bold))
-                    Text("\(snapshot.remainingMinutes) min remaining")
+                    Text(verbatim: "\(snapshot.remainingMinutes) min remaining")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Text("\(snapshot.completedMinutes) min completed")
+                    Text(verbatim: "\(snapshot.completedMinutes) min completed")
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                
+                if !completedSessions.isEmpty {
+                    Divider()
+                        .padding(.vertical, 8)
+                    
+                    VStack(alignment: .leading, spacing: 6) {
+                        ForEach(completedSessions.prefix(3), id: \.id) { session in
+                            Text(session.displayTitle)
+                                .font(.caption)
+                                .strikethrough()
+                                .foregroundStyle(.secondary)
+                        }
+                        
+                        if completedSessions.count > 3 {
+                            Text(verbatim: "+\(completedSessions.count - 3) more")
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
         }
     }
@@ -360,7 +426,7 @@ struct IOSDashboardView: View {
             VStack(alignment: .leading, spacing: 12) {
                 weekStrip
                 if eventsForSelectedDate.isEmpty {
-                    Text("No events on this day")
+                    Text(NSLocalizedString("No events on this day", value: "No events on this day", comment: ""))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 } else {
@@ -484,6 +550,7 @@ struct IOSDashboardView: View {
 
     private var todayTaskCount: Int {
         assignmentsStore.tasks.filter { task in
+            guard task.type != .practiceTest else { return false }
             guard let due = task.due else { return false }
             return calendar.isDateInToday(due) && !task.isCompleted
         }.count
@@ -505,7 +572,7 @@ struct IOSDashboardView: View {
     private var filteredCalendarEvents: [EKEvent] {
         let selectedID = settings.selectedSchoolCalendarID
         guard !selectedID.isEmpty else {
-            return deviceCalendar.events
+            return []
         }
         return deviceCalendar.events.filter { $0.calendar.calendarIdentifier == selectedID }
     }
@@ -514,7 +581,7 @@ struct IOSDashboardView: View {
         let now = Date()
         let end = calendar.date(byAdding: .day, value: 7, to: now) ?? now
         return assignmentsStore.tasks
-            .filter { !$0.isCompleted }
+            .filter { !$0.isCompleted && $0.type != .practiceTest }
             .compactMap { task -> AppTask? in
                 guard let due = task.effectiveDueDateTime else { return nil }
                 return (due >= now && due <= end) ? task : nil
@@ -524,11 +591,20 @@ struct IOSDashboardView: View {
 
     private var upcomingAssignments: [AppTask] {
         let now = Date()
+        let sevenDaysFromNow = Calendar.current.date(byAdding: .day, value: 7, to: now) ?? now
+        
         return assignmentsStore.tasks
-            .filter { !$0.isCompleted }
-            .compactMap { task -> AppTask? in
-                guard let due = task.effectiveDueDateTime else { return nil }
-                return due >= now ? task : nil
+            .filter { task in
+                // Only show assignments (homework, project, reading, exam, quiz)
+                guard task.type == .homework || task.type == .project || task.type == .reading || 
+                      task.type == .exam || task.type == .quiz else {
+                    return false
+                }
+                // Only incomplete assignments
+                guard !task.isCompleted else { return false }
+                // Only assignments with due dates in the next 7 days
+                guard let due = task.effectiveDueDateTime else { return false }
+                return due >= now && due <= sevenDaysFromNow
             }
             .sorted { lhs, rhs in
                 let leftDue = lhs.effectiveDueDateTime ?? Date.distantFuture
@@ -572,12 +648,12 @@ struct IOSDashboardView: View {
 
     private func assignmentStatusItems() -> [AssignmentStatusItem] {
         let plans = AssignmentPlansStore.shared
-        let completed = assignmentsStore.tasks.filter { $0.isCompleted }.count
+        let completed = assignmentsStore.tasks.filter { $0.isCompleted && $0.type != .practiceTest }.count
         let inProgress = assignmentsStore.tasks.filter { task in
-            !task.isCompleted && plans.plan(for: task.id) != nil
+            task.type != .practiceTest && !task.isCompleted && plans.plan(for: task.id) != nil
         }.count
         let notStarted = assignmentsStore.tasks.filter { task in
-            !task.isCompleted && plans.plan(for: task.id) == nil
+            task.type != .practiceTest && !task.isCompleted && plans.plan(for: task.id) == nil
         }.count
 
         return [
@@ -622,9 +698,9 @@ struct IOSDashboardView: View {
                 .chartLegend(.hidden)
 
                 VStack(spacing: 2) {
-                    Text("\(total)")
+                    Text(verbatim: "\(total)")
                         .font(.headline.weight(.bold))
-                    Text("Total")
+                    Text(NSLocalizedString("Total", value: "Total", comment: ""))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }
@@ -641,7 +717,7 @@ struct IOSDashboardView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Spacer()
-                        Text("\(item.count)")
+                        Text(verbatim: "\(item.count)")
                             .font(.caption.weight(.semibold))
                         if let percent = item.percentText {
                             Text(percent)
@@ -735,14 +811,71 @@ struct IOSDashboardView: View {
 
     private var plannerSessionsToday: [StoredScheduledSession] {
         let cal = Calendar.current
-        return plannerStore.scheduled
+        let scheduled = plannerStore.scheduled
             .filter { cal.isDateInToday($0.start) }
+        let scheduledIds = Set(scheduled.compactMap { $0.assignmentId })
+        let practiceSessions = practiceTestSessionsToday(excluding: scheduledIds)
+        return (scheduled + practiceSessions)
             .sorted {
                 if $0.start != $1.start {
                     return $0.start < $1.start
                 }
                 return $0.title.localizedCaseInsensitiveCompare($1.title) == .orderedAscending
             }
+    }
+
+    private func practiceTestSessionsToday(excluding scheduledIds: Set<UUID>) -> [StoredScheduledSession] {
+        let cal = Calendar.current
+        let todayTasks = assignmentsStore.tasks.filter { task in
+            guard task.type == .practiceTest else { return false }
+            guard let due = task.due, cal.isDateInToday(due) else { return false }
+            return !scheduledIds.contains(task.id)
+        }
+
+        return todayTasks.compactMap { task in
+            guard let due = task.due else { return nil }
+            let start = task.effectiveDueDateTime ?? due
+            let end = cal.date(byAdding: .minute, value: max(15, task.estimatedMinutes), to: start) ?? start
+            return StoredScheduledSession(
+                id: UUID(),
+                assignmentId: task.id,
+                sessionIndex: 1,
+                sessionCount: 1,
+                title: task.title,
+                dueDate: due,
+                estimatedMinutes: task.estimatedMinutes,
+                isLockedToDueDate: task.locked,
+                category: .practiceTest,
+                start: start,
+                end: end,
+                type: .task,
+                isLocked: false,
+                isUserEdited: false,
+                userEditedAt: nil,
+                aiInputHash: nil,
+                aiComputedAt: nil,
+                aiConfidence: nil,
+                aiProvenance: nil
+            )
+        }
+    }
+    
+    private var totalSessionCount: Int {
+        plannerSessionsToday.filter { $0.type == .task || $0.type == .study }.count
+    }
+    
+    private var completedSessionCount: Int {
+        let now = Date()
+        return plannerSessionsToday.filter { session in
+            (session.type == .task || session.type == .study) && session.end < now
+        }.count
+    }
+    
+    private var completedSessions: [StoredScheduledSession] {
+        let now = Date()
+        return plannerSessionsToday.filter { session in
+            (session.type == .task || session.type == .study) && session.end < now
+        }
     }
 
     private func plannerSessionRow(_ session: StoredScheduledSession) -> some View {
@@ -806,7 +939,7 @@ struct IOSDashboardView: View {
             return sessionMinutes
         }
         return assignmentsStore.tasks
-            .filter { !$0.isCompleted }
+            .filter { !$0.isCompleted && $0.type != .practiceTest }
             .filter { task in
                 guard let due = task.due else { return false }
                 return Calendar.current.isDateInToday(due)

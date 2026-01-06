@@ -42,17 +42,17 @@ private struct InterfacePreferencesDebugView: View {
         VStack(alignment: .trailing, spacing: 4) {
             if isExpanded {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Interface Preferences").font(.caption.bold())
+                    Text(NSLocalizedString("Interface Preferences", value: "Interface Preferences", comment: "")).font(.caption.bold())
                     Divider()
-                    Text("Reduce Motion: \(prefs.reduceMotion ? "✓" : "✗")")
-                    Text("Increase Contrast: \(prefs.increaseContrast ? "✓" : "✗")")
-                    Text("Reduce Transparency: \(prefs.reduceTransparency ? "✓" : "✗")")
-                    Text("Compact Density: \(prefs.compactDensity ? "✓" : "✗")")
-                    Text("Large Tap Targets: \(prefs.largeTapTargets ? "✓" : "✗")")
-                    Text("Material Intensity: \(String(format: "%.1f", prefs.materialIntensity))")
-                    Text("Animations: \(prefs.animation.enabled ? "✓" : "✗")")
-                    Text("Haptics: \(prefs.haptics.enabled ? "✓" : "✗")")
-                    Text("Tooltips: \(prefs.tooltips.enabled ? "✓" : "✗")")
+                    Text(String(format: NSLocalizedString("interface.debug.reduce_motion", value: "Reduce Motion: %@", comment: "Interface preferences debug"), prefs.reduceMotion ? "✓" : "✗"))
+                    Text(String(format: NSLocalizedString("interface.debug.increase_contrast", value: "Increase Contrast: %@", comment: "Interface preferences debug"), prefs.increaseContrast ? "✓" : "✗"))
+                    Text(String(format: NSLocalizedString("interface.debug.reduce_transparency", value: "Reduce Transparency: %@", comment: "Interface preferences debug"), prefs.reduceTransparency ? "✓" : "✗"))
+                    Text(String(format: NSLocalizedString("interface.debug.compact_density", value: "Compact Density: %@", comment: "Interface preferences debug"), prefs.compactDensity ? "✓" : "✗"))
+                    Text(String(format: NSLocalizedString("interface.debug.large_tap_targets", value: "Large Tap Targets: %@", comment: "Interface preferences debug"), prefs.largeTapTargets ? "✓" : "✗"))
+                    Text(String(format: NSLocalizedString("interface.debug.material_intensity", value: "Material Intensity: %.1f", comment: "Interface preferences debug"), prefs.materialIntensity))
+                    Text(String(format: NSLocalizedString("interface.debug.animations", value: "Animations: %@", comment: "Interface preferences debug"), prefs.animation.enabled ? "✓" : "✗"))
+                    Text(String(format: NSLocalizedString("interface.debug.haptics", value: "Haptics: %@", comment: "Interface preferences debug"), prefs.haptics.enabled ? "✓" : "✗"))
+                    Text(String(format: NSLocalizedString("interface.debug.tooltips", value: "Tooltips: %@", comment: "Interface preferences debug"), prefs.tooltips.enabled ? "✓" : "✗"))
                 }
                 .font(.caption2)
                 .padding(8)
@@ -63,7 +63,7 @@ private struct InterfacePreferencesDebugView: View {
             
             Button(action: { isExpanded.toggle() }) {
                 Image(systemName: isExpanded ? "xmark.circle.fill" : "info.circle.fill")
-                    .foregroundColor(.blue)
+                    .foregroundColor(.accentColor)
                     .font(.title2)
             }
         }

@@ -209,7 +209,7 @@ struct CourseCardView: View {
                         .lineLimit(2)
                         .multilineTextAlignment(.leading)
                     
-                    Text("Create flashcard deck")
+                    Text(NSLocalizedString("Create flashcard deck", value: "Create flashcard deck", comment: ""))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -271,18 +271,18 @@ struct DeckCardView: View {
                     
                     HStack(spacing: 12) {
                         if dueCount > 0 {
-                            Label("\(dueCount)", systemImage: "clock.fill")
+                            Label { Text(verbatim: "\(dueCount)") } icon: { Image(systemName: "clock.fill") }
                                 .font(.caption)
                                 .foregroundStyle(.orange)
                         }
                         
                         if newCount > 0 {
-                            Label("\(newCount)", systemImage: "sparkle")
+                            Label { Text(verbatim: "\(newCount)") } icon: { Image(systemName: "sparkle") }
                                 .font(.caption)
                                 .foregroundStyle(.blue)
                         }
                         
-                        Text("\(deck.cards.count) cards")
+                        Text(verbatim: "\(deck.cards.count) cards")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -399,13 +399,13 @@ struct DeckRowView: View {
                     
                     HStack(spacing: 8) {
                         if dueCount > 0 {
-                            Label("\(dueCount)", systemImage: "clock.fill")
+                            Label { Text(verbatim: "\(dueCount)") } icon: { Image(systemName: "clock.fill") }
                                 .font(.caption)
                                 .foregroundStyle(.orange)
                         }
                         
                         if newCount > 0 {
-                            Label("\(newCount)", systemImage: "sparkle")
+                            Label { Text(verbatim: "\(newCount)") } icon: { Image(systemName: "sparkle") }
                                 .font(.caption)
                                 .foregroundStyle(.blue)
                         }

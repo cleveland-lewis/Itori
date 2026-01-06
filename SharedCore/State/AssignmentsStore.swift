@@ -17,11 +17,39 @@ final class AssignmentsStore: ObservableObject {
     private var iCloudToggleObserver: NSObjectProtocol?
     
     private init() {
+        // Skip slow initialization during tests
+        guard !TestMode.isRunningTests else {
+            debugLog("⚡ Test mode: Skipping network monitoring, iCloud sync, and observers")
+            return
+        }
+        
+        // OPTIMIZATION: Defer all I/O to async initialization
+        Task { @MainActor in
+            await initializeAsync()
+        }
+    }
+    
+    // OPTIMIZATION: Async initialization to avoid blocking app launch
+    @MainActor
+    private func initializeAsync() async {
+        // Step 1: Load cache off-main thread
+        await Task.detached(priority: .userInitiated) { [weak self] in
+            guard let self = self else { return }
+            await self.loadCache()
+        }.value
+        
+        // Step 2: Setup services
         setupNetworkMonitoring()
-        loadCache()
-        loadFromiCloudIfEnabled()
-        setupiCloudMonitoring()
         observeICloudToggle()
+        
+        // Step 3: Load from iCloud if needed (deferred)
+        await Task.detached(priority: .utility) { [weak self] in
+            guard let self = self else { return }
+            await self.loadFromiCloudIfEnabled()
+            await MainActor.run {
+                self.setupiCloudMonitoring()
+            }
+        }.value
     }
 
     @Published var tasks: [AppTask] = [] {
@@ -108,6 +136,12 @@ final class AssignmentsStore: ObservableObject {
         Task { @MainActor in
             generatePlanForNewTask(normalized)
         }
+
+        if normalized.type == .exam || normalized.type == .quiz {
+            Task { @MainActor in
+                ScheduledTestsStore.shared.syncAutoPracticeTests(for: normalized)
+            }
+        }
     }
     
     private func generatePlanForNewTask(_ task: AppTask) {
@@ -117,6 +151,7 @@ final class AssignmentsStore: ObservableObject {
     
     private func convertTaskToAssignment(_ task: AppTask) -> Assignment? {
         guard let due = task.due else { return nil }
+        guard task.category != .practiceTest else { return nil }
         
         let assignmentCategory: AssignmentCategory
         switch task.category {
@@ -127,11 +162,13 @@ final class AssignmentsStore: ObservableObject {
         case .review: assignmentCategory = .review
         case .project: assignmentCategory = .project
         case .study: assignmentCategory = .review
+        case .practiceTest: assignmentCategory = .practiceTest
         }
         
         return Assignment(
             id: task.id,
             courseId: task.courseId,
+            moduleIds: task.moduleIds,
             title: task.title,
             dueDate: due,
             dueTimeMinutes: task.dueTimeMinutes,
@@ -146,10 +183,9 @@ final class AssignmentsStore: ObservableObject {
     
     private func urgencyFromImportance(_ importance: Double) -> AssignmentUrgency {
         switch importance {
-        case ..<0.3: return .low
-        case ..<0.6: return .medium
-        case ..<0.85: return .high
-        default: return .critical
+        case ..<0.4: return .low
+        case ..<0.7: return .medium
+        default: return .high
         }
     }
 
@@ -161,6 +197,10 @@ final class AssignmentsStore: ObservableObject {
         
         // Cancel notification when task is removed
         NotificationManager.shared.cancelAssignmentNotification(id)
+
+        Task { @MainActor in
+            ScheduledTestsStore.shared.removeAutoPracticeTests(for: id)
+        }
     }
 
     func updateTask(_ task: AppTask) {
@@ -212,6 +252,16 @@ final class AssignmentsStore: ObservableObject {
                 Feedback.shared.taskCompleted()
             }
         }
+
+        if normalized.type == .exam || normalized.type == .quiz {
+            Task { @MainActor in
+                ScheduledTestsStore.shared.syncAutoPracticeTests(for: normalized)
+            }
+        } else if existingTask?.type == .exam || existingTask?.type == .quiz {
+            Task { @MainActor in
+                ScheduledTestsStore.shared.removeAutoPracticeTests(for: normalized.id)
+            }
+        }
     }
 
     private func normalizeRecurringMetadata(_ task: AppTask, existing: AppTask?) -> AppTask {
@@ -223,6 +273,7 @@ final class AssignmentsStore: ObservableObject {
                 id: task.id,
                 title: task.title,
                 courseId: task.courseId,
+                moduleIds: task.moduleIds,
                 due: task.due,
                 estimatedMinutes: task.estimatedMinutes,
                 minBlockMinutes: task.minBlockMinutes,
@@ -247,12 +298,13 @@ final class AssignmentsStore: ObservableObject {
         let seriesID = task.recurrenceSeriesID ?? existing?.recurrenceSeriesID ?? UUID()
         let index = task.recurrenceIndex ?? existing?.recurrenceIndex ?? 0
 
-        return AppTask(
-            id: task.id,
-            title: task.title,
-            courseId: task.courseId,
-            due: task.due,
-            estimatedMinutes: task.estimatedMinutes,
+            return AppTask(
+                id: task.id,
+                title: task.title,
+                courseId: task.courseId,
+                moduleIds: task.moduleIds,
+                due: task.due,
+                estimatedMinutes: task.estimatedMinutes,
             minBlockMinutes: task.minBlockMinutes,
             maxBlockMinutes: task.maxBlockMinutes,
             difficulty: task.difficulty,
@@ -307,6 +359,7 @@ final class AssignmentsStore: ObservableObject {
             id: UUID(),
             title: task.title,
             courseId: task.courseId,
+            moduleIds: task.moduleIds,
             due: nextDueDate,
             estimatedMinutes: task.estimatedMinutes,
             minBlockMinutes: task.minBlockMinutes,
@@ -511,6 +564,12 @@ final class AssignmentsStore: ObservableObject {
             
             // Schedule notifications for all loaded incomplete tasks
             scheduleNotificationsForLoadedTasks()
+
+            Task { @MainActor in
+                for task in tasks where task.type == .exam || task.type == .quiz {
+                    ScheduledTestsStore.shared.syncAutoPracticeTests(for: task)
+                }
+            }
         } catch {
             isLoadingFromDisk = false
             debugLog("❌ Failed to load tasks cache: \(error)")
@@ -586,7 +645,7 @@ final class AssignmentsStore: ObservableObject {
                     DebugLogger.log("📡 Network restored - syncing pending changes")
                     Task {
                         try? await Task.sleep(nanoseconds: 2_000_000_000)
-                        await self.syncPendingChanges()
+                        self.syncPendingChanges()
                     }
                 }
             }

@@ -33,7 +33,7 @@ struct EditSessionSheet: View {
                     DatePicker("End Time", selection: $endDate, displayedComponents: .hourAndMinute)
                 }
                 if endDate < startDate {
-                    Text("End time must be after the start time.")
+                    Text(NSLocalizedString("End time must be after the start time.", value: "End time must be after the start time.", comment: ""))
                         .font(.caption)
                         .foregroundColor(.red)
                 }
@@ -42,10 +42,10 @@ struct EditSessionSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") { dismiss() }
+                    Button(NSLocalizedString("Cancel", value: "Cancel", comment: "")) { dismiss() }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") { saveChanges() }
+                    Button(NSLocalizedString("Save", value: "Save", comment: "")) { saveChanges() }
                         .disabled(endDate < startDate)
                 }
             }

@@ -11,7 +11,7 @@ struct IOSPrivacySettingsView: View {
                 Text(NSLocalizedString("settings.privacy.local_only.footer", comment: "All your data stays on this device. No cloud sync or external services are used."))
                     .font(.caption)
                     .foregroundColor(.secondary)
-                Text("Manage iCloud sync in Storage settings.")
+                Text(NSLocalizedString("settings.privacy.icloud_hint", value: "Manage iCloud sync in Storage settings.", comment: "iCloud settings hint"))
                     .font(.caption)
                     .foregroundColor(.secondary)
             } header: {

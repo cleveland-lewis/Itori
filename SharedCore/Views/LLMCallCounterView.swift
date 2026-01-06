@@ -17,10 +17,10 @@ struct LLMCallCounterView: View {
     var body: some View {
         Form {
             Section {
-                Text("LLM Provider Attempt Tracking")
+                Text(NSLocalizedString("llmcallcounter.llm.provider.attempt.tracking", value: "LLM Provider Attempt Tracking", comment: "LLM Provider Attempt Tracking"))
                     .font(.headline)
                 
-                Text("This panel shows provider invocation counters to verify that the 'Enable LLM Assistance' toggle enforcement is airtight.")
+                Text(NSLocalizedString("llmcallcounter.this.panel.shows.provider.invocation", value: "This panel shows provider invocation counters to verify that the 'Enable LLM Assistance' toggle enforcement is airtight.", comment: "This panel shows provider invocation counters to v..."))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -48,7 +48,7 @@ struct LLMCallCounterView: View {
                     
                     if let lastAttempt = counters.lastAttemptTimestamp {
                         HStack {
-                            Text("Last Attempt:")
+                            Text(NSLocalizedString("llmcallcounter.last.attempt", value: "Last Attempt:", comment: "Last Attempt:"))
                             Spacer()
                             Text(lastAttempt, style: .relative)
                                 .foregroundColor(.secondary)
@@ -57,7 +57,7 @@ struct LLMCallCounterView: View {
                     
                     if let lastSuppression = counters.lastSuppressionTimestamp {
                         HStack {
-                            Text("Last Suppression:")
+                            Text(NSLocalizedString("llmcallcounter.last.suppression", value: "Last Suppression:", comment: "Last Suppression:"))
                             Spacer()
                             Text(lastSuppression, style: .relative)
                                 .foregroundColor(.secondary)
@@ -66,7 +66,7 @@ struct LLMCallCounterView: View {
                     
                     if let reason = counters.lastSuppressionReason {
                         HStack {
-                            Text("Last Reason:")
+                            Text(NSLocalizedString("llmcallcounter.last.reason", value: "Last Reason:", comment: "Last Reason:"))
                             Spacer()
                             Text(reason)
                                 .foregroundColor(.secondary)
@@ -83,7 +83,7 @@ struct LLMCallCounterView: View {
                                 Text(provider)
                                     .font(.caption.monospaced())
                                 Spacer()
-                                Text("\(count)")
+                                Text(verbatim: "\(count)")
                                     .foregroundColor(count > 0 ? .primary : .secondary)
                             }
                         }
@@ -98,7 +98,7 @@ struct LLMCallCounterView: View {
                                 Text(port)
                                     .font(.caption.monospaced())
                                 Spacer()
-                                Text("\(count)")
+                                Text(verbatim: "\(count)")
                                     .foregroundColor(count > 0 ? .primary : .secondary)
                             }
                         }
@@ -108,7 +108,7 @@ struct LLMCallCounterView: View {
                 // Enforcement Status
                 Section("Toggle Enforcement Status") {
                     HStack {
-                        Text("LLM Assistance Enabled:")
+                        Text(NSLocalizedString("llmcallcounter.llm.assistance.enabled", value: "LLM Assistance Enabled:", comment: "LLM Assistance Enabled:"))
                         Spacer()
                         Text(AppSettingsModel.shared.enableLLMAssistance ? "YES" : "NO")
                             .foregroundColor(AppSettingsModel.shared.enableLLMAssistance ? .green : .red)
@@ -117,37 +117,37 @@ struct LLMCallCounterView: View {
                     
                     if !AppSettingsModel.shared.enableLLMAssistance {
                         if counters.providerAttemptCountTotal == 0 {
-                            Label("✅ Enforcement: PASSING", systemImage: "checkmark.shield.fill")
+                            Label(NSLocalizedString("llmcallcounter.label.enforcement.passing", value: "✅ Enforcement: PASSING", comment: "✅ Enforcement: PASSING"), systemImage: "checkmark.shield.fill")
                                 .foregroundColor(.green)
                         } else {
-                            Label("❌ Enforcement: FAILING", systemImage: "xmark.shield.fill")
+                            Label(NSLocalizedString("llmcallcounter.label.enforcement.failing", value: "❌ Enforcement: FAILING", comment: "❌ Enforcement: FAILING"), systemImage: "xmark.shield.fill")
                                 .foregroundColor(.red)
                         }
                         
-                        Text("Expected: 0 provider attempts when toggle is OFF")
+                        Text(NSLocalizedString("llmcallcounter.expected.0.provider.attempts.when.toggle.is.off", value: "Expected: 0 provider attempts when toggle is OFF", comment: "Expected: 0 provider attempts when toggle is OFF"))
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
                 }
             } else {
                 Section {
-                    Text("Loading counters...")
+                    Text(NSLocalizedString("llmcallcounter.loading.counters", value: "Loading counters...", comment: "Loading counters..."))
                         .foregroundColor(.secondary)
                 }
             }
             
             // Actions
             Section("Actions") {
-                Button("Refresh Counters") {
+                Button(NSLocalizedString("llmcallcounter.button.refresh.counters", value: "Refresh Counters", comment: "Refresh Counters")) {
                     refreshCounters()
                 }
                 
-                Button("Reset Counters") {
+                Button(NSLocalizedString("llmcallcounter.button.reset.counters", value: "Reset Counters", comment: "Reset Counters")) {
                     resetCounters()
                 }
                 .foregroundColor(.red)
                 
-                Button("Export Diagnostics JSON") {
+                Button(NSLocalizedString("llmcallcounter.button.export.diagnostics.json", value: "Export Diagnostics JSON", comment: "Export Diagnostics JSON")) {
                     exportDiagnostics()
                 }
                 
@@ -175,7 +175,7 @@ struct LLMCallCounterView: View {
         HStack {
             Text(title)
             Spacer()
-            Text("\(value)")
+            Text(verbatim: "\(value)")
                 .fontWeight(.bold)
                 .foregroundColor(critical ? .red : (value > 0 ? .primary : .secondary))
         }

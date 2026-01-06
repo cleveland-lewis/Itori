@@ -232,7 +232,7 @@ struct IOSCourseGradeDetailView: View {
                         HStack {
                             TextField(NSLocalizedString("ios.grades.percent", value: "Percent", comment: "Percent"), text: $editingPercent)
                                 .keyboardType(.decimalPad)
-                            Text("%")
+                            Text(NSLocalizedString("%", value: "%", comment: ""))
                                 .foregroundStyle(.secondary)
                         }
                         TextField(NSLocalizedString("ios.grades.letter", value: "Letter Grade", comment: "Letter Grade"), text: $editingLetter)

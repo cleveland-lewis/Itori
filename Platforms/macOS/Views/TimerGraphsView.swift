@@ -26,7 +26,7 @@ struct TimerGraphsView: View {
                 let progress = liveProgress(for: session)
                 ProgressView(value: progress)
                     .progressViewStyle(.linear)
-                Text("\(Int(progress * 100))%")
+                Text(verbatim: "\(Int(progress * 100))%")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

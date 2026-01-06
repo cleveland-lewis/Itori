@@ -69,7 +69,7 @@ struct SemestersSettingsView: View {
             if !coursesStore.archivedSemesters.isEmpty {
                 Section("Archived Semesters") {
                     ForEach(groupedArchivedSemesters, id: \.year) { group in
-                        Text("\(group.year)")
+                        Text(verbatim: "\(group.year)")
                             .font(DesignSystem.Typography.subHeader)
                             .padding(.vertical, 4)
                         ForEach(group.semesters) { semester in
@@ -155,7 +155,7 @@ struct SemesterSettingsRow: View {
                     }
                 }
 
-                Text("\(semester.startDate.formatted(date: .abbreviated, time: .omitted)) – \(semester.endDate.formatted(date: .abbreviated, time: .omitted))")
+                Text(verbatim: "\(semester.startDate.formatted(date: .abbreviated, time: .omitted)) – \(semester.endDate.formatted(date: .abbreviated, time: .omitted))")
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.tertiary)
             }

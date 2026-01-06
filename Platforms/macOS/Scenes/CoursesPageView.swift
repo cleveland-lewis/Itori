@@ -167,7 +167,7 @@ struct CoursesPageView: View {
         }
         .sheet(isPresented: $showingBatchReview) {
             // TODO: Restore BatchReviewSheet once FileParsingService is stabilized
-            Text("Batch review temporarily unavailable")
+            Text(NSLocalizedString("Batch review temporarily unavailable", value: "Batch review temporarily unavailable", comment: ""))
                 .padding()
             // if let batchState = FileParsingService.shared.batchReviewItems {
             //     BatchReviewSheet(
@@ -786,7 +786,7 @@ struct CoursesPageDetailView: View {
             HStack(spacing: 12) {
                 Label(course.instructor, systemImage: "person")
                 Label(course.location, systemImage: "mappin.and.ellipse")
-                Label("\(course.credits) credits", systemImage: "number")
+                Label { Text(verbatim: "\(course.credits) credits") } icon: { Image(systemName: "number") }
                 Label(course.semesterName, systemImage: "calendar")
             }
             .font(DesignSystem.Typography.caption)

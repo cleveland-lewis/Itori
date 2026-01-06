@@ -16,12 +16,12 @@ public struct WorkloadForecastChart: View {
         VStack(alignment: .leading, spacing: 12) {
             // Header
             HStack {
-                Text("Workload Forecast")
+                Text(NSLocalizedString("Workload Forecast", value: "Workload Forecast", comment: ""))
                     .font(.headline)
                 
                 Spacer()
                 
-                Text("\(Int(forecast.totalHours))h total")
+                Text(verbatim: "\(Int(forecast.totalHours))h total")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -54,7 +54,7 @@ public struct WorkloadForecastChart: View {
                 AxisMarks { value in
                     AxisValueLabel {
                         if let hours = value.as(Double.self) {
-                            Text("\(Int(hours))h")
+                            Text(verbatim: "\(Int(hours))h")
                         }
                     }
                 }
@@ -66,7 +66,7 @@ public struct WorkloadForecastChart: View {
                 HStack {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundColor(.orange)
-                    Text("Peak workload week: \(formatWeekLabel(peakWeek))")
+                    Text(verbatim: "Peak workload week: \(formatWeekLabel(peakWeek))")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -101,10 +101,10 @@ public struct WorkloadForecastSummary: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Workload Forecast")
+                Text(NSLocalizedString("Workload Forecast", value: "Workload Forecast", comment: ""))
                     .font(.headline)
                 Spacer()
-                Text("\(Int(forecast.totalHours))h total")
+                Text(verbatim: "\(Int(forecast.totalHours))h total")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -117,7 +117,7 @@ public struct WorkloadForecastSummary: View {
                     
                     Spacer()
                     
-                    Text("\(Int(week.hours))h")
+                    Text(verbatim: "\(Int(week.hours))h")
                         .font(.callout.bold())
                     
                     if let peakWeek = forecast.peakWeek,
@@ -131,7 +131,7 @@ public struct WorkloadForecastSummary: View {
             }
             
             if forecast.weeklyLoad.count > 4 {
-                Text("+ \(forecast.weeklyLoad.count - 4) more weeks")
+                Text(verbatim: "+ \(forecast.weeklyLoad.count - 4) more weeks")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }

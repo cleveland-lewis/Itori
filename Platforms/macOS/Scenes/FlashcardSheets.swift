@@ -1,5 +1,6 @@
 #if os(macOS)
 import SwiftUI
+import UniformTypeIdentifiers
 
 // MARK: - Add Card Sheet
 
@@ -310,12 +311,12 @@ struct DeckSettingsSheet: View {
             }
         }
         .alert("Delete Deck?", isPresented: $showingDeleteConfirmation) {
-            Button("Cancel", role: .cancel) { }
-            Button("Delete", role: .destructive) {
+            Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) { }
+            Button(NSLocalizedString("Delete", value: "Delete", comment: ""), role: .destructive) {
                 deleteDeck()
             }
         } message: {
-            Text("This will permanently delete \"\(deck.title)\" and all its cards. This action cannot be undone.")
+            Text(String(format: NSLocalizedString("flashcards.delete_deck.warning", value: "This will permanently delete \"%@\" and all its cards. This action cannot be undone.", comment: "Delete deck warning"), deck.title))
         }
         .sheet(isPresented: $showingExport) {
             ExportSheet(text: exportedText, deckName: deck.title)
@@ -347,7 +348,6 @@ struct ExportSheet: View {
     let deckName: String
     
     @Environment(\.dismiss) private var dismiss
-    @State private var copied = false
     
     var body: some View {
         VStack(spacing: 20) {
@@ -366,43 +366,95 @@ struct ExportSheet: View {
             
             Divider()
             
-            VStack(alignment: .leading, spacing: 12) {
-                Text(NSLocalizedString("ui.csv.format.ready.for.anki.import", value: "CSV format ready for Anki import", comment: "CSV format ready for Anki import"))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                
-                ScrollView {
-                    Text(text)
-                        .font(.system(.body, design: .monospaced))
-                        .textSelection(.enabled)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(12)
-                        .background(.tertiaryBackground)
-                        .cornerRadius(8)
-                }
-            }
-            .padding(.horizontal, 20)
-            
-            HStack {
-                Spacer()
-                
-                Button {
-                    NSPasteboard.general.clearContents()
-                    NSPasteboard.general.setString(text, forType: .string)
-                    copied = true
+            if text.isEmpty {
+                // Empty state when no cards
+                VStack(spacing: 16) {
+                    Image(systemName: "square.stack.3d.up.slash")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.secondary)
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        copied = false
-                    }
-                } label: {
-                    Label(copied ? "Copied!" : "Copy to Clipboard", systemImage: copied ? "checkmark" : "doc.on.doc")
+                    Text(NSLocalizedString("ui.no.cards.to.export", value: "No Cards to Export", comment: "No Cards to Export"))
+                        .font(.title3.weight(.semibold))
+                    
+                    Text(NSLocalizedString("ui.add.some.cards.to.this", value: "Add some cards to this deck to export them to Anki format.", comment: "Add some cards to this deck to export them to Anki..."))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
                 }
-                .buttonStyle(.borderedProminent)
+                .frame(maxHeight: .infinity)
+                .padding(.horizontal, 40)
+            } else {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Text(NSLocalizedString("ui.csv.format.ready.for.anki.import", value: "CSV format ready for Anki import", comment: "CSV format ready for Anki import"))
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        
+                        Spacer()
+                        
+                        Text(String(format: NSLocalizedString("flashcards.export.cards_count", value: "%d cards", comment: "Exported cards count"), text.components(separatedBy: "\n").count))
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                    
+                    ScrollView {
+                        Text(text)
+                            .font(.system(.body, design: .monospaced))
+                            .textSelection(.enabled)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(12)
+                            .background(.tertiaryBackground)
+                            .cornerRadius(8)
+                    }
+                }
+                .padding(.horizontal, 20)
+                
+                HStack(spacing: 12) {
+                    Spacer()
+                    
+                    Button {
+                        saveToFile()
+                    } label: {
+                        Label(NSLocalizedString("ui.label.download.csv", value: "Download CSV", comment: "Download CSV"), systemImage: "arrow.down.doc")
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
             }
-            .padding(.horizontal, 20)
-            .padding(.bottom, 20)
         }
         .frame(width: 600, height: 400)
+    }
+    
+    private func saveToFile() {
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.commaSeparatedText]
+        panel.nameFieldStringValue = "\(deckName).csv"
+        panel.title = "Export Flashcards to CSV"
+        panel.message = "Save your flashcards in Anki-compatible CSV format"
+        
+        panel.begin { response in
+            guard response == .OK, let url = panel.url else { return }
+            
+            do {
+                try text.write(to: url, atomically: true, encoding: .utf8)
+                // Show success feedback
+                let alert = NSAlert()
+                alert.messageText = "Export Successful"
+                alert.informativeText = "Your flashcards have been exported to \(url.lastPathComponent)"
+                alert.alertStyle = .informational
+                alert.addButton(withTitle: "OK")
+                alert.runModal()
+            } catch {
+                // Show error
+                let alert = NSAlert()
+                alert.messageText = "Export Failed"
+                alert.informativeText = error.localizedDescription
+                alert.alertStyle = .critical
+                alert.addButton(withTitle: "OK")
+                alert.runModal()
+            }
+        }
     }
 }
 

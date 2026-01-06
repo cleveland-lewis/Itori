@@ -62,11 +62,39 @@ final class GradesStore: ObservableObject {
         try? fm.createDirectory(at: folder, withIntermediateDirectories: true)
         self.storageURL = folder.appendingPathComponent("grades.json")
         
+        // Skip slow initialization during tests
+        guard !TestMode.isRunningTests else {
+            isLoading = false
+            return
+        }
+        
+        // OPTIMIZATION: Defer all I/O to async initialization
+        Task { @MainActor in
+            await initializeAsync()
+        }
+    }
+    
+    // OPTIMIZATION: Async initialization to avoid blocking app launch
+    @MainActor
+    private func initializeAsync() async {
+        // Step 1: Load data off-main thread
+        await Task.detached(priority: .userInitiated) { [weak self] in
+            guard let self = self else { return }
+            await self.load()
+        }.value
+        
+        // Step 2: Setup services
         setupNetworkMonitoring()
-        load()
-        loadFromiCloudIfEnabled()
-        setupiCloudMonitoring()
         observeICloudToggle()
+        
+        // Step 3: Load from iCloud if needed (deferred)
+        await Task.detached(priority: .utility) { [weak self] in
+            guard let self = self else { return }
+            await self.loadFromiCloudIfEnabled()
+            await MainActor.run {
+                self.setupiCloudMonitoring()
+            }
+        }.value
         
         isLoading = false
     }
@@ -169,7 +197,7 @@ final class GradesStore: ObservableObject {
                 guard let self = self else { return }
                 if self.isSyncEnabled {
                     self.setupiCloudMonitoring()
-                    await self.loadFromiCloudIfEnabled()
+                    self.loadFromiCloudIfEnabled()
                 } else {
                     self.iCloudMonitor?.invalidate()
                     self.iCloudMonitor = nil
