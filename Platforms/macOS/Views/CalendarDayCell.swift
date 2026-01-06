@@ -8,12 +8,14 @@ struct CalendarDayCell: View {
     let eventCount: Int
     let calendar: Calendar
 
+    private let cornerRadius: CGFloat = 12
+
     var body: some View {
         let isToday = calendar.isDateInToday(date)
         let a11yContent = VoiceOverLabels.dateCell(date: date, eventCount: eventCount)
 
         ZStack(alignment: .topLeading) {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .fill(isSelected ? Color.accentColor.opacity(0.15) : Color.clear)
 
             VStack(alignment: .leading, spacing: 0) {
@@ -42,10 +44,11 @@ struct CalendarDayCell: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .overlay(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
+            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                 .stroke(isSelected ? Color.accentColor.opacity(0.5) : Color.clear, lineWidth: isSelected ? 1.5 : 0)
         )
-        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .voiceOver(a11yContent)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }

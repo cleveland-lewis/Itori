@@ -11,7 +11,6 @@ final class ScheduledTestsStore: ObservableObject {
     
     private let testsStorageKey = "scheduled_practice_tests_v1"
     private let attemptsStorageKey = "test_attempts_v1"
-    private let sampleDataDisabledKey = "scheduled_practice_tests_sample_data_disabled"
     
     init() {
         loadData()
@@ -126,11 +125,7 @@ final class ScheduledTestsStore: ObservableObject {
             attempts = decoded
         }
         
-        // Add some sample data if empty (for demo purposes)
-        let sampleDataDisabled = UserDefaults.standard.bool(forKey: sampleDataDisabledKey)
-        if scheduledTests.isEmpty && !sampleDataDisabled {
-            addSampleData()
-        }
+        removeSampleDataIfPresent()
     }
     
     private func saveData() {
@@ -150,52 +145,25 @@ final class ScheduledTestsStore: ObservableObject {
         attempts.removeAll()
         UserDefaults.standard.removeObject(forKey: testsStorageKey)
         UserDefaults.standard.removeObject(forKey: attemptsStorageKey)
-        UserDefaults.standard.set(true, forKey: sampleDataDisabledKey)
         saveData()
     }
     
-    // MARK: - Sample Data
+    // MARK: - Sample Data Cleanup
     
-    private func addSampleData() {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        
-        // This week's tests
-        scheduledTests = [
-            ScheduledPracticeTest(
-                title: "Calculus Midterm Practice",
-                subject: "Mathematics",
-                unitName: "Derivatives & Integrals",
-                scheduledAt: calendar.date(byAdding: .day, value: 1, to: today) ?? today,
-                estimatedMinutes: 45,
-                difficulty: 4
-            ),
-            ScheduledPracticeTest(
-                title: "Biology Quiz",
-                subject: "Biology",
-                unitName: "Cell Structure",
-                scheduledAt: calendar.date(byAdding: .day, value: 2, to: today) ?? today,
-                estimatedMinutes: 30,
-                difficulty: 3
-            ),
-            ScheduledPracticeTest(
-                title: "Physics Problem Set",
-                subject: "Physics",
-                unitName: "Newton's Laws",
-                scheduledAt: calendar.date(byAdding: .day, value: 3, to: today) ?? today,
-                estimatedMinutes: 60,
-                difficulty: 5
-            ),
-            ScheduledPracticeTest(
-                title: "Chemistry Review",
-                subject: "Chemistry",
-                unitName: "Periodic Table",
-                scheduledAt: calendar.date(byAdding: .day, value: -2, to: today) ?? today,
-                estimatedMinutes: 40,
-                difficulty: 2
-            )
+    private func removeSampleDataIfPresent() {
+        let sampleTitles: Set<String> = [
+            "Calculus Midterm Practice",
+            "Biology Quiz",
+            "Physics Problem Set",
+            "Chemistry Review"
         ]
-        saveData()
+        let originalCount = scheduledTests.count
+        scheduledTests.removeAll { test in
+            sampleTitles.contains(test.title) && test.sourceAssignmentId == nil
+        }
+        if scheduledTests.count != originalCount {
+            saveData()
+        }
     }
 
     // MARK: - Auto Scheduling (Exams/Quizzes)

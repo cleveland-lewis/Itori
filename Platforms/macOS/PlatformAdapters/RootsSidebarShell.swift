@@ -11,6 +11,20 @@ struct RootsSidebarShell: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var showingCoursesSyncConflict = false
     
+    private var preferredColorScheme: ColorScheme? {
+        switch settings.interfaceStyle {
+        case .system:
+            return nil
+        case .light:
+            return .light
+        case .dark:
+            return .dark
+        case .auto:
+            let hour = Calendar.current.component(.hour, from: Date())
+            return (hour >= 19 || hour < 7) ? .dark : .light
+        }
+    }
+    
     var body: some View {
         HStack(spacing: 16) {
             // Persistent left sidebar (card style)
@@ -98,6 +112,7 @@ struct RootsSidebarShell: View {
         .padding(16)
         .background(DesignSystem.Colors.appBackground)
         .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
+        .preferredColorScheme(preferredColorScheme)
         .globalContextMenu()
         .onAppear {
             setupWindow()

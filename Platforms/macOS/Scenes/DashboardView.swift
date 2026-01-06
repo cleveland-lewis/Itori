@@ -54,54 +54,55 @@ struct DashboardView: View {
                     //     .padding(.bottom, cardSpacing)
                     //     .frame(maxWidth: .infinity, alignment: .leading)
 
-                        // ROW 2: WEEKLY WORKLOAD + CALENDAR
-                    Group {
-                        if isNarrow {
-                            VStack(spacing: cardSpacing) {
-                                workloadCard
-                                    .animateEntry(isLoaded: isLoaded, index: 1)
-                                calendarCard
-                                    .animateEntry(isLoaded: isLoaded, index: 2)
-                            }
-                        } else {
-                            HStack(alignment: .top, spacing: cardSpacing) {
-                                workloadCard
-                                    .animateEntry(isLoaded: isLoaded, index: 1)
-                                    .frame(maxWidth: .infinity)
-                                calendarCard
-                                    .animateEntry(isLoaded: isLoaded, index: 2)
-                                    .frame(maxWidth: .infinity)
-                            }
-                        }
-                    }
-                    .padding(.bottom, cardSpacing)
-
-                    // ROW 3: TODAY'S WORK + UPCOMING
+                    // ROW 2: TODAY'S WORK + CALENDAR
                     Group {
                         if isNarrow {
                             VStack(spacing: cardSpacing) {
                                 if shouldShowEnergyCard {
                                     energyCard
-                                        .animateEntry(isLoaded: isLoaded, index: 3)
+                                        .animateEntry(isLoaded: isLoaded, index: 1)
                                 }
                                 workRemainingCard
-                                    .animateEntry(isLoaded: isLoaded, index: 4)
-                                assignmentsCard
-                                    .animateEntry(isLoaded: isLoaded, index: 5)
+                                    .animateEntry(isLoaded: isLoaded, index: 2)
+                                calendarCard
+                                    .animateEntry(isLoaded: isLoaded, index: 3)
                             }
                         } else {
                             HStack(alignment: .top, spacing: cardSpacing) {
                                 VStack(spacing: cardSpacing) {
                                     if shouldShowEnergyCard {
                                         energyCard
-                                            .animateEntry(isLoaded: isLoaded, index: 3)
+                                            .animateEntry(isLoaded: isLoaded, index: 1)
                                             .frame(maxWidth: .infinity)
                                     }
                                     workRemainingCard
-                                        .animateEntry(isLoaded: isLoaded, index: 4)
+                                        .animateEntry(isLoaded: isLoaded, index: 2)
                                         .frame(maxWidth: .infinity)
                                 }
 
+                                calendarCard
+                                    .animateEntry(isLoaded: isLoaded, index: 3)
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
+                    }
+                    .padding(.bottom, cardSpacing)
+                    .animation(.easeInOut(duration: 0.25), value: shouldShowEnergyCard)
+
+                    // ROW 3: WEEKLY WORKLOAD + UPCOMING
+                    Group {
+                        if isNarrow {
+                            VStack(spacing: cardSpacing) {
+                                workloadCard
+                                    .animateEntry(isLoaded: isLoaded, index: 4)
+                                assignmentsCard
+                                    .animateEntry(isLoaded: isLoaded, index: 5)
+                            }
+                        } else {
+                            HStack(alignment: .top, spacing: cardSpacing) {
+                                workloadCard
+                                    .animateEntry(isLoaded: isLoaded, index: 4)
+                                    .frame(maxWidth: .infinity)
                                 assignmentsCard
                                     .animateEntry(isLoaded: isLoaded, index: 5)
                                     .frame(maxWidth: .infinity)
@@ -109,7 +110,6 @@ struct DashboardView: View {
                         }
                     }
                     .padding(.bottom, cardSpacing)
-                    .animation(.easeInOut(duration: 0.25), value: shouldShowEnergyCard)
 
                     // ROW 4: STUDY TIME + TODAY
                     Group {
@@ -150,8 +150,7 @@ struct DashboardView: View {
                     VersionDropdownView()
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding(.top, 32)
-                    
-                    .padding(.bottom, bottomDockClearancePadding)
+                        .padding(.bottom, bottomDockClearancePadding)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .frame(maxWidth: min(proxy.size.width, 1400))
@@ -1412,6 +1411,8 @@ struct DashboardView: View {
         .chartYAxis {
             AxisMarks(position: .leading)
         }
+        .chartXAxisLabel(NSLocalizedString("dashboard.chart.axis.week", value: "Week", comment: "XAxis label for current semester grade chart"))
+        .chartYAxisLabel(NSLocalizedString("dashboard.chart.axis.gpa", value: "GPA", comment: "YAxis label for grade charts"))
     }
 
     @ViewBuilder
@@ -1464,6 +1465,8 @@ struct DashboardView: View {
         .chartYAxis {
             AxisMarks(position: .leading)
         }
+        .chartXAxisLabel(NSLocalizedString("dashboard.chart.axis.semester", value: "Semester", comment: "XAxis label for semester GPA chart"))
+        .chartYAxisLabel(NSLocalizedString("dashboard.chart.axis.gpa", value: "GPA", comment: "YAxis label for grade charts"))
     }
 
     private var workRemainingCard: some View {

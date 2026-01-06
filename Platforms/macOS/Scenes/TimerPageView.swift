@@ -216,7 +216,10 @@ struct TimerPageView: View {
                         Button(filter.label) { taskDateFilter = filter }
                     }
                 } label: {
-                    Label(taskDateFilter.label, systemImage: "calendar")
+                    Label(
+                        String(format: NSLocalizedString("timer.filter.date_label", value: "Date: %@", comment: "Date filter label on timer"), taskDateFilter.label),
+                        systemImage: "calendar"
+                    )
                 }
                 .menuStyle(.borderlessButton)
                 .fixedSize()
@@ -226,7 +229,10 @@ struct TimerPageView: View {
                         Button(filter.label) { taskStatusFilter = filter }
                     }
                 } label: {
-                    Label(taskStatusFilter.label, systemImage: "line.3.horizontal.decrease.circle")
+                    Label(
+                        String(format: NSLocalizedString("timer.filter.status_label", value: "Status: %@", comment: "Status filter label on timer"), taskStatusFilter.label),
+                        systemImage: "line.3.horizontal.decrease.circle"
+                    )
                 }
                 .menuStyle(.borderlessButton)
                 .fixedSize()
@@ -794,12 +800,17 @@ struct TimerPageView: View {
     private func clockDisplayContent(isRunningState: Bool) -> some View {
         VStack(spacing: 8) {
             if settings.isTimerAnalog {
-                // Triple dial analog display
-                TripleDialTimer(
-                    totalSeconds: clockTimeForAnalog,
-                    accentColor: .accentColor,
-                    dialSize: 118
-                )
+                GeometryReader { proxy in
+                    let availableWidth = max(proxy.size.width - 48, 0)
+                    let dialSize = min(max(140, availableWidth / 3), 220)
+
+                    TripleDialTimer(
+                        totalSeconds: clockTimeForAnalog,
+                        accentColor: .accentColor,
+                        dialSize: dialSize
+                    )
+                    .frame(height: dialSize + 60)
+                }
                 .frame(height: 260)
             } else {
                 // Digital display

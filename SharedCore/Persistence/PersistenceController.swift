@@ -277,7 +277,7 @@ final class PersistenceController {
         if lowered.isEmpty || lowered == "connected" {
             return "iCloud sync isn’t available right now."
         }
-        return "iCloud sync error: \(reason ?? "Unknown issue")."
+        return "iCloud sync is temporarily unavailable. Check System Settings > iCloud."
     }
 
     func newBackgroundContext() -> NSManagedObjectContext {

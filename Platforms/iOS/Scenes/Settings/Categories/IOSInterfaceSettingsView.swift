@@ -176,6 +176,25 @@ struct IOSInterfaceSettingsView: View {
             } footer: {
                 Text(NSLocalizedString("settings.interface.interactions.footer", value: "Haptic feedback and animations respect accessibility settings.", comment: "Interactions footer"))
             }
+
+            Section {
+                Toggle(isOn: Binding(
+                    get: { settings.hideGPAOnDashboard },
+                    set: { settings.hideGPAOnDashboard = $0 }
+                )) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(NSLocalizedString("settings.dashboard.hide_gpa", value: "Hide GPA on dashboard", comment: "Hide GPA toggle label"))
+                        Text(NSLocalizedString("settings.dashboard.hide_gpa.detail", value: "Remove GPA labels from the dashboard grade charts.", comment: "Hide GPA detail"))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .onChange(of: settings.hideGPAOnDashboard) { _, _ in
+                    settings.save()
+                }
+            } header: {
+                Text(NSLocalizedString("settings.dashboard.section_title", value: "Dashboard", comment: "Dashboard section header"))
+            }
         }
         .listStyle(.insetGrouped)
         .navigationTitle(NSLocalizedString("settings.category.interface", comment: "Interface"))

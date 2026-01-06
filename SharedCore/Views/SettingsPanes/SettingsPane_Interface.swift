@@ -78,6 +78,26 @@ struct SettingsPane_Interface: View {
                 Label(NSLocalizedString("settings.label.clock", value: "Clock", comment: "Clock"), systemImage: "clock")
             }
 
+            GroupBox {
+                Toggle(isOn: Binding(
+                    get: { settings.hideGPAOnDashboard },
+                    set: { newValue in
+                        settings.hideGPAOnDashboard = newValue
+                        settings.save()
+                    }
+                )) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(NSLocalizedString("settings.dashboard.hide_gpa", value: "Hide GPA on dashboard", comment: "Hide GPA toggle label"))
+                        Text(NSLocalizedString("settings.dashboard.hide_gpa.detail", value: "Remove GPA labels from the dashboard grade charts.", comment: "Hide GPA detail"))
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.vertical, 6)
+            } label: {
+                Label(NSLocalizedString("settings.dashboard.label", value: "Dashboard", comment: "Label for dashboard-related settings"), systemImage: "chart.line.uptrend.xyaxis")
+            }
+
             Divider().padding(.vertical)
 
             HStack(spacing: 20) {
