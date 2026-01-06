@@ -5,7 +5,7 @@
 //  Tests data persistence, edge cases, and user flow integrity
 //
 
-import XCUIApplication
+import XCTest
 
 final class DataIntegrityTests: XCTestCase {
     
