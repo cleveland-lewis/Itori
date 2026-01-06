@@ -367,6 +367,7 @@ struct IOSAssignmentsView: View {
     @State private var showingEditor = false
     @State private var selectedTask: AppTask? = nil
     @State private var editingTask: AppTask? = nil
+    @State private var pressedTaskId: UUID? = nil
 
     private var supportsMultiWindow: Bool {
         UIDevice.current.userInterfaceIdiom == .pad && horizontalSizeClass == .regular
@@ -381,15 +382,26 @@ struct IOSAssignmentsView: View {
                 )
             }
             if assignmentsStore.tasks.isEmpty {
-                IOSInlineEmptyState(
-                    title: "No tasks yet",
-                    subtitle: "Capture tasks and due dates here."
-                )
+                ContentUnavailableView {
+                    Label("No Tasks Yet", systemImage: "checkmark.circle")
+                } description: {
+                    Text("Capture tasks and due dates here")
+                } actions: {
+                    Button("Add First Task") {
+                        showingEditor = true
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
             } else {
                 ForEach(sortedTasks, id: \.id) { task in
                     HStack(spacing: 12) {
+                        Circle()
+                            .fill(urgencyColor(for: task))
+                            .frame(width: 8, height: 8)
+                        
                         Button {
                             toggleCompletion(task)
+                            FeedbackManager.shared.trigger(event: .taskCompleted)
                         } label: {
                             Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
                                 .foregroundStyle(task.isCompleted ? Color.accentColor : Color.secondary)
@@ -399,7 +411,7 @@ struct IOSAssignmentsView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(task.title)
                                 .font(.body.weight(.medium))
-                            if let due = task.due {
+                            if task.due != nil {
                                 Text("Due \(formatDueDisplay(for: task))")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
@@ -412,9 +424,18 @@ struct IOSAssignmentsView: View {
                         Spacer()
                     }
                     .contentShape(Rectangle())
+                    .scaleEffect(pressedTaskId == task.id ? 0.98 : 1.0)
+                    .animation(.spring(response: 0.3, dampingFraction: 0.6), value: pressedTaskId)
                     .draggable(TransferableAssignment(from: task))
                     .onTapGesture {
                         selectedTask = task
+                    }
+                    .onLongPressGesture(minimumDuration: 0.0, maximumDistance: 0) {
+                        pressedTaskId = task.id
+                    } onPressingChanged: { isPressing in
+                        if !isPressing {
+                            pressedTaskId = nil
+                        }
                     }
                     .contextMenu {
                         if supportsMultiWindow {
@@ -439,6 +460,9 @@ struct IOSAssignmentsView: View {
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
         .background(DesignSystem.Colors.appBackground)
+        .refreshable {
+            await refreshData()
+        }
         
         .sheet(item: $selectedTask) { task in
             IOSTaskDetailView(
@@ -537,6 +561,25 @@ struct IOSAssignmentsView: View {
         formatter.timeStyle = task.hasExplicitDueTime ? .short : .none
         let dateText = formatter.string(from: task.hasExplicitDueTime ? (task.effectiveDueDateTime ?? due) : due)
         return dateText
+    }
+    
+    private func refreshData() async {
+        // AssignmentsStore automatically syncs with iCloud
+        // Just trigger haptic feedback to confirm refresh
+        FeedbackManager.shared.trigger(event: .dataRefreshed)
+    }
+    
+    private func urgencyColor(for task: AppTask) -> Color {
+        guard let due = task.effectiveDueDateTime else { return .secondary.opacity(0.6) }
+        let days = Calendar.current.dateComponents([.day], from: Date(), to: due).day ?? 0
+        
+        switch days {
+        case ..<0: return .red.opacity(0.8)      // Overdue
+        case 0: return .orange.opacity(0.9)      // Today
+        case 1...2: return .yellow.opacity(0.8)  // Soon
+        case 3...7: return .blue.opacity(0.7)    // This week
+        default: return .secondary.opacity(0.6)  // Later
+        }
     }
 }
 

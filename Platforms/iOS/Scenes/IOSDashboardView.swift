@@ -208,9 +208,11 @@ struct IOSDashboardView: View {
                         }
                     )
                 } else if upcomingEvents.isEmpty {
-                    Text(NSLocalizedString("ios.dashboard.upcoming.no_events", comment: "No events"))
-                        .rootsBodySecondary()
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    ContentUnavailableView {
+                        Label("No Events", systemImage: "calendar")
+                    } description: {
+                        Text("Your upcoming calendar events will appear here")
+                    }
                 } else {
                     VStack(alignment: .leading, spacing: 12) {
                         ForEach(upcomingEvents.prefix(4), id: \.eventIdentifier) { event in
