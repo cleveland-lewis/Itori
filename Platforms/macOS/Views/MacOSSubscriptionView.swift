@@ -12,26 +12,24 @@ struct MacOSSubscriptionView: View {
     @State private var showRestoreSuccess = false
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 32) {
-                headerSection
-                
-                statusBanner
-                
-                if !subscriptionManager.availableSubscriptions.isEmpty {
-                    subscriptionPlans
-                } else {
-                    loadingPlaceholder
-                }
-                
-                featuresSection
-                
-                restoreButton
+        VStack(spacing: 32) {
+            headerSection
+            
+            statusBanner
+            
+            if !subscriptionManager.availableSubscriptions.isEmpty {
+                subscriptionPlans
+            } else {
+                loadingPlaceholder
             }
-            .frame(maxWidth: 600)
-            .padding(40)
+            
+            featuresSection
+            
+            restoreButton
         }
-        .frame(minWidth: 700, minHeight: 600)
+        .frame(maxWidth: 600)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(nsColor: .windowBackgroundColor))
         .alert("Error", isPresented: $showError) {
             Button(NSLocalizedString("OK", value: "OK", comment: ""), role: .cancel) { }
         } message: {

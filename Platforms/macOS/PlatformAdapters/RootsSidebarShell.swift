@@ -9,6 +9,7 @@ struct RootsSidebarShell: View {
     @EnvironmentObject var settingsCoordinator: SettingsCoordinator
     @EnvironmentObject var appModel: AppModel
     @Environment(\.colorScheme) private var colorScheme
+    @State private var showingCoursesSyncConflict = false
     
     var body: some View {
         HStack(spacing: 16) {
@@ -61,6 +62,7 @@ struct RootsSidebarShell: View {
                         }
                         .buttonStyle(.plain)
                         .help("Quick Add")
+                        .menuIndicator(.hidden)
                         .menuStyle(.borderlessButton)
                         
                         Divider()
@@ -72,7 +74,12 @@ struct RootsSidebarShell: View {
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 6)
-                    .background(DesignSystem.Materials.hud.opacity(0.6), in: Capsule())
+                    .background {
+                        Capsule()
+                            .fill(DesignSystem.Materials.card)
+                            .opacity(0.85)
+                            .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+                    }
                     
                     Spacer()
                 }
@@ -86,8 +93,10 @@ struct RootsSidebarShell: View {
                     .padding(.bottom, 20)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(DesignSystem.Colors.appBackground)
         }
         .padding(16)
+        .background(DesignSystem.Colors.appBackground)
         .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
         .globalContextMenu()
         .onAppear {
@@ -96,6 +105,19 @@ struct RootsSidebarShell: View {
             if let tab = RootTab(rawValue: appModel.selectedPage.rawValue) {
                 selection = tab
             }
+        }
+        .alert(
+            NSLocalizedString("sync.conflict.courses.title", value: "Courses Sync Conflict", comment: "Courses sync conflict title"),
+            isPresented: $showingCoursesSyncConflict
+        ) {
+            Button(NSLocalizedString("sync.conflict.courses.keep_local", value: "Keep Local", comment: "Keep local data")) {
+                CoursesStore.shared?.resolveSyncConflict(useCloud: false)
+            }
+            Button(NSLocalizedString("sync.conflict.courses.use_icloud", value: "Use iCloud", comment: "Use iCloud data"), role: .destructive) {
+                CoursesStore.shared?.resolveSyncConflict(useCloud: true)
+            }
+        } message: {
+            Text(NSLocalizedString("sync.conflict.courses.message", value: "Courses and semesters differ between this device and iCloud. Choose which data to keep.", comment: "Courses sync conflict message"))
         }
         .onChange(of: selection) { _, newTab in
             if let page = AppPage(rawValue: newTab.rawValue), appModel.selectedPage != page {
@@ -106,6 +128,9 @@ struct RootsSidebarShell: View {
             if let tab = RootTab(rawValue: page.rawValue), selection != tab {
                 selection = tab
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .coursesSyncConflict)) { _ in
+            showingCoursesSyncConflict = true
         }
     }
     

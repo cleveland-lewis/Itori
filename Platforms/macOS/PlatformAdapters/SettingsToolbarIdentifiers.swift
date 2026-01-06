@@ -2,7 +2,6 @@
 import AppKit
 
 enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
-    case subscription
     case general
     case calendar
     case reminders
@@ -20,6 +19,8 @@ enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
     case privacy
     case storage
     case developer
+    case subscription
+    case about
 
     var id: String { rawValue }
 
@@ -43,12 +44,13 @@ enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
         case .privacy: return "Privacy"
         case .storage: return "Storage"
         case .developer: return "Developer"
+        case .about: return "About"
         }
     }
 
     var systemImageName: String {
         switch self {
-        case .subscription: return "sparkles"
+        case .subscription: return "seal"
         case .general: return "gearshape"
         case .calendar: return "calendar"
         case .reminders: return "list.bullet.rectangle"
@@ -66,6 +68,7 @@ enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
         case .privacy: return "lock.shield"
         case .storage: return "externaldrive"
         case .developer: return "hammer.fill"
+        case .about: return "info.circle"
         }
     }
 

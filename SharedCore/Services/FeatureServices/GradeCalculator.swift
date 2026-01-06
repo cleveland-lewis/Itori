@@ -55,7 +55,7 @@ enum GradeCalculator {
     }
 
     /// Maps percentage grade to GPA scale.
-    private static func mapPercentToGPA(_ percent: Double) -> Double {
+    fileprivate static func mapPercentToGPA(_ percent: Double) -> Double {
         switch percent {
         case 93...: return 4.0
         case 90..<93: return 3.7
@@ -88,5 +88,10 @@ enum GradeCalculator {
         case 60..<63: return "D-"
         default: return "F"
         }
+    }
+
+    /// Returns the GPA value for a percentage grade.
+    static func gpa(from percent: Double) -> Double {
+        mapPercentToGPA(percent)
     }
 }

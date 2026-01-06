@@ -594,6 +594,7 @@ struct AddGradeSheet: View {
                     onSave(first)
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(.accentColor)
             } else {
                 Text(NSLocalizedString("ui.no.assignments.available.yet", value: "No assignments available yet.", comment: "No assignments available yet."))
                     .foregroundStyle(.secondary)

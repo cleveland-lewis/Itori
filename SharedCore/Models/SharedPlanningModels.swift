@@ -26,8 +26,13 @@ public enum AssignmentCategory: String, CaseIterable, Codable, Identifiable {
 
 public enum AssignmentUrgency: String, Codable, CaseIterable, Hashable, Identifiable {
     case low, medium, high, critical
-    
+
     public var id: String { rawValue }
+
+    /// Limited selection for assignment creation UIs (no critical/urgent levels).
+    public static var creationOptions: [AssignmentUrgency] {
+        [.low, .medium, .high]
+    }
     
     // Default implementation for non-macOS platforms
     // macOS uses localized versions from Platforms/macOS/Extensions/AssignmentExtensions.swift

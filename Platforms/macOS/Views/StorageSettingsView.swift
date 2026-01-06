@@ -35,11 +35,14 @@ struct StorageSettingsView: View {
                 
                 Text(verbatim: "Status: \(statusLabel)")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(statusLabel == "Error" ? .red : (statusLabel == "Connected" ? .green : .secondary))
 
-                Text(cloudKitStatusMessage)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                if !cloudKitStatusMessage.isEmpty && cloudKitStatusMessage != "Disabled by user" {
+                    Text(cloudKitStatusMessage)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
             }
             
             Section("Storage Usage") {

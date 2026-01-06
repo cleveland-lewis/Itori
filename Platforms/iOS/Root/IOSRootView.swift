@@ -21,6 +21,7 @@ struct IOSRootView: View {
     @State private var showMoreMenu = false
     @State private var moreMenuSelected = false
     @State private var selectedMorePage: AppPage? = nil
+    @State private var showingCoursesSyncConflict = false
     
     private enum TabSelection: Hashable {
         case tab(RootTab)
@@ -98,6 +99,19 @@ struct IOSRootView: View {
             .sheet(item: $sheetRouter.activeSheet) { sheet in
                 sheetContent(for: sheet)
             }
+            .alert(
+                NSLocalizedString("sync.conflict.courses.title", value: "Courses Sync Conflict", comment: "Courses sync conflict title"),
+                isPresented: $showingCoursesSyncConflict
+            ) {
+                Button(NSLocalizedString("sync.conflict.courses.keep_local", value: "Keep Local", comment: "Keep local data")) {
+                    CoursesStore.shared?.resolveSyncConflict(useCloud: false)
+                }
+                Button(NSLocalizedString("sync.conflict.courses.use_icloud", value: "Use iCloud", comment: "Use iCloud data"), role: .destructive) {
+                    CoursesStore.shared?.resolveSyncConflict(useCloud: true)
+                }
+            } message: {
+                Text(NSLocalizedString("sync.conflict.courses.message", value: "Courses and semesters differ between this device and iCloud. Choose which data to keep.", comment: "Courses sync conflict message"))
+            }
             .onChange(of: plannerCoordinator.requestedDate) { _, date in
                 guard date != nil else { return }
                 openPlannerPage()
@@ -105,6 +119,9 @@ struct IOSRootView: View {
             }
             .onChange(of: plannerCoordinator.requestedCourseId) { _, _ in
                 openPlannerPage()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .coursesSyncConflict)) { _ in
+                showingCoursesSyncConflict = true
             }
     }
     

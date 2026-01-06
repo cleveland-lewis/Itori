@@ -80,6 +80,8 @@ final class CoursesStore: ObservableObject {
     private var isOnline: Bool = true
     private var isLoadingFromDisk: Bool = false
     private var iCloudToggleObserver: NSObjectProtocol?
+    private var hasLoadedFromiCloud: Bool = false
+    private var pendingCloudConflict: CoursesPersistedData?
     
     // OPTIMIZATION: Track loading state for UI
     @Published private(set) var isInitialLoadComplete: Bool = false
@@ -1058,6 +1060,17 @@ extension CoursesStore {
         guard let url = iCloudURL else { return }
         guard FileManager.default.fileExists(atPath: url.path) else { return }
         
+        let localSnapshot = await MainActor.run { [semesters, courses, outlineNodes, courseFiles, currentSemesterId, activeSemesterIds] in
+            CoursesPersistedData(
+                semesters: semesters,
+                courses: courses,
+                outlineNodes: outlineNodes,
+                courseFiles: courseFiles,
+                currentSemesterId: currentSemesterId,
+                activeSemesterIds: activeSemesterIds
+            )
+        }
+        
         // Load and decode off-main
         let cloudData = await Task.detached(priority: .utility) { () -> CoursesPersistedData? in
             do {
@@ -1073,6 +1086,23 @@ extension CoursesStore {
         
         guard let decoded = cloudData else { return }
         
+        let isCloudEmpty = decoded.semesters.isEmpty && decoded.courses.isEmpty
+        let hasLocalData = !localSnapshot.semesters.isEmpty || !localSnapshot.courses.isEmpty
+        if isCloudEmpty && hasLocalData {
+            await MainActor.run {
+                hasLoadedFromiCloud = true
+            }
+            await LOG_PERSISTENCE(.info, "CoursesiCloud", "Skipped empty iCloud merge to preserve local data")
+            return
+        }
+        
+        if hasSyncConflict(local: localSnapshot, cloud: decoded) {
+            await MainActor.run {
+                handleSyncConflict(localData: localSnapshot, cloudData: decoded)
+            }
+            return
+        }
+        
         // PHASE 2: Merge on main in ONE update
         await MainActor.run {
             isLoadingFromDisk = true
@@ -1083,8 +1113,11 @@ extension CoursesStore {
             self.currentSemesterId = decoded.currentSemesterId
             if let activeSemesterIdsArray = decoded.activeSemesterIds {
                 self.activeSemesterIds = Set(activeSemesterIdsArray)
+            } else if let currentId = decoded.currentSemesterId {
+                self.activeSemesterIds = [currentId]
             }
             isLoadingFromDisk = false
+            hasLoadedFromiCloud = true
             LOG_PERSISTENCE(.info, "CoursesiCloud", "iCloud data merged", metadata: ["semesters": "\(semesters.count)"])
         }
     }
@@ -1092,6 +1125,10 @@ extension CoursesStore {
     private func saveToiCloud() {
         guard isSyncEnabled else { return }
         guard let url = iCloudURL else { return }
+        if !hasLoadedFromiCloud && semesters.isEmpty && courses.isEmpty {
+            LOG_PERSISTENCE(.info, "CoursesiCloud", "Skipped iCloud sync with empty local data before initial load")
+            return
+        }
 
         let snapshot = CoursesPersistedData(
             semesters: semesters,
@@ -1118,22 +1155,126 @@ extension CoursesStore {
         guard FileManager.default.fileExists(atPath: url.path) else { return }
         
         do {
+            let localSnapshot = CoursesPersistedData(
+                semesters: semesters,
+                courses: courses,
+                outlineNodes: outlineNodes,
+                courseFiles: courseFiles,
+                currentSemesterId: currentSemesterId,
+                activeSemesterIds: activeSemesterIds
+            )
+            
             isLoadingFromDisk = true
             let data = try Data(contentsOf: url)
             let decoded = try JSONDecoder().decode(CoursesPersistedData.self, from: data)
+            
+            let isCloudEmpty = decoded.semesters.isEmpty && decoded.courses.isEmpty
+            let hasLocalData = !localSnapshot.semesters.isEmpty || !localSnapshot.courses.isEmpty
+            if isCloudEmpty && hasLocalData {
+                isLoadingFromDisk = false
+                hasLoadedFromiCloud = true
+                LOG_PERSISTENCE(.info, "CoursesiCloud", "Skipped empty iCloud merge to preserve local data")
+                return
+            }
+            
+            if hasSyncConflict(local: localSnapshot, cloud: decoded) {
+                isLoadingFromDisk = false
+                handleSyncConflict(localData: localSnapshot, cloudData: decoded)
+                return
+            }
             
             self.semesters = decoded.semesters
             self.courses = decoded.courses
             self.outlineNodes = decoded.outlineNodes
             self.courseFiles = decoded.courseFiles
             self.currentSemesterId = decoded.currentSemesterId
+            if let activeSemesterIdsArray = decoded.activeSemesterIds {
+                self.activeSemesterIds = Set(activeSemesterIdsArray)
+            } else if let currentId = decoded.currentSemesterId {
+                self.activeSemesterIds = [currentId]
+            }
             
             LOG_PERSISTENCE(.info, "CoursesiCloud", "Loaded courses from iCloud", metadata: ["semesters": "\(semesters.count)", "courses": "\(courses.count)"])
             isLoadingFromDisk = false
+            hasLoadedFromiCloud = true
         } catch {
             isLoadingFromDisk = false
             LOG_PERSISTENCE(.error, "CoursesiCloud", "Failed to load from iCloud: \(error.localizedDescription)")
         }
+    }
+}
+
+// MARK: - iCloud Conflict Resolution
+
+extension CoursesStore {
+    func resolveSyncConflict(useCloud: Bool) {
+        guard let cloudData = pendingCloudConflict else { return }
+        pendingCloudConflict = nil
+        
+        if useCloud {
+            applySnapshot(cloudData)
+            LOG_PERSISTENCE(.info, "CoursesiCloud", "Resolved sync conflict using iCloud data")
+        } else {
+            hasLoadedFromiCloud = true
+            saveToiCloud()
+            LOG_PERSISTENCE(.info, "CoursesiCloud", "Resolved sync conflict keeping local data")
+        }
+    }
+    
+    private func applySnapshot(_ snapshot: CoursesPersistedData) {
+        isLoadingFromDisk = true
+        semesters = snapshot.semesters
+        courses = snapshot.courses
+        outlineNodes = snapshot.outlineNodes
+        courseFiles = snapshot.courseFiles
+        currentSemesterId = snapshot.currentSemesterId
+        if let activeSemesterIdsArray = snapshot.activeSemesterIds {
+            activeSemesterIds = Set(activeSemesterIdsArray)
+        } else if let currentId = snapshot.currentSemesterId {
+            activeSemesterIds = [currentId]
+        } else {
+            activeSemesterIds = []
+        }
+        isLoadingFromDisk = false
+        hasLoadedFromiCloud = true
+        persist()
+    }
+    
+    private func handleSyncConflict(localData: CoursesPersistedData, cloudData: CoursesPersistedData) {
+        pendingCloudConflict = cloudData
+        hasLoadedFromiCloud = true
+        NotificationCenter.default.post(
+            name: .coursesSyncConflict,
+            object: nil,
+            userInfo: [
+                "localSemesters": localData.semesters.count,
+                "localCourses": localData.courses.count,
+                "cloudSemesters": cloudData.semesters.count,
+                "cloudCourses": cloudData.courses.count
+            ]
+        )
+        LOG_PERSISTENCE(.warn, "CoursesiCloud", "Sync conflict detected", metadata: [
+            "localSemesters": "\(localData.semesters.count)",
+            "localCourses": "\(localData.courses.count)",
+            "cloudSemesters": "\(cloudData.semesters.count)",
+            "cloudCourses": "\(cloudData.courses.count)"
+        ])
+    }
+    
+    private func hasSyncConflict(local: CoursesPersistedData, cloud: CoursesPersistedData) -> Bool {
+        let localHasData = !local.semesters.isEmpty || !local.courses.isEmpty
+        let cloudHasData = !cloud.semesters.isEmpty || !cloud.courses.isEmpty
+        guard localHasData && cloudHasData else { return false }
+        
+        let localSemesterIds = Set(local.semesters.map { $0.id })
+        let cloudSemesterIds = Set(cloud.semesters.map { $0.id })
+        if localSemesterIds != cloudSemesterIds {
+            return true
+        }
+        
+        let localCourseIds = Set(local.courses.map { $0.id })
+        let cloudCourseIds = Set(cloud.courses.map { $0.id })
+        return localCourseIds != cloudCourseIds
     }
 }
 

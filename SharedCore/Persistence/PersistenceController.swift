@@ -375,4 +375,5 @@ final class PersistenceController {
 extension Notification.Name {
     static let iCloudSyncSettingChanged = Notification.Name("iCloudSyncSettingChanged")
     static let iCloudSyncStatusChanged = Notification.Name("iCloudSyncStatusChanged")
+    static let coursesSyncConflict = Notification.Name("CoursesSyncConflict")
 }

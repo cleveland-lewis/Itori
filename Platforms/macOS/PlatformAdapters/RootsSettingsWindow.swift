@@ -111,6 +111,8 @@ struct SettingsRootView: View {
                     StorageSettingsView()
                 case .developer:
                     DeveloperSettingsView()
+                case .about:
+                    AboutSettingsView()
                 }
             }
             .padding(20)
@@ -526,6 +528,13 @@ private struct LegacyInterfaceSettingsView: View {
                         }
                         SettingsRow(title: "Use 24-hour time", description: nil) {
                             Toggle(NSLocalizedString("settings.toggle.", value: "", comment: ""), isOn: $settings.use24HourTime)
+                                .labelsHidden()
+                        }
+                        SettingsRow(
+                            title: NSLocalizedString("settings.toggle.hide_gpa_dashboard", value: "Hide GPA on dashboard", comment: "Hide GPA on dashboard toggle"),
+                            description: NSLocalizedString("settings.toggle.hide_gpa_dashboard.description", value: "Remove numeric GPA values from the dashboard charts.", comment: "Hide GPA description")
+                        ) {
+                            Toggle(NSLocalizedString("", value: "", comment: "Hidden toggle label"), isOn: $settings.hideGPAOnDashboard)
                                 .labelsHidden()
                         }
                     }

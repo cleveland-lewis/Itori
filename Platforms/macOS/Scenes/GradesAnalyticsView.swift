@@ -100,6 +100,7 @@ struct GradesAnalyticsView: View {
                 resetWhatIfMode()
             }
             .buttonStyle(.bordered)
+            .tint(.accentColor)
             .controlSize(.small)
             
             Button {
@@ -203,6 +204,7 @@ struct GradesAnalyticsView: View {
                     Label(NSLocalizedString("gradesanalytics.label.risk.analysis", value: "Risk Analysis", comment: "Risk Analysis"), systemImage: "exclamationmark.triangle")
                 }
                 .buttonStyle(.bordered)
+                .tint(.accentColor)
             }
         }
         .padding()

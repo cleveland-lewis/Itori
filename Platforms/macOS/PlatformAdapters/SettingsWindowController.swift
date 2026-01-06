@@ -91,6 +91,7 @@ struct SystemStyleSettingsView: View {
         case .privacy: PrivacySettingsView()
         case .storage: StorageSettingsView()
         case .developer: DeveloperSettingsView()
+        case .about: AboutSettingsView()
         }
     }
 }

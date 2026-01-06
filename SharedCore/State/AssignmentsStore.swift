@@ -952,11 +952,15 @@ final class AssignmentsStore: ObservableObject {
             // Add/update with cloud tasks (keeping unique IDs from both)
             for cloudTask in cloudTasks {
                 if let localTask = mergedDict[cloudTask.id] {
-                    // If both exist, take the "most complete" one (not completed < completed)
-                    if cloudTask.isCompleted && !localTask.isCompleted {
+                    // BUGFIX: Always prefer cloud version when there's any difference
+                    // This ensures completion status changes sync properly in both directions
+                    // Without timestamps, we treat iCloud as source of truth during merge
+                    if cloudTask.isCompleted != localTask.isCompleted ||
+                       cloudTask.title != localTask.title ||
+                       cloudTask.due != localTask.due {
                         mergedDict[cloudTask.id] = cloudTask
                     }
-                    // Keep local if both completed or both not completed
+                    // Keep local only if completely identical
                 } else {
                     mergedDict[cloudTask.id] = cloudTask
                 }

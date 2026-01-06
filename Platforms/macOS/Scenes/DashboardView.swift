@@ -31,6 +31,7 @@ struct DashboardView: View {
     @State private var studyTrendRange: StudyTrendRange = .seven
     @State private var studyTrend: [StudyTrendPoint] = []
     @State private var showEnergyPopover = false
+    @State private var gradeWidgetMode: GradeWidgetMode = .currentSemester
 
     // Layout tokens
     private let cardSpacing: CGFloat = DesignSystem.Spacing.large
@@ -53,93 +54,98 @@ struct DashboardView: View {
                     //     .padding(.bottom, cardSpacing)
                     //     .frame(maxWidth: .infinity, alignment: .leading)
 
-                        // ROW 2: ANALYTICS
-                        Group {
-                            if isNarrow {
-                                VStack(spacing: cardSpacing) {
-                                    workloadCard
-                                        .animateEntry(isLoaded: isLoaded, index: 1)
-                                    if shouldShowProductivityInsights {
-                                        studyHoursCard
-                                            .animateEntry(isLoaded: isLoaded, index: 2)
-                                    }
-                                }
-                            } else {
-                                HStack(alignment: .top, spacing: cardSpacing) {
-                                    workloadCard
-                                        .animateEntry(isLoaded: isLoaded, index: 1)
-                                        .frame(maxWidth: .infinity)
-
-                                    if shouldShowProductivityInsights {
-                                        calendarCard
-                                            .animateEntry(isLoaded: isLoaded, index: 2)
-                                            .frame(maxWidth: .infinity)
-                                    }
-                                }
+                        // ROW 2: WEEKLY WORKLOAD + CALENDAR
+                    Group {
+                        if isNarrow {
+                            VStack(spacing: cardSpacing) {
+                                workloadCard
+                                    .animateEntry(isLoaded: isLoaded, index: 1)
+                                calendarCard
+                                    .animateEntry(isLoaded: isLoaded, index: 2)
+                            }
+                        } else {
+                            HStack(alignment: .top, spacing: cardSpacing) {
+                                workloadCard
+                                    .animateEntry(isLoaded: isLoaded, index: 1)
+                                    .frame(maxWidth: .infinity)
+                                calendarCard
+                                    .animateEntry(isLoaded: isLoaded, index: 2)
+                                    .frame(maxWidth: .infinity)
                             }
                         }
-                        .padding(.bottom, cardSpacing)
+                    }
+                    .padding(.bottom, cardSpacing)
 
-                        // ROW 3: TODAY'S WORK + UPCOMING
-                        Group {
-                            if isNarrow {
-                                VStack(spacing: cardSpacing) {
-                                    if shouldShowEnergyCard {
-                                        energyCard
-                                            .animateEntry(isLoaded: isLoaded, index: 3)
-                                    }
-                                    workRemainingCard
-                                        .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 4 : 3)
-                                    assignmentsCard
-                                        .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 5 : 4)
+                    // ROW 3: TODAY'S WORK + UPCOMING
+                    Group {
+                        if isNarrow {
+                            VStack(spacing: cardSpacing) {
+                                if shouldShowEnergyCard {
+                                    energyCard
+                                        .animateEntry(isLoaded: isLoaded, index: 3)
                                 }
-                            } else {
-                                HStack(alignment: .top, spacing: cardSpacing) {
+                                workRemainingCard
+                                    .animateEntry(isLoaded: isLoaded, index: 4)
+                                assignmentsCard
+                                    .animateEntry(isLoaded: isLoaded, index: 5)
+                            }
+                        } else {
+                            HStack(alignment: .top, spacing: cardSpacing) {
+                                VStack(spacing: cardSpacing) {
                                     if shouldShowEnergyCard {
                                         energyCard
                                             .animateEntry(isLoaded: isLoaded, index: 3)
                                             .frame(maxWidth: .infinity)
                                     }
-                                    
                                     workRemainingCard
-                                        .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 4 : 3)
-                                        .frame(maxWidth: .infinity)
-
-                                    assignmentsCard
-                                        .animateEntry(isLoaded: isLoaded, index: shouldShowEnergyCard ? 5 : 4)
+                                        .animateEntry(isLoaded: isLoaded, index: 4)
                                         .frame(maxWidth: .infinity)
                                 }
+
+                                assignmentsCard
+                                    .animateEntry(isLoaded: isLoaded, index: 5)
+                                    .frame(maxWidth: .infinity)
                             }
                         }
-                        .padding(.bottom, cardSpacing)
-                        .animation(.easeInOut(duration: 0.25), value: shouldShowEnergyCard)
+                    }
+                    .padding(.bottom, cardSpacing)
+                    .animation(.easeInOut(duration: 0.25), value: shouldShowEnergyCard)
 
-                        // ROW 4: STUDY TIME + TODAY
+                    // ROW 4: STUDY TIME + TODAY
                     Group {
                         if isNarrow {
                             VStack(spacing: cardSpacing) {
                                 if shouldShowProductivityInsights {
                                     studyHoursCard
-                                        .animateEntry(isLoaded: isLoaded, index: 5)
+                                        .animateEntry(isLoaded: isLoaded, index: 6)
                                 }
                                 plannerTodayCard
-                                    .animateEntry(isLoaded: isLoaded, index: 6)
+                                    .animateEntry(isLoaded: isLoaded, index: 7)
                             }
                         } else {
                             HStack(alignment: .top, spacing: cardSpacing) {
                                 if shouldShowProductivityInsights {
                                     studyHoursCard
-                                        .animateEntry(isLoaded: isLoaded, index: 5)
+                                        .animateEntry(isLoaded: isLoaded, index: 6)
                                         .frame(maxWidth: .infinity)
                                 }
 
                                 plannerTodayCard
-                                    .animateEntry(isLoaded: isLoaded, index: 6)
+                                    .animateEntry(isLoaded: isLoaded, index: 7)
                                     .frame(maxWidth: .infinity)
                             }
                         }
                     }
-                    
+                    .padding(.bottom, cardSpacing)
+
+                    // ROW 5: GRADES
+                    Group {
+                        gradeWidgetCard
+                            .frame(maxWidth: .infinity)
+                            .animateEntry(isLoaded: isLoaded, index: 8)
+                    }
+                    .padding(.bottom, cardSpacing)
+
                     // Version dropdown footer
                     VersionDropdownView()
                         .frame(maxWidth: .infinity, alignment: .center)
@@ -314,6 +320,94 @@ struct DashboardView: View {
 
     private var hasStudyTrendData: Bool {
         studyTrend.contains { $0.minutes > 0 }
+    }
+
+    private var currentSemesterGradePoints: [GradeWidgetPoint] {
+        guard let semester = currentSemester else { return [] }
+        let courses = semesterCourses(semester)
+        guard !courses.isEmpty else { return [] }
+        let calendar = Calendar.current
+        let semesterStart = calendar.startOfDay(for: semester.startDate)
+        let semesterEnd = calendar.startOfDay(for: min(Date(), semester.endDate))
+        guard semesterStart <= semesterEnd else { return [] }
+
+        var points: [GradeWidgetPoint] = []
+        var weekStart = semesterStart
+        var weekIndex = 1
+
+        while weekStart <= semesterEnd {
+            let weekEnd = calendar.date(byAdding: .day, value: 6, to: weekStart) ?? weekStart
+            let cutoff = min(weekEnd, semesterEnd)
+            let tasks = semesterTasks(semester, upTo: cutoff)
+            let gpa = GradeCalculator.calculateGPA(courses: courses, tasks: tasks)
+            let label = String(format: NSLocalizedString("dashboard.grades.week_label", value: "W%d", comment: "Label for week on the grades graph"), weekIndex)
+            points.append(GradeWidgetPoint(label: label, gpa: gpa, weekStart: weekStart))
+
+            guard let nextWeek = calendar.date(byAdding: .day, value: 7, to: weekStart) else { break }
+            weekStart = nextWeek
+            weekIndex += 1
+        }
+
+        return points
+    }
+
+    private var allSemestersGradePoints: [GradeWidgetPoint] {
+        coursesStore.semesters
+            .filter { !$0.isArchived }
+            .sorted { $0.startDate < $1.startDate }
+            .compactMap { semester in
+                let courses = semesterCourses(semester)
+                guard !courses.isEmpty else { return nil }
+                let gpa = GradeCalculator.calculateGPA(courses: courses, tasks: semesterTasks(semester))
+                return GradeWidgetPoint(label: semester.name, gpa: gpa, weekStart: nil)
+            }
+    }
+
+    private var currentSemester: Semester? {
+        if let id = coursesStore.currentSemesterId,
+           let semester = coursesStore.semesters.first(where: { $0.id == id && !$0.isArchived }) {
+            return semester
+        }
+        return coursesStore.semesters.first(where: { $0.isCurrent && !$0.isArchived })
+            ?? coursesStore.semesters.first(where: { !$0.isArchived })
+    }
+
+    private func semesterCourses(_ semester: Semester) -> [Course] {
+        coursesStore.courses.filter { $0.semesterId == semester.id && !$0.isArchived }
+    }
+
+    private func semesterTasks(_ semester: Semester, upTo cutoff: Date? = nil) -> [AppTask] {
+        let courseIDs = Set(semesterCourses(semester).map { $0.id })
+        return assignmentsStore.tasks.filter { task in
+            guard let courseId = task.courseId, courseIDs.contains(courseId) else { return false }
+            if let cutoff, let due = task.due {
+                return due <= cutoff
+            }
+            return cutoff == nil
+        }
+    }
+
+    private struct GradeWidgetPoint: Identifiable {
+        let id = UUID()
+        let label: String
+        let gpa: Double
+        let weekStart: Date?
+    }
+
+    private enum GradeWidgetMode: String, CaseIterable, Identifiable {
+        case currentSemester
+        case allSemesters
+
+        var id: String { rawValue }
+
+        var title: String {
+            switch self {
+            case .currentSemester:
+                return NSLocalizedString("dashboard.grades.mode.current", value: "Current semester", comment: "Current semester filter label")
+            case .allSemesters:
+                return NSLocalizedString("dashboard.grades.mode.all", value: "All semesters", comment: "All semesters filter label")
+            }
+        }
     }
 
     private struct UpcomingAssignmentItem: Identifiable {
@@ -774,11 +868,11 @@ struct DashboardView: View {
                 x: .value("Day", item.day, unit: .day),
                 y: .value("Minutes", item.minutes)
             )
-            .foregroundStyle(by: .value("Category", item.category.rawValue))
+            .foregroundStyle(by: .value("Category", item.category.displayName))
             .cornerRadius(6)
         }
         .chartForegroundStyleScale(
-            domain: TaskType.allCases.map { $0.rawValue },
+            domain: TaskType.allCases.map { $0.displayName },
             range: TaskType.allCases.map { mutedCategoryColor($0) }
         )
         .chartYAxis {
@@ -1184,6 +1278,192 @@ struct DashboardView: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabelWithTooltip("Today's planner tasks")
+    }
+
+    private var gradeWidgetCard: some View {
+        DashboardCard(
+            title: NSLocalizedString("dashboard.section.grades", comment: ""),
+            isLoading: !isLoaded
+        ) {
+            VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
+                gradeWidgetHeader
+
+                if selectedGradePoints.isEmpty {
+                    DashboardEmptyState(
+                        title: NSLocalizedString("dashboard.grades.empty.title", value: "No grade data yet", comment: ""),
+                        systemImage: "chart.xyaxis.line",
+                        description: NSLocalizedString("dashboard.grades.empty.description", value: "Add some graded tasks or link your courses to see GPA trends.", comment: "")
+                    )
+                    .frame(maxWidth: .infinity)
+                } else {
+                    gradeChart(for: gradeWidgetMode, points: selectedGradePoints)
+                        .frame(height: 180)
+                }
+
+                if let summary = gradeSummaryText {
+                    Text(summary)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabelWithTooltip("Grades overview")
+    }
+
+    private var gradeWidgetHeader: some View {
+        HStack {
+            Text(NSLocalizedString("dashboard.grades.filter_label", value: "View", comment: "Label for grade view filter"))
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.secondary)
+            Spacer()
+            Picker("Grade view", selection: $gradeWidgetMode) {
+                ForEach(GradeWidgetMode.allCases) { mode in
+                    Text(mode.title).tag(mode)
+                }
+            }
+            .pickerStyle(.segmented)
+            .frame(maxWidth: 260)
+        }
+    }
+
+    private var selectedGradePoints: [GradeWidgetPoint] {
+        switch gradeWidgetMode {
+        case .currentSemester:
+            return currentSemesterGradePoints
+        case .allSemesters:
+            return allSemestersGradePoints
+        }
+    }
+
+    private var gradeSummaryText: String? {
+        guard !settings.hideGPAOnDashboard else { return nil }
+        switch gradeWidgetMode {
+        case .currentSemester:
+            return String(format: NSLocalizedString("dashboard.grades.current_summary", value: "Current GPA: %.2f", comment: "Summary text for the current semester GPA"), coursesStore.currentGPA)
+        case .allSemesters:
+            guard let average = selectedGradeAverage else { return nil }
+            return String(format: NSLocalizedString("dashboard.grades.all_summary", value: "Avg GPA: %.2f", comment: "Summary text for the all semesters GPA"), average)
+        }
+    }
+
+    private var selectedGradeAverage: Double? {
+        guard !selectedGradePoints.isEmpty else { return nil }
+        let total = selectedGradePoints.reduce(0) { partial, point in partial + point.gpa }
+        return total / Double(selectedGradePoints.count)
+    }
+
+    private func gradeChart(for mode: GradeWidgetMode, points: [GradeWidgetPoint]) -> some View {
+        switch mode {
+        case .currentSemester:
+            return AnyView(currentSemesterGradeChart(points: points))
+        case .allSemesters:
+            return AnyView(allSemestersGradeChart(points: points))
+        }
+    }
+
+    @ViewBuilder
+    private func currentSemesterGradeChart(points: [GradeWidgetPoint]) -> some View {
+        Chart(points) { point in
+            guard let start = point.weekStart else { return }
+            LineMark(
+                x: .value("Week", start),
+                y: .value("GPA", point.gpa)
+            )
+            .foregroundStyle(settings.activeAccentColor)
+
+            AreaMark(
+                x: .value("Week", start),
+                y: .value("GPA", point.gpa)
+            )
+            .foregroundStyle(
+                LinearGradient(
+                    colors: [
+                        settings.activeAccentColor.opacity(0.35),
+                        settings.activeAccentColor.opacity(0.0)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+
+            PointMark(
+                x: .value("Week", start),
+                y: .value("GPA", point.gpa)
+            )
+            .foregroundStyle(settings.activeAccentColor)
+            .annotation(position: .top) {
+                if !settings.hideGPAOnDashboard {
+                    Text(String(format: "%.2f", point.gpa))
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .chartXAxis {
+            AxisMarks(values: .stride(by: .day, count: 7)) { value in
+                if let date = value.as(Date.self) {
+                    AxisValueLabel {
+                        Text(date, format: .dateTime.weekday(.abbreviated))
+                    }
+                }
+            }
+        }
+        .chartYAxis {
+            AxisMarks(position: .leading)
+        }
+    }
+
+    @ViewBuilder
+    private func allSemestersGradeChart(points: [GradeWidgetPoint]) -> some View {
+        Chart(points) { point in
+            LineMark(
+                x: .value("Semester", point.label),
+                y: .value("GPA", point.gpa)
+            )
+            .foregroundStyle(settings.activeAccentColor)
+
+            AreaMark(
+                x: .value("Semester", point.label),
+                y: .value("GPA", point.gpa)
+            )
+            .foregroundStyle(
+                LinearGradient(
+                    colors: [
+                        settings.activeAccentColor.opacity(0.35),
+                        settings.activeAccentColor.opacity(0.0)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+
+            PointMark(
+                x: .value("Semester", point.label),
+                y: .value("GPA", point.gpa)
+            )
+            .foregroundStyle(settings.activeAccentColor)
+            .annotation(position: .top) {
+                if !settings.hideGPAOnDashboard {
+                    Text(String(format: "%.2f", point.gpa))
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .chartXAxis {
+            AxisMarks(values: points.map { $0.label }) { value in
+                AxisValueLabel {
+                    if let label = value.as(String.self) {
+                        Text(label)
+                            .font(.caption2)
+                    }
+                }
+            }
+        }
+        .chartYAxis {
+            AxisMarks(position: .leading)
+        }
     }
 
     private var workRemainingCard: some View {

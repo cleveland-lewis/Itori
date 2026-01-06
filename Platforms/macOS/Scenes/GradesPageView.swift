@@ -199,6 +199,7 @@ struct GradesPageView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(.accentColor)
 
                 Button {
                     gradeAnalyticsWindowOpen = true
@@ -212,6 +213,7 @@ struct GradesPageView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
+                .tint(.accentColor)
             }
         }
     }
@@ -849,6 +851,7 @@ struct EditTargetGradeSheet: View {
                         Button { components.append(GradeComponent(id: UUID(), name: "New", weightPercent: 0, earnedPercent: nil)) } label: {
                             Label(NSLocalizedString("grades.label.add.component", value: "Add Component", comment: "Add Component"), systemImage: "plus")
                         }
+                        .tint(.accentColor)
                     }
                 }
 

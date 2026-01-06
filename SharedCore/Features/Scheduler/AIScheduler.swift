@@ -36,6 +36,19 @@ enum TaskType: String, Hashable, CaseIterable, Codable {
         var container = encoder.singleValueContainer()
         try container.encode(rawValue)
     }
+    
+    var displayName: String {
+        switch self {
+        case .project: return "Project"
+        case .exam: return "Exam"
+        case .quiz: return "Quiz"
+        case .homework: return "Homework"
+        case .reading: return "Reading"
+        case .review: return "Review"
+        case .study: return "Study"
+        case .practiceTest: return "Practice Test"
+        }
+    }
 }
 
 struct FixedEvent: Equatable {

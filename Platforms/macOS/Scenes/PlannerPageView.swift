@@ -507,7 +507,7 @@ private extension PlannerPageView {
     }
 
     var subtitleText: String {
-        return "LLM-planned focus blocks"
+        return ""
     }
 
     func adjustDate(by offset: Int) {
@@ -584,13 +584,13 @@ private extension PlannerPageView {
                 } else {
                     ForEach(blocks) { block in
                         if block.isLocked {
-                            PlannerBlockRow(block: block)
+                            PlannerBlockRow(block: block, onStatusChange: updateBlockStatus)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
                                         .stroke(neutralLine.opacity(0.25), lineWidth: 1)
                                 )
                         } else {
-                            PlannerBlockRow(block: block)
+                            PlannerBlockRow(block: block, onStatusChange: updateBlockStatus)
                                 .onDrag {
                                     NSItemProvider(object: block.id.uuidString as NSString)
                                 }
@@ -1127,6 +1127,27 @@ private extension PlannerPageView {
         )
         plannerStore.updateScheduledSession(updated)
     }
+    
+    func updateBlockStatus(id: UUID, newStatus: PlannerBlockStatus) {
+        guard let stored = plannerStore.scheduled.first(where: { $0.id == id }) else { return }
+        
+        // If there's an associated task, update its completion status
+        if let taskId = stored.assignmentId {
+            if let task = assignmentsStore.tasks.first(where: { $0.id == taskId }) {
+                var updatedTask = task
+                updatedTask.isCompleted = (newStatus == .completed)
+                assignmentsStore.updateTask(updatedTask)
+                
+                // Play completion sound if just completed
+                if newStatus == .completed {
+                    AudioFeedbackService.shared.playTimerEnd()
+                }
+            }
+        }
+        
+        // Note: The block status in the UI will update automatically when
+        // the planner refreshes based on the task's completion status
+    }
 }
 
 private struct PlannerBlockDropDelegate: DropDelegate {
@@ -1186,6 +1207,7 @@ private struct PlannerBlockDropDelegate: DropDelegate {
 
 struct PlannerBlockRow: View {
     var block: PlannedBlock
+    var onStatusChange: ((UUID, PlannerBlockStatus) -> Void)? = nil
     
     @Environment(\.colorScheme) private var colorScheme
     private var neutralLine: Color { DesignSystem.Colors.neutralLine(for: colorScheme) }
@@ -1243,6 +1265,20 @@ struct PlannerBlockRow: View {
 
             Spacer()
 
+            // Checkbox for non-fixed events
+            if !block.isLocked && !isFixedEvent {
+                Button {
+                    let newStatus: PlannerBlockStatus = block.status == .completed ? .upcoming : .completed
+                    onStatusChange?(block.id, newStatus)
+                } label: {
+                    Image(systemName: block.status == .completed ? "checkmark.circle.fill" : "circle")
+                        .font(.system(size: 18))
+                        .foregroundStyle(block.status == .completed ? .green : .secondary)
+                }
+                .buttonStyle(.plain)
+                .help(block.status == .completed ? "Mark as not started" : "Mark as completed")
+            }
+            
             if block.isLocked {
                 Image(systemName: "lock.fill")
                     .font(DesignSystem.Typography.body)

@@ -256,8 +256,8 @@ struct AddAssignmentView: View {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(NSLocalizedString("addassignment.urgency", value: "Urgency", comment: "Urgency")).font(.caption).foregroundStyle(.secondary)
                                     Picker("", selection: $urgency) {
-                                        ForEach(AssignmentUrgency.allCases) { u in
-                                            Text(u.rawValue.capitalized).tag(u)
+                                        ForEach(AssignmentUrgency.creationOptions) { option in
+                                            Text(option.label).tag(option)
                                         }
                                     }
                                     .pickerStyle(.menu)

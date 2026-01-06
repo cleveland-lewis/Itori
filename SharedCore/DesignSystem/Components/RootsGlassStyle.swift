@@ -27,6 +27,10 @@ struct GlassCardModifier: ViewModifier {
         let scale = preferredRadius / baseRadius
         return max(2, cornerRadius * scale)
     }
+
+    private var surfaceTint: Color {
+        colorScheme == .dark ? Color.white.opacity(0.06) : Color.black.opacity(0.025)
+    }
     
     func body(content: Content) -> some View {
         #if os(macOS)
@@ -35,6 +39,10 @@ struct GlassCardModifier: ViewModifier {
                 RoundedRectangle(cornerRadius: resolvedCornerRadius, style: .continuous)
                     .fill(DesignSystem.Materials.card)
                     .opacity(DesignSystem.Materials.cardOpacity)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: resolvedCornerRadius, style: .continuous)
+                    .fill(surfaceTint)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: resolvedCornerRadius, style: .continuous)

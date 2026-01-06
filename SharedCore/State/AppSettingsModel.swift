@@ -372,6 +372,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         static let highContrastMode = "roots.settings.highContrastMode"
         static let enableAIPlanner = "roots.settings.enableAIPlanner"
         static let plannerHorizon = "roots.settings.plannerHorizon"
+        static let hideGPAOnDashboard = "roots.settings.hideGPAOnDashboard"
     }
 
     // Backing storage - migrate to UserDefaults-backed values to persist across launches
@@ -441,6 +442,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage("roots.settings.showAnimations") var showAnimationsStorage: Bool = true
     @AppStorage("roots.settings.enableHaptics") var enableHapticsStorage: Bool = true
     @AppStorage("roots.settings.showTooltips") var showTooltipsStorage: Bool = true
+    @AppStorage(Keys.hideGPAOnDashboard) var hideGPAOnDashboardStorage: Bool = false
     @AppStorage("roots.settings.showSampleData") var showSampleDataStorage: Bool = false
 
     // Profile/Study Coach Settings
@@ -1083,6 +1085,11 @@ final class AppSettingsModel: ObservableObject, Codable {
     var showTooltips: Bool {
         get { showTooltipsStorage }
         set { showTooltipsStorage = newValue }
+    }
+
+    var hideGPAOnDashboard: Bool {
+        get { hideGPAOnDashboardStorage }
+        set { hideGPAOnDashboardStorage = newValue }
     }
 
     var showSampleData: Bool {
