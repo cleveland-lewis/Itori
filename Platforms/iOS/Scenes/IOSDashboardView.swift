@@ -116,7 +116,7 @@ struct IOSDashboardView: View {
 
     private var weekStrip: some View {
         HStack(spacing: 10) {
-            ForEach(weekDays, id: \.self) { day in
+            ForEach(Array(weekDays.enumerated()), id: \.element) { index, day in
                 let isSelected = calendar.isDate(day, inSameDayAs: selectedDate)
                 Button {
                     selectedDate = day
@@ -131,7 +131,7 @@ struct IOSDashboardView: View {
                     .foregroundStyle(isSelected ? Color.white : Color.primary)
                     .background(
                         RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .fill(isSelected ? Color.accentColor : .regularMaterial)
+                            .fill(isSelected ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(.regularMaterial))
                     )
                 }
                 .buttonStyle(.plain)

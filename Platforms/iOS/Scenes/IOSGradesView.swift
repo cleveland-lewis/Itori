@@ -45,7 +45,7 @@ struct IOSGradesView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    sheetRouter.show(.addGrade)
+                    sheetRouter.activeSheet = .addGrade(UUID())
                 } label: {
                     Image(systemName: "plus")
                 }
