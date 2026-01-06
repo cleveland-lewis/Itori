@@ -1,4 +1,4 @@
-#if canImport(UIKit)
+#if os(iOS)
 import UIKit
 #endif
 import SwiftUI
@@ -6,15 +6,15 @@ import SwiftUI
 /// Centralized haptic feedback manager
 /// Provides consistent tactile feedback across the app
 @MainActor
-final class FeedbackManager {
-    static let shared = FeedbackManager()
+public final class FeedbackManager {
+    public static let shared = FeedbackManager()
     
     private var lastFeedbackTime: [FeedbackEvent: Date] = [:]
     private let minimumInterval: TimeInterval = 0.1 // Debounce threshold
     
     private init() {}
     
-    enum FeedbackEvent {
+    public enum FeedbackEvent {
         case taskCompleted
         case taskCreated
         case taskDeleted
@@ -33,7 +33,7 @@ final class FeedbackManager {
     
     /// Trigger haptic feedback for an event
     /// Automatically debounces to avoid overwhelming the user
-    func trigger(event: FeedbackEvent) {
+    public func trigger(event: FeedbackEvent) {
         #if os(iOS)
         // Check debounce
         if let lastTime = lastFeedbackTime[event],
@@ -70,7 +70,7 @@ final class FeedbackManager {
     }
     
     /// Prepare haptic engine for upcoming feedback (reduces latency)
-    func prepare(for event: FeedbackEvent) {
+    public func prepare(for event: FeedbackEvent) {
         #if os(iOS)
         switch event {
         case .taskCompleted, .timerCompleted, .successAction, .errorOccurred, .warningAction:
