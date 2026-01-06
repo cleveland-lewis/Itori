@@ -1363,39 +1363,41 @@ struct DashboardView: View {
 
     @ViewBuilder
     private func currentSemesterGradeChart(points: [GradeWidgetPoint]) -> some View {
-        Chart(points) { point in
-            guard let start = point.weekStart else { return }
-            LineMark(
-                x: .value("Week", start),
-                y: .value("GPA", point.gpa)
-            )
-            .foregroundStyle(settings.activeAccentColor)
-
-            AreaMark(
-                x: .value("Week", start),
-                y: .value("GPA", point.gpa)
-            )
-            .foregroundStyle(
-                LinearGradient(
-                    colors: [
-                        settings.activeAccentColor.opacity(0.35),
-                        settings.activeAccentColor.opacity(0.0)
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
+        let validPoints = points.filter { $0.weekStart != nil }
+        Chart(validPoints) { point in
+            if let start = point.weekStart {
+                LineMark(
+                    x: .value("Week", start),
+                    y: .value("GPA", point.gpa)
                 )
-            )
+                .foregroundStyle(settings.activeAccentColor)
 
-            PointMark(
-                x: .value("Week", start),
-                y: .value("GPA", point.gpa)
-            )
-            .foregroundStyle(settings.activeAccentColor)
-            .annotation(position: .top) {
-                if !settings.hideGPAOnDashboard {
-                    Text(String(format: "%.2f", point.gpa))
-                        .font(.caption2.weight(.semibold))
-                        .foregroundStyle(.secondary)
+                AreaMark(
+                    x: .value("Week", start),
+                    y: .value("GPA", point.gpa)
+                )
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [
+                            settings.activeAccentColor.opacity(0.35),
+                            settings.activeAccentColor.opacity(0.0)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+
+                PointMark(
+                    x: .value("Week", start),
+                    y: .value("GPA", point.gpa)
+                )
+                .foregroundStyle(settings.activeAccentColor)
+                .annotation(position: .top) {
+                    if !settings.hideGPAOnDashboard {
+                        Text(String(format: "%.2f", point.gpa))
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
         }

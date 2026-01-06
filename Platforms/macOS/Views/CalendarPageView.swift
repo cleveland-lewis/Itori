@@ -966,6 +966,7 @@ private struct MonthCalendarSplitView: View {
     let events: [CalendarEvent]
     let onSelectDate: (Date) -> Void
     let onSelectEvent: (CalendarEvent) -> Void
+    let onNewEvent: () -> Void
     let timeFormatter: (Date, Date) -> String
     @State private var selectedEvent: CalendarEvent?
 
@@ -1018,7 +1019,7 @@ private struct MonthCalendarSplitView: View {
                 Spacer()
                 
                 Button {
-                    self.showingNewEventSheet = true
+                    onNewEvent()
                 } label: {
                     Image(systemName: "plus")
                         .font(.body.weight(.semibold))
