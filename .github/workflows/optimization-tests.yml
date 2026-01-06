@@ -1,0 +1,171 @@
+name: Optimization Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+
+env:
+  DEVELOPER_DIR: /Applications/Xcode_15.2.app/Contents/Developer
+
+jobs:
+  optimization-tests:
+    name: Optimization Tests
+    runs-on: macos-14
+    
+    strategy:
+      matrix:
+        destination:
+          - 'platform=iOS Simulator,name=iPhone 15 Pro,OS=17.2'
+          - 'platform=macOS'
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.2'
+      
+      - name: Cache SPM Dependencies
+        uses: actions/cache@v4
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+      
+      - name: Run Unit Tests
+        run: |
+          xcodebuild test \
+            -scheme Itori \
+            -destination '${{ matrix.destination }}' \
+            -only-testing:ItoriTests/Unit \
+            -resultBundlePath UnitTestResults.xcresult \
+            -enableCodeCoverage YES
+      
+      - name: Run Performance Tests
+        run: |
+          xcodebuild test \
+            -scheme Itori \
+            -destination '${{ matrix.destination }}' \
+            -only-testing:ItoriTests/OptimizationTests/PerformanceTests \
+            -resultBundlePath PerformanceResults.xcresult \
+            -enableCodeCoverage NO
+      
+      - name: Run Memory Tests
+        run: |
+          xcodebuild test \
+            -scheme Itori \
+            -destination '${{ matrix.destination }}' \
+            -only-testing:ItoriTests/OptimizationTests/MemoryTests \
+            -resultBundlePath MemoryResults.xcresult \
+            -enableAddressSanitizer YES
+      
+      - name: Parse Test Results
+        if: always()
+        run: |
+          # Install xcparse if not available
+          if ! command -v xcparse &> /dev/null; then
+            brew install chargepoint/xcparse/xcparse
+          fi
+          
+          # Parse results
+          xcparse logs PerformanceResults.xcresult > performance-logs.txt
+          xcparse logs MemoryResults.xcresult > memory-logs.txt
+      
+      - name: Check Performance Baselines
+        if: always()
+        run: |
+          # Extract performance metrics
+          swift Scripts/check-performance-baseline.swift PerformanceResults.xcresult
+      
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.destination }}
+          path: |
+            UnitTestResults.xcresult
+            PerformanceResults.xcresult
+            MemoryResults.xcresult
+            performance-logs.txt
+            memory-logs.txt
+          retention-days: 30
+      
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const perfLogs = fs.readFileSync('performance-logs.txt', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Optimization Test Results\n\n\`\`\`\n${perfLogs}\n\`\`\``
+            });
+  
+  nightly-full-suite:
+    name: Nightly Full Optimization Suite
+    runs-on: macos-14
+    if: github.event_name == 'schedule'
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '15.2'
+      
+      - name: Run All Optimization Tests
+        run: |
+          xcodebuild test \
+            -scheme Itori \
+            -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=17.2' \
+            -only-testing:ItoriTests/OptimizationTests \
+            -resultBundlePath NightlyResults.xcresult \
+            -enableCodeCoverage YES \
+            -enableAddressSanitizer YES
+      
+      - name: Generate Performance Report
+        run: |
+          swift Scripts/generate-performance-report.swift NightlyResults.xcresult
+      
+      - name: Upload Nightly Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-optimization-results
+          path: |
+            NightlyResults.xcresult
+            performance-report.html
+          retention-days: 90
+      
+      - name: Send Slack Notification
+        if: failure()
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "❌ Nightly optimization tests failed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Nightly Optimization Tests Failed*\n\nCheck the workflow run for details."
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}

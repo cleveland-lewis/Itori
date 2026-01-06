@@ -260,11 +260,13 @@ final class ComprehensiveStressTests: XCTestCase {
     private func addCourse(code: String, title: String) {
         if app.buttons["AddCourse"].exists {
             app.buttons["AddCourse"].tap()
-            if let codeField = app.textFields["CourseCode"].firstMatch {
+            let codeField = app.textFields["CourseCode"].firstMatch
+            if codeField.waitForExistence(timeout: 2) {
                 codeField.tap()
                 codeField.typeText(code)
             }
-            if let titleField = app.textFields["CourseTitle"].firstMatch {
+            let titleField = app.textFields["CourseTitle"].firstMatch
+            if titleField.waitForExistence(timeout: 2) {
                 titleField.tap()
                 titleField.typeText(title)
             }
@@ -281,7 +283,8 @@ final class ComprehensiveStressTests: XCTestCase {
     private func addAssignment(title: String, courseCode: String) {
         if app.buttons["AddAssignment"].exists {
             app.buttons["AddAssignment"].tap()
-            if let titleField = app.textFields["AssignmentTitle"].firstMatch {
+            let titleField = app.textFields["AssignmentTitle"].firstMatch
+            if titleField.waitForExistence(timeout: 2) {
                 titleField.tap()
                 titleField.typeText(title)
             }
