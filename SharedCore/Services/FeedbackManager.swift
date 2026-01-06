@@ -1,4 +1,6 @@
+#if canImport(UIKit)
 import UIKit
+#endif
 import SwiftUI
 
 /// Centralized haptic feedback manager
