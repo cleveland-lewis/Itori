@@ -6,6 +6,7 @@ import AppKit
 
 struct RootsSidebarShell: View {
     @State private var selection: RootTab = .dashboard
+    @AppStorage("sidebarVisible") private var sidebarVisible: Bool = true
     @EnvironmentObject var settings: AppSettingsModel
     @EnvironmentObject var settingsCoordinator: SettingsCoordinator
     @EnvironmentObject var appModel: AppModel
@@ -27,21 +28,16 @@ struct RootsSidebarShell: View {
     }
     
     var body: some View {
-        NavigationSplitView {
-            List(RootTab.allCases, selection: $selection) { tab in
-                Label(tab.title, systemImage: tab.systemImage)
-                    .tag(tab)
-            }
-            .listStyle(.sidebar)
-            .navigationSplitViewStyle(.balanced)
-            .toolbar {
-                ToolbarItem(placement: .automatic) {
-                    Button(action: toggleSidebar) {
-                        Image(systemName: "sidebar.left")
-                    }
+        HStack(spacing: 16) {
+            if sidebarVisible {
+                GlassPanel(material: .hudWindow, cornerRadius: 18, showBorder: true) {
+                    SidebarColumn(selection: $selection, sidebarVisible: $sidebarVisible)
+                        .frame(maxHeight: .infinity, alignment: .top)
                 }
+                .frame(width: 220)
+                .transition(.move(edge: .leading).combined(with: .opacity))
             }
-        } detail: {
+            
             VStack(spacing: 0) {
                 toolbar
                 Divider()
@@ -53,7 +49,8 @@ struct RootsSidebarShell: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(DesignSystem.Colors.appBackground)
         }
-        .navigationSplitViewStyle(.balanced)
+        .padding(16)
+        .background(DesignSystem.Colors.appBackground)
         .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
         .preferredColorScheme(preferredColorScheme)
         .globalContextMenu()
@@ -150,10 +147,6 @@ struct RootsSidebarShell: View {
         .menuStyle(.borderlessButton)
     }
 
-    private func toggleSidebar() {
-        NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
-    }
-    
     @ViewBuilder
     private var currentPageView: some View {
         switch selection {

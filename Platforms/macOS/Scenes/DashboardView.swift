@@ -1906,6 +1906,20 @@ struct DashboardView: View {
         case medium = "Medium"
         case low = "Low"
     }
+    
+    private func dashboardRowHeights(totalHeight: CGFloat) -> (row2: CGFloat, row3: CGFloat, row4: CGFloat, row5: CGFloat) {
+        let spacingTotal = cardSpacing * 4
+        let minTotal = row2MinHeight + row3MinHeight + row4MinHeight + row5MinHeight + spacingTotal
+        let available = max(0, totalHeight - bottomDockClearancePadding)
+        let extra = max(0, available - minTotal)
+        let extraPerRow = extra / 4
+        return (
+            row2MinHeight + extraPerRow,
+            row3MinHeight + extraPerRow,
+            row4MinHeight + extraPerRow,
+            row5MinHeight + extraPerRow
+        )
+    }
 }
 
 struct DashboardTileBody: View {
@@ -2046,20 +2060,6 @@ private struct DashboardCalendarColumn: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "LLLL yyyy"
         return formatter.string(from: date)
-    }
-
-    private func dashboardRowHeights(totalHeight: CGFloat) -> (row2: CGFloat, row3: CGFloat, row4: CGFloat, row5: CGFloat) {
-        let spacingTotal = cardSpacing * 4
-        let minTotal = row2MinHeight + row3MinHeight + row4MinHeight + row5MinHeight + spacingTotal
-        let available = max(0, totalHeight - bottomDockClearancePadding)
-        let extra = max(0, available - minTotal)
-        let extraPerRow = extra / 4
-        return (
-            row2MinHeight + extraPerRow,
-            row3MinHeight + extraPerRow,
-            row4MinHeight + extraPerRow,
-            row5MinHeight + extraPerRow
-        )
     }
 }
 
