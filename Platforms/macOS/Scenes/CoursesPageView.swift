@@ -848,10 +848,29 @@ struct CoursesPageDetailView: View {
                     }
                 }
 
-                Text(syllabus.notes)
-                    .font(DesignSystem.Typography.caption)
-                    .foregroundStyle(.secondary)
+                if !syllabus.notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(NSLocalizedString("courses.section.notes", value: "Notes", comment: "Course notes header"))
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                        ScrollView {
+                            Text(syllabus.notes)
+                                .font(DesignSystem.Typography.body)
+                                .foregroundStyle(.primary)
+                                .textSelection(.enabled)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .frame(minHeight: 80, maxHeight: 160)
+                        .padding(10)
+                        .background(.tertiaryBackground)
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .stroke(.separatorColor.opacity(0.5), lineWidth: 1)
+                        )
+                    }
                     .padding(.top, 6)
+                }
             } else {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(NSLocalizedString("courses.empty.no_syllabus", comment: "No syllabus"))

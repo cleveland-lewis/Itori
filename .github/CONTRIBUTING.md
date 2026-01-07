@@ -8,6 +8,23 @@ This repository does not accept external contributions. Pull requests are disabl
 
 This file exists to clarify repository governance. The codebase is made available for inspection, security auditing, and transparency purposes only. It is not an open source project.
 
+## Internal Development Guidelines
+
+For authorized contributors (internal team members), please follow these guidelines:
+
+### Commit Standards
+
+**All commits must follow strict conventional commit standards.** See [COMMIT_GUIDELINES.md](COMMIT_GUIDELINES.md) for complete details.
+
+Quick reference:
+- Format: `type(scope): description`
+- Length: 10-72 characters
+- No WIP, TODO, or merge commits
+- Breaking changes must use `!` notation
+- Automated validation runs on all PRs
+
+Failure to follow commit guidelines will result in **automatic PR rejection**.
+
 ## Prohibited Actions
 
 The following actions are not permitted:

@@ -47,7 +47,8 @@ public final class AIEngine: Sendable {
         _ portType: P.Type,
         input: P.Input
     ) async throws -> AIResult<P.Output> {
-        return try await request(portType, input: input, context: AIRequestContext())
+        let context = await MainActor.run { AIRequestContext() }
+        return try await request(portType, input: input, context: context)
     }
 
     public func request<P: AIPort>(
@@ -591,7 +592,8 @@ extension AIEngine {
         _ portType: P.Type,
         index: Int = 0
     ) async throws -> AIPortReplayResult? {
-        return try await replay(portType, index: index, context: AIRequestContext())
+        let context = await MainActor.run { AIRequestContext() }
+        return try await replay(portType, index: index, context: context)
     }
 
     func replay<P: AIPort>(

@@ -1416,7 +1416,7 @@ struct AssignmentEditorSheet: View {
                         }
                         RootsFormRow(label: "assignments.editor.field.urgency".localized) {
                             Picker("", selection: $urgency) {
-                                ForEach(AssignmentUrgency.allCases) { u in
+                                ForEach(AssignmentUrgency.creationOptions) { u in
                                     Text(u.label).tag(u)
                                 }
                             }

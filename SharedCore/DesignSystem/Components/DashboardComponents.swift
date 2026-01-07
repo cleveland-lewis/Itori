@@ -68,12 +68,14 @@ struct DashboardCard<Content: View, HeaderContent: View, FooterContent: View>: V
                 DashboardCompactEmptyState(state: compactState)
             } else {
                 content()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             }
             
             if mode == .full, !(footer() is EmptyView) {
                 footer()
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding(Space.cardPadding)
         .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: Space.cardCornerRadius))

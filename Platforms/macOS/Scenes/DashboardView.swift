@@ -38,6 +38,10 @@ struct DashboardView: View {
     private let contentPadding: CGFloat = RootsSpacing.pagePadding
     private let bottomDockClearancePadding: CGFloat = 100
     private let cardMinHeight: CGFloat = 220
+    private let row2MinHeight: CGFloat = 260
+    private let row3MinHeight: CGFloat = 240
+    private let row4MinHeight: CGFloat = 220
+    private let row5MinHeight: CGFloat = 220
     
     private var shouldShowProductivityInsights: Bool {
         settings.trackStudyHours && settings.showProductivityInsights
@@ -47,6 +51,7 @@ struct DashboardView: View {
         // Fixed hierarchy grid - no ad-hoc cards
         GeometryReader { proxy in
             let isNarrow = proxy.size.width < 980
+            let rowHeights = dashboardRowHeights(totalHeight: proxy.size.height)
             ScrollView(.vertical, showsIndicators: true) {
                 VStack(spacing: 0) {
                     // ROW 1: STATUS STRIP REMOVED - User requested removal of today summary
@@ -79,18 +84,23 @@ struct DashboardView: View {
                                             .animateEntry(isLoaded: isLoaded, index: 1)
                                             .frame(maxWidth: .infinity)
                                             .frame(minHeight: cardMinHeight)
+                                            .frame(maxHeight: .infinity)
                                     }
                                     plannerTodayCard
                                         .animateEntry(isLoaded: isLoaded, index: 2)
                                         .frame(maxWidth: .infinity)
                                         .frame(minHeight: cardMinHeight)
+                                        .frame(maxHeight: .infinity)
                                 }
+                                .frame(maxHeight: .infinity)
 
                                 calendarCard
                                     .animateEntry(isLoaded: isLoaded, index: 3)
                                     .frame(maxWidth: .infinity)
                                     .frame(minHeight: cardMinHeight)
+                                    .frame(maxHeight: .infinity)
                             }
+                            .frame(height: rowHeights.row2)
                         }
                     }
                     .padding(.bottom, cardSpacing)
@@ -113,11 +123,14 @@ struct DashboardView: View {
                                     .animateEntry(isLoaded: isLoaded, index: 4)
                                     .frame(maxWidth: .infinity)
                                     .frame(minHeight: cardMinHeight)
+                                    .frame(maxHeight: .infinity)
                                 assignmentsCard
                                     .animateEntry(isLoaded: isLoaded, index: 5)
                                     .frame(maxWidth: .infinity)
                                     .frame(minHeight: cardMinHeight)
+                                    .frame(maxHeight: .infinity)
                             }
+                            .frame(height: rowHeights.row3)
                         }
                     }
                     .padding(.bottom, cardSpacing)
@@ -142,13 +155,16 @@ struct DashboardView: View {
                                         .animateEntry(isLoaded: isLoaded, index: 6)
                                         .frame(maxWidth: .infinity)
                                         .frame(minHeight: cardMinHeight)
+                                        .frame(maxHeight: .infinity)
                                 }
 
                                 workRemainingCard
                                     .animateEntry(isLoaded: isLoaded, index: 7)
                                     .frame(maxWidth: .infinity)
                                     .frame(minHeight: cardMinHeight)
+                                    .frame(maxHeight: .infinity)
                             }
+                            .frame(height: rowHeights.row4)
                         }
                     }
                     .padding(.bottom, cardSpacing)
@@ -159,7 +175,9 @@ struct DashboardView: View {
                             .frame(maxWidth: .infinity)
                             .animateEntry(isLoaded: isLoaded, index: 8)
                             .frame(minHeight: cardMinHeight)
+                            .frame(maxHeight: .infinity)
                     }
+                    .frame(height: isNarrow ? nil : rowHeights.row5)
                     .padding(.bottom, cardSpacing)
 
                     // Version dropdown footer
@@ -1333,7 +1351,7 @@ struct DashboardView: View {
     private var gradeWidgetHeader: some View {
         HStack {
             Spacer()
-            Picker("Grade view", selection: $gradeWidgetMode) {
+            Picker("", selection: $gradeWidgetMode) {
                 ForEach(GradeWidgetMode.allCases) { mode in
                     Text(mode.title).tag(mode)
                 }
@@ -2029,6 +2047,20 @@ private struct DashboardCalendarColumn: View {
         formatter.dateFormat = "LLLL yyyy"
         return formatter.string(from: date)
     }
+
+    private func dashboardRowHeights(totalHeight: CGFloat) -> (row2: CGFloat, row3: CGFloat, row4: CGFloat, row5: CGFloat) {
+        let spacingTotal = cardSpacing * 4
+        let minTotal = row2MinHeight + row3MinHeight + row4MinHeight + row5MinHeight + spacingTotal
+        let available = max(0, totalHeight - bottomDockClearancePadding)
+        let extra = max(0, available - minTotal)
+        let extraPerRow = extra / 4
+        return (
+            row2MinHeight + extraPerRow,
+            row3MinHeight + extraPerRow,
+            row4MinHeight + extraPerRow,
+            row5MinHeight + extraPerRow
+        )
+    }
 }
 
 // MARK: - Integrated Calendar Grid (no nested card)
@@ -2190,9 +2222,10 @@ private struct DashboardEventsColumn: View {
                             .rootsCardBackground(radius: 18)
                         }
                     }
-                    .padding(.vertical, DesignSystem.Spacing.xsmall)
-                }
-            }
+                .padding(.vertical, DesignSystem.Spacing.xsmall)
+        }
+    }
+
         }
         .padding(DesignSystem.Layout.padding.card)
         .background(DesignSystem.Materials.card)

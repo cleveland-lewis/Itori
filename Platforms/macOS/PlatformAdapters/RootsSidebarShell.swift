@@ -2,9 +2,10 @@
 import SwiftUI
 
 /// Root shell view with persistent sidebar and glass content area
+import AppKit
+
 struct RootsSidebarShell: View {
     @State private var selection: RootTab = .dashboard
-    @AppStorage("sidebarVisible") private var sidebarVisible: Bool = true
     @EnvironmentObject var settings: AppSettingsModel
     @EnvironmentObject var settingsCoordinator: SettingsCoordinator
     @EnvironmentObject var appModel: AppModel
@@ -26,81 +27,24 @@ struct RootsSidebarShell: View {
     }
     
     var body: some View {
-        HStack(spacing: 16) {
-            // Persistent left sidebar (card style)
-            if sidebarVisible {
-                GlassPanel(material: .hudWindow, cornerRadius: 18, showBorder: true) {
-                    SidebarColumn(selection: $selection, sidebarVisible: $sidebarVisible)
-                        .frame(maxHeight: .infinity, alignment: .top)
-                }
-                .frame(width: 260)
-                .transition(.move(edge: .leading).combined(with: .opacity))
+        NavigationSplitView {
+            List(RootTab.allCases, selection: $selection) { tab in
+                Label(tab.title, systemImage: tab.systemImage)
+                    .tag(tab)
             }
-
-            // Main content area
-            VStack(spacing: 0) {
-                // Toolbar with quick add and energy indicator
-                HStack(spacing: 12) {
-                    HStack(spacing: 8) {
-                        Menu {
-                            Button(action: {
-                                NotificationCenter.default.post(name: .addAssignmentRequested, object: nil)
-                            }) {
-                                Label(NSLocalizedString("ui.label.assignment", value: "Assignment", comment: "Assignment"), systemImage: "doc.text")
-                            }
-                            
-                            Button(action: {
-                                NotificationCenter.default.post(name: .addEventRequested, object: nil)
-                            }) {
-                                Label(NSLocalizedString("ui.label.event", value: "Event", comment: "Event"), systemImage: "calendar.badge.plus")
-                            }
-                            
-                            Button(action: {
-                                NotificationCenter.default.post(name: .addCourseRequested, object: nil)
-                            }) {
-                                Label(NSLocalizedString("ui.label.course", value: "Course", comment: "Course"), systemImage: "books.vertical")
-                            }
-                            
-                            Divider()
-                            
-                            Button(action: {
-                                NotificationCenter.default.post(name: .addGradeRequested, object: nil)
-                            }) {
-                                Label(NSLocalizedString("ui.label.grade", value: "Grade", comment: "Grade"), systemImage: "chart.bar")
-                            }
-                        } label: {
-                            Image(systemName: "plus")
-                                .font(.body.weight(.semibold))
-                                .foregroundStyle(.primary)
-                                .frame(width: 24, height: 24)
-                        }
-                        .buttonStyle(.plain)
-                        .help("Quick Add")
-                        .menuIndicator(.hidden)
-                        .menuStyle(.borderlessButton)
-                        
-                        Divider()
-                            .frame(height: 18)
-                            .overlay(Color.primary.opacity(0.12))
-                        
-                        EnergyIndicatorButton(settings: settings, showsBackground: false)
-                            .frame(width: 24, height: 24)
+            .listStyle(.sidebar)
+            .navigationSplitViewStyle(.balanced)
+            .toolbar {
+                ToolbarItem(placement: .automatic) {
+                    Button(action: toggleSidebar) {
+                        Image(systemName: "sidebar.left")
                     }
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 6)
-                    .background {
-                        Capsule()
-                            .fill(DesignSystem.Materials.card)
-                            .opacity(0.85)
-                            .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
-                    }
-                    
-                    Spacer()
                 }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 12)
-                
-                // Page content
+            }
+        } detail: {
+            VStack(spacing: 0) {
+                toolbar
+                Divider()
                 currentPageView
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     .padding(.horizontal, 20)
@@ -109,14 +53,12 @@ struct RootsSidebarShell: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(DesignSystem.Colors.appBackground)
         }
-        .padding(16)
-        .background(DesignSystem.Colors.appBackground)
+        .navigationSplitViewStyle(.balanced)
         .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
         .preferredColorScheme(preferredColorScheme)
         .globalContextMenu()
         .onAppear {
             setupWindow()
-            // Sync selection with appModel
             if let tab = RootTab(rawValue: appModel.selectedPage.rawValue) {
                 selection = tab
             }
@@ -147,6 +89,69 @@ struct RootsSidebarShell: View {
         .onReceive(NotificationCenter.default.publisher(for: .coursesSyncConflict)) { _ in
             showingCoursesSyncConflict = true
         }
+    }
+
+    private var toolbar: some View {
+        HStack(spacing: 12) {
+            HStack(spacing: 8) {
+                quickAddMenu
+                Divider()
+                    .frame(height: 18)
+                    .overlay(Color.primary.opacity(0.12))
+                EnergyIndicatorButton(settings: settings, showsBackground: false)
+                    .frame(width: 24, height: 24)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background {
+                Capsule()
+                    .fill(DesignSystem.Materials.card)
+                    .opacity(0.85)
+                    .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
+            }
+            Spacer()
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 12)
+    }
+
+    private var quickAddMenu: some View {
+        Menu {
+            Button(action: {
+                NotificationCenter.default.post(name: .addAssignmentRequested, object: nil)
+            }) {
+                Label(NSLocalizedString("ui.label.assignment", value: "Assignment", comment: "Assignment"), systemImage: "doc.text")
+            }
+            Button(action: {
+                NotificationCenter.default.post(name: .addEventRequested, object: nil)
+            }) {
+                Label(NSLocalizedString("ui.label.event", value: "Event", comment: "Event"), systemImage: "calendar.badge.plus")
+            }
+            Button(action: {
+                NotificationCenter.default.post(name: .addCourseRequested, object: nil)
+            }) {
+                Label(NSLocalizedString("ui.label.course", value: "Course", comment: "Course"), systemImage: "books.vertical")
+            }
+            Divider()
+            Button(action: {
+                NotificationCenter.default.post(name: .addGradeRequested, object: nil)
+            }) {
+                Label(NSLocalizedString("ui.label.grade", value: "Grade", comment: "Grade"), systemImage: "chart.bar")
+            }
+        } label: {
+            Image(systemName: "plus")
+                .font(.body.weight(.semibold))
+                .foregroundStyle(.primary)
+                .frame(width: 24, height: 24)
+        }
+        .buttonStyle(.plain)
+        .help("Quick Add")
+        .menuIndicator(.hidden)
+        .menuStyle(.borderlessButton)
+    }
+
+    private func toggleSidebar() {
+        NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
     }
     
     @ViewBuilder

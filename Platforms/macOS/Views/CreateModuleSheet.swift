@@ -31,7 +31,7 @@ struct CreateModuleSheet: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(NSLocalizedString("ui.module.name", value: "Module Name", comment: "Module Name"))
                         .font(.headline.weight(.medium))
-                    TextField("e.g., Introduction to Biology", text: $moduleName)
+                    TextField(NSLocalizedString("ui.module.name.placeholder", value: "e.g., Module 1, Cellular Reproduction, Sociological Theorists", comment: "Module name placeholder examples"), text: $moduleName)
                         .textFieldStyle(.roundedBorder)
                 }
                 

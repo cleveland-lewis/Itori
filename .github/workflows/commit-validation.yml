@@ -1,0 +1,307 @@
+name: Commit Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - main
+      - develop
+      - 'release/**'
+
+jobs:
+  validate-commits:
+    name: Validate Commit Messages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate Commit Message Format
+        run: |
+          #!/bin/bash
+          set -e
+          
+          echo "🔍 Validating commit messages..."
+          
+          # Get the range of commits to check
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+            COMMITS=$(git log --format="%H" ${BASE_SHA}..${HEAD_SHA})
+          else
+            # For push events, check the last commit
+            COMMITS=$(git log --format="%H" -1)
+          fi
+          
+          ERRORS=0
+          
+          # Allowed types (Conventional Commits + custom)
+          ALLOWED_TYPES="^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|security|deps|i18n|a11y|analytics|config|hotfix|release)"
+          
+          for COMMIT in $COMMITS; do
+            MESSAGE=$(git log --format=%B -n 1 $COMMIT | head -n 1)
+            FULL_MESSAGE=$(git log --format=%B -n 1 $COMMIT)
+            
+            echo ""
+            echo "📝 Checking commit: ${COMMIT:0:8}"
+            echo "   Message: $MESSAGE"
+            
+            # Rule 1: Must follow Conventional Commits format
+            if ! echo "$MESSAGE" | grep -qE "$ALLOWED_TYPES(\(.+\))?: .+"; then
+              echo "   ❌ FAILED: Must follow format: type(scope): description"
+              echo "   Allowed types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert, security, deps, i18n, a11y, analytics, config, hotfix, release"
+              ERRORS=$((ERRORS + 1))
+            fi
+            
+            # Rule 2: Subject must be 10-72 characters
+            SUBJECT_LENGTH=${#MESSAGE}
+            if [ $SUBJECT_LENGTH -lt 10 ]; then
+              echo "   ❌ FAILED: Subject too short ($SUBJECT_LENGTH chars). Minimum is 10 characters."
+              ERRORS=$((ERRORS + 1))
+            elif [ $SUBJECT_LENGTH -gt 72 ]; then
+              echo "   ❌ FAILED: Subject too long ($SUBJECT_LENGTH chars). Maximum is 72 characters."
+              ERRORS=$((ERRORS + 1))
+            fi
+            
+            # Rule 3: Subject must start with lowercase after type
+            if echo "$MESSAGE" | grep -qE "$ALLOWED_TYPES(\(.+\))?: [A-Z]"; then
+              echo "   ❌ FAILED: Description must start with lowercase letter"
+              ERRORS=$((ERRORS + 1))
+            fi
+            
+            # Rule 4: Subject must not end with period
+            if echo "$MESSAGE" | grep -qE "\.$"; then
+              echo "   ❌ FAILED: Subject must not end with a period"
+              ERRORS=$((ERRORS + 1))
+            fi
+            
+            # Rule 5: Must have a body for certain types (feat, fix, refactor)
+            TYPE=$(echo "$MESSAGE" | grep -oE "^[a-z]+")
+            BODY=$(echo "$FULL_MESSAGE" | tail -n +3)
+            if [[ "$TYPE" =~ ^(feat|fix|refactor|security|perf)$ ]]; then
+              if [ -z "$(echo "$BODY" | tr -d '[:space:]')" ]; then
+                echo "   ⚠️  WARNING: '$TYPE' commits should include a body explaining the changes"
+              fi
+            fi
+            
+            # Rule 6: Check for prohibited words/patterns
+            PROHIBITED_WORDS=("WIP" "wip" "TODO" "FIXME" "HACK" "XXX" "fuck" "shit" "damn" "crap" "stupid" "dumb")
+            for WORD in "${PROHIBITED_WORDS[@]}"; do
+              if echo "$MESSAGE" | grep -iq "\b$WORD\b"; then
+                echo "   ❌ FAILED: Prohibited word detected: '$WORD'"
+                ERRORS=$((ERRORS + 1))
+              fi
+            done
+            
+            # Rule 7: No merge commit messages allowed
+            if echo "$MESSAGE" | grep -qE "^Merge (branch|pull request)"; then
+              echo "   ❌ FAILED: Merge commits not allowed. Please rebase."
+              ERRORS=$((ERRORS + 1))
+            fi
+            
+            # Rule 8: Breaking changes must be marked
+            if echo "$FULL_MESSAGE" | grep -qi "breaking change"; then
+              if ! echo "$MESSAGE" | grep -qE "!:"; then
+                echo "   ❌ FAILED: Breaking changes must include '!' in the type: 'feat!: description'"
+                ERRORS=$((ERRORS + 1))
+              fi
+            fi
+            
+            # Rule 9: Scope validation (if provided)
+            if echo "$MESSAGE" | grep -qE "\(.+\)"; then
+              SCOPE=$(echo "$MESSAGE" | grep -oE "\([^)]+\)" | tr -d '()')
+              SCOPE_LENGTH=${#SCOPE}
+              if [ $SCOPE_LENGTH -lt 2 ] || [ $SCOPE_LENGTH -gt 20 ]; then
+                echo "   ❌ FAILED: Scope must be 2-20 characters"
+                ERRORS=$((ERRORS + 1))
+              fi
+              if ! echo "$SCOPE" | grep -qE "^[a-z0-9-]+$"; then
+                echo "   ❌ FAILED: Scope must contain only lowercase letters, numbers, and hyphens"
+                ERRORS=$((ERRORS + 1))
+              fi
+            fi
+            
+            # Rule 10: No leading/trailing whitespace
+            if echo "$MESSAGE" | grep -qE "^[[:space:]]|[[:space:]]$"; then
+              echo "   ❌ FAILED: Subject must not have leading or trailing whitespace"
+              ERRORS=$((ERRORS + 1))
+            fi
+            
+            if [ $ERRORS -eq 0 ]; then
+              echo "   ✅ PASSED"
+            fi
+          done
+          
+          echo ""
+          if [ $ERRORS -gt 0 ]; then
+            echo "❌ $ERRORS validation error(s) found"
+            echo ""
+            echo "📖 Commit Message Guidelines:"
+            echo "   Format: type(scope): description"
+            echo ""
+            echo "   Examples:"
+            echo "   ✅ feat(auth): add oauth2 support"
+            echo "   ✅ fix(api): handle null response from server"
+            echo "   ✅ docs: update installation instructions"
+            echo "   ✅ refactor(core): simplify state management"
+            echo "   ✅ feat!: remove deprecated api endpoints"
+            echo ""
+            echo "   Rules:"
+            echo "   • Subject: 10-72 characters"
+            echo "   • Start with type: feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|security|deps|i18n|a11y|analytics|config|hotfix|release"
+            echo "   • Description starts with lowercase"
+            echo "   • No period at the end"
+            echo "   • No WIP, TODO, or prohibited words"
+            echo "   • No merge commits (use rebase)"
+            echo "   • Breaking changes must use '!' notation"
+            echo ""
+            exit 1
+          fi
+          
+          echo "✅ All commit messages are valid"
+
+  validate-commit-content:
+    name: Validate Commit Content
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate No Large Files
+        run: |
+          #!/bin/bash
+          set -e
+          
+          echo "🔍 Checking for large files in commits..."
+          
+          # Get the range of commits to check
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+            COMMITS=$(git log --format="%H" ${BASE_SHA}..${HEAD_SHA})
+          else
+            COMMITS=$(git log --format="%H" -1)
+          fi
+          
+          MAX_FILE_SIZE=5242880  # 5MB in bytes
+          ERRORS=0
+          
+          for COMMIT in $COMMITS; do
+            FILES=$(git diff-tree --no-commit-id --name-only -r $COMMIT)
+            for FILE in $FILES; do
+              if git cat-file -e $COMMIT:$FILE 2>/dev/null; then
+                SIZE=$(git cat-file -s $COMMIT:$FILE)
+                if [ $SIZE -gt $MAX_FILE_SIZE ]; then
+                  echo "❌ File too large: $FILE ($SIZE bytes) in commit ${COMMIT:0:8}"
+                  echo "   Maximum allowed: 5MB"
+                  ERRORS=$((ERRORS + 1))
+                fi
+              fi
+            done
+          done
+          
+          if [ $ERRORS -gt 0 ]; then
+            echo "❌ Large files detected. Use Git LFS for large files."
+            exit 1
+          fi
+          
+          echo "✅ No large files detected"
+
+      - name: Validate No Secrets
+        run: |
+          #!/bin/bash
+          set -e
+          
+          echo "🔍 Scanning for potential secrets..."
+          
+          # Get the range of commits to check
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+            git diff ${BASE_SHA}..${HEAD_SHA} > /tmp/diff.txt
+          else
+            git show HEAD > /tmp/diff.txt
+          fi
+          
+          ERRORS=0
+          
+          # Check for common secret patterns
+          if grep -qiE "api[_-]?key|apikey|api[_-]?secret" /tmp/diff.txt; then
+            if grep -E "^\\+" /tmp/diff.txt | grep -qiE "api[_-]?key|apikey|api[_-]?secret"; then
+              echo "⚠️  WARNING: Possible API key detected"
+            fi
+          fi
+          
+          if grep -qiE "password\s*=|passwd\s*=" /tmp/diff.txt; then
+            if grep -E "^\\+" /tmp/diff.txt | grep -qiE "password\s*=|passwd\s*="; then
+              echo "⚠️  WARNING: Possible password detected"
+            fi
+          fi
+          
+          if grep -qE "sk_live_|sk_test_|pk_live_|pk_test_" /tmp/diff.txt; then
+            echo "❌ Stripe API key detected"
+            ERRORS=$((ERRORS + 1))
+          fi
+          
+          if grep -qE "AKIA[0-9A-Z]{16}" /tmp/diff.txt; then
+            echo "❌ AWS Access Key detected"
+            ERRORS=$((ERRORS + 1))
+          fi
+          
+          if grep -qE "ghp_[a-zA-Z0-9]{36}|gho_[a-zA-Z0-9]{36}|github_pat_[a-zA-Z0-9_]{82}" /tmp/diff.txt; then
+            echo "❌ GitHub token detected"
+            ERRORS=$((ERRORS + 1))
+          fi
+          
+          if [ $ERRORS -gt 0 ]; then
+            echo "❌ Secrets detected in commit. Remove them immediately!"
+            exit 1
+          fi
+          
+          echo "✅ No secrets detected"
+
+  enforce-signed-commits:
+    name: Enforce GPG Signed Commits
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check Commit Signatures
+        run: |
+          #!/bin/bash
+          
+          echo "🔍 Checking for GPG signed commits..."
+          
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          COMMITS=$(git log --format="%H" ${BASE_SHA}..${HEAD_SHA})
+          
+          UNSIGNED=0
+          
+          for COMMIT in $COMMITS; do
+            # Check if commit is signed
+            if ! git verify-commit $COMMIT 2>/dev/null; then
+              MESSAGE=$(git log --format=%s -n 1 $COMMIT)
+              echo "⚠️  WARNING: Unsigned commit ${COMMIT:0:8}: $MESSAGE"
+              UNSIGNED=$((UNSIGNED + 1))
+            fi
+          done
+          
+          if [ $UNSIGNED -gt 0 ]; then
+            echo ""
+            echo "⚠️  $UNSIGNED unsigned commit(s) detected"
+            echo "📖 Consider signing your commits with GPG for better security"
+            echo "   See: https://docs.github.com/en/authentication/managing-commit-signature-verification"
+            # Not failing for now, just warning
+          else
+            echo "✅ All commits are signed"
+          fi
