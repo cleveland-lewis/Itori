@@ -35,27 +35,24 @@ struct RootsSidebarShell: View {
     }
 
     var body: some View {
-        HStack(spacing: 16) {
-            if sidebarVisible {
-                GlassPanel(material: .hudWindow, cornerRadius: 18, showBorder: true) {
-                    sidebar
-                }
-                .frame(width: 220)
-                .transition(.move(edge: .leading).combined(with: .opacity))
-            }
-
-            VStack(spacing: 0) {
-                toolbar
-                Divider()
+        NavigationSplitView {
+            sidebar
+        } detail: {
+            ZStack(alignment: .topLeading) {
                 currentPageView
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     .padding(.horizontal, 20)
                     .padding(.bottom, 20)
+
+                toolbar
+                    .padding(.leading, 20)
+                    .padding(.top, 6)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(DesignSystem.Colors.appBackground)
         }
-        .padding(16)
+        .navigationSplitViewStyle(.balanced)
+        .navigationSplitViewColumnWidth(min: 220, ideal: 220, max: 220)
         .background(DesignSystem.Colors.appBackground)
         .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
         .preferredColorScheme(preferredColorScheme)
@@ -64,9 +61,6 @@ struct RootsSidebarShell: View {
             setupWindow()
             if let tab = RootTab(rawValue: appModel.selectedPage.rawValue) {
                 selection = tab
-            }
-            if !sidebarVisible {
-                sidebarVisible = true
             }
         }
         .sheet(isPresented: $showingAddAssignmentSheet) {
@@ -134,49 +128,17 @@ struct RootsSidebarShell: View {
 
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Text(NSLocalizedString("ui.itori", value: "Itori", comment: "Itori"))
-                    .font(.title2.weight(.semibold))
-                Spacer()
-                Button(action: {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                        sidebarVisible.toggle()
-                    }
-                }) {
-                    Image(systemName: "sidebar.left")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                        .frame(width: 28, height: 28)
-                        .contentShape(Rectangle())
+            let tabs = settings.enableFlashcards ? RootTab.allCases : RootTab.allCases.filter { $0 != .flashcards }
+            List(selection: $selection) {
+                ForEach(tabs, id: \.self) { tab in
+                    Label(tab.title, systemImage: tab.systemImage)
+                        .tag(tab)
+                        .font(.system(size: 14, weight: .regular))
+                        .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
                 }
-                .buttonStyle(.plain)
-                .help("Hide Sidebar")
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 20)
-            .padding(.bottom, 12)
-
-            Divider()
-                .opacity(0.3)
-                .padding(.horizontal, 12)
-
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 4) {
-                    let tabs = settings.enableFlashcards ? RootTab.allCases : RootTab.allCases.filter { $0 != .flashcards }
-                    ForEach(tabs, id: \.self) { tab in
-                        SidebarItem(
-                            tab: tab,
-                            isSelected: selection == tab
-                        ) {
-                            selection = tab
-                        }
-                    }
-                }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 8)
-            }
+            .listStyle(.sidebar)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
     private var toolbar: some View {
@@ -199,8 +161,6 @@ struct RootsSidebarShell: View {
             }
             Spacer()
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 12)
     }
 
     private var quickAddMenu: some View {
@@ -315,34 +275,6 @@ struct RootsSidebarShell: View {
             return hexColor
         }
         return Color.blue
-    }
-}
-
-private struct SidebarItem: View {
-    let tab: RootTab
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 10) {
-                Image(systemName: tab.systemImage)
-                    .font(.body)
-                    .foregroundStyle(isSelected ? Color.accentColor : .secondary)
-                    .frame(width: 18)
-                Text(tab.title)
-                    .font(DesignSystem.Typography.body)
-                    .foregroundStyle(isSelected ? .primary : .secondary)
-                Spacer()
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 8)
-            .background(
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(isSelected ? Color.accentColor.opacity(0.18) : Color.clear)
-            )
-        }
-        .buttonStyle(.plain)
     }
 }
 
