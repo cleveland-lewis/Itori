@@ -1134,7 +1134,7 @@ private struct MonthCalendarView: View {
             let gridHeight = cellSize * 6 + (5 * 12)  // 6 rows with 5 spacings
             
             VStack(alignment: .leading, spacing: 0) {
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
                     Text(monthHeader)
                         .font(DesignSystem.Typography.subHeader)
                     weekdayHeader

@@ -3,6 +3,7 @@ import SwiftUI
 
 struct DeckDetailView: View {
     let deck: FlashcardDeck
+    var onDismiss: (() -> Void)? = nil
     
     @Environment(\.dismiss) private var dismiss
     @StateObject private var manager = FlashcardManager.shared
@@ -87,7 +88,11 @@ struct DeckDetailView: View {
         HStack(spacing: 16) {
             // Back button
             Button {
-                dismiss()
+                if let onDismiss = onDismiss {
+                    onDismiss()
+                } else {
+                    dismiss()
+                }
             } label: {
                 Image(systemName: "chevron.left")
                     .font(.body.weight(.semibold))

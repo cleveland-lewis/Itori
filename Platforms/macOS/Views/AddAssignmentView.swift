@@ -176,7 +176,7 @@ struct AddAssignmentView: View {
                                 }
                                 
                                 HStack {
-                                    VStack(alignment: .trailing, spacing: 2) {
+                                    VStack(alignment: .leading, spacing: 2) {
                                         Text(NSLocalizedString("addassignment.lock", value: "Lock", comment: "Lock"))
                                             .font(.body)
                                         Text(NSLocalizedString("addassignment.lock.work.to.due.date", value: "Lock work to due date", comment: "Lock work to due date"))
@@ -204,34 +204,68 @@ struct AddAssignmentView: View {
                                     }
 
                                     if recurrenceEnabled {
-                                        Stepper(value: $recurrenceInterval, in: 1...30) {
-                                            Text(verbatim: "Every \(recurrenceInterval) \(recurrenceUnitLabel)")
+                                        HStack {
+                                            Text(NSLocalizedString("addassignment.every", value: "Every", comment: "Every"))
+                                            Spacer()
+                                            Stepper(value: $recurrenceInterval, in: 1...30) {
+                                                Text(verbatim: "\(recurrenceInterval) \(recurrenceUnitLabel)")
+                                            }
                                         }
 
-                                        Picker("End", selection: $recurrenceEndOption) {
-                                            Text(NSLocalizedString("addassignment.never", value: "Never", comment: "Never")).tag(RecurrenceEndOption.never)
-                                            Text(NSLocalizedString("addassignment.on.date", value: "On Date", comment: "On Date")).tag(RecurrenceEndOption.onDate)
-                                            Text(NSLocalizedString("addassignment.after", value: "After", comment: "After")).tag(RecurrenceEndOption.afterOccurrences)
+                                        HStack {
+                                            Text(NSLocalizedString("addassignment.end", value: "End", comment: "End"))
+                                            Spacer()
+                                            Picker("", selection: $recurrenceEndOption) {
+                                                Text(NSLocalizedString("addassignment.never", value: "Never", comment: "Never")).tag(RecurrenceEndOption.never)
+                                                Text(NSLocalizedString("addassignment.on.date", value: "On Date", comment: "On Date")).tag(RecurrenceEndOption.onDate)
+                                                Text(NSLocalizedString("addassignment.after", value: "After", comment: "After")).tag(RecurrenceEndOption.afterOccurrences)
+                                            }
+                                            .labelsHidden()
+                                            .pickerStyle(.menu)
                                         }
-                                        .pickerStyle(.menu)
 
                                         if recurrenceEndOption == .onDate {
-                                            DatePicker("End Date", selection: $recurrenceEndDate, displayedComponents: .date)
+                                            HStack {
+                                                Text(NSLocalizedString("addassignment.end.date", value: "End Date", comment: "End Date"))
+                                                Spacer()
+                                                DatePicker("", selection: $recurrenceEndDate, displayedComponents: .date)
+                                                    .labelsHidden()
+                                            }
                                         } else if recurrenceEndOption == .afterOccurrences {
-                                            Stepper(value: $recurrenceEndCount, in: 1...99) {
-                                                Text(verbatim: "\(recurrenceEndCount) occurrences")
+                                            HStack {
+                                                Text(NSLocalizedString("addassignment.occurrences", value: "Occurrences", comment: "Occurrences"))
+                                                Spacer()
+                                                Stepper(value: $recurrenceEndCount, in: 1...99) {
+                                                    Text(verbatim: "\(recurrenceEndCount)")
+                                                }
                                             }
                                         }
 
-                                        Toggle(NSLocalizedString("addassignment.toggle.skip.weekends", value: "Skip weekends", comment: "Skip weekends"), isOn: $skipWeekends)
-                                        Toggle(NSLocalizedString("addassignment.toggle.skip.holidays", value: "Skip holidays", comment: "Skip holidays"), isOn: $skipHolidays)
+                                        HStack {
+                                            Text(NSLocalizedString("addassignment.toggle.skip.weekends", value: "Skip weekends", comment: "Skip weekends"))
+                                            Spacer()
+                                            Toggle(isOn: $skipWeekends) {}
+                                                .labelsHidden()
+                                        }
+                                        
+                                        HStack {
+                                            Text(NSLocalizedString("addassignment.toggle.skip.holidays", value: "Skip holidays", comment: "Skip holidays"))
+                                            Spacer()
+                                            Toggle(isOn: $skipHolidays) {}
+                                                .labelsHidden()
+                                        }
 
                                         if skipHolidays {
-                                            Picker("Holiday Source", selection: $holidaySource) {
-                                                Text(NSLocalizedString("addassignment.system.calendar", value: "System Calendar", comment: "System Calendar")).tag(RecurrenceRule.HolidaySource.deviceCalendar)
-                                                Text(NSLocalizedString("addassignment.none", value: "None", comment: "None")).tag(RecurrenceRule.HolidaySource.none)
+                                            HStack {
+                                                Text(NSLocalizedString("addassignment.holiday.source", value: "Holiday Source", comment: "Holiday Source"))
+                                                Spacer()
+                                                Picker("", selection: $holidaySource) {
+                                                    Text(NSLocalizedString("addassignment.system.calendar", value: "System Calendar", comment: "System Calendar")).tag(RecurrenceRule.HolidaySource.deviceCalendar)
+                                                    Text(NSLocalizedString("addassignment.none", value: "None", comment: "None")).tag(RecurrenceRule.HolidaySource.none)
+                                                }
+                                                .labelsHidden()
+                                                .pickerStyle(.menu)
                                             }
-                                            .pickerStyle(.menu)
 
                                             if !holidaySourceAvailable && holidaySource == .deviceCalendar {
                                                 Text(NSLocalizedString("addassignment.no.holiday.source.configured", value: "No holiday source configured.", comment: "No holiday source configured."))
@@ -521,13 +555,13 @@ struct AddAssignmentView: View {
     private func saveTask() {
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
-        guard let courseId = selectedCourseId else { return }
+        // Allow nil courseId for personal tasks
         if (type == .exam || type == .quiz) && selectedModuleIds.isEmpty { return }
 
         let task = AppTask(
             id: UUID(),
             title: trimmed,
-            courseId: courseId,
+            courseId: selectedCourseId, // Can be nil for personal tasks
             moduleIds: Array(selectedModuleIds),
             due: due,
             estimatedMinutes: estimatedMinutes,

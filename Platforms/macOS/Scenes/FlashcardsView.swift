@@ -29,7 +29,9 @@ struct FlashcardsView: View {
         VStack(spacing: 0) {
             // Main content area without sidebar
             if let deck = selectedDeck {
-                DeckDetailView(deck: deck)
+                DeckDetailView(deck: deck) {
+                    selectedDeck = nil
+                }
             } else {
                 deckSelectionView
             }

@@ -1,18 +1,25 @@
 #if os(macOS)
 import SwiftUI
-
-/// Root shell view with persistent sidebar and glass content area
 import AppKit
 
+/// Root shell view with native split sidebar and glass content area
 struct RootsSidebarShell: View {
     @State private var selection: RootTab = .dashboard
     @AppStorage("sidebarVisible") private var sidebarVisible: Bool = true
     @EnvironmentObject var settings: AppSettingsModel
     @EnvironmentObject var settingsCoordinator: SettingsCoordinator
     @EnvironmentObject var appModel: AppModel
+    @EnvironmentObject private var assignmentsStore: AssignmentsStore
+    @EnvironmentObject private var coursesStore: CoursesStore
+    @EnvironmentObject private var gradesStore: GradesStore
+    @EnvironmentObject private var calendarManager: CalendarManager
     @Environment(\.colorScheme) private var colorScheme
     @State private var showingCoursesSyncConflict = false
-    
+    @State private var showingAddAssignmentSheet = false
+    @State private var showingAddEventSheet = false
+    @State private var showingAddCourseSheet = false
+    @State private var showingAddGradeSheet = false
+
     private var preferredColorScheme: ColorScheme? {
         switch settings.interfaceStyle {
         case .system:
@@ -26,18 +33,17 @@ struct RootsSidebarShell: View {
             return (hour >= 19 || hour < 7) ? .dark : .light
         }
     }
-    
+
     var body: some View {
         HStack(spacing: 16) {
             if sidebarVisible {
                 GlassPanel(material: .hudWindow, cornerRadius: 18, showBorder: true) {
-                    SidebarColumn(selection: $selection, sidebarVisible: $sidebarVisible)
-                        .frame(maxHeight: .infinity, alignment: .top)
+                    sidebar
                 }
                 .frame(width: 220)
                 .transition(.move(edge: .leading).combined(with: .opacity))
             }
-            
+
             VStack(spacing: 0) {
                 toolbar
                 Divider()
@@ -58,6 +64,32 @@ struct RootsSidebarShell: View {
             setupWindow()
             if let tab = RootTab(rawValue: appModel.selectedPage.rawValue) {
                 selection = tab
+            }
+            if !sidebarVisible {
+                sidebarVisible = true
+            }
+        }
+        .sheet(isPresented: $showingAddAssignmentSheet) {
+            AddAssignmentView(initialType: .homework) { task in
+                assignmentsStore.addTask(task)
+            }
+            .environmentObject(coursesStore)
+        }
+        .sheet(isPresented: $showingAddEventSheet) {
+            AddEventPopup()
+                .environmentObject(calendarManager)
+                .environmentObject(settings)
+        }
+        .sheet(isPresented: $showingAddCourseSheet) {
+            AddCourseSheet()
+                .environmentObject(coursesStore)
+        }
+        .sheet(isPresented: $showingAddGradeSheet) {
+            AddGradeSheet(
+                assignments: assignmentsStore.tasks,
+                courses: gradeCourseSummaries
+            ) { task in
+                LOG_UI(.info, "QuickAdd", "Add Grade saved sample for \(task.title)")
             }
         }
         .alert(
@@ -86,6 +118,65 @@ struct RootsSidebarShell: View {
         .onReceive(NotificationCenter.default.publisher(for: .coursesSyncConflict)) { _ in
             showingCoursesSyncConflict = true
         }
+        .onReceive(NotificationCenter.default.publisher(for: .addAssignmentRequested)) { _ in
+            showingAddAssignmentSheet = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .addEventRequested)) { _ in
+            showingAddEventSheet = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .addCourseRequested)) { _ in
+            showingAddCourseSheet = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .addGradeRequested)) { _ in
+            showingAddGradeSheet = true
+        }
+    }
+
+    private var sidebar: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Text(NSLocalizedString("ui.itori", value: "Itori", comment: "Itori"))
+                    .font(.title2.weight(.semibold))
+                Spacer()
+                Button(action: {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                        sidebarVisible.toggle()
+                    }
+                }) {
+                    Image(systemName: "sidebar.left")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 28, height: 28)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .help("Hide Sidebar")
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 20)
+            .padding(.bottom, 12)
+
+            Divider()
+                .opacity(0.3)
+                .padding(.horizontal, 12)
+
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 4) {
+                    let tabs = settings.enableFlashcards ? RootTab.allCases : RootTab.allCases.filter { $0 != .flashcards }
+                    ForEach(tabs, id: \.self) { tab in
+                        SidebarItem(
+                            tab: tab,
+                            isSelected: selection == tab
+                        ) {
+                            selection = tab
+                        }
+                    }
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 8)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
     private var toolbar: some View {
@@ -115,23 +206,23 @@ struct RootsSidebarShell: View {
     private var quickAddMenu: some View {
         Menu {
             Button(action: {
-                NotificationCenter.default.post(name: .addAssignmentRequested, object: nil)
+                showingAddAssignmentSheet = true
             }) {
                 Label(NSLocalizedString("ui.label.assignment", value: "Assignment", comment: "Assignment"), systemImage: "doc.text")
             }
             Button(action: {
-                NotificationCenter.default.post(name: .addEventRequested, object: nil)
+                showingAddEventSheet = true
             }) {
                 Label(NSLocalizedString("ui.label.event", value: "Event", comment: "Event"), systemImage: "calendar.badge.plus")
             }
             Button(action: {
-                NotificationCenter.default.post(name: .addCourseRequested, object: nil)
+                showingAddCourseSheet = true
             }) {
                 Label(NSLocalizedString("ui.label.course", value: "Course", comment: "Course"), systemImage: "books.vertical")
             }
             Divider()
             Button(action: {
-                NotificationCenter.default.post(name: .addGradeRequested, object: nil)
+                showingAddGradeSheet = true
             }) {
                 Label(NSLocalizedString("ui.label.grade", value: "Grade", comment: "Grade"), systemImage: "chart.bar")
             }
@@ -174,7 +265,7 @@ struct RootsSidebarShell: View {
             PracticeTestPageView()
         }
     }
-    
+
     private var emptyFlashcardsView: some View {
         VStack(spacing: 12) {
             Image(systemName: "rectangle.stack.badge.person.crop")
@@ -188,7 +279,7 @@ struct RootsSidebarShell: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-    
+
     private func setupWindow() {
         DispatchQueue.main.async {
             if let window = NSApp.keyWindow ?? NSApp.windows.first {
@@ -199,155 +290,68 @@ struct RootsSidebarShell: View {
             }
         }
     }
-}
 
-/// Sidebar column with navigation items
-struct SidebarColumn: View {
-    @Binding var selection: RootTab
-    @Binding var sidebarVisible: Bool
-    @EnvironmentObject var settings: AppSettingsModel
-    @EnvironmentObject var settingsCoordinator: SettingsCoordinator
-    @State private var settingsRotation: Double = 0
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // App header with toggle
-            HStack {
-                Text(NSLocalizedString("ui.itori", value: "Itori", comment: "Itori"))
-                    .font(.title2.weight(.semibold))
-                
-                Spacer()
-                
-                Button(action: {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                        sidebarVisible.toggle()
-                    }
-                }) {
-                    Image(systemName: "sidebar.left")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                        .frame(width: 28, height: 28)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .help("Hide Sidebar")
-                .keyboardShortcut("s", modifiers: [.command, .control])
-            }
-            .padding(.horizontal, 16)
-            .padding(.top, 20)
-            .padding(.bottom, 12)
-            
-            Divider()
-                .opacity(0.3)
-                .padding(.horizontal, 12)
-            
-            // Navigation items
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 4) {
-                    ForEach(RootTab.allCases, id: \.self) { tab in
-                        SidebarItem(
-                            tab: tab,
-                            isSelected: selection == tab,
-                            action: { selection = tab }
-                        )
-                    }
-                }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 8)
-            }
-            
-            Spacer()
-            
-            Divider()
-                .opacity(0.3)
-                .padding(.horizontal, 12)
-            
-            // Settings button at bottom
-            Button(action: {
-                withAnimation(.easeInOut(duration: DesignSystem.Motion.deliberate)) {
-                    settingsRotation += 360
-                }
-                settingsCoordinator.show()
-            }) {
-                HStack(spacing: 10) {
-                    Image(systemName: "gearshape")
-                        .font(.body)
-                        .rotationEffect(.degrees(settingsRotation))
-                    
-                    Text(NSLocalizedString("ui.settings", value: "Settings", comment: "Settings"))
-                        .font(.body)
-                    
-                    Spacer()
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 10)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .background(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .fill(Color.white.opacity(0.05))
+    private var gradeCourseSummaries: [GradeCourseSummary] {
+        coursesStore.activeCourses.map { course in
+            let grade = gradesStore.grade(for: course.id)
+            return GradeCourseSummary(
+                id: course.id,
+                courseCode: course.code,
+                courseTitle: course.title,
+                currentPercentage: grade?.percent,
+                targetPercentage: nil,
+                letterGrade: grade?.letter,
+                creditHours: Int(course.credits ?? 0),
+                colorTag: gradeColor(for: course.colorHex)
             )
-            .padding(.horizontal, 12)
-            .padding(.bottom, 12)
         }
+    }
+
+    private func gradeColor(for hex: String?) -> Color {
+        if let colorTag = ColorTag.fromHex(hex) {
+            return colorTag.color
+        }
+        if let hex = hex, let hexColor = Color(hex: hex) {
+            return hexColor
+        }
+        return Color.blue
     }
 }
 
-/// Individual sidebar navigation item
-struct SidebarItem: View {
+private struct SidebarItem: View {
     let tab: RootTab
     let isSelected: Bool
     let action: () -> Void
-    @EnvironmentObject var settings: AppSettingsModel
-    @State private var isHovered = false
-    
+
     var body: some View {
         Button(action: action) {
             HStack(spacing: 10) {
                 Image(systemName: tab.systemImage)
                     .font(.body)
-                    .frame(width: 20)
-                
+                    .foregroundStyle(isSelected ? Color.accentColor : .secondary)
+                    .frame(width: 18)
                 Text(tab.title)
-                    .font(.body)
-                
+                    .font(DesignSystem.Typography.body)
+                    .foregroundStyle(isSelected ? .primary : .secondary)
                 Spacer()
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
-            .contentShape(Rectangle())
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(isSelected ? Color.accentColor.opacity(0.18) : Color.clear)
+            )
         }
         .buttonStyle(.plain)
-        .background(
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(backgroundForState)
-        )
-        .onHover { hovering in
-            withAnimation(.easeInOut(duration: 0.15)) {
-                isHovered = hovering
-            }
-        }
-    }
-    
-    private var backgroundForState: Color {
-        if isSelected {
-            return settings.activeAccentColor.opacity(0.15)
-        } else if isHovered {
-            return Color.white.opacity(0.08)
-        } else {
-            return Color.clear
-        }
     }
 }
 
-// MARK: - Energy Indicator Button
-
+// Energy indicator reused from earlier implementation for toolbar
 struct EnergyIndicatorButton: View {
     @ObservedObject var settings: AppSettingsModel
     var showsBackground: Bool = true
     @State private var showPopover = false
-    
+
     var body: some View {
         Button(action: {
             showPopover.toggle()
@@ -371,26 +375,23 @@ struct EnergyIndicatorButton: View {
             EnergyPickerPopover(settings: settings, showPopover: $showPopover)
         }
     }
-    
+
     private var energyIcon: String {
         switch settings.defaultEnergyLevel {
         case "High":
             return "bolt.fill"
         case "Low":
             return "bolt.slash"
-        default: // Medium
+        default:
             return "bolt"
         }
     }
-    
+
     private var energyColor: Color {
         switch settings.defaultEnergyLevel {
-        case "High":
-            return .green
-        case "Low":
-            return .orange
-        default: // Medium
-            return .yellow
+        case "High": return .green
+        case "Low": return .orange
+        default: return .yellow
         }
     }
 }
@@ -398,12 +399,12 @@ struct EnergyIndicatorButton: View {
 struct EnergyPickerPopover: View {
     @ObservedObject var settings: AppSettingsModel
     @Binding var showPopover: Bool
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(NSLocalizedString("ui.energy.level", value: "Energy Level", comment: "Energy Level"))
                 .font(.headline)
-            
+
             VStack(spacing: 8) {
                 energyOption(title: "High", icon: "bolt.fill", color: .green)
                 energyOption(title: "Medium", icon: "bolt", color: .yellow)
@@ -413,7 +414,7 @@ struct EnergyPickerPopover: View {
         .padding(16)
         .frame(width: 200)
     }
-    
+
     private func energyOption(title: String, icon: String, color: Color) -> some View {
         Button(action: {
             withAnimation(.easeInOut(duration: 0.2)) {
@@ -427,13 +428,13 @@ struct EnergyPickerPopover: View {
                     .font(.body)
                     .foregroundStyle(color)
                     .frame(width: 24)
-                
+
                 Text(title)
                     .font(.body)
                     .foregroundStyle(.primary)
-                
+
                 Spacer()
-                
+
                 if settings.defaultEnergyLevel == title {
                     Image(systemName: "checkmark")
                         .font(.caption.weight(.semibold))
@@ -445,8 +446,7 @@ struct EnergyPickerPopover: View {
             .padding(.vertical, 8)
             .background(
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(settings.defaultEnergyLevel == title ? 
-                          color.opacity(0.15) : Color.clear)
+                    .fill(settings.defaultEnergyLevel == title ? color.opacity(0.15) : Color.clear)
             )
         }
         .buttonStyle(.plain)

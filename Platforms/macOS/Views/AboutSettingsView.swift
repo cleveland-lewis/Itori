@@ -23,10 +23,15 @@ struct AboutSettingsView: View {
                         .cornerRadius(22)
                         .shadow(radius: 4)
                 } else {
-                    Image(systemName: "graduationcap.circle.fill")
-                        .resizable()
-                        .frame(width: 128, height: 128)
-                        .foregroundStyle(.blue)
+                    ZStack {
+                        Circle()
+                            .fill(.blue)
+                            .frame(width: 128, height: 128)
+                            .shadow(radius: 6)
+                        Text(verbatim: "#")
+                            .font(.system(size: 72, weight: .bold, design: .rounded))
+                            .foregroundStyle(.white)
+                    }
                 }
                 
                 VStack(spacing: 4) {
