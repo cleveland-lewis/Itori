@@ -35,6 +35,8 @@ struct IOSGradesView: View {
                             .onTapGesture {
                                 selectedCourse = course
                             }
+                            .accessibilityAddTraits(.isButton)
+                            .accessibilityHint("View course grade details")
                     }
                 }
             }
@@ -118,16 +120,7 @@ struct IOSGradesView: View {
             
             if let gradeEntry = gradesStore.grade(for: course.id) {
                 if let percent = gradeEntry.percent {
-                    VStack(alignment: .trailing, spacing: 2) {
-                        Text(String(format: "%.1f%%", percent))
-                            .font(.body.weight(.semibold))
-                            .foregroundStyle(gradeColor(percent))
-                        if let letter = gradeEntry.letter {
-                            Text(letter)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+                    GradeIndicator(percent: percent, letter: gradeEntry.letter)
                 } else if let letter = gradeEntry.letter {
                     Text(letter)
                         .font(.body.weight(.semibold))
@@ -231,12 +224,30 @@ struct IOSGradesView: View {
         }
     }
     
+    private func gradeIcon(_ percent: Double) -> String {
+        switch percent {
+        case 90...100: return "star.fill"
+        case 80..<90: return "hand.thumbsup.fill"
+        case 70..<80: return "minus.circle.fill"
+        default: return "exclamationmark.triangle.fill"
+        }
+    }
+    
     private func gpaColor(_ gpa: Double) -> Color {
         switch gpa {
         case 3.5...4.0: return .green
         case 3.0..<3.5: return .blue
         case 2.0..<3.0: return .orange
         default: return .red
+        }
+    }
+    
+    private func gpaIcon(_ gpa: Double) -> String {
+        switch gpa {
+        case 3.5...4.0: return "star.fill"
+        case 3.0..<3.5: return "hand.thumbsup.fill"
+        case 2.0..<3.0: return "minus.circle.fill"
+        default: return "exclamationmark.triangle.fill"
         }
     }
     
@@ -388,6 +399,55 @@ struct IOSCourseGradeDetailView: View {
         case 80..<90: return .blue
         case 70..<80: return .orange
         default: return .red
+        }
+    }
+}
+
+private struct GradeIndicator: View {
+    let percent: Double
+    let letter: String?
+    
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+    
+    var body: some View {
+        HStack(spacing: 6) {
+            if differentiateWithoutColor {
+                Image(systemName: gradeIcon(percent))
+                    .font(.caption)
+                    .foregroundStyle(gradeColor(percent))
+                    .accessibilityHidden(true)
+            }
+            
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(String(format: "%.1f%%", percent))
+                    .font(.body.weight(.semibold))
+                    .foregroundStyle(gradeColor(percent))
+                if let letter {
+                    Text(letter)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(String(format: "%.1f", percent)) percent\(letter.map { ", \($0)" } ?? "")")
+    }
+    
+    private func gradeColor(_ percent: Double) -> Color {
+        switch percent {
+        case 90...100: return .green
+        case 80..<90: return .blue
+        case 70..<80: return .orange
+        default: return .red
+        }
+    }
+    
+    private func gradeIcon(_ percent: Double) -> String {
+        switch percent {
+        case 90...100: return "star.fill"
+        case 80..<90: return "hand.thumbsup.fill"
+        case 70..<80: return "minus.circle.fill"
+        default: return "exclamationmark.triangle.fill"
         }
     }
 }

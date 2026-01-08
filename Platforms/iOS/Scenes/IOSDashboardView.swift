@@ -844,6 +844,9 @@ struct IOSDashboardView: View {
                 selectedSession = session
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint("Opens session details")
     }
 
     private func timeRangeText(for session: StoredScheduledSession) -> String {

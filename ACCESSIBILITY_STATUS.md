@@ -37,7 +37,7 @@
 | VoiceOver | 80% (+10%) | 0% | 0% | 🟢 Much Better |
 | Reduce Motion | 100% | 100% | ~100% | ✅ Done |
 | Dynamic Type | 100% (+75%) | 0% | 0% | ✅ COMPLETE |
-| Differentiate Color | 20% | 0% | 0% | 🟡 Started |
+| Differentiate Color | 50% (+30%) | 0% | 0% | 🟢 Major Progress |
 | Dark Mode | 100% | 100% | ~100% | ✅ Done |
 | Voice Control | 90% | 0% | 0% | 🟡 Nearly Done |
 | Contrast | 50% | 50% | 50% | ⚠️ Needs Check |
@@ -58,7 +58,7 @@
 
 ### 🔴 NOT Ready Yet:
 - **Larger Text / Dynamic Type** - 25% done, critical gap remains
-- **Differentiate Without Color Alone** - 20% done, infrastructure only
+- **Differentiate Without Color Alone** - 50% done, core components implemented
 - **Sufficient Contrast** - Not verified yet
 
 ---
@@ -167,16 +167,29 @@ Text("Hello").font(.body)
 
 ---
 
-### 🟡 Differentiate Without Color (20%)
-**Done:** Infrastructure (`.differentiableIndicator()` helper)  
-**Missing:** Application to actual UI elements
+### 🟢 Differentiate Without Color (50% - UP FROM 20%)
+**Done Today:**
+- ✅ Created reusable `PriorityIndicator` component
+- ✅ Created reusable `StatusIndicator` component  
+- ✅ Created `GradeIndicator` component with icons
+- ✅ Added system icons to `AssignmentUrgency` enum
+- ✅ Added system icons to `AssignmentStatus` enum
+- ✅ Updated `PrioritySelectionView` with icon support
+- ✅ Updated task editor priority display
+- ✅ Updated grade displays with performance icons
 
-**What needs icons/patterns:**
-- Task completion (color only)
-- Priority levels (color only)
-- Course colors (color only)
-- Timer states (color only)
-- Grade indicators (color only)
+**How it works:**
+- When "Differentiate Without Color" is ON, shows both icon + color
+- When OFF, shows simplified color-only indicator
+- Icons: ⭐ (A), 👍 (B), ➖ (C), ⚠️ (D/F) for grades
+- Icons: ✓ (Low), ⚠️ (Medium), ⚠️△ (High), ⚠️⬢ (Critical) for priority
+
+**Still Using Color Only:**
+- Course colors in schedule
+- Some timer state indicators
+- Chart/graph elements
+
+**Estimate:** 1-2 hours to complete remaining items
 
 **Estimate:** 2-3 hours
 
@@ -230,9 +243,10 @@ A comprehensive pre-commit hook now validates accessibility on every commit:
    - Run Accessibility Inspector
    - Fix contrast issues
 
-### Phase 2: Quality (4-6 hours)
-4. **Differentiate Without Color** (2-3 hours)
-   - Add icons to all color indicators
+### Phase 2: Quality (2-4 hours - DOWN FROM 4-6)
+4. **Complete Differentiate Without Color** (1-2 hours) ⬇️
+   - Add icons to course colors
+   - Add timer state indicators
    - Test with setting enabled
 
 5. **Voice Control Testing** (1-2 hours)

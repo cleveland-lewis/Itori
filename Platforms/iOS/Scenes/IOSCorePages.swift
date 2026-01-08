@@ -443,6 +443,8 @@ struct IOSAssignmentsView: View {
                     .onTapGesture {
                         selectedTask = task
                     }
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityHint("Opens task details")
                     .onLongPressGesture(minimumDuration: 0.0, maximumDistance: 0) {
                         pressedTaskId = task.id
                     } onPressingChanged: { isPressing in
@@ -1332,6 +1334,10 @@ struct IOSPracticeView: View {
         .onTapGesture {
             practiceStore.currentTest = test
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel("\(test.title) practice test")
+        .accessibilityHint("Opens test details")
     }
     
     // MARK: - Statistics Card
@@ -2513,6 +2519,8 @@ private struct IOSPlannerBlockRow: View {
             onEdit()
         }
         .accessibilityLabel(Text(verbatim: "\(session.displayTitle), \(timeRange(start: session.start, end: session.end))"))
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint("Edit session time")
     }
 
     private func snappedMinutes(for deltaHeight: CGFloat) -> Int {
