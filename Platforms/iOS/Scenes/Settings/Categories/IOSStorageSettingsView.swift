@@ -220,7 +220,8 @@ struct IOSStorageSettingsView: View {
         NavigationStack {
             VStack(spacing: 20) {
                 Image(systemName: "square.and.arrow.up.circle")
-                    .font(.system(size: 60))
+                    .font(.largeTitle)
+                    .imageScale(.large)
                     .foregroundColor(.accentColor)
                 
                 Text(NSLocalizedString("settings.storage.export.title", comment: "Export Data"))

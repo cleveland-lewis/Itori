@@ -24,7 +24,8 @@ struct IOSCalendarSettingsView: View {
                 Section {
                     VStack(spacing: 12) {
                         Image(systemName: "calendar.badge.exclamationmark")
-                            .font(.system(size: 48))
+                            .font(.largeTitle)
+                            .imageScale(.large)
                             .foregroundColor(.secondary)
                         
                         Text(NSLocalizedString("settings.calendar.not_authorized.title", comment: "Calendar Access Required"))

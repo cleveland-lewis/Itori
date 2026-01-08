@@ -46,6 +46,15 @@ public enum AssignmentUrgency: String, Codable, CaseIterable, Hashable, Identifi
         }
     }
     
+    public var systemIcon: String {
+        switch self {
+        case .low: return "checkmark.circle.fill"
+        case .medium: return "exclamationmark.circle.fill"
+        case .high: return "exclamationmark.triangle.fill"
+        case .critical: return "exclamationmark.octagon.fill"
+        }
+    }
+    
     public var label: String {
         switch self {
         case .low: return "Low"
@@ -68,6 +77,15 @@ public enum AssignmentStatus: String, Codable, CaseIterable, Sendable, Identifia
     // Default implementation for non-macOS platforms
     // macOS uses localized versions from Platforms/macOS/Extensions/AssignmentExtensions.swift
     #if !os(macOS)
+    public var systemIcon: String {
+        switch self {
+        case .notStarted: return "circle"
+        case .inProgress: return "circle.lefthalf.filled"
+        case .completed: return "checkmark.circle.fill"
+        case .archived: return "archivebox.fill"
+        }
+    }
+    
     public var label: String {
         switch self {
         case .notStarted: return "Not Started"

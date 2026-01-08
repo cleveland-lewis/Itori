@@ -61,7 +61,7 @@ struct IOSPracticeTestResultsView: View {
             VStack(spacing: 8) {
                 Text(verbatim: "\(Int(scorePercentage * 100))%")
                     .font(.system(size: 72, weight: .bold, design: .rounded))
-                    .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     .minimumScaleFactor(0.5)
                     .foregroundStyle(scoreColor)
                     .accessibilityAddTraits(.isHeader)

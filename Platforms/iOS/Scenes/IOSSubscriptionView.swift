@@ -113,6 +113,7 @@ struct IOSSubscriptionView: View {
             HStack {
                 Image(systemName: "exclamationmark.circle.fill")
                     .foregroundStyle(.orange)
+                    .accessibilityHidden(true)
                 Text(NSLocalizedString("iossubscription.subscription.expired", value: "Subscription Expired", comment: "Subscription Expired"))
                     .font(.subheadline.weight(.semibold))
                 Spacer()
@@ -283,6 +284,7 @@ private struct SubscriptionPlanCard: View {
                 HStack {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(.green)
+                        .accessibilityHidden(true)
                     Text(NSLocalizedString("iossubscription.current.plan", value: "Current Plan", comment: "Current Plan"))
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.green)

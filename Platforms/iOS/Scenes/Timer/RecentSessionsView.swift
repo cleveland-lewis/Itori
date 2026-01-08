@@ -339,6 +339,7 @@ private struct SessionRow: View {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(.caption)
                                     .foregroundColor(.green)
+                                    .accessibilityHidden(true)
                             }
                         }
                         

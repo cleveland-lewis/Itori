@@ -1714,6 +1714,22 @@ struct IOSTaskEditorView: View {
             }
         }
         
+        var color: Color {
+            switch self {
+            case .low: return .green
+            case .medium: return .yellow
+            case .high: return .orange
+            }
+        }
+        
+        var systemIcon: String {
+            switch self {
+            case .low: return "checkmark.circle.fill"
+            case .medium: return "exclamationmark.circle.fill"
+            case .high: return "exclamationmark.triangle.fill"
+            }
+        }
+        
         // Convert to importance value (0...1) for planner algorithm
         var importanceValue: Double {
             switch self {
@@ -2031,8 +2047,14 @@ struct IOSTaskEditorView: View {
                         HStack {
                             Text(NSLocalizedString("Priority", value: "Priority", comment: ""))
                             Spacer()
-                            Text(draft.priority.label)
-                                .foregroundStyle(.secondary)
+                            HStack(spacing: 6) {
+                                Circle()
+                                    .fill(draft.priority.color)
+                                    .frame(width: 8, height: 8)
+                                    .accessibilityHidden(true)
+                                Text(draft.priority.label)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
                 }
@@ -2275,6 +2297,7 @@ struct IOSTaskEditorView: View {
 private struct PrioritySelectionView: View {
     @Binding var selectedPriority: IOSTaskEditorView.Priority
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
     
     var body: some View {
         List {
@@ -2284,6 +2307,17 @@ private struct PrioritySelectionView: View {
                     dismiss()
                 } label: {
                     HStack {
+                        if differentiateWithoutColor {
+                            Image(systemName: priority.systemIcon)
+                                .foregroundStyle(priority.color)
+                                .accessibilityHidden(true)
+                        } else {
+                            Circle()
+                                .fill(priority.color)
+                                .frame(width: 12, height: 12)
+                                .accessibilityHidden(true)
+                        }
+                        
                         Text(priority.label)
                             .foregroundStyle(.primary)
                         Spacer()

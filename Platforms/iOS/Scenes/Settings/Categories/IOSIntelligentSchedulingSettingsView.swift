@@ -47,6 +47,7 @@ struct IOSIntelligentSchedulingSettingsContent: View {
             HStack {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundColor(.green)
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading) {
                     Text(NSLocalizedString("settings.intelligent.title", value: "Intelligent Scheduling", comment: "Intelligent Scheduling title"))
                         .font(.headline)
@@ -265,6 +266,7 @@ struct StudyRecommendationsView: View {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundColor(.secondary)
                         }
+                        .accessibilityLabel("Dismiss notification")
                     }
                     
                     Divider()
@@ -348,6 +350,7 @@ struct RescheduleNotificationsView: View {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundColor(.secondary)
                         }
+                        .accessibilityLabel("Dismiss notification")
                     }
                     
                     HStack {
@@ -460,6 +463,7 @@ struct StudyTimeNotificationRow: View {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(.secondary)
                 }
+                .accessibilityLabel("Dismiss notification")
             }
             
             Text(recommendation.courseName)
@@ -491,6 +495,7 @@ struct RescheduleNotificationRow: View {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(.secondary)
                 }
+                .accessibilityLabel("Dismiss notification")
             }
             
             Text(notification.assignmentTitle)

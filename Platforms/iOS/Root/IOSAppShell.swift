@@ -187,13 +187,13 @@ struct IOSAppShell<Content: View>: View {
             Group {
                 if #available(iOS 26.0, *) {
                     Image(systemName: "plus")
-                        .font(.system(size: settings.largeTapTargets ? 18 : 16, weight: .semibold))
+                        .font(.body.weight(.semibold))
                         .foregroundStyle(.white)
                         .frame(width: 40, height: 40)
                         .glassEffect(.regular.tint(settings.activeAccentColor).interactive())
                 } else {
                     Image(systemName: "plus")
-                        .font(.system(size: settings.largeTapTargets ? 18 : 16, weight: .semibold))
+                        .font(.body.weight(.semibold))
                         .foregroundStyle(.white)
                         .frame(width: 40, height: 40)
                         .background(.ultraThinMaterial, in: Circle())
@@ -217,13 +217,13 @@ struct IOSAppShell<Content: View>: View {
             Group {
                 if #available(iOS 26.0, *) {
                     Image(systemName: "gearshape")
-                        .font(.system(size: settings.largeTapTargets ? 18 : 16, weight: .medium))
+                        .font(.body.weight(.medium))
                         .foregroundStyle(.white)
                         .frame(width: 40, height: 40)
                         .glassEffect(.regular.tint(settings.activeAccentColor).interactive())
                 } else {
                     Image(systemName: "gearshape")
-                        .font(.system(size: settings.largeTapTargets ? 18 : 16, weight: .medium))
+                        .font(.body.weight(.medium))
                         .foregroundStyle(.white)
                         .frame(width: 40, height: 40)
                         .background(.ultraThinMaterial, in: Circle())

@@ -14,7 +14,8 @@ struct IOSNotificationsSettingsView: View {
                 Section {
                     VStack(spacing: 12) {
                         Image(systemName: "bell.slash")
-                            .font(.system(size: 48))
+                            .font(.largeTitle)
+                            .imageScale(.large)
                             .foregroundColor(.secondary)
                         
                         Text(NSLocalizedString("settings.notifications.disabled.title", comment: "Notifications Disabled"))

@@ -39,7 +39,8 @@ struct FloatingControls: View {
             }
         } label: {
             Image(systemName: "line.3.horizontal")
-                .font(.system(size: buttonSize * 0.4, weight: .medium))
+                .font(.body.weight(.medium))
+                .imageScale(.large)
                 .foregroundColor(.primary)
                 .frame(width: buttonSize, height: buttonSize)
                 .background(.ultraThinMaterial, in: Circle())
@@ -71,7 +72,8 @@ struct FloatingControls: View {
             }
         } label: {
             Image(systemName: "plus")
-                .font(.system(size: buttonSize * 0.4, weight: .semibold))
+                .font(.body.weight(.semibold))
+                .imageScale(.large)
                 .foregroundColor(.primary)
                 .frame(width: buttonSize, height: buttonSize)
                 .background(.ultraThinMaterial, in: Circle())

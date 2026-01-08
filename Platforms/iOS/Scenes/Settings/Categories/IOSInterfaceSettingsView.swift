@@ -48,7 +48,7 @@ struct IOSInterfaceSettingsView: View {
                     )) {
                         HStack(spacing: 12) {
                             Image(systemName: tab.systemImage)
-                                .font(.system(size: 18))
+                                .font(.title3)
                                 .frame(width: 28)
                                 .foregroundColor(isRequired ? .green : .primary)
                             Text(tab.title)

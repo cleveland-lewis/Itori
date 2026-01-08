@@ -108,13 +108,6 @@
 			);
 			target = 1AD7D4332EDD328800D403F3 /* Itori */;
 		};
-		1B0A001E2F111111 /* Exceptions for "Platforms/watchOS/Widget" folder in "ItoriWatch Widget Extension" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Platforms/watchOS/Widget/Info.plist,
-			);
-			target = 1B0A00162F111111 /* ItoriWatch Widget Extension */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -123,13 +116,6 @@
 			buildPhase = 1AD7D4302EDD328800D403F3 /* Sources */;
 			membershipExceptions = (
 				DesignSystem/Localizable.xcstrings,
-			);
-		};
-		1B0A001F2F111111 /* Exceptions for "Platforms/watchOS/Widget" folder in "Resources" phase from "ItoriWatch Widget Extension" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = 1B0A00172F111111 /* Resources */;
-			membershipExceptions = (
-				Platforms/watchOS/Widget/Info.plist,
 			);
 		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */

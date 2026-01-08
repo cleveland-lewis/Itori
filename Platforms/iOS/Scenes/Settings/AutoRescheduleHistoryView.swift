@@ -38,7 +38,8 @@ struct AutoRescheduleHistoryView: View {
     private var emptyState: some View {
         VStack(spacing: 16) {
             Image(systemName: "clock.arrow.circlepath")
-                .font(.system(size: 60))
+                .font(.largeTitle)
+                .imageScale(.large)
                 .foregroundColor(.secondary)
             
             Text(NSLocalizedString("settings.planner.reschedule.history.empty.title", value: "No Reschedule History", comment: "Reschedule history empty title"))
