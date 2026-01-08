@@ -129,6 +129,41 @@ public struct CourseColorIndicator: View {
     }
 }
 
+/// Calendar color indicator for system calendars
+/// Shows first letter of calendar name when differentiate is enabled
+public struct CalendarColorIndicator: View {
+    let color: Color
+    let name: String
+    let size: CGFloat
+    
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+    
+    public init(color: Color, name: String, size: CGFloat = 12) {
+        self.color = color
+        self.name = name
+        self.size = size
+    }
+    
+    public var body: some View {
+        if differentiateWithoutColor && !name.isEmpty {
+            // Show first letter of calendar name
+            Text(String(name.prefix(1)).uppercased())
+                .font(.system(size: size * 0.7, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(width: size, height: size)
+                .background(color)
+                .clipShape(Circle())
+                .accessibilityHidden(true)
+        } else {
+            // Just show colored circle
+            Circle()
+                .fill(color)
+                .frame(width: size, height: size)
+                .accessibilityHidden(true)
+        }
+    }
+}
+
 #Preview("Priority Indicators") {
     VStack(spacing: 16) {
         Text("Differentiate Without Color: OFF")

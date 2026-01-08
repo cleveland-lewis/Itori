@@ -68,9 +68,10 @@ struct IOSCalendarSettingsView: View {
                         
                         ForEach(deviceCalendar.getAvailableCalendars(), id: \.calendarIdentifier) { calendar in
                             HStack {
-                                Circle()
-                                    .fill(Color(cgColor: calendar.cgColor))
-                                    .frame(width: 12, height: 12)
+                                CalendarColorIndicator(
+                                    color: Color(cgColor: calendar.cgColor),
+                                    name: calendar.title
+                                )
                                 
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(calendar.title)

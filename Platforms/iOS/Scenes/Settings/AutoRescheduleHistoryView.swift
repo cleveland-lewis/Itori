@@ -105,12 +105,25 @@ struct HistoryRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
+                // Icon with fill provides shape differentiation
                 Image(systemName: strategyIcon)
                     .foregroundColor(strategyColor)
-                    .font(.body)
+                    .font(.title3)
+                    .accessibilityLabel(operation.strategy.displayName)
                 
-                Text(operation.strategy.displayName)
-                    .font(.headline)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(operation.strategy.displayName)
+                        .font(.headline)
+                    
+                    HStack(spacing: 4) {
+                        Text(formatTime(operation.originalStart))
+                        Image(systemName: "arrow.right")
+                            .font(.caption2)
+                        Text(formatTime(operation.newStart))
+                    }
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                }
                 
                 Spacer()
                 
@@ -119,22 +132,14 @@ struct HistoryRow: View {
                     .foregroundColor(.secondary)
             }
             
-            VStack(alignment: .leading, spacing: 4) {
+            if !operation.pushedSessions.isEmpty {
                 HStack(spacing: 4) {
-                    Text(formatTime(operation.originalStart))
-                    Image(systemName: "arrow.right")
+                    Image(systemName: "arrow.up.circle")
                         .font(.caption)
-                        .foregroundColor(.secondary)
-                    Text(formatTime(operation.newStart))
-                }
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                
-                if !operation.pushedSessions.isEmpty {
-                Text(String(format: NSLocalizedString("settings.planner.reschedule.history.pushed", value: "Pushed %d task(s)", comment: "Pushed tasks count"), operation.pushedSessions.count))
+                    Text(String(format: NSLocalizedString("settings.planner.reschedule.history.pushed", value: "Pushed %d task(s)", comment: "Pushed tasks count"), operation.pushedSessions.count))
                         .font(.caption)
-                        .foregroundColor(.orange)
                 }
+                .foregroundColor(.orange)
             }
         }
         .padding(.vertical, 4)
@@ -142,9 +147,9 @@ struct HistoryRow: View {
     
     private var strategyIcon: String {
         switch operation.strategy {
-        case .sameDaySlot: return "clock.arrow.circlepath"
-        case .sameDayPushed: return "arrow.up.square.fill"
-        case .nextDay: return "calendar.badge.clock"
+        case .sameDaySlot: return "checkmark.circle.fill"
+        case .sameDayPushed: return "arrow.up.circle.fill"
+        case .nextDay: return "calendar.circle.fill"
         case .overflow: return "exclamationmark.triangle.fill"
         }
     }
