@@ -200,3 +200,4 @@ Both `RootsCard` and `AppCard` are **custom components** that give you:
 
 **Unblock now, migrate later.** ✅
 
+# Pre-commit hook updated to allow design tokens
