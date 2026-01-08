@@ -1,23 +1,89 @@
-# Pre-Commit Hook Quick Reference
+# Pre-Commit Hooks Quick Reference
 
-## What It Checks
+## 🎯 What Gets Checked (13 Checks)
 
-### ✅ Accessibility
-- Icon-only buttons need labels
-- Decorative images should be hidden
-- Use semantic fonts, not fixed sizes
-- Toggles need descriptive labels
+| Check | Type | Time | Fix |
+|-------|------|------|-----|
+| ⚔️  Merge conflicts | Error | <1s | Resolve conflicts |
+| 📦 Large files (>5MB) | Error | <1s | Use Git LFS |
+| 🖨️  Print statements | Error | 1-2s | Use DebugLogger |
+| 🔨 Build verification | Error | 30-60s | Fix build errors |
+| 🔒 Security patterns | Warn | 1s | Review code |
+| 📝 TODO/FIXME | Warn | 1s | Create issues |
+| 📦 Package.resolved | Warn | <1s | Run resolve |
+| 🎨 Asset catalogs | Warn | <1s | Fix structure |
+| 🧹 SwiftLint | Warn | 2-5s | swiftlint --fix |
+| 🔢 Version sync | Warn | 1s | Update VERSION |
+| 🧵 Threading safety | Warn | 2-3s | Add @MainActor |
+| ♿ Accessibility | Warn | 5-10s | Add labels |
+| 🌍 Localization | Warn | 2-5s | Add translations |
 
-### ✅ Localization
-- No hardcoded user-facing text
-- Alerts must be localized
-- All keys must exist in Localizable.strings
+**Total**: ~50-90 seconds
 
 ---
 
-## Common Fixes
+## ⚡ Quick Commands
 
-### Icon Button Without Label
+```bash
+# Normal commit (all checks)
+git commit -m "feat(auth): add oauth2 support"
+
+# Emergency bypass (use sparingly!)
+git commit --no-verify -m "hotfix: critical bug"
+
+# Disable build for speed
+echo "CHECK_BUILD=false" >> .git-hooks-config
+
+# Re-enable all
+git checkout .git-hooks-config
+
+# Test hook manually
+.git/hooks/pre-commit
+```
+
+---
+
+## 🚨 Common Errors & Quick Fixes
+
+### ❌ Print Statements Found
+```swift
+// ❌ Bad
+print("Debug: \(value)")
+
+// ✅ Good
+DebugLogger.log("Debug: \(value)")
+```
+
+### ❌ Build Failed
+```bash
+# Fix build first
+xcodebuild -project ItoriApp.xcodeproj \
+  -scheme "Itori (iOS)" build
+
+# Then commit
+git commit -m "fix: build error"
+```
+
+### ❌ Merge Conflict Markers
+```bash
+# Find conflicts
+git diff --check
+
+# Remove <<<<<<<, =======, >>>>>>>
+# Stage clean files
+git add file.swift
+```
+
+### ⚠️  SwiftLint Issues
+```bash
+# Auto-fix
+swiftlint --fix
+
+# Install if missing
+brew install swiftlint
+```
+
+### ⚠️  Accessibility - Icon Button
 ```swift
 // ❌ Before
 Button { action() } label: {
@@ -27,81 +93,96 @@ Button { action() } label: {
 // ✅ After
 Button { action() } label: {
     Image(systemName: "plus")
+        .accessibilityHidden(true)
 }
 .accessibilityLabel("Add item")
-.accessibilityHint("Opens form to create item")
 ```
 
-### Decorative Image
-```swift
-// ❌ Before
-Image(systemName: "sparkles")
-    .foregroundStyle(.blue)
-
-// ✅ After
-Image(systemName: "sparkles")
-    .foregroundStyle(.blue)
-    .accessibilityHidden(true)
-```
-
-### Hardcoded Text
+### ⚠️  Localization - Hardcoded Text
 ```swift
 // ❌ Before
 Text("Hello World")
 
 // ✅ After
-Text(NSLocalizedString("greeting", value: "Hello World", comment: "Greeting message"))
-```
-
-### Fixed Font Size
-```swift
-// ❌ Before
-.font(.system(size: 16))
-
-// ✅ After
-.font(.body)
+Text(NSLocalizedString("greeting", 
+  value: "Hello World", 
+  comment: "Greeting"))
 ```
 
 ---
 
-## Bypass Hook (Emergency Only)
+## ⚙️ Configuration (.git-hooks-config)
 
 ```bash
-git commit --no-verify
+# Skip slow build check
+CHECK_BUILD=false
+
+# Allow TODOs
+CHECK_TODO_FIXME=false
+
+# Increase file limit to 10MB
+MAX_FILE_SIZE=10485760
+
+# Disable specific checks
+CHECK_SWIFTLINT=false
+CHECK_ACCESSIBILITY=false
+CHECK_THREADING=false
 ```
 
 ---
 
-## Files Checked
-- ✅ `Platforms/iOS/**/*.swift`
-- ✅ `Platforms/macOS/**/*.swift`
-- ✅ `SharedCore/**/*.swift`
-- ❌ `*Tests/` (skipped)
-- ❌ `*Model.swift` (skipped)
+## 📊 What Each Symbol Means
+
+- ✅ **Green check** = Passed
+- ⚠️  **Yellow warning** = Warning (doesn't block)
+- ❌ **Red X** = Error (blocks commit)
 
 ---
 
-## Hook Response Options
+## 🆘 Emergency Override
 
-When warnings appear:
-- **N** = Cancel commit, fix issues
-- **Y** = Proceed anyway
-- **Ctrl+C** = Abort
-
----
-
-## Quick Test
+Only use when **absolutely necessary**:
 
 ```bash
-# Test if hooks work
-echo 'Text("test")' > test.swift
-git add test.swift
-git commit -m "test"
-# Should show warning
-
-rm test.swift
+git commit --no-verify -m "emergency: production fix"
 ```
+
+⚠️ **Warning**: Can break builds and introduce bugs!
 
 ---
 
-Read full guide: **GIT_HOOKS_GUIDE.md**
+## 💡 Pro Tips
+
+1. **Run checks before staging**:
+   ```bash
+   .git/hooks/pre-commit  # Test first
+   git add . && git commit -m "msg"
+   ```
+
+2. **Speed up commits**:
+   - Disable build check during rapid iteration
+   - Re-enable before pushing
+
+3. **Fix warnings early**:
+   - Don't let them pile up
+   - Address TODO/FIXME with GitHub issues
+
+4. **Use SwiftLint auto-fix**:
+   ```bash
+   swiftlint --fix
+   git add .
+   git commit -m "style: apply swiftlint fixes"
+   ```
+
+---
+
+## 📖 Full Documentation
+
+- **Detailed guide**: `PRE_COMMIT_HOOKS_GUIDE.md`
+- **Setup instructions**: `GIT_HOOKS_SETUP_COMPLETE.md`
+- **Commit format rules**: `STRICT_COMMIT_RULES.md`
+
+---
+
+**Last Updated**: 2026-01-08  
+**Hook Version**: 2.0
