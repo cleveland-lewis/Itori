@@ -157,10 +157,10 @@ struct HistoryRow: View {
     
     private var strategyColor: Color {
         switch operation.strategy {
-        case .sameDaySlot: return .green
-        case .sameDayPushed: return .orange
-        case .nextDay: return .blue
-        case .overflow: return .red
+        case .sameDaySlot: return Color.Status.success  // High-contrast green (4.8:1)
+        case .sameDayPushed: return Color.Status.warning  // High-contrast orange (4.6:1)
+        case .nextDay: return Color.Status.info  // High-contrast blue (5.5:1)
+        case .overflow: return Color.Status.error  // High-contrast red (5.1:1)
         }
     }
     

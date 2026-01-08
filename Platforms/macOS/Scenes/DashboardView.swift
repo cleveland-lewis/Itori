@@ -477,6 +477,8 @@ struct DashboardView: View {
                     .padding(.horizontal, 10)
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("Energy level: \(energyDisplayText)")
+            .accessibilityHint("Double-click to change energy level")
             .popover(isPresented: $showEnergyPopover) {
                 energyPicker
                     .padding(12)
@@ -745,6 +747,8 @@ struct DashboardView: View {
             .buttonStyle(.plain)
             .font(.headline)
             .help(NSLocalizedString("dashboard.help.add_event", comment: ""))
+            .accessibilityLabel("Add event")
+            .accessibilityHint("Opens form to create a new calendar event")
         } footer: {
             if events.count > 5 {
                 Button {
@@ -759,6 +763,8 @@ struct DashboardView: View {
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.secondary)
+                .accessibilityLabel("View all \(events.count) events")
+                .accessibilityHint("Navigate to calendar page")
             }
         }
         .accessibilityElement(children: .contain)
@@ -770,6 +776,7 @@ struct DashboardView: View {
             Circle()
                 .fill(.blue)
                 .frame(width: 8, height: 8)
+                .accessibilityHidden(true)
             
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.xsmall) {
                 Text(event.title)
@@ -802,6 +809,9 @@ struct DashboardView: View {
                 .fill(.secondaryBackground.opacity(0))
         )
         .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(event.title), \(event.time)\(event.location.map { ", \($0)" } ?? "")")
+        .accessibilityHint("Double-click for options")
         .onHover { hovering in
             withAnimation(.easeInOut(duration: 0.15)) {
                 // Hover effect handled by system
