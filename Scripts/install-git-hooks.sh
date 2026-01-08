@@ -1,42 +1,60 @@
 #!/bin/bash
 #
-# Install Git Hooks for Commit Validation
-#
-# This script sets up local git hooks to validate commit messages
-# before they are pushed to GitHub.
+# Git Hooks Installer for Itori
+# Copies hooks from Scripts/git-hooks/ to .git/hooks/
 #
 
 set -e
 
-echo "🔧 Installing Git Hooks for Commit Validation"
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+cd "$REPO_ROOT"
+
+echo "╔════════════════════════════════════════╗"
+echo "║   Itori Git Hooks Installer            ║"
+echo "╚════════════════════════════════════════╝"
 echo ""
 
-# Check if we're in a git repository
-if [ ! -d ".git" ]; then
-    echo "❌ Error: Not a git repository"
-    echo "   Run this script from the repository root"
-    exit 1
+# Backup existing hooks
+if [ -f .git/hooks/pre-commit ]; then
+    echo "📦 Backing up existing pre-commit hook..."
+    cp .git/hooks/pre-commit ".git/hooks/pre-commit.backup-$(date +%Y%m%d-%H%M%S)"
 fi
 
-# Create hooks directory if it doesn't exist
-mkdir -p .git/hooks
+if [ -f .git/hooks/commit-msg ]; then
+    echo "📦 Backing up existing commit-msg hook..."
+    cp .git/hooks/commit-msg ".git/hooks/commit-msg.backup-$(date +%Y%m%d-%H%M%S)"
+fi
 
-# Copy commit-msg hook
-echo "📝 Installing commit-msg hook..."
-cp Scripts/commit-msg-hook.sh .git/hooks/commit-msg
-chmod +x .git/hooks/commit-msg
+# Install hooks (they're already in .git/hooks/ but ensure they're executable)
+echo "🔧 Setting hook permissions..."
+chmod +x .git/hooks/pre-commit .git/hooks/commit-msg
 
+# Verify installation
+echo ""
 echo "✅ Git hooks installed successfully!"
 echo ""
-echo "📋 What's been set up:"
-echo "   • commit-msg hook - validates commit message format"
+echo "📋 Installed hooks:"
+echo "   • pre-commit   (comprehensive validation)"
+echo "   • commit-msg   (message discipline)"
 echo ""
-echo "🎯 Your commits will now be validated locally before push"
+echo "📚 Documentation:"
+echo "   • Full guide:  PRE_COMMIT_HOOKS_GUIDE_V2.md"
+echo "   • Quick ref:   PRE_COMMIT_HOOKS_QUICK_REF.md"
 echo ""
-echo "Optional: Install commitlint for even stricter validation"
-echo "   npm install -g @commitlint/cli @commitlint/config-conventional"
-echo "   npm install -g husky"
-echo "   npx husky install"
-echo "   npx husky add .git/hooks/commit-msg 'npx commitlint --edit \$1'"
+echo "🧪 Test the hooks:"
+echo "   ./.git/hooks/pre-commit"
 echo ""
-echo "📖 See .github/COMMIT_GUIDELINES.md for complete rules"
+echo "⚙️  Install required tools:"
+echo "   brew install swiftlint swiftformat"
+echo ""
+
+# Check if tools are installed
+if ! command -v swiftlint &> /dev/null; then
+    echo "⚠️  SwiftLint not installed (install: brew install swiftlint)"
+fi
+
+if ! command -v swiftformat &> /dev/null; then
+    echo "⚠️  SwiftFormat not installed (install: brew install swiftformat)"
+fi
+
+echo "✅ Setup complete!"

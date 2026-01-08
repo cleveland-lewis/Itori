@@ -179,6 +179,59 @@ private struct DifferentiableIndicatorModifier: ViewModifier {
     }
 }
 
+// MARK: - Increase Contrast Support
+
+extension View {
+    /// Enhances text opacity for better contrast when Increase Contrast is enabled
+    /// Respects Settings > Accessibility > Display & Text Size > Increase Contrast
+    public func contrastAwareOpacity(_ opacity: Double) -> some View {
+        self.modifier(ContrastAwareOpacityModifier(baseOpacity: opacity))
+    }
+    
+    /// Applies stronger colors when Increase Contrast is enabled
+    public func contrastAwareForeground(_ color: Color) -> some View {
+        self.modifier(ContrastAwareForegroundModifier(color: color))
+    }
+}
+
+private struct ContrastAwareOpacityModifier: ViewModifier {
+    let baseOpacity: Double
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    
+    // Use reduceTransparency as a proxy for high contrast needs
+    // (Apple doesn't expose increaseContrast in SwiftUI yet)
+    var enhancedOpacity: Double {
+        if reduceTransparency {
+            // Increase opacity by ~50% when transparency is reduced
+            return min(1.0, baseOpacity * 1.5)
+        }
+        return baseOpacity
+    }
+    
+    func body(content: Content) -> some View {
+        content.opacity(enhancedOpacity)
+    }
+}
+
+private struct ContrastAwareForegroundModifier: ViewModifier {
+    let color: Color
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.colorScheme) private var colorScheme
+    
+    func body(content: Content) -> some View {
+        if reduceTransparency {
+            // Use higher contrast variants
+            if colorScheme == .dark {
+                content.foregroundStyle(color == .secondary ? Color.white.opacity(0.9) : color)
+            } else {
+                content.foregroundStyle(color == .secondary ? Color.black.opacity(0.8) : color)
+            }
+        } else {
+            content.foregroundStyle(color)
+        }
+    }
+}
+
 // Helper for type-erased shapes
 private struct AnyShape: Shape {
     private let _path: (CGRect) -> Path

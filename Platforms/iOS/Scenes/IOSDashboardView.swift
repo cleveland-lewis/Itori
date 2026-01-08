@@ -225,7 +225,8 @@ struct IOSDashboardView: View {
                     VStack(spacing: 12) {
                         Image(systemName: "tray")
                             .font(.system(.largeTitle))
-                            .foregroundStyle(.secondary.opacity(0.5))
+                            .contrastAwareOpacity(0.5)
+                            .foregroundStyle(.secondary)
                             .padding(.top, 8)
                             .accessibilityHidden(true)
                         
@@ -291,7 +292,8 @@ struct IOSDashboardView: View {
                 VStack(spacing: 10) {
                     Image(systemName: "calendar.badge.clock")
                         .font(.system(.largeTitle))
-                        .foregroundStyle(.secondary.opacity(0.5))
+                        .contrastAwareOpacity(0.5)
+                        .foregroundStyle(.secondary)
                         .accessibilityHidden(true)
                     
                     Text(NSLocalizedString("No planned tasks today", value: "No planned tasks today", comment: ""))
@@ -317,7 +319,8 @@ struct IOSDashboardView: View {
                 VStack(spacing: 10) {
                     Image(systemName: "chart.bar")
                         .font(.system(.largeTitle))
-                        .foregroundStyle(.secondary.opacity(0.5))
+                        .contrastAwareOpacity(0.5)
+                        .foregroundStyle(.secondary)
                         .accessibilityHidden(true)
                     
                     VStack(spacing: 4) {
@@ -827,9 +830,7 @@ struct IOSDashboardView: View {
 
     private func plannerSessionRow(_ session: StoredScheduledSession) -> some View {
         HStack(spacing: 8) {
-            Circle()
-                .fill(session.isUserEdited ? Color.orange : Color.accentColor)
-                .frame(width: 6, height: 6)
+            SessionEditIndicator(isUserEdited: session.isUserEdited)
             Text(session.title)
                 .font(.subheadline.weight(.semibold))
                 .lineLimit(1)
@@ -1020,6 +1021,28 @@ struct IOSDashboardView: View {
             return course.code.isEmpty ? course.title : course.code
         }
         return nil
+    }
+}
+
+/// Indicates if a session was user-edited or auto-scheduled
+private struct SessionEditIndicator: View {
+    let isUserEdited: Bool
+    
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+    
+    var body: some View {
+        if differentiateWithoutColor && isUserEdited {
+            Image(systemName: "pencil.circle.fill")
+                .font(.caption2)
+                .foregroundStyle(.orange)
+                .frame(width: 8, height: 8)
+                .accessibilityHidden(true)
+        } else {
+            Circle()
+                .fill(isUserEdited ? Color.orange : Color.accentColor)
+                .frame(width: 6, height: 6)
+                .accessibilityHidden(true)
+        }
     }
 }
 

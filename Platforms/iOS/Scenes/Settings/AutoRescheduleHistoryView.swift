@@ -119,6 +119,7 @@ struct HistoryRow: View {
                         Text(formatTime(operation.originalStart))
                         Image(systemName: "arrow.right")
                             .font(.caption2)
+                            .accessibilityHidden(true)
                         Text(formatTime(operation.newStart))
                     }
                     .font(.subheadline)

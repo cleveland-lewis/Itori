@@ -93,7 +93,17 @@ Itori/
    - Update the Development Team in project settings
    - Enable iCloud capability with your container
 
-5. **Build and run**
+5. **Install Git hooks** (recommended)
+   ```bash
+   ./Scripts/install-git-hooks.sh
+   ```
+
+6. **Install development tools**
+   ```bash
+   brew install swiftlint swiftformat
+   ```
+
+7. **Build and run**
    - `Cmd+R` to build and run
    - Select target device/simulator
 
@@ -111,11 +121,46 @@ Itori/
 
 ## Development
 
+### Pre-Commit Hooks
+
+The project enforces code quality with pre-commit hooks that run automatically before each commit:
+
+- ✅ Repository hygiene (trailing whitespace, file sizes, naming)
+- ✅ Swift code quality (SwiftLint, SwiftFormat)
+- ✅ App rename enforcement (Roots → Itori)
+- ✅ Build sanity checks
+- ✅ Architectural guardrails (platform boundaries)
+- ✅ TODO/FIXME policy
+- ✅ Commit message discipline
+
+**Install hooks:**
+```bash
+./Scripts/install-git-hooks.sh
+```
+
+**Documentation:**
+- Full guide: [PRE_COMMIT_HOOKS_GUIDE_V2.md](PRE_COMMIT_HOOKS_GUIDE_V2.md)
+- Quick reference: [PRE_COMMIT_HOOKS_QUICK_REF.md](PRE_COMMIT_HOOKS_QUICK_REF.md)
+
+**Bypass (emergency only):**
+```bash
+git commit --no-verify
+```
+
 ### Code Quality Tools
 
 The project includes automated quality checks:
 
 ```bash
+# Run SwiftLint
+swiftlint
+
+# Auto-fix SwiftLint issues
+swiftlint --fix
+
+# Format code with SwiftFormat
+swiftformat .
+
 # Check for code hygiene issues
 bash Scripts/check_release_hygiene.sh
 

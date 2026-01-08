@@ -24,6 +24,8 @@ struct ContentView: View {
                 Text(formatTime(elapsedTime))
                     .font(.system(size: 48, weight: .medium, design: .rounded))
                     .monospacedDigit()
+                    .accessibilityLabel("Timer")
+                    .accessibilityValue(formatTimeForVoiceOver(elapsedTime))
                 
                 HStack(spacing: 20) {
                     Button(action: pauseTimer) {
@@ -31,6 +33,7 @@ struct ContentView: View {
                             .font(.title2)
                     }
                     .buttonStyle(.bordered)
+                    .accessibilityLabel("Pause timer")
                     
                     Button(action: stopTimer) {
                         Image(systemName: "stop.fill")
@@ -38,16 +41,19 @@ struct ContentView: View {
                     }
                     .buttonStyle(.bordered)
                     .tint(.red)
+                    .accessibilityLabel("Stop timer")
                 }
             } else {
                 Image(systemName: "timer")
                     .font(.system(size: 60))
                     .foregroundStyle(.tint)
                     .padding(.bottom, 8)
+                    .accessibilityHidden(true)
                 
                 Text(elapsedTime > 0 ? formatTime(elapsedTime) : "Ready")
                     .font(.title3)
                     .foregroundStyle(.secondary)
+                    .accessibilityLabel(elapsedTime > 0 ? "Previous time: \(formatTimeForVoiceOver(elapsedTime))" : "Timer ready")
                 
                 Button(action: startTimer) {
                     Label("Start Timer", systemImage: "play.fill")
@@ -114,6 +120,24 @@ struct ContentView: View {
         } else {
             return String(format: "%02d:%02d", minutes, seconds)
         }
+    }
+    
+    private func formatTimeForVoiceOver(_ time: TimeInterval) -> String {
+        let hours = Int(time) / 3600
+        let minutes = Int(time) / 60 % 60
+        let seconds = Int(time) % 60
+        
+        var components: [String] = []
+        
+        if hours > 0 {
+            components.append("\(hours) hour\(hours == 1 ? "" : "s")")
+        }
+        if minutes > 0 || hours > 0 {
+            components.append("\(minutes) minute\(minutes == 1 ? "" : "s")")
+        }
+        components.append("\(seconds) second\(seconds == 1 ? "" : "s")")
+        
+        return components.joined(separator: ", ")
     }
 }
 

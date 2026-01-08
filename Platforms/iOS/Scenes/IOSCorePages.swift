@@ -402,9 +402,7 @@ struct IOSAssignmentsView: View {
             } else {
                 ForEach(sortedTasks, id: \.id) { task in
                     HStack(spacing: 12) {
-                        Circle()
-                            .fill(urgencyColor(for: task))
-                            .frame(width: 8, height: 8)
+                        TaskUrgencyIndicator(task: task)
                         
                         Button {
                             toggleCompletion(task)
@@ -2725,4 +2723,54 @@ struct IOSFilterHeaderView: View {
         )
     }
 }
+
+/// Task urgency indicator based on due date proximity
+/// Shows both color and icon when differentiate without color is enabled
+private struct TaskUrgencyIndicator: View {
+    let task: AppTask
+    
+    @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
+    
+    var body: some View {
+        if differentiateWithoutColor {
+            Image(systemName: urgencyIcon)
+                .font(.caption2)
+                .foregroundStyle(urgencyColor)
+                .frame(width: 12, height: 12)
+                .accessibilityHidden(true)
+        } else {
+            Circle()
+                .fill(urgencyColor)
+                .frame(width: 8, height: 8)
+                .accessibilityHidden(true)
+        }
+    }
+    
+    private var urgencyColor: Color {
+        guard let due = task.effectiveDueDateTime else { return .secondary.opacity(0.6) }
+        let days = Calendar.current.dateComponents([.day], from: Date(), to: due).day ?? 0
+        
+        switch days {
+        case ..<0: return .red.opacity(0.8)
+        case 0: return .orange.opacity(0.9)
+        case 1...2: return .yellow.opacity(0.8)
+        case 3...7: return .blue.opacity(0.7)
+        default: return .secondary.opacity(0.6)
+        }
+    }
+    
+    private var urgencyIcon: String {
+        guard let due = task.effectiveDueDateTime else { return "circle.fill" }
+        let days = Calendar.current.dateComponents([.day], from: Date(), to: due).day ?? 0
+        
+        switch days {
+        case ..<0: return "exclamationmark.triangle.fill"  // Overdue
+        case 0: return "exclamationmark.circle.fill"       // Today
+        case 1...2: return "clock.fill"                    // Soon
+        case 3...7: return "calendar.circle.fill"          // This week
+        default: return "circle.fill"                      // Later
+        }
+    }
+}
+
 #endif

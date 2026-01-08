@@ -51,7 +51,8 @@ struct IOSFlashcardsView: View {
         VStack(spacing: 24) {
             Image(systemName: "rectangle.stack.fill")
                 .font(.largeTitle)
-                .foregroundStyle(.secondary.opacity(0.5))
+                .contrastAwareOpacity(0.5)
+                .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
             
             VStack(spacing: 12) {
