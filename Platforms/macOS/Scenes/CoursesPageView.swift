@@ -166,22 +166,19 @@ struct CoursesPageView: View {
             }
         }
         .sheet(isPresented: $showingBatchReview) {
-            // GitHub Issue #514: Restore BatchReviewSheet once FileParsingService is stabilized
-            Text(NSLocalizedString("Batch review temporarily unavailable", value: "Batch review temporarily unavailable", comment: ""))
-                .padding()
-            // if let batchState = FileParsingService.shared.batchReviewItems {
-            //     BatchReviewSheet(
-            //         state: batchState,
-            //         onApprove: {
-            //             await FileParsingService.shared.approveBatchReview(batchState)
-            //         },
-            //         onCancel: {
-            //             Task {
-            //                 await FileParsingService.shared.cancelBatchReview()
-            //             }
-            //         }
-            //     )
-            // }
+            if let batchState = FileParsingService.shared.batchReviewItems {
+                BatchReviewSheet(
+                    state: batchState,
+                    onApprove: {
+                        await FileParsingService.shared.approveBatchReview(batchState)
+                    },
+                    onCancel: {
+                        Task {
+                            await FileParsingService.shared.cancelBatchReview()
+                        }
+                    }
+                )
+            }
         }
         .onReceive(FileParsingService.shared.$batchReviewItems) { batchState in
             showingBatchReview = batchState != nil

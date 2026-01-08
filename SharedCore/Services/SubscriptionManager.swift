@@ -12,12 +12,11 @@ final class SubscriptionManager: ObservableObject {
     
     private var updateListenerTask: Task<Void, Error>? = nil
     
-    // Product identifiers - these should match your App Store Connect configuration
+    // Product identifiers - must match App Store Connect configuration exactly
+    // These IDs correspond to the StoreKit configuration in Config/ItoriSubscriptions.storekit
     private let productIdentifiers = [
-        "6757490466",
-        "6757490562",
-        "6757490611",
-        "6757490125"
+        "com.itori.subscription.monthly",  // Monthly subscription: $4.99/month
+        "com.itori.subscription.yearly"    // Yearly subscription: $49.99/year (17% savings)
     ]
     
     enum SubscriptionStatus {
