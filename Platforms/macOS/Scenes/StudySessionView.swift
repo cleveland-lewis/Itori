@@ -67,6 +67,8 @@ struct StudySessionView: View {
                 }
                 .buttonStyle(.plain)
                 .help("End session")
+                .accessibilityLabel("End session")
+                .accessibilityHint("Closes the study session")
             }
             
             // Progress bar

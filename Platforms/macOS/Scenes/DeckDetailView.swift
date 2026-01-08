@@ -141,6 +141,7 @@ struct DeckDetailView: View {
                 }
                 .buttonStyle(.bordered)
                 .help("Add new card")
+                .accessibilityLabel("Add new card")
                 
                 Button {
                     showingDeckSettings = true
@@ -149,6 +150,7 @@ struct DeckDetailView: View {
                 }
                 .buttonStyle(.bordered)
                 .help("Deck settings")
+                .accessibilityLabel("Deck settings")
             }
         }
         .padding(20)
@@ -356,6 +358,7 @@ struct FlashcardRowView: View {
                 }
                 .buttonStyle(.plain)
                 .help(isFlipped ? "Hide answer" : "Show answer")
+                .accessibilityLabel(isFlipped ? "Hide answer" : "Show answer")
                 
                 Button {
                     showingEdit = true
@@ -365,6 +368,7 @@ struct FlashcardRowView: View {
                 }
                 .buttonStyle(.plain)
                 .help("Edit card")
+                .accessibilityLabel("Edit card")
             }
         }
         .padding(.horizontal, 16)
