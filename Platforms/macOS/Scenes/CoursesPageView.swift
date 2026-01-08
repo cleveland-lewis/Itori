@@ -166,7 +166,7 @@ struct CoursesPageView: View {
             }
         }
         .sheet(isPresented: $showingBatchReview) {
-            // TODO: Restore BatchReviewSheet once FileParsingService is stabilized
+            // GitHub Issue #514: Restore BatchReviewSheet once FileParsingService is stabilized
             Text(NSLocalizedString("Batch review temporarily unavailable", value: "Batch review temporarily unavailable", comment: ""))
                 .padding()
             // if let batchState = FileParsingService.shared.batchReviewItems {
@@ -507,6 +507,7 @@ struct CoursesPageView: View {
             Image(systemName: "books.vertical")
                 .font(DesignSystem.Typography.body)
                 .foregroundStyle(.secondary)
+            .accessibilityHidden(true)
             Text(NSLocalizedString("courses.empty.select", comment: "Select course"))
                 .font(DesignSystem.Typography.subHeader)
             Text(NSLocalizedString("courses.empty.overview", comment: "Overview"))

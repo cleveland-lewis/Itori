@@ -1447,10 +1447,8 @@ struct IOSTaskDetailView: View {
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel(task.isCompleted ? "Mark as incomplete" : "Mark as complete")
-                                    .font(.body.weight(.medium))
-                            }
-                        }
-                        .buttonStyle(.plain)
+                        .accessibilityHint(task.isCompleted ? "Marks task as not done" : "Marks task as done")
+                        .accessibilityAddTraits(.isButton)
                     }
                 }
                 

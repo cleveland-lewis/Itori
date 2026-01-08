@@ -257,6 +257,7 @@ struct AssignmentsPageView: View {
                     .foregroundColor(.accentColor)
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("Filter assignments")
             .popover(isPresented: $showFilterPopover, arrowEdge: .top) {
                 filterPopover
                     .padding(DesignSystem.Layout.padding.card)

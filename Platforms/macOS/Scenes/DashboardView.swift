@@ -542,6 +542,7 @@ struct DashboardView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundStyle(.orange)
+                            .accessibilityHidden(true)
                         Text(NSLocalizedString("dashboard.due_today", comment: ""))
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(.secondary)
@@ -558,6 +559,7 @@ struct DashboardView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "calendar")
                             .foregroundStyle(.blue)
+                            .accessibilityHidden(true)
                         Text(NSLocalizedString("dashboard.events_today", comment: ""))
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(.secondary)
@@ -574,6 +576,7 @@ struct DashboardView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "doc.text.fill")
                             .foregroundStyle(.purple)
+                            .accessibilityHidden(true)
                         Text(NSLocalizedString("dashboard.active_assignments", comment: ""))
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(.secondary)
@@ -865,6 +868,7 @@ struct DashboardView: View {
                         .font(.system(size: emptyStateIconSize))
                         .foregroundStyle(.secondary.opacity(0.5))
                         .padding(.top, 12)
+                        .accessibilityHidden(true)
                     
                     VStack(spacing: 6) {
                         Text(NSLocalizedString("No upcoming assignments", value: "No upcoming assignments", comment: ""))

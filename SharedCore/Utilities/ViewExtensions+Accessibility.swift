@@ -170,9 +170,9 @@ private struct DifferentiableIndicatorModifier: ViewModifier {
         content.overlay(
             Group {
                 if differentiateWithoutColor && isActive {
-                    // Add checkmark or indicator for users who can't rely on color
+                    // Add border indicator for users who can't rely on color
                     shape
-                        .strokeBorder(Color.primary, lineWidth: 2)
+                        .stroke(Color.primary, lineWidth: 2)
                 }
             }
         )

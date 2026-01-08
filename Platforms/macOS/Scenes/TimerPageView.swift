@@ -264,6 +264,7 @@ struct TimerPageView: View {
                 }
                 .pickerStyle(.segmented)
                 .frame(maxWidth: 420)
+                .accessibilityLabel("Study time range")
             }
 
             if studyRange == .custom {

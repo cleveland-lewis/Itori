@@ -1280,12 +1280,14 @@ struct PlannerBlockRow: View {
                 }
                 .buttonStyle(.plain)
                 .help(block.status == .completed ? "Mark as not started" : "Mark as completed")
+                .accessibilityLabel(block.status == .completed ? "Mark as not started" : "Mark as completed")
             }
             
             if block.isLocked {
                 Image(systemName: "lock.fill")
                     .font(DesignSystem.Typography.body)
                     .foregroundStyle(.secondary)
+                    .accessibilityLabel("Locked session")
             }
         }
         .padding(.horizontal, 12)
