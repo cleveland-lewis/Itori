@@ -10,6 +10,8 @@ struct PracticeTestPageView: View {
     @State private var showingGenerator = false
     @State private var selectedScheduledTest: ScheduledPracticeTest?
     
+    @ScaledMetric private var largeIconSize: CGFloat = 64
+    
     var body: some View {
         NavigationStack {
             if let currentTest = practiceStore.currentTest {
@@ -129,7 +131,7 @@ struct PracticeTestPageView: View {
     private var emptyStateView: some View {
         VStack(spacing: 20) {
             Image(systemName: "text.book.closed")
-                .font(.system(size: 64))
+                .font(.system(size: largeIconSize))
                 .foregroundStyle(.secondary)
             
             Text(NSLocalizedString("practice.empty.title", comment: ""))
@@ -348,7 +350,7 @@ struct PracticeTestPageView: View {
     private func failedView(test: PracticeTest) -> some View {
         VStack(spacing: 24) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 64))
+                .font(.system(size: largeIconSize))
                 .foregroundStyle(.red)
             
             Text(NSLocalizedString("practicetest.generation.failed", value: "Generation Failed", comment: "Generation Failed"))

@@ -112,6 +112,14 @@ struct OverdueTaskRow: View {
     var onTap: () -> Void
     var onComplete: () -> Void
     
+    @ScaledMetric private var emptyIconSize: CGFloat = 48
+
+    
+    @ScaledMetric private var normalTextSize: CGFloat = 18
+
+    
+    
+    
     @Environment(\.colorScheme) private var colorScheme
     private var neutralLine: Color { DesignSystem.Colors.neutralLine(for: colorScheme) }
 
@@ -1267,7 +1275,7 @@ struct PlannerBlockRow: View {
                     onStatusChange?(block.id, newStatus)
                 } label: {
                     Image(systemName: block.status == .completed ? "checkmark.circle.fill" : "circle")
-                        .font(.system(size: 18))
+                        .font(.system(size: normalTextSize))
                         .foregroundStyle(block.status == .completed ? .green : .secondary)
                 }
                 .buttonStyle(.plain)

@@ -2,6 +2,9 @@ import SwiftUI
 
 struct AssignmentSceneContent: View {
     @SceneStorage(SceneActivationHelper.assignmentSceneStorageKey) private var assignmentIdString: String?
+    @ScaledMetric private var emptyIconSize: CGFloat = 48
+
+    
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var coursesStore: CoursesStore
     @Environment(\.dismiss) private var dismiss
@@ -56,7 +59,7 @@ struct AssignmentSceneContent: View {
     private var placeholder: some View {
         VStack(spacing: 12) {
             Image(systemName: "doc.text.magnifyingglass")
-                .font(.system(size: 48))
+                .font(.system(size: emptyIconSize))
                 .foregroundStyle(.secondary)
             Text(NSLocalizedString("ui.assignment.detail.will.appear.here", value: "Assignment detail will appear here.", comment: "Assignment detail will appear here."))
                 .font(.title3.weight(.semibold))

@@ -2,6 +2,9 @@ import SwiftUI
 
 struct CourseSceneContent: View {
     @SceneStorage(SceneActivationHelper.courseSceneStorageKey) private var courseIdString: String?
+    @ScaledMetric private var emptyIconSize: CGFloat = 48
+
+    
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
 
@@ -90,7 +93,7 @@ struct CourseSceneContent: View {
     private var placeholder: some View {
         VStack(spacing: 12) {
             Image(systemName: "book.closed")
-                .font(.system(size: 48))
+                .font(.system(size: emptyIconSize))
                 .foregroundStyle(.secondary)
             Text(NSLocalizedString("ui.open.a.course.in.a.new.window.to.see.details.here", value: "Open a course in a new window to see details here.", comment: "Open a course in a new window to see details here."))
                 .font(.title3.weight(.medium))

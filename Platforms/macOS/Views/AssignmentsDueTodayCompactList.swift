@@ -58,6 +58,10 @@ struct AssignmentsDueTodayCompactList: View {
                         .padding(8)
                         .background(DesignSystem.Materials.surface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                         .onTapGesture { onSelect(task) }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityLabel("\(task.title), \(task.isCompleted ? "completed" : "not completed")")
+                        .accessibilityHint("Opens task details")
                     }
                 }
             }

@@ -7,6 +7,11 @@ import UniformTypeIdentifiers
 struct AddCardSheet: View {
     let deck: FlashcardDeck
     
+    @ScaledMetric private var emptyIconSize: CGFloat = 48
+
+    
+    
+    
     @Environment(\.dismiss) private var dismiss
     @StateObject private var manager = FlashcardManager.shared
     
@@ -370,7 +375,7 @@ struct ExportSheet: View {
                 // Empty state when no cards
                 VStack(spacing: 16) {
                     Image(systemName: "square.stack.3d.up.slash")
-                        .font(.system(size: 48))
+                        .font(.system(size: emptyIconSize))
                         .foregroundStyle(.secondary)
                     
                     Text(NSLocalizedString("ui.no.cards.to.export", value: "No Cards to Export", comment: "No Cards to Export"))

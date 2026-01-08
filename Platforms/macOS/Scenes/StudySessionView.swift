@@ -14,6 +14,9 @@ struct StudySessionView: View {
     @State private var cardsStudied = 0
     @State private var showingAnswer = false
     
+    @ScaledMetric private var completionIconSize: CGFloat = 64
+    @ScaledMetric private var emptyIconSize: CGFloat = 48
+    
     private var currentCard: Flashcard? {
         guard currentIndex < currentCards.count else { return nil }
         return currentCards[currentIndex]
@@ -185,7 +188,7 @@ struct StudySessionView: View {
             Spacer()
             
             Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 64))
+                .font(.system(size: completionIconSize))
                 .foregroundStyle(.green)
             
             Text(NSLocalizedString("studysession.session.complete", value: "Session Complete!", comment: "Session Complete!"))
@@ -217,7 +220,7 @@ struct StudySessionView: View {
     private var emptyView: some View {
         VStack(spacing: 16) {
             Image(systemName: "checkmark.circle")
-                .font(.system(size: 48))
+                .font(.system(size: emptyIconSize))
                 .foregroundStyle(.tertiary)
             
             Text(NSLocalizedString("studysession.no.cards.to.study", value: "No Cards to Study", comment: "No Cards to Study"))

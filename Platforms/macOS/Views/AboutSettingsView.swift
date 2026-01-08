@@ -2,6 +2,13 @@
 import SwiftUI
 
 struct AboutSettingsView: View {
+    @ScaledMetric private var largeIconSize: CGFloat = 48
+
+    @ScaledMetric private var appIconSize: CGFloat = 72
+
+    @ScaledMetric private var appNameSize: CGFloat = 32
+
+    
     @Environment(\.openURL) private var openURL
     
     private let appVersion: String = {
@@ -29,14 +36,14 @@ struct AboutSettingsView: View {
                             .frame(width: 128, height: 128)
                             .shadow(radius: 6)
                         Text(verbatim: "#")
-                            .font(.system(size: 72, weight: .bold, design: .rounded))
+                            .font(.system(size: appIconSize, weight: .bold, design: .rounded))
                             .foregroundStyle(.white)
                     }
                 }
                 
                 VStack(spacing: 4) {
                     Text(NSLocalizedString("about.app.name", value: "Itori", comment: "App name"))
-                        .font(.system(size: 32, weight: .semibold))
+                        .font(.system(size: appNameSize, weight: .semibold))
                     
                     Text(NSLocalizedString("about.app.tagline", value: "Academic Planning & Productivity", comment: "App tagline"))
                         .font(.subheadline)

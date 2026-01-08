@@ -32,6 +32,14 @@ struct DashboardView: View {
     @State private var studyTrend: [StudyTrendPoint] = []
     @State private var showEnergyPopover = false
     @State private var gradeWidgetMode: GradeWidgetMode = .currentSemester
+    
+    // Dynamic Type support
+    @ScaledMetric private var statNumberSize: CGFloat = 32
+    @ScaledMetric private var largeStatSize: CGFloat = 40
+    @ScaledMetric private var emptyStateIconSize: CGFloat = 48
+    @ScaledMetric private var timerDisplaySize: CGFloat = 64
+    @ScaledMetric private var headlineSize: CGFloat = 28
+    @ScaledMetric private var largeHeadlineSize: CGFloat = 36
 
     // Layout tokens
     private let cardSpacing: CGFloat = 12  // Spacing within rows (between cards horizontally)
@@ -463,7 +471,7 @@ struct DashboardView: View {
         HStack(spacing: 24) {
             // Primary headline
             Text(statusHeadline)
-                .font(.system(size: 28, weight: .semibold))
+                .font(.system(size: headlineSize, weight: .semibold))
             
             Spacer()
             
@@ -539,7 +547,7 @@ struct DashboardView: View {
                             .foregroundStyle(.secondary)
                     }
                     Text(verbatim: "\(tasksDueToday().count)")
-                        .font(.system(size: 32, weight: .bold))
+                        .font(.system(size: statNumberSize, weight: .bold))
                         .contentTransition(.numericText())
                 }
                 
@@ -555,7 +563,7 @@ struct DashboardView: View {
                             .foregroundStyle(.secondary)
                     }
                     Text(verbatim: "\(todaysCalendarEvents().count)")
-                        .font(.system(size: 32, weight: .bold))
+                        .font(.system(size: statNumberSize, weight: .bold))
                         .contentTransition(.numericText())
                 }
                 
@@ -571,7 +579,7 @@ struct DashboardView: View {
                             .foregroundStyle(.secondary)
                     }
                     Text(verbatim: "\(assignmentsStore.tasks.filter { !$0.isCompleted && $0.type != .practiceTest }.count)")
-                        .font(.system(size: 32, weight: .bold))
+                        .font(.system(size: statNumberSize, weight: .bold))
                         .contentTransition(.numericText())
                 }
                 
@@ -595,7 +603,7 @@ struct DashboardView: View {
 
                 let dueToday = tasksDueToday().count
                 Text(verbatim: "\(dueToday)")
-                    .font(.system(size: 40, weight: .bold))
+                    .font(.system(size: largeStatSize, weight: .bold))
                 Text(String.localizedStringWithFormat(
                     NSLocalizedString("tasks_due_today", comment: ""),
                     dueToday
@@ -656,7 +664,7 @@ struct DashboardView: View {
     private var calendarPermissionPrompt: some View {
         VStack(spacing: DesignSystem.Spacing.medium) {
             Image(systemName: "calendar.badge.exclamationmark")
-                .font(.system(size: 32))
+                .font(.system(size: statNumberSize))
                 .foregroundStyle(.secondary)
             
             Text(NSLocalizedString("dashboard.calendar.connect_message", comment: ""))
@@ -679,7 +687,7 @@ struct DashboardView: View {
     private var calendarAccessDeniedView: some View {
         VStack(spacing: DesignSystem.Spacing.medium) {
             Image(systemName: "exclamationmark.triangle")
-                .font(.system(size: 32))
+                .font(.system(size: statNumberSize))
                 .foregroundStyle(.orange)
             
             Text(NSLocalizedString("dashboard.calendar.access_denied_message", comment: ""))
@@ -854,7 +862,7 @@ struct DashboardView: View {
             if items.isEmpty {
                 VStack(spacing: 16) {
                     Image(systemName: "tray")
-                        .font(.system(size: 48))
+                        .font(.system(size: emptyStateIconSize))
                         .foregroundStyle(.secondary.opacity(0.5))
                         .padding(.top, 12)
                     
@@ -1304,6 +1312,10 @@ struct DashboardView: View {
                 }
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel("\(task.title), \(task.isDone ? "completed" : "not completed")")
+        .accessibilityHint("Tap to toggle completion, right-click for more options")
     }
 
     private var plannerTodayCard: some View {
@@ -1536,7 +1548,7 @@ struct DashboardView: View {
             } else {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(verbatim: "\(snapshot.remainingPercent)%")
-                        .font(.system(size: 36, weight: .bold))
+                        .font(.system(size: largeHeadlineSize, weight: .bold))
                     Text(String.localizedStringWithFormat(
                         NSLocalizedString("minutes_remaining", comment: ""),
                         snapshot.remainingMinutes

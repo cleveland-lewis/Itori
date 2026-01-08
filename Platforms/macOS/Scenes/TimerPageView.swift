@@ -622,6 +622,8 @@ struct TimerPageView: View {
                         }
                         .buttonStyle(.bordered)
                         .help("Pause the timer (it can be resumed)")
+                        .accessibilityLabel("Pause timer")
+                        .accessibilityHint("Pauses the running timer")
                         
                         Button(action: resetTimer) {
                             Label {
@@ -633,6 +635,8 @@ struct TimerPageView: View {
                         }
                         .buttonStyle(.bordered)
                         .help("Stop and reset the timer")
+                        .accessibilityLabel("Stop timer")
+                        .accessibilityHint("Stops and resets the timer")
                     }
                 } else {
                     clockGlassContainer {

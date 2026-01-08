@@ -844,7 +844,12 @@ struct EditTargetGradeSheet: View {
                                     .frame(maxWidth: 160)
                                 TextField("\(Int(comp.earnedPercent ?? 0))%", text: Binding(get: { String(Int(comp.earnedPercent ?? 0)) }, set: { comp.earnedPercent = Double($0) ?? comp.earnedPercent }))
                                     .frame(width: 50)
-                                Button(role: .destructive) { components.removeAll(where: { $0.id == comp.id }) } label: { Image(systemName: "trash") }
+                                Button(role: .destructive) { 
+                                    components.removeAll(where: { $0.id == comp.id }) 
+                                } label: { 
+                                    Image(systemName: "trash")
+                                        .accessibilityLabel("Delete component")
+                                }
                             }
                         }
 

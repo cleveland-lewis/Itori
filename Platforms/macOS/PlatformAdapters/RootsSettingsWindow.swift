@@ -474,6 +474,10 @@ private struct AppearanceSettingsView: View {
                                         settings.accentColorChoice = swatch.choice
                                         settings.save()
                                     }
+                                    .accessibilityElement(children: .combine)
+                                    .accessibilityAddTraits(.isButton)
+                                    .accessibilityLabel("\(swatch.name) color")
+                                    .accessibilityHint("Set accent color")
                                 }
                             }
                         }

@@ -9,6 +9,11 @@ struct FlashcardsView: View {
     @State private var showingStudySession = false
     @State private var searchText = ""
     
+    @ScaledMetric private var emptyIconSize: CGFloat = 48
+    @ScaledMetric private var largeIconSize: CGFloat = 64
+    @ScaledMetric private var smallTextSize: CGFloat = 14
+    @ScaledMetric private var mediumTextSize: CGFloat = 16
+    
     private var filteredDecks: [FlashcardDeck] {
         if searchText.isEmpty {
             return manager.decks
@@ -108,7 +113,7 @@ struct FlashcardsView: View {
                 } else if !searchText.isEmpty {
                     VStack(spacing: 12) {
                         Image(systemName: "magnifyingglass")
-                            .font(.system(size: 48))
+                            .font(.system(size: emptyIconSize))
                             .foregroundStyle(.secondary)
                         Text(NSLocalizedString("flashcards.search.no_results", comment: "No decks found"))
                             .font(.headline)
@@ -136,7 +141,7 @@ struct FlashcardsView: View {
     private var emptyStateView: some View {
         VStack(spacing: 16) {
             Image(systemName: "rectangle.stack")
-                .font(.system(size: 48))
+                .font(.system(size: emptyIconSize))
                 .foregroundStyle(.tertiary)
             
             Text(searchText.isEmpty ? NSLocalizedString("flashcards.empty.no_decks", comment: "No Decks") : NSLocalizedString("flashcards.empty.no_results", comment: "No Results"))
@@ -163,7 +168,7 @@ struct FlashcardsView: View {
     private var emptyDetailView: some View {
         VStack(spacing: 16) {
             Image(systemName: "rectangle.stack.badge.plus")
-                .font(.system(size: 64))
+                .font(.system(size: largeIconSize))
                 .foregroundStyle(.tertiary)
             
             Text(NSLocalizedString("flashcards.empty.select_deck", comment: "Select a Deck"))
@@ -319,7 +324,7 @@ struct CourseRowView: View {
                     .frame(width: 32, height: 32)
                     .overlay {
                         Image(systemName: "book.fill")
-                            .font(.system(size: 14))
+                            .font(.system(size: smallTextSize))
                             .foregroundStyle(.white)
                     }
                 
@@ -339,7 +344,7 @@ struct CourseRowView: View {
                 
                 // Add deck indicator
                 Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 16))
+                    .font(.system(size: mediumTextSize))
                     .foregroundStyle(.blue)
             }
             .padding(.horizontal, 16)
@@ -388,7 +393,7 @@ struct DeckRowView: View {
                     .frame(width: 32, height: 32)
                     .overlay {
                         Image(systemName: "rectangle.stack.fill")
-                            .font(.system(size: 14))
+                            .font(.system(size: smallTextSize))
                             .foregroundStyle(isSelected ? .white : .secondary)
                     }
                 

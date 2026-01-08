@@ -78,6 +78,10 @@ struct ActivityListView: View {
                     .onTapGesture {
                         viewModel.selectActivity(activity.id)
                     }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityLabel("\(activity.name)")
+                    .accessibilityHint("Select activity")
                 }
                 .onDelete { idx in
                     idx.map { viewModel.filteredActivities[$0].id }.forEach(viewModel.deleteActivity)

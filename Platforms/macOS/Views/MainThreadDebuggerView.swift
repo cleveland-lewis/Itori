@@ -2,6 +2,11 @@
 import SwiftUI
 
 struct MainThreadDebuggerView: View {
+    @ScaledMetric private var emptyIconSize: CGFloat = 48
+
+    @ScaledMetric private var mediumTextSize: CGFloat = 16
+
+    
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var debugger = MainThreadDebugger.shared
     @State private var selectedEvent: MainThreadDebugger.DebugEvent?
@@ -109,7 +114,7 @@ struct MainThreadDebuggerView: View {
             } else {
                 VStack(spacing: 16) {
                     Image(systemName: "ant.circle")
-                        .font(.system(size: 48))
+                        .font(.system(size: emptyIconSize))
                         .foregroundStyle(.secondary)
                     
                     Text(NSLocalizedString("mainthreaddebugger.main.thread.debugger.disabled", value: "Main Thread Debugger Disabled", comment: "Main Thread Debugger Disabled"))
@@ -226,6 +231,10 @@ struct MainThreadDebuggerView: View {
                                     .onTapGesture {
                                         selectedEvent = event
                                     }
+                                    .accessibilityElement(children: .combine)
+                                    .accessibilityAddTraits(.isButton)
+                                    .accessibilityLabel("Debug event")
+                                    .accessibilityHint("View event details")
                                     .id(event.id)
                             }
                         }

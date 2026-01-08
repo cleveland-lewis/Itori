@@ -89,7 +89,7 @@ struct ModuleDetailView: View {
                     if files.isEmpty {
                         VStack(spacing: 12) {
                             Image(systemName: "doc.badge.plus")
-                                .font(.system(size: 48))
+                                .font(.system(size: largeIconSize, weight: .bold, design: .rounded))
                                 .foregroundStyle(.tertiary)
                             
                             Text(NSLocalizedString("moduledetail.no.files.attached", value: "No files attached", comment: "No files attached"))
@@ -134,6 +134,9 @@ struct ModuleDetailView: View {
 /// File row in module detail
 private struct ModuleFileRow: View {
     let file: CourseFile
+    @ScaledMetric private var largeIconSize: CGFloat = 48
+
+    
     @State private var isHovered = false
     
     var body: some View {

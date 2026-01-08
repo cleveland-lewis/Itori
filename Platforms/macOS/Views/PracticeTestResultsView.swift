@@ -3,6 +3,9 @@ import SwiftUI
 
 struct PracticeTestResultsView: View {
     let test: PracticeTest
+    @ScaledMetric private var largeIconSize: CGFloat = 48
+
+    
     @ObservedObject var store: PracticeTestStore
     
     @State private var selectedQuestionId: UUID?
@@ -108,7 +111,7 @@ struct PracticeTestResultsView: View {
             // Overall score
             VStack(spacing: 4) {
                 Text(scorePercentage)
-                    .font(.system(size: 48, weight: .bold, design: .rounded))
+                    .font(.system(size: largeIconSize, weight: .bold, design: .rounded))
                     .foregroundStyle(scoreColor)
                 
                 Text(NSLocalizedString("practice.results.overall_score", comment: "Overall Score"))
@@ -223,7 +226,7 @@ struct PracticeTestResultsView: View {
     private var emptySelectionView: some View {
         VStack(spacing: 16) {
             Image(systemName: "doc.text.magnifyingglass")
-                .font(.system(size: 48))
+                .font(.system(size: largeIconSize, weight: .bold, design: .rounded))
                 .foregroundStyle(.secondary)
             
             Text(NSLocalizedString("practice.empty.select_question", comment: "Select a question to review"))

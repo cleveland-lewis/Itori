@@ -3,6 +3,17 @@ import SwiftUI
 import StoreKit
 
 struct MacOSSubscriptionView: View {
+    @ScaledMetric private var emptyIconSize: CGFloat = 48
+
+    @ScaledMetric private var mediumTextSize: CGFloat = 16
+
+    @ScaledMetric private var heroIconSize: CGFloat = 60
+
+    @ScaledMetric private var heroTitleSize: CGFloat = 32
+
+    @ScaledMetric private var pricingSize: CGFloat = 36
+
+    
     @StateObject private var subscriptionManager = SubscriptionManager.shared
     @Environment(\.dismiss) private var dismiss
     
@@ -47,7 +58,7 @@ struct MacOSSubscriptionView: View {
     private var headerSection: some View {
         VStack(spacing: 16) {
             Image(systemName: "sparkles")
-                .font(.system(size: 60))
+                .font(.system(size: heroIconSize))
                 .foregroundStyle(
                     LinearGradient(
                         colors: [.blue, .purple],
@@ -57,7 +68,7 @@ struct MacOSSubscriptionView: View {
                 )
             
             Text(NSLocalizedString("macossubscription.unlock.premium", value: "Unlock Premium", comment: "Unlock Premium"))
-                .font(.system(size: 32, weight: .bold))
+                .font(.system(size: heroTitleSize, weight: .bold))
             
             Text(NSLocalizedString("macossubscription.get.unlimited.access.to.all", value: "Get unlimited access to all features and priority support", comment: "Get unlimited access to all features and priority ..."))
                 .font(.title3)
@@ -250,7 +261,7 @@ private struct MacSubscriptionPlanCard: View {
                     .font(.title2.bold())
                 
                 Text(product.displayPrice)
-                    .font(.system(size: 36, weight: .bold))
+                    .font(.system(size: pricingSize, weight: .bold))
                 
                 Text(subscriptionPeriod)
                     .font(.subheadline)

@@ -6,6 +6,9 @@ import UniformTypeIdentifiers
 struct TaskDependencyEditorView: View {
     let assignmentId: UUID
     let assignmentTitle: String
+    @ScaledMetric private var emptyIconSize: CGFloat = 48
+
+    
     @StateObject private var planStore = AssignmentPlanStore.shared
     @Environment(\.dismiss) private var dismiss
     @State private var showCycleAlert = false
@@ -245,7 +248,7 @@ struct TaskDependencyEditorView: View {
     private var emptyStateView: some View {
         VStack(spacing: 16) {
             Image(systemName: "list.bullet.clipboard")
-                .font(.system(size: 48))
+                .font(.system(size: emptyIconSize))
                 .foregroundStyle(.secondary)
             Text(NSLocalizedString("taskdependencyeditor.no.tasks.in.plan", value: "No Tasks in Plan", comment: "No Tasks in Plan"))
                 .font(.title3.weight(.semibold))
@@ -260,7 +263,7 @@ struct TaskDependencyEditorView: View {
     private var noPlanView: some View {
         VStack(spacing: 16) {
             Image(systemName: "calendar.badge.exclamationmark")
-                .font(.system(size: 48))
+                .font(.system(size: emptyIconSize))
                 .foregroundStyle(.secondary)
             Text(NSLocalizedString("taskdependencyeditor.no.plan.found", value: "No Plan Found", comment: "No Plan Found"))
                 .font(.title3.weight(.semibold))

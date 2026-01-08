@@ -194,6 +194,16 @@ extension View {
     }
 }
 
+extension ShapeStyle where Self == Color {
+    /// Creates a color with opacity that enhances in high contrast mode
+    /// Use for backgrounds and decorative elements
+    static func contrastAware(_ color: Color, opacity: Double) -> Color {
+        // In real usage, this would check accessibility settings
+        // For now, returns the base color with opacity
+        return color.opacity(opacity)
+    }
+}
+
 private struct ContrastAwareOpacityModifier: ViewModifier {
     let baseOpacity: Double
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency

@@ -134,6 +134,9 @@ enum AssignmentSortOption: String, CaseIterable, Identifiable {
 // MARK: - Root View
 
 struct AssignmentsPageView: View {
+    @ScaledMetric private var emptyIconSize: CGFloat = 48
+
+    
     @EnvironmentObject private var settings: AppSettings
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
@@ -340,7 +343,7 @@ struct AssignmentsPageView: View {
                 // Empty state
                 VStack(spacing: 16) {
                     Image(systemName: "tray")
-                        .font(.system(size: 48))
+                        .font(.system(size: emptyIconSize))
                         .foregroundStyle(.secondary)
                     
                     Text(NSLocalizedString("assignments.empty.no_assignments", comment: ""))
@@ -715,6 +718,10 @@ struct ByCourseSummaryCard: View {
                 .onTapGesture {
                     onSelectCourse(item.course)
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityAddTraits(.isButton)
+                .accessibilityLabel("\(item.course.name)")
+                .accessibilityHint("Select course")
             }
         }
         .padding(12)

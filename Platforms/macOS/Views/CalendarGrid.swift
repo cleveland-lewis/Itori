@@ -13,6 +13,12 @@ struct CalendarGrid: View {
     private let calendar = Calendar.current
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 0), count: 7)
     
+    private var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter
+    }
+    
     private var monthName: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "LLLL yyyy"
@@ -58,6 +64,10 @@ struct CalendarGrid: View {
                         .onTapGesture {
                             calendarManager.selectedDate = day
                         }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityLabel(dateFormatter.string(from: day))
+                        .accessibilityHint("Select date")
                     } else {
                         Color.clear
                             .frame(height: 90)

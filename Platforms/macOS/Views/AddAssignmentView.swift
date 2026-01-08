@@ -367,6 +367,10 @@ struct AddAssignmentView: View {
                     .onTapGesture {
                         withAnimation(DesignSystem.Motion.standardSpring) { showingAddCourse = false }
                     }
+                    .accessibilityElement()
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityLabel("Dismiss")
+                    .accessibilityHint("Close add course dialog")
 
                 // Placeholder for actual add-course UI
                 AddCourseSheet()

@@ -12,6 +12,10 @@ struct DeckDetailView: View {
     @State private var showingDeckSettings = false
     @State private var selectedTab: DeckTab = .cards
     
+    @ScaledMetric private var emptyIconSize: CGFloat = 48
+    @ScaledMetric private var statNumberSize: CGFloat = 36
+    @ScaledMetric private var smallTextSize: CGFloat = 12
+    
     enum DeckTab: String, CaseIterable {
         case cards = "Cards"
         case statistics = "Statistics"
@@ -206,7 +210,7 @@ struct DeckDetailView: View {
     private var emptyCardsView: some View {
         VStack(spacing: 16) {
             Image(systemName: "square.stack.3d.up.badge.a")
-                .font(.system(size: 48))
+                .font(.system(size: emptyIconSize))
                 .foregroundStyle(.tertiary)
             
             Text(NSLocalizedString("deckdetail.no.cards.yet", value: "No Cards Yet", comment: "No Cards Yet"))
@@ -278,7 +282,7 @@ struct DeckDetailView: View {
             }
             
             Text(value)
-                .font(.system(size: 36, weight: .bold))
+                .font(.system(size: statNumberSize, weight: .bold))
             
             Text(title)
                 .font(.subheadline)
@@ -348,7 +352,7 @@ struct FlashcardRowView: View {
                     }
                 } label: {
                     Image(systemName: isFlipped ? "eye.slash" : "eye")
-                        .font(.system(size: 12))
+                        .font(.system(size: smallTextSize))
                 }
                 .buttonStyle(.plain)
                 .help(isFlipped ? "Hide answer" : "Show answer")
@@ -357,7 +361,7 @@ struct FlashcardRowView: View {
                     showingEdit = true
                 } label: {
                     Image(systemName: "pencil")
-                        .font(.system(size: 12))
+                        .font(.system(size: smallTextSize))
                 }
                 .buttonStyle(.plain)
                 .help("Edit card")

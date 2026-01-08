@@ -80,6 +80,11 @@ public struct CalendarEvent: Identifiable, Hashable {
 }
 
 struct CalendarPageView: View {
+    @ScaledMetric private var emptyIconSize: CGFloat = 48
+
+    @ScaledMetric private var mediumTextSize: CGFloat = 16
+
+    
     @EnvironmentObject var settings: AppSettingsModel
 
     @EnvironmentObject var eventsStore: EventsCountStore
@@ -401,7 +406,7 @@ struct CalendarPageView: View {
             // Empty state
             VStack(spacing: 12) {
                 Image(systemName: "calendar.badge.clock")
-                    .font(.system(size: 48))
+                    .font(.system(size: emptyIconSize))
                     .foregroundStyle(.tertiary)
                 
                 Text(NSLocalizedString("calendar.no_events.title", value: "No Events", comment: "No Events"))
@@ -452,7 +457,7 @@ struct CalendarPageView: View {
                 
                 // Category color indicator (outline SF Symbol)
                 Image(systemName: categoryIcon(for: event.category))
-                    .font(.system(size: 16))
+                    .font(.system(size: mediumTextSize))
                     .foregroundStyle(Color.accentColor)
                     .frame(width: 20)
                 

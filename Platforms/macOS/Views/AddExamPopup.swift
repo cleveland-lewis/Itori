@@ -55,7 +55,10 @@ struct AddExamPopup: View {
                         HStack {
                             Text(url.lastPathComponent)
                             Spacer()
-                            Button(action: { uploadedURLs.removeAll { $0 == url } }) { Image(systemName: "xmark.circle") }
+                            Button(action: { uploadedURLs.removeAll { $0 == url } }) { 
+                                Image(systemName: "xmark.circle")
+                                    .accessibilityLabel("Remove \(url.lastPathComponent)")
+                            }
                                 .buttonStyle(.plain)
                         }
                     }
