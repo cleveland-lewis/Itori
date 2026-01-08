@@ -719,9 +719,11 @@ struct IOSDashboardView: View {
 
     private func upcomingAssignmentRow(_ item: UpcomingAssignmentItem) -> some View {
         HStack(spacing: 10) {
-            Circle()
-                .fill(item.courseColor)
-                .frame(width: 8, height: 8)
+            CourseColorIndicator(
+                color: item.courseColor,
+                courseCode: item.courseCode ?? "",
+                size: 8
+            )
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.title)
