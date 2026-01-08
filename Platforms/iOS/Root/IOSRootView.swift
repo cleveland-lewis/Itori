@@ -77,8 +77,13 @@ struct IOSRootView: View {
             .interfacePreferences(interfacePreferences)
             .preferredColorScheme(preferredColorScheme)
             .transaction { transaction in
-                if !settings.showAnimations {
-                    transaction.disablesAnimations = true
+                // Respect system Reduce Motion setting
+                if transaction.disablesAnimations == false {
+                    #if os(iOS)
+                    transaction.disablesAnimations = UIAccessibility.isReduceMotionEnabled
+                    #elseif os(macOS)
+                    transaction.disablesAnimations = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+                    #endif
                 }
             }
             .overlay(alignment: .top) {

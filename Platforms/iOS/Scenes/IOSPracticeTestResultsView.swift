@@ -5,6 +5,7 @@ struct IOSPracticeTestResultsView: View {
     let test: PracticeTest
     @ObservedObject var store: PracticeTestStore
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.layoutMetrics) private var metrics
     
     @State private var expandedQuestionIds: Set<UUID> = []
     
@@ -35,7 +36,7 @@ struct IOSPracticeTestResultsView: View {
                     statisticsSection
                     questionsReview
                 }
-                .padding(20)
+                .padding(metrics.cardPadding)
             }
             .background(Color(uiColor: .systemGroupedBackground))
             .navigationTitle("Test Results")
@@ -60,7 +61,10 @@ struct IOSPracticeTestResultsView: View {
             VStack(spacing: 8) {
                 Text(verbatim: "\(Int(scorePercentage * 100))%")
                     .font(.system(size: 72, weight: .bold, design: .rounded))
+                    .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+                    .minimumScaleFactor(0.5)
                     .foregroundStyle(scoreColor)
+                    .accessibilityAddTraits(.isHeader)
                 
                 Text(verbatim: "\(test.correctCount) out of \(test.questions.count) correct")
                     .font(.headline)
@@ -116,7 +120,7 @@ struct IOSPracticeTestResultsView: View {
                     statisticRow(label: "Completed", value: formattedDate(submittedAt))
                 }
             }
-            .padding(16)
+            .padding(metrics.cardPadding)
             .background(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(Color(uiColor: .secondarySystemGroupedBackground))
@@ -181,6 +185,8 @@ struct IOSPracticeTestResultsView: View {
                         HStack {
                             Image(systemName: isCorrect ? "checkmark.circle.fill" : "xmark.circle.fill")
                                 .foregroundStyle(isCorrect ? .green : .red)
+                                .font(.body)
+                                .accessibilityHidden(true)
                             Text(isCorrect ? "Correct" : "Incorrect")
                                 .font(.subheadline.bold())
                                 .foregroundStyle(isCorrect ? .green : .red)
@@ -198,6 +204,8 @@ struct IOSPracticeTestResultsView: View {
                     Image(systemName: "chevron.right")
                         .foregroundStyle(.secondary)
                         .rotationEffect(.degrees(isExpanded ? 90 : 0))
+                        .font(.caption)
+                        .accessibilityHidden(true)
                 }
             }
             .buttonStyle(.plain)
@@ -241,7 +249,7 @@ struct IOSPracticeTestResultsView: View {
                 )
             }
         }
-        .padding(16)
+        .padding(metrics.cardPadding)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(Color(uiColor: .secondarySystemGroupedBackground))

@@ -9,6 +9,7 @@ struct IOSScheduledTestsView: View {
     @State private var selectedTest: ScheduledPracticeTest?
     @State private var showingStartConfirmation = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.layoutMetrics) private var metrics
     
     private var isPad: Bool { horizontalSizeClass == .regular }
     
@@ -51,8 +52,9 @@ struct IOSScheduledTestsView: View {
             Spacer()
             
             Image(systemName: "calendar.badge.clock")
-                .font(.system(size: 64))
+                .font(.system(.largeTitle))
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
             
             VStack(spacing: 8) {
                 Text(NSLocalizedString("iosscheduledtests.no.scheduled.tests", value: "No Scheduled Tests", comment: "No Scheduled Tests"))
@@ -208,7 +210,7 @@ struct IOSScheduledTestRow: View {
                 .controlSize(.small)
             }
         }
-        .padding(16)
+        .padding(metrics.cardPadding)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(Color(uiColor: .secondarySystemGroupedBackground))

@@ -9,6 +9,8 @@ struct NativeAnalogClock: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.colorScheme) private var colorScheme
+    @ScaledMetric private var hourNumberSize: CGFloat = 16
+    @ScaledMetric private var digitalTimeSize: CGFloat = 36
     private var radius: CGFloat { diameter / 2 }
     
     var body: some View {
@@ -74,7 +76,7 @@ struct NativeAnalogClock: View {
                 let distance = radius * 0.62  // Moved inward from 0.68 for more even spacing
                 
                 Text(formatHour(hour))
-                    .font(.system(size: diameter * 0.1, weight: .medium, design: .rounded))
+                    .font(.system(size: hourNumberSize * (diameter / 160), weight: .medium, design: .rounded))
                     .monospacedDigit()
                     .foregroundStyle(.primary)
                     .position(
@@ -151,6 +153,7 @@ struct NativeAnalogClock: View {
 
 struct DashboardClockCard: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.layoutMetrics) private var metrics
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -167,7 +170,8 @@ struct DashboardClockCard: View {
                 
                 VStack(alignment: .leading, spacing: 8) {
                     Text(Date(), style: .time)
-                        .font(.system(size: 36, weight: .medium, design: .rounded))
+                        .font(.system(size: digitalTimeSize, weight: .medium, design: .rounded))
+                        .minimumScaleFactor(0.5)
                         .monospacedDigit()
                         .foregroundStyle(.primary)
                     
@@ -181,7 +185,7 @@ struct DashboardClockCard: View {
             }
             .padding(.vertical, 8)
         }
-        .padding(20)
+        .padding(metrics.cardPadding)
         .background {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .fill(.background.secondary)

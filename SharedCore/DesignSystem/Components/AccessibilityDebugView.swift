@@ -155,7 +155,7 @@ struct AccessibilityDebugView: View {
                         .foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(16)
+                .padding(metrics.cardPadding)
                 .background(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .fill(simulateReduceTransparency ? 
@@ -181,7 +181,7 @@ struct AccessibilityDebugView: View {
                         .foregroundStyle(simulateReduceMotion ? .orange : .green)
                 }
             }
-            .padding(16)
+            .padding(metrics.cardPadding)
             .background(
                 RoundedRectangle(cornerRadius: 8, style: .continuous)
                     .fill(_controlBackground.opacity(0.5))
@@ -199,6 +199,7 @@ struct AccessibilityDebugView: View {
             Image(systemName: isEnabled ? "checkmark.circle.fill" : "circle")
                 .foregroundStyle(isEnabled ? .green : .secondary)
                 .font(.body)
+                .accessibilityHidden(true)
         }
     }
 }

@@ -5,6 +5,7 @@ import StoreKit
 struct IOSSubscriptionView: View {
     @StateObject private var subscriptionManager = SubscriptionManager.shared
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.layoutMetrics) private var metrics
     
     @State private var isPurchasing = false
     @State private var showError = false
@@ -31,7 +32,7 @@ struct IOSSubscriptionView: View {
                     
                     restoreButton
                 }
-                .padding(20)
+                .padding(metrics.cardPadding)
             }
             .background(DesignSystem.Colors.appBackground)
             .navigationTitle(NSLocalizedString("settings.itori.premium", value: "Subscriptions", comment: "Subscriptions"))
@@ -59,7 +60,8 @@ struct IOSSubscriptionView: View {
     private var headerSection: some View {
         VStack(spacing: 16) {
             Image(systemName: "sparkles")
-                .font(.system(size: 60))
+                .font(.system(.largeTitle))
+                .accessibilityHidden(true)
                 .foregroundStyle(
                     LinearGradient(
                         colors: [.blue, .purple],
@@ -87,6 +89,8 @@ struct IOSSubscriptionView: View {
                 HStack {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(.green)
+                        .font(.body)
+                        .accessibilityHidden(true)
                     Text(NSLocalizedString("iossubscription.active.subscription", value: "Active Subscription", comment: "Active Subscription"))
                         .font(.subheadline.weight(.semibold))
                     Spacer()
@@ -138,7 +142,7 @@ struct IOSSubscriptionView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .padding(16)
+        .padding(metrics.cardPadding)
         .background(
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .fill(Color(uiColor: .secondarySystemBackground))
@@ -305,7 +309,7 @@ private struct SubscriptionPlanCard: View {
                 .disabled(isPurchasing)
             }
         }
-        .padding(16)
+        .padding(metrics.cardPadding)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(Color(uiColor: .secondarySystemBackground))

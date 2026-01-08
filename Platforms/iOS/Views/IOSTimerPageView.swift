@@ -14,12 +14,14 @@ struct IOSTimerPageView: View {
     @State private var activitySearchText = ""
     @State private var selectedCollectionID: UUID? = nil
     @AppStorage("timer.display.style") private var timerDisplayStyleRaw: String = TimerDisplayStyle.digital.rawValue
+    @ScaledMetric private var timerFontSize: CGFloat = 84
     @State private var timerCardWidth: CGFloat = 0
     @State private var showingFocusPage = false
     @State private var showingRecentSessions = false
     @State private var showingAddSession = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.layoutMetrics) private var metrics
 
     private var sessionState: FocusSession.State {
         viewModel.currentSession?.state ?? .idle
@@ -71,7 +73,7 @@ struct IOSTimerPageView: View {
                     activitySearch
                     activityList
                 }
-                .padding(20)
+                .padding(metrics.cardPadding)
             }
             .frame(minWidth: 300, idealWidth: 350, maxWidth: 400)
             .background(Color(uiColor: .systemGroupedBackground))
@@ -87,7 +89,7 @@ struct IOSTimerPageView: View {
                     debugSection
 #endif
                 }
-                .padding(20)
+                .padding(metrics.cardPadding)
             }
             .frame(maxWidth: .infinity)
         }
@@ -112,7 +114,7 @@ struct IOSTimerPageView: View {
                 activitySearch
                 activityList
             }
-            .padding(16)
+            .padding(metrics.cardPadding)
             .background(
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color(uiColor: .secondarySystemGroupedBackground))
@@ -125,7 +127,7 @@ struct IOSTimerPageView: View {
             debugSection
 #endif
         }
-        .padding(20)
+        .padding(metrics.cardPadding)
     }
 
     private var timerStatusCard: some View {
@@ -166,12 +168,17 @@ struct IOSTimerPageView: View {
                     timerSeconds: timerDialSeconds
                 )
                 .accessibilityIdentifier("Timer.Clock")
+                .accessibilityLabel("Timer display")
+                .accessibilityValue(timeString(for: viewModel.sessionRemaining, elapsed: viewModel.sessionElapsed))
                 .frame(maxWidth: .infinity)
             } else {
                 Text(timeString(for: viewModel.sessionRemaining, elapsed: viewModel.sessionElapsed))
                     .font(.system(size: timerTextSize, weight: .bold, design: .rounded))
+                    .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                     .monospacedDigit()
                     .accessibilityIdentifier("Timer.Time")
+                    .accessibilityLabel("Timer")
+                    .accessibilityValue(timeString(for: viewModel.sessionRemaining, elapsed: viewModel.sessionElapsed))
                     .frame(maxWidth: .infinity, alignment: .center)
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
@@ -183,7 +190,7 @@ struct IOSTimerPageView: View {
             }
             controlRow
         }
-        .padding(16)
+        .padding(metrics.cardPadding)
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(Color(uiColor: .secondarySystemBackground))
@@ -367,6 +374,7 @@ struct IOSTimerPageView: View {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(.accentColor)
                         .font(.body)
+                        .accessibilityHidden(true)
                 }
             }
             .padding(.horizontal, 12)
@@ -503,7 +511,7 @@ struct IOSTimerPageView: View {
                 .padding(.vertical, 24)
             }
         }
-        .padding(16)
+        .padding(metrics.cardPadding)
         .background(
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color(uiColor: .secondarySystemGroupedBackground))
@@ -596,7 +604,7 @@ struct IOSTimerPageView: View {
                         .frame(height: 260)
                     } else {
                         Text(timeString(for: viewModel.sessionRemaining, elapsed: viewModel.sessionElapsed))
-                            .font(.system(size: 84, weight: .bold, design: .rounded))
+                            .font(.system(size: timerFontSize, weight: .bold, design: .rounded))
                             .monospacedDigit()
                             .minimumScaleFactor(0.4)
                             .lineLimit(1)
@@ -617,6 +625,7 @@ struct IOSTimerPageView: View {
                         showingFocusPage = false
                     } label: {
                         Image(systemName: "xmark")
+                            .accessibilityLabel("Close")
                     }
                 }
             }
@@ -692,7 +701,7 @@ struct IOSTimerPageView: View {
             tasksDueTodaySection
             tasksDueThisWeekSection
         }
-        .padding(16)
+        .padding(metrics.cardPadding)
         .background(
             RoundedRectangle(cornerRadius: 12)
                 .fill(Color(uiColor: .secondarySystemGroupedBackground))
@@ -704,8 +713,9 @@ struct IOSTimerPageView: View {
             HStack {
                 Image(systemName: "calendar.badge.clock")
                     .foregroundColor(.orange)
+                    .accessibilityHidden(true)
                 Text(NSLocalizedString("timer.tasks.dueToday", comment: "Due Today"))
-                    .font(.subheadline.weight(.medium))
+                    .font(.system(.subheadline, weight: .medium))
                 Spacer()
                 if !tasksDueToday.isEmpty {
                     Text(verbatim: "\(tasksDueToday.count)")

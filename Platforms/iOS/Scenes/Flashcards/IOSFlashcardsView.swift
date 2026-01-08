@@ -37,6 +37,8 @@ struct IOSFlashcardsView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
+                    .accessibilityLabel("Add flashcard deck")
+                    .accessibilityHint("Opens form to create a new flashcard deck")
                 }
             }
             .sheet(isPresented: $showingAddDeck) {
@@ -48,8 +50,9 @@ struct IOSFlashcardsView: View {
     private var emptyStateView: some View {
         VStack(spacing: 24) {
             Image(systemName: "rectangle.stack.fill")
-                .font(.system(size: 72))
+                .font(.largeTitle)
                 .foregroundStyle(.secondary.opacity(0.5))
+                .accessibilityHidden(true)
             
             VStack(spacing: 12) {
                 Text(NSLocalizedString("iosflashcards.no.flashcard.decks", value: "No Flashcard Decks", comment: "No Flashcard Decks"))
@@ -133,6 +136,9 @@ struct DeckRowView: View {
             }
         }
         .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(deck.title), \(deck.cards.count) cards\(dueCount > 0 ? ", \(dueCount) due now" : "")")
+        .accessibilityHint("Tap to study this deck")
     }
 }
 
@@ -221,12 +227,16 @@ struct IOSDeckDetailView: View {
                             Image(systemName: "play.circle.fill")
                                 .font(.title2)
                                 .foregroundStyle(Color.accentColor)
+                                .accessibilityHidden(true)
                         }
                     }
+                    .accessibilityLabel("Study now, \(dueCards.count) cards due")
+                    .accessibilityHint("Start studying flashcards")
                 } else {
                     HStack {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundStyle(.green)
+                            .accessibilityHidden(true)
                         Text(NSLocalizedString("iosflashcards.all.caught.up", value: "All caught up!", comment: "All caught up!"))
                             .foregroundStyle(.secondary)
                     }
@@ -276,6 +286,8 @@ struct IOSDeckDetailView: View {
                 } label: {
                     Image(systemName: "plus")
                 }
+                .accessibilityLabel("Add flashcard")
+                .accessibilityHint("Create a new flashcard in this deck")
             }
         }
         .sheet(isPresented: $showingAddCard) {
@@ -591,8 +603,9 @@ struct IOSStudySessionView: View {
     private var completionView: some View {
         VStack(spacing: 24) {
             Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 72))
+                .font(.largeTitle)
                 .foregroundStyle(.green)
+                .accessibilityHidden(true)
             
             VStack(spacing: 8) {
                 Text(NSLocalizedString("iosflashcards.session.complete", value: "Session Complete!", comment: "Session Complete!"))
@@ -624,4 +637,3 @@ struct IOSStudySessionView: View {
 }
 #endif
 #endif
-

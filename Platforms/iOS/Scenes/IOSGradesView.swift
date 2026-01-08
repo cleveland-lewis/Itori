@@ -10,6 +10,7 @@ struct IOSGradesView: View {
     @State private var selectedCourse: Course? = nil
     @State private var showingGradeEditor = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.layoutMetrics) private var metrics
     
     private var isPad: Bool {
         horizontalSizeClass == .regular
@@ -51,6 +52,7 @@ struct IOSGradesView: View {
                     sheetRouter.activeSheet = .addGrade(UUID())
                 } label: {
                     Image(systemName: "plus")
+                        .accessibilityLabel("Add grade")
                 }
             }
         }
@@ -71,14 +73,15 @@ struct IOSGradesView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                     Text(String(format: "%.2f", calculateOverallGPA()))
-                        .font(.system(size: 36, weight: .bold, design: .rounded))
+                        .font(.system(.largeTitle, weight: .bold))
                         .foregroundStyle(.primary)
                 }
                 Spacer()
                 Image(systemName: "chart.bar.doc.horizontal.fill")
-                    .font(.system(size: 40))
+                    .font(.system(.largeTitle))
                     .foregroundStyle(gpaColor(calculateOverallGPA()))
                     .opacity(0.3)
+                    .accessibilityHidden(true)
             }
             
             if !coursesStore.activeCourses.isEmpty {
@@ -90,11 +93,13 @@ struct IOSGradesView: View {
                 }
             }
         }
-        .padding(16)
+        .padding(metrics.cardPadding)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(Color(uiColor: .secondarySystemGroupedBackground))
         )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Overall GPA: \(String(format: "%.2f", calculateOverallGPA())), \(coursesStore.activeCourses.count) courses, \(gradedCoursesCount) graded")
     }
     
     private func courseRow(for course: Course) -> some View {
@@ -137,8 +142,28 @@ struct IOSGradesView: View {
             Image(systemName: "chevron.right")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
         }
         .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabelFor(course: course))
+        .accessibilityHint("Tap to view course details")
+    }
+    
+    private func accessibilityLabelFor(course: Course) -> String {
+        let courseName = course.code.isEmpty ? course.title : "\(course.code), \(course.title)"
+        if let gradeEntry = gradesStore.grade(for: course.id) {
+            if let percent = gradeEntry.percent {
+                if let letter = gradeEntry.letter {
+                    return "\(courseName), grade: \(String(format: "%.1f", percent)) percent, \(letter)"
+                } else {
+                    return "\(courseName), grade: \(String(format: "%.1f", percent)) percent"
+                }
+            } else if let letter = gradeEntry.letter {
+                return "\(courseName), grade: \(letter)"
+            }
+        }
+        return "\(courseName), not graded"
     }
     
     private func statItem(label: String, value: String) -> some View {

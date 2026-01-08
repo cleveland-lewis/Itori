@@ -49,20 +49,20 @@ struct IOSPlannerView: View {
                                 RoundedRectangle(cornerRadius: 18, style: .continuous)
                                     .stroke(Color.accentColor.opacity(focusPulse ? 0.55 : 0), lineWidth: 2)
                             )
-                            .animation(.easeInOut(duration: 0.35), value: focusPulse)
+                            .systemAccessibleAnimation(.easeInOut(duration: 0.35), value: focusPulse)
                             .id(PlannerScrollTarget.schedule)
                         overflowSection
                             .id(PlannerScrollTarget.overflow)
                         unscheduledSection
                             .id(PlannerScrollTarget.unscheduled)
                     }
-                    .padding(20)
+                    .padding(metrics.cardPadding)
                     .padding(.bottom, isPad ? 80 : 0) // Extra padding on iPad for floating button
                 }
                 .onReceive(plannerCoordinator.$requestedDate) { date in
                     guard let date else { return }
                     selectedDate = date
-                    withAnimation(.easeInOut) {
+                    withSystemAnimation(.easeInOut) {
                         proxy.scrollTo(PlannerScrollTarget.schedule, anchor: .top)
                     }
                     focusPulse = true
@@ -80,6 +80,7 @@ struct IOSPlannerView: View {
                 } label: {
                     HStack(spacing: 8) {
                         Image(systemName: "sparkles")
+                            .accessibilityHidden(true)
                         Text(NSLocalizedString("ios.planner.generate_plan_button", comment: "Generate Plan"))
                     }
                     .frame(maxWidth: .infinity)
@@ -93,6 +94,7 @@ struct IOSPlannerView: View {
                 .padding(.horizontal, 20)
                 .padding(.bottom, 20)
                 .shadow(color: .black.opacity(0.15), radius: 8, y: 4)
+                .accessibilityLabel(NSLocalizedString("ios.planner.generate_plan_button", comment: "Generate Plan"))
             }
         }
         .background(DesignSystem.Colors.appBackground)
@@ -143,7 +145,7 @@ struct IOSPlannerView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .padding(16)
+        .padding(metrics.cardPadding)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Color(uiColor: .secondarySystemBackground))
@@ -198,6 +200,7 @@ struct IOSPlannerView: View {
                         subtitle: String(format: NSLocalizedString("ios.planner.due_format", comment: "Due date"), formattedDate(session.dueDate), session.estimatedMinutes),
                         systemImage: "clock.badge.exclamationmark"
                     )
+                    .accessibilityElement(children: .combine)
                 }
             }
         }
@@ -409,8 +412,12 @@ struct IOSAssignmentsView: View {
                         } label: {
                             Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
                                 .foregroundStyle(task.isCompleted ? Color.accentColor : Color.secondary)
+                                .accessibilityHidden(true)
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel(task.isCompleted ? "Mark as incomplete" : "Mark as complete")
+                        .accessibilityHint(task.isCompleted ? "Marks task as not done" : "Marks task as done")
+                        .accessibilityAddTraits(.isButton)
 
                         VStack(alignment: .leading, spacing: 4) {
                             Text(task.title)
@@ -429,7 +436,9 @@ struct IOSAssignmentsView: View {
                     }
                     .contentShape(Rectangle())
                     .scaleEffect(pressedTaskId == task.id ? 0.98 : 1.0)
-                    .animation(.spring(response: 0.3, dampingFraction: 0.6), value: pressedTaskId)
+                    .systemAccessibleAnimation(.spring(response: 0.3, dampingFraction: 0.6), value: pressedTaskId)
+                    .accessibilityElement(children: .contain)
+                    .accessibilityLabel("\(task.title), \(task.isCompleted ? "completed" : "not completed"), due \(formatDueDisplay(for: task))")
                     .draggable(TransferableAssignment(from: task))
                     .onTapGesture {
                         selectedTask = task
@@ -877,7 +886,7 @@ struct IOSCalendarView: View {
                     }
                 }
             }
-            .padding(20)
+            .padding(metrics.cardPadding)
         }
         .background(DesignSystem.Colors.appBackground)
         
@@ -923,6 +932,7 @@ struct IOSPracticeView: View {
                                     Circle()
                                         .fill(Color.blue.opacity(0.15))
                                 )
+                                .accessibilityHidden(true)
                             
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(NSLocalizedString("Scheduled Tests", value: "Scheduled Tests", comment: ""))
@@ -939,14 +949,18 @@ struct IOSPracticeView: View {
                             Image(systemName: "chevron.right")
                                 .font(.subheadline.weight(.semibold))
                                 .foregroundStyle(.secondary)
+                                .accessibilityHidden(true)
                         }
-                        .padding(16)
+                        .padding(metrics.cardPadding)
                         .background(
                             RoundedRectangle(cornerRadius: 16, style: .continuous)
                                 .fill(Color(uiColor: .secondarySystemGroupedBackground))
                         )
                     }
                     .buttonStyle(.plain)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(String(format: NSLocalizedString("iospractice.scheduled.tests.accessibility.label", value: "Scheduled Tests, %d upcoming", comment: "Scheduled tests card accessibility label"), scheduledTestsStore.scheduledTests.filter { $0.status != .archived }.count))
+                    .accessibilityHint(NSLocalizedString("iospractice.scheduled.tests.accessibility.hint", value: "View and manage scheduled tests", comment: "Scheduled tests card accessibility hint"))
                     
                     // Practice Tests Section
                     VStack(alignment: .leading, spacing: 12) {
@@ -961,6 +975,8 @@ struct IOSPracticeView: View {
                                     .font(.title2)
                                     .foregroundStyle(.blue)
                             }
+                            .accessibilityLabel("Generate new practice test")
+                            .accessibilityHint("Opens form to create a new practice test")
                         }
                         
                         if practiceStore.isGenerating {
@@ -979,7 +995,7 @@ struct IOSPracticeView: View {
                         statisticsCard
                     }
                 }
-                .padding(20)
+                .padding(metrics.cardPadding)
             }
             .background(DesignSystem.Colors.appBackground)
             .navigationTitle("Practice")
@@ -1045,6 +1061,7 @@ struct IOSPracticeView: View {
                     Image(systemName: "play.circle.fill")
                         .font(.title)
                         .foregroundStyle(.green)
+                        .accessibilityHidden(true)
                     
                     VStack(alignment: .leading, spacing: 4) {
                         Text(NSLocalizedString("Ready to Start", value: "Ready to Start", comment: ""))
@@ -1076,13 +1093,16 @@ struct IOSPracticeView: View {
                         .foregroundStyle(.blue)
                 }
             }
-            .padding(16)
+            .padding(metrics.cardPadding)
             .background(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(Color(uiColor: .secondarySystemGroupedBackground))
             )
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Ready to start, \(test.courseName), \(test.questionCount) questions, \(test.difficulty.rawValue) difficulty")
+        .accessibilityHint("Tap to start practice test")
         .fullScreenCover(isPresented: Binding(
             get: { test.status == .inProgress },
             set: { _ in }
@@ -1100,6 +1120,7 @@ struct IOSPracticeView: View {
                     Image(systemName: "arrow.clockwise.circle.fill")
                         .font(.title)
                         .foregroundStyle(.orange)
+                        .accessibilityHidden(true)
                     
                     VStack(alignment: .leading, spacing: 4) {
                         Text(NSLocalizedString("In Progress", value: "In Progress", comment: ""))
@@ -1122,7 +1143,7 @@ struct IOSPracticeView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .padding(16)
+            .padding(metrics.cardPadding)
             .background(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(Color(uiColor: .secondarySystemGroupedBackground))
@@ -1149,6 +1170,7 @@ struct IOSPracticeView: View {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.title)
                         .foregroundStyle(scoreColor)
+                        .accessibilityHidden(true)
                     
                     VStack(alignment: .leading, spacing: 4) {
                         Text(NSLocalizedString("Completed", value: "Completed", comment: ""))
@@ -1166,7 +1188,7 @@ struct IOSPracticeView: View {
                         .foregroundStyle(scoreColor)
                 }
             }
-            .padding(16)
+            .padding(metrics.cardPadding)
             .background(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(Color(uiColor: .secondarySystemGroupedBackground))
@@ -1220,7 +1242,7 @@ struct IOSPracticeView: View {
             }
             .buttonStyle(.plain)
         }
-        .padding(16)
+        .padding(metrics.cardPadding)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(Color(uiColor: .secondarySystemGroupedBackground))
@@ -1232,8 +1254,10 @@ struct IOSPracticeView: View {
     private var emptyTestsCard: some View {
         VStack(spacing: 12) {
             Image(systemName: "doc.text.magnifyingglass")
-                .font(.system(size: 48))
+                .font(.largeTitle)
+                .imageScale(.large)
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
             
             Text(NSLocalizedString("No Practice Tests Yet", value: "No Practice Tests Yet", comment: ""))
                 .font(.headline)
@@ -1274,6 +1298,7 @@ struct IOSPracticeView: View {
                 recentTestRow(test)
             }
         }
+        .accessibilityLabel(NSLocalizedString("iospractice.ready_test.accessibility.label", value: "Start practice test", comment: "Ready test card accessibility label"))
     }
     
     private func recentTestRow(_ test: PracticeTest) -> some View {
@@ -1336,7 +1361,7 @@ struct IOSPracticeView: View {
                 )
             }
         }
-        .padding(16)
+        .padding(metrics.cardPadding)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(Color(uiColor: .secondarySystemGroupedBackground))
@@ -1410,9 +1435,14 @@ struct IOSTaskDetailView: View {
                         } label: {
                             HStack(spacing: 12) {
                                 Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
+                                    .accessibilityHidden(true)
                                     .font(.title2)
                                     .foregroundStyle(task.isCompleted ? Color.accentColor : Color.secondary)
                                 Text(task.isCompleted ? "Completed" : "Mark as Complete")
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(task.isCompleted ? "Mark as incomplete" : "Mark as complete")
                                     .font(.body.weight(.medium))
                             }
                         }
@@ -1617,7 +1647,7 @@ private struct IOSInfoCard: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
-        .padding(16)
+        .padding(metrics.cardPadding)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Color(uiColor: .secondarySystemBackground))
@@ -2260,9 +2290,12 @@ private struct PrioritySelectionView: View {
                         if selectedPriority == priority {
                             Image(systemName: "checkmark")
                                 .foregroundStyle(Color.accentColor)
+                                .accessibilityHidden(true)
                         }
                     }
                 }
+                .accessibilityLabel(priority.label)
+                .accessibilityAddTraits(selectedPriority == priority ? [.isSelected] : [])
             }
         }
         .navigationTitle("Select Priority")
@@ -2397,7 +2430,7 @@ private struct IOSPlanHelpView: View {
                     Text(NSLocalizedString("Generate Plan to create time blocks for today and the next few days.", value: "Generate Plan to create time blocks for today and the next few days.", comment: ""))
                     Text(NSLocalizedString("Tasks without a due date stay in the Unscheduled section.", value: "Tasks without a due date stay in the Unscheduled section.", comment: ""))
                 }
-                .padding(20)
+                .padding(metrics.cardPadding)
             }
             .navigationTitle("How Planner Works")
             .toolbar {
@@ -2488,6 +2521,7 @@ private struct IOSPlannerBlockRow: View {
 
 private struct IOSBlockEditorView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.layoutMetrics) private var metrics
     @State private var title: String
     @State private var start: Date
     @State private var durationMinutes: Int

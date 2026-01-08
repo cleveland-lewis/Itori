@@ -24,7 +24,7 @@ struct AssignmentPlanCard: View {
                 noPlanView
             }
         }
-        .padding(16)
+        .padding(metrics.cardPadding)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(DesignSystem.Materials.card)
@@ -52,8 +52,10 @@ struct AssignmentPlanCard: View {
                     Image(systemName: isExpanded ? "chevron.up.circle.fill" : "chevron.down.circle")
                         .font(.title3)
                         .foregroundStyle(.secondary)
+                        .accessibilityHidden(true)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(isExpanded ? NSLocalizedString("iosassignmentplans.button.collapse.plan", value: "Collapse plan", comment: "Collapse plan") : NSLocalizedString("iosassignmentplans.button.expand.plan", value: "Expand plan", comment: "Expand plan"))
             }
         }
     }
@@ -149,9 +151,11 @@ struct PlanStepRow: View {
                 Image(systemName: checkboxIcon)
                     .foregroundStyle(checkboxColor)
                     .font(.title3)
+                    .accessibilityHidden(true)
             }
             .buttonStyle(.plain)
             .disabled(isBlocked)
+            .accessibilityLabel(isBlocked ? NSLocalizedString("iosassignmentplans.button.step.locked", value: "Step locked", comment: "Step locked") : NSLocalizedString("iosassignmentplans.button.toggle.step", value: "Toggle step complete", comment: "Toggle step complete"))
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(step.title)
@@ -237,6 +241,7 @@ struct IOSAssignmentPlansView: View {
     @EnvironmentObject private var filterState: IOSFilterState
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var toastRouter: IOSToastRouter
+    @Environment(\.layoutMetrics) private var metrics
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -266,7 +271,7 @@ struct IOSAssignmentPlansView: View {
                     }
                 }
             }
-            .padding(20)
+            .padding(metrics.cardPadding)
         }
         
         .onAppear {
@@ -292,8 +297,9 @@ struct IOSAssignmentPlansView: View {
     private var emptyState: some View {
         VStack(spacing: 12) {
             Image(systemName: "list.bullet.clipboard")
-                .font(.system(size: 48))
+                .font(.largeTitle)
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
             Text(NSLocalizedString("iosassignmentplans.no.assignments", value: "No assignments", comment: "No assignments"))
                 .font(.headline)
             Text(NSLocalizedString("iosassignmentplans.add.assignments.to.see.their.plans", value: "Add assignments to see their plans", comment: "Add assignments to see their plans"))

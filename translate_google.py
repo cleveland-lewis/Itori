@@ -227,82 +227,93 @@ def translate_language(xcstrings_path, target_lang, batch_size=2500, parallel=Tr
         print(f"✅ {APP_STORE_LANGUAGES.get(target_lang, target_lang)} is already complete!\n")
         return True
     
-    # Process ALL strings at once
-    batch_to_process = to_translate
     translated_count = 0
     failed_count = 0
-    
-    print(f"🔄 Processing ALL {len(batch_to_process)} strings...")
+
+    total_to_process = len(to_translate)
+    if total_to_process == 0:
+        return True
+
+    print(f"🔄 Processing {total_to_process} strings in batches of {batch_size}...")
     if parallel:
-        print(f"   Using parallel processing with 10 workers (FAST)")
+        print("   Using parallel processing with 10 workers (FAST)")
     print(f"{'='*70}\n")
-    
+
     translator = Translator()
-    
-    if parallel and len(batch_to_process) > 10:
-        # Parallel processing for speed
-        def translate_item(item):
-            key, value = item
-            translated = translate_text(key, target_lang, translator)
-            return key, value, translated
-        
-        with ThreadPoolExecutor(max_workers=10) as executor:
-            futures = {executor.submit(translate_item, item): item for item in batch_to_process}
-            
-            for idx, future in enumerate(as_completed(futures), 1):
-                try:
-                    key, value, translated = future.result()
-                    
-                    if translated and translated != key:
-                        if "localizations" not in value:
-                            value["localizations"] = {}
-                        
-                        value["localizations"][file_lang_code] = {
-                            "stringUnit": {
-                                "state": "translated",
-                                "value": translated
+
+    remaining_items = list(to_translate)
+    batch_index = 0
+    while remaining_items:
+        batch_index += 1
+        batch_to_process = remaining_items[:batch_size]
+        remaining_items = remaining_items[batch_size:]
+
+        print(f"Batch {batch_index}: {len(batch_to_process)} items")
+
+        if parallel and len(batch_to_process) > 10:
+            # Parallel processing for speed
+            def translate_item(item):
+                key, value = item
+                translated = translate_text(key, target_lang, translator)
+                return key, value, translated
+
+            with ThreadPoolExecutor(max_workers=10) as executor:
+                futures = {executor.submit(translate_item, item): item for item in batch_to_process}
+
+                for idx, future in enumerate(as_completed(futures), 1):
+                    try:
+                        key, value, translated = future.result()
+
+                        if translated and translated != key:
+                            if "localizations" not in value:
+                                value["localizations"] = {}
+
+                            value["localizations"][file_lang_code] = {
+                                "stringUnit": {
+                                    "state": "translated",
+                                    "value": translated
+                                }
                             }
-                        }
-                        translated_count += 1
-                    else:
+                            translated_count += 1
+                        else:
+                            failed_count += 1
+
+                        if idx % 100 == 0 or idx == len(batch_to_process):
+                            print(f"[{idx}/{len(batch_to_process)}] Progress: {idx/len(batch_to_process)*100:.0f}%")
+
+                    except Exception as e:
                         failed_count += 1
-                    
-                    if idx % 100 == 0 or idx == len(batch_to_process):
-                        print(f"[{idx}/{len(batch_to_process)}] Progress: {idx/len(batch_to_process)*100:.0f}%")
-                        
-                except Exception as e:
-                    failed_count += 1
-                    print(f"⚠️  Error: {str(e)[:50]}")
-    else:
-        # Sequential processing
-        for idx, (key, value) in enumerate(batch_to_process, 1):
-            if idx % 10 == 0 or idx == 1:
-                print(f"[{idx}/{len(batch_to_process)}] Progress: {idx/len(batch_to_process)*100:.0f}%")
-            
-            translated = translate_text(key, target_lang, translator)
-            
-            if translated and translated != key:
-                if "localizations" not in value:
-                    value["localizations"] = {}
-                
-                value["localizations"][file_lang_code] = {
-                    "stringUnit": {
-                        "state": "translated",
-                        "value": translated
+                        print(f"⚠️  Error: {str(e)[:50]}")
+        else:
+            # Sequential processing
+            for idx, (key, value) in enumerate(batch_to_process, 1):
+                if idx % 10 == 0 or idx == 1:
+                    print(f"[{idx}/{len(batch_to_process)}] Progress: {idx/len(batch_to_process)*100:.0f}%")
+
+                translated = translate_text(key, target_lang, translator)
+
+                if translated and translated != key:
+                    if "localizations" not in value:
+                        value["localizations"] = {}
+
+                    value["localizations"][file_lang_code] = {
+                        "stringUnit": {
+                            "state": "translated",
+                            "value": translated
+                        }
                     }
-                }
-                translated_count += 1
-            else:
-                failed_count += 1
-            
-            time.sleep(0.3)  # Light rate limiting
-    
-    # Save updated file
-    if translated_count > 0:
-        print(f"\n💾 Saving {translated_count} translations...")
-        with open(xcstrings_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        print("✅ Saved!")
+                    translated_count += 1
+                else:
+                    failed_count += 1
+
+                time.sleep(0.3)  # Light rate limiting
+
+        # Save after each batch to avoid long runs losing work
+        if translated_count > 0:
+            print(f"\n💾 Saving batch {batch_index} progress...")
+            with open(xcstrings_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+            print("✅ Saved!")
     
     # Calculate completion
     new_total_translated = already_done + translated_count
@@ -368,6 +379,7 @@ def main():
     print("\n" + "="*70)
     
     # Select language to process
+    batch_size = 10000
     if len(sys.argv) > 1:
         if sys.argv[1] == '--all':
             # Translate all incomplete languages
@@ -390,6 +402,12 @@ def main():
                 print(f"❌ Unknown language code: {target_lang}")
                 print(f"Available: {', '.join(sorted([k for k in APP_STORE_LANGUAGES.keys() if k != 'en']))}")
                 sys.exit(1)
+            if len(sys.argv) > 2:
+                try:
+                    batch_size = int(sys.argv[2])
+                except ValueError:
+                    print(f"❌ Invalid batch size: {sys.argv[2]}")
+                    sys.exit(1)
     else:
         # Auto-select next incomplete
         if incomplete_langs:
@@ -400,8 +418,7 @@ def main():
             print("\n🎉 ALL LANGUAGES COMPLETE!")
             sys.exit(0)
     
-    # Process the language - do ALL strings at once
-    batch_size = 10000  # Process everything
+    # Process the language - batch size may be overridden by CLI arg
     is_complete = translate_language(xcstrings_file, target_lang, batch_size, parallel=True)
     
     if not is_complete:

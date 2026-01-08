@@ -166,3 +166,6 @@ Temporary Items
 *.bak
 *.tmp
 *~
+
+# Git hooks configuration
+.git-hooks-config

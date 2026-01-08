@@ -5,6 +5,7 @@ struct IOSPracticeTestTakingView: View {
     let test: PracticeTest
     @ObservedObject var store: PracticeTestStore
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.layoutMetrics) private var metrics
     
     @State private var currentQuestionIndex = 0
     @State private var userAnswers: [UUID: String] = [:]
@@ -38,7 +39,7 @@ struct IOSPracticeTestTakingView: View {
                             answerChoices(question)
                             navigationButtons
                         }
-                        .padding(20)
+                        .padding(metrics.cardPadding)
                     }
                 } else {
                     emptyState
@@ -100,7 +101,7 @@ struct IOSPracticeTestTakingView: View {
             ProgressView(value: progress)
                 .tint(.blue)
         }
-        .padding(16)
+        .padding(metrics.cardPadding)
         .background(Color(uiColor: .secondarySystemGroupedBackground))
     }
     
@@ -125,7 +126,8 @@ struct IOSPracticeTestTakingView: View {
             if userAnswers[question.id] != nil {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(.green)
-                    .font(.title3)
+                    .font(.system(.title3))
+                    .accessibilityHidden(true)
             }
         }
     }
@@ -172,7 +174,7 @@ struct IOSPracticeTestTakingView: View {
                     .multilineTextAlignment(.leading)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(16)
+            .padding(metrics.cardPadding)
             .background(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(isSelected ? Color.blue.opacity(0.1) : Color(uiColor: .secondarySystemGroupedBackground))
@@ -231,8 +233,9 @@ struct IOSPracticeTestTakingView: View {
     private var emptyState: some View {
         VStack(spacing: 12) {
             Image(systemName: "questionmark.circle")
-                .font(.system(size: 48))
+                .font(.system(.largeTitle))
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
             Text(NSLocalizedString("iospracticetesttaking.no.questions.available", value: "No questions available", comment: "No questions available"))
                 .font(.title3.bold())
             Text(NSLocalizedString("iospracticetesttaking.something.went.wrong.loading.the.test", value: "Something went wrong loading the test", comment: "Something went wrong loading the test"))

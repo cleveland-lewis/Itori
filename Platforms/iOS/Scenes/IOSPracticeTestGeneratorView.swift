@@ -76,8 +76,11 @@ struct IOSPracticeTestGeneratorView: View {
                         } label: {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundStyle(.secondary)
+                                .accessibilityHidden(true)
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel("Remove \(topic)")
+                        .accessibilityHint("Removes this topic from the test")
                     }
                 }
             }

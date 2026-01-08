@@ -26239,6 +26239,12 @@
             "state": "translated",
             "value": "Delete Immediately"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "즉시 삭제"
+          }
         }
       }
     },
@@ -26249,6 +26255,12 @@
             "state": "translated",
             "value": "Delete Semester"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학기 삭제"
+          }
         }
       }
     },
@@ -26258,6 +26270,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Delete Test"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "테스트 삭제"
           }
         }
       }
@@ -26371,6 +26389,12 @@
             "state": "translated",
             "value": "設計"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "설계"
+          }
         }
       }
     },
@@ -26483,6 +26507,12 @@
             "state": "translated",
             "value": "設計代幣"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "디자인 토큰"
+          }
         }
       }
     },
@@ -26594,6 +26624,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "設計調試"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "디자인 디버그"
           }
         }
       }
@@ -26713,6 +26749,12 @@
             "state": "translated",
             "value": "細節"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세부"
+          }
         }
       }
     },
@@ -26824,6 +26866,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "開發者模式"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "개발자 모드"
           }
         }
       }
@@ -26943,6 +26991,12 @@
             "state": "translated",
             "value": "困難"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "어려움"
+          }
         }
       }
     },
@@ -26952,6 +27006,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Digital"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "디지털"
           }
         }
       }
@@ -26963,6 +27023,12 @@
             "state": "translated",
             "value": "Discard Changes"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "변경 사항 취소"
+          }
         }
       }
     },
@@ -26972,6 +27038,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Disconnected"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연결이 끊김"
           }
         }
       }
@@ -27091,6 +27163,12 @@
             "state": "translated",
             "value": "完畢"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "완료"
+          }
         }
       }
     },
@@ -27202,6 +27280,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "到期的 ％@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "로 인한 %@"
           }
         }
       }
@@ -27321,6 +27405,12 @@
             "state": "translated",
             "value": "到期日"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "만기일"
+          }
         }
       }
     },
@@ -27432,6 +27522,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "現在到期"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지금 마감"
           }
         }
       }
@@ -27551,6 +27647,12 @@
             "state": "translated",
             "value": "期間"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지속"
+          }
         }
       }
     },
@@ -27669,6 +27771,12 @@
             "state": "translated",
             "value": "編輯"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "편집하다"
+          }
         }
       }
     },
@@ -27678,6 +27786,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Edit Assignment"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제 수정"
           }
         }
       }
@@ -27791,6 +27905,12 @@
             "state": "translated",
             "value": "編輯卡"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "카드 편집"
+          }
         }
       }
     },
@@ -27800,6 +27920,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Edit Event"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이벤트 편집"
           }
         }
       }
@@ -27912,6 +28038,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "教育程度"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "교육 수준"
           }
         }
       }
@@ -28031,6 +28163,12 @@
             "state": "translated",
             "value": "電子郵件"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이메일"
+          }
         }
       }
     },
@@ -28142,6 +28280,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "啟用抽認卡"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "플래시카드 활성화"
           }
         }
       }
@@ -28255,6 +28399,12 @@
             "state": "translated",
             "value": "啟用觸覺反饋"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "햅틱 피드백 활성화"
+          }
         }
       }
     },
@@ -28366,6 +28516,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "啟用調試功能"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "디버깅 기능 활성화"
           }
         }
       }
@@ -28479,6 +28635,12 @@
             "state": "translated",
             "value": "啟用可選的 UI 動畫（仍然遵循“減少運動”）"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택적 UI 애니메이션 활성화(여전히 모션 감소를 준수함)"
+          }
         }
       }
     },
@@ -28590,6 +28752,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "使調試器能夠跟踪主線程塊、長時間操作和性能問題。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메인 스레드 블록, 긴 작업 및 성능 문제를 추적하려면 디버거를 활성화하세요."
           }
         }
       }
@@ -28703,6 +28871,12 @@
             "state": "translated",
             "value": "結束日期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "종료일"
+          }
         }
       }
     },
@@ -28814,6 +28988,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "結束時間必須晚於開始時間。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "종료 시간은 시작 시간 이후여야 합니다."
           }
         }
       }
@@ -28927,6 +29107,12 @@
             "state": "translated",
             "value": "結束"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "종료"
+          }
         }
       }
     },
@@ -29038,6 +29224,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "能級"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에너지 수준"
           }
         }
       }
@@ -29151,6 +29343,12 @@
             "state": "translated",
             "value": "活力： ％@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에너지: %@"
+          }
         }
       }
     },
@@ -29256,6 +29454,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "估計的"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추정된"
           }
         }
       }
@@ -29369,6 +29573,12 @@
             "state": "translated",
             "value": "估計因素"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추정 요인"
+          }
         }
       }
     },
@@ -29481,6 +29691,12 @@
             "state": "translated",
             "value": "事件緩衝區（最後 50 個）"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이벤트 버퍼(마지막 50개)"
+          }
         }
       }
     },
@@ -29592,6 +29808,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "事件 (%@)"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이벤트(%@)"
           }
         }
       }
@@ -29711,6 +29933,12 @@
             "state": "translated",
             "value": "每%1$@ %2$@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모든 %@ %@"
+          }
         }
       }
     },
@@ -29828,6 +30056,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "考試"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시험"
           }
         }
       }
@@ -29947,6 +30181,12 @@
             "state": "translated",
             "value": "考試"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시험"
+          }
         }
       }
     },
@@ -29956,6 +30196,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Exams and quizzes require at least one module."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시험과 퀴즈에는 하나 이상의 모듈이 필요합니다."
           }
         }
       }
@@ -30069,6 +30315,12 @@
             "state": "translated",
             "value": "剩餘工作的預期平均數"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "남은 작업의 예상 평균"
+          }
         }
       }
     },
@@ -30181,6 +30433,12 @@
             "state": "translated",
             "value": "預期：當切換關閉時，提供程序嘗試 0 次"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "예상: 토글이 꺼진 경우 공급자 시도가 0회입니다."
+          }
         }
       }
     },
@@ -30292,6 +30550,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "導出到 Anki"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anki로 내보내기"
           }
         }
       }
@@ -30407,6 +30671,12 @@
             "state": "translated",
             "value": "外部服務"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "외부 서비스"
+          }
         }
       }
     },
@@ -30518,6 +30788,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "2025 年秋季"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2025년 가을"
           }
         }
       }
@@ -30637,6 +30913,12 @@
             "state": "translated",
             "value": "過濾器"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "필터"
+          }
         }
       }
     },
@@ -30749,6 +31031,12 @@
             "state": "translated",
             "value": "微調哪些子系統發出調試日誌。錯誤和警告始終被記錄。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "디버그 로그를 내보내는 하위 시스템을 미세 조정합니다.오류와 경고는 항상 기록됩니다."
+          }
         }
       }
     },
@@ -30860,6 +31148,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "抽認卡系統"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "플래시카드 시스템"
           }
         }
       }
@@ -30979,6 +31273,12 @@
             "state": "translated",
             "value": "抽認卡"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "플래시카드"
+          }
         }
       }
     },
@@ -31091,6 +31391,12 @@
             "state": "translated",
             "value": "焦點調試器"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "포커스 디버거"
+          }
         }
       }
     },
@@ -31202,6 +31508,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "從： ％@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에서: %@"
           }
         }
       }
@@ -31321,6 +31633,12 @@
             "state": "translated",
             "value": "平均績點 %1$@ / %2$@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "평점 %@ / %@"
+          }
         }
       }
     },
@@ -31433,6 +31751,12 @@
             "state": "translated",
             "value": "平均績點概覽"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "평점 개요"
+          }
         }
       }
     },
@@ -31544,6 +31868,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "GPA 比例：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPA 등급: %@"
           }
         }
       }
@@ -31663,6 +31993,12 @@
             "state": "translated",
             "value": "一般的"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "일반적인"
+          }
         }
       }
     },
@@ -31775,6 +32111,12 @@
             "state": "translated",
             "value": "生成計劃以創建今天和未來幾天的時間段。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘과 다음 며칠 동안의 시간 블록을 생성하는 계획을 생성합니다."
+          }
         }
       }
     },
@@ -31784,6 +32126,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Generate Test"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "테스트 생성"
           }
         }
       }
@@ -31795,6 +32143,12 @@
             "state": "translated",
             "value": "Generate your first test to start practicing"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연습을 시작하려면 첫 번째 테스트를 생성하세요."
+          }
         }
       }
     },
@@ -31804,6 +32158,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Generating Test"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "테스트 생성 중"
           }
         }
       }
@@ -31917,6 +32277,12 @@
             "state": "translated",
             "value": "生成失敗"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "생성 실패"
+          }
         }
       }
     },
@@ -32028,6 +32394,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "在作業到期前收到通知"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제 마감일 전에 알림 받기"
           }
         }
       }
@@ -32141,6 +32513,12 @@
             "state": "translated",
             "value": "倒計時或秒錶計時器完成時收到通知"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "카운트다운 또는 스톱워치 타이머가 완료되면 알림 받기"
+          }
         }
       }
     },
@@ -32252,6 +32630,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "工作會議和休息時間完成時收到通知"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "작업 세션 및 휴식 시간이 완료되면 알림 받기"
           }
         }
       }
@@ -32371,6 +32755,12 @@
             "state": "translated",
             "value": "年級"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "등급"
+          }
         }
       }
     },
@@ -32482,6 +32872,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "成績分析"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "성적 분석"
           }
         }
       }
@@ -32595,6 +32991,12 @@
             "state": "translated",
             "value": "等級成分"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "등급 구성 요소"
+          }
         }
       }
     },
@@ -32707,6 +33109,12 @@
             "state": "translated",
             "value": "等級成分 – %@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "등급 구성 요소 – %@"
+          }
         }
       }
     },
@@ -32812,6 +33220,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "觸覺反饋和動畫尊重輔助功能設置。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "햅틱 피드백과 애니메이션은 접근성 설정을 따릅니다."
           }
         }
       }
@@ -32919,6 +33333,12 @@
             "state": "translated",
             "value": "啟用“減少運動”後，觸覺反饋將被禁用"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모션 감소가 활성화되면 햅틱 피드백이 비활성화됩니다."
+          }
         }
       }
     },
@@ -33024,6 +33444,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "觸覺反饋尊重輔助功能設置"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "햅틱 피드백은 접근성 설정을 존중합니다."
           }
         }
       }
@@ -33131,6 +33557,12 @@
             "state": "translated",
             "value": "觸覺：%@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "햅틱: %@"
+          }
         }
       }
     },
@@ -33237,6 +33669,12 @@
             "state": "translated",
             "value": "高的"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "높은"
+          }
         }
       }
     },
@@ -33342,6 +33780,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "值越高，過渡感覺越柔和。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "값이 높을수록 전환이 더 부드럽게 느껴집니다."
           }
         }
       }
@@ -33455,6 +33899,12 @@
             "state": "translated",
             "value": "最高：%1$@ %2$@%%"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최고: %@ %@%%"
+          }
         }
       }
     },
@@ -33561,6 +34011,12 @@
             "state": "translated",
             "value": "歷史圖表"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "역사 차트"
+          }
         }
       }
     },
@@ -33666,6 +34122,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "歷史記錄：%@ 項"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기록: %@ 항목"
           }
         }
       }
@@ -33779,6 +34241,12 @@
             "state": "translated",
             "value": "家庭作業"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "숙제"
+          }
         }
       }
     },
@@ -33884,6 +34352,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "依賴關係如何工作"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "종속성이 작동하는 방식"
           }
         }
       }
@@ -33991,6 +34465,12 @@
             "state": "translated",
             "value": "刷新時提前多遠掃描事件。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "새로 고칠 때 이벤트를 검색할 기간입니다."
+          }
         }
       }
     },
@@ -34096,6 +34576,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "您對這一點了解多少？"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당신은 이것을 얼마나 잘 알고 있었나요?"
           }
         }
       }
@@ -34203,6 +34689,12 @@
             "state": "translated",
             "value": "假設成績不會被保存"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가상 성적은 저장되지 않습니다."
+          }
         }
       }
     },
@@ -34309,6 +34801,12 @@
             "state": "translated",
             "value": "圖示"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아이콘"
+          }
         }
       }
     },
@@ -34414,6 +34912,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "圖標和文本"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아이콘과 텍스트"
           }
         }
       }
@@ -34527,6 +35031,12 @@
             "state": "translated",
             "value": "如果您在剩餘作業中得分為 %1$@%%，則您的預計最終成績為 %2$@%%。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "남은 과제에서 %@%% 점수를 받으면 예상 최종 성적은 %@%%입니다."
+          }
         }
       }
     },
@@ -34536,6 +35046,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "In Progress"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "진행 중"
           }
         }
       }
@@ -34643,6 +35159,12 @@
             "state": "translated",
             "value": "包含在概述中："
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "개요에 포함:"
+          }
         }
       }
     },
@@ -34748,6 +35270,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "增加對比度"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대비 증가"
           }
         }
       }
@@ -34855,6 +35383,12 @@
             "state": "translated",
             "value": "增加對比度：%@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대비 증가: %@"
+          }
         }
       }
     },
@@ -34960,6 +35494,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "增加按鈕和控件的尺寸以便於點擊"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "더 쉽게 탭할 수 있도록 버튼과 컨트롤 크기를 늘립니다."
           }
         }
       }
@@ -35073,6 +35613,12 @@
             "state": "translated",
             "value": "一體化"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "완성"
+          }
         }
       }
     },
@@ -35185,6 +35731,12 @@
             "state": "translated",
             "value": "集成"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "통합"
+          }
         }
       }
     },
@@ -35290,6 +35842,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "互動"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "상호작용"
           }
         }
       }
@@ -35403,6 +35961,12 @@
             "state": "translated",
             "value": "介面"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "인터페이스"
+          }
         }
       }
     },
@@ -35508,6 +36072,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "界面首選項"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "인터페이스 환경설정"
           }
         }
       }
@@ -35615,6 +36185,12 @@
             "state": "translated",
             "value": "間隔：%@d"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "간격: %@d"
+          }
         }
       }
     },
@@ -35720,6 +36296,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "將您的個人資料、備份和學校範圍的設置保存在各自的部分中。當帳戶同步可用時，根將鏈接到此處。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "프로필, 백업, 학교 전체 설정을 해당 섹션에 보관하세요.Itori는 계정 동기화가 가능해지면 여기에 연결됩니다."
           }
         }
       }
@@ -35827,6 +36409,12 @@
             "state": "translated",
             "value": "啟用法學碩士協助："
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LLM 지원 활성화됨:"
+          }
         }
       }
     },
@@ -35932,6 +36520,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "LLM 提供者嘗試跟踪"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LLM 제공자 시도 추적"
           }
         }
       }
@@ -36039,6 +36633,12 @@
             "state": "translated",
             "value": "LLM 協助已啟用。根可以使用 Apple Intelligence、本地模型或自定義提供程序來提高解析準確性並向生成的計劃添加冗餘檢查。法學碩士永遠不會默默地覆蓋確定性結果。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LLM 지원이 활성화되었습니다.Itori는 Apple Intelligence, 로컬 모델 또는 사용자 정의 공급자를 사용하여 구문 분석 정확도를 높이고 생성된 계획에 중복 검사를 추가할 수 있습니다.LLM은 결정론적 결과를 자동으로 덮어쓰지 않습니다."
+          }
         }
       }
     },
@@ -36144,6 +36744,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "大型攻絲目標"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대형 탭 타겟"
           }
         }
       }
@@ -36251,6 +36857,12 @@
             "state": "translated",
             "value": "大點擊目標：%@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "큰 탭 대상: %@"
+          }
         }
       }
     },
@@ -36356,6 +36968,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "最近 500 場活動"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지난 500개 이벤트"
           }
         }
       }
@@ -36463,6 +37081,12 @@
             "state": "translated",
             "value": "最後一次嘗試："
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마지막 시도:"
+          }
         }
       }
     },
@@ -36568,6 +37192,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "最後的原因："
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마지막 이유:"
           }
         }
       }
@@ -36675,6 +37305,12 @@
             "state": "translated",
             "value": "最後壓制："
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마지막 억제:"
+          }
         }
       }
     },
@@ -36684,6 +37320,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Last Sync"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마지막 동기화"
           }
         }
       }
@@ -36784,6 +37426,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "最後的： ％@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마지막: %@"
           }
         }
       }
@@ -36897,6 +37545,12 @@
             "state": "translated",
             "value": "佈局"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "공들여 나열한 것"
+          }
         }
       }
     },
@@ -37002,6 +37656,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "佈局更改會立即應用於所有屏幕。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "레이아웃 변경은 모든 화면에 즉시 적용됩니다."
           }
         }
       }
@@ -37109,6 +37769,12 @@
             "state": "translated",
             "value": "輕質玻璃強度"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가벼운 유리 강도"
+          }
         }
       }
     },
@@ -37214,6 +37880,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "課程鏈接"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "강좌 바로가기"
           }
         }
       }
@@ -37321,6 +37993,12 @@
             "state": "translated",
             "value": "鏈接"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모래밭"
+          }
         }
       }
     },
@@ -37426,6 +38104,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "實時預覽"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "실시간 미리보기"
           }
         }
       }
@@ -37533,6 +38217,12 @@
             "state": "translated",
             "value": "直播活動：%@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "실시간 활동: %@"
+          }
         }
       }
     },
@@ -37638,6 +38328,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "正在加載計數器..."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "카운터 로드 중..."
           }
         }
       }
@@ -37745,6 +38441,12 @@
             "state": "translated",
             "value": "正在加載課程分析..."
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "강좌 분석 로드 중…"
+          }
         }
       }
     },
@@ -37850,6 +38552,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "本地數據庫"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "로컬 데이터베이스"
           }
         }
       }
@@ -37957,6 +38665,12 @@
             "state": "translated",
             "value": "鎖"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "잠그다"
+          }
         }
       }
     },
@@ -38062,6 +38776,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "將工作鎖定在截止日期"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "작업을 마감일까지 잠급니다"
           }
         }
       }
@@ -38169,6 +38889,12 @@
             "state": "translated",
             "value": "鎖定截止日期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마감일까지 잠겨 있음"
+          }
         }
       }
     },
@@ -38274,6 +39000,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lorem ipsum dolor sat amet，consectetur adipiscing elit，sed do eiusmod tempor incididunt ut laboure et dolore magna aliqua。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut Labore et dolore magna aliqua."
           }
         }
       }
@@ -38387,6 +39119,12 @@
             "state": "translated",
             "value": "低的"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "낮은"
+          }
         }
       }
     },
@@ -38499,6 +39237,12 @@
             "state": "translated",
             "value": "最低：%1$@ %2$@%%"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최저: %@ %@%%"
+          }
         }
       }
     },
@@ -38604,6 +39348,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "MLX 配置"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MLX 구성"
           }
         }
       }
@@ -38711,6 +39461,12 @@
             "state": "translated",
             "value": "MLX 模型從 Hugging Face 中心或本地緩存加載"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MLX 모델은 Hugging Face 허브 또는 로컬 캐시에서 로드됩니다."
+          }
         }
       }
     },
@@ -38816,6 +39572,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "主線程調試器"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메인 스레드 디버거"
           }
         }
       }
@@ -38923,6 +39685,12 @@
             "state": "translated",
             "value": "主線程調試器已禁用"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메인 스레드 디버거 비활성화됨"
+          }
         }
       }
     },
@@ -39028,6 +39796,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "管理權限"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "권한 관리"
           }
         }
       }
@@ -39135,6 +39909,12 @@
             "state": "translated",
             "value": "從課程頁面管理所有課程、學期和學術設置。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "코스 페이지에서 모든 코스, 학기 및 학업 설정을 관리하세요."
+          }
         }
       }
     },
@@ -39240,6 +40020,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "管理需要權限或連接到外部服務的應用程序功能。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "권한이 필요한 앱 기능을 관리하거나 외부 서비스에 연결합니다."
           }
         }
       }
@@ -39347,6 +40133,12 @@
             "state": "translated",
             "value": "管理數據存儲和 iCloud 同步。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "데이터 저장 및 iCloud 동기화를 관리합니다."
+          }
         }
       }
     },
@@ -39452,6 +40244,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "在存儲設置中管理 iCloud 同步。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장소 설정에서 iCloud 동기화를 관리하세요."
           }
         }
       }
@@ -39559,6 +40357,12 @@
             "state": "translated",
             "value": "管理你的學期。當前學期用於新課程並出現在主界面中。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학업을 관리하세요.현재 학기는 새 강좌에 사용되며 기본 인터페이스에 나타납니다."
+          }
         }
       }
     },
@@ -39664,6 +40468,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "管理您的活動課程和存檔課程"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "활성 및 보관된 코스 관리"
           }
         }
       }
@@ -39771,6 +40581,12 @@
             "state": "translated",
             "value": "管理您當前的課程。存檔的課程在主界面中隱藏，但仍可訪問。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "현재 강좌를 관리하세요.보관된 코스는 기본 인터페이스에서 숨겨지지만 계속 액세스할 수 있습니다."
+          }
         }
       }
     },
@@ -39780,6 +40596,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mark Complete"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "완료로 표시"
           }
         }
       }
@@ -39887,6 +40709,12 @@
             "state": "translated",
             "value": "材料強度"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "재료 강도"
+          }
         }
       }
     },
@@ -39993,6 +40821,12 @@
             "state": "translated",
             "value": "材料強度：%@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "재료 강도: %@"
+          }
         }
       }
     },
@@ -40098,6 +40932,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "材質預覽"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "소재 미리보기"
           }
         }
       }
@@ -40211,6 +41051,12 @@
             "state": "translated",
             "value": "材料"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "재료"
+          }
         }
       }
     },
@@ -40316,6 +41162,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "最大推送任務數"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "푸시할 최대 작업"
           }
         }
       }
@@ -40423,6 +41275,12 @@
             "state": "translated",
             "value": "最大代幣數：%@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최대 토큰: %@"
+          }
         }
       }
     },
@@ -40528,6 +41386,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已達到最多 5 個選項卡。禁用一個選項卡以啟用另一個選項卡。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최대 5개의 탭에 도달했습니다.다른 탭을 활성화하려면 탭을 비활성화하세요."
           }
         }
       }
@@ -40641,6 +41505,12 @@
             "state": "translated",
             "value": "中等的"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "중간"
+          }
         }
       }
     },
@@ -40746,6 +41616,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "會議時間"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "회의 시간"
           }
         }
       }
@@ -40859,6 +41735,12 @@
             "state": "translated",
             "value": "訊息"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메시지"
+          }
         }
       }
     },
@@ -40964,6 +41846,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "最小化整個應用程序的動畫"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "앱 전체에서 애니메이션을 최소화하세요."
           }
         }
       }
@@ -41071,6 +41959,12 @@
             "state": "translated",
             "value": "模擬後端 - 無需配置"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모의 백엔드 - 구성이 필요하지 않습니다."
+          }
         }
       }
     },
@@ -41080,6 +41974,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mode locked during session"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세션 중에 모드가 잠겼습니다."
           }
         }
       }
@@ -41187,6 +42087,12 @@
             "state": "translated",
             "value": "模塊"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모듈"
+          }
         }
       }
     },
@@ -41292,6 +42198,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "筆記"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "참고 사항"
           }
         }
       }
@@ -41405,6 +42317,12 @@
             "state": "translated",
             "value": "姓名"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이름"
+          }
         }
       }
     },
@@ -41516,6 +42434,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "絕不"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "절대"
           }
         }
       }
@@ -41629,6 +42553,12 @@
             "state": "translated",
             "value": "新課程"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "새로운 코스"
+          }
         }
       }
     },
@@ -41741,6 +42671,12 @@
             "state": "translated",
             "value": "新活動"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "새로운 이벤트"
+          }
         }
       }
     },
@@ -41846,6 +42782,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "新學期"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "새학기"
           }
         }
       }
@@ -41953,6 +42895,12 @@
             "state": "translated",
             "value": "無活躍學期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "활성학기 없음"
+          }
         }
       }
     },
@@ -42058,6 +43006,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "還沒有卡"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 카드가 없습니다"
           }
         }
       }
@@ -42165,6 +43119,12 @@
             "state": "translated",
             "value": "沒有卡可供學習"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "공부할 카드가 없습니다"
+          }
         }
       }
     },
@@ -42271,6 +43231,12 @@
             "state": "translated",
             "value": "無課程"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "코스 없음"
+          }
         }
       }
     },
@@ -42280,6 +43246,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No Events"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이벤트 없음"
           }
         }
       }
@@ -42387,6 +43359,12 @@
             "state": "translated",
             "value": "沒有抽認卡組"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "플래시카드 덱 없음"
+          }
         }
       }
     },
@@ -42492,6 +43470,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "還沒有大綱"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 개요가 없습니다."
           }
         }
       }
@@ -42599,6 +43583,12 @@
             "state": "translated",
             "value": "未找到計劃"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계획을 찾을 수 없습니다"
+          }
         }
       }
     },
@@ -42608,6 +43598,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No Practice Tests Yet"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 연습 시험이 없습니다"
           }
         }
       }
@@ -42715,6 +43711,12 @@
             "state": "translated",
             "value": "沒有改期歷史"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "일정 변경 내역 없음"
+          }
         }
       }
     },
@@ -42724,6 +43726,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No Tasks Yet"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 할 일이 없습니다"
           }
         }
       }
@@ -42831,6 +43839,12 @@
             "state": "translated",
             "value": "計劃中沒有任務"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계획에 작업 없음"
+          }
         }
       }
     },
@@ -42936,6 +43950,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "沒有活躍課程"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "활성 강좌가 없습니다."
           }
         }
       }
@@ -43043,6 +44063,12 @@
             "state": "translated",
             "value": "未選擇活動"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택한 활동이 없습니다."
+          }
         }
       }
     },
@@ -43148,6 +44174,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "還沒有分析。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 분석이 없습니다."
           }
         }
       }
@@ -43261,6 +44293,12 @@
             "state": "translated",
             "value": "沒有作業"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당 없음"
+          }
         }
       }
     },
@@ -43366,6 +44404,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "還沒有可用的作業。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 사용 가능한 과제가 없습니다."
           }
         }
       }
@@ -43473,6 +44517,12 @@
             "state": "translated",
             "value": "今天沒有作業到期。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘 마감인 과제가 없습니다."
+          }
         }
       }
     },
@@ -43578,6 +44628,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "尚無與本課程相關的作業。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 이 강좌에 연결된 과제가 없습니다."
           }
         }
       }
@@ -43685,6 +44741,12 @@
             "state": "translated",
             "value": "本課程沒有記錄作業。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 강좌에 기록된 과제가 없습니다."
+          }
         }
       }
     },
@@ -43790,6 +44852,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "沒有卡可供學習"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "공부할 카드가 없습니다"
           }
         }
       }
@@ -43897,6 +44965,12 @@
             "state": "translated",
             "value": "還沒有數據"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 데이터가 없습니다"
+          }
         }
       }
     },
@@ -44002,6 +45076,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "無截止日期"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마감일 없음"
           }
         }
       }
@@ -44115,6 +45195,12 @@
             "state": "translated",
             "value": "沒有活動"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이벤트 없음"
+          }
         }
       }
     },
@@ -44220,6 +45306,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "這一天沒有活動"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 날은 이벤트가 없습니다."
           }
         }
       }
@@ -44327,6 +45419,12 @@
             "state": "translated",
             "value": "尚無與本課程相關的考試。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 이 과정에 연결된 시험이 없습니다."
+          }
         }
       }
     },
@@ -44432,6 +45530,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "沒有連接外部服務"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연결된 외부 서비스 없음"
           }
         }
       }
@@ -44539,6 +45643,12 @@
             "state": "translated",
             "value": "未配置節假日源。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "구성된 휴일 소스가 없습니다."
+          }
         }
       }
     },
@@ -44644,6 +45754,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "還沒有模塊文件。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 모듈 파일이 없습니다."
           }
         }
       }
@@ -44751,6 +45867,12 @@
             "state": "translated",
             "value": "沒有可用的註釋"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사용 가능한 메모가 없습니다."
+          }
         }
       }
     },
@@ -44856,6 +45978,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "還沒有可用的計劃時間"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 계획 시간이 없습니다."
           }
         }
       }
@@ -44963,6 +46091,12 @@
             "state": "translated",
             "value": "還沒有計劃"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 계획 없음"
+          }
         }
       }
     },
@@ -45068,6 +46202,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "今天沒有計劃任務"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘은 계획된 작업이 없습니다."
           }
         }
       }
@@ -45175,6 +46315,12 @@
             "state": "translated",
             "value": "%@ 上沒有計劃程序阻塞。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@에 플래너 블록이 없습니다."
+          }
         }
       }
     },
@@ -45280,6 +46426,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "還沒有練習測驗。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 연습 퀴즈가 없습니다."
           }
         }
       }
@@ -45387,6 +46539,12 @@
             "state": "translated",
             "value": "沒有最近刪除的學期。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최근 삭제된 학기가 없습니다."
+          }
         }
       }
     },
@@ -45492,6 +46650,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "沒有預定的會議"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "예정된 회의 없음"
           }
         }
       }
@@ -45601,6 +46765,12 @@
             "state": "translated",
             "value": "沒有安排測試"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "예정된 테스트 없음"
+          }
         }
       }
     },
@@ -45610,6 +46780,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No scheduled time"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "예정된 시간 없음"
           }
         }
       }
@@ -45717,6 +46893,12 @@
             "state": "translated",
             "value": "沒有定義學期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "정의된 학기 없음"
+          }
         }
       }
     },
@@ -45822,6 +47004,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "還沒有學期。添加一個以開始組織您的課程。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 학기가 없습니다.강좌를 구성하려면 하나를 추가하세요."
           }
         }
       }
@@ -45929,6 +47117,12 @@
             "state": "translated",
             "value": "今天沒有跟踪研究"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘 추적된 연구 없음"
+          }
         }
       }
     },
@@ -45938,6 +47132,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No tasks"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "작업 없음"
           }
         }
       }
@@ -46045,6 +47245,12 @@
             "state": "translated",
             "value": "本週沒有安排測試。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이번 주에는 시험 일정이 없습니다."
+          }
         }
       }
     },
@@ -46150,6 +47356,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "未設置時間 - 除非您設置時間，否則假定截止時間為晚上 11:59。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시간이 설정되지 않았습니다. 시간을 설정하지 않으면 마감 시간이 오후 11시 59분으로 간주됩니다."
           }
         }
       }
@@ -46257,6 +47469,12 @@
             "state": "translated",
             "value": "沒有即將到來的任務"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "예정된 과제가 없습니다."
+          }
         }
       }
     },
@@ -46362,6 +47580,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "沒有即將到來的截止日期"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "예정된 마감일 없음"
           }
         }
       }
@@ -46469,6 +47693,12 @@
             "state": "translated",
             "value": "沒有即將到來的截止日期。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "예정된 마감일이 없습니다."
+          }
         }
       }
     },
@@ -46574,6 +47804,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "沒有即將舉行的活動"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다가오는 이벤트가 없습니다"
           }
         }
       }
@@ -46681,6 +47917,12 @@
             "state": "translated",
             "value": "沒有任何"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "없음"
+          }
         }
       }
     },
@@ -46780,6 +48022,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "未連接"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연결되지 않음"
           }
         }
       }
@@ -46887,6 +48135,12 @@
             "state": "translated",
             "value": "未設置"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "설정되지 않음"
+          }
         }
       }
     },
@@ -46992,6 +48246,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "注意：這些模擬僅供預覽，不會影響實際系統行為"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "참고: 이러한 시뮬레이션은 미리보기 전용이며 실제 시스템 동작에 영향을 주지 않습니다."
           }
         }
       }
@@ -47105,6 +48365,12 @@
             "state": "translated",
             "value": "筆記"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메모"
+          }
         }
       }
     },
@@ -47114,6 +48380,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "OK"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "좋아요"
           }
         }
       }
@@ -47220,6 +48492,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "離開"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "끄다"
           }
         }
       }
@@ -47329,6 +48607,12 @@
             "state": "translated",
             "value": "奧拉馬配置"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "올라마 구성"
+          }
         }
       }
     },
@@ -47428,6 +48712,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "在"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "~에"
           }
         }
       }
@@ -47535,6 +48825,12 @@
             "state": "translated",
             "value": "日期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "날짜"
+          }
         }
       }
     },
@@ -47640,6 +48936,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "只有來自此列表的提醒才會出現在根中。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 목록의 알림만 Itori에 표시됩니다."
           }
         }
       }
@@ -47747,6 +49049,12 @@
             "state": "translated",
             "value": "打開系統設置來管理日曆、通知和其他權限。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시스템 설정을 열어 달력, 알림 및 기타 권한을 관리하세요."
+          }
         }
       }
     },
@@ -47756,6 +49064,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open System Settings…"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시스템 설정 열기…"
           }
         }
       }
@@ -47863,6 +49177,12 @@
             "state": "translated",
             "value": "在新窗口中打開課程以在此處查看詳細信息。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "여기에서 세부정보를 보려면 새 창에서 강좌를 여세요."
+          }
         }
       }
     },
@@ -47872,6 +49192,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Open in New Window"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "새 창에서 열기"
           }
         }
       }
@@ -47979,6 +49305,12 @@
             "state": "translated",
             "value": "OpenAI 兼容的 LLM API 配置"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OpenAI 호환 LLM API 구성"
+          }
         }
       }
     },
@@ -48084,6 +49416,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "整體狀況"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "전반적인 현황"
           }
         }
       }
@@ -48191,6 +49529,12 @@
             "state": "translated",
             "value": "高峰工作週：%@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최대 작업량 주: %@"
+          }
         }
       }
     },
@@ -48296,6 +49640,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "百分比"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "백분율"
           }
         }
       }
@@ -48403,6 +49753,12 @@
             "state": "translated",
             "value": "性能調試"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "성능 디버깅"
+          }
         }
       }
     },
@@ -48508,6 +49864,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "沒有權限。請在系統設置中啟用才能使用此功能。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "허가가 거부되었습니다.이 기능을 사용하려면 시스템 설정에서 활성화하세요."
           }
         }
       }
@@ -48621,6 +49983,12 @@
             "state": "translated",
             "value": "已固定"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "고정됨"
+          }
         }
       }
     },
@@ -48631,6 +49999,12 @@
             "state": "translated",
             "value": "Plan your day to track progress"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "진행 상황을 추적할 수 있도록 하루 계획을 세우세요"
+          }
         }
       }
     },
@@ -48640,6 +50014,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Planner Options"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "플래너 옵션"
           }
         }
       }
@@ -48747,6 +50127,12 @@
             "state": "translated",
             "value": "規劃器配置設置"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "플래너 구성 설정"
+          }
         }
       }
     },
@@ -48852,6 +50238,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Planner 使用您的作業截止日期來構建學習塊的時間表。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "플래너는 과제 마감일을 사용하여 학습 블록 일정을 만듭니다."
           }
         }
       }
@@ -48965,6 +50357,12 @@
             "state": "translated",
             "value": "規劃"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계획"
+          }
         }
       }
     },
@@ -48974,6 +50372,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Platform Debug Info"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "플랫폼 디버그 정보"
           }
         }
       }
@@ -49080,6 +50484,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "請先在“學期”部分創建一個學期。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "먼저 Semesters 섹션에서 학기를 생성해 주세요."
           }
         }
       }
@@ -49193,6 +50603,12 @@
             "state": "translated",
             "value": "積分"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "전철기"
+          }
         }
       }
     },
@@ -49202,6 +50618,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pomodoro"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "포모도로"
           }
         }
       }
@@ -49311,6 +50733,12 @@
             "state": "translated",
             "value": "番茄計時器"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "뽀모도로 타이머"
+          }
         }
       }
     },
@@ -49417,6 +50845,12 @@
             "state": "translated",
             "value": "練習測驗"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "퀴즈 연습"
+          }
         }
       }
     },
@@ -49426,6 +50860,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Practice Test"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연습 시험"
           }
         }
       }
@@ -49437,6 +50877,12 @@
             "state": "translated",
             "value": "Practice Tests"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연습 시험"
+          }
         }
       }
     },
@@ -49446,6 +50892,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Preferences…"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "환경설정…"
           }
         }
       }
@@ -49552,6 +51004,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "以前的： ％@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이전의: %@"
           }
         }
       }
@@ -49665,6 +51123,12 @@
             "state": "translated",
             "value": "優先事項"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "우선 사항"
+          }
         }
       }
     },
@@ -49770,6 +51234,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "隱私與安全"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "개인정보 보호 및 안전"
           }
         }
       }
@@ -49877,6 +51347,12 @@
             "state": "translated",
             "value": "隱私與安全"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "개인 정보 보호 및 보안"
+          }
         }
       }
     },
@@ -49982,6 +51458,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "生產力追踪"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "생산성 추적"
           }
         }
       }
@@ -50089,6 +51571,12 @@
             "state": "translated",
             "value": "檔案管理"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "프로필 관리"
+          }
         }
       }
     },
@@ -50195,6 +51683,12 @@
             "state": "translated",
             "value": "型材類型"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "프로필 유형"
+          }
         }
       }
     },
@@ -50300,6 +51794,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "個人資料管理即將推出"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "프로필 관리 지원 예정"
           }
         }
       }
@@ -50413,6 +51913,12 @@
             "state": "translated",
             "value": "專案"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "프로젝트"
+          }
         }
       }
     },
@@ -50519,6 +52025,12 @@
             "state": "translated",
             "value": "為交互提供觸覺反饋"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "상호 작용에 대한 촉각 피드백 제공"
+          }
         }
       }
     },
@@ -50624,6 +52136,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已推送 %@ 個任務"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 작업을 푸시했습니다."
           }
         }
       }
@@ -50737,6 +52255,12 @@
             "state": "translated",
             "value": "問題"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "질문"
+          }
         }
       }
     },
@@ -50848,6 +52372,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "快速行動"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "빠른 작업"
           }
         }
       }
@@ -50961,6 +52491,12 @@
             "state": "translated",
             "value": "測驗"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "놀리다"
+          }
         }
       }
     },
@@ -51066,6 +52602,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "範圍： ％@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "범위: %@"
           }
         }
       }
@@ -51179,6 +52721,12 @@
             "state": "translated",
             "value": "閱讀"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "독서"
+          }
         }
       }
     },
@@ -51188,6 +52736,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ready to Start"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시작 준비"
           }
         }
       }
@@ -51295,6 +52849,12 @@
             "state": "translated",
             "value": "接收您的日程安排和任務的每日摘要"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "일정 및 작업에 대한 일일 요약을 받아보세요."
+          }
         }
       }
     },
@@ -51400,6 +52960,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "全天接收令人鼓舞的通知"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "하루종일 격려의 알림을 받아보세요"
           }
         }
       }
@@ -51513,6 +53079,12 @@
             "state": "translated",
             "value": "最近的"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최근의"
+          }
         }
       }
     },
@@ -51618,6 +53190,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "最近的活動：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최근 이벤트: %@"
           }
         }
       }
@@ -51725,6 +53303,12 @@
             "state": "translated",
             "value": "最近的會議"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최근 세션"
+          }
         }
       }
     },
@@ -51830,6 +53414,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "減少運動"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "움직임 줄이기"
           }
         }
       }
@@ -51937,6 +53527,12 @@
             "state": "translated",
             "value": "減少運動：%@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "동작 줄이기: %@"
+          }
         }
       }
     },
@@ -52042,6 +53638,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "降低透明度"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "투명성 감소"
           }
         }
       }
@@ -52149,6 +53751,12 @@
             "state": "translated",
             "value": "降低透明度：%@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "투명도 감소: %@"
+          }
         }
       }
     },
@@ -52255,6 +53863,12 @@
             "state": "translated",
             "value": "提醒我："
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알림:"
+          }
         }
       }
     },
@@ -52360,6 +53974,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "提醒集成設置"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알림 통합 설정"
           }
         }
       }
@@ -52473,6 +54093,12 @@
             "state": "translated",
             "value": "重複"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "반복하다"
+          }
         }
       }
     },
@@ -52578,6 +54204,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "用不透明顏色替換半透明背景"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "반투명 배경을 불투명한 색상으로 교체"
           }
         }
       }
@@ -52685,6 +54317,12 @@
             "state": "translated",
             "value": "必需的"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "필수의"
+          }
         }
       }
     },
@@ -52790,6 +54428,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "重置所有數據"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모든 데이터 재설정"
           }
         }
       }
@@ -52897,6 +54541,12 @@
             "state": "translated",
             "value": "重置所有設置"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모든 설정 재설정"
+          }
         }
       }
     },
@@ -52906,6 +54556,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Retry"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다시 해 보다"
           }
         }
       }
@@ -53019,6 +54675,12 @@
             "state": "translated",
             "value": "審查"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "검토"
+          }
         }
       }
     },
@@ -53124,6 +54786,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已查看 %@ 卡"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 카드를 검토함"
           }
         }
       }
@@ -53231,6 +54899,12 @@
             "state": "translated",
             "value": "風險分析"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "위험 분석"
+          }
         }
       }
     },
@@ -53336,6 +55010,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "對數據、權限和本地文件進行快速自診斷。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "데이터, 권한 및 로컬 파일에 대해 빠른 자가 진단을 실행합니다."
           }
         }
       }
@@ -53443,6 +55123,12 @@
             "state": "translated",
             "value": "選定日期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택한 날짜"
+          }
         }
       }
     },
@@ -53549,6 +55235,12 @@
             "state": "translated",
             "value": "樣本卡"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "샘플 카드"
+          }
         }
       }
     },
@@ -53558,6 +55250,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Save"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "구하다"
           }
         }
       }
@@ -53665,6 +55363,12 @@
             "state": "translated",
             "value": "保存學期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학기 저장"
+          }
         }
       }
     },
@@ -53770,6 +55474,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "安排建議已準備就緒"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "일정 제안 준비됨"
           }
         }
       }
@@ -53877,6 +55587,12 @@
             "state": "translated",
             "value": "預定測試"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "예정된 테스트"
+          }
         }
       }
     },
@@ -53983,6 +55699,12 @@
             "state": "translated",
             "value": "選擇日曆"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "달력을 선택하세요"
+          }
         }
       }
     },
@@ -54088,6 +55810,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "選擇課程"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "코스를 선택하세요"
           }
         }
       }
@@ -54197,6 +55925,12 @@
             "state": "translated",
             "value": "選擇一個列表"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "목록을 선택하세요"
+          }
         }
       }
     },
@@ -54207,6 +55941,12 @@
             "state": "translated",
             "value": "Select a School Calendar"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학교 달력을 선택하세요"
+          }
         }
       }
     },
@@ -54216,6 +55956,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Select an activity to add notes"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메모를 추가할 활동을 선택하세요."
           }
         }
       }
@@ -54323,6 +56069,12 @@
             "state": "translated",
             "value": "選擇一個事件以查看詳細信息"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세부정보를 보려면 이벤트를 선택하세요."
+          }
         }
       }
     },
@@ -54332,6 +56084,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Select an item"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "항목을 선택하세요"
           }
         }
       }
@@ -54441,6 +56199,12 @@
             "state": "translated",
             "value": "選擇課程"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "코스 선택"
+          }
         }
       }
     },
@@ -54546,6 +56310,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "選擇用於學校/學術活動的日曆。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학교/학술 행사에 사용할 캘린더를 선택하세요."
           }
         }
       }
@@ -54653,6 +56423,12 @@
             "state": "translated",
             "value": "最多選擇 %@ 個操作。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최대 %@ 작업을 선택하세요."
+          }
         }
       }
     },
@@ -54758,6 +56534,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "最多選擇 5 個頁面顯示在選項卡欄中。所有頁面均可通過菜單訪問。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "탭 표시줄에 표시할 페이지를 최대 5개까지 선택하세요.모든 페이지는 메뉴를 통해 계속 액세스할 수 있습니다."
           }
         }
       }
@@ -54865,6 +56647,12 @@
             "state": "translated",
             "value": "精選材質"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택된 소재"
+          }
         }
       }
     },
@@ -54964,6 +56752,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已選擇：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택됨: %@"
           }
         }
       }
@@ -55077,6 +56871,12 @@
             "state": "translated",
             "value": "已選擇：%1$@ • 今天%2$@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선택됨: %@ • %@ 오늘"
+          }
         }
       }
     },
@@ -55189,6 +56989,12 @@
             "state": "translated",
             "value": "學期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학기"
+          }
         }
       }
     },
@@ -55294,6 +57100,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "學期管理"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학기 관리"
           }
         }
       }
@@ -55401,6 +57213,12 @@
             "state": "translated",
             "value": "學期管理即將推出"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "곧 학기 관리가 시작됩니다"
+          }
         }
       }
     },
@@ -55506,6 +57324,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "會議結束！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세션이 완료되었습니다!"
           }
         }
       }
@@ -55613,6 +57437,12 @@
             "state": "translated",
             "value": "會議： ％@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세션: %@"
+          }
         }
       }
     },
@@ -55622,6 +57452,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Settings"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "설정"
           }
         }
       }
@@ -55729,6 +57565,12 @@
             "state": "translated",
             "value": "顯示動畫"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "애니메이션 표시"
+          }
         }
       }
     },
@@ -55835,6 +57677,12 @@
             "state": "translated",
             "value": "顯示答案"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "답변 표시"
+          }
         }
       }
     },
@@ -55940,6 +57788,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "顯示側邊欄"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사이드바 표시"
           }
         }
       }
@@ -56049,6 +57903,12 @@
             "state": "translated",
             "value": "模擬輔助功能"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성 기능 시뮬레이션"
+          }
         }
       }
     },
@@ -56154,6 +58014,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "來源： ％@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "원천: %@"
           }
         }
       }
@@ -56261,6 +58127,12 @@
             "state": "translated",
             "value": "堆棧跟踪"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스택 추적"
+          }
         }
       }
     },
@@ -56366,6 +58238,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "標準 (A-F)"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "표준(A~F)"
           }
         }
       }
@@ -56479,6 +58357,12 @@
             "state": "translated",
             "value": "開始"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시작"
+          }
         }
       }
     },
@@ -56585,6 +58469,12 @@
             "state": "translated",
             "value": "開始日期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시작일"
+          }
         }
       }
     },
@@ -56690,6 +58580,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "開始"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시작"
           }
         }
       }
@@ -56803,6 +58699,12 @@
             "state": "translated",
             "value": "統計數據"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "통계"
+          }
         }
       }
     },
@@ -56915,6 +58817,12 @@
             "state": "translated",
             "value": "地位"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "상태"
+          }
         }
       }
     },
@@ -57020,6 +58928,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "地位："
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "상태:"
           }
         }
       }
@@ -57127,6 +59041,12 @@
             "state": "translated",
             "value": "地位： ％@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "상태: %@"
+          }
         }
       }
     },
@@ -57136,6 +59056,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stop"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "멈추다"
           }
         }
       }
@@ -57147,6 +59073,12 @@
             "state": "translated",
             "value": "Stop timer to change mode"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모드를 변경하려면 타이머를 중지하세요."
+          }
         }
       }
     },
@@ -57156,6 +59088,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stopwatch"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스톱워치"
           }
         }
       }
@@ -57263,6 +59201,12 @@
             "state": "translated",
             "value": "存儲與同步"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장 및 동기화"
+          }
         }
       }
     },
@@ -57368,6 +59312,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "存儲信息不可用"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장용량 정보를 사용할 수 없음"
           }
         }
       }
@@ -57475,6 +59425,12 @@
             "state": "translated",
             "value": "加強邊框和文字對比度"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "테두리 및 텍스트 대비 강화"
+          }
         }
       }
     },
@@ -57580,6 +59536,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "學生"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학생"
           }
         }
       }
@@ -57687,6 +59649,12 @@
             "state": "translated",
             "value": "學習教練"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학습코치"
+          }
         }
       }
     },
@@ -57792,6 +59760,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "學習材料"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학습 자료"
           }
         }
       }
@@ -57905,6 +59879,12 @@
             "state": "translated",
             "value": "學習模式"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학습 모드"
+          }
         }
       }
     },
@@ -58011,6 +59991,12 @@
             "state": "translated",
             "value": "現在學習"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지금 공부하세요"
+          }
         }
       }
     },
@@ -58116,6 +60102,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "學習選擇"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연구 옵션"
           }
         }
       }
@@ -58229,6 +60221,12 @@
             "state": "translated",
             "value": "學習會"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학습 세션"
+          }
         }
       }
     },
@@ -58334,6 +60332,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "研究會話默認值"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학습 세션 기본값"
           }
         }
       }
@@ -58441,6 +60445,12 @@
             "state": "translated",
             "value": "研究總結"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연구 요약"
+          }
         }
       }
     },
@@ -58547,6 +60557,12 @@
             "state": "translated",
             "value": "今天學習時間："
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘 공부 시간:"
+          }
         }
       }
     },
@@ -58556,6 +60572,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Submit"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "제출하다"
           }
         }
       }
@@ -58663,6 +60685,12 @@
             "state": "translated",
             "value": "子系統切換"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "하위 시스템 토글"
+          }
         }
       }
     },
@@ -58768,6 +60796,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "在不同的配置文件之間切換以供工作、學校或個人使用"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "직장, 학교 또는 개인용으로 다양한 프로필 간 전환"
           }
         }
       }
@@ -58881,6 +60915,12 @@
             "state": "translated",
             "value": "教學大綱"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "강의 계획서"
+          }
         }
       }
     },
@@ -58986,6 +61026,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "與 Apple 提醒同步任務"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple 미리 알림으로 작업 동기화"
           }
         }
       }
@@ -59093,6 +61139,12 @@
             "state": "translated",
             "value": "系統日曆"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시스템 달력"
+          }
         }
       }
     },
@@ -59198,6 +61250,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "定時"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "타이밍"
           }
         }
       }
@@ -59305,6 +61363,12 @@
             "state": "translated",
             "value": "標籤欄頁面"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "탭바 페이지"
+          }
         }
       }
     },
@@ -59314,6 +61378,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tap an element to inspect"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "검사할 요소를 탭하세요."
           }
         }
       }
@@ -59421,6 +61491,12 @@
             "state": "translated",
             "value": "目標 ％"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "목표%"
+          }
         }
       }
     },
@@ -59526,6 +61602,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "目標 ％@％％"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대상 %@%%"
           }
         }
       }
@@ -59633,6 +61715,12 @@
             "state": "translated",
             "value": "目標有助於場景計算和視覺指標。這不會影響官方成績。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "목표는 시나리오 계산 및 시각적 표시를 돕습니다.이는 공식 성적에는 영향을 미치지 않습니다."
+          }
         }
       }
     },
@@ -59739,6 +61827,12 @@
             "state": "translated",
             "value": "任務依賴關係"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "작업 종속성"
+          }
         }
       }
     },
@@ -59748,6 +61842,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Task Options"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "작업 옵션"
           }
         }
       }
@@ -59855,6 +61955,12 @@
             "state": "translated",
             "value": "任務順序"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "작업 순서"
+          }
         }
       }
     },
@@ -59961,6 +62067,12 @@
             "state": "translated",
             "value": "任務命令已執行"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "작업 순서 시행"
+          }
         }
       }
     },
@@ -59970,6 +62082,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tasks"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "작업"
           }
         }
       }
@@ -60077,6 +62195,12 @@
             "state": "translated",
             "value": "任務必須按順序完成。拖動以重新排序。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "작업은 순서대로 완료되어야 합니다.재정렬하려면 드래그하세요."
+          }
         }
       }
     },
@@ -60183,6 +62307,12 @@
             "state": "translated",
             "value": "沒有截止日期的任務將保留在“未計劃”部分中。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마감일이 없는 작업은 예약되지 않음 섹션에 유지됩니다."
+          }
         }
       }
     },
@@ -60288,6 +62418,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "溫度：%.2f"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "온도: %.2f"
           }
         }
       }
@@ -60401,6 +62537,12 @@
             "state": "translated",
             "value": "學期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "용어"
+          }
         }
       }
     },
@@ -60410,6 +62552,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Test Connection"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연결 테스트"
           }
         }
       }
@@ -60517,6 +62665,12 @@
             "state": "translated",
             "value": "無需更改系統設置即可測試和預覽輔助功能"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시스템 설정을 변경하지 않고도 접근성 기능을 테스트하고 미리 볼 수 있습니다."
+          }
         }
       }
     },
@@ -60622,6 +62776,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "測試：具有自定義綁定的文本編輯器（關鍵）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "테스트: 사용자 정의 바인딩이 포함된 TextEditor(중요)"
           }
         }
       }
@@ -60735,6 +62895,12 @@
             "state": "translated",
             "value": "文字"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "텍스트"
+          }
         }
       }
     },
@@ -60840,6 +63006,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "學習教練幫助您保持專注，並根據您的精力水平建議最佳的學習模式。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Study Coach는 집중력을 유지하도록 돕고 에너지 수준에 따라 최적의 학습 패턴을 제안합니다."
           }
         }
       }
@@ -60949,6 +63121,12 @@
             "state": "translated",
             "value": "當自動重新安排關閉時，這些計數器必須保持為零。只有“抑制”應該增加。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자동 일정 조정이 꺼진 경우 이러한 카운터는 0으로 유지되어야 합니다.'억제됨'만 증가해야 합니다."
+          }
         }
       }
     },
@@ -61054,6 +63232,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "這些設置決定您的默認學習會話配置。您可以針對各個會話調整它們。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이러한 설정은 기본 학습 세션 구성을 결정합니다.개별 세션에 맞게 조정할 수 있습니다."
           }
         }
       }
@@ -61161,6 +63345,12 @@
             "state": "translated",
             "value": "這些設置有助於提高可讀性並降低視覺複雜性。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이러한 설정은 가독성을 높이고 시각적 복잡성을 줄이는 데 도움이 됩니다."
+          }
         }
       }
     },
@@ -61170,6 +63360,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "This Event Only"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이번 이벤트만"
           }
         }
       }
@@ -61283,6 +63479,12 @@
             "state": "translated",
             "value": "本星期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이번 주"
+          }
         }
       }
     },
@@ -61293,6 +63495,12 @@
             "state": "translated",
             "value": "This and Future Events"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "현재 및 향후 이벤트"
+          }
         }
       }
     },
@@ -61302,6 +63510,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "This calendar is read-only; changes cannot be saved."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 달력은 읽기 전용입니다.변경사항을 저장할 수 없습니다."
           }
         }
       }
@@ -61409,6 +63623,12 @@
             "state": "translated",
             "value": "這無法撤消。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 작업은 취소할 수 없습니다."
+          }
         }
       }
     },
@@ -61514,6 +63734,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "這張卡展示了材質效果"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 카드는 물질적 효과를 보여줍니다."
           }
         }
       }
@@ -61621,6 +63847,12 @@
             "state": "translated",
             "value": "此面板顯示提供商調用計數器，以驗證“啟用 LLM 協助”切換執行是否嚴密。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 패널에는 'LLM 지원 활성화' 토글 시행이 완벽한지 확인하기 위한 공급자 호출 카운터가 표시됩니다."
+          }
         }
       }
     },
@@ -61726,6 +63958,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "這將禁用所有由 LLM 支持的功能，包括 Apple Intelligence、本地模型和自定義提供商。解析和規劃將僅使用確定性算法。\n\n您可以隨時重新啟用 LLM 幫助。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이렇게 하면 Apple Intelligence, 로컬 모델 및 사용자 정의 공급자를 포함한 모든 LLM 기반 기능이 비활성화됩니다.구문 분석 및 계획에서는 결정적 알고리즘만 사용합니다.\n\n언제든지 LLM 지원을 다시 활성화할 수 있습니다."
           }
         }
       }
@@ -61833,6 +64071,12 @@
             "state": "translated",
             "value": "這會將學期移至最近刪除。您可以在 30 天內恢復。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그러면 학기가 최근 삭제됨으로 이동됩니다.30일 이내에 복구할 수 있습니다."
+          }
         }
       }
     },
@@ -61938,6 +64182,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "這將永久刪除“%@”及其所有卡。此操作無法撤消。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "\"%@\" 및 모든 카드가 영구적으로 삭제됩니다.이 작업은 취소할 수 없습니다."
           }
         }
       }
@@ -62045,6 +64295,12 @@
             "state": "translated",
             "value": "這將永久刪除所有重新安排歷史記錄。此操作無法撤消。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모든 일정 변경 내역이 영구적으로 삭제됩니다.이 작업은 취소할 수 없습니다."
+          }
         }
       }
     },
@@ -62150,6 +64406,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "這將刪除所有應用程序數據，包括課程、作業、設置和緩存的會話。此操作無法撤消。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이렇게 하면 강좌, 과제, 설정, 캐시된 세션을 포함한 모든 앱 데이터가 제거됩니다.이 작업은 취소할 수 없습니다."
           }
         }
       }
@@ -62257,6 +64519,12 @@
             "state": "translated",
             "value": "這會將所有設置重置為其默認值"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모든 설정이 기본값으로 재설정됩니다."
+          }
         }
       }
     },
@@ -62362,6 +64630,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "這會將所有設置重置為其默認值。此操作無法撤消。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그러면 모든 설정이 기본값으로 재설정됩니다.이 작업은 취소할 수 없습니다."
           }
         }
       }
@@ -62475,6 +64749,12 @@
             "state": "translated",
             "value": "線"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "실"
+          }
         }
       }
     },
@@ -62580,6 +64860,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "時間和精力"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시간과 노력"
           }
         }
       }
@@ -62687,6 +64973,12 @@
             "state": "translated",
             "value": "超時：%@s"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시간 초과: %@s"
+          }
         }
       }
     },
@@ -62696,6 +64988,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Timer"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시간제 노동자"
           }
         }
       }
@@ -62803,6 +65101,12 @@
             "state": "translated",
             "value": "標題/正文/標題"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "제목/본문/캡션"
+          }
         }
       }
     },
@@ -62909,6 +65213,12 @@
             "state": "translated",
             "value": "要斷開 Itori 與日曆的連接，請在系統設置 > 隱私和安全 > 日曆中撤銷訪問權限。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "캘린더에서 Itori의 연결을 해제하려면 시스템 설정 > 개인 정보 보호 및 보안 > 캘린더에서 액세스를 취소하세요."
+          }
         }
       }
     },
@@ -63014,6 +65324,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "要斷開 Itori 與提醒的連接，請在系統設置 > 隱私和安全 > 提醒中撤銷訪問權限。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알림에서 Itori의 연결을 끊으려면 시스템 설정 > 개인 정보 보호 및 보안 > 알림에서 액세스를 취소하세요."
           }
         }
       }
@@ -63127,6 +65443,12 @@
             "state": "translated",
             "value": "今天"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘"
+          }
         }
       }
     },
@@ -63232,6 +65554,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "今天的計劃"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘의 계획"
           }
         }
       }
@@ -63339,6 +65667,12 @@
             "state": "translated",
             "value": "今天： ％@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘: %@"
+          }
         }
       }
     },
@@ -63444,6 +65778,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "工具提示：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "툴팁: %@"
           }
         }
       }
@@ -63557,6 +65897,12 @@
             "state": "translated",
             "value": "全部的"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "총"
+          }
         }
       }
     },
@@ -63656,6 +66002,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "總牌數"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "총 카드 수"
           }
         }
       }
@@ -63763,6 +66115,12 @@
             "state": "translated",
             "value": "總計：%@m"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "전체: %@m"
+          }
         }
       }
     },
@@ -63868,6 +66226,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "跟踪 UI 凍結和性能問題"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "UI 정지 및 성능 문제 추적"
           }
         }
       }
@@ -63975,6 +66339,12 @@
             "state": "translated",
             "value": "趨勢與分析"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "동향 및 분석"
+          }
         }
       }
     },
@@ -64080,6 +66450,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "打開或關閉抽認卡系統"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "플래시카드 시스템 켜기 또는 끄기"
           }
         }
       }
@@ -64187,6 +66563,12 @@
             "state": "translated",
             "value": "在應用程序中打開或關閉抽認卡。禁用隱藏相關的 UI 和學習流程。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "앱 전체에서 플래시카드를 켜거나 끕니다.비활성화하면 관련 UI 및 학습 흐름이 숨겨집니다."
+          }
         }
       }
     },
@@ -64292,6 +66674,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "關閉能量面板將使規划算法全天默認為中等能量。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에너지 패널을 끄면 계획 알고리즘이 하루 종일 중간 에너지로 기본 설정됩니다."
           }
         }
       }
@@ -64399,6 +66787,12 @@
             "state": "translated",
             "value": "輸入代碼進行確認"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "확인하려면 코드를 입력하세요."
+          }
         }
       }
     },
@@ -64504,6 +66898,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "版式"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "타이포그래피"
           }
         }
       }
@@ -64611,6 +67011,12 @@
             "state": "translated",
             "value": "即將到來的截止日期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다가오는 마감일"
+          }
         }
       }
     },
@@ -64716,6 +67122,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已更新%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 업데이트됨"
           }
         }
       }
@@ -64823,6 +67235,12 @@
             "state": "translated",
             "value": "更新：%@"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "업데이트됨: %@"
+          }
         }
       }
     },
@@ -64928,6 +67346,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "上傳教學大綱/練習測試"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "강의 계획서 / 연습 시험 업로드"
           }
         }
       }
@@ -65035,6 +67459,12 @@
             "state": "translated",
             "value": "緊迫性"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "긴급"
+          }
         }
       }
     },
@@ -65140,6 +67570,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "使用更密集的佈局和更小的間距"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "더 적은 간격으로 더 조밀한 레이아웃 사용"
           }
         }
       }
@@ -65247,6 +67683,12 @@
             "state": "translated",
             "value": "使用課程頁面添加、編輯和組織您的學術日程。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "코스 페이지를 사용하여 학업 일정을 추가, 편집, 구성할 수 있습니다."
+          }
         }
       }
     },
@@ -65352,6 +67794,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "使用“作業”列表中的“在新窗口中打開”來創建專用窗口。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당 목록에서 \"새 창에서 열기\"를 사용하여 전용 창을 만듭니다."
           }
         }
       }
@@ -65459,6 +67907,12 @@
             "state": "translated",
             "value": "使用課程列表中的“在新窗口中打開”來檢查課程，而不會丟失您的位置。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "강좌 목록에서 \"새 창에서 열기\"를 사용하면 자리를 잃지 않고 강좌를 살펴볼 수 있습니다."
+          }
         }
       }
     },
@@ -65468,6 +67922,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Validation"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "확인"
           }
         }
       }
@@ -65575,6 +68035,12 @@
             "state": "translated",
             "value": "驗證不變的執行和抑制"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "불변 적용 및 억제 확인"
+          }
         }
       }
     },
@@ -65584,6 +68050,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Version"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "버전"
           }
         }
       }
@@ -65595,6 +68067,12 @@
             "state": "translated",
             "value": "View All"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모두 보기"
+          }
         }
       }
     },
@@ -65604,6 +68082,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "View Details"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세부정보 보기"
           }
         }
       }
@@ -65711,6 +68195,12 @@
             "state": "translated",
             "value": "查看歷史記錄"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기록 보기"
+          }
         }
       }
     },
@@ -65816,6 +68306,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "查看最近的日誌事件。Console.app 中提供了完整日誌，並由子系統“com.itori.app”過濾。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최근 로그 이벤트를 봅니다.전체 로그는 하위 시스템 'com.itori.app'으로 필터링된 Console.app에서 사용할 수 있습니다."
           }
         }
       }
@@ -65923,6 +68419,12 @@
             "state": "translated",
             "value": "可視化您的學業表現"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학업 성과를 시각화하세요"
+          }
         }
       }
     },
@@ -66029,6 +68531,12 @@
             "state": "translated",
             "value": "重量 ％"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "무게 %"
+          }
         }
       }
     },
@@ -66134,6 +68642,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "重量： ％@％％"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "무게: %@%%"
           }
         }
       }
@@ -66247,6 +68761,12 @@
             "state": "translated",
             "value": "加權%1$@%% • %2$@ 課程"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가중치 적용 %@%% • %@ 강좌"
+          }
         }
       }
     },
@@ -66352,6 +68872,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "一旦本課程有數據，我們將顯示作業進度和學習時間。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 코스에 데이터가 있으면 과제 진행 상황과 학습 시간이 표시됩니다."
           }
         }
       }
@@ -66459,6 +68985,12 @@
             "state": "translated",
             "value": "假設模式激活"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What-If 모드 활성화"
+          }
         }
       }
     },
@@ -66564,6 +69096,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "假設情景"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가정 시나리오"
           }
         }
       }
@@ -66671,6 +69209,12 @@
             "state": "translated",
             "value": "啟用後，應用程序會將結構化調試日誌記錄發送到 Xcode 控制台。這有助於調試、分類和理解應用程序在運行時的行為。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "활성화되면 앱은 Xcode 콘솔에 구조화된 디버그 로깅을 내보냅니다.이는 런타임 시 앱 동작을 디버깅, 분류 및 이해하는 데 도움이 됩니다."
+          }
         }
       }
     },
@@ -66770,6 +69314,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "當任務自動重新安排時，它們將出現在此處"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "작업 일정이 자동으로 변경되면 여기에 표시됩니다."
           }
         }
       }
@@ -66871,6 +69421,12 @@
             "state": "translated",
             "value": "工作日"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "근무일"
+          }
         }
       }
     },
@@ -66970,6 +69526,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "工作量預測"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "작업량 예측"
           }
         }
       }
@@ -67071,6 +69633,12 @@
             "state": "translated",
             "value": "可與 OpenAI、Azure OpenAI、LM Studio 和其他兼容的 LLM API 配合使用"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OpenAI, Azure OpenAI, LM Studio 및 기타 호환 가능한 LLM API와 함께 작동합니다."
+          }
         }
       }
     },
@@ -67170,6 +69738,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "價值 %@%% 的成績"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@%% 등급의 가치"
           }
         }
       }
@@ -67271,6 +69845,12 @@
             "state": "translated",
             "value": "您想現在開始“%@”嗎？這將創建一個新的測試嘗試。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지금 '%@'을(를) 시작하시겠습니까?그러면 새로운 테스트 시도가 생성됩니다."
+          }
         }
       }
     },
@@ -67370,6 +69950,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "年份：%.2f"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연도: %.2f"
           }
         }
       }
@@ -67471,6 +70057,12 @@
             "state": "translated",
             "value": "您有未保存的更改。關閉前保存以避免丟失。"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장되지 않은 변경사항이 있습니다.잃어버리지 않으려면 닫기 전에 저장하세요."
+          }
         }
       }
     },
@@ -67570,6 +70162,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "您有未保存的編輯。關閉前保存以避免丟失。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장되지 않은 수정사항이 있습니다.잃어버리지 않으려면 닫기 전에 저장하세요."
           }
         }
       }
@@ -67671,6 +70269,12 @@
             "state": "translated",
             "value": "您學習了 %@ 卡"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 카드를 연구했습니다."
+          }
         }
       }
     },
@@ -67680,6 +70284,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your upcoming calendar events will appear here"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "예정된 캘린더 일정이 여기에 표시됩니다."
           }
         }
       }
@@ -67803,6 +70413,12 @@
             "state": "translated",
             "value": "Animation:"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성 디버그.애니메이션"
+          }
         }
       }
     },
@@ -67813,6 +70429,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Secondary Button"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성 디버그.버튼.보조.버튼"
           }
         }
       }
@@ -67825,6 +70447,12 @@
             "state": "translated",
             "value": "Standard Button"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성 디버그.버튼.표준.버튼"
+          }
         }
       }
     },
@@ -67835,6 +70463,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Current System Settings"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성 debug.current.system.settings"
           }
         }
       }
@@ -67847,6 +70481,12 @@
             "state": "translated",
             "value": "Live Preview"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성디버그.라이브.미리보기"
+          }
         }
       }
     },
@@ -67857,6 +70497,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Note: These simulations are for preview only and don't affect actual system behavior"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "내게 필요한 옵션debug.note.these.simulations.are.for"
           }
         }
       }
@@ -67869,6 +70515,12 @@
             "state": "translated",
             "value": "Sample Card"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성디버그.샘플.카드"
+          }
         }
       }
     },
@@ -67879,6 +70531,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Simulate Accessibility Features"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성 debug.simulate.accessibility.features"
           }
         }
       }
@@ -67891,6 +70549,12 @@
             "state": "translated",
             "value": "Test and preview accessibility features without changing system settings"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성 debug.test.and.preview.accessibility.features"
+          }
         }
       }
     },
@@ -67901,6 +70565,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "This card demonstrates material effects"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성디버그.이.카드.시연.재료.효과"
           }
         }
       }
@@ -67913,6 +70583,12 @@
             "state": "translated",
             "value": "Differentiate Without Color"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성 debug.toggle.차별화.without.color"
+          }
         }
       }
     },
@@ -67923,6 +70599,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Increase Contrast"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성 debug.toggle.increase.contrast"
           }
         }
       }
@@ -67935,6 +70617,12 @@
             "state": "translated",
             "value": "Reduce Motion"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성 debug.toggle.reduce.motion"
+          }
         }
       }
     },
@@ -67945,6 +70633,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reduce Transparency"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성 debug.toggle.reduce.transparency"
           }
         }
       }
@@ -67957,6 +70651,12 @@
             "state": "translated",
             "value": "VoiceOver Active"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "접근성 debug.toggle.voiceover.active"
+          }
         }
       }
     },
@@ -67967,6 +70667,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cancel"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "활동 편집기.버튼.취소"
           }
         }
       }
@@ -67990,6 +70696,12 @@
             "state": "translated",
             "value": "Details"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "활동편집기.세부정보"
+          }
         }
       }
     },
@@ -68000,6 +70712,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Links"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "활동편집기.링크"
           }
         }
       }
@@ -68012,6 +70730,12 @@
             "state": "translated",
             "value": "None"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "활동편집기.없음"
+          }
         }
       }
     },
@@ -68023,6 +70747,12 @@
             "state": "translated",
             "value": "Activities"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "활동 목록.활동"
+          }
         }
       }
     },
@@ -68033,6 +70763,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add Collection"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "활동 목록.라벨.추가.컬렉션"
           }
         }
       }
@@ -68056,6 +70792,12 @@
             "state": "translated",
             "value": "Add Course"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가과제.추가.강좌"
+          }
         }
       }
     },
@@ -68066,6 +70808,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "After"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당 추가.이후"
           }
         }
       }
@@ -68078,6 +70826,12 @@
             "state": "translated",
             "value": "ATTACHMENTS"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당 추가.첨부 파일"
+          }
         }
       }
     },
@@ -68088,6 +70842,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cancel"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가할당.버튼.취소"
           }
         }
       }
@@ -68111,6 +70871,12 @@
             "state": "translated",
             "value": "Save and Close"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가할당.버튼.저장.및.닫기"
+          }
         }
       }
     },
@@ -68121,6 +70887,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "DETAILS"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가할당.세부정보"
           }
         }
       }
@@ -68144,6 +70916,12 @@
             "state": "translated",
             "value": "Estimated"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당 추가.예상"
+          }
         }
       }
     },
@@ -68154,6 +70932,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lock"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가할당.잠금"
           }
         }
       }
@@ -68177,6 +70961,12 @@
             "state": "translated",
             "value": "Never"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가할당.never"
+          }
         }
       }
     },
@@ -68187,6 +70977,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No holiday source configured."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가할당.no.holiday.source.configured"
           }
         }
       }
@@ -68199,6 +70995,12 @@
             "state": "translated",
             "value": "None"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당 추가.없음"
+          }
         }
       }
     },
@@ -68209,6 +71011,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "NOTES"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당 추가.메모"
           }
         }
       }
@@ -68232,6 +71040,12 @@
             "state": "translated",
             "value": "Personal (No Course)"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가과제.개인.번호.과정"
+          }
         }
       }
     },
@@ -68242,6 +71056,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Repeat"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가할당.반복"
           }
         }
       }
@@ -68254,6 +71074,12 @@
             "state": "translated",
             "value": "Status"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당 추가.상태"
+          }
         }
       }
     },
@@ -68264,6 +71090,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "System Calendar"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가할당.시스템.캘린더"
           }
         }
       }
@@ -68276,6 +71108,12 @@
             "state": "translated",
             "value": "TIMING"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당 추가.타이밍"
+          }
         }
       }
     },
@@ -68286,6 +71124,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Skip holidays"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당 추가.toggle.skip.holidays"
           }
         }
       }
@@ -68298,6 +71142,12 @@
             "state": "translated",
             "value": "Skip weekends"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당 추가.토글.건너뛰기.주말"
+          }
         }
       }
     },
@@ -68309,6 +71159,12 @@
             "state": "translated",
             "value": "Urgency"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당 추가.긴급"
+          }
         }
       }
     },
@@ -68319,6 +71175,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Weight %"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가할당.가중치"
           }
         }
       }
@@ -68342,6 +71204,12 @@
             "state": "translated",
             "value": "Cancel"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가된강좌.버튼.취소"
+          }
         }
       }
     },
@@ -68364,6 +71232,12 @@
             "state": "translated",
             "value": "Save and Close"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가된강좌.버튼.저장.및.닫기"
+          }
         }
       }
     },
@@ -68375,6 +71249,12 @@
             "state": "translated",
             "value": "Course Materials"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가된 강좌.강좌.자료"
+          }
         }
       }
     },
@@ -68385,6 +71265,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Archived (placeholder)"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "추가된 강좌.toggle.archived.placeholder"
           }
         }
       }
@@ -68516,6 +71402,12 @@
             "state": "translated",
             "value": "休息"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알람.브레이크"
+          }
         }
       }
     },
@@ -68634,6 +71526,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "暫停"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알람.일시 중지"
           }
         }
       }
@@ -68754,6 +71652,12 @@
             "state": "translated",
             "value": "已暫停"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알람.일시중지됨"
+          }
         }
       }
     },
@@ -68873,6 +71777,12 @@
             "state": "translated",
             "value": "恢復"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알람.재개"
+          }
         }
       }
     },
@@ -68991,6 +71901,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "停止"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알람.중지"
           }
         }
       }
@@ -69122,6 +72038,12 @@
             "state": "translated",
             "value": "Details"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당세부정보창.세부정보"
+          }
         }
       }
     },
@@ -69132,6 +72054,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Grade"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제세부정보창.등급"
           }
         }
       }
@@ -69144,6 +72072,12 @@
             "state": "translated",
             "value": "Delete Assignment"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당세부정보창.레이블.삭제.할당"
+          }
         }
       }
     },
@@ -69154,6 +72088,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Time & Effort"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당세부정보창.시간.노력"
           }
         }
       }
@@ -69273,6 +72213,12 @@
             "state": "translated",
             "value": "新增作業"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.작업.추가"
+          }
         }
       }
     },
@@ -69325,6 +72271,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "เพิ่มเกรด"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.액션.추가_등급"
           }
         }
       }
@@ -69562,6 +72514,12 @@
             "state": "translated",
             "value": "編輯"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.작업.편집"
+          }
         }
       }
     },
@@ -69679,6 +72637,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "篩選"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.작업.필터"
           }
         }
       }
@@ -69926,6 +72890,12 @@
             "state": "translated",
             "value": "確定"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.행동.확인"
+          }
         }
       }
     },
@@ -70043,6 +73013,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "計劃日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.행동.계획_일"
           }
         }
       }
@@ -70215,6 +73191,12 @@
             "state": "translated",
             "value": "การบ้าน"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.범주.숙제"
+          }
         }
       }
     },
@@ -70268,6 +73250,12 @@
             "state": "needs_review",
             "value": "assignments.category.practice_test"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.범주.연습_테스트"
+          }
         }
       }
     },
@@ -70279,6 +73267,12 @@
             "state": "translated",
             "value": "Create personal tasks not tied to any course"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.create.personal.tasks.not.tied.to.any.course"
+          }
         }
       }
     },
@@ -70288,6 +73282,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Actions"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.세부 사항.작업"
           }
         }
       }
@@ -70299,6 +73299,12 @@
             "state": "translated",
             "value": "Archive"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.세부정보.보관"
+          }
         }
       }
     },
@@ -70308,6 +73314,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Delete"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.세부정보.삭제"
           }
         }
       }
@@ -70427,6 +73439,12 @@
             "state": "translated",
             "value": "選擇作業以查看詳細信息"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.세부 사항.빈_자막"
+          }
         }
       }
     },
@@ -70545,6 +73563,12 @@
             "state": "translated",
             "value": "選擇作業"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.세부 사항.빈_제목"
+          }
         }
       }
     },
@@ -70565,6 +73589,12 @@
             "state": "translated",
             "value": "Grade Impact"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.세부사항.등급_영향"
+          }
         }
       }
     },
@@ -70574,6 +73604,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mark Completed"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.세부사항.마크_완료"
           }
         }
       }
@@ -70585,6 +73621,12 @@
             "state": "translated",
             "value": "Mark Completed Full"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.detail.mark_completed_full"
+          }
         }
       }
     },
@@ -70594,6 +73636,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "No Weight"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.세부사항.no_weight"
           }
         }
       }
@@ -70615,6 +73663,12 @@
             "state": "translated",
             "value": "Planner"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.세부사항.플래너"
+          }
         }
       }
     },
@@ -70624,6 +73678,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Planning"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.세부사항.계획"
           }
         }
       }
@@ -70645,6 +73705,12 @@
             "state": "translated",
             "value": "Start Timer"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.세부사항.타이머"
+          }
         }
       }
     },
@@ -70654,6 +73720,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cancel"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.편집기.작업.취소"
           }
         }
       }
@@ -70675,6 +73747,12 @@
             "state": "translated",
             "value": "Add"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.편집기.강좌.추가"
+          }
         }
       }
     },
@@ -70684,6 +73762,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Empty"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.편집기.강좌.비어있음"
           }
         }
       }
@@ -70695,6 +73779,12 @@
             "state": "translated",
             "value": "Helper"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.편집기.강좌.헬퍼"
+          }
         }
       }
     },
@@ -70704,6 +73794,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Notes"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.편집기.필드.노트"
           }
         }
       }
@@ -70715,6 +73811,12 @@
             "state": "translated",
             "value": "Status"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.편집기.섹션.상태"
+          }
         }
       }
     },
@@ -70725,6 +73827,12 @@
             "state": "translated",
             "value": "Task"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.편집기.섹션.작업"
+          }
         }
       }
     },
@@ -70734,6 +73842,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Timing"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.편집기.섹션.타이밍"
           }
         }
       }
@@ -70853,6 +73967,12 @@
             "state": "translated",
             "value": "建立你的第一個作業以開始使用"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.빈.create_first"
+          }
         }
       }
     },
@@ -70970,6 +74090,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "無作業"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.빈.no_할당"
           }
         }
       }
@@ -71089,6 +74215,12 @@
             "state": "translated",
             "value": "無已解析的作業"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.빈.no_parsed"
+          }
         }
       }
     },
@@ -71207,6 +74339,12 @@
             "state": "translated",
             "value": "解析教學大綱檔案以在此查看作業"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.빈.parse_syllabus"
+          }
         }
       }
     },
@@ -71319,6 +74457,12 @@
             "state": "translated",
             "value": "全部"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.필터.모두"
+          }
         }
       }
     },
@@ -71329,6 +74473,12 @@
             "state": "translated",
             "value": "All Courses"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.필터.모든_강좌"
+          }
         }
       }
     },
@@ -71338,6 +74488,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Any"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.필터.모든"
           }
         }
       }
@@ -71457,6 +74613,12 @@
             "state": "translated",
             "value": "即將到期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.필터.due_soon"
+          }
         }
       }
     },
@@ -71568,6 +74730,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "已逾期"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.필터.기한 초과"
           }
         }
       }
@@ -71686,6 +74854,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "截止日期"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.양식.기한_날짜"
           }
         }
       }
@@ -71923,6 +75097,12 @@
             "state": "translated",
             "value": "類型"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.양식.유형"
+          }
         }
       }
     },
@@ -71933,6 +75113,12 @@
             "state": "translated",
             "value": "Earned Points"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.등급.획득_점"
+          }
         }
       }
     },
@@ -71942,6 +75128,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Possible Points"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.등급.가능한_점수"
           }
         }
       }
@@ -72071,6 +75263,12 @@
             "state": "translated",
             "value": "新增已解析的作業"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.parse.add_parsed"
+          }
         }
       }
     },
@@ -72188,6 +75386,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "取消全選"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.parse.deselect_all"
           }
         }
       }
@@ -72307,6 +75511,12 @@
             "state": "translated",
             "value": "編輯已解析的作業"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.구문 분석.편집_제목"
+          }
         }
       }
     },
@@ -72424,6 +75634,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "成功匯入了 %d 個作業。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.parse.import_count"
           }
         }
       }
@@ -72543,6 +75759,12 @@
             "state": "translated",
             "value": "匯入成功"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.parse.import_success"
+          }
         }
       }
     },
@@ -72660,6 +75882,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "批准項目以將其匯入到你的作業中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.parse.review_subtitle"
           }
         }
       }
@@ -72779,6 +76007,12 @@
             "state": "translated",
             "value": "審核已解析的作業"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.분석.검토_제목"
+          }
         }
       }
     },
@@ -72896,6 +76130,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "全選"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.분석.선택_모두"
           }
         }
       }
@@ -73015,6 +76255,12 @@
             "state": "translated",
             "value": "未知來源"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.parse.unknown_source"
+          }
         }
       }
     },
@@ -73079,6 +76325,12 @@
             "state": "translated",
             "value": "แก้ชุด"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.계획.해결_세트"
+          }
         }
       }
     },
@@ -73131,6 +76383,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "หมวดหมู่"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.행.범주_라벨"
           }
         }
       }
@@ -73237,6 +76495,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%d นาที"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.행.예상_분"
           }
         }
       }
@@ -73355,6 +76619,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "搜索作業"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.검색.자리 표시자"
           }
         }
       }
@@ -73710,6 +76980,12 @@
             "state": "translated",
             "value": "今日到期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.섹션.마감일_오늘"
+          }
         }
       }
     },
@@ -73827,6 +77103,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "錯過了"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.섹션.누락"
           }
         }
       }
@@ -74070,6 +77352,12 @@
             "state": "translated",
             "value": "即將到來"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.섹션.예정"
+          }
         }
       }
     },
@@ -74187,6 +77475,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "即將到來的負載"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.섹션.upcoming_load"
           }
         }
       }
@@ -74412,6 +77706,12 @@
             "state": "translated",
             "value": "完全的"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.세그먼트.완료"
+          }
         }
       }
     },
@@ -74530,6 +77830,12 @@
             "state": "translated",
             "value": "作業"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.세그먼트.레이블"
+          }
         }
       }
     },
@@ -74642,6 +77948,12 @@
             "state": "translated",
             "value": "即將推出"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.세그먼트.예정"
+          }
         }
       }
     },
@@ -74651,6 +77963,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copy"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.선택.복사"
           }
         }
       }
@@ -74662,6 +77980,12 @@
             "state": "translated",
             "value": "Cut"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.선택.컷"
+          }
         }
       }
     },
@@ -74672,6 +77996,12 @@
             "state": "translated",
             "value": "Duplicate"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.선택.중복"
+          }
         }
       }
     },
@@ -74681,6 +78011,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Paste"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.선택.붙여넣기"
           }
         }
       }
@@ -74799,6 +78135,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "課程"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제.정렬.강좌"
           }
         }
       }
@@ -75272,6 +78614,12 @@
             "state": "translated",
             "value": "作業到期"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.통계.할당 기한"
+          }
         }
       }
     },
@@ -75508,6 +78856,12 @@
             "state": "translated",
             "value": "逾期作業"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.통계.기한이 지난 할당"
+          }
         }
       }
     },
@@ -75561,6 +78915,12 @@
             "state": "translated",
             "value": "ไม่ได้เริ่ม"
           }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할당.상태.not_started"
+          }
         }
       }
     },
@@ -75571,6 +78931,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Add Assignment"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "과제2.추가.할당"
           }
         }
       }
@@ -75637,6 +79003,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Last Suppression:"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자동 일정 카운터.마지막.억제"
           }
         }
       }

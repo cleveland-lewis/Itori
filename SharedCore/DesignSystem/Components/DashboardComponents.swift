@@ -129,7 +129,7 @@ struct AdaptiveDashboardGrid<Content: View>: View {
             ) {
                 content()
             }
-            .padding(20)
+            .padding(metrics.cardPadding)
             .padding(.bottom, 100) // Dock clearance
         }
         .background(Color(nsColor: .windowBackgroundColor))
@@ -218,9 +218,10 @@ struct DashboardStatRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
-                .font(.system(size: 16))
+                .font(.body)
                 .foregroundStyle(.secondary)
                 .frame(width: 20)
+                .accessibilityHidden(true)
             
             Text(label)
                 .font(.subheadline)
@@ -379,6 +380,7 @@ struct CalendarTimeCard: View {
                         Image(systemName: "chevron.right")
                             .font(.caption)
                             .foregroundStyle(.tertiary)
+                            .accessibilityHidden(true)
                     }
                 } else {
                     HStack {
@@ -391,6 +393,7 @@ struct CalendarTimeCard: View {
                         Image(systemName: "chevron.right")
                             .font(.caption)
                             .foregroundStyle(.tertiary)
+                            .accessibilityHidden(true)
                     }
                 }
             }
@@ -489,6 +492,7 @@ struct DashboardCalendarEvent: Identifiable {
                 } label: {
                     Image(systemName: "plus")
                 }
+                .accessibilityLabel("Add assignment")
                 .buttonStyle(.plain)
                 .font(.headline)
             } footer: {
@@ -516,7 +520,7 @@ struct DashboardCalendarEvent: Identifiable {
                 )
             }
         }
-        .padding(20)
+        .padding(metrics.cardPadding)
     }
     .frame(width: 400, height: 800)
 }

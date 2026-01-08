@@ -11,6 +11,7 @@ struct CalendarAccessBanner: View {
             Image(systemName: "calendar.badge.exclamationmark")
                 .font(.title3)
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
@@ -25,6 +26,7 @@ struct CalendarAccessBanner: View {
             Button(actionTitle, action: action)
                 .buttonStyle(.borderedProminent)
                 .controlSize(.small)
+                .accessibilityHint("Grants calendar access to show events")
         }
         .padding(12)
         .background(

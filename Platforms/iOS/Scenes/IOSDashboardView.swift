@@ -18,6 +18,7 @@ struct IOSDashboardView: View {
     @EnvironmentObject private var plannerCoordinator: PlannerCoordinator
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.overlayInsets) private var overlayInsets
+    @Environment(\.layoutMetrics) private var metrics
     @ObservedObject private var plannerStore = PlannerStore.shared
     @State private var selectedAssignmentId: UUID? = nil
     @State private var selectedSession: StoredScheduledSession? = nil
@@ -130,7 +131,7 @@ struct IOSDashboardView: View {
                 .foregroundStyle(.secondary)
                 .padding(.top, 4)
             }
-            .padding(20)
+            .padding(metrics.cardPadding)
         }
         .frame(maxWidth: .infinity, minHeight: 150)
     }
@@ -138,7 +139,9 @@ struct IOSDashboardView: View {
     private var quickStatsRow: some View {
         HStack(spacing: 12) {
             statPill(title: NSLocalizedString("ios.dashboard.stats.next_7_days", comment: "Next 7 Days"), value: "\(weekEventCount)", icon: "calendar.badge.clock")
+                .accessibilityElement(children: .combine)
             statPill(title: NSLocalizedString("ios.dashboard.stats.due_this_month", comment: "Due This Month"), value: "\(dueThisMonthTasks.count)", icon: "calendar")
+                .accessibilityElement(children: .combine)
         }
     }
     
@@ -209,8 +212,11 @@ struct IOSDashboardView: View {
                         } label: {
                             Image(systemName: "plus")
                                 .font(.headline)
+                                .accessibilityHidden(true)
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel("Add assignment")
+                        .accessibilityHint("Opens form to create a new assignment")
                     ))
                 }
                 .buttonStyle(.plain)
@@ -218,9 +224,10 @@ struct IOSDashboardView: View {
                 if items.isEmpty {
                     VStack(spacing: 12) {
                         Image(systemName: "tray")
-                            .font(.system(size: 40))
+                            .font(.system(.largeTitle))
                             .foregroundStyle(.secondary.opacity(0.5))
                             .padding(.top, 8)
+                            .accessibilityHidden(true)
                         
                         VStack(spacing: 4) {
                             Text(NSLocalizedString("No upcoming assignments", value: "No upcoming assignments", comment: ""))
@@ -283,8 +290,9 @@ struct IOSDashboardView: View {
             if sessions.isEmpty {
                 VStack(spacing: 10) {
                     Image(systemName: "calendar.badge.clock")
-                        .font(.system(size: 36))
+                        .font(.system(.largeTitle))
                         .foregroundStyle(.secondary.opacity(0.5))
+                        .accessibilityHidden(true)
                     
                     Text(NSLocalizedString("No planned tasks today", value: "No planned tasks today", comment: ""))
                         .font(.subheadline.weight(.semibold))
@@ -308,8 +316,9 @@ struct IOSDashboardView: View {
             if snapshot.plannedMinutes <= 0 {
                 VStack(spacing: 10) {
                     Image(systemName: "chart.bar")
-                        .font(.system(size: 36))
+                        .font(.system(.largeTitle))
                         .foregroundStyle(.secondary.opacity(0.5))
+                        .accessibilityHidden(true)
                     
                     VStack(spacing: 4) {
                         Text(NSLocalizedString("No scheduled time", value: "No scheduled time", comment: ""))
@@ -326,8 +335,9 @@ struct IOSDashboardView: View {
                 // All tasks completed
                 VStack(spacing: 10) {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 40))
+                        .font(.system(.largeTitle))
                         .foregroundStyle(.green)
+                        .accessibilityHidden(true)
                     
                     VStack(spacing: 4) {
                         Text(verbatim: "\(completedSessionCount)/\(totalSessionCount) tasks completed")
@@ -347,7 +357,7 @@ struct IOSDashboardView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         ForEach(completedSessions, id: \.id) { session in
                             Text(session.displayTitle)
-                                .font(.caption)
+                                .font(.system(.caption))
                                 .strikethrough()
                                 .foregroundStyle(.secondary)
                         }
@@ -357,7 +367,7 @@ struct IOSDashboardView: View {
             } else {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(verbatim: "\(snapshot.remainingPercent)%")
-                        .font(.system(size: 32, weight: .bold))
+                        .font(.largeTitle.weight(.bold))
                     Text(verbatim: "\(snapshot.remainingMinutes) min remaining")
                         .font(.caption)
                         .foregroundStyle(.secondary)
