@@ -40,7 +40,7 @@
 | Differentiate Color | 50% (+30%) | 0% | 0% | 🟢 Major Progress |
 | Dark Mode | 100% | 100% | ~100% | ✅ Done |
 | Voice Control | 95% | 0% | 0% | 🟢 Ready for Testing |
-| Contrast | 50% | 50% | 50% | ⚠️ Needs Check |
+| Contrast | 60% (+10%) | 50% | 50% | 🟡 Audited |
 
 ---
 
