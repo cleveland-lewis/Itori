@@ -1,0 +1,91 @@
+# SwiftLint Configuration for Itori
+# Enforces code quality standards
+
+# Enable all rules by default then selectively disable
+opt_in_rules:
+  - empty_count
+  - empty_string
+  - fatal_error_message
+  - force_unwrapping
+  - implicitly_unwrapped_optional
+  - unavailable_function
+  - unused_import
+  - unused_declaration
+  - vertical_whitespace_closing_braces
+  - vertical_whitespace_opening_braces
+
+disabled_rules:
+  - line_length # Too restrictive for complex SwiftUI
+  - type_body_length # Some ViewModels are large
+  - file_length # Some complex views are large
+
+# Paths to exclude from linting
+excluded:
+  - _Deprecated_macOS
+  - .build
+  - .derivedData
+  - DerivedData
+  - Carthage
+  - Pods
+  - .git
+  - __pycache__
+  - website
+  - Tests/ItoriUITests # UI test snapshots are auto-generated
+
+# Custom rules
+force_unwrapping:
+  severity: error
+  
+force_cast:
+  severity: error
+  
+force_try:
+  severity: warning
+  
+cyclomatic_complexity:
+  warning: 15
+  error: 25
+  ignores_case_statements: true
+
+function_body_length:
+  warning: 60
+  error: 100
+
+large_tuple:
+  warning: 3
+  error: 4
+
+identifier_name:
+  min_length:
+    warning: 2
+    error: 1
+  max_length:
+    warning: 50
+    error: 60
+  excluded:
+    - id
+    - x
+    - y
+    - z
+
+# Custom warning for TODO/FIXME
+custom_rules:
+  todo_fixme_production:
+    name: "TODO/FIXME in production code"
+    regex: '(TODO|FIXME)(?!.*test)'
+    match_kinds: comment
+    message: "TODO/FIXME comments should be converted to GitHub issues"
+    severity: warning
+    
+  unsafe_threading:
+    name: "Unsafe threading patterns"
+    regex: '@MainActor.*DispatchQueue\.main'
+    message: "Redundant DispatchQueue.main with @MainActor"
+    severity: warning
+    
+  print_statement:
+    name: "Print statement detector"
+    regex: '\bprint\('
+    message: "Use DebugLogger instead of print()"
+    severity: error
+    excluded: ".*Tests\\.swift"

@@ -1,0 +1,49 @@
+# SwiftFormat Configuration for Itori
+# Ensures consistent code formatting
+
+# Swift version
+--swiftversion 5.9
+
+# Indentation
+--indent 4
+--indentcase false
+--tabwidth 4
+
+# Wrapping
+--maxwidth 120
+--wraparguments before-first
+--wrapparameters before-first
+--wrapcollections before-first
+
+# Spacing
+--trimwhitespace always
+--commas inline
+--semicolons never
+
+# Organization
+--importgrouping testable-bottom
+--organizetypes struct,class,actor,enum,extension
+
+# Rules to enable
+--enable isEmpty
+--enable redundantReturn
+--enable sortedImports
+--enable unusedArguments
+--enable wrapMultilineStatementBraces
+
+# Rules to disable
+--disable andOperator # && is clearer than "and"
+--disable redundantSelf # Required for clarity in closures
+--disable trailingClosures # Not always clearer
+
+# Exclude directories
+--exclude _Deprecated_macOS
+--exclude .build
+--exclude DerivedData
+--exclude .derivedData
+--exclude Carthage
+--exclude Pods
+--exclude .git
+--exclude __pycache__
+--exclude website
+--exclude Tests/ItoriUITests

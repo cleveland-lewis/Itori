@@ -1,0 +1,39 @@
+# VoiceOver Audit - Remaining Work
+
+## Images Needing Attention
+
+### Empty State Images (Decorative)
+- IOSDashboardView.swift:178 - "tray" icon → needs .accessibilityHidden(true)
+- AutoRescheduleHistoryView.swift:40 - "clock.arrow.circlepath" → has .accessibilityHidden via imageScale
+
+### Status/Informational Images (Need Labels)
+- AutoRescheduleHistoryView.swift:107 - strategyIcon → already has .accessibilityLabel ✅
+- SettingsRootView.swift - category icons → in Labels (auto-handled) ✅
+
+### Decorative Arrows/Separators
+- AutoRescheduleHistoryView.swift:127 - "arrow.right" → needs .accessibilityHidden(true)
+- AutoRescheduleHistoryView.swift:137 - "arrow.up.circle" → accompanies text, keep visible
+
+## Priority Fixes
+
+### High Priority (User-facing empty states):
+1. IOSDashboardView.swift - Empty assignment tray icon
+2. Calendar/Notification settings - Permission icons (already have accessible text)
+
+### Medium Priority (Settings):
+3. Settings icons in Labels - Auto-handled by SwiftUI ✅
+4. Checkmarks in settings - Convey selection state (need review)
+
+### Low Priority (Decorative):
+5. Arrow separators in time displays
+6. Background decorative elements
+
+## Recommendation
+
+Focus on:
+1. Empty state icons → mark as decorative (.accessibilityHidden)
+2. Verify all Buttons have labels
+3. Ensure form fields have proper labels
+4. Test navigation flows with VoiceOver
+
+Most work is already done. Remaining: ~10-15 fixes.
