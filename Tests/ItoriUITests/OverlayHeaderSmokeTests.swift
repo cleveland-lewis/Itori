@@ -1,6 +1,13 @@
 import XCTest
 
 final class OverlayHeaderSmokeTests: XCTestCase {
+    
+    override func setUpWithError() throws {
+        #if os(macOS)
+        throw XCTSkip("Test suite expects iOS overlay structure - needs macOS adaptation")
+        #endif
+    }
+    
     func testOverlayButtonsRemainVisibleWhileScrolling() {
         let app = XCUIApplication()
         app.launch()

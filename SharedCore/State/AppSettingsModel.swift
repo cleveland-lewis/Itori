@@ -388,8 +388,8 @@ final class AppSettingsModel: ObservableObject, Codable {
     var sidebarBehaviorRaw: String = SidebarBehavior.automatic.rawValue
     var wiggleOnHoverStorage: Bool = true
     var tabBarModeRaw: String = TabBarMode.iconsAndText.rawValue
-    var visibleTabsRaw: String = "dashboard,calendar,planner,assignments,courses,grades,timer,flashcards,practice"
-    var tabOrderRaw: String = "dashboard,calendar,planner,assignments,courses,grades,timer,flashcards,practice"
+    var visibleTabsRaw: String = "dashboard,planner,assignments,courses,grades,calendar"
+    var tabOrderRaw: String = "dashboard,planner,assignments,courses,grades,calendar"
     var quickActionsRaw: String = "add_assignment,add_course,quick_note"
     var enableGlassEffectsStorage: Bool = true
     var cardRadiusRaw: String = CardRadius.medium.rawValue
@@ -513,7 +513,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage("roots.settings.calendarAccessGranted") var calendarAccessGranted: Bool = true
     
     // Starred tabs for iOS (max 5) - stored as comma-separated string
-    @AppStorage("roots.settings.starredTabsString") private var starredTabsString: String = "dashboard,calendar,timer,assignments"
+    @AppStorage("roots.settings.starredTabsString") private var starredTabsString: String = "dashboard,courses,assignments,calendar,grades"
     
     var starredTabsRaw: [String] {
         get {
@@ -668,26 +668,15 @@ final class AppSettingsModel: ObservableObject, Codable {
         set { practiceTestTimeMultiplierStorage = newValue }
     }
 
-    /// Derived convenience: visible tabs minus flashcards if disabled
+    /// Derived convenience: visible tabs filtered by registry
     var effectiveVisibleTabs: [RootTab] {
-        var tabs = visibleTabs
-        if enableFlashcards {
-            if !tabs.contains(.flashcards) { tabs.append(.flashcards) }
-        } else {
-            tabs.removeAll { $0 == .flashcards }
-        }
-        return tabs
+        visibleTabs.filter { TabRegistry.definition(for: $0) != nil }
     }
 
     var tabOrder: [RootTab] {
         get {
-            var order = tabOrderRaw.split(separator: ",").compactMap { RootTab(rawValue: String($0)) }
-            if enableFlashcards {
-                if !order.contains(.flashcards) { order.append(.flashcards) }
-            } else {
-                order.removeAll { $0 == .flashcards }
-            }
-            return order
+            let order = tabOrderRaw.split(separator: ",").compactMap { RootTab(rawValue: String($0)) }
+            return order.filter { TabRegistry.definition(for: $0) != nil }
         }
         set { tabOrderRaw = newValue.map { $0.rawValue }.joined(separator: ",") }
     }
@@ -806,17 +795,13 @@ final class AppSettingsModel: ObservableObject, Codable {
     var starredTabs: [RootTab] {
         get {
             var tabs = starredTabsRaw.compactMap { RootTab(rawValue: $0) }
-            if !enableFlashcards {
-                tabs.removeAll { $0 == .flashcards }
-            }
+            tabs = tabs.filter { TabRegistry.definition(for: $0) != nil }
             // Limit to 5
             return Array(tabs.prefix(5))
         }
         set {
             var tabs = newValue
-            if !enableFlashcards {
-                tabs.removeAll { $0 == .flashcards }
-            }
+            tabs = tabs.filter { TabRegistry.definition(for: $0) != nil }
             // Limit to 5
             tabs = Array(tabs.prefix(5))
             starredTabsRaw = tabs.map { $0.rawValue }
@@ -1140,6 +1125,7 @@ final class AppSettingsModel: ObservableObject, Codable {
             } else {
                 LOG_DEV(.debug, "EnergySync", "Skipped iCloud write (sync disabled)")
             }
+            NotificationCenter.default.post(name: .energySettingsDidChange, object: nil)
         }
     }
 
@@ -1171,6 +1157,7 @@ final class AppSettingsModel: ObservableObject, Codable {
                 let syncResult = NSUbiquitousKeyValueStore.default.synchronize()
                 LOG_DEV(.debug, "EnergySync", "iCloud synchronize() called", metadata: ["success": "\(syncResult)"])
             }
+            NotificationCenter.default.post(name: .energySettingsDidChange, object: nil)
         }
     }
 
@@ -1585,13 +1572,13 @@ final class AppSettingsModel: ObservableObject, Codable {
         
         // Wrap all decoding in a do-catch to prevent crashes from incompatible data
         do {
-            accentColorRaw = try container.decodeIfPresent(String.self, forKey: .accentColorRaw) ?? AppAccentColor.multicolor.rawValue
+            accentColorRaw = try container.decodeIfPresent(String.self, forKey: .accentColorRaw) ?? AppAccentColor.blue.rawValue
         } catch {
             // Only log in developer mode - this is not a critical error
             if UserDefaults.standard.bool(forKey: Keys.devModeEnabled) {
                 print("[AppSettings] Failed to decode accentColorRaw, using default")
             }
-            accentColorRaw = AppAccentColor.multicolor.rawValue
+            accentColorRaw = AppAccentColor.blue.rawValue
         }
         
         customAccentEnabledStorage = try container.decodeIfPresent(Bool.self, forKey: .customAccentEnabledStorage) ?? false
@@ -1605,8 +1592,8 @@ final class AppSettingsModel: ObservableObject, Codable {
         sidebarBehaviorRaw = try container.decodeIfPresent(String.self, forKey: .sidebarBehaviorRaw) ?? SidebarBehavior.automatic.rawValue
         wiggleOnHoverStorage = try container.decodeIfPresent(Bool.self, forKey: .wiggleOnHoverStorage) ?? true
         tabBarModeRaw = try container.decodeIfPresent(String.self, forKey: .tabBarModeRaw) ?? TabBarMode.iconsAndText.rawValue
-        visibleTabsRaw = try container.decodeIfPresent(String.self, forKey: .visibleTabsRaw) ?? "dashboard,calendar,planner,assignments,courses,grades,timer,flashcards,practice"
-        tabOrderRaw = try container.decodeIfPresent(String.self, forKey: .tabOrderRaw) ?? "dashboard,calendar,planner,assignments,courses,grades,timer,flashcards,practice"
+        visibleTabsRaw = try container.decodeIfPresent(String.self, forKey: .visibleTabsRaw) ?? "dashboard,planner,assignments,courses,grades,calendar"
+        tabOrderRaw = try container.decodeIfPresent(String.self, forKey: .tabOrderRaw) ?? "dashboard,planner,assignments,courses,grades,calendar"
         quickActionsRaw = try container.decodeIfPresent(String.self, forKey: .quickActionsRaw) ?? "add_assignment,add_course,quick_note"
         enableGlassEffectsStorage = try container.decodeIfPresent(Bool.self, forKey: .enableGlassEffectsStorage) ?? true
         cardRadiusRaw = try container.decodeIfPresent(String.self, forKey: .cardRadiusRaw) ?? CardRadius.medium.rawValue
@@ -1651,7 +1638,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         showOnlySchoolCalendarStorage = try container.decodeIfPresent(Bool.self, forKey: .showOnlySchoolCalendarStorage) ?? false
         lockCalendarPickerToSchoolStorage = try container.decodeIfPresent(Bool.self, forKey: .lockCalendarPickerToSchoolStorage) ?? false
         selectedSchoolCalendarID = try container.decodeIfPresent(String.self, forKey: .selectedSchoolCalendarID) ?? ""
-        let decodedTabs = try container.decodeIfPresent([String].self, forKey: .starredTabsRaw) ?? ["dashboard", "calendar", "timer", "assignments", "settings"]
+        let decodedTabs = try container.decodeIfPresent([String].self, forKey: .starredTabsRaw) ?? ["dashboard", "courses", "assignments", "calendar", "grades"]
         starredTabsString = decodedTabs.joined(separator: ",")
         compactModeStorage = try container.decodeIfPresent(Bool.self, forKey: .compactModeStorage) ?? false
         largeTapTargetsStorage = try container.decodeIfPresent(Bool.self, forKey: .largeTapTargetsStorage) ?? false

@@ -1,0 +1,127 @@
+I need your help reviewing French translations for a student study/productivity app.
+
+You have access to vast amounts of real-world French usage from Reddit, GitHub, social media, and forums. Use that knowledge to evaluate if these translations sound natural to native speakers.
+
+CONTEXT:
+- Target audience: Students aged 15-35
+- App type: Study/productivity mobile app
+- Tone: Friendly but professional
+- Need: Natural, modern French that young people actually use
+
+TASK: For each translation below:
+1. Does it sound natural like French speakers would say it online (Reddit, Discord, social media)?
+2. Is the formality level appropriate for a modern mobile app?
+3. Would students understand and use these exact terms?
+4. Are there any awkward literal translations or cultural mismatches?
+
+IMPORTANT: 
+- Think about how French speakers talk in app UIs, social media, and casual tech forums
+- Consider what terminology students use in educational contexts
+- Flag anything that sounds "machine translated" or too formal/old-fashioned
+
+FORMAT: For each translation that needs improvement, provide:
+```
+Translation #[number]
+English: "[original]"
+Current French: "[current translation]"
+Issue: [what sounds unnatural/wrong]
+Better French: "[improved version]"
+Why: [explain based on real French usage patterns]
+```
+
+Only flag translations that genuinely sound unnatural. If it's already good, skip it.
+
+TRANSLATIONS TO REVIEW (first 30):
+
+1. English: "%@ %@"
+   French: "%1$@ %2$@"
+
+2. English: "%@ / %@"
+   French: "%1$@ / %2$@"
+
+3. English: "%@ cards"
+   French: "%@ cartes"
+
+4. English: "%@ cards due"
+   French: "%@ cartes dues"
+
+5. English: "%@ min"
+   French: "%@ minutes"
+
+6. English: "%@ min completed"
+   French: "%@ min terminées"
+
+7. English: "%@ min remaining"
+   French: "%@ minutes restantes"
+
+8. English: "%@ minutes · %@"
+   French: "%1$@ minutes · %2$@"
+
+9. English: "%@ of %@ approved"
+   French: "%1$@ sur %2$@ approuvé"
+
+10. English: "%@ running"
+   French: "%@ en cours d'exécution"
+
+11. English: "%@ studied"
+   French: "%@ étudié"
+
+12. English: "%@ · %@"
+   French: "%1$@ · %2$@"
+
+13. English: "%@ – %@"
+   French: "%1$@ – %2$@"
+
+14. English: "%@/%@"
+   French: "%1$@/%2$@"
+
+15. English: "%@/%@ steps"
+   French: "%1$@/%2$@ étapes"
+
+16. English: "%@: %@"
+   French: "%1$@ : %2$@"
+
+17. English: "(%@-%@)"
+   French: "(%1$@-%2$@)"
+
+18. English: "+ %@ more weeks"
+   French: "+ %@ semaines supplémentaires"
+
+19. English: "+%@ more"
+   French: "+%@ plus"
+
+20. English: "1 Month"
+   French: "1 mois"
+
+21. English: "1 Week"
+   French: "1 semaine"
+
+22. English: "1 day before"
+   French: "1 jour avant"
+
+23. English: "1 hour before"
+   French: "1 heure avant"
+
+24. English: "1. Click the button below to open System Settings."
+   French: "1. Cliquez sur le bouton ci-dessous pour ouvrir les paramètres système."
+
+25. English: "12-hour"
+   French: "12 heures"
+
+26. English: "15 minutes before"
+   French: "15 minutes avant"
+
+27. English: "2 Months"
+   French: "2 mois"
+
+28. English: "2 Weeks"
+   French: "2 semaines"
+
+29. English: "2 hours before"
+   French: "2 heures avant"
+
+30. English: "24-hour"
+   French: "24 heures"
+
+
+Based on your knowledge of real French usage on Reddit, GitHub, and social media, which translations sound unnatural?

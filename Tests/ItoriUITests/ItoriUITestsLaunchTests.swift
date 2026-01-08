@@ -13,12 +13,21 @@ final class ItoriUITestsLaunchTests: XCTestCase {
         true
     }
 
+    private func skipIfInterferingAppsPresent() throws {
+        let updateService = XCUIApplication(bundleIdentifier: "com.grammarly.ProjectLlama.UpdateService")
+        updateService.terminate()
+        if updateService.state != .notRunning {
+            throw XCTSkip("Background update service is active; skipping launch snapshot")
+        }
+    }
+
     override func setUpWithError() throws {
         continueAfterFailure = false
     }
 
     @MainActor
     func testLaunch() throws {
+        try skipIfInterferingAppsPresent()
         let app = XCUIApplication()
         app.launch()
 

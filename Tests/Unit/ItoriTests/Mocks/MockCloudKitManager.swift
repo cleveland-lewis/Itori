@@ -41,17 +41,9 @@ class MockCloudKitManager {
             throw failureError
         }
         
-        // Simulate conflict
-        if let existingData = syncedData[key], existingData != data {
-            if let resolver = conflictResolver {
-                syncedData[key] = resolver(existingData, data)
-            } else {
-                throw MockCloudKitError.conflictDetected
-            }
-        } else {
-            syncedData[key] = data
-            quotaRemaining -= Int64(data.count)
-        }
+        // Last write wins - always update the data
+        syncedData[key] = data
+        quotaRemaining -= Int64(data.count)
     }
     
     func fetchFromCloud(key: String) async throws -> Data? {

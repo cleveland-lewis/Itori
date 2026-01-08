@@ -838,7 +838,7 @@ final class AssignmentsStore: ObservableObject {
         guard isSyncEnabled, !AppSettingsModel.shared.suppressICloudRestore else { return }
         
         // Monitor for iCloud file changes every 30 seconds
-        iCloudMonitor = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in
+        iCloudMonitor = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { [weak self] _ in
             self?.checkForCloudUpdates()
         }
     }

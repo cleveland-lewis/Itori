@@ -18,6 +18,7 @@ struct ItoriIOSApp: App {
     @StateObject private var focusManager = FocusManager()
     @StateObject private var preferences = AppPreferences()
     @StateObject private var eventsCountStore = EventsCountStore()
+    @StateObject private var watchConnectivity = WatchConnectivityManager.shared
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
@@ -69,6 +70,10 @@ struct ItoriIOSApp: App {
                     preferences.reduceTransparency = appSettings.increaseTransparency || !appSettings.enableGlassEffects
                     preferences.glassIntensity = appSettings.glassIntensity
                     preferences.reduceMotion = appSettings.reduceMotion
+                    
+                    // Initialize watch connectivity with timer manager
+                    watchConnectivity.setTimerManager(timerManager)
+                    _ = IOSTimerLiveActivityCoordinator.shared
                     
                     // PHASE 3: Start prewarming hot views after idle
                     Task {

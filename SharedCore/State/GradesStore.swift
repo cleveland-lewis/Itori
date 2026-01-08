@@ -180,7 +180,7 @@ final class GradesStore: ObservableObject {
     
     private func setupiCloudMonitoring() {
         guard isSyncEnabled else { return }
-        iCloudMonitor = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in
+        iCloudMonitor = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in
                 await self?.loadFromiCloud()
             }
@@ -189,7 +189,7 @@ final class GradesStore: ObservableObject {
     
     private func observeICloudToggle() {
         iCloudToggleObserver = NotificationCenter.default.addObserver(
-            forName: NSNotification.Name("iCloudSyncToggled"),
+            forName: .iCloudSyncSettingChanged,
             object: nil,
             queue: .main
         ) { [weak self] _ in

@@ -19,9 +19,6 @@ enum AppShortcut: String, CaseIterable, Identifiable {
     case assignments
     case courses
     case grades
-    case timer
-    case flashcards
-    case practice
     
     // MARK: - Actions
     case newAssignment
@@ -77,9 +74,6 @@ enum AppShortcut: String, CaseIterable, Identifiable {
         case .assignments: return "4"
         case .courses: return "5"
         case .grades: return "6"
-        case .timer: return "7"
-        case .flashcards: return "8"
-        case .practice: return "9"
             
         // Actions
         case .newAssignment: return "t"
@@ -132,7 +126,7 @@ enum AppShortcut: String, CaseIterable, Identifiable {
         switch self {
         // Tab navigation
         case .dashboard, .calendar, .planner, .assignments,
-             .courses, .grades, .timer, .flashcards, .practice:
+             .courses, .grades:
             return .command
             
         // New items with Shift
@@ -187,9 +181,6 @@ enum AppShortcut: String, CaseIterable, Identifiable {
         case .assignments: return "Assignments"
         case .courses: return "Courses"
         case .grades: return "Grades"
-        case .timer: return "Timer"
-        case .flashcards: return "Flashcards"
-        case .practice: return "Practice"
             
         case .newAssignment: return "New Assignment"
         case .newCourse: return "New Course"

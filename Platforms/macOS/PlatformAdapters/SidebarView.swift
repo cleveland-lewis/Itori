@@ -14,9 +14,9 @@ struct SidebarView: View {
             set: { if let v = $0 { selectedTab = v; DebugLogger.log("[Sidebar] selected tab: \(selectedTab)") } }
         )
 
-        let tabs = settings.enableFlashcards ? RootTab.allCases : RootTab.allCases.filter { $0 != .flashcards }
+        let tabs = TabRegistry.allTabs.map { $0.id }
         List(selection: selectionBinding) {
-            Section("Navigation") {
+            Section(NSLocalizedString("sidebar.section.navigation", value: "Navigation", comment: "Sidebar section header")) {
                 ForEach(tabs) { tab in
                     SidebarItemRow(tab: tab, title: tab.title, systemImage: tab.systemImage, selectedTab: $selectedTab)
                 }

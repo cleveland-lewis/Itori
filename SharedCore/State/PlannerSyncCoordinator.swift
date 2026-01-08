@@ -41,6 +41,14 @@ final class PlannerSyncCoordinator: ObservableObject {
                 self?.recomputePlanner(dtos: dtos, plannerStore: plannerStore, settings: settings)
             }
             .store(in: &cancellables)
+
+        NotificationCenter.default.publisher(for: .energySettingsDidChange)
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .sink { [weak self] _ in
+                guard let self = self else { return }
+                self.requestRecompute(assignmentsStore: assignmentsStore, plannerStore: plannerStore, settings: settings)
+            }
+            .store(in: &cancellables)
     }
 
     func reset() {

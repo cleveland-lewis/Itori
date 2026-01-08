@@ -13,7 +13,23 @@ final class AssignmentPlansStore: ObservableObject {
     
     private let storageURL: URL
     private let settings: PlanGenerationSettings
+    private var iCloudMonitor: Timer?
+    private var iCloudToggleObserver: NSObjectProtocol?
     private var cancellables = Set<AnyCancellable>()
+    
+    private lazy var iCloudURL: URL? = {
+        let containerIdentifier = "iCloud.com.cwlewisiii.Itori"
+        guard let ubiquityURL = FileManager.default.url(forUbiquityContainerIdentifier: containerIdentifier) else {
+            return nil
+        }
+        let documentsURL = ubiquityURL.appendingPathComponent("Documents/Plans")
+        try? FileManager.default.createDirectory(at: documentsURL, withIntermediateDirectories: true)
+        return documentsURL.appendingPathComponent("assignment_plans.json")
+    }()
+    
+    private var isSyncEnabled: Bool {
+        AppSettingsModel.shared.enableICloudSync
+    }
     
     private init() {
         let fm = FileManager.default
@@ -25,6 +41,12 @@ final class AssignmentPlansStore: ObservableObject {
         
         load()
         isLoading = false
+        
+        observeICloudToggle()
+        if isSyncEnabled {
+            loadFromiCloudIfEnabled()
+            setupiCloudMonitoring()
+        }
     }
     
     // MARK: - Plan Access
@@ -257,6 +279,87 @@ final class AssignmentPlansStore: ObservableObject {
             save()
         }
     }
+
+    // MARK: - iCloud Sync
+    
+    private func loadFromiCloudIfEnabled() {
+        guard isSyncEnabled else { return }
+        loadFromiCloud()
+    }
+    
+    private func loadFromiCloud() {
+        guard let iCloudURL else { return }
+        guard FileManager.default.fileExists(atPath: iCloudURL.path) else { return }
+        
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let self else { return }
+            let coordinator = NSFileCoordinator()
+            var error: NSError?
+            var cloudData: Data?
+            
+            coordinator.coordinate(readingItemAt: iCloudURL, options: [], error: &error) { url in
+                cloudData = try? Data(contentsOf: url)
+            }
+            
+            guard error == nil, let data = cloudData else { return }
+            
+            do {
+                let payload = try JSONDecoder().decode(PlansPayload.self, from: data)
+                let cloudPlans = Dictionary(uniqueKeysWithValues: payload.plans.map { ($0.assignmentId, $0) })
+                DispatchQueue.main.async {
+                    if cloudPlans != self.plans {
+                        self.plans = cloudPlans
+                        self.save()
+                    }
+                }
+            } catch {
+                return
+            }
+        }
+    }
+    
+    private func saveToiCloud() {
+        guard let iCloudURL, isSyncEnabled else { return }
+        
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let self else { return }
+            do {
+                let payload = PlansPayload(plans: Array(self.plans.values))
+                let data = try JSONEncoder().encode(payload)
+                let coordinator = NSFileCoordinator()
+                var error: NSError?
+                coordinator.coordinate(writingItemAt: iCloudURL, options: .forReplacing, error: &error) { url in
+                    try? data.write(to: url, options: [.atomic])
+                }
+            } catch {
+                return
+            }
+        }
+    }
+    
+    private func setupiCloudMonitoring() {
+        guard isSyncEnabled else { return }
+        iCloudMonitor = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { [weak self] _ in
+            self?.loadFromiCloud()
+        }
+    }
+    
+    private func observeICloudToggle() {
+        iCloudToggleObserver = NotificationCenter.default.addObserver(
+            forName: .iCloudSyncSettingChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self else { return }
+            if self.isSyncEnabled {
+                self.loadFromiCloudIfEnabled()
+                self.setupiCloudMonitoring()
+            } else {
+                self.iCloudMonitor?.invalidate()
+                self.iCloudMonitor = nil
+            }
+        }
+    }
     
     /// Mark a step as incomplete
     func uncompleteStep(stepId: UUID, in assignmentId: UUID) {
@@ -309,6 +412,9 @@ final class AssignmentPlansStore: ObservableObject {
             let payload = PlansPayload(plans: Array(plans.values))
             let data = try JSONEncoder().encode(payload)
             try data.write(to: storageURL, options: [.atomic])
+            if isSyncEnabled {
+                saveToiCloud()
+            }
         } catch {
             DebugLogger.log("Failed to save assignment plans: \(error)")
         }

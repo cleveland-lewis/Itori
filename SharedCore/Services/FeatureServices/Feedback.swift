@@ -55,17 +55,14 @@ class Feedback {
     // MARK: - Sound Playback
     
     private func playSound(for type: FeedbackType) {
-        // Use AudioFeedbackService for timer and task completion sounds
+        // Sounds disabled for timer and task completion
         switch type {
         case .taskCompleted, .success:
-            AudioFeedbackService.shared.playTimerEnd()
-            return
+            return  // No sound
         case .timerStart:
-            AudioFeedbackService.shared.playTimerStart()
-            return
+            return  // No sound
         case .timerStop:
-            AudioFeedbackService.shared.playTimerPause()
-            return
+            return  // No sound
         default:
             break
         }

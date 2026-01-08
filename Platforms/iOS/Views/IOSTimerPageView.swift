@@ -9,7 +9,7 @@ import SwiftUI
 struct IOSTimerPageView: View {
     @EnvironmentObject private var settings: AppSettingsModel
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
-    @StateObject private var viewModel = TimerPageViewModel()
+    @StateObject private var viewModel = TimerPageViewModel.shared
     @StateObject private var liveActivityManager = IOSTimerLiveActivityManager()
     @State private var activitySearchText = ""
     @State private var selectedCollectionID: UUID? = nil
@@ -131,20 +131,9 @@ struct IOSTimerPageView: View {
     private var timerStatusCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .center, spacing: 8) {
-                if sessionState == .idle {
-                    Button {
-                        showingFocusPage = true
-                    } label: {
-                        Image(systemName: "arrow.up.left.and.arrow.down.right")
-                            .font(.headline)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(NSLocalizedString("timer.focus.window_title", comment: "Focus"))
-                } else {
-                    Text(statusTitle)
-                        .font(.headline)
-                        .accessibilityIdentifier("Timer.Status")
-                }
+                Text(statusTitle)
+                    .font(.headline)
+                    .accessibilityIdentifier("Timer.Status")
                 Spacer()
                 Menu {
                     ForEach(TimerMode.allCases) { mode in
@@ -152,6 +141,14 @@ struct IOSTimerPageView: View {
                             viewModel.currentMode = mode
                         } label: {
                             Label(mode.displayName, systemImage: mode.systemImage)
+                        }
+                    }
+                    
+                    Divider()
+                    
+                    Picker(selection: $timerDisplayStyleRaw, label: Text(NSLocalizedString("timer.display.style", value: "Display", comment: "Display style picker"))) {
+                        ForEach(TimerDisplayStyle.allCases) { style in
+                            Text(style.label).tag(style.rawValue)
                         }
                     }
                 } label: {
@@ -812,11 +809,6 @@ struct IOSTimerPageView: View {
         var updatedTask = task
         updatedTask.isCompleted.toggle()
         assignmentsStore.updateTask(updatedTask)
-        
-        // Play completion sound if task was just completed
-        if updatedTask.isCompleted {
-            AudioFeedbackService.shared.playTimerEnd()
-        }
     }
 
 #if DEBUG

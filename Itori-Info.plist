@@ -8,6 +8,8 @@
 	<string></string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>processing</string>
@@ -18,6 +20,49 @@
 	<array>
 		<string>com.itori.background.refresh</string>
 		<string>com.clevelandlewis.Itori.intelligentScheduling</string>
+	</array>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.itori.assignment</string>
+			<key>UTTypeDescription</key>
+			<string>Itori Assignment</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.itori.course</string>
+			<key>UTTypeDescription</key>
+			<string>Itori Course</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.itori.session</string>
+			<key>UTTypeDescription</key>
+			<string>Itori Planner Session</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+		</dict>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.itori.calendar.event</string>
+			<key>UTTypeDescription</key>
+			<string>Itori Calendar Event</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+		</dict>
 	</array>
 </dict>
 </plist>

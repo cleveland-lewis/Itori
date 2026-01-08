@@ -234,8 +234,35 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
                 title: event.title,
                 start: event.startDate,
                 end: event.endDate,
-                notes: event.notes
+                notes: event.notes,
+                url: event.url
             )
+        }
+
+        for event in store.events(matching: predicate) {
+            guard let metadata = PlannerCalendarSync.parseMetadata(notes: event.notes, url: event.url) else { continue }
+            let cleanedNotes = decodeNotesWithCategory(notes: event.notes).userNotes
+            var didChange = false
+
+            if cleanedNotes != event.notes {
+                event.notes = cleanedNotes.isEmpty ? nil : cleanedNotes
+                didChange = true
+            }
+            if event.url == nil {
+                var components = URLComponents()
+                components.scheme = PlannerCalendarSync.metadataURLScheme
+                components.host = "planner"
+                components.queryItems = [
+                    URLQueryItem(name: "block_id", value: metadata.blockId),
+                    URLQueryItem(name: "source", value: metadata.source),
+                    URLQueryItem(name: "day_key", value: metadata.dayKey)
+                ]
+                event.url = components.url
+                didChange = true
+            }
+            if didChange {
+                save(event: event)
+            }
         }
 
         let plan = PlannerCalendarSync.syncPlan(blocks: blocks, existingEvents: existingEvents, range: range)
@@ -251,6 +278,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
             event.startDate = upsert.block.start
             event.endDate = upsert.block.end
             event.notes = upsert.block.notes
+            event.url = PlannerCalendarSync.metadataURL(for: upsert.block)
             save(event: event)
         }
 

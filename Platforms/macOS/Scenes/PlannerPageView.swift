@@ -1137,11 +1137,6 @@ private extension PlannerPageView {
                 var updatedTask = task
                 updatedTask.isCompleted = (newStatus == .completed)
                 assignmentsStore.updateTask(updatedTask)
-                
-                // Play completion sound if just completed
-                if newStatus == .completed {
-                    AudioFeedbackService.shared.playTimerEnd()
-                }
             }
         }
         

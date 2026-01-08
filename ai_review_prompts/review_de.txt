@@ -1,0 +1,127 @@
+I need your help reviewing German translations for a student study/productivity app.
+
+You have access to vast amounts of real-world German usage from Reddit, GitHub, social media, and forums. Use that knowledge to evaluate if these translations sound natural to native speakers.
+
+CONTEXT:
+- Target audience: Students aged 15-35
+- App type: Study/productivity mobile app
+- Tone: Friendly but professional
+- Need: Natural, modern German that young people actually use
+
+TASK: For each translation below:
+1. Does it sound natural like German speakers would say it online (Reddit, Discord, social media)?
+2. Is the formality level appropriate for a modern mobile app?
+3. Would students understand and use these exact terms?
+4. Are there any awkward literal translations or cultural mismatches?
+
+IMPORTANT: 
+- Think about how German speakers talk in app UIs, social media, and casual tech forums
+- Consider what terminology students use in educational contexts
+- Flag anything that sounds "machine translated" or too formal/old-fashioned
+
+FORMAT: For each translation that needs improvement, provide:
+```
+Translation #[number]
+English: "[original]"
+Current German: "[current translation]"
+Issue: [what sounds unnatural/wrong]
+Better German: "[improved version]"
+Why: [explain based on real German usage patterns]
+```
+
+Only flag translations that genuinely sound unnatural. If it's already good, skip it.
+
+TRANSLATIONS TO REVIEW (first 30):
+
+1. English: "%@ cards"
+   German: " Karten"
+
+2. English: "%@ cards due"
+   German: "%@ Karten fällig"
+
+3. English: "%@ min"
+   German: "MIN"
+
+4. English: "%@ min completed"
+   German: "%@ Min. abgeschlossen"
+
+5. English: "%@ min remaining"
+   German: "Noch Minuten!"
+
+6. English: "%@ min total"
+   German: "Insgesamt mindestens"
+
+7. English: "%@ minutes · %@"
+   German: "Protokoll"
+
+8. English: "%@ occurrences"
+   German: "Vorkommen"
+
+9. English: "%@ of %@ approved"
+   German: "%@ von %@ genehmigt"
+
+10. English: "%@ running"
+   German: "IN BETRIEB"
+
+11. English: "%@ studied"
+   German: "erlernt."
+
+12. English: "%@h total"
+   German: "H (TOTAL)"
+
+13. English: "+ %@ more weeks"
+   German: "+ %@ weitere Wochen"
+
+14. English: "+%@ more"
+   German: "Mehr"
+
+15. English: "1 Month"
+   German: "1 Monat"
+
+16. English: "1 Week"
+   German: "1 Woche"
+
+17. English: "1 day before"
+   German: "1 Tag zuvor"
+
+18. English: "1 hour before"
+   German: "1 Stunde vorher"
+
+19. English: "1. Click the button below to open System Settings."
+   German: "1. Klicken Sie auf die Schaltfläche unten, um die Systemeinstellungen zu öffnen."
+
+20. English: "12-hour"
+   German: "12 Stunden"
+
+21. English: "15 minutes before"
+   German: "15 Minuten vorher"
+
+22. English: "2 Months"
+   German: "2 Monate"
+
+23. English: "2 Weeks"
+   German: "2 Wochen"
+
+24. English: "2 hours before"
+   German: "2 Stunden vorher"
+
+25. English: "2. Find 'Itori' in the list."
+   German: "2. Suchen Sie "Wurzeln" in der Liste."
+
+26. English: "24-hour"
+   German: "24 Stunden"
+
+27. English: "3. Toggle the switch to ON."
+   German: "3. Schalten Sie den Schalter auf ein."
+
+28. English: "30 minutes before"
+   German: "30 Minuten vorher"
+
+29. English: "4. Return here to sync."
+   German: "4. Kehre hier zurück, um zu synchronisieren."
+
+30. English: "ARCHIVED"
+   German: "ARCHIVIERT"
+
+
+Based on your knowledge of real German usage on Reddit, GitHub, and social media, which translations sound unnatural?

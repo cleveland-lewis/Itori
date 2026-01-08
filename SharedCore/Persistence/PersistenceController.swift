@@ -40,13 +40,17 @@ final class PersistenceController {
             description.url = URL(fileURLWithPath: "/dev/null")
         }
 
-        // Defer iCloud check to avoid circular dependency with AppSettingsModel
-        // Default to disabled during initial setup
-        let iCloudSyncEnabled = false
+        // Respect persisted iCloud setting on startup.
+        let iCloudSyncEnabled = AppSettingsModel.shared.enableICloudSync
         isCloudKitEnabled = iCloudSyncEnabled
         
-        // Always start without CloudKit to avoid circular dependency
-        description.cloudKitContainerOptions = nil
+        if iCloudSyncEnabled {
+            description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
+                containerIdentifier: cloudKitContainerIdentifier
+            )
+        } else {
+            description.cloudKitContainerOptions = nil
+        }
         
         description.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
         description.setOption(true as NSNumber, forKey: NSInferMappingModelAutomaticallyOption)

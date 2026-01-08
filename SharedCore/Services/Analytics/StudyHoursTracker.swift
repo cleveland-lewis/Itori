@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import CoreData
 
 /// Service for tracking and aggregating study hours
 @MainActor
@@ -18,6 +19,7 @@ public final class StudyHoursTracker: ObservableObject {
     private let storageURL: URL
     private let completedSessionsURL: URL
     private var completedSessionIds: Set<UUID> = []
+    private var cancellables = Set<AnyCancellable>()
     
     private init() {
         let fm = FileManager.default
@@ -34,6 +36,8 @@ public final class StudyHoursTracker: ObservableObject {
         
         // Check for date rollover and reset if needed
         checkAndResetIfNeeded()
+        observeTimerSessionChanges()
+        recomputeTotalsFromSessions()
     }
     
     // MARK: - Public API
@@ -73,6 +77,65 @@ public final class StudyHoursTracker: ObservableObject {
         completedSessionIds.removeAll()
         saveTotals()
         saveCompletedSessionIds()
+    }
+
+    // MARK: - Timer Sessions Sync
+
+    private func observeTimerSessionChanges() {
+        NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange)
+            .sink { [weak self] _ in
+                Task { @MainActor in
+                    self?.recomputeTotalsFromSessions()
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    private func recomputeTotalsFromSessions() {
+        guard AppSettingsModel.shared.trackStudyHours else { return }
+        guard let entity = NSEntityDescription.entity(forEntityName: "TimerSession", in: PersistenceController.shared.viewContext) else {
+            return
+        }
+        let request = NSFetchRequest<NSManagedObject>(entityName: entity.name ?? "TimerSession")
+        request.predicate = NSPredicate(format: "endedAt != nil")
+
+        do {
+            let calendar = Calendar.current
+            let now = Date()
+            let results = try PersistenceController.shared.viewContext.fetch(request)
+            var today = 0
+            var week = 0
+            var month = 0
+            var ids = Set<UUID>()
+
+            for object in results {
+                guard let id = object.value(forKey: "id") as? UUID else { continue }
+                ids.insert(id)
+                let durationSeconds = object.value(forKey: "durationSeconds") as? Double ?? 0
+                let minutes = Int(durationSeconds / 60)
+                guard minutes > 0 else { continue }
+                let date = (object.value(forKey: "endedAt") as? Date)
+                    ?? (object.value(forKey: "startedAt") as? Date)
+                    ?? now
+
+                if calendar.isDate(date, inSameDayAs: now) {
+                    today += minutes
+                }
+                if calendar.isDate(date, equalTo: now, toGranularity: .weekOfYear) {
+                    week += minutes
+                }
+                if calendar.isDate(date, equalTo: now, toGranularity: .month) {
+                    month += minutes
+                }
+            }
+
+            totals = StudyHoursTotals(todayMinutes: today, weekMinutes: week, monthMinutes: month, lastResetDate: now)
+            completedSessionIds = ids
+            saveTotals()
+            saveCompletedSessionIds()
+        } catch {
+            LOG_UI(.error, "StudyHoursTracker", "Failed to recompute totals: \(error)")
+        }
     }
     
     // MARK: - Date Rollover Logic

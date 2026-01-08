@@ -44,14 +44,15 @@ public struct TabRegistry {
     /// Order determines default display order
     public static let allTabs: [TabDefinition] = [
         TabDefinition(id: .dashboard, icon: "square.grid.2x2", title: "Dashboard", defaultEnabled: true),
-        TabDefinition(id: .timer, icon: "timer", title: "Timer", defaultEnabled: true),
         TabDefinition(id: .planner, icon: "pencil.and.list.clipboard", title: "Planner", defaultEnabled: false),
         TabDefinition(id: .assignments, icon: "slider.horizontal.3", title: "Assignments", defaultEnabled: false),
         TabDefinition(id: .courses, icon: "book.closed", title: "Courses", defaultEnabled: true),
         TabDefinition(id: .grades, icon: "number.circle", title: "Grades", defaultEnabled: true),
         TabDefinition(id: .calendar, icon: "calendar", title: "Calendar", defaultEnabled: false),
-        TabDefinition(id: .flashcards, icon: "rectangle.stack", title: "Flashcards", defaultEnabled: false),
-        TabDefinition(id: .practice, icon: "list.clipboard", title: "Practice", defaultEnabled: false)
+        TabDefinition(id: .timer, icon: "timer", title: "Timer", defaultEnabled: true)
+        // Flashcards and Practice Tests not ready for production
+        // TabDefinition(id: .flashcards, icon: "rectangle.stack", title: "Flashcards", defaultEnabled: false),
+        // TabDefinition(id: .practice, icon: "list.clipboard", title: "Practice Tests", defaultEnabled: false)
     ]
     
     /// Quick lookup by tab ID

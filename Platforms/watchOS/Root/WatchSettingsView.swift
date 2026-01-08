@@ -49,6 +49,10 @@ struct WatchSettingsView: View {
                 } label: {
                     Label(NSLocalizedString("Task Options", value: "Task Options", comment: ""), systemImage: "checkmark.circle")
                 }
+                .listRowBackground(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                )
             }
             
             // Planner Section
@@ -58,6 +62,10 @@ struct WatchSettingsView: View {
                 } label: {
                     Label(NSLocalizedString("Planner Options", value: "Planner Options", comment: ""), systemImage: "calendar")
                 }
+                .listRowBackground(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                )
             }
             
             // Sync Status
@@ -99,6 +107,12 @@ struct WatchSettingsView: View {
         }
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
+        .scrollContentBackground(.hidden)
+        .background(.ultraThinMaterial)
+        .listRowBackground(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(.ultraThinMaterial)
+        )
     }
 }
 
@@ -122,6 +136,12 @@ private struct TasksSettingsView: View {
         }
         .navigationTitle("Tasks")
         .navigationBarTitleDisplayMode(.inline)
+        .scrollContentBackground(.hidden)
+        .background(.ultraThinMaterial)
+        .listRowBackground(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(.ultraThinMaterial)
+        )
     }
 }
 
@@ -144,6 +164,12 @@ private struct PlannerSettingsView: View {
         }
         .navigationTitle("Planner")
         .navigationBarTitleDisplayMode(.inline)
+        .scrollContentBackground(.hidden)
+        .background(.ultraThinMaterial)
+        .listRowBackground(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(.ultraThinMaterial)
+        )
     }
 }
 

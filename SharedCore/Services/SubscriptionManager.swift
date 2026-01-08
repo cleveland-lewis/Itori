@@ -14,8 +14,10 @@ final class SubscriptionManager: ObservableObject {
     
     // Product identifiers - these should match your App Store Connect configuration
     private let productIdentifiers = [
-        "com.itori.subscription.monthly",
-        "com.itori.subscription.yearly"
+        "6757490466",
+        "6757490562",
+        "6757490611",
+        "6757490125"
     ]
     
     enum SubscriptionStatus {

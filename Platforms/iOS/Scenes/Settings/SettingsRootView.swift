@@ -9,21 +9,20 @@ struct SettingsRootView: View {
     var body: some View {
         NavigationStack {
             List {
-                // Subscription section at top
                 Section {
                     NavigationLink {
                         IOSSubscriptionView()
                     } label: {
                         Label {
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(NSLocalizedString("settings.itori.premium", value: "Itori Premium", comment: "Itori Premium"))
+                                Text(NSLocalizedString("settings.itori.premium", value: "Subscriptions", comment: "Subscriptions"))
                                     .font(.body.weight(.semibold))
                                 Text(NSLocalizedString("settings.unlock.all.features", value: "Unlock all features", comment: "Unlock all features"))
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
                         } icon: {
-                            Image(systemName: "sparkles")
+                            Image(systemName: "creditcard")
                                 .foregroundStyle(
                                     LinearGradient(
                                         colors: [.blue, .purple],
@@ -40,9 +39,7 @@ struct SettingsRootView: View {
                         bottom: layoutMetrics.listRowVerticalPadding,
                         trailing: 16
                     ))
-                }
-                
-                Section {
+
                     ForEach(SettingsCategory.allCases) { category in
                         NavigationLink(destination: category.destinationView()) {
                             Label {

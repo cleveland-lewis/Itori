@@ -34,14 +34,15 @@ struct DashboardView: View {
     @State private var gradeWidgetMode: GradeWidgetMode = .currentSemester
 
     // Layout tokens
-    private let cardSpacing: CGFloat = DesignSystem.Spacing.large
+    private let cardSpacing: CGFloat = 12  // Spacing within rows (between cards horizontally)
+    private let rowSpacing: CGFloat = 24   // Spacing between rows (vertically)
     private let contentPadding: CGFloat = RootsSpacing.pagePadding
-    private let bottomDockClearancePadding: CGFloat = 100
-    private let cardMinHeight: CGFloat = 220
-    private let row2MinHeight: CGFloat = 260
-    private let row3MinHeight: CGFloat = 240
-    private let row4MinHeight: CGFloat = 220
-    private let row5MinHeight: CGFloat = 220
+    private let bottomDockClearancePadding: CGFloat = 80
+    private let cardMinHeight: CGFloat = 200
+    private let row2MinHeight: CGFloat = 240
+    private let row3MinHeight: CGFloat = 220
+    private let row4MinHeight: CGFloat = 200
+    private let row5MinHeight: CGFloat = 200
     
     private var shouldShowProductivityInsights: Bool {
         settings.trackStudyHours && settings.showProductivityInsights
@@ -52,6 +53,9 @@ struct DashboardView: View {
         GeometryReader { proxy in
             let isNarrow = proxy.size.width < 980
             let rowHeights = dashboardRowHeights(totalHeight: proxy.size.height)
+            let row2LeftCardMaxHeight = shouldShowEnergyCard
+                ? (rowHeights.row2 / 2 - cardSpacing / 2)
+                : rowHeights.row2
             ScrollView(.vertical, showsIndicators: true) {
                 VStack(spacing: 0) {
                     // ROW 1: STATUS STRIP REMOVED - User requested removal of today summary
@@ -84,26 +88,25 @@ struct DashboardView: View {
                                             .animateEntry(isLoaded: isLoaded, index: 1)
                                             .frame(maxWidth: .infinity)
                                             .frame(minHeight: cardMinHeight)
-                                            .frame(maxHeight: .infinity)
+                                            .frame(maxHeight: row2LeftCardMaxHeight)
                                     }
                                     plannerTodayCard
                                         .animateEntry(isLoaded: isLoaded, index: 2)
                                         .frame(maxWidth: .infinity)
                                         .frame(minHeight: cardMinHeight)
-                                        .frame(maxHeight: .infinity)
+                                        .frame(maxHeight: row2LeftCardMaxHeight)
                                 }
-                                .frame(maxHeight: .infinity)
 
                                 calendarCard
                                     .animateEntry(isLoaded: isLoaded, index: 3)
                                     .frame(maxWidth: .infinity)
                                     .frame(minHeight: cardMinHeight)
-                                    .frame(maxHeight: .infinity)
+                                    .frame(maxHeight: rowHeights.row2)
                             }
-                            .frame(height: rowHeights.row2)
+                            .frame(maxHeight: rowHeights.row2)
                         }
                     }
-                    .padding(.bottom, cardSpacing)
+                    .padding(.bottom, rowSpacing)
                     .animation(.easeInOut(duration: 0.25), value: shouldShowEnergyCard)
 
                     // ROW 3: WEEKLY WORKLOAD + UPCOMING
@@ -123,17 +126,17 @@ struct DashboardView: View {
                                     .animateEntry(isLoaded: isLoaded, index: 4)
                                     .frame(maxWidth: .infinity)
                                     .frame(minHeight: cardMinHeight)
-                                    .frame(maxHeight: .infinity)
+                                    .frame(maxHeight: rowHeights.row3)
                                 assignmentsCard
                                     .animateEntry(isLoaded: isLoaded, index: 5)
                                     .frame(maxWidth: .infinity)
                                     .frame(minHeight: cardMinHeight)
-                                    .frame(maxHeight: .infinity)
+                                    .frame(maxHeight: rowHeights.row3)
                             }
-                            .frame(height: rowHeights.row3)
+                            .frame(maxHeight: rowHeights.row3)
                         }
                     }
-                    .padding(.bottom, cardSpacing)
+                    .padding(.bottom, rowSpacing)
 
                     // ROW 4: STUDY TIME + TODAY
                     Group {
@@ -155,19 +158,19 @@ struct DashboardView: View {
                                         .animateEntry(isLoaded: isLoaded, index: 6)
                                         .frame(maxWidth: .infinity)
                                         .frame(minHeight: cardMinHeight)
-                                        .frame(maxHeight: .infinity)
+                                        .frame(maxHeight: rowHeights.row4)
                                 }
 
                                 workRemainingCard
                                     .animateEntry(isLoaded: isLoaded, index: 7)
                                     .frame(maxWidth: .infinity)
                                     .frame(minHeight: cardMinHeight)
-                                    .frame(maxHeight: .infinity)
+                                    .frame(maxHeight: rowHeights.row4)
                             }
-                            .frame(height: rowHeights.row4)
+                            .frame(maxHeight: rowHeights.row4)
                         }
                     }
-                    .padding(.bottom, cardSpacing)
+                    .padding(.bottom, rowSpacing)
 
                     // ROW 5: GRADES
                     Group {
@@ -175,10 +178,10 @@ struct DashboardView: View {
                             .frame(maxWidth: .infinity)
                             .animateEntry(isLoaded: isLoaded, index: 8)
                             .frame(minHeight: cardMinHeight)
-                            .frame(maxHeight: .infinity)
+                            .frame(maxHeight: isNarrow ? .infinity : rowHeights.row5)
                     }
-                    .frame(height: isNarrow ? nil : rowHeights.row5)
-                    .padding(.bottom, cardSpacing)
+                    .frame(maxHeight: isNarrow ? nil : rowHeights.row5)
+                    .padding(.bottom, rowSpacing)
 
                     // Version dropdown footer
                     VersionDropdownView()
@@ -236,6 +239,7 @@ struct DashboardView: View {
                 .store(in: &cancellables)
         }
         .background(DesignSystem.Colors.appBackground)
+        .accessibilityIdentifier("Page.dashboard")
         .onReceive(assignmentsStore.$tasks) { _ in
             syncTasks()
         }
@@ -261,11 +265,11 @@ struct DashboardView: View {
         case 600..<900:
             return 20
         case 900..<1200:
-            return 24
+            return 28
         case 1200..<1600:
-            return 32
+            return 36
         default:
-            return 40
+            return 44
         }
     }
 
@@ -1890,7 +1894,7 @@ struct DashboardView: View {
     private func ensureEnergyReset(now: Date) {
         let calendar = Calendar.current
         let dayStart = calendar.startOfDay(for: now)
-        let resetTimeToday = calendar.date(byAdding: .hour, value: 4, to: dayStart) ?? dayStart
+        let resetTimeToday = calendar.date(byAdding: .hour, value: 2, to: dayStart) ?? dayStart
         let mostRecentReset = now >= resetTimeToday
             ? resetTimeToday
             : (calendar.date(byAdding: .day, value: -1, to: resetTimeToday) ?? resetTimeToday)

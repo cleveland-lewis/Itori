@@ -39,13 +39,13 @@ public enum TimerMode: String, CaseIterable, Identifiable, Codable {
     }
 }
 
-enum TimerDisplayStyle: String, CaseIterable, Identifiable, Codable {
+public enum TimerDisplayStyle: String, CaseIterable, Identifiable, Codable {
     case digital
     case analog
 
-    var id: String { rawValue }
+    public var id: String { rawValue }
 
-    var label: String {
+    public var label: String {
         switch self {
         case .digital:
             return NSLocalizedString("timer.display.digital", comment: "")

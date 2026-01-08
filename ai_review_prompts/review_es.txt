@@ -1,0 +1,127 @@
+I need your help reviewing Spanish translations for a student study/productivity app.
+
+You have access to vast amounts of real-world Spanish usage from Reddit, GitHub, social media, and forums. Use that knowledge to evaluate if these translations sound natural to native speakers.
+
+CONTEXT:
+- Target audience: Students aged 15-35
+- App type: Study/productivity mobile app
+- Tone: Friendly but professional
+- Need: Natural, modern Spanish that young people actually use
+
+TASK: For each translation below:
+1. Does it sound natural like Spanish speakers would say it online (Reddit, Discord, social media)?
+2. Is the formality level appropriate for a modern mobile app?
+3. Would students understand and use these exact terms?
+4. Are there any awkward literal translations or cultural mismatches?
+
+IMPORTANT: 
+- Think about how Spanish speakers talk in app UIs, social media, and casual tech forums
+- Consider what terminology students use in educational contexts
+- Flag anything that sounds "machine translated" or too formal/old-fashioned
+
+FORMAT: For each translation that needs improvement, provide:
+```
+Translation #[number]
+English: "[original]"
+Current Spanish: "[current translation]"
+Issue: [what sounds unnatural/wrong]
+Better Spanish: "[improved version]"
+Why: [explain based on real Spanish usage patterns]
+```
+
+Only flag translations that genuinely sound unnatural. If it's already good, skip it.
+
+TRANSLATIONS TO REVIEW (first 30):
+
+1. English: "%@ %@"
+   Spanish: "%1$@ %2$@"
+
+2. English: "%@ / %@"
+   Spanish: "%1$@ / %2$@"
+
+3. English: "%@ cards"
+   Spanish: "%@ tarjetas"
+
+4. English: "%@ cards due"
+   Spanish: "%@ tarjetas vencidas"
+
+5. English: "%@ min"
+   Spanish: "%@ mín."
+
+6. English: "%@ min completed"
+   Spanish: "%@ min completado"
+
+7. English: "%@ min remaining"
+   Spanish: "%@ min restante"
+
+8. English: "%@ min total"
+   Spanish: "%@ total mínimo"
+
+9. English: "%@ minutes · %@"
+   Spanish: "%1$@ minutos · %2$@"
+
+10. English: "%@ occurrences"
+   Spanish: "%@ ocurrencias"
+
+11. English: "%@ of %@ approved"
+   Spanish: "%1$@ de %2$@ aprobado"
+
+12. English: "%@ running"
+   Spanish: "%@ correr"
+
+13. English: "%@ · %@"
+   Spanish: "%1$@ · %2$@"
+
+14. English: "%@ – %@"
+   Spanish: "%1$@ – %2$@"
+
+15. English: "%@/%@"
+   Spanish: "%1$@/%2$@"
+
+16. English: "%@/%@ steps"
+   Spanish: "%1$@/%2$@ pasos"
+
+17. English: "%@: %@"
+   Spanish: "%1$@: %2$@"
+
+18. English: "%@m"
+   Spanish: "%@metro"
+
+19. English: "(%@-%@)"
+   Spanish: "(%1$@-%2$@)"
+
+20. English: "+ %@ more weeks"
+   Spanish: "+ %@ más semanas"
+
+21. English: "+%@ more"
+   Spanish: "+%@ más"
+
+22. English: "1 Month"
+   Spanish: "1 mes"
+
+23. English: "1 Week"
+   Spanish: "1 semana"
+
+24. English: "1 day before"
+   Spanish: "1 dia antes"
+
+25. English: "1 hour before"
+   Spanish: "1 hora antes"
+
+26. English: "1. Click the button below to open System Settings."
+   Spanish: "1. Haga clic en el botón a continuación para abrir Configuración del sistema."
+
+27. English: "12-hour"
+   Spanish: "12 horas"
+
+28. English: "15 minutes before"
+   Spanish: "15 minutos antes"
+
+29. English: "2 Months"
+   Spanish: "2 meses"
+
+30. English: "2 Weeks"
+   Spanish: "2 Semanas"
+
+
+Based on your knowledge of real Spanish usage on Reddit, GitHub, and social media, which translations sound unnatural?

@@ -42,6 +42,9 @@ struct IOSGradesView: View {
         .scrollContentBackground(.hidden)
         .background(DesignSystem.Colors.appBackground)
         .navigationTitle(NSLocalizedString("ios.grades.title", value: "Grades", comment: "Grades"))
+        .refreshable {
+            await refreshGradesData()
+        }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
@@ -210,6 +213,12 @@ struct IOSGradesView: View {
         case 2.0..<3.0: return .orange
         default: return .red
         }
+    }
+    
+    private func refreshGradesData() async {
+        // GradesStore automatically syncs with iCloud
+        // Just trigger haptic feedback to confirm refresh
+        FeedbackManager.shared.trigger(event: .dataRefreshed)
     }
 }
 

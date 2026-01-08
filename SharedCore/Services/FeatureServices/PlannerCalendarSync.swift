@@ -22,6 +22,7 @@ struct PlannerCalendarEventSnapshot: Equatable {
     let start: Date
     let end: Date
     let notes: String?
+    let url: URL?
 }
 
 struct PlannerCalendarSyncPlan: Equatable {
@@ -38,6 +39,7 @@ enum PlannerCalendarSync {
     static let plannerSource = "planner"
     static let metadataStart = "[RootsPlanner]"
     static let metadataEnd = "[/RootsPlanner]"
+    static let metadataURLScheme = "itori-planner"
 
     static func buildBlocks(
         from sessions: [StoredScheduledSession],
@@ -113,8 +115,7 @@ enum PlannerCalendarSync {
     ) -> PlannerCalendarSyncPlan {
         let blockIds = Set(blocks.map { $0.id })
         let existingMetadata = existingEvents.compactMap { event -> (PlannerCalendarEventSnapshot, PlannerCalendarMetadata)? in
-            guard let notes = event.notes,
-                  let metadata = parseMetadata(from: notes) else { return nil }
+            guard let metadata = parseMetadata(notes: event.notes, url: event.url) else { return nil }
             return (event, metadata)
         }
 
@@ -154,7 +155,26 @@ enum PlannerCalendarSync {
         return PlannerCalendarSyncPlan(upserts: upserts, deletions: deletions)
     }
 
-    static func parseMetadata(from notes: String) -> PlannerCalendarMetadata? {
+    static func parseMetadata(notes: String?, url: URL?) -> PlannerCalendarMetadata? {
+        if let url, let metadata = parseMetadata(from: url) {
+            return metadata
+        }
+        guard let notes, let metadata = parseMetadata(from: notes) else { return nil }
+        return metadata
+    }
+
+    private static func parseMetadata(from url: URL) -> PlannerCalendarMetadata? {
+        guard url.scheme == metadataURLScheme else { return nil }
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return nil }
+        let items = components.queryItems ?? []
+        let blockId = items.first(where: { $0.name == "block_id" })?.value ?? ""
+        let source = items.first(where: { $0.name == "source" })?.value ?? ""
+        let dayKey = items.first(where: { $0.name == "day_key" })?.value ?? ""
+        guard !blockId.isEmpty, !source.isEmpty, !dayKey.isEmpty else { return nil }
+        return PlannerCalendarMetadata(blockId: blockId, source: source, dayKey: dayKey)
+    }
+
+    private static func parseMetadata(from notes: String) -> PlannerCalendarMetadata? {
         guard let start = notes.range(of: metadataStart),
               let end = notes.range(of: metadataEnd) else { return nil }
         let block = notes[start.upperBound..<end.lowerBound]
@@ -225,8 +245,7 @@ enum PlannerCalendarSync {
 
         let dueHeader = NSLocalizedString("planner.calendar.notes.due", value: "Due:", comment: "Planner calendar notes due section")
         let completedHeader = NSLocalizedString("planner.calendar.notes.completed", value: "Completed:", comment: "Planner calendar notes completed section")
-        let metadata = metadataBlock(kind: kind, dayKey: dayKey, start: start, end: end, sessions: sessions, calendar: calendar, timeZone: timeZone)
-        let lines = [dueHeader] + dueItems + ["", completedHeader] + completedItems + ["", metadata]
+        let lines = [dueHeader] + dueItems + ["", completedHeader] + completedItems
         return lines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
@@ -255,6 +274,18 @@ enum PlannerCalendarSync {
         items: \(items)
         \(metadataEnd)
         """
+    }
+
+    static func metadataURL(for block: PlannerCalendarBlock) -> URL? {
+        var components = URLComponents()
+        components.scheme = metadataURLScheme
+        components.host = "planner"
+        components.queryItems = [
+            URLQueryItem(name: "block_id", value: block.id),
+            URLQueryItem(name: "source", value: plannerSource),
+            URLQueryItem(name: "day_key", value: block.dayKey)
+        ]
+        return components.url
     }
 
     private static func blockIdFor(

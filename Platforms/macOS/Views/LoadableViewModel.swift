@@ -22,14 +22,16 @@ extension LoadableViewModel {
             self.loadingMessage = message
         }
 
-        defer {
-            Task { @MainActor in
-                self.isLoading = false
-                self.loadingMessage = nil
-            }
+        do {
+            let result = try await work()
+            self.isLoading = false
+            self.loadingMessage = nil
+            return result
+        } catch {
+            self.isLoading = false
+            self.loadingMessage = nil
+            throw error
         }
-
-        return try await work()
     }
 }
 #endif

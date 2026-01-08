@@ -220,6 +220,10 @@ final class IOSWatchSyncCoordinator: NSObject, ObservableObject {
             handleStartTimer(message)
         case "stopTimer":
             handleStopTimer()
+        case "pauseTimer":
+            handlePauseTimer()
+        case "resumeTimer":
+            handleResumeTimer()
         case "toggleTask":
             handleToggleTask(message)
         case "addTask":
@@ -242,17 +246,39 @@ final class IOSWatchSyncCoordinator: NSObject, ObservableObject {
     private func handleStartTimer(_ message: [String: Any]) {
         guard let timerManager = timerManager else { return }
         
-        if let durationSeconds = message["duration"] as? Int {
+        let durationSeconds = message["duration"] as? Int
+        let modeRaw = message["mode"] as? String
+        let mode = modeRaw.flatMap { TimerMode(rawValue: $0) } ?? .timer
+
+        if mode == .timer, let durationSeconds {
             timerManager.secondsRemaining = durationSeconds
+            timerManager.start()
         }
-        timerManager.start()
+        TimerPageViewModel.shared.startExternalSession(mode: mode, durationSeconds: durationSeconds)
         
         IOSWatchSyncCoordinator.log("▶️  Started timer from watch")
     }
     
     private func handleStopTimer() {
         timerManager?.stop()
+        TimerPageViewModel.shared.endSession(completed: false)
         IOSWatchSyncCoordinator.log("⏹️  Stopped timer from watch")
+    }
+
+    private func handlePauseTimer() {
+        TimerPageViewModel.shared.pauseSession()
+        if let timerManager, timerManager.isRunning, !timerManager.isPaused {
+            timerManager.togglePause()
+        }
+        IOSWatchSyncCoordinator.log("⏸️  Paused timer from watch")
+    }
+
+    private func handleResumeTimer() {
+        TimerPageViewModel.shared.resumeSession()
+        if let timerManager, timerManager.isRunning, timerManager.isPaused {
+            timerManager.togglePause()
+        }
+        IOSWatchSyncCoordinator.log("▶️  Resumed timer from watch")
     }
     
     private func handleToggleTask(_ message: [String: Any]) {
@@ -267,11 +293,6 @@ final class IOSWatchSyncCoordinator: NSObject, ObservableObject {
         let wasCompleted = task.isCompleted
         task.isCompleted.toggle()
         store.updateTask(task)
-        
-        // Play completion sound if task was just completed
-        if !wasCompleted && task.isCompleted {
-            AudioFeedbackService.shared.playTimerEnd()
-        }
         
         IOSWatchSyncCoordinator.log("✓ Toggled task from watch: \(task.title)")
     }

@@ -18,6 +18,8 @@ struct IOSSubscriptionView: View {
                     headerSection
                     
                     statusBanner
+
+                    pricingOverview
                     
                     if !subscriptionManager.availableSubscriptions.isEmpty {
                         subscriptionPlans
@@ -32,7 +34,7 @@ struct IOSSubscriptionView: View {
                 .padding(20)
             }
             .background(DesignSystem.Colors.appBackground)
-            .navigationTitle("Itori Premium")
+            .navigationTitle(NSLocalizedString("settings.itori.premium", value: "Subscriptions", comment: "Subscriptions"))
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -120,6 +122,27 @@ struct IOSSubscriptionView: View {
         default:
             EmptyView()
         }
+    }
+
+    private var pricingOverview: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(NSLocalizedString("iossubscription.pricing.title", value: "Student Pricing", comment: "Pricing header"))
+                .font(.headline)
+            
+            PricingRow(title: NSLocalizedString("iossubscription.pricing.monthly", value: "Monthly", comment: "Monthly plan title"), price: "$5.99", detail: NSLocalizedString("iossubscription.pricing.monthly.detail", value: "per month", comment: "Monthly plan detail"))
+            PricingRow(title: NSLocalizedString("iossubscription.pricing.semester", value: "Semester", comment: "Semester plan title"), price: "$25", detail: NSLocalizedString("iossubscription.pricing.semester.detail", value: "every 6 months", comment: "Semester plan detail"))
+            PricingRow(title: NSLocalizedString("iossubscription.pricing.yearly", value: "Yearly", comment: "Yearly plan title"), price: "$40", detail: NSLocalizedString("iossubscription.pricing.yearly.detail", value: "per year", comment: "Yearly plan detail"))
+            PricingRow(title: NSLocalizedString("iossubscription.pricing.lifetime", value: "Lifetime", comment: "Lifetime plan title"), price: "$199", detail: NSLocalizedString("iossubscription.pricing.lifetime.detail", value: "one-time", comment: "Lifetime plan detail"))
+            
+            Text(NSLocalizedString("iossubscription.pricing.includes", value: "Includes iOS, iPadOS, and macOS. watchOS support coming soon.", comment: "Pricing includes blurb"))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color(uiColor: .secondarySystemBackground))
+        )
     }
     
     private var subscriptionPlans: some View {
@@ -217,12 +240,13 @@ private struct SubscriptionPlanCard: View {
     let onPurchase: () -> Void
     
     private var isYearly: Bool {
-        product.id.contains("yearly")
+        guard let subscription = product.subscription else { return false }
+        return subscription.subscriptionPeriod.unit == .year
     }
     
     private var savingsText: String? {
         guard isYearly else { return nil }
-        return "Save 20%"
+        return "Best Value"
     }
     
     var body: some View {
@@ -269,7 +293,7 @@ private struct SubscriptionPlanCard: View {
                             ProgressView()
                                 .tint(.white)
                         } else {
-                            Text(NSLocalizedString("iossubscription.subscribe", value: "Subscribe", comment: "Subscribe"))
+                            Text(actionLabel)
                         }
                     }
                     .frame(maxWidth: .infinity)
@@ -293,17 +317,25 @@ private struct SubscriptionPlanCard: View {
     }
     
     private var subscriptionPeriod: String {
-        if let subscription = product.subscription {
-            switch subscription.subscriptionPeriod.unit {
-            case .month:
-                return "per month"
-            case .year:
-                return "per year"
-            default:
-                return ""
-            }
+        guard let subscription = product.subscription else {
+            return "one-time"
         }
-        return ""
+        
+        let period = subscription.subscriptionPeriod
+        switch period.unit {
+        case .month:
+            return period.value == 6 ? "per semester" : "per month"
+        case .year:
+            return "per year"
+        default:
+            return ""
+        }
+    }
+    
+    private var actionLabel: String {
+        product.subscription == nil
+            ? NSLocalizedString("iossubscription.purchase", value: "Purchase", comment: "Purchase")
+            : NSLocalizedString("iossubscription.subscribe", value: "Subscribe", comment: "Subscribe")
     }
 }
 
@@ -330,6 +362,27 @@ private struct FeatureRow: View {
             }
             
             Spacer()
+        }
+    }
+}
+
+private struct PricingRow: View {
+    let title: String
+    let price: String
+    let detail: String
+    
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+            Spacer()
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(price)
+                    .font(.subheadline.weight(.semibold))
+                Text(detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 }

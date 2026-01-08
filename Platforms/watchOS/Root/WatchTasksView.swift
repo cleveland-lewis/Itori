@@ -26,6 +26,10 @@ struct WatchTasksView: View {
                     Label(NSLocalizedString("Add Task", value: "Add Task", comment: ""), systemImage: "plus.circle.fill")
                         .foregroundColor(.blue)
                 }
+                .listRowBackground(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                )
             }
             
             // Incomplete Tasks
@@ -59,11 +63,17 @@ struct WatchTasksView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
+                    .listRowBackground(
+                        RoundedRectangle(cornerRadius: 24, style: .continuous)
+                            .fill(.ultraThinMaterial)
+                    )
                 }
             }
         }
         .navigationTitle("Tasks")
         .navigationBarTitleDisplayMode(.inline)
+        .scrollContentBackground(.hidden)
+        .background(.ultraThinMaterial)
     }
 }
 
@@ -108,6 +118,10 @@ private struct TaskRow: View {
             }
         }
         .buttonStyle(.plain)
+        .listRowBackground(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(.ultraThinMaterial)
+        )
     }
     
     private func toggleComplete() {

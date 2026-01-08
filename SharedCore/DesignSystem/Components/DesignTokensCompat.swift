@@ -213,7 +213,7 @@ struct RootsCard<Content: View>: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        VStack(alignment: .leading, spacing: compact ? RootsSpacing.m : RootsSpacing.l) {
+        VStack(alignment: .leading, spacing: compact ? RootsSpacing.m : 12) {
             if title != nil || icon != nil || subtitle != nil {
                 HStack(spacing: RootsSpacing.s) {
                     if let icon { Image(systemName: icon) }
@@ -232,7 +232,7 @@ struct RootsCard<Content: View>: View {
                 footer
             }
         }
-        .padding(compact ? RootsSpacing.m : RootsSpacing.l)
+        .padding(compact ? RootsSpacing.m : 14)
         .background(
             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                 .fill(DesignSystem.Materials.card)

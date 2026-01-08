@@ -320,9 +320,11 @@ final class PlannerStore: ObservableObject {
     }
 
     func reset() {
+        let previousSessions = scheduled
         scheduled.removeAll()
         overflow.removeAll()
         save()
+        syncCalendar(for: previousSessions)
     }
     
     /// Add session to overflow (for auto-reschedule)
@@ -333,12 +335,14 @@ final class PlannerStore: ObservableObject {
     
     /// Update multiple sessions atomically (for auto-reschedule)
     func updateBulk(_ sessions: [StoredScheduledSession]) {
+        let previousSessions = scheduled
         self.scheduled = sessions
         save()
-        syncCalendar(for: sessions)
+        syncCalendar(for: previousSessions + sessions)
     }
 
     func resetAll() {
+        let previousSessions = scheduled
         scheduled.removeAll()
         overflow.removeAll()
         try? FileManager.default.removeItem(at: storageURL)
@@ -349,6 +353,7 @@ final class PlannerStore: ObservableObject {
             try? FileManager.default.removeItem(at: conflictsURL)
         }
         save()
+        syncCalendar(for: previousSessions)
     }
 
     private func save() {

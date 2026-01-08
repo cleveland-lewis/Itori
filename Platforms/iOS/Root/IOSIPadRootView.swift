@@ -10,9 +10,9 @@ struct IOSIPadRootView: View {
         var id: String { rawValue }
         var title: String {
             switch self {
-            case .core: return "Core"
-            case .planning: return "Planning"
-            case .focus: return "Focus"
+            case .core: return NSLocalizedString("ipad.section.core", value: "Core", comment: "iPad sidebar section")
+            case .planning: return NSLocalizedString("ipad.section.planning", value: "Planning", comment: "iPad sidebar section")
+            case .focus: return NSLocalizedString("ipad.section.focus", value: "Focus", comment: "iPad sidebar section")
             }
         }
     }
@@ -27,7 +27,7 @@ struct IOSIPadRootView: View {
                     .tag(section)
             }
             .listStyle(.sidebar)
-            .navigationTitle("Menu")
+            .navigationTitle(NSLocalizedString("navigation.menu", value: "Menu", comment: "Sidebar menu title"))
         } detail: {
             NavigationSplitView {
                 List(sectionPages, selection: $selectedPage) { page in
@@ -35,12 +35,15 @@ struct IOSIPadRootView: View {
                         .tag(page)
                 }
                 .listStyle(.sidebar)
-                .navigationTitle("Pages")
+                .navigationTitle(NSLocalizedString("navigation.pages", value: "Pages", comment: "Sidebar pages title"))
             } detail: {
                 if let page = selectedPage {
                     detailView(for: page)
                 } else {
-                    IOSPlaceholderView(title: "Select a page", subtitle: "Choose a page from the middle column.")
+                    IOSPlaceholderView(
+                        title: NSLocalizedString("navigation.select_page", value: "Select a page", comment: "iPad placeholder title"),
+                        subtitle: NSLocalizedString("navigation.select_page.subtitle", value: "Choose a page from the middle column.", comment: "iPad placeholder subtitle")
+                    )
                 }
             }
         }
@@ -72,7 +75,10 @@ struct IOSIPadRootView: View {
         case .timer:
             IOSTimerPageView()
         default:
-            IOSPlaceholderView(title: page.title, subtitle: "This view is not available on iPad yet.")
+            IOSPlaceholderView(
+                title: page.title,
+                subtitle: NSLocalizedString("navigation.ipad.unavailable", value: "This view is not available on iPad yet.", comment: "iPad unavailable view message")
+            )
         }
     }
 }

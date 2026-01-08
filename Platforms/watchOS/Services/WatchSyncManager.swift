@@ -18,6 +18,7 @@ final class WatchSyncManager: NSObject, ObservableObject {
     // Published State
     @Published var activeTimer: ActiveTimerSummary?
     @Published var timerSecondsRemaining: Int = 0
+    @Published var isTimerPaused: Bool = false
     @Published var tasks: [TaskSummary] = []
     @Published var isConnected: Bool = false
     @Published var lastSyncDate: Date?
@@ -100,6 +101,7 @@ final class WatchSyncManager: NSObject, ObservableObject {
         )
         timerSecondsRemaining = durationSeconds ?? 0
         startLocalTimerTracking()
+        saveSharedTimerState()
     }
     
     func stopTimer() {
@@ -111,7 +113,35 @@ final class WatchSyncManager: NSObject, ObservableObject {
         // Update local state
         activeTimer = nil
         timerSecondsRemaining = 0
+        isTimerPaused = false
         stopLocalTimerTracking()
+        saveSharedTimerState()
+    }
+    
+    func togglePause() {
+        if isTimerPaused {
+            resumeTimer()
+        } else {
+            pauseTimer()
+        }
+    }
+
+    func pauseTimer() {
+        log("⏸️  Pausing timer")
+        let message: [String: Any] = ["action": "pauseTimer"]
+        sendMessage(message)
+        isTimerPaused = true
+        stopLocalTimerTracking()
+        saveSharedTimerState()
+    }
+
+    func resumeTimer() {
+        log("▶️  Resuming timer")
+        let message: [String: Any] = ["action": "resumeTimer"]
+        sendMessage(message)
+        isTimerPaused = false
+        startLocalTimerTracking()
+        saveSharedTimerState()
     }
     
     private func startLocalTimerTracking() {
@@ -122,9 +152,11 @@ final class WatchSyncManager: NSObject, ObservableObject {
                 guard let self = self, self.timerSecondsRemaining > 0 else {
                     self?.stopLocalTimerTracking()
                     self?.activeTimer = nil
+                    self?.saveSharedTimerState()
                     return
                 }
                 self.timerSecondsRemaining -= 1
+                self.saveSharedTimerState()
             }
         }
     }
@@ -132,6 +164,20 @@ final class WatchSyncManager: NSObject, ObservableObject {
     private func stopLocalTimerTracking() {
         timerUpdateTimer?.invalidate()
         timerUpdateTimer = nil
+    }
+
+    private func saveSharedTimerState() {
+        guard let defaults = UserDefaults(suiteName: AppGroupConstants.identifier) else { return }
+        let payload = WatchTimerStateSnapshot(
+            isRunning: activeTimer != nil,
+            isPaused: isTimerPaused,
+            modeRaw: activeTimer?.mode.rawValue ?? "",
+            remainingSeconds: timerSecondsRemaining,
+            startedAtISO: activeTimer?.startedAtISO
+        )
+        if let data = try? JSONEncoder().encode(payload) {
+            defaults.set(data, forKey: AppGroupConstants.watchTimerStateKey)
+        }
     }
     
     // MARK: - Task Actions
@@ -300,6 +346,14 @@ extension WatchSyncManager: WCSessionDelegate {
             }
         }
     }
+}
+
+struct WatchTimerStateSnapshot: Codable {
+    let isRunning: Bool
+    let isPaused: Bool
+    let modeRaw: String
+    let remainingSeconds: Int
+    let startedAtISO: String?
 }
 
 #endif

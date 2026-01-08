@@ -11,201 +11,222 @@ struct IOSIntelligentSchedulingSettingsView: View {
     
     var body: some View {
         List {
-            // MARK: - System Status (Always On)
-            Section {
-                HStack {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.green)
-                    
-                    VStack(alignment: .leading) {
-                        Text(NSLocalizedString("settings.intelligent.title", value: "Intelligent Scheduling", comment: "Intelligent Scheduling title"))
-                            .font(.headline)
-                        Text(NSLocalizedString("settings.intelligent.always_active", value: "Always Active", comment: "Always Active"))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    Spacer()
-                }
-            } header: {
-                Text(NSLocalizedString("settings.intelligent.status.header", value: "Status", comment: "Status header"))
-            } footer: {
-                Text(NSLocalizedString("settings.intelligent.status.footer", value: "Intelligent scheduling is always enabled to provide continuous grade monitoring and task rescheduling.", comment: "Status footer"))
-            }
-            
-            // MARK: - Grade Monitoring
-            Section {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Image(systemName: "chart.line.uptrend.xyaxis")
-                                .foregroundColor(.blue)
-                            Text(NSLocalizedString("settings.intelligent.grade_monitoring.title", value: "Grade Monitoring", comment: "Grade monitoring title"))
-                                .font(.headline)
-                            Spacer()
-                            if gradeMonitor.isMonitoring {
-                                Text(NSLocalizedString("settings.intelligent.grade_monitoring.active", value: "Active", comment: "Active"))
-                                    .font(.caption)
-                                    .foregroundColor(.green)
-                            }
-                        }
-                        
-                        Text(NSLocalizedString("settings.intelligent.grade_monitoring.body", value: "Detects grade changes and suggests study time adjustments", comment: "Grade monitoring body"))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding(.vertical, 4)
-                    
-                    HStack {
-                        Text(NSLocalizedString("settings.intelligent.grade_monitoring.threshold", value: "Grade Change Threshold", comment: "Grade change threshold"))
-                        Spacer()
-                        Text(verbatim: "\(Int(settings.gradeChangeThreshold))%")
-                            .foregroundColor(.secondary)
-                    }
-                    
-                    Slider(
-                        value: $settings.gradeChangeThreshold,
-                        in: 1...20,
-                        step: 1
-                    ) {
-                        Text(NSLocalizedString("settings.intelligent.grade_monitoring.threshold.label", value: "Threshold", comment: "Threshold label"))
-                    } minimumValueLabel: {
-                        Text(NSLocalizedString("settings.intelligent.grade_monitoring.threshold.min", value: "1%", comment: "Threshold min"))
-                            .font(.caption)
-                    } maximumValueLabel: {
-                        Text(NSLocalizedString("settings.intelligent.grade_monitoring.threshold.max", value: "20%", comment: "Threshold max"))
-                            .font(.caption)
-                    }
-                    
-                    if !gradeMonitor.studyRecommendations.isEmpty {
-                        NavigationLink {
-                            StudyRecommendationsView()
-                        } label: {
-                            HStack {
-                                Text(NSLocalizedString("settings.intelligent.recommendations.active", value: "Active Recommendations", comment: "Active recommendations"))
-                                Spacer()
-                                Text(verbatim: "\(gradeMonitor.studyRecommendations.count)")
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-                } header: {
-                    Text(NSLocalizedString("settings.intelligent.grade_monitoring.header", value: "Grade Monitoring", comment: "Grade monitoring header"))
-                } footer: {
-                    Text(NSLocalizedString("settings.intelligent.grade_monitoring.footer", value: "Monitors your grades and suggests additional study time when grades decline by the threshold percentage.", comment: "Grade monitoring footer"))
-                }
-                
-                // MARK: - Auto-Reschedule
-                Section {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Image(systemName: "calendar.badge.clock")
-                                .foregroundColor(.orange)
-                            Text(NSLocalizedString("settings.intelligent.reschedule.title", value: "Auto-Reschedule", comment: "Auto-reschedule title"))
-                                .font(.headline)
-                            Spacer()
-                            if autoReschedule.isProcessing {
-                                ProgressView()
-                                    .scaleEffect(0.8)
-                            }
-                        }
-                        
-                        Text(NSLocalizedString("settings.intelligent.reschedule.body", value: "Automatically reschedules overdue tasks based on priority and available time", comment: "Auto-reschedule body"))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding(.vertical, 4)
-                    
-                    if let lastCheck = autoReschedule.lastCheckTime {
-                        HStack {
-                            Text(NSLocalizedString("settings.intelligent.reschedule.last_check", value: "Last Check", comment: "Last check label"))
-                            Spacer()
-                            Text(lastCheck, style: .relative)
-                                .foregroundColor(.secondary)
-                        }
-                        .font(.caption)
-                    }
-                    
-                    Picker(NSLocalizedString("settings.intelligent.reschedule.work_start", value: "Work Hours Start", comment: "Work hours start"), selection: Binding(
-                        get: { autoReschedule.workHoursStart },
-                        set: { newValue in
-                            coordinator.setWorkHours(
-                                start: newValue,
-                                end: autoReschedule.workHoursEnd
-                            )
-                        }
-                    )) {
-                        ForEach(0..<24) { hour in
-                            Text(formatHour(hour)).tag(hour)
-                        }
-                    }
-                    
-                    Picker(NSLocalizedString("settings.intelligent.reschedule.work_end", value: "Work Hours End", comment: "Work hours end"), selection: Binding(
-                        get: { autoReschedule.workHoursEnd },
-                        set: { newValue in
-                            coordinator.setWorkHours(
-                                start: autoReschedule.workHoursStart,
-                                end: newValue
-                            )
-                        }
-                    )) {
-                        ForEach(0..<24) { hour in
-                            Text(formatHour(hour)).tag(hour)
-                        }
-                    }
-                    
-                    Button {
-                        Task {
-                            await coordinator.checkOverdueTasks()
-                        }
-                    } label: {
-                        HStack {
-                            Image(systemName: "arrow.clockwise")
-                            Text(NSLocalizedString("settings.intelligent.reschedule.check_now", value: "Check Now", comment: "Check now"))
-                        }
-                    }
-                    
-                    if !autoReschedule.rescheduleNotifications.isEmpty {
-                        NavigationLink {
-                            RescheduleNotificationsView()
-                        } label: {
-                            HStack {
-                                Text(NSLocalizedString("settings.intelligent.reschedule.recent", value: "Recent Reschedules", comment: "Recent reschedules"))
-                                Spacer()
-                                Text(verbatim: "\(autoReschedule.rescheduleNotifications.count)")
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-                } header: {
-                    Text(NSLocalizedString("settings.intelligent.reschedule.header", value: "Auto-Reschedule", comment: "Auto-reschedule header"))
-                } footer: {
-                    Text(NSLocalizedString("settings.intelligent.reschedule.footer", value: "Checks for overdue tasks hourly and automatically reschedules them to the next available time slot based on priority.", comment: "Auto-reschedule footer"))
-                }
-                
-                // MARK: - All Notifications
-                if !coordinator.allNotifications.isEmpty {
-                    Section {
-                        Button {
-                            showingNotifications = true
-                        } label: {
-                            HStack {
-                                Image(systemName: "bell.badge")
-                                    .foregroundColor(.red)
-                                Text(NSLocalizedString("settings.intelligent.notifications.view_all", value: "View All Notifications", comment: "View all notifications"))
-                                Spacer()
-                                Text(verbatim: "\(coordinator.allNotifications.count)")
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    } header: {
-                        Text(NSLocalizedString("settings.intelligent.notifications.header", value: "Notifications", comment: "Notifications header"))
-                    }
-                }
+            IOSIntelligentSchedulingSettingsContent(
+                coordinator: coordinator,
+                gradeMonitor: gradeMonitor,
+                autoReschedule: autoReschedule,
+                settings: settings,
+                showingNotifications: $showingNotifications
+            )
         }
         .navigationTitle(NSLocalizedString("settings.category.intelligentScheduling", comment: "Intelligent Scheduling"))
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingNotifications) {
             AllNotificationsView()
+        }
+    }
+    
+    private func formatHour(_ hour: Int) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h a"
+        let date = Calendar.current.date(bySettingHour: hour, minute: 0, second: 0, of: Date())!
+        return formatter.string(from: date)
+    }
+}
+
+struct IOSIntelligentSchedulingSettingsContent: View {
+    @ObservedObject var coordinator: IntelligentSchedulingCoordinator
+    @ObservedObject var gradeMonitor: GradeMonitoringService
+    @ObservedObject var autoReschedule: EnhancedAutoRescheduleService
+    @ObservedObject var settings: AppSettingsModel
+    @Binding var showingNotifications: Bool
+
+    var body: some View {
+        // MARK: - System Status (Always On)
+        Section {
+            HStack {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundColor(.green)
+                VStack(alignment: .leading) {
+                    Text(NSLocalizedString("settings.intelligent.title", value: "Intelligent Scheduling", comment: "Intelligent Scheduling title"))
+                        .font(.headline)
+                    Text(NSLocalizedString("settings.intelligent.always_active", value: "Always Active", comment: "Always Active"))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+            }
+        } header: {
+            Text(NSLocalizedString("settings.intelligent.status.header", value: "Status", comment: "Status header"))
+        } footer: {
+            Text(NSLocalizedString("settings.intelligent.status.footer", value: "Intelligent scheduling is always enabled to provide continuous grade monitoring and task rescheduling.", comment: "Status footer"))
+        }
+
+        // MARK: - Grade Monitoring
+        Section {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Image(systemName: "chart.line.uptrend.xyaxis")
+                        .foregroundColor(.blue)
+                    Text(NSLocalizedString("settings.intelligent.grade_monitoring.title", value: "Grade Monitoring", comment: "Grade monitoring title"))
+                        .font(.headline)
+                    Spacer()
+                    if gradeMonitor.isMonitoring {
+                        Text(NSLocalizedString("settings.intelligent.grade_monitoring.active", value: "Active", comment: "Active"))
+                            .font(.caption)
+                            .foregroundColor(.green)
+                    }
+                }
+                Text(NSLocalizedString("settings.intelligent.grade_monitoring.body", value: "Detects grade changes and suggests study time adjustments", comment: "Grade monitoring body"))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding(.vertical, 4)
+
+            HStack {
+                Text(NSLocalizedString("settings.intelligent.grade_monitoring.threshold", value: "Grade Change Threshold", comment: "Grade change threshold"))
+                Spacer()
+                Text(verbatim: "\(Int(settings.gradeChangeThreshold))%")
+                    .foregroundColor(.secondary)
+            }
+
+            Slider(
+                value: $settings.gradeChangeThreshold,
+                in: 1...20,
+                step: 1
+            ) {
+                Text(NSLocalizedString("settings.intelligent.grade_monitoring.threshold.label", value: "Threshold", comment: "Threshold label"))
+            } minimumValueLabel: {
+                Text(NSLocalizedString("settings.intelligent.grade_monitoring.threshold.min", value: "1%", comment: "Threshold min"))
+                    .font(.caption)
+            } maximumValueLabel: {
+                Text(NSLocalizedString("settings.intelligent.grade_monitoring.threshold.max", value: "20%", comment: "Threshold max"))
+                    .font(.caption)
+            }
+
+            if !gradeMonitor.studyRecommendations.isEmpty {
+                NavigationLink {
+                    StudyRecommendationsView()
+                } label: {
+                    HStack {
+                        Text(NSLocalizedString("settings.intelligent.recommendations.active", value: "Active Recommendations", comment: "Active recommendations"))
+                        Spacer()
+                        Text(verbatim: "\(gradeMonitor.studyRecommendations.count)")
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+        } header: {
+            Text(NSLocalizedString("settings.intelligent.grade_monitoring.header", value: "Grade Monitoring", comment: "Grade monitoring header"))
+        } footer: {
+            Text(NSLocalizedString("settings.intelligent.grade_monitoring.footer", value: "Monitors your grades and suggests additional study time when grades decline by the threshold percentage.", comment: "Grade monitoring footer"))
+        }
+
+        // MARK: - Auto-Reschedule
+        Section {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Image(systemName: "calendar.badge.clock")
+                        .foregroundColor(.orange)
+                    Text(NSLocalizedString("settings.intelligent.reschedule.title", value: "Auto-Reschedule", comment: "Auto-reschedule title"))
+                        .font(.headline)
+                    Spacer()
+                    if autoReschedule.isProcessing {
+                        ProgressView()
+                            .scaleEffect(0.8)
+                    }
+                }
+                Text(NSLocalizedString("settings.intelligent.reschedule.body", value: "Automatically reschedules overdue tasks based on priority and available time", comment: "Auto-reschedule body"))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding(.vertical, 4)
+
+            if let lastCheck = autoReschedule.lastCheckTime {
+                HStack {
+                    Text(NSLocalizedString("settings.intelligent.reschedule.last_check", value: "Last Check", comment: "Last check label"))
+                    Spacer()
+                    Text(lastCheck, style: .relative)
+                        .foregroundColor(.secondary)
+                }
+                .font(.caption)
+            }
+
+            Picker(NSLocalizedString("settings.intelligent.reschedule.work_start", value: "Work Hours Start", comment: "Work hours start"), selection: Binding(
+                get: { autoReschedule.workHoursStart },
+                set: { newValue in
+                    coordinator.setWorkHours(
+                        start: newValue,
+                        end: autoReschedule.workHoursEnd
+                    )
+                }
+            )) {
+                ForEach(0..<24) { hour in
+                    Text(formatHour(hour)).tag(hour)
+                }
+            }
+
+            Picker(NSLocalizedString("settings.intelligent.reschedule.work_end", value: "Work Hours End", comment: "Work hours end"), selection: Binding(
+                get: { autoReschedule.workHoursEnd },
+                set: { newValue in
+                    coordinator.setWorkHours(
+                        start: autoReschedule.workHoursStart,
+                        end: newValue
+                    )
+                }
+            )) {
+                ForEach(0..<24) { hour in
+                    Text(formatHour(hour)).tag(hour)
+                }
+            }
+
+            Button {
+                Task {
+                    await coordinator.checkOverdueTasks()
+                }
+            } label: {
+                HStack {
+                    Image(systemName: "arrow.clockwise")
+                    Text(NSLocalizedString("settings.intelligent.reschedule.check_now", value: "Check Now", comment: "Check now"))
+                }
+            }
+
+            if !autoReschedule.rescheduleNotifications.isEmpty {
+                NavigationLink {
+                    RescheduleNotificationsView()
+                } label: {
+                    HStack {
+                        Text(NSLocalizedString("settings.intelligent.reschedule.recent", value: "Recent Reschedules", comment: "Recent reschedules"))
+                        Spacer()
+                        Text(verbatim: "\(autoReschedule.rescheduleNotifications.count)")
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+        } header: {
+            Text(NSLocalizedString("settings.intelligent.reschedule.header", value: "Auto-Reschedule", comment: "Auto-reschedule header"))
+        } footer: {
+            Text(NSLocalizedString("settings.intelligent.reschedule.footer", value: "Checks for overdue tasks hourly and automatically reschedules them to the next available time slot based on priority.", comment: "Auto-reschedule footer"))
+        }
+
+        // MARK: - All Notifications
+        if !coordinator.allNotifications.isEmpty {
+            Section {
+                Button {
+                    showingNotifications = true
+                } label: {
+                    HStack {
+                        Image(systemName: "bell.badge")
+                            .foregroundColor(.red)
+                        Text(NSLocalizedString("settings.intelligent.notifications.view_all", value: "View All Notifications", comment: "View all notifications"))
+                        Spacer()
+                        Text(verbatim: "\(coordinator.allNotifications.count)")
+                            .foregroundColor(.secondary)
+                    }
+                }
+            } header: {
+                Text(NSLocalizedString("settings.intelligent.notifications.header", value: "Notifications", comment: "Notifications header"))
+            }
         }
     }
     

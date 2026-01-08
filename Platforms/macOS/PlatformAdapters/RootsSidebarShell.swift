@@ -37,30 +37,48 @@ struct RootsSidebarShell: View {
     var body: some View {
         NavigationSplitView {
             sidebar
+                .accessibilityIdentifier("Sidebar")
         } detail: {
-            ZStack(alignment: .topLeading) {
-                currentPageView
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 20)
-
-                toolbar
-                    .padding(.leading, 20)
-                    .padding(.top, 6)
-            }
+            currentPageView
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(DesignSystem.Colors.appBackground)
+            .accessibilityIdentifier("Page.\(selection.rawValue)")
         }
         .navigationSplitViewStyle(.balanced)
         .navigationSplitViewColumnWidth(min: 220, ideal: 220, max: 220)
         .background(DesignSystem.Colors.appBackground)
+        .accessibilityIdentifier("MainWindow")
+        .toolbar {
+            ToolbarItemGroup(placement: .navigation) {
+                Button(action: {
+                    NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
+                }) {
+                    Image(systemName: "sidebar.left")
+                        .font(.body)
+                }
+                .help("Toggle Sidebar")
+                .accessibilityIdentifier("ToggleSidebar")
+            }
+            ToolbarItemGroup(placement: .primaryAction) {
+                quickAddMenu
+                EnergyIndicatorButton(settings: settings, showsBackground: false)
+                    .frame(width: 24, height: 24)
+                    .accessibilityIdentifier("Overlay.Settings")
+            }
+        }
         .frame(minWidth: RootsWindowSizing.minMainWidth, minHeight: RootsWindowSizing.minMainHeight)
         .preferredColorScheme(preferredColorScheme)
         .globalContextMenu()
         .onAppear {
             setupWindow()
-            if let tab = RootTab(rawValue: appModel.selectedPage.rawValue) {
+            if let tab = RootTab(rawValue: appModel.selectedPage.rawValue),
+               TabRegistry.definition(for: tab) != nil {
                 selection = tab
+            } else {
+                selection = .dashboard
             }
         }
         .sheet(isPresented: $showingAddAssignmentSheet) {
@@ -105,7 +123,9 @@ struct RootsSidebarShell: View {
             }
         }
         .onReceive(appModel.$selectedPage) { page in
-            if let tab = RootTab(rawValue: page.rawValue), selection != tab {
+            if let tab = RootTab(rawValue: page.rawValue),
+               TabRegistry.definition(for: tab) != nil,
+               selection != tab {
                 selection = tab
             }
         }
@@ -128,39 +148,19 @@ struct RootsSidebarShell: View {
 
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 0) {
-            let tabs = settings.enableFlashcards ? RootTab.allCases : RootTab.allCases.filter { $0 != .flashcards }
+            let tabs = TabRegistry.allTabs.map { $0.id }
             List(selection: $selection) {
                 ForEach(tabs, id: \.self) { tab in
                     Label(tab.title, systemImage: tab.systemImage)
                         .tag(tab)
                         .font(.system(size: 14, weight: .regular))
                         .listRowInsets(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
+                        .accessibilityIdentifier("TabBar.\(tab.rawValue)")
                 }
             }
             .listStyle(.sidebar)
         }
-    }
-
-    private var toolbar: some View {
-        HStack(spacing: 12) {
-            HStack(spacing: 8) {
-                quickAddMenu
-                Divider()
-                    .frame(height: 18)
-                    .overlay(Color.primary.opacity(0.12))
-                EnergyIndicatorButton(settings: settings, showsBackground: false)
-                    .frame(width: 24, height: 24)
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 6)
-            .background {
-                Capsule()
-                    .fill(DesignSystem.Materials.card)
-                    .opacity(0.85)
-                    .shadow(color: Color.black.opacity(0.05), radius: 2, x: 0, y: 1)
-            }
-            Spacer()
-        }
+        .shadow(color: .black.opacity(0.05), radius: 8, x: 2, y: 0)
     }
 
     private var quickAddMenu: some View {
@@ -196,6 +196,7 @@ struct RootsSidebarShell: View {
         .help("Quick Add")
         .menuIndicator(.hidden)
         .menuStyle(.borderlessButton)
+        .accessibilityIdentifier("Overlay.QuickAdd")
     }
 
     @ViewBuilder

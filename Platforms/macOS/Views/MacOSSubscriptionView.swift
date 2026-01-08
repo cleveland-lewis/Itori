@@ -17,6 +17,8 @@ struct MacOSSubscriptionView: View {
             
             statusBanner
             
+            pricingOverview
+            
             if !subscriptionManager.availableSubscriptions.isEmpty {
                 subscriptionPlans
             } else {
@@ -107,6 +109,27 @@ struct MacOSSubscriptionView: View {
         default:
             EmptyView()
         }
+    }
+
+    private var pricingOverview: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(NSLocalizedString("macossubscription.pricing.title", value: "Student Pricing", comment: "Pricing header"))
+                .font(.title3.bold())
+            
+            MacPricingRow(title: NSLocalizedString("macossubscription.pricing.monthly", value: "Monthly", comment: "Monthly plan title"), price: "$5.99", detail: NSLocalizedString("macossubscription.pricing.monthly.detail", value: "per month", comment: "Monthly plan detail"))
+            MacPricingRow(title: NSLocalizedString("macossubscription.pricing.semester", value: "Semester", comment: "Semester plan title"), price: "$25", detail: NSLocalizedString("macossubscription.pricing.semester.detail", value: "every 6 months", comment: "Semester plan detail"))
+            MacPricingRow(title: NSLocalizedString("macossubscription.pricing.yearly", value: "Yearly", comment: "Yearly plan title"), price: "$40", detail: NSLocalizedString("macossubscription.pricing.yearly.detail", value: "per year", comment: "Yearly plan detail"))
+            MacPricingRow(title: NSLocalizedString("macossubscription.pricing.lifetime", value: "Lifetime", comment: "Lifetime plan title"), price: "$199", detail: NSLocalizedString("macossubscription.pricing.lifetime.detail", value: "one-time", comment: "Lifetime plan detail"))
+            
+            Text(NSLocalizedString("macossubscription.pricing.includes", value: "Includes iOS, iPadOS, and macOS. watchOS support coming soon.", comment: "Pricing includes blurb"))
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color(nsColor: .controlBackgroundColor))
+        )
     }
     
     private var subscriptionPlans: some View {
@@ -201,12 +224,13 @@ private struct MacSubscriptionPlanCard: View {
     let onPurchase: () -> Void
     
     private var isYearly: Bool {
-        product.id.contains("yearly")
+        guard let subscription = product.subscription else { return false }
+        return subscription.subscriptionPeriod.unit == .year
     }
     
     private var savingsText: String? {
         guard isYearly else { return nil }
-        return "Save 20%"
+        return "Best Value"
     }
     
     var body: some View {
@@ -255,7 +279,7 @@ private struct MacSubscriptionPlanCard: View {
                                 .controlSize(.small)
                                 .tint(.white)
                         } else {
-                            Text(NSLocalizedString("macossubscription.subscribe", value: "Subscribe", comment: "Subscribe"))
+                            Text(actionLabel)
                                 .font(.headline)
                         }
                     }
@@ -280,17 +304,25 @@ private struct MacSubscriptionPlanCard: View {
     }
     
     private var subscriptionPeriod: String {
-        if let subscription = product.subscription {
-            switch subscription.subscriptionPeriod.unit {
-            case .month:
-                return "per month"
-            case .year:
-                return "per year"
-            default:
-                return ""
-            }
+        guard let subscription = product.subscription else {
+            return "one-time"
         }
-        return ""
+        
+        let period = subscription.subscriptionPeriod
+        switch period.unit {
+        case .month:
+            return period.value == 6 ? "per semester" : "per month"
+        case .year:
+            return "per year"
+        default:
+            return ""
+        }
+    }
+    
+    private var actionLabel: String {
+        product.subscription == nil
+            ? NSLocalizedString("macossubscription.purchase", value: "Purchase", comment: "Purchase")
+            : NSLocalizedString("macossubscription.subscribe", value: "Subscribe", comment: "Subscribe")
     }
 }
 
@@ -317,6 +349,27 @@ private struct MacFeatureRow: View {
             }
             
             Spacer()
+        }
+    }
+}
+
+private struct MacPricingRow: View {
+    let title: String
+    let price: String
+    let detail: String
+    
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(.headline)
+            Spacer()
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(price)
+                    .font(.headline)
+                Text(detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 }

@@ -122,15 +122,6 @@ struct ContentView: View {
                 }
             }
         }
-        .onChange(of: settings.enableFlashcards) { _, enabled in
-            guard !enabled else { return }
-            
-            // If currently on flashcards tab, switch to dashboard
-            if selectedTab == .flashcards {
-                selectedTab = .dashboard
-                appModel.selectedPage = .dashboard
-            }
-        }
         #if os(macOS)
         .onKeyDown { event in
             switch event.keyCode {

@@ -6,6 +6,7 @@ import _Concurrency
 
 @MainActor
 final class TimerPageViewModel: ObservableObject {
+    static let shared = TimerPageViewModel()
     // Activities & collections
     @Published var activities: [TimerActivity] = []
     @Published var collections: [ActivityCollection] = []
@@ -37,6 +38,8 @@ final class TimerPageViewModel: ObservableObject {
     // Alarm scheduler removed (deferred to v1.1)
     private let persistenceQueue = DispatchQueue(label: "timer.persistence.queue", qos: .utility)
     private let persistence = PersistenceController.shared
+    private var iCloudMonitor: Timer?
+    private var iCloudToggleObserver: NSObjectProtocol?
 
     // Mode binding - assume a shared selector writes to this or inject externally
     var modeCancellable: AnyCancellable?
@@ -44,9 +47,9 @@ final class TimerPageViewModel: ObservableObject {
     init() {
         loadPersistedSessions()
         loadPersistedState()
-        if activities.isEmpty && collections.isEmpty && pastSessions.isEmpty {
-            loadPlaceholderData()
-        }
+        observeICloudToggle()
+        loadFromiCloudIfEnabled()
+        setupiCloudMonitoring()
         startClock()
         requestNotificationPermissionIfNeeded()
     }
@@ -56,6 +59,10 @@ final class TimerPageViewModel: ObservableObject {
         // Cancel observables synchronously - no Task needed since these are already on MainActor
         stopClock()
         modeCancellable?.cancel()
+        iCloudMonitor?.invalidate()
+        if let observer = iCloudToggleObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
 
     // MARK: - Clock
@@ -153,15 +160,15 @@ final class TimerPageViewModel: ObservableObject {
 
         LOG_UI(.info, "Timer", "Started session \(session.id) for activity=\(String(describing: session.activityID)) mode=\(currentMode.rawValue)")
         
-        // Play timer start feedback (audio + haptic)
+        // Play timer start feedback (haptic only)
         Task { @MainActor in
-            AudioFeedbackService.shared.playTimerStart()
             Feedback.shared.timerStart()
         }
         
         scheduleCompletionNotification()
         
         persistState()
+        notifyTimerSessionUpdate()
     }
 
     func pauseSession() {
@@ -170,15 +177,15 @@ final class TimerPageViewModel: ObservableObject {
         currentSession = s
         LOG_UI(.info, "Timer", "Paused session \(s.id)")
         
-        // Play pause feedback (audio + haptic)
+        // Play pause feedback (haptic only)
         Task { @MainActor in
-            AudioFeedbackService.shared.playTimerPause()
             Feedback.shared.timerStop()
         }
         
         cancelCompletionNotification()
         
         persistState()
+        notifyTimerSessionUpdate()
     }
 
     func resumeSession() {
@@ -188,9 +195,8 @@ final class TimerPageViewModel: ObservableObject {
         currentSession = s
         LOG_UI(.info, "Timer", "Resumed session \(s.id)")
         
-        // Play resume feedback (same as start)
+        // Play resume feedback (haptic only)
         Task { @MainActor in
-            AudioFeedbackService.shared.playTimerStart()
             Feedback.shared.timerStart()
         }
         
@@ -199,6 +205,17 @@ final class TimerPageViewModel: ObservableObject {
         // Phase 2.2: Reschedule AlarmKit alarm with remaining time
         
         persistState()
+        notifyTimerSessionUpdate()
+    }
+
+    func togglePauseExternal() {
+        if let session = currentSession {
+            if session.state == .running {
+                pauseSession()
+            } else if session.state == .paused {
+                resumeSession()
+            }
+        }
     }
 
     func endSession(completed: Bool) {
@@ -237,9 +254,8 @@ final class TimerPageViewModel: ObservableObject {
             )
         }
         
-        // Play end feedback (audio + haptic)
+        // Play end feedback (haptic only)
         Task { @MainActor in
-            AudioFeedbackService.shared.playTimerEnd()
             if completed {
                 Feedback.shared.timerStop()  // Success haptic
             } else {
@@ -252,6 +268,18 @@ final class TimerPageViewModel: ObservableObject {
         // Phase 2.2: Cancel AlarmKit alarm when session ends
         
         persistState()
+        notifyTimerSessionUpdate()
+    }
+
+    func startExternalSession(mode: TimerMode, durationSeconds: Int?) {
+        currentMode = mode
+        if mode == .timer, let durationSeconds {
+            timerDuration = TimeInterval(durationSeconds)
+        } else if mode == .pomodoro, let durationSeconds {
+            focusDuration = TimeInterval(durationSeconds)
+        }
+        let planned: TimeInterval? = (mode == .stopwatch) ? nil : durationSeconds.map { TimeInterval($0) }
+        startSession(plannedDuration: planned)
     }
 
 #if DEBUG
@@ -325,6 +353,14 @@ final class TimerPageViewModel: ObservableObject {
             sessionRemaining = 0
         }
         currentSession = session
+        notifyTimerSessionUpdate()
+    }
+
+    private func notifyTimerSessionUpdate() {
+        NotificationCenter.default.post(
+            name: .timerSessionDidUpdate,
+            object: nil
+        )
     }
 
     // MARK: - Notifications
@@ -420,6 +456,20 @@ final class TimerPageViewModel: ObservableObject {
         return docs.appendingPathComponent("TimerState.json")
     }
 
+    private lazy var iCloudURL: URL? = {
+        let containerIdentifier = "iCloud.com.cwlewisiii.Itori"
+        guard let ubiquityURL = FileManager.default.url(forUbiquityContainerIdentifier: containerIdentifier) else {
+            return nil
+        }
+        let documentsURL = ubiquityURL.appendingPathComponent("Documents/Timer")
+        try? FileManager.default.createDirectory(at: documentsURL, withIntermediateDirectories: true)
+        return documentsURL.appendingPathComponent("TimerState.json")
+    }()
+
+    private var isSyncEnabled: Bool {
+        AppSettingsModel.shared.enableICloudSync
+    }
+
     private func loadPersistedState() {
         let url = stateURL
         persistenceQueue.async {
@@ -467,8 +517,111 @@ final class TimerPageViewModel: ObservableObject {
             do {
                 let data = try JSONEncoder().encode(snapshot)
                 try data.write(to: url, options: .atomic)
+                self.saveToiCloud(data: data)
             } catch {
                 LOG_UI(.error, "Timer", "Failed to persist timer state: \(error.localizedDescription)")
+            }
+        }
+    }
+
+    private func loadFromiCloudIfEnabled() {
+        guard isSyncEnabled else { return }
+        loadFromiCloud()
+    }
+
+    private func loadFromiCloud() {
+        guard let iCloudURL else { return }
+        guard FileManager.default.fileExists(atPath: iCloudURL.path) else { return }
+
+        persistenceQueue.async { [weak self] in
+            guard let self else { return }
+            let fileManager = FileManager.default
+            let localURL = self.stateURL
+
+            let cloudModified = (try? fileManager.attributesOfItem(atPath: iCloudURL.path)[.modificationDate]) as? Date
+            let localModified = (try? fileManager.attributesOfItem(atPath: localURL.path)[.modificationDate]) as? Date
+
+            if let localModified, let cloudModified, localModified >= cloudModified {
+                let data = (try? Data(contentsOf: localURL))
+                self.saveToiCloud(data: data)
+                return
+            }
+
+            let coordinator = NSFileCoordinator()
+            var error: NSError?
+            var cloudData: Data?
+            coordinator.coordinate(readingItemAt: iCloudURL, options: [], error: &error) { url in
+                cloudData = try? Data(contentsOf: url)
+            }
+            guard error == nil, let data = cloudData else { return }
+            guard let decoded = try? JSONDecoder().decode(TimerPersistedState.self, from: data) else { return }
+
+            DispatchQueue.main.async {
+                self.activities = decoded.activities
+                self.collections = decoded.collections
+                self.selectedCollectionID = decoded.selectedCollectionID
+                self.currentActivityID = decoded.currentActivityID
+                self.currentMode = decoded.currentMode
+                self.isOnBreak = decoded.isOnBreak
+                self.focusDuration = decoded.focusDuration
+                self.breakDuration = decoded.breakDuration
+                self.longBreakDuration = decoded.longBreakDuration ?? 15 * 60
+                self.timerDuration = decoded.timerDuration
+                self.pomodoroCompletedCycles = decoded.pomodoroCompletedCycles ?? 0
+                self.pomodoroMaxCycles = decoded.pomodoroMaxCycles ?? 4
+            }
+        }
+    }
+
+    private func saveToiCloud(data: Data? = nil) {
+        guard isSyncEnabled, let iCloudURL else { return }
+        let payload = data ?? (try? JSONEncoder().encode(TimerPersistedState(
+            activities: activities,
+            collections: collections,
+            pastSessions: nil,
+            selectedCollectionID: selectedCollectionID,
+            currentActivityID: currentActivityID,
+            currentMode: currentMode,
+            isOnBreak: isOnBreak,
+            focusDuration: focusDuration,
+            breakDuration: breakDuration,
+            longBreakDuration: longBreakDuration,
+            timerDuration: timerDuration,
+            pomodoroCompletedCycles: pomodoroCompletedCycles,
+            pomodoroMaxCycles: pomodoroMaxCycles
+        )))
+        guard let payload else { return }
+
+        persistenceQueue.async {
+            let coordinator = NSFileCoordinator()
+            var error: NSError?
+            coordinator.coordinate(writingItemAt: iCloudURL, options: .forReplacing, error: &error) { url in
+                try? payload.write(to: url, options: [.atomic])
+            }
+        }
+    }
+
+    private func setupiCloudMonitoring() {
+        guard isSyncEnabled else { return }
+        iCloudMonitor = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { [weak self] _ in
+            self?.loadFromiCloud()
+        }
+    }
+
+    private func observeICloudToggle() {
+        iCloudToggleObserver = NotificationCenter.default.addObserver(
+            forName: .iCloudSyncSettingChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self else { return }
+            if self.isSyncEnabled {
+                self.loadFromiCloudIfEnabled()
+                self.setupiCloudMonitoring()
+                self.saveToiCloud()
+            } else {
+                self.iCloudMonitor?.invalidate()
+                self.iCloudMonitor = nil
             }
         }
     }
@@ -573,24 +726,4 @@ final class TimerPageViewModel: ObservableObject {
         return entity
     }
 
-    // MARK: - Placeholder data
-    private func loadPlaceholderData() {
-        let deepWork = ActivityCollection(name: "Deep Work", description: "Long focus blocks")
-        let math = ActivityCollection(name: "Math", description: "Problem solving")
-        collections = [deepWork, math]
-
-        activities = [
-            TimerActivity(name: "Reading — Biology", note: "Chapters 4-6", studyCategory: .reading, collectionID: deepWork.id, emoji: "📚"),
-            TimerActivity(name: "Problem Set — Calculus", studyCategory: .problemSolving, collectionID: math.id, emoji: "✏️"),
-            TimerActivity(name: "Review Notes", studyCategory: .reviewing, collectionID: deepWork.id, emoji: "📝"),
-            TimerActivity(name: "Essay Draft", studyCategory: .writing, collectionID: nil, emoji: "🖋️")
-        ]
-        currentActivityID = activities.first?.id
-
-        pastSessions = [
-            FocusSession(activityID: activities.first?.id, mode: .pomodoro, plannedDuration: focusDuration, startedAt: Date().addingTimeInterval(-3600), endedAt: Date().addingTimeInterval(-3300), state: .completed, actualDuration: 3000),
-            FocusSession(activityID: activities[1].id, mode: .timer, plannedDuration: 1800, startedAt: Date().addingTimeInterval(-7200), endedAt: Date().addingTimeInterval(-7000), state: .completed, actualDuration: 2000)
-        ]
-        pastSessions.forEach { upsertSessionInStore($0) }
-    }
 }

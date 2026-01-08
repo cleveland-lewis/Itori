@@ -32,16 +32,14 @@ final class FocusManager: ObservableObject {
             activeSession = LocalTimerSession(id: UUID(), activityID: activity.id, mode: mode, startDate: Date(), endDate: nil, duration: 0)
         }
         
-        // Play pleasant start sound
-        audioService.playTimerStart()
+        // Play haptic feedback only
         Feedback.shared.timerStart()
     }
 
     func pauseTimer() {
         isRunning = false
         
-        // Play slightly downtone pause sound
-        audioService.playTimerPause()
+        // Play haptic feedback only
         Feedback.shared.timerStop()
     }
 
@@ -56,8 +54,7 @@ final class FocusManager: ObservableObject {
     func endTimerSession() {
         isRunning = false
         
-        // Play flat end tone
-        audioService.playTimerEnd()
+        // Play haptic feedback only
         Feedback.shared.timerStop()
         
         if var session = activeSession {

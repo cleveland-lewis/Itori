@@ -140,16 +140,16 @@ public enum RootTab: String, CaseIterable, Identifiable {
 
     public var title: String {
         switch self {
-        case .dashboard: return "Dashboard"
-        case .calendar: return "Calendar"
-        case .planner: return "Planner"
-        case .assignments: return "Assignments"
-        case .courses: return "Courses"
-        case .grades: return "Grades"
-        case .timer: return "Timer"
-        case .flashcards: return "Flashcards"
-        case .practice: return "Practice"
-        case .settings: return "Settings"
+        case .dashboard: return NSLocalizedString("tab.dashboard", value: "Dashboard", comment: "Sidebar tab")
+        case .calendar: return NSLocalizedString("tab.calendar", value: "Calendar", comment: "Sidebar tab")
+        case .planner: return NSLocalizedString("tab.planner", value: "Planner", comment: "Sidebar tab")
+        case .assignments: return NSLocalizedString("tab.assignments", value: "Assignments", comment: "Sidebar tab")
+        case .courses: return NSLocalizedString("tab.courses", value: "Courses", comment: "Sidebar tab")
+        case .grades: return NSLocalizedString("tab.grades", value: "Grades", comment: "Sidebar tab")
+        case .timer: return NSLocalizedString("tab.timer", value: "Timer", comment: "Sidebar tab")
+        case .flashcards: return NSLocalizedString("tab.flashcards", value: "Flashcards", comment: "Sidebar tab")
+        case .practice: return NSLocalizedString("tab.practice", value: "Practice", comment: "Sidebar tab")
+        case .settings: return NSLocalizedString("tab.settings", value: "Settings", comment: "Sidebar tab")
         }
     }
 
@@ -216,13 +216,16 @@ public extension LoadableViewModel {
             self.isLoading = true
             self.loadingMessage = message
         }
-        defer {
-            Task { @MainActor in
-                self.isLoading = false
-                self.loadingMessage = nil
-            }
+        do {
+            let result = try await work()
+            self.isLoading = false
+            self.loadingMessage = nil
+            return result
+        } catch {
+            self.isLoading = false
+            self.loadingMessage = nil
+            throw error
         }
-        return try await work()
     }
 }
 

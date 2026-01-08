@@ -12,13 +12,9 @@ enum SettingsSection: String, CaseIterable, Identifiable {
     case accounts
     case courses
     case calendar
-    case reminders
     case planner
     case semesters
     case profiles
-    case timer
-    case flashcards
-    case practice
     case ai
     case integrations
     case notifications
@@ -40,13 +36,9 @@ enum SettingsSection: String, CaseIterable, Identifiable {
         case .accounts: return "person.crop.circle"
         case .courses: return "books.vertical"
         case .calendar: return "calendar"
-        case .reminders: return "bell"
         case .planner: return "calendar.badge.clock"
         case .semesters: return "calendar.circle"
         case .profiles: return "person.text.rectangle"
-        case .timer: return "timer"
-        case .flashcards: return "rectangle.stack"
-        case .practice: return "pencil.and.list.clipboard"
         case .ai: return "brain"
         case .integrations: return "puzzlepiece.extension"
         case .notifications: return "bell.badge"
@@ -81,8 +73,6 @@ struct SettingsRootView: View {
                     GeneralSettingsView()
                 case .calendar:
                     CalendarSettingsView()
-                case .reminders:
-                    RemindersSettingsView()
                 case .planner:
                     PlannerSettingsView()
                 case .courses:
@@ -93,12 +83,6 @@ struct SettingsRootView: View {
                     InterfaceSettingsView()
                 case .profiles:
                     ProfilesSettingsView()
-                case .timer:
-                    TimerSettingsView()
-                case .flashcards:
-                    FlashcardSettingsView()
-                case .practice:
-                    PracticeSettingsView()
                 case .ai:
                     AISettingsView()
                 case .integrations:

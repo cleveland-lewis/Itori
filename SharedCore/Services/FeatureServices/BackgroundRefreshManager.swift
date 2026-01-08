@@ -7,11 +7,15 @@ final class BackgroundRefreshManager {
     static let shared = BackgroundRefreshManager()
 
     private let refreshIdentifier = "com.itori.background.refresh"
+    private var didRegister = false
 
     private init() {}
 
     func register() {
 #if canImport(BackgroundTasks) && os(iOS)
+        guard !TestMode.isRunningTests else { return }
+        guard !didRegister else { return }
+        didRegister = true
         BGTaskScheduler.shared.register(forTaskWithIdentifier: refreshIdentifier, using: nil) { task in
             self.scheduleNext()
             self.handleRefresh(task: task)
@@ -21,6 +25,12 @@ final class BackgroundRefreshManager {
 
     func scheduleNext() {
 #if canImport(BackgroundTasks) && os(iOS)
+        if !didRegister {
+            register()
+        }
+        guard didRegister else {
+            return
+        }
         let request = BGAppRefreshTaskRequest(identifier: refreshIdentifier)
         request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60)
         do {

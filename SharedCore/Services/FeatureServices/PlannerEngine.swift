@@ -482,7 +482,7 @@ enum PlannerEngine {
                         }
                     }()
                     let energyMatch = 1 - abs(difficultyReq - slotEnergy)
-                    let placementScore = 0.8 * session.scheduleIndex + 0.2 * energyMatch
+                    let placementScore = 0.4 * session.scheduleIndex + 0.6 * energyMatch
                     if let current = bestPlacement {
                         if placementScore > current.score {
                             bestPlacement = (day, startIdx, placementScore)

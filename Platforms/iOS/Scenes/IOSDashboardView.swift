@@ -15,15 +15,18 @@ struct IOSDashboardView: View {
     @EnvironmentObject private var settings: AppSettingsModel
     @EnvironmentObject private var sheetRouter: IOSSheetRouter
     @EnvironmentObject private var navigation: IOSNavigationCoordinator
+    @EnvironmentObject private var plannerCoordinator: PlannerCoordinator
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.overlayInsets) private var overlayInsets
     @ObservedObject private var plannerStore = PlannerStore.shared
-    @ObservedObject private var calendarAuth = CalendarAuthorizationManager.shared
+    @State private var selectedAssignmentId: UUID? = nil
+    @State private var selectedSession: StoredScheduledSession? = nil
 
-    @State private var selectedDate = Date()
     @AppStorage("dashboard.greeting.dateKey") private var greetingDateKey: String = ""
     @AppStorage("dashboard.greeting.text") private var storedGreeting: String = ""
 
     private let calendar = Calendar.current
+    private let dashboardSpacing: CGFloat = 16
     
     private var shouldShowProductivityInsights: Bool {
         settings.trackStudyHours && settings.showProductivityInsights
@@ -32,11 +35,9 @@ struct IOSDashboardView: View {
     var body: some View {
         GeometryReader { proxy in
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 16) {
+                VStack(spacing: dashboardSpacing) {
                     plannerTodayCard
                     quickStatsRow
-
-                    upcomingEventsCard
 
                     upcomingAssignmentsCard
 
@@ -49,13 +50,59 @@ struct IOSDashboardView: View {
                 }
                 .frame(maxWidth: min(720, proxy.size.width - 32))
                 .frame(maxWidth: .infinity)
+                .padding(.top, overlayInsets.top + 60)
                 .padding(.horizontal, 16)
-                .padding(.bottom, 36)
+                .padding(.bottom, 20)
             }
         }
         .background(DesignSystem.Colors.appBackground.ignoresSafeArea())
         .task {
             await deviceCalendar.bootstrapOnLaunch()
+        }
+        .sheet(item: Binding<AppTask?>(
+            get: { 
+                guard let id = selectedAssignmentId else { return nil }
+                return assignmentsStore.tasks.first(where: { $0.id == id })
+            },
+            set: { newValue, _ in selectedAssignmentId = newValue?.id }
+        )) { (task: AppTask) in
+            IOSTaskDetailView(
+                task: task,
+                courses: coursesStore.activeCourses,
+                onEdit: {
+                    selectedAssignmentId = nil
+                    // Open edit sheet
+                    let defaults = IOSSheetRouter.TaskDefaults(
+                        courseId: task.courseId,
+                        dueDate: task.due ?? Date(),
+                        title: task.title,
+                        type: task.type,
+                        itemLabel: NSLocalizedString("ios.item.assignment", value: "Assignment", comment: "Assignment")
+                    )
+                    sheetRouter.activeSheet = .addAssignment(defaults)
+                },
+                onDelete: {
+                    assignmentsStore.removeTask(id: task.id)
+                    selectedAssignmentId = nil
+                },
+                onToggleCompletion: {
+                    var updated = task
+                    updated.isCompleted.toggle()
+                    assignmentsStore.updateTask(updated)
+                }
+            )
+        }
+        .sheet(item: $selectedSession) { session in
+            IOSSessionDetailView(
+                session: session,
+                timeRangeText: timeRangeText(for: session),
+                courseTitle: sessionCourseTitle(session),
+                locationText: sessionLocation(session),
+                notesText: sessionNotes(session),
+                onEdit: {
+                    plannerCoordinator.openPlanner(for: session.start, courseId: session.assignmentId)
+                }
+            )
         }
     }
 
@@ -90,51 +137,20 @@ struct IOSDashboardView: View {
 
     private var quickStatsRow: some View {
         HStack(spacing: 12) {
-            statPill(title: NSLocalizedString("ios.dashboard.stats.due_soon", comment: "Due Soon"), value: "\(dueSoonTasks.count)", icon: "bolt")
             statPill(title: NSLocalizedString("ios.dashboard.stats.next_7_days", comment: "Next 7 Days"), value: "\(weekEventCount)", icon: "calendar.badge.clock")
-            statPill(title: NSLocalizedString("ios.dashboard.stats.courses", comment: "Courses"), value: "\(coursesStore.activeCourses.count)", icon: "square.grid.2x2")
+            statPill(title: NSLocalizedString("ios.dashboard.stats.due_this_month", comment: "Due This Month"), value: "\(dueThisMonthTasks.count)", icon: "calendar")
         }
-    }
-
-    private var weekStrip: some View {
-        HStack(spacing: 10) {
-            ForEach(Array(weekDays.enumerated()), id: \.element) { index, day in
-                let isSelected = calendar.isDate(day, inSameDayAs: selectedDate)
-                Button {
-                    selectedDate = day
-                } label: {
-                    VStack(spacing: 6) {
-                        Text(weekdaySymbol(for: day))
-                            .font(.caption2.weight(.semibold))
-                        Text(dayNumber(for: day))
-                            .font(.callout.weight(.semibold))
-                    }
-                    .frame(width: 42, height: 56)
-                    .foregroundStyle(isSelected ? Color.white : Color.primary)
-                    .background(
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .fill(isSelected ? AnyShapeStyle(Color.accentColor) : AnyShapeStyle(.regularMaterial))
-                    )
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .padding(10)
-        .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(DesignSystem.Materials.hud)
-        )
     }
     
-    // MARK: - Study Hours Card (Phase D)
+    // MARK: - Study Time Card (Phase D)
     
     @ObservedObject private var tracker = StudyHoursTracker.shared
     
     private var studyHoursCard: some View {
         RootsCard(
-            title: NSLocalizedString("ios.dashboard.study_hours.title", value: "Study Hours", comment: "Study hours card title"),
-            subtitle: NSLocalizedString("ios.dashboard.study_hours.subtitle", value: "Your progress", comment: "Study hours card subtitle"),
-            icon: "clock.fill"
+            title: NSLocalizedString("ios.dashboard.study_time.title", value: "Study Time", comment: "Study time card title"),
+            subtitle: NSLocalizedString("ios.dashboard.study_time.subtitle", value: "Your progress", comment: "Study time card subtitle"),
+            icon: nil
         ) {
             VStack(spacing: 16) {
                 HStack(spacing: 20) {
@@ -154,7 +170,7 @@ struct IOSDashboardView: View {
                     )
                 }
             }
-            .frame(minHeight: 80)
+            .frame(minHeight: 60)
         }
     }
     
@@ -170,60 +186,6 @@ struct IOSDashboardView: View {
         .frame(maxWidth: .infinity)
     }
 
-    private var upcomingEventsCard: some View {
-        RootsCard(title: NSLocalizedString("ios.dashboard.upcoming.title", comment: "Upcoming"), subtitle: NSLocalizedString("ios.dashboard.upcoming.subtitle", comment: "From your calendar"), icon: "calendar") {
-            Group {
-                if calendarAuth.isDenied {
-                    CalendarAccessBanner(
-                        title: "Calendar access is off",
-                        message: "Enable access to show events and allow scheduling.",
-                        actionTitle: "Open Settings",
-                        action: { calendarAuth.openSettings() }
-                    )
-                } else if calendarAuth.isNotDetermined {
-                    CalendarAccessBanner(
-                        title: "Calendar access is off",
-                        message: "Enable access to show events and allow scheduling.",
-                        actionTitle: "Allow Access",
-                        action: {
-                            Task { _ = await deviceCalendar.requestFullAccessIfNeeded() }
-                        }
-                    )
-                } else if settings.selectedSchoolCalendarID.isEmpty {
-                    ContentUnavailableView {
-                        Label(NSLocalizedString("Select a School Calendar", value: "Select a School Calendar", comment: ""), systemImage: "calendar.badge.plus")
-                    } description: {
-                        Text(NSLocalizedString("Choose a school calendar in Settings → Calendar to see upcoming events.", value: "Choose a school calendar in Settings → Calendar to see upcoming events.", comment: ""))
-                    }
-                } else if upcomingEvents.isEmpty {
-                    ContentUnavailableView {
-                        Label(NSLocalizedString("No Events", value: "No Events", comment: ""), systemImage: "calendar")
-                    } description: {
-                        Text(NSLocalizedString("Your upcoming calendar events will appear here", value: "Your upcoming calendar events will appear here", comment: ""))
-                    }
-                } else {
-                    VStack(alignment: .leading, spacing: 12) {
-                        ForEach(upcomingEvents.prefix(4), id: \.eventIdentifier) { event in
-                            HStack(alignment: .top, spacing: 12) {
-                                RoundedRectangle(cornerRadius: 6, style: .continuous)
-                                    .fill(Color.accentColor.opacity(0.7))
-                                    .frame(width: 6)
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(event.title)
-                                        .font(.body.weight(.medium))
-                                    Text(eventTimeRange(event))
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                                Spacer()
-                            }
-                        }
-                    }
-                }
-            }
-            .frame(minHeight: 120)
-        }
-    }
 
     private var assignmentStatusCard: some View {
         RootsCard(title: nil, subtitle: nil, icon: nil) {
@@ -238,24 +200,29 @@ struct IOSDashboardView: View {
         RootsCard(title: nil, subtitle: nil, icon: nil) {
             let items = upcomingAssignmentItems(limit: 6)
             VStack(alignment: .leading, spacing: 12) {
-                cardHeader(title: "Upcoming Assignments", trailing: AnyView(
-                    Button {
-                        presentAddAssignment()
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.headline)
-                    }
-                    .buttonStyle(.plain)
-                ))
+                Button {
+                    openAssignments()
+                } label: {
+                    cardHeader(title: "Upcoming Assignments", trailing: AnyView(
+                        Button {
+                            presentAddAssignment()
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.headline)
+                        }
+                        .buttonStyle(.plain)
+                    ))
+                }
+                .buttonStyle(.plain)
 
                 if items.isEmpty {
-                    VStack(spacing: 16) {
+                    VStack(spacing: 12) {
                         Image(systemName: "tray")
-                            .font(.system(size: 48))
+                            .font(.system(size: 40))
                             .foregroundStyle(.secondary.opacity(0.5))
-                            .padding(.top, 12)
+                            .padding(.top, 8)
                         
-                        VStack(spacing: 6) {
+                        VStack(spacing: 4) {
                             Text(NSLocalizedString("No upcoming assignments", value: "No upcoming assignments", comment: ""))
                                 .font(.subheadline.weight(.semibold))
                             Text(NSLocalizedString("Add an assignment to see it here", value: "Add an assignment to see it here", comment: ""))
@@ -270,10 +237,15 @@ struct IOSDashboardView: View {
                         .controlSize(.small)
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 20)
+                    .padding(.vertical, 12)
                 } else {
                     ForEach(items) { item in
-                        upcomingAssignmentRow(item)
+                        Button {
+                            selectedAssignmentId = item.id
+                        } label: {
+                            upcomingAssignmentRow(item)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
 
@@ -293,12 +265,25 @@ struct IOSDashboardView: View {
     }
 
     private var plannerTodayCard: some View {
-        RootsCard(title: "Today", subtitle: "Planner", icon: "list.bullet.rectangle") {
+        RootsCard(title: nil, subtitle: nil, icon: nil) {
+            HStack(alignment: .firstTextBaseline) {
+                HStack(spacing: RootsSpacing.s) {
+                    Image(systemName: "list.bullet.rectangle")
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(NSLocalizedString("ios.dashboard.planner_today.title", value: "Today", comment: "Planner today title")).rootsSectionHeader()
+                        Text(NSLocalizedString("ios.dashboard.planner_today.subtitle", value: "Planner", comment: "Planner today subtitle")).rootsCaption()
+                    }
+                }
+                Spacer()
+                Text(todayDateString).rootsSectionHeader()
+            }
+            .padding(.bottom, 6)
+
             let sessions = plannerSessionsToday
             if sessions.isEmpty {
-                VStack(spacing: 12) {
+                VStack(spacing: 10) {
                     Image(systemName: "calendar.badge.clock")
-                        .font(.system(size: 40))
+                        .font(.system(size: 36))
                         .foregroundStyle(.secondary.opacity(0.5))
                     
                     Text(NSLocalizedString("No planned tasks today", value: "No planned tasks today", comment: ""))
@@ -306,7 +291,7 @@ struct IOSDashboardView: View {
                         .foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
+                .padding(.vertical, 12)
             } else {
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(sessions.prefix(4), id: \.id) { session in
@@ -318,12 +303,12 @@ struct IOSDashboardView: View {
     }
 
     private var workRemainingCard: some View {
-        RootsCard(title: "Remaining", subtitle: "Today", icon: "chart.bar.fill") {
+        RootsCard(title: NSLocalizedString("ios.dashboard.work_sessions.title", value: "Work Sessions", comment: "Work sessions card title"), subtitle: NSLocalizedString("ios.dashboard.work_sessions.subtitle", value: "Today", comment: "Today subtitle"), icon: nil) {
             let snapshot = remainingWorkSnapshot
             if snapshot.plannedMinutes <= 0 {
-                VStack(spacing: 12) {
+                VStack(spacing: 10) {
                     Image(systemName: "chart.bar")
-                        .font(.system(size: 40))
+                        .font(.system(size: 36))
                         .foregroundStyle(.secondary.opacity(0.5))
                     
                     VStack(spacing: 4) {
@@ -336,12 +321,12 @@ struct IOSDashboardView: View {
                     }
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
+                .padding(.vertical, 12)
             } else if snapshot.remainingMinutes == 0 {
                 // All tasks completed
-                VStack(spacing: 12) {
+                VStack(spacing: 10) {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 44))
+                        .font(.system(size: 40))
                         .foregroundStyle(.green)
                     
                     VStack(spacing: 4) {
@@ -421,34 +406,6 @@ struct IOSDashboardView: View {
         navigation.open(page: .assignments, starredTabs: settings.starredTabs)
     }
 
-    private var calendarCard: some View {
-        RootsCard(title: "Calendar", subtitle: "This week", icon: "calendar") {
-            VStack(alignment: .leading, spacing: 12) {
-                weekStrip
-                if eventsForSelectedDate.isEmpty {
-                    Text(NSLocalizedString("No events on this day", value: "No events on this day", comment: ""))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else {
-                    ForEach(eventsForSelectedDate.prefix(3), id: \.eventIdentifier) { event in
-                        HStack(spacing: 10) {
-                            Circle()
-                                .fill(Color.accentColor.opacity(0.7))
-                                .frame(width: 6, height: 6)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(event.title)
-                                    .font(.caption.weight(.semibold))
-                                Text(eventTimeRange(event))
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     private func statPill(title: String, value: String, icon: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -464,6 +421,13 @@ struct IOSDashboardView: View {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(DesignSystem.Materials.card)
         )
+    }
+
+    private var todayDateString: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: Date())
     }
 
     private func cardHeader(title: String, trailing: AnyView? = nil) -> some View {
@@ -556,13 +520,6 @@ struct IOSDashboardView: View {
         }.count
     }
 
-    private var upcomingEvents: [EKEvent] {
-        let now = Date()
-        return filteredCalendarEvents
-            .filter { $0.endDate > now }
-            .sorted { $0.startDate < $1.startDate }
-    }
-
     private var weekEventCount: Int {
         let now = Date()
         let end = calendar.date(byAdding: .day, value: 7, to: now) ?? now
@@ -577,14 +534,17 @@ struct IOSDashboardView: View {
         return deviceCalendar.events.filter { $0.calendar.calendarIdentifier == selectedID }
     }
 
-    private var dueSoonTasks: [AppTask] {
+    private var dueThisMonthTasks: [AppTask] {
         let now = Date()
-        let end = calendar.date(byAdding: .day, value: 7, to: now) ?? now
+        let startOfMonth = calendar.startOfDay(for: calendar.date(from: calendar.dateComponents([.year, .month], from: now))!)
+        let endOfMonth = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth) ?? now
+        let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: endOfMonth) ?? endOfMonth
+        
         return assignmentsStore.tasks
             .filter { !$0.isCompleted && $0.type != .practiceTest }
             .compactMap { task -> AppTask? in
                 guard let due = task.effectiveDueDateTime else { return nil }
-                return (due >= now && due <= end) ? task : nil
+                return (due >= now && due <= endOfDay) ? task : nil
             }
             .sorted { ($0.effectiveDueDateTime ?? Date.distantFuture) < ($1.effectiveDueDateTime ?? Date.distantFuture) }
     }
@@ -777,36 +737,11 @@ struct IOSDashboardView: View {
         }
     }
 
-    private var eventsForSelectedDate: [EKEvent] {
-        filteredCalendarEvents.filter { calendar.isDate($0.startDate, inSameDayAs: selectedDate) }
-            .sorted { $0.startDate < $1.startDate }
-    }
-
     private func courseColor(for hex: String?) -> Color {
         if let hex, let color = Color(hex: hex) {
             return color
         }
         return Color.accentColor
-    }
-
-    private var weekDays: [Date] {
-        guard let weekInterval = calendar.dateInterval(of: .weekOfYear, for: selectedDate) else { return [] }
-        return (0..<7).compactMap { offset in
-            calendar.date(byAdding: .day, value: offset, to: weekInterval.start)
-        }
-    }
-
-    private func weekdaySymbol(for date: Date) -> String {
-        LocaleFormatters.shortDayName.string(from: date).uppercased()
-    }
-
-    private func dayNumber(for date: Date) -> String {
-        LocaleFormatters.dayOfMonth.string(from: date)
-    }
-
-    private func eventTimeRange(_ event: EKEvent) -> String {
-        let formatter = LocaleFormatters.shortTime
-        return "\(formatter.string(from: event.startDate))-\(formatter.string(from: event.endDate))"
     }
 
     private var plannerSessionsToday: [StoredScheduledSession] {
@@ -883,21 +818,122 @@ struct IOSDashboardView: View {
             Circle()
                 .fill(session.isUserEdited ? Color.orange : Color.accentColor)
                 .frame(width: 6, height: 6)
-            VStack(alignment: .leading, spacing: 2) {
-                Text(session.title)
-                    .font(.subheadline.weight(.semibold))
-                    .lineLimit(1)
-                Text(timeRangeText(for: session))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+            Text(session.title)
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(1)
             Spacer()
+            Text(timeRangeText(for: session))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if let assignmentId = session.assignmentId {
+                selectedAssignmentId = assignmentId
+            } else {
+                selectedSession = session
+            }
         }
     }
 
     private func timeRangeText(for session: StoredScheduledSession) -> String {
         let formatter = LocaleFormatters.shortTime
         return "\(formatter.string(from: session.start)) – \(formatter.string(from: session.end))"
+    }
+
+    private func sessionCourseTitle(_ session: StoredScheduledSession) -> String? {
+        guard let assignmentId = session.assignmentId,
+              let task = assignmentsStore.tasks.first(where: { $0.id == assignmentId }),
+              let courseId = task.courseId,
+              let course = coursesStore.courses.first(where: { $0.id == courseId }) else {
+            return nil
+        }
+        return course.code.isEmpty ? course.title : course.code
+    }
+
+    private func sessionLocation(_ session: StoredScheduledSession) -> String? {
+        return nil
+    }
+
+    private func sessionNotes(_ session: StoredScheduledSession) -> String? {
+        return nil
+    }
+
+    private struct IOSSessionDetailView: View {
+        let session: StoredScheduledSession
+        let timeRangeText: String
+        let courseTitle: String?
+        let locationText: String?
+        let notesText: String?
+        let onEdit: () -> Void
+        @Environment(\.dismiss) private var dismiss
+
+        var body: some View {
+            NavigationStack {
+                VStack(spacing: 16) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(session.title)
+                            .font(.title2.weight(.semibold))
+                        Text(timeRangeText)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        Text(session.dueDate, style: .date)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        if let courseTitle {
+                            detailRow(label: NSLocalizedString("Course", value: "Course", comment: "Session course label"),
+                                      value: courseTitle)
+                        }
+                        if let locationText {
+                            detailRow(label: NSLocalizedString("Location", value: "Location", comment: "Session location label"),
+                                      value: locationText)
+                        }
+                        if let notesText {
+                            detailRow(label: NSLocalizedString("Notes", value: "Notes", comment: "Session notes label"),
+                                      value: notesText)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Button {
+                        dismiss()
+                        onEdit()
+                    } label: {
+                        Text(NSLocalizedString("Edit", value: "Edit", comment: "Edit session"))
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+
+                    Spacer()
+                }
+                .padding()
+                .navigationTitle(NSLocalizedString("Session", value: "Session", comment: "Session detail title"))
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(NSLocalizedString("common.done", comment: "Done")) {
+                            dismiss()
+                        }
+                    }
+                }
+            }
+        }
+
+        private func detailRow(label: String, value: String) -> some View {
+            HStack(alignment: .firstTextBaseline) {
+                Text(label)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Text(value)
+                    .font(.caption)
+                    .multilineTextAlignment(.trailing)
+            }
+        }
     }
 
     private struct RemainingWorkSnapshot {

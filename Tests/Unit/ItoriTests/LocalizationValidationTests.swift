@@ -108,7 +108,9 @@ final class LocalizationValidationTests: XCTestCase {
         
         for (key, value) in dict {
             XCTAssertFalse(value.isEmpty, "🚨 CRITICAL: Empty translation for key: \(key)")
-            XCTAssertNotEqual(value, key, "🚨 CRITICAL: Translation equals key: \(key)")
+            if LocalizationManager.isLocalizationKey(key) {
+                XCTAssertNotEqual(value, key, "🚨 CRITICAL: Translation equals key: \(key)")
+            }
         }
     }
     

@@ -98,21 +98,6 @@ struct ItoriCommands: Commands {
             }
             .keyboardShortcut(AppShortcut.grades.keyEquivalent, modifiers: AppShortcut.grades.modifiers)
             
-            Button(AppShortcut.timer.title) {
-                NotificationCenter.default.post(name: .switchToTab, object: RootTab.timer)
-            }
-            .keyboardShortcut(AppShortcut.timer.keyEquivalent, modifiers: AppShortcut.timer.modifiers)
-            
-            Button(AppShortcut.flashcards.title) {
-                NotificationCenter.default.post(name: .switchToTab, object: RootTab.flashcards)
-            }
-            .keyboardShortcut(AppShortcut.flashcards.keyEquivalent, modifiers: AppShortcut.flashcards.modifiers)
-            
-            Button(AppShortcut.practice.title) {
-                NotificationCenter.default.post(name: .switchToTab, object: RootTab.practice)
-            }
-            .keyboardShortcut(AppShortcut.practice.keyEquivalent, modifiers: AppShortcut.practice.modifiers)
-            
             Divider()
             
             Button(AppShortcut.focusSearch.title) {

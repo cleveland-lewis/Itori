@@ -10,30 +10,41 @@ struct WatchRootView: View {
     @StateObject private var syncManager = WatchSyncManager.shared
     
     var body: some View {
-        TabView {
-            // Timer Tab
-            NavigationStack {
-                WatchTimerView()
+        NavigationStack {
+            List {
+                NavigationLink {
+                    WatchTimerView()
+                } label: {
+                    Label(NSLocalizedString("Timer", value: "Timer", comment: ""), systemImage: "timer")
+                }
+                .listRowBackground(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                )
+                
+                NavigationLink {
+                    WatchTasksView()
+                } label: {
+                    Label(NSLocalizedString("Planner", value: "Planner", comment: ""), systemImage: "calendar")
+                }
+                .listRowBackground(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                )
+                
+                NavigationLink {
+                    WatchSettingsView()
+                } label: {
+                    Label(NSLocalizedString("Settings", value: "Settings", comment: ""), systemImage: "gear")
+                }
+                .listRowBackground(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                )
             }
-            .tabItem {
-                Label(NSLocalizedString("Timer", value: "Timer", comment: ""), systemImage: "timer")
-            }
-            
-            // Tasks Tab
-            NavigationStack {
-                WatchTasksView()
-            }
-            .tabItem {
-                Label(NSLocalizedString("Tasks", value: "Tasks", comment: ""), systemImage: "checkmark.circle")
-            }
-            
-            // Settings Tab
-            NavigationStack {
-                WatchSettingsView()
-            }
-            .tabItem {
-                Label(NSLocalizedString("Settings", value: "Settings", comment: ""), systemImage: "gear")
-            }
+            .navigationTitle("Itori")
+            .scrollContentBackground(.hidden)
+            .background(.ultraThinMaterial)
         }
         .environmentObject(syncManager)
     }

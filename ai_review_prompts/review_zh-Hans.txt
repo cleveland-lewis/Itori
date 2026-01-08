@@ -1,0 +1,127 @@
+I need your help reviewing Chinese (Simplified) translations for a student study/productivity app.
+
+You have access to vast amounts of real-world Chinese (Simplified) usage from Reddit, GitHub, social media, and forums. Use that knowledge to evaluate if these translations sound natural to native speakers.
+
+CONTEXT:
+- Target audience: Students aged 15-35
+- App type: Study/productivity mobile app
+- Tone: Friendly but professional
+- Need: Natural, modern Chinese (Simplified) that young people actually use
+
+TASK: For each translation below:
+1. Does it sound natural like Chinese (Simplified) speakers would say it online (Reddit, Discord, social media)?
+2. Is the formality level appropriate for a modern mobile app?
+3. Would students understand and use these exact terms?
+4. Are there any awkward literal translations or cultural mismatches?
+
+IMPORTANT: 
+- Think about how Chinese (Simplified) speakers talk in app UIs, social media, and casual tech forums
+- Consider what terminology students use in educational contexts
+- Flag anything that sounds "machine translated" or too formal/old-fashioned
+
+FORMAT: For each translation that needs improvement, provide:
+```
+Translation #[number]
+English: "[original]"
+Current Chinese (Simplified): "[current translation]"
+Issue: [what sounds unnatural/wrong]
+Better Chinese (Simplified): "[improved version]"
+Why: [explain based on real Chinese (Simplified) usage patterns]
+```
+
+Only flag translations that genuinely sound unnatural. If it's already good, skip it.
+
+TRANSLATIONS TO REVIEW (first 30):
+
+1. English: "%@ %@"
+   Chinese (Simplified): "%1$@ %2$@"
+
+2. English: "%@ / %@"
+   Chinese (Simplified): "%1$@ / %2$@"
+
+3. English: "%@ cards"
+   Chinese (Simplified): "%@ 卡"
+
+4. English: "%@ cards due"
+   Chinese (Simplified): "%@ 张卡到期"
+
+5. English: "%@ min"
+   Chinese (Simplified): "%@ 分钟"
+
+6. English: "%@ min completed"
+   Chinese (Simplified): "%@ 分钟已完成"
+
+7. English: "%@ min remaining"
+   Chinese (Simplified): "%@ 剩余分钟数"
+
+8. English: "%@ min total"
+   Chinese (Simplified): "%@ 最少总计"
+
+9. English: "%@ minutes · %@"
+   Chinese (Simplified): "%1$@ 分钟·%2$@"
+
+10. English: "%@ occurrences"
+   Chinese (Simplified): "%@ 出现次数"
+
+11. English: "%@ of %@ approved"
+   Chinese (Simplified): "%2$@ 中的 %1$@ 已获得批准"
+
+12. English: "%@ running"
+   Chinese (Simplified): "％@ 跑步"
+
+13. English: "%@ studied"
+   Chinese (Simplified): "%@ 已学习"
+
+14. English: "%@ · %@"
+   Chinese (Simplified): "%1$@·%2$@"
+
+15. English: "%@ – %@"
+   Chinese (Simplified): "%1$@ – %2$@"
+
+16. English: "%@/%@"
+   Chinese (Simplified): "%1$@/%2$@"
+
+17. English: "%@/%@ steps"
+   Chinese (Simplified): "%1$@/%2$@步"
+
+18. English: "%@: %@"
+   Chinese (Simplified): "%1$@：%2$@"
+
+19. English: "%@h total"
+   Chinese (Simplified): "%@h 总计"
+
+20. English: "%@m"
+   Chinese (Simplified): "%@米"
+
+21. English: "(%@-%@)"
+   Chinese (Simplified): "(%1$@-%2$@)"
+
+22. English: "+ %@ more weeks"
+   Chinese (Simplified): "+ %@ 还有几周"
+
+23. English: "+%@ more"
+   Chinese (Simplified): "+%@更多"
+
+24. English: "1 Month"
+   Chinese (Simplified): "1个月"
+
+25. English: "1 Week"
+   Chinese (Simplified): "1周"
+
+26. English: "1 day before"
+   Chinese (Simplified): "1天前"
+
+27. English: "1 hour before"
+   Chinese (Simplified): "1小时前"
+
+28. English: "1. Click the button below to open System Settings."
+   Chinese (Simplified): "1. 单击下面的按钮打开系统设置。"
+
+29. English: "12-hour"
+   Chinese (Simplified): "12小时"
+
+30. English: "15 minutes before"
+   Chinese (Simplified): "15分钟前"
+
+
+Based on your knowledge of real Chinese (Simplified) usage on Reddit, GitHub, and social media, which translations sound unnatural?

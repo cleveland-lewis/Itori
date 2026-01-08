@@ -519,8 +519,8 @@ struct AIScheduler {
 
                     // Composite score
                     // deterministic weights
-                    let alpha = 1.0 // task priority weight
-                    let beta = 0.5  // energy weight
+                    let alpha = 0.8 // task priority weight
+                    let beta = 0.9  // energy weight
                     let gamma = 0.5 // lateness penalty weight (lower is better)
 
                     let score = alpha * taskPriority + beta * energy - gamma * latenessPenalty

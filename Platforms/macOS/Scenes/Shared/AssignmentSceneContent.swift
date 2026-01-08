@@ -25,11 +25,6 @@ struct AssignmentSceneContent: View {
                         let wasCompleted = updated.isCompleted
                         updated.isCompleted.toggle()
                         assignmentsStore.updateTask(updated)
-                        
-                        // Play completion sound if task was just completed
-                        if !wasCompleted && updated.isCompleted {
-                            AudioFeedbackService.shared.playTimerEnd()
-                        }
                     },
                     onDelete: {
                         assignmentsStore.removeTask(id: task.id)

@@ -30,6 +30,13 @@ public struct ActiveTimerSummary: Codable {
     public let mode: TimerMode
     public let durationSeconds: Int?
     public let startedAtISO: String
+    
+    public init(id: UUID, mode: TimerMode, durationSeconds: Int?, startedAtISO: String) {
+        self.id = id
+        self.mode = mode
+        self.durationSeconds = durationSeconds
+        self.startedAtISO = startedAtISO
+    }
 }
 
 public struct TaskSummary: Codable, Identifiable {
@@ -37,6 +44,13 @@ public struct TaskSummary: Codable, Identifiable {
     public let title: String
     public let dueISO: String?
     public let isComplete: Bool
+    
+    public init(id: UUID, title: String, dueISO: String?, isComplete: Bool) {
+        self.id = id
+        self.title = title
+        self.dueISO = dueISO
+        self.isComplete = isComplete
+    }
 }
 
 public struct WatchSnapshot: Codable {
@@ -44,6 +58,13 @@ public struct WatchSnapshot: Codable {
     public var todaysTasks: [TaskSummary]
     public var energyToday: EnergyLevel?
     public var lastSyncISO: String
+    
+    public init(activeTimer: ActiveTimerSummary? = nil, todaysTasks: [TaskSummary] = [], energyToday: EnergyLevel? = nil, lastSyncISO: String? = nil) {
+        self.activeTimer = activeTimer
+        self.todaysTasks = todaysTasks
+        self.energyToday = energyToday
+        self.lastSyncISO = lastSyncISO ?? ISO8601DateFormatter().string(from: Date())
+    }
 }
 
 public enum WatchCommand: Codable {

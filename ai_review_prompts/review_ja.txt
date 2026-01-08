@@ -1,0 +1,127 @@
+I need your help reviewing Japanese translations for a student study/productivity app.
+
+You have access to vast amounts of real-world Japanese usage from Reddit, GitHub, social media, and forums. Use that knowledge to evaluate if these translations sound natural to native speakers.
+
+CONTEXT:
+- Target audience: Students aged 15-35
+- App type: Study/productivity mobile app
+- Tone: Friendly but professional
+- Need: Natural, modern Japanese that young people actually use
+
+TASK: For each translation below:
+1. Does it sound natural like Japanese speakers would say it online (Reddit, Discord, social media)?
+2. Is the formality level appropriate for a modern mobile app?
+3. Would students understand and use these exact terms?
+4. Are there any awkward literal translations or cultural mismatches?
+
+IMPORTANT: 
+- Think about how Japanese speakers talk in app UIs, social media, and casual tech forums
+- Consider what terminology students use in educational contexts
+- Flag anything that sounds "machine translated" or too formal/old-fashioned
+
+FORMAT: For each translation that needs improvement, provide:
+```
+Translation #[number]
+English: "[original]"
+Current Japanese: "[current translation]"
+Issue: [what sounds unnatural/wrong]
+Better Japanese: "[improved version]"
+Why: [explain based on real Japanese usage patterns]
+```
+
+Only flag translations that genuinely sound unnatural. If it's already good, skip it.
+
+TRANSLATIONS TO REVIEW (first 30):
+
+1. English: "%@ %@"
+   Japanese: "%1$@ %2$@"
+
+2. English: "%@ / %@"
+   Japanese: "%1$@ / %2$@"
+
+3. English: "%@ cards"
+   Japanese: "%@ カード"
+
+4. English: "%@ cards due"
+   Japanese: "%@ カードの期限"
+
+5. English: "%@ min"
+   Japanese: "%@分"
+
+6. English: "%@ min completed"
+   Japanese: "%@ 分完了"
+
+7. English: "%@ min remaining"
+   Japanese: "残り %@ 分"
+
+8. English: "%@ min total"
+   Japanese: "%@ 分合計"
+
+9. English: "%@ minutes · %@"
+   Japanese: "%1$@ 分 · %2$@"
+
+10. English: "%@ occurrences"
+   Japanese: "%@ の出現回数"
+
+11. English: "%@ of %@ approved"
+   Japanese: "%1$@/%2$@ が承認されました"
+
+12. English: "%@ running"
+   Japanese: "%@ 実行中"
+
+13. English: "%@ studied"
+   Japanese: "%@ 勉強しました"
+
+14. English: "%@ · %@"
+   Japanese: "%1$@ · %2$@"
+
+15. English: "%@ – %@"
+   Japanese: "%1$@ – %2$@"
+
+16. English: "%@/%@"
+   Japanese: "%1$@/%2$@"
+
+17. English: "%@/%@ steps"
+   Japanese: "%1$@/%2$@ ステップ"
+
+18. English: "%@: %@"
+   Japanese: "%1$@: %2$@"
+
+19. English: "%@h total"
+   Japanese: "合計 %@h"
+
+20. English: "(%@-%@)"
+   Japanese: "(%1$@-%2$@)"
+
+21. English: "+ %@ more weeks"
+   Japanese: "+ %@ あと数週間"
+
+22. English: "+%@ more"
+   Japanese: "+%@ 詳細"
+
+23. English: "1 Month"
+   Japanese: "1ヶ月"
+
+24. English: "1 Week"
+   Japanese: "1週間"
+
+25. English: "1 day before"
+   Japanese: "1日前"
+
+26. English: "1 hour before"
+   Japanese: "1時間前"
+
+27. English: "1. Click the button below to open System Settings."
+   Japanese: "1. 下のボタンをクリックしてシステム設定を開きます。"
+
+28. English: "12-hour"
+   Japanese: "12時間"
+
+29. English: "15 minutes before"
+   Japanese: "15分前"
+
+30. English: "2 Months"
+   Japanese: "2ヶ月"
+
+
+Based on your knowledge of real Japanese usage on Reddit, GitHub, and social media, which translations sound unnatural?

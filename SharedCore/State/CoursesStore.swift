@@ -47,16 +47,17 @@ final class CoursesStore: ObservableObject {
     // Publishes course deleted events
     fileprivate let courseDeleted = PassthroughSubject<UUID, Never>()
 
-    @Published private(set) var semesters: [Semester] = []
-    @Published private(set) var courses: [Course] = []
-    @Published private(set) var outlineNodes: [CourseOutlineNode] = []
-    @Published private(set) var courseFiles: [CourseFile] = []
-    @Published private(set) var currentGPA: Double = 0
+    @Published var semesters: [Semester] = []
+    @Published var courses: [Course] = []
+    @Published var outlineNodes: [CourseOutlineNode] = []
+    @Published var courseFiles: [CourseFile] = []
+    @Published var currentGPA: Double = 0
 
     // MARK: - Active Semesters (Multi-semester support)
     
     @Published var activeSemesterIds: Set<UUID> = [] {
         didSet {
+            guard !TestMode.isRunningTests else { return }
             persist()
         }
     }
@@ -64,6 +65,7 @@ final class CoursesStore: ObservableObject {
     // Legacy support: currentSemesterId for backward compatibility
     @Published var currentSemesterId: UUID? {
         didSet {
+            guard !TestMode.isRunningTests else { return }
             // Migrate: if currentSemesterId is set, ensure it's in activeSemesterIds
             if let id = currentSemesterId, !activeSemesterIds.contains(id) {
                 activeSemesterIds = [id]
@@ -103,15 +105,17 @@ final class CoursesStore: ObservableObject {
             self.storageURL = storageURL
             // ensure containing directory exists
             try? fm.createDirectory(at: storageURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+            // Use temp directory for cache when custom storage URL is provided (e.g., during tests)
+            self.cacheURL = storageURL.deletingLastPathComponent().appendingPathComponent("courses_cache.json")
         } else {
             let dir = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
             let folder = dir.appendingPathComponent("RootsCourses", isDirectory: true)
             try? fm.createDirectory(at: folder, withIntermediateDirectories: true)
             self.storageURL = folder.appendingPathComponent("courses.json")
+            let cacheFolder = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("RootsCourses", isDirectory: true)
+            try? FileManager.default.createDirectory(at: cacheFolder, withIntermediateDirectories: true)
+            self.cacheURL = cacheFolder.appendingPathComponent("courses_cache.json")
         }
-        let cacheFolder = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("RootsCourses", isDirectory: true)
-        try? FileManager.default.createDirectory(at: cacheFolder, withIntermediateDirectories: true)
-        self.cacheURL = cacheFolder.appendingPathComponent("courses_cache.json")
 
         // OPTIMIZATION: Setup only - defer actual data loading
         // Skip slow initialization during tests
@@ -127,6 +131,15 @@ final class CoursesStore: ObservableObject {
         // OPTIMIZATION: Load data asynchronously after initialization
         Task { @MainActor in
             await loadDataAsync()
+        }
+    }
+    
+    deinit {
+        // Clean up observers
+        iCloudMonitor?.invalidate()
+        pathMonitor?.cancel()
+        if let observer = iCloudToggleObserver {
+            NotificationCenter.default.removeObserver(observer)
         }
     }
     
@@ -577,6 +590,7 @@ final class CoursesStore: ObservableObject {
 
     private func persist() {
         guard !isLoadingFromDisk else { return }
+        guard !TestMode.isRunningTests else { return }
         
         let snapshot = CoursesPersistedData(
             semesters: semesters,
@@ -592,8 +606,8 @@ final class CoursesStore: ObservableObject {
             try data.write(to: cacheURL, options: [Data.WritingOptions.atomic, Data.WritingOptions.completeFileProtection])
             LOG_PERSISTENCE(.debug, "CoursesSave", "Persisted courses data", metadata: ["semesters": "\(semesters.count)", "courses": "\(courses.count)", "activeSemesters": "\(activeSemesterIds.count)", "size": "\(data.count)"])
             
-            // Queue for iCloud sync if online and enabled
-            if isOnline && isSyncEnabled {
+            // Queue for iCloud sync if online and enabled (skip in tests)
+            if isOnline && isSyncEnabled && !TestMode.isRunningTests {
                 saveToiCloud()
             }
         } catch {
@@ -605,6 +619,7 @@ final class CoursesStore: ObservableObject {
 
     @MainActor
     func recalcGPA(tasks: [AppTask]) {
+        guard !TestMode.isRunningTests else { return }
         let gradedCourses = courses.filter { !$0.isArchived }
         currentGPA = GradeCalculator.calculateGPA(courses: gradedCourses, tasks: tasks)
     }

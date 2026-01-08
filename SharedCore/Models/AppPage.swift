@@ -15,15 +15,15 @@ enum AppPage: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .dashboard:  return "Dashboard"
-        case .calendar:   return "Calendar"
-        case .planner:    return "Planner"
-        case .assignments:return "Assignments"
-        case .courses:    return "Courses"
-        case .grades:     return "Grades"
-        case .timer:      return "Timer"
-        case .flashcards: return "Flashcards"
-        case .practice:   return "Practice"
+        case .dashboard:  return NSLocalizedString("tab.dashboard", value: "Dashboard", comment: "Page title")
+        case .calendar:   return NSLocalizedString("tab.calendar", value: "Calendar", comment: "Page title")
+        case .planner:    return NSLocalizedString("tab.planner", value: "Planner", comment: "Page title")
+        case .assignments:return NSLocalizedString("tab.assignments", value: "Assignments", comment: "Page title")
+        case .courses:    return NSLocalizedString("tab.courses", value: "Courses", comment: "Page title")
+        case .grades:     return NSLocalizedString("tab.grades", value: "Grades", comment: "Page title")
+        case .timer:      return NSLocalizedString("tab.timer", value: "Timer", comment: "Page title")
+        case .flashcards: return NSLocalizedString("tab.flashcards", value: "Flashcards", comment: "Page title")
+        case .practice:   return NSLocalizedString("tab.practice", value: "Practice", comment: "Page title")
         }
     }
 

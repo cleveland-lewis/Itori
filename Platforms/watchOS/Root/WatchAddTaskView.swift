@@ -20,7 +20,7 @@ struct WatchAddTaskView: View {
     }
     
     var body: some View {
-        Form {
+        List {
             Section("Task") {
                 TextField("Title", text: $title)
                     .autocorrectionDisabled()
@@ -48,8 +48,17 @@ struct WatchAddTaskView: View {
                 .disabled(!canSave)
             }
         }
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background(.ultraThinMaterial)
+        .listRowBackground(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(.ultraThinMaterial)
+        )
         .navigationTitle("New Task")
         .navigationBarTitleDisplayMode(.inline)
+        .scrollContentBackground(.hidden)
+        .background(.ultraThinMaterial)
     }
     
     private func saveTask() {

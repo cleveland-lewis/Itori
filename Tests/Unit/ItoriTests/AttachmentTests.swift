@@ -73,12 +73,13 @@ final class AttachmentTests: BaseTestCase {
     func testAttachmentEquatable() {
         let id = UUID()
         let url = URL(fileURLWithPath: "/test/file.pdf")
+        let date = Date()
         
         let attachment1 = Attachment(
             id: id,
             name: "Test",
             localURL: url,
-            dateAdded: Date(),
+            dateAdded: date,
             tag: .lecture,
             moduleNumber: 1
         )
@@ -87,7 +88,7 @@ final class AttachmentTests: BaseTestCase {
             id: id,
             name: "Test",
             localURL: url,
-            dateAdded: Date(),
+            dateAdded: date,
             tag: .lecture,
             moduleNumber: 1
         )

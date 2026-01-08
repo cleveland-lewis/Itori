@@ -16,17 +16,8 @@ struct IOSRootView: View {
     @Environment(\.colorScheme) private var colorScheme
     
     @State private var selectedTab: RootTab = .dashboard
-    @State private var selectedTabOrMore: TabSelection = .tab(.dashboard)
     @State private var columnVisibility: NavigationSplitViewVisibility = .automatic
-    @State private var showMoreMenu = false
-    @State private var moreMenuSelected = false
-    @State private var selectedMorePage: AppPage? = nil
     @State private var showingCoursesSyncConflict = false
-    
-    private enum TabSelection: Hashable {
-        case tab(RootTab)
-        case more
-    }
     
     init() {
         _tabBarPrefs = StateObject(wrappedValue: TabBarPreferencesStore(settings: AppSettingsModel.shared))
@@ -44,10 +35,7 @@ struct IOSRootView: View {
     }
 
     private var starredTabs: [RootTab] {
-        var tabs = settings.starredTabs
-        
-        // Remove Practice tab from iOS (not supported on mobile)
-        tabs.removeAll { $0 == .practice }
+        var tabs = settings.starredTabs.filter { TabRegistry.definition(for: $0) != nil }
         
         // Ensure at least Dashboard is present
         if tabs.isEmpty {
@@ -123,6 +111,15 @@ struct IOSRootView: View {
             .onReceive(NotificationCenter.default.publisher(for: .coursesSyncConflict)) { _ in
                 showingCoursesSyncConflict = true
             }
+            .onReceive(NotificationCenter.default.publisher(for: .iosOpenPage)) { notification in
+                guard let tab = notification.object as? RootTab else { return }
+                if starredTabs.contains(tab) {
+                    selectedTab = tab
+                    navigation.path = NavigationPath()
+                } else {
+                    navigation.open(page: AppPage.from(tab), starredTabs: starredTabs)
+                }
+            }
     }
     
     private var bodyContent: some View {
@@ -149,27 +146,18 @@ struct IOSRootView: View {
     
     private var standardNavigationView: some View {
         NavigationStack(path: $navigation.path) {
-            TabView(selection: $selectedTabOrMore) {
+            TabView(selection: $selectedTab) {
                 ForEach(starredTabs, id: \.self) { tab in
                     IOSAppShell(title: tab.title) {
                         tabView(for: tab)
                     }
-                    .tag(TabSelection.tab(tab))
+                    .tag(tab)
                     .tabItem {
                         if let def = TabRegistry.definition(for: tab) {
                             Label(def.title, systemImage: def.icon)
                         }
                     }
                 }
-                
-                // More menu tab (rightmost position)
-                IOSAppShell(title: moreTabTitle) {
-                    moreTabContent
-                }
-                    .tag(TabSelection.more)
-                    .tabItem {
-                        Label(NSLocalizedString("iosroot.label.more", value: "More", comment: "More"), systemImage: "ellipsis.circle")
-                    }
             }
             .toolbarBackground(.hidden, for: .tabBar)
             .toolbar(.visible, for: .tabBar)
@@ -182,47 +170,8 @@ struct IOSRootView: View {
                 }
             }
         }
-        .toolbarBackground(.automatic, for: .navigationBar)
-        .sheet(isPresented: $showMoreMenu) {
-            moreMenuSheet
-        }
-        .onChange(of: selectedTabOrMore) { oldValue, newValue in
-            if case .more = newValue {
-                // If tapping More while already in More tab, show the menu
-                if case .more = oldValue {
-                    showMoreMenu = true
-                } else if selectedMorePage == nil {
-                    // First time selecting More tab with no page selected
-                    showMoreMenu = false
-                } else {
-                    // Switching to More tab while a page is already selected
-                    showMoreMenu = false
-                }
-            } else if case .tab(let tab) = newValue {
-                selectedTab = tab
-                // Clear selected more page when switching away from More tab
-                if case .more = oldValue {
-                    selectedMorePage = nil
-                }
-            }
-        }
-        .onChange(of: settings.enableFlashcards) { _, enabled in
-            guard !enabled else { return }
-            
-            // If currently on flashcards tab, switch to dashboard
-            if selectedTab == .flashcards {
-                selectedTab = .dashboard
-                selectedTabOrMore = .tab(.dashboard)
-            }
-            
-            // If flashcards page is selected in More tab, clear it
-            if selectedMorePage == .flashcards {
-                selectedMorePage = nil
-            }
-            
-            // Clear navigation path to remove any flashcards page from stack
-            navigation.path = NavigationPath()
-        }
+        .toolbar(.hidden, for: .navigationBar)
+        .toolbarBackground(.hidden, for: .navigationBar)
     }
     
     @ViewBuilder
@@ -309,6 +258,10 @@ struct IOSRootView: View {
         }
     }
 
+    private func openMorePage(_ tab: RootTab) {
+        navigation.open(page: AppPage.from(tab), starredTabs: starredTabs)
+    }
+
     private func gradeCourseSummaries() -> [GradeCourseSummary] {
         coursesStore.activeCourses.map { course in
             GradeCourseSummary(id: course.id, title: course.code.isEmpty ? course.title : course.code)
@@ -332,10 +285,6 @@ struct IOSRootView: View {
             IOSGradesView()
         case .timer:
             IOSTimerPageView()
-        case .flashcards:
-            IOSFlashcardsView()
-        case .practice:
-            IOSPlaceholderView(title: "Practice Tests", subtitle: "Practice tests are only available on macOS.")
         default:
             IOSPlaceholderView(title: tab.title, subtitle: "This page is not available on iOS yet.")
         }
@@ -358,10 +307,6 @@ struct IOSRootView: View {
             IOSGradesView()
         case .timer:
             IOSTimerPageView()
-        case .flashcards:
-            IOSFlashcardsView()
-        case .practice:
-            IOSPlaceholderView(title: "Practice Tests", subtitle: "Practice tests are only available on macOS.")
         default:
             IOSPlaceholderView(title: page.title, subtitle: "This view is coming soon.")
         }
@@ -371,72 +316,6 @@ struct IOSRootView: View {
         switch destination {
         case .page(let page):
             return page.title
-        }
-    }
-    
-    // MARK: - More Menu
-    
-    private var moreMenuSheet: some View {
-        NavigationStack {
-            List {
-                ForEach(nonStarredTabs, id: \.self) { tab in
-                    Button {
-                        selectedMorePage = AppPage.from(tab)
-                        showMoreMenu = false
-                    } label: {
-                        HStack {
-                            if let def = TabRegistry.definition(for: tab) {
-                                Label {
-                                    Text(def.title)
-                                        .foregroundColor(.primary)
-                                } icon: {
-                                    Image(systemName: def.icon)
-                                        .foregroundColor(.accentColor)
-                                        .frame(width: 28, height: 28)
-                                }
-                            }
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                }
-            }
-            .listStyle(.insetGrouped)
-            .navigationTitle("More Pages")
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(NSLocalizedString("iosroot.button.done", value: "Done", comment: "Done")) {
-                        showMoreMenu = false
-                    }
-                }
-            }
-        }
-    }
-
-    private var moreTabTitle: String {
-        selectedMorePage?.title ?? NSLocalizedString("iosroot.label.more", value: "More", comment: "More")
-    }
-
-    @ViewBuilder
-    private var moreTabContent: some View {
-        if let page = selectedMorePage {
-            pageView(for: page)
-        } else {
-            List {
-                ForEach(nonStarredTabs, id: \.self) { tab in
-                    Button {
-                        selectedMorePage = AppPage.from(tab)
-                    } label: {
-                        if let def = TabRegistry.definition(for: tab) {
-                            Label(def.title, systemImage: def.icon)
-                        }
-                    }
-                }
-            }
-            .listStyle(.insetGrouped)
         }
     }
     

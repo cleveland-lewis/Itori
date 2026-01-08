@@ -500,11 +500,6 @@ struct IOSAssignmentsView: View {
         var updated = task
         updated.isCompleted.toggle()
         assignmentsStore.updateTask(updated)
-        
-        // Play completion sound if task was just completed
-        if updated.isCompleted {
-            AudioFeedbackService.shared.playTimerEnd()
-        }
     }
 
     private func openPlanner(for task: AppTask) {

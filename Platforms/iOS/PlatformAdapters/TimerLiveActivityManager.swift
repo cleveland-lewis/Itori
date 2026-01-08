@@ -6,27 +6,8 @@
 #if os(iOS)
 import Foundation
 import Combine
-
 #if canImport(ActivityKit)
 import ActivityKit
-
-@available(iOS 16.1, *)
-struct TimerLiveActivityAttributes: ActivityAttributes {
-    struct ContentState: Codable, Hashable {
-        var mode: String
-        var label: String
-        var remainingSeconds: Int
-        var elapsedSeconds: Int
-        var isRunning: Bool
-        var isOnBreak: Bool
-        var activityName: String?
-        var activityEmoji: String?
-        var pomodoroCurrentCycle: Int?
-        var pomodoroTotalCycles: Int?
-    }
-
-    var activityID: String
-}
 
 final class IOSTimerLiveActivityManager: ObservableObject {
     private var activity: Activity<TimerLiveActivityAttributes>?

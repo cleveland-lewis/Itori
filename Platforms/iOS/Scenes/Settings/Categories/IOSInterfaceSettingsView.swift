@@ -38,8 +38,7 @@ struct IOSInterfaceSettingsView: View {
                     let isStarred = settings.starredTabs.contains(tab)
                     let isRequired = TabRegistry.definition(for: tab)?.isSystemRequired ?? false
                     let canToggleOff = isStarred && !isRequired
-                    let isFlashcardsDisabled = tab == .flashcards && !settings.enableFlashcards
-                    let canToggleOn = !isStarred && settings.starredTabs.count < 5 && !isFlashcardsDisabled
+                    let canToggleOn = !isStarred && settings.starredTabs.count < 5
                     
                     Toggle(isOn: Binding(
                         get: { isStarred },
@@ -61,7 +60,7 @@ struct IOSInterfaceSettingsView: View {
                             }
                         }
                     }
-                    .disabled(isFlashcardsDisabled || (isStarred && isRequired) || (!isStarred && !canToggleOn))
+                    .disabled((isStarred && isRequired) || (!isStarred && !canToggleOn))
                     .listRowInsets(EdgeInsets(
                         top: layoutMetrics.listRowVerticalPadding,
                         leading: 16,

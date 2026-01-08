@@ -87,6 +87,58 @@ struct IOSAppearanceSettingsView: View {
             } header: {
                 Text(NSLocalizedString("settings.appearance.style.header", comment: "Style"))
             }
+
+            Section {
+                Picker(selection: Binding(
+                    get: { settings.accentColorChoice },
+                    set: { newValue in
+                        settings.objectWillChange.send()
+                        settings.accentColorChoice = newValue
+                        settings.save()
+                    }
+                )) {
+                    ForEach(AppAccentColor.allCases) { accent in
+                        HStack(spacing: 10) {
+                            Circle()
+                                .fill(accent.color)
+                                .frame(width: 14, height: 14)
+                            Text(accent.label)
+                        }
+                        .tag(accent)
+                    }
+                } label: {
+                    Text(NSLocalizedString("settings.appearance.accent", value: "Accent Color", comment: "Accent color"))
+                }
+                .pickerStyle(.menu)
+
+                Toggle(isOn: Binding(
+                    get: { settings.isCustomAccentEnabled },
+                    set: { newValue in
+                        settings.objectWillChange.send()
+                        settings.isCustomAccentEnabled = newValue
+                        settings.save()
+                    }
+                )) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(NSLocalizedString("settings.appearance.accent.custom.toggle", value: "Enable custom accent color", comment: "Enable custom accent color"))
+                        Text(NSLocalizedString("settings.appearance.accent.custom.detail", value: "Overrides the built-in palette.", comment: "Custom accent color detail"))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                ColorPicker(
+                    NSLocalizedString("settings.appearance.accent.custom.picker", value: "Custom accent tint", comment: "Custom accent tint"),
+                    selection: Binding(
+                        get: { settings.customAccentColor },
+                        set: { settings.customAccentColor = $0; settings.save() }
+                    )
+                )
+                .disabled(!settings.isCustomAccentEnabled)
+                .foregroundStyle(settings.isCustomAccentEnabled ? .primary : .secondary)
+            } header: {
+                Text(NSLocalizedString("settings.appearance.accent.header", value: "Accent", comment: "Accent section header"))
+            }
         }
         .listStyle(.insetGrouped)
         .navigationTitle(NSLocalizedString("settings.category.appearance", comment: "Appearance"))

@@ -22,11 +22,17 @@ class BaseTestCase: XCTestCase {
     
     /// Test calendar for date manipulation
     var calendar: Calendar!
+
+    private var testEnvironment: TestEnvironment?
     
     // MARK: - Lifecycle
     
     override func setUpWithError() throws {
         try super.setUpWithError()
+
+        let environment = TestEnvironment()
+        environment.start()
+        testEnvironment = environment
         
         // Create isolated test defaults
         let suiteName = "com.itori.test.\(UUID().uuidString)"
@@ -48,6 +54,9 @@ class BaseTestCase: XCTestCase {
         testDefaults = nil
         mockData = nil
         calendar = nil
+
+        testEnvironment?.stop()
+        testEnvironment = nil
         
         try super.tearDownWithError()
     }

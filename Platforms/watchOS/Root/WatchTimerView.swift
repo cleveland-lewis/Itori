@@ -42,6 +42,10 @@ struct WatchTimerView: View {
                         DigitalTimerDisplay(displayTime: displayTime)
                     }
                 }
+                .background(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                )
                 
                 if let timer = syncManager.activeTimer {
                     Text(timer.mode.displayName)
@@ -51,7 +55,7 @@ struct WatchTimerView: View {
                 
                 // Controls
                 if isActive {
-                    // Active Session - Only Stop button
+                    // Active Session - Pause and Stop buttons
                     VStack(spacing: 12) {
                         // Mode is locked during session
                         HStack {
@@ -63,12 +67,26 @@ struct WatchTimerView: View {
                         .foregroundColor(.secondary)
                         .padding(.horizontal)
                         
-                        Button(action: stopTimer) {
-                            Label(NSLocalizedString("Stop", value: "Stop", comment: ""), systemImage: "stop.fill")
+                        HStack(spacing: 12) {
+                            // Pause/Resume button
+                            Button(action: togglePause) {
+                                Label(
+                                    syncManager.isTimerPaused ? NSLocalizedString("Resume", value: "Resume", comment: "") : NSLocalizedString("Pause", value: "Pause", comment: ""),
+                                    systemImage: syncManager.isTimerPaused ? "play.fill" : "pause.fill"
+                                )
                                 .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(syncManager.isTimerPaused ? .green : .orange)
+                            
+                            // Stop button
+                            Button(action: stopTimer) {
+                                Label(NSLocalizedString("Stop", value: "Stop", comment: ""), systemImage: "stop.fill")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.red)
                         }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.red)
                     }
                 } else {
                     // No Active Session - Show mode picker and start
@@ -103,6 +121,8 @@ struct WatchTimerView: View {
         }
         .navigationTitle("Timer")
         .navigationBarTitleDisplayMode(.inline)
+        .scrollContentBackground(.hidden)
+        .background(.ultraThinMaterial)
         .onAppear {
             // Initialize selected mode from settings
             selectedMode = TimerMode(rawValue: defaultTimerMode) ?? .pomodoro
@@ -125,6 +145,14 @@ struct WatchTimerView: View {
     
     private func stopTimer() {
         syncManager.stopTimer()
+    }
+    
+    private func togglePause() {
+        if syncManager.isTimerPaused {
+            syncManager.resumeTimer()
+        } else {
+            syncManager.pauseTimer()
+        }
     }
 }
 

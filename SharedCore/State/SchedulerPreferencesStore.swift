@@ -69,9 +69,9 @@ final class SchedulerPreferencesStore {
     private func energyDelta(for level: String) -> Double {
         switch level.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
         case "high":
-            return 0.2
+            return 0.35
         case "low":
-            return -0.2
+            return -0.35
         default:
             return 0.0
         }

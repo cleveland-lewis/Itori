@@ -48,7 +48,7 @@ struct IOSAppShell<Content: View>: View {
     
     var body: some View {
         let overlayInsets = EdgeInsets(
-            top: safeAreaInsets.top + appLayout.headerHeight,
+            top: safeAreaInsets.top,
             leading: 0,
             bottom: 0,
             trailing: appLayout.overlayTrailingInset + 44 + buttonSpacing + 44
@@ -57,24 +57,52 @@ struct IOSAppShell<Content: View>: View {
         let contentView = ZStack(alignment: .top) {
             // Content extends to top edge
             content
-                .padding(.top, safeAreaInsets.top + 60)
+                .toolbarBackground(.hidden, for: .navigationBar)
             
             // Floating header title with glass effect
             VStack(spacing: 0) {
                 HStack {
-                    Text(title)
-                        .font(.title2.weight(.semibold))
-                        .foregroundColor(.primary)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 10)
-                        .background(
-                            .ultraThinMaterial,
-                            in: RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        )
-                        .shadow(color: .black.opacity(0.06), radius: 8, y: 2)
+                    Menu {
+                        ForEach(TabRegistry.allTabs.map { $0.id }) { tab in
+                            if let def = TabRegistry.definition(for: tab) {
+                                Button {
+                                    NotificationCenter.default.post(name: .iosOpenPage, object: tab)
+                                } label: {
+                                    Label(def.title, systemImage: def.icon)
+                                }
+                            } else {
+                                Button {
+                                    NotificationCenter.default.post(name: .iosOpenPage, object: tab)
+                                } label: {
+                                    Text(tab.title)
+                                }
+                            }
+                        }
+                    } label: {
+                        Group {
+                            if #available(iOS 26.0, *) {
+                                Text(title)
+                                    .font(.title2.weight(.semibold))
+                                    .foregroundColor(.primary)
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 10)
+                                    .glassEffect(.regular)
+                            } else {
+                                Text(title)
+                                    .font(.title2.weight(.semibold))
+                                    .foregroundColor(.primary)
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 10)
+                                    .background(
+                                        .ultraThinMaterial,
+                                        in: RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                    )
+                            }
+                        }
+                    }
                     Spacer()
                 }
-                .padding(.top, safeAreaInsets.top + 8)
+                .padding(.top, safeAreaInsets.top + appLayout.overlayTopInset)
                 .padding(.horizontal, 16)
                 Spacer()
             }
@@ -85,14 +113,13 @@ struct IOSAppShell<Content: View>: View {
                     HStack {
                         Spacer()
                         topRightControls
-                            .padding(.top, safeAreaInsets.top + 8)
+                            .padding(.top, safeAreaInsets.top + appLayout.overlayTopInset)
                             .padding(.trailing, appLayout.overlayTrailingInset)
                     }
                     Spacer()
                 }
             }
         }
-        .ignoresSafeArea(edges: .top)
         .readSafeAreaInsets { safeAreaInsets = $0 }
         .environment(\.overlayInsets, overlayInsets)
         .interfacePreferences(interfacePreferences)
@@ -101,11 +128,9 @@ struct IOSAppShell<Content: View>: View {
                 .environmentObject(settings)
         }
 
-        if PlatformCapabilities.supportsHiddenNavigationBar {
-            contentView.toolbar(.hidden, for: .navigationBar)
-        } else {
-            contentView
-        }
+        contentView
+            .toolbar(.hidden, for: .navigationBar)
+            .toolbarBackground(.hidden, for: .navigationBar)
     }
 
     private var topRightControls: some View {
@@ -159,12 +184,25 @@ struct IOSAppShell<Content: View>: View {
                 }
             }
         } label: {
-            Image(systemName: "plus")
-                .font(.system(size: settings.largeTapTargets ? 20 : 18, weight: .semibold))
-                .foregroundColor(.primary)
-                .frame(width: 44, height: 44)
-                .background(.ultraThinMaterial, in: Circle())
-                .shadow(color: .black.opacity(0.12), radius: 6, y: 3)
+            Group {
+                if #available(iOS 26.0, *) {
+                    Image(systemName: "plus")
+                        .font(.system(size: settings.largeTapTargets ? 18 : 16, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 40, height: 40)
+                        .glassEffect(.regular.tint(settings.activeAccentColor).interactive())
+                } else {
+                    Image(systemName: "plus")
+                        .font(.system(size: settings.largeTapTargets ? 18 : 16, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 40, height: 40)
+                        .background(.ultraThinMaterial, in: Circle())
+                        .overlay(
+                            Circle()
+                                .stroke(settings.activeAccentColor.opacity(0.3), lineWidth: 1)
+                        )
+                }
+            }
         }
         .buttonStyle(NoHighlightButtonStyle())
         .accessibilityLabel(NSLocalizedString("ios.menu.quick_add", comment: "Quick add"))
@@ -176,12 +214,25 @@ struct IOSAppShell<Content: View>: View {
         Button {
             showSettingsSheet = true
         } label: {
-            Image(systemName: "gearshape")
-                .font(.system(size: settings.largeTapTargets ? 20 : 18, weight: .medium))
-                .foregroundColor(.primary)
-                .frame(width: 44, height: 44)
-                .background(.ultraThinMaterial, in: Circle())
-                .shadow(color: .black.opacity(0.12), radius: 6, y: 3)
+            Group {
+                if #available(iOS 26.0, *) {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: settings.largeTapTargets ? 18 : 16, weight: .medium))
+                        .foregroundStyle(.white)
+                        .frame(width: 40, height: 40)
+                        .glassEffect(.regular.tint(settings.activeAccentColor).interactive())
+                } else {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: settings.largeTapTargets ? 18 : 16, weight: .medium))
+                        .foregroundStyle(.white)
+                        .frame(width: 40, height: 40)
+                        .background(.ultraThinMaterial, in: Circle())
+                        .overlay(
+                            Circle()
+                                .stroke(settings.activeAccentColor.opacity(0.3), lineWidth: 1)
+                        )
+                }
+            }
         }
         .buttonStyle(NoHighlightButtonStyle())
         .accessibilityLabel(NSLocalizedString("ios.menu.settings", comment: "Settings"))
