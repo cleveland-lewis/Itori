@@ -5,8 +5,7 @@
 //  Base repository for Core Data operations with consistent error handling
 //
 
-import Foundation
-import CoreData
+internal import CoreData
 
 /// Base protocol for all repositories
 protocol Repository {
@@ -20,21 +19,25 @@ extension Repository {
         let request = Entity.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
         request.fetchLimit = 1
-        
+
         let results = try context.fetch(request)
         return results.first as? Entity
     }
-    
+
     /// Fetch all entities
-    func fetchAll(in context: NSManagedObjectContext, predicate: NSPredicate? = nil, sortDescriptors: [NSSortDescriptor] = []) throws -> [Entity] {
+    func fetchAll(
+        in context: NSManagedObjectContext,
+        predicate: NSPredicate? = nil,
+        sortDescriptors: [NSSortDescriptor] = []
+    ) throws -> [Entity] {
         let request = Entity.fetchRequest()
         request.predicate = predicate
         request.sortDescriptors = sortDescriptors
-        
+
         let results = try context.fetch(request)
         return results as? [Entity] ?? []
     }
-    
+
     /// Delete entity by ID
     func delete(id: UUID, in context: NSManagedObjectContext) throws {
         guard let entity = try fetch(id: id, in: context) else {
@@ -42,11 +45,11 @@ extension Repository {
         }
         context.delete(entity)
     }
-    
+
     /// Save context with error handling
     func save(context: NSManagedObjectContext) throws {
         guard context.hasChanges else { return }
-        
+
         do {
             try context.save()
         } catch {
@@ -61,17 +64,17 @@ enum RepositoryError: LocalizedError {
     case saveFailed(Error)
     case invalidData
     case migrationFailed(Error)
-    
+
     var errorDescription: String? {
         switch self {
         case .entityNotFound:
-            return "Entity not found"
-        case .saveFailed(let error):
-            return "Save failed: \(error.localizedDescription)"
+            "Entity not found"
+        case let .saveFailed(error):
+            "Save failed: \(error.localizedDescription)"
         case .invalidData:
-            return "Invalid data provided"
-        case .migrationFailed(let error):
-            return "Migration failed: \(error.localizedDescription)"
+            "Invalid data provided"
+        case let .migrationFailed(error):
+            "Migration failed: \(error.localizedDescription)"
         }
     }
 }

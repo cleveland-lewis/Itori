@@ -13,7 +13,7 @@ struct GlassPopupContainer<Content: View>: View {
 
     var body: some View {
         let policy = MaterialPolicy(preferences: preferences)
-        
+
         ZStack {
             Color(nsColor: .underPageBackgroundColor)
                 .ignoresSafeArea()

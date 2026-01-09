@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - AppModel Environment Key
 
 private struct AppModelKey: EnvironmentKey {
-    static let defaultValue: AppModel = AppModel.shared
+    static let defaultValue: AppModel = .shared
 }
 
 extension EnvironmentValues {

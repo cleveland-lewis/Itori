@@ -5,14 +5,14 @@ import SwiftUI
 struct NativeAnalogClock: View {
     var diameter: CGFloat = 160
     var showDigitalTime: Bool = true
-    
+
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.colorScheme) private var colorScheme
     @ScaledMetric private var hourNumberSize: CGFloat = 16
     @ScaledMetric private var digitalTimeSize: CGFloat = 36
     private var radius: CGFloat { diameter / 2 }
-    
+
     var body: some View {
         TimelineView(.animation(minimumInterval: reduceMotion ? 1.0 : nil, paused: false)) { context in
             let date = context.date
@@ -48,17 +48,19 @@ struct NativeAnalogClock: View {
             hourNumerals
 
             // Clock hands
-            clockHands(hour: components.hour ?? 0,
-                      minute: components.minute ?? 0,
-                      second: components.second ?? 0,
-                      nanosecond: components.nanosecond ?? 0)
+            clockHands(
+                hour: components.hour ?? 0,
+                minute: components.minute ?? 0,
+                second: components.second ?? 0,
+                nanosecond: components.nanosecond ?? 0
+            )
         }
         .frame(width: diameter, height: diameter)
     }
-    
+
     private var hourMarkers: some View {
         ZStack {
-            ForEach(0..<12) { index in
+            ForEach(0 ..< 12) { index in
                 RoundedRectangle(cornerRadius: 1.5, style: .continuous)
                     .fill(.primary.opacity(0.5))
                     .frame(width: 3, height: radius * 0.12)
@@ -67,14 +69,14 @@ struct NativeAnalogClock: View {
             }
         }
     }
-    
+
     private var hourNumerals: some View {
         ZStack {
             ForEach([12, 3, 6, 9], id: \.self) { hour in
                 let angle = Double(hour) / 12.0 * 360.0 - 90.0
                 let radian = angle * .pi / 180.0
-                let distance = radius * 0.62  // Moved inward from 0.68 for more even spacing
-                
+                let distance = radius * 0.62 // Moved inward from 0.68 for more even spacing
+
                 Text(formatHour(hour))
                     .font(.system(size: hourNumberSize * (diameter / 160), weight: .medium, design: .rounded))
                     .monospacedDigit()
@@ -86,12 +88,12 @@ struct NativeAnalogClock: View {
             }
         }
     }
-    
+
     private func clockHands(hour: Int, minute: Int, second: Int, nanosecond: Int) -> some View {
         let seconds = Double(second) + Double(nanosecond) / 1_000_000_000
         let minutes = Double(minute) + seconds / 60
         let hours = Double(hour % 12) + minutes / 60
-        
+
         return ZStack {
             // Hour hand
             Capsule(style: .continuous)
@@ -100,7 +102,7 @@ struct NativeAnalogClock: View {
                 .offset(y: -radius * 0.275)
                 .rotationEffect(.degrees(hours * 30))
                 .shadow(color: .black.opacity(0.1), radius: 1, y: 1)
-            
+
             // Minute hand
             Capsule(style: .continuous)
                 .fill(.primary.opacity(0.9))
@@ -108,7 +110,7 @@ struct NativeAnalogClock: View {
                 .offset(y: -radius * 0.4)
                 .rotationEffect(.degrees(minutes * 6))
                 .shadow(color: .black.opacity(0.1), radius: 1, y: 1)
-            
+
             // Second hand (with ultra-smooth animation)
             if !reduceMotion {
                 Capsule(style: .continuous)
@@ -117,7 +119,7 @@ struct NativeAnalogClock: View {
                     .offset(y: -radius * 0.425)
                     .rotationEffect(.degrees(seconds * 6))
             }
-            
+
             // Center dot
             Circle()
                 .fill(.primary)
@@ -125,7 +127,7 @@ struct NativeAnalogClock: View {
                 .shadow(color: .black.opacity(0.15), radius: 2)
         }
     }
-    
+
     private func digitalTimeDisplay(for date: Date) -> some View {
         Text(date, style: .time)
             .font(.system(.body, design: .rounded, weight: .medium))
@@ -133,14 +135,14 @@ struct NativeAnalogClock: View {
             .foregroundStyle(.secondary)
             .accessibilityHidden(true)
     }
-    
+
     private func formatHour(_ hour: Int) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .none
         formatter.locale = Locale.current
         return formatter.string(from: NSNumber(value: hour)) ?? "\(hour)"
     }
-    
+
     private func accessibilityTimeLabel(for date: Date) -> String {
         let formatter = DateFormatter()
         formatter.timeStyle = .medium
@@ -154,31 +156,32 @@ struct NativeAnalogClock: View {
 struct DashboardClockCard: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.layoutMetrics) private var metrics
-    
+    @ScaledMetric private var digitalTimeSize: CGFloat = 36
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 Label(NSLocalizedString("ui.label.time", value: "Time", comment: "Time"), systemImage: "clock")
                     .font(.headline)
                     .foregroundStyle(.primary)
-                
+
                 Spacer()
             }
-            
+
             HStack(spacing: 24) {
                 NativeAnalogClock(diameter: 140, showDigitalTime: false)
-                
+
                 VStack(alignment: .leading, spacing: 8) {
                     Text(Date(), style: .time)
-                        .font(.system(size: digitalTimeSize, weight: .medium, design: .rounded))
+                        .font(.system(size: self.digitalTimeSize, weight: .medium, design: .rounded))
                         .minimumScaleFactor(0.5)
                         .monospacedDigit()
                         .foregroundStyle(.primary)
-                    
+
                     Text(Date(), style: .date)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                    
+
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -198,14 +201,14 @@ struct DashboardClockCard: View {
 }
 
 #if !DISABLE_PREVIEWS
-#Preview("Native Analog Clock") {
-    VStack(spacing: 40) {
-        NativeAnalogClock(diameter: 200, showDigitalTime: true)
-        
-        DashboardClockCard()
-            .frame(width: 400)
+    #Preview("Native Analog Clock") {
+        VStack(spacing: 40) {
+            NativeAnalogClock(diameter: 200, showDigitalTime: true)
+
+            DashboardClockCard()
+                .frame(width: 400)
+        }
+        .padding(40)
+        .background(Color(nsColor: .windowBackgroundColor))
     }
-    .padding(40)
-    .background(Color(nsColor: .windowBackgroundColor))
-}
 #endif

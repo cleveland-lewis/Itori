@@ -4,27 +4,27 @@ import Foundation
 
 /// Defines the type of AI task to be performed
 public enum AITaskKind: String, Codable {
-    case intentToAction      // Parse user intent → structured action
-    case summarize          // Summarize text
-    case rewrite            // Rewrite/improve text
-    case studyQuestionGen   // Generate study questions
-    case textCompletion     // General completion
-    case chat               // Conversational
-    
+    case intentToAction // Parse user intent → structured action
+    case summarize // Summarize text
+    case rewrite // Rewrite/improve text
+    case studyQuestionGen // Generate study questions
+    case textCompletion // General completion
+    case chat // Conversational
+
     public var displayName: String {
         switch self {
         case .intentToAction:
-            return "Intent Parsing"
+            "Intent Parsing"
         case .summarize:
-            return "Summarization"
+            "Summarization"
         case .rewrite:
-            return "Text Rewriting"
+            "Text Rewriting"
         case .studyQuestionGen:
-            return "Study Questions"
+            "Study Questions"
         case .textCompletion:
-            return "Text Completion"
+            "Text Completion"
         case .chat:
-            return "Chat"
+            "Chat"
         }
     }
 }
@@ -39,7 +39,7 @@ public struct AICapabilities {
     public let maxContextLength: Int
     public let supportedTasks: Set<AITaskKind>
     public let estimatedLatency: TimeInterval
-    
+
     public init(
         isOffline: Bool,
         supportsTools: Bool,
@@ -67,7 +67,7 @@ public struct AIProviderResult {
     public let tokenCount: Int?
     public let cached: Bool
     public let structuredData: [String: Any]?
-    
+
     public init(
         text: String,
         provider: String,
@@ -91,7 +91,7 @@ public struct AIProviderResult {
 public protocol AIProvider {
     var name: String { get }
     var capabilities: AICapabilities { get }
-    
+
     /// Generate completion for given prompt
     func generate(
         prompt: String,
@@ -99,7 +99,7 @@ public protocol AIProvider {
         schema: [String: Any]?,
         temperature: Double
     ) async throws -> AIProviderResult
-    
+
     /// Check if provider is available/ready
     func isAvailable() async -> Bool
 }
@@ -114,24 +114,24 @@ public enum AIError: Error, LocalizedError {
     case modelNotDownloaded
     case generationFailed(String)
     case invalidSchema
-    case contextTooLong(Int, Int)  // requested, max
-    
+    case contextTooLong(Int, Int) // requested, max
+
     public var errorDescription: String? {
         switch self {
-        case .providerUnavailable(let name):
-            return "Provider '\(name)' is not available"
-        case .providerNotConfigured(let name):
-            return "Provider '\(name)' is not configured"
+        case let .providerUnavailable(name):
+            "Provider '\(name)' is not available"
+        case let .providerNotConfigured(name):
+            "Provider '\(name)' is not configured"
         case .networkRequired:
-            return "This operation requires network access"
+            "This operation requires network access"
         case .modelNotDownloaded:
-            return "Local model is not downloaded"
-        case .generationFailed(let reason):
-            return "Generation failed: \(reason)"
+            "Local model is not downloaded"
+        case let .generationFailed(reason):
+            "Generation failed: \(reason)"
         case .invalidSchema:
-            return "Invalid JSON schema provided"
-        case .contextTooLong(let requested, let max):
-            return "Context length \(requested) exceeds maximum \(max)"
+            "Invalid JSON schema provided"
+        case let .contextTooLong(requested, max):
+            "Context length \(requested) exceeds maximum \(max)"
         }
     }
 }

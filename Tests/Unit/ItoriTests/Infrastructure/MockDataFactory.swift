@@ -12,13 +12,13 @@ import Foundation
 @MainActor
 struct MockDataFactory {
     let calendar: Calendar
-    
+
     init(calendar: Calendar = .current) {
         self.calendar = calendar
     }
-    
+
     // MARK: - Task Creation
-    
+
     func createTask(
         id: UUID = UUID(),
         title: String = "Test Task",
@@ -50,7 +50,7 @@ struct MockDataFactory {
             category: category
         )
     }
-    
+
     func createHomeworkTask() -> AppTask {
         createTask(
             title: "Math Homework",
@@ -58,7 +58,7 @@ struct MockDataFactory {
             type: .homework
         )
     }
-    
+
     func createQuizTask() -> AppTask {
         createTask(
             title: "Physics Quiz Prep",
@@ -66,7 +66,7 @@ struct MockDataFactory {
             type: .quiz
         )
     }
-    
+
     func createExamTask() -> AppTask {
         createTask(
             title: "History Exam Review",
@@ -75,9 +75,9 @@ struct MockDataFactory {
             type: .exam
         )
     }
-    
+
     // MARK: - Course Creation
-    
+
     func createCourse(
         id: UUID = UUID(),
         title: String = "Test Course",
@@ -99,9 +99,9 @@ struct MockDataFactory {
             location: location
         )
     }
-    
+
     // MARK: - Semester Creation
-    
+
     func createSemester(
         id: UUID = UUID(),
         term: SemesterType = .fall,
@@ -111,7 +111,7 @@ struct MockDataFactory {
     ) -> Semester {
         let start = startDate ?? date(year: 2024, month: 9, day: 1)
         let end = endDate ?? date(year: 2024, month: 12, day: 20)
-        
+
         return Semester(
             id: id,
             startDate: start,
@@ -120,9 +120,9 @@ struct MockDataFactory {
             academicYear: academicYear
         )
     }
-    
+
     // MARK: - Timer Session Creation
-    
+
     func createTimerSession(
         id: UUID = UUID(),
         activityID: UUID,
@@ -140,20 +140,20 @@ struct MockDataFactory {
             duration: duration
         )
     }
-    
+
     // MARK: - Calendar Event Creation
-    
+
     func createFixedEvent(
         id: UUID = UUID(),
         title: String = "Meeting",
         startDate: Date? = nil,
         endDate: Date? = nil,
-        isAllDay: Bool = false,
+        isAllDay _: Bool = false,
         source: EventSource = .calendar
     ) -> FixedEvent {
         let start = startDate ?? Date()
         let end = endDate ?? start.addingTimeInterval(3600) // 1 hour
-        
+
         return FixedEvent(
             id: id,
             title: title,
@@ -163,9 +163,9 @@ struct MockDataFactory {
             source: source
         )
     }
-    
+
     // MARK: - Recurrence Rule Creation
-    
+
     func createRecurrenceRule(
         frequency: RecurrenceRule.Frequency = .weekly,
         interval: Int = 1,
@@ -178,9 +178,9 @@ struct MockDataFactory {
             skipPolicy: RecurrenceRule.SkipPolicy()
         )
     }
-    
+
     // MARK: - Practice Test Creation
-    
+
     func createPracticeTest(
         id: UUID = UUID(),
         title: String = "Practice Test",
@@ -196,9 +196,9 @@ struct MockDataFactory {
             difficulty: difficulty
         )
     }
-    
+
     // MARK: - Helper Methods
-    
+
     private func date(year: Int, month: Int, day: Int, hour: Int = 0, minute: Int = 0) -> Date {
         var components = DateComponents()
         components.year = year
@@ -209,10 +209,10 @@ struct MockDataFactory {
         components.timeZone = calendar.timeZone
         return calendar.date(from: components)!
     }
-    
+
     /// Create a batch of tasks for testing bulk operations
     func createTaskBatch(count: Int, courseId: UUID? = nil) -> [AppTask] {
-        (0..<count).map { index in
+        (0 ..< count).map { index in
             createTask(
                 title: "Task \(index + 1)",
                 courseId: courseId,
@@ -220,7 +220,7 @@ struct MockDataFactory {
             )
         }
     }
-    
+
     /// Create a complete course with tasks and a semester
     func createCourseWithTasks(taskCount: Int = 5) -> (course: Course, semester: Semester, tasks: [AppTask]) {
         let semester = createSemester()

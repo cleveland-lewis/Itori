@@ -5,19 +5,19 @@
 //  Drag & drop type definitions and UTIs
 //
 
-import Foundation
-import UniformTypeIdentifiers
 import CoreTransferable
+import Foundation
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// Custom UTIs for Itori entities
 extension UTType {
     /// Assignment drag type: com.itori.assignment
     static let itoriAssignment = UTType(exportedAs: "com.itori.assignment")
-    
-    /// Course drag type: com.itori.course  
+
+    /// Course drag type: com.itori.course
     static let itoriCourse = UTType(exportedAs: "com.itori.course")
-    
+
     /// Planner session drag type: com.itori.session
     static let itoriSession = UTType(exportedAs: "com.itori.session")
 
@@ -32,7 +32,7 @@ nonisolated struct TransferableAssignment: Codable, Sendable {
     let courseId: String?
     let dueDate: Date?
     let estimatedMinutes: Int
-    
+
     init(from task: AppTask) {
         self.id = task.id.uuidString
         self.title = task.title
@@ -40,7 +40,7 @@ nonisolated struct TransferableAssignment: Codable, Sendable {
         self.dueDate = task.due
         self.estimatedMinutes = task.estimatedMinutes
     }
-    
+
     /// Export as plain text for cross-app compatibility
     var plainTextRepresentation: String {
         var text = title
@@ -55,16 +55,16 @@ nonisolated struct TransferableAssignment: Codable, Sendable {
     }
 }
 
-    /// Transferable course representation for drag & drop
+/// Transferable course representation for drag & drop
 nonisolated struct TransferableCourse: Codable, Sendable {
     let id: String
     let title: String
     let code: String
     let semesterId: String?
-    
+
     /// Export as plain text
     var plainTextRepresentation: String {
-        return code.isEmpty ? title : "\(code) - \(title)"
+        code.isEmpty ? title : "\(code) - \(title)"
     }
 }
 

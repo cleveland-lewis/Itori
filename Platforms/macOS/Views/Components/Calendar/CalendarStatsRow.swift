@@ -45,9 +45,14 @@ struct CalendarStatsRow_Previews: PreviewProvider {
                 .padding()
                 .previewLayout(.sizeThatFits)
 
-            CalendarStatsRow(averagePerDay: "3.4", totalThisMonth: "102", busiestDay: "Dec 12", upcomingBreak: "Spring Break Mar 8")
-                .padding()
-                .previewLayout(.sizeThatFits)
+            CalendarStatsRow(
+                averagePerDay: "3.4",
+                totalThisMonth: "102",
+                busiestDay: "Dec 12",
+                upcomingBreak: "Spring Break Mar 8"
+            )
+            .padding()
+            .previewLayout(.sizeThatFits)
         }
     }
 }

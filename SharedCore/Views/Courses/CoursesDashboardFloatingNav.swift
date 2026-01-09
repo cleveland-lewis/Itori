@@ -16,13 +16,13 @@ struct CoursesDashboardFloatingNav: View {
 
         var icon: String {
             switch self {
-            case .dashboard: return "square.grid.2x2"
-            case .calendar: return "calendar"
-            case .assignments: return "doc.text"
-            case .planner: return "slider.horizontal.3"
-            case .courses: return "book.closed"
-            case .grades: return "chart.bar"
-            case .timer: return "timer"
+            case .dashboard: "square.grid.2x2"
+            case .calendar: "calendar"
+            case .assignments: "doc.text"
+            case .planner: "slider.horizontal.3"
+            case .courses: "book.closed"
+            case .grades: "chart.bar"
+            case .timer: "timer"
             }
         }
     }
@@ -36,20 +36,20 @@ struct CoursesDashboardFloatingNav: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
         #if os(macOS)
-        .background {
-            DesignSystem.Colors.sidebarBackground
-        }
-        .clipShape(Capsule())
+            .background {
+                DesignSystem.Colors.sidebarBackground
+            }
+            .clipShape(Capsule())
         #else
-        .background(DesignSystem.Materials.hud)
-        .clipShape(Capsule())
+            .background(DesignSystem.Materials.hud)
+            .clipShape(Capsule())
         #endif
-        .overlay(
-            Capsule()
-                .strokeBorder(Color(nsColor: .separatorColor).opacity(0.3), lineWidth: 1)
-        )
+            .overlay(
+                Capsule()
+                    .strokeBorder(Color(nsColor: .separatorColor).opacity(0.3), lineWidth: 1)
+            )
         #if !os(macOS)
-        .shadow(color: Color.black.opacity(0.1), radius: 20, x: 0, y: 10)
+            .shadow(color: Color.black.opacity(0.1), radius: 20, x: 0, y: 10)
         #endif
     }
 

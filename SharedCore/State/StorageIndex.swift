@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 struct StorageIndexEntry: Identifiable, Hashable {
     let id: UUID
@@ -29,8 +29,8 @@ enum StorageSortOption: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .titleAscending: return "A-Z"
-        case .mostRecent: return "Recent"
+        case .titleAscending: "A-Z"
+        case .mostRecent: "Recent"
         }
     }
 }

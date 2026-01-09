@@ -1,6 +1,3 @@
-import Foundation
-import Combine
-
 @MainActor
 final class StorageAggregateStore: ObservableObject {
     static let shared = StorageAggregateStore()
@@ -15,7 +12,7 @@ final class StorageAggregateStore: ObservableObject {
             self.storageURL = storageURL
         } else {
             let dir = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-            let folder = dir.appendingPathComponent("RootsStorage", isDirectory: true)
+            let folder = dir.appendingPathComponent("ItoriStorage", isDirectory: true)
             try? fm.createDirectory(at: folder, withIntermediateDirectories: true)
             self.storageURL = folder.appendingPathComponent("aggregate_storage.json")
         }

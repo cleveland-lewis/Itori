@@ -1,6 +1,4 @@
 import Foundation
-import Combine
-import Network
 
 struct StoredScheduledSession: Identifiable, Codable, Hashable {
     let id: UUID
@@ -23,25 +21,27 @@ struct StoredScheduledSession: Identifiable, Codable, Hashable {
     let aiConfidence: Double?
     let aiProvenance: String?
 
-    init(id: UUID,
-         assignmentId: UUID?,
-         sessionIndex: Int?,
-         sessionCount: Int?,
-         title: String,
-         dueDate: Date,
-         estimatedMinutes: Int,
-         isLockedToDueDate: Bool,
-         category: AssignmentCategory?,
-         start: Date,
-         end: Date,
-         type: ScheduleBlockType = .task,
-         isLocked: Bool = false,
-         isUserEdited: Bool = false,
-         userEditedAt: Date? = nil,
-         aiInputHash: String? = nil,
-         aiComputedAt: Date? = nil,
-         aiConfidence: Double? = nil,
-         aiProvenance: String? = nil) {
+    init(
+        id: UUID,
+        assignmentId: UUID?,
+        sessionIndex: Int?,
+        sessionCount: Int?,
+        title: String,
+        dueDate: Date,
+        estimatedMinutes: Int,
+        isLockedToDueDate: Bool,
+        category: AssignmentCategory?,
+        start: Date,
+        end: Date,
+        type: ScheduleBlockType = .task,
+        isLocked: Bool = false,
+        isUserEdited: Bool = false,
+        userEditedAt: Date? = nil,
+        aiInputHash: String? = nil,
+        aiComputedAt: Date? = nil,
+        aiConfidence: Double? = nil,
+        aiProvenance: String? = nil
+    ) {
         self.id = id
         self.assignmentId = assignmentId
         self.sessionIndex = sessionIndex
@@ -91,22 +91,22 @@ struct StoredScheduledSession: Identifiable, Codable, Hashable {
         aiConfidence = try container.decodeIfPresent(Double.self, forKey: .aiConfidence)
         aiProvenance = try container.decodeIfPresent(String.self, forKey: .aiProvenance)
     }
-    
+
     // MARK: - UI Helpers
-    
+
     /// System icon name for consistent rendering across platforms
     var iconName: String {
         switch type {
         case .breakTime:
             // Determine if short or long break based on duration
-            return estimatedMinutes >= 15 ? "moon.fill" : "cup.and.saucer.fill"
+            estimatedMinutes >= 15 ? "moon.fill" : "cup.and.saucer.fill"
         case .study, .task:
-            return isUserEdited ? "pencil.and.outline" : "calendar.badge.clock"
+            isUserEdited ? "pencil.and.outline" : "calendar.badge.clock"
         case .event:
-            return "calendar"
+            "calendar"
         }
     }
-    
+
     /// Whether this session is a break
     var isBreak: Bool {
         type == .breakTime
@@ -151,20 +151,20 @@ final class PlannerStore: ObservableObject {
     private var iCloudMonitor: Timer?
     private var pathMonitor: NWPathMonitor?
     private var isOnline: Bool = true
-    
+
     private var isSyncEnabled: Bool {
         AppSettingsModel.shared.enableICloudSync
     }
 
     private init() {
         let fm = FileManager.default
-        
+
         // Setup local storage
         let dir = fm.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let folder = dir.appendingPathComponent("RootsPlanner", isDirectory: true)
+        let folder = dir.appendingPathComponent("ItoriPlanner", isDirectory: true)
         try? fm.createDirectory(at: folder, withIntermediateDirectories: true)
         self.storageURL = folder.appendingPathComponent("planner.json")
-        
+
         // Setup iCloud URLs (opportunistic, no errors if unavailable)
         if let containerURL = fm.url(forUbiquityContainerIdentifier: "iCloud.com.cwlewisiii.Itori") {
             let iCloudFolder = containerURL.appendingPathComponent("Documents/Planner", isDirectory: true)
@@ -175,16 +175,16 @@ final class PlannerStore: ObservableObject {
             self.iCloudURL = nil
             self.iCloudConflictsURL = nil
         }
-        
+
         // Load local data
         load()
         isLoading = false
-        
+
         // Skip slow initialization during tests
         guard !TestMode.isRunningTests else {
             return
         }
-        
+
         // Load: iCloud first if enabled and available, then local
         setupNetworkMonitoring()
         if isSyncEnabled {
@@ -196,7 +196,7 @@ final class PlannerStore: ObservableObject {
     }
 
     func persist(scheduled: [ScheduledSession], overflow: [PlannerSession], metadata: AIScheduleMetadata? = nil) {
-        let preserved = Dictionary(grouping: self.scheduled.filter { $0.isUserEdited }, by: {
+        let preserved = Dictionary(grouping: self.scheduled.filter(\.isUserEdited), by: {
             PlannerSessionKey(assignmentId: $0.assignmentId, title: $0.title)
         })
         let existingByIndex = Dictionary(grouping: self.scheduled, by: {
@@ -250,7 +250,11 @@ final class PlannerStore: ObservableObject {
             }
 
             if let meta = metadata,
-               let existing = existingByIndex[PlannerSessionIndexKey(assignmentId: mapped.assignmentId, sessionIndex: mapped.sessionIndex)]?.first {
+               let existing = existingByIndex[PlannerSessionIndexKey(
+                   assignmentId: mapped.assignmentId,
+                   sessionIndex: mapped.sessionIndex
+               )]?.first
+            {
                 if let editAt = existing.userEditedAt, editAt >= meta.computedAt {
                     return existing
                 }
@@ -326,13 +330,13 @@ final class PlannerStore: ObservableObject {
         save()
         syncCalendar(for: previousSessions)
     }
-    
+
     /// Add session to overflow (for auto-reschedule)
     func addToOverflow(_ session: StoredOverflowSession) {
         overflow.append(session)
         save()
     }
-    
+
     /// Update multiple sessions atomically (for auto-reschedule)
     func updateBulk(_ sessions: [StoredScheduledSession]) {
         let previousSessions = scheduled
@@ -359,11 +363,11 @@ final class PlannerStore: ObservableObject {
     private func save() {
         // ALWAYS save locally first (offline-first principle)
         let payload = Persisted(scheduled: scheduled, overflow: overflow)
-        
+
         do {
             let data = try JSONEncoder().encode(payload)
             try data.write(to: storageURL, options: [.atomic])
-            
+
             // Opportunistically sync to iCloud if enabled (non-blocking)
             if isSyncEnabled {
                 saveToiCloud(data: data)
@@ -374,22 +378,22 @@ final class PlannerStore: ObservableObject {
     }
 
     private func syncCalendar(for sessions: [StoredScheduledSession]) {
-        guard let start = sessions.map({ $0.start }).min(),
-              let end = sessions.map({ $0.end }).max() else { return }
-        Task { await CalendarManager.shared.syncPlannerSessionsToCalendar(in: start...end) }
+        guard let start = sessions.map(\.start).min(),
+              let end = sessions.map(\.end).max() else { return }
+        Task { await CalendarManager.shared.syncPlannerSessionsToCalendar(in: start ... end) }
     }
 
     private func load() {
         // Load from local storage (fallback or primary source)
-        guard FileManager.default.fileExists(atPath: storageURL.path) else { 
+        guard FileManager.default.fileExists(atPath: storageURL.path) else {
             DebugLogger.log("ℹ️ No local planner data found")
-            return 
+            return
         }
-        
+
         do {
             let data = try Data(contentsOf: storageURL)
             let payload = try JSONDecoder().decode(Persisted.self, from: data)
-            
+
             // Only update if we haven't already loaded from iCloud
             if scheduled.isEmpty && overflow.isEmpty {
                 scheduled = payload.scheduled
@@ -400,9 +404,9 @@ final class PlannerStore: ObservableObject {
             DebugLogger.log("❌ Failed to load planner from local: \(error)")
         }
     }
-    
+
     // MARK: - iCloud Sync (Production-Ready, Offline-First)
-    
+
     private func loadFromiCloud() {
         // Only attempt if explicitly enabled by user
         guard isSyncEnabled else { return }
@@ -410,34 +414,34 @@ final class PlannerStore: ObservableObject {
             DebugLogger.log("ℹ️ iCloud restore suppressed after reset")
             return
         }
-        
+
         // Silently fail if iCloud unavailable (offline-first)
         guard let url = iCloudURL else {
             DebugLogger.log("ℹ️ iCloud container not available")
             return
         }
-        
+
         guard FileManager.default.fileExists(atPath: url.path) else {
             DebugLogger.log("ℹ️ No iCloud planner data found, using local cache")
             return
         }
-        
+
         do {
             let data = try Data(contentsOf: url)
             let payload = try JSONDecoder().decode(Persisted.self, from: data)
-            
+
             // Check for conflicts before merging
             if shouldPreserveConflict(cloudScheduled: payload.scheduled, cloudOverflow: payload.overflow) {
                 preserveConflictFile(cloudData: data)
             }
-            
+
             // iCloud is source of truth on launch when enabled
             scheduled = payload.scheduled
             overflow = payload.overflow
-            
+
             // Save to local for offline access
             try data.write(to: storageURL, options: [.atomic])
-            
+
             DebugLogger.log("✅ Loaded \(scheduled.count) scheduled, \(overflow.count) overflow from iCloud")
         } catch {
             // Silent failure - fall back to local
@@ -473,14 +477,14 @@ final class PlannerStore: ObservableObject {
             iCloudMonitor = nil
         }
     }
-    
+
     private func saveToiCloud(data: Data) {
         // Only attempt if explicitly enabled
         guard isSyncEnabled else { return }
-        
+
         // Silently fail if unavailable
         guard let url = iCloudURL else { return }
-        
+
         // Non-blocking background sync
         DispatchQueue.global(qos: .utility).async {
             do {
@@ -492,24 +496,27 @@ final class PlannerStore: ObservableObject {
             }
         }
     }
-    
-    private func shouldPreserveConflict(cloudScheduled: [StoredScheduledSession], cloudOverflow: [StoredOverflowSession]) -> Bool {
+
+    private func shouldPreserveConflict(
+        cloudScheduled: [StoredScheduledSession],
+        cloudOverflow: [StoredOverflowSession]
+    ) -> Bool {
         // Preserve conflict if local has data and cloud differs significantly
         guard !scheduled.isEmpty || !overflow.isEmpty else { return false }
-        
+
         let localCount = scheduled.count + overflow.count
         let cloudCount = cloudScheduled.count + cloudOverflow.count
-        
+
         // Significant difference warrants conflict preservation
         return abs(localCount - cloudCount) > max(5, localCount / 4)
     }
-    
+
     private func preserveConflictFile(cloudData: Data) {
         guard let conflictsFolder = iCloudConflictsURL else { return }
-        
+
         let timestamp = ISO8601DateFormatter().string(from: Date())
         let conflictURL = conflictsFolder.appendingPathComponent("planner_conflict_\(timestamp).json")
-        
+
         do {
             try cloudData.write(to: conflictURL, options: .atomic)
             DebugLogger.log("💾 Preserved conflict file: \(conflictURL.lastPathComponent)")
@@ -522,17 +529,20 @@ final class PlannerStore: ObservableObject {
         var scheduled: [StoredScheduledSession]
         var overflow: [StoredOverflowSession]
     }
-    
+
     // MARK: - Network & iCloud Monitoring
-    
+
     private func setupNetworkMonitoring() {
         pathMonitor = NWPathMonitor()
         pathMonitor?.pathUpdateHandler = { [weak self] path in
             Task { @MainActor [weak self] in
                 self?.isOnline = path.status == .satisfied
-                if path.status == .satisfied, let self = self, self.isSyncEnabled, let _ = self.iCloudURL {
+                if path.status == .satisfied, let self, self.isSyncEnabled, let _ = self.iCloudURL {
                     // Sync on reconnection
-                    if let data = try? JSONEncoder().encode(Persisted(scheduled: self.scheduled, overflow: self.overflow)) {
+                    if let data = try? JSONEncoder().encode(Persisted(
+                        scheduled: self.scheduled,
+                        overflow: self.overflow
+                    )) {
                         self.saveToiCloud(data: data)
                     }
                 }
@@ -540,7 +550,7 @@ final class PlannerStore: ObservableObject {
         }
         pathMonitor?.start(queue: DispatchQueue.global(qos: .background))
     }
-    
+
     private func setupiCloudMonitoring() {
         guard isSyncEnabled else { return }
         iCloudMonitor = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in

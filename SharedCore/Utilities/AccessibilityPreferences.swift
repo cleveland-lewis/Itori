@@ -1,35 +1,35 @@
 import SwiftUI
 
 #if os(macOS)
-import AppKit
+    import AppKit
 #endif
 
 /// Utility to access system accessibility preferences
-struct AccessibilityPreferences {
+enum AccessibilityPreferences {
     /// Check if Reduce Motion is enabled in system preferences
     static var isReduceMotionEnabled: Bool {
         #if os(macOS)
-        return NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+            return NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
         #else
-        return UIAccessibility.isReduceMotionEnabled
+            return UIAccessibility.isReduceMotionEnabled
         #endif
     }
-    
+
     /// Check if Increase Contrast is enabled
     static var isIncreaseContrastEnabled: Bool {
         #if os(macOS)
-        return NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast
+            return NSWorkspace.shared.accessibilityDisplayShouldIncreaseContrast
         #else
-        return UIAccessibility.isDarkerSystemColorsEnabled
+            return UIAccessibility.isDarkerSystemColorsEnabled
         #endif
     }
-    
+
     /// Check if Reduce Transparency is enabled
     static var isReduceTransparencyEnabled: Bool {
         #if os(macOS)
-        return NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency
+            return NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency
         #else
-        return UIAccessibility.isReduceTransparencyEnabled
+            return UIAccessibility.isReduceTransparencyEnabled
         #endif
     }
 }

@@ -1,20 +1,19 @@
-import Foundation
-import CoreData
+internal import CoreData
 
 /// Repository for managing course modules and files with iCloud sync
 final class CourseModuleRepository {
     private let persistenceController: PersistenceController
-    
+
     init(persistenceController: PersistenceController) {
         self.persistenceController = persistenceController
     }
-    
+
     convenience init() {
         self.init(persistenceController: .shared)
     }
-    
+
     // MARK: - Module Operations
-    
+
     /// Create a new course module
     func createModule(
         courseId: UUID,
@@ -24,12 +23,12 @@ final class CourseModuleRepository {
         sortIndex: Int = 0
     ) async throws -> CourseOutlineNode {
         let context = persistenceController.newBackgroundContext()
-        
+
         return try await context.perform {
             let mo = CourseOutlineNodeMO(context: context)
             let id = UUID()
             let now = Date()
-            
+
             mo.id = id
             mo.courseId = courseId
             mo.parentId = parentId
@@ -38,9 +37,9 @@ final class CourseModuleRepository {
             mo.sortIndex = Int32(sortIndex)
             mo.createdAt = now
             mo.updatedAt = now
-            
+
             try context.save()
-            
+
             return CourseOutlineNode(
                 id: id,
                 courseId: courseId,
@@ -53,21 +52,21 @@ final class CourseModuleRepository {
             )
         }
     }
-    
+
     /// Fetch all modules for a course
     func fetchModules(for courseId: UUID) async throws -> [CourseOutlineNode] {
         let context = persistenceController.newBackgroundContext()
-        
+
         return try await context.perform {
             let request = CourseOutlineNodeMO.fetchRequest()
             request.predicate = NSPredicate(format: "courseId == %@", courseId as CVarArg)
             request.sortDescriptors = [NSSortDescriptor(key: "sortIndex", ascending: true)]
-            
+
             let results = try context.fetch(request)
             return results.map { self.toDomain($0) }
         }
     }
-    
+
     /// Update module
     func updateModule(
         id: UUID,
@@ -75,48 +74,56 @@ final class CourseModuleRepository {
         sortIndex: Int? = nil
     ) async throws {
         let context = persistenceController.newBackgroundContext()
-        
+
         try await context.perform {
             let request = CourseOutlineNodeMO.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             request.fetchLimit = 1
-            
+
             guard let mo = try context.fetch(request).first else {
-                throw NSError(domain: "CourseModuleRepository", code: 404, userInfo: [NSLocalizedDescriptionKey: "Module not found"])
+                throw NSError(
+                    domain: "CourseModuleRepository",
+                    code: 404,
+                    userInfo: [NSLocalizedDescriptionKey: "Module not found"]
+                )
             }
-            
-            if let title = title {
+
+            if let title {
                 mo.title = title
             }
-            if let sortIndex = sortIndex {
+            if let sortIndex {
                 mo.sortIndex = Int32(sortIndex)
             }
             mo.updatedAt = Date()
-            
+
             try context.save()
         }
     }
-    
+
     /// Delete module
     func deleteModule(id: UUID) async throws {
         let context = persistenceController.newBackgroundContext()
-        
+
         try await context.perform {
             let request = CourseOutlineNodeMO.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             request.fetchLimit = 1
-            
+
             guard let mo = try context.fetch(request).first else {
-                throw NSError(domain: "CourseModuleRepository", code: 404, userInfo: [NSLocalizedDescriptionKey: "Module not found"])
+                throw NSError(
+                    domain: "CourseModuleRepository",
+                    code: 404,
+                    userInfo: [NSLocalizedDescriptionKey: "Module not found"]
+                )
             }
-            
+
             context.delete(mo)
             try context.save()
         }
     }
-    
+
     // MARK: - File Operations
-    
+
     /// Add file to module or course
     func addFile(
         courseId: UUID,
@@ -128,12 +135,12 @@ final class CourseModuleRepository {
         isPracticeExam: Bool = false
     ) async throws -> CourseFile {
         let context = persistenceController.newBackgroundContext()
-        
+
         return try await context.perform {
             let mo = CourseFileMO(context: context)
             let id = UUID()
             let now = Date()
-            
+
             mo.id = id
             mo.courseId = courseId
             mo.nodeId = nodeId
@@ -148,9 +155,9 @@ final class CourseModuleRepository {
             mo.contentFingerprint = self.generateFingerprint(fileName: fileName)
             mo.createdAt = now
             mo.updatedAt = now
-            
+
             try context.save()
-            
+
             return CourseFile(
                 id: id,
                 courseId: courseId,
@@ -170,27 +177,31 @@ final class CourseModuleRepository {
             )
         }
     }
-    
+
     /// Fetch files for a module or course
     func fetchFiles(courseId: UUID, nodeId: UUID? = nil) async throws -> [CourseFile] {
         let context = persistenceController.newBackgroundContext()
-        
+
         return try await context.perform {
             let request = CourseFileMO.fetchRequest()
-            
-            if let nodeId = nodeId {
-                request.predicate = NSPredicate(format: "courseId == %@ AND nodeId == %@", courseId as CVarArg, nodeId as CVarArg)
+
+            if let nodeId {
+                request.predicate = NSPredicate(
+                    format: "courseId == %@ AND nodeId == %@",
+                    courseId as CVarArg,
+                    nodeId as CVarArg
+                )
             } else {
                 request.predicate = NSPredicate(format: "courseId == %@ AND nodeId == nil", courseId as CVarArg)
             }
-            
+
             request.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: true)]
-            
+
             let results = try context.fetch(request)
             return results.map { self.toCourseDomain($0) }
         }
     }
-    
+
     /// Update file sync status and iCloud URL
     func updateFileSync(
         id: UUID,
@@ -198,24 +209,28 @@ final class CourseModuleRepository {
         syncStatus: String
     ) async throws {
         let context = persistenceController.newBackgroundContext()
-        
+
         try await context.perform {
             let request = CourseFileMO.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             request.fetchLimit = 1
-            
+
             guard let mo = try context.fetch(request).first else {
-                throw NSError(domain: "CourseModuleRepository", code: 404, userInfo: [NSLocalizedDescriptionKey: "File not found"])
+                throw NSError(
+                    domain: "CourseModuleRepository",
+                    code: 404,
+                    userInfo: [NSLocalizedDescriptionKey: "File not found"]
+                )
             }
-            
+
             mo.iCloudURL = iCloudURL
             mo.syncStatus = syncStatus
             mo.updatedAt = Date()
-            
+
             try context.save()
         }
     }
-    
+
     /// Update file parse status
     func updateFileParse(
         id: UUID,
@@ -223,45 +238,53 @@ final class CourseModuleRepository {
         parseError: String? = nil
     ) async throws {
         let context = persistenceController.newBackgroundContext()
-        
+
         try await context.perform {
             let request = CourseFileMO.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             request.fetchLimit = 1
-            
+
             guard let mo = try context.fetch(request).first else {
-                throw NSError(domain: "CourseModuleRepository", code: 404, userInfo: [NSLocalizedDescriptionKey: "File not found"])
+                throw NSError(
+                    domain: "CourseModuleRepository",
+                    code: 404,
+                    userInfo: [NSLocalizedDescriptionKey: "File not found"]
+                )
             }
-            
+
             mo.parseStatus = parseStatus.rawValue
             mo.parseError = parseError
             mo.parsedAt = parseStatus == .parsed ? Date() : nil
             mo.updatedAt = Date()
-            
+
             try context.save()
         }
     }
-    
+
     /// Delete file
     func deleteFile(id: UUID) async throws {
         let context = persistenceController.newBackgroundContext()
-        
+
         try await context.perform {
             let request = CourseFileMO.fetchRequest()
             request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
             request.fetchLimit = 1
-            
+
             guard let mo = try context.fetch(request).first else {
-                throw NSError(domain: "CourseModuleRepository", code: 404, userInfo: [NSLocalizedDescriptionKey: "File not found"])
+                throw NSError(
+                    domain: "CourseModuleRepository",
+                    code: 404,
+                    userInfo: [NSLocalizedDescriptionKey: "File not found"]
+                )
             }
-            
+
             context.delete(mo)
             try context.save()
         }
     }
-    
+
     // MARK: - File Parse Results
-    
+
     /// Save parse result
     func saveParseResult(
         fileId: UUID,
@@ -272,11 +295,11 @@ final class CourseModuleRepository {
         errorMessage: String?
     ) async throws {
         let context = persistenceController.newBackgroundContext()
-        
+
         try await context.perform {
             let mo = FileParseResultMO(context: context)
             let now = Date()
-            
+
             mo.id = UUID()
             mo.fileId = fileId
             mo.parseType = parseType
@@ -286,13 +309,13 @@ final class CourseModuleRepository {
             mo.errorMessage = errorMessage
             mo.createdAt = now
             mo.updatedAt = now
-            
+
             try context.save()
         }
     }
-    
+
     // MARK: - Private Helpers
-    
+
     private func toDomain(_ mo: CourseOutlineNodeMO) -> CourseOutlineNode {
         CourseOutlineNode(
             id: mo.id!,
@@ -305,7 +328,7 @@ final class CourseModuleRepository {
             updatedAt: mo.updatedAt ?? Date()
         )
     }
-    
+
     private func toCourseDomain(_ mo: CourseFileMO) -> CourseFile {
         CourseFile(
             id: mo.id!,
@@ -325,7 +348,7 @@ final class CourseModuleRepository {
             updatedAt: mo.updatedAt ?? Date()
         )
     }
-    
+
     private func generateFingerprint(fileName: String) -> String {
         "\(fileName)-\(UUID().uuidString.prefix(8))"
     }

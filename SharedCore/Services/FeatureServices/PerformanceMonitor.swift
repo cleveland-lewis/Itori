@@ -1,6 +1,6 @@
 import Foundation
 
-struct PerformanceMonitor {
+enum PerformanceMonitor {
     static func measure(_ label: String, threshold: TimeInterval = 0.3, _ block: () -> Void) {
         let start = Date()
         block()

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SemesterPickerView: View {
     @EnvironmentObject private var coursesStore: CoursesStore
-    
+
     var body: some View {
         Menu {
             ForEach(coursesStore.nonArchivedSemesters) { semester in
@@ -28,16 +28,20 @@ struct SemesterPickerView: View {
                 }
                 .disabled(!canToggleSemester(isActive: isActive))
             }
-            
+
             if !coursesStore.nonArchivedSemesters.isEmpty {
                 Divider()
-                
+
                 // Quick actions
-                Button(NSLocalizedString("semesterpicker.button.select.all", value: "Select All", comment: "Select All")) {
-                    let allIds = Set(coursesStore.nonArchivedSemesters.map { $0.id })
+                Button(NSLocalizedString(
+                    "semesterpicker.button.select.all",
+                    value: "Select All",
+                    comment: "Select All"
+                )) {
+                    let allIds = Set(coursesStore.nonArchivedSemesters.map(\.id))
                     coursesStore.setActiveSemesters(allIds)
                 }
-                
+
                 Button(NSLocalizedString("semesterpicker.button.clear.all", value: "Clear All", comment: "Clear All")) {
                     coursesStore.setActiveSemesters([])
                 }
@@ -47,9 +51,9 @@ struct SemesterPickerView: View {
             HStack(spacing: 4) {
                 Image(systemName: "calendar")
                     .font(.system(size: 14))
-                
+
                 Text(summaryText)
-                
+
                 Image(systemName: "chevron.down")
                     .font(.system(size: 10))
             }
@@ -90,7 +94,7 @@ struct SemesterPickerView: View {
 
 struct CompactSemesterPicker: View {
     @EnvironmentObject private var coursesStore: CoursesStore
-    
+
     var body: some View {
         Menu {
             ForEach(coursesStore.nonArchivedSemesters) { semester in

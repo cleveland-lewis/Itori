@@ -68,8 +68,8 @@ public final class AIPortRegistry: Sendable {
 
         let viable = providers.filter {
             $0.isAvailable() &&
-            $0.supports(port: port) &&
-            privacyPolicy.allows(provider: $0.id, for: .normal)
+                $0.supports(port: port) &&
+                privacyPolicy.allows(provider: $0.id, for: .normal)
         }
 
         if let best = viable.first {

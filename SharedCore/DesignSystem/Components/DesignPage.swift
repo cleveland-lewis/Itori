@@ -10,9 +10,13 @@ struct DesignPage: View {
                     Image(systemName: "cube.fill")
                         .imageScale(.large)
 
-                    Text(NSLocalizedString("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", comment: ""))
-                        .font(DesignSystem.Typography.body)
-                        .foregroundStyle(.primary)
+                    Text(NSLocalizedString(
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                        value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                        comment: ""
+                    ))
+                    .font(DesignSystem.Typography.body)
+                    .foregroundStyle(.primary)
                 }
                 .frame(minHeight: DesignSystem.Cards.defaultHeight)
 
@@ -34,9 +38,9 @@ struct DesignPage: View {
 }
 
 #if !DISABLE_PREVIEWS
-#if !DISABLE_PREVIEWS
-#Preview {
-    DesignPage()
-}
-#endif
+    #if !DISABLE_PREVIEWS
+        #Preview {
+            DesignPage()
+        }
+    #endif
 #endif

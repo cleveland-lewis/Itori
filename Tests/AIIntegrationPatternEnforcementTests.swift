@@ -4,9 +4,8 @@ import XCTest
 /// CI test that enforces the single integration pattern
 /// This test MUST fail if any code violates the approved AI integration pattern
 final class AIIntegrationPatternEnforcementTests: XCTestCase {
-    
     // MARK: - Pattern Enforcement Tests
-    
+
     func testNoDirectProviderImportsInFeatures() throws {
         // Scan all Swift files in feature directories
         let featurePaths = [
@@ -15,49 +14,51 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
             "Platforms/macOS/Features",
             "Platforms/watchOS/Features"
         ]
-        
+
         var violations: [String] = []
-        
+
         for featurePath in featurePaths {
             let fullPath = projectRoot.appendingPathComponent(featurePath)
             guard FileManager.default.fileExists(atPath: fullPath.path) else { continue }
-            
+
             let swiftFiles = try findSwiftFiles(in: fullPath)
-            
+
             for file in swiftFiles {
                 let content = try String(contentsOf: file, encoding: .utf8)
-                
+
                 // Check for direct provider imports
                 if content.contains("import OpenAIProvider") ||
-                   content.contains("import AnthropicProvider") ||
-                   content.contains("import GeminiProvider") {
+                    content.contains("import AnthropicProvider") ||
+                    content.contains("import GeminiProvider")
+                {
                     violations.append("\(file.lastPathComponent): Imports AI provider directly")
                 }
-                
+
                 // Check for direct provider instantiation
                 if content.contains("OpenAIProvider(") ||
-                   content.contains("AnthropicProvider(") ||
-                   content.contains("GeminiProvider(") {
+                    content.contains("AnthropicProvider(") ||
+                    content.contains("GeminiProvider(")
+                {
                     violations.append("\(file.lastPathComponent): Instantiates AI provider directly")
                 }
             }
         }
-        
+
         XCTAssertTrue(violations.isEmpty, """
-            ❌ AI Integration Pattern Violations Found:
-            
-            \(violations.joined(separator: "\n"))
-            
-            Features must only call AIEngine.request() or SafeAIPort.execute()
-            Never import or instantiate providers directly.
-            """)
+        ❌ AI Integration Pattern Violations Found:
+
+        \(violations.joined(separator: "\n"))
+
+        Features must only call AIEngine.request() or SafeAIPort.execute()
+        Never import or instantiate providers directly.
+        """)
     }
-    
+
     func testNoProviderImportsOutsideAIEngine() throws {
         let projectRoot = self.projectRoot
         let swiftFiles = try findSwiftFiles(in: projectRoot)
         var violations: [String] = []
-        
+
         for file in swiftFiles {
             let path = file.path
             if path.contains("/SharedCore/AIEngine/") {
@@ -65,19 +66,20 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
             }
             let content = try String(contentsOf: file, encoding: .utf8)
             if content.contains("import OpenAIProvider") ||
-               content.contains("import AnthropicProvider") ||
-               content.contains("import GeminiProvider") {
+                content.contains("import AnthropicProvider") ||
+                content.contains("import GeminiProvider")
+            {
                 violations.append("\(file.lastPathComponent): Provider import outside AIEngine")
             }
         }
-        
+
         XCTAssertTrue(violations.isEmpty, """
-            ❌ AI Integration Pattern Violations Found:
-            
-            \(violations.joined(separator: "\n"))
-            
-            Provider imports must live inside AIEngine only.
-            """)
+        ❌ AI Integration Pattern Violations Found:
+
+        \(violations.joined(separator: "\n"))
+
+        Provider imports must live inside AIEngine only.
+        """)
     }
 
     func testNoDirectFallbackCallsInFeatures() throws {
@@ -87,36 +89,37 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
             "Platforms/macOS/Features",
             "Platforms/watchOS/Features"
         ]
-        
+
         var violations: [String] = []
-        
+
         for featurePath in featurePaths {
             let fullPath = projectRoot.appendingPathComponent(featurePath)
             guard FileManager.default.fileExists(atPath: fullPath.path) else { continue }
-            
+
             let swiftFiles = try findSwiftFiles(in: fullPath)
-            
+
             for file in swiftFiles {
                 let content = try String(contentsOf: file, encoding: .utf8)
-                
+
                 // Check for direct fallback calls
                 if content.contains("SchedulingFallbackEngine") ||
-                   content.contains(".executeFallback(") {
+                    content.contains(".executeFallback(")
+                {
                     violations.append("\(file.lastPathComponent): Calls fallback directly")
                 }
             }
         }
-        
+
         XCTAssertTrue(violations.isEmpty, """
-            ❌ AI Integration Pattern Violations Found:
-            
-            \(violations.joined(separator: "\n"))
-            
-            Features must not call fallback implementations directly.
-            Use AIEngine.request() which handles fallback automatically.
-            """)
+        ❌ AI Integration Pattern Violations Found:
+
+        \(violations.joined(separator: "\n"))
+
+        Features must not call fallback implementations directly.
+        Use AIEngine.request() which handles fallback automatically.
+        """)
     }
-    
+
     func testNoAICallsFromViews() throws {
         let viewPaths = [
             "Shared/Views",
@@ -124,39 +127,40 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
             "Platforms/macOS/Views",
             "Platforms/macOS/Scenes"
         ]
-        
+
         var violations: [String] = []
-        
+
         for viewPath in viewPaths {
             let fullPath = projectRoot.appendingPathComponent(viewPath)
             guard FileManager.default.fileExists(atPath: fullPath.path) else { continue }
-            
+
             let swiftFiles = try findSwiftFiles(in: fullPath)
-            
+
             for file in swiftFiles {
                 // Skip ViewModels
                 if file.lastPathComponent.contains("ViewModel") {
                     continue
                 }
-                
+
                 let content = try String(contentsOf: file, encoding: .utf8)
-                
+
                 // Check for AI engine calls from Views
                 if content.contains("AIEngine.shared.request") ||
-                   content.contains("SafeAIPort") {
+                    content.contains("SafeAIPort")
+                {
                     violations.append("\(file.lastPathComponent): Calls AI from View layer")
                 }
             }
         }
-        
+
         XCTAssertTrue(violations.isEmpty, """
-            ❌ AI Integration Pattern Violations Found:
-            
-            \(violations.joined(separator: "\n"))
-            
-            Views must not call AI directly.
-            Use ViewModels to handle all AI interactions.
-            """)
+        ❌ AI Integration Pattern Violations Found:
+
+        \(violations.joined(separator: "\n"))
+
+        Views must not call AI directly.
+        Use ViewModels to handle all AI interactions.
+        """)
     }
 
     func testNoLegacyAIProvidersOutsideLegacyModule() throws {
@@ -197,18 +201,18 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
         }
 
         XCTAssertTrue(violations.isEmpty, """
-            ❌ Legacy AI provider usage found outside SharedCore/AI:
+        ❌ Legacy AI provider usage found outside SharedCore/AI:
 
-            \(violations.joined(separator: "\n"))
+        \(violations.joined(separator: "\n"))
 
-            Legacy provider APIs must be wrapped behind AIEngine or adapters only.
-            """)
+        Legacy provider APIs must be wrapped behind AIEngine or adapters only.
+        """)
     }
 
     func testAIPortCallsOnlyFromAllowedLayers() throws {
         let swiftFiles = try findSwiftFiles(in: projectRoot)
         var violations: [String] = []
-        
+
         let allowedPathSnippets = [
             "/ViewModel",
             "/Reducer",
@@ -221,27 +225,27 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
             "/Views/",
             "/Scenes/"
         ]
-        
+
         for file in swiftFiles {
             let content = try String(contentsOf: file, encoding: .utf8)
             guard content.contains("AIEngine.shared.request") else { continue }
-            
+
             let path = file.path
             let isDisallowed = disallowedPathSnippets.contains { path.contains($0) }
             let isAllowed = allowedPathSnippets.contains { path.contains($0) }
-            
+
             if isDisallowed || !isAllowed {
                 violations.append("\(file.lastPathComponent): AIEngine call outside allowed layer")
             }
         }
-        
+
         XCTAssertTrue(violations.isEmpty, """
-            ❌ AI Integration Pattern Violations Found:
-            
-            \(violations.joined(separator: "\n"))
-            
-            AI ports may be called only from ViewModels, Reducers, background/import jobs, or AIEngine orchestrators.
-            """)
+        ❌ AI Integration Pattern Violations Found:
+
+        \(violations.joined(separator: "\n"))
+
+        AI ports may be called only from ViewModels, Reducers, background/import jobs, or AIEngine orchestrators.
+        """)
     }
 
     func testScheduleSuggestionApplyCalledOnlyFromPlannerViews() throws {
@@ -256,21 +260,22 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
             let content = try String(contentsOf: file, encoding: .utf8)
             guard content.contains("applyPendingScheduleSuggestion(") else { continue }
             if !allowedFiles.contains(file.lastPathComponent) {
-                violations.append("\(file.lastPathComponent): applyPendingScheduleSuggestion called outside Planner view")
+                violations
+                    .append("\(file.lastPathComponent): applyPendingScheduleSuggestion called outside Planner view")
             }
         }
 
         XCTAssertTrue(violations.isEmpty, """
-            ❌ Schedule apply entrypoint violations found:
+        ❌ Schedule apply entrypoint violations found:
 
-            \(violations.joined(separator: "\n"))
+        \(violations.joined(separator: "\n"))
 
-            applyPendingScheduleSuggestion() may be called only from Planner view entrypoints.
-            """)
+        applyPendingScheduleSuggestion() may be called only from Planner view entrypoints.
+        """)
     }
-    
+
     // MARK: - Monotonic Merge Guard Tests
-    
+
     func testFieldMergeGuardPreventsStaleResults() {
         let guard = FieldMergeGuard(
             lastUserEditAt: Date(),
@@ -278,15 +283,15 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
             lastAppliedAIInputHash: "abc123",
             isUserLocked: false
         )
-        
+
         let staleResult = MockAIResult(
             inputHash: "abc123",
             computedAt: Date().addingTimeInterval(-120), // Computed before user edit
             confidence: AIConfidence(0.8)
         )
-        
+
         XCTAssertFalse(
-            guard.shouldApply(result: staleResult, currentInputHash: "abc123"),
+            guard .shouldApply(result: staleResult, currentInputHash: "abc123"),
             "Should not apply stale result computed before user edit"
         )
     }
@@ -309,37 +314,37 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
         )
 
         XCTAssertFalse(
-            guard.shouldApply(result: result, currentInputHash: "abc123"),
+            guard .shouldApply(result: result, currentInputHash: "abc123"),
             "Should not apply when uptime indicates result is older than user edit"
         )
     }
-    
+
     func testFieldMergeGuardPreventsInputMismatch() {
         let guard = FieldMergeGuard()
-        
+
         let result = MockAIResult(
             inputHash: "abc123",
             computedAt: Date(),
             confidence: AIConfidence(0.8)
         )
-        
+
         XCTAssertFalse(
-            guard.shouldApply(result: result, currentInputHash: "xyz789"),
+            guard .shouldApply(result: result, currentInputHash: "xyz789"),
             "Should not apply result with mismatched input hash"
         )
     }
-    
+
     func testFieldMergeGuardRespectsUserLock() {
         let guard = FieldMergeGuard(isUserLocked: true)
-        
+
         let result = MockAIResult(
             inputHash: "abc123",
             computedAt: Date(),
             confidence: AIConfidence(0.8)
         )
-        
+
         XCTAssertFalse(
-            guard.shouldApply(result: result, currentInputHash: "abc123"),
+            guard .shouldApply(result: result, currentInputHash: "abc123"),
             "Should never apply to user-locked field"
         )
     }
@@ -354,7 +359,7 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
         )
 
         XCTAssertFalse(
-            guard.shouldApply(
+            guard .shouldApply(
                 result: result,
                 currentInputHash: "abc123",
                 currentFeatureStateVersion: 1
@@ -362,9 +367,9 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
             "Should not apply if feature state version changed"
         )
     }
-    
+
     // MARK: - Schedule Diff Idempotency Tests
-    
+
     func testScheduleDiffIsIdempotent() {
         let diff = ScheduleDiff(
             addedBlocks: [
@@ -380,10 +385,10 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
             reason: "test",
             confidence: AIConfidence(0.8)
         )
-        
+
         XCTAssertTrue(diff.isIdempotent(), "Schedule diff should be idempotent with non-overlapping operations")
     }
-    
+
     func testScheduleDiffDetectsNonIdempotent() {
         let diff = ScheduleDiff(
             addedBlocks: [
@@ -397,7 +402,7 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
             reason: "test",
             confidence: AIConfidence(0.8)
         )
-        
+
         XCTAssertFalse(diff.isIdempotent(), "Schedule diff should detect overlapping operations")
     }
 
@@ -408,7 +413,13 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
         ]
         let diff = ScheduleDiff(
             addedBlocks: [
-                ProposedBlock(tempID: "block2", title: "Write", startDate: now.addingTimeInterval(3600), duration: 1200, reason: "test")
+                ProposedBlock(
+                    tempID: "block2",
+                    title: "Write",
+                    startDate: now.addingTimeInterval(3600),
+                    duration: 1200,
+                    reason: "test"
+                )
             ],
             movedBlocks: [
                 MovedBlock(blockID: "block1", newStartDate: now.addingTimeInterval(900), reason: "test")
@@ -426,9 +437,9 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
 
         XCTAssertEqual(once, twice, "Applying the same diff twice should yield a stable state")
     }
-    
+
     // MARK: - Merge Policy Tests
-    
+
     func testDefaultOnlyPolicyDoesNotOverwriteUserEdits() {
         let policy = AIMergePolicy.defaultOnly
         let guard = FieldMergeGuard(lastUserEditAt: Date())
@@ -437,13 +448,13 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
             computedAt: Date(),
             confidence: AIConfidence(0.8)
         )
-        
+
         XCTAssertFalse(
             policy.shouldApply(result: result, guard: guard, currentInputHash: "abc123", isFieldEmpty: true),
             "Default-only policy should not overwrite user edits"
         )
     }
-    
+
     func testSuggestOnlyPolicyNeverAutoApplies() {
         let policy = AIMergePolicy.suggestOnly
         let guard = FieldMergeGuard()
@@ -452,13 +463,13 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
             computedAt: Date(),
             confidence: AIConfidence(0.9)
         )
-        
+
         XCTAssertFalse(
             policy.shouldApply(result: result, guard: guard, currentInputHash: "abc123", isFieldEmpty: true),
             "Suggest-only policy should never auto-apply"
         )
     }
-    
+
     func testExplicitApplyRequiredNeverAutoApplies() {
         let policy = AIMergePolicy.explicitApplyRequired
         let guard = FieldMergeGuard()
@@ -467,7 +478,7 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
             computedAt: Date(),
             confidence: AIConfidence(0.95)
         )
-        
+
         XCTAssertFalse(
             policy.shouldApply(result: result, guard: guard, currentInputHash: "abc123", isFieldEmpty: true),
             "Explicit-apply-required policy should never auto-apply"
@@ -479,28 +490,28 @@ final class AIIntegrationPatternEnforcementTests: XCTestCase {
         XCTAssertEqual(SchedulePlacementPort.mergePolicy, .suggestOnly)
         XCTAssertEqual(ConflictResolutionPort.mergePolicy, .suggestOnly)
     }
-    
+
     // MARK: - Helper Methods
-    
+
     private var projectRoot: URL {
         URL(fileURLWithPath: #file)
             .deletingLastPathComponent()
             .deletingLastPathComponent()
     }
-    
+
     private func findSwiftFiles(in directory: URL) throws -> [URL] {
         let fileManager = FileManager.default
         guard let enumerator = fileManager.enumerator(at: directory, includingPropertiesForKeys: nil) else {
             return []
         }
-        
+
         var swiftFiles: [URL] = []
         for case let fileURL as URL in enumerator {
             if fileURL.pathExtension == "swift" {
                 swiftFiles.append(fileURL)
             }
         }
-        
+
         return swiftFiles
     }
 }

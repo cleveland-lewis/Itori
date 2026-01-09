@@ -1,43 +1,46 @@
-import SwiftUI
 import Charts
+import SwiftUI
 
 /// Grades Analytics page showing charts, trends, and grade insights
 struct GradesAnalyticsView: View {
     @EnvironmentObject private var settings: AppSettings
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var coursesStore: CoursesStore
-    
+
     @Environment(\.dismiss) private var dismiss
-    
+
     // MARK: - Filter State
+
     @State private var selectedCourseId: UUID?
     @State private var showWeightedGPA: Bool = true
     @State private var selectedDateRange: DateRangeFilter = .allTime
-    
+
     // MARK: - What-If Simulator State
+
     @State private var whatIfMode: Bool = false
     @State private var whatIfAssignments: [UUID: Double] = [:] // taskId -> hypothetical grade
-    
+
     // MARK: - Interaction State
+
     @State private var selectedChartElement: String?
     @State private var showRiskBreakdown: Bool = false
     @State private var selectedForecastScenario: ForecastScenario = .realistic
-    
+
     var body: some View {
         ZStack(alignment: .top) {
             ScrollView {
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
                     header
-                    
+
                     // What-If Banner
                     if whatIfMode {
                         whatIfBanner
                     }
-                    
+
                     filterControls
-                    
+
                     chartsSection
-                    
+
                     if showRiskBreakdown {
                         riskBreakdownSection
                     }
@@ -45,25 +48,33 @@ struct GradesAnalyticsView: View {
                 .padding(DesignSystem.Spacing.large)
             }
             .frame(minWidth: 900, minHeight: 700)
-            .rootsSystemBackground()
+            .itoriSystemBackground()
         }
     }
-    
+
     // MARK: - Header
-    
+
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text(NSLocalizedString("gradesanalytics.grade.analytics", value: "Grade Analytics", comment: "Grade Analytics"))
-                    .font(.title.bold())
-                
-                Text(NSLocalizedString("gradesanalytics.visualize.your.academic.performance", value: "Visualize your academic performance", comment: "Visualize your academic performance"))
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                Text(NSLocalizedString(
+                    "gradesanalytics.grade.analytics",
+                    value: "Grade Analytics",
+                    comment: "Grade Analytics"
+                ))
+                .font(.title.bold())
+
+                Text(NSLocalizedString(
+                    "gradesanalytics.visualize.your.academic.performance",
+                    value: "Visualize your academic performance",
+                    comment: "Visualize your academic performance"
+                ))
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
             }
-            
+
             Spacer()
-            
+
             Button {
                 dismiss()
             } label: {
@@ -76,33 +87,41 @@ struct GradesAnalyticsView: View {
             .accessibilityLabelWithTooltip("Close")
         }
     }
-    
+
     // MARK: - What-If Banner
-    
+
     private var whatIfBanner: some View {
         HStack(spacing: 12) {
             Image(systemName: "wand.and.stars")
                 .foregroundStyle(Color.accentColor)
                 .symbolRenderingMode(.hierarchical)
-            
+
             VStack(alignment: .leading, spacing: 2) {
-                Text(NSLocalizedString("gradesanalytics.whatif.mode.active", value: "What-If Mode Active", comment: "What-If Mode Active"))
-                    .font(.subheadline.weight(.semibold))
-                
-                Text(NSLocalizedString("gradesanalytics.hypothetical.grades.wont.be.saved", value: "Hypothetical grades won't be saved", comment: "Hypothetical grades won't be saved"))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                Text(NSLocalizedString(
+                    "gradesanalytics.whatif.mode.active",
+                    value: "What-If Mode Active",
+                    comment: "What-If Mode Active"
+                ))
+                .font(.subheadline.weight(.semibold))
+
+                Text(NSLocalizedString(
+                    "gradesanalytics.hypothetical.grades.wont.be.saved",
+                    value: "Hypothetical grades won't be saved",
+                    comment: "Hypothetical grades won't be saved"
+                ))
+                .font(.caption)
+                .foregroundStyle(.secondary)
             }
-            
+
             Spacer()
-            
+
             Button(NSLocalizedString("gradesanalytics.button.reset", value: "Reset", comment: "Reset")) {
                 resetWhatIfMode()
             }
             .buttonStyle(.bordered)
             .tint(.accentColor)
             .controlSize(.small)
-            
+
             Button {
                 whatIfMode = false
             } label: {
@@ -119,23 +138,27 @@ struct GradesAnalyticsView: View {
                 .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
         )
     }
-    
+
     // MARK: - Filter Controls
-    
+
     private var filterControls: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(NSLocalizedString("gradesanalytics.filters", value: "Filters", comment: "Filters"))
                 .font(.headline)
-            
+
             HStack(spacing: 12) {
                 // Course Filter
                 Menu {
-                    Button(NSLocalizedString("gradesanalytics.button.all.courses", value: "All Courses", comment: "All Courses")) {
+                    Button(NSLocalizedString(
+                        "gradesanalytics.button.all.courses",
+                        value: "All Courses",
+                        comment: "All Courses"
+                    )) {
                         selectedCourseId = nil
                     }
-                    
+
                     Divider()
-                    
+
                     ForEach(coursesStore.courses) { course in
                         Button(course.code) {
                             selectedCourseId = course.id
@@ -144,7 +167,8 @@ struct GradesAnalyticsView: View {
                 } label: {
                     HStack {
                         Image(systemName: "book")
-                        Text(selectedCourseId == nil ? "All Courses" : coursesStore.courses.first(where: { $0.id == selectedCourseId })?.code ?? "Course")
+                        Text(selectedCourseId == nil ? "All Courses" : coursesStore.courses
+                            .first(where: { $0.id == selectedCourseId })?.code ?? "Course")
                         Image(systemName: "chevron.down")
                             .font(.caption)
                     }
@@ -154,7 +178,7 @@ struct GradesAnalyticsView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
                 .buttonStyle(.plain)
-                
+
                 // Date Range Filter
                 Menu {
                     ForEach(DateRangeFilter.allCases, id: \.self) { range in
@@ -175,16 +199,19 @@ struct GradesAnalyticsView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
                 .buttonStyle(.plain)
-                
+
                 // Weighted Toggle
                 Toggle(isOn: $showWeightedGPA) {
-                    Label(NSLocalizedString("gradesanalytics.label.weighted", value: "Weighted", comment: "Weighted"), systemImage: "scalemass")
+                    Label(
+                        NSLocalizedString("gradesanalytics.label.weighted", value: "Weighted", comment: "Weighted"),
+                        systemImage: "scalemass"
+                    )
                 }
                 .toggleStyle(.button)
                 .controlSize(.regular)
-                
+
                 Spacer()
-                
+
                 // What-If Mode Toggle
                 Button {
                     whatIfMode.toggle()
@@ -192,16 +219,30 @@ struct GradesAnalyticsView: View {
                         whatIfAssignments = [:]
                     }
                 } label: {
-                    Label(NSLocalizedString("gradesanalytics.label.whatif.mode", value: "What-If Mode", comment: "What-If Mode"), systemImage: "wand.and.stars")
+                    Label(
+                        NSLocalizedString(
+                            "gradesanalytics.label.whatif.mode",
+                            value: "What-If Mode",
+                            comment: "What-If Mode"
+                        ),
+                        systemImage: "wand.and.stars"
+                    )
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(whatIfMode ? Color.accentColor : .secondary)
-                
+
                 // Risk Breakdown Toggle
                 Button {
                     showRiskBreakdown.toggle()
                 } label: {
-                    Label(NSLocalizedString("gradesanalytics.label.risk.analysis", value: "Risk Analysis", comment: "Risk Analysis"), systemImage: "exclamationmark.triangle")
+                    Label(
+                        NSLocalizedString(
+                            "gradesanalytics.label.risk.analysis",
+                            value: "Risk Analysis",
+                            comment: "Risk Analysis"
+                        ),
+                        systemImage: "exclamationmark.triangle"
+                    )
                 }
                 .buttonStyle(.bordered)
                 .tint(.accentColor)
@@ -215,40 +256,40 @@ struct GradesAnalyticsView: View {
                 .stroke(Color.white.opacity(0.05), lineWidth: 1)
         )
     }
-    
+
     // MARK: - Charts Section
-    
+
     private var chartsSection: some View {
         VStack(spacing: DesignSystem.Spacing.medium) {
             // Row 1: GPA Trend + Grade Distribution
             HStack(spacing: DesignSystem.Spacing.medium) {
                 gpaTrendChart
                     .frame(maxWidth: .infinity)
-                
+
                 gradeDistributionChart
                     .frame(maxWidth: .infinity)
             }
-            
+
             // Row 2: Course Performance + Assignment Completion
             HStack(spacing: DesignSystem.Spacing.medium) {
                 coursePerformanceChart
                     .frame(maxWidth: .infinity)
-                
+
                 assignmentCompletionChart
                     .frame(maxWidth: .infinity)
             }
         }
     }
-    
+
     // MARK: - Individual Charts
-    
+
     private var gpaTrendChart: some View {
         RootsChartContainer(
             title: "GPA Trend",
             summary: "Your GPA over time"
         ) {
             let data = generateGPATrendData()
-            
+
             Chart(data) { item in
                 LineMark(
                     x: .value("Week", item.week),
@@ -256,7 +297,7 @@ struct GradesAnalyticsView: View {
                 )
                 .foregroundStyle(Color.accentColor)
                 .interpolationMethod(.catmullRom)
-                
+
                 AreaMark(
                     x: .value("Week", item.week),
                     y: .value("GPA", item.gpa)
@@ -273,9 +314,9 @@ struct GradesAnalyticsView: View {
                 )
                 .interpolationMethod(.catmullRom)
             }
-            .chartYScale(domain: 0...4.0)
+            .chartYScale(domain: 0 ... 4.0)
             .chartYAxis {
-                AxisMarks(position: .leading) { value in
+                AxisMarks(position: .leading) { _ in
                     AxisGridLine()
                     AxisValueLabel()
                 }
@@ -285,14 +326,14 @@ struct GradesAnalyticsView: View {
         .accessibilityLabelWithTooltip("GPA Trend Chart")
         .accessibilityValue("Shows GPA progression over recent weeks")
     }
-    
+
     private var gradeDistributionChart: some View {
         RootsChartContainer(
             title: "Grade Distribution",
             summary: "Breakdown by letter grade"
         ) {
             let data = generateGradeDistributionData()
-            
+
             Chart(data) { item in
                 BarMark(
                     x: .value("Grade", item.grade),
@@ -302,7 +343,7 @@ struct GradesAnalyticsView: View {
                 .cornerRadius(8)
             }
             .chartYAxis {
-                AxisMarks(position: .leading) { value in
+                AxisMarks(position: .leading) { _ in
                     AxisGridLine()
                     AxisValueLabel()
                 }
@@ -312,14 +353,14 @@ struct GradesAnalyticsView: View {
         .accessibilityLabelWithTooltip("Grade Distribution Chart")
         .accessibilityValue("Shows count of assignments by letter grade")
     }
-    
+
     private var coursePerformanceChart: some View {
         RootsChartContainer(
             title: "Course Performance",
             summary: "Current grade by course"
         ) {
             let data = generateCoursePerformanceData()
-            
+
             Chart(data) { item in
                 BarMark(
                     x: .value("Course", item.courseCode),
@@ -328,9 +369,9 @@ struct GradesAnalyticsView: View {
                 .foregroundStyle(Color.accentColor)
                 .cornerRadius(8)
             }
-            .chartYScale(domain: 0...100)
+            .chartYScale(domain: 0 ... 100)
             .chartYAxis {
-                AxisMarks(position: .leading) { value in
+                AxisMarks(position: .leading) { _ in
                     AxisGridLine()
                     AxisValueLabel()
                 }
@@ -340,14 +381,14 @@ struct GradesAnalyticsView: View {
         .accessibilityLabelWithTooltip("Course Performance Chart")
         .accessibilityValue("Shows current grade percentage for each course")
     }
-    
+
     private var assignmentCompletionChart: some View {
         RootsChartContainer(
             title: "Assignment Completion",
             summary: "Completed vs. pending"
         ) {
             let data = generateAssignmentCompletionData()
-            
+
             Chart(data) { item in
                 SectorMark(
                     angle: .value("Count", item.count),
@@ -371,15 +412,15 @@ struct GradesAnalyticsView: View {
         .accessibilityLabelWithTooltip("Assignment Completion Chart")
         .accessibilityValue("Shows ratio of completed to pending assignments")
     }
-    
+
     // MARK: - Data Generation
-    
+
     private struct GPATrendItem: Identifiable {
         let id = UUID()
         let week: String
         let gpa: Double
     }
-    
+
     private func generateGPATrendData() -> [GPATrendItem] {
         let calendar = Calendar.current
         let endDate = Date()
@@ -389,7 +430,7 @@ struct GradesAnalyticsView: View {
         let startDate = max(rangeStart, defaultStart)
 
         var items: [GPATrendItem] = []
-        for index in 0..<8 {
+        for index in 0 ..< 8 {
             guard let weekStart = calendar.date(byAdding: .weekOfYear, value: index, to: startDate) else { continue }
             if weekStart > endDate { break }
             let weekEnd = calendar.date(byAdding: .day, value: 6, to: weekStart) ?? weekStart
@@ -401,77 +442,81 @@ struct GradesAnalyticsView: View {
 
         return items
     }
-    
+
     private struct GradeDistributionItem: Identifiable {
         let id = UUID()
         let grade: String
         let count: Int
     }
-    
+
     private func generateGradeDistributionData() -> [GradeDistributionItem] {
         let tasks = filteredTasks().filter { $0.isCompleted && $0.gradeEarnedPoints != nil }
         var gradeCounts: [String: Int] = ["A": 0, "B": 0, "C": 0, "D": 0, "F": 0]
-        
+
         for task in tasks {
             if let earned = task.gradeEarnedPoints, let possible = task.gradePossiblePoints, possible > 0 {
                 let percentage = (earned / possible) * 100
-                let grade: String
-                if percentage >= 90 { grade = "A" }
-                else if percentage >= 80 { grade = "B" }
-                else if percentage >= 70 { grade = "C" }
-                else if percentage >= 60 { grade = "D" }
-                else { grade = "F" }
+                let grade = if percentage >= 90 { "A" }
+                else if percentage >= 80 { "B" }
+                else if percentage >= 70 { "C" }
+                else if percentage >= 60 { "D" }
+                else { "F" }
                 gradeCounts[grade, default: 0] += 1
             }
         }
-        
+
         return ["A", "B", "C", "D", "F"].map { grade in
             GradeDistributionItem(grade: grade, count: gradeCounts[grade] ?? 0)
         }
     }
-    
+
     private struct CoursePerformanceItem: Identifiable {
         let id = UUID()
         let courseCode: String
         let percentage: Double
     }
-    
+
     private func generateCoursePerformanceData() -> [CoursePerformanceItem] {
         let tasks = filteredTasks()
         return filteredCourses().compactMap { course in
-            guard let percentage = coursePercent(for: course.id, tasks: tasks, weighted: showWeightedGPA) else { return nil }
+            guard let percentage = coursePercent(for: course.id, tasks: tasks, weighted: showWeightedGPA)
+            else { return nil }
             return CoursePerformanceItem(courseCode: course.code, percentage: percentage)
         }
     }
-    
+
     private struct AssignmentCompletionItem: Identifiable {
         let id = UUID()
         let status: String
         let count: Int
         let color: Color
     }
-    
+
     private func generateAssignmentCompletionData() -> [AssignmentCompletionItem] {
         let tasks = filteredTasks()
-        let completed = tasks.filter { $0.isCompleted }.count
+        let completed = tasks.filter(\.isCompleted).count
         let pending = tasks.filter { !$0.isCompleted }.count
-        
+
         return [
             AssignmentCompletionItem(status: "Completed", count: completed, color: .green),
             AssignmentCompletionItem(status: "Pending", count: pending, color: .orange)
         ]
     }
-    
+
     // MARK: - Risk Breakdown Section
-    
+
     private var riskBreakdownSection: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Text(NSLocalizedString("gradesanalytics.risk.analysis", value: "Risk Analysis", comment: "Risk Analysis"))
-                    .font(.title3.bold())
-                
+                Text(NSLocalizedString(
+                    "gradesanalytics.risk.analysis",
+                    value: "Risk Analysis",
+                    comment: "Risk Analysis"
+                ))
+                .font(.title3.bold())
+
                 Spacer()
-                
+
                 Button {
                     showRiskBreakdown = false
                 } label: {
@@ -480,7 +525,7 @@ struct GradesAnalyticsView: View {
                 }
                 .buttonStyle(.plain)
             }
-            
+
             VStack(spacing: 12) {
                 riskCard(
                     level: "High Risk",
@@ -489,7 +534,7 @@ struct GradesAnalyticsView: View {
                     icon: "exclamationmark.triangle.fill",
                     description: "Courses below 70% need immediate attention"
                 )
-                
+
                 riskCard(
                     level: "Moderate Risk",
                     courses: getCoursesAtRisk(threshold: 80, max: 70),
@@ -497,7 +542,7 @@ struct GradesAnalyticsView: View {
                     icon: "exclamationmark.circle.fill",
                     description: "Courses between 70-80% require monitoring"
                 )
-                
+
                 riskCard(
                     level: "On Track",
                     courses: getCoursesAtRisk(threshold: 100, max: 80),
@@ -515,47 +560,53 @@ struct GradesAnalyticsView: View {
                 .stroke(Color.white.opacity(0.05), lineWidth: 1)
         )
     }
-    
-    private func riskCard(level: String, courses: [Course], color: Color, icon: String, description: String) -> some View {
+
+    private func riskCard(
+        level: String,
+        courses: [Course],
+        color: Color,
+        icon: String,
+        description: String
+    ) -> some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: icon)
                 .font(.title2)
                 .foregroundStyle(color)
                 .symbolRenderingMode(.hierarchical)
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
                     Text(level)
                         .font(.headline)
-                    
+
                     Text(verbatim: "(\(courses.count))")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
-                
+
                 Text(description)
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                
+
                 if !courses.isEmpty {
-                    Text(courses.map { $0.code }.joined(separator: ", "))
+                    Text(courses.map(\.code).joined(separator: ", "))
                         .font(.caption.bold())
                         .foregroundStyle(color)
                 }
             }
-            
+
             Spacer()
         }
         .padding()
         .background(color.opacity(0.05))
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
-    
+
     private func getCoursesAtRisk(threshold: Double, max: Double? = nil) -> [Course] {
         let tasks = filteredTasks()
         return filteredCourses().filter { course in
             if let grade = coursePercent(for: course.id, tasks: tasks, weighted: showWeightedGPA) {
-                if let max = max {
+                if let max {
                     return grade < threshold && grade >= max
                 } else {
                     return grade < threshold
@@ -564,28 +615,28 @@ struct GradesAnalyticsView: View {
             return false
         }
     }
-    
+
     // MARK: - What-If Functions
-    
+
     private func resetWhatIfMode() {
         whatIfAssignments = [:]
     }
-    
+
     // MARK: - Helpers
-    
+
     private func colorForGrade(_ grade: String) -> Color {
         switch grade {
-        case "A": return .green
-        case "B": return .blue
-        case "C": return .yellow
-        case "D": return .orange
-        case "F": return .red
-        default: return .gray
+        case "A": .green
+        case "B": .blue
+        case "C": .yellow
+        case "D": .orange
+        case "F": .red
+        default: .gray
         }
     }
 
     private func filteredCourses() -> [Course] {
-        if let selectedCourseId = selectedCourseId {
+        if let selectedCourseId {
             return coursesStore.courses.filter { $0.id == selectedCourseId }
         }
         return coursesStore.courses
@@ -609,7 +660,7 @@ struct GradesAnalyticsView: View {
         let startDate = dateRangeBounds()?.start
         return courseFiltered.filter { task in
             guard let due = task.due else { return false }
-            if let startDate = startDate, due < startDate { return false }
+            if let startDate, due < startDate { return false }
             return due <= endDate
         }
     }
@@ -646,9 +697,9 @@ struct GradesAnalyticsView: View {
         }
         let graded = tasks.filter { task in
             task.courseId == courseId &&
-            task.isCompleted &&
-            task.gradeEarnedPoints != nil &&
-            task.gradePossiblePoints ?? 0 > 0
+                task.isCompleted &&
+                task.gradeEarnedPoints != nil &&
+                task.gradePossiblePoints ?? 0 > 0
         }
         guard !graded.isEmpty else { return nil }
         let total = graded.reduce(0.0) { partial, task in
@@ -682,18 +733,18 @@ struct GradesAnalyticsView: View {
 
     private func mapPercentToGPA(_ percent: Double) -> Double {
         switch percent {
-        case 93...: return 4.0
-        case 90..<93: return 3.7
-        case 87..<90: return 3.3
-        case 83..<87: return 3.0
-        case 80..<83: return 2.7
-        case 77..<80: return 2.3
-        case 73..<77: return 2.0
-        case 70..<73: return 1.7
-        case 67..<70: return 1.3
-        case 63..<67: return 1.0
-        case 60..<63: return 0.7
-        default: return 0.0
+        case 93...: 4.0
+        case 90 ..< 93: 3.7
+        case 87 ..< 90: 3.3
+        case 83 ..< 87: 3.0
+        case 80 ..< 83: 2.7
+        case 77 ..< 80: 2.3
+        case 73 ..< 77: 2.0
+        case 70 ..< 73: 1.7
+        case 67 ..< 70: 1.3
+        case 63 ..< 67: 1.0
+        case 60 ..< 63: 0.7
+        default: 0.0
         }
     }
 }
@@ -705,13 +756,13 @@ enum DateRangeFilter: CaseIterable {
     case thisMonth
     case thisQuarter
     case thisSemester
-    
+
     var label: String {
         switch self {
-        case .allTime: return "All Time"
-        case .thisMonth: return "This Month"
-        case .thisQuarter: return "This Quarter"
-        case .thisSemester: return "This Semester"
+        case .allTime: "All Time"
+        case .thisMonth: "This Month"
+        case .thisQuarter: "This Quarter"
+        case .thisSemester: "This Semester"
         }
     }
 }
@@ -720,12 +771,12 @@ enum ForecastScenario: CaseIterable {
     case optimistic
     case realistic
     case pessimistic
-    
+
     var label: String {
         switch self {
-        case .optimistic: return "Optimistic"
-        case .realistic: return "Realistic"
-        case .pessimistic: return "Pessimistic"
+        case .optimistic: "Optimistic"
+        case .realistic: "Realistic"
+        case .pessimistic: "Pessimistic"
         }
     }
 }
@@ -733,14 +784,14 @@ enum ForecastScenario: CaseIterable {
 // MARK: - Preview
 
 #if !DISABLE_PREVIEWS
-#Preview {
-    let settings = AppSettings()
-    let assignmentsStore = AssignmentsStore.shared
-    let coursesStore = CoursesStore(storageURL: nil)
-    
-    return GradesAnalyticsView()
-        .environmentObject(settings)
-        .environmentObject(assignmentsStore)
-        .environmentObject(coursesStore)
-}
+    #Preview {
+        let settings = AppSettings()
+        let assignmentsStore = AssignmentsStore.shared
+        let coursesStore = CoursesStore(storageURL: nil)
+
+        return GradesAnalyticsView()
+            .environmentObject(settings)
+            .environmentObject(assignmentsStore)
+            .environmentObject(coursesStore)
+    }
 #endif

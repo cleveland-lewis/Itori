@@ -5,8 +5,8 @@
 //  Created on 12/24/24.
 //
 
-import WidgetKit
 import SwiftUI
+import WidgetKit
 
 @main
 struct ItoriTimerWidgetBundle: WidgetBundle {

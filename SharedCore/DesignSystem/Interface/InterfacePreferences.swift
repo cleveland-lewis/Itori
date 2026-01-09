@@ -6,13 +6,13 @@ import SwiftUI
 @MainActor
 struct InterfacePreferences: Equatable {
     // MARK: - Accessibility Flags
-    
+
     let reduceMotion: Bool
     let increaseContrast: Bool
     let reduceTransparency: Bool
-    
+
     // MARK: - Derived Tokens
-    
+
     let spacing: SpacingTokens
     let materials: MaterialTokens
     let animation: AnimationTokens
@@ -20,15 +20,15 @@ struct InterfacePreferences: Equatable {
     let typography: TypographyTokens
     let haptics: HapticsTokens
     let tooltips: TooltipsTokens
-    
+
     // MARK: - Layout Preferences
-    
+
     let compactDensity: Bool
     let largeTapTargets: Bool
     let materialIntensity: Double
-    
+
     // MARK: - Default
-    
+
     static let `default` = InterfacePreferences(
         reduceMotion: false,
         increaseContrast: false,
@@ -44,9 +44,9 @@ struct InterfacePreferences: Equatable {
         largeTapTargets: false,
         materialIntensity: 0.5
     )
-    
+
     // MARK: - Spacing Tokens
-    
+
     struct SpacingTokens: Equatable {
         let xxs: CGFloat
         let xs: CGFloat
@@ -56,13 +56,13 @@ struct InterfacePreferences: Equatable {
         let xl: CGFloat
         let xxl: CGFloat
         let xxxl: CGFloat
-        
+
         let cardPadding: CGFloat
         let listRowVerticalPadding: CGFloat
         let listRowHorizontalPadding: CGFloat
         let sectionSpacing: CGFloat
         let gridGap: CGFloat
-        
+
         static let standard = SpacingTokens(
             xxs: 4,
             xs: 8,
@@ -78,7 +78,7 @@ struct InterfacePreferences: Equatable {
             sectionSpacing: 24,
             gridGap: 24
         )
-        
+
         static let compact = SpacingTokens(
             xxs: 2,
             xs: 4,
@@ -94,7 +94,7 @@ struct InterfacePreferences: Equatable {
             sectionSpacing: 16,
             gridGap: 16
         )
-        
+
         static let largeTapTarget = SpacingTokens(
             xxs: 6,
             xs: 12,
@@ -111,36 +111,36 @@ struct InterfacePreferences: Equatable {
             gridGap: 28
         )
     }
-    
+
     // MARK: - Material Tokens
-    
+
     struct MaterialTokens: Equatable {
         let cardMaterial: MaterialType
         let hudMaterial: MaterialType
         let popupMaterial: MaterialType
         let overlayMaterial: MaterialType
-        
+
         let borderOpacity: Double
         let borderWidth: CGFloat
         let separatorOpacity: Double
-        
+
         enum MaterialType: Equatable {
             case material(Material)
             case solid(Color)
-            
+
             static func == (lhs: MaterialType, rhs: MaterialType) -> Bool {
                 switch (lhs, rhs) {
-                case (.material(let l), .material(let r)):
-                    return String(describing: l) == String(describing: r)
-                case (.solid(let l), .solid(let r)):
-                    return l == r
+                case let (.material(l), .material(r)):
+                    String(describing: l) == String(describing: r)
+                case let (.solid(l), .solid(r)):
+                    l == r
                 default:
-                    return false
+                    false
                 }
             }
         }
-        
-        static func standard(intensity: Double) -> MaterialTokens {
+
+        static func standard(intensity _: Double) -> MaterialTokens {
             let cardMaterial: MaterialType = .material(.regularMaterial)
             return MaterialTokens(
                 cardMaterial: cardMaterial,
@@ -152,16 +152,16 @@ struct InterfacePreferences: Equatable {
                 separatorOpacity: 0.1
             )
         }
-        
-        static func reduceTransparency(colorScheme: ColorScheme) -> MaterialTokens {
+
+        static func reduceTransparency(colorScheme _: ColorScheme) -> MaterialTokens {
             #if os(macOS)
-            let cardColor = Color(nsColor: .textBackgroundColor)
-            let hudColor = Color(nsColor: .controlBackgroundColor).opacity(0.95)
+                let cardColor = Color(nsColor: .textBackgroundColor)
+                let hudColor = Color(nsColor: .controlBackgroundColor).opacity(0.95)
             #else
-            let cardColor = Color(uiColor: .systemBackground)
-            let hudColor = Color(uiColor: .secondarySystemBackground).opacity(0.95)
+                let cardColor = Color(uiColor: .systemBackground)
+                let hudColor = Color(uiColor: .secondarySystemBackground).opacity(0.95)
             #endif
-            
+
             return MaterialTokens(
                 cardMaterial: .solid(cardColor),
                 hudMaterial: .solid(hudColor),
@@ -172,8 +172,8 @@ struct InterfacePreferences: Equatable {
                 separatorOpacity: 0.15
             )
         }
-        
-        static func increaseContrast(intensity: Double) -> MaterialTokens {
+
+        static func increaseContrast(intensity _: Double) -> MaterialTokens {
             MaterialTokens(
                 cardMaterial: .material(.regularMaterial),
                 hudMaterial: .material(.ultraThinMaterial),
@@ -185,18 +185,18 @@ struct InterfacePreferences: Equatable {
             )
         }
     }
-    
+
     // MARK: - Animation Tokens
-    
+
     struct AnimationTokens: Equatable {
         let enabled: Bool
         let showAnimations: Bool
-        
+
         let quick: Animation?
         let standard: Animation?
         let deliberate: Animation?
         let spring: Animation?
-        
+
         static let standard = AnimationTokens(
             enabled: true,
             showAnimations: true,
@@ -205,7 +205,7 @@ struct InterfacePreferences: Equatable {
             deliberate: .easeInOut(duration: 0.35),
             spring: .spring(response: 0.3, dampingFraction: 0.7)
         )
-        
+
         static let reduceMotion = AnimationTokens(
             enabled: false,
             showAnimations: false,
@@ -215,19 +215,19 @@ struct InterfacePreferences: Equatable {
             spring: nil
         )
     }
-    
+
     // MARK: - Corner Radius Tokens
-    
+
     struct CornerRadiusTokens: Equatable {
         let small: CGFloat
         let medium: CGFloat
         let large: CGFloat
         let xlarge: CGFloat
-        
+
         let card: CGFloat
         let button: CGFloat
         let field: CGFloat
-        
+
         static let standard = CornerRadiusTokens(
             small: 8,
             medium: 12,
@@ -237,7 +237,7 @@ struct InterfacePreferences: Equatable {
             button: 10,
             field: 8
         )
-        
+
         static let compact = CornerRadiusTokens(
             small: 6,
             medium: 10,
@@ -248,30 +248,30 @@ struct InterfacePreferences: Equatable {
             field: 6
         )
     }
-    
+
     // MARK: - Typography Tokens
-    
+
     struct TypographyTokens: Equatable {
         let scaleMultiplier: CGFloat
-        
+
         static let standard = TypographyTokens(scaleMultiplier: 1.0)
         static let largeTapTarget = TypographyTokens(scaleMultiplier: 1.15)
     }
-    
+
     // MARK: - Haptics Tokens
-    
+
     struct HapticsTokens: Equatable {
         let enabled: Bool
-        
+
         static let enabled = HapticsTokens(enabled: true)
         static let disabled = HapticsTokens(enabled: false)
     }
-    
+
     // MARK: - Tooltips Tokens
-    
+
     struct TooltipsTokens: Equatable {
         let enabled: Bool
-        
+
         static let enabled = TooltipsTokens(enabled: true)
         static let disabled = TooltipsTokens(enabled: false)
     }

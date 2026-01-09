@@ -19,15 +19,15 @@ enum BloomLevel: String, Codable, CaseIterable {
     case analyze = "Analyze"
     case evaluate = "Evaluate"
     case create = "Create"
-    
+
     var order: Int {
         switch self {
-        case .remember: return 1
-        case .understand: return 2
-        case .apply: return 3
-        case .analyze: return 4
-        case .evaluate: return 5
-        case .create: return 6
+        case .remember: 1
+        case .understand: 2
+        case .apply: 3
+        case .analyze: 4
+        case .evaluate: 5
+        case .create: 6
         }
     }
 }
@@ -41,7 +41,7 @@ struct QuestionSlot: Identifiable, Codable, Hashable {
     var templateType: QuestionTemplateType
     var maxPromptWords: Int
     var bannedPhrases: [String]
-    
+
     init(
         id: String,
         topic: String,
@@ -74,7 +74,7 @@ struct TestBlueprint: Codable {
     var slots: [QuestionSlot] // deterministic slot plan
     var estimatedTimeMinutes: Int
     var createdAt: Date
-    
+
     init(
         id: UUID = UUID(),
         questionCount: Int,
@@ -108,7 +108,7 @@ struct GenerationContext: Codable {
     var existingQuestionHashes: Set<String> // to avoid duplicates
     var generatedCount: Int // how many questions already generated
     var totalCount: Int
-    
+
     init(
         courseName: String,
         existingQuestionHashes: Set<String> = [],
@@ -126,7 +126,7 @@ struct GenerationContext: Codable {
 struct QuestionQuality: Codable, Sendable {
     var selfCheck: [String] // List of quality criteria checked by LLM
     var confidence: Double // Confidence score 0.0-1.0
-    
+
     init(selfCheck: [String] = [], confidence: Double = 0.0) {
         self.selfCheck = selfCheck
         self.confidence = confidence
@@ -146,7 +146,7 @@ struct QuestionDraft: Codable {
     var difficulty: String
     var templateType: String
     var quality: QuestionQuality? // LLM self-assessment
-    
+
     init(
         contractVersion: String = "testgen.v1",
         prompt: String,
@@ -181,7 +181,7 @@ struct QuestionValidated: Identifiable, Codable {
     var question: PracticeQuestion
     var promptHash: String
     var validatedAt: Date
-    
+
     init(
         id: UUID = UUID(),
         slotId: String,
@@ -205,14 +205,14 @@ struct ValidationError: Codable, Sendable, CustomStringConvertible {
         case distribution = "Distribution"
         case duplicate = "Duplicate"
     }
-    
+
     var category: Category
     var field: String?
     var message: String
     var severity: String // "error" or "warning"
-    
+
     nonisolated var description: String {
-        if let field = field {
+        if let field {
             return "[\(category.rawValue)] \(field): \(message)"
         }
         return "[\(category.rawValue)] \(message)"
@@ -226,10 +226,10 @@ struct GenerationFailure: Codable, Error, CustomStringConvertible, Sendable {
     var errors: [ValidationError]
     var attemptsMade: Int
     var timestamp: Date
-    
+
     nonisolated var description: String {
         var desc = "Generation failed: \(reason)"
-        if let slotId = slotId {
+        if let slotId {
             desc += " (slot: \(slotId))"
         }
         desc += " after \(attemptsMade) attempts"
@@ -238,7 +238,7 @@ struct GenerationFailure: Codable, Error, CustomStringConvertible, Sendable {
         }
         return desc
     }
-    
+
     init(
         reason: String,
         slotId: String? = nil,
@@ -270,7 +270,7 @@ struct GenerationStats: Codable {
     var validationErrors: [ValidationError]
     var repairAttempts: Int
     var fallbacksUsed: Int
-    
+
     init(
         totalSlots: Int = 0,
         successfulSlots: Int = 0,

@@ -13,25 +13,25 @@ enum QuickAction: String, CaseIterable, Identifiable, Codable {
 
     var title: String {
         switch self {
-        case .add_assignment: return "Add Assignment"
-        case .add_course: return "Add Course"
-        case .add_task: return "Add Task"
-        case .add_grade: return "Add Grade"
-        case .auto_schedule: return "Auto Schedule"
-        case .quick_note: return "Quick Note"
-        case .open_new_note: return "New Note"
+        case .add_assignment: "Add Assignment"
+        case .add_course: "Add Course"
+        case .add_task: "Add Task"
+        case .add_grade: "Add Grade"
+        case .auto_schedule: "Auto Schedule"
+        case .quick_note: "Quick Note"
+        case .open_new_note: "New Note"
         }
     }
 
     var systemImage: String {
         switch self {
-        case .add_assignment: return "plus.square.on.square"
-        case .add_course: return "book.badge.plus"
-        case .add_task: return "checkmark.circle.badge.plus"
-        case .add_grade: return "chart.bar.doc.horizontal"
-        case .auto_schedule: return "wand.and.stars"
-        case .quick_note: return "pencil"
-        case .open_new_note: return "square.and.pencil"
+        case .add_assignment: "plus.square.on.square"
+        case .add_course: "book.badge.plus"
+        case .add_task: "checkmark.circle.badge.plus"
+        case .add_grade: "chart.bar.doc.horizontal"
+        case .auto_schedule: "wand.and.stars"
+        case .quick_note: "pencil"
+        case .open_new_note: "square.and.pencil"
         }
     }
 

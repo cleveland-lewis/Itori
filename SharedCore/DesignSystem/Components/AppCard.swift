@@ -62,7 +62,6 @@ struct AppCard<Content: View>: View {
         }
         .contentTransition(.opacity)
     }
-
 }
 
 private extension AnyTransition {

@@ -7,11 +7,16 @@ protocol AssignmentTaskUpdating: AnyObject {
 
 extension AssignmentsStore: AssignmentTaskUpdating {}
 
-struct DragDropHandler {
+enum DragDropHandler {
     /// Reassigns the task described by the payload to a new course, returning `true` when the update succeeds.
-    static func reassignAssignment(_ payload: TransferableAssignment, to courseId: UUID, assignmentsStore: AssignmentTaskUpdating) -> Bool {
+    static func reassignAssignment(
+        _ payload: TransferableAssignment,
+        to courseId: UUID,
+        assignmentsStore: AssignmentTaskUpdating
+    ) -> Bool {
         guard let taskId = UUID(uuidString: payload.id),
-              let task = assignmentsStore.tasks.first(where: { $0.id == taskId }) else {
+              let task = assignmentsStore.tasks.first(where: { $0.id == taskId })
+        else {
             return false
         }
         let updated = task.withCourseId(courseId)

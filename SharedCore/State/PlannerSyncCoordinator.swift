@@ -1,6 +1,6 @@
-import Foundation
 import Combine
 import CryptoKit
+import Foundation
 
 @MainActor
 final class PlannerSyncCoordinator: ObservableObject {
@@ -45,8 +45,12 @@ final class PlannerSyncCoordinator: ObservableObject {
         NotificationCenter.default.publisher(for: .energySettingsDidChange)
             .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
             .sink { [weak self] _ in
-                guard let self = self else { return }
-                self.requestRecompute(assignmentsStore: assignmentsStore, plannerStore: plannerStore, settings: settings)
+                guard let self else { return }
+                self.requestRecompute(
+                    assignmentsStore: assignmentsStore,
+                    plannerStore: plannerStore,
+                    settings: settings
+                )
             }
             .store(in: &cancellables)
     }
@@ -96,7 +100,11 @@ final class PlannerSyncCoordinator: ObservableObject {
 
         let sessions = filtered.flatMap { PlannerEngine.generateSessions(for: $0, settings: StudyPlanSettings()) }
         let energy = SchedulerPreferencesStore.shared.energyProfileForPlanning(settings: settings)
-        let scheduledResult = PlannerEngine.scheduleSessionsWithStrategy(sessions, settings: StudyPlanSettings(), energyProfile: energy)
+        let scheduledResult = PlannerEngine.scheduleSessionsWithStrategy(
+            sessions,
+            settings: StudyPlanSettings(),
+            energyProfile: energy
+        )
         plannerStore.persist(scheduled: scheduledResult.scheduled, overflow: scheduledResult.overflow)
         syncPlannerCalendar(for: scheduledResult.scheduled)
     }
@@ -138,35 +146,35 @@ final class PlannerSyncCoordinator: ObservableObject {
 
     private func syncCalendarNotes(plannerStore: PlannerStore) {
         let sessions = plannerStore.scheduled
-        guard let start = sessions.map({ $0.start }).min(),
-              let end = sessions.map({ $0.end }).max() else { return }
-        Task { await CalendarManager.shared.syncPlannerSessionsToCalendar(in: start...end) }
+        guard let start = sessions.map(\.start).min(),
+              let end = sessions.map(\.end).max() else { return }
+        Task { await CalendarManager.shared.syncPlannerSessionsToCalendar(in: start ... end) }
     }
 
     private func syncPlannerCalendar(for scheduled: [ScheduledSession]) {
-        guard let start = scheduled.map({ $0.start }).min(),
-              let end = scheduled.map({ $0.end }).max() else { return }
-        Task { await CalendarManager.shared.syncPlannerSessionsToCalendar(in: start...end) }
+        guard let start = scheduled.map(\.start).min(),
+              let end = scheduled.map(\.end).max() else { return }
+        Task { await CalendarManager.shared.syncPlannerSessionsToCalendar(in: start ... end) }
     }
 
     private static func urgency(from value: Double) -> AssignmentUrgency {
         switch value {
-        case ..<0.3: return .low
-        case ..<0.7: return .medium
-        default: return .high
+        case ..<0.3: .low
+        case ..<0.7: .medium
+        default: .high
         }
     }
-    
+
     private static func category(from type: TaskType) -> AssignmentCategory {
         switch type {
-        case .exam: return .exam
-        case .quiz: return .quiz
-        case .project: return .project
-        case .homework: return .homework
-        case .reading: return .reading
-        case .review: return .review
-        case .study: return .review
-        case .practiceTest: return .practiceTest
+        case .exam: .exam
+        case .quiz: .quiz
+        case .project: .project
+        case .homework: .homework
+        case .reading: .reading
+        case .review: .review
+        case .study: .review
+        case .practiceTest: .practiceTest
         }
     }
 }

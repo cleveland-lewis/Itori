@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 @MainActor
 final class FocusManager: ObservableObject {
@@ -15,11 +15,11 @@ final class FocusManager: ObservableObject {
     @Published var isPomodorBreak: Bool = false
     @Published var activeSession: LocalTimerSession? = nil
     @Published var sessions: [LocalTimerSession] = []
-    
+
     private var timerCancellable: AnyCancellable?
     @Published var settings: AppSettingsModel
     private let audioService = AudioFeedbackService.shared
-    
+
     init() {
         self.settings = AppSettingsModel.shared
         pomodoroSessions = settings.pomodoroIterations
@@ -29,16 +29,23 @@ final class FocusManager: ObservableObject {
         guard !isRunning else { return }
         isRunning = true
         if activeSession == nil, let activity = activities.first(where: { $0.id == selectedActivityID }) {
-            activeSession = LocalTimerSession(id: UUID(), activityID: activity.id, mode: mode, startDate: Date(), endDate: nil, duration: 0)
+            activeSession = LocalTimerSession(
+                id: UUID(),
+                activityID: activity.id,
+                mode: mode,
+                startDate: Date(),
+                endDate: nil,
+                duration: 0
+            )
         }
-        
+
         // Play haptic feedback only
         Feedback.shared.timerStart()
     }
 
     func pauseTimer() {
         isRunning = false
-        
+
         // Play haptic feedback only
         Feedback.shared.timerStop()
     }
@@ -50,13 +57,13 @@ final class FocusManager: ObservableObject {
         completedPomodoroSessions = 0
         isPomodorBreak = false
     }
-    
+
     func endTimerSession() {
         isRunning = false
-        
+
         // Play haptic feedback only
         Feedback.shared.timerStop()
-        
+
         if var session = activeSession {
             session.endDate = Date()
             let elapsed = Date().timeIntervalSince(session.startDate)
@@ -92,17 +99,17 @@ final class FocusManager: ObservableObject {
             elapsedSeconds = 0
         case .pomodoro:
             duration = 25 * 60 - remainingSeconds
-            
+
             if isPomodorBreak {
                 completedPomodoroSessions += 1
                 isPomodorBreak = false
                 remainingSeconds = 25 * 60
             } else {
                 isPomodorBreak = true
-                
+
                 let longBreakCadence = settings.longBreakCadence
                 let isLongBreak = (completedPomodoroSessions + 1) % longBreakCadence == 0
-                
+
                 if isLongBreak {
                     remainingSeconds = TimeInterval(settings.pomodoroLongBreakMinutes * 60)
                 } else {

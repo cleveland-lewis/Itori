@@ -16,11 +16,11 @@ extension Course: StorageListable {
         }
         return "Untitled Course"
     }
-    
+
     public var entityType: StorageEntityType {
         .course
     }
-    
+
     public var contextDescription: String? {
         // Show course code
         if !code.isEmpty {
@@ -28,12 +28,12 @@ extension Course: StorageListable {
         }
         return nil
     }
-    
+
     public var primaryDate: Date {
         // Use current date as fallback since Course doesn't have createdDate
         Date()
     }
-    
+
     public var statusDescription: String? {
         isArchived ? "Archived" : "Active"
     }
@@ -47,19 +47,19 @@ extension Semester: StorageListable {
         let termName = semesterTerm.rawValue
         return "\(termName) \(academicYear ?? "")"
     }
-    
+
     public var entityType: StorageEntityType {
         .semester
     }
-    
+
     public var contextDescription: String? {
         educationLevel.rawValue
     }
-    
+
     public var primaryDate: Date {
         startDate
     }
-    
+
     public var statusDescription: String? {
         isCurrent ? "Current" : nil
     }
@@ -90,16 +90,16 @@ extension CourseOutlineNode: StorageListable {
             return "Untitled Node"
         }
     }
-    
+
     public var entityType: StorageEntityType {
         .courseOutline
     }
-    
+
     public var contextDescription: String? {
         // Show node type
         type.rawValue
     }
-    
+
     public var primaryDate: Date {
         createdAt
     }
@@ -125,11 +125,11 @@ extension CourseFile: StorageListable {
         let timestamp = formatter.string(from: createdAt)
         return "File (\(timestamp))"
     }
-    
+
     public var entityType: StorageEntityType {
         .courseFile
     }
-    
+
     public var contextDescription: String? {
         // Show file type and special flags
         var parts: [String] = []
@@ -144,7 +144,7 @@ extension CourseFile: StorageListable {
         }
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
-    
+
     public var primaryDate: Date {
         createdAt
     }
@@ -154,7 +154,7 @@ extension CourseFile: StorageListable {
 
 extension Attachment: StorageListable {
     public var displayTitle: String {
-        if let name = name, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if let name, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return name
         }
         // Fallback: extract from URL
@@ -165,21 +165,21 @@ extension Attachment: StorageListable {
             }
         }
         // Fallback by tag
-        if let tag = tag {
+        if let tag {
             return "\(tag.rawValue.capitalized) Attachment"
         }
         return "Untitled Attachment"
     }
-    
+
     public var entityType: StorageEntityType {
         .attachment
     }
-    
+
     public var contextDescription: String? {
         // Show tag if available
         tag?.rawValue.capitalized
     }
-    
+
     public var primaryDate: Date {
         dateAdded ?? Date()
     }
@@ -190,46 +190,46 @@ extension Attachment: StorageListable {
 // Note: CalendarEvent conformance temporarily disabled due to type ambiguity
 // Deferred: CalendarEvent type resolution
 /*
-extension CalendarEvent: StorageListable {
-    public var displayTitle: String {
-        if !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            return title
-        }
-        // Fallback: use category + date
-        let dateStr = startDate.formatted(date: .abbreviated, time: .omitted)
-        #if os(macOS)
-        let cat = category.rawValue
-        #else
-        let cat = category?.rawValue ?? "Event"
-        #endif
-        return "\(cat) (\(dateStr))"
-    }
-    
-    public var entityType: StorageEntityType {
-        .calendarEvent
-    }
-    
-    public var contextDescription: String? {
-        // Show location if available
-        location
-    }
-    
-    public var primaryDate: Date {
-        startDate
-    }
-    
-    public var searchableText: String {
-        var components = [displayTitle, entityType.rawValue]
-        if let location = location {
-            components.append(location)
-        }
-        if let notes = notes {
-            components.append(notes)
-        }
-        return components.joined(separator: " ")
-    }
-}
-*/
+ extension CalendarEvent: StorageListable {
+     public var displayTitle: String {
+         if !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+             return title
+         }
+         // Fallback: use category + date
+         let dateStr = startDate.formatted(date: .abbreviated, time: .omitted)
+         #if os(macOS)
+         let cat = category.rawValue
+         #else
+         let cat = category?.rawValue ?? "Event"
+         #endif
+         return "\(cat) (\(dateStr))"
+     }
+
+     public var entityType: StorageEntityType {
+         .calendarEvent
+     }
+
+     public var contextDescription: String? {
+         // Show location if available
+         location
+     }
+
+     public var primaryDate: Date {
+         startDate
+     }
+
+     public var searchableText: String {
+         var components = [displayTitle, entityType.rawValue]
+         if let location = location {
+             components.append(location)
+         }
+         if let notes = notes {
+             components.append(notes)
+         }
+         return components.joined(separator: " ")
+     }
+ }
+ */
 
 // MARK: - AppTask (Assignments)
 
@@ -309,15 +309,16 @@ extension StoredScheduledSession: StorageListable {
     public var displayTitle: String {
         // Handle breaks with localized titles
         if type == .breakTime {
-            let breakType = estimatedMinutes >= 15 ? 
+            let breakType = estimatedMinutes >= 15 ?
                 NSLocalizedString("planner.break.long", value: "Long Break", comment: "Long break session title") :
                 NSLocalizedString("planner.break.short", value: "Short Break", comment: "Short break session title")
             return breakType
         }
-        
+
         let baseTitle: String = {
             if let assignmentId,
-               let task = AssignmentsStore.shared.tasks.first(where: { $0.id == assignmentId }) {
+               let task = AssignmentsStore.shared.tasks.first(where: { $0.id == assignmentId })
+            {
                 return task.title
             }
             let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -493,8 +494,8 @@ extension ParsedAssignment: StorageListable {
 // MARK: - Fallback Utilities
 
 /// Helper to generate fallback titles with timestamps
-internal func fallbackTitle(prefix: String, date: Date?) -> String {
-    if let date = date {
+func fallbackTitle(prefix: String, date: Date?) -> String {
+    if let date {
         let dateStr = date.formatted(date: .abbreviated, time: .shortened)
         return "\(prefix) (\(dateStr))"
     }
@@ -502,8 +503,8 @@ internal func fallbackTitle(prefix: String, date: Date?) -> String {
 }
 
 /// Helper to safely extract non-empty string
-internal func nonEmptyString(_ str: String?) -> String? {
-    guard let str = str else { return nil }
+func nonEmptyString(_ str: String?) -> String? {
+    guard let str else { return nil }
     let trimmed = str.trimmingCharacters(in: .whitespacesAndNewlines)
     return trimmed.isEmpty ? nil : trimmed
 }

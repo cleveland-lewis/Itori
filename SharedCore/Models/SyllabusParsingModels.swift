@@ -20,7 +20,7 @@ struct SyllabusParsingJob: Identifiable, Codable {
     var completedAt: Date?
     var errorMessage: String?
     var createdAt: Date
-    
+
     init(
         id: UUID = UUID(),
         courseId: UUID,
@@ -46,21 +46,21 @@ struct SyllabusParsingJob: Identifiable, Codable {
 
 struct ParsedAssignment: Identifiable, Codable {
     var id: UUID
-    var jobId: UUID  // Link back to parsing job
+    var jobId: UUID // Link back to parsing job
     var courseId: UUID
     var title: String
     var dueDate: Date?
-    var dueTime: String?  // Optional time string if parsed
-    var inferredType: String?  // e.g., "Homework", "Exam", "Project"
+    var dueTime: String? // Optional time string if parsed
+    var inferredType: String? // e.g., "Homework", "Exam", "Project"
     var inferredCategory: String?
-    var provenanceAnchor: String?  // Text snippet from syllabus for traceability
-    var rawText: String?  // Full parsed text
+    var provenanceAnchor: String? // Text snippet from syllabus for traceability
+    var rawText: String? // Full parsed text
     var createdAt: Date
-    
+
     // Not imported to canonical assignments yet
     var isImported: Bool
     var importedTaskId: UUID?
-    
+
     init(
         id: UUID = UUID(),
         jobId: UUID,

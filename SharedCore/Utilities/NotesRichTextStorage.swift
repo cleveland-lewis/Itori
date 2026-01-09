@@ -1,8 +1,8 @@
 import Foundation
 #if os(macOS)
-import AppKit
+    import AppKit
 #else
-import UIKit
+    import UIKit
 #endif
 
 enum NotesRichTextStorage {
@@ -13,10 +13,11 @@ enum NotesRichTextStorage {
             let payload = String(raw.dropFirst(rtfPrefix.count))
             if let data = Data(base64Encoded: payload),
                let attributed = try? NSAttributedString(
-                data: data,
-                options: [.documentType: NSAttributedString.DocumentType.rtf],
-                documentAttributes: nil
-               ) {
+                   data: data,
+                   options: [.documentType: NSAttributedString.DocumentType.rtf],
+                   documentAttributes: nil
+               )
+            {
                 return attributed
             }
         }
@@ -58,17 +59,17 @@ enum NotesRichTextStorage {
 
     private static func fontIsBoldOrItalic(_ font: PlatformFont) -> Bool {
         #if os(macOS)
-        let traits = font.fontDescriptor.symbolicTraits
-        return traits.contains(.bold) || traits.contains(.italic)
+            let traits = font.fontDescriptor.symbolicTraits
+            return traits.contains(.bold) || traits.contains(.italic)
         #else
-        let traits = font.fontDescriptor.symbolicTraits
-        return traits.contains(.traitBold) || traits.contains(.traitItalic)
+            let traits = font.fontDescriptor.symbolicTraits
+            return traits.contains(.traitBold) || traits.contains(.traitItalic)
         #endif
     }
 }
 
 #if os(macOS)
-typealias PlatformFont = NSFont
+    typealias PlatformFont = NSFont
 #else
-typealias PlatformFont = UIFont
+    typealias PlatformFont = UIFont
 #endif

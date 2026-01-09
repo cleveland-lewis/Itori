@@ -56,9 +56,9 @@ private struct GlassEffectModifier: ViewModifier {
     @ViewBuilder
     private var overlayView: some View {
         let policy = MaterialPolicy(preferences: preferences)
-        
+
         switch shape {
-        case .rect(let cornerRadius):
+        case let .rect(cornerRadius):
             // Layer material, tint, highlights and subtle blur to resemble liquid glass
             ZStack {
                 RoundedRectangle(cornerRadius: cornerRadius)
@@ -93,8 +93,8 @@ private struct GlassEffectModifier: ViewModifier {
 
     private var clipShape: some Shape {
         switch shape {
-        case .rect(let r):
-            return RoundedRectangle(cornerRadius: r)
+        case let .rect(r):
+            RoundedRectangle(cornerRadius: r)
         }
     }
 }

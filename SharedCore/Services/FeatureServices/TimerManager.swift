@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 import UserNotifications
 
 final class TimerManager: ObservableObject {
@@ -16,12 +16,12 @@ final class TimerManager: ObservableObject {
         LOG_TIMER(.info, "TimerStart", "Timer starting with \(secondsRemaining)s")
         isRunning = true
         isPaused = false
-        
+
         // Play timer start feedback
         Task { @MainActor in
             Feedback.shared.timerStart()
         }
-        
+
         // Throttled to 1s
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             guard let strongSelf = self else { return }
@@ -40,29 +40,29 @@ final class TimerManager: ObservableObject {
         isPaused = false
         timer?.invalidate()
         timer = nil
-        
+
         // Play timer stop feedback
         Task { @MainActor in
             Feedback.shared.timerStop()
         }
     }
-    
+
     func togglePause() {
         guard isRunning else { return }
-        
+
         isPaused.toggle()
-        
+
         if isPaused {
             LOG_TIMER(.info, "TimerPause", "Timer paused")
             timer?.invalidate()
             timer = nil
-            
+
             Task { @MainActor in
                 Feedback.shared.timerStop() // Use stop feedback for pause
             }
         } else {
             LOG_TIMER(.info, "TimerResume", "Timer resumed")
-            
+
             // Restart the timer
             timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
                 guard let strongSelf = self else { return }
@@ -73,7 +73,7 @@ final class TimerManager: ObservableObject {
             if let t = timer {
                 RunLoop.current.add(t, forMode: .common)
             }
-            
+
             Task { @MainActor in
                 Feedback.shared.timerStart()
             }
@@ -94,7 +94,11 @@ final class TimerManager: ObservableObject {
     /// Call this on launch to populate permission state
     func checkNotificationPermissions() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
-            LOG_NOTIFICATIONS(.debug, "Permissions", "Notification auth status: \(settings.authorizationStatus.rawValue)")
+            LOG_NOTIFICATIONS(
+                .debug,
+                "Permissions",
+                "Notification auth status: \(settings.authorizationStatus.rawValue)"
+            )
             if settings.authorizationStatus == .denied {
                 LOG_NOTIFICATIONS(.debug, "Permissions", "Notification permissions denied by user")
             } else if settings.authorizationStatus == .notDetermined {
@@ -103,7 +107,7 @@ final class TimerManager: ObservableObject {
             // Don't auto-request - let user trigger from Settings or timer start
         }
     }
-    
+
     /// Request notification permission (called explicitly by user action)
     func requestNotificationPermission() {
         NotificationManager.shared.requestAuthorization()

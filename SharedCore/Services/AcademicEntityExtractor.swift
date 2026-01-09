@@ -100,15 +100,15 @@ enum AcademicExtractionError: Error, LocalizedError {
     case noEntitiesFound
     case insufficientContext
     case parsingFailed(String)
-    
+
     var errorDescription: String? {
         switch self {
         case .noEntitiesFound:
-            return "No academic entities found in document"
+            "No academic entities found in document"
         case .insufficientContext:
-            return "Insufficient context to extract entities"
-        case .parsingFailed(let reason):
-            return "Parsing failed: \(reason)"
+            "Insufficient context to extract entities"
+        case let .parsingFailed(reason):
+            "Parsing failed: \(reason)"
         }
     }
 }
@@ -117,34 +117,33 @@ enum AcademicExtractionError: Error, LocalizedError {
 
 @MainActor
 class AcademicEntityExtractor: AcademicEntityExtractPort {
-    
     private let dateDetector = DateDetector()
     private let assignmentDetector = AssignmentDetector()
     private let courseDetector = CourseDetector()
     private let policyDetector = PolicyDetector()
-    
+
     func extract(from text: String, context: ExtractionContext?) async throws -> AcademicExtractionResult {
         // Normalize text
         let normalizedText = normalizeText(text)
-        
+
         // Extract entities in parallel
         async let courses = courseDetector.detectCourses(in: normalizedText, context: context)
         async let assignments = assignmentDetector.detectAssignments(in: normalizedText, context: context)
         async let dates = dateDetector.detectDates(in: normalizedText)
         async let policies = policyDetector.detectPolicies(in: normalizedText)
-        
+
         let extractedCourses = try await courses
         let extractedAssignments = try await assignments
         let extractedDates = try await dates
         let extractedPolicies = try await policies
-        
+
         // Calculate confidence
         let confidence = calculateConfidence(
             courses: extractedCourses,
             assignments: extractedAssignments,
             dates: extractedDates
         )
-        
+
         return AcademicExtractionResult(
             courses: extractedCourses,
             assignments: extractedAssignments,
@@ -153,24 +152,25 @@ class AcademicEntityExtractor: AcademicEntityExtractPort {
             confidence: confidence
         )
     }
-    
+
     private func normalizeText(_ text: String) -> String {
         text
             .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
-    
+
     private func calculateConfidence(
         courses: [ExtractedCourse],
         assignments: [ExtractedAssignment],
         dates: [ExtractedDate]
     ) -> ExtractionConfidence {
         let courseConf = courses.isEmpty ? 0.0 : courses.map(\.confidence).reduce(0, +) / Double(courses.count)
-        let assignmentConf = assignments.isEmpty ? 0.0 : assignments.map(\.confidence).reduce(0, +) / Double(assignments.count)
+        let assignmentConf = assignments.isEmpty ? 0.0 : assignments.map(\.confidence)
+            .reduce(0, +) / Double(assignments.count)
         let dateConf = dates.isEmpty ? 0.0 : 0.8
-        
+
         let overall = (courseConf + assignmentConf + dateConf) / 3.0
-        
+
         return ExtractionConfidence(
             overall: overall,
             courseDetection: courseConf,
@@ -187,16 +187,16 @@ class DateDetector {
         var dates: [ExtractedDate] = []
         let detector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
         let range = NSRange(text.startIndex..., in: text)
-        
+
         let matches = detector.matches(in: text, range: range)
-        
+
         for match in matches {
             guard let date = match.date,
                   let matchRange = Range(match.range, in: text) else { continue }
-            
+
             let context = extractContext(around: match.range, in: text)
             let type = determineDateType(from: context)
-            
+
             dates.append(ExtractedDate(
                 date: date,
                 context: context,
@@ -208,22 +208,22 @@ class DateDetector {
                 )
             ))
         }
-        
+
         return dates
     }
-    
+
     private func extractContext(around range: NSRange, in text: String) -> String {
         let start = max(0, range.location - 50)
         let end = min(text.count, range.location + range.length + 50)
         let contextRange = NSRange(location: start, length: end - start)
-        
+
         guard let swiftRange = Range(contextRange, in: text) else { return "" }
         return String(text[swiftRange])
     }
-    
+
     private func determineDateType(from context: String) -> DateType {
         let lowercased = context.lowercased()
-        
+
         if lowercased.contains("due") || lowercased.contains("submit") {
             return .dueDate
         } else if lowercased.contains("exam") || lowercased.contains("test") || lowercased.contains("quiz") {
@@ -246,28 +246,28 @@ class AssignmentDetector {
         "quiz", "test", "exam", "midterm", "final", "lab", "report",
         "presentation", "reading", "review", "problem set"
     ]
-    
-    func detectAssignments(in text: String, context: ExtractionContext?) async throws -> [ExtractedAssignment] {
+
+    func detectAssignments(in text: String, context _: ExtractionContext?) async throws -> [ExtractedAssignment] {
         var assignments: [ExtractedAssignment] = []
         let lines = text.components(separatedBy: .newlines)
-        
+
         for (index, line) in lines.enumerated() {
             guard containsAssignmentKeyword(line) else { continue }
-            
+
             let title = extractTitle(from: line)
             let category = extractCategory(from: line)
             let dueDate = extractDueDate(from: line, nextLines: Array(lines.dropFirst(index).prefix(3)))
             let duration = extractDuration(from: line, category: category)
             let weight = extractWeight(from: line)
-            
+
             let confidence = calculateAssignmentConfidence(
                 title: title,
                 category: category,
                 dueDate: dueDate
             )
-            
+
             guard confidence > 0.3 else { continue }
-            
+
             assignments.append(ExtractedAssignment(
                 title: title,
                 category: category,
@@ -279,36 +279,38 @@ class AssignmentDetector {
                 confidence: confidence
             ))
         }
-        
+
         return assignments
     }
-    
+
     private func containsAssignmentKeyword(_ text: String) -> Bool {
         let lowercased = text.lowercased()
         return assignmentKeywords.contains { lowercased.contains($0) }
     }
-    
+
     private func extractTitle(from line: String) -> String {
         // Remove common prefixes and clean up
         var title = line
             .replacingOccurrences(of: "^\\d+\\.\\s*", with: "", options: .regularExpression)
             .replacingOccurrences(of: "^[-•]\\s*", with: "", options: .regularExpression)
             .trimmingCharacters(in: .whitespaces)
-        
+
         // Take first sentence or up to first dash/colon
         if let range = title.range(of: "[.:-]", options: .regularExpression) {
             title = String(title[..<range.lowerBound])
         }
-        
+
         return title.trimmingCharacters(in: .whitespaces)
     }
-    
+
     private func extractCategory(from line: String) -> AssignmentCategory? {
         let lowercased = line.lowercased()
-        
+
         if lowercased.contains("homework") || lowercased.contains("hw") || lowercased.contains("problem set") {
             return .homework
-        } else if lowercased.contains("exam") || lowercased.contains("test") || lowercased.contains("midterm") || lowercased.contains("final") {
+        } else if lowercased.contains("exam") || lowercased.contains("test") || lowercased
+            .contains("midterm") || lowercased.contains("final")
+        {
             return .exam
         } else if lowercased.contains("quiz") {
             return .quiz
@@ -319,23 +321,23 @@ class AssignmentDetector {
         } else if lowercased.contains("review") {
             return .review
         }
-        
+
         return nil
     }
-    
+
     private func extractDueDate(from line: String, nextLines: [String]) -> Date? {
         let combinedText = ([line] + nextLines).joined(separator: " ")
         let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.date.rawValue)
         let range = NSRange(combinedText.startIndex..., in: combinedText)
-        
+
         let matches = detector?.matches(in: combinedText, range: range) ?? []
         return matches.first?.date
     }
-    
-    private func extractDuration(from line: String, category: AssignmentCategory?) -> Int? {
+
+    private func extractDuration(from _: String, category: AssignmentCategory?) -> Int? {
         // Use category defaults from the earlier spec
-        guard let category = category else { return nil }
-        
+        guard let category else { return nil }
+
         switch category {
         case .reading: return 45
         case .homework: return 75
@@ -346,61 +348,62 @@ class AssignmentDetector {
         case .practiceTest: return 50
         }
     }
-    
+
     private func extractWeight(from line: String) -> String? {
         // Look for percentage patterns
         let pattern = "(\\d+)\\s*%"
         guard let regex = try? NSRegularExpression(pattern: pattern),
               let match = regex.firstMatch(in: line, range: NSRange(line.startIndex..., in: line)),
-              let range = Range(match.range(at: 0), in: line) else {
+              let range = Range(match.range(at: 0), in: line)
+        else {
             return nil
         }
-        
+
         return String(line[range])
     }
-    
+
     private func calculateAssignmentConfidence(
         title: String,
         category: AssignmentCategory?,
         dueDate: Date?
     ) -> Double {
         var confidence = 0.3
-        
+
         if !title.isEmpty && title.count > 3 {
             confidence += 0.3
         }
-        
+
         if category != nil {
             confidence += 0.2
         }
-        
+
         if dueDate != nil {
             confidence += 0.2
         }
-        
+
         return min(confidence, 1.0)
     }
 }
 
 class CourseDetector {
-    func detectCourses(in text: String, context: ExtractionContext?) async throws -> [ExtractedCourse] {
+    func detectCourses(in text: String, context _: ExtractionContext?) async throws -> [ExtractedCourse] {
         var courses: [ExtractedCourse] = []
-        
+
         // Look for course code patterns (e.g., "CS 101", "MATH-2301", "BIO101")
         let pattern = "([A-Z]{2,4})\\s*[-\\s]?\\s*(\\d{3,4})"
         guard let regex = try? NSRegularExpression(pattern: pattern) else { return courses }
-        
+
         let range = NSRange(text.startIndex..., in: text)
         let matches = regex.matches(in: text, range: range)
-        
+
         for match in matches {
             guard let codeRange = Range(match.range, in: text) else { continue }
             let code = String(text[codeRange])
-            
+
             // Try to find course title nearby
             let contextRange = extractContext(around: match.range, in: text, window: 100)
             let title = extractCourseTitle(from: contextRange, code: code)
-            
+
             courses.append(ExtractedCourse(
                 title: title,
                 code: code,
@@ -415,19 +418,19 @@ class CourseDetector {
                 confidence: title.isEmpty ? 0.6 : 0.9
             ))
         }
-        
+
         return courses
     }
-    
+
     private func extractContext(around range: NSRange, in text: String, window: Int) -> String {
         let start = max(0, range.location - window)
         let end = min(text.count, range.location + range.length + window)
         let contextRange = NSRange(location: start, length: end - start)
-        
+
         guard let swiftRange = Range(contextRange, in: text) else { return "" }
         return String(text[swiftRange])
     }
-    
+
     private func extractCourseTitle(from context: String, code: String) -> String {
         // Look for title after code (common pattern: "CS 101: Introduction to Programming")
         if let range = context.range(of: code) {
@@ -436,7 +439,7 @@ class CourseDetector {
                 return afterCode[titleMatch].trimmingCharacters(in: CharacterSet(charactersIn: ":–- \n"))
             }
         }
-        
+
         return ""
     }
 }
@@ -449,27 +452,27 @@ class PolicyDetector {
         "integrity": ["academic integrity", "plagiarism", "cheating", "honor code"],
         "participation": ["participation", "class participation", "engagement"]
     ]
-    
+
     func detectPolicies(in text: String) async throws -> [ExtractedPolicy] {
         var policies: [ExtractedPolicy] = []
         let paragraphs = text.components(separatedBy: "\n\n")
-        
+
         for paragraph in paragraphs {
             guard let policyType = detectPolicyType(in: paragraph) else { continue }
-            
+
             policies.append(ExtractedPolicy(
                 type: policyType,
                 description: paragraph.trimmingCharacters(in: .whitespacesAndNewlines),
                 sourceSpan: TextSpan(start: 0, end: paragraph.count, text: paragraph)
             ))
         }
-        
+
         return policies
     }
-    
+
     private func detectPolicyType(in text: String) -> PolicyType? {
         let lowercased = text.lowercased()
-        
+
         if policyKeywords["grading"]!.contains(where: { lowercased.contains($0) }) {
             return .grading
         } else if policyKeywords["attendance"]!.contains(where: { lowercased.contains($0) }) {
@@ -481,7 +484,7 @@ class PolicyDetector {
         } else if policyKeywords["participation"]!.contains(where: { lowercased.contains($0) }) {
             return .participation
         }
-        
+
         return nil
     }
 }

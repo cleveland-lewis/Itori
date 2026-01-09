@@ -1,8 +1,5 @@
-import Foundation
-import Combine
-import CoreData
+internal import CoreData
 import UserNotifications
-import _Concurrency
 
 @MainActor
 final class TimerPageViewModel: ObservableObject {
@@ -66,6 +63,7 @@ final class TimerPageViewModel: ObservableObject {
     }
 
     // MARK: - Clock
+
     func startClock() {
         clockCancellable = Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
@@ -84,6 +82,7 @@ final class TimerPageViewModel: ObservableObject {
     }
 
     // MARK: - CRUD for activities
+
     func addActivity(_ activity: TimerActivity) {
         activities.append(activity)
         persistState()
@@ -113,6 +112,7 @@ final class TimerPageViewModel: ObservableObject {
     }
 
     // MARK: - Collections
+
     func addCollection(_ c: ActivityCollection) {
         collections.append(c)
         persistState()
@@ -132,6 +132,7 @@ final class TimerPageViewModel: ObservableObject {
     }
 
     // MARK: - Sessions
+
     func startSession(plannedDuration: TimeInterval? = nil) {
         guard currentSession?.state != .running else { return }
         requestNotificationPermissionIfNeeded()
@@ -153,20 +154,30 @@ final class TimerPageViewModel: ObservableObject {
             planned = focusDuration
         }
 
-        let session = FocusSession(activityID: currentActivityID, mode: currentMode, plannedDuration: planned, startedAt: Date(), state: .running)
+        let session = FocusSession(
+            activityID: currentActivityID,
+            mode: currentMode,
+            plannedDuration: planned,
+            startedAt: Date(),
+            state: .running
+        )
         currentSession = session
         sessionElapsed = 0
         sessionRemaining = planned ?? 0
 
-        LOG_UI(.info, "Timer", "Started session \(session.id) for activity=\(String(describing: session.activityID)) mode=\(currentMode.rawValue)")
-        
+        LOG_UI(
+            .info,
+            "Timer",
+            "Started session \(session.id) for activity=\(String(describing: session.activityID)) mode=\(currentMode.rawValue)"
+        )
+
         // Play timer start feedback (haptic only)
         Task { @MainActor in
             Feedback.shared.timerStart()
         }
-        
+
         scheduleCompletionNotification()
-        
+
         persistState()
         notifyTimerSessionUpdate()
     }
@@ -176,14 +187,14 @@ final class TimerPageViewModel: ObservableObject {
         s.state = .paused
         currentSession = s
         LOG_UI(.info, "Timer", "Paused session \(s.id)")
-        
+
         // Play pause feedback (haptic only)
         Task { @MainActor in
             Feedback.shared.timerStop()
         }
-        
+
         cancelCompletionNotification()
-        
+
         persistState()
         notifyTimerSessionUpdate()
     }
@@ -194,16 +205,16 @@ final class TimerPageViewModel: ObservableObject {
         s.state = .running
         currentSession = s
         LOG_UI(.info, "Timer", "Resumed session \(s.id)")
-        
+
         // Play resume feedback (haptic only)
         Task { @MainActor in
             Feedback.shared.timerStart()
         }
-        
+
         scheduleCompletionNotification()
-        
+
         // Phase 2.2: Reschedule AlarmKit alarm with remaining time
-        
+
         persistState()
         notifyTimerSessionUpdate()
     }
@@ -244,7 +255,7 @@ final class TimerPageViewModel: ObservableObject {
             }
             isOnBreak.toggle()
         }
-        
+
         // Track study hours if completed and setting enabled (Phase D)
         if completed, let actualDuration = s.actualDuration {
             let durationMinutes = Int(actualDuration / 60)
@@ -253,20 +264,20 @@ final class TimerPageViewModel: ObservableObject {
                 durationMinutes: durationMinutes
             )
         }
-        
+
         // Play end feedback (haptic only)
         Task { @MainActor in
             if completed {
-                Feedback.shared.timerStop()  // Success haptic
+                Feedback.shared.timerStop() // Success haptic
             } else {
-                Feedback.shared.timerStop()  // Also stop feedback for cancelled
+                Feedback.shared.timerStop() // Also stop feedback for cancelled
             }
         }
         LOG_UI(.info, "Timer", "Ended session \(s.id) completed=\(completed)")
         cancelCompletionNotification()
-        
+
         // Phase 2.2: Cancel AlarmKit alarm when session ends
-        
+
         persistState()
         notifyTimerSessionUpdate()
     }
@@ -282,32 +293,32 @@ final class TimerPageViewModel: ObservableObject {
         startSession(plannedDuration: planned)
     }
 
-#if DEBUG
-    func debugAdvance(seconds: TimeInterval) {
-        guard let session = currentSession else { return }
-        sessionElapsed += seconds
-        if let planned = session.plannedDuration {
-            sessionRemaining = max(planned - sessionElapsed, 0)
-            if sessionRemaining == 0 {
-                endSession(completed: true)
-                return
+    #if DEBUG
+        func debugAdvance(seconds: TimeInterval) {
+            guard let session = currentSession else { return }
+            sessionElapsed += seconds
+            if let planned = session.plannedDuration {
+                sessionRemaining = max(planned - sessionElapsed, 0)
+                if sessionRemaining == 0 {
+                    endSession(completed: true)
+                    return
+                }
             }
+            currentSession = session
         }
-        currentSession = session
-    }
-#endif
-    
+    #endif
+
     /// Skip current Pomodoro segment and advance to the next one
     func skipSegment() {
         guard let session = currentSession, session.mode == .pomodoro else { return }
         guard session.state == .running else { return }
-        
+
         LOG_UI(.info, "Timer", "Skipping Pomodoro segment - was on break: \(isOnBreak)")
-        
+
         // End current segment without counting remaining time as study time
         // Mark as completed to trigger the break toggle
         endSession(completed: true)
-        
+
         // Automatically start the next segment
         startSession()
     }
@@ -315,14 +326,18 @@ final class TimerPageViewModel: ObservableObject {
     func sessions(for activityID: UUID?) -> [FocusSession] {
         pastSessions.filter { $0.activityID == activityID }
     }
-    
+
     func addManualSession(_ session: FocusSession) {
         insertPastSession(session)
         upsertSessionInStore(session)
-        LOG_UI(.info, "Timer", "Manually added session \(session.id) for activity=\(String(describing: session.activityID))")
+        LOG_UI(
+            .info,
+            "Timer",
+            "Manually added session \(session.id) for activity=\(String(describing: session.activityID))"
+        )
         persistState()
     }
-    
+
     func deleteSessions(ids: [UUID]) {
         pastSessions.removeAll { ids.contains($0.id) }
         LOG_UI(.info, "Timer", "Deleted \(ids.count) session(s)")
@@ -339,6 +354,7 @@ final class TimerPageViewModel: ObservableObject {
     }
 
     // MARK: - Internals
+
     private func tickSession() {
         guard let session = currentSession, session.state == .running else { return }
         sessionElapsed += 1
@@ -364,11 +380,16 @@ final class TimerPageViewModel: ObservableObject {
     }
 
     // MARK: - Notifications
+
     private func requestNotificationPermissionIfNeeded() {
         guard !hasRequestedNotificationPermission else { return }
         hasRequestedNotificationPermission = true
         DispatchQueue.main.async {
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            UNUserNotificationCenter.current().requestAuthorization(options: [
+                .alert,
+                .sound,
+                .badge
+            ]) { granted, error in
                 if granted {
                     LOG_UI(.info, "Timer", "Notification permission granted")
                 } else if let error {
@@ -381,13 +402,13 @@ final class TimerPageViewModel: ObservableObject {
     }
 
     // MARK: - Notification/Alarm Scheduling (Phase 2.4: Fallback Support)
-    
+
     private func scheduleCompletionNotification() {
         guard let session = currentSession, session.state == .running else { return }
         guard session.mode != .stopwatch else { return }
         if session.mode == .timer && !AppSettingsModel.shared.timerAlertsEnabled { return }
         if session.mode == .pomodoro && !AppSettingsModel.shared.pomodoroAlertsEnabled { return }
-        
+
         cancelCompletionNotification()
 
         let remaining = sessionRemaining > 0 ? sessionRemaining : (session.plannedDuration ?? 0) - sessionElapsed
@@ -395,20 +416,20 @@ final class TimerPageViewModel: ObservableObject {
 
         let title: String
         let body: String
-        
+
         if session.mode == .pomodoro {
             title = NSLocalizedString("timer.notification.pomodoro_complete", comment: "Pomodoro Complete")
-            body = isOnBreak ? 
+            body = isOnBreak ?
                 NSLocalizedString("timer.notification.break_over", comment: "Break is over. Time to focus!") :
                 NSLocalizedString("timer.notification.work_over", comment: "Time for a break!")
         } else {
             title = NSLocalizedString("timer.notification.timer_finished", comment: "Timer Finished")
             body = NSLocalizedString("timer.notification.check_progress", comment: "Time to check your progress!")
         }
-        
+
         // Phase 2.4: Use AlarmKit if available and enabled, otherwise fall back to notifications
     }
-    
+
     private func scheduleStandardNotification(remaining: TimeInterval, title: String, body: String) {
         let content = UNMutableNotificationContent()
         content.title = title
@@ -418,8 +439,8 @@ final class TimerPageViewModel: ObservableObject {
         content.userInfo = ["sessionID": currentSession?.id.uuidString ?? "unknown"]
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: remaining, repeats: false)
-        let request = UNNotificationRequest(identifier: "RootsTimerCompletion", content: content, trigger: trigger)
-        
+        let request = UNNotificationRequest(identifier: "ItoriTimerCompletion", content: content, trigger: trigger)
+
         UNUserNotificationCenter.current().add(request) { error in
             if let error {
                 LOG_UI(.error, "Timer", "Error scheduling notification: \(error.localizedDescription)")
@@ -431,10 +452,11 @@ final class TimerPageViewModel: ObservableObject {
 
     private func cancelCompletionNotification() {
         // Cancel both AlarmKit and standard notifications to avoid duplicates
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["RootsTimerCompletion"])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["ItoriTimerCompletion"])
     }
 
     // MARK: - Persistence
+
     private struct TimerPersistedState: Codable {
         var activities: [TimerActivity]
         var collections: [ActivityCollection]
@@ -713,7 +735,7 @@ final class TimerPageViewModel: ObservableObject {
     }
 
     private func sortPastSessions() {
-        pastSessions.sort { (lhs, rhs) in
+        pastSessions.sort { lhs, rhs in
             (lhs.startedAt ?? .distantPast) > (rhs.startedAt ?? .distantPast)
         }
     }
@@ -725,5 +747,4 @@ final class TimerPageViewModel: ObservableObject {
         }
         return entity
     }
-
 }

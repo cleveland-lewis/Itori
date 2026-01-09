@@ -33,24 +33,24 @@ class MockNetworkMonitor {
     var supportsIPv4 = true
     var supportsIPv6 = true
     var updateHandler: ((Bool, ConnectionType) -> Void)?
-    
+
     func startMonitoring() {
         // Simulate monitoring
     }
-    
+
     func stopMonitoring() {
         // Stop monitoring
     }
-    
+
     func simulateConnectionChange(connected: Bool, type: ConnectionType) {
         isConnected = connected
         connectionType = type
         updateHandler?(connected, type)
     }
-    
+
     func simulateQualityChange(_ quality: ConnectionQuality) {
         connectionQuality = quality
-        
+
         switch quality {
         case .excellent:
             isConstrained = false
@@ -62,11 +62,11 @@ class MockNetworkMonitor {
             isConnected = false
         }
     }
-    
+
     func simulateExpensiveConnection(_ expensive: Bool) {
         isExpensive = expensive
     }
-    
+
     func reset() {
         isConnected = true
         connectionType = .wifi

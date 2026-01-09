@@ -3,25 +3,24 @@ import XCTest
 
 /// Tests that run against the fixture corpus
 class FixtureBasedTests: XCTestCase {
-    
     var builders: TestBuilders!
-    
+
     override func setUp() {
         super.setUp()
         builders = TestBuilders(seed: 42)
     }
-    
+
     // MARK: - Schema Fixtures
-    
+
     func testSchemaFixtures() {
         let fixtures = schemaFixtures()
-        
+
         for fixture in fixtures {
             let data = fixture.input.data(using: .utf8)!
-            
+
             do {
                 let decoded = try JSONDecoder().decode(QuestionDraft.self, from: data)
-                
+
                 if fixture.expected.shouldPass {
                     XCTAssertTrue(true, "\(fixture.name): Passed as expected")
                 } else {
@@ -36,34 +35,35 @@ class FixtureBasedTests: XCTestCase {
             }
         }
     }
-    
+
     // MARK: - Validator Fixtures
-    
+
     func testValidatorFixtures() {
         let fixtures = validatorFixtures()
-        
+
         for fixture in fixtures {
             guard let data = fixture.input.data(using: .utf8),
-                  let draft = try? JSONDecoder().decode(QuestionDraft.self, from: data) else {
+                  let draft = try? JSONDecoder().decode(QuestionDraft.self, from: data)
+            else {
                 if !fixture.expected.shouldPass {
                     continue
                 }
                 XCTFail("\(fixture.name): Failed to parse valid JSON")
                 continue
             }
-            
+
             let slot = builders.buildSlot(
                 topic: draft.topic,
                 bloomLevel: BloomLevel(rawValue: draft.bloomLevel) ?? .understand,
                 difficulty: PracticeTestDifficulty(rawValue: draft.difficulty) ?? .medium
             )
-            
+
             let schemaErrors = QuestionValidator.validateSchema(draft: draft)
             let contentErrors = QuestionValidator.validateContent(draft: draft, slot: slot)
             let allErrors = schemaErrors + contentErrors
-            
+
             let hasErrors = !allErrors.filter { $0.severity == "error" }.isEmpty
-            
+
             if fixture.expected.shouldPass {
                 XCTAssertFalse(hasErrors, "\(fixture.name): Should pass but has errors: \(allErrors)")
             } else {
@@ -71,60 +71,64 @@ class FixtureBasedTests: XCTestCase {
             }
         }
     }
-    
+
     // MARK: - Unicode Fixtures
-    
+
     func testUnicodeFixtures() {
         let fixtures = unicodeFixtures()
-        
+
         for fixture in fixtures {
             guard let data = fixture.input.data(using: .utf8),
-                  let draft = try? JSONDecoder().decode(QuestionDraft.self, from: data) else {
+                  let draft = try? JSONDecoder().decode(QuestionDraft.self, from: data)
+            else {
                 if !fixture.expected.shouldPass {
                     continue
                 }
                 XCTFail("\(fixture.name): Failed to parse")
                 continue
             }
-            
+
             let errors = QuestionValidator.validateSchema(draft: draft)
             XCTAssertNotNil(errors, "\(fixture.name): Should not crash")
         }
     }
-    
+
     // MARK: - Golden Fixtures
-    
+
     func testGoldenFixtures() {
         let fixtures = goldenFixtures()
-        
+
         for fixture in fixtures {
             guard let data = fixture.input.data(using: .utf8),
-                  let draft = try? JSONDecoder().decode(QuestionDraft.self, from: data) else {
+                  let draft = try? JSONDecoder().decode(QuestionDraft.self, from: data)
+            else {
                 XCTFail("\(fixture.name): Golden fixture must parse")
                 continue
             }
-            
+
             let slot = builders.buildSlot(
                 topic: draft.topic,
                 bloomLevel: BloomLevel(rawValue: draft.bloomLevel) ?? .understand,
                 difficulty: PracticeTestDifficulty(rawValue: draft.difficulty) ?? .medium
             )
-            
+
             let schemaErrors = QuestionValidator.validateSchema(draft: draft)
             let contentErrors = QuestionValidator.validateContent(draft: draft, slot: slot)
             let allErrors = schemaErrors + contentErrors
-            
+
             let criticalErrors = allErrors.filter { $0.severity == "error" }
-            
-            XCTAssertTrue(criticalErrors.isEmpty,
-                         "\(fixture.name): Golden fixture must pass. Errors: \(criticalErrors)")
+
+            XCTAssertTrue(
+                criticalErrors.isEmpty,
+                "\(fixture.name): Golden fixture must pass. Errors: \(criticalErrors)"
+            )
         }
     }
-    
+
     // MARK: - Hardcoded Fixtures
-    
+
     private func schemaFixtures() -> [TestFixture] {
-        return [
+        [
             FixtureBuilder.createFixture(
                 name: "non_json_text",
                 category: "schema",
@@ -133,7 +137,7 @@ class FixtureBasedTests: XCTestCase {
                 errorCodes: ["INVALID_JSON"],
                 notes: "Plain text should be rejected"
             ),
-            
+
             FixtureBuilder.createFixture(
                 name: "empty_json",
                 category: "schema",
@@ -142,7 +146,7 @@ class FixtureBasedTests: XCTestCase {
                 errorCodes: ["MISSING_FIELD"],
                 notes: "Empty object missing all required fields"
             ),
-            
+
             FixtureBuilder.createFixture(
                 name: "missing_prompt",
                 category: "schema",
@@ -163,7 +167,7 @@ class FixtureBasedTests: XCTestCase {
                 errorFields: ["prompt"],
                 notes: "Missing required prompt field"
             ),
-            
+
             FixtureBuilder.createFixture(
                 name: "wrong_type_choices",
                 category: "schema",
@@ -187,9 +191,9 @@ class FixtureBasedTests: XCTestCase {
             )
         ]
     }
-    
+
     private func validatorFixtures() -> [TestFixture] {
-        return [
+        [
             FixtureBuilder.createFixture(
                 name: "all_of_the_above",
                 category: "validators",
@@ -210,7 +214,7 @@ class FixtureBasedTests: XCTestCase {
                 errorCodes: ["BANNED_PHRASE"],
                 notes: "'All of the above' is banned"
             ),
-            
+
             FixtureBuilder.createFixture(
                 name: "three_choices",
                 category: "validators",
@@ -231,7 +235,7 @@ class FixtureBasedTests: XCTestCase {
                 errorCodes: ["INVALID_CHOICE_COUNT"],
                 notes: "Must have exactly 4 choices"
             ),
-            
+
             FixtureBuilder.createFixture(
                 name: "duplicate_choices",
                 category: "validators",
@@ -252,7 +256,7 @@ class FixtureBasedTests: XCTestCase {
                 errorCodes: ["DUPLICATE_CHOICE"],
                 notes: "Choices must be unique after normalization"
             ),
-            
+
             FixtureBuilder.createFixture(
                 name: "correct_index_out_of_bounds",
                 category: "validators",
@@ -275,9 +279,9 @@ class FixtureBasedTests: XCTestCase {
             )
         ]
     }
-    
+
     private func unicodeFixtures() -> [TestFixture] {
-        return [
+        [
             FixtureBuilder.createFixture(
                 name: "zero_width_space",
                 category: "unicode",
@@ -297,7 +301,7 @@ class FixtureBasedTests: XCTestCase {
                 shouldPass: true,
                 notes: "Zero-width space should be handled gracefully"
             ),
-            
+
             FixtureBuilder.createFixture(
                 name: "smart_quotes",
                 category: "unicode",
@@ -319,9 +323,9 @@ class FixtureBasedTests: XCTestCase {
             )
         ]
     }
-    
+
     private func goldenFixtures() -> [TestFixture] {
-        return [
+        [
             FixtureBuilder.createFixture(
                 name: "golden_bio_mitosis",
                 category: "golden",
@@ -346,7 +350,7 @@ class FixtureBasedTests: XCTestCase {
                 shouldPass: true,
                 notes: "Golden fixture: valid mitosis question"
             ),
-            
+
             FixtureBuilder.createFixture(
                 name: "golden_bio_photosynthesis",
                 category: "golden",
@@ -371,7 +375,7 @@ class FixtureBasedTests: XCTestCase {
                 shouldPass: true,
                 notes: "Golden fixture: valid photosynthesis question with proper formatting"
             ),
-            
+
             FixtureBuilder.createFixture(
                 name: "golden_bio_dna_structure",
                 category: "golden",

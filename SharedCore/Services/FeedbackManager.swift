@@ -1,5 +1,5 @@
 #if os(iOS)
-import UIKit
+    import UIKit
 #endif
 import SwiftUI
 
@@ -8,12 +8,12 @@ import SwiftUI
 @MainActor
 public final class FeedbackManager {
     public static let shared = FeedbackManager()
-    
+
     private var lastFeedbackTime: [FeedbackEvent: Date] = [:]
     private let minimumInterval: TimeInterval = 0.1 // Debounce threshold
-    
+
     private init() {}
-    
+
     public enum FeedbackEvent {
         case taskCompleted
         case taskCreated
@@ -30,58 +30,59 @@ public final class FeedbackManager {
         case itemDragged
         case itemDropped
     }
-    
+
     /// Trigger haptic feedback for an event
     /// Automatically debounces to avoid overwhelming the user
     public func trigger(event: FeedbackEvent) {
         #if os(iOS)
-        // Check debounce
-        if let lastTime = lastFeedbackTime[event],
-           Date().timeIntervalSince(lastTime) < minimumInterval {
-            return
-        }
-        
-        lastFeedbackTime[event] = Date()
-        
-        // Generate appropriate feedback
-        switch event {
-        case .taskCompleted, .timerCompleted, .successAction:
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
-            
-        case .taskCreated, .taskDeleted, .timerStarted, .timerStopped:
-            UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-            
-        case .errorOccurred:
-            UINotificationFeedbackGenerator().notificationOccurred(.error)
-            
-        case .warningAction:
-            UINotificationFeedbackGenerator().notificationOccurred(.warning)
-            
-        case .navigationChanged, .selectionChanged:
-            UISelectionFeedbackGenerator().selectionChanged()
-            
-        case .dataRefreshed:
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            
-        case .itemDragged, .itemDropped:
-            UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
-        }
+            // Check debounce
+            if let lastTime = lastFeedbackTime[event],
+               Date().timeIntervalSince(lastTime) < minimumInterval
+            {
+                return
+            }
+
+            lastFeedbackTime[event] = Date()
+
+            // Generate appropriate feedback
+            switch event {
+            case .taskCompleted, .timerCompleted, .successAction:
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+
+            case .taskCreated, .taskDeleted, .timerStarted, .timerStopped:
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+
+            case .errorOccurred:
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+
+            case .warningAction:
+                UINotificationFeedbackGenerator().notificationOccurred(.warning)
+
+            case .navigationChanged, .selectionChanged:
+                UISelectionFeedbackGenerator().selectionChanged()
+
+            case .dataRefreshed:
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+
+            case .itemDragged, .itemDropped:
+                UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
+            }
         #endif
     }
-    
+
     /// Prepare haptic engine for upcoming feedback (reduces latency)
     public func prepare(for event: FeedbackEvent) {
         #if os(iOS)
-        switch event {
-        case .taskCompleted, .timerCompleted, .successAction, .errorOccurred, .warningAction:
-            UINotificationFeedbackGenerator().prepare()
-            
-        case .taskCreated, .taskDeleted, .timerStarted, .timerStopped, .dataRefreshed, .itemDragged, .itemDropped:
-            UIImpactFeedbackGenerator(style: .medium).prepare()
-            
-        case .navigationChanged, .selectionChanged:
-            UISelectionFeedbackGenerator().prepare()
-        }
+            switch event {
+            case .taskCompleted, .timerCompleted, .successAction, .errorOccurred, .warningAction:
+                UINotificationFeedbackGenerator().prepare()
+
+            case .taskCreated, .taskDeleted, .timerStarted, .timerStopped, .dataRefreshed, .itemDragged, .itemDropped:
+                UIImpactFeedbackGenerator(style: .medium).prepare()
+
+            case .navigationChanged, .selectionChanged:
+                UISelectionFeedbackGenerator().prepare()
+            }
         #endif
     }
 }
@@ -103,14 +104,14 @@ extension View {
 
 /*
  // In IOSAssignmentsView.swift
- 
+
  Button {
      toggleCompletion(task)
      FeedbackManager.shared.trigger(event: .taskCompleted)
  } label: {
      Image(systemName: task.isCompleted ? "checkmark.circle.fill" : "circle")
  }
- 
+
  // Or with modifier
  .hapticFeedback(.taskCompleted, onTrigger: task.isCompleted)
  */

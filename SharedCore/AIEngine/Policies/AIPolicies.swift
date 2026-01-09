@@ -19,26 +19,26 @@ public struct DefaultPrivacyPolicy: AIPrivacyPolicy {
     public func allows(provider: AIProviderID, for privacy: AIPrivacyLevel) -> Bool {
         switch privacy {
         case .normal:
-            return true
+            true
         case .sensitive:
-            return provider != .bringYourOwn
+            provider != .bringYourOwn
         case .onDeviceOnly:
-            return provider == .appleFoundationAI || provider == .localCoreML
+            provider == .appleFoundationAI || provider == .localCoreML
         }
     }
 
-    public func redactIfNeeded(inputJSON: Data, privacy: AIPrivacyLevel) throws -> Data {
+    public func redactIfNeeded(inputJSON: Data, privacy _: AIPrivacyLevel) throws -> Data {
         // Placeholder for future redaction logic; pass-through by default.
-        return inputJSON
+        inputJSON
     }
 }
 
 public struct DefaultRateLimitPolicy: AIRateLimitPolicy {
     public init() {}
-    public func allows(port: AIPortID) -> Bool { true }
+    public func allows(port _: AIPortID) -> Bool { true }
 }
 
 public struct DefaultCapabilityPolicy: AICapabilityPolicy {
     public init() {}
-    public func isPortEnabled(_ port: AIPortID) -> Bool { true }
+    public func isPortEnabled(_: AIPortID) -> Bool { true }
 }

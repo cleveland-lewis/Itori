@@ -9,15 +9,20 @@ struct AnalyticsBucket: Identifiable {
     var categoryDurations: [String: Double] // seconds per category
 }
 
-struct StudyAnalyticsAggregator {
+enum StudyAnalyticsAggregator {
     static func bucketsForToday(hours: Int = 24, calendar: Calendar = Calendar.current) -> [AnalyticsBucket] {
         let now = Date()
         let startOfDay = calendar.startOfDay(for: now)
         var buckets: [AnalyticsBucket] = []
-        for i in 0..<hours {
+        for i in 0 ..< hours {
             let s = calendar.date(byAdding: .hour, value: i, to: startOfDay)!
-            let e = calendar.date(byAdding: .hour, value: i+1, to: startOfDay)!
-            buckets.append(AnalyticsBucket(label: hourLabel(for: s, calendar: calendar), start: s, end: e, categoryDurations: [:]))
+            let e = calendar.date(byAdding: .hour, value: i + 1, to: startOfDay)!
+            buckets.append(AnalyticsBucket(
+                label: hourLabel(for: s, calendar: calendar),
+                start: s,
+                end: e,
+                categoryDurations: [:]
+            ))
         }
         return buckets
     }
@@ -27,7 +32,7 @@ struct StudyAnalyticsAggregator {
         guard let range = calendar.range(of: .day, in: .month, for: now) else { return [] }
         let start = calendar.date(from: calendar.dateComponents([.year, .month], from: now))!
         return range.map { day -> AnalyticsBucket in
-            let s = calendar.date(byAdding: .day, value: day-1, to: start)!
+            let s = calendar.date(byAdding: .day, value: day - 1, to: start)!
             let e = calendar.date(byAdding: .day, value: day, to: start)!
             return AnalyticsBucket(label: String(day), start: s, end: e, categoryDurations: [:])
         }
@@ -36,10 +41,11 @@ struct StudyAnalyticsAggregator {
     static func bucketsForYear(calendar: Calendar = Calendar.current) -> [AnalyticsBucket] {
         let now = Date()
         let start = calendar.date(from: calendar.dateComponents([.year], from: now))!
-        return (1...12).map { m -> AnalyticsBucket in
-            let s = calendar.date(byAdding: .month, value: m-1, to: start)!
+        return (1 ... 12).map { m -> AnalyticsBucket in
+            let s = calendar.date(byAdding: .month, value: m - 1, to: start)!
             let e = calendar.date(byAdding: .month, value: m, to: start)!
-            let formatter = DateFormatter(); formatter.dateFormat = "MMM"
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MMM"
             return AnalyticsBucket(label: formatter.string(from: s), start: s, end: e, categoryDurations: [:])
         }
     }
@@ -52,26 +58,38 @@ struct StudyAnalyticsAggregator {
         if let monday = calendar.date(byAdding: .day, value: -startDiff, to: now) {
             let startOfMonday = calendar.startOfDay(for: monday)
             var buckets: [AnalyticsBucket] = []
-            for i in 0..<7 {
+            for i in 0 ..< 7 {
                 let s = calendar.date(byAdding: .day, value: i, to: startOfMonday)!
-                let e = calendar.date(byAdding: .day, value: i+1, to: startOfMonday)!
-                buckets.append(AnalyticsBucket(label: dayLabel(for: s, calendar: calendar), start: s, end: e, categoryDurations: [:]))
+                let e = calendar.date(byAdding: .day, value: i + 1, to: startOfMonday)!
+                buckets.append(AnalyticsBucket(
+                    label: dayLabel(for: s, calendar: calendar),
+                    start: s,
+                    end: e,
+                    categoryDurations: [:]
+                ))
             }
             return buckets
         }
         return []
     }
 
-    static func aggregate(sessions: [LocalTimerSession], activities: [LocalTimerActivity], into buckets: [AnalyticsBucket], calendar: Calendar = Calendar.current) -> [AnalyticsBucket] {
+    static func aggregate(
+        sessions: [LocalTimerSession],
+        activities: [LocalTimerActivity],
+        into buckets: [AnalyticsBucket],
+        calendar _: Calendar = Calendar.current
+    ) -> [AnalyticsBucket] {
         var result = buckets
         // map activity id to category
         var activityMap: [UUID: LocalTimerActivity] = [:]
-        for a in activities { activityMap[a.id] = a }
+        for a in activities {
+            activityMap[a.id] = a
+        }
 
         for session in sessions {
             guard let end = session.endDate else { continue }
             // clamp session into buckets by overlap
-            for i in 0..<result.count {
+            for i in 0 ..< result.count {
                 if session.startDate < result[i].end && end > result[i].start {
                     // overlap duration
                     let s = max(session.startDate, result[i].start)
@@ -85,13 +103,13 @@ struct StudyAnalyticsAggregator {
         return result
     }
 
-    private static func hourLabel(for date: Date, calendar: Calendar) -> String {
+    private static func hourLabel(for date: Date, calendar _: Calendar) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "ha"
         return formatter.string(from: date).lowercased()
     }
 
-    private static func dayLabel(for date: Date, calendar: Calendar) -> String {
+    private static func dayLabel(for date: Date, calendar _: Calendar) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE"
         return formatter.string(from: date)

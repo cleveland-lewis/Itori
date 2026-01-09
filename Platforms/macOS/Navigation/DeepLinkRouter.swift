@@ -10,7 +10,7 @@ enum DeepLinkRoute {
     case focus(mode: LocalTimerMode?, activityId: UUID?)
     case settings(section: SettingsToolbarIdentifier?)
     case invalid(String)
-    
+
     enum CalendarView: String {
         case month, week, day, year
     }
@@ -19,22 +19,26 @@ enum DeepLinkRoute {
 @MainActor
 final class DeepLinkRouter {
     static let shared = DeepLinkRouter()
-    
+
     private init() {}
-    
-    func handle(url: URL,
-                appModel: AppModel,
-                plannerCoordinator: PlannerCoordinator,
-                calendarManager: CalendarManager,
-                settingsCoordinator: SettingsCoordinator) -> Bool {
+
+    func handle(
+        url: URL,
+        appModel: AppModel,
+        plannerCoordinator: PlannerCoordinator,
+        calendarManager: CalendarManager,
+        settingsCoordinator: SettingsCoordinator
+    ) -> Bool {
         let route = parse(url: url)
-        return open(route: route,
-                    appModel: appModel,
-                    plannerCoordinator: plannerCoordinator,
-                    calendarManager: calendarManager,
-                    settingsCoordinator: settingsCoordinator)
+        return open(
+            route: route,
+            appModel: appModel,
+            plannerCoordinator: plannerCoordinator,
+            calendarManager: calendarManager,
+            settingsCoordinator: settingsCoordinator
+        )
     }
-    
+
     func parse(url: URL) -> DeepLinkRoute {
         guard url.scheme?.lowercased() == "roots" else {
             return .invalid("Unsupported scheme")
@@ -46,11 +50,11 @@ final class DeepLinkRouter {
         func query(_ name: String) -> String? {
             queryItems.first(where: { $0.name == name })?.value
         }
-        
+
         if parts.isEmpty {
             return .dashboard
         }
-        
+
         switch parts[0].lowercased() {
         case "dashboard":
             return .dashboard
@@ -91,41 +95,43 @@ final class DeepLinkRouter {
             return .invalid("Unknown path")
         }
     }
-    
-    private func open(route: DeepLinkRoute,
-                      appModel: AppModel,
-                      plannerCoordinator: PlannerCoordinator,
-                      calendarManager: CalendarManager,
-                      settingsCoordinator: SettingsCoordinator) -> Bool {
+
+    private func open(
+        route: DeepLinkRoute,
+        appModel: AppModel,
+        plannerCoordinator: PlannerCoordinator,
+        calendarManager: CalendarManager,
+        settingsCoordinator: SettingsCoordinator
+    ) -> Bool {
         switch route {
         case .dashboard:
             appModel.selectedPage = .dashboard
             return true
-        case .calendar(let date, _):
+        case let .calendar(date, _):
             appModel.selectedPage = .calendar
-            if let date = date {
+            if let date {
                 calendarManager.selectedDate = date
             }
             return true
         case .planner:
             appModel.selectedPage = .planner
             return true
-        case .assignment(_):
+        case .assignment:
             appModel.selectedPage = .assignments
             return true
-        case .course(let id):
+        case let .course(id):
             appModel.selectedPage = .courses
             plannerCoordinator.selectedCourseFilter = id
             return true
-        case .focus(let mode, let activityId):
+        case let .focus(mode, activityId):
             appModel.selectedPage = .timer
             appModel.focusDeepLink = FocusDeepLink(mode: mode, activityId: activityId)
             appModel.focusWindowRequested = true
             return true
-        case .settings(let section):
+        case let .settings(section):
             settingsCoordinator.show(selecting: section ?? .general)
             return true
-        case .invalid(let reason):
+        case let .invalid(reason):
             DebugLogger.log("DeepLink invalid: \(reason)")
             return false
         }

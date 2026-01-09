@@ -1,6 +1,6 @@
 import SwiftUI
 #if canImport(Charts)
-import Charts
+    import Charts
 #endif
 
 /// Reusable dotted bar chart for timer/focus history.
@@ -31,7 +31,7 @@ struct TimerBarChart: View {
         data.map(\.minutes).max() ?? 0
     }
 
-    private static nonisolated func defaultTimeFormatter(_ date: Date) -> String {
+    private nonisolated static func defaultTimeFormatter(_ date: Date) -> String {
         let f = DateFormatter()
         f.dateFormat = "ha"
         return f.string(from: date)
@@ -39,49 +39,53 @@ struct TimerBarChart: View {
 
     var body: some View {
         #if canImport(Charts)
-        Chart {
-            ForEach(data) { point in
-                let dotCount = max(1, Int(ceil(point.minutes / minutesPerDot)))
-                ForEach(0..<dotCount, id: \.self) { idx in
-                    PointMark(
-                        x: .value("Time", point.date),
-                        y: .value("Minutes", Double(idx) * minutesPerDot)
-                    )
-                    .symbolSize(28)
-                    .foregroundStyle(point.isCurrent ? Color.yellow : Color.secondary.opacity(0.55))
-                }
-
-                if point.isCurrent {
-                    PointMark(
-                        x: .value("Time", point.date),
-                        y: .value("Minutes", max(point.minutes, minutesPerDot))
-                    )
-                    .symbol(.circle)
-                    .foregroundStyle(Color.yellow)
-                    .symbolSize(120)
-                }
-            }
-        }
-        .chartYAxis(.hidden)
-        .chartXAxis {
-            AxisMarks(values: data.map(\.date)) { value in
-                if let date = value.as(Date.self) {
-                    AxisValueLabel {
-                        Text(xLabelFormatter(date))
-                            .font(DesignSystem.Typography.caption)
-                            .foregroundStyle(.secondary)
+            Chart {
+                ForEach(data) { point in
+                    let dotCount = max(1, Int(ceil(point.minutes / minutesPerDot)))
+                    ForEach(0 ..< dotCount, id: \.self) { idx in
+                        PointMark(
+                            x: .value("Time", point.date),
+                            y: .value("Minutes", Double(idx) * minutesPerDot)
+                        )
+                        .symbolSize(28)
+                        .foregroundStyle(point.isCurrent ? Color.yellow : Color.secondary.opacity(0.55))
                     }
-                    AxisTick()
+
+                    if point.isCurrent {
+                        PointMark(
+                            x: .value("Time", point.date),
+                            y: .value("Minutes", max(point.minutes, minutesPerDot))
+                        )
+                        .symbol(.circle)
+                        .foregroundStyle(Color.yellow)
+                        .symbolSize(120)
+                    }
                 }
             }
-        }
-        .chartYScale(domain: 0...(max(yMax * 1.1, minutesPerDot * 3)))
-        .chartPlotStyle { plot in
-            plot.background(.clear)
-        }
-        .frame(height: 220)
+            .chartYAxis(.hidden)
+            .chartXAxis {
+                AxisMarks(values: data.map(\.date)) { value in
+                    if let date = value.as(Date.self) {
+                        AxisValueLabel {
+                            Text(xLabelFormatter(date))
+                                .font(DesignSystem.Typography.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        AxisTick()
+                    }
+                }
+            }
+            .chartYScale(domain: 0 ... max(yMax * 1.1, minutesPerDot * 3))
+            .chartPlotStyle { plot in
+                plot.background(.clear)
+            }
+            .frame(height: 220)
         #else
-        Text(NSLocalizedString("ui.charts.framework.unavailable", value: "Charts framework unavailable", comment: "Charts framework unavailable"))
+            Text(NSLocalizedString(
+                "ui.charts.framework.unavailable",
+                value: "Charts framework unavailable",
+                comment: "Charts framework unavailable"
+            ))
             .font(DesignSystem.Typography.caption)
             .foregroundStyle(.secondary)
         #endif

@@ -8,7 +8,6 @@ import XCTest
 
 @MainActor
 final class DragDropHandlerTests: XCTestCase {
-
     func testReassignAssignmentUpdatesCourse() {
         let store = MockAssignmentStore()
         let assignment = AppTask(

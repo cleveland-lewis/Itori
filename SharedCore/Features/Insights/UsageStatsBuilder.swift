@@ -15,9 +15,8 @@ enum UsageStatsBuilder {
         window: StatsWindow,
         now: Date = .init()
     ) -> UsageStats {
-        let days: Int
-        switch window {
-        case .days(let d): days = d
+        let days: Int = switch window {
+        case let .days(d): d
         }
 
         let calendar = Calendar.current
@@ -121,7 +120,7 @@ enum UsageStatsBuilder {
                 )
             }
 
-        let typeStats: [UsageStats.TaskTypeStats] = typeMap.map { (type, entry) in
+        let typeStats: [UsageStats.TaskTypeStats] = typeMap.map { type, entry in
             let avgPlanned = entry.plannedBlocks.isEmpty ? 0.0 :
                 Double(entry.plannedBlocks.reduce(0,+)) / Double(entry.plannedBlocks.count)
             let avgActual = entry.actualBlocks.isEmpty ? 0.0 :

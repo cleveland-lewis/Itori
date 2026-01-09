@@ -15,7 +15,7 @@ struct BlockFeedback: Codable {
     let type: TaskType
     let start: Date
     let end: Date
-    let completion: Double   // 0.0–1.0
+    let completion: Double // 0.0–1.0
     let action: FeedbackAction
 }
 
@@ -25,7 +25,8 @@ final class SchedulerFeedbackStore {
 
     private(set) var feedback: [BlockFeedback] = []
     private var fileURL: URL? = {
-        guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return nil }
+        guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+        else { return nil }
         let appDir = dir.appendingPathComponent("Itori", isDirectory: true)
         try? FileManager.default.createDirectory(at: appDir, withIntermediateDirectories: true)
         return appDir.appendingPathComponent("scheduler_feedback.json")

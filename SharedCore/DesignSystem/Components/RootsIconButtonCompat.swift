@@ -6,7 +6,7 @@ struct RootsIconButton: View {
     var systemName: String
     var role: RootsIconButtonRole = .primaryAccent
     var size: CGFloat = 44
-    var accessibilityLabel: String? = nil
+    var accessibilityLabel: String?
     var action: () -> Void
 
     var body: some View {
@@ -23,6 +23,6 @@ struct RootsIconButtonLabel: View {
     var size: CGFloat = 44
 
     var body: some View {
-        RootsHeaderButton(icon: systemName, size: size) { }
+        RootsHeaderButton(icon: systemName, size: size) {}
     }
 }

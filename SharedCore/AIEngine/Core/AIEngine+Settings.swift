@@ -18,9 +18,9 @@ extension AIEngine {
 
     static func localModelInfo() -> LocalModelInfo {
         #if os(macOS)
-        let type: LocalModelType = .macOSStandard
+            let type: LocalModelType = .macOSStandard
         #else
-        let type: LocalModelType = .iOSLite
+            let type: LocalModelType = .iOSLite
         #endif
         return LocalModelInfo(name: type.displayName, size: type.estimatedSize)
     }

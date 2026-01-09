@@ -1,6 +1,6 @@
+import Combine
 import Foundation
 import SwiftUI
-import Combine
 
 // MARK: - Tab Configuration Model (Platform-Agnostic)
 
@@ -12,7 +12,7 @@ public struct TabDefinition: Identifiable, Hashable {
     public let title: String
     public let defaultEnabled: Bool
     public let isSystemRequired: Bool // Cannot be disabled by user
-    
+
     public init(
         id: RootTab,
         icon: String,
@@ -25,11 +25,11 @@ public struct TabDefinition: Identifiable, Hashable {
         self.title = title
         self.defaultEnabled = defaultEnabled
         self.isSystemRequired = isSystemRequired
-        
+
         #if DEBUG
-        // Fail loudly in debug if required fields are missing
-        assert(!icon.isEmpty, "Tab \(id.rawValue) missing icon")
-        assert(!title.isEmpty, "Tab \(id.rawValue) missing title")
+            // Fail loudly in debug if required fields are missing
+            assert(!icon.isEmpty, "Tab \(id.rawValue) missing icon")
+            assert(!title.isEmpty, "Tab \(id.rawValue) missing title")
         #endif
     }
 }
@@ -38,8 +38,7 @@ public struct TabDefinition: Identifiable, Hashable {
 
 /// Central registry of all available tabs
 /// Shared between iOS and iPadOS - only presentation differs
-public struct TabRegistry {
-    
+public enum TabRegistry {
     /// All available tabs with their metadata
     /// Order determines default display order
     public static let allTabs: [TabDefinition] = [
@@ -54,27 +53,27 @@ public struct TabRegistry {
         // TabDefinition(id: .flashcards, icon: "rectangle.stack", title: "Flashcards", defaultEnabled: false),
         // TabDefinition(id: .practice, icon: "list.clipboard", title: "Practice Tests", defaultEnabled: false)
     ]
-    
+
     /// Quick lookup by tab ID
     private static let tabLookup: [RootTab: TabDefinition] = Dictionary(
         uniqueKeysWithValues: allTabs.map { ($0.id, $0) }
     )
-    
+
     /// Get definition for a specific tab
     public static func definition(for tab: RootTab) -> TabDefinition? {
-        return tabLookup[tab]
+        tabLookup[tab]
     }
-    
+
     /// Default tabs for new users (platform-agnostic)
     public static let defaultEnabledTabs: [RootTab] = allTabs
-        .filter { $0.defaultEnabled }
-        .map { $0.id }
-    
+        .filter(\.defaultEnabled)
+        .map(\.id)
+
     /// Tabs that cannot be disabled (always visible)
     public static let systemRequiredTabs: [RootTab] = allTabs
-        .filter { $0.isSystemRequired }
-        .map { $0.id }
-    
+        .filter(\.isSystemRequired)
+        .map(\.id)
+
     /// Safe fallback tab if current selection becomes invalid
     public static let fallbackTab: RootTab = .dashboard
 }
@@ -85,102 +84,105 @@ public struct TabRegistry {
 /// Platform-agnostic state that works for both iOS and iPadOS
 @MainActor
 public final class TabBarPreferencesStore: ObservableObject {
-    
     @Published public var selectedTab: RootTab
-    
+
     private let settings: AppSettingsModel
-    
-    internal init(settings: AppSettingsModel) {
+
+    init(settings: AppSettingsModel) {
         self.settings = settings
         self.selectedTab = TabRegistry.fallbackTab
     }
-    
+
     // MARK: - Tab Visibility (with Guards)
-    
+
     /// Get user's visible tabs with system-required tabs enforced
     public func visibleTabs() -> [RootTab] {
         var tabs = settings.effectiveVisibleTabs
-        
+
         // GUARD: Always include system-required tabs (Settings)
         for requiredTab in TabRegistry.systemRequiredTabs {
             if !tabs.contains(requiredTab) {
                 tabs.append(requiredTab)
-                
+
                 #if DEBUG
-                assertionFailure("⚠️ System-required tab .\(requiredTab.rawValue) was missing from visible tabs. Auto-corrected.")
+                    assertionFailure(
+                        "⚠️ System-required tab .\(requiredTab.rawValue) was missing from visible tabs. Auto-corrected."
+                    )
                 #endif
             }
         }
-        
+
         return tabs
     }
-    
+
     /// Get tabs in user's preferred order
     public func orderedTabs() -> [RootTab] {
         var tabs = settings.tabOrder
-        
+
         // GUARD: Ensure Settings is always included
         for requiredTab in TabRegistry.systemRequiredTabs {
             if !tabs.contains(requiredTab) {
                 tabs.append(requiredTab)
-                
+
                 #if DEBUG
-                assertionFailure("⚠️ System-required tab .\(requiredTab.rawValue) was missing from tab order. Auto-corrected.")
+                    assertionFailure(
+                        "⚠️ System-required tab .\(requiredTab.rawValue) was missing from tab order. Auto-corrected."
+                    )
                 #endif
             }
         }
-        
+
         return tabs
     }
-    
+
     /// Get effective tabs (visible + ordered, filtered by registry)
     public func effectiveTabsInOrder() -> [RootTab] {
         let visible = Set(visibleTabs())
         let ordered = orderedTabs()
-        
+
         // Filter ordered tabs to only include visible ones
         var result = ordered.filter { visible.contains($0) && TabRegistry.definition(for: $0) != nil }
-        
+
         // GUARD: Ensure we have at least the fallback tab
         if result.isEmpty {
             result = [TabRegistry.fallbackTab]
-            
+
             #if DEBUG
-            assertionFailure("⚠️ No valid tabs found. Falling back to \(TabRegistry.fallbackTab.rawValue).")
+                assertionFailure("⚠️ No valid tabs found. Falling back to \(TabRegistry.fallbackTab.rawValue).")
             #endif
         }
-        
+
         // GUARD: Ensure Settings is always present
         for requiredTab in TabRegistry.systemRequiredTabs {
             if !result.contains(requiredTab) {
                 result.append(requiredTab)
             }
         }
-        
+
         return result
     }
-    
+
     // MARK: - Tab Modification (with Guards)
-    
+
     /// Set tab visibility (enforces system-required tabs)
     public func setTabVisibility(_ tab: RootTab, visible: Bool) {
         // GUARD: Prevent disabling system-required tabs
         guard let definition = TabRegistry.definition(for: tab) else {
             #if DEBUG
-            assertionFailure("⚠️ Attempted to modify unknown tab: \(tab.rawValue)")
+                assertionFailure("⚠️ Attempted to modify unknown tab: \(tab.rawValue)")
             #endif
             return
         }
-        
+
         if definition.isSystemRequired && !visible {
             #if DEBUG
-            assertionFailure("⚠️ Attempted to disable system-required tab: \(tab.rawValue). Ignoring.")
-            DebugLogger.log("⚠️ GUARD: Cannot disable \(tab.rawValue) - it is system-required.")
+                assertionFailure("⚠️ Attempted to disable system-required tab: \(tab.rawValue). Ignoring.")
+                DebugLogger.log("⚠️ GUARD: Cannot disable \(tab.rawValue) - it is system-required.")
             #endif
             // Silently ignore - do not modify visibility
             return
         }
-        
+
         // Apply change
         var currentTabs = settings.visibleTabs
         if visible {
@@ -193,60 +195,64 @@ public final class TabBarPreferencesStore: ObservableObject {
         settings.visibleTabs = currentTabs
         settings.save()
     }
-    
+
     /// Update tab order
     public func setTabOrder(_ tabs: [RootTab]) {
         var order = tabs
-        
+
         // GUARD: Ensure system-required tabs are included
         for requiredTab in TabRegistry.systemRequiredTabs {
             if !order.contains(requiredTab) {
                 order.append(requiredTab)
-                
+
                 #if DEBUG
-                assertionFailure("⚠️ System-required tab .\(requiredTab.rawValue) was missing from new order. Auto-added.")
+                    assertionFailure(
+                        "⚠️ System-required tab .\(requiredTab.rawValue) was missing from new order. Auto-added."
+                    )
                 #endif
             }
         }
-        
+
         settings.tabOrder = order
         settings.save()
     }
-    
+
     /// Reset to defaults
     public func resetToDefaults() {
         settings.visibleTabs = TabRegistry.defaultEnabledTabs
-        settings.tabOrder = TabRegistry.allTabs.map { $0.id }
+        settings.tabOrder = TabRegistry.allTabs.map(\.id)
         settings.save()
     }
-    
+
     // MARK: - Selection (with Safety)
-    
+
     /// Safely select a tab (validates it exists and is visible)
     public func selectTab(_ tab: RootTab) {
         let validTabs = effectiveTabsInOrder()
-        
+
         if validTabs.contains(tab) {
             selectedTab = tab
         } else {
             // Tab not available, fall back to safe default
             selectedTab = TabRegistry.fallbackTab
-            
+
             #if DEBUG
-            assertionFailure("⚠️ Attempted to select unavailable tab: \(tab.rawValue). Falling back to \(TabRegistry.fallbackTab.rawValue).")
+                assertionFailure(
+                    "⚠️ Attempted to select unavailable tab: \(tab.rawValue). Falling back to \(TabRegistry.fallbackTab.rawValue)."
+                )
             #endif
         }
     }
-    
+
     /// Ensure current selection is valid (call after tab changes)
     public func validateSelection() {
         let validTabs = effectiveTabsInOrder()
-        
+
         if !validTabs.contains(selectedTab) {
             selectedTab = validTabs.first ?? TabRegistry.fallbackTab
-            
+
             #if DEBUG
-            DebugLogger.log("ℹ️ Current selection invalid. Reset to \(selectedTab.rawValue).")
+                DebugLogger.log("ℹ️ Current selection invalid. Reset to \(selectedTab.rawValue).")
             #endif
         }
     }

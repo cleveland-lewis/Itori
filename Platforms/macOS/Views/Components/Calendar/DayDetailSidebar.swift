@@ -80,8 +80,8 @@ struct DayDetailSidebar: View {
                 NSLocalizedString("events_count", comment: ""),
                 0
             ))
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 40)
@@ -119,17 +119,17 @@ struct DayDetailSidebar: View {
         f.dateFormat = use24 ? "HH:mm" : "h:mm a"
         return "\(f.string(from: event.startDate)) - \(f.string(from: event.endDate))"
     }
-    
+
     private func categoryLabel(for category: EventCategory) -> String {
         switch category {
-        case .exam: return "Exam"
-        case .class: return "Class"
-        case .homework: return "Homework"
-        case .reading: return "Reading"
-        case .review: return "Review"
-        case .study: return "Study"
-        case .lab: return "Lab"
-        case .other: return "Event"
+        case .exam: "Exam"
+        case .class: "Class"
+        case .homework: "Homework"
+        case .reading: "Reading"
+        case .review: "Review"
+        case .study: "Study"
+        case .lab: "Lab"
+        case .other: "Event"
         }
     }
 
@@ -139,14 +139,14 @@ struct DayDetailSidebar: View {
 
     private func categoryColor(for category: EventCategory) -> Color {
         switch category {
-        case .exam: return .red
-        case .class: return .blue
-        case .homework: return .orange
-        case .reading: return .yellow
-        case .review: return .purple
-        case .study: return .green
-        case .lab: return .cyan
-        case .other: return Color(nsColor: .controlAccentColor)
+        case .exam: .red
+        case .class: .blue
+        case .homework: .orange
+        case .reading: .yellow
+        case .review: .purple
+        case .study: .green
+        case .lab: .cyan
+        case .other: Color(nsColor: .controlAccentColor)
         }
     }
 
@@ -157,17 +157,17 @@ struct DayDetailSidebar: View {
     private func mapStubCategory(_ category: EventCategoryStub?) -> EventCategory {
         switch category {
         case .homework:
-            return .homework
+            .homework
         case .classSession:
-            return .class
+            .class
         case .study:
-            return .study
+            .study
         case .exam:
-            return .exam
+            .exam
         case .meeting:
-            return .other
+            .other
         case .other, .none:
-            return .other
+            .other
         }
     }
 }
@@ -238,8 +238,18 @@ private struct DayDetailEventRow: View {
 
 struct DayDetailSidebar_Previews: PreviewProvider {
     static var sampleEvents: [CalendarEvent] = [
-        CalendarEvent(title: "Dentist Appointment", startDate: Date().addingTimeInterval(3600), endDate: Date().addingTimeInterval(5400), location: "Dental Office"),
-        CalendarEvent(title: "Study Group", startDate: Date().addingTimeInterval(7200), endDate: Date().addingTimeInterval(9000), location: "Library")
+        CalendarEvent(
+            title: "Dentist Appointment",
+            startDate: Date().addingTimeInterval(3600),
+            endDate: Date().addingTimeInterval(5400),
+            location: "Dental Office"
+        ),
+        CalendarEvent(
+            title: "Study Group",
+            startDate: Date().addingTimeInterval(7200),
+            endDate: Date().addingTimeInterval(9000),
+            location: "Library"
+        )
     ]
 
     static var previews: some View {

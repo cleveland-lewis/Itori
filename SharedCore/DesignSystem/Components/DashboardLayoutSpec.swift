@@ -19,11 +19,11 @@ struct SlotSpec {
     func span(for mode: ColumnMode) -> Int {
         switch mode {
         case .four:
-            return columns.wide
+            columns.wide
         case .two:
-            return columns.medium
+            columns.medium
         case .one:
-            return columns.narrow
+            columns.narrow
         }
     }
 
@@ -104,35 +104,35 @@ enum DashboardLayoutSpec {
         return rows
     }
 
-#if DEBUG
-    static func validate(for mode: ColumnMode) {
-        let allSlots = DashboardSlot.allCases
-        let slotKeys = Set(spec.keys)
-        let allSlotKeys = Set(allSlots)
+    #if DEBUG
+        static func validate(for mode: ColumnMode) {
+            let allSlots = DashboardSlot.allCases
+            let slotKeys = Set(spec.keys)
+            let allSlotKeys = Set(allSlots)
 
-        assert(spec.count == allSlots.count, "DashboardLayoutSpec: spec count mismatch.")
-        assert(slotKeys == allSlotKeys, "DashboardLayoutSpec: spec keys mismatch.")
+            assert(spec.count == allSlots.count, "DashboardLayoutSpec: spec count mismatch.")
+            assert(slotKeys == allSlotKeys, "DashboardLayoutSpec: spec keys mismatch.")
 
-        for slot in allSlots {
-            let span = span(for: slot, mode: mode)
-            assert(span >= 1 && span <= mode.rawValue, "DashboardLayoutSpec: invalid span \(span) for \(slot).")
-        }
-
-        let rows = rows(for: mode)
-        var seen: [DashboardSlot] = []
-        for (index, row) in rows.enumerated() {
-            let total = row.reduce(0) { $0 + span(for: $1, mode: mode) }
-            let isLast = index == rows.count - 1
-            if isLast {
-                assert(total <= mode.rawValue, "DashboardLayoutSpec: row exceeds capacity.")
-            } else {
-                assert(total == mode.rawValue, "DashboardLayoutSpec: row does not fill capacity.")
+            for slot in allSlots {
+                let span = span(for: slot, mode: mode)
+                assert(span >= 1 && span <= mode.rawValue, "DashboardLayoutSpec: invalid span \(span) for \(slot).")
             }
-            seen.append(contentsOf: row)
-        }
 
-        assert(Set(seen) == allSlotKeys, "DashboardLayoutSpec: missing or extra slots.")
-        assert(seen.count == allSlots.count, "DashboardLayoutSpec: duplicate slots detected.")
-    }
-#endif
+            let rows = rows(for: mode)
+            var seen: [DashboardSlot] = []
+            for (index, row) in rows.enumerated() {
+                let total = row.reduce(0) { $0 + span(for: $1, mode: mode) }
+                let isLast = index == rows.count - 1
+                if isLast {
+                    assert(total <= mode.rawValue, "DashboardLayoutSpec: row exceeds capacity.")
+                } else {
+                    assert(total == mode.rawValue, "DashboardLayoutSpec: row does not fill capacity.")
+                }
+                seen.append(contentsOf: row)
+            }
+
+            assert(Set(seen) == allSlotKeys, "DashboardLayoutSpec: missing or extra slots.")
+            assert(seen.count == allSlots.count, "DashboardLayoutSpec: duplicate slots detected.")
+        }
+    #endif
 }

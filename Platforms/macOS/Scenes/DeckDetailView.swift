@@ -1,427 +1,457 @@
 #if os(macOS)
-import SwiftUI
+    import SwiftUI
 
-struct DeckDetailView: View {
-    let deck: FlashcardDeck
-    var onDismiss: (() -> Void)? = nil
-    
-    @Environment(\.dismiss) private var dismiss
-    @StateObject private var manager = FlashcardManager.shared
-    @State private var showingAddCard = false
-    @State private var showingStudySession = false
-    @State private var showingDeckSettings = false
-    @State private var selectedTab: DeckTab = .cards
-    
-    @ScaledMetric private var emptyIconSize: CGFloat = 48
-    @ScaledMetric private var statNumberSize: CGFloat = 36
-    @ScaledMetric private var smallTextSize: CGFloat = 12
-    
-    enum DeckTab: String, CaseIterable {
-        case cards = "Cards"
-        case statistics = "Statistics"
-        
-        var systemImage: String {
-            switch self {
-            case .cards: return "square.stack.3d.up"
-            case .statistics: return "chart.bar"
-            }
-        }
-    }
-    
-    private var currentDeck: FlashcardDeck? {
-        manager.deck(withId: deck.id)
-    }
-    
-    private var dueCards: [Flashcard] {
-        manager.dueCards(for: deck.id)
-    }
-    
-    private var newCards: [Flashcard] {
-        currentDeck?.cards.filter { $0.repetition == 0 } ?? []
-    }
-    
-    private var learningCards: [Flashcard] {
-        currentDeck?.cards.filter { $0.repetition > 0 && $0.repetition < 3 } ?? []
-    }
-    
-    private var reviewCards: [Flashcard] {
-        currentDeck?.cards.filter { $0.repetition >= 3 } ?? []
-    }
-    
-    var body: some View {
-        VStack(spacing: 0) {
-            // Header
-            headerView
-            
-            Divider()
-            
-            // Tab Picker
-            Picker("View", selection: $selectedTab) {
-                ForEach(DeckTab.allCases, id: \.self) { tab in
-                    Label(tab.rawValue, systemImage: tab.systemImage)
-                        .tag(tab)
+    struct DeckDetailView: View {
+        let deck: FlashcardDeck
+        var onDismiss: (() -> Void)?
+
+        @Environment(\.dismiss) private var dismiss
+        @StateObject private var manager = FlashcardManager.shared
+        @State private var showingAddCard = false
+        @State private var showingStudySession = false
+        @State private var showingDeckSettings = false
+        @State private var selectedTab: DeckTab = .cards
+
+        @ScaledMetric private var emptyIconSize: CGFloat = 48
+        @ScaledMetric private var statNumberSize: CGFloat = 36
+        @ScaledMetric private var smallTextSize: CGFloat = 12
+
+        enum DeckTab: String, CaseIterable {
+            case cards = "Cards"
+            case statistics = "Statistics"
+
+            var systemImage: String {
+                switch self {
+                case .cards: "square.stack.3d.up"
+                case .statistics: "chart.bar"
                 }
             }
-            .pickerStyle(.segmented)
-            .padding(20)
-            
-            // Content
-            switch selectedTab {
-            case .cards:
-                cardsView
-            case .statistics:
-                statisticsView
-            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(.tertiaryBackground)
-        .sheet(isPresented: $showingAddCard) {
-            AddCardSheet(deck: deck)
+
+        private var currentDeck: FlashcardDeck? {
+            manager.deck(withId: deck.id)
         }
-        .sheet(isPresented: $showingStudySession) {
-            StudySessionView(deck: deck)
+
+        private var dueCards: [Flashcard] {
+            manager.dueCards(for: deck.id)
         }
-        .sheet(isPresented: $showingDeckSettings) {
-            DeckSettingsSheet(deck: deck)
+
+        private var newCards: [Flashcard] {
+            currentDeck?.cards.filter { $0.repetition == 0 } ?? []
         }
-    }
-    
-    // MARK: - Header
-    
-    private var headerView: some View {
-        HStack(spacing: 16) {
-            // Back button
-            Button {
-                if let onDismiss = onDismiss {
-                    onDismiss()
-                } else {
-                    dismiss()
+
+        private var learningCards: [Flashcard] {
+            currentDeck?.cards.filter { $0.repetition > 0 && $0.repetition < 3 } ?? []
+        }
+
+        private var reviewCards: [Flashcard] {
+            currentDeck?.cards.filter { $0.repetition >= 3 } ?? []
+        }
+
+        var body: some View {
+            VStack(spacing: 0) {
+                // Header
+                headerView
+
+                Divider()
+
+                // Tab Picker
+                Picker("View", selection: $selectedTab) {
+                    ForEach(DeckTab.allCases, id: \.self) { tab in
+                        Label(tab.rawValue, systemImage: tab.systemImage)
+                            .tag(tab)
+                    }
                 }
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(.body.weight(.semibold))
+                .pickerStyle(.segmented)
+                .padding(20)
+
+                // Content
+                switch selectedTab {
+                case .cards:
+                    cardsView
+                case .statistics:
+                    statisticsView
+                }
             }
-            .buttonStyle(.plain)
-            .help("Back to Flashcards")
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(deck.title)
-                    .font(.title2.bold())
-                
-                HStack(spacing: 12) {
-                    if dueCards.count > 0 {
-                        Label(NSLocalizedString("deckdetail.label.duecardscount.due", value: "\(dueCards.count) due", comment: "\(dueCards.count) due"), systemImage: "clock.fill")
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(.tertiaryBackground)
+            .sheet(isPresented: $showingAddCard) {
+                AddCardSheet(deck: deck)
+            }
+            .sheet(isPresented: $showingStudySession) {
+                StudySessionView(deck: deck)
+            }
+            .sheet(isPresented: $showingDeckSettings) {
+                DeckSettingsSheet(deck: deck)
+            }
+        }
+
+        // MARK: - Header
+
+        private var headerView: some View {
+            HStack(spacing: 16) {
+                // Back button
+                Button {
+                    if let onDismiss {
+                        onDismiss()
+                    } else {
+                        dismiss()
+                    }
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.body.weight(.semibold))
+                }
+                .buttonStyle(.plain)
+                .help("Back to Flashcards")
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(deck.title)
+                        .font(.title2.bold())
+
+                    HStack(spacing: 12) {
+                        if !dueCards.isEmpty {
+                            Label(
+                                NSLocalizedString(
+                                    "deckdetail.label.duecardscount.due",
+                                    value: "\(dueCards.count) due",
+                                    comment: "\(dueCards.count) due"
+                                ),
+                                systemImage: "clock.fill"
+                            )
                             .font(.subheadline)
                             .foregroundStyle(.orange)
+                        }
+
+                        Text(verbatim: "\(currentDeck?.cards.count ?? 0) cards")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     }
-                    
-                    Text(verbatim: "\(currentDeck?.cards.count ?? 0) cards")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                // Actions
+                HStack(spacing: 8) {
+                    Button {
+                        showingStudySession = true
+                    } label: {
+                        Label(
+                            NSLocalizedString("deckdetail.label.study", value: "Study", comment: "Study"),
+                            systemImage: "brain.head.profile"
+                        )
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(dueCards.isEmpty && newCards.isEmpty)
+                    .help(dueCards.isEmpty && newCards.isEmpty ? "No cards to study" : "Start study session")
+
+                    Button {
+                        showingAddCard = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    .buttonStyle(.bordered)
+                    .help("Add new card")
+                    .accessibilityLabel("Add new card")
+
+                    Button {
+                        showingDeckSettings = true
+                    } label: {
+                        Image(systemName: "gear")
+                    }
+                    .buttonStyle(.bordered)
+                    .help("Deck settings")
+                    .accessibilityLabel("Deck settings")
                 }
             }
-            
-            Spacer()
-            
-            // Actions
-            HStack(spacing: 8) {
-                Button {
-                    showingStudySession = true
-                } label: {
-                    Label(NSLocalizedString("deckdetail.label.study", value: "Study", comment: "Study"), systemImage: "brain.head.profile")
+            .padding(20)
+            .background(.secondaryBackground)
+        }
+
+        // MARK: - Cards View
+
+        private var cardsView: some View {
+            ScrollView {
+                LazyVStack(spacing: 16) {
+                    if let deck = currentDeck, !deck.cards.isEmpty {
+                        // Card sections
+                        if !newCards.isEmpty {
+                            cardSection(title: "New", icon: "sparkle", color: .blue, cards: newCards)
+                        }
+
+                        if !dueCards.isEmpty {
+                            cardSection(title: "Due", icon: "clock.fill", color: .orange, cards: dueCards)
+                        }
+
+                        if !learningCards.isEmpty {
+                            cardSection(title: "Learning", icon: "book", color: .green, cards: learningCards)
+                        }
+
+                        if !reviewCards.isEmpty {
+                            cardSection(title: "Review", icon: "checkmark.circle", color: .purple, cards: reviewCards)
+                        }
+                    } else {
+                        emptyCardsView
+                    }
                 }
-                .buttonStyle(.borderedProminent)
-                .disabled(dueCards.isEmpty && newCards.isEmpty)
-                .help(dueCards.isEmpty && newCards.isEmpty ? "No cards to study" : "Start study session")
-                
+                .padding(20)
+            }
+        }
+
+        private func cardSection(title: String, icon: String, color: Color, cards: [Flashcard]) -> some View {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Label(title, systemImage: icon)
+                        .font(.headline)
+                        .foregroundStyle(color)
+
+                    Text(verbatim: "\(cards.count)")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+
+                    Spacer()
+                }
+
+                VStack(spacing: 8) {
+                    ForEach(cards) { card in
+                        FlashcardRowView(card: card, deckId: deck.id)
+                    }
+                }
+            }
+        }
+
+        private var emptyCardsView: some View {
+            VStack(spacing: 16) {
+                Image(systemName: "square.stack.3d.up.badge.a")
+                    .font(.system(size: emptyIconSize))
+                    .foregroundStyle(.tertiary)
+
+                Text(NSLocalizedString("deckdetail.no.cards.yet", value: "No Cards Yet", comment: "No Cards Yet"))
+                    .font(.headline)
+
+                Text(NSLocalizedString(
+                    "deckdetail.add.your.first.flashcard.to.start.studying",
+                    value: "Add your first flashcard to start studying",
+                    comment: "Add your first flashcard to start studying"
+                ))
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
                 Button {
                     showingAddCard = true
                 } label: {
-                    Image(systemName: "plus")
+                    Label(
+                        NSLocalizedString("deckdetail.label.add.card", value: "Add Card", comment: "Add Card"),
+                        systemImage: "plus"
+                    )
                 }
-                .buttonStyle(.bordered)
-                .help("Add new card")
-                .accessibilityLabel("Add new card")
-                
-                Button {
-                    showingDeckSettings = true
-                } label: {
-                    Image(systemName: "gear")
+                .buttonStyle(.borderedProminent)
+            }
+            .padding(40)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+
+        // MARK: - Statistics View
+
+        private var statisticsView: some View {
+            ScrollView {
+                LazyVGrid(columns: [
+                    GridItem(.flexible()),
+                    GridItem(.flexible())
+                ], spacing: 16) {
+                    statCard(
+                        title: "Total Cards",
+                        value: "\(currentDeck?.cards.count ?? 0)",
+                        icon: "square.stack.3d.up",
+                        color: .blue
+                    )
+
+                    statCard(
+                        title: "Due Today",
+                        value: "\(dueCards.count)",
+                        icon: "clock.fill",
+                        color: .orange
+                    )
+
+                    statCard(
+                        title: "New Cards",
+                        value: "\(newCards.count)",
+                        icon: "sparkle",
+                        color: .green
+                    )
+
+                    statCard(
+                        title: "Review Cards",
+                        value: "\(reviewCards.count)",
+                        icon: "checkmark.circle",
+                        color: .purple
+                    )
                 }
-                .buttonStyle(.bordered)
-                .help("Deck settings")
-                .accessibilityLabel("Deck settings")
+                .padding(20)
             }
         }
-        .padding(20)
-        .background(.secondaryBackground)
-    }
-    
-    // MARK: - Cards View
-    
-    private var cardsView: some View {
-        ScrollView {
-            LazyVStack(spacing: 16) {
-                if let deck = currentDeck, !deck.cards.isEmpty {
-                    // Card sections
-                    if !newCards.isEmpty {
-                        cardSection(title: "New", icon: "sparkle", color: .blue, cards: newCards)
-                    }
-                    
-                    if !dueCards.isEmpty {
-                        cardSection(title: "Due", icon: "clock.fill", color: .orange, cards: dueCards)
-                    }
-                    
-                    if !learningCards.isEmpty {
-                        cardSection(title: "Learning", icon: "book", color: .green, cards: learningCards)
-                    }
-                    
-                    if !reviewCards.isEmpty {
-                        cardSection(title: "Review", icon: "checkmark.circle", color: .purple, cards: reviewCards)
-                    }
-                } else {
-                    emptyCardsView
+
+        private func statCard(title: String, value: String, icon: String, color: Color) -> some View {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Image(systemName: icon)
+                        .font(.title2)
+                        .foregroundStyle(color)
+
+                    Spacer()
                 }
-            }
-            .padding(20)
-        }
-    }
-    
-    private func cardSection(title: String, icon: String, color: Color, cards: [Flashcard]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Label(title, systemImage: icon)
-                    .font(.headline)
-                    .foregroundStyle(color)
-                
-                Text(verbatim: "\(cards.count)")
+
+                Text(value)
+                    .font(.system(size: statNumberSize, weight: .bold))
+
+                Text(title)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                
-                Spacer()
-            }
-            
-            VStack(spacing: 8) {
-                ForEach(cards) { card in
-                    FlashcardRowView(card: card, deckId: deck.id)
-                }
-            }
-        }
-    }
-    
-    private var emptyCardsView: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "square.stack.3d.up.badge.a")
-                .font(.system(size: emptyIconSize))
-                .foregroundStyle(.tertiary)
-            
-            Text(NSLocalizedString("deckdetail.no.cards.yet", value: "No Cards Yet", comment: "No Cards Yet"))
-                .font(.headline)
-            
-            Text(NSLocalizedString("deckdetail.add.your.first.flashcard.to.start.studying", value: "Add your first flashcard to start studying", comment: "Add your first flashcard to start studying"))
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            
-            Button {
-                showingAddCard = true
-            } label: {
-                Label(NSLocalizedString("deckdetail.label.add.card", value: "Add Card", comment: "Add Card"), systemImage: "plus")
-            }
-            .buttonStyle(.borderedProminent)
-        }
-        .padding(40)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-    
-    // MARK: - Statistics View
-    
-    private var statisticsView: some View {
-        ScrollView {
-            LazyVGrid(columns: [
-                GridItem(.flexible()),
-                GridItem(.flexible())
-            ], spacing: 16) {
-                statCard(
-                    title: "Total Cards",
-                    value: "\(currentDeck?.cards.count ?? 0)",
-                    icon: "square.stack.3d.up",
-                    color: .blue
-                )
-                
-                statCard(
-                    title: "Due Today",
-                    value: "\(dueCards.count)",
-                    icon: "clock.fill",
-                    color: .orange
-                )
-                
-                statCard(
-                    title: "New Cards",
-                    value: "\(newCards.count)",
-                    icon: "sparkle",
-                    color: .green
-                )
-                
-                statCard(
-                    title: "Review Cards",
-                    value: "\(reviewCards.count)",
-                    icon: "checkmark.circle",
-                    color: .purple
-                )
             }
             .padding(20)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(.secondaryBackground)
+            )
         }
     }
-    
-    private func statCard(title: String, value: String, icon: String, color: Color) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Image(systemName: icon)
-                    .font(.title2)
-                    .foregroundStyle(color)
-                
+
+    // MARK: - Flashcard Row
+
+    struct FlashcardRowView: View {
+        let card: Flashcard
+        let deckId: UUID
+
+        @State private var isFlipped = false
+        @State private var showingEdit = false
+        @StateObject private var manager = FlashcardManager.shared
+
+        var body: some View {
+            HStack(spacing: 12) {
+                // Status indicator
+                Circle()
+                    .fill(statusColor)
+                    .frame(width: 8, height: 8)
+
+                // Content
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(card.frontText)
+                        .font(.subheadline.weight(.medium))
+                        .lineLimit(1)
+
+                    if isFlipped {
+                        Text(card.backText)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
+
+                    HStack(spacing: 8) {
+                        if card.repetition > 0 {
+                            Text(verbatim: "Interval: \(card.interval)d")
+                                .font(.caption2)
+                                .foregroundStyle(.tertiary)
+                        }
+
+                        if let lastReviewed = card.lastReviewed {
+                            Text(String(
+                                format: NSLocalizedString(
+                                    "macos.flashcard.last_reviewed_relative",
+                                    value: "Last: %@",
+                                    comment: "Last reviewed time relative"
+                                ),
+                                lastReviewed.formatted(.relative(presentation: .numeric))
+                            ))
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                        }
+                    }
+                }
+
                 Spacer()
-            }
-            
-            Text(value)
-                .font(.system(size: statNumberSize, weight: .bold))
-            
-            Text(title)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-        .padding(20)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 12)
-                .fill(.secondaryBackground)
-        )
-    }
-}
 
-// MARK: - Flashcard Row
+                // Actions
+                HStack(spacing: 4) {
+                    Button {
+                        withAnimation(.spring(response: 0.3)) {
+                            isFlipped.toggle()
+                        }
+                    } label: {
+                        Image(systemName: isFlipped ? "eye.slash" : "eye")
+                            .font(.system(size: smallTextSize))
+                    }
+                    .buttonStyle(.plain)
+                    .help(isFlipped ? "Hide answer" : "Show answer")
+                    .accessibilityLabel(isFlipped ? "Hide answer" : "Show answer")
 
-struct FlashcardRowView: View {
-    let card: Flashcard
-    let deckId: UUID
-    
-    @State private var isFlipped = false
-    @State private var showingEdit = false
-    @StateObject private var manager = FlashcardManager.shared
-    
-    var body: some View {
-        HStack(spacing: 12) {
-            // Status indicator
-            Circle()
-                .fill(statusColor)
-                .frame(width: 8, height: 8)
-            
-            // Content
-            VStack(alignment: .leading, spacing: 4) {
-                Text(card.frontText)
-                    .font(.subheadline.weight(.medium))
-                    .lineLimit(1)
-                
-                if isFlipped {
-                    Text(card.backText)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                }
-                
-                HStack(spacing: 8) {
-                    if card.repetition > 0 {
-                        Text(verbatim: "Interval: \(card.interval)d")
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
+                    Button {
+                        showingEdit = true
+                    } label: {
+                        Image(systemName: "pencil")
+                            .font(.system(size: smallTextSize))
                     }
-                    
-                    if let lastReviewed = card.lastReviewed {
-                        Text(String(format: NSLocalizedString("macos.flashcard.last_reviewed_relative", value: "Last: %@", comment: "Last reviewed time relative"), lastReviewed.formatted(.relative(presentation: .numeric))))
-                            .font(.caption2)
-                            .foregroundStyle(.tertiary)
-                    }
+                    .buttonStyle(.plain)
+                    .help("Edit card")
+                    .accessibilityLabel("Edit card")
                 }
             }
-            
-            Spacer()
-            
-            // Actions
-            HStack(spacing: 4) {
-                Button {
-                    withAnimation(.spring(response: 0.3)) {
-                        isFlipped.toggle()
-                    }
-                } label: {
-                    Image(systemName: isFlipped ? "eye.slash" : "eye")
-                        .font(.system(size: smallTextSize))
-                }
-                .buttonStyle(.plain)
-                .help(isFlipped ? "Hide answer" : "Show answer")
-                .accessibilityLabel(isFlipped ? "Hide answer" : "Show answer")
-                
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(.secondaryBackground)
+            )
+            .contextMenu {
                 Button {
                     showingEdit = true
                 } label: {
-                    Image(systemName: "pencil")
-                        .font(.system(size: smallTextSize))
+                    Label(
+                        NSLocalizedString("deckdetail.label.edit.card", value: "Edit Card", comment: "Edit Card"),
+                        systemImage: "pencil"
+                    )
                 }
-                .buttonStyle(.plain)
-                .help("Edit card")
-                .accessibilityLabel("Edit card")
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .background(
-            RoundedRectangle(cornerRadius: 8)
-                .fill(.secondaryBackground)
-        )
-        .contextMenu {
-            Button {
-                showingEdit = true
-            } label: {
-                Label(NSLocalizedString("deckdetail.label.edit.card", value: "Edit Card", comment: "Edit Card"), systemImage: "pencil")
-            }
-            
-            Divider()
-            
-            Button(role: .destructive) {
-                deleteCard()
-            } label: {
-                Label(NSLocalizedString("deckdetail.label.delete.card", value: "Delete Card", comment: "Delete Card"), systemImage: "trash")
-            }
-        }
-        .sheet(isPresented: $showingEdit) {
-            EditCardSheet(card: card, deckId: deckId)
-        }
-    }
-    
-    private var statusColor: Color {
-        if card.repetition == 0 {
-            return .blue
-        } else if card.dueDate <= Date() {
-            return .orange
-        } else {
-            return .green
-        }
-    }
-    
-    private func deleteCard() {
-        if let deckIndex = manager.decks.firstIndex(where: { $0.id == deckId }) {
-            var deck = manager.decks[deckIndex]
-            deck.cards.removeAll { $0.id == card.id }
-            manager.updateDeck(deck)
-        }
-    }
-}
 
-#if !DISABLE_PREVIEWS
-#Preview {
-    DeckDetailView(deck: FlashcardDeck(title: "Sample Deck", cards: [
-        Flashcard(frontText: "Question 1", backText: "Answer 1", difficulty: .medium, dueDate: Date()),
-        Flashcard(frontText: "Question 2", backText: "Answer 2", difficulty: .easy, dueDate: Date())
-    ]))
-}
-#endif
+                Divider()
+
+                Button(role: .destructive) {
+                    deleteCard()
+                } label: {
+                    Label(
+                        NSLocalizedString("deckdetail.label.delete.card", value: "Delete Card", comment: "Delete Card"),
+                        systemImage: "trash"
+                    )
+                }
+            }
+            .sheet(isPresented: $showingEdit) {
+                EditCardSheet(card: card, deckId: deckId)
+            }
+        }
+
+        private var statusColor: Color {
+            if card.repetition == 0 {
+                .blue
+            } else if card.dueDate <= Date() {
+                .orange
+            } else {
+                .green
+            }
+        }
+
+        private func deleteCard() {
+            if let deckIndex = manager.decks.firstIndex(where: { $0.id == deckId }) {
+                var deck = manager.decks[deckIndex]
+                deck.cards.removeAll { $0.id == card.id }
+                manager.updateDeck(deck)
+            }
+        }
+    }
+
+    #if !DISABLE_PREVIEWS
+        #Preview {
+            DeckDetailView(deck: FlashcardDeck(title: "Sample Deck", cards: [
+                Flashcard(frontText: "Question 1", backText: "Answer 1", difficulty: .medium, dueDate: Date()),
+                Flashcard(frontText: "Question 2", backText: "Answer 2", difficulty: .easy, dueDate: Date())
+            ]))
+        }
+    #endif
 #endif

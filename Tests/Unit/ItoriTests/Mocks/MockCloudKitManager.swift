@@ -22,44 +22,44 @@ class MockCloudKitManager {
     var syncCallCount = 0
     var fetchCallCount = 0
     var conflictResolver: ((Data, Data) -> Data)?
-    
+
     var isConnected = true
     var quotaRemaining: Int64 = 1_000_000_000 // 1GB
-    
+
     func syncToCloud(key: String, data: Data) async throws {
         syncCallCount += 1
-        
+
         if !isConnected {
             throw MockCloudKitError.networkUnavailable
         }
-        
+
         if Int64(data.count) > quotaRemaining {
             throw MockCloudKitError.quotaExceeded
         }
-        
+
         if shouldFail {
             throw failureError
         }
-        
+
         // Last write wins - always update the data
         syncedData[key] = data
         quotaRemaining -= Int64(data.count)
     }
-    
+
     func fetchFromCloud(key: String) async throws -> Data? {
         fetchCallCount += 1
-        
+
         if !isConnected {
             throw MockCloudKitError.networkUnavailable
         }
-        
+
         if shouldFail {
             throw failureError
         }
-        
+
         return syncedData[key]
     }
-    
+
     func clearCache() {
         syncedData.removeAll()
         syncCallCount = 0

@@ -8,13 +8,13 @@ final class PracticeTestStore: ObservableObject {
     @Published var tests: [PracticeTest] = []
     @Published var currentTest: PracticeTest?
     @Published var isGenerating: Bool = false
-    @Published var summary: PracticeTestSummary = PracticeTestSummary()
+    @Published var summary: PracticeTestSummary = .init()
     @Published var useAlgorithmicGenerator: Bool = true // Toggle for blueprint-first generation
-    
+
     private let llmService: LocalLLMService
     private let algorithmicGenerator: AlgorithmicTestGenerator
     private let storageKey = "practice_tests_v1"
-    
+
     init(
         llmService: LocalLLMService? = nil,
         algorithmicGenerator: AlgorithmicTestGenerator? = nil,
@@ -29,12 +29,12 @@ final class PracticeTestStore: ObservableObject {
         self.useAlgorithmicGenerator = useAlgorithmicGenerator
         loadTests()
     }
-    
+
     // MARK: - Test Generation
-    
+
     func generateTest(request: PracticeTestRequest) async {
         isGenerating = true
-        
+
         let test = PracticeTest(
             courseId: request.courseId,
             courseName: request.courseName,
@@ -43,31 +43,31 @@ final class PracticeTestStore: ObservableObject {
             questionCount: request.questionCount,
             status: .generating
         )
-        
+
         await MainActor.run {
             tests.append(test)
             currentTest = test
         }
-        
+
         do {
             let questions: [PracticeQuestion]
-            
+
             if useAlgorithmicGenerator {
                 // Use blueprint-first algorithmic generator
                 let result = await algorithmicGenerator.generateTest(request: request)
-                
+
                 switch result {
-                case .success(let validatedQuestions):
-                    questions = validatedQuestions.map { $0.question }
-                    
-                case .failure(let failure):
+                case let .success(validatedQuestions):
+                    questions = validatedQuestions.map(\.question)
+
+                case let .failure(failure):
                     throw failure
                 }
             } else {
                 // Use legacy generation method
                 questions = try await llmService.generateQuestions(request: request)
             }
-            
+
             await MainActor.run {
                 if let index = tests.firstIndex(where: { $0.id == test.id }) {
                     tests[index].questions = questions
@@ -89,11 +89,11 @@ final class PracticeTestStore: ObservableObject {
             }
         }
     }
-    
+
     func retryGeneration(testId: UUID) async {
         guard let test = tests.first(where: { $0.id == testId }),
               test.status == .failed else { return }
-        
+
         let request = PracticeTestRequest(
             courseId: test.courseId,
             courseName: test.courseName,
@@ -101,61 +101,61 @@ final class PracticeTestStore: ObservableObject {
             difficulty: test.difficulty,
             questionCount: test.questionCount
         )
-        
+
         await MainActor.run {
             if let index = tests.firstIndex(where: { $0.id == testId }) {
                 tests[index].status = .generating
                 tests[index].generationError = nil
             }
         }
-        
+
         await generateTest(request: request)
     }
-    
+
     // MARK: - Test Taking
-    
+
     func startTest(_ testId: UUID) {
         guard let index = tests.firstIndex(where: { $0.id == testId }),
               tests[index].status == .ready else { return }
-        
+
         tests[index].status = .inProgress
         currentTest = tests[index]
         saveTests()
     }
-    
+
     func answerQuestion(testId: UUID, questionId: UUID, answer: String, timeSpent: Double? = nil) {
         guard let testIndex = tests.firstIndex(where: { $0.id == testId }),
               let question = tests[testIndex].questions.first(where: { $0.id == questionId }) else { return }
-        
+
         let isCorrect = llmService.validateAnswer(
             userAnswer: answer,
             correctAnswer: question.correctAnswer,
             format: question.format
         )
-        
+
         let practiceAnswer = PracticeAnswer(
             questionId: questionId,
             userAnswer: answer,
             isCorrect: isCorrect,
             timeSpentSeconds: timeSpent
         )
-        
+
         tests[testIndex].answers[questionId] = practiceAnswer
         currentTest = tests[testIndex]
         saveTests()
     }
-    
+
     func submitTest(_ testId: UUID) {
         guard let index = tests.firstIndex(where: { $0.id == testId }) else { return }
-        
+
         tests[index].status = .submitted
         tests[index].submittedAt = Date()
         currentTest = tests[index]
-        
+
         saveTests()
         updateSummary()
     }
-    
+
     // MARK: - Test Management
 
     func updateTest(_ test: PracticeTest) {
@@ -167,7 +167,7 @@ final class PracticeTestStore: ObservableObject {
         saveTests()
         updateSummary()
     }
-    
+
     func deleteTest(_ testId: UUID) {
         tests.removeAll { $0.id == testId }
         if currentTest?.id == testId {
@@ -176,38 +176,38 @@ final class PracticeTestStore: ObservableObject {
         saveTests()
         updateSummary()
     }
-    
+
     func clearCurrentTest() {
         currentTest = nil
     }
-    
+
     func getTest(byId id: UUID) -> PracticeTest? {
         tests.first { $0.id == id }
     }
-    
+
     func getTestsForCourse(_ courseId: UUID) -> [PracticeTest] {
         tests.filter { $0.courseId == courseId }
             .sorted { $0.createdAt > $1.createdAt }
     }
-    
+
     // MARK: - Analytics
-    
+
     private func updateSummary() {
         let submittedTests = tests.filter { $0.status == .submitted }
-        
+
         let totalTests = submittedTests.count
         let totalQuestions = submittedTests.reduce(0) { $0 + $1.questions.count }
         let totalCorrect = submittedTests.reduce(0) { $0 + $1.correctCount }
         let averageScore = totalQuestions > 0 ? Double(totalCorrect) / Double(totalQuestions) : 0
-        
+
         // Calculate per-topic performance
         var topicStats: [String: (total: Int, correct: Int, dates: [Date])] = [:]
-        
+
         for test in submittedTests {
             for topic in test.topics {
                 let questionsPerTopic = test.questions.count / max(test.topics.count, 1)
                 let correctPerTopic = test.correctCount / max(test.topics.count, 1)
-                
+
                 if var stats = topicStats[topic] {
                     stats.total += questionsPerTopic
                     stats.correct += correctPerTopic
@@ -218,7 +218,7 @@ final class PracticeTestStore: ObservableObject {
                 }
             }
         }
-        
+
         let topicPerformance = topicStats.mapValues { stats in
             TopicPerformance(
                 topic: "",
@@ -228,7 +228,7 @@ final class PracticeTestStore: ObservableObject {
                 lastPracticed: stats.dates.max()
             )
         }
-        
+
         // Calculate practice frequency
         var frequency: [Date: Int] = [:]
         let calendar = Calendar.current
@@ -236,7 +236,7 @@ final class PracticeTestStore: ObservableObject {
             let date = calendar.startOfDay(for: test.submittedAt ?? test.createdAt)
             frequency[date, default: 0] += 1
         }
-        
+
         summary = PracticeTestSummary(
             totalTests: totalTests,
             totalQuestions: totalQuestions,
@@ -250,9 +250,9 @@ final class PracticeTestStore: ObservableObject {
             practiceFrequency: frequency
         )
     }
-    
+
     // MARK: - Persistence
-    
+
     private func saveTests() {
         do {
             let data = try JSONEncoder().encode(tests)
@@ -261,10 +261,10 @@ final class PracticeTestStore: ObservableObject {
             DebugLogger.log("Failed to save practice tests: \(error)")
         }
     }
-    
+
     private func loadTests() {
         guard let data = UserDefaults.standard.data(forKey: storageKey) else { return }
-        
+
         do {
             tests = try JSONDecoder().decode([PracticeTest].self, from: data)
             updateSummary()

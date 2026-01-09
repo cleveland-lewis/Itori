@@ -10,7 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- (Nothing yet - v1.0.0 in progress)
+- Pre-commit hook: Markdown file enforcement to prevent documentation sprawl (2026-01-09)
+  - Only 5 markdown files allowed: README.md, CHANGELOG.md, BACKLOG.md, PRIVACY_POLICY.md, PRIVACY_POLICY_ENHANCED.md
+  - New markdown files are blocked with helpful guidance to use CHANGELOG.md or GitHub issues
+  - Completed work → CHANGELOG.md, TODO items → GitHub issues
 
 ---
 

@@ -1,10 +1,10 @@
+import Combine
 import Foundation
 import UserNotifications
-import Combine
 #if os(macOS)
-import AppKit
+    import AppKit
 #elseif os(iOS)
-import UIKit
+    import UIKit
 #endif
 
 final class NotificationManager: ObservableObject {
@@ -43,16 +43,20 @@ final class NotificationManager: ObservableObject {
         // First check current status to avoid redundant requests
         UNUserNotificationCenter.current().getNotificationSettings { [weak self] settings in
             guard let self else { return }
-            
+
             // Only request if not determined
             guard settings.authorizationStatus == .notDetermined else {
-                LOG_NOTIFICATIONS(.debug, "Permissions", "Authorization already determined (\(settings.authorizationStatus.rawValue)), skipping request")
+                LOG_NOTIFICATIONS(
+                    .debug,
+                    "Permissions",
+                    "Authorization already determined (\(settings.authorizationStatus.rawValue)), skipping request"
+                )
                 DispatchQueue.main.async {
                     self.updateStateFromSettings(settings)
                 }
                 return
             }
-            
+
             LOG_NOTIFICATIONS(.info, "Permissions", "Requesting notification authorization")
             let center = UNUserNotificationCenter.current()
             center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
@@ -64,10 +68,18 @@ final class NotificationManager: ObservableObject {
                         // Silently handle permission errors (common in sandboxed/restricted environments)
                         let nsError = error as NSError
                         if nsError.domain == "UNErrorDomain" && nsError.code == 1 {
-                            LOG_NOTIFICATIONS(.debug, "Permissions", "Notification authorization not available in this environment (UNError 1)")
+                            LOG_NOTIFICATIONS(
+                                .debug,
+                                "Permissions",
+                                "Notification authorization not available in this environment (UNError 1)"
+                            )
                             self.authorizationState = .denied
                         } else {
-                            LOG_NOTIFICATIONS(.error, "Permissions", "Permission request failed: \(error.localizedDescription)")
+                            LOG_NOTIFICATIONS(
+                                .error,
+                                "Permissions",
+                                "Permission request failed: \(error.localizedDescription)"
+                            )
                             self.authorizationState = .error(error.localizedDescription)
                         }
                     } else {
@@ -79,18 +91,17 @@ final class NotificationManager: ObservableObject {
             }
         }
     }
-    
+
     private func updateStateFromSettings(_ settings: UNNotificationSettings) {
-        let state: AuthorizationState
-        switch settings.authorizationStatus {
+        let state: AuthorizationState = switch settings.authorizationStatus {
         case .notDetermined:
-            state = .notRequested
+            .notRequested
         case .authorized, .provisional, .ephemeral:
-            state = .granted
+            .granted
         case .denied:
-            state = .denied
+            .denied
         @unknown default:
-            state = .error("Unknown authorization status")
+            .error("Unknown authorization status")
         }
         self.authorizationState = state
         self.isAuthorized = state.isAuthorized
@@ -105,18 +116,19 @@ final class NotificationManager: ObservableObject {
         }
     }
 
-#if os(macOS)
-    func openNotificationSettings() {
-        guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") else { return }
-        NSWorkspace.shared.open(url)
-    }
-#elseif os(iOS)
-    func openNotificationSettings() {
-        if let url = URL(string: UIApplication.openSettingsURLString) {
-            UIApplication.shared.open(url)
+    #if os(macOS)
+        func openNotificationSettings() {
+            guard let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") else { return }
+            NSWorkspace.shared.open(url)
         }
-    }
-#endif
+
+    #elseif os(iOS)
+        func openNotificationSettings() {
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
+        }
+    #endif
 
     func scheduleTimerNotification(seconds: TimeInterval, title: String) {
         let content = UNMutableNotificationContent()
@@ -127,8 +139,13 @@ final class NotificationManager: ObservableObject {
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(1, seconds), repeats: false)
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
         UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                LOG_UI(.error, "NotificationManager", "Failed to schedule timer notification", metadata: ["error": error.localizedDescription])
+            if let error {
+                LOG_UI(
+                    .error,
+                    "NotificationManager",
+                    "Failed to schedule timer notification",
+                    metadata: ["error": error.localizedDescription]
+                )
             }
         }
     }
@@ -164,37 +181,47 @@ final class NotificationManager: ObservableObject {
         case .completed:
             content.title = "Itori Refresh Complete"
             content.body = "Calendar and planner are up to date."
-        case .failed(let reason):
+        case let .failed(reason):
             content.title = "Itori Refresh Failed"
             content.body = reason
         }
 
         let request = UNNotificationRequest(
-            identifier: "roots.refresh.\(UUID().uuidString)",
+            identifier: "itori.refresh.\(UUID().uuidString)",
             content: content,
             trigger: nil
         )
         UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                LOG_UI(.error, "NotificationManager", "Failed to schedule refresh notification", metadata: ["error": error.localizedDescription])
+            if let error {
+                LOG_UI(
+                    .error,
+                    "NotificationManager",
+                    "Failed to schedule refresh notification",
+                    metadata: ["error": error.localizedDescription]
+                )
             }
         }
     }
 
     func updateBadgeCount(_ count: Int) {
-#if os(macOS)
-        NSApplication.shared.dockTile.badgeLabel = count > 0 ? "\(count)" : nil
-#endif
+        #if os(macOS)
+            NSApplication.shared.dockTile.badgeLabel = count > 0 ? "\(count)" : nil
+        #endif
 
         if #available(macOS 14.0, iOS 16.0, *) {
             UNUserNotificationCenter.current().setBadgeCount(count)
         } else {
             let content = UNMutableNotificationContent()
             content.badge = NSNumber(value: count)
-            let request = UNNotificationRequest(identifier: "roots.badge.update", content: content, trigger: nil)
+            let request = UNNotificationRequest(identifier: "itori.badge.update", content: content, trigger: nil)
             UNUserNotificationCenter.current().add(request) { error in
-                if let error = error {
-                    LOG_UI(.error, "NotificationManager", "Failed to update badge", metadata: ["error": error.localizedDescription])
+                if let error {
+                    LOG_UI(
+                        .error,
+                        "NotificationManager",
+                        "Failed to update badge",
+                        metadata: ["error": error.localizedDescription]
+                    )
                 }
             }
         }
@@ -203,144 +230,168 @@ final class NotificationManager: ObservableObject {
     func clearBadge() {
         updateBadgeCount(0)
     }
-    
+
     // MARK: - Timer Completion Notifications
-    
+
     func scheduleTimerCompleted(mode: String, duration: TimeInterval) {
         guard AppSettingsModel.shared.timerAlertsEnabled else { return }
-        
+
         let content = UNMutableNotificationContent()
         content.title = "Timer Complete"
         content.body = "\(mode) finished after \(formatDuration(duration))"
         content.sound = .default
         content.interruptionLevel = .timeSensitive
-        
+
         let request = UNNotificationRequest(
             identifier: UUID().uuidString,
             content: content,
             trigger: nil // Immediate
         )
-        
+
         UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                LOG_UI(.error, "NotificationManager", "Failed to schedule timer completion", metadata: ["error": error.localizedDescription])
+            if let error {
+                LOG_UI(
+                    .error,
+                    "NotificationManager",
+                    "Failed to schedule timer completion",
+                    metadata: ["error": error.localizedDescription]
+                )
             }
         }
     }
-    
+
     // MARK: - Pomodoro Notifications
-    
+
     func schedulePomodoroWorkComplete() {
         guard AppSettingsModel.shared.pomodoroAlertsEnabled else { return }
-        
+
         let content = UNMutableNotificationContent()
         content.title = "Work Session Complete"
         content.body = "Time for a break! Great job staying focused."
         content.sound = .default
         content.interruptionLevel = .timeSensitive
-        
+
         let request = UNNotificationRequest(
             identifier: UUID().uuidString,
             content: content,
             trigger: nil // Immediate
         )
-        
+
         UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                LOG_UI(.error, "NotificationManager", "Failed to schedule pomodoro work completion", metadata: ["error": error.localizedDescription])
+            if let error {
+                LOG_UI(
+                    .error,
+                    "NotificationManager",
+                    "Failed to schedule pomodoro work completion",
+                    metadata: ["error": error.localizedDescription]
+                )
             }
         }
     }
-    
+
     func schedulePomodoroBreakComplete(isLongBreak: Bool = false) {
         guard AppSettingsModel.shared.pomodoroAlertsEnabled else { return }
-        
+
         let content = UNMutableNotificationContent()
         content.title = isLongBreak ? "Long Break Complete" : "Break Complete"
         content.body = "Ready to focus? Let's get back to work!"
         content.sound = .default
         content.interruptionLevel = .timeSensitive
-        
+
         let request = UNNotificationRequest(
             identifier: UUID().uuidString,
             content: content,
             trigger: nil // Immediate
         )
-        
+
         UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                LOG_UI(.error, "NotificationManager", "Failed to schedule pomodoro break completion", metadata: ["error": error.localizedDescription])
+            if let error {
+                LOG_UI(
+                    .error,
+                    "NotificationManager",
+                    "Failed to schedule pomodoro break completion",
+                    metadata: ["error": error.localizedDescription]
+                )
             }
         }
     }
-    
+
     // MARK: - Assignment Notifications
-    
+
     func scheduleAssignmentDue(_ assignment: AppTask) {
         guard AppSettingsModel.shared.notificationsEnabled else { return }
         guard AppSettingsModel.shared.assignmentRemindersEnabled else { return }
         guard let dueDate = assignment.due else { return }
         guard !assignment.isCompleted else { return }
-        
+
         let leadTime = AppSettingsModel.shared.assignmentLeadTime
         let notificationDate = dueDate.addingTimeInterval(-leadTime)
-        
+
         // Don't schedule if already past
         guard notificationDate > Date() else { return }
-        
+
         let content = UNMutableNotificationContent()
         content.title = NSLocalizedString("notification.assignment.title", comment: "Assignment Due Soon")
-        content.body = String(format: NSLocalizedString("notification.assignment.body", comment: "%@ is due soon"), assignment.title)
+        content.body = String(
+            format: NSLocalizedString("notification.assignment.body", comment: "%@ is due soon"),
+            assignment.title
+        )
         content.sound = .default
         content.userInfo = ["assignmentId": assignment.id.uuidString]
-        content.categoryIdentifier = "roots.assignmentReminder"
-        
+        content.categoryIdentifier = "itori.assignmentReminder"
+
         // Add course subtitle if available
         if let courseId = assignment.courseId,
            let coursesStore = CoursesStore.shared,
-           let course = coursesStore.courses.first(where: { $0.id == courseId }) {
+           let course = coursesStore.courses.first(where: { $0.id == courseId })
+        {
             content.subtitle = course.title
         }
-        
+
         let triggerDate = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: notificationDate)
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
-        
+
         let identifier = "assignment-\(assignment.id.uuidString)"
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
-        
+
         UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                LOG_UI(.error, "NotificationManager", "Failed to schedule assignment notification", metadata: ["error": error.localizedDescription, "assignmentId": assignment.id.uuidString])
+            if let error {
+                LOG_UI(
+                    .error,
+                    "NotificationManager",
+                    "Failed to schedule assignment notification",
+                    metadata: ["error": error.localizedDescription, "assignmentId": assignment.id.uuidString]
+                )
             }
         }
     }
-    
+
     func scheduleAllAssignmentReminders() {
         let assignments = AssignmentsStore.shared.tasks
         for assignment in assignments where !assignment.isCompleted {
             scheduleAssignmentDue(assignment)
         }
     }
-    
+
     func cancelAllAssignmentReminders() {
         UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
             let assignmentIds = requests
                 .filter { $0.identifier.hasPrefix("assignment-") }
-                .map { $0.identifier }
-            
+                .map(\.identifier)
+
             if !assignmentIds.isEmpty {
                 UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: assignmentIds)
             }
         }
     }
-    
+
     func cancelAssignmentNotification(_ assignmentId: UUID) {
         let identifier = "assignment-\(assignmentId.uuidString)"
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
     }
-    
+
     // MARK: - Daily Overview
-    
+
     func scheduleDailyOverview() {
         guard AppSettingsModel.shared.smartNotifications else {
             cancelDailyOverview()
@@ -354,32 +405,32 @@ final class NotificationManager: ObservableObject {
             cancelDailyOverview()
             return
         }
-        
+
         // Cancel existing daily overview
         cancelDailyOverview()
-        
+
         // Generate overview content
         let content = generateDailyOverviewContent()
-        
+
         let overviewTime = AppSettingsModel.shared.dailyOverviewTime
         let components = Calendar.current.dateComponents([.hour, .minute], from: overviewTime)
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
-        
+
         let request = UNNotificationRequest(identifier: "daily-overview", content: content, trigger: trigger)
-        
+
         UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
+            if let error {
                 DebugLogger.log("Error scheduling daily overview: \(error.localizedDescription)")
             }
         }
     }
-    
+
     func cancelDailyOverview() {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["daily-overview"])
     }
-    
+
     // MARK: - Motivational Messages
-    
+
     func scheduleMotivationalMessages() {
         guard AppSettingsModel.shared.smartNotifications else {
             cancelMotivationalMessages()
@@ -393,50 +444,55 @@ final class NotificationManager: ObservableObject {
             cancelMotivationalMessages()
             return
         }
-        
+
         // Cancel existing motivational messages
         cancelMotivationalMessages()
-        
+
         // Schedule 3 daily messages at 10am, 2pm, and 6pm
         let times = [
             DateComponents(hour: 10, minute: 0),
             DateComponents(hour: 14, minute: 0),
             DateComponents(hour: 18, minute: 0)
         ]
-        
+
         let messages = [
             NSLocalizedString("notification.motivation.message_1", comment: "Keep up the great work!"),
             NSLocalizedString("notification.motivation.message_2", comment: "You're making progress!"),
             NSLocalizedString("notification.motivation.message_3", comment: "Stay focused on your goals!"),
             NSLocalizedString("notification.motivation.message_4", comment: "Every small step counts!"),
             NSLocalizedString("notification.motivation.message_5", comment: "Believe in yourself!"),
-            NSLocalizedString("notification.motivation.message_6", comment: "You're doing amazing!"),
+            NSLocalizedString("notification.motivation.message_6", comment: "You're doing amazing!")
         ]
-        
+
         for (index, timeComponents) in times.enumerated() {
             let content = UNMutableNotificationContent()
             content.title = NSLocalizedString("notification.motivation.title", comment: "Stay Motivated")
             content.body = messages.randomElement() ?? messages[0]
             content.sound = .default
-            content.categoryIdentifier = "roots.motivation"
-            
+            content.categoryIdentifier = "itori.motivation"
+
             let trigger = UNCalendarNotificationTrigger(dateMatching: timeComponents, repeats: true)
             let request = UNNotificationRequest(
                 identifier: "motivation-\(index)",
                 content: content,
                 trigger: trigger
             )
-            
+
             UNUserNotificationCenter.current().add(request) { error in
-                if let error = error {
-                    LOG_UI(.error, "NotificationManager", "Failed to schedule motivational message", metadata: ["error": error.localizedDescription])
+                if let error {
+                    LOG_UI(
+                        .error,
+                        "NotificationManager",
+                        "Failed to schedule motivational message",
+                        metadata: ["error": error.localizedDescription]
+                    )
                 }
             }
         }
     }
-    
+
     func cancelMotivationalMessages() {
-        let identifiers = (0..<3).map { "motivation-\($0)" }
+        let identifiers = (0 ..< 3).map { "motivation-\($0)" }
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
     }
 
@@ -471,8 +527,13 @@ final class NotificationManager: ObservableObject {
         )
 
         UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                LOG_UI(.error, "NotificationManager", "Failed to schedule weekly summary", metadata: ["error": error.localizedDescription])
+            if let error {
+                LOG_UI(
+                    .error,
+                    "NotificationManager",
+                    "Failed to schedule weekly summary",
+                    metadata: ["error": error.localizedDescription]
+                )
             }
         }
     }
@@ -495,37 +556,40 @@ final class NotificationManager: ObservableObject {
             cancelWeeklySummary()
         }
     }
-    
+
     func cancelAllScheduledNotifications() {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
     }
-    
+
     private func generateDailyOverviewContent() -> UNMutableNotificationContent {
         let content = UNMutableNotificationContent()
         content.title = NSLocalizedString("notification.daily_overview.title", comment: "Good Morning!")
         content.interruptionLevel = .timeSensitive
-        content.categoryIdentifier = "roots.dailyOverview"
-        
+        content.categoryIdentifier = "itori.dailyOverview"
+
         var bodyParts: [String] = []
-        
+
         let today = Calendar.current.startOfDay(for: Date())
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today)!
-        
+
         // Today's assignments
         if AppSettingsModel.shared.dailyOverviewIncludeTasks {
             let todayTasks = AssignmentsStore.shared.tasks.filter { task in
                 guard !task.isCompleted, let due = task.due else { return false }
                 return due >= today && due < tomorrow
             }
-            
+
             if !todayTasks.isEmpty {
                 let taskText = todayTasks.count == 1 ?
                     NSLocalizedString("notification.daily_overview.task_singular", comment: "1 task") :
-                    String(format: NSLocalizedString("notification.daily_overview.tasks_plural", comment: "%d tasks"), todayTasks.count)
+                    String(
+                        format: NSLocalizedString("notification.daily_overview.tasks_plural", comment: "%d tasks"),
+                        todayTasks.count
+                    )
                 bodyParts.append(taskText)
             }
         }
-        
+
         // Yesterday's study time from FocusManager/timer sessions
         if AppSettingsModel.shared.dailyOverviewIncludeYesterdayStudyTime {
             if let studyMinutes = getYesterdayStudyTime() {
@@ -538,39 +602,39 @@ final class NotificationManager: ObservableObject {
                 }
             }
         }
-        
+
         // Today's events from CalendarManager
         if AppSettingsModel.shared.dailyOverviewIncludeEvents {
             if let todayEvents = getTodayEvents(), !todayEvents.isEmpty {
                 if todayEvents.count <= 2 {
-                    let eventTitles = todayEvents.map { $0.title }.joined(separator: ", ")
+                    let eventTitles = todayEvents.map(\.title).joined(separator: ", ")
                     bodyParts.append("Today: \(eventTitles)")
                 } else {
                     bodyParts.append("Today: \(todayEvents.count) events scheduled")
                 }
             }
         }
-        
+
         // Motivational closing
         if AppSettingsModel.shared.dailyOverviewIncludeMotivation {
             bodyParts.append(NSLocalizedString("notification.daily_overview.motivation", comment: "You've got this!"))
         }
-        
+
         content.body = bodyParts.isEmpty ?
             NSLocalizedString("notification.daily_overview.default", comment: "Open Itori to see today's plan") :
             bodyParts.joined(separator: " • ")
         content.sound = .default
-        
+
         return content
     }
 
     private func generateWeeklySummaryContent() -> UNMutableNotificationContent {
         let content = UNMutableNotificationContent()
         content.title = NSLocalizedString("notification.weekly_summary.title", comment: "Weekly Summary")
-        content.categoryIdentifier = "roots.weeklySummary"
+        content.categoryIdentifier = "itori.weeklySummary"
 
         let weekMinutes = StudyHoursTracker.shared.totals.weekMinutes
-        let completedTasks = AssignmentsStore.shared.tasks.filter { $0.isCompleted }.count
+        let completedTasks = AssignmentsStore.shared.tasks.filter(\.isCompleted).count
         let studyText = weekMinutes > 0 ? "Study time: \(StudyHoursTotals.formatMinutes(weekMinutes))" : "No study time logged"
         let taskText = String.localizedStringWithFormat(
             NSLocalizedString("tasks_completed", comment: ""),
@@ -581,7 +645,7 @@ final class NotificationManager: ObservableObject {
         content.sound = .default
         return content
     }
-    
+
     private func getYesterdayStudyTime() -> Int? {
         // Try to access yesterday's study time from UserDefaults cache
         // This assumes timer data is cached somewhere accessible
@@ -589,70 +653,71 @@ final class NotificationManager: ObservableObject {
         let minutes = UserDefaults.standard.integer(forKey: key)
         return minutes > 0 ? minutes : nil
     }
-    
+
     private func getTodayEvents() -> [(title: String, startDate: Date)]? {
         // Access today's calendar events
         // This will integrate with CalendarManager when available
         let today = Calendar.current.startOfDay(for: Date())
         _ = Calendar.current.date(byAdding: .day, value: 1, to: today)!
-        
+
         // Placeholder: return nil for now, can be enhanced with CalendarManager
         // Deferred: CalendarManager integration
         return nil
     }
-    
+
     // MARK: - Debug Helpers
-    
+
     #if DEBUG
-    func printPendingNotifications() {
-        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
-            DebugLogger.log("📬 Pending Notifications: \(requests.count)")
-            for request in requests {
-                DebugLogger.log("  • \(request.identifier)")
-                if let trigger = request.trigger as? UNCalendarNotificationTrigger,
-                   let nextTrigger = trigger.nextTriggerDate() {
-                    DebugLogger.log("    Next: \(nextTrigger)")
+        func printPendingNotifications() {
+            UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+                DebugLogger.log("📬 Pending Notifications: \(requests.count)")
+                for request in requests {
+                    DebugLogger.log("  • \(request.identifier)")
+                    if let trigger = request.trigger as? UNCalendarNotificationTrigger,
+                       let nextTrigger = trigger.nextTriggerDate()
+                    {
+                        DebugLogger.log("    Next: \(nextTrigger)")
+                    }
                 }
             }
         }
-    }
-    
-    func sendTestNotification() {
-        let content = UNMutableNotificationContent()
-        content.title = "Test Notification"
-        content.body = "This is a test notification from Itori (5 seconds)"
-        content.sound = .default
-        
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-        let request = UNNotificationRequest(identifier: "test-notification", content: content, trigger: trigger)
-        
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
-                DebugLogger.log("❌ Test notification failed: \(error)")
-            } else {
-                DebugLogger.log("✅ Test notification scheduled for 5 seconds")
+
+        func sendTestNotification() {
+            let content = UNMutableNotificationContent()
+            content.title = "Test Notification"
+            content.body = "This is a test notification from Itori (5 seconds)"
+            content.sound = .default
+
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+            let request = UNNotificationRequest(identifier: "test-notification", content: content, trigger: trigger)
+
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error {
+                    DebugLogger.log("❌ Test notification failed: \(error)")
+                } else {
+                    DebugLogger.log("✅ Test notification scheduled for 5 seconds")
+                }
             }
         }
-    }
     #endif
-    
+
     // MARK: - General Local Notifications
-    
+
     func scheduleLocalNotification(title: String, body: String, identifier: String) async {
         guard AppSettingsModel.shared.notificationsEnabled else { return }
-        
+
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
         content.sound = .default
         content.interruptionLevel = .timeSensitive
-        
+
         let request = UNNotificationRequest(
             identifier: identifier,
             content: content,
             trigger: nil // Immediate delivery
         )
-        
+
         do {
             try await UNUserNotificationCenter.current().add(request)
         } catch {
@@ -662,26 +727,26 @@ final class NotificationManager: ObservableObject {
             ])
         }
     }
-    
+
     // MARK: - Utility
-    
+
     private func formatDuration(_ seconds: TimeInterval) -> String {
         let minutes = Int(seconds) / 60
         let hours = minutes / 60
         let remainingMinutes = minutes % 60
-        
+
         if hours > 0 {
             return "\(hours)h \(remainingMinutes)m"
         } else {
             return "\(minutes)m"
         }
     }
-    
+
     private func formatLeadTime(_ seconds: TimeInterval) -> String {
         let minutes = Int(seconds) / 60
         let hours = minutes / 60
         let days = hours / 24
-        
+
         if days > 0 {
             return "in \(days) day\(days == 1 ? "" : "s")"
         } else if hours > 0 {

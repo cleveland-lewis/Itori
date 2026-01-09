@@ -1,5 +1,5 @@
-import Foundation
 import EventKit
+import Foundation
 
 struct DiagnosticIssue: Identifiable, Equatable {
     let id = UUID()
@@ -81,7 +81,11 @@ final class AppDebugger {
             issues.append(permissionIssue)
         }
 
-        if let fsIssue = checkFileSystemIntegrity(documentsDirectory: docsDir, tasksURL: tasksURL, coursesURL: coursesURL) {
+        if let fsIssue = checkFileSystemIntegrity(
+            documentsDirectory: docsDir,
+            tasksURL: tasksURL,
+            coursesURL: coursesURL
+        ) {
             issues.append(fsIssue)
         }
 
@@ -94,7 +98,7 @@ final class AppDebugger {
 
     private func checkOrphanTasks(assignmentsStore: AssignmentsStore, dataManager: CoursesStore) -> DiagnosticIssue? {
         let coursesById = Dictionary(uniqueKeysWithValues: dataManager.courses.map { ($0.id, $0) })
-        let semesterIds = Set(dataManager.semesters.map { $0.id })
+        let semesterIds = Set(dataManager.semesters.map(\.id))
 
         let orphanTasks = assignmentsStore.tasks.filter { task in
             guard let courseId = task.courseId else { return false }
@@ -103,7 +107,7 @@ final class AppDebugger {
         }
 
         guard !orphanTasks.isEmpty else { return nil }
-        let ids = orphanTasks.map { $0.id.uuidString }.joined(separator: ", ")
+        let ids = orphanTasks.map(\.id.uuidString).joined(separator: ", ")
         return DiagnosticIssue(
             title: "Orphan Tasks",
             details: "Found tasks linked to missing Course/Semester",
@@ -117,7 +121,7 @@ final class AppDebugger {
     ) -> DiagnosticIssue? {
         let (eventStatus, reminderStatus) = authProvider()
         let actualAuthorized = (eventStatus == .fullAccess || eventStatus == .writeOnly) ||
-        (reminderStatus == .fullAccess || reminderStatus == .writeOnly)
+            (reminderStatus == .fullAccess || reminderStatus == .writeOnly)
 
         guard actualAuthorized == calendarManager.isAuthorized else {
             return DiagnosticIssue(
@@ -172,7 +176,7 @@ final class AppDebugger {
     private func checkSemesterDates(dataManager: CoursesStore) -> DiagnosticIssue? {
         let paradoxes = dataManager.semesters.filter { $0.endDate < $0.startDate }
         guard !paradoxes.isEmpty else { return nil }
-        let names = paradoxes.map { $0.name }.joined(separator: ", ")
+        let names = paradoxes.map(\.name).joined(separator: ", ")
         return DiagnosticIssue(
             title: "Time Paradox",
             details: "Semesters with endDate before startDate: \(names)",

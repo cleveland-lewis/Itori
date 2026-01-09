@@ -1,5 +1,5 @@
-import Foundation
 import EventKit
+import Foundation
 
 protocol EventStorable {
     func requestEventStoreAccess() async throws -> Bool
@@ -9,13 +9,13 @@ protocol EventStorable {
 extension EKEventStore: EventStorable {
     func requestEventStoreAccess() async throws -> Bool {
         if #available(macOS 14.0, iOS 17.0, *) {
-            return try await requestFullAccessToEvents()
+            try await requestFullAccessToEvents()
         } else {
-            return try await requestAccess(to: .event)
+            try await requestAccess(to: .event)
         }
     }
-    
+
     func fetchEvents(matching predicate: NSPredicate) -> [EKEvent] {
-        return events(matching: predicate)
+        events(matching: predicate)
     }
 }

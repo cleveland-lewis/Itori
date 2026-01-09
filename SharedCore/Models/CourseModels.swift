@@ -11,11 +11,11 @@ enum EducationLevel: String, Codable, CaseIterable, Identifiable {
     var semesterTypes: [SemesterType] {
         switch self {
         case .middleSchool, .highSchool:
-            return [.fall, .spring, .summerI, .summerII]
+            [.fall, .spring, .summerI, .summerII]
         case .college:
-            return [.fall, .spring, .summerI, .winter]
+            [.fall, .spring, .summerI, .winter]
         case .gradSchool:
-            return [.fall, .spring, .winter, .summerI, .summerII]
+            [.fall, .spring, .winter, .summerI, .summerII]
         }
     }
 }
@@ -63,17 +63,19 @@ struct Semester: Identifiable, Codable, Hashable {
 
     var name: String { defaultName }
 
-    init(id: UUID = UUID(),
-         startDate: Date,
-         endDate: Date,
-         isCurrent: Bool = false,
-         educationLevel: EducationLevel = .college,
-         semesterTerm: SemesterType = .fall,
-         gradProgram: GradSchoolProgram? = nil,
-         isArchived: Bool = false,
-         deletedAt: Date? = nil,
-         academicYear: String? = nil,
-         notes: String? = nil) {
+    init(
+        id: UUID = UUID(),
+        startDate: Date,
+        endDate: Date,
+        isCurrent: Bool = false,
+        educationLevel: EducationLevel = .college,
+        semesterTerm: SemesterType = .fall,
+        gradProgram: GradSchoolProgram? = nil,
+        isArchived: Bool = false,
+        deletedAt: Date? = nil,
+        academicYear: String? = nil,
+        notes: String? = nil
+    ) {
         self.id = id
         self.startDate = startDate
         self.endDate = endDate
@@ -88,7 +90,8 @@ struct Semester: Identifiable, Codable, Hashable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, startDate, endDate, isCurrent, educationLevel, semesterTerm, gradProgram, isArchived, deletedAt, academicYear, notes
+        case id, startDate, endDate, isCurrent, educationLevel, semesterTerm, gradProgram, isArchived, deletedAt,
+             academicYear, notes
     }
 
     init(from decoder: Decoder) throws {
@@ -150,21 +153,23 @@ struct Course: Identifiable, Codable, Hashable {
     var notes: String?
     var attachments: [Attachment]
 
-    init(id: UUID = UUID(),
-         title: String,
-         code: String,
-         semesterId: UUID,
-         colorHex: String? = nil,
-         isArchived: Bool = false,
-         courseType: CourseType = .regular,
-         instructor: String? = nil,
-         location: String? = nil,
-         credits: Double? = nil,
-         creditType: CreditType = .credits,
-         meetingTimes: String? = nil,
-         syllabus: String? = nil,
-         notes: String? = nil,
-         attachments: [Attachment] = []) {
+    init(
+        id: UUID = UUID(),
+        title: String,
+        code: String,
+        semesterId: UUID,
+        colorHex: String? = nil,
+        isArchived: Bool = false,
+        courseType: CourseType = .regular,
+        instructor: String? = nil,
+        location: String? = nil,
+        credits: Double? = nil,
+        creditType: CreditType = .credits,
+        meetingTimes: String? = nil,
+        syllabus: String? = nil,
+        notes: String? = nil,
+        attachments: [Attachment] = []
+    ) {
         self.id = id
         self.title = title
         self.code = code
@@ -183,7 +188,8 @@ struct Course: Identifiable, Codable, Hashable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, title, code, semesterId, colorHex, isArchived, courseType, instructor, location, credits, creditType, meetingTimes, syllabus, notes, attachments
+        case id, title, code, semesterId, colorHex, isArchived, courseType, instructor, location, credits, creditType,
+             meetingTimes, syllabus, notes, attachments
     }
 
     init(from decoder: Decoder) throws {
@@ -204,11 +210,11 @@ struct Course: Identifiable, Codable, Hashable {
         notes = try container.decodeIfPresent(String.self, forKey: .notes)
         attachments = try container.decodeIfPresent([Attachment].self, forKey: .attachments) ?? []
     }
-    
+
     /// Get display name based on user's preference
     func displayName(mode: CourseDisplayMode? = nil) -> String {
         let displayMode = mode ?? CourseDisplayMode.from(userDefaults: .standard)
-        
+
         switch displayMode {
         case .name:
             return title
@@ -230,7 +236,7 @@ public enum CourseDisplayMode: String, Codable {
     case name
     case code
     case both
-    
+
     public static func from(userDefaults: UserDefaults) -> CourseDisplayMode {
         let rawValue = userDefaults.string(forKey: "courseDisplayMode") ?? "both"
         return CourseDisplayMode(rawValue: rawValue) ?? .both
@@ -250,20 +256,20 @@ enum CourseOutlineNodeType: String, Codable, CaseIterable, Identifiable {
     case chapter = "Chapter"
     case part = "Part"
     case lesson = "Lesson"
-    
+
     var id: String { rawValue }
 }
 
 struct CourseOutlineNode: Identifiable, Codable, Hashable {
     var id: UUID
     var courseId: UUID
-    var parentId: UUID?  // nil means root node
+    var parentId: UUID? // nil means root node
     var type: CourseOutlineNodeType
     var title: String
-    var sortIndex: Int  // Deterministic ordering within siblings
+    var sortIndex: Int // Deterministic ordering within siblings
     var createdAt: Date
     var updatedAt: Date
-    
+
     init(
         id: UUID = UUID(),
         courseId: UUID,
@@ -283,7 +289,7 @@ struct CourseOutlineNode: Identifiable, Codable, Hashable {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
-    
+
     // Helper to check if this is a root node
     var isRoot: Bool {
         parentId == nil
@@ -295,25 +301,25 @@ struct CourseOutlineNode: Identifiable, Codable, Hashable {
 struct CourseFile: Identifiable, Codable, Hashable {
     var id: UUID
     var courseId: UUID
-    var nodeId: UUID?  // nil means attached to course root
+    var nodeId: UUID? // nil means attached to course root
     var filename: String
-    var fileType: String  // e.g., "pdf", "docx"
-    var localURL: String?  // File path or bookmark data
-    
+    var fileType: String // e.g., "pdf", "docx"
+    var localURL: String? // File path or bookmark data
+
     // Legacy flags (maintained for backwards compatibility)
     var isSyllabus: Bool
     var isPracticeExam: Bool
-    
+
     // New classification system
     var category: FileCategory
     var parseStatus: ParseStatus
     var parsedAt: Date?
     var parseError: String?
     var contentFingerprint: String
-    
+
     var createdAt: Date
     var updatedAt: Date
-    
+
     init(
         id: UUID = UUID(),
         courseId: UUID,
@@ -347,7 +353,7 @@ struct CourseFile: Identifiable, Codable, Hashable {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
-    
+
     // Backwards compatibility
     private enum CodingKeys: String, CodingKey {
         case id, courseId, nodeId, filename, fileType, localURL
@@ -355,7 +361,7 @@ struct CourseFile: Identifiable, Codable, Hashable {
         case category, parseStatus, parsedAt, parseError, contentFingerprint
         case createdAt, updatedAt
     }
-    
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
@@ -374,11 +380,11 @@ struct CourseFile: Identifiable, Codable, Hashable {
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date()
         updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? Date()
     }
-    
+
     var displayName: String {
         filename
     }
-    
+
     var url: URL {
         guard let urlString = localURL else {
             return URL(fileURLWithPath: "/tmp/\(filename)")
@@ -386,4 +392,3 @@ struct CourseFile: Identifiable, Codable, Hashable {
         return URL(fileURLWithPath: urlString)
     }
 }
-

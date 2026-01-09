@@ -4,20 +4,20 @@ struct CourseSceneContent: View {
     @SceneStorage(SceneActivationHelper.courseSceneStorageKey) private var courseIdString: String?
     @ScaledMetric private var emptyIconSize: CGFloat = 48
 
-    
     @EnvironmentObject private var coursesStore: CoursesStore
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
 
     private var course: Course? {
         guard let idString = courseIdString,
-              let uuid = UUID(uuidString: idString) else {
+              let uuid = UUID(uuidString: idString)
+        else {
             return nil
         }
         return coursesStore.courses.first(where: { $0.id == uuid })
     }
 
     private var semester: Semester? {
-        guard let course = course else { return nil }
+        guard let course else { return nil }
         return coursesStore.semesters.first(where: { $0.id == course.semesterId })
     }
 
@@ -30,9 +30,13 @@ struct CourseSceneContent: View {
 
     var body: some View {
         NavigationStack {
-            if let course = course {
+            if let course {
                 List {
-                    Section(header: Text(NSLocalizedString("ui.course.details", value: "Course Details", comment: "Course Details"))) {
+                    Section(header: Text(NSLocalizedString(
+                        "ui.course.details",
+                        value: "Course Details",
+                        comment: "Course Details"
+                    ))) {
                         infoRow(label: "Code", value: course.code.isEmpty ? "Not set" : course.code)
                         infoRow(label: "Title", value: course.title)
                         infoRow(label: "Semester", value: semester?.name ?? "Not set")
@@ -47,10 +51,18 @@ struct CourseSceneContent: View {
                         }
                     }
 
-                    Section(header: Text(NSLocalizedString("ui.assignments", value: "Assignments", comment: "Assignments"))) {
+                    Section(header: Text(NSLocalizedString(
+                        "ui.assignments",
+                        value: "Assignments",
+                        comment: "Assignments"
+                    ))) {
                         if assignmentsForCourse.isEmpty {
-                            Text(NSLocalizedString("ui.no.assignments.recorded.for.this.course", value: "No assignments recorded for this course.", comment: "No assignments recorded for this course."))
-                                .foregroundStyle(.secondary)
+                            Text(NSLocalizedString(
+                                "ui.no.assignments.recorded.for.this.course",
+                                value: "No assignments recorded for this course.",
+                                comment: "No assignments recorded for this course."
+                            ))
+                            .foregroundStyle(.secondary)
                         } else {
                             ForEach(assignmentsForCourse, id: \.id) { assignment in
                                 VStack(alignment: .leading, spacing: 4) {
@@ -72,7 +84,8 @@ struct CourseSceneContent: View {
         .onContinueUserActivity(SceneActivationHelper.windowActivityType) { activity in
             guard let state = SceneActivationHelper.decodeWindowState(from: activity),
                   state.windowId == WindowIdentifier.courseDetail.rawValue,
-                  let identifier = state.entityId else {
+                  let identifier = state.entityId
+            else {
                 return
             }
             courseIdString = identifier
@@ -95,13 +108,21 @@ struct CourseSceneContent: View {
             Image(systemName: "book.closed")
                 .font(.system(size: emptyIconSize))
                 .foregroundStyle(.secondary)
-            Text(NSLocalizedString("ui.open.a.course.in.a.new.window.to.see.details.here", value: "Open a course in a new window to see details here.", comment: "Open a course in a new window to see details here."))
-                .font(.title3.weight(.medium))
-            Text(NSLocalizedString("ui.use.open.in.new.window", value: "Use “Open in New Window” from the Courses list to inspect a course without losing your place.", comment: "Use “Open in New Window” from the Courses list to ..."))
-                .font(.callout)
-                .multilineTextAlignment(.center)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal)
+            Text(NSLocalizedString(
+                "ui.open.a.course.in.a.new.window.to.see.details.here",
+                value: "Open a course in a new window to see details here.",
+                comment: "Open a course in a new window to see details here."
+            ))
+            .font(.title3.weight(.medium))
+            Text(NSLocalizedString(
+                "ui.use.open.in.new.window",
+                value: "Use “Open in New Window” from the Courses list to inspect a course without losing your place.",
+                comment: "Use “Open in New Window” from the Courses list to ..."
+            ))
+            .font(.callout)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(.secondary)
+            .padding(.horizontal)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
@@ -120,7 +141,8 @@ struct PlannerSceneContent: View {
 
     private var selectedDate: Date {
         if let stored = dateId,
-           let date = SceneActivationHelper.date(from: stored) {
+           let date = SceneActivationHelper.date(from: stored)
+        {
             return date
         }
         return Date()
@@ -163,7 +185,8 @@ struct PlannerSceneContent: View {
         .onContinueUserActivity(SceneActivationHelper.windowActivityType) { activity in
             guard let state = SceneActivationHelper.decodeWindowState(from: activity),
                   state.windowId == WindowIdentifier.plannerDay.rawValue,
-                  let identifier = state.entityId else {
+                  let identifier = state.entityId
+            else {
                 return
             }
             dateId = identifier

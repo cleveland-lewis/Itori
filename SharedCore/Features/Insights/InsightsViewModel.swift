@@ -1,6 +1,6 @@
-import Foundation
-import Combine
 import _Concurrency
+import Combine
+import Foundation
 
 final class InsightsViewModel: LoadableViewModel {
     @Published var isLoading: Bool = false

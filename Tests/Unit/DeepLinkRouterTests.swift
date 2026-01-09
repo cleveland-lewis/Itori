@@ -19,34 +19,64 @@ final class DeepLinkRouterTests: XCTestCase {
 
     func testDashboardRoute() {
         let url = URL(string: "roots://dashboard")!
-        XCTAssertTrue(router.handle(url: url, appModel: appModel, plannerCoordinator: planner, calendarManager: calendar, settingsCoordinator: settingsCoordinator))
+        XCTAssertTrue(router.handle(
+            url: url,
+            appModel: appModel,
+            plannerCoordinator: planner,
+            calendarManager: calendar,
+            settingsCoordinator: settingsCoordinator
+        ))
         XCTAssertEqual(appModel.selectedPage, .dashboard)
     }
 
     func testCalendarRouteWithDate() {
         let url = URL(string: "roots://calendar?date=2024-12-25&view=month")!
-        XCTAssertTrue(router.handle(url: url, appModel: appModel, plannerCoordinator: planner, calendarManager: calendar, settingsCoordinator: settingsCoordinator))
+        XCTAssertTrue(router.handle(
+            url: url,
+            appModel: appModel,
+            plannerCoordinator: planner,
+            calendarManager: calendar,
+            settingsCoordinator: settingsCoordinator
+        ))
         XCTAssertEqual(appModel.selectedPage, .calendar)
         XCTAssertEqual(Calendar.current.component(.day, from: calendar.selectedDate ?? Date()), 25)
     }
 
     func testPlannerRoute() {
         let url = URL(string: "roots://planner")!
-        XCTAssertTrue(router.handle(url: url, appModel: appModel, plannerCoordinator: planner, calendarManager: calendar, settingsCoordinator: settingsCoordinator))
+        XCTAssertTrue(router.handle(
+            url: url,
+            appModel: appModel,
+            plannerCoordinator: planner,
+            calendarManager: calendar,
+            settingsCoordinator: settingsCoordinator
+        ))
         XCTAssertEqual(appModel.selectedPage, .planner)
     }
 
     func testAssignmentRoute() {
         let id = UUID()
         let url = URL(string: "roots://assignment/\(id.uuidString)")!
-        XCTAssertTrue(router.handle(url: url, appModel: appModel, plannerCoordinator: planner, calendarManager: calendar, settingsCoordinator: settingsCoordinator))
+        XCTAssertTrue(router.handle(
+            url: url,
+            appModel: appModel,
+            plannerCoordinator: planner,
+            calendarManager: calendar,
+            settingsCoordinator: settingsCoordinator
+        ))
         XCTAssertEqual(appModel.selectedPage, .assignments)
     }
 
     func testCourseRoute() {
         let id = UUID()
         let url = URL(string: "roots://course/\(id.uuidString)")!
-        XCTAssertTrue(router.handle(url: url, appModel: appModel, plannerCoordinator: planner, calendarManager: calendar, settingsCoordinator: settingsCoordinator))
+        XCTAssertTrue(router.handle(
+            url: url,
+            appModel: appModel,
+            plannerCoordinator: planner,
+            calendarManager: calendar,
+            settingsCoordinator: settingsCoordinator
+        ))
         XCTAssertEqual(appModel.selectedPage, .courses)
         XCTAssertEqual(planner.selectedCourseFilter, id)
     }
@@ -54,7 +84,13 @@ final class DeepLinkRouterTests: XCTestCase {
     func testFocusRoute() {
         let activityId = UUID()
         let url = URL(string: "roots://focus?mode=pomodoro&activityId=\(activityId.uuidString)")!
-        XCTAssertTrue(router.handle(url: url, appModel: appModel, plannerCoordinator: planner, calendarManager: calendar, settingsCoordinator: settingsCoordinator))
+        XCTAssertTrue(router.handle(
+            url: url,
+            appModel: appModel,
+            plannerCoordinator: planner,
+            calendarManager: calendar,
+            settingsCoordinator: settingsCoordinator
+        ))
         XCTAssertEqual(appModel.selectedPage, .timer)
         XCTAssertEqual(appModel.focusDeepLink?.mode, .pomodoro)
         XCTAssertEqual(appModel.focusDeepLink?.activityId, activityId)
@@ -62,21 +98,45 @@ final class DeepLinkRouterTests: XCTestCase {
 
     func testSettingsRoute() {
         let url = URL(string: "roots://settings?section=developer")!
-        XCTAssertTrue(router.handle(url: url, appModel: appModel, plannerCoordinator: planner, calendarManager: calendar, settingsCoordinator: settingsCoordinator))
+        XCTAssertTrue(router.handle(
+            url: url,
+            appModel: appModel,
+            plannerCoordinator: planner,
+            calendarManager: calendar,
+            settingsCoordinator: settingsCoordinator
+        ))
     }
 
     func testInvalidScheme() {
         let url = URL(string: "http://calendar")!
-        XCTAssertFalse(router.handle(url: url, appModel: appModel, plannerCoordinator: planner, calendarManager: calendar, settingsCoordinator: settingsCoordinator))
+        XCTAssertFalse(router.handle(
+            url: url,
+            appModel: appModel,
+            plannerCoordinator: planner,
+            calendarManager: calendar,
+            settingsCoordinator: settingsCoordinator
+        ))
     }
 
     func testMissingAssignmentId() {
         let url = URL(string: "roots://assignment/")!
-        XCTAssertFalse(router.handle(url: url, appModel: appModel, plannerCoordinator: planner, calendarManager: calendar, settingsCoordinator: settingsCoordinator))
+        XCTAssertFalse(router.handle(
+            url: url,
+            appModel: appModel,
+            plannerCoordinator: planner,
+            calendarManager: calendar,
+            settingsCoordinator: settingsCoordinator
+        ))
     }
 
     func testUnknownRoute() {
         let url = URL(string: "roots://unknown")!
-        XCTAssertFalse(router.handle(url: url, appModel: appModel, plannerCoordinator: planner, calendarManager: calendar, settingsCoordinator: settingsCoordinator))
+        XCTAssertFalse(router.handle(
+            url: url,
+            appModel: appModel,
+            plannerCoordinator: planner,
+            calendarManager: calendar,
+            settingsCoordinator: settingsCoordinator
+        ))
     }
 }

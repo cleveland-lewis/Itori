@@ -5,8 +5,8 @@
 //  Created for Phase 6.2: EventKit Integration Testing
 //
 
-import Foundation
 import EventKit
+import Foundation
 @testable import Itori
 
 enum MockEventStoreError: Error {
@@ -23,36 +23,36 @@ class MockEventStore {
     var saveCallCount = 0
     var removeCallCount = 0
     var shouldFailSave = false
-    
+
     func requestAccess() async -> Bool {
         requestAccessCallCount += 1
         return hasAccess
     }
-    
+
     func fetchEvents(from startDate: Date, to endDate: Date, calendars: [EKCalendar]? = nil) -> [EKEvent] {
         let filteredEvents = events.filter { event in
             guard let eventStart = event.startDate, let eventEnd = event.endDate else { return false }
             let overlaps = eventStart < endDate && eventEnd > startDate
-            
-            if let calendars = calendars {
+
+            if let calendars {
                 return overlaps && calendars.contains(event.calendar)
             }
             return overlaps
         }
         return filteredEvents
     }
-    
+
     func save(event: EKEvent) throws {
         saveCallCount += 1
-        
+
         if !hasAccess {
             throw MockEventStoreError.accessDenied
         }
-        
+
         if shouldFailSave {
             throw MockEventStoreError.saveFailed
         }
-        
+
         // Check if updating existing event
         if let index = events.firstIndex(where: { $0.eventIdentifier == event.eventIdentifier }) {
             events[index] = event
@@ -60,21 +60,21 @@ class MockEventStore {
             events.append(event)
         }
     }
-    
+
     func remove(event: EKEvent) throws {
         removeCallCount += 1
-        
+
         if !hasAccess {
             throw MockEventStoreError.accessDenied
         }
-        
+
         guard let index = events.firstIndex(where: { $0.eventIdentifier == event.eventIdentifier }) else {
             throw MockEventStoreError.eventNotFound
         }
-        
+
         events.remove(at: index)
     }
-    
+
     func reset() {
         events.removeAll()
         calendars.removeAll()

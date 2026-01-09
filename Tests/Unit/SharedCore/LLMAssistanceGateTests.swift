@@ -1,10 +1,10 @@
-import Testing
 import Foundation
+import Testing
 @testable import Itori
 
 @MainActor
 struct LLMAssistanceGateTests {
-    @Test func testLLMAssistanceDisabledSkipsProviders() async throws {
+    @Test func lLMAssistanceDisabledSkipsProviders() async throws {
         let original = AppSettingsModel.shared.enableLLMAssistance
         AppSettingsModel.shared.enableLLMAssistance = false
         defer { AppSettingsModel.shared.enableLLMAssistance = original }
@@ -41,16 +41,16 @@ private enum TestPort: AIPort {
         let value: String
     }
 
-    static func validate(input: Input) throws {}
-    static func validate(output: Output) throws {}
+    static func validate(input _: Input) throws {}
+    static func validate(output _: Output) throws {}
 }
 
 private struct TestFallbackEngine: AIFallbackEngine {
-    func canFallback(for port: AIPortID) -> Bool { true }
+    func canFallback(for _: AIPortID) -> Bool { true }
 
     func executeFallback<P: AIPort>(
-        _ portType: P.Type,
-        input: P.Input,
+        _: P.Type,
+        input _: P.Input,
         context: AIRequestContext
     ) async throws -> AIResult<P.Output> {
         guard let output = TestPort.Output(value: "fallback") as? P.Output else {
@@ -83,12 +83,12 @@ private final class CallTrackingProvider: AIEngineProvider, @unchecked Sendable 
     }
 
     func isAvailable() -> Bool { true }
-    func supports(port: AIPortID) -> Bool { true }
+    func supports(port _: AIPortID) -> Bool { true }
 
     func execute(
-        port: AIPortID,
-        inputJSON: Data,
-        context: AIRequestContext
+        port _: AIPortID,
+        inputJSON _: Data,
+        context _: AIRequestContext
     ) async throws -> (outputJSON: Data, diagnostic: AIDiagnostic) {
         lock.lock()
         _executeCallCount += 1

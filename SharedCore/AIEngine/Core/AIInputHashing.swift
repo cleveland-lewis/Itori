@@ -92,7 +92,8 @@ enum AIInputHasher {
     private static func canonicalJSONString(_ value: Any) -> String {
         guard JSONSerialization.isValidJSONObject(value),
               let data = try? JSONSerialization.data(withJSONObject: value, options: [.sortedKeys]),
-              let string = String(data: data, encoding: .utf8) else {
+              let string = String(data: data, encoding: .utf8)
+        else {
             return String(describing: value)
         }
         return string

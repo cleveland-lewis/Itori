@@ -11,19 +11,19 @@ final class SpyAIProvider: AIEngineProvider {
     let id: AIEngineProviderID = .custom("spy_provider")
     var performCallCount = 0
     var lastPortID: AIPortID?
-    
+
     func isAvailable() -> Bool {
-        return true
+        true
     }
-    
-    func supports(port: AIPortID) -> Bool {
-        return true
+
+    func supports(port _: AIPortID) -> Bool {
+        true
     }
-    
-    func execute(port: AIPortID, inputJSON: Data, context: AIRequestContext) async throws -> (Data, AIDiagnostic) {
+
+    func execute(port: AIPortID, inputJSON _: Data, context _: AIRequestContext) async throws -> (Data, AIDiagnostic) {
         performCallCount += 1
         lastPortID = port
-        
+
         // Return dummy response
         let response = ["result": "spy_response"]
         let data = try JSONEncoder().encode(response)
@@ -35,46 +35,45 @@ final class SpyAIProvider: AIEngineProvider {
 /// Tests proving that LLM toggle OFF => 0 provider attempts
 @MainActor
 final class LLMToggleDisablesProviderAttemptsTests: XCTestCase {
-    
     var spyProvider: SpyAIProvider!
     var engine: AIEngine!
     var originalToggleState: Bool = true
-    
+
     override func setUp() async throws {
         try await super.setUp()
-        
+
         // Save original toggle state
         originalToggleState = AppSettingsModel.shared.enableLLMAssistance
-        
+
         // Create spy provider
         spyProvider = SpyAIProvider()
-        
+
         // Create test engine with spy
         let testFallback = TestFallbackEngine()
         engine = AIEngine(
             providers: [spyProvider],
             fallback: testFallback
         )
-        
+
         // Reset health monitor counters
         await AIEngine.healthMonitor.resetLLMCounters()
     }
-    
+
     override func tearDown() async throws {
         // Restore original toggle state
         AppSettingsModel.shared.enableLLMAssistance = originalToggleState
-        
+
         try await super.tearDown()
     }
-    
+
     // MARK: - Core Enforcement Tests
-    
+
     func testToggleOFF_ZeroProviderAttempts_SinglePort() async throws {
         // Arrange: Disable LLM toggle
         AppSettingsModel.shared.enableLLMAssistance = false
-        
+
         // Act: Call a port multiple times
-        for _ in 0..<10 {
+        for _ in 0 ..< 10 {
             do {
                 _ = try await engine.request(
                     DurationEstimationPort.self,
@@ -90,33 +89,42 @@ final class LLMToggleDisablesProviderAttemptsTests: XCTestCase {
                 // Fallback might throw if not available, that's OK
             }
         }
-        
+
         // Assert: Spy provider never called
-        XCTAssertEqual(spyProvider.performCallCount, 0,
-                       "Provider should NEVER be called when toggle is OFF")
-        
+        XCTAssertEqual(
+            spyProvider.performCallCount,
+            0,
+            "Provider should NEVER be called when toggle is OFF"
+        )
+
         // Assert: Health monitor shows zero attempts
         let counters = await AIEngine.healthMonitor.getLLMCounters()
-        XCTAssertEqual(counters.providerAttemptCountTotal, 0,
-                       "Health monitor should show 0 provider attempts")
-        
+        XCTAssertEqual(
+            counters.providerAttemptCountTotal,
+            0,
+            "Health monitor should show 0 provider attempts"
+        )
+
         // Assert: Suppression count increased
-        XCTAssertGreaterThan(counters.suppressedByLLMToggleCount, 0,
-                            "Suppression count should increase")
+        XCTAssertGreaterThan(
+            counters.suppressedByLLMToggleCount,
+            0,
+            "Suppression count should increase"
+        )
     }
-    
+
     func testToggleOFF_ZeroProviderAttempts_MultiplePorts() async throws {
         // Arrange: Disable LLM toggle
         AppSettingsModel.shared.enableLLMAssistance = false
-        
+
         let ports: [any AIPort.Type] = [
-            DurationEstimationPort.self,
+            DurationEstimationPort.self
             // Add more ports as needed
         ]
-        
+
         // Act: Call multiple ports
         for portType in ports {
-            for _ in 0..<5 {
+            for _ in 0 ..< 5 {
                 do {
                     if portType == DurationEstimationPort.self {
                         _ = try await engine.request(
@@ -135,18 +143,18 @@ final class LLMToggleDisablesProviderAttemptsTests: XCTestCase {
                 }
             }
         }
-        
+
         // Assert: Zero provider attempts
         XCTAssertEqual(spyProvider.performCallCount, 0)
-        
+
         let counters = await AIEngine.healthMonitor.getLLMCounters()
         XCTAssertEqual(counters.providerAttemptCountTotal, 0)
     }
-    
+
     func testToggleOFF_FallbackCountIncreases() async throws {
         // Arrange: Disable LLM toggle
         AppSettingsModel.shared.enableLLMAssistance = false
-        
+
         // Act: Call port (should use fallback if available)
         do {
             _ = try await engine.request(
@@ -162,17 +170,20 @@ final class LLMToggleDisablesProviderAttemptsTests: XCTestCase {
         } catch {
             // Expected if fallback not available
         }
-        
+
         // Assert: Fallback-only count increased
         let counters = await AIEngine.healthMonitor.getLLMCounters()
-        XCTAssertGreaterThan(counters.fallbackOnlyCount, 0,
-                            "Fallback-only count should increase")
+        XCTAssertGreaterThan(
+            counters.fallbackOnlyCount,
+            0,
+            "Fallback-only count should increase"
+        )
     }
-    
+
     func testToggleON_ProviderAttemptsAllowed() async throws {
         // Arrange: Enable LLM toggle
         AppSettingsModel.shared.enableLLMAssistance = true
-        
+
         // Act: Call port
         do {
             _ = try await engine.request(
@@ -188,24 +199,27 @@ final class LLMToggleDisablesProviderAttemptsTests: XCTestCase {
         } catch {
             // May fail for other reasons
         }
-        
+
         // Assert: Provider can be called (count > 0)
         let counters = await AIEngine.healthMonitor.getLLMCounters()
         // Note: Actual count depends on provider availability and other policies
         // The key is that it's NOT blocked by the toggle
-        XCTAssertEqual(counters.suppressedByLLMToggleCount, 0,
-                       "Should not suppress when toggle is ON")
+        XCTAssertEqual(
+            counters.suppressedByLLMToggleCount,
+            0,
+            "Should not suppress when toggle is ON"
+        )
     }
-    
+
     // MARK: - Stress Test (Chaos)
-    
+
     func testToggleOFF_HeavyUsage_StillZeroAttempts() async throws {
         // Arrange: Disable LLM toggle
         AppSettingsModel.shared.enableLLMAssistance = false
-        
+
         // Act: Simulate heavy usage (1000+ calls)
         await withTaskGroup(of: Void.self) { group in
-            for _ in 0..<1000 {
+            for _ in 0 ..< 1000 {
                 group.addTask {
                     do {
                         _ = try await self.engine.request(
@@ -224,22 +238,28 @@ final class LLMToggleDisablesProviderAttemptsTests: XCTestCase {
                 }
             }
         }
-        
+
         // Assert: Still zero provider attempts
-        XCTAssertEqual(spyProvider.performCallCount, 0,
-                       "Even under heavy load, provider should NEVER be called when toggle is OFF")
-        
+        XCTAssertEqual(
+            spyProvider.performCallCount,
+            0,
+            "Even under heavy load, provider should NEVER be called when toggle is OFF"
+        )
+
         let counters = await AIEngine.healthMonitor.getLLMCounters()
-        XCTAssertEqual(counters.providerAttemptCountTotal, 0,
-                       "Health monitor should show 0 attempts even after 1000+ requests")
+        XCTAssertEqual(
+            counters.providerAttemptCountTotal,
+            0,
+            "Health monitor should show 0 attempts even after 1000+ requests"
+        )
     }
-    
+
     // MARK: - Provenance Verification
-    
+
     func testToggleOFF_ResultHasFallbackProvenance() async throws {
         // Arrange: Disable LLM toggle
         AppSettingsModel.shared.enableLLMAssistance = false
-        
+
         // Act: Call port that supports fallback
         let result = try await engine.request(
             DurationEstimationPort.self,
@@ -251,33 +271,38 @@ final class LLMToggleDisablesProviderAttemptsTests: XCTestCase {
                 difficulty: 0.5
             )
         )
-        
+
         // Assert: Provenance indicates fallback
         switch result.provenance {
-        case .fallback(let reason):
-            XCTAssertEqual(reason, "llm_disabled",
-                          "Provenance should indicate LLM disabled")
+        case let .fallback(reason):
+            XCTAssertEqual(
+                reason,
+                "llm_disabled",
+                "Provenance should indicate LLM disabled"
+            )
         default:
             XCTFail("Expected fallback provenance when toggle is OFF")
         }
-        
+
         // Assert: Reason codes include suppression
-        XCTAssertTrue(result.diagnostic.reasonCodes.contains("llm_disabled"),
-                     "Diagnostic should include llm_disabled reason code")
+        XCTAssertTrue(
+            result.diagnostic.reasonCodes.contains("llm_disabled"),
+            "Diagnostic should include llm_disabled reason code"
+        )
     }
 }
 
 // MARK: - Test Fallback Engine
 
 private final class TestFallbackEngine: AIFallbackEngine {
-    func canFallback(for port: AIPortID) -> Bool {
-        return true
+    func canFallback(for _: AIPortID) -> Bool {
+        true
     }
-    
+
     func executeFallback<P: AIPort>(
-        _ portType: P.Type,
-        input: P.Input,
-        context: AIRequestContext
+        _: P.Type,
+        input _: P.Input,
+        context _: AIRequestContext
     ) async throws -> AIResult<P.Output> {
         // Return a dummy result
         // This is simplified - real fallback would produce proper output
@@ -288,15 +313,14 @@ private final class TestFallbackEngine: AIFallbackEngine {
 // MARK: - Performance Tests
 
 extension LLMToggleDisablesProviderAttemptsTests {
-    
     func testToggleOFF_PerformanceOverhead() async throws {
         // Arrange
         AppSettingsModel.shared.enableLLMAssistance = false
-        
+
         // Measure: Time for 100 suppressed calls
         measure {
             Task {
-                for _ in 0..<100 {
+                for _ in 0 ..< 100 {
                     do {
                         _ = try await self.engine.request(
                             DurationEstimationPort.self,
@@ -314,7 +338,7 @@ extension LLMToggleDisablesProviderAttemptsTests {
                 }
             }
         }
-        
+
         // Assert: Still zero attempts
         XCTAssertEqual(spyProvider.performCallCount, 0)
     }

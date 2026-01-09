@@ -328,7 +328,12 @@ final class StorageSafetyTests: XCTestCase {
             frequency: .daily,
             interval: 1,
             end: .never,
-            skipPolicy: .init(skipWeekends: false, skipHolidays: true, holidaySource: .deviceCalendar, adjustment: .forward)
+            skipPolicy: .init(
+                skipWeekends: false,
+                skipHolidays: true,
+                holidaySource: .deviceCalendar,
+                adjustment: .forward
+            )
         )
         let task = AppTask(
             id: UUID(),
@@ -368,7 +373,12 @@ final class StorageSafetyTests: XCTestCase {
             frequency: .daily,
             interval: 1,
             end: .never,
-            skipPolicy: .init(skipWeekends: false, skipHolidays: true, holidaySource: .deviceCalendar, adjustment: .forward)
+            skipPolicy: .init(
+                skipWeekends: false,
+                skipHolidays: true,
+                holidaySource: .deviceCalendar,
+                adjustment: .forward
+            )
         )
         let task = AppTask(
             id: UUID(),
@@ -428,16 +438,16 @@ final class StorageSafetyTests: XCTestCase {
         let next = AssignmentsStore.shared.tasks.first { $0.id != task.id }
         XCTAssertEqual(next?.dueTimeMinutes, task.dueTimeMinutes)
     }
-    
+
     // MARK: - Deletion/Reassign Invariants Tests (Issue #235)
-    
+
     @MainActor
     func testDeleteSemesterWithCascadeRemovesAllChildren() {
         let tempURL = FileManager.default.temporaryDirectory
             .appendingPathComponent("deletion_test_\(UUID().uuidString)")
             .appendingPathComponent("courses.json")
         let coursesStore = CoursesStore(storageURL: tempURL)
-        
+
         let semester = Semester(
             startDate: Date(),
             endDate: Date().addingTimeInterval(86400 * 90),
@@ -445,12 +455,12 @@ final class StorageSafetyTests: XCTestCase {
             notes: ""
         )
         coursesStore.addSemester(semester)
-        
+
         let course1 = Course(id: UUID(), title: "Math", code: "MATH101", semesterId: semester.id, isArchived: false)
         let course2 = Course(id: UUID(), title: "Physics", code: "PHYS101", semesterId: semester.id, isArchived: false)
         coursesStore.addCourse(course1)
         coursesStore.addCourse(course2)
-        
+
         let task1 = AppTask(
             id: UUID(),
             title: "Math HW",
@@ -480,9 +490,9 @@ final class StorageSafetyTests: XCTestCase {
             category: .project
         )
         AssignmentsStore.shared.tasks = [task1, task2]
-        
+
         coursesStore.permanentlyDeleteSemester(semester.id)
-        
+
         XCTAssertFalse(coursesStore.semesters.contains(where: { $0.id == semester.id }))
         XCTAssertFalse(coursesStore.courses.contains(where: { $0.id == course1.id }))
         XCTAssertFalse(coursesStore.courses.contains(where: { $0.id == course2.id }))
@@ -492,14 +502,14 @@ final class StorageSafetyTests: XCTestCase {
         XCTAssertNil(reassigned1?.courseId, "Task should be reassigned to Unassigned")
         XCTAssertNil(reassigned2?.courseId, "Task should be reassigned to Unassigned")
     }
-    
+
     @MainActor
     func testDeleteCourseWithCascadeRemovesOnlyCourseChildren() {
         let tempURL = FileManager.default.temporaryDirectory
             .appendingPathComponent("deletion_test_\(UUID().uuidString)")
             .appendingPathComponent("courses.json")
         let coursesStore = CoursesStore(storageURL: tempURL)
-        
+
         let semester = Semester(
             startDate: Date(),
             endDate: Date().addingTimeInterval(86400 * 90),
@@ -507,12 +517,24 @@ final class StorageSafetyTests: XCTestCase {
             notes: ""
         )
         coursesStore.addSemester(semester)
-        
-        let deleteCourse = Course(id: UUID(), title: "Delete Me", code: "DEL101", semesterId: semester.id, isArchived: false)
-        let keepCourse = Course(id: UUID(), title: "Keep Me", code: "KEEP101", semesterId: semester.id, isArchived: false)
+
+        let deleteCourse = Course(
+            id: UUID(),
+            title: "Delete Me",
+            code: "DEL101",
+            semesterId: semester.id,
+            isArchived: false
+        )
+        let keepCourse = Course(
+            id: UUID(),
+            title: "Keep Me",
+            code: "KEEP101",
+            semesterId: semester.id,
+            isArchived: false
+        )
         coursesStore.addCourse(deleteCourse)
         coursesStore.addCourse(keepCourse)
-        
+
         let deleteTask = AppTask(
             id: UUID(),
             title: "Delete Task",
@@ -542,9 +564,9 @@ final class StorageSafetyTests: XCTestCase {
             category: .reading
         )
         AssignmentsStore.shared.tasks = [deleteTask, keepTask]
-        
+
         coursesStore.deleteCourse(deleteCourse)
-        
+
         XCTAssertFalse(coursesStore.courses.contains(where: { $0.id == deleteCourse.id }))
         XCTAssertTrue(coursesStore.courses.contains(where: { $0.id == keepCourse.id }))
         XCTAssertEqual(AssignmentsStore.shared.tasks.count, 2, "Both tasks should persist")
@@ -553,14 +575,14 @@ final class StorageSafetyTests: XCTestCase {
         let untouchedTask = AssignmentsStore.shared.tasks.first { $0.id == keepTask.id }
         XCTAssertEqual(untouchedTask?.courseId, keepCourse.id, "Other course's task should remain unchanged")
     }
-    
+
     @MainActor
     func testDeletionWithDeepNestingPreservesDataIntegrity() {
         let tempURL = FileManager.default.temporaryDirectory
             .appendingPathComponent("deletion_test_\(UUID().uuidString)")
             .appendingPathComponent("courses.json")
         let coursesStore = CoursesStore(storageURL: tempURL)
-        
+
         let semester1 = Semester(
             startDate: Date(),
             endDate: Date().addingTimeInterval(86400 * 90),
@@ -575,14 +597,14 @@ final class StorageSafetyTests: XCTestCase {
         )
         coursesStore.addSemester(semester1)
         coursesStore.addSemester(semester2)
-        
+
         let s1Course1 = Course(id: UUID(), title: "S1C1", code: "S1C1", semesterId: semester1.id, isArchived: false)
         let s1Course2 = Course(id: UUID(), title: "S1C2", code: "S1C2", semesterId: semester1.id, isArchived: false)
         let s2Course1 = Course(id: UUID(), title: "S2C1", code: "S2C1", semesterId: semester2.id, isArchived: false)
         coursesStore.addCourse(s1Course1)
         coursesStore.addCourse(s1Course2)
         coursesStore.addCourse(s2Course1)
-        
+
         let s1c1Task1 = AppTask(
             id: UUID(),
             title: "S1C1T1",
@@ -640,15 +662,15 @@ final class StorageSafetyTests: XCTestCase {
             category: .homework
         )
         AssignmentsStore.shared.tasks = [s1c1Task1, s1c1Task2, s1c2Task, s2c1Task]
-        
+
         coursesStore.permanentlyDeleteSemester(semester1.id)
-        
+
         XCTAssertFalse(coursesStore.semesters.contains(where: { $0.id == semester1.id }))
         XCTAssertTrue(coursesStore.semesters.contains(where: { $0.id == semester2.id }))
         XCTAssertFalse(coursesStore.courses.contains(where: { $0.id == s1Course1.id }))
         XCTAssertFalse(coursesStore.courses.contains(where: { $0.id == s1Course2.id }))
         XCTAssertTrue(coursesStore.courses.contains(where: { $0.id == s2Course1.id }))
-        
+
         XCTAssertEqual(AssignmentsStore.shared.tasks.count, 4, "All tasks should persist")
         let task1 = AssignmentsStore.shared.tasks.first { $0.id == s1c1Task1.id }
         let task2 = AssignmentsStore.shared.tasks.first { $0.id == s1c1Task2.id }
@@ -659,14 +681,14 @@ final class StorageSafetyTests: XCTestCase {
         XCTAssertNil(task3?.courseId)
         XCTAssertEqual(task4?.courseId, s2Course1.id, "Semester 2 task should remain assigned")
     }
-    
+
     @MainActor
     func testMultipleSequentialDeletionsPreserveCorrectState() {
         let tempURL = FileManager.default.temporaryDirectory
             .appendingPathComponent("deletion_test_\(UUID().uuidString)")
             .appendingPathComponent("courses.json")
         let coursesStore = CoursesStore(storageURL: tempURL)
-        
+
         let semester = Semester(
             startDate: Date(),
             endDate: Date().addingTimeInterval(86400 * 90),
@@ -674,14 +696,14 @@ final class StorageSafetyTests: XCTestCase {
             notes: ""
         )
         coursesStore.addSemester(semester)
-        
+
         let course1 = Course(id: UUID(), title: "Course 1", code: "C1", semesterId: semester.id, isArchived: false)
         let course2 = Course(id: UUID(), title: "Course 2", code: "C2", semesterId: semester.id, isArchived: false)
         let course3 = Course(id: UUID(), title: "Course 3", code: "C3", semesterId: semester.id, isArchived: false)
         coursesStore.addCourse(course1)
         coursesStore.addCourse(course2)
         coursesStore.addCourse(course3)
-        
+
         let task1 = AppTask(
             id: UUID(),
             title: "Task 1",
@@ -725,15 +747,15 @@ final class StorageSafetyTests: XCTestCase {
             category: .project
         )
         AssignmentsStore.shared.tasks = [task1, task2, task3]
-        
+
         coursesStore.deleteCourse(course1)
         XCTAssertEqual(AssignmentsStore.shared.tasks.count, 3)
         XCTAssertNil(AssignmentsStore.shared.tasks.first { $0.id == task1.id }?.courseId)
-        
+
         coursesStore.deleteCourse(course2)
         XCTAssertEqual(AssignmentsStore.shared.tasks.count, 3)
         XCTAssertNil(AssignmentsStore.shared.tasks.first { $0.id == task2.id }?.courseId)
-        
+
         let finalTask3 = AssignmentsStore.shared.tasks.first { $0.id == task3.id }
         XCTAssertEqual(finalTask3?.courseId, course3.id, "Remaining task should still be assigned")
     }

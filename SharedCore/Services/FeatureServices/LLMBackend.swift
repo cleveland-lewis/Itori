@@ -6,22 +6,22 @@ enum LLMBackendType: String, Codable, CaseIterable {
     case mlx = "MLX"
     case ollama = "Ollama"
     case openaiCompatible = "OpenAI Compatible"
-    
+
     var requiresAPIKey: Bool {
         switch self {
         case .openaiCompatible:
-            return true
+            true
         case .mock, .mlx, .ollama:
-            return false
+            false
         }
     }
-    
+
     var supportsStreaming: Bool {
         switch self {
         case .mlx, .ollama, .openaiCompatible:
-            return true
+            true
         case .mock:
-            return false
+            false
         }
     }
 }
@@ -35,13 +35,13 @@ struct LLMBackendConfig: Codable {
     var temperature: Double
     var maxTokens: Int
     var timeout: TimeInterval
-    
+
     // MLX-specific
     var mlxModelPath: String?
-    
+
     // Ollama-specific
     var ollamaHost: String?
-    
+
     init(
         type: LLMBackendType = .mock,
         modelName: String = "mock-model",
@@ -63,12 +63,12 @@ struct LLMBackendConfig: Codable {
         self.mlxModelPath = mlxModelPath
         self.ollamaHost = ollamaHost
     }
-    
+
     // Preset configurations
     static var mockConfig: LLMBackendConfig {
         LLMBackendConfig(type: .mock, modelName: "mock-model")
     }
-    
+
     static var mlxDefault: LLMBackendConfig {
         LLMBackendConfig(
             type: .mlx,
@@ -76,7 +76,7 @@ struct LLMBackendConfig: Codable {
             mlxModelPath: nil // Auto-downloads to cache
         )
     }
-    
+
     static var ollamaDefault: LLMBackendConfig {
         LLMBackendConfig(
             type: .ollama,
@@ -84,7 +84,7 @@ struct LLMBackendConfig: Codable {
             ollamaHost: "http://localhost:11434"
         )
     }
-    
+
     static func openaiCompatible(apiKey: String, endpoint: String = "https://api.openai.com/v1") -> LLMBackendConfig {
         LLMBackendConfig(
             type: .openaiCompatible,
@@ -108,7 +108,7 @@ struct LLMResponse: Codable {
 protocol LLMBackend {
     var config: LLMBackendConfig { get }
     var isAvailable: Bool { get async }
-    
+
     func generate(prompt: String) async throws -> LLMResponse
     func generateJSON(prompt: String, schema: String?) async throws -> String
 }
@@ -122,23 +122,23 @@ enum LLMBackendError: Error, LocalizedError {
     case invalidResponse(String)
     case apiKeyMissing
     case modelNotFound(String)
-    
+
     var errorDescription: String? {
         switch self {
-        case .notAvailable(let reason):
-            return "LLM backend not available: \(reason)"
-        case .configurationError(let details):
-            return "Configuration error: \(details)"
-        case .networkError(let details):
-            return "Network error: \(details)"
+        case let .notAvailable(reason):
+            "LLM backend not available: \(reason)"
+        case let .configurationError(details):
+            "Configuration error: \(details)"
+        case let .networkError(details):
+            "Network error: \(details)"
         case .timeoutError:
-            return "Request timed out"
-        case .invalidResponse(let details):
-            return "Invalid response: \(details)"
+            "Request timed out"
+        case let .invalidResponse(details):
+            "Invalid response: \(details)"
         case .apiKeyMissing:
-            return "API key is required but not provided"
-        case .modelNotFound(let model):
-            return "Model not found: \(model)"
+            "API key is required but not provided"
+        case let .modelNotFound(model):
+            "Model not found: \(model)"
         }
     }
 }

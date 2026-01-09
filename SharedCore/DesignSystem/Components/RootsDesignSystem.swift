@@ -5,7 +5,9 @@ import SwiftUI
 
 // MARK: - Responsive Grid
 
-public struct RootsResponsiveGrid<Data: RandomAccessCollection, Content: View>: View where Data.Element: Identifiable, Data.Index == Int {
+public struct RootsResponsiveGrid<Data: RandomAccessCollection, Content: View>: View where Data.Element: Identifiable,
+    Data.Index == Int
+{
     var items: Data
     let content: (Data.Element) -> Content
 
@@ -15,11 +17,10 @@ public struct RootsResponsiveGrid<Data: RandomAccessCollection, Content: View>: 
     }
 
     public var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 300), spacing: RootsSpacing.l)], spacing: RootsSpacing.l) {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 300), spacing: ItariSpacing.l)], spacing: ItariSpacing.l) {
             ForEach(items) { item in
                 content(item)
             }
         }
     }
 }
-

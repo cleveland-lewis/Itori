@@ -4,18 +4,17 @@ import XCTest
 /// Memory leak detection and memory usage tests
 /// Run with Instruments Memory Profiler for detailed analysis
 final class MemoryLeakTests: XCTestCase {
-    
     // MARK: - Store Memory Leaks
-    
+
     func testAssignmentsStoreDoesNotLeak() {
         weak var weakStore: AssignmentsStore?
-        
+
         autoreleasepool {
             let store = AssignmentsStore()
             weakStore = store
-            
+
             // Perform operations
-            for i in 0..<100 {
+            for i in 0 ..< 100 {
                 let task = AppTask(
                     id: UUID(),
                     title: "Task \(i)",
@@ -35,18 +34,18 @@ final class MemoryLeakTests: XCTestCase {
                 store.addTask(task)
             }
         }
-        
+
         // Store should be deallocated
         XCTAssertNil(weakStore, "AssignmentsStore leaked")
     }
-    
+
     func testCoursesStoreDoesNotLeak() {
         weak var weakStore: CoursesStore?
-        
+
         autoreleasepool {
             let store = CoursesStore()
             weakStore = store
-            
+
             // Perform operations
             let semester = Semester(
                 startDate: Date(),
@@ -56,23 +55,23 @@ final class MemoryLeakTests: XCTestCase {
                 semesterTerm: .fall
             )
             store.addSemester(semester)
-            
-            for i in 0..<50 {
+
+            for i in 0 ..< 50 {
                 store.addCourse(title: "Course \(i)", code: "CS\(i)", to: semester)
             }
         }
-        
+
         XCTAssertNil(weakStore, "CoursesStore leaked")
     }
-    
+
     // MARK: - View Memory Tests
-    
+
     func testPlannerStoreMemoryUsage() {
         let store = PlannerStore.shared
-        
+
         measure(metrics: [XCTMemoryMetric()]) {
             // Generate 100 planner sessions
-            let sessions = (0..<100).map { index in
+            let sessions = (0 ..< 100).map { index in
                 StoredScheduledSession(
                     id: UUID(),
                     assignmentId: UUID(),
@@ -90,19 +89,19 @@ final class MemoryLeakTests: XCTestCase {
                     isUserEdited: false
                 )
             }
-            
+
             store.persist(scheduled: sessions, overflow: [])
         }
     }
-    
+
     func testFlashcardManagerMemoryUsage() {
         let manager = FlashcardManager.shared
-        
+
         measure(metrics: [XCTMemoryMetric()]) {
             let deck = manager.createDeck(title: "Test Deck")
-            
+
             // Add 200 flashcards
-            for i in 0..<200 {
+            for i in 0 ..< 200 {
                 manager.addCard(
                     to: deck.id,
                     front: "Question \(i)",
@@ -111,15 +110,15 @@ final class MemoryLeakTests: XCTestCase {
             }
         }
     }
-    
+
     // MARK: - Large Data Set Tests
-    
+
     func testMemoryWithLargeDataSet() {
         let store = AssignmentsStore()
-        
+
         measure(metrics: [XCTMemoryMetric()]) {
             // Create 1000 assignments
-            for i in 0..<1000 {
+            for i in 0 ..< 1000 {
                 let task = AppTask(
                     id: UUID(),
                     title: "Task \(i)",
@@ -138,29 +137,29 @@ final class MemoryLeakTests: XCTestCase {
                 )
                 store.addTask(task)
             }
-            
+
             // Verify memory is within acceptable range
             let tasks = store.tasks
             XCTAssertEqual(tasks.count, 1000)
         }
     }
-    
+
     // MARK: - Closure Retention Tests
-    
+
     func testTimerManagerDoesNotRetainClosures() {
         weak var weakManager: TimerManager?
-        
+
         autoreleasepool {
             let manager = TimerManager()
             weakManager = manager
-            
+
             // Start and stop timer multiple times
-            for _ in 0..<10 {
+            for _ in 0 ..< 10 {
                 manager.startSession(mode: .pomodoro, duration: 1500)
                 manager.stopSession()
             }
         }
-        
+
         XCTAssertNil(weakManager, "TimerManager retained closures")
     }
 }

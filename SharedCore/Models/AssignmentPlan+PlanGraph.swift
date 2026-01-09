@@ -15,7 +15,7 @@ extension AssignmentPlan {
                 version: self.version
             )
         )
-        
+
         // Add nodes from steps
         for step in steps {
             let node = PlanNode(
@@ -35,20 +35,20 @@ extension AssignmentPlan {
                     dueBy: step.dueBy
                 )
             )
-            
+
             try? graph.addNode(node)
         }
-        
+
         // Add edges from prerequisiteIds
         for step in steps {
             for prereqId in step.prerequisiteIds {
                 try? graph.addEdge(from: prereqId, to: step.id)
             }
         }
-        
+
         return graph
     }
-    
+
     /// Update AssignmentPlan from PlanGraph
     mutating func applyPlanGraph(_ graph: PlanGraph) {
         // Update steps with node information
@@ -57,26 +57,26 @@ extension AssignmentPlan {
                 steps[index].isCompleted = node.isCompleted
                 steps[index].completedAt = node.completedAt
                 steps[index].sequenceIndex = node.sortIndex
-                
+
                 // Update prerequisites from edges
-                let prereqIds = graph.getPrerequisites(for: node.id).map { $0.id }
+                let prereqIds = graph.getPrerequisites(for: node.id).map(\.id)
                 steps[index].prerequisiteIds = prereqIds
             }
         }
-        
+
         // Update version
         self.version = graph.metadata.version
     }
-    
+
     private func mapStepTypeToNodeType(_ stepType: PlanStep.StepType) -> PlanNode.NodeType {
         switch stepType {
-        case .task: return .task
-        case .reading: return .reading
-        case .practice: return .practice
-        case .review: return .review
-        case .research: return .research
-        case .writing: return .writing
-        case .preparation: return .preparation
+        case .task: .task
+        case .reading: .reading
+        case .practice: .practice
+        case .review: .review
+        case .research: .research
+        case .writing: .writing
+        case .preparation: .preparation
         }
     }
 }
@@ -84,6 +84,6 @@ extension AssignmentPlan {
 extension PlanGraph {
     /// Create a PlanGraph from an AssignmentPlan
     static func from(_ plan: AssignmentPlan) -> PlanGraph {
-        return plan.toPlanGraph()
+        plan.toPlanGraph()
     }
 }

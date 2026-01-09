@@ -2,19 +2,25 @@ import SwiftUI
 
 func makeSidebarBackground(colorScheme: ColorScheme) -> AnyView {
     #if os(macOS)
-    let bg = Color.clear
-        .background(.ultraThinMaterial)
-        .overlay(
-            Rectangle()
-                .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(colorScheme == .dark ? 0.16 : 0.12), lineWidth: 0.4)
-        )
+        let bg = Color.clear
+            .background(.ultraThinMaterial)
+            .overlay(
+                Rectangle()
+                    .stroke(
+                        DesignSystem.Colors.neutralLine(for: colorScheme).opacity(colorScheme == .dark ? 0.16 : 0.12),
+                        lineWidth: 0.4
+                    )
+            )
     #else
-    let bg = Color.clear
-        .background(.ultraThinMaterial)
-        .overlay(
-            Rectangle()
-                .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(colorScheme == .dark ? 0.16 : 0.12), lineWidth: 0.4)
-        )
+        let bg = Color.clear
+            .background(.ultraThinMaterial)
+            .overlay(
+                Rectangle()
+                    .stroke(
+                        DesignSystem.Colors.neutralLine(for: colorScheme).opacity(colorScheme == .dark ? 0.16 : 0.12),
+                        lineWidth: 0.4
+                    )
+            )
     #endif
     return AnyView(bg)
 }

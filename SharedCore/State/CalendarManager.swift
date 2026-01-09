@@ -1,8 +1,8 @@
-import Foundation
 import Combine
 import EventKit
+import Foundation
 #if os(macOS)
-import AppKit
+    import AppKit
 #endif
 import _Concurrency
 import SwiftUI
@@ -42,12 +42,14 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     // Helpers used by AddEventPopup - forwarded
     var writableCalendars: [EKCalendar] {
         guard authManager.isAuthorized else { return [] }
-        return deviceManager.store.calendars(for: .event).filter { $0.allowsContentModifications }
+        return deviceManager.store.calendars(for: .event).filter(\.allowsContentModifications)
     }
+
     var defaultCalendarForNewEvents: EKCalendar? {
         guard authManager.isAuthorized else { return nil }
         return deviceManager.store.defaultCalendarForNewEvents
     }
+
     func defaultCalendarForNewReminders() -> EKCalendar? { deviceManager.store.defaultCalendarForNewReminders() }
 
     // MARK: - Insights
@@ -91,20 +93,21 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
 
     private init() {
         cacheURL = nil
-        
+
         // Skip slow initialization during tests
         guard !TestMode.isRunningTests else {
             return
         }
-        
+
         // Observe store changes via DeviceCalendarManager's store
         deviceManager.startObservingStoreChanges()
         // Also subscribe to notification to refresh local caches
-        NotificationCenter.default.addObserver(forName: .EKEventStoreChanged, object: nil, queue: .main) { [weak self] _ in
-            Task { @MainActor in
-                await self?.refreshAuthStatus()
+        NotificationCenter.default
+            .addObserver(forName: .EKEventStoreChanged, object: nil, queue: .main) { [weak self] _ in
+                Task { @MainActor in
+                    await self?.refreshAuthStatus()
+                }
             }
-        }
         _Concurrency.Task { await self.refreshAuthStatus() }
     }
 
@@ -116,7 +119,9 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
             self.eventAuthorizationStatus = authManager.eventStatus
             self.reminderAuthorizationStatus = EKEventStore.authorizationStatus(for: .reminder)
             self.isCalendarAccessDenied = authManager.isDenied
-            self.isRemindersAccessDenied = (self.reminderAuthorizationStatus == .denied || self.reminderAuthorizationStatus == .restricted)
+            self
+                .isRemindersAccessDenied = (self.reminderAuthorizationStatus == .denied || self
+                    .reminderAuthorizationStatus == .restricted)
         }
         if self.isAuthorized {
             refreshSources()
@@ -128,7 +133,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     }
 
     /// Ensures the month cache is hydrated and surfaces a real loading state.
-    func ensureMonthCache(for date: Date) {
+    func ensureMonthCache(for _: Date) {
         _Concurrency.Task { [weak self] in
             guard let self else { return }
             _ = await self.withLoading(message: "Loading calendar…") {
@@ -162,7 +167,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
             self.availableReminderLists = []
             return
         }
-        
+
         self.availableCalendars = store.calendars(for: .event)
         self.availableReminderLists = store.calendars(for: .reminder)
 
@@ -184,14 +189,14 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         // await planTodayIfNeeded(tasks: AssignmentsStore.shared.tasks)
     }
 
-    func refreshMonthlyCache(for date: Date) {
+    func refreshMonthlyCache(for _: Date) {
         // Forward to device manager; it manages the canonical event cache
         Task { await DeviceCalendarManager.shared.refreshEventsForVisibleRange() }
     }
 
     // Helper
     func isSchoolEvent(_ event: EKEvent) -> Bool {
-        return event.calendar.calendarIdentifier == selectedCalendarID
+        event.calendar.calendarIdentifier == selectedCalendarID
     }
 
     // MARK: - Planner sync into calendar
@@ -219,15 +224,25 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         let schoolCalendarId = AppSettingsModel.shared.selectedSchoolCalendarID
         let targetCalendarId = schoolCalendarId.isEmpty ? selectedCalendarID : schoolCalendarId
         guard !targetCalendarId.isEmpty else { return }
-        guard let targetCalendar = store.calendars(for: .event).first(where: { $0.calendarIdentifier == targetCalendarId }) else { return }
+        guard let targetCalendar = store.calendars(for: .event)
+            .first(where: { $0.calendarIdentifier == targetCalendarId }) else { return }
 
         let calendar = Calendar.current
         let sessions = PlannerStore.shared.scheduled
             .filter { $0.type == .task || $0.type == .study }
             .filter { $0.end > range.lowerBound && $0.start < range.upperBound }
-        let blocks = PlannerCalendarSync.buildBlocks(from: sessions, gapMinutes: gapMinutes, calendar: calendar, timeZone: calendar.timeZone)
+        let blocks = PlannerCalendarSync.buildBlocks(
+            from: sessions,
+            gapMinutes: gapMinutes,
+            calendar: calendar,
+            timeZone: calendar.timeZone
+        )
 
-        let predicate = store.predicateForEvents(withStart: range.lowerBound, end: range.upperBound, calendars: [targetCalendar])
+        let predicate = store.predicateForEvents(
+            withStart: range.lowerBound,
+            end: range.upperBound,
+            calendars: [targetCalendar]
+        )
         let existingEvents = store.events(matching: predicate).map { event in
             PlannerCalendarEventSnapshot(
                 identifier: event.eventIdentifier,
@@ -301,6 +316,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     }
 
     // MARK: - Request Access
+
     func requestAccess() async {
         // Forward to DeviceCalendarManager
         _ = await DeviceCalendarManager.shared.requestFullAccessIfNeeded()
@@ -320,23 +336,26 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     }
 
     // Create and save events (used by AddEventPopup)
-    func saveEvent(title: String,
-                   startDate: Date,
-                   endDate: Date,
-                   isAllDay: Bool,
-                   location: String,
-                   notes: String,
-                   url: URL? = nil,
-                   alarms: [EKAlarm]? = nil,
-                   recurrenceRule: EKRecurrenceRule? = nil,
-                   calendar: EKCalendar?,
-                   category: EventCategory? = nil) async throws {
+    func saveEvent(
+        title: String,
+        startDate: Date,
+        endDate: Date,
+        isAllDay: Bool,
+        location _: String,
+        notes: String,
+        url: URL? = nil,
+        alarms: [EKAlarm]? = nil,
+        recurrenceRule: EKRecurrenceRule? = nil,
+        calendar: EKCalendar?,
+        category: EventCategory? = nil
+    ) async throws {
         guard authManager.isAuthorized else {
             authManager.logDeniedOnce(context: "saveEvent")
             return
         }
         // Forward create to device manager
-        guard let targetCalendar = calendar ?? DeviceCalendarManager.shared.store.defaultCalendarForNewEvents else { return }
+        guard let targetCalendar = calendar ?? DeviceCalendarManager.shared.store.defaultCalendarForNewEvents
+        else { return }
         try await MainActor.run {
             let newEvent = EKEvent(eventStore: DeviceCalendarManager.shared.store)
             newEvent.title = title
@@ -345,9 +364,9 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
             newEvent.isAllDay = isAllDay
             // Don't set location to avoid triggering location authorization check
             newEvent.notes = encodeNotesWithCategory(userNotes: notes, category: category)
-            if let url = url { newEvent.url = url }
+            if let url { newEvent.url = url }
             if let rule = recurrenceRule { newEvent.recurrenceRules = [rule] }
-            if let alarms = alarms { newEvent.alarms = alarms }
+            if let alarms { newEvent.alarms = alarms }
             newEvent.calendar = targetCalendar
 
             try DeviceCalendarManager.shared.store.save(newEvent, span: .thisEvent)
@@ -356,20 +375,22 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     }
 
     // Update an existing event by identifier
-    func updateEvent(identifier: String,
-                     title: String,
-                     startDate: Date,
-                     endDate: Date,
-                     isAllDay: Bool,
-                     location: String?,
-                     notes: String?,
-                     url: String?,
-                     primaryAlert: AlertOption?,
-                     secondaryAlert: AlertOption?,
-                     travelTime: TimeInterval?,
-                     recurrence: RecurrenceOption = .none,
-                     category: EventCategory? = nil,
-                     span: EKSpan = .thisEvent) async throws {
+    func updateEvent(
+        identifier: String,
+        title: String,
+        startDate: Date,
+        endDate: Date,
+        isAllDay: Bool,
+        location _: String?,
+        notes: String?,
+        url: String?,
+        primaryAlert: AlertOption?,
+        secondaryAlert: AlertOption?,
+        travelTime _: TimeInterval?,
+        recurrence: RecurrenceOption = .none,
+        category: EventCategory? = nil,
+        span: EKSpan = .thisEvent
+    ) async throws {
         enum CalendarUpdateError: LocalizedError {
             case eventNotFound
             case readOnlyCalendar
@@ -377,9 +398,9 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
 
             var errorDescription: String? {
                 switch self {
-                case .eventNotFound: return "Event could not be loaded."
-                case .readOnlyCalendar: return "This calendar is read-only."
-                case .unauthorized: return "Calendar access is not granted."
+                case .eventNotFound: "Event could not be loaded."
+                case .readOnlyCalendar: "This calendar is read-only."
+                case .unauthorized: "Calendar access is not granted."
                 }
             }
         }
@@ -400,14 +421,14 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         item.isAllDay = isAllDay
         // Don't set location to avoid triggering location authorization check
         item.notes = encodeNotesWithCategory(userNotes: notes ?? "", category: category)
-        
+
         // Handle URL
         if let urlString = url, !urlString.isEmpty, let validURL = URL(string: urlString) {
             item.url = validURL
         } else {
             item.url = nil
         }
-        
+
         // Handle alarms
         var alarms: [EKAlarm] = []
         if let primary = primaryAlert?.alarm {
@@ -417,10 +438,10 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
             alarms.append(secondary)
         }
         item.alarms = alarms.isEmpty ? nil : alarms
-        
+
         // Note: EKEvent doesn't have a travelTime property in EventKit API
         // Travel time functionality would need to be handled differently
-        
+
         // Handle recurrence
         item.recurrenceRules = recurrence.rule.map { [$0] }
 
@@ -428,14 +449,16 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
             guard !(item.recurrenceRules?.isEmpty ?? true) else { return .thisEvent }
             return span
         }()
-        
+
         try DeviceCalendarManager.shared.store.save(item, span: effectiveSpan, commit: true)
         await DeviceCalendarManager.shared.refreshEventsForVisibleRange(reason: "updateEvent")
     }
 
     // Delete an event or reminder by identifier
     func deleteCalendarItem(identifier: String, isReminder: Bool) async throws {
-        if isReminder, let reminder = DeviceCalendarManager.shared.store.calendarItem(withIdentifier: identifier) as? EKReminder {
+        if isReminder,
+           let reminder = DeviceCalendarManager.shared.store.calendarItem(withIdentifier: identifier) as? EKReminder
+        {
             try DeviceCalendarManager.shared.store.remove(reminder, commit: true)
         } else if let event = DeviceCalendarManager.shared.store.calendarItem(withIdentifier: identifier) as? EKEvent {
             try DeviceCalendarManager.shared.store.remove(event, span: .thisEvent, commit: true)
@@ -453,12 +476,11 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     }
 
     func openCalendarPrivacySettings() {
-#if os(macOS)
-        NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars")!)
-#endif
+        #if os(macOS)
+            NSWorkspace.shared
+                .open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars")!)
+        #endif
     }
-
-
 
     enum RecurrenceOption: String, CaseIterable, Identifiable {
         case none, daily, weekly, monthly
@@ -467,17 +489,17 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         var rule: EKRecurrenceRule? {
             switch self {
             case .none:
-                return nil
+                nil
             case .daily:
-                return EKRecurrenceRule(recurrenceWith: .daily, interval: 1, end: nil)
+                EKRecurrenceRule(recurrenceWith: .daily, interval: 1, end: nil)
             case .weekly:
-                return EKRecurrenceRule(recurrenceWith: .weekly, interval: 1, end: nil)
+                EKRecurrenceRule(recurrenceWith: .weekly, interval: 1, end: nil)
             case .monthly:
-                return EKRecurrenceRule(recurrenceWith: .monthly, interval: 1, end: nil)
+                EKRecurrenceRule(recurrenceWith: .monthly, interval: 1, end: nil)
             }
         }
     }
-    
+
     enum AlertOption: String, CaseIterable, Identifiable {
         case none = "None"
         case atTime = "At time of event"
@@ -488,35 +510,35 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         case twoHours = "2 hours before"
         case oneDay = "1 day before"
         case twoDays = "2 days before"
-        
+
         var id: String { rawValue }
-        
+
         var alarm: EKAlarm? {
             switch self {
             case .none:
-                return nil
+                nil
             case .atTime:
-                return EKAlarm(relativeOffset: 0)
+                EKAlarm(relativeOffset: 0)
             case .fiveMinutes:
-                return EKAlarm(relativeOffset: -5 * 60)
+                EKAlarm(relativeOffset: -5 * 60)
             case .fifteenMinutes:
-                return EKAlarm(relativeOffset: -15 * 60)
+                EKAlarm(relativeOffset: -15 * 60)
             case .thirtyMinutes:
-                return EKAlarm(relativeOffset: -30 * 60)
+                EKAlarm(relativeOffset: -30 * 60)
             case .oneHour:
-                return EKAlarm(relativeOffset: -60 * 60)
+                EKAlarm(relativeOffset: -60 * 60)
             case .twoHours:
-                return EKAlarm(relativeOffset: -2 * 60 * 60)
+                EKAlarm(relativeOffset: -2 * 60 * 60)
             case .oneDay:
-                return EKAlarm(relativeOffset: -24 * 60 * 60)
+                EKAlarm(relativeOffset: -24 * 60 * 60)
             case .twoDays:
-                return EKAlarm(relativeOffset: -2 * 24 * 60 * 60)
+                EKAlarm(relativeOffset: -2 * 24 * 60 * 60)
             }
         }
-        
+
         static func from(alarm: EKAlarm?) -> AlertOption {
-            guard let alarm = alarm else { return .none }
-            
+            guard let alarm else { return .none }
+
             switch alarm.relativeOffset {
             case 0: return .atTime
             case -5 * 60: return .fiveMinutes
@@ -530,7 +552,7 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
             }
         }
     }
-    
+
     enum TravelTimeOption: String, CaseIterable, Identifiable {
         case none = "None"
         case fifteenMinutes = "15 minutes"
@@ -538,29 +560,29 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         case oneHour = "1 hour"
         case oneAndHalfHours = "1.5 hours"
         case twoHours = "2 hours"
-        
+
         var id: String { rawValue }
-        
+
         var timeInterval: TimeInterval? {
             switch self {
             case .none:
-                return nil
+                nil
             case .fifteenMinutes:
-                return 15 * 60
+                15 * 60
             case .thirtyMinutes:
-                return 30 * 60
+                30 * 60
             case .oneHour:
-                return 60 * 60
+                60 * 60
             case .oneAndHalfHours:
-                return 90 * 60
+                90 * 60
             case .twoHours:
-                return 2 * 60 * 60
+                2 * 60 * 60
             }
         }
-        
+
         static func from(interval: TimeInterval?) -> TravelTimeOption {
-            guard let interval = interval else { return .none }
-            
+            guard let interval else { return .none }
+
             switch interval {
             case 15 * 60: return .fifteenMinutes
             case 30 * 60: return .thirtyMinutes
@@ -576,46 +598,51 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
     func openSystemPrivacySettings() {
         openCalendarPrivacySettings()
     }
-    
+
     // MARK: - Category Storage
-    
+
     /// Encodes category into notes with a special marker that won't be displayed to users
     private func encodeNotesWithCategory(userNotes: String, category: EventCategory?) -> String {
         var result = userNotes
         if let cat = category {
             // Store category as metadata at the end of notes
-            let categoryMarker = "\n[RootsCategory:\(cat.rawValue)]"
+            let categoryMarker = "\n[ItoriCategory:\(cat.rawValue)]"
             // Remove any existing category marker first
-            result = result.replacingOccurrences(of: #"\n\[RootsCategory:.*?\]"#, with: "", options: .regularExpression)
+            result = result.replacingOccurrences(of: #"\n\[ItoriCategory:.*?\]"#, with: "", options: .regularExpression)
             result = result + categoryMarker
         }
         return result
     }
-    
+
     /// Extracts category from notes and returns both the clean user notes and category
     func decodeNotesWithCategory(notes: String?) -> (userNotes: String, category: EventCategory?) {
-        guard let notes = notes else { return ("", nil) }
-        
+        guard let notes else { return ("", nil) }
+
         var workingNotes = notes
         var category: EventCategory? = nil
-        
-        // Remove [RootsCategory:...] marker
-        let categoryPattern = #"\[RootsCategory:(.*?)\]"#
+
+        // Remove [ItoriCategory:...] marker
+        let categoryPattern = #"\[ItoriCategory:(.*?)\]"#
         if let regex = try? NSRegularExpression(pattern: categoryPattern, options: []),
-           let match = regex.firstMatch(in: workingNotes, options: [], range: NSRange(workingNotes.startIndex..., in: workingNotes)),
-           let categoryRange = Range(match.range(at: 1), in: workingNotes) {
+           let match = regex.firstMatch(
+               in: workingNotes,
+               options: [],
+               range: NSRange(workingNotes.startIndex..., in: workingNotes)
+           ),
+           let categoryRange = Range(match.range(at: 1), in: workingNotes)
+        {
             let categoryString = String(workingNotes[categoryRange])
             category = EventCategory(rawValue: categoryString)
             workingNotes = workingNotes.replacingOccurrences(of: categoryPattern, with: "", options: .regularExpression)
         }
-        
-        // Remove [RootsPlanner]...[/RootsPlanner] metadata blocks
-        let plannerPattern = #"\[RootsPlanner\][\s\S]*?\[/RootsPlanner\]"#
+
+        // Remove [ItoriPlanner]...[/ItoriPlanner] metadata blocks
+        let plannerPattern = #"\[ItoriPlanner\][\s\S]*?\[/ItoriPlanner\]"#
         workingNotes = workingNotes.replacingOccurrences(of: plannerPattern, with: "", options: .regularExpression)
-        
+
         // Clean up whitespace
         let cleanNotes = workingNotes.trimmingCharacters(in: .whitespacesAndNewlines)
-        
+
         return (cleanNotes, category)
     }
 }
@@ -647,6 +674,7 @@ extension CalendarManager {
         await DeviceCalendarManager.shared.requestFullAccessIfNeeded()
     }
 }
+
 extension EKEvent {
     /// Safe identifier for UI lists even when eventIdentifier is nil (e.g., cached events).
     var rootsIdentifier: String {

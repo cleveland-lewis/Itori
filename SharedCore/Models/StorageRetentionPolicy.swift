@@ -11,33 +11,33 @@ public enum StorageRetentionPolicy: String, CaseIterable, Identifiable, Codable 
 
     public var label: String {
         switch self {
-        case .never: return "Never Delete"
-        case .semester30Days: return "30 Days After Semester"
-        case .semester90Days: return "90 Days After Semester"
-        case .oneYear: return "1 Year"
-        case .twoYears: return "2 Years"
+        case .never: "Never Delete"
+        case .semester30Days: "30 Days After Semester"
+        case .semester90Days: "90 Days After Semester"
+        case .oneYear: "1 Year"
+        case .twoYears: "2 Years"
         }
     }
 
     public var detail: String {
         switch self {
         case .never:
-            return "Keep all detailed data."
+            "Keep all detailed data."
         case .semester30Days:
-            return "Remove detailed data 30 days after a semester ends."
+            "Remove detailed data 30 days after a semester ends."
         case .semester90Days:
-            return "Remove detailed data 90 days after a semester ends."
+            "Remove detailed data 90 days after a semester ends."
         case .oneYear:
-            return "Remove detailed data after 1 year."
+            "Remove detailed data after 1 year."
         case .twoYears:
-            return "Remove detailed data after 2 years."
+            "Remove detailed data after 2 years."
         }
     }
 
     public var isSemesterBased: Bool {
         switch self {
-        case .semester30Days, .semester90Days: return true
-        case .never, .oneYear, .twoYears: return false
+        case .semester30Days, .semester90Days: true
+        case .never, .oneYear, .twoYears: false
         }
     }
 

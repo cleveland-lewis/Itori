@@ -1,7 +1,5 @@
-import SwiftUI
-import Combine
 #if os(macOS)
-import AppKit
+    import AppKit
 #endif
 
 @MainActor
@@ -10,19 +8,18 @@ final class SettingsCoordinator: ObservableObject {
 
     private let appSettings: AppSettingsModel
     private let coursesStore: CoursesStore
-    private lazy var windowController: SettingsWindowController = {
-        SettingsWindowController(
-            appSettings: appSettings,
-            coursesStore: coursesStore,
-            coordinator: self
-        )
-    }()
+    private lazy var windowController: SettingsWindowController = .init(
+        appSettings: appSettings,
+        coursesStore: coursesStore,
+        coordinator: self
+    )
 
     init(appSettings: AppSettingsModel, coursesStore: CoursesStore) {
         self.appSettings = appSettings
         self.coursesStore = coursesStore
         if let stored = UserDefaults.standard.string(forKey: SettingsWindowController.lastPaneKey),
-           let pane = SettingsToolbarIdentifier(rawValue: stored) {
+           let pane = SettingsToolbarIdentifier(rawValue: stored)
+        {
             selectedSection = pane
         }
     }
@@ -46,5 +43,5 @@ final class SettingsCoordinator: ObservableObject {
 }
 
 extension Notification.Name {
-    static let selectSettingsPane = Notification.Name("roots.settings.selectPane")
+    static let selectSettingsPane = Notification.Name("itori.settings.selectPane")
 }

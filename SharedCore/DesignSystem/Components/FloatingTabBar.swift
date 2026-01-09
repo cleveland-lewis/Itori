@@ -15,7 +15,7 @@ struct FloatingTabBar: View {
 
     var body: some View {
         let policy = MaterialPolicy(preferences: preferences)
-        
+
         HStack(spacing: 12) {
             let tabs = settings.tabOrder.filter { settings.effectiveVisibleTabs.contains($0) }
             ForEach(tabs) { tab in
@@ -30,9 +30,18 @@ struct FloatingTabBar: View {
         )
         .overlay(
             Capsule()
-                .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(colorScheme == .dark ? policy.borderOpacity * 1.5 : policy.borderOpacity * 1.17), lineWidth: policy.borderWidth * 0.6)
+                .stroke(
+                    DesignSystem.Colors.neutralLine(for: colorScheme)
+                        .opacity(colorScheme == .dark ? policy.borderOpacity * 1.5 : policy.borderOpacity * 1.17),
+                    lineWidth: policy.borderWidth * 0.6
+                )
         )
-        .shadow(color: DesignSystem.Colors.neutralLine(for: colorScheme).opacity(colorScheme == .dark ? 0.12 : 0.09), radius: 24, x: 0, y: 12)
+        .shadow(
+            color: DesignSystem.Colors.neutralLine(for: colorScheme).opacity(colorScheme == .dark ? 0.12 : 0.09),
+            radius: 24,
+            x: 0,
+            y: 12
+        )
         .fixedSize(horizontal: true, vertical: true)
         .padding(.bottom, 26)
         .contextMenu {
@@ -104,25 +113,30 @@ private struct FloatingTabButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         let policy = MaterialPolicy(preferences: preferences)
-        
+
         configuration.label
             .padding(.vertical, 6)
             .padding(.horizontal, isSelected ? 12 : 8)
             .background(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(policy.hudMaterial(colorScheme: colorScheme).opacity(isSelected ? 0.95 : (colorScheme == .dark ? 0.6 : 0.7)))
+                    .fill(policy.hudMaterial(colorScheme: colorScheme)
+                        .opacity(isSelected ? 0.95 : (colorScheme == .dark ? 0.6 : 0.7)))
                     .background(
                         isSelected ?
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            RoundedRectangle(cornerRadius: 16, style: .continuous)
                             .fill(Color.accentColor)
-                        : nil
+                            : nil
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(isSelected ? policy.borderOpacity * 2.5 : policy.borderOpacity * 1.33), lineWidth: policy.borderWidth * 0.6)
+                            .stroke(
+                                DesignSystem.Colors.neutralLine(for: colorScheme)
+                                    .opacity(isSelected ? policy.borderOpacity * 2.5 : policy.borderOpacity * 1.33),
+                                lineWidth: policy.borderWidth * 0.6
+                            )
                     )
             )
-                        .scaleEffect(configuration.isPressed ? (isSelected ? 0.96 : 0.97) : 1)
+            .scaleEffect(configuration.isPressed ? (isSelected ? 0.96 : 0.97) : 1)
             .opacity(configuration.isPressed ? 0.9 : 1)
             .animation(.spring(response: 0.24, dampingFraction: 0.7), value: configuration.isPressed)
     }

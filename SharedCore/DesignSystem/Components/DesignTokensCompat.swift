@@ -1,9 +1,9 @@
 import SwiftUI
 #if canImport(AppKit)
-import AppKit
+    import AppKit
 #endif
 #if canImport(UIKit)
-import UIKit
+    import UIKit
 #endif
 
 // Compatibility shim for legacy helpers. The canonical definitions live in
@@ -11,42 +11,47 @@ import UIKit
 // helpers that are not defined elsewhere to avoid redeclaration errors.
 
 // MARK: - Spacing
-enum RootsSpacing {
+
+enum ItariSpacing {
     static let xs: CGFloat = 4
     static let s: CGFloat = 8
     static let m: CGFloat = 12
     static let l: CGFloat = 16
     static let xl: CGFloat = 24
     static let section: CGFloat = 40
-    static let pagePadding: CGFloat = 20  // Consistent horizontal page padding for macOS
+    static let pagePadding: CGFloat = 20 // Consistent horizontal page padding for macOS
 }
 
 // MARK: - Radius
-enum RootsRadius {
+
+enum ItariRadius {
     static let card: CGFloat = 24
     static let popup: CGFloat = 20
     static let chip: CGFloat = 12
 }
 
 // MARK: - Colors
-enum RootsColor {
+
+enum ItariColor {
     static func glassBorder(for colorScheme: ColorScheme) -> Color {
         DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.16)
     }
+
     static var textPrimary: Color { .primary }
     static var textSecondary: Color { .secondary }
     static var label: Color { .primary }
     static var secondaryLabel: Color { .secondary }
     static var cardBackground: Color { DesignSystem.Colors.cardBackground }
     static var inputBackground: Color {
-#if canImport(AppKit)
-        return Color(nsColor: NSColor.textBackgroundColor)
-#elseif canImport(UIKit)
-        return Color(uiColor: UIColor.secondarySystemBackground)
-#else
-        return .secondary
-#endif
+        #if canImport(AppKit)
+            return Color(nsColor: NSColor.textBackgroundColor)
+        #elseif canImport(UIKit)
+            return Color(uiColor: UIColor.secondarySystemBackground)
+        #else
+            return .secondary
+        #endif
     }
+
     static var subtleFill: Color { Color(nsColor: .controlBackgroundColor).opacity(0.4) }
     static var accent: Color { .accentColor }
     static var calendarDensityLow: Color { Color.green.opacity(0.8) }
@@ -55,72 +60,73 @@ enum RootsColor {
 }
 
 // MARK: - Typography
+
 extension Text {
-    func rootsSectionHeader() -> some View {
+    func itariSectionHeader() -> some View {
         font(.system(size: 14, weight: .semibold))
     }
 
-    func rootsBody() -> some View {
+    func itariBody() -> some View {
         font(.system(size: 13, weight: .regular))
     }
 
-    func rootsBodySecondary() -> some View {
+    func itoriBodySecondary() -> some View {
         font(.system(size: 13)).foregroundColor(.secondary)
     }
 
-    func rootsCaption() -> some View {
+    func itoriCaption() -> some View {
         font(.footnote).foregroundColor(.secondary)
     }
 }
 
 extension View {
-    func rootsSystemBackground() -> some View {
+    func itoriSystemBackground() -> some View {
         background(Color(nsColor: .windowBackgroundColor))
     }
 
-    func rootsCardBackground(radius: CGFloat = RootsRadius.card) -> some View {
+    func itoriCardBackground(radius: CGFloat = ItariRadius.card) -> some View {
         #if os(macOS)
-        background(
-            RoundedRectangle(cornerRadius: radius, style: .continuous)
-                .fill(DesignSystem.Materials.card)
-                .opacity(DesignSystem.Materials.cardOpacity)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-        .modifier(NeutralLineOverlay(radius: radius, opacity: 0.6))
+            background(
+                RoundedRectangle(cornerRadius: radius, style: .continuous)
+                    .fill(DesignSystem.Materials.card)
+                    .opacity(DesignSystem.Materials.cardOpacity)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+            .modifier(NeutralLineOverlay(radius: radius, opacity: 0.6))
         #else
-        background(
-            RoundedRectangle(cornerRadius: radius, style: .continuous)
-                .fill(DesignSystem.Materials.card)
-                .opacity(DesignSystem.Materials.cardOpacity)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-        .modifier(NeutralLineOverlay(radius: radius, opacity: 0.12))
+            background(
+                RoundedRectangle(cornerRadius: radius, style: .continuous)
+                    .fill(DesignSystem.Materials.card)
+                    .opacity(DesignSystem.Materials.cardOpacity)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+            .modifier(NeutralLineOverlay(radius: radius, opacity: 0.12))
         #endif
     }
 
-    func rootsGlassBackground(opacity: Double = 0.2, radius: CGFloat = RootsRadius.card) -> some View {
+    func itoriGlassBackground(opacity: Double = 0.2, radius: CGFloat = ItariRadius.card) -> some View {
         #if os(macOS)
-        background(
-            RoundedRectangle(cornerRadius: radius, style: .continuous)
-                .fill(DesignSystem.Materials.card)
-                .opacity(DesignSystem.Materials.cardOpacity)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+            background(
+                RoundedRectangle(cornerRadius: radius, style: .continuous)
+                    .fill(DesignSystem.Materials.card)
+                    .opacity(DesignSystem.Materials.cardOpacity)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
         #else
-        background(
-            RoundedRectangle(cornerRadius: radius, style: .continuous)
-                .fill(DesignSystem.Materials.card)
-                .opacity(opacity * DesignSystem.Materials.cardOpacity)
-        )
-        .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+            background(
+                RoundedRectangle(cornerRadius: radius, style: .continuous)
+                    .fill(DesignSystem.Materials.card)
+                    .opacity(opacity * DesignSystem.Materials.cardOpacity)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
         #endif
     }
 
-    func rootsFloatingShadow() -> some View {
+    func itoriFloatingShadow() -> some View {
         shadow(color: Color.primary.opacity(0.12), radius: 20, y: 10)
     }
 
-    func rootsCardShadow() -> some View {
+    func itoriCardShadow() -> some View {
         shadow(color: Color.black.opacity(0.15), radius: 10, y: 5)
     }
 }
@@ -140,7 +146,7 @@ private struct NeutralLineOverlay: ViewModifier {
 
 // MARK: - Components
 
-struct RootsPopupContainer<Content: View, Footer: View>: View {
+struct ItoriPopupContainer<Content: View, Footer: View>: View {
     var title: String
     var subtitle: String?
     @ViewBuilder var content: Content
@@ -148,38 +154,38 @@ struct RootsPopupContainer<Content: View, Footer: View>: View {
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        VStack(alignment: .leading, spacing: RootsSpacing.l) {
+        VStack(alignment: .leading, spacing: ItariSpacing.l) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(title).rootsSectionHeader()
-                if let subtitle { Text(subtitle).rootsCaption() }
+                Text(title).itariSectionHeader()
+                if let subtitle { Text(subtitle).itoriCaption() }
             }
             Divider()
             content
             Divider()
             footer
         }
-        .padding(.horizontal, RootsSpacing.xl)
-        .padding(.vertical, RootsSpacing.l)
+        .padding(.horizontal, ItariSpacing.xl)
+        .padding(.vertical, ItariSpacing.l)
         .frame(maxWidth: 560)
         .background(
             DesignSystem.Materials.popup,
-            in: RoundedRectangle(cornerRadius: RootsRadius.popup, style: .continuous)
+            in: RoundedRectangle(cornerRadius: ItariRadius.popup, style: .continuous)
         )
         .shadow(color: .black.opacity(0.25), radius: 20, y: 10)
         .overlay(
-            RoundedRectangle(cornerRadius: RootsRadius.popup, style: .continuous)
+            RoundedRectangle(cornerRadius: ItariRadius.popup, style: .continuous)
                 .strokeBorder(Color.white.opacity(0.1), lineWidth: 1)
         )
         .popupTextAlignedLeft()
         #if os(macOS)
-        .onExitCommand {
-            dismiss()
-        }
+            .onExitCommand {
+                dismiss()
+            }
         #endif
     }
 }
 
-struct RootsFormRow<Control: View, Helper: View>: View {
+struct ItoriFormRow<Control: View, Helper: View>: View {
     var label: String
     @ViewBuilder var control: Control
     @ViewBuilder var helper: Helper
@@ -192,9 +198,9 @@ struct RootsFormRow<Control: View, Helper: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .firstTextBaseline, spacing: RootsSpacing.m) {
+            HStack(alignment: .firstTextBaseline, spacing: ItariSpacing.m) {
                 Text(label)
-                    .rootsBodySecondary()
+                    .itoriBodySecondary()
                     .frame(width: 110, alignment: Alignment.leading)
                 control
             }
@@ -203,7 +209,7 @@ struct RootsFormRow<Control: View, Helper: View>: View {
     }
 }
 
-struct RootsCard<Content: View>: View {
+struct ItoriCard<Content: View>: View {
     var title: String?
     var subtitle: String?
     var icon: String?
@@ -213,13 +219,13 @@ struct RootsCard<Content: View>: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        VStack(alignment: .leading, spacing: compact ? RootsSpacing.m : 12) {
+        VStack(alignment: .leading, spacing: compact ? ItariSpacing.m : 12) {
             if title != nil || icon != nil || subtitle != nil {
-                HStack(spacing: RootsSpacing.s) {
+                HStack(spacing: ItariSpacing.s) {
                     if let icon { Image(systemName: icon) }
                     VStack(alignment: .leading, spacing: 2) {
-                        if let title { Text(title).rootsSectionHeader() }
-                        if let subtitle { Text(subtitle).rootsCaption() }
+                        if let title { Text(title).itariSectionHeader() }
+                        if let subtitle { Text(subtitle).itoriCaption() }
                     }
                     Spacer()
                 }
@@ -232,7 +238,7 @@ struct RootsCard<Content: View>: View {
                 footer
             }
         }
-        .padding(compact ? RootsSpacing.m : 14)
+        .padding(compact ? ItariSpacing.m : 14)
         .background(
             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                 .fill(DesignSystem.Materials.card)
@@ -246,11 +252,11 @@ struct RootsCard<Content: View>: View {
     }
 }
 
-struct RootsFloatingTabBar: View {
-    var items: [RootTab]
-    @Binding var selected: RootTab
+struct ItoriFloatingTabBar: View {
+    var items: [ItoriTab]
+    @Binding var selected: ItoriTab
     var mode: TabBarMode
-    var onSelect: (RootTab) -> Void
+    var onSelect: (ItoriTab) -> Void
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -264,7 +270,7 @@ struct RootsFloatingTabBar: View {
             HStack(spacing: DesignSystem.Layout.spacing.small) {
                 ForEach(items) { tab in
                     let isSelected = tab == selected
-                    RootTabBarItem(
+                    ItoriTabBarItem(
                         icon: tab.systemImage,
                         title: tab.title,
                         isSelected: isSelected,
@@ -287,7 +293,7 @@ struct RootsFloatingTabBar: View {
                     .fill(DesignSystem.Materials.hud)
                     .overlay(
                         RoundedRectangle(cornerRadius: 28, style: .continuous)
-                            .stroke(RootsColor.glassBorder(for: colorScheme), lineWidth: 1)
+                            .stroke(ItariColor.glassBorder(for: colorScheme), lineWidth: 1)
                     )
             )
             .frame(maxWidth: min(availableWidth - 32, 640))
@@ -316,7 +322,7 @@ func resolvedTabBarMode(
     }
 }
 
-struct RootTabBarItem: View {
+struct ItoriTabBarItem: View {
     let icon: String
     let title: String
     let isSelected: Bool
@@ -350,7 +356,10 @@ struct RootTabBarItem: View {
             )
             .overlay(
                 Capsule(style: .continuous)
-                    .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(isSelected ? 0.3 : 0.16), lineWidth: 0.5)
+                    .stroke(
+                        DesignSystem.Colors.neutralLine(for: colorScheme).opacity(isSelected ? 0.3 : 0.16),
+                        lineWidth: 0.5
+                    )
             )
             .overlay(
                 Capsule(style: .continuous)
@@ -370,7 +379,7 @@ struct RootTabBarItem: View {
         }
         .onHover { hovering in
             #if canImport(AppKit)
-            if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
             #endif
         }
         .accessibilityLabelWithTooltip(title)
@@ -427,13 +436,13 @@ private struct HoverTooltipModifier: ViewModifier {
     }
 
     private var hoverTooltipEnabled: Bool {
-#if os(macOS)
-        true
-#elseif os(iOS)
-        UIDevice.current.userInterfaceIdiom == .pad
-#else
-        false
-#endif
+        #if os(macOS)
+            true
+        #elseif os(iOS)
+            UIDevice.current.userInterfaceIdiom == .pad
+        #else
+            false
+        #endif
     }
 }
 

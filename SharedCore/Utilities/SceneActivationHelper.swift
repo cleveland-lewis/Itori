@@ -1,21 +1,19 @@
-import Foundation
-
 #if canImport(UIKit)
-import UIKit
+    import UIKit
 #endif
 
 #if canImport(AppKit)
-import AppKit
+    import AppKit
 #endif
 
 /// Helper for requesting SwiftUI scene activations with `NSUserActivity` payloads.
 enum SceneActivationHelper {
     static let windowActivityType = "com.itori.scene.windowState"
-    static let windowStateKey = "roots.scene.windowState"
-    static let assignmentSceneStorageKey = "roots.scene.assignmentDetail.assignmentId"
-    static let courseSceneStorageKey = "roots.scene.courseDetail.courseId"
-    static let plannerSceneStorageKey = "roots.scene.plannerDay.dateId"
-    static let timerSceneStorageKey = "roots.scene.timerSession.sessionId"
+    static let windowStateKey = "itori.scene.windowState"
+    static let assignmentSceneStorageKey = "itori.scene.assignmentDetail.assignmentId"
+    static let courseSceneStorageKey = "itori.scene.courseDetail.courseId"
+    static let plannerSceneStorageKey = "itori.scene.plannerDay.dateId"
+    static let timerSceneStorageKey = "itori.scene.timerSession.sessionId"
 
     private static let jsonEncoder: JSONEncoder = {
         let encoder = JSONEncoder()
@@ -47,9 +45,11 @@ enum SceneActivationHelper {
     }
 
     static func openAssignmentWindow(withId id: UUID, title: String? = nil) {
-        var state = WindowState(windowId: .assignmentDetail,
-                                entityId: id.uuidString,
-                                displayTitle: title)
+        var state = WindowState(
+            windowId: .assignmentDetail,
+            entityId: id.uuidString,
+            displayTitle: title
+        )
         if state.displayTitle == nil {
             state.displayTitle = WindowIdentifier.assignmentDetail.title
         }
@@ -57,31 +57,36 @@ enum SceneActivationHelper {
     }
 
     static func openCourseWindow(for course: Course) {
-        let displayTitle: String
-        if course.code.isEmpty {
-            displayTitle = course.title
+        let displayTitle: String = if course.code.isEmpty {
+            course.title
         } else {
-            displayTitle = "\(course.code) • \(course.title)"
+            "\(course.code) • \(course.title)"
         }
-        let state = WindowState(windowId: .courseDetail,
-                                entityId: course.id.uuidString,
-                                displayTitle: displayTitle)
+        let state = WindowState(
+            windowId: .courseDetail,
+            entityId: course.id.uuidString,
+            displayTitle: displayTitle
+        )
         openWindow(state)
     }
 
     static func openPlannerWindow(for date: Date) {
         let identifier = isoIdentifier(from: date)
         let displayTitle = "\(WindowIdentifier.plannerDay.title) • \(formattedDate(date))"
-        let state = WindowState(windowId: .plannerDay,
-                                entityId: identifier,
-                                displayTitle: displayTitle)
+        let state = WindowState(
+            windowId: .plannerDay,
+            entityId: identifier,
+            displayTitle: displayTitle
+        )
         openWindow(state)
     }
 
     static func openTimerWindow() {
-        let state = WindowState(windowId: .timerSession,
-                                entityId: nil,
-                                displayTitle: WindowIdentifier.timerSession.title)
+        let state = WindowState(
+            windowId: .timerSession,
+            entityId: nil,
+            displayTitle: WindowIdentifier.timerSession.title
+        )
         openWindow(state)
     }
 
@@ -115,10 +120,15 @@ enum SceneActivationHelper {
 
     private static func activateScene(with activity: NSUserActivity) {
         #if canImport(UIKit) && !os(macOS)
-        UIApplication.shared.requestSceneSessionActivation(nil, userActivity: activity, options: nil, errorHandler: nil)
+            UIApplication.shared.requestSceneSessionActivation(
+                nil,
+                userActivity: activity,
+                options: nil,
+                errorHandler: nil
+            )
         #elseif canImport(AppKit)
-        // macOS doesn't support requestSceneSessionActivation.
-        _ = activity
+            // macOS doesn't support requestSceneSessionActivation.
+            _ = activity
         #endif
     }
 }

@@ -1,25 +1,26 @@
 import Foundation
 #if canImport(SwiftUI)
-import SwiftUI
+    import SwiftUI
 #endif
 
 // MARK: - Shared Planning Models
+
 // These types are available on all platforms (macOS, iOS, watchOS)
 
 public enum AssignmentCategory: String, CaseIterable, Codable, Identifiable {
     case reading, exam, homework, quiz, review, project, practiceTest
-    
+
     public var id: String { rawValue }
-    
+
     public var displayName: String {
         switch self {
-        case .project: return "Project"
-        case .exam: return "Exam"
-        case .quiz: return "Quiz"
-        case .homework: return "Homework"
-        case .reading: return "Reading"
-        case .review: return "Review"
-        case .practiceTest: return "Practice Test"
+        case .project: "Project"
+        case .exam: "Exam"
+        case .quiz: "Quiz"
+        case .homework: "Homework"
+        case .reading: "Reading"
+        case .review: "Review"
+        case .practiceTest: "Practice Test"
         }
     }
 }
@@ -33,36 +34,36 @@ public enum AssignmentUrgency: String, Codable, CaseIterable, Hashable, Identifi
     public static var creationOptions: [AssignmentUrgency] {
         [.low, .medium, .high]
     }
-    
+
     // Default implementation for non-macOS platforms
     // macOS uses localized versions from Platforms/macOS/Extensions/AssignmentExtensions.swift
     #if !os(macOS)
-    public var color: Color {
-        switch self {
-        case .low: return .green
-        case .medium: return .yellow
-        case .high: return .orange
-        case .critical: return .red
+        public var color: Color {
+            switch self {
+            case .low: .green
+            case .medium: .yellow
+            case .high: .orange
+            case .critical: .red
+            }
         }
-    }
-    
-    public var systemIcon: String {
-        switch self {
-        case .low: return "checkmark.circle.fill"
-        case .medium: return "exclamationmark.circle.fill"
-        case .high: return "exclamationmark.triangle.fill"
-        case .critical: return "exclamationmark.octagon.fill"
+
+        public var systemIcon: String {
+            switch self {
+            case .low: "checkmark.circle.fill"
+            case .medium: "exclamationmark.circle.fill"
+            case .high: "exclamationmark.triangle.fill"
+            case .critical: "exclamationmark.octagon.fill"
+            }
         }
-    }
-    
-    public var label: String {
-        switch self {
-        case .low: return "Low"
-        case .medium: return "Medium"
-        case .high: return "High"
-        case .critical: return "Critical"
+
+        public var label: String {
+            switch self {
+            case .low: "Low"
+            case .medium: "Medium"
+            case .high: "High"
+            case .critical: "Critical"
+            }
         }
-    }
     #endif
 }
 
@@ -71,29 +72,29 @@ public enum AssignmentStatus: String, Codable, CaseIterable, Sendable, Identifia
     case inProgress
     case completed
     case archived
-    
+
     public var id: String { rawValue }
-    
+
     // Default implementation for non-macOS platforms
     // macOS uses localized versions from Platforms/macOS/Extensions/AssignmentExtensions.swift
     #if !os(macOS)
-    public var systemIcon: String {
-        switch self {
-        case .notStarted: return "circle"
-        case .inProgress: return "circle.lefthalf.filled"
-        case .completed: return "checkmark.circle.fill"
-        case .archived: return "archivebox.fill"
+        public var systemIcon: String {
+            switch self {
+            case .notStarted: "circle"
+            case .inProgress: "circle.lefthalf.filled"
+            case .completed: "checkmark.circle.fill"
+            case .archived: "archivebox.fill"
+            }
         }
-    }
-    
-    public var label: String {
-        switch self {
-        case .notStarted: return "Not Started"
-        case .inProgress: return "In Progress"
-        case .completed: return "Completed"
-        case .archived: return "Archived"
+
+        public var label: String {
+            switch self {
+            case .notStarted: "Not Started"
+            case .inProgress: "In Progress"
+            case .completed: "Completed"
+            case .archived: "Archived"
+            }
         }
-    }
     #endif
 }
 
@@ -101,7 +102,7 @@ public struct PlanStepStub: Codable, Hashable, Identifiable {
     public var id: UUID
     public var title: String
     public var expectedMinutes: Int
-    
+
     public init(id: UUID = UUID(), title: String = "", expectedMinutes: Int = 0) {
         self.id = id
         self.title = title
@@ -122,7 +123,7 @@ public struct Assignment: Identifiable, Codable, Hashable {
     public var urgency: AssignmentUrgency
     public var isLockedToDueDate: Bool
     public var plan: [PlanStepStub]
-    
+
     // Optional UI/tracking fields
     public var status: AssignmentStatus?
     public var courseCode: String?
@@ -240,62 +241,60 @@ public enum EventCategoryStub: String, Codable, CaseIterable {
 
 // MARK: - Planner Integration
 
-extension Assignment {
+public extension Assignment {
     /// Planner-specific computed properties for scheduling algorithm
-    public var plannerPriorityWeight: Double {
+    var plannerPriorityWeight: Double {
         // Convert urgency to priority weight (0...1 scale)
         switch urgency {
-        case .low: return 0.2
-        case .medium: return 0.6
-        case .high: return 0.8
-        case .critical: return 1.0
+        case .low: 0.2
+        case .medium: 0.6
+        case .high: 0.8
+        case .critical: 1.0
         }
     }
-    
-    public var plannerEstimatedMinutes: Int {
+
+    var plannerEstimatedMinutes: Int {
         estimatedMinutes
     }
-    
-    public var plannerDueDate: Date? {
+
+    var plannerDueDate: Date? {
         effectiveDueDateTime
     }
-    
-    public var plannerCourseId: UUID? {
+
+    var plannerCourseId: UUID? {
         courseId
     }
-    
-    public var plannerCategory: AssignmentCategory {
+
+    var plannerCategory: AssignmentCategory {
         category
     }
-    
+
     /// Difficulty estimation for planner (0...1 scale)
     /// Based on category and estimated time
-    public var plannerDifficulty: Double {
-        let baseForCategory: Double = {
-            switch category {
-            case .exam: return 0.9
-            case .project: return 0.8
-            case .quiz: return 0.7
-            case .homework: return 0.6
-            case .reading: return 0.5
-            case .review: return 0.4
-            case .practiceTest: return 0.7
-            }
-        }()
-        
+    var plannerDifficulty: Double {
+        let baseForCategory = switch category {
+        case .exam: 0.9
+        case .project: 0.8
+        case .quiz: 0.7
+        case .homework: 0.6
+        case .reading: 0.5
+        case .review: 0.4
+        case .practiceTest: 0.7
+        }
+
         // Adjust by time estimate
         let timeAdjustment: Double = {
             if estimatedMinutes < 30 { return -0.1 }
             if estimatedMinutes > 120 { return 0.1 }
             return 0.0
         }()
-        
+
         return min(1.0, max(0.0, baseForCategory + timeAdjustment))
     }
 }
 
-extension Assignment {
-    public var effectiveDueDateTime: Date {
+public extension Assignment {
+    var effectiveDueDateTime: Date {
         if let dueTimeMinutes {
             return Calendar.current.date(byAdding: .minute, value: dueTimeMinutes, to: dueDate) ?? dueDate
         }
@@ -304,8 +303,8 @@ extension Assignment {
         components.minute = 59
         return Calendar.current.date(from: components) ?? dueDate
     }
-    
-    public var hasExplicitDueTime: Bool {
+
+    var hasExplicitDueTime: Bool {
         dueTimeMinutes != nil
     }
 }

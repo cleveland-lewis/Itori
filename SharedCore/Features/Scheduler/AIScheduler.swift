@@ -36,17 +36,17 @@ enum TaskType: String, Hashable, CaseIterable, Codable {
         var container = encoder.singleValueContainer()
         try container.encode(rawValue)
     }
-    
+
     var displayName: String {
         switch self {
-        case .project: return "Project"
-        case .exam: return "Exam"
-        case .quiz: return "Quiz"
-        case .homework: return "Homework"
-        case .reading: return "Reading"
-        case .review: return "Review"
-        case .study: return "Study"
-        case .practiceTest: return "Practice Test"
+        case .project: "Project"
+        case .exam: "Exam"
+        case .quiz: "Quiz"
+        case .homework: "Homework"
+        case .reading: "Reading"
+        case .review: "Review"
+        case .study: "Study"
+        case .practiceTest: "Practice Test"
         }
     }
 }
@@ -70,10 +70,10 @@ struct AppTask: Codable, Equatable, Hashable {
     let estimatedMinutes: Int
     let minBlockMinutes: Int
     let maxBlockMinutes: Int
-    let difficulty: Double     // 0…1
-    let importance: Double     // 0…1
+    let difficulty: Double // 0…1
+    let importance: Double // 0…1
     let type: TaskType
-    let category: TaskType     // First-class category field (aliased to type for now)
+    let category: TaskType // First-class category field (aliased to type for now)
     let locked: Bool
     let recurrence: RecurrenceRule?
     let recurrenceSeriesID: UUID?
@@ -87,19 +87,51 @@ struct AppTask: Codable, Equatable, Hashable {
     var sourceUniqueKey: String?
     var sourceFingerprint: String?
     var notes: String?
-    var needsReview: Bool = false  // Marks items that may be orphaned from source
-    
+    var needsReview: Bool = false // Marks items that may be orphaned from source
+
     // Phase 4.1: Alarm reminder properties (iOS/iPadOS only)
-    var alarmDate: Date?               // When to fire the alarm reminder
-    var alarmEnabled: Bool = false     // Whether alarm is active
-    var alarmSound: String?            // Optional custom alarm sound identifier
-    
+    var alarmDate: Date? // When to fire the alarm reminder
+    var alarmEnabled: Bool = false // Whether alarm is active
+    var alarmSound: String? // Optional custom alarm sound identifier
+
     // Soft delete support for data integrity
-    var deletedAt: Date?               // When task was soft-deleted (nil = active)
-    
+    var deletedAt: Date? // When task was soft-deleted (nil = active)
+
     var isDeleted: Bool { deletedAt != nil }
 
-    init(id: UUID, title: String, courseId: UUID?, moduleIds: [UUID] = [], due: Date?, estimatedMinutes: Int, minBlockMinutes: Int, maxBlockMinutes: Int, difficulty: Double, importance: Double, type: TaskType, locked: Bool, attachments: [Attachment] = [], isCompleted: Bool = false, gradeWeightPercent: Double? = nil, gradePossiblePoints: Double? = nil, gradeEarnedPoints: Double? = nil, category: TaskType? = nil, dueTimeMinutes: Int? = nil, recurrence: RecurrenceRule? = nil, recurrenceSeriesID: UUID? = nil, recurrenceIndex: Int? = nil, calendarEventIdentifier: String? = nil, sourceUniqueKey: String? = nil, sourceFingerprint: String? = nil, notes: String? = nil, needsReview: Bool = false, alarmDate: Date? = nil, alarmEnabled: Bool = false, alarmSound: String? = nil, deletedAt: Date? = nil) {
+    init(
+        id: UUID,
+        title: String,
+        courseId: UUID?,
+        moduleIds: [UUID] = [],
+        due: Date?,
+        estimatedMinutes: Int,
+        minBlockMinutes: Int,
+        maxBlockMinutes: Int,
+        difficulty: Double,
+        importance: Double,
+        type: TaskType,
+        locked: Bool,
+        attachments: [Attachment] = [],
+        isCompleted: Bool = false,
+        gradeWeightPercent: Double? = nil,
+        gradePossiblePoints: Double? = nil,
+        gradeEarnedPoints: Double? = nil,
+        category: TaskType? = nil,
+        dueTimeMinutes: Int? = nil,
+        recurrence: RecurrenceRule? = nil,
+        recurrenceSeriesID: UUID? = nil,
+        recurrenceIndex: Int? = nil,
+        calendarEventIdentifier: String? = nil,
+        sourceUniqueKey: String? = nil,
+        sourceFingerprint: String? = nil,
+        notes: String? = nil,
+        needsReview: Bool = false,
+        alarmDate: Date? = nil,
+        alarmEnabled: Bool = false,
+        alarmSound: String? = nil,
+        deletedAt: Date? = nil
+    ) {
         self.id = id
         self.title = title
         self.courseId = courseId
@@ -112,7 +144,7 @@ struct AppTask: Codable, Equatable, Hashable {
         self.difficulty = difficulty
         self.importance = importance
         self.type = type
-        self.category = category ?? type  // Use provided category or default to type
+        self.category = category ?? type // Use provided category or default to type
         self.locked = locked
         self.recurrence = recurrence
         self.recurrenceSeriesID = recurrenceSeriesID
@@ -161,10 +193,10 @@ struct AppTask: Codable, Equatable, Hashable {
         case sourceFingerprint
         case notes
         case needsReview
-        case alarmDate           // Phase 4.1
-        case alarmEnabled        // Phase 4.1
-        case alarmSound          // Phase 4.1
-        case deletedAt           // Soft delete support
+        case alarmDate // Phase 4.1
+        case alarmEnabled // Phase 4.1
+        case alarmSound // Phase 4.1
+        case deletedAt // Soft delete support
     }
 
     init(from decoder: Decoder) throws {
@@ -211,12 +243,12 @@ struct AppTask: Codable, Equatable, Hashable {
         sourceFingerprint = try container.decodeIfPresent(String.self, forKey: .sourceFingerprint)
         notes = try container.decodeIfPresent(String.self, forKey: .notes)
         needsReview = try container.decodeIfPresent(Bool.self, forKey: .needsReview) ?? false
-        
+
         // Phase 4.1: Decode alarm properties
         alarmDate = try container.decodeIfPresent(Date.self, forKey: .alarmDate)
         alarmEnabled = try container.decodeIfPresent(Bool.self, forKey: .alarmEnabled) ?? false
         alarmSound = try container.decodeIfPresent(String.self, forKey: .alarmSound)
-        
+
         // Soft delete support
         deletedAt = try container.decodeIfPresent(Date.self, forKey: .deletedAt)
     }
@@ -250,12 +282,12 @@ struct AppTask: Codable, Equatable, Hashable {
         try container.encodeIfPresent(sourceFingerprint, forKey: .sourceFingerprint)
         try container.encodeIfPresent(notes, forKey: .notes)
         try container.encode(needsReview, forKey: .needsReview)
-        
+
         // Phase 4.1: Encode alarm properties
         try container.encodeIfPresent(alarmDate, forKey: .alarmDate)
         try container.encode(alarmEnabled, forKey: .alarmEnabled)
         try container.encodeIfPresent(alarmSound, forKey: .alarmSound)
-        
+
         // Soft delete support
         try container.encodeIfPresent(deletedAt, forKey: .deletedAt)
     }
@@ -324,7 +356,7 @@ extension AppTask {
     var isPersonal: Bool {
         courseId == nil
     }
-    
+
     var effectiveDueDateTime: Date? {
         guard let due else { return nil }
         if let dueTimeMinutes {
@@ -335,11 +367,11 @@ extension AppTask {
         components.minute = 59
         return Calendar.current.date(from: components)
     }
-    
+
     var hasExplicitDueTime: Bool {
         dueTimeMinutes != nil
     }
-    
+
     /// Convenience initializer with safe defaults for common cases
     /// Reduces initializer drift when model evolves
     static func create(
@@ -414,8 +446,7 @@ private struct CandidateBlock: Equatable {
     var durationMinutes: Int { Int(end.timeIntervalSince(start) / 60.0) }
 }
 
-
-struct AIScheduler {
+enum AIScheduler {
     private static let calendar = Calendar.current
     // Expose Task alias for tests that reference AIScheduler.Task
     typealias Task = AppTask
@@ -428,12 +459,30 @@ struct AIScheduler {
         preferences: SchedulerPreferences = SchedulerPreferences.default(),
         energyLevel: EnergyLevel = .medium
     ) -> ScheduleResult {
-        LOG_SCHEDULER(.info, "ScheduleGeneration", "Starting schedule generation", metadata: ["tasks": "\(inputTasks.count)", "fixedEvents": "\(fixedEvents.count)", "energyLevel": "\(energyLevel.rawValue)"])
+        LOG_SCHEDULER(
+            .info,
+            "ScheduleGeneration",
+            "Starting schedule generation",
+            metadata: [
+                "tasks": "\(inputTasks.count)",
+                "fixedEvents": "\(fixedEvents.count)",
+                "energyLevel": "\(energyLevel.rawValue)"
+            ]
+        )
         var log: [String] = []
 
         // 1. Filter tasks based on energy level
         let filteredTasks = filterTasksByEnergyLevel(tasks: inputTasks, energyLevel: energyLevel)
-        LOG_SCHEDULER(.debug, "ScheduleGeneration", "Filtered tasks by energy", metadata: ["original": "\(inputTasks.count)", "filtered": "\(filteredTasks.count)", "energyLevel": "\(energyLevel.rawValue)"])
+        LOG_SCHEDULER(
+            .debug,
+            "ScheduleGeneration",
+            "Filtered tasks by energy",
+            metadata: [
+                "original": "\(inputTasks.count)",
+                "filtered": "\(filteredTasks.count)",
+                "energyLevel": "\(energyLevel.rawValue)"
+            ]
+        )
 
         // 2. Build free intervals per day
         let dayIntervals = buildFreeIntervalsPerDay(fixedEvents: fixedEvents, constraints: constraints)
@@ -444,7 +493,11 @@ struct AIScheduler {
         let horizonDays = daysBetween(start: constraints.horizonStart, end: constraints.horizonEnd)
         var priorityMap: [UUID: Double] = [:]
         for task in tasks {
-            priorityMap[task.id] = computePriority(for: task, horizonDays: max(1, horizonDays), preferences: preferences)
+            priorityMap[task.id] = computePriority(
+                for: task,
+                horizonDays: max(1, horizonDays),
+                preferences: preferences
+            )
         }
 
         // 3. Generate candidate blocks
@@ -452,7 +505,7 @@ struct AIScheduler {
 
         // 4. Assign tasks greedily
         // Sort tasks by priority desc, due asc
-        tasks.sort { (a, b) -> Bool in
+        tasks.sort { a, b -> Bool in
             let pa = priorityMap[a.id] ?? 0
             let pb = priorityMap[b.id] ?? 0
             if pa == pb {
@@ -489,7 +542,8 @@ struct AIScheduler {
                     // candidate must not exceed per-block max for scheduler and task
                     if c.durationMinutes <= 0 { return false }
                     if c.durationMinutes < task.minBlockMinutes { return false }
-                    if c.durationMinutes > constraints.maxStudyMinutesPerBlock && constraints.maxStudyMinutesPerBlock > 0 { return false }
+                    if c.durationMinutes > constraints.maxStudyMinutesPerBlock && constraints
+                        .maxStudyMinutesPerBlock > 0 { return false }
                     // due date constraint
                     if let due = dueDate, c.end > due { return false }
                     // per-day cap
@@ -507,7 +561,8 @@ struct AIScheduler {
                 for idx in feasibleIndices {
                     let c = candidates[idx]
                     let energy = c.energyScore
-                    // lateness penalty: if due exists, penalize distance to due (closer to due -> higher penalty), prefer earlier -> negative penalty
+                    // lateness penalty: if due exists, penalize distance to due (closer to due -> higher penalty),
+                    // prefer earlier -> negative penalty
                     var latenessPenalty = 0.0
                     if let due = dueDate {
                         let secondsUntilDue = due.timeIntervalSince(c.start)
@@ -520,7 +575,7 @@ struct AIScheduler {
                     // Composite score
                     // deterministic weights
                     let alpha = 0.8 // task priority weight
-                    let beta = 0.9  // energy weight
+                    let beta = 0.9 // energy weight
                     let gamma = 0.5 // lateness penalty weight (lower is better)
 
                     let score = alpha * taskPriority + beta * energy - gamma * latenessPenalty
@@ -537,7 +592,10 @@ struct AIScheduler {
                 // Determine duration to schedule in this candidate
                 let chosenDuration = min(task.maxBlockMinutes, chosen.durationMinutes, remaining)
                 // Respect scheduler global per-block cap
-                let finalDuration = min(chosenDuration, constraints.maxStudyMinutesPerBlock > 0 ? constraints.maxStudyMinutesPerBlock : chosenDuration)
+                let finalDuration = min(
+                    chosenDuration,
+                    constraints.maxStudyMinutesPerBlock > 0 ? constraints.maxStudyMinutesPerBlock : chosenDuration
+                )
 
                 // Create scheduled block
                 let blockStart = chosen.start
@@ -590,7 +648,10 @@ struct AIScheduler {
 
             if remaining > 0 {
                 unscheduled.append(task)
-                log.append("Task \(task.title): scheduled \(task.estimatedMinutes - remaining)/\(task.estimatedMinutes) minutes; could not fully schedule within horizon.")
+                log
+                    .append(
+                        "Task \(task.title): scheduled \(task.estimatedMinutes - remaining)/\(task.estimatedMinutes) minutes; could not fully schedule within horizon."
+                    )
             } else {
                 log.append("Task \(task.title): fully scheduled.")
             }
@@ -598,17 +659,35 @@ struct AIScheduler {
 
         // 5. Local improvement pass: merge adjacent blocks for same task on the same day
         scheduledBlocks.sort { $0.start < $1.start }
-        scheduledBlocks = mergeAdjacentBlocks(blocks: scheduledBlocks, maxBlockMinutes: constraints.maxStudyMinutesPerBlock, minGap: constraints.minGapBetweenBlocksMinutes)
+        scheduledBlocks = mergeAdjacentBlocks(
+            blocks: scheduledBlocks,
+            maxBlockMinutes: constraints.maxStudyMinutesPerBlock,
+            minGap: constraints.minGapBetweenBlocksMinutes
+        )
 
-        LOG_SCHEDULER(.info, "ScheduleGeneration", "Schedule generation complete", metadata: ["scheduled": "\(scheduledBlocks.count)", "unscheduled": "\(unscheduled.count)"])
+        LOG_SCHEDULER(
+            .info,
+            "ScheduleGeneration",
+            "Schedule generation complete",
+            metadata: ["scheduled": "\(scheduledBlocks.count)", "unscheduled": "\(unscheduled.count)"]
+        )
         if !unscheduled.isEmpty {
-            LOG_SCHEDULER(.warn, "ScheduleGeneration", "Some tasks could not be scheduled", metadata: ["count": "\(unscheduled.count)"])
+            LOG_SCHEDULER(
+                .warn,
+                "ScheduleGeneration",
+                "Some tasks could not be scheduled",
+                metadata: ["count": "\(unscheduled.count)"]
+            )
         }
         return ScheduleResult(blocks: scheduledBlocks, unscheduledTasks: unscheduled, log: log)
     }
 
     // MARK: - Free interval generation
-    private static func buildFreeIntervalsPerDay(fixedEvents: [FixedEvent], constraints: Constraints) -> [Date: [FreeInterval]] {
+
+    private static func buildFreeIntervalsPerDay(
+        fixedEvents: [FixedEvent],
+        constraints: Constraints
+    ) -> [Date: [FreeInterval]] {
         var result: [Date: [FreeInterval]] = [:]
         let start = startOfDay(constraints.horizonStart)
         let end = startOfDay(constraints.horizonEnd)
@@ -626,18 +705,19 @@ struct AIScheduler {
                 for fe in fixedEvents {
                     // consider events that overlap this day window
                     if fe.end <= dayStart || fe.start >= dayEnd { continue }
-                    // treat any locked events as blockers; unlocked fixed events could be considered flexible but here we block
+                    // treat any locked events as blockers; unlocked fixed events could be considered flexible but here
+                    // we block
                     if fe.isLocked {
                         let rStart = max(fe.start, dayStart)
                         let rEnd = min(fe.end, dayEnd)
-                        b.append(rStart...rEnd)
+                        b.append(rStart ... rEnd)
                     }
                 }
                 for w in constraints.doNotScheduleWindows {
                     if w.upperBound <= dayStart || w.lowerBound >= dayEnd { continue }
                     let rStart = max(w.lowerBound, dayStart)
                     let rEnd = min(w.upperBound, dayEnd)
-                    b.append(rStart...rEnd)
+                    b.append(rStart ... rEnd)
                 }
                 // sort blockers by start
                 b.sort { $0.lowerBound < $1.lowerBound }
@@ -649,7 +729,8 @@ struct AIScheduler {
                 free = subtractIntervalList(free, blockerLower: blocker.lowerBound, blockerUpper: blocker.upperBound)
             }
 
-            // discard fragments smaller than smallest feasible block (use 20 minutes as safe minimum or min from constraints if present)
+            // discard fragments smaller than smallest feasible block (use 20 minutes as safe minimum or min from
+            // constraints if present)
             let minFeasible = 20
             free = free.filter { $0.durationMinutes >= minFeasible }
 
@@ -662,7 +743,11 @@ struct AIScheduler {
         return result
     }
 
-    private static func subtractIntervalList(_ free: [FreeInterval], blockerLower: Date, blockerUpper: Date) -> [FreeInterval] {
+    private static func subtractIntervalList(
+        _ free: [FreeInterval],
+        blockerLower: Date,
+        blockerUpper: Date
+    ) -> [FreeInterval] {
         var out: [FreeInterval] = []
         for interval in free {
             // no overlap
@@ -701,6 +786,7 @@ struct AIScheduler {
     }
 
     // MARK: - Priority
+
     private static func computePriority(for task: Task, horizonDays: Int, preferences: SchedulerPreferences) -> Double {
         // urgency
         let now = Date()
@@ -732,7 +818,11 @@ struct AIScheduler {
     }
 
     // MARK: - Candidate generation
-    private static func generateCandidates(from dayIntervals: [Date: [FreeInterval]], constraints: Constraints) -> [CandidateBlock] {
+
+    private static func generateCandidates(
+        from dayIntervals: [Date: [FreeInterval]],
+        constraints: Constraints
+    ) -> [CandidateBlock] {
         var candidates: [CandidateBlock] = []
         let sortedDays = dayIntervals.keys.sorted()
 
@@ -746,13 +836,24 @@ struct AIScheduler {
                 if remaining <= constraints.maxStudyMinutesPerBlock || constraints.maxStudyMinutesPerBlock <= 0 {
                     if remaining >= 20 {
                         let energy = energyForDate(cursor, profile: constraints.energyProfile)
-                        candidates.append(CandidateBlock(start: cursor, end: interval.end, energyScore: energy, dayStart: day))
+                        candidates.append(CandidateBlock(
+                            start: cursor,
+                            end: interval.end,
+                            energyScore: energy,
+                            dayStart: day
+                        ))
                     }
                     continue
                 }
 
                 // Otherwise, break into chunks of up to maxStudyMinutesPerBlock deterministically
-                let chunk = max(20, min(constraints.maxStudyMinutesPerBlock > 0 ? constraints.maxStudyMinutesPerBlock : remaining, remaining))
+                let chunk = max(
+                    20,
+                    min(
+                        constraints.maxStudyMinutesPerBlock > 0 ? constraints.maxStudyMinutesPerBlock : remaining,
+                        remaining
+                    )
+                )
                 while remaining >= 20 {
                     let dur = min(chunk, remaining)
                     let end = calendar.date(byAdding: .minute, value: dur, to: cursor)!
@@ -768,18 +869,28 @@ struct AIScheduler {
     }
 
     // MARK: - Merge adjacent
-    private static func mergeAdjacentBlocks(blocks: [ScheduledBlock], maxBlockMinutes: Int, minGap: Int) -> [ScheduledBlock] {
+
+    private static func mergeAdjacentBlocks(
+        blocks: [ScheduledBlock],
+        maxBlockMinutes: Int,
+        minGap: Int
+    ) -> [ScheduledBlock] {
         guard !blocks.isEmpty else { return [] }
         var out: [ScheduledBlock] = []
         var current = blocks[0]
-        for i in 1..<blocks.count {
+        for i in 1 ..< blocks.count {
             let next = blocks[i]
             if next.taskId == current.taskId {
                 let gap = Int(next.start.timeIntervalSince(current.end) / 60.0)
                 let combinedMinutes = Int(next.end.timeIntervalSince(current.start) / 60.0)
                 if gap <= minGap && (maxBlockMinutes <= 0 || combinedMinutes <= maxBlockMinutes) {
                     // merge
-                    current = ScheduledBlock(id: current.id, taskId: current.taskId, start: current.start, end: next.end)
+                    current = ScheduledBlock(
+                        id: current.id,
+                        taskId: current.taskId,
+                        start: current.start,
+                        end: next.end
+                    )
                     continue
                 }
             }
@@ -791,6 +902,7 @@ struct AIScheduler {
     }
 
     // MARK: - Energy-Aware Task Filtering
+
     /// Filters tasks based on current energy level
     /// - High: All tasks
     /// - Medium: Tasks due within 7 days + high importance tasks
@@ -801,71 +913,72 @@ struct AIScheduler {
         let today = calendar.startOfDay(for: now)
         let tomorrow = calendar.date(byAdding: .day, value: 1, to: today)!
         let sevenDays = calendar.date(byAdding: .day, value: 7, to: today)!
-        
+
         switch energyLevel {
         case .high:
             // High energy: schedule all tasks
             return tasks
-            
+
         case .medium:
             // Medium energy: tasks due within a week OR high importance
             return tasks.filter { task in
                 // Always include locked tasks
                 if task.locked { return true }
-                
+
                 // Include high importance tasks regardless of due date
                 if task.importance >= 0.7 { return true }
-                
+
                 // Include tasks due within 7 days
                 if let due = task.due, due <= sevenDays {
                     return true
                 }
-                
+
                 // Include tasks with no due date if they're important enough
                 if task.due == nil && task.importance >= 0.5 {
                     return true
                 }
-                
+
                 return false
             }
-            
+
         case .low:
             // Low energy: only critically due (today/tomorrow) or very urgent
             return tasks.filter { task in
                 // Always include locked tasks
                 if task.locked { return true }
-                
+
                 // Include tasks due today or tomorrow
                 if let due = task.due {
                     if due <= tomorrow {
                         return true
                     }
-                    
+
                     // Include very urgent tasks (within 2 days) if they're also important
                     let twoDays = calendar.date(byAdding: .day, value: 2, to: today)!
                     if due <= twoDays && task.importance >= 0.7 {
                         return true
                     }
                 }
-                
+
                 // Include critical items (high importance + difficulty)
                 if task.importance >= 0.8 && task.difficulty >= 0.6 {
                     return true
                 }
-                
+
                 return false
             }
         }
     }
 
     // MARK: - Utilities
+
     private static func energyForDate(_ date: Date, profile: [Int: Double]) -> Double {
         let hour = calendar.component(.hour, from: date)
         return profile[hour] ?? 0.5
     }
 
     private static func startOfDay(_ d: Date) -> Date {
-        return calendar.startOfDay(for: d)
+        calendar.startOfDay(for: d)
     }
 
     private static func daysBetween(start: Date, end: Date) -> Int {
@@ -876,47 +989,48 @@ struct AIScheduler {
     }
 
     private static func clamp<T: Comparable>(_ v: T, _ lo: T, _ hi: T) -> T {
-        return min(max(v, lo), hi)
+        min(max(v, lo), hi)
     }
 }
 
 // MARK: - TaskType Extensions for Duration Estimation
+
 extension TaskType {
     /// Base estimate in minutes for first session
     var baseEstimateMinutes: Int {
         switch self {
-        case .reading: return 45
-        case .homework: return 75
-        case .review: return 60
-        case .project: return 120
-        case .exam: return 180
-        case .quiz: return 30
-        case .study: return 60
-        case .practiceTest: return 60
+        case .reading: 45
+        case .homework: 75
+        case .review: 60
+        case .project: 120
+        case .exam: 180
+        case .quiz: 30
+        case .study: 60
+        case .practiceTest: 60
         }
     }
-    
+
     /// Step size for duration picker
     var stepSize: Int {
         switch self {
-        case .reading, .review, .quiz: return 5
-        case .homework, .study: return 10
-        case .project, .exam: return 15
-        case .practiceTest: return 10
+        case .reading, .review, .quiz: 5
+        case .homework, .study: 10
+        case .project, .exam: 15
+        case .practiceTest: 10
         }
     }
-    
+
     /// Convert to AssignmentCategory for compatibility
     var asAssignmentCategory: AssignmentCategory {
         switch self {
-        case .project: return .project
-        case .exam: return .exam
-        case .quiz: return .quiz
-        case .homework: return .homework
-        case .reading: return .reading
-        case .review: return .review
-        case .study: return .review
-        case .practiceTest: return .practiceTest
+        case .project: .project
+        case .exam: .exam
+        case .quiz: .quiz
+        case .homework: .homework
+        case .reading: .reading
+        case .review: .review
+        case .study: .review
+        case .practiceTest: .practiceTest
         }
     }
 }

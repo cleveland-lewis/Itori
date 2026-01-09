@@ -19,8 +19,8 @@ struct CoursesDashboardSidebar: View {
 
         return semesterFiltered.filter {
             $0.title.localizedCaseInsensitiveContains(searchText) ||
-            $0.code.localizedCaseInsensitiveContains(searchText) ||
-            $0.instructor.localizedCaseInsensitiveContains(searchText)
+                $0.code.localizedCaseInsensitiveContains(searchText) ||
+                $0.instructor.localizedCaseInsensitiveContains(searchText)
         }
     }
 
@@ -58,9 +58,9 @@ struct CoursesDashboardSidebar: View {
         }
         .frame(width: 300)
         #if os(macOS)
-        .background(DesignSystem.Colors.sidebarBackground)
+            .background(DesignSystem.Colors.sidebarBackground)
         #else
-        .background(DesignSystem.Materials.sidebar)
+            .background(DesignSystem.Materials.sidebar)
         #endif
     }
 
@@ -94,7 +94,7 @@ struct CoursesDashboardSidebar: View {
             .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
 
             Picker("", selection: $selectedSemesterID) {
-                Text(NSLocalizedString("All", value: "All", comment: "")).tag(Optional<UUID>(nil))
+                Text(NSLocalizedString("All", value: "All", comment: "")).tag(UUID?(nil))
                 ForEach(semesters) { semester in
                     Text(semester.name).tag(Optional(semester.id))
                 }
@@ -134,7 +134,10 @@ struct CoursesDashboardSidebar: View {
                 .padding(.vertical, 8)
             }
             .buttonStyle(.borderless)
-            .background(Color(nsColor: .controlBackgroundColor).opacity(0.3), in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+            .background(
+                Color(nsColor: .controlBackgroundColor).opacity(0.3),
+                in: RoundedRectangle(cornerRadius: 6, style: .continuous)
+            )
         }
     }
 }

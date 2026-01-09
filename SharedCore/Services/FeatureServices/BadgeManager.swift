@@ -1,53 +1,53 @@
-import Foundation
-import UserNotifications
 import Combine
 import EventKit
+import Foundation
+import UserNotifications
 
 #if os(macOS)
-import AppKit
+    import AppKit
 #elseif os(iOS)
-import UIKit
+    import UIKit
 #endif
 
 // MARK: - Badge Source
 
 /// Defines what the app icon badge count represents
 public enum BadgeSource: String, Codable, CaseIterable, Identifiable {
-    case off = "off"
+    case off
     case upcomingAssignments = "upcoming_assignments"
     case eventsToday = "events_today"
     case eventsThisWeek = "events_this_week"
     case assignmentsThisWeek = "assignments_this_week"
-    
+
     public var id: String { rawValue }
-    
+
     public var displayName: String {
         switch self {
         case .off:
-            return "Off".localized
+            "Off".localized
         case .upcomingAssignments:
-            return "Upcoming Assignments (24h)".localized
+            "Upcoming Assignments (24h)".localized
         case .eventsToday:
-            return "Events Today".localized
+            "Events Today".localized
         case .eventsThisWeek:
-            return "Events This Week".localized
+            "Events This Week".localized
         case .assignmentsThisWeek:
-            return "Assignments This Week".localized
+            "Assignments This Week".localized
         }
     }
-    
+
     public var description: String {
         switch self {
         case .off:
-            return "No badge count".localized
+            "No badge count".localized
         case .upcomingAssignments:
-            return "Count assignments due in the next 24 hours".localized
+            "Count assignments due in the next 24 hours".localized
         case .eventsToday:
-            return "Count events scheduled for today".localized
+            "Count events scheduled for today".localized
         case .eventsThisWeek:
-            return "Count events scheduled this week".localized
+            "Count events scheduled this week".localized
         case .assignmentsThisWeek:
-            return "Count assignments due this week".localized
+            "Count assignments due this week".localized
         }
     }
 }
@@ -58,33 +58,34 @@ public enum BadgeSource: String, Codable, CaseIterable, Identifiable {
 @MainActor
 public final class BadgeManager: ObservableObject {
     public static let shared = BadgeManager()
-    
+
     @Published public var badgeSource: BadgeSource {
         didSet {
             saveBadgeSource()
             updateBadge()
         }
     }
-    
+
     private var cancellables = Set<AnyCancellable>()
     private let updateCoalesceInterval: TimeInterval = 2.0
     private var updateWorkItem: DispatchWorkItem?
-    
+
     // Constants
     private let upcomingWindow: TimeInterval = 24 * 60 * 60 // 24 hours
-    
+
     private init() {
         // Load saved preference
         if let savedRaw = UserDefaults.standard.string(forKey: "badgeSource"),
-           let saved = BadgeSource(rawValue: savedRaw) {
+           let saved = BadgeSource(rawValue: savedRaw)
+        {
             self.badgeSource = saved
         } else {
             self.badgeSource = .off
         }
-        
+
         setupObservers()
     }
-    
+
     private func setupObservers() {
         // Update badge when assignments change
         NotificationCenter.default.publisher(for: .assignmentsDidChange)
@@ -92,142 +93,150 @@ public final class BadgeManager: ObservableObject {
                 self?.scheduleUpdate()
             }
             .store(in: &cancellables)
-        
+
         // Update badge when events change
         NotificationCenter.default.publisher(for: .eventsDidChange)
             .sink { [weak self] _ in
                 self?.scheduleUpdate()
             }
             .store(in: &cancellables)
-        
+
         // Update badge at day/week boundaries
         NotificationCenter.default.publisher(for: .NSCalendarDayChanged)
             .sink { [weak self] _ in
                 self?.updateBadge()
             }
             .store(in: &cancellables)
-        
+
         // Update badge when app becomes active
         #if os(macOS)
-        NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)
-            .sink { [weak self] _ in
-                self?.updateBadge()
-            }
-            .store(in: &cancellables)
+            NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)
+                .sink { [weak self] _ in
+                    self?.updateBadge()
+                }
+                .store(in: &cancellables)
         #elseif os(iOS)
-        NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
-            .sink { [weak self] _ in
-                self?.updateBadge()
-            }
-            .store(in: &cancellables)
+            NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+                .sink { [weak self] _ in
+                    self?.updateBadge()
+                }
+                .store(in: &cancellables)
         #endif
     }
-    
+
     /// Schedule a coalesced badge update to avoid spamming
     private func scheduleUpdate() {
         updateWorkItem?.cancel()
-        
+
         let workItem = DispatchWorkItem { [weak self] in
             self?.updateBadge()
         }
         updateWorkItem = workItem
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + updateCoalesceInterval, execute: workItem)
     }
-    
+
     /// Update the app icon badge immediately
     public func updateBadge() {
         let count = calculateBadgeCount()
         setBadgeCount(count)
     }
-    
+
     private func calculateBadgeCount() -> Int {
         switch badgeSource {
         case .off:
-            return 0
+            0
         case .upcomingAssignments:
-            return countUpcomingAssignments()
+            countUpcomingAssignments()
         case .eventsToday:
-            return countEventsToday()
+            countEventsToday()
         case .eventsThisWeek:
-            return countEventsThisWeek()
+            countEventsThisWeek()
         case .assignmentsThisWeek:
-            return countAssignmentsThisWeek()
+            countAssignmentsThisWeek()
         }
     }
-    
+
     private func countUpcomingAssignments() -> Int {
         let now = Date()
         let windowEnd = now.addingTimeInterval(upcomingWindow)
-        
+
         let store = AssignmentsStore.shared
-        
+
         return store.tasks.filter { task in
             guard !task.isCompleted, let due = task.due else { return false }
             return due >= now && due <= windowEnd
         }.count
     }
-    
+
     private func countEventsToday() -> Int {
         let calendar = Calendar.current
         let now = Date()
-        
+
         let deviceCalendar = DeviceCalendarManager.shared
-        
+
         return deviceCalendar.events.filter { event in
             calendar.isDate(event.startDate, inSameDayAs: now)
         }.count
     }
-    
+
     private func countEventsThisWeek() -> Int {
         let calendar = Calendar.current
         let now = Date()
-        
-        guard let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)),
-              let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStart) else {
+
+        guard let weekStart = calendar.date(from: calendar.dateComponents(
+            [.yearForWeekOfYear, .weekOfYear],
+            from: now
+        )),
+            let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStart)
+        else {
             return 0
         }
-        
+
         let deviceCalendar = DeviceCalendarManager.shared
-        
+
         return deviceCalendar.events.filter { event in
             event.startDate >= weekStart && event.startDate < weekEnd
         }.count
     }
-    
+
     private func countAssignmentsThisWeek() -> Int {
         let calendar = Calendar.current
         let now = Date()
-        
-        guard let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: now)),
-              let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStart) else {
+
+        guard let weekStart = calendar.date(from: calendar.dateComponents(
+            [.yearForWeekOfYear, .weekOfYear],
+            from: now
+        )),
+            let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStart)
+        else {
             return 0
         }
-        
+
         let store = AssignmentsStore.shared
-        
+
         return store.tasks.filter { task in
             guard !task.isCompleted, let due = task.due else { return false }
             return due >= weekStart && due < weekEnd
         }.count
     }
-    
+
     private func setBadgeCount(_ count: Int) {
         #if os(macOS)
-        if count > 0 {
-            NSApplication.shared.dockTile.badgeLabel = "\(count)"
-        } else {
-            NSApplication.shared.dockTile.badgeLabel = nil
-        }
-        #elseif os(iOS)
-        UNUserNotificationCenter.current().setBadgeCount(count) { error in
-            if let error {
-                DebugLogger.log("Failed to set badge count: \(error.localizedDescription)")
+            if count > 0 {
+                NSApplication.shared.dockTile.badgeLabel = "\(count)"
+            } else {
+                NSApplication.shared.dockTile.badgeLabel = nil
             }
-        }
+        #elseif os(iOS)
+            UNUserNotificationCenter.current().setBadgeCount(count) { error in
+                if let error {
+                    DebugLogger.log("Failed to set badge count: \(error.localizedDescription)")
+                }
+            }
         #endif
     }
-    
+
     private func saveBadgeSource() {
         UserDefaults.standard.set(badgeSource.rawValue, forKey: "badgeSource")
     }

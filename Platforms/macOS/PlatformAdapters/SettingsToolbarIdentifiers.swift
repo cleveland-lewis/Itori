@@ -1,71 +1,71 @@
 #if os(macOS)
-import AppKit
+    import AppKit
 
-enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
-    case general
-    case calendar
-    case planner
-    case courses
-    case semesters
-    case interface
-    case profiles
-    case ai
-    case integrations
-    case notifications
-    case privacy
-    case storage
-    case developer
-    case subscription
-    case about
+    enum SettingsToolbarIdentifier: String, CaseIterable, Identifiable {
+        case general
+        case calendar
+        case planner
+        case courses
+        case semesters
+        case interface
+        case profiles
+        case ai
+        case integrations
+        case notifications
+        case privacy
+        case storage
+        case developer
+        case subscription
+        case about
 
-    var id: String { rawValue }
+        var id: String { rawValue }
 
-    var label: String {
-        switch self {
-        case .subscription: return "Subscription"
-        case .general: return "General"
-        case .calendar: return "Calendar"
-        case .planner: return "Planner"
-        case .courses: return "Courses"
-        case .semesters: return "Semesters"
-        case .interface: return "Interface"
-        case .profiles: return "Profile"
-        case .ai: return "LLM"
-        case .integrations: return "Integrations"
-        case .notifications: return "Notifications"
-        case .privacy: return "Privacy"
-        case .storage: return "Storage"
-        case .developer: return "Developer"
-        case .about: return "About"
+        var label: String {
+            switch self {
+            case .subscription: "Subscription"
+            case .general: "General"
+            case .calendar: "Calendar"
+            case .planner: "Planner"
+            case .courses: "Courses"
+            case .semesters: "Semesters"
+            case .interface: "Interface"
+            case .profiles: "Profile"
+            case .ai: "LLM"
+            case .integrations: "Integrations"
+            case .notifications: "Notifications"
+            case .privacy: "Privacy"
+            case .storage: "Storage"
+            case .developer: "Developer"
+            case .about: "About"
+            }
+        }
+
+        var systemImageName: String {
+            switch self {
+            case .subscription: "seal"
+            case .general: "gearshape"
+            case .calendar: "calendar"
+            case .planner: "pencil.and.list.clipboard"
+            case .courses: "books.vertical"
+            case .semesters: "graduationcap"
+            case .interface: "macwindow"
+            case .profiles: "person.crop.circle"
+            case .ai: "cpu.fill"
+            case .integrations: "arrow.triangle.2.circlepath.circle"
+            case .notifications: "bell.badge"
+            case .privacy: "lock.shield"
+            case .storage: "externaldrive"
+            case .developer: "hammer.fill"
+            case .about: "info.circle"
+            }
+        }
+
+        var toolbarItemIdentifier: NSToolbarItem.Identifier {
+            NSToolbarItem.Identifier("itori.settings.\(rawValue)")
+        }
+
+        var windowTitle: String {
+            "Settings"
         }
     }
-
-    var systemImageName: String {
-        switch self {
-        case .subscription: return "seal"
-        case .general: return "gearshape"
-        case .calendar: return "calendar"
-        case .planner: return "pencil.and.list.clipboard"
-        case .courses: return "books.vertical"
-        case .semesters: return "graduationcap"
-        case .interface: return "macwindow"
-        case .profiles: return "person.crop.circle"
-        case .ai: return "cpu.fill"
-        case .integrations: return "arrow.triangle.2.circlepath.circle"
-        case .notifications: return "bell.badge"
-        case .privacy: return "lock.shield"
-        case .storage: return "externaldrive"
-        case .developer: return "hammer.fill"
-        case .about: return "info.circle"
-        }
-    }
-
-    var toolbarItemIdentifier: NSToolbarItem.Identifier {
-        NSToolbarItem.Identifier("roots.settings.\(rawValue)")
-    }
-
-    var windowTitle: String {
-        "Settings"
-    }
-}
 #endif

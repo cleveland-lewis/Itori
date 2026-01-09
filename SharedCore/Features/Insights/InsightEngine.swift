@@ -5,7 +5,6 @@ protocol InsightEngine {
 }
 
 final class RuleBasedInsightEngine: InsightEngine {
-
     func generateInsights(from stats: UsageStats) -> [Insight] {
         var insights: [Insight] = []
         insights.append(contentsOf: timeOfDayInsights(from: stats))
@@ -20,9 +19,9 @@ final class RuleBasedInsightEngine: InsightEngine {
 
     private func score(_ severity: InsightSeverity) -> Int {
         switch severity {
-        case .critical: return 3
-        case .warning:  return 2
-        case .info:     return 1
+        case .critical: 3
+        case .warning: 2
+        case .info: 1
         }
     }
 
@@ -39,7 +38,8 @@ final class RuleBasedInsightEngine: InsightEngine {
 
         if let worst = ratios.min(by: { $0.ratio < $1.ratio }),
            worst.ratio < 0.4,
-           worst.hour >= 20 {
+           worst.hour >= 20
+        {
             out.append(
                 Insight(
                     category: .timeOfDay,
@@ -51,7 +51,8 @@ final class RuleBasedInsightEngine: InsightEngine {
         }
 
         if let best = ratios.max(by: { $0.ratio < $1.ratio }),
-           best.ratio > 0.7 {
+           best.ratio > 0.7
+        {
             out.append(
                 Insight(
                     category: .timeOfDay,
@@ -69,7 +70,7 @@ final class RuleBasedInsightEngine: InsightEngine {
         guard !stats.byDay.isEmpty else { return [] }
 
         let days = stats.byDay
-        let avg = Double(days.map { $0.scheduledMinutes }.reduce(0,+)) / Double(days.count)
+        let avg = Double(days.map(\.scheduledMinutes).reduce(0,+)) / Double(days.count)
         guard avg > 0 else { return [] }
 
         var out: [Insight] = []

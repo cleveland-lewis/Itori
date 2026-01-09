@@ -1,5 +1,5 @@
-import SwiftUI
 import Combine
+import SwiftUI
 
 final class AppModel: ObservableObject {
     static let shared = AppModel()
@@ -25,5 +25,5 @@ struct FocusDeepLink {
 }
 
 extension Notification.Name {
-    static let selectCalendarEvent = Notification.Name("roots.calendar.selectEvent")
+    static let selectCalendarEvent = Notification.Name("itori.calendar.selectEvent")
 }

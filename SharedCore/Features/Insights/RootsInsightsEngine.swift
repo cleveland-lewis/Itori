@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 /// Lightweight snapshot of an assignment at the time an event was emitted.
 struct AssignmentSnapshot: Identifiable, Hashable {
@@ -120,25 +120,25 @@ struct CourseEffortSummary {
 /// Simple, explainable estimation model that adjusts by recent bias.
 struct TimeEstimationModel {
     func predictedTotalTime(for assignment: AssignmentSnapshot, history: [AssignmentMetrics]) -> TimeInterval {
-        let baseMinutes: Double
-        if let est = assignment.estimatedMinutes { baseMinutes = Double(est) }
+        let baseMinutes: Double = if let est = assignment.estimatedMinutes { Double(est) }
         else {
             // light defaults by category enum when available
             if let cat = assignment.category {
                 switch cat {
                 case .reading:
-                    baseMinutes = 90
+                    90
                 case .exam:
-                    baseMinutes = 180
+                    180
                 default:
-                    baseMinutes = 120
+                    120
                 }
             } else {
-                baseMinutes = 120
+                120
             }
         }
 
-        let comparable = history.filter { $0.snapshot.courseId == assignment.courseId && $0.snapshot.category == assignment.category }
+        let comparable = history
+            .filter { $0.snapshot.courseId == assignment.courseId && $0.snapshot.category == assignment.category }
         let ratios: [Double] = comparable.compactMap { metrics in
             guard let est = metrics.snapshot.estimatedMinutes, est > 0 else { return nil }
             return (metrics.actualTime / 60.0) / Double(est)
@@ -195,7 +195,7 @@ final class RootsInsightsEngine: ObservableObject {
 
             let risk = riskScore(for: metrics, today: today)
             let blocks = suggestBlocks(required: remaining, dueDate: due)
-            let reasoning = "Remaining \(Int(remaining/60)) min with \(daysBetween(today, due)) day(s) left."
+            let reasoning = "Remaining \(Int(remaining / 60)) min with \(daysBetween(today, due)) day(s) left."
 
             insights.append(TaskPlanningInsight(
                 id: UUID(),
@@ -230,9 +230,9 @@ final class RootsInsightsEngine: ObservableObject {
 
     private func updateAggregates(for event: InsightsEvent) {
         switch event {
-        case .assignmentCreated(let snap), .assignmentUpdated(let snap):
+        case let .assignmentCreated(snap), let .assignmentUpdated(snap):
             upsertAssignmentSnapshot(snap)
-        case .assignmentCompleted(let snap, let completedAt):
+        case let .assignmentCompleted(snap, completedAt):
             upsertAssignmentSnapshot(snap)
             // Mark completion by closing remaining predicted time
             if var metrics = assignmentMetrics[snap.id] {
@@ -243,9 +243,9 @@ final class RootsInsightsEngine: ObservableObject {
             if let courseId = snap.courseId {
                 addStudyTime(courseId: courseId, duration: 0, at: completedAt)
             }
-        case .studySessionCompleted(let session):
+        case let .studySessionCompleted(session):
             apply(session: session)
-        case .gradeRecorded(let grade):
+        case let .gradeRecorded(grade):
             var course = courseMetrics[grade.courseId] ?? CourseMetrics(courseId: grade.courseId)
             course.gradeEntries.append(grade)
             courseMetrics[grade.courseId] = course
@@ -257,14 +257,23 @@ final class RootsInsightsEngine: ObservableObject {
     private func upsertAssignmentSnapshot(_ snap: AssignmentSnapshot) {
         var metrics = assignmentMetrics[snap.id] ?? AssignmentMetrics(snapshot: snap)
         metrics.snapshot = snap
-        metrics.predictedTotalTime = estimationModel.predictedTotalTime(for: snap, history: Array(assignmentMetrics.values))
+        metrics.predictedTotalTime = estimationModel.predictedTotalTime(
+            for: snap,
+            history: Array(assignmentMetrics.values)
+        )
         assignmentMetrics[snap.id] = metrics
     }
 
     private func apply(session: StudySessionSnapshot) {
         if let assignmentId = session.assignmentId, var metrics = assignmentMetrics[assignmentId] {
             metrics.actualTime += session.duration
-            metrics.sessions.append(StudySessionSummary(startDate: session.startDate, endDate: session.endDate, duration: session.duration, mode: session.mode, activityId: session.activityId))
+            metrics.sessions.append(StudySessionSummary(
+                startDate: session.startDate,
+                endDate: session.endDate,
+                duration: session.duration,
+                mode: session.mode,
+                activityId: session.activityId
+            ))
             assignmentMetrics[metrics.snapshot.id] = metrics
         }
         if let courseId = session.courseId {
@@ -296,7 +305,7 @@ final class RootsInsightsEngine: ObservableObject {
         let today = calendar.startOfDay(for: Date())
         let daysLeft = max(0, calendar.dateComponents([.day], from: today, to: dueDate).day ?? 0)
         let chunk = min(required / Double(max(daysLeft, 1)), 90 * 60)
-        for i in 0..<min(daysLeft + 1, 3) {
+        for i in 0 ..< min(daysLeft + 1, 3) {
             if let start = calendar.date(byAdding: .day, value: i, to: today)?.addingTimeInterval(18 * 3600) {
                 let end = start.addingTimeInterval(chunk)
                 blocks.append(SuggestedBlock(start: start, end: end, locationHint: "Evening"))
@@ -309,11 +318,15 @@ final class RootsInsightsEngine: ObservableObject {
 // MARK: - Helpers
 
 private func daysBetween(_ start: Date, _ end: Date) -> Double {
-    let comps = Calendar.current.dateComponents([.day], from: Calendar.current.startOfDay(for: start), to: Calendar.current.startOfDay(for: end))
+    let comps = Calendar.current.dateComponents(
+        [.day],
+        from: Calendar.current.startOfDay(for: start),
+        to: Calendar.current.startOfDay(for: end)
+    )
     return Double(comps.day ?? 0)
 }
 
-private extension Array where Element == Double {
+private extension [Double] {
     func middleValue() -> Double? {
         guard !isEmpty else { return nil }
         let sorted = self.sorted()
@@ -355,7 +368,11 @@ extension Assignment {
 }
 
 extension LocalTimerSession {
-    func makeStudySnapshot(activity: LocalTimerActivity?, courseId: UUID?, assignmentId: UUID?) -> StudySessionSnapshot {
+    func makeStudySnapshot(
+        activity: LocalTimerActivity?,
+        courseId: UUID?,
+        assignmentId: UUID?
+    ) -> StudySessionSnapshot {
         StudySessionSnapshot(
             id: id,
             activityId: activity?.id ?? activityID,
