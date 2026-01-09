@@ -21,6 +21,15 @@
             case .critical: .red
             }
         }
+
+        var systemIcon: String {
+            switch self {
+            case .low: "arrow.down.circle"
+            case .medium: "minus.circle"
+            case .high: "arrow.up.circle"
+            case .critical: "exclamationmark.circle"
+            }
+        }
     }
 
     extension AssignmentCategory {
@@ -44,6 +53,15 @@
             case .inProgress: "assignments.status.in_progress".localized
             case .completed: "assignments.status.completed".localized
             case .archived: "assignments.status.archived".localized
+            }
+        }
+
+        var systemIcon: String {
+            switch self {
+            case .notStarted: "circle"
+            case .inProgress: "circle.lefthalf.filled"
+            case .completed: "checkmark.circle.fill"
+            case .archived: "archivebox"
             }
         }
     }

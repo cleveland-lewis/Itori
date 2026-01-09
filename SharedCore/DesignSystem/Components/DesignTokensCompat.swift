@@ -253,10 +253,10 @@ struct ItoriCard<Content: View>: View {
 }
 
 struct ItoriFloatingTabBar: View {
-    var items: [ItoriTab]
-    @Binding var selected: ItoriTab
+    var items: [AppPage]
+    @Binding var selected: AppPage
     var mode: TabBarMode
-    var onSelect: (ItoriTab) -> Void
+    var onSelect: (AppPage) -> Void
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
