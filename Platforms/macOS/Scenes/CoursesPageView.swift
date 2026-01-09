@@ -107,7 +107,6 @@
                                 .frame(maxWidth: .infinity)
                                 .layoutPriority(1)
 
-<<<<<<< Updated upstream
 struct CoursesPageView: View {
     @EnvironmentObject private var settings: AppSettingsModel
     @EnvironmentObject private var settingsCoordinator: SettingsCoordinator
@@ -222,9 +221,30 @@ struct CoursesPageView: View {
                     onCancel: {
                         Task {
                             await FileParsingService.shared.cancelBatchReview()
+                            rightColumn
+                                .frame(maxWidth: .infinity, alignment: .topLeading)
+                                .layoutPriority(2)
                         }
+                        .frame(maxWidth: min(proxy.size.width, 1400))
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, responsivePadding(for: proxy.size.width))
+                        .padding(.vertical, RootsSpacing.l)
+                    } else {
+                        HStack(alignment: .top, spacing: RootsSpacing.l) {
+                            sidebarView
+                                .frame(width: sidebarWidth)
+                                .layoutPriority(1)
+
+                            rightColumn
+                                .frame(maxWidth: .infinity, alignment: .topLeading)
+                                .layoutPriority(2)
+                        }
+                        .frame(maxWidth: min(proxy.size.width, 1400))
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, responsivePadding(for: proxy.size.width))
+                        .padding(.vertical, RootsSpacing.l)
                     }
-                )
+                }
             }
         }
         .onReceive(FileParsingService.shared.$batchReviewItems) { batchState in
@@ -240,7 +260,6 @@ struct CoursesPageView: View {
         .onAppear {
             if selectedCourseId == nil {
                 selectedCourseId = filteredCourses.first?.id
-=======
                             rightColumn
                                 .frame(maxWidth: .infinity, alignment: .topLeading)
                                 .layoutPriority(2)
@@ -271,7 +290,36 @@ struct CoursesPageView: View {
                     persistCourse(updated)
                     selectedCourseId = updated.id
                 }
->>>>>>> Stashed changes
+            }
+            .sheet(isPresented: $showingAddTaskSheet) {
+                AddAssignmentView(initialType: addTaskType, preselectedCourseId: addTaskCourseId) { task in
+                    assignmentsStore.addTask(task)
+                }
+                .environmentObject(coursesStore)
+            }
+            .sheet(isPresented: $showingGradeSheet) {
+                gradeEntrySheet
+            }
+            .sheet(isPresented: $showingParsedAssignmentsReview) {
+                if let courseId = selectedCourseId {
+                    ParsedAssignmentsReviewView(courseId: courseId)
+                        .environmentObject(parsingStore)
+                        .environmentObject(assignmentsStore)
+                        .environmentObject(coursesStore)
+                }
+            }
+            .sheet(isPresented: $showingCreateModuleSheet) {
+                if let courseId = selectedCourseId {
+                    CreateModuleSheet(courseId: courseId) { module in
+                        coursesStore.addOutlineNode(module)
+                    }
+                }
+            }
+            .sheet(isPresented: $showNewCourseSheet) {
+                CourseEditorSheet(course: editingCourse) { updated in
+                    persistCourse(updated)
+                    selectedCourseId = updated.id
+                }
             }
             .sheet(isPresented: $showingAddTaskSheet) {
                 AddAssignmentView(initialType: addTaskType, preselectedCourseId: addTaskCourseId) { task in
