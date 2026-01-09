@@ -4,7 +4,7 @@ struct MenuBarView: View {
     @ObservedObject var viewModel: MenuBarViewModel
     @ObservedObject var assignmentsStore: AssignmentsStore
     @ObservedObject var settings: AppSettingsModel
-    
+
     private var assignmentsLeftToday: Int {
         let calendar = Calendar.current
         let now = Date()
@@ -20,12 +20,12 @@ struct MenuBarView: View {
             guard let endedAt = $0.endDate else { return false }
             return Calendar.current.isDateInToday(endedAt)
         }
-        
+
         // Sum only work time (excludes break time for Pomodoro)
         let totalSeconds = todaySessions.reduce(0.0) { total, session in
-            return total + session.workSeconds
+            total + session.workSeconds
         }
-        
+
         let hours = Int(totalSeconds) / 3600
         let minutes = (Int(totalSeconds) % 3600) / 60
         if hours > 0 {
@@ -58,7 +58,7 @@ struct MenuBarView: View {
                         .foregroundColor(.secondary)
                 }
             }
-            
+
             Divider()
 
             VStack(alignment: .leading, spacing: 8) {
@@ -66,8 +66,12 @@ struct MenuBarView: View {
                     Image(systemName: "checkmark.circle")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    Text(NSLocalizedString("menubar.assignments.left.today", value: "Assignments left today:", comment: "Assignments left today:"))
-                        .font(.subheadline)
+                    Text(NSLocalizedString(
+                        "menubar.assignments.left.today",
+                        value: "Assignments left today:",
+                        comment: "Assignments left today:"
+                    ))
+                    .font(.subheadline)
                     Spacer()
                     Text(verbatim: "\(assignmentsLeftToday)")
                         .font(.subheadline)
@@ -78,14 +82,18 @@ struct MenuBarView: View {
                     Image(systemName: "clock")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    Text(NSLocalizedString("menubar.study.time.today", value: "Study time today:", comment: "Study time today:"))
-                        .font(.subheadline)
+                    Text(NSLocalizedString(
+                        "menubar.study.time.today",
+                        value: "Study time today:",
+                        comment: "Study time today:"
+                    ))
+                    .font(.subheadline)
                     Spacer()
                     Text(totalStudyTimeToday)
                         .font(.subheadline)
                         .bold()
                 }
-                
+
                 if let activity = viewModel.activities.first(where: { $0.id == viewModel.selectedActivityID }) {
                     HStack(spacing: 8) {
                         Image(systemName: "circle.fill")
@@ -123,15 +131,15 @@ struct MenuBarView: View {
         .padding()
         .frame(width: 280)
     }
-    
+
     private var modeIcon: String {
         switch viewModel.mode {
         case .pomodoro:
-            return "timer"
+            "timer"
         case .countdown:
-            return "timer"
+            "timer"
         case .stopwatch:
-            return "stopwatch"
+            "stopwatch"
         }
     }
 }

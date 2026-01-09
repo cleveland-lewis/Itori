@@ -8,7 +8,12 @@ struct DesignShell<Content: View>: View {
     let timestamp: Date
     let content: () -> Content
 
-    init(imageName: String = "Tahoe", selectedMaterial: Binding<DesignMaterial>, timestamp: Date = Date(), @ViewBuilder content: @escaping () -> Content) {
+    init(
+        imageName: String = "Tahoe",
+        selectedMaterial: Binding<DesignMaterial>,
+        timestamp: Date = Date(),
+        @ViewBuilder content: @escaping () -> Content
+    ) {
         self._selectedMaterialToken = selectedMaterial
         self.imageName = imageName
         self.timestamp = timestamp
@@ -43,17 +48,21 @@ struct DesignShell<Content: View>: View {
 }
 
 #if !DISABLE_PREVIEWS
-#if !DISABLE_PREVIEWS
-#Preview {
-    StatefulPreviewWrapper(DesignMaterial.regular) { binding in
-        DesignShell(selectedMaterial: binding, timestamp: Date(timeIntervalSince1970: 1760000000)) {
-            Image(systemName: "cube.fill")
-                .imageScale(.large)
-            Text(NSLocalizedString("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", comment: ""))
-                .foregroundStyle(.primary)
+    #if !DISABLE_PREVIEWS
+        #Preview {
+            StatefulPreviewWrapper(DesignMaterial.regular) { binding in
+                DesignShell(selectedMaterial: binding, timestamp: Date(timeIntervalSince1970: 1_760_000_000)) {
+                    Image(systemName: "cube.fill")
+                        .imageScale(.large)
+                    Text(NSLocalizedString(
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                        value: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                        comment: ""
+                    ))
+                    .foregroundStyle(.primary)
+                }
+                .padding(DesignSystem.Layout.padding.card)
+            }
         }
-        .padding(DesignSystem.Layout.padding.card)
-    }
-}
-#endif
+    #endif
 #endif

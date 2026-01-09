@@ -5,14 +5,14 @@ import SwiftUI
 public struct PriorityIndicator: View {
     let priority: AssignmentUrgency
     let showLabel: Bool
-    
+
     @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
-    
+
     public init(priority: AssignmentUrgency, showLabel: Bool = false) {
         self.priority = priority
         self.showLabel = showLabel
     }
-    
+
     public var body: some View {
         HStack(spacing: 6) {
             if differentiateWithoutColor {
@@ -28,7 +28,7 @@ public struct PriorityIndicator: View {
                     .frame(width: 8, height: 8)
                     .accessibilityHidden(true)
             }
-            
+
             if showLabel {
                 Text(priority.label)
                     .font(.caption)
@@ -44,14 +44,14 @@ public struct PriorityIndicator: View {
 public struct StatusIndicator: View {
     let status: AssignmentStatus
     let showLabel: Bool
-    
+
     @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
-    
+
     public init(status: AssignmentStatus, showLabel: Bool = false) {
         self.status = status
         self.showLabel = showLabel
     }
-    
+
     public var body: some View {
         HStack(spacing: 6) {
             if differentiateWithoutColor {
@@ -67,7 +67,7 @@ public struct StatusIndicator: View {
                     .frame(width: 8, height: 8)
                     .accessibilityHidden(true)
             }
-            
+
             if showLabel {
                 Text(status.label)
                     .font(.caption)
@@ -77,13 +77,13 @@ public struct StatusIndicator: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(status.label)
     }
-    
+
     private var statusColor: Color {
         switch status {
-        case .notStarted: return .secondary
-        case .inProgress: return .blue
-        case .completed: return .green
-        case .archived: return .gray
+        case .notStarted: .secondary
+        case .inProgress: .blue
+        case .completed: .green
+        case .archived: .gray
         }
     }
 }
@@ -94,15 +94,15 @@ public struct CourseColorIndicator: View {
     let color: Color
     let courseCode: String
     let size: CGFloat
-    
+
     @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
-    
+
     public init(color: Color, courseCode: String = "", size: CGFloat = 8) {
         self.color = color
         self.courseCode = courseCode
         self.size = size
     }
-    
+
     public var body: some View {
         if differentiateWithoutColor && !courseCode.isEmpty {
             // Show first letter/digit of course code
@@ -121,7 +121,7 @@ public struct CourseColorIndicator: View {
                 .accessibilityHidden(true)
         }
     }
-    
+
     private var courseInitial: String {
         // Extract first letter or digit from course code
         let alphanumeric = courseCode.filter { $0.isLetter || $0.isNumber }
@@ -135,15 +135,15 @@ public struct CalendarColorIndicator: View {
     let color: Color
     let name: String
     let size: CGFloat
-    
+
     @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
-    
+
     public init(color: Color, name: String, size: CGFloat = 12) {
         self.color = color
         self.name = name
         self.size = size
     }
-    
+
     public var body: some View {
         if differentiateWithoutColor && !name.isEmpty {
             // Show first letter of calendar name
@@ -168,7 +168,7 @@ public struct CalendarColorIndicator: View {
     VStack(spacing: 16) {
         Text("Differentiate Without Color: OFF")
             .font(.headline)
-        
+
         ForEach(AssignmentUrgency.allCases) { priority in
             HStack {
                 PriorityIndicator(priority: priority)
@@ -176,27 +176,27 @@ public struct CalendarColorIndicator: View {
                 Spacer()
             }
         }
-        
+
         Divider()
-        
-        Text("Differentiate Without Color: ON")
+
+        Text("Differentiate Without Color Mode")
             .font(.headline)
-        
-        ForEach(AssignmentUrgency.allCases) { priority in
-            HStack {
-                PriorityIndicator(priority: priority)
-                    .environment(\.accessibilityDifferentiateWithoutColor, true)
-                PriorityIndicator(priority: priority, showLabel: true)
-                    .environment(\.accessibilityDifferentiateWithoutColor, true)
-                Spacer()
-            }
-        }
-        
+
+        Text("(System Setting - Cannot be simulated in previews)")
+            .font(.caption)
+            .foregroundStyle(.secondary)
+
+        Text("Enable in Settings → Accessibility → Display & Text Size → Differentiate Without Color")
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+            .multilineTextAlignment(.center)
+            .padding(.horizontal)
+
         Divider()
-        
+
         Text("Course Color Indicators")
             .font(.headline)
-        
+
         HStack(spacing: 16) {
             VStack {
                 Text("Normal")
@@ -204,15 +204,12 @@ public struct CalendarColorIndicator: View {
                 CourseColorIndicator(color: .red, courseCode: "MATH201")
                 CourseColorIndicator(color: .green, courseCode: "PHY301")
             }
-            
+
             VStack {
-                Text("Differentiate")
+                Text("With Code")
                 CourseColorIndicator(color: .blue, courseCode: "CS101")
-                    .environment(\.accessibilityDifferentiateWithoutColor, true)
                 CourseColorIndicator(color: .red, courseCode: "MATH201")
-                    .environment(\.accessibilityDifferentiateWithoutColor, true)
                 CourseColorIndicator(color: .green, courseCode: "PHY301")
-                    .environment(\.accessibilityDifferentiateWithoutColor, true)
             }
         }
     }

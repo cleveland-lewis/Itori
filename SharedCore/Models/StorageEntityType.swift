@@ -4,94 +4,101 @@ import Foundation
 /// Maps to STORAGE_DATA_INVENTORY.md
 public enum StorageEntityType: String, CaseIterable, Identifiable, Codable {
     // MARK: - Academic
+
     case course = "Course"
     case semester = "Semester"
     case assignment = "Assignment"
     case grade = "Grade"
-    
+
     // MARK: - Planning & Scheduling
+
     case plannerBlock = "Planner Block"
     case assignmentPlan = "Assignment Plan"
     case focusSession = "Focus Session"
-    
+
     // MARK: - Testing & Practice
+
     case practiceTest = "Practice Test"
     case testBlueprint = "Test Blueprint"
-    
+
     // MARK: - Content & Files
+
     case courseOutline = "Course Outline"
     case courseFile = "Course File"
     case attachment = "Attachment"
-    
+
     // MARK: - Syllabus & Parsing
+
     case syllabus = "Syllabus"
     case parsedAssignment = "Parsed Assignment"
-    
+
     // MARK: - Calendar & Events
+
     case calendarEvent = "Calendar Event"
-    
+
     // MARK: - Timer & Focus
+
     case timerSession = "Timer Session"
-    
+
     public var id: String { rawValue }
-    
+
     /// Whether this entity type has a native title/name property
     public var hasNativeTitle: Bool {
         switch self {
         case .course, .assignment, .practiceTest, .testBlueprint,
              .courseOutline, .courseFile, .attachment, .parsedAssignment,
              .calendarEvent:
-            return true
+            true
         case .semester, .grade, .plannerBlock, .assignmentPlan,
              .focusSession, .syllabus, .timerSession:
-            return false
+            false
         }
     }
-    
+
     /// Category for grouping in UI
     public var category: EntityCategory {
         switch self {
         case .course, .semester, .assignment, .grade:
-            return .academic
+            .academic
         case .plannerBlock, .assignmentPlan, .focusSession:
-            return .planning
+            .planning
         case .practiceTest, .testBlueprint:
-            return .testing
+            .testing
         case .courseOutline, .courseFile, .attachment:
-            return .content
+            .content
         case .syllabus, .parsedAssignment:
-            return .syllabus
+            .syllabus
         case .calendarEvent:
-            return .calendar
+            .calendar
         case .timerSession:
-            return .timer
+            .timer
         }
     }
-    
+
     /// User-facing type label for lists
     public var displayTypeName: String {
-        return rawValue
+        rawValue
     }
-    
+
     /// SF Symbol icon for this entity type
     public var icon: String {
         switch self {
-        case .course: return "book.closed"
-        case .semester: return "calendar"
-        case .assignment: return "doc.text"
-        case .grade: return "chart.bar"
-        case .plannerBlock: return "calendar.badge.clock"
-        case .assignmentPlan: return "list.bullet.clipboard"
-        case .focusSession: return "timer"
-        case .practiceTest: return "doc.badge.gearshape"
-        case .testBlueprint: return "doc.on.doc"
-        case .courseOutline: return "list.bullet.indent"
-        case .courseFile: return "doc"
-        case .attachment: return "paperclip"
-        case .syllabus: return "doc.richtext"
-        case .parsedAssignment: return "doc.text.magnifyingglass"
-        case .calendarEvent: return "calendar.badge.clock"
-        case .timerSession: return "timer.square"
+        case .course: "book.closed"
+        case .semester: "calendar"
+        case .assignment: "doc.text"
+        case .grade: "chart.bar"
+        case .plannerBlock: "calendar.badge.clock"
+        case .assignmentPlan: "list.bullet.clipboard"
+        case .focusSession: "timer"
+        case .practiceTest: "doc.badge.gearshape"
+        case .testBlueprint: "doc.on.doc"
+        case .courseOutline: "list.bullet.indent"
+        case .courseFile: "doc"
+        case .attachment: "paperclip"
+        case .syllabus: "doc.richtext"
+        case .parsedAssignment: "doc.text.magnifyingglass"
+        case .calendarEvent: "calendar.badge.clock"
+        case .timerSession: "timer.square"
         }
     }
 }
@@ -105,18 +112,18 @@ public enum EntityCategory: String, CaseIterable, Identifiable {
     case syllabus = "Syllabus"
     case calendar = "Calendar"
     case timer = "Timer"
-    
+
     public var id: String { rawValue }
-    
+
     public var icon: String {
         switch self {
-        case .academic: return "graduationcap"
-        case .planning: return "calendar.badge.clock"
-        case .testing: return "checkmark.seal"
-        case .content: return "doc.on.doc"
-        case .syllabus: return "doc.richtext"
-        case .calendar: return "calendar"
-        case .timer: return "timer"
+        case .academic: "graduationcap"
+        case .planning: "calendar.badge.clock"
+        case .testing: "checkmark.seal"
+        case .content: "doc.on.doc"
+        case .syllabus: "doc.richtext"
+        case .calendar: "calendar"
+        case .timer: "timer"
         }
     }
 }
@@ -125,19 +132,19 @@ public enum EntityCategory: String, CaseIterable, Identifiable {
 public protocol StorageListable: Identifiable {
     /// Human-readable display title (native or computed)
     var displayTitle: String { get }
-    
+
     /// Entity type classification
     var entityType: StorageEntityType { get }
-    
+
     /// Contextual description (course name, semester, etc.)
     var contextDescription: String? { get }
-    
+
     /// Primary date for sorting and retention (created, due, modified)
     var primaryDate: Date { get }
-    
+
     /// Optional status indicator (completed, archived, active)
     var statusDescription: String? { get }
-    
+
     /// Search text combining all relevant fields
     var searchableText: String { get }
 }
@@ -145,7 +152,7 @@ public protocol StorageListable: Identifiable {
 /// Default implementations for common patterns
 public extension StorageListable {
     var statusDescription: String? { nil }
-    
+
     var searchableText: String {
         var components = [displayTitle, entityType.rawValue]
         if let context = contextDescription {
@@ -163,11 +170,11 @@ public struct StorageListItem: Identifiable, Hashable {
     public let contextDescription: String?
     public let primaryDate: Date
     public let statusDescription: String?
-    
+
     /// Reference to original entity for edit/delete
     public let entityId: String
     public let entityStore: String // Store identifier for routing
-    
+
     public init(
         id: UUID = UUID(),
         displayTitle: String,
@@ -187,7 +194,7 @@ public struct StorageListItem: Identifiable, Hashable {
         self.entityId = entityId
         self.entityStore = entityStore
     }
-    
+
     /// Full text for search
     public var searchText: String {
         var components = [displayTitle, entityType.rawValue]

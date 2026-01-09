@@ -11,12 +11,12 @@ struct RootsAnalogClock: View {
     var diameter: CGFloat = 200
     var showSecondHand: Bool = true
     var accentColor: Color = .accentColor
-    var timerSeconds: TimeInterval? = nil // Timer state in seconds; nil = show system time
+    var timerSeconds: TimeInterval? // Timer state in seconds; nil = show system time
 
     private var radius: CGFloat { diameter / 2 }
 
     var body: some View {
-        if let timerSeconds = timerSeconds {
+        if let timerSeconds {
             let components = timeComponents(from: timerSeconds)
             ZStack {
                 AnalogDialView(style: style, diameter: diameter, accentColor: accentColor)
@@ -174,7 +174,7 @@ struct StopwatchTicks: View {
 
     var body: some View {
         ZStack {
-            ForEach(0..<60) { idx in
+            ForEach(0 ..< 60) { idx in
                 let isFive = idx % 5 == 0
                 let isQuarter = idx % 15 == 0
                 let tickHeight: CGFloat = isQuarter ? 12 : (isFive ? 8 : 4)
@@ -199,7 +199,7 @@ struct ClockTicks: View {
 
     var body: some View {
         ZStack {
-            ForEach(0..<60) { idx in
+            ForEach(0 ..< 60) { idx in
                 let isFive = idx % 5 == 0
                 let tickHeight: CGFloat = isFive ? 12 : 6
                 let tickWidth: CGFloat = isFive ? 2.5 : 1.2
@@ -225,13 +225,13 @@ struct StopwatchNumerals: View {
 
     private var dynamicTypeSizeMultiplier: CGFloat {
         switch dynamicTypeSize {
-        case .xSmall, .small: return 0.85
-        case .medium: return 1.0
-        case .large: return 1.1
-        case .xLarge: return 1.2
-        case .xxLarge: return 1.3
-        case .xxxLarge: return 1.4
-        default: return 1.5
+        case .xSmall, .small: 0.85
+        case .medium: 1.0
+        case .large: 1.1
+        case .xLarge: 1.2
+        case .xxLarge: 1.3
+        case .xxxLarge: 1.4
+        default: 1.5
         }
     }
 
@@ -278,13 +278,13 @@ struct ClockNumerals: View {
 
     private var dynamicTypeSizeMultiplier: CGFloat {
         switch dynamicTypeSize {
-        case .xSmall, .small: return 0.85
-        case .medium: return 1.0
-        case .large: return 1.1
-        case .xLarge: return 1.2
-        case .xxLarge: return 1.3
-        case .xxxLarge: return 1.4
-        default: return 1.5
+        case .xSmall, .small: 0.85
+        case .medium: 1.0
+        case .large: 1.1
+        case .xLarge: 1.2
+        case .xxLarge: 1.3
+        case .xxxLarge: 1.4
+        default: 1.5
         }
     }
 
@@ -302,15 +302,15 @@ struct ClockNumerals: View {
 
     private func baselineOffset(for hour: Int) -> CGFloat {
         switch hour {
-        case 12: return fontSize * 0.15
-        case 6: return -fontSize * 0.1
-        default: return 0
+        case 12: fontSize * 0.15
+        case 6: -fontSize * 0.1
+        default: 0
         }
     }
 
     var body: some View {
         ZStack {
-            ForEach(1...12, id: \.self) { hour in
+            ForEach(1 ... 12, id: \.self) { hour in
                 let angle = Double(hour) / 12.0 * 360.0 - 90.0
                 let radian = angle * .pi / 180.0
                 let numeralDistance = radius * 0.78
@@ -346,7 +346,7 @@ struct StopwatchSubDialFace: View {
             Circle()
                 .stroke(Color.primary.opacity(0.18), lineWidth: 0.9)
 
-            ForEach(0..<60) { idx in
+            ForEach(0 ..< 60) { idx in
                 let isMajor = idx % 5 == 0
                 let tickOpacity: Double = isMajor ? 0.32 : 0.2
                 let tickWidth: CGFloat = isMajor ? 1.3 : 0.7

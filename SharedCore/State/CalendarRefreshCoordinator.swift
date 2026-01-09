@@ -1,6 +1,6 @@
-import Foundation
-import EventKit
 import Combine
+import EventKit
+import Foundation
 import SwiftUI
 
 struct PendingScheduleSuggestion: Identifiable, Equatable {
@@ -29,8 +29,7 @@ final class CalendarRefreshCoordinator: ObservableObject {
     private var settings: AppSettingsModel { AppSettingsModel.shared }
     private let assignmentsStore = AssignmentsStore.shared
 
-    private let autoScheduleTagPrefix = "[RootsAutoSchedule:"
-
+    private let autoScheduleTagPrefix = "[ItoriAutoSchedule:"
 
     func refresh() {
         Task { _ = await runRefresh() }
@@ -120,14 +119,15 @@ final class CalendarRefreshCoordinator: ObservableObject {
         let diff = buildScheduleDiff(
             proposed: proposed,
             existingEvents: existingEvents,
-            within: startDate...endDate
+            within: startDate ... endDate
         )
 
         if diff.addedBlocks.isEmpty &&
             diff.movedBlocks.isEmpty &&
             diff.resizedBlocks.isEmpty &&
             diff.removedBlocks.isEmpty &&
-            diff.conflicts.isEmpty {
+            diff.conflicts.isEmpty
+        {
             return
         }
 
@@ -140,7 +140,7 @@ final class CalendarRefreshCoordinator: ObservableObject {
                 featureStateVersion: 0,
                 summaryText: summaryText(for: diff),
                 targetCalendarID: targetCalendar.calendarIdentifier,
-                range: startDate...endDate
+                range: startDate ... endDate
             )
         )
     }
@@ -179,7 +179,11 @@ final class CalendarRefreshCoordinator: ObservableObject {
         try applyScheduleDiff(suggestion.diff, targetCalendar: target, within: suggestion.range)
         await calendarManager.syncPlannerSessionsToCalendar(in: suggestion.range)
         pendingScheduleSuggestion = nil
-        await deviceCalendar.refreshEvents(from: suggestion.range.lowerBound, to: suggestion.range.upperBound, reason: "autoScheduleApply")
+        await deviceCalendar.refreshEvents(
+            from: suggestion.range.lowerBound,
+            to: suggestion.range.upperBound,
+            reason: "autoScheduleApply"
+        )
     }
 
     private func applyPendingScheduleSuggestionNonConflictingInternal() async throws {
@@ -193,7 +197,11 @@ final class CalendarRefreshCoordinator: ObservableObject {
         guard nonConflicting.changeCount > 0 else { return }
         try applyScheduleDiff(nonConflicting, targetCalendar: target, within: suggestion.range)
         await calendarManager.syncPlannerSessionsToCalendar(in: suggestion.range)
-        await deviceCalendar.refreshEvents(from: suggestion.range.lowerBound, to: suggestion.range.upperBound, reason: "autoScheduleApply")
+        await deviceCalendar.refreshEvents(
+            from: suggestion.range.lowerBound,
+            to: suggestion.range.upperBound,
+            reason: "autoScheduleApply"
+        )
 
         if suggestion.diff.conflicts.isEmpty {
             pendingScheduleSuggestion = nil
@@ -226,7 +234,9 @@ final class CalendarRefreshCoordinator: ObservableObject {
             return nil
         }
         if !calendarManager.selectedCalendarID.isEmpty,
-           let selected = deviceCalendar.store.calendars(for: .event).first(where: { $0.calendarIdentifier == calendarManager.selectedCalendarID }) {
+           let selected = deviceCalendar.store.calendars(for: .event)
+           .first(where: { $0.calendarIdentifier == calendarManager.selectedCalendarID })
+        {
             return selected
         }
         return deviceCalendar.store.defaultCalendarForNewEvents
@@ -247,8 +257,8 @@ final class CalendarRefreshCoordinator: ObservableObject {
     ) -> ScheduleDiff {
         let existingTagged = existingEvents.filter { event in
             event.endDate > range.lowerBound &&
-            event.startDate < range.upperBound &&
-            extractTag(from: event.notes) != nil
+                event.startDate < range.upperBound &&
+                extractTag(from: event.notes) != nil
         }
 
         var existingByTag: [String: EKEvent] = [:]
@@ -301,8 +311,8 @@ final class CalendarRefreshCoordinator: ObservableObject {
         let store = deviceCalendar.store
         let existing = deviceCalendar.events.filter { event in
             event.calendar.calendarIdentifier == targetCalendar.calendarIdentifier &&
-            event.endDate > range.lowerBound && event.startDate < range.upperBound &&
-            extractTag(from: event.notes) != nil
+                event.endDate > range.lowerBound && event.startDate < range.upperBound &&
+                extractTag(from: event.notes) != nil
         }
 
         var existingByTag: [String: EKEvent] = [:]
@@ -314,8 +324,12 @@ final class CalendarRefreshCoordinator: ObservableObject {
 
         var movedByID: [String: MovedBlock] = [:]
         var resizedByID: [String: ResizedBlock] = [:]
-        for move in diff.movedBlocks { movedByID[move.blockID] = move }
-        for resize in diff.resizedBlocks { resizedByID[resize.blockID] = resize }
+        for move in diff.movedBlocks {
+            movedByID[move.blockID] = move
+        }
+        for resize in diff.resizedBlocks {
+            resizedByID[resize.blockID] = resize
+        }
 
         for block in diff.addedBlocks where targetCalendar.allowsContentModifications {
             if existingByTag[block.tempID] != nil {
@@ -354,7 +368,7 @@ final class CalendarRefreshCoordinator: ObservableObject {
         pendingScheduleSuggestion = suggestion
         return true
     }
-    
+
     private func summaryText(for diff: ScheduleDiff) -> String {
         var parts: [String] = []
         if !diff.addedBlocks.isEmpty {
@@ -423,7 +437,7 @@ final class CalendarRefreshCoordinator: ObservableObject {
     private func extractTag(from notes: String?) -> String? {
         guard let notes, let start = notes.range(of: autoScheduleTagPrefix) else { return nil }
         guard let end = notes[start.upperBound...].firstIndex(of: "]") else { return nil }
-        return String(notes[start.lowerBound...end])
+        return String(notes[start.lowerBound ... end])
     }
 
     private func mergeNotes(_ notes: String?, tag: String) -> String {
@@ -439,11 +453,11 @@ final class CalendarRefreshCoordinator: ObservableObject {
 
     private func lookaheadDays(from horizon: String) -> Int {
         switch horizon {
-        case "1w": return 7
-        case "2w": return 14
-        case "1m": return 30
-        case "2m": return 60
-        default: return 14
+        case "1w": 7
+        case "2w": 14
+        case "1m": 30
+        case "2m": 60
+        default: 14
         }
     }
 }
@@ -454,17 +468,17 @@ enum CalendarRefreshError: LocalizedError, Identifiable {
 
     var id: String {
         switch self {
-        case .permissionDenied: return "permissionDenied"
-        case .schedulingFailed: return "schedulingFailed"
+        case .permissionDenied: "permissionDenied"
+        case .schedulingFailed: "schedulingFailed"
         }
     }
 
     var errorDescription: String? {
         switch self {
         case .permissionDenied:
-            return NSLocalizedString("calendar.refresh.permission_denied", comment: "")
+            NSLocalizedString("calendar.refresh.permission_denied", comment: "")
         case .schedulingFailed:
-            return NSLocalizedString("calendar.refresh.scheduling_failed", comment: "")
+            NSLocalizedString("calendar.refresh.scheduling_failed", comment: "")
         }
     }
 }

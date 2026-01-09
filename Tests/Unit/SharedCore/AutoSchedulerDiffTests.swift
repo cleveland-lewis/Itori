@@ -1,5 +1,5 @@
-import XCTest
 import EventKit
+import XCTest
 @testable import SharedCore
 
 final class AutoSchedulerDiffTests: XCTestCase {

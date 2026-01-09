@@ -2,107 +2,107 @@ import Foundation
 
 /// Category classification for course files
 enum FileCategory: String, Codable, CaseIterable, Identifiable {
-    case uncategorized = "uncategorized"
-    case notes = "notes"
-    case test = "test"
-    case syllabus = "syllabus"
+    case uncategorized
+    case notes
+    case test
+    case syllabus
     case classNotes = "class"
-    case rubric = "rubric"
-    case practiceTest = "practiceTest"
-    case assignmentList = "assignmentList"
-    case other = "other"
-    
+    case rubric
+    case practiceTest
+    case assignmentList
+    case other
+
     var id: String { rawValue }
-    
+
     var displayName: String {
         switch self {
-        case .uncategorized: return "Uncategorized"
-        case .notes: return "Notes"
-        case .test: return "Test"
-        case .syllabus: return "Syllabus"
-        case .classNotes: return "Class"
-        case .rubric: return "Rubric"
-        case .practiceTest: return "Practice Test"
-        case .assignmentList: return "Assignment List"
-        case .other: return "Other"
+        case .uncategorized: "Uncategorized"
+        case .notes: "Notes"
+        case .test: "Test"
+        case .syllabus: "Syllabus"
+        case .classNotes: "Class"
+        case .rubric: "Rubric"
+        case .practiceTest: "Practice Test"
+        case .assignmentList: "Assignment List"
+        case .other: "Other"
         }
     }
-    
+
     var icon: String {
         switch self {
-        case .uncategorized: return "questionmark.square"
-        case .notes: return "note.text"
-        case .test: return "checkmark.seal"
-        case .syllabus: return "doc.text.below.ecg"
-        case .classNotes: return "book"
-        case .rubric: return "list.clipboard"
-        case .practiceTest: return "pencil.and.list.clipboard"
-        case .assignmentList: return "checklist"
-        case .other: return "doc"
+        case .uncategorized: "questionmark.square"
+        case .notes: "note.text"
+        case .test: "checkmark.seal"
+        case .syllabus: "doc.text.below.ecg"
+        case .classNotes: "book"
+        case .rubric: "list.clipboard"
+        case .practiceTest: "pencil.and.list.clipboard"
+        case .assignmentList: "checklist"
+        case .other: "doc"
         }
     }
-    
+
     /// Whether this category triggers auto-parsing
     var triggersAutoParsing: Bool {
         switch self {
         case .syllabus, .classNotes, .rubric, .practiceTest, .test, .assignmentList:
-            return true
+            true
         case .uncategorized, .notes, .other:
-            return false
+            false
         }
     }
-    
+
     /// Weight for practice test generation (0.0 - 1.0)
     var practiceTestWeight: Double {
         switch self {
-        case .rubric: return 1.00
-        case .syllabus: return 0.90
-        case .classNotes: return 0.80
-        case .practiceTest: return 0.75
-        case .test: return 0.70
-        case .notes: return 0.40
-        case .other: return 0.20
-        case .uncategorized: return 0.10
-        case .assignmentList: return 0.60
+        case .rubric: 1.00
+        case .syllabus: 0.90
+        case .classNotes: 0.80
+        case .practiceTest: 0.75
+        case .test: 0.70
+        case .notes: 0.40
+        case .other: 0.20
+        case .uncategorized: 0.10
+        case .assignmentList: 0.60
         }
     }
 }
 
 /// Parse status for course files
 enum ParseStatus: String, Codable {
-    case notParsed = "notParsed"
-    case queued = "queued"
-    case parsing = "parsing"
-    case parsed = "parsed"
-    case failed = "failed"
-    
+    case notParsed
+    case queued
+    case parsing
+    case parsed
+    case failed
+
     var displayName: String {
         switch self {
-        case .notParsed: return "Not Parsed"
-        case .queued: return "Queued"
-        case .parsing: return "Parsing..."
-        case .parsed: return "Parsed"
-        case .failed: return "Failed"
+        case .notParsed: "Not Parsed"
+        case .queued: "Queued"
+        case .parsing: "Parsing..."
+        case .parsed: "Parsed"
+        case .failed: "Failed"
         }
     }
-    
+
     var icon: String {
         switch self {
-        case .notParsed: return "circle"
-        case .queued: return "clock"
-        case .parsing: return "arrow.triangle.2.circlepath"
-        case .parsed: return "checkmark.circle"
-        case .failed: return "exclamationmark.triangle"
+        case .notParsed: "circle"
+        case .queued: "clock"
+        case .parsing: "arrow.triangle.2.circlepath"
+        case .parsed: "checkmark.circle"
+        case .failed: "exclamationmark.triangle"
         }
     }
-    
+
     var color: String {
         switch self {
-        case .notParsed: return "gray"
-        case .queued: return "orange"
-        case .parsing: return "blue"
-        case .parsed: return "green"
-        case .failed: return "red"
+        case .notParsed: "gray"
+        case .queued: "orange"
+        case .parsing: "blue"
+        case .parsed: "green"
+        case .failed: "red"
         }
     }
 }

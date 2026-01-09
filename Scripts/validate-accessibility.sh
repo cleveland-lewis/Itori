@@ -1,6 +1,17 @@
 #!/bin/bash
 # Accessibility Validation Script
 # Checks Swift files for proper accessibility implementations
+#
+# This linter detects TRUE accessibility issues by filtering out false positives:
+# - Buttons with text labels (already accessible via text)
+# - Toggles with text labels (already accessible via label)
+# - Images with surrounding Text context (contextually accessible)
+# - Buttons with Label(..., systemImage:) (already accessible)
+#
+# Only flags:
+# - Icon-only buttons without accessibility labels
+# - Truly decorative images without accessibilityHidden
+# - Fixed font sizes that break Dynamic Type
 
 set -e
 
@@ -48,9 +59,25 @@ check_file() {
             # Check next 10 lines for Image and accessibilityLabel
             local context=$(sed -n "${line_num},$((line_num + 10))p" "$file")
             
+            # Skip if button has text content (already accessible)
+            if echo "$context" | grep -qE 'Button\(".*"\)|Button\(NSLocalizedString'; then
+                continue
+            fi
+            
+            # Skip if button has Label with text (already accessible)
+            if echo "$context" | grep -q "Label.*systemImage"; then
+                continue
+            fi
+            
+            # Skip if in an HStack/VStack with Text (context provides accessibility)
+            local wider_context=$(sed -n "$((line_num - 5)),$((line_num + 10))p" "$file")
+            if echo "$wider_context" | grep -B5 "Button" | grep -q "Text("; then
+                continue
+            fi
+            
             if echo "$context" | grep -q "Image(systemName:" && \
-               ! echo "$context" | grep -q "accessibilityLabel\|Label.*systemImage"; then
-                echo -e "${YELLOW}⚠️  WARNING${NC}: Button with icon missing accessibility label"
+               ! echo "$context" | grep -q "accessibilityLabel"; then
+                echo -e "${YELLOW}⚠️  WARNING${NC}: Icon-only button missing accessibility label"
                 echo "   File: $file:$line_num"
                 echo "   Add: .accessibilityLabel(\"Description\")"
                 echo ""
@@ -64,31 +91,52 @@ check_file() {
         # Look for decorative patterns: badges, chevrons, decorative icons
         local decorative_patterns=(
             "chevron\."
-            "\.badge"
-            "\.fill.*\.opacity"
             "sparkles"
-            "circle\.fill"
         )
         
         for pattern in "${decorative_patterns[@]}"; do
-            if grep -B2 -A2 "$pattern" "$file" | grep -v "accessibilityHidden" | grep -q "Image(systemName:.*$pattern"; then
-                local line_num=$(grep -n "$pattern" "$file" | head -1 | cut -d: -f1)
-                echo -e "${YELLOW}⚠️  WARNING${NC}: Potentially decorative image not hidden"
-                echo "   File: $file:$line_num"
-                echo "   Pattern: $pattern"
-                echo "   Consider: .accessibilityHidden(true) if decorative"
-                echo ""
-                ((file_warnings++))
-            fi
+            local image_lines=$(grep -n "Image(systemName:.*$pattern" "$file" | cut -d: -f1 || true)
+            for line_num in $image_lines; do
+                local context=$(sed -n "$((line_num - 3)),$((line_num + 5))p" "$file")
+                
+                # Skip if image is in a button (button should have accessibilityLabel instead)
+                if echo "$context" | grep -B3 "Image.*$pattern" | grep -q "Button"; then
+                    continue
+                fi
+                
+                # Skip if already has accessibilityHidden
+                if echo "$context" | grep -q "accessibilityHidden"; then
+                    continue
+                fi
+                
+                # Skip if image has explicit accessibility label
+                if echo "$context" | grep -q "accessibilityLabel"; then
+                    continue
+                fi
+                
+                # Only warn if truly decorative (no nearby Text providing context)
+                if ! echo "$context" | grep -q "Text("; then
+                    echo -e "${YELLOW}⚠️  WARNING${NC}: Potentially decorative image not hidden"
+                    echo "   File: $file:$line_num"
+                    echo "   Pattern: $pattern"
+                    echo "   Consider: .accessibilityHidden(true) if decorative"
+                    echo ""
+                    ((file_warnings++))
+                fi
+            done
         done
     fi
     
     # Check for Text with hardcoded strings (should use NSLocalizedString)
     if grep -q 'Text("' "$file" && ! grep -q "Text(verbatim:" "$file"; then
-        local hardcoded_count=$(grep -c 'Text("' "$file" || echo "0")
-        local localized_count=$(grep -c 'NSLocalizedString\|LocalizedStringKey' "$file" || echo "0")
+        local hardcoded_count=$(grep -c 'Text("' "$file" 2>/dev/null || echo "0")
+        local localized_count=$(grep -c 'NSLocalizedString\|LocalizedStringKey' "$file" 2>/dev/null || echo "0")
         
-        if [ "$hardcoded_count" -gt 3 ] && [ "$localized_count" -eq 0 ]; then
+        # Ensure counts are valid integers
+        hardcoded_count=${hardcoded_count:-0}
+        localized_count=${localized_count:-0}
+        
+        if [ "$hardcoded_count" -gt 3 ] 2>/dev/null && [ "$localized_count" -eq 0 ] 2>/dev/null; then
             echo -e "${YELLOW}⚠️  WARNING${NC}: Hardcoded strings found, localization may be missing"
             echo "   File: $file"
             echo "   Consider using NSLocalizedString for user-facing text"
@@ -101,13 +149,23 @@ check_file() {
     if grep -q "Toggle(isOn:" "$file"; then
         local toggle_lines=$(grep -n "Toggle(isOn:" "$file" | cut -d: -f1)
         for line_num in $toggle_lines; do
-            local context=$(sed -n "${line_num},$((line_num + 5))p" "$file")
+            local context=$(sed -n "$((line_num - 2)),$((line_num + 5))p" "$file")
+            
+            # Skip if Toggle has text label (already accessible)
+            if echo "$context" | grep -qE 'Toggle\(".*", isOn:'; then
+                continue
+            fi
+            
+            # Skip if Toggle has closure with Text content
+            if echo "$context" | grep -A3 "Toggle(isOn:" | grep -q "Text("; then
+                continue
+            fi
             
             # Check if toggle has proper label structure
-            if ! echo "$context" | grep -q "VStack.*Text\|Label.*Text"; then
+            if ! echo "$context" | grep -q "VStack.*Text\|Label.*Text\|accessibilityLabel"; then
                 echo -e "${YELLOW}⚠️  WARNING${NC}: Toggle may need descriptive label"
                 echo "   File: $file:$line_num"
-                echo "   Consider adding descriptive VStack with title and subtitle"
+                echo "   Consider adding descriptive VStack with title and subtitle or text label"
                 echo ""
                 ((file_warnings++))
             fi

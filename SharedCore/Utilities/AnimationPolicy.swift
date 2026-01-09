@@ -1,21 +1,19 @@
 import SwiftUI
-import Combine
 
 /// Centralized animation policy that respects system accessibility settings
 /// Use this instead of direct `withAnimation` or `.animation` calls to ensure
 /// proper Reduce Motion support throughout the app
 @MainActor
 public final class AnimationPolicy: ObservableObject {
-    
     /// Shared singleton instance
     public static let shared = AnimationPolicy()
-    
+
     /// Whether reduce motion is currently enabled
     @Published public private(set) var isReduceMotionEnabled: Bool = false
-    
+
     private init() {
         updateReduceMotionStatus()
-        
+
         // Listen for accessibility changes
         NotificationCenter.default.addObserver(
             forName: NSNotification.Name("NSWorkspaceAccessibilityDisplayOptionsDidChangeNotification"),
@@ -28,30 +26,30 @@ public final class AnimationPolicy: ObservableObject {
             }
         }
     }
-    
+
     /// Update the reduce motion status from system and app preferences
     private func updateReduceMotionStatus() {
         let systemReduceMotion: Bool
         #if os(macOS)
-        systemReduceMotion = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+            systemReduceMotion = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
         #else
-        systemReduceMotion = UIAccessibility.isReduceMotionEnabled
+            systemReduceMotion = UIAccessibility.isReduceMotionEnabled
         #endif
-        
+
         // Check app's custom preference as well
-        let appReduceMotion = UserDefaults.standard.bool(forKey: "roots.settings.reduceMotion")
-        
+        let appReduceMotion = UserDefaults.standard.bool(forKey: "itori.settings.reduceMotion")
+
         // Enable reduce motion if either system OR app preference is enabled
         isReduceMotionEnabled = systemReduceMotion || appReduceMotion
     }
-    
+
     /// Manually trigger update (call when app settings change)
     public func updateFromAppSettings() {
         updateReduceMotionStatus()
     }
-    
+
     // MARK: - Animation Contexts
-    
+
     /// Animation context defines the purpose/type of animation
     public enum AnimationContext {
         /// Essential UI state changes (selection, focus)
@@ -67,9 +65,9 @@ public final class AnimationPolicy: ObservableObject {
         /// List item transitions
         case listTransition
     }
-    
+
     // MARK: - Animation Policy Methods
-    
+
     /// Get the appropriate animation for the given context
     /// Returns nil if animations should be disabled for this context
     public func animation(for context: AnimationContext) -> Animation? {
@@ -83,7 +81,7 @@ public final class AnimationPolicy: ObservableObject {
                 return nil
             }
         }
-        
+
         // Normal animation behavior
         switch context {
         case .essential:
@@ -100,25 +98,25 @@ public final class AnimationPolicy: ObservableObject {
             return .spring(response: 0.4, dampingFraction: 0.8)
         }
     }
-    
+
     /// Execute a block with animation appropriate for the context
     public func withAnimation<Result>(
         _ context: AnimationContext,
         _ body: () throws -> Result
     ) rethrows -> Result {
         if let animation = animation(for: context) {
-            return try SwiftUI.withAnimation(animation, body)
+            try SwiftUI.withAnimation(animation, body)
         } else {
-            return try body()
+            try body()
         }
     }
-    
+
     /// Get animation duration for the context (useful for custom animations)
     public func duration(for context: AnimationContext) -> Double {
         guard !isReduceMotionEnabled else {
             return context == .essential ? 0.1 : 0
         }
-        
+
         switch context {
         case .essential:
             return 0.25
@@ -134,7 +132,7 @@ public final class AnimationPolicy: ObservableObject {
             return 0.4
         }
     }
-    
+
     /// Whether animations should be shown for this context
     public func shouldAnimate(for context: AnimationContext) -> Bool {
         guard !isReduceMotionEnabled else {
@@ -146,20 +144,20 @@ public final class AnimationPolicy: ObservableObject {
 
 // MARK: - View Extensions
 
-extension View {
+public extension View {
     /// Apply animation using the centralized animation policy
-    public func animationPolicy(_ context: AnimationPolicy.AnimationContext, value: some Equatable) -> some View {
+    func animationPolicy(_ context: AnimationPolicy.AnimationContext, value: some Equatable) -> some View {
         if let animation = AnimationPolicy.shared.animation(for: context) {
             return self.animation(animation, value: value)
         } else {
             return self.animation(nil, value: value)
         }
     }
-    
+
     /// Apply transition using the centralized animation policy
-    public func transitionPolicy(_ context: AnimationPolicy.AnimationContext) -> some View {
+    func transitionPolicy(_ context: AnimationPolicy.AnimationContext) -> some View {
         let policy = AnimationPolicy.shared
-        
+
         if policy.isReduceMotionEnabled {
             // Use instant or fade transitions when reduce motion is enabled
             if context == .essential {
@@ -190,8 +188,8 @@ private struct AnimationPolicyKey: EnvironmentKey {
     static let defaultValue = AnimationPolicy.shared
 }
 
-extension EnvironmentValues {
-    public var animationPolicy: AnimationPolicy {
+public extension EnvironmentValues {
+    var animationPolicy: AnimationPolicy {
         get { self[AnimationPolicyKey.self] }
         set { self[AnimationPolicyKey.self] = newValue }
     }

@@ -1,7 +1,7 @@
 import Foundation
 
 #if canImport(FoundationModels)
-import FoundationModels
+    import FoundationModels
 #endif
 
 /// Apple Intelligence Provider (Foundation Models)
@@ -39,25 +39,25 @@ public final class AppleIntelligenceProvider: AIProvider {
 
     public static func availability() -> Availability {
         #if canImport(FoundationModels)
-        if #available(iOS 26.0, macOS 26.0, *) {
-            #if os(iOS) || os(macOS)
-            if AppleFoundationClient.isAvailable() {
-                return Availability(available: true, reason: "Apple Foundation Models available")
+            if #available(iOS 26.0, macOS 26.0, *) {
+                #if os(iOS) || os(macOS)
+                    if AppleFoundationClient.isAvailable() {
+                        return Availability(available: true, reason: "Apple Foundation Models available")
+                    }
+                    return Availability(available: false, reason: "Apple Intelligence not available on this device")
+                #else
+                    return Availability(available: false, reason: "Unsupported OS for Apple Intelligence")
+                #endif
             }
-            return Availability(available: false, reason: "Apple Intelligence not available on this device")
-            #else
-            return Availability(available: false, reason: "Unsupported OS for Apple Intelligence")
-            #endif
-        }
-        return Availability(available: false, reason: "Requires iOS 26+ / macOS 26+")
+            return Availability(available: false, reason: "Requires iOS 26+ / macOS 26+")
         #else
-        return Availability(available: false, reason: "FoundationModels framework not available in this SDK")
+            return Availability(available: false, reason: "FoundationModels framework not available in this SDK")
         #endif
     }
 
     public func generate(
         prompt: String,
-        task: AITaskKind,
+        task _: AITaskKind,
         schema: [String: Any]?,
         temperature: Double
     ) async throws -> AIProviderResult {
@@ -69,18 +69,18 @@ public final class AppleIntelligenceProvider: AIProvider {
         let startTime = Date()
 
         #if canImport(FoundationModels)
-        if #available(iOS 26.0, macOS 26.0, *) {
-            let responseText = try await AppleFoundationClient.generate(prompt: prompt, temperature: temperature)
-            let latency = Int(Date().timeIntervalSince(startTime) * 1000)
-            return AIProviderResult(
-                text: responseText,
-                provider: name,
-                latencyMs: latency,
-                tokenCount: nil,
-                cached: false,
-                structuredData: schema != nil ? ["provider": "apple"] : nil
-            )
-        }
+            if #available(iOS 26.0, macOS 26.0, *) {
+                let responseText = try await AppleFoundationClient.generate(prompt: prompt, temperature: temperature)
+                let latency = Int(Date().timeIntervalSince(startTime) * 1000)
+                return AIProviderResult(
+                    text: responseText,
+                    provider: name,
+                    latencyMs: latency,
+                    tokenCount: nil,
+                    cached: false,
+                    structuredData: schema != nil ? ["provider": "apple"] : nil
+                )
+            }
         #endif
 
         throw AIError.providerUnavailable("Apple Intelligence unavailable: \(availability.reason)")
@@ -92,16 +92,16 @@ public final class AppleIntelligenceProvider: AIProvider {
 }
 
 #if canImport(FoundationModels)
-@available(iOS 26.0, macOS 26.0, *)
-private enum AppleFoundationClient {
-    static func isAvailable() -> Bool {
-        return SystemLanguageModel.default.isAvailable
-    }
+    @available(iOS 26.0, macOS 26.0, *)
+    private enum AppleFoundationClient {
+        static func isAvailable() -> Bool {
+            SystemLanguageModel.default.isAvailable
+        }
 
-    static func generate(prompt: String, temperature: Double) async throws -> String {
-        let session = LanguageModelSession(model: .default)
-        let response = try await session.respond(to: prompt)
-        return response.content
+        static func generate(prompt: String, temperature _: Double) async throws -> String {
+            let session = LanguageModelSession(model: .default)
+            let response = try await session.respond(to: prompt)
+            return response.content
+        }
     }
-}
 #endif

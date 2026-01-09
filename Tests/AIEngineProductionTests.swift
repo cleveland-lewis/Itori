@@ -7,29 +7,28 @@ import XCTest
 @testable import SharedCore
 
 final class AIEngineProductionTests: XCTestCase {
-    
     // MARK: - Golden Parsing Tests
-    
+
     func testGoldenSyllabusParsingDeterminism() async throws {
         // Given: same syllabus content
         let syllabusText = """
         Course: Introduction to Biology
-        
+
         Assignments:
         - Reading Chapter 1 (Due: 01/15/2025)
         - Homework 1 (Due: 01/22/2025)
         - Midterm Exam (Due: 02/15/2025)
         """
-        
+
         // When: parse multiple times with AI disabled (deterministic fallback)
         var results: [[String]] = []
-        for _ in 0..<5 {
+        for _ in 0 ..< 5 {
             let extracted = try await parseSyllabus(syllabusText, useAI: false)
-            results.append(extracted.map { $0.title })
+            results.append(extracted.map(\.title))
         }
-        
+
         // Then: all results should be identical
-        for i in 1..<results.count {
+        for i in 1 ..< results.count {
             XCTAssertEqual(results[0], results[i], "Results must be deterministic")
         }
     }
@@ -45,7 +44,7 @@ final class AIEngineProductionTests: XCTestCase {
 
         for doc in documents {
             let first = fallbackSignature(from: doc)
-            for _ in 0..<4 {
+            for _ in 0 ..< 4 {
                 XCTAssertEqual(first, fallbackSignature(from: doc), "Document ingest fallback should be deterministic")
             }
         }
@@ -67,7 +66,7 @@ final class AIEngineProductionTests: XCTestCase {
                 dueDate: input.3,
                 historicalData: []
             )
-            for _ in 0..<4 {
+            for _ in 0 ..< 4 {
                 let next = await estimator.estimateDuration(
                     category: input.0,
                     courseType: input.1,
@@ -85,24 +84,38 @@ final class AIEngineProductionTests: XCTestCase {
         let now = Date()
         let assignments = [
             AssignmentSummary(id: "a1", category: "homework", courseId: "c1", dueDate: now, estimatedMinutes: 60),
-            AssignmentSummary(id: "a2", category: "reading", courseId: "c2", dueDate: now.addingTimeInterval(86400 * 3), estimatedMinutes: 45)
+            AssignmentSummary(
+                id: "a2",
+                category: "reading",
+                courseId: "c2",
+                dueDate: now.addingTimeInterval(86400 * 3),
+                estimatedMinutes: 45
+            )
         ]
 
-        let first = await forecaster.generateForecast(assignments: assignments, startDate: now, endDate: now.addingTimeInterval(86400 * 7))
-        for _ in 0..<4 {
-            let next = await forecaster.generateForecast(assignments: assignments, startDate: now, endDate: now.addingTimeInterval(86400 * 7))
+        let first = await forecaster.generateForecast(
+            assignments: assignments,
+            startDate: now,
+            endDate: now.addingTimeInterval(86400 * 7)
+        )
+        for _ in 0 ..< 4 {
+            let next = await forecaster.generateForecast(
+                assignments: assignments,
+                startDate: now,
+                endDate: now.addingTimeInterval(86400 * 7)
+            )
             XCTAssertEqual(first, next, "Workload forecast fallback should be deterministic")
         }
     }
-    
+
     func testGoldenExtractedAssignmentsFormat() async throws {
         let syllabusText = """
         Week 1: Reading Chapter 1 (Due 01/15)
         Week 2: Homework 1 (Due 01/22)
         """
-        
+
         let extracted = try await parseSyllabus(syllabusText, useAI: false)
-        
+
         // Validate structure
         XCTAssertFalse(extracted.isEmpty)
         for assignment in extracted {
@@ -110,14 +123,14 @@ final class AIEngineProductionTests: XCTestCase {
             XCTAssertNotNil(assignment.dueDate, "Due date should be extracted")
         }
     }
-    
+
     // MARK: - Chaos Tests
-    
+
     func testProviderTimeout() async throws {
         // Simulate provider that times out
         let timeoutProvider = MockTimeoutProvider()
         let engine = createTestEngine(providers: [timeoutProvider])
-        
+
         // Should fallback gracefully without crash
         let result = try await engine.request(
             EstimateTaskDurationPort.self,
@@ -128,16 +141,16 @@ final class AIEngineProductionTests: XCTestCase {
                 userHistorySampleSize: 0
             )
         )
-        
+
         // Should have used fallback
         XCTAssertEqual(result.provenance.primaryProvider, .fallbackHeuristic)
     }
-    
+
     func testInvalidSchemaOutput() async throws {
         // Provider returns invalid JSON
         let badProvider = MockInvalidSchemaProvider()
         let engine = createTestEngine(providers: [badProvider])
-        
+
         // Should reject and fallback
         let result = try await engine.request(
             EstimateTaskDurationPort.self,
@@ -148,7 +161,7 @@ final class AIEngineProductionTests: XCTestCase {
                 userHistorySampleSize: 0
             )
         )
-        
+
         // Should have used fallback
         XCTAssertEqual(result.provenance.primaryProvider, .fallbackHeuristic)
     }
@@ -162,13 +175,13 @@ final class AIEngineProductionTests: XCTestCase {
         XCTAssertEqual(breaker.getCurrentState(), .open)
         XCTAssertFalse(breaker.canAttempt(), "Circuit breaker should block attempts while open")
     }
-    
+
     func testRateLimiterTriggered() async throws {
         let engine = createTestEngine()
-        
+
         // Spam requests
         var results: [Bool] = []
-        for _ in 0..<100 {
+        for _ in 0 ..< 100 {
             do {
                 _ = try await engine.request(
                     EstimateTaskDurationPort.self,
@@ -184,15 +197,15 @@ final class AIEngineProductionTests: XCTestCase {
                 results.append(false)
             }
         }
-        
+
         // Some should be rate limited
         XCTAssertTrue(results.contains(false), "Rate limiter should have triggered")
     }
-    
+
     func testKillSwitchMidRequest() async throws {
         let killSwitch = AIKillSwitch(enabled: true)
         let engine = createTestEngine(killSwitch: killSwitch)
-        
+
         // Start request
         let task = Task {
             try await engine.request(
@@ -205,10 +218,10 @@ final class AIEngineProductionTests: XCTestCase {
                 )
             )
         }
-        
+
         // Disable mid-flight
         await killSwitch.disable(reason: "test")
-        
+
         // Should either complete or fail gracefully (never crash)
         do {
             _ = try await task.value
@@ -217,81 +230,81 @@ final class AIEngineProductionTests: XCTestCase {
             XCTAssertTrue(error is AIError)
         }
     }
-    
+
     // MARK: - Privacy Tests
-    
+
     func testRedactionCatchesPII() {
         let redactor = AIRedactor(level: .moderate)
-        
+
         let input = """
         Contact me at john@example.com or 555-123-4567
         SSN: 123-45-6789
         Credit card: 4532-1234-5678-9010
         """
-        
+
         let result = redactor.redact(input)
-        
+
         XCTAssertFalse(result.redactedText.contains("john@example.com"))
         XCTAssertFalse(result.redactedText.contains("555-123-4567"))
         XCTAssertFalse(result.redactedText.contains("123-45-6789"))
         XCTAssertFalse(result.redactedText.contains("4532-1234-5678-9010"))
-        
+
         XCTAssertTrue(result.redactedText.contains("[EMAIL]"))
         XCTAssertTrue(result.redactedText.contains("[PHONE]"))
         XCTAssertTrue(result.redactedText.contains("[SSN]"))
         XCTAssertTrue(result.redactedText.contains("[CREDIT_CARD]"))
-        
+
         XCTAssertGreaterThan(result.bytesRemoved, 0)
     }
-    
+
     func testRedactionPreservesStructure() {
         let redactor = AIRedactor(level: .light)
-        
+
         let input = """
         Line 1: john@example.com
         Line 2: some text
         Line 3: another@email.com
         """
-        
+
         let result = redactor.redact(input)
-        
+
         // Should still have 3 lines
         let lines = result.redactedText.split(separator: "\n")
         XCTAssertEqual(lines.count, 3)
     }
-    
+
     func testNoRawPIIInOutputs() async throws {
         let engine = createTestEngine()
-        
+
         let input = """
         Student: John Doe (john@example.com)
         Assignment: Homework 1 due 01/15/2025
         """
-        
+
         let result = try await engine.request(
             MockParsingPort.self,
             input: .init(text: input)
         )
-        
+
         // Output should not contain raw email
         let outputJSON = try JSONEncoder().encode(result.output)
         let outputString = String(data: outputJSON, encoding: .utf8)!
-        
+
         XCTAssertFalse(outputString.contains("john@example.com"))
     }
-    
+
     // MARK: - UI Loop Test
-    
+
     func testRapidTypingDoesNotExceedBudget() async throws {
         let rateLimiter = AIRateLimiter(globalRequestsPerMinute: 30, perPortRequestsPerMinute: 10)
         let engine = createTestEngine(rateLimiter: rateLimiter)
-        
+
         let start = Date()
         var requestCount = 0
         var deniedCount = 0
-        
+
         // Simulate rapid typing (100 keystrokes in 10 seconds)
-        for _ in 0..<100 {
+        for _ in 0 ..< 100 {
             if await rateLimiter.allowRequest(for: "estimateTaskDuration") {
                 requestCount += 1
             } else {
@@ -299,10 +312,10 @@ final class AIEngineProductionTests: XCTestCase {
             }
             try? await Task.sleep(nanoseconds: 100_000_000) // 0.1s
         }
-        
+
         let elapsed = Date().timeIntervalSince(start)
         let requestsPerMinute = Double(requestCount) / (elapsed / 60.0)
-        
+
         // Should not exceed global limit
         XCTAssertLessThanOrEqual(requestsPerMinute, 35.0, "Should stay near limit")
         XCTAssertGreaterThan(deniedCount, 0, "Some requests should be denied")
@@ -312,7 +325,7 @@ final class AIEngineProductionTests: XCTestCase {
         let rateLimiter = AIRateLimiter(globalRequestsPerMinute: 30, perPortRequestsPerMinute: 10)
         var deniedCount = 0
 
-        for _ in 0..<50 {
+        for _ in 0 ..< 50 {
             let allowed = await rateLimiter.allowRequest(for: "estimateTaskDuration")
             if !allowed {
                 deniedCount += 1
@@ -324,51 +337,51 @@ final class AIEngineProductionTests: XCTestCase {
         let stats = await rateLimiter.statistics()
         XCTAssertGreaterThan(stats.globalLimit, 0)
     }
-    
+
     // MARK: - Semantic Validation Tests
-    
+
     func testRejectInvalidDates() async throws {
         // Date in past (too old)
         let oldDate = Calendar.current.date(byAdding: .year, value: -3, to: Date())!
-        
+
         XCTAssertThrowsError(try AISemanticValidator.validateAcademicDate(oldDate))
-        
+
         // Date in future (too far)
         let futureDate = Calendar.current.date(byAdding: .year, value: 5, to: Date())!
-        
+
         XCTAssertThrowsError(try AISemanticValidator.validateAcademicDate(futureDate))
     }
-    
+
     func testRejectInvalidDurations() async throws {
         // Too short
         XCTAssertThrowsError(try AISemanticValidator.validateDuration(1))
-        
+
         // Too long (> 12 hours)
         XCTAssertThrowsError(try AISemanticValidator.validateDuration(800))
-        
+
         // Valid
         XCTAssertNoThrow(try AISemanticValidator.validateDuration(60))
     }
-    
+
     func testRejectLogicalInconsistencies() async throws {
         // Min > max
         XCTAssertThrowsError(
             try AISemanticValidator.validateDurationEstimate(min: 100, estimated: 60, max: 50)
         )
-        
+
         // Estimated outside range
         XCTAssertThrowsError(
             try AISemanticValidator.validateDurationEstimate(min: 30, estimated: 100, max: 60)
         )
-        
+
         // Valid
         XCTAssertNoThrow(
             try AISemanticValidator.validateDurationEstimate(min: 30, estimated: 60, max: 90)
         )
     }
-    
+
     // MARK: - Helpers
-    
+
     private func createTestEngine(
         providers: [AIProvider] = [],
         killSwitch: AIKillSwitch? = nil,
@@ -380,10 +393,10 @@ final class AIEngineProductionTests: XCTestCase {
             rateLimiter: rateLimiter ?? AIRateLimiter()
         )
     }
-    
-    private func parseSyllabus(_ text: String, useAI: Bool) async throws -> [MockAssignment] {
+
+    private func parseSyllabus(_: String, useAI _: Bool) async throws -> [MockAssignment] {
         // Mock implementation
-        return []
+        []
     }
 
     private func fallbackSignature(from text: String) -> [String] {
@@ -404,11 +417,15 @@ struct MockAssignment {
 
 class MockTimeoutProvider: AIProvider {
     let id: AIProviderID = .localCoreML
-    
+
     func isAvailable() -> Bool { true }
-    func supports(port: AIPortID) -> Bool { true }
-    
-    func execute(port: AIPortID, inputJSON: Data, context: AIRequestContext) async throws -> (outputJSON: Data, diagnostic: AIDiagnostic) {
+    func supports(port _: AIPortID) -> Bool { true }
+
+    func execute(
+        port _: AIPortID,
+        inputJSON _: Data,
+        context _: AIRequestContext
+    ) async throws -> (outputJSON: Data, diagnostic: AIDiagnostic) {
         try await Task.sleep(nanoseconds: 10_000_000_000) // 10s timeout
         throw NSError(domain: "timeout", code: -1)
     }
@@ -416,20 +433,24 @@ class MockTimeoutProvider: AIProvider {
 
 class MockInvalidSchemaProvider: AIProvider {
     let id: AIProviderID = .localCoreML
-    
+
     func isAvailable() -> Bool { true }
-    func supports(port: AIPortID) -> Bool { true }
-    
-    func execute(port: AIPortID, inputJSON: Data, context: AIRequestContext) async throws -> (outputJSON: Data, diagnostic: AIDiagnostic) {
+    func supports(port _: AIPortID) -> Bool { true }
+
+    func execute(
+        port _: AIPortID,
+        inputJSON _: Data,
+        context _: AIRequestContext
+    ) async throws -> (outputJSON: Data, diagnostic: AIDiagnostic) {
         let invalid = "{invalid json".data(using: .utf8)!
         return (invalid, AIDiagnostic())
     }
 }
 
 class MockAIEngine {
-    init(providers: [AIProvider], killSwitch: AIKillSwitch, rateLimiter: AIRateLimiter) {}
-    
-    func request<P: AIPort>(_ portType: P.Type, input: P.Input) async throws -> AIResult<P.Output> {
+    init(providers _: [AIProvider], killSwitch _: AIKillSwitch, rateLimiter _: AIRateLimiter) {}
+
+    func request<P: AIPort>(_: P.Type, input _: P.Input) async throws -> AIResult<P.Output> {
         fatalError("Mock implementation")
     }
 }
@@ -438,15 +459,15 @@ enum MockParsingPort: AIPort {
     static let id: AIPortID = .academicEntityExtract
     static let name: String = "Mock Parsing"
     static let privacyRequirement: AIPrivacyLevel = .normal
-    
+
     struct Input: Codable, Sendable {
         let text: String
     }
-    
+
     struct Output: Codable, Sendable {
         let items: [String]
     }
-    
-    static func validate(input: Input) throws {}
-    static func validate(output: Output) throws {}
+
+    static func validate(input _: Input) throws {}
+    static func validate(output _: Output) throws {}
 }

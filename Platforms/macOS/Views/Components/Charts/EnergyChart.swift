@@ -1,5 +1,5 @@
-import SwiftUI
 import Charts
+import SwiftUI
 
 // Reference: Swift Charts: Audio Graphs & Accessibility - https://www.youtube.com/watch?v=example
 // (Swift Charts: Audio Graphs & Accessibility - demonstrates that Swift Charts auto-generates Audio Graphs)
@@ -16,8 +16,11 @@ struct EnergyChart: View {
     @State private var data: [EnergyPoint] = {
         let calendar = Calendar.current
         let now = Date()
-        return (0..<24).map { i in
-            EnergyPoint(hour: calendar.date(byAdding: .hour, value: -23 + i, to: now)!, level: Double.random(in: 20...100))
+        return (0 ..< 24).map { i in
+            EnergyPoint(
+                hour: calendar.date(byAdding: .hour, value: -23 + i, to: now)!,
+                level: Double.random(in: 20 ... 100)
+            )
         }
     }()
 
@@ -31,7 +34,11 @@ struct EnergyChart: View {
                         x: .value("Hour", point.hour),
                         y: .value("Energy", point.level)
                     )
-                    .foregroundStyle(LinearGradient(colors: [Color.blue.opacity(0.35), Color.blue.opacity(0.05)], startPoint: .top, endPoint: .bottom))
+                    .foregroundStyle(LinearGradient(
+                        colors: [Color.blue.opacity(0.35), Color.blue.opacity(0.05)],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    ))
                     .interpolationMethod(.catmullRom)
 
                     LineMark(
@@ -67,13 +74,13 @@ struct EnergyChart: View {
                     }
                 }
             }
-            .chartYScale(domain: 0...100)
+            .chartYScale(domain: 0 ... 100)
             .chartXAxis {
                 AxisMarks(values: data.map(\.hour)) { _ in AxisTick() }
             }
             .chartYAxis { AxisMarks(position: .leading) }
             .chartOverlay { proxy in
-                GeometryReader { geo in
+                GeometryReader { _ in
                     Rectangle().fill(Color.clear).contentShape(Rectangle())
                         .gesture(DragGesture(minimumDistance: 0)
                             .onChanged { value in

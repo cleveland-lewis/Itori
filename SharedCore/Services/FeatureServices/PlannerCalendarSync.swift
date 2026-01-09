@@ -1,5 +1,5 @@
-import Foundation
 import CryptoKit
+import Foundation
 
 struct PlannerCalendarBlock: Equatable {
     let id: String
@@ -37,8 +37,8 @@ struct PlannerCalendarSyncPlan: Equatable {
 
 enum PlannerCalendarSync {
     static let plannerSource = "planner"
-    static let metadataStart = "[RootsPlanner]"
-    static let metadataEnd = "[/RootsPlanner]"
+    static let metadataStart = "[ItoriPlanner]"
+    static let metadataEnd = "[/ItoriPlanner]"
     static let metadataURLScheme = "itori-planner"
 
     static func buildBlocks(
@@ -63,9 +63,32 @@ enum PlannerCalendarSync {
                   let start = currentStart,
                   let end = currentEnd else { return }
             let title = calendarTitle(for: currentSessions)
-            let notes = buildNotes(kind: title, dayKey: dayKey, start: start, end: end, sessions: currentSessions, calendar: calendar, timeZone: timeZone)
-            let blockId = blockIdFor(kind: title, dayKey: dayKey, start: start, end: end, sessions: currentSessions, calendar: calendar, timeZone: timeZone)
-            blocks.append(PlannerCalendarBlock(id: blockId, title: title, start: start, end: end, notes: notes, dayKey: dayKey))
+            let notes = buildNotes(
+                kind: title,
+                dayKey: dayKey,
+                start: start,
+                end: end,
+                sessions: currentSessions,
+                calendar: calendar,
+                timeZone: timeZone
+            )
+            let blockId = blockIdFor(
+                kind: title,
+                dayKey: dayKey,
+                start: start,
+                end: end,
+                sessions: currentSessions,
+                calendar: calendar,
+                timeZone: timeZone
+            )
+            blocks.append(PlannerCalendarBlock(
+                id: blockId,
+                title: title,
+                start: start,
+                end: end,
+                notes: notes,
+                dayKey: dayKey
+            ))
             currentDayKey = nil
             currentStart = nil
             currentEnd = nil
@@ -113,8 +136,11 @@ enum PlannerCalendarSync {
         existingEvents: [PlannerCalendarEventSnapshot],
         range: ClosedRange<Date>
     ) -> PlannerCalendarSyncPlan {
-        let blockIds = Set(blocks.map { $0.id })
-        let existingMetadata = existingEvents.compactMap { event -> (PlannerCalendarEventSnapshot, PlannerCalendarMetadata)? in
+        let blockIds = Set(blocks.map(\.id))
+        let existingMetadata = existingEvents.compactMap { event -> (
+            PlannerCalendarEventSnapshot,
+            PlannerCalendarMetadata
+        )? in
             guard let metadata = parseMetadata(notes: event.notes, url: event.url) else { return nil }
             return (event, metadata)
         }
@@ -128,7 +154,8 @@ enum PlannerCalendarSync {
                 if match.0.title != block.title ||
                     match.0.start != block.start ||
                     match.0.end != block.end ||
-                    match.0.notes != block.notes {
+                    match.0.notes != block.notes
+                {
                     upserts.append(.init(block: block, existingIdentifier: match.0.identifier))
                 }
             } else {
@@ -177,7 +204,7 @@ enum PlannerCalendarSync {
     private static func parseMetadata(from notes: String) -> PlannerCalendarMetadata? {
         guard let start = notes.range(of: metadataStart),
               let end = notes.range(of: metadataEnd) else { return nil }
-        let block = notes[start.upperBound..<end.lowerBound]
+        let block = notes[start.upperBound ..< end.lowerBound]
         var blockId = ""
         var source = ""
         var dayKey = ""
@@ -200,13 +227,13 @@ enum PlannerCalendarSync {
     }
 
     private static func buildNotes(
-        kind: String,
-        dayKey: String,
-        start: Date,
-        end: Date,
+        kind _: String,
+        dayKey _: String,
+        start _: Date,
+        end _: Date,
         sessions: [StoredScheduledSession],
-        calendar: Calendar,
-        timeZone: TimeZone
+        calendar _: Calendar,
+        timeZone _: TimeZone
     ) -> String {
         let tasksById = Dictionary(uniqueKeysWithValues: AssignmentsStore.shared.tasks.map { ($0.id, $0) })
         let orderedSessions = sessions.sorted { $0.start < $1.start }
@@ -243,8 +270,16 @@ enum PlannerCalendarSync {
             }
         }
 
-        let dueHeader = NSLocalizedString("planner.calendar.notes.due", value: "Due:", comment: "Planner calendar notes due section")
-        let completedHeader = NSLocalizedString("planner.calendar.notes.completed", value: "Completed:", comment: "Planner calendar notes completed section")
+        let dueHeader = NSLocalizedString(
+            "planner.calendar.notes.due",
+            value: "Due:",
+            comment: "Planner calendar notes due section"
+        )
+        let completedHeader = NSLocalizedString(
+            "planner.calendar.notes.completed",
+            value: "Completed:",
+            comment: "Planner calendar notes completed section"
+        )
         let lines = [dueHeader] + dueItems + ["", completedHeader] + completedItems
         return lines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
     }
@@ -258,7 +293,15 @@ enum PlannerCalendarSync {
         calendar: Calendar,
         timeZone: TimeZone
     ) -> String {
-        let blockId = blockIdFor(kind: kind, dayKey: dayKey, start: start, end: end, sessions: sessions, calendar: calendar, timeZone: timeZone)
+        let blockId = blockIdFor(
+            kind: kind,
+            dayKey: dayKey,
+            start: start,
+            end: end,
+            sessions: sessions,
+            calendar: calendar,
+            timeZone: timeZone
+        )
         let items = sessions.sorted { $0.start < $1.start }.map { session in
             let assignmentId = session.assignmentId?.uuidString ?? "none"
             return "\(assignmentId):\(session.id.uuidString)"
@@ -308,17 +351,16 @@ enum PlannerCalendarSync {
     }
 
     private static func calendarTitle(for sessions: [StoredScheduledSession]) -> String {
-        let categories = Set(sessions.compactMap { $0.category })
+        let categories = Set(sessions.compactMap(\.category))
         if categories.count == 1, let category = categories.first {
-            let base: String
-            switch category {
-            case .homework: base = "Homework"
-            case .reading: base = "Reading"
-            case .review: base = "Review"
-            case .exam: base = "Exam"
-            case .quiz: base = "Quiz"
-            case .project: base = "Project"
-            case .practiceTest: base = "Practice Test"
+            let base = switch category {
+            case .homework: "Homework"
+            case .reading: "Reading"
+            case .review: "Review"
+            case .exam: "Exam"
+            case .quiz: "Quiz"
+            case .project: "Project"
+            case .practiceTest: "Practice Test"
             }
             return "\(base) Session"
         }
@@ -337,7 +379,7 @@ enum PlannerCalendarSync {
         return "\(max(0, minutes))m"
     }
 
-    private static func roundedDate(_ date: Date, calendar: Calendar, incrementMinutes: Int) -> Date {
+    private static func roundedDate(_ date: Date, calendar _: Calendar, incrementMinutes: Int) -> Date {
         let seconds = date.timeIntervalSinceReferenceDate
         let increment = TimeInterval(incrementMinutes * 60)
         let rounded = (seconds / increment).rounded() * increment

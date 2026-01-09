@@ -1,399 +1,466 @@
 #if os(macOS)
-import SwiftUI
+    import SwiftUI
 
-struct MainThreadDebuggerView: View {
-    @ScaledMetric private var emptyIconSize: CGFloat = 48
+    struct MainThreadDebuggerView: View {
+        @ScaledMetric private var emptyIconSize: CGFloat = 48
 
-    @ScaledMetric private var mediumTextSize: CGFloat = 16
+        @ScaledMetric private var mediumTextSize: CGFloat = 16
 
-    
-    @Environment(\.dismiss) private var dismiss
-    @ObservedObject private var debugger = MainThreadDebugger.shared
-    @State private var selectedEvent: MainThreadDebugger.DebugEvent?
-    @State private var autoScroll = true
-    @State private var showActivationToast = false
-    
-    var body: some View {
-        ZStack {
-            mainContent
-            
-            // Activation Toast
-            if showActivationToast {
-                VStack {
-                    Spacer()
-                    
-                    HStack(spacing: 12) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.title)
-                            .foregroundColor(.green)
-                        
-                        Text(NSLocalizedString("mainthreaddebugger.debugger.activated", value: "Debugger Activated", comment: "Debugger Activated"))
+        @Environment(\.dismiss) private var dismiss
+        @ObservedObject private var debugger = MainThreadDebugger.shared
+        @State private var selectedEvent: MainThreadDebugger.DebugEvent?
+        @State private var autoScroll = true
+        @State private var showActivationToast = false
+
+        var body: some View {
+            ZStack {
+                mainContent
+
+                // Activation Toast
+                if showActivationToast {
+                    VStack {
+                        Spacer()
+
+                        HStack(spacing: 12) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.title)
+                                .foregroundColor(.green)
+
+                            Text(NSLocalizedString(
+                                "mainthreaddebugger.debugger.activated",
+                                value: "Debugger Activated",
+                                comment: "Debugger Activated"
+                            ))
                             .font(.headline)
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 16)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(.secondaryBackground)
-                            .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 5)
-                    )
-                    .padding(.bottom, 50)
-                }
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: showActivationToast)
-            }
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigation) {
-                Button(action: { dismiss() }) {
-                    Label(NSLocalizedString("mainthreaddebugger.label.back", value: "Back", comment: "Back"), systemImage: "chevron.left")
-                }
-            }
-        }
-    }
-    
-    private var mainContent: some View {
-        VStack(spacing: 0) {
-            // Header with controls
-            HStack {
-                Toggle(NSLocalizedString("mainthreaddebugger.toggle.enable.main.thread.debugger", value: "Enable Main Thread Debugger", comment: "Enable Main Thread Debugger"), isOn: Binding(
-                    get: { 
-                        DebugLogger.log("🔍 Toggle GET called - debugger.isEnabled = \(debugger.isEnabled)")
-                        return debugger.isEnabled 
-                    },
-                    set: { newValue in
-                        DebugLogger.log("🔍 Toggle SET called with newValue = \(newValue)")
-                        DebugLogger.log("🔍 About to call debugger.toggle()...")
-                        debugger.toggle()
-                        DebugLogger.log("🔍 debugger.toggle() completed")
-                        if newValue {
-                            DebugLogger.log("🔍 Showing activation toast")
-                            showActivationToast = true
-                            // Auto-dismiss after 2 seconds
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                                showActivationToast = false
-                            }
                         }
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 16)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(.secondaryBackground)
+                                .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 5)
+                        )
+                        .padding(.bottom, 50)
                     }
-                ))
-                .font(.headline)
-                .toggleStyle(.switch)
-                
-                Spacer()
-                
-                HStack(spacing: 12) {
-                    // TEST BUTTON - to verify enable() works
-                    Button(NSLocalizedString("mainthreaddebugger.button.test.enable", value: "Test Enable", comment: "Test Enable")) {
-                        DebugLogger.log("🔍 TEST BUTTON clicked - manually calling enable()")
-                        MainThreadDebugger.shared.enable()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    
-                    Toggle(NSLocalizedString("mainthreaddebugger.toggle.autoscroll", value: "Auto-scroll", comment: "Auto-scroll"), isOn: $autoScroll)
-                        .font(.caption)
-                    
-                    Button(action: { debugger.clearEvents() }) {
-                        Label(NSLocalizedString("mainthreaddebugger.label.clear", value: "Clear", comment: "Clear"), systemImage: "trash")
-                    }
-                    .disabled(!debugger.isEnabled)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .animation(.spring(response: 0.4, dampingFraction: 0.8), value: showActivationToast)
                 }
             }
-            .padding()
-            .background(.secondaryBackground)
-            
-            Divider()
-            
-            if debugger.isEnabled {
-                // Metrics Dashboard
-                metricsSection
-                
+            .toolbar {
+                ToolbarItem(placement: .navigation) {
+                    Button(action: { dismiss() }) {
+                        Label(
+                            NSLocalizedString("mainthreaddebugger.label.back", value: "Back", comment: "Back"),
+                            systemImage: "chevron.left"
+                        )
+                    }
+                }
+            }
+        }
+
+        private var mainContent: some View {
+            VStack(spacing: 0) {
+                // Header with controls
+                HStack {
+                    Toggle(
+                        NSLocalizedString(
+                            "mainthreaddebugger.toggle.enable.main.thread.debugger",
+                            value: "Enable Main Thread Debugger",
+                            comment: "Enable Main Thread Debugger"
+                        ),
+                        isOn: Binding(
+                            get: {
+                                DebugLogger.log("🔍 Toggle GET called - debugger.isEnabled = \(debugger.isEnabled)")
+                                return debugger.isEnabled
+                            },
+                            set: { newValue in
+                                DebugLogger.log("🔍 Toggle SET called with newValue = \(newValue)")
+                                DebugLogger.log("🔍 About to call debugger.toggle()...")
+                                debugger.toggle()
+                                DebugLogger.log("🔍 debugger.toggle() completed")
+                                if newValue {
+                                    DebugLogger.log("🔍 Showing activation toast")
+                                    showActivationToast = true
+                                    // Auto-dismiss after 2 seconds
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                        showActivationToast = false
+                                    }
+                                }
+                            }
+                        )
+                    )
+                    .font(.headline)
+                    .toggleStyle(.switch)
+
+                    Spacer()
+
+                    HStack(spacing: 12) {
+                        // TEST BUTTON - to verify enable() works
+                        Button(NSLocalizedString(
+                            "mainthreaddebugger.button.test.enable",
+                            value: "Test Enable",
+                            comment: "Test Enable"
+                        )) {
+                            DebugLogger.log("🔍 TEST BUTTON clicked - manually calling enable()")
+                            MainThreadDebugger.shared.enable()
+                        }
+                        .buttonStyle(.borderedProminent)
+
+                        Toggle(
+                            NSLocalizedString(
+                                "mainthreaddebugger.toggle.autoscroll",
+                                value: "Auto-scroll",
+                                comment: "Auto-scroll"
+                            ),
+                            isOn: $autoScroll
+                        )
+                        .font(.caption)
+
+                        Button(action: { debugger.clearEvents() }) {
+                            Label(
+                                NSLocalizedString("mainthreaddebugger.label.clear", value: "Clear", comment: "Clear"),
+                                systemImage: "trash"
+                            )
+                        }
+                        .disabled(!debugger.isEnabled)
+                    }
+                }
+                .padding()
+                .background(.secondaryBackground)
+
                 Divider()
-                
-                // Events List
-                eventsSection
-            } else {
-                VStack(spacing: 16) {
-                    Image(systemName: "ant.circle")
-                        .font(.system(size: emptyIconSize))
-                        .foregroundStyle(.secondary)
-                    
-                    Text(NSLocalizedString("mainthreaddebugger.main.thread.debugger.disabled", value: "Main Thread Debugger Disabled", comment: "Main Thread Debugger Disabled"))
+
+                if debugger.isEnabled {
+                    // Metrics Dashboard
+                    metricsSection
+
+                    Divider()
+
+                    // Events List
+                    eventsSection
+                } else {
+                    VStack(spacing: 16) {
+                        Image(systemName: "ant.circle")
+                            .font(.system(size: emptyIconSize))
+                            .foregroundStyle(.secondary)
+
+                        Text(NSLocalizedString(
+                            "mainthreaddebugger.main.thread.debugger.disabled",
+                            value: "Main Thread Debugger Disabled",
+                            comment: "Main Thread Debugger Disabled"
+                        ))
                         .font(.headline)
-                    
-                    Text(NSLocalizedString("mainthreaddebugger.enable.the.debugger.to.track", value: "Enable the debugger to track main thread blocks, long operations, and performance issues.", comment: "Enable the debugger to track main thread blocks, l..."))
+
+                        Text(NSLocalizedString(
+                            "mainthreaddebugger.enable.the.debugger.to.track",
+                            value: "Enable the debugger to track main thread blocks, long operations, and performance issues.",
+                            comment: "Enable the debugger to track main thread blocks, l..."
+                        ))
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                         .frame(maxWidth: 400)
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        featureItem(icon: "stopwatch", title: "Main Thread Monitoring", description: "Detects UI freezes and blocked main thread")
-                        featureItem(icon: "chart.line.uptrend.xyaxis", title: "Performance Metrics", description: "Track block duration, memory usage, and active tasks")
-                        featureItem(icon: "list.bullet.clipboard", title: "Event Log", description: "Detailed log with stack traces for debugging")
-                        featureItem(icon: "arrow.down.doc", title: "Export Reports", description: "Export debug data for analysis")
+
+                        VStack(alignment: .leading, spacing: 8) {
+                            featureItem(
+                                icon: "stopwatch",
+                                title: "Main Thread Monitoring",
+                                description: "Detects UI freezes and blocked main thread"
+                            )
+                            featureItem(
+                                icon: "chart.line.uptrend.xyaxis",
+                                title: "Performance Metrics",
+                                description: "Track block duration, memory usage, and active tasks"
+                            )
+                            featureItem(
+                                icon: "list.bullet.clipboard",
+                                title: "Event Log",
+                                description: "Detailed log with stack traces for debugging"
+                            )
+                            featureItem(
+                                icon: "arrow.down.doc",
+                                title: "Export Reports",
+                                description: "Export debug data for analysis"
+                            )
+                        }
+                        .padding()
                     }
-                    .padding()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
-            
-            // Activation Toast
-            if showActivationToast {
-                VStack {
-                    Spacer()
-                    
-                    HStack(spacing: 12) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.title)
-                            .foregroundColor(.green)
-                        
-                        Text(NSLocalizedString("mainthreaddebugger.debugger.activated", value: "Debugger Activated", comment: "Debugger Activated"))
+
+                // Activation Toast
+                if showActivationToast {
+                    VStack {
+                        Spacer()
+
+                        HStack(spacing: 12) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.title)
+                                .foregroundColor(.green)
+
+                            Text(NSLocalizedString(
+                                "mainthreaddebugger.debugger.activated",
+                                value: "Debugger Activated",
+                                comment: "Debugger Activated"
+                            ))
                             .font(.headline)
+                        }
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 16)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(.secondaryBackground)
+                                .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 5)
+                        )
+                        .padding(.bottom, 50)
                     }
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 16)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(.secondaryBackground)
-                            .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 5)
-                    )
-                    .padding(.bottom, 50)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .animation(.spring(response: 0.4, dampingFraction: 0.8), value: showActivationToast)
                 }
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: showActivationToast)
             }
         }
-    }
-    
-    private var metricsSection: some View {
-        HStack(spacing: 20) {
-            metricCard(
-                icon: "exclamationmark.triangle.fill",
-                title: "Total Blocks",
-                value: "\(debugger.performanceMetrics.totalMainThreadBlocks)",
-                color: .orange
-            )
-            
-            metricCard(
-                icon: "clock.fill",
-                title: "Longest Block",
-                value: String(format: "%.0fms", debugger.performanceMetrics.longestBlockDuration * 1000),
-                color: .red
-            )
-            
-            metricCard(
-                icon: "chart.bar.fill",
-                title: "Avg Block",
-                value: String(format: "%.0fms", debugger.performanceMetrics.averageBlockDuration * 1000),
-                color: .yellow
-            )
-            
-            metricCard(
-                icon: "memorychip.fill",
-                title: "Memory",
-                value: String(format: "%.0fMB", debugger.performanceMetrics.memoryUsageMB),
-                color: .blue
-            )
-            
-            metricCard(
-                icon: "app.badge.fill",
-                title: "Active Tasks",
-                value: "\(debugger.performanceMetrics.activeTasks)",
-                color: .green
-            )
-        }
-        .padding()
-        .background(.secondaryBackground.opacity(0.5))
-    }
-    
-    private var eventsSection: some View {
-        HSplitView {
-            // Events list
-            VStack(spacing: 0) {
-                HStack {
-                    Text(verbatim: "Events (\(debugger.events.count))")
-                        .font(.headline)
-                    Spacer()
-                    Text(NSLocalizedString("mainthreaddebugger.last.500.events", value: "Last 500 events", comment: "Last 500 events"))
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                .padding(.horizontal)
-                .padding(.vertical, 8)
-                .background(.secondaryBackground)
-                
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        LazyVStack(spacing: 1) {
-                            ForEach(debugger.events.reversed()) { event in
-                                eventRow(event)
-                                    .background(selectedEvent?.id == event.id ? .accentTertiary : Color.clear)
-                                    .onTapGesture {
-                                        selectedEvent = event
-                                    }
-                                    .accessibilityElement(children: .combine)
-                                    .accessibilityAddTraits(.isButton)
-                                    .accessibilityLabel("Debug event")
-                                    .accessibilityHint("View event details")
-                                    .id(event.id)
-                            }
-                        }
-                    }
-                    .onChange(of: debugger.events.count) { _, _ in
-                        if autoScroll, let lastEvent = debugger.events.last {
-                            withAnimation {
-                                proxy.scrollTo(lastEvent.id, anchor: .bottom)
-                            }
-                        }
-                    }
-                }
-            }
-            .frame(minWidth: 300)
-            
-            // Event detail
-            if let event = selectedEvent {
-                eventDetailView(event)
-                    .frame(minWidth: 300)
-            } else {
-                VStack {
-                    Text(NSLocalizedString("mainthreaddebugger.select.an.event.to.view.details", value: "Select an event to view details", comment: "Select an event to view details"))
-                        .foregroundColor(.secondary)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(.secondaryBackground.opacity(0.3))
-            }
-        }
-    }
-    
-    private func eventRow(_ event: MainThreadDebugger.DebugEvent) -> some View {
-        HStack(spacing: 8) {
-            Text(event.type.rawValue)
-                .font(.caption2)
-                .frame(width: 30)
-            
-            Text(timeString(event.timestamp))
-                .font(.caption2)
-                .foregroundColor(.secondary)
-                .frame(width: 80)
-            
-            Text(event.message)
-                .font(.caption)
-                .lineLimit(1)
-            
-            Spacer()
-            
-            Image(systemName: "chevron.right")
-                .font(.caption2)
-                .foregroundColor(.secondary)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
-        .background(.secondaryBackground)
-    }
-    
-    private func eventDetailView(_ event: MainThreadDebugger.DebugEvent) -> some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                // Header
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(event.type.rawValue)
-                        .font(.title2)
-                    Text(event.timestamp, style: .time)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                
-                Divider()
-                
-                // Message
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(NSLocalizedString("mainthreaddebugger.message", value: "Message", comment: "Message"))
-                        .font(.headline)
-                    Text(event.message)
-                        .font(.body)
-                        .textSelection(.enabled)
-                }
-                
-                // Thread Info
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(NSLocalizedString("mainthreaddebugger.thread", value: "Thread", comment: "Thread"))
-                        .font(.headline)
-                    Text(event.threadInfo)
-                        .font(.body)
-                        .monospaced()
-                }
-                
-                // Stack Trace
-                if !event.stackTrace.isEmpty {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(NSLocalizedString("mainthreaddebugger.stack.trace", value: "Stack Trace", comment: "Stack Trace"))
-                            .font(.headline)
-                        
-                        VStack(alignment: .leading, spacing: 2) {
-                            ForEach(Array(event.stackTrace.enumerated()), id: \.offset) { index, frame in
-                                Text(verbatim: "\(index): \(frame)")
-                                    .font(.caption)
-                                    .monospaced()
-                                    .textSelection(.enabled)
-                            }
-                        }
-                        .padding(8)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(.secondaryBackground)
-                        .cornerRadius(6)
-                    }
-                }
-                
-                Spacer()
+
+        private var metricsSection: some View {
+            HStack(spacing: 20) {
+                metricCard(
+                    icon: "exclamationmark.triangle.fill",
+                    title: "Total Blocks",
+                    value: "\(debugger.performanceMetrics.totalMainThreadBlocks)",
+                    color: .orange
+                )
+
+                metricCard(
+                    icon: "clock.fill",
+                    title: "Longest Block",
+                    value: String(format: "%.0fms", debugger.performanceMetrics.longestBlockDuration * 1000),
+                    color: .red
+                )
+
+                metricCard(
+                    icon: "chart.bar.fill",
+                    title: "Avg Block",
+                    value: String(format: "%.0fms", debugger.performanceMetrics.averageBlockDuration * 1000),
+                    color: .yellow
+                )
+
+                metricCard(
+                    icon: "memorychip.fill",
+                    title: "Memory",
+                    value: String(format: "%.0fMB", debugger.performanceMetrics.memoryUsageMB),
+                    color: .blue
+                )
+
+                metricCard(
+                    icon: "app.badge.fill",
+                    title: "Active Tasks",
+                    value: "\(debugger.performanceMetrics.activeTasks)",
+                    color: .green
+                )
             }
             .padding()
+            .background(.secondaryBackground.opacity(0.5))
         }
-        .background(.primaryBackground)
-    }
-    
-    private func metricCard(icon: String, title: String, value: String, color: Color) -> some View {
-        VStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.title2)
-                .foregroundColor(color)
-            
-            Text(value)
-                .font(.title3)
-                .bold()
-            
-            Text(title)
-                .font(.caption)
-                .foregroundColor(.secondary)
+
+        private var eventsSection: some View {
+            HSplitView {
+                // Events list
+                VStack(spacing: 0) {
+                    HStack {
+                        Text(verbatim: "Events (\(debugger.events.count))")
+                            .font(.headline)
+                        Spacer()
+                        Text(NSLocalizedString(
+                            "mainthreaddebugger.last.500.events",
+                            value: "Last 500 events",
+                            comment: "Last 500 events"
+                        ))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    .background(.secondaryBackground)
+
+                    ScrollViewReader { proxy in
+                        ScrollView {
+                            LazyVStack(spacing: 1) {
+                                ForEach(debugger.events.reversed()) { event in
+                                    eventRow(event)
+                                        .background(selectedEvent?.id == event.id ? .accentTertiary : Color.clear)
+                                        .onTapGesture {
+                                            selectedEvent = event
+                                        }
+                                        .accessibilityElement(children: .combine)
+                                        .accessibilityAddTraits(.isButton)
+                                        .accessibilityLabel("Debug event")
+                                        .accessibilityHint("View event details")
+                                        .id(event.id)
+                                }
+                            }
+                        }
+                        .onChange(of: debugger.events.count) { _, _ in
+                            if autoScroll, let lastEvent = debugger.events.last {
+                                withAnimation {
+                                    proxy.scrollTo(lastEvent.id, anchor: .bottom)
+                                }
+                            }
+                        }
+                    }
+                }
+                .frame(minWidth: 300)
+
+                // Event detail
+                if let event = selectedEvent {
+                    eventDetailView(event)
+                        .frame(minWidth: 300)
+                } else {
+                    VStack {
+                        Text(NSLocalizedString(
+                            "mainthreaddebugger.select.an.event.to.view.details",
+                            value: "Select an event to view details",
+                            comment: "Select an event to view details"
+                        ))
+                        .foregroundColor(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(.secondaryBackground.opacity(0.3))
+                }
+            }
         }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(.secondaryBackground)
-        .cornerRadius(8)
-    }
-    
-    private func featureItem(icon: String, title: String, description: String) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: icon)
-                .font(.title3)
-                .foregroundColor(.accentColor)
-                .frame(width: 24)
-            
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.subheadline)
+
+        private func eventRow(_ event: MainThreadDebugger.DebugEvent) -> some View {
+            HStack(spacing: 8) {
+                Text(event.type.rawValue)
+                    .font(.caption2)
+                    .frame(width: 30)
+
+                Text(timeString(event.timestamp))
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                    .frame(width: 80)
+
+                Text(event.message)
+                    .font(.caption)
+                    .lineLimit(1)
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(.secondaryBackground)
+        }
+
+        private func eventDetailView(_ event: MainThreadDebugger.DebugEvent) -> some View {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    // Header
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(event.type.rawValue)
+                            .font(.title2)
+                        Text(event.timestamp, style: .time)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Divider()
+
+                    // Message
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(NSLocalizedString("mainthreaddebugger.message", value: "Message", comment: "Message"))
+                            .font(.headline)
+                        Text(event.message)
+                            .font(.body)
+                            .textSelection(.enabled)
+                    }
+
+                    // Thread Info
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(NSLocalizedString("mainthreaddebugger.thread", value: "Thread", comment: "Thread"))
+                            .font(.headline)
+                        Text(event.threadInfo)
+                            .font(.body)
+                            .monospaced()
+                    }
+
+                    // Stack Trace
+                    if !event.stackTrace.isEmpty {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(NSLocalizedString(
+                                "mainthreaddebugger.stack.trace",
+                                value: "Stack Trace",
+                                comment: "Stack Trace"
+                            ))
+                            .font(.headline)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                ForEach(Array(event.stackTrace.enumerated()), id: \.offset) { index, frame in
+                                    Text(verbatim: "\(index): \(frame)")
+                                        .font(.caption)
+                                        .monospaced()
+                                        .textSelection(.enabled)
+                                }
+                            }
+                            .padding(8)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(.secondaryBackground)
+                            .cornerRadius(6)
+                        }
+                    }
+
+                    Spacer()
+                }
+                .padding()
+            }
+            .background(.primaryBackground)
+        }
+
+        private func metricCard(icon: String, title: String, value: String, color: Color) -> some View {
+            VStack(spacing: 8) {
+                Image(systemName: icon)
+                    .font(.title2)
+                    .foregroundColor(color)
+
+                Text(value)
+                    .font(.title3)
                     .bold()
-                Text(description)
+
+                Text(title)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(.secondaryBackground)
+            .cornerRadius(8)
+        }
+
+        private func featureItem(icon: String, title: String, description: String) -> some View {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: icon)
+                    .font(.title3)
+                    .foregroundColor(.accentColor)
+                    .frame(width: 24)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.subheadline)
+                        .bold()
+                    Text(description)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+
+        private func timeString(_ date: Date) -> String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "HH:mm:ss.SSS"
+            return formatter.string(from: date)
         }
     }
-    
-    private func timeString(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm:ss.SSS"
-        return formatter.string(from: date)
-    }
-}
 
 #endif

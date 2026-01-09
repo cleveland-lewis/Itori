@@ -1,8 +1,6 @@
-import Foundation
-
 @MainActor
 enum SampleDataSeeder {
-    private struct SampleIds {
+    private enum SampleIds {
         static let fallSemester = UUID(uuidString: "E4B0F2C5-0F4C-4D5A-9F5B-3E57A2D1F101")!
         static let springSemester = UUID(uuidString: "A0C7F676-0B56-4E9D-9E08-2F4D6F4B9A02")!
 
@@ -18,10 +16,12 @@ enum SampleDataSeeder {
         static let taskProject = UUID(uuidString: "2F6A9C6B-3A2D-4C2E-9A8B-6E2F1D0C2406")!
     }
 
-    static func apply(enabled: Bool,
-                      coursesStore: CoursesStore,
-                      assignmentsStore: AssignmentsStore,
-                      gradesStore: GradesStore) {
+    static func apply(
+        enabled: Bool,
+        coursesStore: CoursesStore,
+        assignmentsStore: AssignmentsStore,
+        gradesStore: GradesStore
+    ) {
         _ = gradesStore
         if enabled {
             seed(coursesStore: coursesStore, assignmentsStore: assignmentsStore, gradesStore: gradesStore)
@@ -30,20 +30,26 @@ enum SampleDataSeeder {
         }
     }
 
-    private static func seed(coursesStore: CoursesStore,
-                             assignmentsStore: AssignmentsStore,
-                             gradesStore: GradesStore) {
+    private static func seed(
+        coursesStore: CoursesStore,
+        assignmentsStore: AssignmentsStore,
+        gradesStore: GradesStore
+    ) {
         _ = gradesStore
         let now = Date()
         let calendar = Calendar.current
 
-        let currentSemester = makeSemester(reference: now,
-                                           id: SampleIds.fallSemester,
-                                           isCurrent: true)
+        let currentSemester = makeSemester(
+            reference: now,
+            id: SampleIds.fallSemester,
+            isCurrent: true
+        )
         let nextSemesterStart = calendar.date(byAdding: .day, value: 1, to: currentSemester.endDate) ?? now
-        let nextSemester = makeSemester(reference: nextSemesterStart,
-                                        id: SampleIds.springSemester,
-                                        isCurrent: false)
+        let nextSemester = makeSemester(
+            reference: nextSemesterStart,
+            id: SampleIds.springSemester,
+            isCurrent: false
+        )
 
         if !coursesStore.semesters.contains(where: { $0.id == currentSemester.id }) {
             coursesStore.addSemester(currentSemester)
@@ -102,7 +108,7 @@ enum SampleDataSeeder {
         }
 
         let tasks = makeSampleTasks(now: now)
-        let existingTaskIds = Set(assignmentsStore.tasks.map { $0.id })
+        let existingTaskIds = Set(assignmentsStore.tasks.map(\.id))
         for task in tasks where !existingTaskIds.contains(task.id) {
             assignmentsStore.addTask(task)
         }
@@ -110,9 +116,11 @@ enum SampleDataSeeder {
         coursesStore.recalcGPA(tasks: assignmentsStore.tasks)
     }
 
-    private static func remove(coursesStore: CoursesStore,
-                               assignmentsStore: AssignmentsStore,
-                               gradesStore: GradesStore) {
+    private static func remove(
+        coursesStore: CoursesStore,
+        assignmentsStore: AssignmentsStore,
+        gradesStore: GradesStore
+    ) {
         _ = gradesStore
         let sampleTaskIds: Set<UUID> = [
             SampleIds.taskProblemSet,
@@ -147,22 +155,23 @@ enum SampleDataSeeder {
         coursesStore.recalcGPA(tasks: assignmentsStore.tasks)
     }
 
-    private static func makeSemester(reference: Date,
-                                     id: UUID,
-                                     isCurrent: Bool) -> Semester {
+    private static func makeSemester(
+        reference: Date,
+        id: UUID,
+        isCurrent: Bool
+    ) -> Semester {
         let calendar = Calendar.current
         let month = calendar.component(.month, from: reference)
 
-        let term: SemesterType
-        switch month {
-        case 1...3:
-            term = .spring
-        case 4...6:
-            term = .summerI
-        case 7...8:
-            term = .summerII
+        let term: SemesterType = switch month {
+        case 1 ... 3:
+            .spring
+        case 4 ... 6:
+            .summerI
+        case 7 ... 8:
+            .summerII
         default:
-            term = .fall
+            .fall
         }
 
         let startDate = calendar.date(byAdding: .month, value: -2, to: reference) ?? reference

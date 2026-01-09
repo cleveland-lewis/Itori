@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - Integration Pattern Enforcement
 
@@ -10,32 +10,32 @@ import Combine
 /// - ViewModels only, never Views
 public enum AIIntegrationEnforcement {
     static let appLaunchDate = Date()
-    
+
     /// Validates that a caller is authorized to use AI
     public static func validateCaller(file: String = #file, function: String = #function) -> Bool {
         // In production, this would check that:
         // 1. Caller is a ViewModel (not a View)
         // 2. Caller doesn't import provider modules
         // 3. Call path goes through approved entry points
-        
+
         #if DEBUG
-        // Verify not called from SwiftUI View
-        let isView = file.contains("View.swift") && !file.contains("ViewModel")
-        if isView {
-            assertionFailure("❌ AI integration violated: \(function) called from View layer. Use ViewModel only.")
-            return false
-        }
+            // Verify not called from SwiftUI View
+            let isView = file.contains("View.swift") && !file.contains("ViewModel")
+            if isView {
+                assertionFailure("❌ AI integration violated: \(function) called from View layer. Use ViewModel only.")
+                return false
+            }
         #endif
-        
+
         return true
     }
-    
+
     /// Reports unauthorized integration attempts
     public static func reportViolation(_ message: String, file: String = #file, line: Int = #line) {
         #if DEBUG
-        DebugLogger.log("⚠️ AI Integration Violation at \(file):\(line)")
-        DebugLogger.log("   \(message)")
-        assertionFailure(message)
+            DebugLogger.log("⚠️ AI Integration Violation at \(file):\(line)")
+            DebugLogger.log("   \(message)")
+            assertionFailure(message)
         #endif
     }
 }
@@ -50,7 +50,7 @@ public struct FieldMergeGuard: Codable, Sendable {
     public let lastAppliedAIUptime: TimeInterval?
     public let lastAppliedAIInputHash: String?
     public let isUserLocked: Bool
-    
+
     public init(
         lastUserEditAt: Date? = nil,
         lastUserEditUptime: TimeInterval? = nil,
@@ -66,7 +66,7 @@ public struct FieldMergeGuard: Codable, Sendable {
         self.lastAppliedAIInputHash = lastAppliedAIInputHash
         self.isUserLocked = isUserLocked
     }
-    
+
     /// Determines if an AI result should be applied to this field
     public func shouldApply(
         result: any AIResultProtocol,
@@ -77,7 +77,7 @@ public struct FieldMergeGuard: Codable, Sendable {
         guard !isUserLocked else {
             return false
         }
-        
+
         // Never apply if result input doesn't match current state
         guard currentInputHash == result.inputHash else {
             return false
@@ -86,39 +86,44 @@ public struct FieldMergeGuard: Codable, Sendable {
         if let version = currentFeatureStateVersion, version != result.featureStateVersion {
             return false
         }
-        
+
         // Never apply if user edited after result was computed
         if let userEditTime = lastUserEditAt,
-           userEditTime >= result.computedAt {
+           userEditTime >= result.computedAt
+        {
             return false
         }
 
         if let userEditUptime = lastUserEditUptime,
            let resultUptime = result.computedAtUptime,
-           userEditUptime >= resultUptime {
+           userEditUptime >= resultUptime
+        {
             return false
         }
 
         if result.computedAt < AIIntegrationEnforcement.appLaunchDate,
-           lastUserEditAt != nil {
+           lastUserEditAt != nil
+        {
             return false
         }
-        
+
         // Never apply stale results
         if let lastApplied = lastAppliedAIAt,
-           result.computedAt < lastApplied {
+           result.computedAt < lastApplied
+        {
             return false
         }
 
         if let lastAppliedUptime = lastAppliedAIUptime,
            let resultUptime = result.computedAtUptime,
-           resultUptime < lastAppliedUptime {
+           resultUptime < lastAppliedUptime
+        {
             return false
         }
-        
+
         return true
     }
-    
+
     /// Records that user edited this field
     public func withUserEdit(at time: Date = Date()) -> FieldMergeGuard {
         FieldMergeGuard(
@@ -130,7 +135,7 @@ public struct FieldMergeGuard: Codable, Sendable {
             isUserLocked: isUserLocked
         )
     }
-    
+
     /// Records that AI result was applied
     public func withAIApplied(
         at time: Date = Date(),
@@ -145,7 +150,7 @@ public struct FieldMergeGuard: Codable, Sendable {
             isUserLocked: isUserLocked
         )
     }
-    
+
     /// Locks field to prevent any AI modifications
     public func locked() -> FieldMergeGuard {
         FieldMergeGuard(
@@ -174,7 +179,7 @@ extension AIResult: AIResultProtocol {
     public var inputHash: String {
         metadata.inputHash
     }
-    
+
     public var computedAt: Date {
         metadata.computedAt
     }
@@ -198,7 +203,7 @@ public enum AIMergePolicy: String, Codable, Sendable {
     case suggestOnly
     /// AI requires explicit user approval before applying.
     case explicitApplyRequired
-    
+
     /// Determines if result should be applied to the live field.
     public func shouldApply(
         result: any AIResultProtocol,
@@ -209,7 +214,7 @@ public enum AIMergePolicy: String, Codable, Sendable {
         guard `guard`.shouldApply(result: result, currentInputHash: currentInputHash) else {
             return false
         }
-        
+
         switch self {
         case .defaultOnly:
             return isFieldEmpty && `guard`.lastUserEditAt == nil
@@ -230,7 +235,7 @@ public struct ScheduleDiff: Codable, Sendable, Equatable {
     public let conflicts: [ScheduleConflict]
     public let reason: String
     public let confidence: AIConfidence
-    
+
     public init(
         addedBlocks: [ProposedBlock] = [],
         movedBlocks: [MovedBlock] = [],
@@ -248,20 +253,20 @@ public struct ScheduleDiff: Codable, Sendable, Equatable {
         self.reason = reason
         self.confidence = confidence
     }
-    
+
     /// Returns true if applying this diff would be idempotent.
     public func isIdempotent() -> Bool {
-        let addedIDs = Set(addedBlocks.map { $0.tempID })
-        let movedIDs = Set(movedBlocks.map { $0.blockID })
-        let resizedIDs = Set(resizedBlocks.map { $0.blockID })
-        let removedIDs = Set(removedBlocks.map { $0.blockID })
-        
+        let addedIDs = Set(addedBlocks.map(\.tempID))
+        let movedIDs = Set(movedBlocks.map(\.blockID))
+        let resizedIDs = Set(resizedBlocks.map(\.blockID))
+        let removedIDs = Set(removedBlocks.map(\.blockID))
+
         return addedIDs.isDisjoint(with: movedIDs) &&
-               addedIDs.isDisjoint(with: resizedIDs) &&
-               addedIDs.isDisjoint(with: removedIDs) &&
-               movedIDs.isDisjoint(with: resizedIDs) &&
-               movedIDs.isDisjoint(with: removedIDs) &&
-               resizedIDs.isDisjoint(with: removedIDs)
+            addedIDs.isDisjoint(with: resizedIDs) &&
+            addedIDs.isDisjoint(with: removedIDs) &&
+            movedIDs.isDisjoint(with: resizedIDs) &&
+            movedIDs.isDisjoint(with: removedIDs) &&
+            resizedIDs.isDisjoint(with: removedIDs)
     }
 }
 
@@ -272,8 +277,15 @@ public struct ProposedBlock: Codable, Sendable, Identifiable, Equatable {
     public let startDate: Date
     public let duration: TimeInterval
     public let reason: String
-    
-    public init(id: UUID = UUID(), tempID: String, title: String, startDate: Date, duration: TimeInterval, reason: String) {
+
+    public init(
+        id: UUID = UUID(),
+        tempID: String,
+        title: String,
+        startDate: Date,
+        duration: TimeInterval,
+        reason: String
+    ) {
         self.id = id
         self.tempID = tempID
         self.title = title
@@ -288,7 +300,7 @@ public struct MovedBlock: Codable, Sendable, Identifiable, Equatable {
     public let blockID: String
     public let newStartDate: Date
     public let reason: String
-    
+
     public init(id: UUID = UUID(), blockID: String, newStartDate: Date, reason: String) {
         self.id = id
         self.blockID = blockID
@@ -302,7 +314,7 @@ public struct ResizedBlock: Codable, Sendable, Identifiable, Equatable {
     public let blockID: String
     public let newDuration: TimeInterval
     public let reason: String
-    
+
     public init(id: UUID = UUID(), blockID: String, newDuration: TimeInterval, reason: String) {
         self.id = id
         self.blockID = blockID
@@ -328,7 +340,7 @@ public struct ScheduleConflict: Codable, Sendable, Identifiable, Equatable {
     public let blockID: String
     public let conflictingBlockID: String?
     public let reason: String
-    
+
     public init(id: UUID = UUID(), blockID: String, conflictingBlockID: String? = nil, reason: String) {
         self.id = id
         self.blockID = blockID
@@ -343,14 +355,14 @@ public struct ScheduleConflict: Codable, Sendable, Identifiable, Equatable {
 @MainActor
 public final class AIRegressionMonitor: ObservableObject {
     public static let shared = AIRegressionMonitor()
-    
+
     @Published public private(set) var alerts: [RegressionAlert] = []
-    
+
     private var baseline = HealthBaseline()
     private var current = HealthMetrics()
-    
+
     private init() {}
-    
+
     /// Records a port execution for monitoring
     public func recordExecution(
         port: AIPortID,
@@ -366,13 +378,13 @@ public final class AIRegressionMonitor: ObservableObject {
             validationFailed: validationFailed,
             redactionDelta: redactionDelta
         )
-        
+
         checkForRegressions()
     }
-    
+
     private func checkForRegressions() {
         alerts.removeAll()
-        
+
         // Check fallback usage spike
         let fallbackRate = current.fallbackRate
         if fallbackRate > baseline.fallbackRate * 1.3 {
@@ -384,7 +396,7 @@ public final class AIRegressionMonitor: ObservableObject {
                 baseline: baseline.fallbackRate
             ))
         }
-        
+
         // Check validation failure rate
         let validationFailureRate = current.validationFailureRate
         if validationFailureRate > 0.05 {
@@ -396,7 +408,7 @@ public final class AIRegressionMonitor: ObservableObject {
                 baseline: 0.05
             ))
         }
-        
+
         // Check p95 latency
         if let p95 = current.p95Latency, p95 > baseline.latencyBudgetMs {
             alerts.append(RegressionAlert(
@@ -407,7 +419,7 @@ public final class AIRegressionMonitor: ObservableObject {
                 baseline: Double(baseline.latencyBudgetMs)
             ))
         }
-        
+
         // Check redaction delta
         let avgRedaction = current.avgRedactionDelta
         if avgRedaction > 0.3 {
@@ -420,7 +432,7 @@ public final class AIRegressionMonitor: ObservableObject {
             ))
         }
     }
-    
+
     /// Resets baseline to current metrics
     public func setBaseline() {
         baseline = HealthBaseline(
@@ -438,7 +450,7 @@ public struct RegressionAlert: Identifiable {
     public let metric: String
     public let current: Double
     public let baseline: Double
-    
+
     public enum Severity {
         case warning
         case error
@@ -453,32 +465,32 @@ private struct HealthBaseline {
 
 private struct HealthMetrics {
     private var executions: [ExecutionRecord] = []
-    
+
     var fallbackRate: Double {
         guard !executions.isEmpty else { return 0 }
-        let fallbacks = executions.filter { $0.usedFallback }.count
+        let fallbacks = executions.filter(\.usedFallback).count
         return Double(fallbacks) / Double(executions.count)
     }
-    
+
     var validationFailureRate: Double {
         guard !executions.isEmpty else { return 0 }
-        let failures = executions.filter { $0.validationFailed }.count
+        let failures = executions.filter(\.validationFailed).count
         return Double(failures) / Double(executions.count)
     }
-    
+
     var p95Latency: Int? {
         guard !executions.isEmpty else { return nil }
-        let sorted = executions.map { $0.latencyMs }.sorted()
+        let sorted = executions.map(\.latencyMs).sorted()
         let index = Int(Double(sorted.count) * 0.95)
         return sorted[min(index, sorted.count - 1)]
     }
-    
+
     var avgRedactionDelta: Double {
         guard !executions.isEmpty else { return 0 }
-        let sum = executions.map { $0.redactionDelta }.reduce(0, +)
+        let sum = executions.map(\.redactionDelta).reduce(0, +)
         return sum / Double(executions.count)
     }
-    
+
     mutating func recordExecution(
         port: AIPortID,
         usedFallback: Bool,
@@ -493,7 +505,7 @@ private struct HealthMetrics {
             validationFailed: validationFailed,
             redactionDelta: redactionDelta
         ))
-        
+
         // Keep last 1000 executions
         if executions.count > 1000 {
             executions.removeFirst(executions.count - 1000)

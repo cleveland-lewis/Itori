@@ -1,8 +1,8 @@
-import Foundation
 import _Concurrency
+import Foundation
 
 enum SyllabusParser {
-    static func parseDates(from url: URL, courseId: UUID? = nil) async -> [AppTask] {
+    static func parseDates(from _: URL, courseId: UUID? = nil) async -> [AppTask] {
         // Simulate parsing delay (2 seconds)
         try? await _Concurrency.Task.sleep(nanoseconds: 2_000_000_000)
 

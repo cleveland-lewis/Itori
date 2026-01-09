@@ -1,40 +1,40 @@
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - AI Mode
 
 /// Defines how AI requests are routed
 public enum AIMode: String, Codable, CaseIterable, Identifiable {
-    case auto              // Smart routing (Apple → BYO → Local)
-    case appleOnly         // Only use Apple Intelligence
-    case localOnly         // Only use local models (offline)
-    case byoOnly           // Only use BYO provider
-    
+    case auto // Smart routing (Apple → BYO → Local)
+    case appleOnly // Only use Apple Intelligence
+    case localOnly // Only use local models (offline)
+    case byoOnly // Only use BYO provider
+
     public var id: String { rawValue }
-    
+
     public var displayName: String {
         switch self {
         case .auto:
-            return "Auto (Recommended)"
+            "Auto (Recommended)"
         case .appleOnly:
-            return "Apple Intelligence Only"
+            "Apple Intelligence Only"
         case .localOnly:
-            return "Local Only (Offline)"
+            "Local Only (Offline)"
         case .byoOnly:
-            return "BYO Provider"
+            "BYO Provider"
         }
     }
-    
+
     public var description: String {
         switch self {
         case .auto:
-            return "Automatically select the best available provider"
+            "Automatically select the best available provider"
         case .appleOnly:
-            return "Use only Apple Intelligence (on-device)"
+            "Use only Apple Intelligence (on-device)"
         case .localOnly:
-            return "Use only local models (no network access)"
+            "Use only local models (no network access)"
         case .byoOnly:
-            return "Use your configured provider"
+            "Use your configured provider"
         }
     }
 }
@@ -49,7 +49,7 @@ public struct RoutingEvent {
     let latencyMs: Int
     let success: Bool
     let errorMessage: String?
-    
+
     init(provider: String, task: AITaskKind, latencyMs: Int, success: Bool, errorMessage: String? = nil) {
         self.timestamp = Date()
         self.provider = provider
@@ -66,33 +66,34 @@ public struct RoutingEvent {
 @MainActor
 public final class AIRouter: ObservableObject {
     public static let shared = AIRouter()
-    
+
     @Published public var mode: AIMode {
         didSet {
             saveMode()
             objectWillChange.send()
         }
     }
-    
+
     @Published public var currentProvider: String?
     @Published public var isProcessing: Bool = false
-    
+
     private var providers: [String: AIProvider] = [:]
     private var routingLog: [RoutingEvent] = []
     private let maxLogSize = 100
-    
+
     private init() {
         // Load saved mode
         if let savedRaw = UserDefaults.standard.string(forKey: "aiRouterMode"),
-           let saved = AIMode(rawValue: savedRaw) {
+           let saved = AIMode(rawValue: savedRaw)
+        {
             self.mode = saved
         } else {
             self.mode = .auto
         }
-        
+
         registerProviders()
     }
-    
+
     /// Route a request to appropriate provider
     public func route(
         prompt: String,
@@ -102,22 +103,22 @@ public final class AIRouter: ObservableObject {
     ) async throws -> AIProviderResult {
         isProcessing = true
         defer { isProcessing = false }
-        
+
         let startTime = Date()
-        
+
         do {
             let provider = try await selectProvider(
                 task: task,
                 requireOffline: requireOffline
             )
-            
+
             let result = try await provider.generate(
                 prompt: prompt,
                 task: task,
                 schema: schema,
                 temperature: temperatureFor(task: task)
             )
-            
+
             let latency = Int(Date().timeIntervalSince(startTime) * 1000)
             logRouting(
                 provider: provider.name,
@@ -125,10 +126,10 @@ public final class AIRouter: ObservableObject {
                 latencyMs: latency,
                 success: true
             )
-            
+
             currentProvider = provider.name
             return result
-            
+
         } catch {
             let latency = Int(Date().timeIntervalSince(startTime) * 1000)
             logRouting(
@@ -141,7 +142,7 @@ public final class AIRouter: ObservableObject {
             throw error
         }
     }
-    
+
     /// Select appropriate provider based on mode and requirements
     private func selectProvider(
         task: AITaskKind,
@@ -170,7 +171,7 @@ public final class AIRouter: ObservableObject {
             return byo
         }
     }
-    
+
     /// Auto-select best available provider
     private func autoSelectProvider(
         task: AITaskKind,
@@ -180,13 +181,14 @@ public final class AIRouter: ObservableObject {
         if !requireOffline,
            let apple = providers["apple"],
            await apple.isAvailable(),
-           apple.capabilities.supportedTasks.contains(task) {
+           apple.capabilities.supportedTasks.contains(task)
+        {
             return apple
         }
 
         #if os(iOS) || os(iPadOS)
-        // Ensure the lite model download is queued if Apple Intelligence is unavailable.
-        triggerLiteDownloadIfNeeded()
+            // Ensure the lite model download is queued if Apple Intelligence is unavailable.
+            triggerLiteDownloadIfNeeded()
         #endif
 
         let appleAvailability = AppleIntelligenceProvider.availability()
@@ -194,7 +196,8 @@ public final class AIRouter: ObservableObject {
 
         // 2. Try local (offline, platform-specific)
         if let local = try? await selectLocalProvider(),
-           local.capabilities.supportedTasks.contains(task) {
+           local.capabilities.supportedTasks.contains(task)
+        {
             return local
         }
 
@@ -202,7 +205,8 @@ public final class AIRouter: ObservableObject {
         if !requireOffline,
            let byo = providers["byo"],
            await byo.isAvailable(),
-           byo.capabilities.supportedTasks.contains(task) {
+           byo.capabilities.supportedTasks.contains(task)
+        {
             return byo
         }
 
@@ -211,57 +215,64 @@ public final class AIRouter: ObservableObject {
     }
 
     #if os(iOS) || os(iPadOS)
-    private func triggerLiteDownloadIfNeeded() {
-        if LocalModelManager.shared.isModelDownloaded(.iOSLite) || LocalModelManager.shared.isDownloading(.iOSLite) {
-            return
-        }
-        Task {
-            do {
-                try await LocalModelManager.shared.downloadModel(.iOSLite)
-            } catch {
-                LOG_AI(.error, "AIRouter", "Failed to download iOS lite model", metadata: ["error": error.localizedDescription])
+        private func triggerLiteDownloadIfNeeded() {
+            if LocalModelManager.shared.isModelDownloaded(.iOSLite) || LocalModelManager.shared
+                .isDownloading(.iOSLite)
+            {
+                return
+            }
+            Task {
+                do {
+                    try await LocalModelManager.shared.downloadModel(.iOSLite)
+                } catch {
+                    LOG_AI(
+                        .error,
+                        "AIRouter",
+                        "Failed to download iOS lite model",
+                        metadata: ["error": error.localizedDescription]
+                    )
+                }
             }
         }
-    }
     #endif
-    
+
     /// Select platform-appropriate local provider
     private func selectLocalProvider() async throws -> AIProvider {
         #if os(macOS)
-        guard let local = providers["local-macos"] else {
-            throw AIError.providerUnavailable("Local macOS model")
-        }
+            guard let local = providers["local-macos"] else {
+                throw AIError.providerUnavailable("Local macOS model")
+            }
         #else
-        guard let local = providers["local-ios"] else {
-            throw AIError.providerUnavailable("Local iOS model")
-        }
+            guard let local = providers["local-ios"] else {
+                throw AIError.providerUnavailable("Local iOS model")
+            }
         #endif
-        
+
         guard await local.isAvailable() else {
             throw AIError.modelNotDownloaded
         }
-        
+
         return local
     }
-    
+
     /// Get appropriate temperature for task type
     private func temperatureFor(task: AITaskKind) -> Double {
         switch task {
         case .intentToAction:
-            return 0.0  // Deterministic
+            0.0 // Deterministic
         case .studyQuestionGen:
-            return 0.7  // Creative
+            0.7 // Creative
         case .rewrite:
-            return 0.5  // Balanced
+            0.5 // Balanced
         case .summarize:
-            return 0.3  // Focused
+            0.3 // Focused
         case .textCompletion:
-            return 0.5  // Balanced
+            0.5 // Balanced
         case .chat:
-            return 0.7  // Natural
+            0.7 // Natural
         }
     }
-    
+
     /// Log a routing decision
     private func logRouting(
         provider: String,
@@ -277,70 +288,70 @@ public final class AIRouter: ObservableObject {
             success: success,
             errorMessage: errorMessage
         )
-        
+
         routingLog.append(event)
-        
+
         // Trim log if too large
         if routingLog.count > maxLogSize {
             routingLog.removeFirst(routingLog.count - maxLogSize)
         }
-        
+
         #if DEBUG
-        DebugLogger.log("🤖 AI Router: \(provider) - \(task.displayName) (\(latencyMs)ms) - \(success ? "✅" : "❌")")
-        if let error = errorMessage {
-            DebugLogger.log("   Error: \(error)")
-        }
+            DebugLogger.log("🤖 AI Router: \(provider) - \(task.displayName) (\(latencyMs)ms) - \(success ? "✅" : "❌")")
+            if let error = errorMessage {
+                DebugLogger.log("   Error: \(error)")
+            }
         #endif
     }
-    
+
     /// Register all available providers
     private func registerProviders() {
         // Register Apple Intelligence provider
         providers["apple"] = AppleIntelligenceProvider()
-        
+
         // Register local providers
         #if os(macOS)
-        providers["local-macos"] = LocalModelProvider_macOS()
+            providers["local-macos"] = LocalModelProvider_macOS()
         #else
-        providers["local-ios"] = LocalModelProvider_iOS()
+            providers["local-ios"] = LocalModelProvider_iOS()
         #endif
-        
+
         // BYO provider will be registered when user configures
     }
-    
+
     /// Register BYO provider with configuration
     public func registerBYOProvider(_ provider: AIProvider) {
         providers["byo"] = provider
     }
-    
+
     /// Remove BYO provider
     public func removeBYOProvider() {
         providers.removeValue(forKey: "byo")
     }
-    
+
     /// Get current routing log
     public func getRoutingLog() -> [RoutingEvent] {
-        return routingLog
+        routingLog
     }
-    
+
     /// Clear routing log
     public func clearRoutingLog() {
         routingLog.removeAll()
     }
-    
+
     /// Save mode to UserDefaults
     private func saveMode() {
         UserDefaults.standard.set(mode.rawValue, forKey: "aiRouterMode")
     }
-    
+
     /// Get available providers
     public func getAvailableProviders() async -> [String: Bool] {
         var availability: [String: Bool] = [:]
-        
+
         for (key, provider) in providers {
             availability[key] = await provider.isAvailable()
         }
-        
+
         return availability
     }
 }

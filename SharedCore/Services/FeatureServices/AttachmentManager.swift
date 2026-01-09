@@ -1,8 +1,9 @@
 import Foundation
+
 #if os(macOS)
-#if os(macOS)
-import AppKit
-#endif
+    #if os(macOS)
+        import AppKit
+    #endif
 #endif
 
 /// Manages file attachments - saving, deleting, and organizing files
@@ -16,7 +17,7 @@ class AttachmentManager {
         guard let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
             LOG_UI(.error, "AttachmentManager", "CRITICAL: Could not find documents directory - using temp")
             // Fallback to temp directory
-            return fileManager.temporaryDirectory.appendingPathComponent("RootsAttachments", isDirectory: true)
+            return fileManager.temporaryDirectory.appendingPathComponent("ItoriAttachments", isDirectory: true)
         }
         return documentsURL.appendingPathComponent("Attachments", isDirectory: true)
     }
@@ -85,7 +86,7 @@ class AttachmentManager {
     /// - Parameter url: The URL to check
     /// - Returns: True if the file exists, false otherwise
     func fileExists(at url: URL?) -> Bool {
-        guard let url = url else { return false }
+        guard let url else { return false }
         return fileManager.fileExists(atPath: url.path)
     }
 
@@ -93,7 +94,7 @@ class AttachmentManager {
     /// - Parameter url: The URL of the file
     /// - Returns: The file size in bytes, or nil if it couldn't be determined
     func fileSize(at url: URL?) -> Int64? {
-        guard let url = url, let attributes = try? fileManager.attributesOfItem(atPath: url.path) else {
+        guard let url, let attributes = try? fileManager.attributesOfItem(atPath: url.path) else {
             return nil
         }
         return attributes[.size] as? Int64
@@ -103,11 +104,11 @@ class AttachmentManager {
     /// - Parameter attachment: The attachment to open
     func openFile(_ attachment: Attachment) {
         #if os(macOS)
-        guard let url = attachment.localURL else { return }
-        NSWorkspace.shared.open(url)
+            guard let url = attachment.localURL else { return }
+            NSWorkspace.shared.open(url)
         #else
-        // For iOS, you'd use a document interaction controller or QuickLook
-        DebugLogger.log("Opening files is primarily supported on macOS")
+            // For iOS, you'd use a document interaction controller or QuickLook
+            DebugLogger.log("Opening files is primarily supported on macOS")
         #endif
     }
 
@@ -115,8 +116,8 @@ class AttachmentManager {
     /// - Parameter attachment: The attachment to reveal
     func revealInFinder(_ attachment: Attachment) {
         #if os(macOS)
-        guard let url = attachment.localURL else { return }
-        NSWorkspace.shared.activateFileViewerSelecting([url])
+            guard let url = attachment.localURL else { return }
+            NSWorkspace.shared.activateFileViewerSelecting([url])
         #endif
     }
 }

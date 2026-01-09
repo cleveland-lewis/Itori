@@ -43,156 +43,158 @@ public struct NotesEditor: View {
 }
 
 #if os(macOS)
-private struct NotesTextView: NSViewRepresentable {
-    @Binding var text: String
-    @Binding var isFocused: Bool
+    private struct NotesTextView: NSViewRepresentable {
+        @Binding var text: String
+        @Binding var isFocused: Bool
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator(text: $text, isFocused: $isFocused)
-    }
+        func makeCoordinator() -> Coordinator {
+            Coordinator(text: $text, isFocused: $isFocused)
+        }
 
-    func makeNSView(context: Context) -> NSScrollView {
-        let scrollView = NSScrollView()
-        scrollView.drawsBackground = false
-        scrollView.hasVerticalScroller = true
-        scrollView.hasHorizontalScroller = false
+        func makeNSView(context: Context) -> NSScrollView {
+            let scrollView = NSScrollView()
+            scrollView.drawsBackground = false
+            scrollView.hasVerticalScroller = true
+            scrollView.hasHorizontalScroller = false
 
-        let textView = NSTextView()
-        textView.delegate = context.coordinator
-        textView.drawsBackground = false
-        textView.isRichText = true
-        textView.isEditable = true
-        textView.isSelectable = true
-        textView.importsGraphics = false
-        textView.allowsUndo = true
-        textView.font = NSFont.preferredFont(forTextStyle: .body)
-        textView.textContainerInset = NSSize(width: 6, height: 8)
-        textView.textStorage?.setAttributedString(
-            NotesRichTextStorage.attributedString(from: text)
-        )
-
-        scrollView.documentView = textView
-        return scrollView
-    }
-
-    func updateNSView(_ nsView: NSScrollView, context: Context) {
-        guard let textView = nsView.documentView as? NSTextView else { return }
-        let currentEncoded = NotesRichTextStorage.encode(textView.attributedString())
-        if currentEncoded != text {
+            let textView = NSTextView()
+            textView.delegate = context.coordinator
+            textView.drawsBackground = false
+            textView.isRichText = true
+            textView.isEditable = true
+            textView.isSelectable = true
+            textView.importsGraphics = false
+            textView.allowsUndo = true
+            textView.font = NSFont.preferredFont(forTextStyle: .body)
+            textView.textContainerInset = NSSize(width: 6, height: 8)
             textView.textStorage?.setAttributedString(
                 NotesRichTextStorage.attributedString(from: text)
             )
-        }
-    }
 
-    final class Coordinator: NSObject, NSTextViewDelegate {
-        @Binding var text: String
-        @Binding var isFocused: Bool
-
-        init(text: Binding<String>, isFocused: Binding<Bool>) {
-            _text = text
-            _isFocused = isFocused
+            scrollView.documentView = textView
+            return scrollView
         }
 
-        func textDidBeginEditing(_ notification: Notification) {
-            isFocused = true
+        func updateNSView(_ nsView: NSScrollView, context _: Context) {
+            guard let textView = nsView.documentView as? NSTextView else { return }
+            let currentEncoded = NotesRichTextStorage.encode(textView.attributedString())
+            if currentEncoded != text {
+                textView.textStorage?.setAttributedString(
+                    NotesRichTextStorage.attributedString(from: text)
+                )
+            }
         }
 
-        func textDidEndEditing(_ notification: Notification) {
-            isFocused = false
-        }
+        final class Coordinator: NSObject, NSTextViewDelegate {
+            @Binding var text: String
+            @Binding var isFocused: Bool
 
-        func textDidChange(_ notification: Notification) {
-            guard let textView = notification.object as? NSTextView else { return }
-            text = NotesRichTextStorage.encode(textView.attributedString())
-        }
-    }
-}
-#else
-private struct NotesTextView: UIViewRepresentable {
-    @Binding var text: String
-    @Binding var isFocused: Bool
+            init(text: Binding<String>, isFocused: Binding<Bool>) {
+                _text = text
+                _isFocused = isFocused
+            }
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator(text: $text, isFocused: $isFocused)
-    }
+            func textDidBeginEditing(_: Notification) {
+                isFocused = true
+            }
 
-    func makeUIView(context: Context) -> UITextView {
-        let textView = RichTextView()
-        textView.delegate = context.coordinator
-        textView.backgroundColor = .clear
-        textView.isScrollEnabled = true
-        textView.alwaysBounceVertical = true
-        textView.font = UIFont.preferredFont(forTextStyle: .body)
-        textView.adjustsFontForContentSizeCategory = true
-        textView.textContainerInset = UIEdgeInsets(top: 8, left: 4, bottom: 8, right: 4)
-        textView.attributedText = NotesRichTextStorage.attributedString(from: text)
-        return textView
-    }
+            func textDidEndEditing(_: Notification) {
+                isFocused = false
+            }
 
-    func updateUIView(_ uiView: UITextView, context: Context) {
-        let currentEncoded = NotesRichTextStorage.encode(uiView.attributedText ?? NSAttributedString(string: ""))
-        if currentEncoded != text {
-            uiView.attributedText = NotesRichTextStorage.attributedString(from: text)
-        }
-    }
-
-    final class Coordinator: NSObject, UITextViewDelegate {
-        @Binding var text: String
-        @Binding var isFocused: Bool
-
-        init(text: Binding<String>, isFocused: Binding<Bool>) {
-            _text = text
-            _isFocused = isFocused
-        }
-
-        func textViewDidBeginEditing(_ textView: UITextView) {
-            isFocused = true
-        }
-
-        func textViewDidEndEditing(_ textView: UITextView) {
-            isFocused = false
-        }
-
-        func textViewDidChange(_ textView: UITextView) {
-            text = NotesRichTextStorage.encode(textView.attributedText ?? NSAttributedString(string: ""))
-        }
-    }
-
-    private final class RichTextView: UITextView {
-        override var keyCommands: [UIKeyCommand]? {
-            [
-                UIKeyCommand(input: "b", modifierFlags: .command, action: #selector(handleToggleBoldface)),
-                UIKeyCommand(input: "i", modifierFlags: .command, action: #selector(handleToggleItalics))
-            ]
-        }
-
-        @objc private func handleToggleBoldface() {
-            toggleTrait(.traitBold)
-        }
-
-        @objc private func handleToggleItalics() {
-            toggleTrait(.traitItalic)
-        }
-
-        private func toggleTrait(_ trait: UIFontDescriptor.SymbolicTraits) {
-            guard let currentFont = typingAttributes[.font] as? UIFont ?? font else { return }
-            let range = selectedRange
-            let targetTraits: UIFontDescriptor.SymbolicTraits = currentFont.fontDescriptor.symbolicTraits.contains(trait)
-                ? currentFont.fontDescriptor.symbolicTraits.subtracting(trait)
-                : currentFont.fontDescriptor.symbolicTraits.union(trait)
-            let descriptor = currentFont.fontDescriptor.withSymbolicTraits(targetTraits) ?? currentFont.fontDescriptor
-            let updatedFont = UIFont(descriptor: descriptor, size: currentFont.pointSize)
-
-            if range.length == 0 {
-                typingAttributes[.font] = updatedFont
-            } else {
-                let mutable = NSMutableAttributedString(attributedString: attributedText)
-                mutable.addAttribute(.font, value: updatedFont, range: range)
-                attributedText = mutable
-                selectedRange = range
+            func textDidChange(_ notification: Notification) {
+                guard let textView = notification.object as? NSTextView else { return }
+                text = NotesRichTextStorage.encode(textView.attributedString())
             }
         }
     }
-}
+#else
+    private struct NotesTextView: UIViewRepresentable {
+        @Binding var text: String
+        @Binding var isFocused: Bool
+
+        func makeCoordinator() -> Coordinator {
+            Coordinator(text: $text, isFocused: $isFocused)
+        }
+
+        func makeUIView(context: Context) -> UITextView {
+            let textView = RichTextView()
+            textView.delegate = context.coordinator
+            textView.backgroundColor = .clear
+            textView.isScrollEnabled = true
+            textView.alwaysBounceVertical = true
+            textView.font = UIFont.preferredFont(forTextStyle: .body)
+            textView.adjustsFontForContentSizeCategory = true
+            textView.textContainerInset = UIEdgeInsets(top: 8, left: 4, bottom: 8, right: 4)
+            textView.attributedText = NotesRichTextStorage.attributedString(from: text)
+            return textView
+        }
+
+        func updateUIView(_ uiView: UITextView, context _: Context) {
+            let currentEncoded = NotesRichTextStorage.encode(uiView.attributedText ?? NSAttributedString(string: ""))
+            if currentEncoded != text {
+                uiView.attributedText = NotesRichTextStorage.attributedString(from: text)
+            }
+        }
+
+        final class Coordinator: NSObject, UITextViewDelegate {
+            @Binding var text: String
+            @Binding var isFocused: Bool
+
+            init(text: Binding<String>, isFocused: Binding<Bool>) {
+                _text = text
+                _isFocused = isFocused
+            }
+
+            func textViewDidBeginEditing(_: UITextView) {
+                isFocused = true
+            }
+
+            func textViewDidEndEditing(_: UITextView) {
+                isFocused = false
+            }
+
+            func textViewDidChange(_ textView: UITextView) {
+                text = NotesRichTextStorage.encode(textView.attributedText ?? NSAttributedString(string: ""))
+            }
+        }
+
+        private final class RichTextView: UITextView {
+            override var keyCommands: [UIKeyCommand]? {
+                [
+                    UIKeyCommand(input: "b", modifierFlags: .command, action: #selector(handleToggleBoldface)),
+                    UIKeyCommand(input: "i", modifierFlags: .command, action: #selector(handleToggleItalics))
+                ]
+            }
+
+            @objc private func handleToggleBoldface() {
+                toggleTrait(.traitBold)
+            }
+
+            @objc private func handleToggleItalics() {
+                toggleTrait(.traitItalic)
+            }
+
+            private func toggleTrait(_ trait: UIFontDescriptor.SymbolicTraits) {
+                guard let currentFont = typingAttributes[.font] as? UIFont ?? font else { return }
+                let range = selectedRange
+                let targetTraits: UIFontDescriptor.SymbolicTraits = currentFont.fontDescriptor.symbolicTraits
+                    .contains(trait)
+                    ? currentFont.fontDescriptor.symbolicTraits.subtracting(trait)
+                    : currentFont.fontDescriptor.symbolicTraits.union(trait)
+                let descriptor = currentFont.fontDescriptor.withSymbolicTraits(targetTraits) ?? currentFont
+                    .fontDescriptor
+                let updatedFont = UIFont(descriptor: descriptor, size: currentFont.pointSize)
+
+                if range.length == 0 {
+                    typingAttributes[.font] = updatedFont
+                } else {
+                    let mutable = NSMutableAttributedString(attributedString: attributedText)
+                    mutable.addAttribute(.font, value: updatedFont, range: range)
+                    attributedText = mutable
+                    selectedRange = range
+                }
+            }
+        }
+    }
 #endif

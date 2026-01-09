@@ -21,6 +21,7 @@ public extension AIPort {
     static var preferredProviders: [AIProviderID] {
         [.appleFoundationAI, .localCoreML, .bringYourOwn, .fallbackHeuristic]
     }
+
     static var supportsDeterministicFallback: Bool { true }
     static var mergePolicy: AIMergePolicy { .defaultOnly }
     static var inputHashExcludedKeys: Set<String> { [] }

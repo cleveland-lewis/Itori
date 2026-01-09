@@ -1,10 +1,10 @@
 import SwiftUI
 #if os(iOS)
-import UIKit
+    import UIKit
 #elseif os(macOS)
-#if os(macOS)
-import AppKit
-#endif
+    #if os(macOS)
+        import AppKit
+    #endif
 #endif
 
 enum SensoryFeedback {
@@ -29,37 +29,38 @@ struct SensoryFeedbackModifier: ViewModifier {
     private func performFeedback() {
         // Respect user preferences via UserDefaults
         let enableHaptics = UserDefaults.standard.bool(forKey: "preferences.enableHaptics")
-        guard enableHaptics || !UserDefaults.standard.dictionaryRepresentation().keys.contains("preferences.enableHaptics") else { return }
-        
+        guard enableHaptics || !UserDefaults.standard.dictionaryRepresentation().keys
+            .contains("preferences.enableHaptics") else { return }
+
         // Respect Reduce Motion accessibility setting
         let reduceMotion = UserDefaults.standard.bool(forKey: "preferences.reduceMotion")
         guard !reduceMotion else { return }
-        
+
         #if os(iOS)
-        switch feedback {
-        case .success:
-            let g = UINotificationFeedbackGenerator()
-            g.notificationOccurred(.success)
-        case .warning:
-            let g = UINotificationFeedbackGenerator()
-            g.notificationOccurred(.warning)
-        case .error:
-            let g = UINotificationFeedbackGenerator()
-            g.notificationOccurred(.error)
-        case .selection:
-            let g = UISelectionFeedbackGenerator()
-            g.selectionChanged()
-        }
+            switch feedback {
+            case .success:
+                let g = UINotificationFeedbackGenerator()
+                g.notificationOccurred(.success)
+            case .warning:
+                let g = UINotificationFeedbackGenerator()
+                g.notificationOccurred(.warning)
+            case .error:
+                let g = UINotificationFeedbackGenerator()
+                g.notificationOccurred(.error)
+            case .selection:
+                let g = UISelectionFeedbackGenerator()
+                g.selectionChanged()
+            }
         #elseif os(macOS)
-        // macOS doesn't have standard haptic generators in AppKit; use NSHapticFeedbackManager
-        let manager = NSHapticFeedbackManager.defaultPerformer
-        switch feedback {
-        case .success, .selection:
-            manager.perform(.generic, performanceTime: .now)
-        case .warning, .error:
-            // levelChange is the closest distinct feel for warnings/errors
-            manager.perform(.levelChange, performanceTime: .now)
-        }
+            // macOS doesn't have standard haptic generators in AppKit; use NSHapticFeedbackManager
+            let manager = NSHapticFeedbackManager.defaultPerformer
+            switch feedback {
+            case .success, .selection:
+                manager.perform(.generic, performanceTime: .now)
+            case .warning, .error:
+                // levelChange is the closest distinct feel for warnings/errors
+                manager.perform(.levelChange, performanceTime: .now)
+            }
         #endif
     }
 }
@@ -80,16 +81,16 @@ struct HoverTriggerModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         #if os(macOS)
-        content.onHover { hovering in
-            // set true on enter, reset on exit so each enter triggers feedback
-            if hovering {
-                trigger = true
-            } else {
-                trigger = false
+            content.onHover { hovering in
+                // set true on enter, reset on exit so each enter triggers feedback
+                if hovering {
+                    trigger = true
+                } else {
+                    trigger = false
+                }
             }
-        }
         #else
-        content
+            content
         #endif
     }
 }

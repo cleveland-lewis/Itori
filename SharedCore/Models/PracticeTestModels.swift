@@ -7,7 +7,7 @@ enum PracticeTestDifficulty: String, Codable, CaseIterable, Identifiable {
     case easy = "Easy"
     case medium = "Medium"
     case hard = "Hard"
-    
+
     var id: String { rawValue }
 }
 
@@ -27,7 +27,7 @@ struct PracticeQuestion: Identifiable, Codable, Hashable {
     var correctAnswer: String
     var explanation: String
     var bloomsLevel: String? // e.g., "Remember", "Understand", "Apply", "Analyze"
-    
+
     init(
         id: UUID = UUID(),
         prompt: String,
@@ -53,7 +53,7 @@ struct PracticeAnswer: Codable, Hashable {
     var userAnswer: String
     var isCorrect: Bool
     var timeSpentSeconds: Double?
-    
+
     init(questionId: UUID, userAnswer: String, isCorrect: Bool, timeSpentSeconds: Double? = nil) {
         self.questionId = questionId
         self.userAnswer = userAnswer
@@ -85,7 +85,7 @@ struct PracticeTest: Identifiable, Codable {
     var createdAt: Date
     var submittedAt: Date?
     var generationError: String?
-    
+
     init(
         id: UUID = UUID(),
         courseId: UUID,
@@ -113,15 +113,15 @@ struct PracticeTest: Identifiable, Codable {
         self.submittedAt = submittedAt
         self.generationError = generationError
     }
-    
+
     var score: Double? {
         guard status == .submitted else { return nil }
-        let correct = answers.values.filter { $0.isCorrect }.count
+        let correct = answers.values.filter(\.isCorrect).count
         return questions.isEmpty ? 0 : Double(correct) / Double(questions.count)
     }
-    
+
     var correctCount: Int {
-        answers.values.filter { $0.isCorrect }.count
+        answers.values.filter(\.isCorrect).count
     }
 }
 
@@ -135,7 +135,7 @@ struct PracticeTestRequest {
     var includeMultipleChoice: Bool
     var includeShortAnswer: Bool
     var includeExplanation: Bool
-    
+
     init(
         courseId: UUID,
         courseName: String,
@@ -167,7 +167,7 @@ struct TopicPerformance: Identifiable, Codable {
     var correctAnswers: Int
     var averageScore: Double
     var lastPracticed: Date?
-    
+
     var accuracy: Double {
         totalQuestions > 0 ? Double(correctAnswers) / Double(totalQuestions) : 0
     }
@@ -181,7 +181,7 @@ struct PracticeTestSummary: Codable {
     var topicPerformance: [String: TopicPerformance]
     var recentTests: [PracticeTest]
     var practiceFrequency: [Date: Int] // Date -> test count
-    
+
     init(
         totalTests: Int = 0,
         totalQuestions: Int = 0,

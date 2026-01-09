@@ -1,16 +1,18 @@
 import SwiftUI
 
 // MARK: - Platform-Adaptive Components
+
 /// Components that automatically adapt their behavior based on platform capabilities
 
 // MARK: - Adaptive Navigation Container
+
 struct AdaptiveNavigationContainer<Content: View>: View {
     let content: Content
-    
+
     init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
-    
+
     var body: some View {
         switch CapabilityDomain.Navigation.navigationStyle {
         case .stack:
@@ -39,33 +41,37 @@ struct AdaptiveNavigationContainer<Content: View>: View {
 }
 
 // MARK: - Adaptive Button
+
 struct AdaptiveButton<Label: View>: View {
     let action: () -> Void
     let label: Label
-    
+
     init(action: @escaping () -> Void, @ViewBuilder label: () -> Label) {
         self.action = action
         self.label = label()
     }
-    
+
     var body: some View {
         Button(action: action) {
             label
-                .frame(minWidth: CapabilityDomain.Density.minTapTargetSize,
-                       minHeight: CapabilityDomain.Density.minTapTargetSize)
+                .frame(
+                    minWidth: CapabilityDomain.Density.minTapTargetSize,
+                    minHeight: CapabilityDomain.Density.minTapTargetSize
+                )
         }
         .platformHoverEffect()
     }
 }
 
 // MARK: - Adaptive Card
+
 struct AdaptiveCard<Content: View>: View {
     let content: Content
-    
+
     init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
-    
+
     var body: some View {
         content
             .platformPadding()
@@ -74,69 +80,71 @@ struct AdaptiveCard<Content: View>: View {
                     .fill(cardMaterial)
             }
     }
-    
+
     private var cornerRadius: CGFloat {
         switch Platform.current {
-        case .watchOS: return 8
-        case .iOS: return 12
-        case .iPadOS: return 16
-        case .macOS: return 12
+        case .watchOS: 8
+        case .iOS: 12
+        case .iPadOS: 16
+        case .macOS: 12
         }
     }
-    
+
     private var cardMaterial: Material {
         switch Platform.current {
-        case .watchOS: return .thick
-        case .iOS: return .regularMaterial
-        case .iPadOS: return .regularMaterial
-        case .macOS: return .thin
+        case .watchOS: .thick
+        case .iOS: .regularMaterial
+        case .iPadOS: .regularMaterial
+        case .macOS: .thin
         }
     }
 }
 
 // MARK: - Adaptive List
+
 struct AdaptiveList<Content: View>: View {
     let content: Content
-    
+
     init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
-    
+
     var body: some View {
         #if os(watchOS)
-        List {
-            content
-        }
-        .listStyle(.plain)
+            List {
+                content
+            }
+            .listStyle(.plain)
         #elseif os(iOS)
-        List {
-            content
-        }
-        .listStyle(.insetGrouped)
+            List {
+                content
+            }
+            .listStyle(.insetGrouped)
         #elseif os(macOS)
-        List {
-            content
-        }
-        .listStyle(.sidebar)
+            List {
+                content
+            }
+            .listStyle(.sidebar)
         #else
-        List {
-            content
-        }
-        .listStyle(.sidebar)
+            List {
+                content
+            }
+            .listStyle(.sidebar)
         #endif
     }
 }
 
 // MARK: - Adaptive Toolbar
+
 struct AdaptiveToolbar<Content: View>: View {
     let placement: ToolbarPlacement
     let content: Content
-    
+
     init(placement: ToolbarPlacement = .automatic, @ViewBuilder content: () -> Content) {
         self.placement = placement
         self.content = content()
     }
-    
+
     var body: some View {
         Group {
             if shouldShowToolbar {
@@ -144,20 +152,20 @@ struct AdaptiveToolbar<Content: View>: View {
             }
         }
     }
-    
+
     private var shouldShowToolbar: Bool {
         switch placement {
         case .menuBar:
-            return CapabilityDomain.Visual.hasMenuBar
+            CapabilityDomain.Visual.hasMenuBar
         case .sidebar:
-            return CapabilityDomain.Visual.prefersSidebar
+            CapabilityDomain.Visual.prefersSidebar
         case .tabBar:
-            return CapabilityDomain.Visual.prefersTabBar
+            CapabilityDomain.Visual.prefersTabBar
         case .automatic:
-            return true
+            true
         }
     }
-    
+
     enum ToolbarPlacement {
         case menuBar
         case sidebar
@@ -167,10 +175,11 @@ struct AdaptiveToolbar<Content: View>: View {
 }
 
 // MARK: - Adaptive Modal Presentation
+
 extension View {
-    func adaptiveModal<Content: View>(
+    func adaptiveModal(
         isPresented: Binding<Bool>,
-        @ViewBuilder content: @escaping () -> Content
+        @ViewBuilder content: @escaping () -> some View
     ) -> some View {
         self.sheet(isPresented: isPresented) {
             if CapabilityDomain.Layout.prefersFullWidthSheets {
@@ -186,13 +195,14 @@ extension View {
 // MARK: - Platform-Aware Spacing
 
 // MARK: - Adaptive Density Container
+
 struct AdaptiveDensityContainer<Content: View>: View {
     let content: Content
-    
+
     init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
-    
+
     var body: some View {
         content
             .environment(\.platformDensity, CapabilityDomain.Density.uiDensity)
@@ -200,6 +210,7 @@ struct AdaptiveDensityContainer<Content: View>: View {
 }
 
 // MARK: - Environment Key for Platform Density
+
 private struct PlatformDensityKey: EnvironmentKey {
     static let defaultValue: UIDensity = CapabilityDomain.Density.uiDensity
 }
@@ -212,58 +223,59 @@ extension EnvironmentValues {
 }
 
 // MARK: - Adaptive Grid
+
 struct AdaptiveGrid<Content: View>: View {
     let content: Content
-    
+
     init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
-    
+
     var body: some View {
         LazyVGrid(columns: columns, spacing: spacing) {
             content
         }
     }
-    
+
     private var columns: [GridItem] {
-        let count: Int
-        switch CapabilityDomain.Density.uiDensity {
+        let count = switch CapabilityDomain.Density.uiDensity {
         case .minimal:
-            count = 1
+            1
         case .standard:
-            count = 2
+            2
         case .comfortable:
-            count = 3
+            3
         case .dense:
-            count = 4
+            4
         }
         return Array(repeating: GridItem(.flexible()), count: count)
     }
-    
+
     private var spacing: CGFloat {
         CapabilityDomain.Density.paddingScale * 12
     }
 }
 
 // MARK: - Adaptive Text Size
+
 extension View {
     func adaptiveTextSize(_ baseSize: CGFloat) -> some View {
-        let scaledSize: CGFloat
-        switch CapabilityDomain.Density.uiDensity {
+        let scaledSize: CGFloat = switch CapabilityDomain.Density.uiDensity {
         case .minimal:
-            scaledSize = baseSize * 0.9
+            baseSize * 0.9
         case .standard:
-            scaledSize = baseSize
+            baseSize
         case .comfortable:
-            scaledSize = baseSize * 1.1
+            baseSize * 1.1
         case .dense:
-            scaledSize = baseSize * 0.95
+            baseSize * 0.95
         }
         return self.font(.system(size: scaledSize))
     }
 }
 
 // MARK: - Platform-Specific Gesture Modifiers
+
 extension View {
     /// Add platform-appropriate tap/click handling
     func adaptiveTapGesture(action: @escaping () -> Void) -> some View {
@@ -278,7 +290,7 @@ extension View {
             )
         }
     }
-    
+
     /// Add platform-appropriate long-press handling
     func adaptiveLongPress(action: @escaping () -> Void) -> some View {
         let minimumDuration: Double = Platform.isWatch ? 0.3 : 0.5
@@ -287,21 +299,22 @@ extension View {
 }
 
 // MARK: - Adaptive Spacing
+
 struct AdaptiveVStack<Content: View>: View {
     let alignment: HorizontalAlignment
     let content: Content
-    
+
     init(alignment: HorizontalAlignment = .center, @ViewBuilder content: () -> Content) {
         self.alignment = alignment
         self.content = content()
     }
-    
+
     var body: some View {
         VStack(alignment: alignment, spacing: platformSpacing) {
             content
         }
     }
-    
+
     private var platformSpacing: CGFloat {
         CapabilityDomain.Density.paddingScale * 12
     }
@@ -310,47 +323,48 @@ struct AdaptiveVStack<Content: View>: View {
 struct AdaptiveHStack<Content: View>: View {
     let alignment: VerticalAlignment
     let content: Content
-    
+
     init(alignment: VerticalAlignment = .center, @ViewBuilder content: () -> Content) {
         self.alignment = alignment
         self.content = content()
     }
-    
+
     var body: some View {
         HStack(alignment: alignment, spacing: platformSpacing) {
             content
         }
     }
-    
+
     private var platformSpacing: CGFloat {
         CapabilityDomain.Density.paddingScale * 12
     }
 }
 
 // MARK: - Platform Feature Flags
-struct PlatformFeature {
+
+enum PlatformFeature {
     /// Check if a feature should be enabled on current platform
     static func isEnabled(_ feature: Feature) -> Bool {
         switch feature {
         case .multiWindow:
-            return CapabilityDomain.Interaction.supportsMultipleWindows
+            CapabilityDomain.Interaction.supportsMultipleWindows
         case .keyboardShortcuts:
-            return CapabilityDomain.Interaction.supportsKeyboardShortcuts
+            CapabilityDomain.Interaction.supportsKeyboardShortcuts
         case .dragAndDrop:
-            return CapabilityDomain.Interaction.supportsCrossPlatformDragDrop
+            CapabilityDomain.Interaction.supportsCrossPlatformDragDrop
         case .hoverEffects:
-            return CapabilityDomain.Interaction.supportsHover
+            CapabilityDomain.Interaction.supportsHover
         case .contextMenus:
-            return CapabilityDomain.Interaction.supportsRichContextMenus
+            CapabilityDomain.Interaction.supportsRichContextMenus
         case .floatingPanels:
-            return CapabilityDomain.Layout.supportsFloatingPanels
+            CapabilityDomain.Layout.supportsFloatingPanels
         case .splitView:
-            return CapabilityDomain.Layout.supportsMultiPane
+            CapabilityDomain.Layout.supportsMultiPane
         case .menuBar:
-            return CapabilityDomain.Visual.hasMenuBar
+            CapabilityDomain.Visual.hasMenuBar
         }
     }
-    
+
     enum Feature {
         case multiWindow
         case keyboardShortcuts
@@ -364,11 +378,12 @@ struct PlatformFeature {
 }
 
 // MARK: - Conditional View Helper
+
 extension View {
     @ViewBuilder
-    func platformConditional<Transform: View>(
+    func platformConditional(
         _ condition: Bool,
-        transform: (Self) -> Transform
+        transform: (Self) -> some View
     ) -> some View {
         if condition {
             transform(self)

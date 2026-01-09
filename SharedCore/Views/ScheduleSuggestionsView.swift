@@ -18,8 +18,12 @@ struct PendingScheduleSuggestionStrip: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(NSLocalizedString("schedulesuggestions.schedule.suggestions.ready", value: "Schedule suggestions ready", comment: "Schedule suggestions ready"))
-                        .font(.headline)
+                    Text(NSLocalizedString(
+                        "schedulesuggestions.schedule.suggestions.ready",
+                        value: "Schedule suggestions ready",
+                        comment: "Schedule suggestions ready"
+                    ))
+                    .font(.headline)
 
                     Text(pending.summaryText)
                         .font(.subheadline)
@@ -33,11 +37,19 @@ struct PendingScheduleSuggestionStrip: View {
 
                 if hasConflicts {
                     if nonConflictingChanges > 0 {
-                        Button(NSLocalizedString("schedulesuggestions.button.apply.nonconflicting", value: "Apply Non-Conflicting", comment: "Apply Non-Conflicting")) { onApplyNonConflicting() }
+                        Button(NSLocalizedString(
+                            "schedulesuggestions.button.apply.nonconflicting",
+                            value: "Apply Non-Conflicting",
+                            comment: "Apply Non-Conflicting"
+                        )) { onApplyNonConflicting() }
                             .buttonStyle(.borderedProminent)
                     }
                 } else {
-                    Button(NSLocalizedString("schedulesuggestions.button.apply.totalchanges.changes", value: "Apply (\(totalChanges) changes)", comment: "Apply (\(totalChanges) changes)")) { onApply() }
+                    Button(NSLocalizedString(
+                        "schedulesuggestions.button.apply.totalchanges.changes",
+                        value: "Apply (\(totalChanges) changes)",
+                        comment: "Apply (\(totalChanges) changes)"
+                    )) { onApply() }
                         .buttonStyle(.borderedProminent)
                 }
             }
@@ -59,8 +71,10 @@ struct PendingScheduleSuggestionStrip: View {
             }
 
             HStack {
-                Button(NSLocalizedString("schedulesuggestions.button.dismiss", value: "Dismiss", comment: "Dismiss")) { onDismiss() }
-                    .foregroundStyle(.secondary)
+                Button(NSLocalizedString("schedulesuggestions.button.dismiss", value: "Dismiss", comment: "Dismiss")) {
+                    onDismiss()
+                }
+                .foregroundStyle(.secondary)
                 Spacer()
             }
         }
@@ -191,7 +205,8 @@ extension ScheduleDiff {
             return date
         }
         if let other = conflict.conflictingBlockID,
-           let date = dateForBlockID(other) {
+           let date = dateForBlockID(other)
+        {
             return date
         }
         return nil

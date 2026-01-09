@@ -1,5 +1,5 @@
-import SwiftUI
 import Combine
+import SwiftUI
 
 @MainActor
 final class AppPreferences: ObservableObject {
@@ -113,17 +113,17 @@ final class AppPreferences: ObservableObject {
 
         var color: Color {
             switch self {
-            case .blue: return .blue
-            case .purple: return .purple
-            case .pink: return .pink
-            case .red: return .red
-            case .orange: return .orange
-            case .yellow: return .yellow
-            case .green: return .green
-            case .mint: return .mint
-            case .teal: return .teal
-            case .cyan: return .cyan
-            case .indigo: return .indigo
+            case .blue: .blue
+            case .purple: .purple
+            case .pink: .pink
+            case .red: .red
+            case .orange: .orange
+            case .yellow: .yellow
+            case .green: .green
+            case .mint: .mint
+            case .teal: .teal
+            case .cyan: .cyan
+            case .indigo: .indigo
             }
         }
     }
@@ -161,33 +161,33 @@ struct RootsGlassBackgroundModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         #if os(macOS)
-        let background: AnyShapeStyle = AnyShapeStyle(Color(nsColor: NSColor.windowBackgroundColor))
-        return content
-            .background(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(background)
-            )
-        #else
-        // If reduceTransparency is set, use a solid background (less transparency). Otherwise use material.
-        if preferences.reduceTransparency || !settings.enableGlassEffects {
-            let background: AnyShapeStyle = AnyShapeStyle(Color(nsColor: NSColor.windowBackgroundColor))
+            let background = AnyShapeStyle(Color(nsColor: NSColor.windowBackgroundColor))
             return content
                 .background(
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         .fill(background)
                 )
-        }
+        #else
+            // If reduceTransparency is set, use a solid background (less transparency). Otherwise use material.
+            if preferences.reduceTransparency || !settings.enableGlassEffects {
+                let background = AnyShapeStyle(Color(nsColor: NSColor.windowBackgroundColor))
+                return content
+                    .background(
+                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                            .fill(background)
+                    )
+            }
 
-        let intensity = preferences.highContrast ? 1.0 : preferences.glassIntensity
-        let background: AnyShapeStyle = preferences.highContrast
-            ? AnyShapeStyle(Color.primary.opacity(0.08))
-            : AnyShapeStyle(DesignSystem.Materials.hud.opacity(intensity))
+            let intensity = preferences.highContrast ? 1.0 : preferences.glassIntensity
+            let background: AnyShapeStyle = preferences.highContrast
+                ? AnyShapeStyle(Color.primary.opacity(0.08))
+                : AnyShapeStyle(DesignSystem.Materials.hud.opacity(intensity))
 
-        return content
-            .background(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .fill(background)
-            )
+            return content
+                .background(
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .fill(background)
+                )
         #endif
     }
 }

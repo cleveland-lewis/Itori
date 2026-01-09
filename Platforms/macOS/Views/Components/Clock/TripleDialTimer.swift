@@ -5,15 +5,15 @@ struct TripleDialTimer: View {
     let totalSeconds: TimeInterval
     let accentColor: Color
     var dialSize: CGFloat = 112
-    
+
     private var timeComponents: (hours: Int, minutes: Int, seconds: Int) {
         let total = Int(totalSeconds)
-        let h = (total / 3600) % 12  // 12-hour format
+        let h = (total / 3600) % 12 // 12-hour format
         let m = (total / 60) % 60
         let s = total % 60
         return (h, m, s)
     }
-    
+
     var body: some View {
         HStack(spacing: 28) {
             // Hours dial (far left) - 12 hour max
@@ -24,7 +24,7 @@ struct TripleDialTimer: View {
                 accentColor: accentColor,
                 dialSize: dialSize
             )
-            
+
             // Minutes dial (center) - 60 minutes max
             SingleDial(
                 value: timeComponents.minutes,
@@ -33,7 +33,7 @@ struct TripleDialTimer: View {
                 accentColor: accentColor,
                 dialSize: dialSize
             )
-            
+
             // Seconds dial (far right) - 60 seconds max
             SingleDial(
                 value: timeComponents.seconds,
@@ -55,16 +55,16 @@ private struct SingleDial: View {
     let accentColor: Color
     let dialSize: CGFloat
     @Environment(\.colorScheme) private var colorScheme
-    
+
     private var progress: Double {
         guard maxValue > 0 else { return 0 }
         return Double(value) / Double(maxValue)
     }
-    
+
     private var angle: Double {
         progress * 360.0
     }
-    
+
     var body: some View {
         let tickOffset = -(dialSize / 2 - 8)
         let handLength = dialSize * 0.34
@@ -75,7 +75,7 @@ private struct SingleDial: View {
                 Circle()
                     .stroke(Color.primary.opacity(0.1), lineWidth: 2)
                     .frame(width: dialSize, height: dialSize)
-                
+
                 // Progress arc
                 Circle()
                     .trim(from: 0, to: progress)
@@ -85,9 +85,9 @@ private struct SingleDial: View {
                     )
                     .frame(width: dialSize, height: dialSize)
                     .rotationEffect(.degrees(-90))
-                
+
                 // Tick marks
-                ForEach(0..<tickCount, id: \.self) { index in
+                ForEach(0 ..< tickCount, id: \.self) { index in
                     let isMajor = index % majorTickInterval == 0
                     Capsule()
                         .fill(Color.primary.opacity(isMajor ? 0.4 : 0.2))
@@ -95,20 +95,20 @@ private struct SingleDial: View {
                         .offset(y: tickOffset)
                         .rotationEffect(.degrees(Double(index) * tickAngle))
                 }
-                
+
                 // Hand
                 Capsule()
                     .fill(accentColor)
                     .frame(width: 2, height: handLength)
                     .offset(y: -(handLength / 2))
                     .rotationEffect(.degrees(angle))
-                
+
                 // Center dot
                 Circle()
                     .fill(accentColor)
                     .frame(width: 6, height: 6)
             }
-            
+
             Text(verbatim: "\(value)")
                 .font(.system(size: 18, weight: .semibold, design: .rounded))
                 .monospacedDigit()
@@ -121,38 +121,38 @@ private struct SingleDial: View {
                 .textCase(.uppercase)
         }
     }
-    
+
     private var tickCount: Int {
         switch maxValue {
-        case 12: return 12
-        case 60: return 60
-        default: return maxValue
+        case 12: 12
+        case 60: 60
+        default: maxValue
         }
     }
-    
+
     private var majorTickInterval: Int {
         switch maxValue {
-        case 12: return 3  // Every 3 hours
-        case 60: return 5  // Every 5 minutes/seconds
-        default: return max(1, maxValue / 12)
+        case 12: 3 // Every 3 hours
+        case 60: 5 // Every 5 minutes/seconds
+        default: max(1, maxValue / 12)
         }
     }
-    
+
     private var tickAngle: Double {
         360.0 / Double(tickCount)
     }
 }
 
 #if !DISABLE_PREVIEWS
-struct TripleDialTimer_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack(spacing: 40) {
-            TripleDialTimer(totalSeconds: 0, accentColor: .blue)
-            TripleDialTimer(totalSeconds: 3665, accentColor: .blue)  // 1:01:05
-            TripleDialTimer(totalSeconds: 125, accentColor: .blue)   // 2:05
+    struct TripleDialTimer_Previews: PreviewProvider {
+        static var previews: some View {
+            VStack(spacing: 40) {
+                TripleDialTimer(totalSeconds: 0, accentColor: .blue)
+                TripleDialTimer(totalSeconds: 3665, accentColor: .blue) // 1:01:05
+                TripleDialTimer(totalSeconds: 125, accentColor: .blue) // 2:05
+            }
+            .padding()
+            .frame(width: 400, height: 600)
         }
-        .padding()
-        .frame(width: 400, height: 600)
     }
-}
 #endif

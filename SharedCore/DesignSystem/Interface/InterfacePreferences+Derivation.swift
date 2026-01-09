@@ -13,33 +13,30 @@ extension InterfacePreferences {
         let showAnimations = settings.showAnimationsStorage
         let enableHaptics = settings.enableHapticsStorage
         let showTooltips = settings.showTooltipsStorage
-        
+
         // Derive spacing tokens
-        let spacing: SpacingTokens
-        if largeTapTargets {
-            spacing = .largeTapTarget
+        let spacing: SpacingTokens = if largeTapTargets {
+            .largeTapTarget
         } else if compactDensity {
-            spacing = .compact
+            .compact
         } else {
-            spacing = .standard
+            .standard
         }
-        
+
         // Derive material tokens (reduce transparency takes precedence)
-        let materials: MaterialTokens
-        if reduceTransparency {
-            materials = .reduceTransparency(colorScheme: colorScheme)
+        let materials: MaterialTokens = if reduceTransparency {
+            .reduceTransparency(colorScheme: colorScheme)
         } else if increaseContrast {
-            materials = .increaseContrast(intensity: materialIntensity)
+            .increaseContrast(intensity: materialIntensity)
         } else {
-            materials = .standard(intensity: materialIntensity)
+            .standard(intensity: materialIntensity)
         }
-        
+
         // Derive animation tokens (reduce motion disables all animations)
-        let animation: AnimationTokens
-        if reduceMotion {
-            animation = .reduceMotion
+        let animation: AnimationTokens = if reduceMotion {
+            .reduceMotion
         } else {
-            animation = AnimationTokens(
+            AnimationTokens(
                 enabled: showAnimations,
                 showAnimations: showAnimations,
                 quick: showAnimations ? .easeOut(duration: 0.15) : nil,
@@ -48,27 +45,27 @@ extension InterfacePreferences {
                 spring: showAnimations ? .spring(response: 0.3, dampingFraction: 0.7) : nil
             )
         }
-        
+
         // Derive corner radius tokens
         let cornerRadius: CornerRadiusTokens = compactDensity ? .compact : .standard
-        
+
         // Derive typography tokens
         let typography: TypographyTokens = largeTapTargets ? .largeTapTarget : .standard
-        
+
         // Derive haptics tokens (iOS only)
         #if os(iOS)
-        let haptics: HapticsTokens = enableHaptics ? .enabled : .disabled
+            let haptics: HapticsTokens = enableHaptics ? .enabled : .disabled
         #else
-        let haptics: HapticsTokens = .disabled
+            let haptics: HapticsTokens = .disabled
         #endif
-        
+
         // Derive tooltips tokens (macOS only)
         #if os(macOS)
-        let tooltips: TooltipsTokens = showTooltips ? .enabled : .disabled
+            let tooltips: TooltipsTokens = showTooltips ? .enabled : .disabled
         #else
-        let tooltips: TooltipsTokens = .disabled
+            let tooltips: TooltipsTokens = .disabled
         #endif
-        
+
         return InterfacePreferences(
             reduceMotion: reduceMotion,
             increaseContrast: increaseContrast,
@@ -85,9 +82,13 @@ extension InterfacePreferences {
             materialIntensity: materialIntensity
         )
     }
-    
+
     /// Derive preferences from AppPreferences
-    static func from(_ preferences: AppPreferences, settings: AppSettingsModel, colorScheme: ColorScheme) -> InterfacePreferences {
+    static func from(
+        _ preferences: AppPreferences,
+        settings: AppSettingsModel,
+        colorScheme: ColorScheme
+    ) -> InterfacePreferences {
         // Use AppPreferences as primary source, fallback to settings
         let reduceMotion = preferences.reduceMotion
         let increaseContrast = preferences.highContrast
@@ -98,33 +99,30 @@ extension InterfacePreferences {
         let showAnimations = settings.showAnimationsStorage
         let enableHaptics = preferences.enableHaptics
         let showTooltips = settings.showTooltipsStorage
-        
+
         // Derive spacing tokens
-        let spacing: SpacingTokens
-        if largeTapTargets {
-            spacing = .largeTapTarget
+        let spacing: SpacingTokens = if largeTapTargets {
+            .largeTapTarget
         } else if compactDensity {
-            spacing = .compact
+            .compact
         } else {
-            spacing = .standard
+            .standard
         }
-        
+
         // Derive material tokens (reduce transparency takes precedence)
-        let materials: MaterialTokens
-        if reduceTransparency {
-            materials = .reduceTransparency(colorScheme: colorScheme)
+        let materials: MaterialTokens = if reduceTransparency {
+            .reduceTransparency(colorScheme: colorScheme)
         } else if increaseContrast {
-            materials = .increaseContrast(intensity: materialIntensity)
+            .increaseContrast(intensity: materialIntensity)
         } else {
-            materials = .standard(intensity: materialIntensity)
+            .standard(intensity: materialIntensity)
         }
-        
+
         // Derive animation tokens (reduce motion disables all animations)
-        let animation: AnimationTokens
-        if reduceMotion {
-            animation = .reduceMotion
+        let animation: AnimationTokens = if reduceMotion {
+            .reduceMotion
         } else {
-            animation = AnimationTokens(
+            AnimationTokens(
                 enabled: showAnimations,
                 showAnimations: showAnimations,
                 quick: showAnimations ? .easeOut(duration: 0.15) : nil,
@@ -133,27 +131,27 @@ extension InterfacePreferences {
                 spring: showAnimations ? .spring(response: 0.3, dampingFraction: 0.7) : nil
             )
         }
-        
+
         // Derive corner radius tokens
         let cornerRadius: CornerRadiusTokens = compactDensity ? .compact : .standard
-        
+
         // Derive typography tokens
         let typography: TypographyTokens = largeTapTargets ? .largeTapTarget : .standard
-        
+
         // Derive haptics tokens (iOS only)
         #if os(iOS)
-        let haptics: HapticsTokens = enableHaptics ? .enabled : .disabled
+            let haptics: HapticsTokens = enableHaptics ? .enabled : .disabled
         #else
-        let haptics: HapticsTokens = .disabled
+            let haptics: HapticsTokens = .disabled
         #endif
-        
+
         // Derive tooltips tokens (macOS only)
         #if os(macOS)
-        let tooltips: TooltipsTokens = showTooltips ? .enabled : .disabled
+            let tooltips: TooltipsTokens = showTooltips ? .enabled : .disabled
         #else
-        let tooltips: TooltipsTokens = .disabled
+            let tooltips: TooltipsTokens = .disabled
         #endif
-        
+
         return InterfacePreferences(
             reduceMotion: reduceMotion,
             increaseContrast: increaseContrast,

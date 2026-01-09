@@ -6,63 +6,77 @@
 //
 
 #if !DISABLE_SWIFTDATA
-import Foundation
-import SwiftData
+    import Foundation
+    import SwiftData
 
-@Model
-final class AssignmentPlanEntity {
-    @Attribute(.unique) var assignmentId: UUID
-    var generatedAt: Date
-    var version: Int
-    var status: PlanStatus
-    
-    @Relationship(deleteRule: .cascade, inverse: \PlanStepEntity.plan)
-    var steps: [PlanStepEntity]
-    
-    init(assignmentId: UUID, generatedAt: Date = Date(), version: Int = 1, status: PlanStatus = .draft, steps: [PlanStepEntity] = []) {
-        self.assignmentId = assignmentId
-        self.generatedAt = generatedAt
-        self.version = version
-        self.status = status
-        self.steps = steps
+    @Model
+    final class AssignmentPlanEntity {
+        @Attribute(.unique) var assignmentId: UUID
+        var generatedAt: Date
+        var version: Int
+        var status: PlanStatus
+
+        @Relationship(deleteRule: .cascade, inverse: \PlanStepEntity.plan)
+        var steps: [PlanStepEntity]
+
+        init(
+            assignmentId: UUID,
+            generatedAt: Date = Date(),
+            version: Int = 1,
+            status: PlanStatus = .draft,
+            steps: [PlanStepEntity] = []
+        ) {
+            self.assignmentId = assignmentId
+            self.generatedAt = generatedAt
+            self.version = version
+            self.status = status
+            self.steps = steps
+        }
     }
-}
 
-@Model
-final class PlanStepEntity {
-    var id: UUID
-    var title: String
-    var estimatedDuration: Int
-    var recommendedWindow: Date?
-    var dueBy: Date?
-    var sequenceIndex: Int
-    var stepType: StepType
-    
-    var plan: AssignmentPlanEntity?
-    
-    init(id: UUID = UUID(), title: String, estimatedDuration: Int, recommendedWindow: Date? = nil, dueBy: Date? = nil, sequenceIndex: Int, stepType: StepType = .work) {
-        self.id = id
-        self.title = title
-        self.estimatedDuration = estimatedDuration
-        self.recommendedWindow = recommendedWindow
-        self.dueBy = dueBy
-        self.sequenceIndex = sequenceIndex
-        self.stepType = stepType
+    @Model
+    final class PlanStepEntity {
+        var id: UUID
+        var title: String
+        var estimatedDuration: Int
+        var recommendedWindow: Date?
+        var dueBy: Date?
+        var sequenceIndex: Int
+        var stepType: StepType
+
+        var plan: AssignmentPlanEntity?
+
+        init(
+            id: UUID = UUID(),
+            title: String,
+            estimatedDuration: Int,
+            recommendedWindow: Date? = nil,
+            dueBy: Date? = nil,
+            sequenceIndex: Int,
+            stepType: StepType = .work
+        ) {
+            self.id = id
+            self.title = title
+            self.estimatedDuration = estimatedDuration
+            self.recommendedWindow = recommendedWindow
+            self.dueBy = dueBy
+            self.sequenceIndex = sequenceIndex
+            self.stepType = stepType
+        }
     }
-}
 
-enum PlanStatus: String, Codable {
-    case draft
-    case active
-    case completed
-    case archived
-}
+    enum PlanStatus: String, Codable {
+        case draft
+        case active
+        case completed
+        case archived
+    }
 
-enum StepType: String, Codable {
-    case work
-    case review
-    case practice
-    case research
-}
+    enum StepType: String, Codable {
+        case work
+        case review
+        case practice
+        case research
+    }
 
 #endif

@@ -1,158 +1,164 @@
 import SwiftUI
 
 #if os(macOS)
-import AppKit
+    import AppKit
 
-/// Keyboard navigation and focus management for macOS
-/// Provides consistent keyboard shortcuts and focus behavior across the app
-@available(macOS 13.0, *)
-public struct KeyboardNavigationModifier: ViewModifier {
-    
-    @FocusState private var isFocused: Bool
-    
-    let onEscape: (() -> Void)?
-    let onReturn: (() -> Void)?
-    let onTab: (() -> Void)?
-    let onShiftTab: (() -> Void)?
-    
-    public init(
-        onEscape: (() -> Void)? = nil,
-        onReturn: (() -> Void)? = nil,
-        onTab: (() -> Void)? = nil,
-        onShiftTab: (() -> Void)? = nil
-    ) {
-        self.onEscape = onEscape
-        self.onReturn = onReturn
-        self.onTab = onTab
-        self.onShiftTab = onShiftTab
-    }
-    
-    public func body(content: Content) -> some View {
-        content
-            .focused($isFocused)
-            .onAppear {
-                // Set initial focus
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    isFocused = true
+    /// Keyboard navigation and focus management for macOS
+    /// Provides consistent keyboard shortcuts and focus behavior across the app
+    @available(macOS 13.0, *)
+    public struct KeyboardNavigationModifier: ViewModifier {
+        @FocusState private var isFocused: Bool
+
+        let onEscape: (() -> Void)?
+        let onReturn: (() -> Void)?
+        let onTab: (() -> Void)?
+        let onShiftTab: (() -> Void)?
+
+        public init(
+            onEscape: (() -> Void)? = nil,
+            onReturn: (() -> Void)? = nil,
+            onTab: (() -> Void)? = nil,
+            onShiftTab: (() -> Void)? = nil
+        ) {
+            self.onEscape = onEscape
+            self.onReturn = onReturn
+            self.onTab = onTab
+            self.onShiftTab = onShiftTab
+        }
+
+        public func body(content: Content) -> some View {
+            content
+                .focused($isFocused)
+                .onAppear {
+                    // Set initial focus
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        isFocused = true
+                    }
                 }
-            }
+        }
     }
-}
 
-@available(macOS 13.0, *)
-extension View {
-    /// Add keyboard navigation support with standard shortcuts
-    public func keyboardNavigation(
-        onEscape: (() -> Void)? = nil,
-        onReturn: (() -> Void)? = nil,
-        onTab: (() -> Void)? = nil,
-        onShiftTab: (() -> Void)? = nil
-    ) -> some View {
-        modifier(KeyboardNavigationModifier(
-            onEscape: onEscape,
-            onReturn: onReturn,
-            onTab: onTab,
-            onShiftTab: onShiftTab
-        ))
+    @available(macOS 13.0, *)
+    public extension View {
+        /// Add keyboard navigation support with standard shortcuts
+        func keyboardNavigation(
+            onEscape: (() -> Void)? = nil,
+            onReturn: (() -> Void)? = nil,
+            onTab: (() -> Void)? = nil,
+            onShiftTab: (() -> Void)? = nil
+        ) -> some View {
+            modifier(KeyboardNavigationModifier(
+                onEscape: onEscape,
+                onReturn: onReturn,
+                onTab: onTab,
+                onShiftTab: onShiftTab
+            ))
+        }
     }
-}
 
-// MARK: - App-wide Keyboard Commands
+    // MARK: - App-wide Keyboard Commands
 
-/// Standard keyboard commands for the app
-public struct AppKeyboardCommands: Commands {
-    
-    public init() {}
-    
-    public var body: some Commands {
-        CommandGroup(after: .newItem) {
-            Button(NSLocalizedString("ui.button.add.event", value: "Add Event...", comment: "Add Event...")) {
-                NotificationCenter.default.post(name: .addEvent, object: nil)
-            }
-            .keyboardShortcut("n", modifiers: [.command])
-            
-            Button(NSLocalizedString("ui.button.add.course", value: "Add Course...", comment: "Add Course...")) {
-                NotificationCenter.default.post(name: .addCourse, object: nil)
-            }
-            .keyboardShortcut("n", modifiers: [.command, .shift])
-            
-            Button(NSLocalizedString("ui.button.add.assignment", value: "Add Assignment...", comment: "Add Assignment...")) {
-                NotificationCenter.default.post(name: .addAssignment, object: nil)
-            }
-            .keyboardShortcut("a", modifiers: [.command])
-        }
+    /// Standard keyboard commands for the app
+    public struct AppKeyboardCommands: Commands {
+        public init() {}
 
-        CommandGroup(after: .textEditing) {
-            Button(NSLocalizedString("ui.button.search", value: "Search...", comment: "Search...")) {
-                NotificationCenter.default.post(name: .focusSearch, object: nil)
+        public var body: some Commands {
+            CommandGroup(after: .newItem) {
+                Button(NSLocalizedString("ui.button.add.event", value: "Add Event...", comment: "Add Event...")) {
+                    NotificationCenter.default.post(name: .addEvent, object: nil)
+                }
+                .keyboardShortcut("n", modifiers: [.command])
+
+                Button(NSLocalizedString("ui.button.add.course", value: "Add Course...", comment: "Add Course...")) {
+                    NotificationCenter.default.post(name: .addCourse, object: nil)
+                }
+                .keyboardShortcut("n", modifiers: [.command, .shift])
+
+                Button(NSLocalizedString(
+                    "ui.button.add.assignment",
+                    value: "Add Assignment...",
+                    comment: "Add Assignment..."
+                )) {
+                    NotificationCenter.default.post(name: .addAssignment, object: nil)
+                }
+                .keyboardShortcut("a", modifiers: [.command])
             }
-            .keyboardShortcut("f", modifiers: [.command])
+
+            CommandGroup(after: .textEditing) {
+                Button(NSLocalizedString("ui.button.search", value: "Search...", comment: "Search...")) {
+                    NotificationCenter.default.post(name: .focusSearch, object: nil)
+                }
+                .keyboardShortcut("f", modifiers: [.command])
+            }
+
+            CommandGroup(after: .sidebar) {
+                Button(NSLocalizedString("ui.button.focus.mode", value: "Focus Mode", comment: "Focus Mode")) {
+                    NotificationCenter.default.post(name: .toggleFocusMode, object: nil)
+                }
+                .keyboardShortcut("f", modifiers: [.command, .option])
+
+                Divider()
+
+                Button(NSLocalizedString("ui.button.previous.day", value: "Previous Day", comment: "Previous Day")) {
+                    NotificationCenter.default.post(name: .previousDay, object: nil)
+                }
+                .keyboardShortcut(.leftArrow, modifiers: [.command])
+
+                Button(NSLocalizedString("ui.button.next.day", value: "Next Day", comment: "Next Day")) {
+                    NotificationCenter.default.post(name: .nextDay, object: nil)
+                }
+                .keyboardShortcut(.rightArrow, modifiers: [.command])
+
+                Button(NSLocalizedString("ui.button.previous.week", value: "Previous Week", comment: "Previous Week")) {
+                    NotificationCenter.default.post(name: .previousWeek, object: nil)
+                }
+                .keyboardShortcut(.leftArrow, modifiers: [.command, .option])
+
+                Button(NSLocalizedString("ui.button.next.week", value: "Next Week", comment: "Next Week")) {
+                    NotificationCenter.default.post(name: .nextWeek, object: nil)
+                }
+                .keyboardShortcut(.rightArrow, modifiers: [.command, .option])
+
+                Button(NSLocalizedString("ui.button.today", value: "Today", comment: "Today")) {
+                    NotificationCenter.default.post(name: .goToTodayNotification, object: nil)
+                }
+                .keyboardShortcut("t", modifiers: [.command])
+            }
+
+            #if DEBUG
+                CommandGroup(after: .help) {
+                    Button(NSLocalizedString(
+                        "ui.button.accessibility.debug",
+                        value: "Accessibility Debug...",
+                        comment: "Accessibility Debug..."
+                    )) {
+                        NotificationCenter.default.post(name: .showAccessibilityDebug, object: nil)
+                    }
+                    .keyboardShortcut("d", modifiers: [.command, .option, .shift])
+                }
+            #endif
         }
-        
-        CommandGroup(after: .sidebar) {
-            Button(NSLocalizedString("ui.button.focus.mode", value: "Focus Mode", comment: "Focus Mode")) {
-                NotificationCenter.default.post(name: .toggleFocusMode, object: nil)
-            }
-            .keyboardShortcut("f", modifiers: [.command, .option])
-            
-            Divider()
-            
-            Button(NSLocalizedString("ui.button.previous.day", value: "Previous Day", comment: "Previous Day")) {
-                NotificationCenter.default.post(name: .previousDay, object: nil)
-            }
-            .keyboardShortcut(.leftArrow, modifiers: [.command])
-            
-            Button(NSLocalizedString("ui.button.next.day", value: "Next Day", comment: "Next Day")) {
-                NotificationCenter.default.post(name: .nextDay, object: nil)
-            }
-            .keyboardShortcut(.rightArrow, modifiers: [.command])
-            
-            Button(NSLocalizedString("ui.button.previous.week", value: "Previous Week", comment: "Previous Week")) {
-                NotificationCenter.default.post(name: .previousWeek, object: nil)
-            }
-            .keyboardShortcut(.leftArrow, modifiers: [.command, .option])
-            
-            Button(NSLocalizedString("ui.button.next.week", value: "Next Week", comment: "Next Week")) {
-                NotificationCenter.default.post(name: .nextWeek, object: nil)
-            }
-            .keyboardShortcut(.rightArrow, modifiers: [.command, .option])
-            
-            Button(NSLocalizedString("ui.button.today", value: "Today", comment: "Today")) {
-                NotificationCenter.default.post(name: .goToTodayNotification, object: nil)
-            }
-            .keyboardShortcut("t", modifiers: [.command])
-        }
-        
+    }
+
+    // MARK: - Notification Names for Keyboard Commands
+
+    public extension Notification.Name {
+        static let addEvent = Notification.Name("app.keyboard.addEvent")
+        static let addEventRequested = Notification.Name("app.keyboard.addEventRequested")
+        static let addCourse = Notification.Name("app.keyboard.addCourse")
+        static let addCourseRequested = Notification.Name("app.keyboard.addCourseRequested")
+        static let addAssignment = Notification.Name("app.keyboard.addAssignment")
+        static let toggleFocusMode = Notification.Name("app.keyboard.toggleFocusMode")
+        static let previousDay = Notification.Name("app.keyboard.previousDay")
+        static let nextDay = Notification.Name("app.keyboard.nextDay")
+        static let previousWeek = Notification.Name("app.keyboard.previousWeek")
+        static let nextWeek = Notification.Name("app.keyboard.nextWeek")
+        // goToTodayNotification is defined in Notification+Names.swift for cross-platform use
+        static let focusSearch = Notification.Name("app.keyboard.focusSearch")
+
         #if DEBUG
-        CommandGroup(after: .help) {
-            Button(NSLocalizedString("ui.button.accessibility.debug", value: "Accessibility Debug...", comment: "Accessibility Debug...")) {
-                NotificationCenter.default.post(name: .showAccessibilityDebug, object: nil)
-            }
-            .keyboardShortcut("d", modifiers: [.command, .option, .shift])
-        }
+            static let showAccessibilityDebug = Notification.Name("app.keyboard.showAccessibilityDebug")
         #endif
     }
-}
-
-// MARK: - Notification Names for Keyboard Commands
-
-extension Notification.Name {
-    public static let addEvent = Notification.Name("app.keyboard.addEvent")
-    public static let addEventRequested = Notification.Name("app.keyboard.addEventRequested")
-    public static let addCourse = Notification.Name("app.keyboard.addCourse")
-    public static let addCourseRequested = Notification.Name("app.keyboard.addCourseRequested")
-    public static let addAssignment = Notification.Name("app.keyboard.addAssignment")
-    public static let toggleFocusMode = Notification.Name("app.keyboard.toggleFocusMode")
-    public static let previousDay = Notification.Name("app.keyboard.previousDay")
-    public static let nextDay = Notification.Name("app.keyboard.nextDay")
-    public static let previousWeek = Notification.Name("app.keyboard.previousWeek")
-    public static let nextWeek = Notification.Name("app.keyboard.nextWeek")
-    // goToTodayNotification is defined in Notification+Names.swift for cross-platform use
-    public static let focusSearch = Notification.Name("app.keyboard.focusSearch")
-    
-    #if DEBUG
-    public static let showAccessibilityDebug = Notification.Name("app.keyboard.showAccessibilityDebug")
-    #endif
-}
 
 #endif

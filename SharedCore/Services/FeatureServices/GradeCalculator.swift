@@ -9,9 +9,9 @@ enum GradeCalculator {
     static func calculateCourseGrade(courseID: UUID, tasks: [AppTask]) -> Double? {
         let graded = tasks.filter { task in
             task.courseId == courseID &&
-            task.isCompleted &&
-            task.gradeEarnedPoints != nil &&
-            task.gradePossiblePoints ?? 0 > 0
+                task.isCompleted &&
+                task.gradeEarnedPoints != nil &&
+                task.gradePossiblePoints ?? 0 > 0
         }
         guard !graded.isEmpty else { return nil }
 
@@ -57,36 +57,36 @@ enum GradeCalculator {
     /// Maps percentage grade to GPA scale.
     fileprivate static func mapPercentToGPA(_ percent: Double) -> Double {
         switch percent {
-        case 93...: return 4.0
-        case 90..<93: return 3.7
-        case 87..<90: return 3.3
-        case 83..<87: return 3.0
-        case 80..<83: return 2.7
-        case 77..<80: return 2.3
-        case 73..<77: return 2.0
-        case 70..<73: return 1.7
-        case 67..<70: return 1.3
-        case 63..<67: return 1.0
-        case 60..<63: return 0.7
-        default: return 0.0
+        case 93...: 4.0
+        case 90 ..< 93: 3.7
+        case 87 ..< 90: 3.3
+        case 83 ..< 87: 3.0
+        case 80 ..< 83: 2.7
+        case 77 ..< 80: 2.3
+        case 73 ..< 77: 2.0
+        case 70 ..< 73: 1.7
+        case 67 ..< 70: 1.3
+        case 63 ..< 67: 1.0
+        case 60 ..< 63: 0.7
+        default: 0.0
         }
     }
 
     /// Converts a percentage score to a letter grade.
     static func letterGrade(for percent: Double) -> String {
         switch percent {
-        case 93...: return "A"
-        case 90..<93: return "A-"
-        case 87..<90: return "B+"
-        case 83..<87: return "B"
-        case 80..<83: return "B-"
-        case 77..<80: return "C+"
-        case 73..<77: return "C"
-        case 70..<73: return "C-"
-        case 67..<70: return "D+"
-        case 63..<67: return "D"
-        case 60..<63: return "D-"
-        default: return "F"
+        case 93...: "A"
+        case 90 ..< 93: "A-"
+        case 87 ..< 90: "B+"
+        case 83 ..< 87: "B"
+        case 80 ..< 83: "B-"
+        case 77 ..< 80: "C+"
+        case 73 ..< 77: "C"
+        case 70 ..< 73: "C-"
+        case 67 ..< 70: "D+"
+        case 63 ..< 67: "D"
+        case 60 ..< 63: "D-"
+        default: "F"
         }
     }
 

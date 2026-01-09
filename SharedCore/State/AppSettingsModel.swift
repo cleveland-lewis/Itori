@@ -1,7 +1,7 @@
-import SwiftUI
 import OSLog
+import SwiftUI
 #if os(macOS)
-import AppKit
+    import AppKit
 #endif
 import Combine
 import CoreGraphics
@@ -15,17 +15,17 @@ enum TabBarMode: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .iconsOnly:   return "Icons"
-        case .textOnly:    return "Text"
-        case .iconsAndText:return "Icons & Text"
+        case .iconsOnly: "Icons"
+        case .textOnly: "Text"
+        case .iconsAndText: "Icons & Text"
         }
     }
 
     var systemImageName: String {
         switch self {
-        case .iconsOnly:   return "square.grid.2x2"
-        case .textOnly:    return "textformat"
-        case .iconsAndText:return "square.grid.2x2.and.square"
+        case .iconsOnly: "square.grid.2x2"
+        case .textOnly: "textformat"
+        case .iconsAndText: "square.grid.2x2.and.square"
         }
     }
 }
@@ -47,9 +47,9 @@ enum InterfaceStyle: String, CaseIterable, Identifiable {
     var label: String {
         switch self {
         #if os(macOS)
-        case .system: return "Follow macOS"
+            case .system: return "Follow macOS"
         #else
-        case .system: return "System"
+            case .system: return "System"
         #endif
         case .light: return "Light"
         case .dark: return "Dark"
@@ -70,9 +70,9 @@ enum SidebarBehavior: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .automatic: return "Auto-collapse"
-        case .expanded:  return "Always expanded"
-        case .compact:   return "Favor compact mode"
+        case .automatic: "Auto-collapse"
+        case .expanded: "Always expanded"
+        case .compact: "Favor compact mode"
         }
     }
 }
@@ -86,17 +86,17 @@ enum CardRadius: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .small:  return "Small"
-        case .medium: return "Medium"
-        case .large:  return "Large"
+        case .small: "Small"
+        case .medium: "Medium"
+        case .large: "Large"
         }
     }
 
     var value: Double {
         switch self {
-        case .small:  return 12
-        case .medium: return 18
-        case .large:  return 26
+        case .small: 12
+        case .medium: 18
+        case .large: 26
         }
     }
 }
@@ -119,24 +119,24 @@ enum AssignmentSwipeAction: String, CaseIterable, Identifiable, Codable {
 
     var label: String {
         switch self {
-        case .complete: return "Complete / Undo"
-        case .edit: return "Edit"
-        case .delete: return "Delete"
-        case .openDetail: return "Open Details"
+        case .complete: "Complete / Undo"
+        case .edit: "Edit"
+        case .delete: "Delete"
+        case .openDetail: "Open Details"
         }
     }
 
     var systemImage: String {
         switch self {
-        case .complete: return "checkmark.circle"
-        case .edit: return "pencil"
-        case .delete: return "trash"
-        case .openDetail: return "info.circle"
+        case .complete: "checkmark.circle"
+        case .edit: "pencil"
+        case .delete: "trash"
+        case .openDetail: "info.circle"
         }
     }
 }
 
-struct AppTypography {
+enum AppTypography {
     enum TextStyle {
         case headline, title2, body
     }
@@ -145,21 +145,21 @@ struct AppTypography {
         switch mode {
         case .system:
             switch style {
-            case .headline: return .system(size: 24, weight: .semibold)
-            case .title2: return .system(size: 20, weight: .semibold)
-            case .body: return .system(size: 16, weight: .regular)
+            case .headline: .system(size: 24, weight: .semibold)
+            case .title2: .system(size: 20, weight: .semibold)
+            case .body: .system(size: 16, weight: .regular)
             }
         case .dos:
             switch style {
-            case .headline: return .custom("Menlo", size: 24).monospacedDigit()
-            case .title2: return .custom("Menlo", size: 20).monospacedDigit()
-            case .body: return .custom("Menlo", size: 16).monospacedDigit()
+            case .headline: .custom("Menlo", size: 24).monospacedDigit()
+            case .title2: .custom("Menlo", size: 20).monospacedDigit()
+            case .body: .custom("Menlo", size: 16).monospacedDigit()
             }
         case .rounded:
             switch style {
-            case .headline: return .system(size: 24, weight: .semibold, design: .rounded)
-            case .title2: return .system(size: 20, weight: .semibold, design: .rounded)
-            case .body: return .system(size: 16, weight: .regular, design: .rounded)
+            case .headline: .system(size: 24, weight: .semibold, design: .rounded)
+            case .title2: .system(size: 20, weight: .semibold, design: .rounded)
+            case .body: .system(size: 16, weight: .regular, design: .rounded)
             }
         }
     }
@@ -186,31 +186,31 @@ enum AppAccentColor: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .multicolor: return "Multicolor (Default)"
-        case .graphite: return "Graphite"
-        case .aqua: return "Aqua"
-        case .blue: return "Blue"
-        case .purple: return "Purple"
-        case .pink: return "Pink"
-        case .red: return "Red"
-        case .orange: return "Orange"
-        case .yellow: return "Yellow"
-        case .green: return "Green"
+        case .multicolor: "Multicolor (Default)"
+        case .graphite: "Graphite"
+        case .aqua: "Aqua"
+        case .blue: "Blue"
+        case .purple: "Purple"
+        case .pink: "Pink"
+        case .red: "Red"
+        case .orange: "Orange"
+        case .yellow: "Yellow"
+        case .green: "Green"
         }
     }
 
     fileprivate var nsColor: NSColor {
         switch self {
-        case .multicolor: return NSColor.controlAccentColor
-        case .graphite: return NSColor.systemGray
-        case .aqua: return NSColor.systemTeal
-        case .blue: return NSColor.systemBlue
-        case .purple: return NSColor.systemPurple
-        case .pink: return NSColor.systemPink
-        case .red: return NSColor.systemRed
-        case .orange: return NSColor.systemOrange
-        case .yellow: return NSColor.systemYellow
-        case .green: return NSColor.systemGreen
+        case .multicolor: NSColor.controlAccentColor
+        case .graphite: NSColor.systemGray
+        case .aqua: NSColor.systemTeal
+        case .blue: NSColor.systemBlue
+        case .purple: NSColor.systemPurple
+        case .pink: NSColor.systemPink
+        case .red: NSColor.systemRed
+        case .orange: NSColor.systemOrange
+        case .yellow: NSColor.systemYellow
+        case .green: NSColor.systemGreen
         }
     }
 
@@ -221,9 +221,9 @@ enum AppAccentColor: String, CaseIterable, Identifiable {
 
 final class AppSettingsModel: ObservableObject, Codable {
     /// Shared singleton used across the app. Loaded from persisted storage when available.
-    nonisolated(unsafe) private static var _shared: AppSettingsModel?
+    private nonisolated(unsafe) static var _shared: AppSettingsModel?
     private static let lock = NSLock()
-    
+
     nonisolated(unsafe) static var shared: AppSettingsModel {
         if let existing = _shared {
             return existing
@@ -238,18 +238,23 @@ final class AppSettingsModel: ObservableObject, Codable {
         _shared = model
         return model
     }
-    
+
     // MARK: - Performance optimization
+
     private var saveDebouncer: Task<Void, Never>?
 
     // MARK: - Codable keys
+
     enum CodingKeys: String, CodingKey {
-        case accentColorRaw, customAccentEnabledStorage, customAccentRed, customAccentGreen, customAccentBlue, customAccentAlpha
+        case accentColorRaw, customAccentEnabledStorage, customAccentRed, customAccentGreen, customAccentBlue,
+             customAccentAlpha
         case interfaceStyleRaw, glassLightStrength, glassDarkStrength, sidebarBehaviorRaw, wiggleOnHoverStorage
         case tabBarModeRaw, visibleTabsRaw, tabOrderRaw, quickActionsRaw, enableGlassEffectsStorage
         case cardRadiusRaw, animationSoftnessStorage, typographyModeRaw
-        case devModeEnabledStorage, devModeUILoggingStorage, devModeDataLoggingStorage, devModeSchedulerLoggingStorage, devModePerformanceStorage
+        case devModeEnabledStorage, devModeUILoggingStorage, devModeDataLoggingStorage, devModeSchedulerLoggingStorage,
+             devModePerformanceStorage
         case enableICloudSyncStorage
+        case enableCoreDataSyncStorage
         case suppressICloudRestoreStorage
         case enableSpotlightIndexingStorage
         case enableRaycastIntegrationStorage
@@ -306,7 +311,6 @@ final class AppSettingsModel: ObservableObject, Codable {
         case energySelectionConfirmedStorage
     }
 
-
     private static func components(from color: Color) -> (red: Double, green: Double, blue: Double, alpha: Double)? {
         guard let cgColor = color.cgColor else { return nil }
         guard let srgbSpace = CGColorSpace(name: CGColorSpace.sRGB) else { return nil }
@@ -337,25 +341,25 @@ final class AppSettingsModel: ObservableObject, Codable {
     }
 
     private enum Keys {
-        static let accentColor = "roots.settings.accentColor"
-        static let customAccentEnabled = "roots.settings.customAccentEnabled"
-        static let customAccentRed = "roots.settings.customAccent.red"
-        static let customAccentGreen = "roots.settings.customAccent.green"
-        static let customAccentBlue = "roots.settings.customAccent.blue"
-        static let customAccentAlpha = "roots.settings.customAccent.alpha"
-        static let interfaceStyle = "roots.settings.interfaceStyle"
-        static let glassLightStrength = "roots.settings.glass.light"
-        static let glassDarkStrength = "roots.settings.glass.dark"
-        static let sidebarBehavior = "roots.settings.sidebarBehavior"
-        static let wiggleOnHover = "roots.settings.wiggleOnHover"
-        static let tabBarMode = "roots.settings.tabBarMode"
-        static let visibleTabs = "roots.settings.visibleTabs"
-        static let tabOrder = "roots.settings.tabOrder"
-        static let quickActions = "roots.settings.quickActions"
-        static let enableGlassEffects = "roots.settings.enableGlassEffects"
-        static let cardRadius = "roots.settings.cardRadius"
-        static let animationSoftness = "roots.settings.animationSoftness"
-        static let typographyMode = "roots.settings.typographyMode"
+        static let accentColor = "Itori.settings.accentColor"
+        static let customAccentEnabled = "Itori.settings.customAccentEnabled"
+        static let customAccentRed = "Itori.settings.customAccent.red"
+        static let customAccentGreen = "Itori.settings.customAccent.green"
+        static let customAccentBlue = "Itori.settings.customAccent.blue"
+        static let customAccentAlpha = "Itori.settings.customAccent.alpha"
+        static let interfaceStyle = "Itori.settings.interfaceStyle"
+        static let glassLightStrength = "Itori.settings.glass.light"
+        static let glassDarkStrength = "Itori.settings.glass.dark"
+        static let sidebarBehavior = "Itori.settings.sidebarBehavior"
+        static let wiggleOnHover = "Itori.settings.wiggleOnHover"
+        static let tabBarMode = "Itori.settings.tabBarMode"
+        static let visibleTabs = "Itori.settings.visibleTabs"
+        static let tabOrder = "Itori.settings.tabOrder"
+        static let quickActions = "Itori.settings.quickActions"
+        static let enableGlassEffects = "Itori.settings.enableGlassEffects"
+        static let cardRadius = "Itori.settings.cardRadius"
+        static let animationSoftness = "Itori.settings.animationSoftness"
+        static let typographyMode = "Itori.settings.typographyMode"
         static let devModeEnabled = "devMode.enabled"
         static let devModeUILogging = "devMode.uiLogging"
         static let devModeDataLogging = "devMode.dataLogging"
@@ -363,16 +367,16 @@ final class AppSettingsModel: ObservableObject, Codable {
         static let devModePerformance = "devMode.performance"
 
         // New keys for global settings
-        static let use24HourTime = "roots.settings.use24HourTime"
-        static let workdayStartHour = "roots.settings.workday.start.hour"
-        static let workdayStartMinute = "roots.settings.workday.start.minute"
-        static let workdayEndHour = "roots.settings.workday.end.hour"
-        static let workdayEndMinute = "roots.settings.workday.end.minute"
-        static let showEnergyPanel = "roots.settings.showEnergyPanel"
-        static let highContrastMode = "roots.settings.highContrastMode"
-        static let enableAIPlanner = "roots.settings.enableAIPlanner"
-        static let plannerHorizon = "roots.settings.plannerHorizon"
-        static let hideGPAOnDashboard = "roots.settings.hideGPAOnDashboard"
+        static let use24HourTime = "Itori.settings.use24HourTime"
+        static let workdayStartHour = "Itori.settings.workday.start.hour"
+        static let workdayStartMinute = "Itori.settings.workday.start.minute"
+        static let workdayEndHour = "Itori.settings.workday.end.hour"
+        static let workdayEndMinute = "Itori.settings.workday.end.minute"
+        static let showEnergyPanel = "Itori.settings.showEnergyPanel"
+        static let highContrastMode = "Itori.settings.highContrastMode"
+        static let enableAIPlanner = "Itori.settings.enableAIPlanner"
+        static let plannerHorizon = "Itori.settings.plannerHorizon"
+        static let hideGPAOnDashboard = "Itori.settings.hideGPAOnDashboard"
     }
 
     // Backing storage - migrate to UserDefaults-backed values to persist across launches
@@ -401,14 +405,15 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage(Keys.devModeSchedulerLogging) var devModeSchedulerLoggingStorage: Bool = true
     @AppStorage(Keys.devModePerformance) var devModePerformanceStorage: Bool = true
     var enableICloudSyncStorage: Bool = true
-    @AppStorage("roots.settings.suppressICloudRestore") var suppressICloudRestoreStorage: Bool = false
+    var enableCoreDataSyncStorage: Bool = false
+    @AppStorage("Itori.settings.suppressICloudRestore") var suppressICloudRestoreStorage: Bool = false
     var enableSpotlightIndexingStorage: Bool = false
     var enableRaycastIntegrationStorage: Bool = false
 
     // Layout preferences (iOS/iPad)
-    @AppStorage("roots.settings.compactMode") var compactModeStorage: Bool = false
-    @AppStorage("roots.settings.largeTapTargets") var largeTapTargetsStorage: Bool = false
-    @AppStorage("roots.settings.showSidebarByDefault") var showSidebarByDefaultStorage: Bool = true
+    @AppStorage("Itori.settings.compactMode") var compactModeStorage: Bool = false
+    @AppStorage("Itori.settings.largeTapTargets") var largeTapTargetsStorage: Bool = false
+    @AppStorage("Itori.settings.showSidebarByDefault") var showSidebarByDefaultStorage: Bool = true
 
     // New UserDefaults-backed properties
     @AppStorage(Keys.use24HourTime) var use24HourTimeStorage: Bool = false
@@ -420,101 +425,113 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage(Keys.highContrastMode) var highContrastModeStorage: Bool = false
     @AppStorage(Keys.enableAIPlanner) var enableAIPlannerStorage: Bool = false
     @AppStorage(Keys.plannerHorizon) var plannerHorizonStorage: String = "2w"
-    @AppStorage("roots.settings.enableFlashcards") var enableFlashcardsStorage: Bool = true
-    @AppStorage("roots.settings.assignmentSwipeLeading") var assignmentSwipeLeadingRaw: String = AssignmentSwipeAction.complete.rawValue
-    @AppStorage("roots.settings.assignmentSwipeTrailing") var assignmentSwipeTrailingRaw: String = AssignmentSwipeAction.delete.rawValue
+    @AppStorage("Itori.settings.enableFlashcards") var enableFlashcardsStorage: Bool = true
+    @AppStorage("Itori.settings.assignmentSwipeLeading") var assignmentSwipeLeadingRaw: String = AssignmentSwipeAction
+        .complete.rawValue
+    @AppStorage("Itori.settings.assignmentSwipeTrailing") var assignmentSwipeTrailingRaw: String = AssignmentSwipeAction
+        .delete.rawValue
 
     // General Settings
-    @AppStorage("roots.settings.startOfWeek") var startOfWeekStorage: String = "Sunday"
-    @AppStorage("roots.settings.defaultView") var defaultViewStorage: String = "Dashboard"
-    @AppStorage("roots.settings.isSchoolMode") var isSchoolModeStorage: Bool = true  // true = School Mode, false = Self-Study Mode
+    @AppStorage("Itori.settings.startOfWeek") var startOfWeekStorage: String = "Sunday"
+    @AppStorage("Itori.settings.defaultView") var defaultViewStorage: String = "Dashboard"
+    @AppStorage("Itori.settings.isSchoolMode") var isSchoolModeStorage: Bool =
+        true // true = School Mode, false = Self-Study Mode
 
     // Learning Data
-    @AppStorage("roots.learning.categoryDurations") var categoryDurationsData: Data = Data()
+    @AppStorage("Itori.learning.categoryDurations") var categoryDurationsData: Data = .init()
 
     // Interface Settings
-    @AppStorage("roots.settings.reduceMotion") var reduceMotionStorage: Bool = false
-    @AppStorage("roots.settings.increaseTransparency") var increaseTransparencyStorage: Bool = false
-    @AppStorage("roots.settings.increaseContrast") var increaseContrastStorage: Bool = false
-    @AppStorage("roots.settings.reduceTransparency") var reduceTransparencyStorage: Bool = false
-    @AppStorage("roots.settings.glassIntensity") var glassIntensityStorage: Double = 0.5
-    @AppStorage("roots.settings.accentColorName") var accentColorNameStorage: String = "Blue"
-    @AppStorage("roots.settings.showAnimations") var showAnimationsStorage: Bool = true
-    @AppStorage("roots.settings.enableHaptics") var enableHapticsStorage: Bool = true
-    @AppStorage("roots.settings.showTooltips") var showTooltipsStorage: Bool = true
+    @AppStorage("Itori.settings.reduceMotion") var reduceMotionStorage: Bool = false
+    @AppStorage("Itori.settings.increaseTransparency") var increaseTransparencyStorage: Bool = false
+    @AppStorage("Itori.settings.increaseContrast") var increaseContrastStorage: Bool = false
+    @AppStorage("Itori.settings.reduceTransparency") var reduceTransparencyStorage: Bool = false
+    @AppStorage("Itori.settings.glassIntensity") var glassIntensityStorage: Double = 0.5
+    @AppStorage("Itori.settings.accentColorName") var accentColorNameStorage: String = "Blue"
+    @AppStorage("Itori.settings.showAnimations") var showAnimationsStorage: Bool = true
+    @AppStorage("Itori.settings.enableHaptics") var enableHapticsStorage: Bool = true
+    @AppStorage("Itori.settings.showTooltips") var showTooltipsStorage: Bool = true
     @AppStorage(Keys.hideGPAOnDashboard) var hideGPAOnDashboardStorage: Bool = false
-    @AppStorage("roots.settings.showSampleData") var showSampleDataStorage: Bool = false
+    @AppStorage("Itori.settings.showSampleData") var showSampleDataStorage: Bool = false
 
     // Profile/Study Coach Settings
-    @AppStorage("roots.settings.defaultFocusDuration") var defaultFocusDurationStorage: Int = 25
-    @AppStorage("roots.settings.defaultBreakDuration") var defaultBreakDurationStorage: Int = 5
-    @AppStorage("roots.settings.defaultEnergyLevel") var defaultEnergyLevelStorage: String = "Medium"
-    @AppStorage("roots.settings.energySelectionConfirmed") var energySelectionConfirmedStorage: Bool = false
-    @AppStorage("roots.settings.energySelectionResetDateTimestamp") private var energySelectionResetDateTimestamp: Double = Date.distantPast.timeIntervalSince1970
-    
+    @AppStorage("Itori.settings.defaultFocusDuration") var defaultFocusDurationStorage: Int = 25
+    @AppStorage("Itori.settings.defaultBreakDuration") var defaultBreakDurationStorage: Int = 5
+    @AppStorage("Itori.settings.defaultEnergyLevel") var defaultEnergyLevelStorage: String = "Medium"
+    @AppStorage("Itori.settings.energySelectionConfirmed") var energySelectionConfirmedStorage: Bool = false
+    @AppStorage(
+        "Itori.settings.energySelectionResetDateTimestamp"
+    ) private var energySelectionResetDateTimestamp: Double =
+        Date.distantPast.timeIntervalSince1970
+
     var energySelectionResetDate: Date {
         get { Date(timeIntervalSince1970: energySelectionResetDateTimestamp) }
         set { energySelectionResetDateTimestamp = newValue.timeIntervalSince1970 }
     }
-    
-    @AppStorage("roots.settings.enableStudyCoach") var enableStudyCoachStorage: Bool = true
-    @AppStorage("roots.settings.smartNotifications") var smartNotificationsStorage: Bool = true
-    @AppStorage("roots.settings.autoScheduleBreaks") var autoScheduleBreaksStorage: Bool = true
-    @AppStorage("roots.settings.trackStudyHours") var trackStudyHoursStorage: Bool = true
-    @AppStorage("roots.settings.showProductivityInsights") var showProductivityInsightsStorage: Bool = true
-    @AppStorage("roots.settings.weeklySummaryNotifications") var weeklySummaryNotificationsStorage: Bool = false
-    @AppStorage("roots.settings.preferMorningSessions") var preferMorningSessionsStorage: Bool = false
-    @AppStorage("roots.settings.preferEveningSessions") var preferEveningSessionsStorage: Bool = false
-    @AppStorage("roots.settings.enableDeepWorkMode") var enableDeepWorkModeStorage: Bool = false
+
+    @AppStorage("Itori.settings.enableStudyCoach") var enableStudyCoachStorage: Bool = true
+    @AppStorage("Itori.settings.smartNotifications") var smartNotificationsStorage: Bool = true
+    @AppStorage("Itori.settings.autoScheduleBreaks") var autoScheduleBreaksStorage: Bool = true
+    @AppStorage("Itori.settings.trackStudyHours") var trackStudyHoursStorage: Bool = true
+    @AppStorage("Itori.settings.showProductivityInsights") var showProductivityInsightsStorage: Bool = true
+    @AppStorage("Itori.settings.weeklySummaryNotifications") var weeklySummaryNotificationsStorage: Bool = false
+    @AppStorage("Itori.settings.preferMorningSessions") var preferMorningSessionsStorage: Bool = false
+    @AppStorage("Itori.settings.preferEveningSessions") var preferEveningSessionsStorage: Bool = false
+    @AppStorage("Itori.settings.enableDeepWorkMode") var enableDeepWorkModeStorage: Bool = false
 
     // Pomodoro defaults (migrated here)
-    @AppStorage("roots.settings.pomodoroFocus") var pomodoroFocusStorage: Int = 25
-    @AppStorage("roots.settings.pomodoroShortBreak") var pomodoroShortBreakStorage: Int = 5
-    @AppStorage("roots.settings.pomodoroLongBreak") var pomodoroLongBreakStorage: Int = 15
-    @AppStorage("roots.settings.pomodoroIterations") var pomodoroIterationsStorage: Int = 4
-    @AppStorage("roots.settings.timerDurationMinutes") var timerDurationStorage: Int = 30
-    @AppStorage("roots.settings.longBreakCadence") var longBreakCadenceStorage: Int = 4
-    @AppStorage("roots.settings.timerAppearance") var timerAppearanceStorage: String = "analog"
-    
+    @AppStorage("Itori.settings.pomodoroFocus") var pomodoroFocusStorage: Int = 25
+    @AppStorage("Itori.settings.pomodoroShortBreak") var pomodoroShortBreakStorage: Int = 5
+    @AppStorage("Itori.settings.pomodoroLongBreak") var pomodoroLongBreakStorage: Int = 15
+    @AppStorage("Itori.settings.pomodoroIterations") var pomodoroIterationsStorage: Int = 4
+    @AppStorage("Itori.settings.timerDurationMinutes") var timerDurationStorage: Int = 30
+    @AppStorage("Itori.settings.longBreakCadence") var longBreakCadenceStorage: Int = 4
+    @AppStorage("Itori.settings.timerAppearance") var timerAppearanceStorage: String = "analog"
+
     // Auto-reschedule settings
-    @AppStorage("roots.settings.enableAutoReschedule") var enableAutoReschedule: Bool = true
-    @AppStorage("roots.settings.autoRescheduleCheckInterval") var autoRescheduleCheckInterval: Int = 5 // minutes
-    @AppStorage("roots.settings.autoReschedulePushLowerPriority") var autoReschedulePushLowerPriority: Bool = true
-    @AppStorage("roots.settings.autoRescheduleMaxPushCount") var autoRescheduleMaxPushCount: Int = 2
-    
+    @AppStorage("Itori.settings.enableAutoReschedule") var enableAutoReschedule: Bool = true
+    @AppStorage("Itori.settings.autoRescheduleCheckInterval") var autoRescheduleCheckInterval: Int = 5 // minutes
+    @AppStorage("Itori.settings.autoReschedulePushLowerPriority") var autoReschedulePushLowerPriority: Bool = true
+    @AppStorage("Itori.settings.autoRescheduleMaxPushCount") var autoRescheduleMaxPushCount: Int = 2
+
     // Notification settings
-    @AppStorage("roots.settings.notificationsEnabled") var notificationsEnabledStorage: Bool = false
-    @AppStorage("roots.settings.assignmentRemindersEnabled") var assignmentRemindersEnabledStorage: Bool = true
-    @AppStorage("roots.settings.dailyOverviewEnabled") var dailyOverviewEnabledStorage: Bool = false
-    @AppStorage("roots.settings.affirmationsEnabled") var affirmationsEnabledStorage: Bool = false
-    @AppStorage("roots.settings.timerAlertsEnabled") var timerAlertsEnabledStorage: Bool = true
-    @AppStorage("roots.settings.pomodoroAlertsEnabled") var pomodoroAlertsEnabledStorage: Bool = true
-    @AppStorage("roots.settings.alarmKitTimersEnabled") var alarmKitTimersEnabledStorage: Bool = true
-    @AppStorage("roots.settings.assignmentLeadTime") var assignmentLeadTimeStorage: Double = 3600 // 1 hour in seconds
-    
+    @AppStorage("Itori.settings.notificationsEnabled") var notificationsEnabledStorage: Bool = false
+    @AppStorage("Itori.settings.assignmentRemindersEnabled") var assignmentRemindersEnabledStorage: Bool = true
+    @AppStorage("Itori.settings.dailyOverviewEnabled") var dailyOverviewEnabledStorage: Bool = false
+    @AppStorage("Itori.settings.affirmationsEnabled") var affirmationsEnabledStorage: Bool = false
+    @AppStorage("Itori.settings.timerAlertsEnabled") var timerAlertsEnabledStorage: Bool = true
+    @AppStorage("Itori.settings.pomodoroAlertsEnabled") var pomodoroAlertsEnabledStorage: Bool = true
+    @AppStorage("Itori.settings.alarmKitTimersEnabled") var alarmKitTimersEnabledStorage: Bool = true
+    @AppStorage("Itori.settings.assignmentLeadTime") var assignmentLeadTimeStorage: Double = 3600 // 1 hour in seconds
+
     // Daily overview content toggles
-    @AppStorage("roots.settings.dailyOverviewIncludeTasks") var dailyOverviewIncludeTasksStorage: Bool = true
-    @AppStorage("roots.settings.dailyOverviewIncludeEvents") var dailyOverviewIncludeEventsStorage: Bool = true
-    @AppStorage("roots.settings.dailyOverviewIncludeYesterdayCompleted") var dailyOverviewIncludeYesterdayCompletedStorage: Bool = true
-    @AppStorage("roots.settings.dailyOverviewIncludeYesterdayStudyTime") var dailyOverviewIncludeYesterdayStudyTimeStorage: Bool = true
-    @AppStorage("roots.settings.dailyOverviewIncludeMotivation") var dailyOverviewIncludeMotivationStorage: Bool = true
-    @AppStorage("roots.settings.practiceTestTimeMultiplier") var practiceTestTimeMultiplierStorage: Double = 1.0
+    @AppStorage("Itori.settings.dailyOverviewIncludeTasks") var dailyOverviewIncludeTasksStorage: Bool = true
+    @AppStorage("Itori.settings.dailyOverviewIncludeEvents") var dailyOverviewIncludeEventsStorage: Bool = true
+    @AppStorage(
+        "Itori.settings.dailyOverviewIncludeYesterdayCompleted"
+    ) var dailyOverviewIncludeYesterdayCompletedStorage: Bool =
+        true
+    @AppStorage(
+        "Itori.settings.dailyOverviewIncludeYesterdayStudyTime"
+    ) var dailyOverviewIncludeYesterdayStudyTimeStorage: Bool =
+        true
+    @AppStorage("Itori.settings.dailyOverviewIncludeMotivation") var dailyOverviewIncludeMotivationStorage: Bool = true
+    @AppStorage("Itori.settings.practiceTestTimeMultiplier") var practiceTestTimeMultiplierStorage: Double = 1.0
 
     // Calendar UI filter setting
-    @AppStorage("roots.settings.showOnlySchoolCalendar") var showOnlySchoolCalendarStorage: Bool = false
-    
+    @AppStorage("Itori.settings.showOnlySchoolCalendar") var showOnlySchoolCalendarStorage: Bool = false
+
     // Calendar picker admin-lock setting
-    @AppStorage("roots.settings.lockCalendarPickerToSchool") var lockCalendarPickerToSchoolStorage: Bool = false
-    
+    @AppStorage("Itori.settings.lockCalendarPickerToSchool") var lockCalendarPickerToSchoolStorage: Bool = false
+
     // Selected school calendar identifier
-    @AppStorage("roots.settings.selectedSchoolCalendarID") var selectedSchoolCalendarID: String = ""
-    
+    @AppStorage("Itori.settings.selectedSchoolCalendarID") var selectedSchoolCalendarID: String = ""
+
     // Calendar access granted
-    @AppStorage("roots.settings.calendarAccessGranted") var calendarAccessGranted: Bool = true
-    
+    @AppStorage("Itori.settings.calendarAccessGranted") var calendarAccessGranted: Bool = true
+
     // Starred tabs for iOS (max 5) - stored as comma-separated string
-    @AppStorage("roots.settings.starredTabsString") private var starredTabsString: String = "dashboard,courses,assignments,calendar,grades"
-    
+    @AppStorage("Itori.settings.starredTabsString") private var starredTabsString: String = "dashboard,courses,assignments,calendar,grades"
+
     var starredTabsRaw: [String] {
         get {
             starredTabsString.split(separator: ",").map(String.init)
@@ -523,10 +540,11 @@ final class AppSettingsModel: ObservableObject, Codable {
             starredTabsString = newValue.joined(separator: ",")
         }
     }
-    
+
     // Daily overview time (stored as seconds since midnight)
-    @AppStorage("roots.settings.dailyOverviewTimeSeconds") private var dailyOverviewTimeSecondsStorage: Int = 28800 // 8:00 AM
-    
+    @AppStorage("Itori.settings.dailyOverviewTimeSeconds") private var dailyOverviewTimeSecondsStorage: Int =
+        28800 // 8:00 AM
+
     var dailyOverviewTimeStorage: Date {
         get {
             let seconds = dailyOverviewTimeSecondsStorage
@@ -544,18 +562,19 @@ final class AppSettingsModel: ObservableObject, Codable {
             dailyOverviewTimeSecondsStorage = hour * 3600 + minute * 60
         }
     }
-    
+
     // AI Settings
-    @AppStorage("roots.settings.aiEnabled") var aiEnabledStorage: Bool = false  // Global AI kill switch - DISABLED BY DEFAULT per Issue #175.H
+    @AppStorage("Itori.settings.aiEnabled") var aiEnabledStorage: Bool =
+        false // Global AI kill switch - DISABLED BY DEFAULT per Issue #175.H
     var aiModeRaw: String = "auto"
     var byoProviderConfigData: Data? = nil
-    var localBackendTypeRaw: String = "mlx"  // Default to MLX for macOS
+    var localBackendTypeRaw: String = "mlx" // Default to MLX for macOS
     var localModelDownloadedMacOS: Bool = false
     var localModelDownloadediOS: Bool = false
-    
+
     // Onboarding state (Issue #208)
     var onboardingStateData: Data? = nil
-    
+
     // Event load thresholds (persisted)
     var loadLowThresholdStorage: Int = 1
     var loadMediumThresholdStorage: Int = 3
@@ -633,7 +652,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         get {
             visibleTabsRaw.split(separator: ",").compactMap { RootTab(rawValue: String($0)) }
         }
-        set { visibleTabsRaw = newValue.map { $0.rawValue }.joined(separator: ",") }
+        set { visibleTabsRaw = newValue.map(\.rawValue).joined(separator: ",") }
     }
 
     // Planner-related settings
@@ -644,7 +663,7 @@ final class AppSettingsModel: ObservableObject, Codable {
 
     var plannerHorizon: String {
         get { plannerHorizonStorage }
-        set { 
+        set {
             plannerHorizonStorage = newValue
             // Notify that scheduler should update
             NotificationCenter.default.post(name: .plannerHorizonDidChange, object: nil)
@@ -678,7 +697,7 @@ final class AppSettingsModel: ObservableObject, Codable {
             let order = tabOrderRaw.split(separator: ",").compactMap { RootTab(rawValue: String($0)) }
             return order.filter { TabRegistry.definition(for: $0) != nil }
         }
-        set { tabOrderRaw = newValue.map { $0.rawValue }.joined(separator: ",") }
+        set { tabOrderRaw = newValue.map(\.rawValue).joined(separator: ",") }
     }
 
     var iconLabelMode: TabBarMode {
@@ -689,7 +708,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     // Quick Actions
     var quickActions: [QuickAction] {
         get { quickActionsRaw.split(separator: ",").compactMap { QuickAction(rawValue: String($0)) } }
-        set { quickActionsRaw = newValue.map { $0.rawValue }.joined(separator: ",") }
+        set { quickActionsRaw = newValue.map(\.rawValue).joined(separator: ",") }
     }
 
     var enableGlassEffects: Bool {
@@ -760,16 +779,24 @@ final class AppSettingsModel: ObservableObject, Codable {
         }
     }
 
+    var enableCoreDataSync: Bool {
+        get { enableCoreDataSyncStorage }
+        set {
+            enableCoreDataSyncStorage = newValue
+            NotificationCenter.default.post(name: .coreDataSyncSettingChanged, object: newValue)
+        }
+    }
+
     var suppressICloudRestore: Bool {
         get { suppressICloudRestoreStorage }
         set { suppressICloudRestoreStorage = newValue }
     }
-    
+
     var enableSpotlightIndexing: Bool {
         get { enableSpotlightIndexingStorage }
         set { enableSpotlightIndexingStorage = newValue }
     }
-    
+
     var enableRaycastIntegration: Bool {
         get { enableRaycastIntegrationStorage }
         set { enableRaycastIntegrationStorage = newValue }
@@ -780,17 +807,17 @@ final class AppSettingsModel: ObservableObject, Codable {
         get { compactModeStorage }
         set { compactModeStorage = newValue }
     }
-    
+
     var largeTapTargets: Bool {
         get { largeTapTargetsStorage }
         set { largeTapTargetsStorage = newValue }
     }
-    
+
     var showSidebarByDefault: Bool {
         get { showSidebarByDefaultStorage }
         set { showSidebarByDefaultStorage = newValue }
     }
-    
+
     // Starred tabs (iOS tab bar, max 5)
     var starredTabs: [RootTab] {
         get {
@@ -804,7 +831,7 @@ final class AppSettingsModel: ObservableObject, Codable {
             tabs = tabs.filter { TabRegistry.definition(for: $0) != nil }
             // Limit to 5
             tabs = Array(tabs.prefix(5))
-            starredTabsRaw = tabs.map { $0.rawValue }
+            starredTabsRaw = tabs.map(\.rawValue)
         }
     }
 
@@ -842,47 +869,47 @@ final class AppSettingsModel: ObservableObject, Codable {
         get { timerDurationStorage }
         set { timerDurationStorage = newValue }
     }
-    
+
     var timerAppearance: String {
         get { timerAppearanceStorage }
         set { timerAppearanceStorage = newValue }
     }
-    
+
     var isTimerAnalog: Bool {
         timerAppearance == "analog"
     }
-    
+
     var longBreakCadence: Int {
         get { longBreakCadenceStorage }
         set { longBreakCadenceStorage = newValue }
     }
-    
+
     // Notification settings exposed to views
     var notificationsEnabled: Bool {
         get { notificationsEnabledStorage }
         set { notificationsEnabledStorage = newValue }
     }
-    
+
     var assignmentRemindersEnabled: Bool {
         get { assignmentRemindersEnabledStorage }
         set { assignmentRemindersEnabledStorage = newValue }
     }
-    
+
     var dailyOverviewEnabled: Bool {
         get { dailyOverviewEnabledStorage }
         set { dailyOverviewEnabledStorage = newValue }
     }
-    
+
     var affirmationsEnabled: Bool {
         get { affirmationsEnabledStorage }
         set { affirmationsEnabledStorage = newValue }
     }
-    
+
     var timerAlertsEnabled: Bool {
         get { timerAlertsEnabledStorage }
         set { timerAlertsEnabledStorage = newValue }
     }
-    
+
     var pomodoroAlertsEnabled: Bool {
         get { pomodoroAlertsEnabledStorage }
         set { pomodoroAlertsEnabledStorage = newValue }
@@ -892,37 +919,37 @@ final class AppSettingsModel: ObservableObject, Codable {
         get { alarmKitTimersEnabledStorage }
         set { alarmKitTimersEnabledStorage = newValue }
     }
-    
+
     var assignmentLeadTime: TimeInterval {
         get { assignmentLeadTimeStorage }
         set { assignmentLeadTimeStorage = newValue }
     }
-    
+
     var dailyOverviewTime: Date {
         get { dailyOverviewTimeStorage }
         set { dailyOverviewTimeStorage = newValue }
     }
-    
+
     var dailyOverviewIncludeTasks: Bool {
         get { dailyOverviewIncludeTasksStorage }
         set { dailyOverviewIncludeTasksStorage = newValue }
     }
-    
+
     var dailyOverviewIncludeEvents: Bool {
         get { dailyOverviewIncludeEventsStorage }
         set { dailyOverviewIncludeEventsStorage = newValue }
     }
-    
+
     var dailyOverviewIncludeYesterdayCompleted: Bool {
         get { dailyOverviewIncludeYesterdayCompletedStorage }
         set { dailyOverviewIncludeYesterdayCompletedStorage = newValue }
     }
-    
+
     var dailyOverviewIncludeYesterdayStudyTime: Bool {
         get { dailyOverviewIncludeYesterdayStudyTimeStorage }
         set { dailyOverviewIncludeYesterdayStudyTimeStorage = newValue }
     }
-    
+
     var dailyOverviewIncludeMotivation: Bool {
         get { dailyOverviewIncludeMotivationStorage }
         set { dailyOverviewIncludeMotivationStorage = newValue }
@@ -943,13 +970,13 @@ final class AppSettingsModel: ObservableObject, Codable {
         get { loadHighThresholdStorage }
         set { loadHighThresholdStorage = newValue }
     }
-    
+
     // Calendar UI filter setting exposed to views
     var showOnlySchoolCalendar: Bool {
         get { showOnlySchoolCalendarStorage }
         set { showOnlySchoolCalendarStorage = newValue }
     }
-    
+
     // Calendar picker admin-lock setting exposed to views
     var lockCalendarPickerToSchool: Bool {
         get { lockCalendarPickerToSchoolStorage }
@@ -996,7 +1023,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         get { isSchoolModeStorage }
         set { isSchoolModeStorage = newValue }
     }
-    
+
     // Learning Data
     var categoryLearningData: [String: CategoryLearningData] {
         get {
@@ -1012,7 +1039,7 @@ final class AppSettingsModel: ObservableObject, Codable {
             }
         }
     }
-    
+
     func recordTaskCompletion(courseId: UUID, category: AssignmentCategory, actualMinutes: Int) {
         let key = DurationEstimator.learningKey(courseId: courseId, category: category)
         var data = categoryLearningData
@@ -1020,7 +1047,7 @@ final class AppSettingsModel: ObservableObject, Codable {
             courseId: courseId,
             category: category
         )
-        
+
         learning.record(actualMinutes: actualMinutes)
         data[key] = learning
         categoryLearningData = data
@@ -1094,32 +1121,61 @@ final class AppSettingsModel: ObservableObject, Codable {
     }
 
     var defaultEnergyLevel: String {
-        get { 
+        get {
             // Try to get from iCloud first if sync is enabled
             if enableICloudSync {
-                let cloudValue = NSUbiquitousKeyValueStore.default.string(forKey: "roots.settings.defaultEnergyLevel")
-                if let cloudValue = cloudValue, !cloudValue.isEmpty {
-                    LOG_DEV(.debug, "EnergySync", "Reading energy from iCloud", metadata: ["cloudValue": cloudValue, "localValue": defaultEnergyLevelStorage])
+                let cloudValue = NSUbiquitousKeyValueStore.default.string(forKey: "Itori.settings.defaultEnergyLevel")
+                if let cloudValue, !cloudValue.isEmpty {
+                    LOG_DEV(
+                        .debug,
+                        "EnergySync",
+                        "Reading energy from iCloud",
+                        metadata: ["cloudValue": cloudValue, "localValue": defaultEnergyLevelStorage]
+                    )
                     // Update local if different
                     if cloudValue != defaultEnergyLevelStorage {
-                        LOG_DEV(.info, "EnergySync", "Syncing iCloud value to local storage", metadata: ["from": defaultEnergyLevelStorage, "to": cloudValue])
+                        LOG_DEV(
+                            .info,
+                            "EnergySync",
+                            "Syncing iCloud value to local storage",
+                            metadata: ["from": defaultEnergyLevelStorage, "to": cloudValue]
+                        )
                         defaultEnergyLevelStorage = cloudValue
                     }
                     return cloudValue
                 }
-                LOG_DEV(.debug, "EnergySync", "No iCloud value found, using local", metadata: ["localValue": defaultEnergyLevelStorage])
+                LOG_DEV(
+                    .debug,
+                    "EnergySync",
+                    "No iCloud value found, using local",
+                    metadata: ["localValue": defaultEnergyLevelStorage]
+                )
             } else {
-                LOG_DEV(.debug, "EnergySync", "iCloud sync disabled, using local only", metadata: ["localValue": defaultEnergyLevelStorage])
+                LOG_DEV(
+                    .debug,
+                    "EnergySync",
+                    "iCloud sync disabled, using local only",
+                    metadata: ["localValue": defaultEnergyLevelStorage]
+                )
             }
-            return defaultEnergyLevelStorage 
+            return defaultEnergyLevelStorage
         }
-        set { 
-            LOG_DEV(.info, "EnergySync", "Setting energy level", metadata: ["oldValue": defaultEnergyLevelStorage, "newValue": newValue, "iCloudEnabled": "\(enableICloudSync)"])
+        set {
+            LOG_DEV(
+                .info,
+                "EnergySync",
+                "Setting energy level",
+                metadata: [
+                    "oldValue": defaultEnergyLevelStorage,
+                    "newValue": newValue,
+                    "iCloudEnabled": "\(enableICloudSync)"
+                ]
+            )
             defaultEnergyLevelStorage = newValue
             // Sync to iCloud if enabled
             if enableICloudSync {
                 LOG_DEV(.debug, "EnergySync", "Writing energy to iCloud", metadata: ["value": newValue])
-                NSUbiquitousKeyValueStore.default.set(newValue, forKey: "roots.settings.defaultEnergyLevel")
+                NSUbiquitousKeyValueStore.default.set(newValue, forKey: "Itori.settings.defaultEnergyLevel")
                 let syncResult = NSUbiquitousKeyValueStore.default.synchronize()
                 LOG_DEV(.debug, "EnergySync", "iCloud synchronize() called", metadata: ["success": "\(syncResult)"])
             } else {
@@ -1130,37 +1186,66 @@ final class AppSettingsModel: ObservableObject, Codable {
     }
 
     var energySelectionConfirmed: Bool {
-        get { 
+        get {
             // Try to get from iCloud first if sync is enabled
             if enableICloudSync {
-                let cloudValue = NSUbiquitousKeyValueStore.default.object(forKey: "roots.settings.energySelectionConfirmed") as? Bool
-                if let cloudValue = cloudValue {
-                    LOG_DEV(.debug, "EnergySync", "Reading energySelectionConfirmed from iCloud", metadata: ["cloudValue": "\(cloudValue)", "localValue": "\(energySelectionConfirmedStorage)"])
+                let cloudValue = NSUbiquitousKeyValueStore.default
+                    .object(forKey: "Itori.settings.energySelectionConfirmed") as? Bool
+                if let cloudValue {
+                    LOG_DEV(
+                        .debug,
+                        "EnergySync",
+                        "Reading energySelectionConfirmed from iCloud",
+                        metadata: ["cloudValue": "\(cloudValue)", "localValue": "\(energySelectionConfirmedStorage)"]
+                    )
                     // Update local if different
                     if cloudValue != energySelectionConfirmedStorage {
-                        LOG_DEV(.info, "EnergySync", "Syncing energySelectionConfirmed to local", metadata: ["from": "\(energySelectionConfirmedStorage)", "to": "\(cloudValue)"])
+                        LOG_DEV(
+                            .info,
+                            "EnergySync",
+                            "Syncing energySelectionConfirmed to local",
+                            metadata: ["from": "\(energySelectionConfirmedStorage)", "to": "\(cloudValue)"]
+                        )
                         energySelectionConfirmedStorage = cloudValue
                     }
                     return cloudValue
                 }
-                LOG_DEV(.debug, "EnergySync", "No iCloud energySelectionConfirmed, using local", metadata: ["localValue": "\(energySelectionConfirmedStorage)"])
+                LOG_DEV(
+                    .debug,
+                    "EnergySync",
+                    "No iCloud energySelectionConfirmed, using local",
+                    metadata: ["localValue": "\(energySelectionConfirmedStorage)"]
+                )
             }
-            return energySelectionConfirmedStorage 
+            return energySelectionConfirmedStorage
         }
-        set { 
-            LOG_DEV(.info, "EnergySync", "Setting energySelectionConfirmed", metadata: ["oldValue": "\(energySelectionConfirmedStorage)", "newValue": "\(newValue)", "iCloudEnabled": "\(enableICloudSync)"])
+        set {
+            LOG_DEV(
+                .info,
+                "EnergySync",
+                "Setting energySelectionConfirmed",
+                metadata: [
+                    "oldValue": "\(energySelectionConfirmedStorage)",
+                    "newValue": "\(newValue)",
+                    "iCloudEnabled": "\(enableICloudSync)"
+                ]
+            )
             energySelectionConfirmedStorage = newValue
             // Sync to iCloud if enabled
             if enableICloudSync {
-                LOG_DEV(.debug, "EnergySync", "Writing energySelectionConfirmed to iCloud", metadata: ["value": "\(newValue)"])
-                NSUbiquitousKeyValueStore.default.set(newValue, forKey: "roots.settings.energySelectionConfirmed")
+                LOG_DEV(
+                    .debug,
+                    "EnergySync",
+                    "Writing energySelectionConfirmed to iCloud",
+                    metadata: ["value": "\(newValue)"]
+                )
+                NSUbiquitousKeyValueStore.default.set(newValue, forKey: "Itori.settings.energySelectionConfirmed")
                 let syncResult = NSUbiquitousKeyValueStore.default.synchronize()
                 LOG_DEV(.debug, "EnergySync", "iCloud synchronize() called", metadata: ["success": "\(syncResult)"])
             }
             NotificationCenter.default.post(name: .energySettingsDidChange, object: nil)
         }
     }
-
 
     var enableStudyCoach: Bool {
         get { enableStudyCoachStorage }
@@ -1206,34 +1291,33 @@ final class AppSettingsModel: ObservableObject, Codable {
         get { enableDeepWorkModeStorage }
         set { enableDeepWorkModeStorage = newValue }
     }
-    
+
     // AI Settings computed properties
     var aiMode: AIMode {
         get { AIMode(rawValue: aiModeRaw) ?? .auto }
         set { aiModeRaw = newValue.rawValue }
     }
-    
+
     var localBackendType: LLMBackendType {
         get { LLMBackendType(rawValue: localBackendTypeRaw) ?? .mlx }
         set { localBackendTypeRaw = newValue.rawValue }
     }
-    
-    // FIXME: BYOProviderConfig type is missing - temporarily commented out
+
     /*
-    var byoProviderConfig: BYOProviderConfig {
-        get {
-            guard let data = byoProviderConfigData,
-                  let config = try? JSONDecoder().decode(BYOProviderConfig.self, from: data) else {
-                return .default
-            }
-            return config
-        }
-        set {
-            byoProviderConfigData = try? JSONEncoder().encode(newValue)
-        }
-    }
-    */
-    
+     var byoProviderConfig: BYOProviderConfig {
+         get {
+             guard let data = byoProviderConfigData,
+                   let config = try? JSONDecoder().decode(BYOProviderConfig.self, from: data) else {
+                 return .default
+             }
+             return config
+         }
+         set {
+             byoProviderConfigData = try? JSONEncoder().encode(newValue)
+         }
+     }
+     */
+
     var aiEnabled: Bool {
         get { aiEnabledStorage }
         set { aiEnabledStorage = newValue }
@@ -1243,7 +1327,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         get { aiEnabledStorage }
         set { aiEnabledStorage = newValue }
     }
-    
+
     var onboardingState: OnboardingState {
         get {
             guard let data = onboardingStateData else {
@@ -1253,7 +1337,12 @@ final class AppSettingsModel: ObservableObject, Codable {
                 let decoder = JSONDecoder()
                 return try decoder.decode(OnboardingState.self, from: data)
             } catch {
-                LOG_SETTINGS(.error, "OnboardingStateLoad", "Failed to decode onboarding state", metadata: ["error": "\(error)"])
+                LOG_SETTINGS(
+                    .error,
+                    "OnboardingStateLoad",
+                    "Failed to decode onboarding state",
+                    metadata: ["error": "\(error)"]
+                )
                 return .neverSeen
             }
         }
@@ -1261,9 +1350,19 @@ final class AppSettingsModel: ObservableObject, Codable {
             do {
                 let encoder = JSONEncoder()
                 onboardingStateData = try encoder.encode(newValue)
-                LOG_SETTINGS(.info, "OnboardingStateUpdate", "Onboarding state updated", metadata: ["state": newValue.debugDescription])
+                LOG_SETTINGS(
+                    .info,
+                    "OnboardingStateUpdate",
+                    "Onboarding state updated",
+                    metadata: ["state": newValue.debugDescription]
+                )
             } catch {
-                LOG_SETTINGS(.error, "OnboardingStateSave", "Failed to encode onboarding state", metadata: ["error": "\(error)"])
+                LOG_SETTINGS(
+                    .error,
+                    "OnboardingStateSave",
+                    "Failed to encode onboarding state",
+                    metadata: ["error": "\(error)"]
+                )
             }
         }
     }
@@ -1301,46 +1400,48 @@ final class AppSettingsModel: ObservableObject, Codable {
     }
 
     // MARK: - Persistence helpers
-    
+
     // Version tracking for settings schema
     private static let settingsSchemaVersion = 3 // Increment when adding/removing properties
-    private static let schemaVersionKey = "roots.settings.schemaVersion"
-    
+    private static let schemaVersionKey = "Itori.settings.schemaVersion"
+
     static func load() -> AppSettingsModel {
         // Note: Can't use LOG_SETTINGS here as it accesses AppSettingsModel.shared which may not be initialized
         let devMode = UserDefaults.standard.bool(forKey: Keys.devModeEnabled)
         if devMode {
             print("[AppSettings] Starting load...")
         }
-        
+
         // Check schema version
         let savedVersion = UserDefaults.standard.integer(forKey: schemaVersionKey)
         if savedVersion != 0 && savedVersion != settingsSchemaVersion {
-            print("[AppSettings] Schema version changed (\(savedVersion) → \(settingsSchemaVersion)), clearing old settings")
-            UserDefaults.standard.removeObject(forKey: "roots.settings.appsettings")
+            print(
+                "[AppSettings] Schema version changed (\(savedVersion) → \(settingsSchemaVersion)), clearing old settings"
+            )
+            UserDefaults.standard.removeObject(forKey: "Itori.settings.appsettings")
             UserDefaults.standard.set(settingsSchemaVersion, forKey: schemaVersionKey)
             return AppSettingsModel()
         }
-        
+
         // Set current version if not set
         if savedVersion == 0 {
             UserDefaults.standard.set(settingsSchemaVersion, forKey: schemaVersionKey)
         }
-        
-        let key = "roots.settings.appsettings"
-        
+
+        let key = "Itori.settings.appsettings"
+
         guard let data = UserDefaults.standard.data(forKey: key) else {
             if devMode {
                 print("[AppSettings] No saved data found, creating new instance")
             }
             return AppSettingsModel()
         }
-        
+
         if devMode {
             print("[AppSettings] Found saved data (\(data.count) bytes), attempting to decode...")
         }
         let decoder = JSONDecoder()
-        
+
         // Decode synchronously during static initialization to avoid dispatch deadlock
         do {
             if devMode {
@@ -1356,13 +1457,13 @@ final class AppSettingsModel: ObservableObject, Codable {
                 print("[AppSettings] ⚠️ DecodingError: \(decodingError)")
                 if devMode {
                     switch decodingError {
-                    case .keyNotFound(let key, let context):
+                    case let .keyNotFound(key, context):
                         print("  - Missing key: \(key.stringValue) at \(context.codingPath)")
-                    case .typeMismatch(let type, let context):
+                    case let .typeMismatch(type, context):
                         print("  - Type mismatch for \(type) at \(context.codingPath)")
-                    case .valueNotFound(let type, let context):
+                    case let .valueNotFound(type, context):
                         print("  - Value not found for \(type) at \(context.codingPath)")
-                    case .dataCorrupted(let context):
+                    case let .dataCorrupted(context):
                         print("  - Data corrupted at \(context.codingPath)")
                     @unknown default:
                         print("  - Unknown decoding error")
@@ -1371,7 +1472,7 @@ final class AppSettingsModel: ObservableObject, Codable {
             } else {
                 print("[AppSettings] ⚠️ Unexpected error: \(error)")
             }
-            
+
             // Decode failed - clear and create fresh
             print("[AppSettings] Clearing incompatible/corrupted data and creating fresh instance")
             UserDefaults.standard.removeObject(forKey: key)
@@ -1386,9 +1487,9 @@ final class AppSettingsModel: ObservableObject, Codable {
             do {
                 // Wait 300ms before saving - batches rapid changes
                 try await Task.sleep(nanoseconds: 300_000_000)
-                guard let self = self else { return }
-                
-                let key = "roots.settings.appsettings"
+                guard let self else { return }
+
+                let key = "Itori.settings.appsettings"
                 let encoder = JSONEncoder()
                 if let data = try? encoder.encode(self) {
                     UserDefaults.standard.set(data, forKey: key)
@@ -1408,7 +1509,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         // setupICloudObserver()
         print("[AppSettings] init() completed (iCloud observer disabled for debugging)")
     }
-    
+
     private func setupICloudObserver() {
         let devMode = UserDefaults.standard.bool(forKey: Keys.devModeEnabled)
         if devMode {
@@ -1420,44 +1521,45 @@ final class AppSettingsModel: ObservableObject, Codable {
             object: NSUbiquitousKeyValueStore.default,
             queue: .main
         ) { [weak self] notification in
-            guard let self = self else { return }
-            
+            guard let self else { return }
+
             // TEMP: LOG_DEV disabled to prevent recursive MainActor lock during app init
             // LOG_DEV accesses Diagnostics.shared which has @MainActor properties
             print("[EnergySync] 🔔 Received iCloud change notification at \(Date())")
-            
+
             // Get change reason
             if let reason = notification.userInfo?[NSUbiquitousKeyValueStoreChangeReasonKey] as? Int {
-                let reasonString: String
-                switch reason {
+                let reasonString = switch reason {
                 case NSUbiquitousKeyValueStoreServerChange:
-                    reasonString = "ServerChange (another device modified)"
+                    "ServerChange (another device modified)"
                 case NSUbiquitousKeyValueStoreInitialSyncChange:
-                    reasonString = "InitialSyncChange (first sync)"
+                    "InitialSyncChange (first sync)"
                 case NSUbiquitousKeyValueStoreQuotaViolationChange:
-                    reasonString = "QuotaViolation (storage limit exceeded)"
+                    "QuotaViolation (storage limit exceeded)"
                 case NSUbiquitousKeyValueStoreAccountChange:
-                    reasonString = "AccountChange (iCloud account changed)"
+                    "AccountChange (iCloud account changed)"
                 default:
-                    reasonString = "Unknown (\(reason))"
+                    "Unknown (\(reason))"
                 }
                 print("[EnergySync] Change reason: \(reasonString)")
             }
-            
+
             // Get changed keys
             if let changedKeys = notification.userInfo?[NSUbiquitousKeyValueStoreChangedKeysKey] as? [String] {
                 print("[EnergySync] Changed keys from iCloud: \(changedKeys.joined(separator: ", "))")
-                
+
                 for key in changedKeys {
                     switch key {
-                    case "roots.settings.defaultEnergyLevel":
+                    case "Itori.settings.defaultEnergyLevel":
                         if let cloudValue = NSUbiquitousKeyValueStore.default.string(forKey: key) {
                             let oldValue = self.defaultEnergyLevelStorage
                             if cloudValue != oldValue {
-                                print("[EnergySync] ⚡️ Energy level changed from another device: \(oldValue) → \(cloudValue)")
+                                print(
+                                    "[EnergySync] ⚡️ Energy level changed from another device: \(oldValue) → \(cloudValue)"
+                                )
                                 self.defaultEnergyLevelStorage = cloudValue
                                 self.objectWillChange.send()
-                                
+
                                 print("[EnergySync] Triggering planner recompute due to energy change")
                             } else {
                                 print("[EnergySync] Energy level unchanged: \(cloudValue)")
@@ -1465,28 +1567,29 @@ final class AppSettingsModel: ObservableObject, Codable {
                         } else {
                             print("[EnergySync] Energy level key changed but no value in iCloud")
                         }
-                        
-                    case "roots.settings.energySelectionConfirmed":
+
+                    case "Itori.settings.energySelectionConfirmed":
                         let cloudValue = NSUbiquitousKeyValueStore.default.bool(forKey: key)
                         let oldValue = self.energySelectionConfirmedStorage
                         if cloudValue != oldValue {
-                            print("[EnergySync] Energy selection confirmed changed from another device: \(oldValue) → \(cloudValue)")
+                            print(
+                                "[EnergySync] Energy selection confirmed changed from another device: \(oldValue) → \(cloudValue)"
+                            )
                             self.energySelectionConfirmedStorage = cloudValue
                             self.objectWillChange.send()
                         } else {
                             print("[EnergySync] Energy selection confirmed unchanged: \(cloudValue)")
                         }
-                        
+
                     default:
                         print("[EnergySync] Ignoring non-energy key change: \(key)")
-                        break
                     }
                 }
             } else {
                 print("[EnergySync] No changed keys in notification userInfo")
             }
         }
-        
+
         let devModeAfterObserver = UserDefaults.standard.bool(forKey: Keys.devModeEnabled)
         if devModeAfterObserver {
             print("[AppSettings] setupICloudObserver() completed successfully")
@@ -1520,6 +1623,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(devModeSchedulerLoggingStorage, forKey: .devModeSchedulerLoggingStorage)
         try container.encode(devModePerformanceStorage, forKey: .devModePerformanceStorage)
         try container.encode(enableICloudSyncStorage, forKey: .enableICloudSyncStorage)
+        try container.encode(enableCoreDataSyncStorage, forKey: .enableCoreDataSyncStorage)
         try container.encode(suppressICloudRestoreStorage, forKey: .suppressICloudRestoreStorage)
         try container.encode(enableAIPlannerStorage, forKey: .enableAIPlannerStorage)
         try container.encode(plannerHorizonStorage, forKey: .plannerHorizonStorage)
@@ -1543,8 +1647,14 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(dailyOverviewTimeStorage, forKey: .dailyOverviewTimeStorage)
         try container.encode(dailyOverviewIncludeTasksStorage, forKey: .dailyOverviewIncludeTasksStorage)
         try container.encode(dailyOverviewIncludeEventsStorage, forKey: .dailyOverviewIncludeEventsStorage)
-        try container.encode(dailyOverviewIncludeYesterdayCompletedStorage, forKey: .dailyOverviewIncludeYesterdayCompletedStorage)
-        try container.encode(dailyOverviewIncludeYesterdayStudyTimeStorage, forKey: .dailyOverviewIncludeYesterdayStudyTimeStorage)
+        try container.encode(
+            dailyOverviewIncludeYesterdayCompletedStorage,
+            forKey: .dailyOverviewIncludeYesterdayCompletedStorage
+        )
+        try container.encode(
+            dailyOverviewIncludeYesterdayStudyTimeStorage,
+            forKey: .dailyOverviewIncludeYesterdayStudyTimeStorage
+        )
         try container.encode(dailyOverviewIncludeMotivationStorage, forKey: .dailyOverviewIncludeMotivationStorage)
         try container.encode(practiceTestTimeMultiplierStorage, forKey: .practiceTestTimeMultiplierStorage)
         try container.encode(showOnlySchoolCalendarStorage, forKey: .showOnlySchoolCalendarStorage)
@@ -1569,10 +1679,11 @@ final class AppSettingsModel: ObservableObject, Codable {
 
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
+
         // Wrap all decoding in a do-catch to prevent crashes from incompatible data
         do {
-            accentColorRaw = try container.decodeIfPresent(String.self, forKey: .accentColorRaw) ?? AppAccentColor.blue.rawValue
+            accentColorRaw = try container.decodeIfPresent(String.self, forKey: .accentColorRaw) ?? AppAccentColor.blue
+                .rawValue
         } catch {
             // Only log in developer mode - this is not a critical error
             if UserDefaults.standard.bool(forKey: Keys.devModeEnabled) {
@@ -1580,72 +1691,126 @@ final class AppSettingsModel: ObservableObject, Codable {
             }
             accentColorRaw = AppAccentColor.blue.rawValue
         }
-        
-        customAccentEnabledStorage = try container.decodeIfPresent(Bool.self, forKey: .customAccentEnabledStorage) ?? false
+
+        customAccentEnabledStorage = try container
+            .decodeIfPresent(Bool.self, forKey: .customAccentEnabledStorage) ?? false
         customAccentRed = try container.decodeIfPresent(Double.self, forKey: .customAccentRed) ?? 0
         customAccentGreen = try container.decodeIfPresent(Double.self, forKey: .customAccentGreen) ?? 122 / 255
         customAccentBlue = try container.decodeIfPresent(Double.self, forKey: .customAccentBlue) ?? 1
         customAccentAlpha = try container.decodeIfPresent(Double.self, forKey: .customAccentAlpha) ?? 1
-        interfaceStyleRaw = try container.decodeIfPresent(String.self, forKey: .interfaceStyleRaw) ?? InterfaceStyle.system.rawValue
+        interfaceStyleRaw = try container.decodeIfPresent(String.self, forKey: .interfaceStyleRaw) ?? InterfaceStyle
+            .system.rawValue
         glassLightStrength = try container.decodeIfPresent(Double.self, forKey: .glassLightStrength) ?? 0.33
         glassDarkStrength = try container.decodeIfPresent(Double.self, forKey: .glassDarkStrength) ?? 0.17
-        sidebarBehaviorRaw = try container.decodeIfPresent(String.self, forKey: .sidebarBehaviorRaw) ?? SidebarBehavior.automatic.rawValue
+        sidebarBehaviorRaw = try container.decodeIfPresent(String.self, forKey: .sidebarBehaviorRaw) ?? SidebarBehavior
+            .automatic.rawValue
         wiggleOnHoverStorage = try container.decodeIfPresent(Bool.self, forKey: .wiggleOnHoverStorage) ?? true
-        tabBarModeRaw = try container.decodeIfPresent(String.self, forKey: .tabBarModeRaw) ?? TabBarMode.iconsAndText.rawValue
+        tabBarModeRaw = try container.decodeIfPresent(String.self, forKey: .tabBarModeRaw) ?? TabBarMode.iconsAndText
+            .rawValue
         visibleTabsRaw = try container.decodeIfPresent(String.self, forKey: .visibleTabsRaw) ?? "dashboard,planner,assignments,courses,grades,calendar"
         tabOrderRaw = try container.decodeIfPresent(String.self, forKey: .tabOrderRaw) ?? "dashboard,planner,assignments,courses,grades,calendar"
         quickActionsRaw = try container.decodeIfPresent(String.self, forKey: .quickActionsRaw) ?? "add_assignment,add_course,quick_note"
         enableGlassEffectsStorage = try container.decodeIfPresent(Bool.self, forKey: .enableGlassEffectsStorage) ?? true
         cardRadiusRaw = try container.decodeIfPresent(String.self, forKey: .cardRadiusRaw) ?? CardRadius.medium.rawValue
         animationSoftnessStorage = try container.decodeIfPresent(Double.self, forKey: .animationSoftnessStorage) ?? 0.42
-        typographyModeRaw = try container.decodeIfPresent(String.self, forKey: .typographyModeRaw) ?? TypographyMode.system.rawValue
+        typographyModeRaw = try container.decodeIfPresent(String.self, forKey: .typographyModeRaw) ?? TypographyMode
+            .system.rawValue
         devModeEnabledStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeEnabledStorage) ?? false
         devModeUILoggingStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeUILoggingStorage) ?? true
         devModeDataLoggingStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeDataLoggingStorage) ?? true
-        devModeSchedulerLoggingStorage = try container.decodeIfPresent(Bool.self, forKey: .devModeSchedulerLoggingStorage) ?? true
+        devModeSchedulerLoggingStorage = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .devModeSchedulerLoggingStorage
+        ) ?? true
         devModePerformanceStorage = try container.decodeIfPresent(Bool.self, forKey: .devModePerformanceStorage) ?? true
         enableICloudSyncStorage = try container.decodeIfPresent(Bool.self, forKey: .enableICloudSyncStorage) ?? true
-        suppressICloudRestoreStorage = try container.decodeIfPresent(Bool.self, forKey: .suppressICloudRestoreStorage) ?? false
+        enableCoreDataSyncStorage = try container
+            .decodeIfPresent(Bool.self, forKey: .enableCoreDataSyncStorage) ?? false
+        suppressICloudRestoreStorage = try container
+            .decodeIfPresent(Bool.self, forKey: .suppressICloudRestoreStorage) ?? false
         enableFlashcardsStorage = try container.decodeIfPresent(Bool.self, forKey: .enableFlashcardsStorage) ?? true
-        assignmentSwipeLeadingRaw = try container.decodeIfPresent(String.self, forKey: .assignmentSwipeLeadingRaw) ?? AssignmentSwipeAction.complete.rawValue
-        assignmentSwipeTrailingRaw = try container.decodeIfPresent(String.self, forKey: .assignmentSwipeTrailingRaw) ?? AssignmentSwipeAction.delete.rawValue
+        assignmentSwipeLeadingRaw = try container
+            .decodeIfPresent(String.self, forKey: .assignmentSwipeLeadingRaw) ?? AssignmentSwipeAction.complete.rawValue
+        assignmentSwipeTrailingRaw = try container
+            .decodeIfPresent(String.self, forKey: .assignmentSwipeTrailingRaw) ?? AssignmentSwipeAction.delete.rawValue
         pomodoroFocusStorage = try container.decodeIfPresent(Int.self, forKey: .pomodoroFocusStorage) ?? 25
         pomodoroShortBreakStorage = try container.decodeIfPresent(Int.self, forKey: .pomodoroShortBreakStorage) ?? 5
         pomodoroLongBreakStorage = try container.decodeIfPresent(Int.self, forKey: .pomodoroLongBreakStorage) ?? 15
         pomodoroIterationsStorage = try container.decodeIfPresent(Int.self, forKey: .pomodoroIterationsStorage) ?? 4
         timerDurationStorage = try container.decodeIfPresent(Int.self, forKey: .timerDurationStorage) ?? 30
         longBreakCadenceStorage = try container.decodeIfPresent(Int.self, forKey: .longBreakCadenceStorage) ?? 4
-        notificationsEnabledStorage = try container.decodeIfPresent(Bool.self, forKey: .notificationsEnabledStorage) ?? false
-        assignmentRemindersEnabledStorage = try container.decodeIfPresent(Bool.self, forKey: .assignmentRemindersEnabledStorage) ?? true
-        dailyOverviewEnabledStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewEnabledStorage) ?? false
-        affirmationsEnabledStorage = try container.decodeIfPresent(Bool.self, forKey: .affirmationsEnabledStorage) ?? false
+        notificationsEnabledStorage = try container
+            .decodeIfPresent(Bool.self, forKey: .notificationsEnabledStorage) ?? false
+        assignmentRemindersEnabledStorage = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .assignmentRemindersEnabledStorage
+        ) ?? true
+        dailyOverviewEnabledStorage = try container
+            .decodeIfPresent(Bool.self, forKey: .dailyOverviewEnabledStorage) ?? false
+        affirmationsEnabledStorage = try container
+            .decodeIfPresent(Bool.self, forKey: .affirmationsEnabledStorage) ?? false
         timerAlertsEnabledStorage = try container.decodeIfPresent(Bool.self, forKey: .timerAlertsEnabledStorage) ?? true
-        pomodoroAlertsEnabledStorage = try container.decodeIfPresent(Bool.self, forKey: .pomodoroAlertsEnabledStorage) ?? true
-        alarmKitTimersEnabledStorage = try container.decodeIfPresent(Bool.self, forKey: .alarmKitTimersEnabledStorage) ?? true
-        assignmentLeadTimeStorage = try container.decodeIfPresent(Double.self, forKey: .assignmentLeadTimeStorage) ?? 3600
+        pomodoroAlertsEnabledStorage = try container
+            .decodeIfPresent(Bool.self, forKey: .pomodoroAlertsEnabledStorage) ?? true
+        alarmKitTimersEnabledStorage = try container
+            .decodeIfPresent(Bool.self, forKey: .alarmKitTimersEnabledStorage) ?? true
+        assignmentLeadTimeStorage = try container
+            .decodeIfPresent(Double.self, forKey: .assignmentLeadTimeStorage) ?? 3600
         dailyOverviewTimeStorage = try container.decodeIfPresent(Date.self, forKey: .dailyOverviewTimeStorage) ?? {
             var components = DateComponents()
             components.hour = 8
             components.minute = 0
             return Calendar.current.date(from: components) ?? Date()
         }()
-        dailyOverviewIncludeTasksStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewIncludeTasksStorage) ?? true
-        dailyOverviewIncludeEventsStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewIncludeEventsStorage) ?? true
-        dailyOverviewIncludeYesterdayCompletedStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewIncludeYesterdayCompletedStorage) ?? true
-        dailyOverviewIncludeYesterdayStudyTimeStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewIncludeYesterdayStudyTimeStorage) ?? true
-        dailyOverviewIncludeMotivationStorage = try container.decodeIfPresent(Bool.self, forKey: .dailyOverviewIncludeMotivationStorage) ?? true
-        practiceTestTimeMultiplierStorage = try container.decodeIfPresent(Double.self, forKey: .practiceTestTimeMultiplierStorage) ?? 1.0
-        showOnlySchoolCalendarStorage = try container.decodeIfPresent(Bool.self, forKey: .showOnlySchoolCalendarStorage) ?? false
-        lockCalendarPickerToSchoolStorage = try container.decodeIfPresent(Bool.self, forKey: .lockCalendarPickerToSchoolStorage) ?? false
+        dailyOverviewIncludeTasksStorage = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .dailyOverviewIncludeTasksStorage
+        ) ?? true
+        dailyOverviewIncludeEventsStorage = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .dailyOverviewIncludeEventsStorage
+        ) ?? true
+        dailyOverviewIncludeYesterdayCompletedStorage = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .dailyOverviewIncludeYesterdayCompletedStorage
+        ) ?? true
+        dailyOverviewIncludeYesterdayStudyTimeStorage = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .dailyOverviewIncludeYesterdayStudyTimeStorage
+        ) ?? true
+        dailyOverviewIncludeMotivationStorage = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .dailyOverviewIncludeMotivationStorage
+        ) ?? true
+        practiceTestTimeMultiplierStorage = try container.decodeIfPresent(
+            Double.self,
+            forKey: .practiceTestTimeMultiplierStorage
+        ) ?? 1.0
+        showOnlySchoolCalendarStorage = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .showOnlySchoolCalendarStorage
+        ) ?? false
+        lockCalendarPickerToSchoolStorage = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .lockCalendarPickerToSchoolStorage
+        ) ?? false
         selectedSchoolCalendarID = try container.decodeIfPresent(String.self, forKey: .selectedSchoolCalendarID) ?? ""
-        let decodedTabs = try container.decodeIfPresent([String].self, forKey: .starredTabsRaw) ?? ["dashboard", "courses", "assignments", "calendar", "grades"]
+        let decodedTabs = try container.decodeIfPresent([String].self, forKey: .starredTabsRaw) ?? [
+            "dashboard",
+            "courses",
+            "assignments",
+            "calendar",
+            "grades"
+        ]
         starredTabsString = decodedTabs.joined(separator: ",")
         compactModeStorage = try container.decodeIfPresent(Bool.self, forKey: .compactModeStorage) ?? false
         largeTapTargetsStorage = try container.decodeIfPresent(Bool.self, forKey: .largeTapTargetsStorage) ?? false
-        showSidebarByDefaultStorage = try container.decodeIfPresent(Bool.self, forKey: .showSidebarByDefaultStorage) ?? true
+        showSidebarByDefaultStorage = try container
+            .decodeIfPresent(Bool.self, forKey: .showSidebarByDefaultStorage) ?? true
         reduceMotionStorage = try container.decodeIfPresent(Bool.self, forKey: .reduceMotionStorage) ?? false
         increaseContrastStorage = try container.decodeIfPresent(Bool.self, forKey: .increaseContrastStorage) ?? false
-        reduceTransparencyStorage = try container.decodeIfPresent(Bool.self, forKey: .reduceTransparencyStorage) ?? false
+        reduceTransparencyStorage = try container
+            .decodeIfPresent(Bool.self, forKey: .reduceTransparencyStorage) ?? false
         glassIntensityStorage = try container.decodeIfPresent(Double.self, forKey: .glassIntensityStorage) ?? 0.5
         accentColorNameStorage = try container.decodeIfPresent(String.self, forKey: .accentColorNameStorage) ?? "Blue"
         showAnimationsStorage = try container.decodeIfPresent(Bool.self, forKey: .showAnimationsStorage) ?? true
@@ -1653,7 +1818,10 @@ final class AppSettingsModel: ObservableObject, Codable {
         showTooltipsStorage = try container.decodeIfPresent(Bool.self, forKey: .showTooltipsStorage) ?? true
         showSampleDataStorage = try container.decodeIfPresent(Bool.self, forKey: .showSampleDataStorage) ?? false
         defaultEnergyLevelStorage = try container.decodeIfPresent(String.self, forKey: .defaultEnergyLevelStorage) ?? "Medium"
-        energySelectionConfirmedStorage = try container.decodeIfPresent(Bool.self, forKey: .energySelectionConfirmedStorage) ?? false
+        energySelectionConfirmedStorage = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .energySelectionConfirmedStorage
+        ) ?? false
     }
 
     func resetUserDefaults() {

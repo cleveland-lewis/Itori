@@ -9,11 +9,12 @@ struct UsageStats {
     let totalSkippedMinutes: Int
 
     struct HourlyPerformance {
-        let hour: Int            // 0–23
+        let hour: Int // 0–23
         let scheduledMinutes: Int
         let completedMinutes: Int
     }
-    let hourly: [HourlyPerformance]   // length 0–24
+
+    let hourly: [HourlyPerformance] // length 0–24
 
     struct TaskTypeStats {
         let type: TaskType
@@ -22,6 +23,7 @@ struct UsageStats {
         let avgPlannedBlockMinutes: Double
         let avgActualBlockMinutes: Double
     }
+
     let byTaskType: [TaskTypeStats]
 
     struct DayStats {
@@ -29,5 +31,6 @@ struct UsageStats {
         let scheduledMinutes: Int
         let completedMinutes: Int
     }
+
     let byDay: [DayStats]
 }

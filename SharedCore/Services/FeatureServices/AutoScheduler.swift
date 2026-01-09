@@ -1,12 +1,13 @@
-import Foundation
 import EventKit
+import Foundation
+
 /// Lightweight task model for auto-scheduling.
 struct AutoScheduleTask: Identifiable {
     let id: UUID
     let title: String
     let estimatedDurationMinutes: Int
     let dueDate: Date
-    let priority: Int   // higher = more important
+    let priority: Int // higher = more important
 
     init(id: UUID = UUID(), title: String, estimatedDurationMinutes: Int, dueDate: Date, priority: Int) {
         self.id = id
@@ -17,8 +18,8 @@ struct AutoScheduleTask: Identifiable {
     }
 }
 
-final class AutoScheduler {
-    private static let autoScheduleTagPrefix = "[RootsAutoSchedule:"
+enum AutoScheduler {
+    private static let autoScheduleTagPrefix = "[ItoriAutoSchedule:"
 
     private struct TimeSlot {
         var startDate: Date
@@ -92,7 +93,6 @@ final class AutoScheduler {
                 minutesScheduledPerDay[dayStart] = already + chunk
                 minutesNeeded -= chunk
             }
-
         }
 
         return ScheduleDiff(
@@ -134,7 +134,7 @@ final class AutoScheduler {
         let calendar = Calendar.current
         var slots: [TimeSlot] = []
 
-        for offset in 0..<days {
+        for offset in 0 ..< days {
             guard let day = calendar.date(byAdding: .day, value: offset, to: startDate) else { continue }
             guard let windowStart = calendar.date(bySettingHour: startHour, minute: 0, second: 0, of: day),
                   let windowEnd = calendar.date(bySettingHour: endHour, minute: 0, second: 0, of: day) else { continue }

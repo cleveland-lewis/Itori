@@ -1,6 +1,6 @@
+import Combine
 import Foundation
 import SwiftUI
-import Combine
 
 @MainActor
 final class FlashcardManager: ObservableObject {
@@ -77,6 +77,7 @@ final class FlashcardManager: ObservableObject {
     }
 
     // MARK: - Persistence
+
     private func save() {
         do {
             let data = try JSONEncoder().encode(decks)
@@ -102,6 +103,7 @@ final class FlashcardManager: ObservableObject {
     }
 
     // MARK: - Spaced Repetition (SM-2 inspired)
+
     func processReview(deckID: UUID, cardID: UUID, grade: FlashcardRating, referenceDate: Date = Date()) {
         guard let dIndex = decks.firstIndex(where: { $0.id == deckID }),
               let cIndex = decks[dIndex].cards.firstIndex(where: { $0.id == cardID }) else { return }

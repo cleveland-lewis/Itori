@@ -4,17 +4,17 @@ import XCTest
 @MainActor
 final class MenuBarViewModelTests: XCTestCase {
     var viewModel: MenuBarViewModel!
-    
+
     override func setUp() {
         super.setUp()
         viewModel = MenuBarViewModel()
     }
-    
+
     override func tearDown() {
         viewModel = nil
         super.tearDown()
     }
-    
+
     func testInitialState() {
         XCTAssertEqual(viewModel.mode, .pomodoro)
         XCTAssertFalse(viewModel.isRunning)
@@ -27,31 +27,31 @@ final class MenuBarViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.activities.isEmpty)
         XCTAssertTrue(viewModel.sessions.isEmpty)
     }
-    
+
     func testModeCanBeChanged() {
         viewModel.mode = .countdown
         XCTAssertEqual(viewModel.mode, .countdown)
-        
+
         viewModel.mode = .stopwatch
         XCTAssertEqual(viewModel.mode, .stopwatch)
     }
-    
+
     func testActivitySelectionChanges() {
         let activityID = UUID()
         viewModel.selectedActivityID = activityID
         XCTAssertEqual(viewModel.selectedActivityID, activityID)
     }
-    
+
     func testPomodoroBreakStateToggles() {
         XCTAssertFalse(viewModel.isPomodorBreak)
-        
+
         viewModel.isPomodorBreak = true
         XCTAssertTrue(viewModel.isPomodorBreak)
     }
-    
+
     func testCompletedSessionsIncrement() {
         XCTAssertEqual(viewModel.completedPomodoroSessions, 0)
-        
+
         viewModel.completedPomodoroSessions += 1
         XCTAssertEqual(viewModel.completedPomodoroSessions, 1)
     }

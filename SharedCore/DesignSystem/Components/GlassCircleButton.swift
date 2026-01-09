@@ -5,7 +5,7 @@ struct GlassCircleButton: View {
     let action: () -> Void
 
     var body: some View {
-        RootsHeaderButton(icon: systemName, size: 40) {
+        ItariHeaderButton(icon: systemName, size: 40) {
             action()
         }
     }

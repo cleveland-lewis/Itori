@@ -7,10 +7,10 @@ struct CircleIconButton: View {
     var backgroundMaterial: Material = DesignSystem.Materials.hud
     var backgroundOpacity: Double = 1
     var showsBorder: Bool = false
-    var borderColor: Color = Color.primary.opacity(0.06)
+    var borderColor: Color = .primary.opacity(0.06)
     var borderWidth: CGFloat = 1
     var iconRotation: Angle = .zero
-    var accessibilityLabel: String? = nil
+    var accessibilityLabel: String?
     let action: () -> Void
 
     var body: some View {
@@ -22,13 +22,13 @@ struct CircleIconButton: View {
                 .frame(width: size, height: size)
                 .background(
                     Circle()
-                        #if os(macOS)
+                    #if os(macOS)
                         .fill(DesignSystem.Colors.sidebarBackground)
                         .opacity(backgroundOpacity)
-                        #else
+                    #else
                         .fill(backgroundMaterial)
                         .opacity(backgroundOpacity)
-                        #endif
+                    #endif
                 )
                 .overlay {
                     if showsBorder {
@@ -39,7 +39,7 @@ struct CircleIconButton: View {
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .rootsStandardInteraction()
+        .itariStandardInteraction()
         .focusEffectDisabled(true)
         .accessibilityLabelWithTooltip(accessibilityLabel ?? icon)
     }

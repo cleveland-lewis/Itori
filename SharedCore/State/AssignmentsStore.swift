@@ -1,10 +1,9 @@
-import Foundation
 import Combine
-import Network
 import EventKit
+import Foundation
+import Network
+internal import CoreData
 
-// TEMP: @MainActor removed to prevent recursive lock during static initialization
-// TODO: Restore @MainActor and implement proper lazy initialization in v1.1
 final class AssignmentsStore: ObservableObject {
     static let shared = AssignmentsStore()
     static var holidayCheckerOverride: ((Date, RecurrenceRule.HolidaySource) -> Bool)?
@@ -15,37 +14,37 @@ final class AssignmentsStore: ObservableObject {
     private var pendingSyncQueue: [AppTask] = []
     private var isLoadingFromDisk: Bool = false
     private var iCloudToggleObserver: NSObjectProtocol?
-    
+
     private init() {
         // Skip slow initialization during tests
         guard !TestMode.isRunningTests else {
             debugLog("⚡ Test mode: Skipping network monitoring, iCloud sync, and observers")
             return
         }
-        
+
         // OPTIMIZATION: Defer all I/O to async initialization
         Task { @MainActor in
             await initializeAsync()
         }
     }
-    
+
     // OPTIMIZATION: Async initialization to avoid blocking app launch
     @MainActor
     private func initializeAsync() async {
         // Step 1: Load cache off-main thread
         await Task.detached(priority: .userInitiated) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             await self.loadCache()
         }.value
-        
+
         // Step 2: Setup services
         setupNetworkMonitoring()
         observeICloudToggle()
-        
+
         // Step 3: Load from iCloud if needed (deferred)
         await Task.detached(priority: .utility) { [weak self] in
-            guard let self = self else { return }
-            self.loadFromiCloudIfEnabled()
+            guard let self else { return }
+            await self.loadFromiCloudIfEnabled()
             await MainActor.run {
                 self.setupiCloudMonitoring()
             }
@@ -55,16 +54,16 @@ final class AssignmentsStore: ObservableObject {
     @Published var tasks: [AppTask] = [] {
         didSet {
             debugLog("🔄 tasks didSet triggered: \(tasks.count) tasks, isLoadingFromDisk: \(isLoadingFromDisk)")
-            
+
             // Don't save while loading from disk to prevent data loss
             guard !isLoadingFromDisk else {
                 debugLog("⏭️ Skipping save - loading from disk")
                 return
             }
-            
+
             updateAppBadge()
-            saveCache()  // Always save locally first
-            
+            saveCache() // Always save locally first
+
             // Queue for iCloud sync if online and enabled
             if isOnline && isSyncEnabled {
                 saveToiCloud()
@@ -76,12 +75,13 @@ final class AssignmentsStore: ObservableObject {
     }
 
     private var cacheURL: URL? = {
-        guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return nil }
-        let folder = dir.appendingPathComponent("RootsAssignments", isDirectory: true)
+        guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+        else { return nil }
+        let folder = dir.appendingPathComponent("ItoriAssignments", isDirectory: true)
         try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         return folder.appendingPathComponent("tasks.json")
     }()
-    
+
     private lazy var iCloudURL: URL? = {
         // Always attempt to get container (independent of settings)
         let containerIdentifier = "iCloud.com.cwlewisiii.Itori"
@@ -93,23 +93,25 @@ final class AssignmentsStore: ObservableObject {
         try? FileManager.default.createDirectory(at: documentsURL, withIntermediateDirectories: true)
         return documentsURL.appendingPathComponent("tasks.json")
     }()
-    
+
     private lazy var iCloudConflictsURL: URL? = {
-        guard let ubiquityURL = FileManager.default.url(forUbiquityContainerIdentifier: "iCloud.com.cwlewisiii.Itori") else {
+        guard let ubiquityURL = FileManager.default.url(forUbiquityContainerIdentifier: "iCloud.com.cwlewisiii.Itori")
+        else {
             return nil
         }
         let conflictsFolder = ubiquityURL.appendingPathComponent("Documents/Assignments")
         try? FileManager.default.createDirectory(at: conflictsFolder, withIntermediateDirectories: true)
         return conflictsFolder
     }()
-    
+
     private var conflictsFolderURL: URL? = {
-        guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return nil }
-        let folder = dir.appendingPathComponent("RootsAssignments/Conflicts", isDirectory: true)
+        guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+        else { return nil }
+        let folder = dir.appendingPathComponent("ItoriAssignments/Conflicts", isDirectory: true)
         try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         return folder
     }()
-    
+
     private var isSyncEnabled: Bool {
         AppSettingsModel.shared.enableICloudSync
     }
@@ -123,15 +125,15 @@ final class AssignmentsStore: ObservableObject {
         updateAppBadge()
         saveCache()
         refreshGPA()
-        
+
         // Play task creation feedback
         Task { @MainActor in
             Feedback.shared.taskCreated()
         }
-        
+
         // Schedule notification for new task
         scheduleNotificationIfNeeded(for: normalized)
-        
+
         // Generate plan immediately for the new assignment
         Task { @MainActor in
             generatePlanForNewTask(normalized)
@@ -143,28 +145,27 @@ final class AssignmentsStore: ObservableObject {
             }
         }
     }
-    
+
     private func generatePlanForNewTask(_ task: AppTask) {
         guard let assignment = convertTaskToAssignment(task) else { return }
         AssignmentPlansStore.shared.generatePlan(for: assignment, force: false)
     }
-    
+
     private func convertTaskToAssignment(_ task: AppTask) -> Assignment? {
         guard let due = task.due else { return nil }
         guard task.category != .practiceTest else { return nil }
-        
-        let assignmentCategory: AssignmentCategory
-        switch task.category {
-        case .exam: assignmentCategory = .exam
-        case .quiz: assignmentCategory = .quiz
-        case .homework: assignmentCategory = .homework
-        case .reading: assignmentCategory = .reading
-        case .review: assignmentCategory = .review
-        case .project: assignmentCategory = .project
-        case .study: assignmentCategory = .review
-        case .practiceTest: assignmentCategory = .practiceTest
+
+        let assignmentCategory: AssignmentCategory = switch task.category {
+        case .exam: .exam
+        case .quiz: .quiz
+        case .homework: .homework
+        case .reading: .reading
+        case .review: .review
+        case .project: .project
+        case .study: .review
+        case .practiceTest: .practiceTest
         }
-        
+
         return Assignment(
             id: task.id,
             courseId: task.courseId,
@@ -180,12 +181,12 @@ final class AssignmentsStore: ObservableObject {
             plan: []
         )
     }
-    
+
     private func urgencyFromImportance(_ importance: Double) -> AssignmentUrgency {
         switch importance {
-        case ..<0.4: return .low
-        case ..<0.7: return .medium
-        default: return .high
+        case ..<0.4: .low
+        case ..<0.7: .medium
+        default: .high
         }
     }
 
@@ -194,7 +195,7 @@ final class AssignmentsStore: ObservableObject {
         updateAppBadge()
         saveCache()
         refreshGPA()
-        
+
         // Cancel notification when task is removed
         NotificationManager.shared.cancelAssignmentNotification(id)
 
@@ -212,18 +213,18 @@ final class AssignmentsStore: ObservableObject {
         }()
         let existingTask = tasks.first(where: { $0.id == task.id })
         let normalized = normalizeRecurringMetadata(task, existing: existingTask)
-        
+
         // Check if key fields changed that require plan regeneration
         let needsPlanRegeneration: Bool = {
             guard let idx = tasks.firstIndex(where: { $0.id == task.id }) else { return false }
             let old = tasks[idx]
             return old.due != normalized.due ||
-                   old.dueTimeMinutes != normalized.dueTimeMinutes ||
-                   old.estimatedMinutes != normalized.estimatedMinutes ||
-                   old.category != normalized.category ||
-                   old.importance != normalized.importance
+                old.dueTimeMinutes != normalized.dueTimeMinutes ||
+                old.estimatedMinutes != normalized.estimatedMinutes ||
+                old.category != normalized.category ||
+                old.importance != normalized.importance
         }()
-        
+
         if let idx = tasks.firstIndex(where: { $0.id == normalized.id }) {
             var updatedTasks = tasks
             updatedTasks[idx] = normalized
@@ -235,17 +236,17 @@ final class AssignmentsStore: ObservableObject {
         updateAppBadge()
         saveCache()
         refreshGPA()
-        
+
         // Reschedule notification for updated task
         rescheduleNotificationIfNeeded(for: normalized)
-        
+
         // Regenerate plan if key fields changed
         if needsPlanRegeneration {
             Task { @MainActor in
                 generatePlanForNewTask(normalized)
             }
         }
-        
+
         // Play completion feedback if task was just completed
         if wasJustCompleted {
             Task { @MainActor in
@@ -298,13 +299,13 @@ final class AssignmentsStore: ObservableObject {
         let seriesID = task.recurrenceSeriesID ?? existing?.recurrenceSeriesID ?? UUID()
         let index = task.recurrenceIndex ?? existing?.recurrenceIndex ?? 0
 
-            return AppTask(
-                id: task.id,
-                title: task.title,
-                courseId: task.courseId,
-                moduleIds: task.moduleIds,
-                due: task.due,
-                estimatedMinutes: task.estimatedMinutes,
+        return AppTask(
+            id: task.id,
+            title: task.title,
+            courseId: task.courseId,
+            moduleIds: task.moduleIds,
+            due: task.due,
+            estimatedMinutes: task.estimatedMinutes,
             minBlockMinutes: task.minBlockMinutes,
             maxBlockMinutes: task.maxBlockMinutes,
             difficulty: task.difficulty,
@@ -349,7 +350,7 @@ final class AssignmentsStore: ObservableObject {
         let (nextDueDate, nextDueTimeMinutes) = nextDueDate(for: task, rule: recurrence, baseDate: due)
         guard let nextDueDate else { return nil }
 
-        if case .until(let endDate) = recurrence.end {
+        if case let .until(endDate) = recurrence.end {
             let calendar = Calendar.autoupdatingCurrent
             let endDay = calendar.startOfDay(for: endDate)
             if nextDueDate > endDay { return nil }
@@ -381,23 +382,22 @@ final class AssignmentsStore: ObservableObject {
         )
     }
 
-    private func nextDueDate(for task: AppTask, rule: RecurrenceRule, baseDate: Date) -> (Date?, Int?) {
+    private func nextDueDate(for task: AppTask, rule: RecurrenceRule, baseDate _: Date) -> (Date?, Int?) {
         var calendar = Calendar.autoupdatingCurrent
         calendar.timeZone = .autoupdatingCurrent
 
         let hasTime = task.dueTimeMinutes != nil
         let baseDateTime = baseDateTimeForTask(task, calendar: calendar)
 
-        let nextDateTime: Date?
-        switch rule.frequency {
+        let nextDateTime: Date? = switch rule.frequency {
         case .daily:
-            nextDateTime = calendar.date(byAdding: .day, value: rule.interval, to: baseDateTime)
+            calendar.date(byAdding: .day, value: rule.interval, to: baseDateTime)
         case .weekly:
-            nextDateTime = calendar.date(byAdding: .weekOfYear, value: rule.interval, to: baseDateTime)
+            calendar.date(byAdding: .weekOfYear, value: rule.interval, to: baseDateTime)
         case .monthly:
-            nextDateTime = calendar.date(byAdding: .month, value: rule.interval, to: baseDateTime)
+            calendar.date(byAdding: .month, value: rule.interval, to: baseDateTime)
         case .yearly:
-            nextDateTime = calendar.date(byAdding: .year, value: rule.interval, to: baseDateTime)
+            calendar.date(byAdding: .year, value: rule.interval, to: baseDateTime)
         }
 
         guard let nextDateTime else { return (nil, nil) }
@@ -417,9 +417,9 @@ final class AssignmentsStore: ObservableObject {
         switch rule.end {
         case .never:
             return true
-        case .afterOccurrences(let count):
+        case let .afterOccurrences(count):
             return nextIndex < max(0, count)
-        case .until(let endDate):
+        case let .until(endDate):
             let calendar = Calendar.autoupdatingCurrent
             let endDay = calendar.startOfDay(for: endDate)
             return baseDate <= endDay
@@ -463,7 +463,7 @@ final class AssignmentsStore: ObservableObject {
         let store = DeviceCalendarManager.shared.store
         let calendars = store.calendars(for: .event).filter { calendar in
             // Check for holiday calendars (title-based since .holiday type may not be available)
-            return calendar.title.lowercased().contains("holiday")
+            calendar.title.lowercased().contains("holiday")
         }
         guard !calendars.isEmpty else {
             debugLog("ℹ️ Holiday skipping unavailable (no holiday calendars found).")
@@ -472,7 +472,7 @@ final class AssignmentsStore: ObservableObject {
         let start = Calendar.autoupdatingCurrent.startOfDay(for: date)
         let end = Calendar.autoupdatingCurrent.date(byAdding: .day, value: 1, to: start) ?? date
         let predicate = store.predicateForEvents(withStart: start, end: end, calendars: calendars)
-        let events = store.events(matching: predicate).filter { $0.isAllDay }
+        let events = store.events(matching: predicate).filter(\.isAllDay)
         return !events.isEmpty
     }
 
@@ -491,7 +491,7 @@ final class AssignmentsStore: ObservableObject {
 
     func incompleteTasks() -> [AppTask] {
         // For now all tasks are considered active; in future, filter by completion state
-        return tasks
+        tasks
     }
 
     func resetAll() {
@@ -539,6 +539,12 @@ final class AssignmentsStore: ObservableObject {
             let data = try JSONEncoder().encode(tasks)
             try data.write(to: url, options: .atomic)
             debugLog("💾 saveCache: Saved \(tasks.count) tasks to \(url.path)")
+
+            // Sync to CoreData if enabled
+            Task.detached(priority: .utility) { [weak self] in
+                guard let self else { return }
+                await self.syncToCoreData()
+            }
         } catch {
             debugLog("Failed to save tasks cache: \(error)")
         }
@@ -552,16 +558,16 @@ final class AssignmentsStore: ObservableObject {
             let decoded = try JSONDecoder().decode([AppTask].self, from: data)
             tasks = decoded
             isLoadingFromDisk = false
-            
+
             // Migration validation: verify all tasks have category field populated
             let tasksNeedingMigration = tasks.filter { $0.category != $0.type }
             if !tasksNeedingMigration.isEmpty {
                 debugLog("⚠️ Migration Notice: \(tasksNeedingMigration.count) tasks have different category/type values")
             }
-            
+
             // Verify no data loss
             debugLog("✅ Migration Complete: Loaded \(tasks.count) tasks from \(url.path)")
-            
+
             // Schedule notifications for all loaded incomplete tasks
             scheduleNotificationsForLoadedTasks()
 
@@ -573,29 +579,30 @@ final class AssignmentsStore: ObservableObject {
         } catch {
             isLoadingFromDisk = false
             debugLog("❌ Failed to load tasks cache: \(error)")
-            
+
             // Attempt rollback-safe recovery
             attemptRollbackRecovery(from: url)
         }
     }
 
-#if DEBUG
-    func loadCacheSnapshotForTesting() -> [AppTask] {
-        guard let url = cacheURL, FileManager.default.fileExists(atPath: url.path) else { return [] }
-        do {
-            let data = try Data(contentsOf: url)
-            return try JSONDecoder().decode([AppTask].self, from: data)
-        } catch {
-            debugLog("❌ Failed to load cache snapshot: \(error)")
-            return []
+    #if DEBUG
+        func loadCacheSnapshotForTesting() -> [AppTask] {
+            guard let url = cacheURL, FileManager.default.fileExists(atPath: url.path) else { return [] }
+            do {
+                let data = try Data(contentsOf: url)
+                return try JSONDecoder().decode([AppTask].self, from: data)
+            } catch {
+                debugLog("❌ Failed to load cache snapshot: \(error)")
+                return []
+            }
         }
-    }
-#endif
-    
+    #endif
+
     private func attemptRollbackRecovery(from url: URL) {
         // Try to create a backup of the corrupted file
-        let backupURL = url.deletingLastPathComponent().appendingPathComponent("tasks_cache_backup_\(Date().timeIntervalSince1970).json")
-        
+        let backupURL = url.deletingLastPathComponent()
+            .appendingPathComponent("tasks_cache_backup_\(Date().timeIntervalSince1970).json")
+
         do {
             if FileManager.default.fileExists(atPath: url.path) {
                 try FileManager.default.copyItem(at: url, to: backupURL)
@@ -605,33 +612,33 @@ final class AssignmentsStore: ObservableObject {
             debugLog("⚠️ Could not create backup: \(error)")
         }
     }
-    
+
     // MARK: - Notification Scheduling
-    
+
     private func scheduleNotificationIfNeeded(for task: AppTask) {
         guard !task.isCompleted else { return }
         NotificationManager.shared.scheduleAssignmentDue(task)
     }
-    
+
     private func rescheduleNotificationIfNeeded(for task: AppTask) {
         // Cancel existing notification
         NotificationManager.shared.cancelAssignmentNotification(task.id)
-        
+
         // Schedule new one if task is incomplete
         if !task.isCompleted {
             NotificationManager.shared.scheduleAssignmentDue(task)
         }
     }
-    
+
     private func scheduleNotificationsForLoadedTasks() {
         // Schedule notifications for all incomplete tasks on app launch
         for task in tasks where !task.isCompleted {
             NotificationManager.shared.scheduleAssignmentDue(task)
         }
     }
-    
+
     // MARK: - iCloud Sync
-    
+
     private func setupNetworkMonitoring() {
         pathMonitor = NWPathMonitor()
         pathMonitor?.pathUpdateHandler = { [weak self] path in
@@ -639,7 +646,7 @@ final class AssignmentsStore: ObservableObject {
                 guard let self else { return }
                 let wasOnline = self.isOnline
                 self.isOnline = path.status == .satisfied
-                
+
                 // When coming back online, sync pending changes
                 if !wasOnline && self.isOnline {
                     DebugLogger.log("📡 Network restored - syncing pending changes")
@@ -652,21 +659,21 @@ final class AssignmentsStore: ObservableObject {
         }
         pathMonitor?.start(queue: DispatchQueue.global(qos: .utility))
     }
-    
+
     private func trackPendingChanges() {
         // Store snapshot of current state for later sync
         pendingSyncQueue = tasks
         debugLog("📝 Tracked \(tasks.count) tasks for pending sync")
     }
-    
+
     private func syncPendingChanges() {
         guard isSyncEnabled, isOnline, !pendingSyncQueue.isEmpty else { return }
-        
+
         debugLog("🔄 Syncing \(pendingSyncQueue.count) pending changes to iCloud")
         saveToiCloud()
         pendingSyncQueue.removeAll()
     }
-    
+
     private func loadFromiCloudIfEnabled() {
         guard isSyncEnabled else {
             debugLog("ℹ️ iCloud sync disabled - using local cache only")
@@ -678,20 +685,20 @@ final class AssignmentsStore: ObservableObject {
         }
         loadFromiCloud()
     }
-    
+
     private func saveToiCloud() {
         // Only attempt if user has enabled sync
         guard isSyncEnabled else { return }
-        
+
         // Silently fail if iCloud unavailable
-        guard let url = iCloudURL else { 
+        guard let url = iCloudURL else {
             debugLog("ℹ️ iCloud container not available")
-            return 
+            return
         }
-        
+
         // Non-blocking background sync
         DispatchQueue.global(qos: .utility).async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             do {
                 let data = try JSONEncoder().encode(self.tasks)
                 try data.write(to: url, options: .atomic)
@@ -702,24 +709,24 @@ final class AssignmentsStore: ObservableObject {
             }
         }
     }
-    
+
     private func loadFromiCloud() {
         // Silently fail if iCloud unavailable
-        guard let url = iCloudURL else { 
+        guard let url = iCloudURL else {
             debugLog("ℹ️ iCloud container not available")
-            return 
+            return
         }
-        
+
         guard FileManager.default.fileExists(atPath: url.path) else {
             debugLog("ℹ️ No iCloud data found, using local cache")
             return
         }
-        
+
         do {
             isLoadingFromDisk = true
             let data = try Data(contentsOf: url)
             let decoded = try JSONDecoder().decode([AppTask].self, from: data)
-            
+
             // Check for conflicts before merging
             if hasConflicts(cloudTasks: decoded) {
                 handleConflicts(cloudTasks: decoded)
@@ -733,34 +740,35 @@ final class AssignmentsStore: ObservableObject {
             debugLog("❌ Failed to load from iCloud: \(error)")
         }
     }
-    
+
     private func hasConflicts(cloudTasks: [AppTask]) -> Bool {
         // Check if there are significant conflicts
         let localDict = Dictionary(uniqueKeysWithValues: tasks.map { ($0.id, $0) })
         let cloudDict = Dictionary(uniqueKeysWithValues: cloudTasks.map { ($0.id, $0) })
-        
+
         var conflictCount = 0
-        
+
         // Check for tasks that exist in both but differ
         for (id, cloudTask) in cloudDict {
             if let localTask = localDict[id] {
                 // Simple conflict detection: check if key fields differ
                 if localTask.title != cloudTask.title ||
-                   localTask.due != cloudTask.due ||
-                   localTask.isCompleted != cloudTask.isCompleted {
+                    localTask.due != cloudTask.due ||
+                    localTask.isCompleted != cloudTask.isCompleted
+                {
                     conflictCount += 1
                 }
             }
         }
-        
+
         // If more than 5 conflicts or more than 20% of tasks conflict, flag it
         let threshold = max(5, tasks.count / 5)
         return conflictCount > threshold
     }
-    
+
     private func handleConflicts(cloudTasks: [AppTask]) {
         let timestamp = ISO8601DateFormatter().string(from: Date())
-        
+
         // Save local conflicts folder
         if let conflictsFolder = conflictsFolderURL {
             let localURL = conflictsFolder.appendingPathComponent("local_\(timestamp).json")
@@ -771,7 +779,7 @@ final class AssignmentsStore: ObservableObject {
             } catch {
                 debugLog("⚠️ Failed to save local conflict: \(error.localizedDescription)")
             }
-            
+
             let cloudURL = conflictsFolder.appendingPathComponent("cloud_\(timestamp).json")
             do {
                 let cloudData = try JSONEncoder().encode(cloudTasks)
@@ -781,7 +789,7 @@ final class AssignmentsStore: ObservableObject {
                 debugLog("⚠️ Failed to save cloud conflict: \(error.localizedDescription)")
             }
         }
-        
+
         // Also save conflict to iCloud if available
         if let iCloudConflicts = iCloudConflictsURL {
             let conflictURL = iCloudConflicts.appendingPathComponent("tasks_conflict_\(timestamp).json")
@@ -795,7 +803,7 @@ final class AssignmentsStore: ObservableObject {
                 }
             }
         }
-        
+
         // Post notification for user to resolve
         DispatchQueue.main.async {
             NotificationCenter.default.post(
@@ -808,35 +816,35 @@ final class AssignmentsStore: ObservableObject {
                 ]
             )
         }
-        
+
         // For now, use cloud as default (can be changed by user later)
         debugLog("⚠️ SYNC CONFLICT DETECTED - Using cloud version as default")
         debugLog("   Local: \(tasks.count) tasks")
         debugLog("   Cloud: \(cloudTasks.count) tasks")
         debugLog("   Conflict files saved for manual resolution")
-        
+
         mergeWithiCloudData(cloudTasks)
     }
-    
+
     private func mergeWithiCloudData(_ iCloudTasks: [AppTask]) {
         // Create a dictionary of local tasks by ID
         var localTasksDict = Dictionary(uniqueKeysWithValues: tasks.map { ($0.id, $0) })
-        
+
         // Update/add iCloud tasks (iCloud is source of truth)
         for iCloudTask in iCloudTasks {
             localTasksDict[iCloudTask.id] = iCloudTask
         }
-        
+
         // Convert back to array
         tasks = Array(localTasksDict.values)
-        
+
         // Save merged data locally
         saveCache()
     }
-    
+
     private func setupiCloudMonitoring() {
         guard isSyncEnabled, !AppSettingsModel.shared.suppressICloudRestore else { return }
-        
+
         // Monitor for iCloud file changes every 30 seconds
         iCloudMonitor = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) { [weak self] _ in
             self?.checkForCloudUpdates()
@@ -849,7 +857,7 @@ final class AssignmentsStore: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] notification in
-            guard let self = self, let enabled = notification.object as? Bool else { return }
+            guard let self, let enabled = notification.object as? Bool else { return }
             self.handleICloudToggle(enabled: enabled)
         }
     }
@@ -867,21 +875,23 @@ final class AssignmentsStore: ObservableObject {
             pendingSyncQueue.removeAll()
         }
     }
-    
+
     private func checkForCloudUpdates() {
-        guard isSyncEnabled, isOnline, !AppSettingsModel.shared.suppressICloudRestore, let url = iCloudURL else { return }
-        
+        guard isSyncEnabled, isOnline, !AppSettingsModel.shared.suppressICloudRestore,
+              let url = iCloudURL else { return }
+
         DispatchQueue.global(qos: .utility).async { [weak self] in
-            guard let self = self,
+            guard let self,
                   FileManager.default.fileExists(atPath: url.path) else { return }
-            
+
             do {
                 let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
                 let modificationDate = attributes[.modificationDate] as? Date
-                
+
                 // Check if file was modified recently (within last minute)
                 if let modDate = modificationDate,
-                   Date().timeIntervalSince(modDate) < 60 {
+                   Date().timeIntervalSince(modDate) < 60
+                {
                     let age = Int(Date().timeIntervalSince(modDate))
                     self.debugLog("☁️ iCloud file updated recently (\(age)s ago) at \(modDate) - reloading \(url.path)")
                     DispatchQueue.main.async {
@@ -893,7 +903,7 @@ final class AssignmentsStore: ObservableObject {
             }
         }
     }
-    
+
     deinit {
         iCloudMonitor?.invalidate()
         pathMonitor?.cancel()
@@ -901,9 +911,9 @@ final class AssignmentsStore: ObservableObject {
             NotificationCenter.default.removeObserver(observer)
         }
     }
-    
+
     // MARK: - Public API for Conflict Resolution
-    
+
     func resolveConflict(useLocal: Bool, localURL: URL, cloudURL: URL) {
         do {
             let data: Data
@@ -914,41 +924,41 @@ final class AssignmentsStore: ObservableObject {
                 data = try Data(contentsOf: cloudURL)
                 debugLog("🔧 User chose CLOUD version")
             }
-            
+
             let resolvedTasks = try JSONDecoder().decode([AppTask].self, from: data)
             tasks = resolvedTasks
-            
+
             // Upload chosen version to iCloud
             if isSyncEnabled {
                 saveToiCloud()
             }
-            
+
             // Clean up conflict files
             try? FileManager.default.removeItem(at: localURL)
             try? FileManager.default.removeItem(at: cloudURL)
-            
+
             debugLog("✅ Conflict resolved - \(resolvedTasks.count) tasks loaded")
         } catch {
             debugLog("❌ Failed to resolve conflict: \(error)")
         }
     }
-    
+
     func mergeConflicts(localURL: URL, cloudURL: URL) {
         do {
             let localData = try Data(contentsOf: localURL)
             let cloudData = try Data(contentsOf: cloudURL)
-            
+
             let localTasks = try JSONDecoder().decode([AppTask].self, from: localData)
             let cloudTasks = try JSONDecoder().decode([AppTask].self, from: cloudData)
-            
+
             // Merge: Use most recent modification for each task
             var mergedDict: [UUID: AppTask] = [:]
-            
+
             // Add all local tasks
             for task in localTasks {
                 mergedDict[task.id] = task
             }
-            
+
             // Add/update with cloud tasks (keeping unique IDs from both)
             for cloudTask in cloudTasks {
                 if let localTask = mergedDict[cloudTask.id] {
@@ -956,8 +966,9 @@ final class AssignmentsStore: ObservableObject {
                     // This ensures completion status changes sync properly in both directions
                     // Without timestamps, we treat iCloud as source of truth during merge
                     if cloudTask.isCompleted != localTask.isCompleted ||
-                       cloudTask.title != localTask.title ||
-                       cloudTask.due != localTask.due {
+                        cloudTask.title != localTask.title ||
+                        cloudTask.due != localTask.due
+                    {
                         mergedDict[cloudTask.id] = cloudTask
                     }
                     // Keep local only if completely identical
@@ -965,18 +976,18 @@ final class AssignmentsStore: ObservableObject {
                     mergedDict[cloudTask.id] = cloudTask
                 }
             }
-            
+
             tasks = Array(mergedDict.values)
-            
+
             // Upload merged version
             if isSyncEnabled {
                 saveToiCloud()
             }
-            
+
             // Clean up
             try? FileManager.default.removeItem(at: localURL)
             try? FileManager.default.removeItem(at: cloudURL)
-            
+
             debugLog("✅ Conflicts merged - \(tasks.count) total tasks")
         } catch {
             debugLog("❌ Failed to merge conflicts: \(error)")
@@ -986,5 +997,34 @@ final class AssignmentsStore: ObservableObject {
     private func debugLog(_ message: String) {
         guard AppSettingsModel.shared.devModeDataLogging else { return }
         DebugLogger.log(message)
+    }
+
+    // MARK: - CoreData Sync
+
+    private func syncToCoreData() async {
+        guard AppSettingsModel.shared.enableCoreDataSync else { return }
+
+        let context = PersistenceController.shared.newBackgroundContext()
+        let repo = TaskRepository(context: context)
+
+        await context.perform {
+            do {
+                // Delete tasks not in current set
+                let existingTasks = repo.fetchAll()
+                let currentTaskIds = Set(self.tasks.map(\.id))
+                for task in existingTasks where !currentTaskIds.contains(task.id) {
+                    try repo.delete(id: task.id)
+                }
+
+                // Save/update all current tasks
+                for task in self.tasks {
+                    try repo.save(task)
+                }
+
+                LOG_DATA(.debug, "TasksSync", "CoreData sync complete: \(self.tasks.count) tasks")
+            } catch {
+                LOG_DATA(.error, "TasksSync", "CoreData sync failed: \(error.localizedDescription)")
+            }
+        }
     }
 }

@@ -1,12 +1,13 @@
 import Foundation
 import OSLog
 
-fileprivate let aiLogger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "AIEngine", category: "AIEngine")
+private let aiLogger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "AIEngine", category: "AIEngine")
 
 public final class AIEngine: Sendable {
     public static let shared = AIEngine()
-    
+
     // MARK: - LLM Provider Attempt Tracking (Dev-Only)
+
     public static var healthMonitor = AIHealthMonitor()
     public static let auditLog = AIAuditLog()
 
@@ -70,14 +71,14 @@ public final class AIEngine: Sendable {
         fallbackDeterminismCache.removeAll()
         determinismLock.unlock()
     }
-    
+
     private enum ExecutionStrategy {
-        case fallbackFirst  // For realtime ports
-        case providerFirst  // For batch ports
+        case fallbackFirst // For realtime ports
+        case providerFirst // For batch ports
     }
 
     private func _executeWithGuards<P: AIPort>(
-        portType: P.Type,
+        portType _: P.Type,
         input: P.Input,
         context: AIRequestContext
     ) async throws -> AIResult<P.Output> {
@@ -99,13 +100,16 @@ public final class AIEngine: Sendable {
         /// - Health monitor counters (HealthMonitor.swift)
         /// - Audit log provenance (AIAuditLog.swift)
         /// ═══════════════════════════════════════════════════════════════════════════════
-        
+
         // CRITICAL: Single Kill-Switch Gate for LLM Toggle Enforcement
         // If enableLLMAssistance is OFF, skip all provider logic and use fallback only
         if !AppSettingsModel.shared.enableLLMAssistance {
             // Developer Mode: Log LLM suppression
-            aiLogger.info("LLM | 🚫 LLM assistance disabled - using fallback only | port=\(P.id.rawValue) trigger=\(context.requestID.uuidString) reason=user_setting_disabled")
-            
+            aiLogger
+                .info(
+                    "LLM | 🚫 LLM assistance disabled - using fallback only | port=\(P.id.rawValue) trigger=\(context.requestID.uuidString) reason=user_setting_disabled"
+                )
+
             let inputHash = try Self.computeInputHash(
                 for: input,
                 excludedKeys: P.inputHashExcludedKeys,
@@ -128,18 +132,24 @@ public final class AIEngine: Sendable {
 
             // Execute fallback-only path (no provider selection, no network)
             guard P.supportsDeterministicFallback && fallback.canFallback(for: P.id) else {
-                aiLogger.error("LLM | ❌ No fallback available for port | port=\(P.id.rawValue) supportsFallback=\(String(describing: P.supportsDeterministicFallback))")
+                aiLogger
+                    .error(
+                        "LLM | ❌ No fallback available for port | port=\(P.id.rawValue) supportsFallback=\(String(describing: P.supportsDeterministicFallback))"
+                    )
                 throw AIEngineError.policyDenied(reason: "llm_disabled_no_fallback:\(P.id.rawValue)")
             }
 
             AIEngine.healthMonitor.recordFallbackOnly()
-            
+
             let fallbackStart = Date()
             var result = try await fallback.executeFallback(P.self, input: input, context: context)
             let fallbackDuration = Date().timeIntervalSince(fallbackStart)
-            
-            aiLogger.debug("LLM | Fallback completed (LLM disabled) | port=\(P.id.rawValue) duration=\(String(format: "%.3fs", fallbackDuration))")
-            
+
+            aiLogger
+                .debug(
+                    "LLM | Fallback completed (LLM disabled) | port=\(P.id.rawValue) duration=\(String(format: "%.3fs", fallbackDuration))"
+                )
+
             result = result.withMetadata(
                 AIResultMetadata(
                     inputHash: inputHash,
@@ -156,7 +166,7 @@ public final class AIEngine: Sendable {
             )
             return result.addingReasonCodes(["llm_disabled", "fallback_only"])
         }
-        
+
         guard capabilityPolicy.isPortEnabled(P.id) else {
             throw AIEngineError.policyDenied(reason: "portDisabled:\(P.id.rawValue)")
         }
@@ -176,9 +186,9 @@ public final class AIEngine: Sendable {
         )
         let privacyRedacted = try privacyPolicy.redactIfNeeded(inputJSON: rawInput, privacy: context.privacy)
 
-#if DEBUG
-        AIEngine.replayStore.recordInput(port: P.id, inputJSON: rawInput, inputHash: inputHash)
-#endif
+        #if DEBUG
+            AIEngine.replayStore.recordInput(port: P.id, inputJSON: rawInput, inputHash: inputHash)
+        #endif
 
         let executionStrategy = determineStrategy(for: P.self, context: context)
 
@@ -272,14 +282,14 @@ public final class AIEngine: Sendable {
 
         return result
     }
-    
-    private func determineStrategy<P: AIPort>(for portType: P.Type, context: AIRequestContext) -> ExecutionStrategy {
+
+    private func determineStrategy<P: AIPort>(for _: P.Type, context _: AIRequestContext) -> ExecutionStrategy {
         if let suppression = AIEngine.healthMonitor.getSuppressionDecision(for: P.id.rawValue) {
             if suppression.mode == .preferFallback || suppression.mode == .skipProvider {
                 return .fallbackFirst
             }
         }
-        
+
         // Realtime ports should use fallback first for instant response
         let realtimePorts: Set<AIPortID> = [
             .estimateTaskDuration,
@@ -287,16 +297,16 @@ public final class AIEngine: Sendable {
             .schedulePlacement,
             .conflictResolution
         ]
-        
+
         if realtimePorts.contains(P.id) {
             return .fallbackFirst
         }
-        
+
         return .providerFirst
     }
-    
+
     private func executeFallbackFirst<P: AIPort>(
-        portType: P.Type,
+        portType _: P.Type,
         input: P.Input,
         context: AIRequestContext,
         inputHash: String,
@@ -304,19 +314,25 @@ public final class AIEngine: Sendable {
     ) async throws -> AIResult<P.Output> {
         // Use fallback immediately
         usedFallback = true
-        
+
         // Developer Mode: Log fallback execution
-        aiLogger.info("LLM | 🔄 Using deterministic fallback (no LLM) | port=\(P.id.rawValue) reason=fallback-first strategy trigger=\(context.requestID.uuidString)")
-        
+        aiLogger
+            .info(
+                "LLM | 🔄 Using deterministic fallback (no LLM) | port=\(P.id.rawValue) reason=fallback-first strategy trigger=\(context.requestID.uuidString)"
+            )
+
         let fallbackStart = Date()
         let result = try await fallback.executeFallback(P.self, input: input, context: context)
         let fallbackDuration = Date().timeIntervalSince(fallbackStart)
-        
-        aiLogger.debug("LLM | Fallback completed | port=\(P.id.rawValue) duration=\(String(format: "%.3fs", fallbackDuration)) deterministic=true")
-        
+
+        aiLogger
+            .debug(
+                "LLM | Fallback completed | port=\(P.id.rawValue) duration=\(String(format: "%.3fs", fallbackDuration)) deterministic=true"
+            )
+
         // Optionally enhance with provider in background (not implemented yet)
         // This would update future defaults without blocking current response
-        
+
         let withMetadata = result.withMetadata(
             AIResultMetadata(
                 inputHash: inputHash,
@@ -332,10 +348,10 @@ public final class AIEngine: Sendable {
             portType: P.self
         )
     }
-    
+
     private func executeProviderFirst<P: AIPort>(
-        portType: P.Type,
-        input: P.Input,
+        portType _: P.Type,
+        input _: P.Input,
         context: AIRequestContext,
         inputHash: String,
         privacyRedacted: Data,
@@ -345,7 +361,7 @@ public final class AIEngine: Sendable {
         let preference = P.preferredProviders
         let orderedProviders = providers.sorted {
             (preference.firstIndex(of: $0.id) ?? preference.count) <
-            (preference.firstIndex(of: $1.id) ?? preference.count)
+                (preference.firstIndex(of: $1.id) ?? preference.count)
         }
         let viableProviders = orderedProviders
             .filter { $0.isAvailable() && $0.supports(port: P.id) }
@@ -355,13 +371,13 @@ public final class AIEngine: Sendable {
         guard let provider = viableProviders.first else {
             throw AIEngineError.capabilityUnavailable(port: P.id)
         }
-        
+
         // CRITICAL: Record provider attempt (for LLM toggle enforcement tracking)
         AIEngine.healthMonitor.recordLLMProviderAttempt(
             portId: P.id.rawValue,
             providerId: provider.id.rawValue
         )
-        
+
         // Log audit event for provider attempt
         let requestID = UUID()
         await AIEngine.auditLog.log(AIAuditEntry(
@@ -376,7 +392,7 @@ public final class AIEngine: Sendable {
             success: true,
             inputHash: inputHash
         ))
-        
+
         let finalInput = try applyRedaction(
             inputJSON: privacyRedacted,
             port: P.id,
@@ -390,68 +406,80 @@ public final class AIEngine: Sendable {
         let (outJSON, diag): (Data, AIDiagnostic)
         do {
             #if DEBUG
-            // CANARY: Runtime invariant check (DEBUG-only)
-            // This should NEVER fire if _executeWithGuards properly enforces the kill-switch
-            if !AppSettingsModel.shared.enableLLMAssistance {
-                let counters = AIEngine.healthMonitor.getLLMCounters()
-                assertionFailure("""
+                // CANARY: Runtime invariant check (DEBUG-only)
+                // This should NEVER fire if _executeWithGuards properly enforces the kill-switch
+                if !AppSettingsModel.shared.enableLLMAssistance {
+                    let counters = AIEngine.healthMonitor.getLLMCounters()
+                    assertionFailure("""
                     ═══════════════════════════════════════════════════════════════
                     CRITICAL INVARIANT VIOLATION DETECTED
                     ═══════════════════════════════════════════════════════════════
-                    
+
                     LLM toggle is OFF but provider.execute() is being called!
-                    
+
                     This is a critical bug in AIEngine._executeWithGuards.
                     The kill-switch gate failed to prevent provider execution.
-                    
+
                     Current State:
                     - enableLLMAssistance: false (SHOULD BLOCK PROVIDERS)
                     - providerAttemptCountTotal: \(counters.providerAttemptCountTotal)
                     - Provider: \(provider.id.rawValue)
                     - Port: \(P.id.rawValue)
-                    
+
                     Action Required:
                     1. DO NOT SHIP THIS BUILD
                     2. Review AIEngine._executeWithGuards (lines ~67-117)
                     3. Verify toggle check happens BEFORE provider selection
                     4. Run LLMToggleEnforcementTests to reproduce
-                    
+
                     See: Docs/Architecture/LLM_ENFORCEMENT_INVARIANT.md
                     ═══════════════════════════════════════════════════════════════
                     """)
-            }
+                }
             #endif
-            
+
             // Developer Mode: Log LLM execution start
-            aiLogger.info("LLM | 🤖 Starting LLM request | provider=\(provider.id.rawValue) port=\(P.id.rawValue) trigger=\(context.requestID.uuidString) privacy=\(String(describing: context.privacy)) inputSize=\(finalInput.count) bytes timestamp=\(String(describing: Date()))")
-            
+            aiLogger
+                .info(
+                    "LLM | 🤖 Starting LLM request | provider=\(provider.id.rawValue) port=\(P.id.rawValue) trigger=\(context.requestID.uuidString) privacy=\(String(describing: context.privacy)) inputSize=\(finalInput.count) bytes timestamp=\(String(describing: Date()))"
+                )
+
             (outJSON, diag) = try await budget.execute {
                 try await provider.execute(port: P.id, inputJSON: finalInput, context: context)
             }
-            
+
             let executionDuration = Date().timeIntervalSince(start)
-            
-            // Developer Mode: Log LLM execution completion  
-            aiLogger.info("LLM | ✅ LLM request completed | provider=\(provider.id.rawValue) port=\(P.id.rawValue) duration=\(String(format: "%.3fs", executionDuration)) outputSize=\(outJSON.count) bytes latency=\(diag.latencyMs.map { "\($0)ms" } ?? "unknown") reasonCodes=\(diag.reasonCodes.joined(separator: ", ")) success=true")
-            
+
+            // Developer Mode: Log LLM execution completion
+            aiLogger
+                .info(
+                    "LLM | ✅ LLM request completed | provider=\(provider.id.rawValue) port=\(P.id.rawValue) duration=\(String(format: "%.3fs", executionDuration)) outputSize=\(outJSON.count) bytes latency=\(diag.latencyMs.map { "\($0)ms" } ?? "unknown") reasonCodes=\(diag.reasonCodes.joined(separator: ", ")) success=true"
+                )
+
             // Developer Mode: Log output preview (first 200 chars)
             if let outputString = String(data: outJSON, encoding: .utf8) {
                 let preview = String(outputString.prefix(200))
-                aiLogger.debug("LLM | Output preview | provider=\(provider.id.rawValue) preview=\(preview + (outputString.count > 200 ? "..." : ""))")
+                aiLogger
+                    .debug(
+                        "LLM | Output preview | provider=\(provider.id.rawValue) preview=\(preview + (outputString.count > 200 ? "..." : ""))"
+                    )
             }
         } catch {
             let executionDuration = Date().timeIntervalSince(start)
-            
+
             // Developer Mode: Log LLM execution failure
-            aiLogger.error("LLM | ❌ LLM request failed | provider=\(provider.id.rawValue) port=\(P.id.rawValue) duration=\(String(format: "%.3fs", executionDuration)) error=\(String(describing: error)) willRetry=false")
-            
+            aiLogger
+                .error(
+                    "LLM | ❌ LLM request failed | provider=\(provider.id.rawValue) port=\(P.id.rawValue) duration=\(String(format: "%.3fs", executionDuration)) error=\(String(describing: error)) willRetry=false"
+                )
+
             providerReliability.recordProviderFailure(provider.id.rawValue)
             throw error
         }
         let latency = Int(Date().timeIntervalSince(start) * 1000)
 
         let output = try JSONDecoder().decode(P.Output.self, from: outJSON)
-        
+
         do {
             try P.validate(output: output)
         } catch {
@@ -462,7 +490,7 @@ public final class AIEngine: Sendable {
         var notes = diag.notes
         notes["inputHash"] = inputHash
         notes["redactionDelta"] = String(format: "%.2f", redactionDelta)
-        
+
         let mergedDiag = AIDiagnostic(
             reasonCodes: diag.reasonCodes,
             latencyMs: latency,
@@ -492,15 +520,15 @@ public final class AIEngine: Sendable {
     private func timeBudget(for port: AIPortID) -> TimeBudget {
         switch port {
         case .estimateTaskDuration:
-            return TimeBudget(budget: TimeBudget.estimate, portName: port.rawValue)
+            TimeBudget(budget: TimeBudget.estimate, portName: port.rawValue)
         case .workloadForecast:
-            return TimeBudget(budget: TimeBudget.forecast, portName: port.rawValue)
+            TimeBudget(budget: TimeBudget.forecast, portName: port.rawValue)
         case .generateStudyPlan, .schedulePlacement, .conflictResolution:
-            return TimeBudget(budget: TimeBudget.schedule, portName: port.rawValue)
+            TimeBudget(budget: TimeBudget.schedule, portName: port.rawValue)
         case .documentIngest, .academicEntityExtract:
-            return TimeBudget(budget: TimeBudget.parse, portName: port.rawValue)
+            TimeBudget(budget: TimeBudget.parse, portName: port.rawValue)
         case .assignmentCreation:
-            return TimeBudget(budget: TimeBudget.decompose, portName: port.rawValue)
+            TimeBudget(budget: TimeBudget.decompose, portName: port.rawValue)
         }
     }
 
@@ -522,7 +550,7 @@ public final class AIEngine: Sendable {
         result: AIResult<P.Output>,
         port: AIPortID,
         inputHash: String,
-        portType: P.Type
+        portType _: P.Type
     ) -> AIResult<P.Output> {
         let outputHash = stableOutputHash(result.output)
         let cacheKey = "\(port.rawValue)|\(inputHash)"
@@ -546,7 +574,7 @@ public final class AIEngine: Sendable {
         return result
     }
 
-    private func stableOutputHash<T: Encodable>(_ output: T) -> String {
+    private func stableOutputHash(_ output: some Encodable) -> String {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.sortedKeys]
         let data = (try? encoder.encode(output)) ?? Data()
@@ -569,8 +597,9 @@ extension AIEngine {
 
 private extension AIEngine {
     // MARK: - Helper Methods for Kill-Switch Enforcement
-    static func computeInputHash<T: Encodable>(
-        for input: T,
+
+    static func computeInputHash(
+        for input: some Encodable,
         excludedKeys: Set<String> = [],
         unorderedArrayKeys: Set<String> = []
     ) throws -> String {
@@ -586,82 +615,84 @@ private extension AIEngine {
 }
 
 #if DEBUG
-extension AIEngine {
-    @MainActor
-    func replay<P: AIPort>(
-        _ portType: P.Type,
-        index: Int = 0
-    ) async throws -> AIPortReplayResult? {
-        let context = await MainActor.run { AIRequestContext() }
-        return try await replay(portType, index: index, context: context)
-    }
+    extension AIEngine {
+        @MainActor
+        func replay(
+            _ portType: (some AIPort).Type,
+            index: Int = 0
+        ) async throws -> AIPortReplayResult? {
+            let context = await MainActor.run { AIRequestContext() }
+            return try await replay(portType, index: index, context: context)
+        }
 
-    func replay<P: AIPort>(
-        _ portType: P.Type,
-        index: Int = 0,
-        context: AIRequestContext
-    ) async throws -> AIPortReplayResult? {
-        guard let record = AIEngine.replayStore.record(for: P.id, index: index) else {
-            return nil
-        }
-        
-        let input = try JSONDecoder().decode(P.Input.self, from: record.inputJSON)
-        let redactedInput = try privacyPolicy.redactIfNeeded(inputJSON: record.inputJSON, privacy: context.privacy)
-        
-        var providerOutputJSON: String?
-        var providerError: String?
-        var providerID: AIProviderID?
-        var fallbackOutputJSON: String?
-        var fallbackError: String?
-        
-        if let provider = providers.first(where: { $0.isAvailable() && $0.supports(port: P.id) }) {
-            providerID = provider.id
-            do {
-                #if DEBUG
-                // CANARY: Debug replay path should also respect toggle
-                if !AppSettingsModel.shared.enableLLMAssistance {
-                    print("⚠️ WARNING: Replay mode called provider while toggle OFF (debug-only)")
+        func replay<P: AIPort>(
+            _: P.Type,
+            index: Int = 0,
+            context: AIRequestContext
+        ) async throws -> AIPortReplayResult? {
+            guard let record = AIEngine.replayStore.record(for: P.id, index: index) else {
+                return nil
+            }
+
+            let input = try JSONDecoder().decode(P.Input.self, from: record.inputJSON)
+            let redactedInput = try privacyPolicy.redactIfNeeded(inputJSON: record.inputJSON, privacy: context.privacy)
+
+            var providerOutputJSON: String?
+            var providerError: String?
+            var providerID: AIProviderID?
+            var fallbackOutputJSON: String?
+            var fallbackError: String?
+
+            if let provider = providers.first(where: { $0.isAvailable() && $0.supports(port: P.id) }) {
+                providerID = provider.id
+                do {
+                    #if DEBUG
+                        // CANARY: Debug replay path should also respect toggle
+                        if !AppSettingsModel.shared.enableLLMAssistance {
+                            print("⚠️ WARNING: Replay mode called provider while toggle OFF (debug-only)")
+                        }
+                    #endif
+
+                    let (outJSON, _) = try await provider.execute(
+                        port: P.id,
+                        inputJSON: redactedInput,
+                        context: context
+                    )
+                    providerOutputJSON = String(data: outJSON, encoding: .utf8)
+                } catch {
+                    providerError = error.localizedDescription
                 }
-                #endif
-                
-                let (outJSON, _) = try await provider.execute(port: P.id, inputJSON: redactedInput, context: context)
-                providerOutputJSON = String(data: outJSON, encoding: .utf8)
-            } catch {
-                providerError = error.localizedDescription
             }
-        }
-        
-        if fallback.canFallback(for: P.id) {
-            do {
-                let fallbackResult = try await fallback.executeFallback(P.self, input: input, context: context)
-                let encoded = try JSONEncoder().encode(fallbackResult.output)
-                fallbackOutputJSON = String(data: encoded, encoding: .utf8)
-            } catch {
-                fallbackError = error.localizedDescription
+
+            if fallback.canFallback(for: P.id) {
+                do {
+                    let fallbackResult = try await fallback.executeFallback(P.self, input: input, context: context)
+                    let encoded = try JSONEncoder().encode(fallbackResult.output)
+                    fallbackOutputJSON = String(data: encoded, encoding: .utf8)
+                } catch {
+                    fallbackError = error.localizedDescription
+                }
             }
+
+            let outputsMatch: Bool? = if let providerJSON = providerOutputJSON, let fallbackJSON = fallbackOutputJSON {
+                providerJSON == fallbackJSON
+            } else {
+                nil
+            }
+
+            return AIPortReplayResult(
+                port: P.id,
+                inputHash: record.inputHash,
+                providerID: providerID,
+                providerOutputJSON: providerOutputJSON,
+                providerError: providerError,
+                fallbackOutputJSON: fallbackOutputJSON,
+                fallbackError: fallbackError,
+                outputsMatch: outputsMatch,
+                timestamp: record.timestamp
+            )
         }
-        
-        let outputsMatch: Bool?
-        if let providerJSON = providerOutputJSON, let fallbackJSON = fallbackOutputJSON {
-            outputsMatch = providerJSON == fallbackJSON
-        } else {
-            outputsMatch = nil
-        }
-        
-        return AIPortReplayResult(
-            port: P.id,
-            inputHash: record.inputHash,
-            providerID: providerID,
-            providerOutputJSON: providerOutputJSON,
-            providerError: providerError,
-            fallbackOutputJSON: fallbackOutputJSON,
-            fallbackError: fallbackError,
-            outputsMatch: outputsMatch,
-            timestamp: record.timestamp
-        )
     }
-    
-}
 #endif
 
 private extension AIResult {

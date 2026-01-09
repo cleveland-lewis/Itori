@@ -61,9 +61,9 @@ public enum AIProvenance: Codable, Hashable, Sendable {
 
     public var primaryProvider: AIProviderID {
         switch self {
-        case .provider(let id): return id
-        case .fallback(let id): return id
-        case .mixed(let ids): return ids.first ?? .fallbackHeuristic
+        case let .provider(id): id
+        case let .fallback(id): id
+        case let .mixed(ids): ids.first ?? .fallbackHeuristic
         }
     }
 }
@@ -131,12 +131,12 @@ public enum AIEngineError: Error, LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .capabilityUnavailable(let port): return "Capability unavailable: \(port.rawValue)"
-        case .providerUnavailable(let p): return "Provider unavailable: \(p.rawValue)"
-        case .policyDenied(let r): return "Policy denied: \(r)"
-        case .validationFailed(let r): return "Validation failed: \(r)"
-        case .providerFailed(let e): return "Provider failed: \(e.localizedDescription)"
-        case .fallbackFailed(let e): return "Fallback failed: \(e.localizedDescription)"
+        case let .capabilityUnavailable(port): "Capability unavailable: \(port.rawValue)"
+        case let .providerUnavailable(p): "Provider unavailable: \(p.rawValue)"
+        case let .policyDenied(r): "Policy denied: \(r)"
+        case let .validationFailed(r): "Validation failed: \(r)"
+        case let .providerFailed(e): "Provider failed: \(e.localizedDescription)"
+        case let .fallbackFailed(e): "Fallback failed: \(e.localizedDescription)"
         }
     }
 }

@@ -69,7 +69,8 @@ final class PlannerService {
         ]
 
         for block in blocks {
-            guard let rawDate = calendar.date(byAdding: .day, value: -block.daysBefore, to: exam.dueDate) else { continue }
+            guard let rawDate = calendar.date(byAdding: .day, value: -block.daysBefore, to: exam.dueDate)
+            else { continue }
             let scheduledDate = resolveDate(rawDate, estimatedMinutes: block.estimatedMinutes)
 
             var title = "\(block.titlePrefix)\(exam.title)"
@@ -97,7 +98,7 @@ final class PlannerService {
         }
 
         // Sort in reverse scheduling order (closest to exam first).
-        generated.sort { (a, b) -> Bool in
+        generated.sort { a, b -> Bool in
             guard let dueA = a.due, let dueB = b.due else { return false }
             return dueA > dueB
         }

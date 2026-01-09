@@ -8,7 +8,7 @@ public struct DurationEstimate: Codable, Equatable {
     public let maxMinutes: Int
     public let confidence: Double // 0.0 to 1.0
     public let reasonCodes: [String]
-    
+
     public init(
         estimatedMinutes: Int,
         minMinutes: Int,
@@ -28,7 +28,7 @@ public struct EffortProfile: Codable, Equatable {
     public let courseType: String
     public let multiplier: Double
     public let baseMinutesPerCredit: Int
-    
+
     public init(courseType: String, multiplier: Double, baseMinutesPerCredit: Int) {
         self.courseType = courseType
         self.multiplier = multiplier
@@ -40,7 +40,7 @@ public struct WorkloadForecast: Codable, Equatable {
     public let weeklyLoad: [WeekLoad]
     public let peakWeek: Date?
     public let totalHours: Double
-    
+
     public init(weeklyLoad: [WeekLoad], peakWeek: Date?, totalHours: Double) {
         self.weeklyLoad = weeklyLoad
         self.peakWeek = peakWeek
@@ -52,7 +52,7 @@ public struct WeekLoad: Codable, Equatable {
     public let weekStart: Date
     public let hours: Double
     public let breakdown: [String: Double] // category -> hours
-    
+
     public init(weekStart: Date, hours: Double, breakdown: [String: Double]) {
         self.weekStart = weekStart
         self.hours = hours
@@ -92,7 +92,7 @@ public struct CompletionHistory: Codable, Equatable {
     public let actualMinutes: Int
     public let completedDate: Date
     public let courseId: String
-    
+
     public init(category: String, actualMinutes: Int, completedDate: Date, courseId: String) {
         self.category = category
         self.actualMinutes = actualMinutes
@@ -107,7 +107,7 @@ public struct AssignmentSummary: Codable, Equatable {
     public let courseId: String
     public let dueDate: Date
     public let estimatedMinutes: Int
-    
+
     public init(id: String, category: String, courseId: String, dueDate: Date, estimatedMinutes: Int) {
         self.id = id
         self.category = category

@@ -16,10 +16,13 @@ extension Notification.Name {
 
     // Timer state updates (menu bar manager uses this)
     static let timerStateDidChange = Notification.Name("timerStateDidChange")
-    
+
     // Planner settings
     static let plannerHorizonDidChange = Notification.Name("plannerHorizonDidChange")
-    
+
+    // Persistence settings
+    static let coreDataSyncSettingChanged = Notification.Name("coreDataSyncSettingChanged")
+
     // Navigation
     static let navigatePrevious = Notification.Name("navigatePrevious")
     static let navigateNext = Notification.Name("navigateNext")

@@ -4,14 +4,14 @@ struct AssignmentSceneContent: View {
     @SceneStorage(SceneActivationHelper.assignmentSceneStorageKey) private var assignmentIdString: String?
     @ScaledMetric private var emptyIconSize: CGFloat = 48
 
-    
     @EnvironmentObject private var assignmentsStore: AssignmentsStore
     @EnvironmentObject private var coursesStore: CoursesStore
     @Environment(\.dismiss) private var dismiss
 
     private var assignment: AppTask? {
         guard let idString = assignmentIdString,
-              let uuid = UUID(uuidString: idString) else {
+              let uuid = UUID(uuidString: idString)
+        else {
             return nil
         }
         return assignmentsStore.tasks.first(where: { $0.id == uuid })
@@ -49,7 +49,8 @@ struct AssignmentSceneContent: View {
         .onContinueUserActivity(SceneActivationHelper.windowActivityType) { activity in
             guard let state = SceneActivationHelper.decodeWindowState(from: activity),
                   state.windowId == WindowIdentifier.assignmentDetail.rawValue,
-                  let incomingId = state.entityId else {
+                  let incomingId = state.entityId
+            else {
                 return
             }
             assignmentIdString = incomingId
@@ -61,13 +62,21 @@ struct AssignmentSceneContent: View {
             Image(systemName: "doc.text.magnifyingglass")
                 .font(.system(size: emptyIconSize))
                 .foregroundStyle(.secondary)
-            Text(NSLocalizedString("ui.assignment.detail.will.appear.here", value: "Assignment detail will appear here.", comment: "Assignment detail will appear here."))
-                .font(.title3.weight(.semibold))
-            Text(NSLocalizedString("ui.use.open.in.new.window", value: "Use “Open in New Window” from the Assignments list to create a dedicated window.", comment: "Use “Open in New Window” from the Assignments list..."))
-                .font(.callout)
-                .multilineTextAlignment(.center)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal)
+            Text(NSLocalizedString(
+                "ui.assignment.detail.will.appear.here",
+                value: "Assignment detail will appear here.",
+                comment: "Assignment detail will appear here."
+            ))
+            .font(.title3.weight(.semibold))
+            Text(NSLocalizedString(
+                "ui.use.open.in.new.window",
+                value: "Use “Open in New Window” from the Assignments list to create a dedicated window.",
+                comment: "Use “Open in New Window” from the Assignments list..."
+            ))
+            .font(.callout)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(.secondary)
+            .padding(.horizontal)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

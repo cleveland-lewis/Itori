@@ -8,7 +8,7 @@ enum ScheduledTestStatus: String, Codable, CaseIterable {
     case completed = "Completed"
     case missed = "Missed"
     case archived = "Archived"
-    
+
     var displayText: String {
         rawValue
     }
@@ -39,7 +39,7 @@ struct ScheduledPracticeTest: Identifiable, Codable, Hashable {
     var status: ScheduledTestStatus
     var createdAt: Date
     var updatedAt: Date
-    
+
     init(
         id: UUID = UUID(),
         courseId: UUID? = nil,
@@ -144,7 +144,7 @@ struct ScheduledPracticeTest: Identifiable, Codable, Hashable {
         try container.encode(createdAt, forKey: .createdAt)
         try container.encode(updatedAt, forKey: .updatedAt)
     }
-    
+
     /// Returns computed status based on current time
     func computedStatus(hasCompletedAttempt: Bool) -> ScheduledTestStatus {
         if status == .archived {
@@ -168,7 +168,7 @@ struct TestAttempt: Identifiable, Codable, Hashable {
     var completedAt: Date?
     var score: Double?
     var outputReference: String? // JSON storage or file reference
-    
+
     init(
         id: UUID = UUID(),
         scheduledTestID: UUID? = nil,
@@ -184,7 +184,7 @@ struct TestAttempt: Identifiable, Codable, Hashable {
         self.score = score
         self.outputReference = outputReference
     }
-    
+
     var isCompleted: Bool {
         completedAt != nil
     }
@@ -200,17 +200,17 @@ extension Calendar {
         let components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)
         return calendar.date(from: components) ?? date
     }
-    
+
     /// Returns the end of the week (exclusive - start of next Monday)
     func endOfWeek(for date: Date) -> Date {
         let start = startOfWeek(for: date)
         return calendar.date(byAdding: .weekOfYear, value: 1, to: start) ?? start
     }
-    
+
     /// Returns an array of dates for each day of the week (Mon-Sun)
     func daysOfWeek(for date: Date) -> [Date] {
         let start = startOfWeek(for: date)
-        return (0..<7).compactMap { dayOffset in
+        return (0 ..< 7).compactMap { dayOffset in
             calendar.date(byAdding: .day, value: dayOffset, to: start)
         }
     }

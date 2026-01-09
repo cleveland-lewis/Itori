@@ -1,75 +1,74 @@
 #if os(iOS)
-import SwiftUI
-import Combine
+    import Combine
+    import SwiftUI
 
-enum IOSNavigationTarget: Hashable {
-    case page(AppPage)
-}
+    enum IOSNavigationTarget: Hashable {
+        case page(AppPage)
+    }
 
-final class IOSNavigationCoordinator: ObservableObject {
-    @Published var path = NavigationPath()
+    final class IOSNavigationCoordinator: ObservableObject {
+        @Published var path = NavigationPath()
 
-    func open(page: AppPage, starredTabs: [RootTab]) {
-        if let tab = RootTab(rawValue: page.rawValue), starredTabs.contains(tab) {
-            // Tab is starred, will be switched to via selectedTab binding
-            path = NavigationPath()
-        } else {
-            // Tab not starred, push as navigation destination
-            path.append(IOSNavigationTarget.page(page))
+        func open(page: AppPage, starredTabs: [RootTab]) {
+            if let tab = RootTab(rawValue: page.rawValue), starredTabs.contains(tab) {
+                // Tab is starred, will be switched to via selectedTab binding
+                path = NavigationPath()
+            } else {
+                // Tab not starred, push as navigation destination
+                path.append(IOSNavigationTarget.page(page))
+            }
         }
     }
-}
 
-// MARK: - iOS Tab Configuration (Uses Shared TabRegistry)
+    // MARK: - iOS Tab Configuration (Uses Shared TabRegistry)
 
-/// iOS-specific tab configuration helper
-/// Delegates to shared TabRegistry for platform-agnostic logic
-struct IOSTabConfiguration {
-    
-    /// Get tabs for iOS display (uses shared registry)
-    static func tabs(from tabPrefs: TabBarPreferencesStore) -> [RootTab] {
-        return tabPrefs.effectiveTabsInOrder()
-    }
-    
-    /// Available tabs for iOS (from registry)
-    static var availableTabs: [TabDefinition] {
-        return TabRegistry.allTabs
-    }
-}
+    /// iOS-specific tab configuration helper
+    /// Delegates to shared TabRegistry for platform-agnostic logic
+    enum IOSTabConfiguration {
+        /// Get tabs for iOS display (uses shared registry)
+        static func tabs(from tabPrefs: TabBarPreferencesStore) -> [RootTab] {
+            tabPrefs.effectiveTabsInOrder()
+        }
 
-struct IOSNavigationChrome<TrailingContent: View>: ViewModifier {
-    let title: String
-    let trailingContent: () -> TrailingContent
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-
-    init(title: String, @ViewBuilder trailingContent: @escaping () -> TrailingContent = { EmptyView() }) {
-        self.title = title
-        self.trailingContent = trailingContent
+        /// Available tabs for iOS (from registry)
+        static var availableTabs: [TabDefinition] {
+            TabRegistry.allTabs
+        }
     }
 
-    func body(content: Content) -> some View {
-        return content
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(.automatic, for: .navigationBar)
-            .toolbar {
-                // On iPad (regular width), show trailing content in toolbar
-                // On iPhone (compact width), show in toolbar
-                ToolbarItem(placement: .topBarTrailing) {
-                    trailingContent()
+    struct IOSNavigationChrome<TrailingContent: View>: ViewModifier {
+        let title: String
+        let trailingContent: () -> TrailingContent
+        @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+        init(title: String, @ViewBuilder trailingContent: @escaping () -> TrailingContent = { EmptyView() }) {
+            self.title = title
+            self.trailingContent = trailingContent
+        }
+
+        func body(content: Content) -> some View {
+            content
+                .navigationTitle(title)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbarBackground(.automatic, for: .navigationBar)
+                .toolbar {
+                    // On iPad (regular width), show trailing content in toolbar
+                    // On iPhone (compact width), show in toolbar
+                    ToolbarItem(placement: .topBarTrailing) {
+                        trailingContent()
+                    }
                 }
-            }
+        }
     }
-}
 
-private enum IOSNavigationChromeData {
-    static let menuPages: [AppPage] = [
-        .dashboard,
-        .planner,
-        .assignments,
-        .courses,
-        .calendar,
-        .timer
-    ]
-}
+    private enum IOSNavigationChromeData {
+        static let menuPages: [AppPage] = [
+            .dashboard,
+            .planner,
+            .assignments,
+            .courses,
+            .calendar,
+            .timer
+        ]
+    }
 #endif

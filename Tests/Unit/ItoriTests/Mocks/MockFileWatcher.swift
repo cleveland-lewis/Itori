@@ -28,28 +28,28 @@ class MockFileWatcher {
     var recordedEvents: [FileChangeEvent] = []
     var shouldDelayEvents = false
     var eventDelay: TimeInterval = 0.1
-    
+
     func startWatching(path: URL) {
         isWatching = true
         watchedPaths.insert(path)
     }
-    
+
     func stopWatching(path: URL) {
         watchedPaths.remove(path)
         if watchedPaths.isEmpty {
             isWatching = false
         }
     }
-    
+
     func stopAllWatching() {
         isWatching = false
         watchedPaths.removeAll()
     }
-    
+
     func simulateFileChange(path: URL, type: FileChangeType) {
         let event = FileChangeEvent(path: path, type: type, timestamp: Date())
         recordedEvents.append(event)
-        
+
         if shouldDelayEvents {
             DispatchQueue.main.asyncAfter(deadline: .now() + eventDelay) { [weak self] in
                 self?.changeHandler?(event)
@@ -58,13 +58,13 @@ class MockFileWatcher {
             changeHandler?(event)
         }
     }
-    
+
     func simulateBatchChanges(_ changes: [(URL, FileChangeType)]) {
         for (path, type) in changes {
             simulateFileChange(path: path, type: type)
         }
     }
-    
+
     func reset() {
         isWatching = false
         watchedPaths.removeAll()

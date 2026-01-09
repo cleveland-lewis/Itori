@@ -25,15 +25,15 @@ extension Color {
 
     func toHex() -> String {
         #if canImport(AppKit)
-        guard let components = NSColor(self).cgColor.components, components.count >= 3 else {
-            return "#000000"
-        }
+            guard let components = NSColor(self).cgColor.components, components.count >= 3 else {
+                return "#000000"
+            }
         #elseif canImport(UIKit)
-        guard let components = UIColor(self).cgColor.components, components.count >= 3 else {
-            return "#000000"
-        }
+            guard let components = UIColor(self).cgColor.components, components.count >= 3 else {
+                return "#000000"
+            }
         #else
-        return "#000000"
+            return "#000000"
         #endif
 
         let r = Int(components[0] * 255.0)

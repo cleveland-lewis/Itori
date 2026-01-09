@@ -1,383 +1,412 @@
 #if os(macOS)
-import SwiftUI
+    import SwiftUI
 
-struct PracticeTestResultsView: View {
-    let test: PracticeTest
-    @ScaledMetric private var largeIconSize: CGFloat = 48
+    struct PracticeTestResultsView: View {
+        let test: PracticeTest
+        @ScaledMetric private var largeIconSize: CGFloat = 48
 
-    
-    @ObservedObject var store: PracticeTestStore
-    
-    @State private var selectedQuestionId: UUID?
-    
-    private var score: Double {
-        test.score ?? 0
-    }
-    
-    private var scorePercentage: String {
-        String(format: "%.0f%%", score * 100)
-    }
-    
-    var body: some View {
-        VStack(spacing: 0) {
-            headerView
-            
-            HStack(spacing: 0) {
-                // Results overview sidebar
-                resultsSidebar
-                
-                Divider()
-                
-                // Question review area
-                if let questionId = selectedQuestionId,
-                   let question = test.questions.first(where: { $0.id == questionId }) {
-                    questionReviewView(question)
-                } else {
-                    emptySelectionView
-                }
-            }
+        @ObservedObject var store: PracticeTestStore
+
+        @State private var selectedQuestionId: UUID?
+
+        private var score: Double {
+            test.score ?? 0
         }
-    }
-    
-    // MARK: - Header
-    
-    private var headerView: some View {
-        HStack {
-            Button {
-                store.clearCurrentTest()
-            } label: {
-                Label(NSLocalizedString("practice.action.back_to_tests", comment: "Back to Tests"), systemImage: "chevron.left")
-            }
-            .buttonStyle(.plain)
-            
-            Spacer()
-            
-            VStack(spacing: 4) {
-                Text(NSLocalizedString("practice.results.title", comment: "Practice Test Results"))
-                    .font(.headline)
-                
-                Text(test.courseName)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            
-            Spacer()
-            
-            Button {
-                retryTest()
-            } label: {
-                Label(NSLocalizedString("practice.action.new_test", comment: "New Test"), systemImage: "arrow.clockwise")
-            }
-            .buttonStyle(.bordered)
+
+        private var scorePercentage: String {
+            String(format: "%.0f%%", score * 100)
         }
-        .padding()
-        .background(.ultraThinMaterial)
-    }
-    
-    // MARK: - Results Sidebar
-    
-    private var resultsSidebar: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                // Score card
-                scoreCard
-                
-                Divider()
-                
-                // Question list
-                VStack(spacing: 8) {
-                    Text(NSLocalizedString("practice.results.review_questions", comment: "Review Questions"))
-                        .font(.headline)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    
-                    ForEach(test.questions) { question in
-                        questionResultButton(question)
+
+        var body: some View {
+            VStack(spacing: 0) {
+                headerView
+
+                HStack(spacing: 0) {
+                    // Results overview sidebar
+                    resultsSidebar
+
+                    Divider()
+
+                    // Question review area
+                    if let questionId = selectedQuestionId,
+                       let question = test.questions.first(where: { $0.id == questionId })
+                    {
+                        questionReviewView(question)
+                    } else {
+                        emptySelectionView
                     }
                 }
             }
-            .padding(16)
         }
-        .frame(width: 280)
-        .background(.ultraThinMaterial)
-        .onAppear {
-            if selectedQuestionId == nil {
-                selectedQuestionId = test.questions.first?.id
-            }
-        }
-    }
-    
-    private var scoreCard: some View {
-        VStack(spacing: 12) {
-            // Overall score
-            VStack(spacing: 4) {
-                Text(scorePercentage)
-                    .font(.system(size: largeIconSize, weight: .bold, design: .rounded))
-                    .foregroundStyle(scoreColor)
-                
-                Text(NSLocalizedString("practice.results.overall_score", comment: "Overall Score"))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            
-            // Correct/Total
-            HStack(spacing: 20) {
-                statItem(
-                    label: NSLocalizedString("practice.results.correct", comment: "Correct"),
-                    value: "\(test.correctCount)",
-                    color: .green
-                )
-                
-                statItem(
-                    label: NSLocalizedString("practice.results.incorrect", comment: "Incorrect"),
-                    value: "\(test.questions.count - test.correctCount)",
-                    color: .red
-                )
-            }
-            
-            // Performance indicator
+
+        // MARK: - Header
+
+        private var headerView: some View {
             HStack {
-                Image(systemName: performanceIcon)
-                    .foregroundStyle(scoreColor)
-                Text(performanceText)
-                    .font(.subheadline.bold())
-                    .foregroundStyle(scoreColor)
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(scoreColor.opacity(0.2))
-            .clipShape(Capsule())
-        }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(.ultraThinMaterial)
-        )
-    }
-    
-    private func statItem(label: String, value: String, color: Color) -> some View {
-        VStack(spacing: 4) {
-            Text(value)
-                .font(.title2.bold())
-                .foregroundStyle(color)
-            Text(label)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
-        }
-    }
-    
-    private var scoreColor: Color {
-        if score >= 0.9 { return .green }
-        if score >= 0.7 { return .blue }
-        if score >= 0.5 { return .orange }
-        return .red
-    }
-    
-    private var performanceIcon: String {
-        if score >= 0.9 { return "star.fill" }
-        if score >= 0.7 { return "hand.thumbsup.fill" }
-        if score >= 0.5 { return "checkmark.circle.fill" }
-        return "exclamationmark.triangle.fill"
-    }
-    
-    private var performanceText: String {
-        if score >= 0.9 { return NSLocalizedString("practice.results.performance.excellent", comment: "Excellent!") }
-        if score >= 0.7 { return NSLocalizedString("practice.results.performance.good", comment: "Good Job!") }
-        if score >= 0.5 { return NSLocalizedString("practice.results.performance.keep_practicing", comment: "Keep Practicing") }
-        return NSLocalizedString("practice.results.performance.needs_improvement", comment: "Needs Improvement")
-    }
-    
-    private func questionResultButton(_ question: PracticeQuestion) -> some View {
-        Button {
-            selectedQuestionId = question.id
-        } label: {
-            HStack(spacing: 12) {
-                // Status indicator
-                Image(systemName: questionIsCorrect(question) ? "checkmark.circle.fill" : "xmark.circle.fill")
-                    .foregroundStyle(questionIsCorrect(question) ? .green : .red)
-                    .font(.title3)
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(String(format: NSLocalizedString("practice.results.question_prefix", comment: "Q%d"), questionNumber(question)))
-                        .font(.subheadline.bold())
-                    
-                    Text(question.format.rawValue)
-                        .font(.caption2)
+                Button {
+                    store.clearCurrentTest()
+                } label: {
+                    Label(
+                        NSLocalizedString("practice.action.back_to_tests", comment: "Back to Tests"),
+                        systemImage: "chevron.left"
+                    )
+                }
+                .buttonStyle(.plain)
+
+                Spacer()
+
+                VStack(spacing: 4) {
+                    Text(NSLocalizedString("practice.results.title", comment: "Practice Test Results"))
+                        .font(.headline)
+
+                    Text(test.courseName)
+                        .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                
+
                 Spacer()
-                
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+
+                Button {
+                    retryTest()
+                } label: {
+                    Label(
+                        NSLocalizedString("practice.action.new_test", comment: "New Test"),
+                        systemImage: "arrow.clockwise"
+                    )
+                }
+                .buttonStyle(.bordered)
             }
-            .padding(12)
+            .padding()
+            .background(.ultraThinMaterial)
+        }
+
+        // MARK: - Results Sidebar
+
+        private var resultsSidebar: some View {
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Score card
+                    scoreCard
+
+                    Divider()
+
+                    // Question list
+                    VStack(spacing: 8) {
+                        Text(NSLocalizedString("practice.results.review_questions", comment: "Review Questions"))
+                            .font(.headline)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                        ForEach(test.questions) { question in
+                            questionResultButton(question)
+                        }
+                    }
+                }
+                .padding(16)
+            }
+            .frame(width: 280)
+            .background(.ultraThinMaterial)
+            .onAppear {
+                if selectedQuestionId == nil {
+                    selectedQuestionId = test.questions.first?.id
+                }
+            }
+        }
+
+        private var scoreCard: some View {
+            VStack(spacing: 12) {
+                // Overall score
+                VStack(spacing: 4) {
+                    Text(scorePercentage)
+                        .font(.system(size: largeIconSize, weight: .bold, design: .rounded))
+                        .foregroundStyle(scoreColor)
+
+                    Text(NSLocalizedString("practice.results.overall_score", comment: "Overall Score"))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                // Correct/Total
+                HStack(spacing: 20) {
+                    statItem(
+                        label: NSLocalizedString("practice.results.correct", comment: "Correct"),
+                        value: "\(test.correctCount)",
+                        color: .green
+                    )
+
+                    statItem(
+                        label: NSLocalizedString("practice.results.incorrect", comment: "Incorrect"),
+                        value: "\(test.questions.count - test.correctCount)",
+                        color: .red
+                    )
+                }
+
+                // Performance indicator
+                HStack {
+                    Image(systemName: performanceIcon)
+                        .foregroundStyle(scoreColor)
+                    Text(performanceText)
+                        .font(.subheadline.bold())
+                        .foregroundStyle(scoreColor)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(scoreColor.opacity(0.2))
+                .clipShape(Capsule())
+            }
+            .padding()
             .background(
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(selectedQuestionId == question.id ? .accentTertiary : Color.clear)
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(.ultraThinMaterial)
             )
         }
-        .buttonStyle(.plain)
-    }
-    
-    // MARK: - Question Review
-    
-    @ViewBuilder
-    private var emptySelectionView: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "doc.text.magnifyingglass")
-                .font(.system(size: largeIconSize, weight: .bold, design: .rounded))
-                .foregroundStyle(.secondary)
-            
-            Text(NSLocalizedString("practice.empty.select_question", comment: "Select a question to review"))
-                .font(.headline)
-                .foregroundStyle(.secondary)
+
+        private func statItem(label: String, value: String, color: Color) -> some View {
+            VStack(spacing: 4) {
+                Text(value)
+                    .font(.title2.bold())
+                    .foregroundStyle(color)
+                Text(label)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-    
-    private func questionReviewView(_ question: PracticeQuestion) -> some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                // Question header
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text(String(format: NSLocalizedString("practice.results.question_number", comment: "Question %d"), questionNumber(question)))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        
-                        Spacer()
-                        
-                        if let bloomsLevel = question.bloomsLevel {
-                            Text(bloomsLevel)
-                                .font(.caption)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(.blue.opacity(0.2))
-                                .clipShape(Capsule())
-                        }
-                        
-                        // Correctness badge
-                        HStack(spacing: 4) {
-                            Image(systemName: questionIsCorrect(question) ? "checkmark.circle.fill" : "xmark.circle.fill")
-                            Text(questionIsCorrect(question) ? NSLocalizedString("practice.results.status.correct", comment: "Correct") : NSLocalizedString("practice.results.status.incorrect", comment: "Incorrect"))
-                        }
-                        .font(.caption.bold())
+
+        private var scoreColor: Color {
+            if score >= 0.9 { return .green }
+            if score >= 0.7 { return .blue }
+            if score >= 0.5 { return .orange }
+            return .red
+        }
+
+        private var performanceIcon: String {
+            if score >= 0.9 { return "star.fill" }
+            if score >= 0.7 { return "hand.thumbsup.fill" }
+            if score >= 0.5 { return "checkmark.circle.fill" }
+            return "exclamationmark.triangle.fill"
+        }
+
+        private var performanceText: String {
+            if score >=
+                0.9 { return NSLocalizedString("practice.results.performance.excellent", comment: "Excellent!") }
+            if score >= 0.7 { return NSLocalizedString("practice.results.performance.good", comment: "Good Job!") }
+            if score >= 0.5 { return NSLocalizedString(
+                "practice.results.performance.keep_practicing",
+                comment: "Keep Practicing"
+            ) }
+            return NSLocalizedString("practice.results.performance.needs_improvement", comment: "Needs Improvement")
+        }
+
+        private func questionResultButton(_ question: PracticeQuestion) -> some View {
+            Button {
+                selectedQuestionId = question.id
+            } label: {
+                HStack(spacing: 12) {
+                    // Status indicator
+                    Image(systemName: questionIsCorrect(question) ? "checkmark.circle.fill" : "xmark.circle.fill")
                         .foregroundStyle(questionIsCorrect(question) ? .green : .red)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background((questionIsCorrect(question) ? Color.green : Color.red).opacity(0.2))
-                        .clipShape(Capsule())
-                    }
-                    
-                    Text(question.prompt)
                         .font(.title3)
-                }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.ultraThinMaterial)
-                )
-                
-                // User's answer
-                if let userAnswer = test.answers[question.id]?.userAnswer {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Label(NSLocalizedString("practice.results.your_answer", comment: "Your Answer"), systemImage: "person.fill")
-                            .font(.headline)
-                        
-                        answerDisplay(question: question, answer: userAnswer, isUserAnswer: true)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(String(
+                            format: NSLocalizedString("practice.results.question_prefix", comment: "Q%d"),
+                            questionNumber(question)
+                        ))
+                        .font(.subheadline.bold())
+
+                        Text(question.format.rawValue)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
                     }
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(questionIsCorrect(question) ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
-                    )
+
+                    Spacer()
+
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
                 }
-                
-                // Correct answer
-                if !questionIsCorrect(question) {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Label(NSLocalizedString("practice.results.correct_answer", comment: "Correct Answer"), systemImage: "checkmark.seal.fill")
-                            .font(.headline)
-                            .foregroundStyle(.green)
-                        
-                        answerDisplay(question: question, answer: question.correctAnswer, isUserAnswer: false)
-                    }
-                    .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.green.opacity(0.1))
-                    )
-                }
-                
-                // Explanation
-                VStack(alignment: .leading, spacing: 12) {
-                    Label(NSLocalizedString("practice.results.explanation", comment: "Explanation"), systemImage: "lightbulb.fill")
-                        .font(.headline)
-                        .foregroundStyle(.blue)
-                    
-                    Text(question.explanation)
-                        .font(.body)
-                        .foregroundStyle(.primary)
-                }
-                .padding()
+                .padding(12)
                 .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.blue.opacity(0.1))
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(selectedQuestionId == question.id ? .accentTertiary : Color.clear)
                 )
             }
-            .padding(32)
+            .buttonStyle(.plain)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-    
-    @ViewBuilder
-    private func answerDisplay(question: PracticeQuestion, answer: String, isUserAnswer: Bool) -> some View {
-        switch question.format {
-        case .multipleChoice:
-            Text(answer)
-                .font(.body)
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(.background)
-                )
-        case .shortAnswer, .explanation:
-            Text(answer)
-                .font(.body)
-                .padding()
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(.background)
-                )
+
+        // MARK: - Question Review
+
+        @ViewBuilder
+        private var emptySelectionView: some View {
+            VStack(spacing: 16) {
+                Image(systemName: "doc.text.magnifyingglass")
+                    .font(.system(size: largeIconSize, weight: .bold, design: .rounded))
+                    .foregroundStyle(.secondary)
+
+                Text(NSLocalizedString("practice.empty.select_question", comment: "Select a question to review"))
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+
+        private func questionReviewView(_ question: PracticeQuestion) -> some View {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    // Question header
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text(String(
+                                format: NSLocalizedString("practice.results.question_number", comment: "Question %d"),
+                                questionNumber(question)
+                            ))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+
+                            Spacer()
+
+                            if let bloomsLevel = question.bloomsLevel {
+                                Text(bloomsLevel)
+                                    .font(.caption)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(.blue.opacity(0.2))
+                                    .clipShape(Capsule())
+                            }
+
+                            // Correctness badge
+                            HStack(spacing: 4) {
+                                Image(systemName: questionIsCorrect(question) ? "checkmark.circle.fill" :
+                                    "xmark.circle.fill")
+                                Text(questionIsCorrect(question) ? NSLocalizedString(
+                                    "practice.results.status.correct",
+                                    comment: "Correct"
+                                ) : NSLocalizedString("practice.results.status.incorrect", comment: "Incorrect"))
+                            }
+                            .font(.caption.bold())
+                            .foregroundStyle(questionIsCorrect(question) ? .green : .red)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background((questionIsCorrect(question) ? Color.green : Color.red).opacity(0.2))
+                            .clipShape(Capsule())
+                        }
+
+                        Text(question.prompt)
+                            .font(.title3)
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(.ultraThinMaterial)
+                    )
+
+                    // User's answer
+                    if let userAnswer = test.answers[question.id]?.userAnswer {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Label(
+                                NSLocalizedString("practice.results.your_answer", comment: "Your Answer"),
+                                systemImage: "person.fill"
+                            )
+                            .font(.headline)
+
+                            answerDisplay(question: question, answer: userAnswer, isUserAnswer: true)
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(questionIsCorrect(question) ? Color.green.opacity(0.1) : Color.red.opacity(0.1))
+                        )
+                    }
+
+                    // Correct answer
+                    if !questionIsCorrect(question) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Label(
+                                NSLocalizedString("practice.results.correct_answer", comment: "Correct Answer"),
+                                systemImage: "checkmark.seal.fill"
+                            )
+                            .font(.headline)
+                            .foregroundStyle(.green)
+
+                            answerDisplay(question: question, answer: question.correctAnswer, isUserAnswer: false)
+                        }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.green.opacity(0.1))
+                        )
+                    }
+
+                    // Explanation
+                    VStack(alignment: .leading, spacing: 12) {
+                        Label(
+                            NSLocalizedString("practice.results.explanation", comment: "Explanation"),
+                            systemImage: "lightbulb.fill"
+                        )
+                        .font(.headline)
+                        .foregroundStyle(.blue)
+
+                        Text(question.explanation)
+                            .font(.body)
+                            .foregroundStyle(.primary)
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(.blue.opacity(0.1))
+                    )
+                }
+                .padding(32)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+
+        @ViewBuilder
+        private func answerDisplay(question: PracticeQuestion, answer: String, isUserAnswer _: Bool) -> some View {
+            switch question.format {
+            case .multipleChoice:
+                Text(answer)
+                    .font(.body)
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(.background)
+                    )
+            case .shortAnswer, .explanation:
+                Text(answer)
+                    .font(.body)
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(.background)
+                    )
+            }
+        }
+
+        // MARK: - Helpers
+
+        private func questionIsCorrect(_ question: PracticeQuestion) -> Bool {
+            test.answers[question.id]?.isCorrect ?? false
+        }
+
+        private func questionNumber(_ question: PracticeQuestion) -> Int {
+            (test.questions.firstIndex { $0.id == question.id } ?? 0) + 1
+        }
+
+        private func retryTest() {
+            let request = PracticeTestRequest(
+                courseId: test.courseId,
+                courseName: test.courseName,
+                topics: test.topics,
+                difficulty: test.difficulty,
+                questionCount: test.questionCount
+            )
+
+            Task {
+                await store.generateTest(request: request)
+            }
         }
     }
-    
-    // MARK: - Helpers
-    
-    private func questionIsCorrect(_ question: PracticeQuestion) -> Bool {
-        test.answers[question.id]?.isCorrect ?? false
-    }
-    
-    private func questionNumber(_ question: PracticeQuestion) -> Int {
-        (test.questions.firstIndex { $0.id == question.id } ?? 0) + 1
-    }
-    
-    private func retryTest() {
-        let request = PracticeTestRequest(
-            courseId: test.courseId,
-            courseName: test.courseName,
-            topics: test.topics,
-            difficulty: test.difficulty,
-            questionCount: test.questionCount
-        )
-        
-        Task {
-            await store.generateTest(request: request)
-        }
-    }
-}
 
 #endif

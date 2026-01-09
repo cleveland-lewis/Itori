@@ -24,7 +24,8 @@ struct QuickActionsLauncher: View {
             ForEach(effectiveActions.indices, id: \.self) { index in
                 let action = effectiveActions[index]
                 actionButton(action)
-                    .offset(x: isExpanded ? expansionDirection.multiplier * CGFloat(index + 1) * (buttonSize + buttonSpacing) : 0)
+                    .offset(x: isExpanded ? expansionDirection
+                        .multiplier * CGFloat(index + 1) * (buttonSize + buttonSpacing) : 0)
                     .opacity(isExpanded ? 1 : 0)
                     .scaleEffect(isExpanded ? 1 : 0.6)
                     .animation(actionAnimation(for: index), value: isExpanded)
@@ -58,9 +59,9 @@ struct QuickActionsLauncher: View {
             size: buttonSize,
             backgroundMaterial: {
                 #if os(macOS)
-                return .regularMaterial
+                    return .regularMaterial
                 #else
-                return DesignSystem.Materials.hud
+                    return DesignSystem.Materials.hud
                 #endif
             }(),
             backgroundOpacity: 1,
@@ -82,13 +83,13 @@ struct QuickActionsLauncher: View {
                 .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(Color.accentColor)
                 .frame(width: buttonSize, height: buttonSize)
-                #if os(macOS)
+            #if os(macOS)
                 .background {
                     DesignSystem.Colors.sidebarBackground
                 }
-                #else
+            #else
                 .background(DesignSystem.Materials.hud)
-                #endif
+            #endif
                 .clipShape(Circle())
                 .overlay(
                     Circle()
@@ -134,15 +135,15 @@ enum QuickActionsExpansionDirection {
 
     var multiplier: CGFloat {
         switch self {
-        case .leading: return -1
-        case .trailing: return 1
+        case .leading: -1
+        case .trailing: 1
         }
     }
 
     var alignment: Alignment {
         switch self {
-        case .leading: return .trailing
-        case .trailing: return .leading
+        case .leading: .trailing
+        case .trailing: .leading
         }
     }
 }

@@ -22,24 +22,29 @@ struct RootsHeaderButton: View {
         }
         .buttonStyle(PlainButtonStyle())
         #if os(macOS)
-        .contentShape(Circle())
-        .onHover { hover in
-            isHovering = hover
-        }
+            .contentShape(Circle())
+            .onHover { hover in
+                isHovering = hover
+            }
         #else
-        .background(
-            Circle()
-                .fill(DesignSystem.Materials.hud)
-                .opacity(isHovering ? 1.0 : 0.9)
-                .shadow(color: Color.black.opacity(isHovering ? 0.08 : 0.03), radius: isHovering ? 6 : 3, x: 0, y: 2)
-        )
-        .contentShape(Circle())
-        .scaleEffect(isHovering ? 1.05 : 1.0)
-        .animation(DesignSystem.Motion.interactiveSpring, value: isHovering)
-        .animation(DesignSystem.Motion.interactiveSpring, value: icon)
-        .onHover { hover in
-            withAnimation(DesignSystem.Motion.interactiveSpring) { isHovering = hover }
-        }
+            .background(
+                    Circle()
+                        .fill(DesignSystem.Materials.hud)
+                        .opacity(isHovering ? 1.0 : 0.9)
+                        .shadow(
+                            color: Color.black.opacity(isHovering ? 0.08 : 0.03),
+                            radius: isHovering ? 6 : 3,
+                            x: 0,
+                            y: 2
+                        )
+                )
+                .contentShape(Circle())
+                .scaleEffect(isHovering ? 1.05 : 1.0)
+                .animation(DesignSystem.Motion.interactiveSpring, value: isHovering)
+                .animation(DesignSystem.Motion.interactiveSpring, value: icon)
+                .onHover { hover in
+                    withAnimation(DesignSystem.Motion.interactiveSpring) { isHovering = hover }
+                }
         #endif
     }
 }

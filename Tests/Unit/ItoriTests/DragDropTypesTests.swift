@@ -9,7 +9,6 @@ import XCTest
 @testable import Itori
 
 final class DragDropTypesTests: XCTestCase {
-    
     func testTransferableAssignmentCreation() {
         // Given
         let taskId = UUID()
@@ -31,10 +30,10 @@ final class DragDropTypesTests: XCTestCase {
             isCompleted: false,
             category: .homework
         )
-        
+
         // When
         let transferable = TransferableAssignment(from: task)
-        
+
         // Then
         XCTAssertEqual(transferable.id, taskId.uuidString)
         XCTAssertEqual(transferable.title, "Math Homework")
@@ -43,14 +42,14 @@ final class DragDropTypesTests: XCTestCase {
         XCTAssertEqual(transferable.dueDate, Calendar.current.startOfDay(for: dueDate))
         XCTAssertEqual(transferable.estimatedMinutes, 120)
     }
-    
+
     func testTransferableAssignmentPlainText() {
         // Given
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
         let dueDate = Date()
-        
+
         let task = AppTask(
             id: UUID(),
             title: "Physics Lab Report",
@@ -67,18 +66,18 @@ final class DragDropTypesTests: XCTestCase {
             isCompleted: false,
             category: .project
         )
-        
+
         // When
         let transferable = TransferableAssignment(from: task)
         let plainText = transferable.plainTextRepresentation
-        
+
         // Then
         XCTAssertTrue(plainText.contains("Physics Lab Report"))
         XCTAssertTrue(plainText.contains("Due:"))
         XCTAssertTrue(plainText.contains(formatter.string(from: dueDate)))
         XCTAssertTrue(plainText.contains("90 minutes"))
     }
-    
+
     func testTransferableCourseWithCode() {
         // Given
         let course = TransferableCourse(
@@ -87,14 +86,14 @@ final class DragDropTypesTests: XCTestCase {
             code: "CS101",
             semesterId: UUID().uuidString
         )
-        
+
         // When
         let plainText = course.plainTextRepresentation
-        
+
         // Then
         XCTAssertEqual(plainText, "CS101 - Introduction to Computer Science")
     }
-    
+
     func testTransferableCourseWithoutCode() {
         // Given
         let course = TransferableCourse(
@@ -103,14 +102,14 @@ final class DragDropTypesTests: XCTestCase {
             code: "",
             semesterId: nil
         )
-        
+
         // When
         let plainText = course.plainTextRepresentation
-        
+
         // Then
         XCTAssertEqual(plainText, "Independent Study")
     }
-    
+
     @MainActor func testWindowStateEncoding() {
         // Given
         let assignmentId = UUID().uuidString
@@ -119,14 +118,14 @@ final class DragDropTypesTests: XCTestCase {
             entityId: assignmentId,
             displayTitle: "Math Homework"
         )
-        
+
         // When
         let encoder = JSONEncoder()
         let data = try? encoder.encode(state)
-        
+
         // Then
         XCTAssertNotNil(data)
-        
+
         // Verify round-trip
         let decoder = JSONDecoder()
         let decoded = try? decoder.decode(WindowState.self, from: data!)
@@ -134,17 +133,16 @@ final class DragDropTypesTests: XCTestCase {
         XCTAssertEqual(decoded?.entityId, assignmentId)
         XCTAssertEqual(decoded?.displayTitle, "Math Homework")
     }
-    
+
     @MainActor func testWindowStateHash() {
         // Given
         let id1 = UUID().uuidString
         let state1 = WindowState(windowId: .assignmentDetail, entityId: id1)
         let state2 = WindowState(windowId: .assignmentDetail, entityId: id1)
         let state3 = WindowState(windowId: .courseDetail, entityId: id1)
-        
+
         // Then
         XCTAssertEqual(state1, state2) // Same window type and entity
         XCTAssertNotEqual(state1, state3) // Different window type
     }
 }
-

@@ -1,92 +1,106 @@
 #if os(macOS)
-import SwiftUI
+    import SwiftUI
 
-struct AddSemesterSheet: View {
-    @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var coursesStore: CoursesStore
+    struct AddSemesterSheet: View {
+        @Environment(\.dismiss) private var dismiss
+        @EnvironmentObject private var coursesStore: CoursesStore
 
-    @State private var term: SemesterType = .fall
-    @State private var year: Int = Calendar.current.component(.year, from: Date())
-    @State private var startDate = Date()
-    @State private var endDate = Calendar.current.date(byAdding: .month, value: 4, to: Date()) ?? Date()
-    @State private var markAsCurrent: Bool = true
+        @State private var term: SemesterType = .fall
+        @State private var year: Int = Calendar.current.component(.year, from: Date())
+        @State private var startDate = Date()
+        @State private var endDate = Calendar.current.date(byAdding: .month, value: 4, to: Date()) ?? Date()
+        @State private var markAsCurrent: Bool = true
 
-    private var computedName: String { "\(term.rawValue) \(year)" }
+        private var computedName: String { "\(term.rawValue) \(year)" }
 
-    var body: some View {
-        VStack {
-            AppCard {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text(NSLocalizedString("ui.new.semester", value: "New Semester", comment: "New Semester"))
-                        .font(.title3.bold())
+        var body: some View {
+            VStack {
+                AppCard {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(NSLocalizedString("ui.new.semester", value: "New Semester", comment: "New Semester"))
+                            .font(.title3.bold())
 
-                    HStack {
-                        Text(computedName)
-                            .font(DesignSystem.Typography.subHeader)
-                        Spacer()
-                    }
-
-                    Picker("Term", selection: $term) {
-                        ForEach(SemesterType.allCases) { t in
-                            Text(t.rawValue).tag(t)
+                        HStack {
+                            Text(computedName)
+                                .font(DesignSystem.Typography.subHeader)
+                            Spacer()
                         }
-                    }
 
-                    Stepper("Year: \(year)", value: $year, in: 2000...2100) { _ in
-                        // update start/end defaults when year changes
-                        var comps = Calendar.current.dateComponents([.year, .month, .day], from: startDate)
-                        comps.year = year
-                        switch term {
-                        case .fall:
-                            comps.month = 9; comps.day = 1
-                        case .winter:
-                            comps.month = 1; comps.day = 6
-                        case .spring:
-                            comps.month = 1; comps.day = 15
-                        case .summerI:
-                            comps.month = 6; comps.day = 1
-                        case .summerII:
-                            comps.month = 7; comps.day = 1
+                        Picker("Term", selection: $term) {
+                            ForEach(SemesterType.allCases) { t in
+                                Text(t.rawValue).tag(t)
+                            }
                         }
-                        if let newStart = Calendar.current.date(from: comps) {
-                            startDate = newStart
-                            endDate = Calendar.current.date(byAdding: .month, value: 4, to: newStart) ?? newStart
+
+                        Stepper("Year: \(year)", value: $year, in: 2000 ... 2100) { _ in
+                            // update start/end defaults when year changes
+                            var comps = Calendar.current.dateComponents([.year, .month, .day], from: startDate)
+                            comps.year = year
+                            switch term {
+                            case .fall:
+                                comps.month = 9
+                                comps.day = 1
+                            case .winter:
+                                comps.month = 1
+                                comps.day = 6
+                            case .spring:
+                                comps.month = 1
+                                comps.day = 15
+                            case .summerI:
+                                comps.month = 6
+                                comps.day = 1
+                            case .summerII:
+                                comps.month = 7
+                                comps.day = 1
+                            }
+                            if let newStart = Calendar.current.date(from: comps) {
+                                startDate = newStart
+                                endDate = Calendar.current.date(byAdding: .month, value: 4, to: newStart) ?? newStart
+                            }
                         }
-                    }
 
-                    Text(NSLocalizedString("ui.start.date", value: "Start date", comment: "Start date"))
-                    DatePicker("Start", selection: $startDate, displayedComponents: .date)
+                        Text(NSLocalizedString("ui.start.date", value: "Start date", comment: "Start date"))
+                        DatePicker("Start", selection: $startDate, displayedComponents: .date)
 
-                    Text(NSLocalizedString("ui.end.date", value: "End date", comment: "End date"))
-                    DatePicker("End", selection: $endDate, displayedComponents: .date)
+                        Text(NSLocalizedString("ui.end.date", value: "End date", comment: "End date"))
+                        DatePicker("End", selection: $endDate, displayedComponents: .date)
 
-                    Toggle(NSLocalizedString("ui.toggle.set.as.current.semester", value: "Set as current semester", comment: "Set as current semester"), isOn: $markAsCurrent)
+                        Toggle(
+                            NSLocalizedString(
+                                "ui.toggle.set.as.current.semester",
+                                value: "Set as current semester",
+                                comment: "Set as current semester"
+                            ),
+                            isOn: $markAsCurrent
+                        )
 
-                    HStack {
-                        Spacer()
-                        Button(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel")) { dismiss() }
-                        Button(NSLocalizedString("ui.button.save", value: "Save", comment: "Save")) {
-                            guard endDate >= startDate else { return }
-                            let sem = Semester(
-                                startDate: startDate,
-                                endDate: endDate,
-                                isCurrent: markAsCurrent,
-                                educationLevel: .college,
-                                semesterTerm: term,
-                                academicYear: "\(year)-\(year + 1)"
-                            )
-                            coursesStore.addSemester(sem)
-                            if markAsCurrent { coursesStore.setCurrentSemester(sem) }
-                            dismiss()
+                        HStack {
+                            Spacer()
+                            Button(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel")) {
+                                dismiss()
+                            }
+                            Button(NSLocalizedString("ui.button.save", value: "Save", comment: "Save")) {
+                                guard endDate >= startDate else { return }
+                                let sem = Semester(
+                                    startDate: startDate,
+                                    endDate: endDate,
+                                    isCurrent: markAsCurrent,
+                                    educationLevel: .college,
+                                    semesterTerm: term,
+                                    academicYear: "\(year)-\(year + 1)"
+                                )
+                                coursesStore.addSemester(sem)
+                                if markAsCurrent { coursesStore.setCurrentSemester(sem) }
+                                dismiss()
+                            }
+                            .buttonStyle(.glassBlueProminent)
                         }
-                        .buttonStyle(.glassBlueProminent)
+                        .font(.callout)
                     }
-                    .font(.callout)
                 }
+                .padding(RootsSpacing.m)
             }
-            .padding(RootsSpacing.m)
+            .frame(width: 420)
         }
-        .frame(width: 420)
     }
-}
 #endif

@@ -1,13 +1,16 @@
 import Foundation
 
-struct SchedulerLearner {
+enum SchedulerLearner {
     static func updatePreferences(from feedback: [BlockFeedback], preferences: inout SchedulerPreferences) {
         guard !feedback.isEmpty else { return }
 
         // Energy profile learning
         var successMinutesByHour: [Int: Double] = [:]
         var failureMinutesByHour: [Int: Double] = [:]
-        for h in 0..<24 { successMinutesByHour[h] = 0.0; failureMinutesByHour[h] = 0.0 }
+        for h in 0 ..< 24 {
+            successMinutesByHour[h] = 0.0
+            failureMinutesByHour[h] = 0.0
+        }
 
         // Block length by type
         var totalMinutesByType: [String: Double] = [:]
@@ -33,10 +36,11 @@ struct SchedulerLearner {
 
         // Update energy profile with EMA smoothing
         let alpha = 0.2
-        for h in 0..<24 {
+        for h in 0 ..< 24 {
             let succ = successMinutesByHour[h] ?? 0
             let fail = failureMinutesByHour[h] ?? 0
-            let observed: Double = (succ + fail) > 0 ? (succ / max(1.0, succ + fail)) : preferences.learnedEnergyProfile[h] ?? 0.5
+            let observed: Double = (succ + fail) > 0 ? (succ / max(1.0, succ + fail)) : preferences
+                .learnedEnergyProfile[h] ?? 0.5
             let old = preferences.learnedEnergyProfile[h] ?? 0.5
             let updated = alpha * observed + (1 - alpha) * old
             preferences.learnedEnergyProfile[h] = min(max(updated, 0.0), 1.0)

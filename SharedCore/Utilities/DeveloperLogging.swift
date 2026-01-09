@@ -28,13 +28,13 @@ func LOG_DEV_LEGACY(
     line: Int = #line
 ) {
     guard AppSettingsModel.shared.devModeEnabled else { return }
-    
+
     let fileName = (file as NSString).lastPathComponent
     let timestamp = ISO8601DateFormatter().string(from: Date())
-    
+
     let levelString: String
     let osLogType: OSLogType
-    
+
     switch level {
     case .info:
         levelString = "ℹ️ INFO"
@@ -49,18 +49,18 @@ func LOG_DEV_LEGACY(
         levelString = "⚠️ WARNING"
         osLogType = .default
     }
-    
+
     var logMessage = "[\(timestamp)] \(levelString) [\(category)] [\(fileName):\(line)] \(function) - \(message)"
-    
-    if let metadata = metadata, !metadata.isEmpty {
+
+    if let metadata, !metadata.isEmpty {
         let metadataString = metadata.map { "\($0.key)=\($0.value)" }.joined(separator: ", ")
         logMessage += " | \(metadataString)"
     }
-    
+
     // Use os_log for proper system logging
     let log = OSLog(subsystem: "com.itori.app", category: category)
     os_log("%{public}@", log: log, type: osLogType, logMessage)
-    
+
     // Also print to console for Xcode debugging
     print(logMessage)
 }

@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 // MARK: - Intelligent Scheduling Coordinator
 
@@ -7,138 +7,138 @@ import Combine
 @MainActor
 final class IntelligentSchedulingCoordinator: ObservableObject {
     static let shared = IntelligentSchedulingCoordinator()
-    
+
     // MARK: - Published Properties
-    
+
     @Published private(set) var isActive: Bool = false
     @Published private(set) var allNotifications: [SchedulingNotification] = []
-    
+
     // MARK: - Notification Model
-    
+
     enum SchedulingNotification: Identifiable {
         case studyTime(StudyTimeRecommendation)
         case reschedule(EnhancedAutoRescheduleService.RescheduleNotification)
-        
+
         var id: UUID {
             switch self {
-            case .studyTime(let rec): return rec.id
-            case .reschedule(let not): return not.id
+            case let .studyTime(rec): rec.id
+            case let .reschedule(not): not.id
             }
         }
-        
+
         var timestamp: Date {
             switch self {
-            case .studyTime(let rec): return rec.timestamp
-            case .reschedule(let not): return not.timestamp
+            case let .studyTime(rec): rec.timestamp
+            case let .reschedule(not): not.timestamp
             }
         }
     }
-    
+
     // MARK: - Dependencies
-    
+
     private let gradeMonitor = GradeMonitoringService.shared
     private let autoReschedule = EnhancedAutoRescheduleService.shared
     private let settings = AppSettingsModel.shared
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialization
-    
+
     private init() {
         setupObservers()
         LOG_UI(.info, "IntelligentScheduling", "Coordinator initialized")
     }
-    
+
     // MARK: - Public API
-    
+
     /// Start the intelligent scheduling system
     func start() {
         guard !isActive else {
             LOG_UI(.debug, "IntelligentScheduling", "Already active")
             return
         }
-        
+
         isActive = true
-        
+
         // Start grade monitoring
         gradeMonitor.startMonitoring()
-        
+
         // Start auto-reschedule checking
         autoReschedule.startAutoCheck()
-        
+
         LOG_UI(.info, "IntelligentScheduling", "Started intelligent scheduling system")
     }
-    
+
     /// Stop the intelligent scheduling system
     func stop() {
         guard isActive else {
             LOG_UI(.debug, "IntelligentScheduling", "Already inactive")
             return
         }
-        
+
         isActive = false
-        
+
         // Stop grade monitoring
         gradeMonitor.stopMonitoring()
-        
+
         // Stop auto-reschedule checking
         autoReschedule.stopAutoCheck()
-        
+
         LOG_UI(.info, "IntelligentScheduling", "Stopped intelligent scheduling system")
     }
-    
+
     /// Add a grade for monitoring
     func addGrade(courseId: UUID, score: Double, assignmentName: String? = nil) {
         gradeMonitor.addGrade(courseId: courseId, score: score, assignmentName: assignmentName)
     }
-    
+
     /// Set weekly study hours for a course
     func setStudyHours(courseId: UUID, weeklyHours: Double) {
         gradeMonitor.setStudyHours(courseId: courseId, weeklyHours: weeklyHours)
     }
-    
+
     /// Manually trigger overdue task check
     func checkOverdueTasks() async {
         await autoReschedule.checkAndRescheduleOverdueTasks()
     }
-    
+
     /// Dismiss a notification
     func dismissNotification(_ notification: SchedulingNotification) {
         switch notification {
-        case .studyTime(let rec):
+        case let .studyTime(rec):
             gradeMonitor.clearRecommendation(id: rec.id)
-        case .reschedule(let not):
+        case let .reschedule(not):
             autoReschedule.clearNotification(id: not.id)
         }
-        
+
         updateAllNotifications()
     }
-    
+
     /// Get study recommendation for a course
     func getStudyRecommendation(for courseId: UUID) -> StudyTimeRecommendation? {
         gradeMonitor.getStudyRecommendation(for: courseId)
     }
-    
+
     // MARK: - Configuration
-    
+
     /// Configure grade monitoring threshold
     func setGradeChangeThreshold(_ threshold: Double) {
         gradeMonitor.gradeChangeThreshold = threshold
     }
-    
+
     /// Configure work hours for rescheduling
     func setWorkHours(start: Int, end: Int) {
         autoReschedule.workHoursStart = start
         autoReschedule.workHoursEnd = end
     }
-    
+
     /// Configure auto-check interval
     func setCheckInterval(_ interval: TimeInterval) {
         autoReschedule.checkInterval = interval
     }
-    
+
     // MARK: - Observers
-    
+
     private func setupObservers() {
         // Observe study time recommendations
         gradeMonitor.$studyRecommendations
@@ -146,7 +146,7 @@ final class IntelligentSchedulingCoordinator: ObservableObject {
                 self?.updateAllNotifications()
             }
             .store(in: &cancellables)
-        
+
         // Observe reschedule notifications
         autoReschedule.$rescheduleNotifications
             .sink { [weak self] _ in
@@ -154,20 +154,20 @@ final class IntelligentSchedulingCoordinator: ObservableObject {
             }
             .store(in: &cancellables)
     }
-    
+
     private func updateAllNotifications() {
         var notifications: [SchedulingNotification] = []
-        
+
         // Add study time recommendations
         for recommendation in gradeMonitor.studyRecommendations {
             notifications.append(.studyTime(recommendation))
         }
-        
+
         // Add reschedule notifications
         for reschedule in autoReschedule.rescheduleNotifications {
             notifications.append(.reschedule(reschedule))
         }
-        
+
         // Sort by timestamp (newest first)
         allNotifications = notifications.sorted { $0.timestamp > $1.timestamp }
     }

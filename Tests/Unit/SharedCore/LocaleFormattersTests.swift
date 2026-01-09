@@ -3,7 +3,7 @@ import XCTest
 
 final class LocaleFormattersTests: XCTestCase {
     func testTimeFormatterUsesLocale() {
-        let date = Date(timeIntervalSince1970: 1735823100) // 2025-01-02 13:05:00 UTC
+        let date = Date(timeIntervalSince1970: 1_735_823_100) // 2025-01-02 13:05:00 UTC
         let enUS = Locale(identifier: "en_US")
         let frFR = Locale(identifier: "fr_FR")
         let utc = TimeZone(secondsFromGMT: 0)!
@@ -14,12 +14,14 @@ final class LocaleFormattersTests: XCTestCase {
         let enString = enFormatter.string(from: date)
         let frString = frFormatter.string(from: date)
 
-        XCTAssertTrue(enString.localizedCaseInsensitiveContains("AM") || enString.localizedCaseInsensitiveContains("PM"))
-        XCTAssertFalse(frString.localizedCaseInsensitiveContains("AM") || frString.localizedCaseInsensitiveContains("PM"))
+        XCTAssertTrue(enString.localizedCaseInsensitiveContains("AM") || enString
+            .localizedCaseInsensitiveContains("PM"))
+        XCTAssertFalse(frString.localizedCaseInsensitiveContains("AM") || frString
+            .localizedCaseInsensitiveContains("PM"))
     }
 
     func testMonthDayOrderingByLocale() {
-        let date = Date(timeIntervalSince1970: 1736030400) // 2025-01-04 00:00:00 UTC
+        let date = Date(timeIntervalSince1970: 1_736_030_400) // 2025-01-04 00:00:00 UTC
         let enUS = Locale(identifier: "en_US")
         let frFR = Locale(identifier: "fr_FR")
         let utc = TimeZone(secondsFromGMT: 0)!
@@ -35,7 +37,7 @@ final class LocaleFormattersTests: XCTestCase {
     }
 
     func testDayNameLocalization() {
-        let date = Date(timeIntervalSince1970: 1736030400) // 2025-01-04 00:00:00 UTC
+        let date = Date(timeIntervalSince1970: 1_736_030_400) // 2025-01-04 00:00:00 UTC
         let enUS = Locale(identifier: "en_US")
         let zhHans = Locale(identifier: "zh_Hans")
         let utc = TimeZone(secondsFromGMT: 0)!

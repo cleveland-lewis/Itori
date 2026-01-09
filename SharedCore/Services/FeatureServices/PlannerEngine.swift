@@ -1,5 +1,5 @@
-import Foundation
 import EventKit
+import Foundation
 
 // MARK: - Study Plan Settings
 
@@ -19,7 +19,7 @@ public struct StudyPlanSettings: Codable, Sendable {
 
     public var projectSessionMinutes: Int = 75
     public var projectMinSessions: Int = 3
-    
+
     public init(
         examDefaultTotalMinutes: Int = 240,
         examDefaultSessionMinutes: Int = 60,
@@ -53,14 +53,14 @@ public struct StudyPlanSettings: Codable, Sendable {
 
 /// Describes the kind of planner session for proper rendering and behavior
 enum PlannerSessionKind: String, Codable, Hashable {
-    case study       // Regular study/work session
-    case shortBreak  // 5-10 minute break
-    case longBreak   // 15-30 minute break
+    case study // Regular study/work session
+    case shortBreak // 5-10 minute break
+    case longBreak // 15-30 minute break
 }
 
 struct PlannerSession: Identifiable, Hashable {
     let id: UUID
-    let assignmentId: UUID  // For breaks, this is a sentinel UUID
+    let assignmentId: UUID // For breaks, this is a sentinel UUID
     let sessionIndex: Int
     let sessionCount: Int
     let title: String
@@ -71,69 +71,71 @@ struct PlannerSession: Identifiable, Hashable {
     let estimatedMinutes: Int
     let isLockedToDueDate: Bool
     var scheduleIndex: Double = 0
-    
+
     /// The kind of session (study vs break)
     let kind: PlannerSessionKind
-    
+
     // MARK: - UI Helpers
-    
+
     /// System icon name for consistent rendering across platforms
     var iconName: String {
         switch kind {
         case .study:
-            return "book.fill"
+            "book.fill"
         case .shortBreak:
-            return "cup.and.saucer.fill"
+            "cup.and.saucer.fill"
         case .longBreak:
-            return "moon.fill"
+            "moon.fill"
         }
     }
-    
+
     /// Color key for theming (platform-specific colors should map from this)
     var accentColorKey: String {
         switch kind {
         case .study:
-            return "primary"
+            "primary"
         case .shortBreak:
-            return "break"
+            "break"
         case .longBreak:
-            return "breakLong"
+            "breakLong"
         }
     }
-    
+
     /// User-facing display title with context
     var displayTitle: String {
         switch kind {
         case .study:
-            return title
+            title
         case .shortBreak:
-            return NSLocalizedString("planner.break.short", value: "Short Break", comment: "Short break session title")
+            NSLocalizedString("planner.break.short", value: "Short Break", comment: "Short break session title")
         case .longBreak:
-            return NSLocalizedString("planner.break.long", value: "Long Break", comment: "Long break session title")
+            NSLocalizedString("planner.break.long", value: "Long Break", comment: "Long break session title")
         }
     }
-    
+
     /// Whether this session is a break (convenience)
     var isBreak: Bool {
         kind == .shortBreak || kind == .longBreak
     }
-    
+
     // MARK: - Initializers
-    
+
     /// Create a study session (standard initialization)
-    init(id: UUID = UUID(), 
-         assignmentId: UUID, 
-         sessionIndex: Int, 
-         sessionCount: Int, 
-         title: String, 
-         dueDate: Date, 
-         category: AssignmentCategory, 
-         importance: AssignmentUrgency, 
-         difficulty: AssignmentUrgency, 
-         estimatedMinutes: Int, 
-         isLockedToDueDate: Bool, 
-         scheduleIndex: Double = 0,
-         kind: PlannerSessionKind = .study) {
+    init(
+        id: UUID = UUID(),
+        assignmentId: UUID,
+        sessionIndex: Int,
+        sessionCount: Int,
+        title: String,
+        dueDate: Date,
+        category: AssignmentCategory,
+        importance: AssignmentUrgency,
+        difficulty: AssignmentUrgency,
+        estimatedMinutes: Int,
+        isLockedToDueDate: Bool,
+        scheduleIndex: Double = 0,
+        kind: PlannerSessionKind = .study
+    ) {
         self.id = id
         self.assignmentId = assignmentId
         self.sessionIndex = sessionIndex
@@ -148,7 +150,7 @@ struct PlannerSession: Identifiable, Hashable {
         self.scheduleIndex = scheduleIndex
         self.kind = kind
     }
-    
+
     /// Create a break session
     static func breakSession(
         id: UUID = UUID(),
@@ -157,10 +159,10 @@ struct PlannerSession: Identifiable, Hashable {
         dueDate: Date
     ) -> PlannerSession {
         assert(kind == .shortBreak || kind == .longBreak, "Only break kinds allowed")
-        
+
         // Use a sentinel UUID for breaks (not associated with any assignment)
         let breakSentinel = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
-        
+
         return PlannerSession(
             id: id,
             assignmentId: breakSentinel,
@@ -168,7 +170,7 @@ struct PlannerSession: Identifiable, Hashable {
             sessionCount: 0,
             title: kind == .shortBreak ? "Short Break" : "Long Break",
             dueDate: dueDate,
-            category: .review,  // Neutral category for breaks
+            category: .review, // Neutral category for breaks
             importance: .low,
             difficulty: .low,
             estimatedMinutes: estimatedMinutes,
@@ -218,17 +220,27 @@ enum PlannerEngine {
             let perSession = settings.examDefaultSessionMinutes
             let rawCount = Int(ceil(Double(totalMinutes) / Double(perSession)))
             let sessionCount = max(3, min(4, rawCount))
-            for i in 1...sessionCount {
+            for i in 1 ... sessionCount {
                 let mins = (i < sessionCount) ? perSession : max(15, totalMinutes - perSession * (sessionCount - 1))
-                makeSession(title: "\(assignment.title) – Study Session \(i)/\(sessionCount)", index: i, count: sessionCount, minutes: mins)
+                makeSession(
+                    title: "\(assignment.title) – Study Session \(i)/\(sessionCount)",
+                    index: i,
+                    count: sessionCount,
+                    minutes: mins
+                )
             }
         case .quiz:
             let perSession = settings.quizDefaultSessionMinutes
             let rawCount = Int(ceil(Double(totalMinutes) / Double(perSession)))
             let sessionCount = max(1, min(2, rawCount))
-            for i in 1...sessionCount {
+            for i in 1 ... sessionCount {
                 let mins = (i < sessionCount) ? perSession : max(15, totalMinutes - perSession * (sessionCount - 1))
-                makeSession(title: "\(assignment.title) – Study Session \(i)/\(sessionCount)", index: i, count: sessionCount, minutes: mins)
+                makeSession(
+                    title: "\(assignment.title) – Study Session \(i)/\(sessionCount)",
+                    index: i,
+                    count: sessionCount,
+                    minutes: mins
+                )
             }
         case .homework:
             if totalMinutes <= settings.homeworkSingleSessionThreshold {
@@ -236,9 +248,14 @@ enum PlannerEngine {
             } else {
                 let perSession = settings.longHomeworkSplitSessionMinutes
                 let sessionCount = Int(ceil(Double(totalMinutes) / Double(perSession)))
-                for i in 1...sessionCount {
+                for i in 1 ... sessionCount {
                     let mins = (i < sessionCount) ? perSession : max(15, totalMinutes - perSession * (sessionCount - 1))
-                    makeSession(title: "\(assignment.title) – Part \(i)/\(sessionCount)", index: i, count: sessionCount, minutes: mins)
+                    makeSession(
+                        title: "\(assignment.title) – Part \(i)/\(sessionCount)",
+                        index: i,
+                        count: sessionCount,
+                        minutes: mins
+                    )
                 }
             }
         case .reading:
@@ -247,17 +264,27 @@ enum PlannerEngine {
             } else {
                 let perSession = settings.longReadingSplitSessionMinutes
                 let sessionCount = Int(ceil(Double(totalMinutes) / Double(perSession)))
-                for i in 1...sessionCount {
+                for i in 1 ... sessionCount {
                     let mins = (i < sessionCount) ? perSession : max(15, totalMinutes - perSession * (sessionCount - 1))
-                    makeSession(title: "\(assignment.title) – Part \(i)/\(sessionCount)", index: i, count: sessionCount, minutes: mins)
+                    makeSession(
+                        title: "\(assignment.title) – Part \(i)/\(sessionCount)",
+                        index: i,
+                        count: sessionCount,
+                        minutes: mins
+                    )
                 }
             }
         case .review:
             let perSession = settings.longReadingSplitSessionMinutes
             let sessionCount = max(1, Int(ceil(Double(totalMinutes) / Double(perSession))))
-            for i in 1...sessionCount {
+            for i in 1 ... sessionCount {
                 let mins = (i < sessionCount) ? perSession : max(15, totalMinutes - perSession * (sessionCount - 1))
-                makeSession(title: "\(assignment.title) – Review \(i)/\(sessionCount)", index: i, count: sessionCount, minutes: mins)
+                makeSession(
+                    title: "\(assignment.title) – Review \(i)/\(sessionCount)",
+                    index: i,
+                    count: sessionCount,
+                    minutes: mins
+                )
             }
         case .practiceTest:
             makeSession(title: assignment.title, index: 1, count: 1, minutes: totalMinutes)
@@ -266,14 +293,27 @@ enum PlannerEngine {
                 let totalCount = assignment.plan.count
                 for (i, step) in assignment.plan.enumerated() {
                     let idx = i + 1
-                    makeSession(title: "\(assignment.title) – \(step.title)", index: idx, count: totalCount, minutes: max(15, step.expectedMinutes))
+                    makeSession(
+                        title: "\(assignment.title) – \(step.title)",
+                        index: idx,
+                        count: totalCount,
+                        minutes: max(15, step.expectedMinutes)
+                    )
                 }
             } else {
-                let sessionCount = max(settings.projectMinSessions, Int(ceil(Double(totalMinutes) / Double(settings.projectSessionMinutes))))
+                let sessionCount = max(
+                    settings.projectMinSessions,
+                    Int(ceil(Double(totalMinutes) / Double(settings.projectSessionMinutes)))
+                )
                 let perSession = Int(ceil(Double(totalMinutes) / Double(sessionCount)))
-                for i in 1...sessionCount {
+                for i in 1 ... sessionCount {
                     let mins = (i < sessionCount) ? perSession : max(15, totalMinutes - perSession * (sessionCount - 1))
-                    makeSession(title: "\(assignment.title) – Work Session \(i)/\(sessionCount)", index: i, count: sessionCount, minutes: mins)
+                    makeSession(
+                        title: "\(assignment.title) – Work Session \(i)/\(sessionCount)",
+                        index: i,
+                        count: sessionCount,
+                        minutes: mins
+                    )
                 }
             }
         @unknown default:
@@ -287,27 +327,34 @@ enum PlannerEngine {
         var sessions: [PlannerSession] = []
         guard let dueDate = task.dueDate else { return [] }
         let estimatedMinutes = max(15, task.estimatedMinutes)
-        let sessionCount: Int
-
-        switch task.category {
+        let sessionCount: Int = switch task.category {
         case .exam:
-            sessionCount = max(1, Int(ceil(Double(estimatedMinutes) / Double(settings.examDefaultSessionMinutes))))
+            max(1, Int(ceil(Double(estimatedMinutes) / Double(settings.examDefaultSessionMinutes))))
         case .project:
-            sessionCount = max(settings.projectMinSessions, Int(ceil(Double(estimatedMinutes) / Double(settings.projectSessionMinutes))))
+            max(
+                settings.projectMinSessions,
+                Int(ceil(Double(estimatedMinutes) / Double(settings.projectSessionMinutes)))
+            )
         case .reading:
-            sessionCount = estimatedMinutes > settings.readingSingleSessionThreshold ? max(2, Int(ceil(Double(estimatedMinutes) / Double(settings.longReadingSplitSessionMinutes)))) : 1
+            estimatedMinutes > settings.readingSingleSessionThreshold ? max(
+                2,
+                Int(ceil(Double(estimatedMinutes) / Double(settings.longReadingSplitSessionMinutes)))
+            ) : 1
         case .homework:
-            sessionCount = estimatedMinutes > settings.homeworkSingleSessionThreshold ? max(2, Int(ceil(Double(estimatedMinutes) / Double(settings.longHomeworkSplitSessionMinutes)))) : 1
+            estimatedMinutes > settings.homeworkSingleSessionThreshold ? max(
+                2,
+                Int(ceil(Double(estimatedMinutes) / Double(settings.longHomeworkSplitSessionMinutes)))
+            ) : 1
         case .quiz:
-            sessionCount = max(1, Int(ceil(Double(estimatedMinutes) / Double(settings.quizDefaultSessionMinutes))))
+            max(1, Int(ceil(Double(estimatedMinutes) / Double(settings.quizDefaultSessionMinutes))))
         case .review:
-            sessionCount = max(1, Int(ceil(Double(estimatedMinutes) / Double(settings.quizDefaultSessionMinutes))))
+            max(1, Int(ceil(Double(estimatedMinutes) / Double(settings.quizDefaultSessionMinutes))))
         case .practiceTest:
-            sessionCount = max(1, Int(ceil(Double(estimatedMinutes) / Double(settings.examDefaultSessionMinutes))))
+            max(1, Int(ceil(Double(estimatedMinutes) / Double(settings.examDefaultSessionMinutes))))
         }
 
         let perSession = max(15, Int(ceil(Double(estimatedMinutes) / Double(sessionCount))))
-        for index in 0..<sessionCount {
+        for index in 0 ..< sessionCount {
             let session = PlannerSession(
                 id: UUID(),
                 assignmentId: task.id,
@@ -329,14 +376,12 @@ enum PlannerEngine {
 
     static func computeScheduleIndex(for session: PlannerSession, today: Date = Date()) -> Double {
         // priority factor from urgency
-        let priorityFactor: Double = {
-            switch session.importance {
-            case .low: return 0.4
-            case .medium: return 0.7
-            case .high: return 1.0
-            case .critical: return 1.0
-            }
-        }()
+        let priorityFactor = switch session.importance {
+        case .low: 0.4
+        case .medium: 0.7
+        case .high: 1.0
+        case .critical: 1.0
+        }
         let horizonDays: Double = 14
         let daysUntil = max(0, Calendar.current.dateComponents([.day], from: today, to: session.dueDate).day ?? 0)
         let dueRaw = 1 - (Double(daysUntil) / horizonDays)
@@ -360,7 +405,11 @@ enum PlannerEngine {
         return min(max(base, 0), 1)
     }
 
-    static func scheduleSessions(_ sessions: [PlannerSession], settings: StudyPlanSettings, energyProfile: [Int: Double]) -> (scheduled: [ScheduledSession], overflow: [PlannerSession]) {
+    static func scheduleSessions(
+        _ sessions: [PlannerSession],
+        settings: StudyPlanSettings,
+        energyProfile: [Int: Double]
+    ) -> (scheduled: [ScheduledSession], overflow: [PlannerSession]) {
         var scheduled: [ScheduledSession] = []
         var overflow: [PlannerSession] = []
 
@@ -397,7 +446,9 @@ enum PlannerEngine {
                 let slotsToBlock = min(arr.count, Int(ceil(Double(minutesSinceStart) / 30.0)))
                 if slotsToBlock > 0 {
                     var blocked = arr
-                    for idx in 0..<slotsToBlock { blocked[idx] = true }
+                    for idx in 0 ..< slotsToBlock {
+                        blocked[idx] = true
+                    }
                     daySlots[day] = blocked
                     return blocked
                 }
@@ -462,25 +513,24 @@ enum PlannerEngine {
             for day in days {
                 if calendar.isDate(day, inSameDayAs: todayStart),
                    maxMinutesToday > 0,
-                   (dayMinutes[day] ?? 0) + session.estimatedMinutes > maxMinutesToday {
+                   (dayMinutes[day] ?? 0) + session.estimatedMinutes > maxMinutesToday
+                {
                     continue
                 }
                 let slotsForDay = slots(for: day)
                 let lastStart = max(0, slotsForDay.count - slotsNeeded)
-                for startIdx in 0...lastStart {
+                for startIdx in 0 ... lastStart {
                     let endIdx = startIdx + slotsNeeded
-                    let slice = slotsForDay[startIdx..<endIdx]
+                    let slice = slotsForDay[startIdx ..< endIdx]
                     if slice.contains(true) { continue }
 
                     let slotHour = 9 + startIdx / 2
                     let slotEnergy = energyProfile[slotHour] ?? 0.5
-                    let difficultyReq: Double = {
-                        switch session.difficulty {
-                        case .low: return 0.0
-                        case .medium: return 0.5
-                        case .high, .critical: return 1.0
-                        }
-                    }()
+                    let difficultyReq = switch session.difficulty {
+                    case .low: 0.0
+                    case .medium: 0.5
+                    case .high, .critical: 1.0
+                    }
                     let energyMatch = 1 - abs(difficultyReq - slotEnergy)
                     let placementScore = 0.4 * session.scheduleIndex + 0.6 * energyMatch
                     if let current = bestPlacement {
@@ -499,7 +549,7 @@ enum PlannerEngine {
             }
 
             var daySlotsArr = slots(for: placement.day)
-            for idx in placement.slot..<(placement.slot + slotsNeeded) {
+            for idx in placement.slot ..< (placement.slot + slotsNeeded) {
                 daySlotsArr[idx] = true
             }
             daySlots[placement.day] = daySlotsArr
@@ -508,7 +558,12 @@ enum PlannerEngine {
             }
 
             let startComponents = DateComponents(hour: 9, minute: 0)
-            let dayStart = calendar.date(bySettingHour: startComponents.hour!, minute: startComponents.minute!, second: 0, of: placement.day) ?? placement.day
+            let dayStart = calendar.date(
+                bySettingHour: startComponents.hour!,
+                minute: startComponents.minute!,
+                second: 0,
+                of: placement.day
+            ) ?? placement.day
             let startDate = dayStart.addingTimeInterval(Double(placement.slot) * 30 * 60)
             let endDate = startDate.addingTimeInterval(Double(session.estimatedMinutes) * 60)
 
@@ -522,16 +577,16 @@ enum PlannerEngine {
     private static func dailyStudyLimitMinutes(for energyLevel: String) -> Int {
         switch energyLevel.lowercased() {
         case "low":
-            return 120
+            120
         case "high":
-            return 360
+            360
         default:
-            return 240
+            240
         }
     }
-    
+
     // MARK: - AI Scheduler Integration (Phase B)
-    
+
     /// Main entry point for scheduling with AI support
     /// - Parameters:
     ///   - sessions: Sessions to schedule
@@ -546,13 +601,13 @@ enum PlannerEngine {
         useAI: Bool? = nil
     ) -> (scheduled: [ScheduledSession], overflow: [PlannerSession]) {
         let shouldUseAI = useAI ?? AppSettingsModel.shared.enableAIPlanner
-        
+
         var result: (scheduled: [ScheduledSession], overflow: [PlannerSession])
-        
+
         if shouldUseAI {
             // Attempt AI scheduling
             result = scheduleWithAI(sessions, settings: settings, energyProfile: energyProfile)
-            
+
             // Fallback to deterministic if AI returns empty/invalid
             if result.scheduled.isEmpty && !sessions.isEmpty {
                 LOG_UI(.warn, "PlannerEngine", "AI scheduling returned empty, falling back to deterministic")
@@ -562,47 +617,50 @@ enum PlannerEngine {
             // Use deterministic scheduling
             result = scheduleSessions(sessions, settings: settings, energyProfile: energyProfile)
         }
-        
+
         // Apply break insertion if enabled (Phase C)
         if AppSettingsModel.shared.autoScheduleBreaks {
-            result = insertBreaks(into: result, energyProfile: energyProfile, deepWorkEnabled: AppSettingsModel.shared.enableDeepWorkMode)
+            result = insertBreaks(
+                into: result,
+                energyProfile: energyProfile,
+                deepWorkEnabled: AppSettingsModel.shared.enableDeepWorkMode
+            )
         }
-        
+
         return result
     }
-    
+
     /// Schedule sessions using AI scheduler
     private static func scheduleWithAI(
         _ sessions: [PlannerSession],
-        settings: StudyPlanSettings,
+        settings _: StudyPlanSettings,
         energyProfile: [Int: Double]
     ) -> (scheduled: [ScheduledSession], overflow: [PlannerSession]) {
         // Get current energy level from settings
         let energyLevelString = AppSettingsModel.shared.defaultEnergyLevel
-        let energyLevel: EnergyLevel
-        switch energyLevelString.lowercased() {
+        let energyLevel: EnergyLevel = switch energyLevelString.lowercased() {
         case "high":
-            energyLevel = .high
+            .high
         case "low":
-            energyLevel = .low
+            .low
         default:
-            energyLevel = .medium
+            .medium
         }
-        
+
         LOG_SCHEDULER(.info, "PlannerEngine", "🔋 Starting AI scheduling with energy awareness", metadata: [
             "energyLevel": "\(energyLevel.rawValue)",
             "energyString": energyLevelString,
             "totalSessions": "\(sessions.count)",
             "timestamp": "\(Date())"
         ])
-        
+
         LOG_DEV(.debug, "EnergyScheduling", "Energy level configuration", metadata: [
             "level": energyLevel.rawValue,
-            "filteringRules": energyLevel == .high ? "All tasks" : 
-                             energyLevel == .medium ? "7-day window + high importance" :
-                             "Critical tasks only (today/tomorrow)"
+            "filteringRules": energyLevel == .high ? "All tasks" :
+                energyLevel == .medium ? "7-day window + high importance" :
+                "Critical tasks only (today/tomorrow)"
         ])
-        
+
         // Convert PlannerSession to AIScheduler.Task
         let tasks = sessions.map { session -> AppTask in
             AppTask(
@@ -621,12 +679,12 @@ enum PlannerEngine {
                 isCompleted: false
             )
         }
-        
+
         // Build constraints
         let now = Date()
         let calendar = Calendar.current
         let horizonEnd = calendar.date(byAdding: .day, value: 14, to: now) ?? now
-        
+
         let deepWorkEnabled = AppSettingsModel.shared.enableDeepWorkMode
         let constraints = Constraints(
             horizonStart: now,
@@ -639,13 +697,13 @@ enum PlannerEngine {
             doNotScheduleWindows: [],
             energyProfile: energyProfile
         )
-        
+
         // Get busy calendar events to block out times
         let fixedEvents = getFixedEventsFromCalendar(
             start: constraints.horizonStart,
             end: constraints.horizonEnd
         )
-        
+
         // Call AI scheduler with energy level
         let aiResult = AIScheduler.generateSchedule(
             tasks: tasks,
@@ -653,26 +711,29 @@ enum PlannerEngine {
             constraints: constraints,
             energyLevel: energyLevel
         )
-        
+
         LOG_DEV(.info, "EnergyScheduling", "📊 AI Scheduler completed", metadata: [
             "inputTasks": "\(tasks.count)",
             "scheduledBlocks": "\(aiResult.blocks.count)",
             "unscheduledTasks": "\(aiResult.unscheduledTasks.count)",
             "energyLevel": energyLevel.rawValue,
-            "filteringEfficiency": String(format: "%.1f%%", Double(aiResult.blocks.count) / Double(max(1, tasks.count)) * 100)
+            "filteringEfficiency": String(
+                format: "%.1f%%",
+                Double(aiResult.blocks.count) / Double(max(1, tasks.count)) * 100
+            )
         ])
-        
+
         if !aiResult.unscheduledTasks.isEmpty {
             LOG_DEV(.warn, "EnergyScheduling", "⚠️ Some tasks could not be scheduled", metadata: [
                 "count": "\(aiResult.unscheduledTasks.count)",
                 "possibleReason": energyLevel == .low ? "Low energy filtered out non-critical tasks" : "Not enough time slots available"
             ])
         }
-        
+
         // Convert back to ScheduledSession
         var scheduled: [ScheduledSession] = []
         var sessionMap = Dictionary(uniqueKeysWithValues: sessions.map { ($0.id, $0) })
-        
+
         for block in aiResult.blocks {
             guard let session = sessionMap[block.taskId] else { continue }
             scheduled.append(ScheduledSession(
@@ -683,78 +744,78 @@ enum PlannerEngine {
             ))
             sessionMap.removeValue(forKey: block.taskId)
         }
-        
+
         let overflow = Array(sessionMap.values)
-        
+
         return (scheduled, overflow)
     }
-    
+
     // MARK: - Break Insertion (Phase C)
-    
+
     private static let shortBreakMinutes = 10
     private static let longBreakMinutes = 20
-    private static let longBreakInterval = 4  // Every 4 study sessions
-    
+    private static let longBreakInterval = 4 // Every 4 study sessions
+
     /// Insert breaks between study sessions
     private static func insertBreaks(
         into result: (scheduled: [ScheduledSession], overflow: [PlannerSession]),
-        energyProfile: [Int: Double],
+        energyProfile _: [Int: Double],
         deepWorkEnabled: Bool
     ) -> (scheduled: [ScheduledSession], overflow: [PlannerSession]) {
         let calendar = Calendar.current
         var scheduledWithBreaks: [ScheduledSession] = []
         let sortedSessions = result.scheduled.sorted { $0.start < $1.start }
-        
+
         var studySessionCount = 0
         let breakInterval = deepWorkEnabled ? 6 : longBreakInterval
         let shortBreak = deepWorkEnabled ? 5 : shortBreakMinutes
         let longBreak = deepWorkEnabled ? 15 : longBreakMinutes
-        
+
         for (index, session) in sortedSessions.enumerated() {
             // Add the study session
             scheduledWithBreaks.append(session)
-            
+
             // Only count study sessions (not existing breaks)
             if !session.session.isBreak {
                 studySessionCount += 1
             }
-            
+
             // Check if we should add a break
-            guard index < sortedSessions.count - 1 else { continue }  // Don't add break after last session
-            
+            guard index < sortedSessions.count - 1 else { continue } // Don't add break after last session
+
             let nextSession = sortedSessions[index + 1]
             let gapMinutes = Int(nextSession.start.timeIntervalSince(session.end) / 60)
-            
+
             // Determine break type
             let isLongBreak = (studySessionCount % breakInterval == 0)
             let breakMinutes = isLongBreak ? longBreak : shortBreak
-            
+
             // Check if we have enough space for the break
             guard gapMinutes >= breakMinutes else { continue }
-            
+
             // Don't add break if next session is on a different day
             let sessionDay = calendar.startOfDay(for: session.end)
             let nextSessionDay = calendar.startOfDay(for: nextSession.start)
             guard sessionDay == nextSessionDay else { continue }
-            
+
             // Don't add break if we're near end of day (after 8 PM)
             let endHour = calendar.component(.hour, from: session.end)
             guard endHour < 20 else { continue }
-            
+
             // Create break session
             let breakKind: PlannerSessionKind = isLongBreak ? .longBreak : .shortBreak
             let breakSession = PlannerSession.breakSession(
                 kind: breakKind,
                 estimatedMinutes: breakMinutes,
-                dueDate: session.end  // Use session end as reference
+                dueDate: session.end // Use session end as reference
             )
-            
+
             let breakStart = session.end
             let breakEnd = breakStart.addingTimeInterval(Double(breakMinutes) * 60)
-            
+
             // Only add if it doesn't overlap with next session
             guard breakEnd <= nextSession.start else { continue }
-            
+
             scheduledWithBreaks.append(ScheduledSession(
                 id: UUID(),
                 session: breakSession,
@@ -762,21 +823,21 @@ enum PlannerEngine {
                 end: breakEnd
             ))
         }
-        
+
         return (scheduledWithBreaks, result.overflow)
     }
-    
+
     // MARK: - Helper Converters
-    
+
     private static func urgencyToDouble(_ urgency: AssignmentUrgency) -> Double {
         switch urgency {
-        case .low: return 0.3
-        case .medium: return 0.6
-        case .high: return 0.9
-        case .critical: return 1.0
+        case .low: 0.3
+        case .medium: 0.6
+        case .high: 0.9
+        case .critical: 1.0
         }
     }
-    
+
     private static func categoryToTaskType(_ category: AssignmentCategory) -> TaskType {
         switch category {
         case .exam: return .exam
@@ -789,52 +850,52 @@ enum PlannerEngine {
         @unknown default: return .homework
         }
     }
-    
+
     // MARK: - Calendar Integration
-    
+
     /// Get fixed events from device calendar that are marked as busy
     private static func getFixedEventsFromCalendar(start: Date, end: Date) -> [FixedEvent] {
         var fixedEvents: [FixedEvent] = []
-        
+
         #if !os(watchOS)
-        let calendarManager = DeviceCalendarManager.shared
-        
-        // Only process if authorized
-        guard calendarManager.isAuthorized else {
-            return fixedEvents
-        }
-        
-        // Filter events to only those in the time range
-        let relevantEvents = calendarManager.events.filter { event in
-            event.startDate >= start && event.startDate < end
-        }
-        
-        // Convert busy events to FixedEvent objects
-        for event in relevantEvents {
-            // Only include events marked as busy (not free/tentative)
-            // EKEventAvailability: .busy, .free, .tentative, .unavailable
-            guard event.availability == .busy || event.availability == .unavailable else {
-                continue
+            let calendarManager = DeviceCalendarManager.shared
+
+            // Only process if authorized
+            guard calendarManager.isAuthorized else {
+                return fixedEvents
             }
-            
-            // Skip all-day events as they don't block specific time slots
-            guard !event.isAllDay else {
-                continue
+
+            // Filter events to only those in the time range
+            let relevantEvents = calendarManager.events.filter { event in
+                event.startDate >= start && event.startDate < end
             }
-            
-            let fixedEvent = FixedEvent(
-                id: UUID(uuidString: event.eventIdentifier) ?? UUID(),
-                title: event.title ?? "Busy",
-                start: event.startDate,
-                end: event.endDate,
-                isLocked: true,
-                source: .calendar
-            )
-            
-            fixedEvents.append(fixedEvent)
-        }
+
+            // Convert busy events to FixedEvent objects
+            for event in relevantEvents {
+                // Only include events marked as busy (not free/tentative)
+                // EKEventAvailability: .busy, .free, .tentative, .unavailable
+                guard event.availability == .busy || event.availability == .unavailable else {
+                    continue
+                }
+
+                // Skip all-day events as they don't block specific time slots
+                guard !event.isAllDay else {
+                    continue
+                }
+
+                let fixedEvent = FixedEvent(
+                    id: UUID(uuidString: event.eventIdentifier) ?? UUID(),
+                    title: event.title ?? "Busy",
+                    start: event.startDate,
+                    end: event.endDate,
+                    isLocked: true,
+                    source: .calendar
+                )
+
+                fixedEvents.append(fixedEvent)
+            }
         #endif
-        
+
         return fixedEvents
     }
 }

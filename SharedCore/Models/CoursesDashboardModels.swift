@@ -21,21 +21,23 @@ struct CourseDashboard: Identifiable, Hashable {
     var instructorNotes: String?
     var upcomingDeadlines: [CourseDeadline]
 
-    init(id: UUID = UUID(),
-         title: String,
-         code: String,
-         instructor: String,
-         credits: Double,
-         currentGrade: Double,
-         progress: Double = 0.65,
-         colorHex: String,
-         term: String = "Fall 2025",
-         location: String? = nil,
-         meetings: [DashboardCourseMeeting] = [],
-         syllabusWeights: SyllabusWeights = SyllabusWeights(),
-         analytics: CourseAnalytics = CourseAnalytics(),
-         instructorNotes: String? = nil,
-         upcomingDeadlines: [CourseDeadline] = []) {
+    init(
+        id: UUID = UUID(),
+        title: String,
+        code: String,
+        instructor: String,
+        credits: Double,
+        currentGrade: Double,
+        progress: Double = 0.65,
+        colorHex: String,
+        term: String = "Fall 2025",
+        location: String? = nil,
+        meetings: [DashboardCourseMeeting] = [],
+        syllabusWeights: SyllabusWeights = SyllabusWeights(),
+        analytics: CourseAnalytics = CourseAnalytics(),
+        instructorNotes: String? = nil,
+        upcomingDeadlines: [CourseDeadline] = []
+    ) {
         self.id = id
         self.title = title
         self.code = code
@@ -63,17 +65,17 @@ struct CourseDashboard: Identifiable, Hashable {
 
     var letterGrade: String {
         switch currentGrade {
-        case 93...100: return "A"
-        case 90..<93: return "A-"
-        case 87..<90: return "B+"
-        case 83..<87: return "B"
-        case 80..<83: return "B-"
-        case 77..<80: return "C+"
-        case 73..<77: return "C"
-        case 70..<73: return "C-"
-        case 67..<70: return "D+"
-        case 60..<67: return "D"
-        default: return "F"
+        case 93 ... 100: "A"
+        case 90 ..< 93: "A-"
+        case 87 ..< 90: "B+"
+        case 83 ..< 87: "B"
+        case 80 ..< 83: "B-"
+        case 77 ..< 80: "C+"
+        case 73 ..< 77: "C"
+        case 70 ..< 73: "C-"
+        case 67 ..< 70: "D+"
+        case 60 ..< 67: "D"
+        default: "F"
         }
     }
 }
@@ -85,7 +87,7 @@ struct DashboardCourseMeeting: Identifiable, Hashable {
     var endTime: String
 
     var formattedDays: String {
-        days.map { $0.abbreviation }.joined(separator: "/")
+        days.map(\.abbreviation).joined(separator: "/")
     }
 
     var formattedTime: String {
@@ -104,13 +106,13 @@ enum DayOfWeek: String, CaseIterable, Hashable {
 
     var abbreviation: String {
         switch self {
-        case .monday: return "Mon"
-        case .tuesday: return "Tue"
-        case .wednesday: return "Wed"
-        case .thursday: return "Thu"
-        case .friday: return "Fri"
-        case .saturday: return "Sat"
-        case .sunday: return "Sun"
+        case .monday: "Mon"
+        case .tuesday: "Tue"
+        case .wednesday: "Wed"
+        case .thursday: "Thu"
+        case .friday: "Fri"
+        case .saturday: "Sat"
+        case .sunday: "Sun"
         }
     }
 }
@@ -185,7 +187,11 @@ extension CourseDashboard {
                 colorHex: "4A90E2",
                 location: "Biltmore Hall 204",
                 meetings: [
-                    DashboardCourseMeeting(days: [.monday, .wednesday, .friday], startTime: "9:00 AM", endTime: "9:50 AM")
+                    DashboardCourseMeeting(
+                        days: [.monday, .wednesday, .friday],
+                        startTime: "9:00 AM",
+                        endTime: "9:50 AM"
+                    )
                 ],
                 syllabusWeights: SyllabusWeights(
                     homework: 0.25,
@@ -204,7 +210,11 @@ extension CourseDashboard {
                 ),
                 instructorNotes: "Office hours: Tuesdays 2-4pm. Midterm exam on Oct 15.",
                 upcomingDeadlines: [
-                    CourseDeadline(title: "Problem Set 7", dueDate: Date().addingTimeInterval(86400 * 2), type: .assignment),
+                    CourseDeadline(
+                        title: "Problem Set 7",
+                        dueDate: Date().addingTimeInterval(86400 * 2),
+                        type: .assignment
+                    ),
                     CourseDeadline(title: "Midterm Exam", dueDate: Date().addingTimeInterval(86400 * 7), type: .exam)
                 ]
             ),
@@ -236,8 +246,16 @@ extension CourseDashboard {
                 ),
                 instructorNotes: "Lab sessions on Fridays. Final project due Dec 10.",
                 upcomingDeadlines: [
-                    CourseDeadline(title: "Binary Trees Lab", dueDate: Date().addingTimeInterval(86400 * 3), type: .assignment),
-                    CourseDeadline(title: "Project Milestone 2", dueDate: Date().addingTimeInterval(86400 * 10), type: .project)
+                    CourseDeadline(
+                        title: "Binary Trees Lab",
+                        dueDate: Date().addingTimeInterval(86400 * 3),
+                        type: .assignment
+                    ),
+                    CourseDeadline(
+                        title: "Project Milestone 2",
+                        dueDate: Date().addingTimeInterval(86400 * 10),
+                        type: .project
+                    )
                 ]
             ),
             CourseDashboard(
@@ -269,7 +287,11 @@ extension CourseDashboard {
                 ),
                 instructorNotes: "Lab reports due Mondays. Study group on Thursdays 5pm.",
                 upcomingDeadlines: [
-                    CourseDeadline(title: "Lab Report 5", dueDate: Date().addingTimeInterval(86400 * 1), type: .assignment),
+                    CourseDeadline(
+                        title: "Lab Report 5",
+                        dueDate: Date().addingTimeInterval(86400 * 1),
+                        type: .assignment
+                    ),
                     CourseDeadline(title: "Quiz 3", dueDate: Date().addingTimeInterval(86400 * 5), type: .quiz)
                 ]
             ),
@@ -301,8 +323,16 @@ extension CourseDashboard {
                 ),
                 instructorNotes: "Research paper due Nov 20. Citations required.",
                 upcomingDeadlines: [
-                    CourseDeadline(title: "Chapter 8 Essay", dueDate: Date().addingTimeInterval(86400 * 4), type: .assignment),
-                    CourseDeadline(title: "Research Paper", dueDate: Date().addingTimeInterval(86400 * 21), type: .project)
+                    CourseDeadline(
+                        title: "Chapter 8 Essay",
+                        dueDate: Date().addingTimeInterval(86400 * 4),
+                        type: .assignment
+                    ),
+                    CourseDeadline(
+                        title: "Research Paper",
+                        dueDate: Date().addingTimeInterval(86400 * 21),
+                        type: .project
+                    )
                 ]
             ),
             CourseDashboard(
@@ -314,7 +344,11 @@ extension CourseDashboard {
                 colorHex: "9B59B6",
                 location: "Mathematics Hall 150",
                 meetings: [
-                    DashboardCourseMeeting(days: [.monday, .wednesday, .friday], startTime: "10:00 AM", endTime: "10:50 AM")
+                    DashboardCourseMeeting(
+                        days: [.monday, .wednesday, .friday],
+                        startTime: "10:00 AM",
+                        endTime: "10:50 AM"
+                    )
                 ],
                 syllabusWeights: SyllabusWeights(
                     homework: 0.25,
@@ -333,7 +367,11 @@ extension CourseDashboard {
                 ),
                 instructorNotes: "R programming required. Office hours Mon/Wed 3-4pm.",
                 upcomingDeadlines: [
-                    CourseDeadline(title: "Problem Set 6", dueDate: Date().addingTimeInterval(86400 * 2), type: .assignment)
+                    CourseDeadline(
+                        title: "Problem Set 6",
+                        dueDate: Date().addingTimeInterval(86400 * 2),
+                        type: .assignment
+                    )
                 ]
             )
         ]

@@ -13,28 +13,33 @@ struct GlassButtonStyle: ButtonStyle {
 
         var body: some View {
             #if os(macOS)
-            configuration.label
-                .padding(6)
-                .contentShape(Circle())
-                .onHover { hovering in
-                    if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
-                }
+                configuration.label
+                    .padding(6)
+                    .contentShape(Circle())
+                    .onHover { hovering in
+                        if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                    }
             #else
-            let policy = MaterialPolicy(preferences: preferences)
+                let policy = MaterialPolicy(preferences: preferences)
 
-            configuration.label
-                .padding(DesignSystem.Layout.padding.card)
-                .frame(width: 48, height: 48)
-                .background(policy.hudMaterial(colorScheme: colorScheme))
-                .opacity(configuration.isPressed ? 0.6 : settings.glassOpacity(for: colorScheme))
-                .clipShape(Circle())
-                .shadow(color: DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.12), radius: 16, x: 0, y: 8)
-                .symbolEffect(.bounce)
-                .onHover { hovering in
-                    #if canImport(AppKit)
-                    if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
-                    #endif
-                }
+                configuration.label
+                    .padding(DesignSystem.Layout.padding.card)
+                    .frame(width: 48, height: 48)
+                    .background(policy.hudMaterial(colorScheme: colorScheme))
+                    .opacity(configuration.isPressed ? 0.6 : settings.glassOpacity(for: colorScheme))
+                    .clipShape(Circle())
+                    .shadow(
+                        color: DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.12),
+                        radius: 16,
+                        x: 0,
+                        y: 8
+                    )
+                    .symbolEffect(.bounce)
+                    .onHover { hovering in
+                        #if canImport(AppKit)
+                            if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
+                        #endif
+                    }
             #endif
         }
     }

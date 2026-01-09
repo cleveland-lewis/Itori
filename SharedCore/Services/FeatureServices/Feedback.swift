@@ -1,9 +1,9 @@
-import Foundation
 import AVFoundation
+import Foundation
 #if os(iOS)
-import UIKit
+    import UIKit
 #elseif os(macOS)
-import AppKit
+    import AppKit
 #endif
 
 // MARK: - Feedback Types
@@ -24,96 +24,101 @@ enum FeedbackType {
 @MainActor
 class Feedback {
     static let shared = Feedback()
-    
+
     private var audioPlayers: [String: AVAudioPlayer] = [:]
     private var settings: AppSettingsModel { AppSettingsModel.shared }
-    
+
     private init() {
         // Preload audio files
         Task {
             await preloadSounds()
         }
     }
-    
+
     // MARK: - Public API
-    
+
     func play(_ type: FeedbackType) {
         // Play sound if enabled
         if shouldPlaySound() {
             playSound(for: type)
         }
-        
+
         // Play haptic if enabled
         if shouldPlayHaptic() {
             playHaptic(for: type)
         }
-        
+
         // Log for debugging
         LOG_UI(.debug, "Feedback", "Played feedback", metadata: ["type": "\(type)"])
     }
-    
+
     // MARK: - Sound Playback
-    
+
     private func playSound(for type: FeedbackType) {
         // Sounds disabled for timer and task completion
         switch type {
         case .taskCompleted, .success:
-            return  // No sound
+            return // No sound
         case .timerStart:
-            return  // No sound
+            return // No sound
         case .timerStop:
-            return  // No sound
+            return // No sound
         default:
             break
         }
-        
+
         // Original sound system for other feedback types
         let soundName = soundFileName(for: type)
-        
+
         // Try to play from preloaded cache
         if let player = audioPlayers[soundName] {
             player.currentTime = 0
             player.play()
             return
         }
-        
+
         // Load and play if not cached
         guard let url = soundURL(for: soundName) else {
             LOG_UI(.warn, "Feedback", "Sound file not found", metadata: ["sound": soundName])
             return
         }
-        
+
         do {
             let player = try AVAudioPlayer(contentsOf: url)
             player.prepareToPlay()
             player.play()
             audioPlayers[soundName] = player
         } catch {
-            LOG_UI(.error, "Feedback", "Failed to play sound", metadata: ["sound": soundName, "error": error.localizedDescription])
+            LOG_UI(
+                .error,
+                "Feedback",
+                "Failed to play sound",
+                metadata: ["sound": soundName, "error": error.localizedDescription]
+            )
         }
     }
-    
+
     private func soundFileName(for type: FeedbackType) -> String {
         switch type {
         case .taskCompleted:
-            return "task_complete"
+            "task_complete"
         case .taskCreated:
-            return "task_created"
+            "task_created"
         case .timerStart:
-            return "timer_start"
+            "timer_start"
         case .timerStop:
-            return "timer_stop"
+            "timer_stop"
         case .success:
-            return "success"
+            "success"
         case .warning:
-            return "warning"
+            "warning"
         case .error:
-            return "error"
+            "error"
         case .selection:
-            return "selection"
+            "selection"
         }
     }
-    
+
     private func soundURL(for name: String) -> URL? {
         // Check for custom sound file
         if let url = Bundle.main.url(forResource: name, withExtension: "aiff") {
@@ -125,45 +130,43 @@ class Feedback {
         if let url = Bundle.main.url(forResource: name, withExtension: "mp3") {
             return url
         }
-        
+
         // Fall back to system sounds
         #if os(macOS)
-        // Use macOS system sounds as fallback
-        let systemSoundsPath = "/System/Library/Sounds"
-        let fallbackSound: String
-        
-        switch name {
-        case "task_complete", "success":
-            fallbackSound = "Glass.aiff"
-        case "task_created":
-            fallbackSound = "Tink.aiff"
-        case "timer_start":
-            fallbackSound = "Tink.aiff"
-        case "timer_stop":
-            fallbackSound = "Pop.aiff"
-        case "warning":
-            fallbackSound = "Basso.aiff"
-        case "error":
-            fallbackSound = "Sosumi.aiff"
-        case "selection":
-            fallbackSound = "Tink.aiff"
-        default:
-            fallbackSound = "Tink.aiff"
-        }
-        
-        return URL(fileURLWithPath: "\(systemSoundsPath)/\(fallbackSound)")
+            // Use macOS system sounds as fallback
+            let systemSoundsPath = "/System/Library/Sounds"
+            let fallbackSound = switch name {
+            case "task_complete", "success":
+                "Glass.aiff"
+            case "task_created":
+                "Tink.aiff"
+            case "timer_start":
+                "Tink.aiff"
+            case "timer_stop":
+                "Pop.aiff"
+            case "warning":
+                "Basso.aiff"
+            case "error":
+                "Sosumi.aiff"
+            case "selection":
+                "Tink.aiff"
+            default:
+                "Tink.aiff"
+            }
+
+            return URL(fileURLWithPath: "\(systemSoundsPath)/\(fallbackSound)")
         #else
-        return nil
+            return nil
         #endif
     }
-    
+
     private func preloadSounds() async {
         // Preload commonly used sounds
         let commonSounds = ["task_complete", "success"]
-        
+
         for soundName in commonSounds {
             guard let url = soundURL(for: soundName) else { continue }
-            
+
             do {
                 let player = try AVAudioPlayer(contentsOf: url)
                 player.prepareToPlay()
@@ -173,61 +176,61 @@ class Feedback {
             }
         }
     }
-    
+
     // MARK: - Haptic Playback
-    
+
     private func playHaptic(for type: FeedbackType) {
         #if os(iOS)
-        switch type {
-        case .taskCompleted, .success, .taskCreated, .timerStop:
-            let generator = UINotificationFeedbackGenerator()
-            generator.notificationOccurred(.success)
-        case .timerStart:
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
-        case .warning:
-            let generator = UINotificationFeedbackGenerator()
-            generator.notificationOccurred(.warning)
-        case .error:
-            let generator = UINotificationFeedbackGenerator()
-            generator.notificationOccurred(.error)
-        case .selection:
-            let generator = UISelectionFeedbackGenerator()
-            generator.selectionChanged()
-        }
+            switch type {
+            case .taskCompleted, .success, .taskCreated, .timerStop:
+                let generator = UINotificationFeedbackGenerator()
+                generator.notificationOccurred(.success)
+            case .timerStart:
+                let generator = UIImpactFeedbackGenerator(style: .medium)
+                generator.impactOccurred()
+            case .warning:
+                let generator = UINotificationFeedbackGenerator()
+                generator.notificationOccurred(.warning)
+            case .error:
+                let generator = UINotificationFeedbackGenerator()
+                generator.notificationOccurred(.error)
+            case .selection:
+                let generator = UISelectionFeedbackGenerator()
+                generator.selectionChanged()
+            }
         #elseif os(macOS)
-        let manager = NSHapticFeedbackManager.defaultPerformer
-        switch type {
-        case .taskCompleted, .success, .selection, .taskCreated, .timerStart, .timerStop:
-            manager.perform(.generic, performanceTime: .now)
-        case .warning, .error:
-            manager.perform(.levelChange, performanceTime: .now)
-        }
+            let manager = NSHapticFeedbackManager.defaultPerformer
+            switch type {
+            case .taskCompleted, .success, .selection, .taskCreated, .timerStart, .timerStop:
+                manager.perform(.generic, performanceTime: .now)
+            case .warning, .error:
+                manager.perform(.levelChange, performanceTime: .now)
+            }
         #endif
     }
-    
+
     // MARK: - Settings Check
-    
+
     private func shouldPlaySound() -> Bool {
         // Check if sounds are enabled in system
         #if os(iOS)
-        // On iOS, respect system sound settings
-        return true // AVAudioSession will handle mute switch automatically
+            // On iOS, respect system sound settings
+            return true // AVAudioSession will handle mute switch automatically
         #elseif os(macOS)
-        // On macOS, always allow (user can control volume)
-        return true
+            // On macOS, always allow (user can control volume)
+            return true
         #else
-        return true
+            return true
         #endif
     }
-    
+
     private func shouldPlayHaptic() -> Bool {
         // Check user preference for haptics
         guard settings.enableHaptics else { return false }
-        
+
         // Respect Reduce Motion accessibility setting
         guard !settings.reduceMotion else { return false }
-        
+
         return true
     }
 }
@@ -239,27 +242,27 @@ extension Feedback {
     func taskCompleted() {
         play(.taskCompleted)
     }
-    
+
     /// Play task creation feedback (sound + haptic)
     func taskCreated() {
         play(.taskCreated)
     }
-    
+
     /// Play timer start feedback (sound + haptic)
     func timerStart() {
         play(.timerStart)
     }
-    
+
     /// Play timer stop feedback (sound + haptic)
     func timerStop() {
         play(.timerStop)
     }
-    
+
     /// Play success feedback (sound + haptic)
     func success() {
         play(.success)
     }
-    
+
     /// Play error feedback (sound + haptic)
     func error() {
         play(.error)

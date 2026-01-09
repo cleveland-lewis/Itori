@@ -4,94 +4,94 @@
 //
 
 #if os(iOS)
-import SwiftUI
+    import SwiftUI
 
-struct IOSAddSessionView: View {
-    @ObservedObject var viewModel: TimerPageViewModel
-    let onDismiss: () -> Void
-    
-    @State private var selectedMode: TimerMode = .pomodoro
-    @State private var durationMinutes: Int = 25
-    @State private var durationSeconds: Int = 0
-    @State private var sessionDate: Date = Date()
-    @State private var selectedActivityID: UUID? = nil
-    
-    private var isValid: Bool {
-        durationMinutes > 0 || durationSeconds > 0
-    }
-    
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Session Type") {
-                    Picker("Mode", selection: $selectedMode) {
-                        ForEach(TimerMode.allCases) { mode in
-                            Label(mode.displayName, systemImage: mode.systemImage)
-                                .tag(mode)
+    struct IOSAddSessionView: View {
+        @ObservedObject var viewModel: TimerPageViewModel
+        let onDismiss: () -> Void
+
+        @State private var selectedMode: TimerMode = .pomodoro
+        @State private var durationMinutes: Int = 25
+        @State private var durationSeconds: Int = 0
+        @State private var sessionDate: Date = .init()
+        @State private var selectedActivityID: UUID? = nil
+
+        private var isValid: Bool {
+            durationMinutes > 0 || durationSeconds > 0
+        }
+
+        var body: some View {
+            NavigationStack {
+                Form {
+                    Section("Session Type") {
+                        Picker("Mode", selection: $selectedMode) {
+                            ForEach(TimerMode.allCases) { mode in
+                                Label(mode.displayName, systemImage: mode.systemImage)
+                                    .tag(mode)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                    }
+
+                    Section("Duration") {
+                        HStack {
+                            Stepper("\(durationMinutes) min", value: $durationMinutes, in: 0 ... 999)
+                        }
+                        HStack {
+                            Stepper("\(durationSeconds) sec", value: $durationSeconds, in: 0 ... 59)
                         }
                     }
-                    .pickerStyle(.segmented)
-                }
-                
-                Section("Duration") {
-                    HStack {
-                        Stepper("\(durationMinutes) min", value: $durationMinutes, in: 0...999)
+
+                    Section("When") {
+                        DatePicker("Date & Time", selection: $sessionDate, displayedComponents: [.date, .hourAndMinute])
                     }
-                    HStack {
-                        Stepper("\(durationSeconds) sec", value: $durationSeconds, in: 0...59)
+
+                    Section("Activity") {
+                        Picker("Link to Activity", selection: $selectedActivityID) {
+                            Text(NSLocalizedString("None", value: "None", comment: "")).tag(UUID?.none)
+                            ForEach(viewModel.activities) { activity in
+                                Text(activity.name).tag(Optional(activity.id))
+                            }
+                        }
+                        .pickerStyle(.menu)
                     }
                 }
-                
-                Section("When") {
-                    DatePicker("Date & Time", selection: $sessionDate, displayedComponents: [.date, .hourAndMinute])
-                }
-                
-                Section("Activity") {
-                    Picker("Link to Activity", selection: $selectedActivityID) {
-                        Text(NSLocalizedString("None", value: "None", comment: "")).tag(UUID?.none)
-                        ForEach(viewModel.activities) { activity in
-                            Text(activity.name).tag(Optional(activity.id))
+                .navigationTitle("Add Session")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(NSLocalizedString("Cancel", value: "Cancel", comment: "")) {
+                            onDismiss()
                         }
                     }
-                    .pickerStyle(.menu)
-                }
-            }
-            .navigationTitle("Add Session")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(NSLocalizedString("Cancel", value: "Cancel", comment: "")) {
-                        onDismiss()
+
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button(NSLocalizedString("Save", value: "Save", comment: "")) {
+                            saveSession()
+                        }
+                        .disabled(!isValid)
                     }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(NSLocalizedString("Save", value: "Save", comment: "")) {
-                        saveSession()
-                    }
-                    .disabled(!isValid)
                 }
             }
         }
+
+        private func saveSession() {
+            let totalSeconds = TimeInterval(durationMinutes * 60 + durationSeconds)
+            guard totalSeconds > 0 else { return }
+
+            let session = FocusSession(
+                activityID: selectedActivityID,
+                mode: selectedMode,
+                plannedDuration: totalSeconds,
+                startedAt: sessionDate,
+                endedAt: sessionDate.addingTimeInterval(totalSeconds),
+                state: .completed,
+                actualDuration: totalSeconds,
+                interruptions: 0
+            )
+
+            viewModel.addManualSession(session)
+            onDismiss()
+        }
     }
-    
-    private func saveSession() {
-        let totalSeconds = TimeInterval(durationMinutes * 60 + durationSeconds)
-        guard totalSeconds > 0 else { return }
-        
-        let session = FocusSession(
-            activityID: selectedActivityID,
-            mode: selectedMode,
-            plannedDuration: totalSeconds,
-            startedAt: sessionDate,
-            endedAt: sessionDate.addingTimeInterval(totalSeconds),
-            state: .completed,
-            actualDuration: totalSeconds,
-            interruptions: 0
-        )
-        
-        viewModel.addManualSession(session)
-        onDismiss()
-    }
-}
 #endif

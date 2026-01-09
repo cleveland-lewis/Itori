@@ -1,6 +1,6 @@
-import Foundation
-import EventKit
 import Combine
+import EventKit
+import Foundation
 
 @MainActor
 final class DeviceCalendarManager: ObservableObject {
@@ -53,21 +53,22 @@ final class DeviceCalendarManager: ObservableObject {
             }
             return
         }
-        
+
         let cal = Calendar.current
         let start = cal.date(byAdding: .day, value: -30, to: .now)!
-        let end   = cal.date(byAdding: .day, value:  90, to: .now)!
+        let end = cal.date(byAdding: .day, value: 90, to: .now)!
 
         // Filter by selected school calendar if one is set
         let calendarsToFetch: [EKCalendar]?
         let calendarID = AppSettingsModel.shared.selectedSchoolCalendarID
         if !calendarID.isEmpty,
-           let selectedCalendar = store.calendar(withIdentifier: calendarID) {
+           let selectedCalendar = store.calendar(withIdentifier: calendarID)
+        {
             calendarsToFetch = [selectedCalendar]
         } else {
             calendarsToFetch = nil
         }
-        
+
         let predicate = store.predicateForEvents(withStart: start, end: end, calendars: calendarsToFetch)
         let fetched = store.events(matching: predicate)
 
@@ -91,17 +92,18 @@ final class DeviceCalendarManager: ObservableObject {
             }
             return
         }
-        
+
         // Filter by selected school calendar if one is set
         let calendarsToFetch: [EKCalendar]?
         let calendarID = AppSettingsModel.shared.selectedSchoolCalendarID
         if !calendarID.isEmpty,
-           let selectedCalendar = store.calendar(withIdentifier: calendarID) {
+           let selectedCalendar = store.calendar(withIdentifier: calendarID)
+        {
             calendarsToFetch = [selectedCalendar]
         } else {
             calendarsToFetch = nil
         }
-        
+
         let predicate = store.predicateForEvents(withStart: start, end: end, calendars: calendarsToFetch)
         let fetched = store.events(matching: predicate)
 
@@ -130,21 +132,22 @@ final class DeviceCalendarManager: ObservableObject {
             }
             return
         }
-        
+
         let cal = Calendar.current
         let start = cal.date(byAdding: .day, value: -30, to: .now)!
-        let end   = cal.date(byAdding: .day, value:  90, to: .now)!
+        let end = cal.date(byAdding: .day, value: 90, to: .now)!
 
         // Filter by selected school calendar if one is set
         let calendarsToFetch: [EKCalendar]?
         let calendarID = AppSettingsModel.shared.selectedSchoolCalendarID
         if !calendarID.isEmpty,
-           let selectedCalendar = store.calendar(withIdentifier: calendarID) {
+           let selectedCalendar = store.calendar(withIdentifier: calendarID)
+        {
             calendarsToFetch = [selectedCalendar]
         } else {
             calendarsToFetch = nil
         }
-        
+
         let predicate = store.predicateForEvents(withStart: start, end: end, calendars: calendarsToFetch)
         let fetched = store.events(matching: predicate)
 
@@ -156,8 +159,12 @@ final class DeviceCalendarManager: ObservableObject {
     func startObservingStoreChanges() {
         guard storeChangedObserver == nil else { return }
 
-        storeChangedObserver = NotificationCenter.default.addObserver(forName: .EKEventStoreChanged, object: store, queue: .main) { [weak self] _ in
-            guard let self = self else { return }
+        storeChangedObserver = NotificationCenter.default.addObserver(
+            forName: .EKEventStoreChanged,
+            object: store,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self else { return }
             guard self.authManager.isAuthorized else {
                 self.authManager.logDeniedOnce(context: "storeChanged")
                 return
@@ -167,13 +174,13 @@ final class DeviceCalendarManager: ObservableObject {
 
         isObservingStoreChanges = true
     }
-    
+
     /// Get all available calendars from the event store
     func getAvailableCalendars() -> [EKCalendar] {
         guard isAuthorized else { return [] }
         return store.calendars(for: .event)
     }
-    
+
     /// Reset calendar authorization (user must manually revoke in Settings app)
     func revokeAccess() {
         // Clear all cached data
@@ -181,14 +188,14 @@ final class DeviceCalendarManager: ObservableObject {
         lastRefreshAt = nil
         lastRefreshReason = nil
         isAuthorized = false
-        
+
         // Stop observing changes
         if let observer = storeChangedObserver {
             NotificationCenter.default.removeObserver(observer)
             storeChangedObserver = nil
             isObservingStoreChanges = false
         }
-        
+
         // Clear selected calendar
         AppSettingsModel.shared.selectedSchoolCalendarID = ""
     }

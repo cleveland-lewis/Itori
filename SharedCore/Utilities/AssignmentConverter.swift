@@ -1,13 +1,12 @@
 import Foundation
 
 /// Converts between Assignment (UI model) and AppTask (persistent model)
-struct AssignmentConverter {
-    
+enum AssignmentConverter {
     /// Convert Assignment to AppTask for persistence
     static func toAppTask(_ assignment: Assignment) -> AppTask {
         let taskType = taskTypeFromCategory(assignment.category)
         let importance = importanceFromUrgency(assignment.urgency)
-        
+
         return AppTask(
             id: assignment.id,
             title: assignment.title,
@@ -30,18 +29,18 @@ struct AssignmentConverter {
             dueTimeMinutes: assignment.dueTimeMinutes
         )
     }
-    
+
     /// Convert AppTask to Assignment for UI
     static func toAssignment(_ task: AppTask, coursesStore: CoursesStore) -> Assignment {
         let category = categoryFromTaskType(task.category)
         let urgency = urgencyFromImportance(task.importance)
         let status = task.isCompleted ? AssignmentStatus.completed : AssignmentStatus.notStarted
-        
+
         // Get course info if available
-        let course = task.courseId.flatMap { courseId in 
+        let course = task.courseId.flatMap { courseId in
             coursesStore.courses.first(where: { $0.id == courseId })
         }
-        
+
         return Assignment(
             id: task.id,
             courseId: task.courseId,
@@ -61,48 +60,48 @@ struct AssignmentConverter {
             notes: nil
         )
     }
-    
+
     // MARK: - Helpers
-    
+
     private static func taskTypeFromCategory(_ category: AssignmentCategory) -> TaskType {
         switch category {
-        case .reading: return .reading
-        case .exam: return .exam
-        case .homework: return .homework
-        case .quiz: return .quiz
-        case .review: return .review
-        case .project: return .project
-        case .practiceTest: return .practiceTest
+        case .reading: .reading
+        case .exam: .exam
+        case .homework: .homework
+        case .quiz: .quiz
+        case .review: .review
+        case .project: .project
+        case .practiceTest: .practiceTest
         }
     }
-    
+
     private static func categoryFromTaskType(_ type: TaskType) -> AssignmentCategory {
         switch type {
-        case .reading: return .reading
-        case .exam: return .exam
-        case .homework: return .homework
-        case .quiz: return .quiz
-        case .review: return .review
-        case .project: return .project
-        case .study: return .review
-        case .practiceTest: return .practiceTest
+        case .reading: .reading
+        case .exam: .exam
+        case .homework: .homework
+        case .quiz: .quiz
+        case .review: .review
+        case .project: .project
+        case .study: .review
+        case .practiceTest: .practiceTest
         }
     }
-    
+
     private static func importanceFromUrgency(_ urgency: AssignmentUrgency) -> Double {
         switch urgency {
-        case .low: return 0.3
-        case .medium: return 0.6
-        case .high: return 0.85
-        case .critical: return 0.85
+        case .low: 0.3
+        case .medium: 0.6
+        case .high: 0.85
+        case .critical: 0.85
         }
     }
-    
+
     private static func urgencyFromImportance(_ importance: Double) -> AssignmentUrgency {
         switch importance {
-        case ..<0.4: return .low
-        case ..<0.7: return .medium
-        default: return .high
+        case ..<0.4: .low
+        case ..<0.7: .medium
+        default: .high
         }
     }
 }

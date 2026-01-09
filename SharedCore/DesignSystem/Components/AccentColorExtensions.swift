@@ -1,7 +1,7 @@
 import SwiftUI
 
 #if os(macOS)
-import AppKit
+    import AppKit
 #endif
 
 // MARK: - Accent Color Application
@@ -12,13 +12,13 @@ extension View {
     func accentedUI() -> some View {
         self.tint(DesignSystem.Colors.accent)
     }
-    
+
     /// Applies accent color with reduced opacity for hover states
     func accentedHover(opacity: Double = 0.15) -> some View {
         self.foregroundStyle(DesignSystem.Colors.accent)
             .background(DesignSystem.Colors.accent.opacity(opacity))
     }
-    
+
     /// Applies accent color for selection highlights
     func accentedSelection(isSelected: Bool) -> some View {
         self.foregroundStyle(isSelected ? .white : .primary)

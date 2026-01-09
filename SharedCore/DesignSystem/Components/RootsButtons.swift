@@ -1,7 +1,8 @@
 import SwiftUI
 
 // MARK: - Liquid Glass Button Style
-public struct RootsLiquidButtonStyle: ButtonStyle {
+
+public struct ItoriLiquidButtonStyle: ButtonStyle {
     public var cornerRadius: CGFloat = 12
     public var verticalPadding: CGFloat = 8
     public var horizontalPadding: CGFloat = 14
@@ -13,10 +14,15 @@ public struct RootsLiquidButtonStyle: ButtonStyle {
     }
 
     public func makeBody(configuration: Configuration) -> some View {
-        RootsLiquidButton(configuration: configuration, cornerRadius: cornerRadius, vPad: verticalPadding, hPad: horizontalPadding)
+        ItoriLiquidButton(
+            configuration: configuration,
+            cornerRadius: cornerRadius,
+            vPad: verticalPadding,
+            hPad: horizontalPadding
+        )
     }
 
-    private struct RootsLiquidButton: View {
+    private struct ItoriLiquidButton: View {
         let configuration: Configuration
         let cornerRadius: CGFloat
         let vPad: CGFloat
@@ -35,13 +41,13 @@ public struct RootsLiquidButtonStyle: ButtonStyle {
                 .padding(.horizontal, hPad)
                 .background {
                     #if os(macOS)
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .fill(AnyShapeStyle(DesignSystem.Colors.sidebarBackground))
+                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                            .fill(AnyShapeStyle(DesignSystem.Colors.sidebarBackground))
                     #else
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .fill(highContrast
-                            ? AnyShapeStyle(Color.primary.opacity(0.08))
-                            : AnyShapeStyle(DesignSystem.Materials.hud))
+                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                            .fill(highContrast
+                                ? AnyShapeStyle(Color.primary.opacity(0.08))
+                                : AnyShapeStyle(DesignSystem.Materials.hud))
                     #endif
                 }
                 .overlay(
@@ -53,11 +59,14 @@ public struct RootsLiquidButtonStyle: ButtonStyle {
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         .stroke(Color.primary.opacity(0.03))
                 )
-                #if !os(macOS)
+            #if !os(macOS)
                 .shadow(color: Color.black.opacity(isHovering ? 0.06 : 0.03), radius: isHovering ? 10 : 6, x: 0, y: 4)
-                #endif
+            #endif
                 .scaleEffect(reducedMotion ? 1.0 : (configuration.isPressed ? 0.92 : 1.0))
-                .animation(reducedMotion ? .none : DesignSystem.Motion.interactiveSpring, value: configuration.isPressed)
+                .animation(
+                    reducedMotion ? .none : DesignSystem.Motion.interactiveSpring,
+                    value: configuration.isPressed
+                )
                 .animation(reducedMotion ? .none : DesignSystem.Motion.interactiveSpring, value: isHovering)
                 .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
                 .onHover { hover in
@@ -68,7 +77,8 @@ public struct RootsLiquidButtonStyle: ButtonStyle {
 }
 
 // MARK: - Accent Toggle Style (looks like a button)
-public struct RootsAccentToggleStyle: ToggleStyle {
+
+public struct ItoriAccentToggleStyle: ToggleStyle {
     public var cornerRadius: CGFloat = 12
     public var paddingV: CGFloat = 8
     public var paddingH: CGFloat = 14
@@ -80,10 +90,12 @@ public struct RootsAccentToggleStyle: ToggleStyle {
     }
 
     public func makeBody(configuration: Configuration) -> some View {
-        AccentToggleContent(configuration: configuration,
-                            cornerRadius: cornerRadius,
-                            paddingV: paddingV,
-                            paddingH: paddingH)
+        AccentToggleContent(
+            configuration: configuration,
+            cornerRadius: cornerRadius,
+            paddingV: paddingV,
+            paddingH: paddingH
+        )
     }
 
     private struct AccentToggleContent: View {
@@ -121,33 +133,33 @@ public struct RootsAccentToggleStyle: ToggleStyle {
                     // Prominent glassy accent
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         .fill(Color.accentColor.opacity(0.90))
-                        #if os(macOS)
+                    #if os(macOS)
                         .background(DesignSystem.Colors.sidebarBackground)
-                        #else
+                    #else
                         .background(DesignSystem.Materials.hud)
-                        #endif
+                    #endif
                         .overlay(
                             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                                 .fill(Color.accentColor.opacity(0.12))
                                 .blur(radius: 6)
                         )
-                        #if !os(macOS)
+                    #if !os(macOS)
                         .shadow(color: Color.accentColor.opacity(0.25), radius: 12, x: 0, y: 6)
-                        #endif
+                    #endif
                 } else {
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        #if os(macOS)
+                    #if os(macOS)
                         .fill(DesignSystem.Colors.sidebarBackground)
-                        #else
+                    #else
                         .fill(DesignSystem.Materials.hud)
-                        #endif
+                    #endif
                         .overlay(
                             RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                                 .stroke(Color.primary.opacity(0.03))
                         )
-                        #if !os(macOS)
+                    #if !os(macOS)
                         .shadow(color: Color.black.opacity(0.03), radius: 6, x: 0, y: 4)
-                        #endif
+                    #endif
                 }
             }
         }
@@ -159,14 +171,15 @@ public struct RootsAccentToggleStyle: ToggleStyle {
 }
 
 // MARK: - Icon-only circular button helper
+
 // Note: ItoriIconButton is defined in Components/ItoriIconButton.swift
 // GlassIconButton is defined in GlassIconButton.swift
 
 // Convenience extensions for quick usage
-public extension ButtonStyle where Self == RootsLiquidButtonStyle {
-    static var rootsLiquid: RootsLiquidButtonStyle { RootsLiquidButtonStyle() }
+public extension ButtonStyle where Self == ItoriLiquidButtonStyle {
+    static var itariLiquid: ItoriLiquidButtonStyle { ItoriLiquidButtonStyle() }
 }
 
-public extension ToggleStyle where Self == RootsAccentToggleStyle {
-    static var rootsAccent: RootsAccentToggleStyle { RootsAccentToggleStyle() }
+public extension ToggleStyle where Self == ItoriAccentToggleStyle {
+    static var itariAccent: ItoriAccentToggleStyle { ItoriAccentToggleStyle() }
 }

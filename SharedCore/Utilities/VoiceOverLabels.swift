@@ -2,105 +2,104 @@ import SwiftUI
 
 /// Centralized VoiceOver label generation for consistent accessibility across the app
 /// Provides semantic, context-aware labels for all interactive elements
-public struct VoiceOverLabels {
-    
+public enum VoiceOverLabels {
     // MARK: - Common Actions
-    
+
     public static func addButton(for itemType: String) -> AccessibilityContent {
         AccessibilityContent(
             label: "Add \(itemType)",
             hint: "Opens form to create a new \(itemType)"
         )
     }
-    
+
     public static func editButton(for itemType: String) -> AccessibilityContent {
         AccessibilityContent(
             label: "Edit \(itemType)",
             hint: "Opens form to edit this \(itemType)"
         )
     }
-    
+
     public static func deleteButton(for itemType: String) -> AccessibilityContent {
         AccessibilityContent(
             label: "Delete \(itemType)",
             hint: "Removes this \(itemType)"
         )
     }
-    
+
     public static func closeButton() -> AccessibilityContent {
         AccessibilityContent(
             label: "Close",
             hint: "Dismisses current view"
         )
     }
-    
+
     public static func cancelButton() -> AccessibilityContent {
         AccessibilityContent(
             label: "Cancel",
             hint: "Cancels current action and closes"
         )
     }
-    
+
     public static func saveButton() -> AccessibilityContent {
         AccessibilityContent(
             label: "Save",
             hint: "Saves changes and closes"
         )
     }
-    
+
     // MARK: - Navigation
-    
+
     public static func navigationButton(to destination: String) -> AccessibilityContent {
         AccessibilityContent(
             label: destination,
             hint: "Navigate to \(destination)"
         )
     }
-    
+
     public static func previousButton(for context: String) -> AccessibilityContent {
         AccessibilityContent(
             label: "Previous \(context)",
             hint: "Go to previous \(context)"
         )
     }
-    
+
     public static func nextButton(for context: String) -> AccessibilityContent {
         AccessibilityContent(
             label: "Next \(context)",
             hint: "Go to next \(context)"
         )
     }
-    
+
     // MARK: - Timer/Focus
-    
+
     public static func startTimerButton() -> AccessibilityContent {
         AccessibilityContent(
             label: "Start Timer",
             hint: "Begins countdown timer"
         )
     }
-    
+
     public static func pauseTimerButton() -> AccessibilityContent {
         AccessibilityContent(
             label: "Pause Timer",
             hint: "Pauses active timer"
         )
     }
-    
+
     public static func resumeTimerButton() -> AccessibilityContent {
         AccessibilityContent(
             label: "Resume Timer",
             hint: "Continues paused timer"
         )
     }
-    
+
     public static func stopTimerButton() -> AccessibilityContent {
         AccessibilityContent(
             label: "Stop Timer",
             hint: "Stops and resets timer"
         )
     }
-    
+
     public static func timerDisplay(minutes: Int, seconds: Int) -> AccessibilityContent {
         let minutesText = String.localizedStringWithFormat(
             NSLocalizedString("minutes_unit", comment: ""),
@@ -110,47 +109,47 @@ public struct VoiceOverLabels {
             NSLocalizedString("seconds_unit", comment: ""),
             seconds
         )
-        
+
         return AccessibilityContent(
             label: "Timer",
             value: "\(minutes) \(minutesText), \(seconds) \(secondsText)",
             hint: nil
         )
     }
-    
+
     // MARK: - Calendar/Events
-    
+
     public static func eventItem(title: String, time: String, course: String?) -> AccessibilityContent {
         var label = "\(title) at \(time)"
-        if let course = course {
+        if let course {
             label += ", \(course)"
         }
-        
+
         return AccessibilityContent(
             label: label,
             hint: "Double tap to view details"
         )
     }
-    
+
     public static func dateCell(date: Date, eventCount: Int) -> AccessibilityContent {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         let dateString = formatter.string(from: date)
-        
+
         let value = String.localizedStringWithFormat(
             NSLocalizedString("events_count", comment: ""),
             eventCount
         )
-        
+
         return AccessibilityContent(
             label: dateString,
             value: value,
             hint: "Double tap to view day"
         )
     }
-    
+
     // MARK: - Assignments
-    
+
     public static func assignmentItem(
         title: String,
         course: String,
@@ -161,34 +160,34 @@ public struct VoiceOverLabels {
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
         let dueDateString = formatter.string(from: dueDate)
-        
+
         let statusText = isCompleted ? "Completed" : "Not completed"
         let label = "\(title), \(course), due \(dueDateString), \(statusText)"
-        
+
         return AccessibilityContent(
             label: label,
             hint: "Double tap to view details"
         )
     }
-    
+
     // MARK: - Grades
-    
+
     public static func gradeItem(
         course: String,
         grade: String,
         points: String?
     ) -> AccessibilityContent {
         var label = "\(course), grade \(grade)"
-        if let points = points {
+        if let points {
             label += ", \(points)"
         }
-        
+
         return AccessibilityContent(
             label: label,
             hint: "Double tap to view details"
         )
     }
-    
+
     public static func gpaDisplay(gpa: Double) -> AccessibilityContent {
         AccessibilityContent(
             label: "Grade Point Average",
@@ -196,25 +195,25 @@ public struct VoiceOverLabels {
             hint: nil
         )
     }
-    
+
     // MARK: - Charts
-    
+
     public static func chartSummary(
         title: String,
         dataPoints: Int,
         range: String?
     ) -> AccessibilityContent {
         var label = "\(title), \(dataPoints) data points"
-        if let range = range {
+        if let range {
             label += ", \(range)"
         }
-        
+
         return AccessibilityContent(
             label: label,
             hint: "Chart displaying \(title.lowercased())"
         )
     }
-    
+
     public static func chartDataPoint(
         value: String,
         label: String
@@ -225,9 +224,9 @@ public struct VoiceOverLabels {
             hint: nil
         )
     }
-    
+
     // MARK: - Forms
-    
+
     public static func textField(
         label: String,
         value: String?,
@@ -238,14 +237,14 @@ public struct VoiceOverLabels {
             value: value ?? placeholder ?? "",
             hint: "Text field"
         )
-        
-        if value == nil, let placeholder = placeholder {
+
+        if value == nil, let placeholder {
             content.hint = "Text field, \(placeholder)"
         }
-        
+
         return content
     }
-    
+
     public static func picker(
         label: String,
         value: String
@@ -256,7 +255,7 @@ public struct VoiceOverLabels {
             hint: "Picker, double tap to change"
         )
     }
-    
+
     public static func toggle(
         label: String,
         isOn: Bool
@@ -267,25 +266,25 @@ public struct VoiceOverLabels {
             hint: "Toggle switch"
         )
     }
-    
+
     // MARK: - Modal/Popup Actions
-    
+
     public static func showDetailButton(for itemType: String) -> AccessibilityContent {
         AccessibilityContent(
             label: "Show \(itemType) details",
             hint: "Opens detailed view"
         )
     }
-    
+
     public static func dismissButton() -> AccessibilityContent {
         AccessibilityContent(
             label: "Dismiss",
             hint: "Closes current view"
         )
     }
-    
+
     // MARK: - Selection Controls
-    
+
     public static func radioButton(
         label: String,
         isSelected: Bool
@@ -296,7 +295,7 @@ public struct VoiceOverLabels {
             hint: "Radio button"
         )
     }
-    
+
     public static func checkbox(
         label: String,
         isChecked: Bool
@@ -315,7 +314,7 @@ public struct AccessibilityContent {
     let label: String
     let value: String?
     var hint: String?
-    
+
     init(label: String, value: String? = nil, hint: String? = nil) {
         self.label = label
         self.value = value
@@ -325,36 +324,36 @@ public struct AccessibilityContent {
 
 // MARK: - View Extensions
 
-extension View {
+public extension View {
     /// Apply VoiceOver labels from AccessibilityContent
-    public func voiceOver(_ content: AccessibilityContent) -> some View {
+    func voiceOver(_ content: AccessibilityContent) -> some View {
         self
             .accessibilityLabelWithTooltip(content.label)
             .modifier(OptionalValueModifier(value: content.value))
             .modifier(OptionalHintModifier(hint: content.hint))
     }
-    
+
     /// Mark view as a container with logical focus order
-    public func accessibilityContainer() -> some View {
+    func accessibilityContainer() -> some View {
         self.accessibilityElement(children: .contain)
     }
-    
+
     /// Mark view as a combined accessibility element
-    public func accessibilityCombined() -> some View {
+    func accessibilityCombined() -> some View {
         self.accessibilityElement(children: .combine)
     }
-    
+
     /// Set sort priority for accessibility navigation order (lower numbers come first)
-    public func accessibilitySortPriority(_ priority: Double) -> some View {
+    func accessibilitySortPriority(_ priority: Double) -> some View {
         self.accessibilitySortPriority(priority)
     }
 }
 
 private struct OptionalValueModifier: ViewModifier {
     let value: String?
-    
+
     func body(content: Content) -> some View {
-        if let value = value {
+        if let value {
             content.accessibilityValue(value)
         } else {
             content
@@ -364,9 +363,9 @@ private struct OptionalValueModifier: ViewModifier {
 
 private struct OptionalHintModifier: ViewModifier {
     let hint: String?
-    
+
     func body(content: Content) -> some View {
-        if let hint = hint {
+        if let hint {
             content.accessibilityHint(hint)
         } else {
             content

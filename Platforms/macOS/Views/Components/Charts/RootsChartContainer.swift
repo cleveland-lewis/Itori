@@ -1,5 +1,5 @@
-import SwiftUI
 import Charts
+import SwiftUI
 
 struct RootsChartContainer<Content: View>: View {
     let title: String
@@ -20,17 +20,17 @@ struct RootsChartContainer<Content: View>: View {
             dataPoints: 0,
             range: summary
         )
-        
+
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title).font(DesignSystem.Typography.header)
-                    if let summary = summary {
+                    if let summary {
                         Text(summary).font(DesignSystem.Typography.caption).foregroundColor(.secondary)
                     }
                 }
                 Spacer()
-                if let trend = trend {
+                if let trend {
                     Image(systemName: trend == .up ? "arrow.up" : "arrow.down")
                         .foregroundColor(trend == .up ? .green : .red)
                         .accessibilityLabelWithTooltip(trend == .up ? "Trending up" : "Trending down")
@@ -43,7 +43,7 @@ struct RootsChartContainer<Content: View>: View {
                 .padding(12)
         }
         .background(RoundedRectangle(cornerRadius: DesignSystem.Corners.medium, style: .continuous)
-                        .fill(DesignSystem.Materials.card))
+            .fill(DesignSystem.Materials.card))
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Corners.medium, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Corners.medium, style: .continuous)

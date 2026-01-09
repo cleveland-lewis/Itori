@@ -1,6 +1,6 @@
-import CoreData
-import Foundation
+internal import CoreData
 import Combine
+import Foundation
 
 final class PersistenceController {
     static let shared = PersistenceController()
@@ -10,9 +10,9 @@ final class PersistenceController {
     private var cancellables = Set<AnyCancellable>()
 
     var viewContext: NSManagedObjectContext { container.viewContext }
-    
+
     private(set) var isCloudKitEnabled = false
-    private(set) var lastCloudKitStatusMessage: String? = nil
+    private(set) var lastCloudKitStatusMessage: String?
 
     init(inMemory: Bool = false) {
         container = NSPersistentCloudKitContainer(name: "Itori")
@@ -33,7 +33,7 @@ final class PersistenceController {
                 description = container.persistentStoreDescriptions.first
             }
         }
-        
+
         guard let description else { return }
 
         if inMemory {
@@ -43,7 +43,7 @@ final class PersistenceController {
         // Respect persisted iCloud setting on startup.
         let iCloudSyncEnabled = AppSettingsModel.shared.enableICloudSync
         isCloudKitEnabled = iCloudSyncEnabled
-        
+
         if iCloudSyncEnabled {
             description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
                 containerIdentifier: cloudKitContainerIdentifier
@@ -51,7 +51,7 @@ final class PersistenceController {
         } else {
             description.cloudKitContainerOptions = nil
         }
-        
+
         description.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
         description.setOption(true as NSNumber, forKey: NSInferMappingModelAutomaticallyOption)
         description.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
@@ -65,12 +65,12 @@ final class PersistenceController {
         if let error = loadError {
             LOG_DATA(.error, "Persistence", "Persistent store load failed: \(error.localizedDescription)")
             print("[Persistence] Full error: \(error)")
-            
+
             // If CloudKit failed, recreate container without CloudKit
             if iCloudSyncEnabled {
                 LOG_DATA(.info, "Persistence", "Retrying without CloudKit - creating new container.")
                 isCloudKitEnabled = false
-                
+
                 // Create new container without CloudKit
                 let newContainer = NSPersistentCloudKitContainer(name: "Itori")
                 guard let newDescription = newContainer.persistentStoreDescriptions.first else {
@@ -90,25 +90,32 @@ final class PersistenceController {
                     container = newContainer
                     return
                 }
-                
+
                 newDescription.cloudKitContainerOptions = nil
                 newDescription.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
                 newDescription.setOption(true as NSNumber, forKey: NSInferMappingModelAutomaticallyOption)
                 newDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
-                newDescription.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
-                
+                newDescription.setOption(
+                    true as NSNumber,
+                    forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey
+                )
+
                 var retryError: Error?
                 newContainer.loadPersistentStores { _, error in
                     retryError = error
                 }
-                
+
                 if retryError == nil {
                     // Success - use new container
                     container = newContainer
                     loadError = nil
                 } else {
                     loadError = retryError
-                    LOG_DATA(.error, "Persistence", "Retry without CloudKit failed: \(retryError!.localizedDescription)")
+                    LOG_DATA(
+                        .error,
+                        "Persistence",
+                        "Retry without CloudKit failed: \(retryError!.localizedDescription)"
+                    )
                 }
             }
         }
@@ -117,7 +124,7 @@ final class PersistenceController {
         if loadError != nil {
             LOG_DATA(.error, "Persistence", "Using in-memory store as final fallback.")
             isCloudKitEnabled = false
-            
+
             let memoryContainer = NSPersistentCloudKitContainer(name: "Itori")
             guard let memoryDescription = memoryContainer.persistentStoreDescriptions.first else {
                 LOG_DATA(.error, "Persistence", "CRITICAL: Cannot create memory store description")
@@ -140,45 +147,49 @@ final class PersistenceController {
                 notifyCloudKitStatus(reason: initialCloudKitReason())
                 return
             }
-            
+
             memoryDescription.url = URL(fileURLWithPath: "/dev/null")
             memoryDescription.cloudKitContainerOptions = nil
             memoryDescription.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
             memoryDescription.setOption(true as NSNumber, forKey: NSInferMappingModelAutomaticallyOption)
-            
+
             memoryContainer.loadPersistentStores { _, error in
-                if let error = error {
-                    LOG_DATA(.error, "Persistence", "CRITICAL: In-memory store load failed: \(error.localizedDescription)")
+                if let error {
+                    LOG_DATA(
+                        .error,
+                        "Persistence",
+                        "CRITICAL: In-memory store load failed: \(error.localizedDescription)"
+                    )
                     // Continue anyway - app will be degraded but won't crash
                 }
             }
-            
+
             container = memoryContainer
         }
 
         viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         viewContext.automaticallyMergesChangesFromParent = true
-        
+
         observeCloudKitToggle()
         notifyCloudKitStatus(reason: initialCloudKitReason())
     }
-    
+
     private func observeCloudKitToggle() {
         NotificationCenter.default.publisher(for: .iCloudSyncSettingChanged)
             .sink { [weak self] notification in
-                guard let self = self else { return }
+                guard let self else { return }
                 if let enabled = notification.object as? Bool {
                     self.updateCloudKitSync(enabled: enabled)
                 }
             }
             .store(in: &cancellables)
     }
-    
+
     private func updateCloudKitSync(enabled: Bool) {
         guard enabled != isCloudKitEnabled else { return }
-        
+
         LOG_DATA(.info, "Persistence", "iCloud sync toggled to: \(enabled)")
-        
+
         if enabled {
             // Enable CloudKit sync by reinitializing the store with CloudKit options
             enableCloudKitSync()
@@ -189,30 +200,31 @@ final class PersistenceController {
             notifyCloudKitStatus(reason: "Disabled by user")
         }
     }
-    
+
     private func enableCloudKitSync() {
         guard let description = container.persistentStoreDescriptions.first,
-              let storeURL = description.url else {
+              let storeURL = description.url
+        else {
             LOG_DATA(.error, "Persistence", "Cannot enable CloudKit: missing store description")
             return
         }
-        
+
         do {
             // Save any pending changes
             if viewContext.hasChanges {
                 try viewContext.save()
             }
-            
+
             // Remove the existing store
             if let store = container.persistentStoreCoordinator.persistentStore(for: storeURL) {
                 try container.persistentStoreCoordinator.remove(store)
             }
-            
+
             // Configure CloudKit options
             description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
                 containerIdentifier: cloudKitContainerIdentifier
             )
-            
+
             // Re-add the store with CloudKit enabled
             try container.persistentStoreCoordinator.addPersistentStore(
                 ofType: NSSQLiteStoreType,
@@ -220,7 +232,7 @@ final class PersistenceController {
                 at: storeURL,
                 options: description.options
             )
-            
+
             LOG_DATA(.info, "Persistence", "iCloud sync enabled successfully")
             isCloudKitEnabled = true
             notifyCloudKitStatus(reason: "Connected")
@@ -306,7 +318,8 @@ final class PersistenceController {
 
     func resetPersistentStore() {
         guard let description = container.persistentStoreDescriptions.first,
-              let storeURL = description.url else {
+              let storeURL = description.url
+        else {
             LOG_DATA(.error, "Persistence", "Reset failed: missing store URL")
             return
         }

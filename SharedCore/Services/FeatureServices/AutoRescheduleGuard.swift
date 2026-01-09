@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 enum AutoRescheduleProvenance: String, Codable {
     case automatic
@@ -46,7 +46,7 @@ final class AutoRescheduleAuditLog: ObservableObject {
 
     private var logURL: URL {
         let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let folder = dir.appendingPathComponent("RootsPlanner", isDirectory: true)
+        let folder = dir.appendingPathComponent("ItoriPlanner", isDirectory: true)
         try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         return folder.appendingPathComponent("auto-reschedule-audit.json")
     }
@@ -56,7 +56,12 @@ final class AutoRescheduleAuditLog: ObservableObject {
             let data = try JSONEncoder().encode(entries.suffix(500))
             try data.write(to: logURL)
         } catch {
-            LOG_UI(.error, "AutoReschedule", "Failed to save audit log", metadata: ["error": error.localizedDescription])
+            LOG_UI(
+                .error,
+                "AutoReschedule",
+                "Failed to save audit log",
+                metadata: ["error": error.localizedDescription]
+            )
         }
     }
 }
@@ -120,11 +125,13 @@ enum AutoRescheduleGate {
     }
 
     static func debugAssertEnabled(reason: String) {
-#if DEBUG
-        if !isEnabled() {
-            assertionFailure("Auto-Reschedule invariant violated: \(reason). Guard must be used for all auto-reschedule work.")
-        }
-#endif
+        #if DEBUG
+            if !isEnabled() {
+                assertionFailure(
+                    "Auto-Reschedule invariant violated: \(reason). Guard must be used for all auto-reschedule work."
+                )
+            }
+        #endif
     }
 }
 
@@ -142,63 +149,63 @@ struct AutoRescheduleCounters: Codable {
 }
 
 #if DEBUG || DEVELOPER_MODE
-final class AutoRescheduleActivityCounter {
-    static let shared = AutoRescheduleActivityCounter()
-    private let lock = NSLock()
-    private var counters = AutoRescheduleCounters()
+    final class AutoRescheduleActivityCounter {
+        static let shared = AutoRescheduleActivityCounter()
+        private let lock = NSLock()
+        private var counters = AutoRescheduleCounters()
 
-    func snapshot() -> AutoRescheduleCounters { counters }
+        func snapshot() -> AutoRescheduleCounters { counters }
 
-    func reset() {
-        lock.lock()
-        counters = AutoRescheduleCounters()
-        lock.unlock()
-    }
+        func reset() {
+            lock.lock()
+            counters = AutoRescheduleCounters()
+            lock.unlock()
+        }
 
-    func recordCheckExecuted() {
-        mutate { $0.checksExecuted += 1 }
-    }
+        func recordCheckExecuted() {
+            mutate { $0.checksExecuted += 1 }
+        }
 
-    func recordSessionsAnalyzed(_ count: Int) {
-        mutate { $0.sessionsAnalyzed += count }
-    }
+        func recordSessionsAnalyzed(_ count: Int) {
+            mutate { $0.sessionsAnalyzed += count }
+        }
 
-    func recordSessionsMoved(_ count: Int) {
-        mutate { $0.sessionsMoved += count }
-    }
+        func recordSessionsMoved(_ count: Int) {
+            mutate { $0.sessionsMoved += count }
+        }
 
-    func recordHistoryWritten(_ count: Int) {
-        mutate { $0.historyEntriesWritten += count }
-    }
+        func recordHistoryWritten(_ count: Int) {
+            mutate { $0.historyEntriesWritten += count }
+        }
 
-    func recordNotificationScheduled() {
-        mutate { $0.notificationsScheduled += 1 }
-    }
+        func recordNotificationScheduled() {
+            mutate { $0.notificationsScheduled += 1 }
+        }
 
-    func recordSuppressed(reason: String) {
-        mutate {
-            $0.suppressedExecutions += 1
-            $0.lastSuppressionReason = reason
+        func recordSuppressed(reason: String) {
+            mutate {
+                $0.suppressedExecutions += 1
+                $0.lastSuppressionReason = reason
+            }
+        }
+
+        private func mutate(_ block: (inout AutoRescheduleCounters) -> Void) {
+            lock.lock()
+            block(&counters)
+            counters.lastUpdatedAt = Date()
+            lock.unlock()
         }
     }
-
-    private func mutate(_ block: (inout AutoRescheduleCounters) -> Void) {
-        lock.lock()
-        block(&counters)
-        counters.lastUpdatedAt = Date()
-        lock.unlock()
-    }
-}
 #else
-final class AutoRescheduleActivityCounter {
-    static let shared = AutoRescheduleActivityCounter()
-    func snapshot() -> AutoRescheduleCounters { AutoRescheduleCounters() }
-    func reset() {}
-    func recordCheckExecuted() {}
-    func recordSessionsAnalyzed(_ count: Int) {}
-    func recordSessionsMoved(_ count: Int) {}
-    func recordHistoryWritten(_ count: Int) {}
-    func recordNotificationScheduled() {}
-    func recordSuppressed(reason: String) {}
-}
+    final class AutoRescheduleActivityCounter {
+        static let shared = AutoRescheduleActivityCounter()
+        func snapshot() -> AutoRescheduleCounters { AutoRescheduleCounters() }
+        func reset() {}
+        func recordCheckExecuted() {}
+        func recordSessionsAnalyzed(_: Int) {}
+        func recordSessionsMoved(_: Int) {}
+        func recordHistoryWritten(_: Int) {}
+        func recordNotificationScheduled() {}
+        func recordSuppressed(reason _: String) {}
+    }
 #endif

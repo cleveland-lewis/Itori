@@ -6,7 +6,7 @@ import Foundation
 public enum PortInvariants {
     private static var fallbackOutputHashes: [String: String] = [:]
     private static let fallbackLock = NSLock()
-    
+
     /// Validates that output satisfies all invariants
     public static func validate<P: AIPort>(
         port: P.Type,
@@ -15,28 +15,28 @@ public enum PortInvariants {
         result: AIResult<P.Output>
     ) throws {
         // 1. Output must be schema-valid (already checked by JSONDecoder)
-        
+
         // 2. Output must be bounded (no invalid values)
         try validateBounded(output: output, port: port)
-        
+
         // 3. Output must be monotonic where expected
         try validateMonotonic(output: output, port: port)
-        
+
         // 4. Output must include reasonCodes for low confidence
         try validateReasonCodes(result: result)
-        
+
         // 5. Output must be idempotent for same input when using fallback
         try validateIdempotent(port: port, input: input, output: output, provenance: result.provenance)
     }
-    
+
     // MARK: - Bounded Validation
-    
-    private static func validateBounded<O>(output: O, port: any AIPort.Type) throws {
+
+    private static func validateBounded(output: some Any, port _: any AIPort.Type) throws {
         let mirror = Mirror(reflecting: output)
-        
+
         for child in mirror.children {
             guard let label = child.label else { continue }
-            
+
             // Check numeric bounds
             if let minutes = child.value as? Int, label.contains("minutes") || label.contains("Minutes") {
                 guard minutes >= 0 && minutes <= 10080 else { // 0 to 1 week
@@ -47,13 +47,13 @@ public enum PortInvariants {
                     )
                 }
             }
-            
+
             // Check date bounds
             if let date = child.value as? Date {
                 let now = Date()
                 let tenYears = now.addingTimeInterval(10 * 365 * 24 * 3600)
                 let hundredYearsAgo = now.addingTimeInterval(-100 * 365 * 24 * 3600)
-                
+
                 guard date >= hundredYearsAgo && date <= tenYears else {
                     throw PortInvariantViolation.boundViolation(
                         field: label,
@@ -62,7 +62,7 @@ public enum PortInvariants {
                     )
                 }
             }
-            
+
             // Check confidence bounds
             if let confidence = child.value as? AIConfidence {
                 guard confidence.value >= 0 && confidence.value <= 1 else {
@@ -75,18 +75,18 @@ public enum PortInvariants {
             }
         }
     }
-    
+
     // MARK: - Monotonic Validation
-    
-    private static func validateMonotonic<O>(output: O, port: any AIPort.Type) throws {
+
+    private static func validateMonotonic(output: some Any, port _: any AIPort.Type) throws {
         let mirror = Mirror(reflecting: output)
         var minValue: Int?
         var estValue: Int?
         var maxValue: Int?
-        
+
         for child in mirror.children {
             guard let label = child.label else { continue }
-            
+
             if label.contains("min") && label.contains("Minutes"), let value = child.value as? Int {
                 minValue = value
             } else if label.contains("estimated") && label.contains("Minutes"), let value = child.value as? Int {
@@ -95,7 +95,7 @@ public enum PortInvariants {
                 maxValue = value
             }
         }
-        
+
         // Check monotonicity: min <= est <= max
         if let min = minValue, let est = estValue {
             guard min <= est else {
@@ -105,7 +105,7 @@ public enum PortInvariants {
                 )
             }
         }
-        
+
         if let est = estValue, let max = maxValue {
             guard est <= max else {
                 throw PortInvariantViolation.monotonicViolation(
@@ -114,7 +114,7 @@ public enum PortInvariants {
                 )
             }
         }
-        
+
         if let min = minValue, let max = maxValue {
             guard min <= max else {
                 throw PortInvariantViolation.monotonicViolation(
@@ -124,12 +124,12 @@ public enum PortInvariants {
             }
         }
     }
-    
+
     // MARK: - Reason Codes Validation
-    
-    private static func validateReasonCodes<O>(result: AIResult<O>) throws {
+
+    private static func validateReasonCodes(result: AIResult<some Any>) throws {
         let confidenceThreshold = 0.6
-        
+
         if result.confidence.value < confidenceThreshold {
             guard !result.diagnostic.reasonCodes.isEmpty else {
                 throw PortInvariantViolation.missingReasonCodes(
@@ -139,9 +139,9 @@ public enum PortInvariants {
             }
         }
     }
-    
+
     // MARK: - Idempotency Validation
-    
+
     private static func validateIdempotent<P: AIPort>(
         port: P.Type,
         input: P.Input,
@@ -157,17 +157,17 @@ public enum PortInvariants {
                 unorderedArrayKeys: port.unorderedArrayKeys
             )
             let outputHash = outputData.sha256Hash()
-            
+
             fallbackLock.lock()
             defer { fallbackLock.unlock() }
-            
+
             if let prior = fallbackOutputHashes[inputHash], prior != outputHash {
                 throw PortInvariantViolation.nonIdempotent(
                     port: String(describing: port),
                     inputHash: inputHash
                 )
             }
-            
+
             fallbackOutputHashes[inputHash] = outputHash
         }
     }
@@ -180,17 +180,17 @@ public enum PortInvariantViolation: Error, LocalizedError {
     case monotonicViolation(relation: String, actual: String)
     case missingReasonCodes(confidence: Double, threshold: Double)
     case nonIdempotent(port: String, inputHash: String)
-    
+
     public var errorDescription: String? {
         switch self {
-        case .boundViolation(let field, let value, let constraint):
-            return "Port invariant violated: field '\(field)' with value '\(value)' violates constraint '\(constraint)'"
-        case .monotonicViolation(let relation, let actual):
-            return "Port invariant violated: expected '\(relation)', but got '\(actual)'"
-        case .missingReasonCodes(let confidence, let threshold):
-            return "Port invariant violated: confidence \(confidence) < \(threshold) but no reasonCodes provided"
-        case .nonIdempotent(let port, let inputHash):
-            return "Port invariant violated: port '\(port)' produced different output for same input hash '\(inputHash)'"
+        case let .boundViolation(field, value, constraint):
+            "Port invariant violated: field '\(field)' with value '\(value)' violates constraint '\(constraint)'"
+        case let .monotonicViolation(relation, actual):
+            "Port invariant violated: expected '\(relation)', but got '\(actual)'"
+        case let .missingReasonCodes(confidence, threshold):
+            "Port invariant violated: confidence \(confidence) < \(threshold) but no reasonCodes provided"
+        case let .nonIdempotent(port, inputHash):
+            "Port invariant violated: port '\(port)' produced different output for same input hash '\(inputHash)'"
         }
     }
 }

@@ -1,51 +1,51 @@
 #if os(macOS)
-import SwiftUI
+    import SwiftUI
 
-// MARK: - macOS-specific UI Extensions for Shared Assignment Types
+    // MARK: - macOS-specific UI Extensions for Shared Assignment Types
 
-extension AssignmentUrgency {
-    var label: String {
-        switch self {
-        case .low: return "assignments.urgency.low".localized
-        case .medium: return "assignments.urgency.medium".localized
-        case .high: return "assignments.urgency.high".localized
-        case .critical: return "assignments.urgency.critical".localized
+    extension AssignmentUrgency {
+        var label: String {
+            switch self {
+            case .low: "assignments.urgency.low".localized
+            case .medium: "assignments.urgency.medium".localized
+            case .high: "assignments.urgency.high".localized
+            case .critical: "assignments.urgency.critical".localized
+            }
+        }
+
+        var color: Color {
+            switch self {
+            case .low: .green
+            case .medium: .yellow
+            case .high: .orange
+            case .critical: .red
+            }
         }
     }
 
-    var color: Color {
-        switch self {
-        case .low: return .green
-        case .medium: return .yellow
-        case .high: return .orange
-        case .critical: return .red
+    extension AssignmentCategory {
+        var localizedName: String {
+            switch self {
+            case .project: "assignments.category.project".localized
+            case .exam: "assignments.category.exam".localized
+            case .quiz: "assignments.category.quiz".localized
+            case .homework, .homework: "assignments.category.homework".localized
+            case .reading: "assignments.category.reading".localized
+            case .review: "assignments.category.review".localized
+            case .practiceTest: "assignments.category.practice_test".localized
+            }
         }
     }
-}
 
-extension AssignmentCategory {
-    var localizedName: String {
-        switch self {
-        case .project: return "assignments.category.project".localized
-        case .exam: return "assignments.category.exam".localized
-        case .quiz: return "assignments.category.quiz".localized
-        case .homework, .homework: return "assignments.category.homework".localized
-        case .reading: return "assignments.category.reading".localized
-        case .review: return "assignments.category.review".localized
-        case .practiceTest: return "assignments.category.practice_test".localized
+    extension AssignmentStatus {
+        var label: String {
+            switch self {
+            case .notStarted: "assignments.status.not_started".localized
+            case .inProgress: "assignments.status.in_progress".localized
+            case .completed: "assignments.status.completed".localized
+            case .archived: "assignments.status.archived".localized
+            }
         }
     }
-}
-
-extension AssignmentStatus {
-    var label: String {
-        switch self {
-        case .notStarted: return "assignments.status.not_started".localized
-        case .inProgress: return "assignments.status.in_progress".localized
-        case .completed: return "assignments.status.completed".localized
-        case .archived: return "assignments.status.archived".localized
-        }
-    }
-}
 
 #endif

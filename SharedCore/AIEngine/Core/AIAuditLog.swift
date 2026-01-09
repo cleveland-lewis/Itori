@@ -9,15 +9,15 @@ import OSLog
 /// Event type for LLM provider attempt tracking
 public enum AIAuditEventType: String, Codable, Sendable {
     case providerAttempt = "provider_attempt"
-    case suppressed = "suppressed"
+    case suppressed
     case fallbackOnly = "fallback_only"
-    case execution = "execution"
+    case execution
 }
 
 /// Reason codes for suppression/fallback
 public enum AISuppressionReason: String, Codable, Sendable {
     case llmDisabled = "llm_disabled"
-    case timeout = "timeout"
+    case timeout
     case breakerOpen = "breaker_open"
     case rateLimited = "rate_limited"
     case noProviderAvailable = "no_provider_available"
@@ -40,7 +40,7 @@ public struct AIAuditEntry: Codable, Sendable {
     public let inputHash: String
     public let outputHash: String?
     public let redactionDelta: Int // bytes removed
-    
+
     public init(
         timestamp: Date,
         requestID: UUID,
@@ -81,54 +81,57 @@ public actor AIAuditLog {
     private var entries: [AIAuditEntry] = []
     private let fileURL: URL
     private let logger = Logger(subsystem: "com.itori.app", category: "AIAudit")
-    
+
     public init(maxEntries: Int = 1000, maxFileSizeBytes: Int = 5_000_000) {
         self.maxEntries = maxEntries
         self.maxFileSizeBytes = maxFileSizeBytes
-        
+
         let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         self.fileURL = docs.appendingPathComponent("ai_audit.jsonl")
-        
+
         Task {
             await loadEntries()
         }
     }
-    
+
     /// Log an entry asynchronously (never blocks caller)
     public func log(_ entry: AIAuditEntry) {
         Task {
             await appendEntry(entry)
         }
     }
-    
+
     private func appendEntry(_ entry: AIAuditEntry) async {
         entries.append(entry)
-        
+
         // Ring buffer: keep only recent entries
         if entries.count > maxEntries {
             entries.removeFirst(entries.count - maxEntries)
         }
-        
+
         // Log to system
         let providerStr = entry.providerID ?? "none"
-        logger.info("AI Request: port=\(entry.portID) provider=\(providerStr) latency=\(entry.latencyMs)ms success=\(entry.success) fallback=\(entry.fallbackUsed)")
-        
+        logger
+            .info(
+                "AI Request: port=\(entry.portID) provider=\(providerStr) latency=\(entry.latencyMs)ms success=\(entry.success) fallback=\(entry.fallbackUsed)"
+            )
+
         // Async write to disk
         await persistEntries()
     }
-    
+
     private func persistEntries() async {
         do {
             let encoder = JSONEncoder()
             encoder.dateEncodingStrategy = .iso8601
-            
+
             var data = Data()
             for entry in entries {
                 let line = try encoder.encode(entry)
                 data.append(line)
                 data.append("\n".data(using: .utf8)!)
             }
-            
+
             // Check size limit
             if data.count > maxFileSizeBytes {
                 // Keep only recent half
@@ -137,50 +140,50 @@ public actor AIAuditLog {
                 await persistEntries() // recursive call with smaller dataset
                 return
             }
-            
+
             try data.write(to: fileURL, options: .atomic)
         } catch {
             logger.error("Failed to persist audit log: \(error.localizedDescription)")
         }
     }
-    
+
     private func loadEntries() async {
         do {
             guard FileManager.default.fileExists(atPath: fileURL.path) else { return }
-            
+
             let data = try Data(contentsOf: fileURL)
             let lines = String(data: data, encoding: .utf8)?.split(separator: "\n") ?? []
-            
+
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
-            
+
             entries = lines.compactMap { line in
                 try? decoder.decode(AIAuditEntry.self, from: Data(line.utf8))
             }
-            
+
             logger.info("Loaded \(self.entries.count) audit entries")
         } catch {
             logger.error("Failed to load audit log: \(error.localizedDescription)")
         }
     }
-    
+
     /// Get recent entries (for diagnostics)
     public func recentEntries(limit: Int = 100) -> [AIAuditEntry] {
         Array(entries.suffix(limit))
     }
-    
+
     /// Get statistics
     public func statistics() -> AIAuditStatistics {
         let total = entries.count
-        let successful = entries.filter { $0.success }.count
-        let fallbacks = entries.filter { $0.fallbackUsed }.count
-        let avgLatency = entries.isEmpty ? 0 : entries.map { $0.latencyMs }.reduce(0, +) / entries.count
-        
+        let successful = entries.filter(\.success).count
+        let fallbacks = entries.filter(\.fallbackUsed).count
+        let avgLatency = entries.isEmpty ? 0 : entries.map(\.latencyMs).reduce(0, +) / entries.count
+
         var portCounts: [String: Int] = [:]
         for entry in entries {
             portCounts[entry.portID, default: 0] += 1
         }
-        
+
         return AIAuditStatistics(
             totalRequests: total,
             successfulRequests: successful,
@@ -189,7 +192,7 @@ public actor AIAuditLog {
             portCounts: portCounts
         )
     }
-    
+
     /// Clear all entries
     public func clear() {
         entries.removeAll()

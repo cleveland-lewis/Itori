@@ -3,7 +3,6 @@ import Foundation
 // MARK: - Default Duration Estimator
 
 public class DefaultDurationEstimator: EstimateTaskDurationPort {
-    
     // Base estimates in minutes for each category
     private let categoryBaselines: [String: Int] = [
         "reading": 45,
@@ -18,7 +17,7 @@ public class DefaultDurationEstimator: EstimateTaskDurationPort {
         "essay": 240,
         "quiz": 20
     ]
-    
+
     // Course type multipliers
     private let courseTypeMultipliers: [String: Double] = [
         "seminar": 1.2,
@@ -28,52 +27,51 @@ public class DefaultDurationEstimator: EstimateTaskDurationPort {
         "independent": 2.0,
         "online": 0.9
     ]
-    
+
     public init() {}
-    
+
     public func estimateDuration(
         category: String,
         courseType: String?,
         credits: Int?,
-        dueDate: Date?,
+        dueDate _: Date?,
         historicalData: [CompletionHistory]
     ) async -> DurationEstimate {
-        
         var reasonCodes: [String] = []
-        
+
         // 1. Start with category baseline
         let baseline = categoryBaselines[category.lowercased()] ?? 60
         reasonCodes.append("category=\(category)")
-        
+
         // 2. Apply course type multiplier
         var multiplier = 1.0
         if let courseType = courseType?.lowercased() {
             multiplier = courseTypeMultipliers[courseType] ?? 1.0
             reasonCodes.append("courseType=\(courseType)")
         }
-        
+
         // 3. Apply credit multiplier
-        if let credits = credits {
+        if let credits {
             let creditMultiplier = Double(credits) / 3.0 // 3 credits is baseline
             multiplier *= creditMultiplier
             reasonCodes.append("credits=\(credits)")
         }
-        
+
         // 4. Check historical data for this category
         let relevantHistory = historicalData.filter { $0.category.lowercased() == category.lowercased() }
-        
+
         var estimatedMinutes: Int
         var confidence: Double
-        
+
         if relevantHistory.count >= 3 {
             // Use historical average
-            let avg = relevantHistory.map { $0.actualMinutes }.reduce(0, +) / relevantHistory.count
+            let avg = relevantHistory.map(\.actualMinutes).reduce(0, +) / relevantHistory.count
             estimatedMinutes = avg
             confidence = min(0.9, 0.5 + Double(relevantHistory.count) * 0.05)
             reasonCodes.append("historySampleSize=\(relevantHistory.count)")
-        } else if relevantHistory.count > 0 {
+        } else if !relevantHistory.isEmpty {
             // Blend historical with baseline
-            let avg = relevantHistory.map { $0.actualMinutes }.reduce(0, +) / relevantHistory.count
+            let avg = relevantHistory.map(\.actualMinutes).reduce(0, +) / relevantHistory.count
             let baselineAdjusted = Int(Double(baseline) * multiplier)
             estimatedMinutes = (avg + baselineAdjusted) / 2
             confidence = 0.6
@@ -85,11 +83,11 @@ public class DefaultDurationEstimator: EstimateTaskDurationPort {
             confidence = 0.5
             reasonCodes.append("heuristicOnly")
         }
-        
+
         // 5. Calculate range (±20%)
         let minMinutes = Int(Double(estimatedMinutes) * 0.8)
         let maxMinutes = Int(Double(estimatedMinutes) * 1.2)
-        
+
         return DurationEstimate(
             estimatedMinutes: estimatedMinutes,
             minMinutes: minMinutes,
@@ -103,7 +101,6 @@ public class DefaultDurationEstimator: EstimateTaskDurationPort {
 // MARK: - Default Effort Profile Estimator
 
 public class DefaultEffortProfileEstimator: EstimateEffortProfilePort {
-    
     private let defaultProfiles: [String: (multiplier: Double, baseMinutes: Int)] = [
         "seminar": (1.2, 180), // 3 hours per week per credit
         "lecture": (1.0, 150),
@@ -112,26 +109,26 @@ public class DefaultEffortProfileEstimator: EstimateEffortProfilePort {
         "independent": (2.0, 270),
         "online": (0.9, 135)
     ]
-    
+
     // Store learned profiles per course
     private var learnedProfiles: [String: EffortProfile] = [:]
-    
+
     public init() {}
-    
+
     public func getEffortProfile(courseType: String, credits: Int) -> EffortProfile {
         let type = courseType.lowercased()
         let profile = defaultProfiles[type] ?? (1.0, 150)
-        
+
         _ = profile.baseMinutes * credits
-        
+
         return EffortProfile(
             courseType: courseType,
             multiplier: profile.multiplier,
             baseMinutesPerCredit: profile.baseMinutes
         )
     }
-    
-    public func updateEffortProfile(courseId: String, actualMinutes: Int, category: String) {
+
+    public func updateEffortProfile(courseId: String, actualMinutes: Int, category _: String) {
         // Update learned profile based on actual completion time
         // This would persist to UserDefaults or Core Data in production
         if let existing = learnedProfiles[courseId] {
@@ -148,28 +145,29 @@ public class DefaultEffortProfileEstimator: EstimateEffortProfilePort {
 // MARK: - Default Workload Forecast
 
 public class DefaultWorkloadForecaster: WorkloadForecastPort {
-    
     public init() {}
-    
+
     public func generateForecast(
         assignments: [AssignmentSummary],
         startDate: Date,
         endDate: Date
     ) async -> WorkloadForecast {
-        
         var weeklyLoads: [Date: (hours: Double, breakdown: [String: Double])] = [:]
         let calendar = Calendar.current
-        
+
         // Group assignments by week
         for assignment in assignments {
             guard assignment.dueDate >= startDate && assignment.dueDate <= endDate else {
                 continue
             }
-            
-            let weekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: assignment.dueDate)) ?? assignment.dueDate
-            
+
+            let weekStart = calendar.date(from: calendar.dateComponents(
+                [.yearForWeekOfYear, .weekOfYear],
+                from: assignment.dueDate
+            )) ?? assignment.dueDate
+
             let hours = Double(assignment.estimatedMinutes) / 60.0
-            
+
             if var existing = weeklyLoads[weekStart] {
                 existing.hours += hours
                 existing.breakdown[assignment.category, default: 0] += hours
@@ -178,7 +176,7 @@ public class DefaultWorkloadForecaster: WorkloadForecastPort {
                 weeklyLoads[weekStart] = (hours: hours, breakdown: [assignment.category: hours])
             }
         }
-        
+
         // Convert to sorted array
         let sortedWeeks = weeklyLoads.keys.sorted()
         let weekLoads = sortedWeeks.map { weekStart in
@@ -189,13 +187,13 @@ public class DefaultWorkloadForecaster: WorkloadForecastPort {
                 breakdown: data.breakdown
             )
         }
-        
+
         // Find peak week
         let peakWeek = weekLoads.max(by: { $0.hours < $1.hours })?.weekStart
-        
+
         // Calculate total hours
         let totalHours = weekLoads.reduce(0.0) { $0 + $1.hours }
-        
+
         return WorkloadForecast(
             weeklyLoad: weekLoads,
             peakWeek: peakWeek,

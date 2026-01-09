@@ -15,32 +15,32 @@ enum AppPage: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .dashboard:  return NSLocalizedString("tab.dashboard", value: "Dashboard", comment: "Page title")
-        case .calendar:   return NSLocalizedString("tab.calendar", value: "Calendar", comment: "Page title")
-        case .planner:    return NSLocalizedString("tab.planner", value: "Planner", comment: "Page title")
-        case .assignments:return NSLocalizedString("tab.assignments", value: "Assignments", comment: "Page title")
-        case .courses:    return NSLocalizedString("tab.courses", value: "Courses", comment: "Page title")
-        case .grades:     return NSLocalizedString("tab.grades", value: "Grades", comment: "Page title")
-        case .timer:      return NSLocalizedString("tab.timer", value: "Timer", comment: "Page title")
-        case .flashcards: return NSLocalizedString("tab.flashcards", value: "Flashcards", comment: "Page title")
-        case .practice:   return NSLocalizedString("tab.practice", value: "Practice", comment: "Page title")
+        case .dashboard: NSLocalizedString("tab.dashboard", value: "Dashboard", comment: "Page title")
+        case .calendar: NSLocalizedString("tab.calendar", value: "Calendar", comment: "Page title")
+        case .planner: NSLocalizedString("tab.planner", value: "Planner", comment: "Page title")
+        case .assignments: NSLocalizedString("tab.assignments", value: "Assignments", comment: "Page title")
+        case .courses: NSLocalizedString("tab.courses", value: "Courses", comment: "Page title")
+        case .grades: NSLocalizedString("tab.grades", value: "Grades", comment: "Page title")
+        case .timer: NSLocalizedString("tab.timer", value: "Timer", comment: "Page title")
+        case .flashcards: NSLocalizedString("tab.flashcards", value: "Flashcards", comment: "Page title")
+        case .practice: NSLocalizedString("tab.practice", value: "Practice", comment: "Page title")
         }
     }
 
     var systemImage: String {
         switch self {
-        case .dashboard:   return "rectangle.grid.2x2"
-        case .calendar:    return "calendar"
-        case .planner:     return "square.and.pencil"
-        case .assignments: return "checklist"
-        case .courses:     return "book.closed"
-        case .grades:      return "chart.bar.doc.horizontal"
-        case .timer:       return "timer"
-        case .flashcards:  return "rectangle.stack"
-        case .practice:    return "list.clipboard"
+        case .dashboard: "rectangle.grid.2x2"
+        case .calendar: "calendar"
+        case .planner: "square.and.pencil"
+        case .assignments: "checklist"
+        case .courses: "book.closed"
+        case .grades: "chart.bar.doc.horizontal"
+        case .timer: "timer"
+        case .flashcards: "rectangle.stack"
+        case .practice: "list.clipboard"
         }
     }
-    
+
     static func from(_ rootTab: RootTab) -> AppPage {
         AppPage(rawValue: rootTab.rawValue) ?? .dashboard
     }

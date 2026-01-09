@@ -2,13 +2,13 @@ import SwiftUI
 
 // MARK: - System Accessibility Support (respects iOS/macOS Settings)
 
-extension View {
+public extension View {
     /// Applies animation only if Reduce Motion is OFF in system settings
     /// Automatically respects Settings > Accessibility > Motion > Reduce Motion
     @ViewBuilder
-    public func systemAccessibleAnimation<V: Equatable>(
+    func systemAccessibleAnimation(
         _ animation: Animation?,
-        value: V
+        value: some Equatable
     ) -> some View {
         if #available(iOS 13.0, macOS 10.15, *) {
             self.modifier(SystemReduceMotionModifier(animation: animation, value: value))
@@ -22,7 +22,7 @@ private struct SystemReduceMotionModifier<V: Equatable>: ViewModifier {
     let animation: Animation?
     let value: V
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    
+
     func body(content: Content) -> some View {
         if reduceMotion {
             content // No animation when Reduce Motion is enabled
@@ -43,13 +43,13 @@ public func withSystemAnimation<Result>(
     if #available(iOS 13.0, macOS 10.15, *) {
         // Check system setting
         #if os(iOS)
-        if UIAccessibility.isReduceMotionEnabled {
-            return try body()
-        }
+            if UIAccessibility.isReduceMotionEnabled {
+                return try body()
+            }
         #elseif os(macOS)
-        if NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
-            return try body()
-        }
+            if NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
+                return try body()
+            }
         #endif
     }
     return try withAnimation(animation, body)
@@ -57,10 +57,10 @@ public func withSystemAnimation<Result>(
 
 // MARK: - Dynamic Type Support
 
-extension View {
+public extension View {
     /// Applies minimum tap target size that scales with Dynamic Type
     /// Respects Settings > Accessibility > Display & Text Size > Larger Text
-    public func dynamicTapTarget(baseSize: CGFloat = 44) -> some View {
+    func dynamicTapTarget(baseSize: CGFloat = 44) -> some View {
         self.modifier(DynamicTapTargetModifier(baseSize: baseSize))
     }
 }
@@ -68,37 +68,36 @@ extension View {
 private struct DynamicTapTargetModifier: ViewModifier {
     let baseSize: CGFloat
     @Environment(\.sizeCategory) private var sizeCategory
-    
+
     var scaledSize: CGFloat {
         // Scale tap target with Dynamic Type
-        let scaleFactor: CGFloat
-        switch sizeCategory {
+        let scaleFactor: CGFloat = switch sizeCategory {
         case .extraSmall, .small, .medium:
-            scaleFactor = 1.0
+            1.0
         case .large:
-            scaleFactor = 1.1
+            1.1
         case .extraLarge:
-            scaleFactor = 1.2
+            1.2
         case .extraExtraLarge:
-            scaleFactor = 1.3
+            1.3
         case .extraExtraExtraLarge:
-            scaleFactor = 1.4
+            1.4
         case .accessibilityMedium:
-            scaleFactor = 1.5
+            1.5
         case .accessibilityLarge:
-            scaleFactor = 1.6
+            1.6
         case .accessibilityExtraLarge:
-            scaleFactor = 1.7
+            1.7
         case .accessibilityExtraExtraLarge:
-            scaleFactor = 1.8
+            1.8
         case .accessibilityExtraExtraExtraLarge:
-            scaleFactor = 2.0
+            2.0
         @unknown default:
-            scaleFactor = 1.0
+            1.0
         }
         return baseSize * scaleFactor
     }
-    
+
     func body(content: Content) -> some View {
         content
             .frame(minWidth: scaledSize, minHeight: scaledSize)
@@ -107,17 +106,17 @@ private struct DynamicTapTargetModifier: ViewModifier {
 
 // MARK: - App-Specific Preferences (NOT Accessibility)
 
-extension View {
+public extension View {
     /// Applies card padding based on user's UI density preference
     /// This is an app-specific setting, not an accessibility feature
-    public func compactModePadding() -> some View {
+    func compactModePadding() -> some View {
         self.modifier(CompactModePaddingModifier())
     }
 }
 
 private struct CompactModePaddingModifier: ViewModifier {
     @Environment(\.layoutMetrics) private var metrics
-    
+
     func body(content: Content) -> some View {
         content.padding(metrics.cardPadding)
     }
@@ -125,11 +124,11 @@ private struct CompactModePaddingModifier: ViewModifier {
 
 // MARK: - Reduce Transparency Support
 
-extension View {
+public extension View {
     /// Conditionally applies blur/transparency based on system setting
     /// Respects Settings > Accessibility > Display & Text Size > Reduce Transparency
-    public func systemAdaptiveBackground<S: ShapeStyle>(
-        _ style: S,
+    func systemAdaptiveBackground(
+        _ style: some ShapeStyle,
         fallback: Color
     ) -> some View {
         self.modifier(AdaptiveBackgroundModifier(style: style, fallback: fallback))
@@ -140,7 +139,7 @@ private struct AdaptiveBackgroundModifier<S: ShapeStyle>: ViewModifier {
     let style: S
     let fallback: Color
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
-    
+
     func body(content: Content) -> some View {
         content.background(
             reduceTransparency ? AnyShapeStyle(fallback) : AnyShapeStyle(style)
@@ -150,10 +149,10 @@ private struct AdaptiveBackgroundModifier<S: ShapeStyle>: ViewModifier {
 
 // MARK: - Differentiate Without Color Support
 
-extension View {
+public extension View {
     /// Adds visual indicators beyond color when system setting is enabled
     /// Respects Settings > Accessibility > Display & Text Size > Differentiate Without Color
-    public func differentiableIndicator(
+    func differentiableIndicator(
         isActive: Bool,
         shape: some Shape = Rectangle()
     ) -> some View {
@@ -165,14 +164,15 @@ private struct DifferentiableIndicatorModifier: ViewModifier {
     let isActive: Bool
     let shape: AnyShape
     @Environment(\.accessibilityDifferentiateWithoutColor) private var differentiateWithoutColor
-    
+
     func body(content: Content) -> some View {
         content.overlay(
             Group {
                 if differentiateWithoutColor && isActive {
                     // Add border indicator for users who can't rely on color
                     shape
-                        .stroke(Color.primary, lineWidth: 2)
+                        .stroke(style: StrokeStyle(lineWidth: 2))
+                        .foregroundStyle(Color.primary)
                 }
             }
         )
@@ -181,15 +181,15 @@ private struct DifferentiableIndicatorModifier: ViewModifier {
 
 // MARK: - Increase Contrast Support
 
-extension View {
+public extension View {
     /// Enhances text opacity for better contrast when Increase Contrast is enabled
     /// Respects Settings > Accessibility > Display & Text Size > Increase Contrast
-    public func contrastAwareOpacity(_ opacity: Double) -> some View {
+    func contrastAwareOpacity(_ opacity: Double) -> some View {
         self.modifier(ContrastAwareOpacityModifier(baseOpacity: opacity))
     }
-    
+
     /// Applies stronger colors when Increase Contrast is enabled
-    public func contrastAwareForeground(_ color: Color) -> some View {
+    func contrastAwareForeground(_ color: Color) -> some View {
         self.modifier(ContrastAwareForegroundModifier(color: color))
     }
 }
@@ -200,14 +200,14 @@ extension ShapeStyle where Self == Color {
     static func contrastAware(_ color: Color, opacity: Double) -> Color {
         // In real usage, this would check accessibility settings
         // For now, returns the base color with opacity
-        return color.opacity(opacity)
+        color.opacity(opacity)
     }
 }
 
 private struct ContrastAwareOpacityModifier: ViewModifier {
     let baseOpacity: Double
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
-    
+
     // Use reduceTransparency as a proxy for high contrast needs
     // (Apple doesn't expose increaseContrast in SwiftUI yet)
     var enhancedOpacity: Double {
@@ -217,7 +217,7 @@ private struct ContrastAwareOpacityModifier: ViewModifier {
         }
         return baseOpacity
     }
-    
+
     func body(content: Content) -> some View {
         content.opacity(enhancedOpacity)
     }
@@ -227,7 +227,7 @@ private struct ContrastAwareForegroundModifier: ViewModifier {
     let color: Color
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.colorScheme) private var colorScheme
-    
+
     func body(content: Content) -> some View {
         if reduceTransparency {
             // Use higher contrast variants
@@ -245,13 +245,13 @@ private struct ContrastAwareForegroundModifier: ViewModifier {
 // Helper for type-erased shapes
 private struct AnyShape: Shape {
     private let _path: (CGRect) -> Path
-    
-    init<S: Shape>(_ shape: S) {
+
+    init(_ shape: some Shape) {
         _path = { rect in
             shape.path(in: rect)
         }
     }
-    
+
     func path(in rect: CGRect) -> Path {
         _path(rect)
     }
@@ -259,23 +259,23 @@ private struct AnyShape: Shape {
 
 // MARK: - Gentle Mode (App-Specific, NOT System Accessibility)
 
-extension AppSettingsModel {
+public extension AppSettingsModel {
     /// Gentle mode is an app-specific UI preference for sensory sensitivity
     /// It's NOT a replacement for system accessibility settings
-    public var isGentleModeActive: Bool {
+    var isGentleModeActive: Bool {
         // This can remain as an app-specific preference
         compactMode == false // Gentle = more breathing room
     }
-    
+
     /// Activates gentle mode (app-specific UI adjustments)
-    public func enableGentleMode() {
+    func enableGentleMode() {
         compactMode = false // More spacing
         // Note: Animations/transparency respect system settings automatically
         save()
     }
-    
+
     /// Deactivates gentle mode
-    public func disableGentleMode() {
+    func disableGentleMode() {
         compactMode = false
         save()
     }
@@ -284,19 +284,19 @@ extension AppSettingsModel {
 // MARK: - Backward Compatibility Helpers
 
 // These maintain compatibility with code that was using the old custom settings
-extension View {
+public extension View {
     /// @deprecated Use systemAccessibleAnimation instead
     @available(*, deprecated, message: "Use systemAccessibleAnimation to respect system Reduce Motion setting")
-    public func accessibleAnimation<V: Equatable>(
+    func accessibleAnimation(
         _ animation: Animation?,
-        value: V
+        value: some Equatable
     ) -> some View {
         self.systemAccessibleAnimation(animation, value: value)
     }
-    
+
     /// @deprecated Use dynamicTapTarget instead
     @available(*, deprecated, message: "Use dynamicTapTarget to scale with Dynamic Type")
-    public func accessibleTapTarget(minimum: CGFloat = 44) -> some View {
+    func accessibleTapTarget(minimum: CGFloat = 44) -> some View {
         self.dynamicTapTarget(baseSize: minimum)
     }
 }

@@ -1,5 +1,5 @@
-import Foundation
 import CryptoKit
+import Foundation
 
 extension Data {
     /// Computes SHA256 hash of data

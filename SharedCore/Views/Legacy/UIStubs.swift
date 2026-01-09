@@ -1,5 +1,5 @@
-import SwiftUI
 import EventKit
+import SwiftUI
 
 // Lightweight stubs for missing design components used throughout the app.
 // These are minimal implementations to allow the project to compile; substitute
@@ -37,12 +37,11 @@ struct GlassLoadingCard: View {
 }
 
 extension View {
-    func loadingHUD(isVisible: Binding<Bool>, title: String = "", message: String? = nil) -> some View {
+    func loadingHUD(isVisible _: Binding<Bool>, title _: String = "", message _: String? = nil) -> some View {
         // No-op wrapper for now — production app will overlay a HUD.
         self
     }
 }
-
 
 // MARK: - Missing model + view shells
 
@@ -68,7 +67,10 @@ struct AttachmentListView: View {
             Button {
                 attachments.append(Attachment(name: "New Attachment"))
             } label: {
-                Label(NSLocalizedString("ui.label.add.attachment", value: "Add Attachment", comment: "Add Attachment"), systemImage: "plus")
+                Label(
+                    NSLocalizedString("ui.label.add.attachment", value: "Add Attachment", comment: "Add Attachment"),
+                    systemImage: "plus"
+                )
             }
         }
     }
@@ -80,7 +82,7 @@ enum FlashcardDifficulty: String, Codable, CaseIterable {
 }
 
 struct Flashcard: Codable, Identifiable, Hashable {
-    var id: UUID = UUID()
+    var id: UUID = .init()
     var frontText: String
     var backText: String
     var difficulty: FlashcardDifficulty
@@ -89,18 +91,18 @@ struct Flashcard: Codable, Identifiable, Hashable {
     var interval: Int = 0
     var easeFactor: Double = 2.5
     var lastReviewed: Date? = nil
-    
+
     var isDue: Bool {
         dueDate <= Date()
     }
-    
+
     var isNew: Bool {
         repetition == 0
     }
 }
 
 struct FlashcardDeck: Codable, Identifiable, Hashable {
-    var id: UUID = UUID()
+    var id: UUID = .init()
     var title: String
     var courseID: UUID?
     var cards: [Flashcard] = []
@@ -165,16 +167,17 @@ enum EventCategory: String, CaseIterable, Identifiable {
 // Shared category parsing & colors
 func parseEventCategory(from title: String) -> EventCategory? {
     let t = title.lowercased()
-    
+
     // English keywords
     if t.contains("exam") || t.contains("final") || t.contains("quiz") || t.contains("midterm") { return .exam }
     if t.contains("lab") { return .lab }
     if t.contains("class") || t.contains("lecture") { return .class }
-    if t.contains("homework") || t.contains("assignment") || t.contains("problem set") || t.contains("ps") { return .homework }
+    if t.contains("homework") || t.contains("assignment") || t.contains("problem set") || t
+        .contains("ps") { return .homework }
     if t.contains("study") { return .study }
     if t.contains("review") { return .review }
     if t.contains("read") || t.contains("reading") { return .reading }
-    
+
     // Chinese keywords (Simplified)
     if t.contains("考试") || t.contains("期末") || t.contains("期中") || t.contains("测验") || t.contains("小测") { return .exam }
     if t.contains("实验") || t.contains("實驗") { return .lab }
@@ -183,21 +186,21 @@ func parseEventCategory(from title: String) -> EventCategory? {
     if t.contains("学习") || t.contains("學習") { return .study }
     if t.contains("复习") || t.contains("復習") { return .review }
     if t.contains("阅读") || t.contains("閱讀") || t.contains("读书") { return .reading }
-    
+
     return nil
 }
 
 extension EventCategory {
     var color: Color {
         switch self {
-        case .study: return Color(hue: 0.55, saturation: 0.85, brightness: 0.8) // blue
-        case .review: return Color(hue: 0.78, saturation: 0.65, brightness: 0.85) // purple
-        case .homework: return Color(hue: 0.33, saturation: 0.6, brightness: 0.85) // green
-        case .reading: return Color(hue: 0.08, saturation: 0.7, brightness: 0.9) // orange
-        case .exam: return Color(hue: 0.02, saturation: 0.75, brightness: 0.9) // red
-        case .class: return Color(hue: 0.6, saturation: 0.5, brightness: 0.8) // teal
-        case .lab: return Color(hue: 0.48, saturation: 0.6, brightness: 0.85) // cyan
-        case .other: return Color.secondary.opacity(0.85)
+        case .study: Color(hue: 0.55, saturation: 0.85, brightness: 0.8) // blue
+        case .review: Color(hue: 0.78, saturation: 0.65, brightness: 0.85) // purple
+        case .homework: Color(hue: 0.33, saturation: 0.6, brightness: 0.85) // green
+        case .reading: Color(hue: 0.08, saturation: 0.7, brightness: 0.9) // orange
+        case .exam: Color(hue: 0.02, saturation: 0.75, brightness: 0.9) // red
+        case .class: Color(hue: 0.6, saturation: 0.5, brightness: 0.8) // teal
+        case .lab: Color(hue: 0.48, saturation: 0.6, brightness: 0.85) // cyan
+        case .other: Color.secondary.opacity(0.85)
         }
     }
 }
@@ -211,8 +214,8 @@ struct AddEventPopup: View {
     @State private var title: String = ""
     @State private var category: EventCategory = .other
     @State private var userSelectedCategory: Bool = false
-    @State private var startDate: Date = Date()
-    @State private var endDate: Date = Date().addingTimeInterval(3600)
+    @State private var startDate: Date = .init()
+    @State private var endDate: Date = .init().addingTimeInterval(3600)
     @State private var isAllDay: Bool = false
     @State private var location: String = ""
     @State private var notes: String = ""
@@ -220,7 +223,7 @@ struct AddEventPopup: View {
     @State private var recurrenceInterval: Int = 1
     @State private var recurrenceEndCount: Int? = nil
     @State private var recurrenceEndDate: Date? = nil
-    @State private var weekdaySelection: [Int: Bool] = Dictionary(uniqueKeysWithValues: (1...7).map { ($0, false) })
+    @State private var weekdaySelection: [Int: Bool] = Dictionary(uniqueKeysWithValues: (1 ... 7).map { ($0, false) })
     @State private var urlString: String = ""
     @State private var primaryAlertMinutes: Int? = nil
     @State private var secondaryAlertMinutes: Int? = nil
@@ -229,7 +232,7 @@ struct AddEventPopup: View {
 
     private var availableCalendars: [EKCalendar] {
         guard CalendarAuthorizationManager.shared.isAuthorized else { return [] }
-        return DeviceCalendarManager.shared.store.calendars(for: .event).filter { $0.allowsContentModifications }
+        return DeviceCalendarManager.shared.store.calendars(for: .event).filter(\.allowsContentModifications)
     }
 
     var body: some View {
@@ -247,9 +250,9 @@ struct AddEventPopup: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 14)
-            
+
             Divider()
-            
+
             // Main form content with Apple Calendar-style row layout
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
@@ -269,10 +272,10 @@ struct AddEventPopup: View {
                                 }
                             }
                         }
-                    
+
                     Divider()
                         .padding(.leading, 20)
-                    
+
                     // Location field with icon
                     HStack(spacing: 12) {
                         Image(systemName: "location")
@@ -283,10 +286,10 @@ struct AddEventPopup: View {
                     }
                     .padding(.horizontal, 20)
                     .padding(.vertical, 10)
-                    
+
                     Divider()
                         .padding(.leading, 20)
-                    
+
                     // All-day toggle with icon
                     Toggle(isOn: $isAllDay) {
                         HStack(spacing: 12) {
@@ -299,10 +302,10 @@ struct AddEventPopup: View {
                     .toggleStyle(.switch)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 10)
-                    
+
                     Divider()
                         .padding(.leading, 20)
-                    
+
                     // Start date/time with proper spacing
                     HStack(spacing: 12) {
                         Image(systemName: "calendar")
@@ -310,32 +313,40 @@ struct AddEventPopup: View {
                             .frame(width: 20)
                         Text(NSLocalizedString("ui.starts", value: "Starts", comment: "Starts"))
                             .frame(width: 60, alignment: .leading)
-                        DatePicker("", selection: $startDate, displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute])
-                            .labelsHidden()
-                            .datePickerStyle(.compact)
+                        DatePicker(
+                            "",
+                            selection: $startDate,
+                            displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute]
+                        )
+                        .labelsHidden()
+                        .datePickerStyle(.compact)
                     }
                     .padding(.horizontal, 20)
                     .padding(.vertical, 10)
-                    
+
                     Divider()
                         .padding(.leading, 20)
-                    
+
                     // End date/time with alignment
                     HStack(spacing: 12) {
                         Spacer()
                             .frame(width: 20)
                         Text(NSLocalizedString("ui.ends", value: "Ends", comment: "Ends"))
                             .frame(width: 60, alignment: .leading)
-                        DatePicker("", selection: $endDate, displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute])
-                            .labelsHidden()
-                            .datePickerStyle(.compact)
+                        DatePicker(
+                            "",
+                            selection: $endDate,
+                            displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute]
+                        )
+                        .labelsHidden()
+                        .datePickerStyle(.compact)
                     }
                     .padding(.horizontal, 20)
                     .padding(.vertical, 10)
-                    
+
                     Divider()
                         .padding(.leading, 20)
-                    
+
                     // Repeat/Recurrence with menu picker
                     HStack(spacing: 12) {
                         Image(systemName: "repeat")
@@ -354,32 +365,38 @@ struct AddEventPopup: View {
                     }
                     .padding(.horizontal, 20)
                     .padding(.vertical, 10)
-                    
+
                     // Advanced recurrence controls - indented and grouped
                     if recurrence != .none {
                         Divider()
                             .padding(.leading, 20)
-                        
+
                         VStack(alignment: .leading, spacing: 10) {
                             // Interval stepper
                             HStack(spacing: 12) {
                                 Spacer()
                                     .frame(width: 20)
-                                Stepper("Every \(recurrenceInterval)", value: $recurrenceInterval, in: 1...52)
+                                Stepper("Every \(recurrenceInterval)", value: $recurrenceInterval, in: 1 ... 52)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            
+
                             // Weekday selection for weekly recurrence
                             if recurrence == .weekly {
                                 HStack(spacing: 12) {
                                     Spacer()
                                         .frame(width: 20)
                                     HStack(spacing: 6) {
-                                        ForEach(1...7, id: \.self) { idx in
+                                        ForEach(1 ... 7, id: \.self) { idx in
                                             let symbol = Calendar.current.veryShortWeekdaySymbols[(idx - 1 + 7) % 7]
-                                            Toggle(symbol, isOn: Binding(get: { weekdaySelection[idx] ?? false }, set: { weekdaySelection[idx] = $0 }))
-                                                .toggleStyle(.button)
-                                                .controlSize(.small)
+                                            Toggle(
+                                                symbol,
+                                                isOn: Binding(
+                                                    get: { weekdaySelection[idx] ?? false },
+                                                    set: { weekdaySelection[idx] = $0 }
+                                                )
+                                            )
+                                            .toggleStyle(.button)
+                                            .controlSize(.small)
                                         }
                                     }
                                     Spacer()
@@ -389,10 +406,10 @@ struct AddEventPopup: View {
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
                     }
-                    
+
                     Divider()
                         .padding(.leading, 20)
-                    
+
                     // Category picker with menu style
                     HStack(spacing: 12) {
                         Image(systemName: "tag")
@@ -400,7 +417,9 @@ struct AddEventPopup: View {
                             .frame(width: 20)
                         Text(NSLocalizedString("ui.category", value: "Category", comment: "Category"))
                             .frame(width: 60, alignment: .leading)
-                        Picker("", selection: Binding(get: { category }, set: { v in category = v; userSelectedCategory = true })) {
+                        Picker("", selection: Binding(get: { category }, set: { v in category = v
+                            userSelectedCategory = true
+                        })) {
                             ForEach(EventCategory.allCases) { c in
                                 Text(c.rawValue).tag(c)
                             }
@@ -411,18 +430,18 @@ struct AddEventPopup: View {
                     }
                     .padding(.horizontal, 20)
                     .padding(.vertical, 10)
-                    
+
                     Divider()
                         .padding(.leading, 20)
-                    
+
                     NotesEditor(title: "Notes", text: $notes, minHeight: 100)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
                 }
             }
-            
+
             Divider()
-            
+
             // Bottom action buttons matching Apple style
             HStack(spacing: 12) {
                 Spacer()
@@ -430,7 +449,7 @@ struct AddEventPopup: View {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
-                
+
                 Button(NSLocalizedString("ui.button.add", value: "Add", comment: "Add")) {
                     createEvent()
                 }
@@ -457,7 +476,8 @@ struct AddEventPopup: View {
         if t.contains("exam") || t.contains("final") || t.contains("quiz") || t.contains("midterm") { return .exam }
         if t.contains("lab") { return .lab }
         if t.contains("class") || t.contains("lecture") { return .class }
-        if t.contains("homework") || t.contains("assignment") || t.contains("problem set") || t.contains("ps") { return .homework }
+        if t.contains("homework") || t.contains("assignment") || t.contains("problem set") || t
+            .contains("ps") { return .homework }
         if t.contains("study") { return .study }
         if t.contains("review") { return .review }
         if t.contains("read") || t.contains("reading") { return .reading }
@@ -465,7 +485,13 @@ struct AddEventPopup: View {
     }
 
     private func createEvent() {
-        func buildRecurrenceRule(option: CalendarManager.RecurrenceOption, interval: Int, weekdays: [Int: Bool], endCount: Int?, endDate: Date?) -> EKRecurrenceRule? {
+        func buildRecurrenceRule(
+            option: CalendarManager.RecurrenceOption,
+            interval: Int,
+            weekdays: [Int: Bool],
+            endCount: Int?,
+            endDate: Date?
+        ) -> EKRecurrenceRule? {
             guard option != .none else { return nil }
             let frequency: EKRecurrenceFrequency
             switch option {
@@ -476,7 +502,7 @@ struct AddEventPopup: View {
             }
             var days: [EKRecurrenceDayOfWeek]? = nil
             if option == .weekly {
-                let selected = weekdays.filter { $0.value }.map { (index, _) in
+                let selected = weekdays.filter(\.value).map { index, _ in
                     EKRecurrenceDayOfWeek(EKWeekday(rawValue: index)!)
                 }
                 if !selected.isEmpty { days = selected }
@@ -484,7 +510,17 @@ struct AddEventPopup: View {
             var end: EKRecurrenceEnd? = nil
             if let count = endCount { end = EKRecurrenceEnd(occurrenceCount: count) }
             else if let d = endDate { end = EKRecurrenceEnd(end: d) }
-            return EKRecurrenceRule(recurrenceWith: frequency, interval: interval, daysOfTheWeek: days, daysOfTheMonth: nil, monthsOfTheYear: nil, weeksOfTheYear: nil, daysOfTheYear: nil, setPositions: nil, end: end)
+            return EKRecurrenceRule(
+                recurrenceWith: frequency,
+                interval: interval,
+                daysOfTheWeek: days,
+                daysOfTheMonth: nil,
+                monthsOfTheYear: nil,
+                weeksOfTheYear: nil,
+                daysOfTheYear: nil,
+                setPositions: nil,
+                end: end
+            )
         }
         Task {
             isSaving = true
@@ -495,15 +531,34 @@ struct AddEventPopup: View {
                 var alarms: [EKAlarm]? = nil
                 var builtAlarms: [EKAlarm] = []
                 if let pm = primaryAlertMinutes { builtAlarms.append(EKAlarm(relativeOffset: TimeInterval(-pm * 60))) }
-                if let sm = secondaryAlertMinutes { builtAlarms.append(EKAlarm(relativeOffset: TimeInterval(-sm * 60))) }
+                if let sm = secondaryAlertMinutes { builtAlarms.append(EKAlarm(relativeOffset: TimeInterval(-sm * 60)))
+                }
                 if !builtAlarms.isEmpty { alarms = builtAlarms }
                 let urlVal = URL(string: urlString)
-                let rule = buildRecurrenceRule(option: recurrence, interval: recurrenceInterval, weekdays: weekdaySelection, endCount: recurrenceEndCount, endDate: recurrenceEndDate)
-                
+                let rule = buildRecurrenceRule(
+                    option: recurrence,
+                    interval: recurrenceInterval,
+                    weekdays: weekdaySelection,
+                    endCount: recurrenceEndCount,
+                    endDate: recurrenceEndDate
+                )
+
                 // Use calendar from settings (school calendar if selected, otherwise system default)
                 let targetCalendar = getSelectedSchoolCalendar()
-                
-                try await calendarManager.saveEvent(title: title, startDate: startDate, endDate: endDate, isAllDay: isAllDay, location: location, notes: notes, url: urlVal, alarms: alarms, recurrenceRule: rule, calendar: targetCalendar, category: category)
+
+                try await calendarManager.saveEvent(
+                    title: title,
+                    startDate: startDate,
+                    endDate: endDate,
+                    isAllDay: isAllDay,
+                    location: location,
+                    notes: notes,
+                    url: urlVal,
+                    alarms: alarms,
+                    recurrenceRule: rule,
+                    calendar: targetCalendar,
+                    category: category
+                )
                 // refresh device events
                 await DeviceCalendarManager.shared.refreshEventsForVisibleRange()
             } catch {
@@ -513,45 +568,64 @@ struct AddEventPopup: View {
             dismiss()
         }
     }
-    
+
     /// Get the selected school calendar for new events
     /// Returns the calendar if found and writable, otherwise nil (will fallback to default)
     private func getSelectedSchoolCalendar() -> EKCalendar? {
         let selectedID = calendarManager.selectedCalendarID
         guard !selectedID.isEmpty else {
             Task { @MainActor in
-                Diagnostics.shared.log(.info, subsystem: .calendar, category: "AddEvent", message: "No school calendar selected, will use system default")
+                Diagnostics.shared.log(
+                    .info,
+                    subsystem: .calendar,
+                    category: "AddEvent",
+                    message: "No school calendar selected, will use system default"
+                )
             }
             return nil
         }
-        
+
         let store = DeviceCalendarManager.shared.store
         guard CalendarAuthorizationManager.shared.isAuthorized else { return nil }
         let calendars = store.calendars(for: .event)
-        
+
         guard let calendar = calendars.first(where: { $0.calendarIdentifier == selectedID }) else {
             Task { @MainActor in
-                Diagnostics.shared.log(.warn, subsystem: .calendar, category: "AddEvent", message: "Selected school calendar (ID: \(selectedID)) not found, will use system default")
+                Diagnostics.shared.log(
+                    .warn,
+                    subsystem: .calendar,
+                    category: "AddEvent",
+                    message: "Selected school calendar (ID: \(selectedID)) not found, will use system default"
+                )
             }
             return nil
         }
-        
+
         guard calendar.allowsContentModifications else {
             Task { @MainActor in
-                Diagnostics.shared.log(.warn, subsystem: .calendar, category: "AddEvent", message: "Selected school calendar '\(calendar.title)' is read-only, will use system default")
+                Diagnostics.shared.log(
+                    .warn,
+                    subsystem: .calendar,
+                    category: "AddEvent",
+                    message: "Selected school calendar '\(calendar.title)' is read-only, will use system default"
+                )
             }
             return nil
         }
-        
+
         Task { @MainActor in
-            Diagnostics.shared.log(.info, subsystem: .calendar, category: "AddEvent", message: "Using selected school calendar: \(calendar.title)")
+            Diagnostics.shared.log(
+                .info,
+                subsystem: .calendar,
+                category: "AddEvent",
+                message: "Using selected school calendar: \(calendar.title)"
+            )
         }
         return calendar
     }
 }
 
-// Backwards compatibility alias
-//struct AddEventPopup: View { var body: some View { Text(NSLocalizedString("ui.add.event", value: "Add Event", comment: "Add Event")) } }
+// Backwards compatibility alias - AddEventPopup has been moved above
 
 // Grades + analytics shells
 struct GPABreakdownCard: View {
@@ -565,9 +639,22 @@ struct GPABreakdownCard: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(NSLocalizedString("ui.gpa.overview", value: "GPA Overview", comment: "GPA Overview"))
                 .font(.headline)
-            Text(String(format: NSLocalizedString("grades.summary.current", value: "Current: %.2f", comment: "Current GPA"), currentGPA))
-            Text(String(format: NSLocalizedString("grades.summary.year", value: "Year: %.2f", comment: "Academic year GPA"), academicYearGPA))
-            Text(String(format: NSLocalizedString("grades.summary.cumulative", value: "Cumulative: %.2f", comment: "Cumulative GPA"), cumulativeGPA))
+            Text(String(
+                format: NSLocalizedString("grades.summary.current", value: "Current: %.2f", comment: "Current GPA"),
+                currentGPA
+            ))
+            Text(String(
+                format: NSLocalizedString("grades.summary.year", value: "Year: %.2f", comment: "Academic year GPA"),
+                academicYearGPA
+            ))
+            Text(String(
+                format: NSLocalizedString(
+                    "grades.summary.cumulative",
+                    value: "Cumulative: %.2f",
+                    comment: "Cumulative GPA"
+                ),
+                cumulativeGPA
+            ))
             Text(verbatim: "Courses: \(courseCount)")
             if isLoading {
                 ProgressView().progressViewStyle(.circular)
@@ -590,14 +677,22 @@ struct AddGradeSheet: View {
             Text(NSLocalizedString("ui.add.grade", value: "Add Grade", comment: "Add Grade"))
                 .font(.headline)
             if let first = assignments.first {
-                Button(NSLocalizedString("ui.button.save.sample.grade", value: "Save Sample Grade", comment: "Save Sample Grade")) {
+                Button(NSLocalizedString(
+                    "ui.button.save.sample.grade",
+                    value: "Save Sample Grade",
+                    comment: "Save Sample Grade"
+                )) {
                     onSave(first)
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.accentColor)
             } else {
-                Text(NSLocalizedString("ui.no.assignments.available.yet", value: "No assignments available yet.", comment: "No assignments available yet."))
-                    .foregroundStyle(.secondary)
+                Text(NSLocalizedString(
+                    "ui.no.assignments.available.yet",
+                    value: "No assignments available yet.",
+                    comment: "No assignments available yet."
+                ))
+                .foregroundStyle(.secondary)
             }
         }
         .padding()
@@ -624,9 +719,9 @@ struct CategoryPieChart: View {
 
     private func label(for range: TimerChartRange) -> String {
         switch range {
-        case .today: return "Today"
-        case .thisWeek: return "This Week"
-        case .thisMonth: return "This Month"
+        case .today: "Today"
+        case .thisWeek: "This Week"
+        case .thisMonth: "This Month"
         }
     }
 }
@@ -645,9 +740,9 @@ struct StudyHistoryBarChart: View {
 
     private func label(for range: TimerChartRange) -> String {
         switch range {
-        case .today: return "Today"
-        case .thisWeek: return "This Week"
-        case .thisMonth: return "This Month"
+        case .today: "Today"
+        case .thisWeek: "This Week"
+        case .thisMonth: "This Month"
         }
     }
 }

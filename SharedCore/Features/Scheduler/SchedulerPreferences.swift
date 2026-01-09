@@ -18,14 +18,26 @@ struct SchedulerPreferences: Codable {
 
     static func `default`() -> SchedulerPreferences {
         var energy: [Int: Double] = [:]
-        for h in 0..<24 { energy[h] = (h >= 9 && h <= 21) ? 0.7 : 0.3 }
+        for h in 0 ..< 24 {
+            energy[h] = (h >= 9 && h <= 21) ? 0.7 : 0.3
+        }
         var pref: [String: Int] = [:]
-        for t in TaskType.allCases { pref[t.rawValue] = 50 }
-        return SchedulerPreferences(wUrgency: 0.45, wImportance: 0.35, wDifficulty: 0.10, wSize: 0.10, learnedEnergyProfile: energy, preferredBlockLengthByType: pref, courseBias: [:])
+        for t in TaskType.allCases {
+            pref[t.rawValue] = 50
+        }
+        return SchedulerPreferences(
+            wUrgency: 0.45,
+            wImportance: 0.35,
+            wDifficulty: 0.10,
+            wSize: 0.10,
+            learnedEnergyProfile: energy,
+            preferredBlockLengthByType: pref,
+            courseBias: [:]
+        )
     }
 
     // Helpers
     func preferredBlockLength(for type: TaskType) -> Int {
-        return preferredBlockLengthByType[type.rawValue] ?? 50
+        preferredBlockLengthByType[type.rawValue] ?? 50
     }
 }

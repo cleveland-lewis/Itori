@@ -1,16 +1,15 @@
-import Testing
 import Foundation
+import Testing
 @testable import Itori
 
 @MainActor
 struct AssignmentPlanEngineTests {
-    
     // MARK: - Determinism Tests
-    
-    @Test func testDeterministicPlanGeneration() async throws {
+
+    @Test func deterministicPlanGeneration() async throws {
         let assignmentId = UUID(uuidString: "12345678-1234-1234-1234-123456789012")!
         let dueDate = Calendar.current.date(from: DateComponents(year: 2026, month: 6, day: 15))!
-        
+
         let assignment = Assignment(
             id: assignmentId,
             courseId: nil,
@@ -22,12 +21,12 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan1 = AssignmentPlanEngine.generatePlan(for: assignment)
         let plan2 = AssignmentPlanEngine.generatePlan(for: assignment)
-        
+
         #expect(plan1.steps.count == plan2.steps.count)
-        
+
         for (step1, step2) in zip(plan1.steps, plan2.steps) {
             #expect(step1.title == step2.title)
             #expect(step1.estimatedDuration == step2.estimatedDuration)
@@ -35,8 +34,8 @@ struct AssignmentPlanEngineTests {
             #expect(step1.stepType == step2.stepType)
         }
     }
-    
-    @Test func testDeterministicExamPlan() async throws {
+
+    @Test func deterministicExamPlan() async throws {
         let dueDate = Calendar.current.date(from: DateComponents(year: 2026, month: 6, day: 15))!
         let assignment = Assignment(
             id: UUID(),
@@ -49,26 +48,26 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment)
-        
+
         #expect(plan.steps.count >= 3)
         #expect(plan.steps.count <= 6)
-        
+
         for step in plan.steps {
             #expect(step.estimatedDuration > 0)
             #expect(step.recommendedStartDate != nil)
         }
-        
+
         let sortedSteps = plan.steps.sorted { $0.sequenceIndex < $1.sequenceIndex }
         for (index, step) in sortedSteps.enumerated() {
             #expect(step.sequenceIndex == index)
         }
     }
-    
+
     // MARK: - Category-Specific Tests
-    
-    @Test func testExamPlanGeneration() async throws {
+
+    @Test func examPlanGeneration() async throws {
         let dueDate = Date().addingTimeInterval(7 * 24 * 60 * 60)
         let assignment = Assignment(
             id: UUID(),
@@ -81,18 +80,18 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment)
-        
+
         #expect(plan.steps.count >= 3)
         #expect(plan.steps.first?.stepType == .review)
         #expect(plan.steps.last?.stepType == .review)
-        
+
         let totalDuration = plan.steps.reduce(0.0) { $0 + $1.estimatedDuration }
         #expect(totalDuration >= TimeInterval(240 * 60))
     }
-    
-    @Test func testQuizPlanGeneration() async throws {
+
+    @Test func quizPlanGeneration() async throws {
         let dueDate = Date().addingTimeInterval(3 * 24 * 60 * 60)
         let assignment = Assignment(
             id: UUID(),
@@ -105,18 +104,18 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment)
-        
+
         #expect(plan.steps.count >= 1)
         #expect(plan.steps.count <= 3)
-        
+
         for step in plan.steps {
             #expect(step.estimatedDuration <= TimeInterval(90 * 60))
         }
     }
-    
-    @Test func testHomeworkShortSession() async throws {
+
+    @Test func homeworkShortSession() async throws {
         let dueDate = Date().addingTimeInterval(2 * 24 * 60 * 60)
         let assignment = Assignment(
             id: UUID(),
@@ -129,15 +128,15 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment)
-        
+
         #expect(plan.steps.count == 1)
         #expect(plan.steps.first?.stepType == .task)
         #expect(plan.steps.first?.estimatedDuration == TimeInterval(45 * 60))
     }
-    
-    @Test func testHomeworkLongSessionSplit() async throws {
+
+    @Test func homeworkLongSessionSplit() async throws {
         let dueDate = Date().addingTimeInterval(3 * 24 * 60 * 60)
         let assignment = Assignment(
             id: UUID(),
@@ -150,16 +149,16 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment)
-        
+
         #expect(plan.steps.count > 1)
-        
+
         let totalDuration = plan.steps.reduce(0.0) { $0 + $1.estimatedDuration }
         #expect(abs(totalDuration - TimeInterval(150 * 60)) < 60)
     }
-    
-    @Test func testReadingPlanGeneration() async throws {
+
+    @Test func readingPlanGeneration() async throws {
         let dueDate = Date().addingTimeInterval(3 * 24 * 60 * 60)
         let assignment = Assignment(
             id: UUID(),
@@ -172,17 +171,17 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment)
-        
+
         #expect(plan.steps.count >= 1)
-        
+
         for step in plan.steps {
             #expect(step.stepType == .reading)
         }
     }
-    
-    @Test func testProjectPlanGeneration() async throws {
+
+    @Test func projectPlanGeneration() async throws {
         let dueDate = Date().addingTimeInterval(14 * 24 * 60 * 60)
         let assignment = Assignment(
             id: UUID(),
@@ -195,15 +194,15 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment)
-        
+
         #expect(plan.steps.count >= 4)
         #expect(plan.steps.first?.stepType == .research)
         #expect(plan.steps.last?.stepType == .review)
     }
-    
-    @Test func testProjectWithExistingPlan() async throws {
+
+    @Test func projectWithExistingPlan() async throws {
         let dueDate = Date().addingTimeInterval(14 * 24 * 60 * 60)
         let customPlan = [
             PlanStepStub(title: "Research Phase", expectedMinutes: 120),
@@ -211,7 +210,7 @@ struct AssignmentPlanEngineTests {
             PlanStepStub(title: "Implementation", expectedMinutes: 180),
             PlanStepStub(title: "Testing", expectedMinutes: 60)
         ]
-        
+
         let assignment = Assignment(
             id: UUID(),
             title: "Custom Project",
@@ -223,19 +222,19 @@ struct AssignmentPlanEngineTests {
             plan: customPlan,
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment)
-        
+
         #expect(plan.steps.count == 4)
         #expect(plan.steps[0].title == "Research Phase")
         #expect(plan.steps[1].title == "Design Phase")
         #expect(plan.steps[2].title == "Implementation")
         #expect(plan.steps[3].title == "Testing")
     }
-    
+
     // MARK: - Edge Cases
-    
-    @Test func testMinimalDuration() async throws {
+
+    @Test func minimalDuration() async throws {
         let dueDate = Date().addingTimeInterval(24 * 60 * 60)
         let assignment = Assignment(
             id: UUID(),
@@ -248,14 +247,14 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment)
-        
+
         #expect(plan.steps.count == 1)
         #expect(plan.steps.first?.estimatedDuration >= TimeInterval(15 * 60))
     }
-    
-    @Test func testVeryLongExam() async throws {
+
+    @Test func veryLongExam() async throws {
         let dueDate = Date().addingTimeInterval(7 * 24 * 60 * 60)
         let assignment = Assignment(
             id: UUID(),
@@ -268,14 +267,14 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment)
-        
+
         #expect(plan.steps.count >= 3)
         #expect(plan.steps.count <= 6)
     }
-    
-    @Test func testNearDueDate() async throws {
+
+    @Test func nearDueDate() async throws {
         let dueDate = Date().addingTimeInterval(12 * 60 * 60)
         let assignment = Assignment(
             id: UUID(),
@@ -288,21 +287,21 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment)
-        
+
         #expect(!plan.steps.isEmpty)
-        
+
         for step in plan.steps {
             if let dueBy = step.dueBy {
                 #expect(dueBy <= dueDate)
             }
         }
     }
-    
+
     // MARK: - Timing Tests
-    
-    @Test func testStepTimingConsistency() async throws {
+
+    @Test func stepTimingConsistency() async throws {
         let dueDate = Date().addingTimeInterval(7 * 24 * 60 * 60)
         let assignment = Assignment(
             id: UUID(),
@@ -315,30 +314,32 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment)
-        
-        for i in 0..<(plan.steps.count - 1) {
+
+        for i in 0 ..< (plan.steps.count - 1) {
             let currentStep = plan.steps[i]
             let nextStep = plan.steps[i + 1]
-            
+
             if let currentStart = currentStep.recommendedStartDate,
-               let nextStart = nextStep.recommendedStartDate {
+               let nextStart = nextStep.recommendedStartDate
+            {
                 #expect(nextStart >= currentStart)
             }
         }
-        
+
         if let lastStep = plan.steps.last,
-           let lastDue = lastStep.dueBy {
+           let lastDue = lastStep.dueBy
+        {
             #expect(lastDue <= dueDate || abs(lastDue.timeIntervalSince(dueDate)) < 60)
         }
     }
-    
-    @Test func testCustomSettings() async throws {
+
+    @Test func customSettings() async throws {
         var settings = PlanGenerationSettings.default
         settings.examLeadDays = 10
         settings.examSessionMinutes = 90
-        
+
         let dueDate = Date().addingTimeInterval(10 * 24 * 60 * 60)
         let assignment = Assignment(
             id: UUID(),
@@ -351,21 +352,22 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment, settings: settings)
-        
+
         #expect(!plan.steps.isEmpty)
-        
+
         if let firstStep = plan.steps.first,
-           let startDate = firstStep.recommendedStartDate {
+           let startDate = firstStep.recommendedStartDate
+        {
             let daysDifference = Calendar.current.dateComponents([.day], from: startDate, to: dueDate).day ?? 0
             #expect(daysDifference >= 9)
         }
     }
-    
+
     // MARK: - Step Type Tests
-    
-    @Test func testExamStepTypes() async throws {
+
+    @Test func examStepTypes() async throws {
         let dueDate = Date().addingTimeInterval(7 * 24 * 60 * 60)
         let assignment = Assignment(
             id: UUID(),
@@ -378,12 +380,12 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment)
-        
+
         var hasReview = false
         var hasPractice = false
-        
+
         for step in plan.steps {
             switch step.stepType {
             case .review:
@@ -394,11 +396,11 @@ struct AssignmentPlanEngineTests {
                 break
             }
         }
-        
+
         #expect(hasReview)
     }
-    
-    @Test func testProjectStepTypes() async throws {
+
+    @Test func projectStepTypes() async throws {
         let dueDate = Date().addingTimeInterval(14 * 24 * 60 * 60)
         let assignment = Assignment(
             id: UUID(),
@@ -411,13 +413,13 @@ struct AssignmentPlanEngineTests {
             plan: [],
             isLockedToDueDate: false
         )
-        
+
         let plan = AssignmentPlanEngine.generatePlan(for: assignment)
-        
+
         var hasResearch = false
         var hasPreparation = false
         var hasReview = false
-        
+
         for step in plan.steps {
             switch step.stepType {
             case .research:
@@ -430,7 +432,7 @@ struct AssignmentPlanEngineTests {
                 break
             }
         }
-        
+
         #expect(hasResearch)
         #expect(hasPreparation)
         #expect(hasReview)

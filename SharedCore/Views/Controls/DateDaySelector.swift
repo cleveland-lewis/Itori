@@ -56,10 +56,10 @@ private struct GhostIconButton: View {
 }
 
 #if !DISABLE_PREVIEWS
-#if !DISABLE_PREVIEWS
-#Preview {
-    DateDaySelector(date: .constant(Date()), onPrevious: {}, onNext: {})
-        .frame(width: 420)
-}
-#endif
+    #if !DISABLE_PREVIEWS
+        #Preview {
+            DateDaySelector(date: .constant(Date()), onPrevious: {}, onNext: {})
+                .frame(width: 420)
+        }
+    #endif
 #endif

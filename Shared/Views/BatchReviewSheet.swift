@@ -4,10 +4,10 @@ struct BatchReviewSheet: View {
     let state: BatchReviewState
     let onApprove: () async -> Void
     let onCancel: () -> Void
-    
+
     @Environment(\.dismiss) private var dismiss
     @State private var isProcessing = false
-    
+
     var body: some View {
         VStack(spacing: 24) {
             // Header
@@ -15,17 +15,17 @@ struct BatchReviewSheet: View {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .font(.system(size: 48))
                     .foregroundStyle(.orange)
-                
+
                 Text("Large Import Detected")
                     .font(.title2.weight(.bold))
-                
+
                 Text("Found \(state.totalItems) items in \(state.fileName)")
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
             .padding(.top, 32)
-            
+
             // Content breakdown
             VStack(alignment: .leading, spacing: 12) {
                 if !state.results.assignments.isEmpty {
@@ -37,7 +37,7 @@ struct BatchReviewSheet: View {
                         Spacer()
                     }
                 }
-                
+
                 if !state.results.events.isEmpty {
                     HStack {
                         Image(systemName: "calendar")
@@ -53,16 +53,16 @@ struct BatchReviewSheet: View {
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .fill(Color.secondary.opacity(0.1))
             )
-            
+
             // Warning message
             Text("This is a large import. Would you like to add all these items to your schedule?")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
-            
+
             Spacer()
-            
+
             // Actions
             HStack(spacing: 12) {
                 Button(action: {
@@ -75,7 +75,7 @@ struct BatchReviewSheet: View {
                 }
                 .buttonStyle(.bordered)
                 .disabled(isProcessing)
-                
+
                 Button(action: {
                     isProcessing = true
                     Task {

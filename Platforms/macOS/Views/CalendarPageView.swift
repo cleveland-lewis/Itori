@@ -1,2497 +1,14 @@
 #if os(macOS)
-import SwiftUI
-import EventKit
-import _Concurrency
-import UniformTypeIdentifiers
-#if os(macOS)
-import AppKit
-#endif
-
-// Shared helper for labeling events
-fileprivate func eventCategoryLabel(for title: String) -> String {
-    let lower = title.lowercased()
-    let pairs: [(String, String)] = [
-        ("exam", "Exam"),
-        ("midterm", "Exam"),
-        ("final", "Exam"),
-        ("class", "Class"),
-        ("lecture", "Class"),
-        ("lab", "Class"),
-        ("study", "Study"),
-        ("read", "Reading"),
-        ("homework", "Homework"),
-        ("assignment", "Homework"),
-        ("problem set", "Homework"),
-        ("practice test", "Practice Test"),
-        ("mock", "Practice Test"),
-        ("quiz", "Practice Test"),
-        ("meeting", "Meeting"),
-        ("sync", "Meeting"),
-        ("1:1", "Meeting"),
-        ("one-on-one", "Meeting")
-    ]
-    for (key, label) in pairs {
-        if lower.contains(key) { return label }
-    }
-    return "Other"
-}
-
-enum CalendarViewMode: String, CaseIterable, Identifiable {
-    case day = "Day"
-    case week = "Week"
-    case month = "Month"
-    case year = "Year"
-    var id: String { rawValue }
-    var title: String { rawValue.capitalized }
-}
-
-public struct CalendarEvent: Identifiable, Hashable {
-    public let id: UUID
-    var title: String
-    var startDate: Date
-    var endDate: Date
-    var location: String?
-    var notes: String?
-    var url: URL?
-    var alarms: [EKAlarm]?
-    var travelTime: TimeInterval?
-    var ekIdentifier: String?
-    var isReminder: Bool = false
-    var category: EventCategory
-    var canEdit: Bool
-    var isRecurring: Bool
-
-    init(id: UUID = UUID(), title: String, startDate: Date, endDate: Date, location: String? = nil, notes: String? = nil, url: URL? = nil, alarms: [EKAlarm]? = nil, travelTime: TimeInterval? = nil, ekIdentifier: String? = nil, isReminder: Bool = false, category: EventCategory? = nil, canEdit: Bool = true, isRecurring: Bool = false) {
-        self.id = id
-        self.title = title
-        self.startDate = startDate
-        self.endDate = endDate
-        self.location = location
-        self.notes = notes
-        self.url = url
-        self.alarms = alarms
-        self.travelTime = travelTime
-        self.ekIdentifier = ekIdentifier
-        self.isReminder = isReminder
-        self.category = category ?? parseEventCategory(from: title) ?? .other
-        self.canEdit = canEdit
-        self.isRecurring = isRecurring
-    }
-}
-
-struct CalendarPageView: View {
-    @ScaledMetric private var emptyIconSize: CGFloat = 48
-
-    @ScaledMetric private var mediumTextSize: CGFloat = 16
-
-    
-    @EnvironmentObject var settings: AppSettingsModel
-
-    @EnvironmentObject var eventsStore: EventsCountStore
-    @EnvironmentObject var calendarManager: CalendarManager
-    @EnvironmentObject var deviceCalendar: DeviceCalendarManager
-    @State private var currentViewMode: CalendarViewMode = .month
-    @State private var focusedDate: Date = Calendar.current.startOfDay(for: Date())
-    @State private var selectedDate: Date? = nil  // No selection until explicit user action
-    @State private var selectedEvent: CalendarEvent?
-    @State private var metrics: CalendarStats = .empty
-    @State private var showingNewEventSheet = false
-    @State private var events: [CalendarEvent] = []
-    @State private var syncedEvents: [CalendarEvent] = []
-    private var eventStore: EKEventStore { DeviceCalendarManager.shared.store }
-
-    private let calendar = Calendar.current
-    
-    // Computed today date (always start of day)
-    private var todayDate: Date {
-        calendar.startOfDay(for: Date())
-    }
-
-    @State private var chevronLeftHover = false
-    @State private var chevronRightHover = false
-    @State private var todayHover = false
-    @State private var refreshHover = false
-    @State private var isRefreshing = false
-    @State private var isHydratingInitial = false
-    @State private var isHydratingFull = false
-    @State private var openTimestamp: Date = Date()
-    @State private var firstFrameElapsed: TimeInterval?
-    @State private var dataReadyElapsed: TimeInterval?
-    @State private var fullDataReadyElapsed: TimeInterval?
-    @State private var loadedEventCount: Int = 0
-    @State private var hydratedEKEvents: [EKEvent] = []
-    
-    // Performance: Cache filtered events to avoid repeated filtering in body
-    @State private var cachedFilteredEvents: [EKEvent] = []
-    @State private var lastFilterUpdate: Date = Date.distantPast
-    
-    // Performance: Cache events by day to avoid repeated filtering
-    @State private var eventsByDay: [String: [CalendarEvent]] = [:]
-
-    // Computed property to filter events based on settings
-    private var filteredEvents: [EKEvent] {
-        // Cache invalidation check
-        let now = Date()
-        if now.timeIntervalSince(lastFilterUpdate) > 1.0 {
-            updateFilteredEventsCache()
-        }
-        return cachedFilteredEvents
-    }
-    
-    private func updateFilteredEventsCache() {
-        let startTime = CFAbsoluteTimeGetCurrent()
-        
-        let allEvents = deviceCalendar.events
-        let filtered: [EKEvent]
-        
-        if settings.showOnlySchoolCalendar && !calendarManager.selectedCalendarID.isEmpty {
-            filtered = allEvents.filter { event in
-                guard let calendar = event.calendar else { return false }
-                return calendar.calendarIdentifier == calendarManager.selectedCalendarID
-            }
-        } else {
-            filtered = allEvents
-        }
-        
-        cachedFilteredEvents = filtered
-        lastFilterUpdate = Date()
-        
-        let duration = (CFAbsoluteTimeGetCurrent() - startTime) * 1000
-        if duration > 16 { // Log if filtering takes more than one frame
-            DebugLogger.log("⚠️ Calendar filter took \(String(format: "%.2f", duration))ms")
-        }
-    }
-
-    var body: some View {
-        GeometryReader { proxy in
-            let verticalPadding = RootsSpacing.pagePadding
-            let topToolbarHeight = DesignSystem.Layout.rowHeight.large + 12
-            let topSectionSpacing: CGFloat = 16
-            let availableWidth = max(0, proxy.size.width - verticalPadding * 2)
-            let sidebarWidth = max(220, min(280, availableWidth * 0.28))
-            let gridPadding = max(8, min(16, availableWidth * 0.02))
-            let loadingHeight: CGFloat = (isHydratingInitial || isHydratingFull) ? 24 : 0
-            let topSectionsHeight = topToolbarHeight
-                + (loadingHeight > 0 ? loadingHeight + topSectionSpacing : 0)
-            let panelHeight = max(0, proxy.size.height - verticalPadding * 2 - topSectionsHeight - topSectionSpacing)
-
-            VStack(spacing: topSectionSpacing) {
-                headerView
-
-                if isHydratingInitial || isHydratingFull {
-                    HStack(spacing: 8) {
-                        ProgressView()
-                        Text(isHydratingFull ? "Loading calendar…" : "Preparing events…")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                    }
-                    .padding(.horizontal, 4)
-                }
-
-                // Main content: sidebar + calendar grid (equal height cards)
-                HStack(alignment: .top, spacing: 16) {
-                    // Left sidebar showing events for selected date
-                    eventSidebarView
-                        .frame(width: sidebarWidth)
-                        .frame(height: panelHeight, alignment: .top)
-
-                    // Main calendar grid
-                    VStack(spacing: 12) {
-                        gridContent
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    .padding(gridPadding)
-                    .background(DesignSystem.Materials.card)
-                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                            .stroke(Color.primary.opacity(0.06), lineWidth: 1)
-                    )
-                    .frame(height: panelHeight, alignment: .top)
-                }
-                .frame(maxWidth: .infinity)
-            }
-            .padding(verticalPadding)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        }
-        .sheet(isPresented: $showingNewEventSheet) {
-            AddEventPopup().environmentObject(calendarManager)
-        }
-        .onAppear {
-            openTimestamp = Date()
-            markFirstFrame()
-            requestAccessAndSync()
-            hydrateEventsIncrementally()
-            updateFilteredEventsCache()
-            updateMetrics()
-            
-            // Log performance metrics to console when developer mode is enabled
-            if settings.devModeEnabled {
-                logPerformanceMetrics()
-            }
-        }
-        .onChange(of: focusedDate) { _, newValue in
-            invalidateEventsCache()
-            loadVisibleRangeEvents()
-            updateMetrics()
-        }
-        .onChange(of: currentViewMode) { _, _ in
-            invalidateEventsCache()
-            loadVisibleRangeEvents()
-            updateMetrics()
-        }
-        .onReceive(deviceCalendar.$events) { _ in
-            invalidateEventsCache()
-            updateMetrics()
-        }
-        .onChange(of: settings.showOnlySchoolCalendar) { _, _ in
-            invalidateEventsCache()
-        }
-        .onChange(of: calendarManager.selectedCalendarID) { _, _ in
-            invalidateEventsCache()
-        }
-        // Present event detail without resizing layout
-        .sheet(item: $selectedEvent, onDismiss: {
-            // restore sidebar when the detail sheet is dismissed
-            withAnimation(DesignSystem.Motion.standardEase) { selectedDate = calendarManager.selectedDate ?? focusedDate }
-            selectedEvent = nil
-        }, content: { event in
-            // Add a subtle presentation animation inside the sheet
-            EventDetailView(item: event, isPresented: Binding(get: { selectedEvent != nil }, set: { if !$0 { selectedEvent = nil } }))
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-        })
-    }
-
-    private var headerView: some View {
-        HStack(alignment: .center, spacing: 12) {
-            titleView
-
-            Spacer()
-
-            navigationControls
-        }
-        .padding(.horizontal, DesignSystem.Layout.padding.window)
-        .padding(.vertical, 4)
-    }
-
-    private var titleView: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(headerTitle)
-                .font(.largeTitle.weight(.semibold))
-                .lineLimit(1)
-            Text(headerSubtitle)
-                .font(DesignSystem.Typography.caption)
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    private var navigationControls: some View {
-        HStack(spacing: 6) {
-            Button { shift(by: -1) } label: {
-                calendarButtonLabel(
-                    title: NSLocalizedString("common.button.previous", comment: ""),
-                    systemImage: "chevron.left"
-                )
-                .foregroundStyle(chevronLeftHover ? Color.accentColor : .primary)
-                .scaleEffect(chevronLeftHover ? 1.06 : 1.0)
-            }
-            .buttonStyle(.plain)
-            .rootsStandardInteraction()
-            .keyboardShortcut(.leftArrow, modifiers: [.command])
-            .onHover { hovering in
-                withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { chevronLeftHover = hovering }
-            }
-
-            Button { jumpToToday() } label: {
-                Text(NSLocalizedString("calendar.today", value: "Today", comment: "Today"))
-                    .font(.subheadline.weight(.semibold))
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.accentColor).opacity(todayHover ? 0.18 : 0.12))
-            }
-            .buttonStyle(.plain)
-            .rootsStandardInteraction()
-            .keyboardShortcut("t", modifiers: [.command])
-            .onHover { hovering in
-                withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { todayHover = hovering }
-            }
-
-            Button { shift(by: 1) } label: {
-                calendarButtonLabel(
-                    title: NSLocalizedString("common.button.next", comment: ""),
-                    systemImage: "chevron.right"
-                )
-                .foregroundStyle(chevronRightHover ? Color.accentColor : .primary)
-                .scaleEffect(chevronRightHover ? 1.06 : 1.0)
-            }
-            .buttonStyle(.plain)
-            .rootsStandardInteraction()
-            .keyboardShortcut(.rightArrow, modifiers: [.command])
-            .onHover { hovering in
-                withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { chevronRightHover = hovering }
-            }
-            
-            Button { refreshCalendar() } label: {
-                calendarButtonLabel(
-                    title: NSLocalizedString("timer.context.refresh_calendar", comment: ""),
-                    systemImage: isRefreshing ? "arrow.clockwise.circle.fill" : "arrow.clockwise"
-                )
-                .foregroundStyle(refreshHover ? Color.accentColor : .primary)
-                .scaleEffect(refreshHover ? 1.06 : 1.0)
-                .rotationEffect(.degrees(isRefreshing ? 360 : 0))
-                .animation(isRefreshing ? .linear(duration: 1.0).repeatForever(autoreverses: false) : .default, value: isRefreshing)
-            }
-            .buttonStyle(.plain)
-            .rootsStandardInteraction()
-            .keyboardShortcut("r", modifiers: [.command])
-            .disabled(isRefreshing)
-            .onHover { hovering in
-                withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { refreshHover = hovering }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .trailing)
-    }
-
-    private var headerTitle: String {
-        switch currentViewMode {
-        case .day:
-            return focusedDate.formatted(.dateTime.weekday().month().day())
-        case .week:
-            return weekTitle(for: focusedDate)
-        case .month:
-            return monthTitle(for: focusedDate)
-        case .year:
-            return String(Calendar.current.component(.year, from: focusedDate))
-        }
-    }
-
-    private var headerSubtitle: String {
-        currentViewMode == .week ? weekSubtitle(for: focusedDate) : ""
-    }
-    
-    // MARK: - Event Sidebar
-    
-    @ViewBuilder
-    private var eventSidebarView: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Header with selected date
-            VStack(alignment: .leading, spacing: 4) {
-                Text(sidebarDateTitle)
-                    .font(.title3.weight(.semibold))
-                    .lineLimit(1)
-                
-                Text(sidebarDateSubtitle)
-                    .font(DesignSystem.Typography.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .padding(.horizontal, 16)
-            .padding(.top, 16)
-            .padding(.bottom, 12)
-            
-            Divider()
-            
-            // Event list
-            eventListView
-        }
-        .frame(maxHeight: .infinity, alignment: .top)
-        .sidebarCardStyle()
-    }
-    
-    @ViewBuilder
-    private var eventListView: some View {
-        let dayEvents = events(on: selectedDate ?? focusedDate)
-        
-        if dayEvents.isEmpty {
-            // Empty state
-            VStack(spacing: 12) {
-                Image(systemName: "calendar.badge.clock")
-                    .font(.system(size: emptyIconSize))
-                    .foregroundStyle(.tertiary)
-                
-                Text(NSLocalizedString("calendar.no_events.title", value: "No Events", comment: "No Events"))
-                    .font(DesignSystem.Typography.body)
-                
-                Text(NSLocalizedString("calendar.no_events.message", value: "Add an assignment or event to get started", comment: "Add an assignment or event to get started"))
-                    .font(DesignSystem.Typography.caption)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding()
-        } else {
-            ScrollView {
-                VStack(spacing: 8) {
-                    ForEach(dayEvents) { event in
-                        sidebarEventRow(event: event)
-                    }
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 12)
-            }
-        }
-    }
-    
-    private func sidebarEventRow(event: CalendarEvent) -> some View {
-        Button {
-            selectedEvent = event
-        } label: {
-            HStack(alignment: .top, spacing: 12) {
-                // Time or "All-day"
-                VStack(alignment: .leading, spacing: 2) {
-                    if calendar.isDateInToday(event.startDate) && event.startDate.timeIntervalSinceNow < 0 && event.endDate.timeIntervalSinceNow > 0 {
-                        Text(NSLocalizedString("calendar.now", value: "Now", comment: "Now"))
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(Color.accentColor)
-                    } else if isAllDay(event: event) {
-                        Text(NSLocalizedString("calendar.all_day", value: "All Day", comment: "All Day"))
-                            .font(.caption.weight(.medium))
-                            .foregroundStyle(.secondary)
-                    } else {
-                        Text(event.startDate.formatted(date: .omitted, time: .shortened))
-                            .font(.caption.weight(.medium))
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .frame(width: 50, alignment: .leading)
-                
-                // Category color indicator (outline SF Symbol)
-                Image(systemName: categoryIcon(for: event.category))
-                    .font(.system(size: mediumTextSize))
-                    .foregroundStyle(Color.accentColor)
-                    .frame(width: 20)
-                
-                // Event details
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(event.title)
-                        .font(DesignSystem.Typography.body)
-                        .lineLimit(2)
-                    
-                    if let location = event.location, !location.isEmpty {
-                        HStack(spacing: 4) {
-                            Image(systemName: "mappin")
-                                .font(.caption2)
-                            Text(location)
-                                .font(.caption)
-                        }
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
-            .background(
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(DesignSystem.Materials.hud.opacity(0.5))
-            )
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .rootsStandardInteraction()
-    }
-    
-    private var sidebarDateTitle: String {
-        let date = selectedDate ?? focusedDate
-        if calendar.isDateInToday(date) {
-            return "Today"
-        } else if calendar.isDateInTomorrow(date) {
-            return "Tomorrow"
-        } else if calendar.isDateInYesterday(date) {
-            return "Yesterday"
-        } else {
-            return date.formatted(.dateTime.weekday(.wide).month().day())
-        }
-    }
-    
-    private var sidebarDateSubtitle: String {
-        let date = selectedDate ?? focusedDate
-        let dayEvents = events(on: date)
-        let count = dayEvents.count
-        return String.localizedStringWithFormat(
-            NSLocalizedString("events_count", comment: ""),
-            count
-        )
-    }
-    
-    private func isAllDay(event: CalendarEvent) -> Bool {
-        let duration = event.endDate.timeIntervalSince(event.startDate)
-        return duration >= 86400 - 60 // Consider >= 23h59m as all-day
-    }
-    
-    private func categoryIcon(for category: EventCategory) -> String {
-        switch category {
-        case .study: return "book"
-        case .homework: return "pencil"
-        case .exam: return "doc.text"
-        case .lab: return "flask"
-        case .class: return "graduationcap"
-        case .reading: return "book.pages"
-        case .review: return "checkmark.circle"
-        case .other: return "calendar"
-        }
-    }
-
-    @ViewBuilder
-    private func calendarButtonLabel(title: String, systemImage: String) -> some View {
-        switch settings.tabBarMode {
-        case .iconsOnly:
-            Image(systemName: systemImage)
-        case .textOnly:
-            Text(title)
-        case .iconsAndText:
-            HStack(spacing: DesignSystem.Spacing.xsmall) {
-                Image(systemName: systemImage)
-                Text(title)
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func addEventButtonLabel() -> some View {
-        let title = NSLocalizedString("calendar.new_event", comment: "")
-        switch settings.tabBarMode {
-        case .iconsOnly:
-            Image(systemName: "plus")
-                .font(.subheadline.weight(.semibold))
-                .frame(width: 36, height: 36)
-                .background(DesignSystem.Materials.hud.opacity(0.75), in: Circle())
-        case .textOnly:
-            Text(title)
-                .font(.subheadline.weight(.semibold))
-                .padding(.horizontal, 12)
-                .padding(.vertical, 7)
-                .background(DesignSystem.Materials.hud.opacity(0.75), in: Capsule())
-        case .iconsAndText:
-            HStack(spacing: DesignSystem.Spacing.xsmall) {
-                Image(systemName: "plus")
-                Text(title)
-            }
-            .font(.subheadline.weight(.semibold))
-            .padding(.horizontal, 12)
-            .padding(.vertical, 7)
-            .background(DesignSystem.Materials.hud.opacity(0.75), in: Capsule())
-        }
-    }
-
-    @ViewBuilder
-    private var gridContent: some View {
-        switch currentViewMode {
-        case .month:
-            MonthCalendarView(
-                focusedDate: $focusedDate,
-                selectedDate: $selectedDate,
-                events: effectiveEvents,
-                onSelectDate: { day in
-                    focusedDate = day
-                    selectedDate = day
-                    calendarManager.selectedDate = day
-                    selectedEvent = events(on: day).first
-                    updateMetrics()
-                },
-                onSelectEvent: { event in
-                    selectedEvent = event
-                    focusedDate = event.startDate
-                    selectedDate = event.startDate
-                    calendarManager.selectedDate = event.startDate
-                    updateMetrics()
-                }
-            )
-        case .week:
-            WeekCalendarView(focusedDate: $focusedDate, events: effectiveEvents)
-        case .day:
-            CalendarDayView(date: focusedDate, events: filteredEvents)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        case .year:
-            CalendarYearView(currentYear: focusedDate)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-    }
-
-    private func eventsFor(date: Date) -> [CalendarEvent] {
-        let start = calendar.startOfDay(for: date)
-        return effectiveEvents.filter { calendar.isDate($0.startDate, inSameDayAs: start) }
-    }
-
-    private func shift(by value: Int) {
-        switch currentViewMode {
-        case .month:
-            if let newDate = calendar.date(byAdding: .month, value: value, to: focusedDate) {
-                focusedDate = newDate
-                selectedDate = newDate
-            }
-        case .week:
-            if let newDate = calendar.date(byAdding: .weekOfYear, value: value, to: focusedDate) {
-                focusedDate = newDate
-                selectedDate = newDate
-            }
-        case .day:
-            if let newDate = calendar.date(byAdding: .day, value: value, to: focusedDate) {
-                focusedDate = newDate
-                selectedDate = newDate
-            }
-        case .year:
-            if let newDate = calendar.date(byAdding: .year, value: value, to: focusedDate) {
-                focusedDate = newDate
-                selectedDate = newDate
-            }
-        }
-    }
-
-    private func monthTitle(for date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "LLLL yyyy"
-        return formatter.string(from: date)
-    }
-
-    private func weekTitle(for date: Date) -> String {
-        let start = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date)) ?? date
-        let end = Calendar.current.date(byAdding: .day, value: 6, to: start) ?? date
-        let f = DateFormatter()
-        f.dateFormat = "EEE, d MMM"
-        let startStr = f.string(from: start)
-        f.dateFormat = "EEE, d MMM"
-        let endStr = f.string(from: end)
-        return "\(startStr) – \(endStr)"
-    }
-
-    private func weekSubtitle(for date: Date) -> String {
-        let f = DateFormatter()
-        f.dateFormat = "LLLL yyyy"
-        return f.string(from: date)
-    }
-
-    private func jumpToToday() {
-        let today = Date()
-        focusedDate = today
-        selectedDate = today
-        calendarManager.selectedDate = today
-    }
-    
-    private func refreshCalendar() {
-        guard !isRefreshing else { return }
-        
-        isRefreshing = true
-        _Concurrency.Task {
-            await deviceCalendar.refreshEventsForVisibleRange(reason: "manual_refresh")
-            invalidateEventsCache()
-            hydrateEventsIncrementally()
-            
-            await MainActor.run {
-                // Keep spinning for a minimum duration for visual feedback
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    isRefreshing = false
-                }
-            }
-        }
-    }
-
-    private var effectiveEvents: [CalendarEvent] {
-        syncedEvents.isEmpty ? events : syncedEvents
-    }
-
-    private func requestAccessAndSync() {
-        _Concurrency.Task {
-            await calendarManager.requestAccess()
-        }
-    }
-
-    private func syncEvents() {
-        hydrateEventsIncrementally()
-    }
-
-    private func hydrateEventsIncrementally() {
-        guard !isHydratingInitial else { return }
-        isHydratingInitial = true
-
-        let cal = Calendar.current
-        let start = cal.date(byAdding: .day, value: -1, to: Date()) ?? Date()
-        let end = cal.date(byAdding: .day, value: 3, to: Date()) ?? Date()
-        let targetCalendars = selectedEventCalendars()
-
-        fetchEventsAsync(start: start, end: end, targetCalendars: targetCalendars, includeReminders: false, reason: "initialRange") { ekEvents, events in
-            self.applyEvents(ekEvents, events: events)
-            self.loadedEventCount = events.count
-            if self.dataReadyElapsed == nil {
-                self.dataReadyElapsed = Date().timeIntervalSince(self.openTimestamp)
-            }
-            self.isHydratingInitial = false
-            self.loadVisibleRangeEvents()
-        }
-    }
-
-    private func loadVisibleRangeEvents() {
-        guard !isHydratingFull else { return }
-        isHydratingFull = true
-
-        let window = visibleInterval()
-        let targetCalendars = selectedEventCalendars()
-
-        fetchEventsAsync(start: window.start, end: window.end, targetCalendars: targetCalendars, includeReminders: true, reason: "visibleRange") { ekEvents, events in
-            self.applyEvents(ekEvents, events: events)
-            self.loadedEventCount = events.count
-            let elapsed = Date().timeIntervalSince(self.openTimestamp)
-            if self.dataReadyElapsed == nil { self.dataReadyElapsed = elapsed }
-            self.fullDataReadyElapsed = elapsed
-            self.isHydratingFull = false
-        }
-    }
-
-    private func selectedEventCalendars() -> [EKCalendar]? {
-        let selectedCalId = calendarManager.selectedCalendarID
-        guard !selectedCalId.isEmpty else { return nil }
-        return eventStore.calendars(for: .event).filter { $0.calendarIdentifier == selectedCalId }
-    }
-
-    private func markFirstFrame() {
-        DispatchQueue.main.async {
-            if self.firstFrameElapsed == nil {
-                self.firstFrameElapsed = Date().timeIntervalSince(self.openTimestamp)
-            }
-        }
-    }
-
-    private func fetchEventsAsync(
-        start: Date,
-        end: Date,
-        targetCalendars: [EKCalendar]?,
-        includeReminders: Bool,
-        reason: String,
-        completion: @escaping ([EKEvent], [CalendarEvent]) -> Void
-    ) {
-        // Guard permissions early
-        let hasEventAccess: Bool = {
-            if #available(macOS 14.0, *) {
-                return calendarManager.eventAuthorizationStatus == .fullAccess || calendarManager.eventAuthorizationStatus == .writeOnly
-            } else {
-                return calendarManager.eventAuthorizationStatus == .fullAccess || calendarManager.eventAuthorizationStatus == .writeOnly
-            }
-        }()
-        let hasReminderAccess: Bool = {
-            if #available(macOS 14.0, *) {
-                return calendarManager.reminderAuthorizationStatus == .fullAccess || calendarManager.reminderAuthorizationStatus == .writeOnly
-            } else {
-                return calendarManager.reminderAuthorizationStatus == .fullAccess || calendarManager.reminderAuthorizationStatus == .writeOnly
-            }
-        }()
-
-        if !(hasEventAccess || hasReminderAccess) {
-            DebugLogger.log("📅 [CalendarPageView] fetchEventsAsync called without permissions")
-            completion([], [])
-            return
-        }
-
-        let store = eventStore
-        DispatchQueue.global(qos: .userInitiated).async {
-            let predicate = store.predicateForEvents(withStart: start, end: end, calendars: targetCalendars)
-            let ekEvents = store.events(matching: predicate)
-
-            DispatchQueue.main.async {
-                let mappedEvents = ekEvents.map { self.mapEventInline($0) }
-                guard includeReminders && hasReminderAccess else {
-                    completion(ekEvents, mappedEvents)
-                    return
-                }
-
-                let reminderCalendars: [EKCalendar]? = {
-                    if calendarManager.selectedReminderListID.isEmpty { return nil }
-                    return store.calendars(for: .reminder).filter { $0.calendarIdentifier == calendarManager.selectedReminderListID }
-                }()
-
-                let reminderPredicate = store.predicateForIncompleteReminders(withDueDateStarting: start, ending: end, calendars: reminderCalendars)
-                store.fetchReminders(matching: reminderPredicate) { reminders in
-                    let mappedReminders = reminders?.compactMap { reminder -> CalendarEvent? in
-                        guard let dueDate = reminder.dueDateComponents?.date else { return nil }
-                        return CalendarEvent(
-                            title: reminder.title,
-                            startDate: dueDate,
-                            endDate: dueDate,
-                            location: reminder.location,
-                            notes: reminder.notes,
-                            url: nil,
-                            alarms: nil,
-                            travelTime: nil,
-                            ekIdentifier: reminder.calendarItemIdentifier,
-                            isReminder: true,
-                            category: nil,
-                            canEdit: reminder.calendar?.allowsContentModifications ?? false,
-                            isRecurring: false
-                        )
-                    } ?? []
-
-                    DispatchQueue.main.async {
-                        completion(ekEvents, mappedEvents + mappedReminders)
-                    }
-                }
-            }
-        }
-    }
-
-    /// Maps an EKEvent to our CalendarEvent model, decoding notes/category and preserving editability/recurrence flags.
-    private func mapEventInline(_ ek: EKEvent) -> CalendarEvent {
-        let (cleanNotes, storedCategory) = calendarManager.decodeNotesWithCategory(notes: ek.notes)
-        return CalendarEvent(
-            title: ek.title,
-            startDate: ek.startDate,
-            endDate: ek.endDate,
-            location: ek.location,
-            notes: cleanNotes,
-            url: ek.url,
-            alarms: ek.alarms,
-            travelTime: nil,
-            ekIdentifier: ek.eventIdentifier,
-            isReminder: false,
-            category: storedCategory,
-            canEdit: ek.calendar?.allowsContentModifications ?? false,
-            isRecurring: !(ek.recurrenceRules?.isEmpty ?? true)
-        )
-    }
-
-    private func applyEvents(_ ekEvents: [EKEvent], events: [CalendarEvent]) {
-        self.syncedEvents = events
-        self.hydratedEKEvents = ekEvents
-        let dates = events.map { calendar.startOfDay(for: $0.startDate) }
-        _Concurrency.Task { @MainActor in
-            eventsStore.update(dates: dates)
-        }
-        updateMetrics()
-    }
-
-    private func formattedTimeRange(start: Date, end: Date) -> String {
-        let use24 = AppSettingsModel.shared.use24HourTime
-        let f = DateFormatter()
-        f.dateFormat = use24 ? "HH:mm" : "h:mm a"
-        return "\(f.string(from: start)) - \(f.string(from: end))"
-    }
-
-    private func events(on day: Date) -> [CalendarEvent] {
-        let startOfDay = calendar.startOfDay(for: day)
-        let dayKey = dateKey(for: startOfDay)
-        
-        // Return cached if available
-        if let cached = eventsByDay[dayKey] {
-            return cached
-        }
-        
-        // Compute without caching during view render
-        // (prevents "modifying state during view update" warning)
-        let filtered = effectiveEvents
-            .filter { calendar.isDate($0.startDate, inSameDayAs: startOfDay) }
-            .sorted { $0.startDate < $1.startDate }
-        
-        return filtered
-    }
-    
-    private func dateKey(for date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: date)
-    }
-    
-    private func invalidateEventsCache() {
-        eventsByDay.removeAll()
-        updateFilteredEventsCache()
-    }
-
-    private func visibleInterval() -> DateInterval {
-        switch currentViewMode {
-        case .month:
-            if let interval = calendar.dateInterval(of: .month, for: focusedDate) {
-                return interval
-            }
-        case .week:
-            let start = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: focusedDate)) ?? focusedDate
-            let end = calendar.date(byAdding: .day, value: 7, to: start) ?? focusedDate
-            return DateInterval(start: start, end: end)
-        case .day:
-            let start = calendar.startOfDay(for: focusedDate)
-            let end = calendar.date(byAdding: .day, value: 1, to: start) ?? focusedDate
-            return DateInterval(start: start, end: end)
-        case .year:
-            if let interval = calendar.dateInterval(of: .year, for: focusedDate) {
-                return interval
-            }
-        @unknown default:
-            break
-        }
-        return DateInterval(start: focusedDate, end: focusedDate.addingTimeInterval(24*3600))
-    }
-
-    private func updateMetrics() {
-        let startTime = CFAbsoluteTimeGetCurrent()
-        
-        // Capture values for background computation
-        let source = hydratedEKEvents.isEmpty ? filteredEvents : hydratedEKEvents
-        let dateToProcess = focusedDate
-        
-        Task.detached(priority: .userInitiated) {
-            // Heavy computation off main thread
-            let calculatedMetrics = CalendarStats.calculate(from: source, for: dateToProcess)
-            
-            let duration = (CFAbsoluteTimeGetCurrent() - startTime) * 1000
-            
-            // Update UI on main thread
-            await MainActor.run {
-                self.metrics = calculatedMetrics
-                if duration > 16 {
-                    DebugLogger.log("⚠️ Calendar metrics calculation took \(String(format: "%.2f", duration))ms")
-                }
-            }
-        }
-    }
-
-    private func formattedMillis(_ interval: TimeInterval?) -> String {
-        guard let interval else { return "—" }
-        return String(format: "%.0f ms", interval * 1000)
-    }
-    
-    private func logPerformanceMetrics() {
-        // Schedule logging after a brief delay to ensure metrics are captured
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            let firstFrame = self.formattedMillis(self.firstFrameElapsed)
-            let dataReady = self.formattedMillis(self.dataReadyElapsed)
-            let fullReady = self.formattedMillis(self.fullDataReadyElapsed)
-            let eventCount = self.loadedEventCount
-            
-            print("📅 Calendar Performance:")
-            print("   First frame: \(firstFrame)")
-            print("   Data ready: \(dataReady)")
-            print("   Full ready: \(fullReady)")
-            print("   Events: \(eventCount)")
-        }
-    }
-}
-
-// MARK: - Month View
-
-private struct MonthCalendarSplitView: View {
-    @Binding var focusedDate: Date
-    @Binding var selectedDate: Date?
-    let events: [CalendarEvent]
-    let onSelectDate: (Date) -> Void
-    let onSelectEvent: (CalendarEvent) -> Void
-    let onNewEvent: () -> Void
-    let timeFormatter: (Date, Date) -> String
-    @State private var selectedEvent: CalendarEvent?
-
-    private let calendar = Calendar.current
-
-    var body: some View {
-        NavigationSplitView {
-            sidebar
-        } detail: {
-            MonthCalendarView(
-                focusedDate: $focusedDate,
-                selectedDate: $selectedDate,
-                events: events,
-                onSelectDate: { day in
-                    selectedDate = day
-                    onSelectDate(day)
-                    selectedEvent = events(on: day).first
-                },
-                onSelectEvent: { event in
-                    selectedEvent = event
-                    onSelectEvent(event)
-                }
-            )
-        }
-        .navigationSplitViewStyle(.balanced)
-        .hideSplitViewDivider()
-    }
-
-    private var sidebar: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Section header with New Event button
-            HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(NSLocalizedString("calendar.selected_date", value: "Selected Date", comment: "Selected Date"))
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .textCase(.uppercase)
-
-                    if let day = selectedDate {
-                        Text(day.formatted(.dateTime.weekday().month().day()))
-                            .font(.title3.weight(.bold))
-                            .foregroundStyle(.primary)
-                    } else {
-                        Text(NSLocalizedString("calendar.no_date_selected", value: "No Date Selected", comment: "No Date Selected"))
-                            .font(.title3.weight(.bold))
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                
-                Spacer()
-                
-                Button {
-                    onNewEvent()
-                } label: {
-                    Image(systemName: "plus")
-                        .font(.body.weight(.semibold))
-                        .frame(width: 32, height: 32)
-                        .background(Circle().fill(DesignSystem.Materials.hud.opacity(0.75)))
-                }
-                .buttonStyle(.plain)
-                .rootsStandardInteraction()
-                .help("New Event")
-            }
-            .padding(.horizontal, 16)
-            .padding(.top, 16)
-            .padding(.bottom, 12)
-
-            Divider()
-
-            // Events list
-            ScrollView {
-                if let day = selectedDate {
-                    let eventsForDay = events(on: day)
-                    if eventsForDay.isEmpty {
-                        VStack(spacing: DesignSystem.Layout.spacing.small) {
-                            Image(systemName: "calendar.badge.exclamationmark")
-                                .font(.title2)
-                                .foregroundStyle(.tertiary)
-                            Text(NSLocalizedString("calendar.no_events", value: "No Events", comment: "No Events"))
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 40)
-                    } else {
-                        LazyVStack(spacing: DesignSystem.Layout.spacing.small) {
-                            ForEach(eventsForDay) { event in
-                                Button {
-                                    selectedEvent = event
-                                    onSelectEvent(event)
-                                } label: {
-                                    EventRow(event: event)
-                                }
-                                .buttonStyle(.plain)
-                                .background(
-                                    RoundedRectangle(cornerRadius: DesignSystem.Corners.pill, style: .continuous)
-                                        .fill(event.id == selectedEvent?.id ? .accentQuaternary : Color.clear)
-                                )
-                            }
-                        }
-                        .padding(12)
-                    }
-                } else {
-                    VStack(spacing: DesignSystem.Layout.spacing.small) {
-                        Image(systemName: "calendar")
-                            .font(.title2)
-                            .foregroundStyle(.tertiary)
-                        Text(NSLocalizedString("calendar.select_day", value: "Select a day", comment: "Select a day"))
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 40)
-                }
-            }
-            if let event = selectedEvent {
-                Divider()
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(NSLocalizedString("calendar.details", value: "Details", comment: "Details"))
-                        .font(DesignSystem.Typography.subHeader)
-                    Text(timeFormatter(event.startDate, event.endDate))
-                        .font(DesignSystem.Typography.body)
-                    if let location = event.location, !location.isEmpty {
-                        Text(String(format: NSLocalizedString("calendar.location_label", comment: ""), location))
-                            .font(DesignSystem.Typography.body)
-                    }
-                    if let notes = event.notes, !notes.isEmpty {
-                        Text(notes)
-                            .font(DesignSystem.Typography.body)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
-            }
-        }
-        .frame(minWidth: 260, maxWidth: 280)
-        .glassCard(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
-    }
-
-    private func events(on day: Date) -> [CalendarEvent] {
-        events
-            .filter { calendar.isDate($0.startDate, inSameDayAs: day) }
-            .sorted { $0.startDate < $1.startDate }
-    }
-}
-
-private struct MonthCalendarView: View {
-    @Binding var focusedDate: Date
-    @Binding var selectedDate: Date?
-    let events: [CalendarEvent]
-    let onSelectDate: (Date) -> Void
-    let onSelectEvent: (CalendarEvent) -> Void
-    @EnvironmentObject var eventsStore: EventsCountStore
-    private let calendar = Calendar.current
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: 6), count: 7)
-    
-    private var todayDate: Date {
-        calendar.startOfDay(for: Date())
-    }
-
-    var body: some View {
-        GeometryReader { geometry in
-            let cellSize = (geometry.size.width - (6 * 12)) / 7  // 6 spacings of 12pt between 7 columns
-            let gridHeight = cellSize * 6 + (5 * 12)  // 6 rows with 5 spacings
-            
-            VStack(alignment: .leading, spacing: 0) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(monthHeader)
-                        .font(DesignSystem.Typography.subHeader)
-                    weekdayHeader
-                    LazyVGrid(columns: columns, spacing: 12) {
-                        ForEach(days) { day in
-                            let normalized = calendar.startOfDay(for: day.date)
-                            let count = eventsStore.eventsByDate[normalized] ?? events(for: day.date).count
-                            let isToday = calendar.isDate(normalized, inSameDayAs: todayDate)
-                            let isSelected = selectedDate.map { calendar.isDate(normalized, inSameDayAs: $0) } ?? false
-                            let calendarDay = CalendarDay(
-                                date: day.date,
-                                isToday: isToday,
-                                isSelected: isSelected,
-                                hasEvents: count > 0,
-                                densityLevel: EventDensityLevel.fromCount(count),
-                                isInCurrentMonth: day.isCurrentMonth
-                            )
-                            
-                            Button {
-                                withAnimation(DesignSystem.Motion.snappyEase) {
-                                    focusedDate = day.date
-                                }
-                                onSelectDate(day.date)
-                            } label: {
-                                MonthDayCell(day: calendarDay)
-                            }
-                            .buttonStyle(.plain)
-                            .frame(width: cellSize, height: cellSize)
-                            .background(
-                                RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusSmall, style: .continuous)
-                                    .fill(isSelected ? DesignSystem.Materials.surfaceHover : DesignSystem.Materials.surface)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusSmall, style: .continuous)
-                                            .strokeBorder(Color.primary.opacity(0.1), lineWidth: 1)
-                                    )
-                            )
-                        }
-                    }
-                    .frame(height: gridHeight)
-                }
-            }
-        }
-    }
-
-    private var monthHeader: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "LLLL yyyy"
-        return formatter.string(from: focusedDate)
-    }
-
-    private var weekdayHeader: some View {
-        let symbols = calendar.shortWeekdaySymbols
-        let first = calendar.firstWeekday - 1
-        let ordered = Array(symbols[first..<symbols.count] + symbols[0..<first])
-        return HStack(spacing: 6) {
-            ForEach(ordered, id: \.self) { symbol in
-                Text(symbol.uppercased())
-                    .font(.caption2.weight(.semibold))
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity)
-            }
-        }
-    }
-
-
-    private var days: [DayItem] {
-        // Generate a safe, non-duplicating grid of days covering the month view
-        guard let monthInterval = calendar.dateInterval(of: .month, for: focusedDate) else { return [] }
-        let monthStart = calendar.startOfDay(for: monthInterval.start)
-        guard let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: monthStart)) else { return [] }
-
-        // last day of month is monthInterval.end - 1 second
-        let lastOfMonth = calendar.date(byAdding: .second, value: -1, to: monthInterval.end) ?? monthInterval.end
-        guard let endOfWeekStart = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: lastOfMonth)),
-              let endOfWeek = calendar.date(byAdding: .day, value: 7, to: endOfWeekStart) else { return [] }
-
-        var items: [DayItem] = []
-        var seen = Set<Date>()
-        var current = startOfWeek
-
-        while current < endOfWeek && items.count < 42 {
-            let s = calendar.startOfDay(for: current)
-            if !seen.contains(s) {
-                let isCurrentMonth = calendar.isDate(s, equalTo: focusedDate, toGranularity: .month)
-                items.append(dayItem(for: s, isCurrentMonth: isCurrentMonth))
-                seen.insert(s)
-            }
-            guard let next = calendar.date(byAdding: .day, value: 1, to: current) else { break }
-            current = next
-        }
-
-        // Ensure full weeks
-        while items.count % 7 != 0 {
-            if let last = items.last?.date, let next = calendar.date(byAdding: .day, value: 1, to: last) {
-                let s = calendar.startOfDay(for: next)
-                if !seen.contains(s) {
-                    let isCurrentMonth = calendar.isDate(s, equalTo: focusedDate, toGranularity: .month)
-                    items.append(dayItem(for: s, isCurrentMonth: isCurrentMonth))
-                    seen.insert(s)
-                } else { break }
-            } else { break }
-        }
-
-        return items
-    }
-
-    private func dayItem(for date: Date, isCurrentMonth: Bool) -> DayItem {
-        DayItem(id: UUID(), date: date, isCurrentMonth: isCurrentMonth, isToday: calendar.isDateInToday(date))
-    }
-
-    private func events(for date: Date) -> [CalendarEvent] {
-        events.filter { calendar.isDate($0.startDate, inSameDayAs: date) }
-    }
-    
-    private func categoryColor(for title: String) -> Color {
-        if let category = parseEventCategory(from: title) {
-            return category.color
-        }
-        return Color.accentColor
-    }
-
-    private struct DayItem: Hashable, Identifiable {
-        let id: UUID
-        let date: Date
-        let isCurrentMonth: Bool
-        let isToday: Bool
-    }
-}
-
-// MARK: - Week View
-
-private struct WeekCalendarView: View {
-    @Binding var focusedDate: Date
-    let events: [CalendarEvent]
-    @EnvironmentObject var settings: AppSettingsModel
-    @Environment(\.colorScheme) private var colorScheme
-    private let calendar = Calendar.current
-
-    private struct PlaceholderBlock: Identifiable {
-        let id = UUID()
-        let dayIndex: Int
-        let startHour: Double
-        let duration: Double
-        let title: String
-    }
-
-    private let placeholders: [PlaceholderBlock] = [
-        .init(dayIndex: 1, startHour: 9, duration: 1.5, title: "Lecture"),
-        .init(dayIndex: 3, startHour: 14, duration: 2, title: "Lab"),
-        .init(dayIndex: 5, startHour: 19, duration: 1.5, title: "Study Block")
-    ]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(weekTitle)
-                .font(DesignSystem.Typography.subHeader)
-
-            WeekHeaderView(weekDays: weekDays, focusedDate: $focusedDate, calendar: calendar, events: events)
-
-            Divider()
-                .overlay(Rectangle().fill(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.26)).frame(height: 1))
-
-            ScrollView {
-                ZStack(alignment: .topLeading) {
-                    timeGrid
-                    eventOverlay
-                }
-            }
-        }
-    }
-
-    private var weekDays: [Date] {
-        let start = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: focusedDate)) ?? focusedDate
-        return (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: start) }
-    }
-
-    private var weekTitle: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d MMM"
-        guard let start = weekDays.first,
-              let end = calendar.date(byAdding: .day, value: 6, to: start) else {
-            return formatter.string(from: focusedDate)
-        }
-        return "\(formatter.string(from: start)) – \(formatter.string(from: end))"
-    }
-
-    private var timeGrid: some View {
-        let hours = Array(6...23)
-        return VStack(alignment: .leading, spacing: 22) {
-            ForEach(hours, id: \.self) { hour in
-                HStack(alignment: .top, spacing: DesignSystem.Layout.spacing.small) {
-                    Text(formatHour(Double(hour)))
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                        .frame(width: 50, alignment: .trailing)
-                    Rectangle()
-                        .fill(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.18))
-                        .frame(height: 1)
-                }
-            }
-        }
-        .padding(.bottom, 20)
-    }
-
-    private var eventOverlay: some View {
-        GeometryReader { proxy in
-            let width = proxy.size.width - 60
-            let columnWidth = width / 7
-            let hourHeight: CGFloat = 22
-
-            VStack(alignment: .leading, spacing: 0) {
-                ForEach(placeholders) { block in
-                    let yOffset = CGFloat(block.startHour - 6) * hourHeight
-                    RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                        .fill(.accentTertiary)
-                        .overlay(
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(block.title).font(.caption.weight(.semibold))
-                                Text(formatHour(block.startHour)).font(.caption2).foregroundColor(.secondary)
-                            }
-                            .padding(DesignSystem.Layout.spacing.small)
-                        )
-                        .frame(width: columnWidth - 8)
-                        .frame(height: CGFloat(block.duration) * hourHeight)
-                        .offset(x: 60 + CGFloat(block.dayIndex) * columnWidth, y: yOffset)
-                }
-            }
-        }
-    }
-
-    private func dayPill(for date: Date) -> some View {
-        let isToday = calendar.isDateInToday(date)
-        let day = calendar.component(.day, from: date)
-        let weekdaySymbol = calendar.shortWeekdaySymbols[(calendar.component(.weekday, from: date) - 1 + 7) % 7]
-        return VStack(spacing: 6) {
-            Text(weekdaySymbol.uppercased())
-                .font(.caption2.weight(.semibold))
-                .foregroundColor(.secondary)
-            Text(verbatim: "\(day)")
-                .font(DesignSystem.Typography.subHeader)
-                .frame(width: 38, height: 38)
-                .background(
-                    Circle()
-                        .fill(isToday ? Color.accentColor.opacity(0.9) : .secondaryBackground.opacity(0.08))
-                )
-                .foregroundColor(isToday ? .white : .primary.opacity(0.8))
-        }
-        .padding(DesignSystem.Layout.spacing.small)
-        .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusSmall)
-    }
-
-    private func formatHour(_ hour: Double) -> String {
-        let base = calendar.date(bySettingHour: Int(hour), minute: Int((hour.truncatingRemainder(dividingBy: 1)) * 60), second: 0, of: focusedDate) ?? focusedDate
-        let formatter = DateFormatter()
-        formatter.dateFormat = AppSettingsModel.shared.use24HourTime ? "HH:mm" : "h a"
-        return formatter.string(from: base)
-    }
-}
-
-// MARK: - Sidebar & Event Detail
-
-private struct CalendarSidebarView: View {
-    let selectedDate: Date
-    let events: [CalendarEvent]
-    let onSelectEvent: (CalendarEvent) -> Void
-    @Environment(\.colorScheme) private var colorScheme
-    private var neutralLine: Color { DesignSystem.Colors.neutralLine(for: colorScheme) }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Section header
-            VStack(alignment: .leading, spacing: 6) {
-                Text(NSLocalizedString("calendar.selected_date", value: "Selected Date", comment: "Selected Date"))
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .textCase(.uppercase)
-
-                Text(selectedDate.formatted(.dateTime.weekday().month().day()))
-                    .font(.title3.weight(.bold))
-                    .foregroundStyle(.primary)
-            }
-            .padding(.horizontal, 16)
-            .padding(.top, 16)
-            .padding(.bottom, 12)
-
-            Rectangle()
-                .fill(neutralLine.opacity(0.26))
-                .frame(height: 1)
-
-            // Events list
-            ScrollView {
-                if events.isEmpty {
-                    VStack(spacing: DesignSystem.Layout.spacing.small) {
-                        Image(systemName: "calendar.badge.exclamationmark")
-                            .font(.title2)
-                            .foregroundStyle(.tertiary)
-                        Text(NSLocalizedString("calendar.no_events", value: "No Events", comment: "No Events"))
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 40)
-                } else {
-                    LazyVStack(spacing: DesignSystem.Layout.spacing.small) {
-                        ForEach(events) { event in
-                            Button {
-                                onSelectEvent(event)
-                            } label: {
-                                EventRow(event: event)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(12)
-                }
-            }
-        }
-        .sidebarCardStyle()
-    }
-}
-
-private struct EventRow: View {
-    let event: CalendarEvent
-    @State private var isHovered = false
-
-    var body: some View {
-        HStack(alignment: .top, spacing: DesignSystem.Layout.spacing.small) {
-            Circle()
-                .fill(Color.accentColor)
-                .frame(width: 6, height: 6)
-                .padding(.top, 6)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(event.title)
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(.primary)
-
-                Text(timeRange)
-                    .font(DesignSystem.Typography.caption)
-                    .foregroundStyle(.secondary)
-
-                if let location = event.location, !location.isEmpty {
-                    HStack(spacing: 4) {
-                        Image(systemName: "mappin")
-                            .font(.caption2)
-                        Text(location)
-                            .font(DesignSystem.Typography.caption)
-                    }
-                    .foregroundStyle(.tertiary)
-                }
-            }
-
-            Spacer()
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(
-            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                .fill(isHovered ? .secondaryBackground.opacity(0.15) : Color.clear)
-        )
-        .onHover { hovering in
-            withAnimation(DesignSystem.Motion.snappyEase) {
-                isHovered = hovering
-            }
-        }
-    }
-
-    private var timeRange: String {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        return "\(formatter.string(from: event.startDate)) – \(formatter.string(from: event.endDate))"
-    }
-}
-
-private struct EventDetailView: View {
-    let item: CalendarEvent
-    @Binding var isPresented: Bool
-    @EnvironmentObject private var calendarManager: CalendarManager
-    @EnvironmentObject private var settings: AppSettingsModel
-    @State private var showDeleteConfirm = false
-    @State private var showScopeSelection = false
-    @State private var showEdit = false
-    @State private var errorMessage: String?
-    @State private var showError = false
-    @State private var selectedScope: EventDeletionService.RecurringDeletionScope?
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            // Header
-            HStack {
-                Text(item.title)
-                    .font(.title2.weight(.bold))
-                    .foregroundStyle(.primary)
-
-                Spacer()
-
-                Button {
-                    isPresented = false
-                } label: {
-                    eventDetailCloseLabel()
-                }
-                .buttonStyle(.plain)
-            }
-
-            Divider()
-
-            // Date and time
-            VStack(alignment: .leading, spacing: 12) {
-                HStack(spacing: DesignSystem.Layout.spacing.small) {
-                    Image(systemName: "calendar")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                        .frame(width: 24)
-                    Text(dateRange)
-                        .font(.body)
-                        .foregroundStyle(.primary)
-                }
-
-                HStack(spacing: DesignSystem.Layout.spacing.small) {
-                    Image(systemName: "clock")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                        .frame(width: 24)
-                    Text(timeRange)
-                        .font(.body)
-                        .foregroundStyle(.primary)
-                }
-
-                if let location = item.location, !location.isEmpty {
-                    HStack(spacing: DesignSystem.Layout.spacing.small) {
-                        Image(systemName: "mappin.circle.fill")
-                            .font(.body)
-                            .foregroundStyle(.red)
-                            .symbolRenderingMode(.hierarchical)
-                            .frame(width: 24)
-                        Text(location)
-                            .font(.body)
-                            .foregroundStyle(.primary)
-                    }
-                }
-                
-                if let url = item.url {
-                    HStack(spacing: DesignSystem.Layout.spacing.small) {
-                        Image(systemName: "link.circle.fill")
-                            .font(.body)
-                            .foregroundStyle(.blue)
-                            .symbolRenderingMode(.hierarchical)
-                            .frame(width: 24)
-                        Link(url.absoluteString, destination: url)
-                            .font(.body)
-                            .foregroundStyle(.blue)
-                    }
-                }
-                
-                if let alarms = item.alarms, !alarms.isEmpty {
-                    HStack(spacing: DesignSystem.Layout.spacing.small) {
-                        Image(systemName: "bell.fill")
-                            .font(.body)
-                            .foregroundStyle(.orange)
-                            .symbolRenderingMode(.hierarchical)
-                            .frame(width: 24)
-                        Text(alarms.compactMap { alarm in
-                            CalendarManager.AlertOption.from(alarm: alarm).rawValue
-                        }.joined(separator: ", "))
-                            .font(.body)
-                            .foregroundStyle(.primary)
-                    }
-                }
-                
-                if let travelTime = item.travelTime, travelTime > 0 {
-                    HStack(spacing: DesignSystem.Layout.spacing.small) {
-                        Image(systemName: "car.fill")
-                            .font(.body)
-                            .foregroundStyle(.green)
-                            .symbolRenderingMode(.hierarchical)
-                            .frame(width: 24)
-                        Text(String(format: NSLocalizedString("calendar.travel_time", comment: ""), CalendarManager.TravelTimeOption.from(interval: travelTime).rawValue))
-                            .font(.body)
-                            .foregroundStyle(.primary)
-                    }
-                }
-            }
-
-            if let notes = item.notes, !notes.isEmpty {
-                Divider()
-
-                VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                    Text(NSLocalizedString("calendar.notes", value: "Notes", comment: "Notes"))
-                        .font(DesignSystem.Typography.subHeader)
-                        .foregroundStyle(.primary)
-
-                    ScrollView {
-                        Text(notes)
-                            .font(.body)
-                            .foregroundStyle(.secondary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .frame(maxHeight: 200)
-                }
-            }
-
-            Spacer()
-
-            if item.ekIdentifier != nil {
-                if !item.canEdit {
-                    Divider()
-                    HStack(spacing: 8) {
-                        Image(systemName: "lock.fill")
-                            .foregroundStyle(.secondary)
-                        Text(NSLocalizedString("calendar.readonly", value: "calendar.readonly", comment: ""))
-                            .font(.footnote.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                Divider()
-                HStack {
-                    Button {
-                        if item.canEdit {
-                            showEdit = true
-                        } else {
-                            errorMessage = "This calendar does not allow edits."
-                            showError = true
-                        }
-                    } label: {
-                        Label(NSLocalizedString("Edit", value: "Edit", comment: ""), systemImage: "pencil")
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(!item.canEdit)
-                    Spacer()
-                    Button(role: .destructive) {
-                        handleDelete()
-                    } label: {
-                        Label(NSLocalizedString("Delete", value: "Delete", comment: ""), systemImage: "trash")
-                    }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.red)
-                }
-                // Scope selection for recurring events (shown first)
-                .confirmationDialog(
-                    NSLocalizedString("event.delete.scope_selection_title", comment: ""),
-                    isPresented: $showScopeSelection,
-                    titleVisibility: .visible
-                ) {
-                    Button(NSLocalizedString("event.delete.scope.this_event", comment: "")) {
-                        selectedScope = .thisEvent
-                        showDeleteConfirm = true
-                    }
-                    Button(NSLocalizedString("event.delete.scope.future_events", comment: "")) {
-                        selectedScope = .futureEvents
-                        showDeleteConfirm = true
-                    }
-                    Button(NSLocalizedString("event.delete.scope.all_events", comment: "")) {
-                        selectedScope = .allEvents
-                        showDeleteConfirm = true
-                    }
-                    Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) { }
-                } message: {
-                    Text(NSLocalizedString("event.delete.scope_selection_message", comment: ""))
-                }
-                // Final confirmation (shown after scope selection or immediately for non-recurring)
-                .confirmationDialog(
-                    NSLocalizedString("event.delete.confirm_title", comment: ""),
-                    isPresented: $showDeleteConfirm,
-                    titleVisibility: .visible
-                ) {
-                    Button(NSLocalizedString("Delete", value: "Delete", comment: ""), role: .destructive) {
-                        performDelete()
-                    }
-                    Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) { }
-                } message: {
-                    Text(confirmationMessage)
-                }
-            }
-        }
-        .padding(DesignSystem.Layout.spacing.large)
-        .frame(minWidth: 420, minHeight: 320)
-        .glassCard(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
-        .sheet(isPresented: $showEdit) {
-            EventEditSheet(item: item) { updated, span in
-                _Concurrency.Task {
-                    guard let id = item.ekIdentifier else { 
-                        await MainActor.run {
-                            errorMessage = "Event identifier not found"
-                            showError = true
-                        }
-                        return 
-                    }
-                    
-                    do {
-                        try await calendarManager.updateEvent(
-                            identifier: id,
-                            title: updated.title,
-                            startDate: updated.startDate,
-                            endDate: updated.endDate,
-                            isAllDay: updated.isAllDay,
-                            location: updated.location,
-                            notes: updated.notes,
-                            url: updated.url,
-                            primaryAlert: updated.primaryAlert,
-                            secondaryAlert: updated.secondaryAlert,
-                            travelTime: updated.travelTime.timeInterval,
-                            recurrence: updated.recurrence,
-                            category: updated.category,
-                            span: span
-                        )
-                        await MainActor.run {
-                            isPresented = false
-                        }
-                    } catch {
-                        await MainActor.run {
-                            errorMessage = "Failed to save event: \(error.localizedDescription)"
-                            showError = true
-                        }
-                    }
-                }
-            }
-        }
-        .alert("Error", isPresented: $showError, presenting: errorMessage) { _ in
-            Button(NSLocalizedString("OK", value: "OK", comment: ""), role: .cancel) { }
-        } message: { message in
-            Text(message)
-        }
-    }
-
-    private var dateRange: String {
-        let f = DateFormatter()
-        f.dateFormat = "EEEE, MMMM d, yyyy"
-        return f.string(from: item.startDate)
-    }
-
-    private var timeRange: String {
-        let f = DateFormatter()
-        f.timeStyle = .short
-        return "\(f.string(from: item.startDate)) – \(f.string(from: item.endDate))"
-    }
-    
-    // MARK: - Delete Handling
-    
-    private func handleDelete() {
-        // Step 1: If recurring, show scope selection first
-        if item.isRecurring {
-            showScopeSelection = true
-        } else {
-            // Non-recurring: skip to confirmation
-            selectedScope = .thisEvent
-            showDeleteConfirm = true
-        }
-    }
-    
-    private var confirmationMessage: String {
-        if item.isReminder {
-            return NSLocalizedString("event.delete.confirm_message_reminder", comment: "")
-        }
-        
-        guard item.isRecurring, let scope = selectedScope else {
-            return NSLocalizedString("event.delete.confirm_message_single", comment: "")
-        }
-        
-        switch scope {
-        case .thisEvent:
-            return NSLocalizedString("event.delete.confirm_message_this", comment: "")
-        case .futureEvents:
-            return NSLocalizedString("event.delete.confirm_message_future", comment: "")
-        case .allEvents:
-            return NSLocalizedString("event.delete.confirm_message_all", comment: "")
-        }
-    }
-    
-    private func performDelete() {
-        guard let identifier = item.ekIdentifier else {
-            errorMessage = "Event identifier not found"
-            showError = true
-            return
-        }
-        
-        _Concurrency.Task {
-            let result = await EventDeletionService.shared.deleteEvent(
-                eventId: identifier,
-                isReminder: item.isReminder,
-                presentConfirmation: { _, _ in true }, // Already confirmed via dialog
-                presentScopeSelection: { selectedScope }
-            )
-            
-            await MainActor.run {
-                switch result {
-                case .deleted:
-                    isPresented = false
-                case .cancelled:
-                    break
-                case .failed(let error):
-                    errorMessage = error.localizedDescription
-                    showError = true
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func eventDetailCloseLabel() -> some View {
-        let title = NSLocalizedString("common.button.close", comment: "")
-        switch settings.tabBarMode {
-        case .iconsOnly:
-            Image(systemName: "xmark.circle.fill")
-                .font(.title3)
-                .foregroundStyle(.secondary)
-                .symbolRenderingMode(.hierarchical)
-        case .textOnly:
-            Text(title)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.secondary)
-        case .iconsAndText:
-            HStack(spacing: DesignSystem.Spacing.xsmall) {
-                Image(systemName: "xmark.circle.fill")
-                    .symbolRenderingMode(.hierarchical)
-                Text(title)
-            }
-            .font(.subheadline.weight(.semibold))
-            .foregroundStyle(.secondary)
-        }
-    }
-}
-
-// MARK: - Event Chips
-
-private struct EventChipsRow: View {
-    var title: String
-    var events: [CalendarEvent]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-            Text(title)
-                .font(.subheadline.weight(.semibold))
-                .foregroundColor(.secondary)
-            if events.isEmpty {
-                Text(NSLocalizedString("calendar.no_events_yet", value: "calendar.no_events_yet", comment: ""))
-                    .font(DesignSystem.Typography.caption)
-                    .foregroundColor(.secondary)
-            } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: DesignSystem.Layout.spacing.small) {
-                        ForEach(events) { event in
-                            HStack(spacing: DesignSystem.Layout.spacing.small) {
-                                Circle()
-                                    .fill(Color.accentColor.opacity(0.9))
-                                    .frame(width: 8, height: 8)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(event.title)
-                                        .font(.caption.weight(.semibold))
-                                    Text(event.formattedTimeRange() + (event.location != nil ? " · \(event.location!)" : ""))
-                                        .font(.caption2)
-                                        .foregroundColor(.secondary)
-                                }
-                            }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .background(
-                                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                    .fill(.secondaryBackground.opacity(0.06))
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Editable Event Sheet
-
-private struct EventEditSheet: View {
-    @Environment(\.dismiss) private var dismiss
-    let item: CalendarEvent
-    var onSave: (EditableEvent, EKSpan) -> Void
-
-    @State private var title: String
-    @State private var category: EventCategory
-    @State private var startDate: Date
-    @State private var endDate: Date
-    @State private var isAllDay: Bool
-    @State private var location: String
-    @State private var notes: String
-    @State private var urlString: String
-    @State private var primaryAlert: CalendarManager.AlertOption
-    @State private var secondaryAlert: CalendarManager.AlertOption
-    @State private var travelTime: CalendarManager.TravelTimeOption
-    @State private var recurrence: CalendarManager.RecurrenceOption = .none
-    @State private var urlError: String?
-    @State private var pendingSave: EditableEvent?
-    @State private var showRecurrenceSpanPicker = false
-
-    init(item: CalendarEvent, onSave: @escaping (EditableEvent, EKSpan) -> Void) {
-        self.item = item
-        self.onSave = onSave
-        _title = State(initialValue: item.title)
-        _category = State(initialValue: item.category)
-        _startDate = State(initialValue: item.startDate)
-        _endDate = State(initialValue: item.endDate)
-        _isAllDay = State(initialValue: false)
-        _location = State(initialValue: item.location ?? "")
-        _notes = State(initialValue: item.notes ?? "")
-        _urlString = State(initialValue: item.url?.absoluteString ?? "")
-        _primaryAlert = State(initialValue: item.alarms?.first.map { CalendarManager.AlertOption.from(alarm: $0) } ?? .none)
-        _secondaryAlert = State(initialValue: item.alarms?.dropFirst().first.map { CalendarManager.AlertOption.from(alarm: $0) } ?? .none)
-        _travelTime = State(initialValue: CalendarManager.TravelTimeOption.from(interval: item.travelTime))
-    }
-    
-    private var isValidURL: Bool {
-        guard !urlString.isEmpty else { return true }
-        return URL(string: urlString) != nil
-    }
-    
-    private var canSave: Bool {
-        !title.isEmpty && isValidURL
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack {
-                Text(NSLocalizedString("calendar.edit_event", value: "calendar.edit_event", comment: ""))
-                    .font(.title2.weight(.semibold))
-                Spacer()
-            }
-            if !item.canEdit {
-                Label(NSLocalizedString("This calendar is read-only; changes cannot be saved.", value: "This calendar is read-only; changes cannot be saved.", comment: ""), systemImage: "lock.fill")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.secondary)
-            }
-
-            TextField("Title", text: $title)
-                .textFieldStyle(.roundedBorder)
-                .font(.body.weight(.medium))
-
-            Picker("Category", selection: $category) {
-                ForEach(EventCategory.allCases) { cat in
-                    Text(cat.rawValue).tag(cat)
-                }
-            }
-            .pickerStyle(.segmented)
-
-            Divider()
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text(NSLocalizedString("calendar.time", value: "calendar.time", comment: ""))
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .textCase(.uppercase)
-                
-                Toggle(NSLocalizedString("macos.calendar.all_day", value: "All Day", comment: "All Day toggle"), isOn: $isAllDay)
-                
-                VStack(alignment: .leading, spacing: 6) {
-                    DatePicker("Start", selection: $startDate, displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute])
-                    DatePicker("End", selection: $endDate, in: startDate..., displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute])
-                }
-            }
-
-            Divider()
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text(NSLocalizedString("calendar.details", value: "calendar.details", comment: ""))
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .textCase(.uppercase)
-                
-                TextField("Location", text: $location)
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    TextField("URL", text: $urlString)
-                        .textContentType(.URL)
-                    
-                    if !urlString.isEmpty && !isValidURL {
-                        Text(NSLocalizedString("calendar.invalid_url", value: "calendar.invalid_url", comment: ""))
-                            .font(.caption)
-                            .foregroundColor(.red)
-                    }
-                }
-                
-                TextField("Notes", text: $notes, axis: .vertical)
-                    .lineLimit(2, reservesSpace: true)
-            }
-
-            Divider()
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text(NSLocalizedString("calendar.options", value: "calendar.options", comment: ""))
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .textCase(.uppercase)
-                
-                Picker("Repeat", selection: $recurrence) {
-                    ForEach(CalendarManager.RecurrenceOption.allCases) { opt in
-                        Text(opt.rawValue.capitalized).tag(opt)
-                    }
-                }
-                
-                VStack(alignment: .leading, spacing: 6) {
-                    Picker("Primary Alert", selection: $primaryAlert) {
-                        ForEach(CalendarManager.AlertOption.allCases) { opt in
-                            Text(opt.rawValue).tag(opt)
-                        }
-                    }
-                    
-                    if primaryAlert != .none {
-                        Picker("Secondary Alert", selection: $secondaryAlert) {
-                            ForEach(CalendarManager.AlertOption.allCases) { opt in
-                                Text(opt.rawValue).tag(opt)
-                            }
-                        }
-                    }
-                }
-                
-                Picker("Travel Time", selection: $travelTime) {
-                    ForEach(CalendarManager.TravelTimeOption.allCases) { opt in
-                        Text(opt.rawValue).tag(opt)
-                    }
-                }
-            }
-
-            Divider()
-                .padding(.top, 4)
-
-            HStack {
-                Button(NSLocalizedString("common.button.cancel", comment: "")) { 
-                    dismiss() 
-                }
-                .keyboardShortcut(.cancelAction)
-                
-                Spacer()
-                
-                Button(NSLocalizedString("common.button.save", comment: "")) {
-                    let updated = EditableEvent(
-                        title: title.isEmpty ? item.title : title,
-                        category: category,
-                        startDate: startDate,
-                        endDate: endDate,
-                        isAllDay: isAllDay,
-                        location: location.isEmpty ? nil : location,
-                        notes: notes.isEmpty ? nil : notes,
-                        url: urlString.isEmpty ? nil : urlString,
-                        primaryAlert: primaryAlert,
-                        secondaryAlert: secondaryAlert,
-                        travelTime: travelTime,
-                        recurrence: recurrence
-                    )
-
-                    if item.isRecurring {
-                        pendingSave = updated
-                        showRecurrenceSpanPicker = true
-                    } else {
-                        onSave(updated, .thisEvent)
-                        dismiss()
-                    }
-                }
-                .buttonStyle(.borderedProminent)
-                .keyboardShortcut(.defaultAction)
-                .disabled(!canSave || !item.canEdit)
-            }
-        }
-        .padding()
-        .frame(minWidth: 440)
-        .confirmationDialog("Apply changes to this event or future events?", isPresented: $showRecurrenceSpanPicker, titleVisibility: .visible) {
-            Button(NSLocalizedString("This Event Only", value: "This Event Only", comment: "")) {
-                if let pendingSave {
-                    onSave(pendingSave, .thisEvent)
-                    dismiss()
-                    self.pendingSave = nil
-                }
-            }
-            Button(NSLocalizedString("This and Future Events", value: "This and Future Events", comment: "")) {
-                if let pendingSave {
-                    onSave(pendingSave, .futureEvents)
-                    dismiss()
-                    self.pendingSave = nil
-                }
-            }
-            Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) {
-                pendingSave = nil
-            }
-        }
-    }
-
-    struct EditableEvent {
-        var title: String
-        var category: EventCategory
-        var startDate: Date
-        var endDate: Date
-        var isAllDay: Bool
-        var location: String?
-        var notes: String?
-        var url: String?
-        var primaryAlert: CalendarManager.AlertOption
-        var secondaryAlert: CalendarManager.AlertOption
-        var travelTime: CalendarManager.TravelTimeOption
-        var recurrence: CalendarManager.RecurrenceOption
-    }
-}
-
-// MARK: - Sample Data
-
-private extension CalendarPageView {
-    static var sampleEvents: [CalendarEvent] { [] }
-}
-
-private extension CalendarEvent {
-    func formattedTimeRange(use24HourTime: Bool = false) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = use24HourTime ? "HH:mm" : "h:mm a"
-        return "\(formatter.string(from: startDate)) – \(formatter.string(from: endDate))"
-    }
-}
-
-// MARK: - Week Header View & Styles
-
-private struct DayColumnStyle: ViewModifier {
-    let cornerRadius: CGFloat = 14
-    let height: CGFloat = 80
-    func body(content: Content) -> some View {
-        content
-            .frame(maxWidth: .infinity)
-            .frame(height: height)
-            .padding(DesignSystem.Layout.spacing.small)
-            .glassChrome(cornerRadius: cornerRadius)
-    }
-}
-
-private extension View {
-    func dayColumnStyle() -> some View { modifier(DayColumnStyle()) }
-}
-
-private struct WeekHeaderView: View {
-    let weekDays: [Date]
-    @Binding var focusedDate: Date
-    let calendar: Calendar
-    let events: [CalendarEvent]
-    private let spacing: CGFloat = 8
-
-    var body: some View {
-        HStack(spacing: spacing) {
-            ForEach(weekDays, id: \.self) { date in
-                let count = eventsCount(for: date)
-                let day = CalendarDay(
-                    date: date,
-                    isToday: calendar.isDateInToday(date),
-                    isSelected: calendar.isDate(date, inSameDayAs: focusedDate),
-                    hasEvents: count > 0,
-                    densityLevel: EventDensityLevel.fromCount(count),
-                    isInCurrentMonth: true
-                )
-                Button {
-                    withAnimation(DesignSystem.Motion.snappyEase) {
-                        focusedDate = date
-                    }
-                } label: {
-                    DayHeaderCard(day: day)
-                }
-                .buttonStyle(.plain)
-                .frame(maxWidth: .infinity)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 4)
-    }
-
-    private func eventsCount(for date: Date) -> Int {
-        let start = calendar.startOfDay(for: date)
-        return events.filter { calendar.isDate($0.startDate, inSameDayAs: start) }.count
-    }
-}
-
-// MARK: - Modern Calendar Entry
-
-struct CalendarView: View {
-    private static let debugDateFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.dateStyle = .short
-        f.timeStyle = .medium
-        return f
-    }()
-    @EnvironmentObject private var calendarManager: CalendarManager
-    @EnvironmentObject private var deviceCalendar: DeviceCalendarManager
-    @EnvironmentObject private var settings: AppSettingsModel
-    @State private var viewMode: CalendarViewMode = .month
-    @State private var currentMonth: Date = Date()
-    @State private var selectedEvent: CalendarEvent? = nil
-    @State private var keyMonitor: Any?
-
-    // Computed property to filter events based on settings
-    private var filteredEvents: [EKEvent] {
-        let allEvents = deviceCalendar.events
-        guard settings.showOnlySchoolCalendar else { return allEvents }
-        guard !calendarManager.selectedCalendarID.isEmpty else { return allEvents }
-        return allEvents.filter { event in
-            guard let calendar = event.calendar else { return false }
-            return calendar.calendarIdentifier == calendarManager.selectedCalendarID
-        }
-    }
-
-    private var monthEvents: [EKEvent] {
-        displayEKEvents
-    }
-
-    private var calendarEvents: [CalendarEvent] {
-        displayEKEvents.map {
-            CalendarEvent(
-                title: $0.title,
-                startDate: $0.startDate,
-                endDate: $0.endDate,
-                location: $0.location,
-                notes: $0.notes,
-                url: $0.url,
-                alarms: $0.alarms,
-                travelTime: nil,
-                ekIdentifier: $0.eventIdentifier,
-                isReminder: false,
-                category: nil,
-                canEdit: $0.calendar?.allowsContentModifications ?? false,
-                isRecurring: !($0.recurrenceRules?.isEmpty ?? true)
-            )
-        }
-    }
-
-    private var displayEKEvents: [EKEvent] {
-        return filteredEvents
-    }
-
-    private var isLoading: Bool {
-        calendarManager.isLoading
-    }
-
-    var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                CalendarStatsRow()
-                    .frame(height: 100)
-
-                HStack(spacing: 20) {
-                    DayDetailSidebar(
-                        date: calendarManager.selectedDate ?? Date(),
-                        events: sidebarEvents(for: calendarManager.selectedDate ?? Date())
-                    ) { event in
-                        selectedEvent = event
-                    }
-
-                    VStack(spacing: 0) {
-                        CalendarHeader(
-                            viewMode: $viewMode,
-                            currentMonth: $currentMonth,
-                            onPrevious: { step(by: -1) },
-                            onNext: { step(by: 1) },
-                            onToday: { jumpToToday() },
-                            onSearch: nil
-                        )
-                        .padding()
-
-                        if isLoading {
-                            loadingState
-                        } else if !calendarManager.isAuthorized {
-                            CalendarEmptyState(
-                                title: "Calendar access needed",
-                                message: "Grant permission to pull your events. You can do this in Settings → Privacy."
-                            )
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        } else if displayEKEvents.isEmpty {
-                            CalendarEmptyState(
-                                title: "No events found",
-                                message: "Nothing is scheduled for this calendar yet. Create an event to see it here."
-                            )
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        } else {
-                            switch viewMode {
-                            case .day:
-                                CalendarDayView(
-                                    date: calendarManager.selectedDate ?? Date(),
-                                    events: displayEKEvents.filter { Calendar.current.isDate($0.startDate, inSameDayAs: calendarManager.selectedDate ?? Date()) },
-                                    onSelectEvent: { ek in selectedEvent = mapEventInline(ek) }
-                                )
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            case .week:
-                                CalendarWeekView(
-                                    currentDate: currentMonth,
-                                    events: displayEKEvents,
-                                    onSelectEvent: { ek in selectedEvent = mapEventInline(ek) }
-                                )
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            case .month:
-                                CalendarGrid(currentMonth: $currentMonth, events: monthEvents)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                    .padding(.horizontal, 8)
-                            case .year:
-                                CalendarYearView(currentYear: currentMonth)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            @unknown default:
-                                CalendarGrid(currentMonth: $currentMonth, events: monthEvents)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            }
-                        }
-                    }
-                    .background(DesignSystem.Materials.card)
-                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                }
-                .frame(maxWidth: .infinity)
-            }
-            .frame(maxWidth: .infinity, alignment: .top)
-            .padding(20)
-            // Reserve space so the floating tab bar in the root ContentView stays visible.
-            .padding(.bottom, 120)
-        }
-        .onAppear {
-            calendarManager.selectedDate = calendarManager.selectedDate ?? Date()
-            currentMonth = calendarManager.selectedDate ?? Date()
-            calendarManager.ensureMonthCache(for: currentMonth)
-            startKeyboardMonitoring()
-        }
-        .overlay(alignment: .topTrailing) {
-            if AppSettingsModel.shared.devModeEnabled {
-                VStack(alignment: .trailing, spacing: 6) {
-                    HStack(spacing: 8) {
-                        Text(DeviceCalendarManager.shared.isAuthorized ? "Authorized" : "Unauthorized")
-                            .font(.caption2)
-                            .foregroundColor(.white)
-                            .padding(6)
-                            .background(RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.45)))
-
-                        Text(String(format: NSLocalizedString("calendar.debug.events_count", comment: ""), DeviceCalendarManager.shared.events.count))
-                            .font(.caption2)
-                            .foregroundColor(.white)
-                            .padding(6)
-                            .background(RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.45)))
-                    }
-
-                    Text(DeviceCalendarManager.shared.lastRefreshAt.map { String(format: NSLocalizedString("calendar.debug.last_refresh", comment: ""), Self.debugDateFormatter.string(from: $0)) } ?? NSLocalizedString("calendar.debug.last_refresh_never", comment: ""))
-                        .font(.caption2)
-                        .foregroundColor(.white.opacity(0.85))
-                        .padding(6)
-                        .background(RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.35)))
-
-                    Text(DeviceCalendarManager.shared.isObservingStoreChanges ? "Observer: registered" : "Observer: not registered")
-                        .font(.caption2)
-                        .foregroundColor(.white)
-                        .padding(6)
-                        .background(RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.35)))
-                }
-                .padding(8)
-                .opacity(0.8)
-            }
-        }
-        .onDisappear {
-            stopKeyboardMonitoring()
-        }
-        .onChange(of: currentMonth) { _, newValue in
-            calendarManager.ensureMonthCache(for: newValue)
-        }
-        .sheet(item: $selectedEvent) { event in
-            EventDetailView(
-                item: event,
-                isPresented: Binding(get: { selectedEvent != nil }, set: { if !$0 { selectedEvent = nil } })
-            )
-        }
-    }
-
-    private var loadingState: some View {
-        VStack(spacing: 12) {
-            ProgressView()
-            Text(NSLocalizedString("calendar.loading", value: "calendar.loading", comment: ""))
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
-    }
-
-    private func step(by value: Int) {
-        var components = DateComponents()
-        switch viewMode {
-        case .day:
-            components.day = value
-        case .week:
-            components.day = value * 7
-        case .month:
-            components.month = value
-        case .year:
-            components.year = value
-        }
-        if let newDate = Calendar.current.date(byAdding: components, to: currentMonth) {
-            currentMonth = newDate
-            calendarManager.selectedDate = newDate
-        }
-    }
-
-    private func jumpToToday() {
-        let today = Date()
-        currentMonth = today
-        calendarManager.selectedDate = today
-    }
-
-    // MARK: - Keyboard navigation (arrow keys)
-#if os(macOS)
-    private func startKeyboardMonitoring() {
-        guard keyMonitor == nil else { return }
-        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-            switch event.keyCode {
-            case 123: // left
-                step(by: -1)
-                return nil
-            case 124: // right
-                step(by: 1)
-                return nil
-            default:
-                return event
-            }
-        }
-    }
-
-    private func stopKeyboardMonitoring() {
-        if let monitor = keyMonitor {
-            NSEvent.removeMonitor(monitor)
-            keyMonitor = nil
-        }
-    }
-#endif
-
-    private func eventsForDay(_ date: Date) -> [EKEvent] {
-        displayEKEvents.filter { Calendar.current.isDate($0.startDate, inSameDayAs: date) }
-    }
-
-    private func sidebarEvents(for date: Date) -> [CalendarEvent] {
-        let startOfDay = Calendar.current.startOfDay(for: date)
-        return calendarEvents
-            .filter { Calendar.current.isDate($0.startDate, inSameDayAs: startOfDay) }
-            .sorted { $0.startDate < $1.startDate }
-    }
-
-    private func mapEventInline(_ ek: EKEvent) -> CalendarEvent {
-        let (cleanNotes, storedCategory) = calendarManager.decodeNotesWithCategory(notes: ek.notes)
-        return CalendarEvent(
-            title: ek.title,
-            startDate: ek.startDate,
-            endDate: ek.endDate,
-            location: ek.location,
-            notes: cleanNotes,
-            url: ek.url,
-            alarms: ek.alarms,
-            travelTime: nil,
-            ekIdentifier: ek.eventIdentifier,
-            isReminder: false,
-            category: storedCategory,
-            canEdit: ek.calendar?.allowsContentModifications ?? false,
-            isRecurring: !(ek.recurrenceRules?.isEmpty ?? true)
-        )
-    }
-
-    private func eventCategoryLabel(for title: String) -> String {
+    import _Concurrency
+    import EventKit
+    import SwiftUI
+    import UniformTypeIdentifiers
+    #if os(macOS)
+        import AppKit
+    #endif
+
+    // Shared helper for labeling events
+    fileprivate func eventCategoryLabel(for title: String) -> String {
         let lower = title.lowercased()
         let pairs: [(String, String)] = [
             ("exam", "Exam"),
@@ -2518,301 +35,2935 @@ struct CalendarView: View {
         }
         return "Other"
     }
-    
-    private func categoryColor(for title: String) -> Color {
-        if let category = parseEventCategory(from: title) {
-            return category.color
-        }
-        return Color.accentColor
+
+    enum CalendarViewMode: String, CaseIterable, Identifiable {
+        case day = "Day"
+        case week = "Week"
+        case month = "Month"
+        case year = "Year"
+        var id: String { rawValue }
+        var title: String { rawValue.capitalized }
     }
-}
 
-struct CalendarPageView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            CalendarPageView()
-                .environmentObject(AppSettingsModel.shared)
-                .environmentObject(EventsCountStore())
-                .environmentObject(CalendarManager.shared)
-                .previewLayout(.sizeThatFits)
-                .frame(width: 1100, height: 720)
+    public struct CalendarEvent: Identifiable, Hashable {
+        public let id: UUID
+        var title: String
+        var startDate: Date
+        var endDate: Date
+        var location: String?
+        var notes: String?
+        var url: URL?
+        var alarms: [EKAlarm]?
+        var travelTime: TimeInterval?
+        var ekIdentifier: String?
+        var isReminder: Bool = false
+        var category: EventCategory
+        var canEdit: Bool
+        var isRecurring: Bool
 
-            CalendarPageView()
-                .environmentObject(AppSettingsModel.shared)
-                .environmentObject(EventsCountStore())
-                .environmentObject(CalendarManager.shared)
-                .preferredColorScheme(.dark)
-                .previewLayout(.sizeThatFits)
-                .frame(width: 1100, height: 720)
+        init(
+            id: UUID = UUID(),
+            title: String,
+            startDate: Date,
+            endDate: Date,
+            location: String? = nil,
+            notes: String? = nil,
+            url: URL? = nil,
+            alarms: [EKAlarm]? = nil,
+            travelTime: TimeInterval? = nil,
+            ekIdentifier: String? = nil,
+            isReminder: Bool = false,
+            category: EventCategory? = nil,
+            canEdit: Bool = true,
+            isRecurring: Bool = false
+        ) {
+            self.id = id
+            self.title = title
+            self.startDate = startDate
+            self.endDate = endDate
+            self.location = location
+            self.notes = notes
+            self.url = url
+            self.alarms = alarms
+            self.travelTime = travelTime
+            self.ekIdentifier = ekIdentifier
+            self.isReminder = isReminder
+            self.category = category ?? parseEventCategory(from: title) ?? .other
+            self.canEdit = canEdit
+            self.isRecurring = isRecurring
         }
     }
-}
 
-private struct NewEventPlaceholder: View {
-    var date: Date
-    var onDismiss: () -> Void
+    struct CalendarPageView: View {
+        @ScaledMetric private var emptyIconSize: CGFloat = 48
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(NSLocalizedString("calendar.new_event", value: "New Event", comment: "New Event"))
-                .font(.title2.weight(.semibold))
-            Text(date.formatted(date: .long, time: .omitted))
-                .foregroundStyle(.secondary)
-            Text(NSLocalizedString("calendar.message.event_creation", comment: ""))
-                .foregroundStyle(.secondary)
-            Spacer()
-            HStack {
-                Spacer()
-                Button(NSLocalizedString("common.button.close", comment: "")) { onDismiss() }
-                    .keyboardShortcut(.cancelAction)
+        @ScaledMetric private var mediumTextSize: CGFloat = 16
+
+        @EnvironmentObject var settings: AppSettingsModel
+
+        @EnvironmentObject var eventsStore: EventsCountStore
+        @EnvironmentObject var calendarManager: CalendarManager
+        @EnvironmentObject var deviceCalendar: DeviceCalendarManager
+        @State private var currentViewMode: CalendarViewMode = .month
+        @State private var focusedDate: Date = Calendar.current.startOfDay(for: Date())
+        @State private var selectedDate: Date? = nil // No selection until explicit user action
+        @State private var selectedEvent: CalendarEvent?
+        @State private var metrics: CalendarStats = .empty
+        @State private var showingNewEventSheet = false
+        @State private var events: [CalendarEvent] = []
+        @State private var syncedEvents: [CalendarEvent] = []
+        private var eventStore: EKEventStore { DeviceCalendarManager.shared.store }
+
+        private let calendar = Calendar.current
+
+        // Computed today date (always start of day)
+        private var todayDate: Date {
+            calendar.startOfDay(for: Date())
+        }
+
+        @State private var chevronLeftHover = false
+        @State private var chevronRightHover = false
+        @State private var todayHover = false
+        @State private var refreshHover = false
+        @State private var isRefreshing = false
+        @State private var isHydratingInitial = false
+        @State private var isHydratingFull = false
+        @State private var openTimestamp: Date = .init()
+        @State private var firstFrameElapsed: TimeInterval?
+        @State private var dataReadyElapsed: TimeInterval?
+        @State private var fullDataReadyElapsed: TimeInterval?
+        @State private var loadedEventCount: Int = 0
+        @State private var hydratedEKEvents: [EKEvent] = []
+
+        // Performance: Cache filtered events to avoid repeated filtering in body
+        @State private var cachedFilteredEvents: [EKEvent] = []
+        @State private var lastFilterUpdate: Date = .distantPast
+
+        // Performance: Cache events by day to avoid repeated filtering
+        @State private var eventsByDay: [String: [CalendarEvent]] = [:]
+
+        // Computed property to filter events based on settings
+        private var filteredEvents: [EKEvent] {
+            // Cache invalidation check
+            let now = Date()
+            if now.timeIntervalSince(lastFilterUpdate) > 1.0 {
+                updateFilteredEventsCache()
+            }
+            return cachedFilteredEvents
+        }
+
+        private func updateFilteredEventsCache() {
+            let startTime = CFAbsoluteTimeGetCurrent()
+
+            let allEvents = deviceCalendar.events
+            let filtered: [EKEvent] = if settings.showOnlySchoolCalendar && !calendarManager.selectedCalendarID
+                .isEmpty
+            {
+                allEvents.filter { event in
+                    guard let calendar = event.calendar else { return false }
+                    return calendar.calendarIdentifier == calendarManager.selectedCalendarID
+                }
+            } else {
+                allEvents
+            }
+
+            cachedFilteredEvents = filtered
+            lastFilterUpdate = Date()
+
+            let duration = (CFAbsoluteTimeGetCurrent() - startTime) * 1000
+            if duration > 16 { // Log if filtering takes more than one frame
+                DebugLogger.log("⚠️ Calendar filter took \(String(format: "%.2f", duration))ms")
             }
         }
-        .padding(DesignSystem.Layout.padding.window)
-    }
-}
 
-private struct CalendarEmptyState: View {
-    let title: String
-    let message: String
-
-    var body: some View {
-        VStack(spacing: 10) {
-            Image(systemName: "calendar.badge.exclamationmark")
-                .font(.title2)
-                .foregroundStyle(.secondary)
-            Text(title)
-                .font(.headline)
-            Text(message)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding()
-    }
-}
-
-// MARK: - Shared Day Helpers
-
-struct CalendarDay: Hashable {
-    var date: Date
-    var isToday: Bool
-    var isSelected: Bool
-    var hasEvents: Bool
-    var densityLevel: EventDensityLevel
-    var isInCurrentMonth: Bool
-}
-
-private struct DayHeaderCard: View {
-    let day: CalendarDay
-    private let calendar = Calendar.current
-    @State private var hovering = false
-
-    var body: some View {
-        VStack(spacing: 6) {
-            Text(weekdaySymbol.uppercased())
-                .font(.caption2.weight(.semibold))
-                .foregroundColor(day.isSelected ? .white : .secondary)
-            Text(verbatim: "\(calendar.component(.day, from: day.date))")
-                .font(DesignSystem.Typography.subHeader)
-                .frame(width: 38, height: 38)
-                .background(
-                    Circle()
-                        .fill(day.isSelected ? Color.accentColor : Color.clear)
-                        .background(
-                            Circle().fill(DesignSystem.Materials.hud)
-                        )
+        var body: some View {
+            GeometryReader { proxy in
+                let verticalPadding = RootsSpacing.pagePadding
+                let topToolbarHeight = DesignSystem.Layout.rowHeight.large + 12
+                let topSectionSpacing: CGFloat = 16
+                let availableWidth = max(0, proxy.size.width - verticalPadding * 2)
+                let sidebarWidth = max(220, min(280, availableWidth * 0.28))
+                let gridPadding = max(8, min(16, availableWidth * 0.02))
+                let loadingHeight: CGFloat = (isHydratingInitial || isHydratingFull) ? 24 : 0
+                let topSectionsHeight = topToolbarHeight
+                    + (loadingHeight > 0 ? loadingHeight + topSectionSpacing : 0)
+                let panelHeight = max(
+                    0,
+                    proxy.size.height - verticalPadding * 2 - topSectionsHeight - topSectionSpacing
                 )
-                .foregroundColor(day.isSelected ? .white : .primary.opacity(0.8))
-        }
-        .padding(DesignSystem.Layout.spacing.small)
-        .frame(maxWidth: .infinity)
-        .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusSmall)
-        .scaleEffect(hovering ? 1.02 : 1.0)
-        .animation(.easeInOut(duration: DesignSystem.Motion.instant), value: hovering)
-        .onHover { hovering = $0 }
-    }
 
-    private var weekdaySymbol: String {
-        Calendar.current.shortWeekdaySymbols[(Calendar.current.component(.weekday, from: day.date) - 1 + 7) % 7]
-    }
-}
+                VStack(spacing: topSectionSpacing) {
+                    headerView
 
-private struct MonthDayCell: View {
-    let day: CalendarDay
-    private let calendar = Calendar.current
-    @State private var hovering = false
-
-    var body: some View {
-        ZStack(alignment: .topTrailing) {
-            Text(dayNumber)
-                .font(DesignSystem.Typography.body)
-                .frame(width: 32, height: 32)
-                .foregroundColor(textColor)
-                .background(
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 8, style: .continuous)
-                            .fill(DesignSystem.Materials.hud)
-                        
-                        RoundedRectangle(cornerRadius: 6, style: .continuous)
-                            .fill(backgroundFill)
-                            .padding(2)
+                    if isHydratingInitial || isHydratingFull {
+                        HStack(spacing: 8) {
+                            ProgressView()
+                            Text(isHydratingFull ? "Loading calendar…" : "Preparing events…")
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 4)
                     }
-                    .shadow(color: shadowColor, radius: shadowRadius, x: 0, y: shadowY)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .strokeBorder(outlineColor, lineWidth: outlineWidth)
-                )
-                .padding(.top, 6)
-                .padding(.trailing, 6)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-        .contentShape(Rectangle())
-        .scaleEffect(hovering ? 1.01 : 1.0)
-        .animation(.easeInOut(duration: DesignSystem.Motion.instant), value: hovering)
-        .onHover { hovering = $0 }
-    }
 
-    private var dayNumber: String { String(calendar.component(.day, from: day.date)) }
+                    // Main content: sidebar + calendar grid (equal height cards)
+                    HStack(alignment: .top, spacing: 16) {
+                        // Left sidebar showing events for selected date
+                        eventSidebarView
+                            .frame(width: sidebarWidth)
+                            .frame(height: panelHeight, alignment: .top)
 
-    private var textColor: Color {
-        if day.isSelected { return .white }
-        if !day.isInCurrentMonth { return .secondary.opacity(0.5) }
-        if day.isToday { return .primary }
-        return .primary
-    }
-
-    private var backgroundFill: Color {
-        if day.isSelected { return .accentColor }
-        if day.isToday { return .clear }
-        return .clear
-    }
-
-    private var outlineColor: Color {
-        if day.isSelected { return Color.accentColor.opacity(0.3) }
-        if day.isToday { return Color.accentColor }
-        return .clear
-    }
-    
-    private var outlineWidth: CGFloat {
-        if day.isSelected { return 2.5 }
-        if day.isToday { return 2.0 }
-        return 0
-    }
-    
-    private var shadowColor: Color {
-        if day.isSelected { return Color.accentColor.opacity(0.4) }
-        return .clear
-    }
-    
-    private var shadowRadius: CGFloat {
-        day.isSelected ? 6 : 0
-    }
-    
-    private var shadowY: CGFloat {
-        day.isSelected ? 3 : 0
-    }
-}
-
-// MARK: - Metrics
-
-private struct CalendarStats {
-    let averagePerDay: Double
-    let totalItems: Int
-    let busiestDayName: String
-    let busiestDayCount: Int
-
-    static let empty = CalendarStats(averagePerDay: 0, totalItems: 0, busiestDayName: "—", busiestDayCount: 0)
-
-    nonisolated static func calculate(from events: [EKEvent], for date: Date) -> CalendarStats {
-        let calendar = Calendar.current
-        let range = calendar.range(of: .day, in: .month, for: date) ?? 0..<0
-        let numDaysInMonth = range.count
-
-        let components = calendar.dateComponents([.year, .month], from: date)
-        let monthEvents = events.filter { event in
-            let eventComponents = calendar.dateComponents([.year, .month], from: event.startDate)
-            return eventComponents.year == components.year && eventComponents.month == components.month
-        }
-
-        let total = monthEvents.count
-        let average = numDaysInMonth > 0 ? Double(total) / Double(numDaysInMonth) : 0.0
-
-        let eventsByDay = Dictionary(grouping: monthEvents) { event in
-            calendar.component(.day, from: event.startDate)
-        }
-
-        if let maxEntry = eventsByDay.max(by: { $0.value.count < $1.value.count }) {
-            var dayComponents = components
-            dayComponents.day = maxEntry.key
-            if let busyDate = calendar.date(from: dayComponents) {
-                let formatter = DateFormatter()
-                formatter.dateFormat = "MMM d"
-                return CalendarStats(
-                    averagePerDay: average,
-                    totalItems: total,
-                    busiestDayName: formatter.string(from: busyDate),
-                    busiestDayCount: maxEntry.value.count
-                )
+                        // Main calendar grid
+                        VStack(spacing: 12) {
+                            gridContent
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                        .padding(gridPadding)
+                        .background(DesignSystem.Materials.card)
+                        .clipShape(RoundedRectangle(
+                            cornerRadius: DesignSystem.Layout.cornerRadiusStandard,
+                            style: .continuous
+                        ))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
+                                .stroke(Color.primary.opacity(0.06), lineWidth: 1)
+                        )
+                        .frame(height: panelHeight, alignment: .top)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .padding(verticalPadding)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
+            .sheet(isPresented: $showingNewEventSheet) {
+                AddEventPopup().environmentObject(calendarManager)
+            }
+            .onAppear {
+                openTimestamp = Date()
+                markFirstFrame()
+                requestAccessAndSync()
+                hydrateEventsIncrementally()
+                updateFilteredEventsCache()
+                updateMetrics()
+
+                // Log performance metrics to console when developer mode is enabled
+                if settings.devModeEnabled {
+                    logPerformanceMetrics()
+                }
+            }
+            .onChange(of: focusedDate) { _, _ in
+                invalidateEventsCache()
+                loadVisibleRangeEvents()
+                updateMetrics()
+            }
+            .onChange(of: currentViewMode) { _, _ in
+                invalidateEventsCache()
+                loadVisibleRangeEvents()
+                updateMetrics()
+            }
+            .onReceive(deviceCalendar.$events) { _ in
+                invalidateEventsCache()
+                updateMetrics()
+            }
+            .onChange(of: settings.showOnlySchoolCalendar) { _, _ in
+                invalidateEventsCache()
+            }
+            .onChange(of: calendarManager.selectedCalendarID) { _, _ in
+                invalidateEventsCache()
+            }
+            // Present event detail without resizing layout
+            .sheet(item: $selectedEvent, onDismiss: {
+                // restore sidebar when the detail sheet is dismissed
+                withAnimation(DesignSystem.Motion.standardEase) {
+                    selectedDate = calendarManager.selectedDate ?? focusedDate
+                }
+                selectedEvent = nil
+            }, content: { event in
+                // Add a subtle presentation animation inside the sheet
+                EventDetailView(
+                    item: event,
+                    isPresented: Binding(get: { selectedEvent != nil }, set: { if !$0 { selectedEvent = nil } })
+                )
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            })
         }
 
-        return CalendarStats(
-            averagePerDay: average,
-            totalItems: total,
-            busiestDayName: "—",
-            busiestDayCount: 0
-        )
-    }
-}
+        private var headerView: some View {
+            HStack(alignment: .center, spacing: 12) {
+                titleView
 
-private struct MetricsRow: View {
-    var metrics: CalendarStats
-    private let columns = [GridItem(.adaptive(minimum: 180), spacing: 12)]
+                Spacer()
 
-    var body: some View {
-        LazyVGrid(columns: columns, spacing: 12) {
-            MetricCard(title: "Average / Day", value: String(format: "%.1f", metrics.averagePerDay), subtitle: "This month", systemImage: "chart.bar.xaxis")
-            MetricCard(title: "Total This Month", value: "\(metrics.totalItems)", subtitle: "Calendar items", systemImage: "calendar")
-            MetricCard(title: "Busiest Day", value: metrics.busiestDayName, subtitle: busiestSubtitle, systemImage: "flame")
+                navigationControls
+            }
+            .padding(.horizontal, DesignSystem.Layout.padding.window)
+            .padding(.vertical, 4)
         }
-        .transition(DesignSystem.Motion.slideUpTransition)
-        .animation(DesignSystem.Motion.standardEase, value: metrics.totalItems)
-    }
 
-    private var busiestSubtitle: String {
-        metrics.busiestDayCount > 0 ? "\(metrics.busiestDayCount) items" : "No items"
-    }
-}
-
-private struct MetricCard: View {
-    var title: String
-    var value: String
-    var subtitle: String
-    var systemImage: String
-
-    var body: some View {
-        HStack(alignment: .center, spacing: 12) {
-            Image(systemName: systemImage)
-                .font(DesignSystem.Typography.body)
-                .foregroundStyle(.secondary)
-                .frame(width: 28, height: 28)
-                .background(Circle().fill(RootsColor.subtleFill))
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
+        private var titleView: some View {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(headerTitle)
+                    .font(.largeTitle.weight(.semibold))
+                    .lineLimit(1)
+                Text(headerSubtitle)
                     .font(DesignSystem.Typography.caption)
                     .foregroundStyle(.secondary)
-                Text(value)
-                    .font(.title3.weight(.semibold))
-                Text(subtitle)
-                    .font(.footnote)
+            }
+        }
+
+        private var navigationControls: some View {
+            HStack(spacing: 6) {
+                Button { shift(by: -1) } label: {
+                    calendarButtonLabel(
+                        title: NSLocalizedString("common.button.previous", comment: ""),
+                        systemImage: "chevron.left"
+                    )
+                    .foregroundStyle(chevronLeftHover ? Color.accentColor : .primary)
+                    .scaleEffect(chevronLeftHover ? 1.06 : 1.0)
+                }
+                .buttonStyle(.plain)
+                .rootsStandardInteraction()
+                .keyboardShortcut(.leftArrow, modifiers: [.command])
+                .onHover { hovering in
+                    withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { chevronLeftHover = hovering }
+                }
+
+                Button { jumpToToday() } label: {
+                    Text(NSLocalizedString("calendar.today", value: "Today", comment: "Today"))
+                        .font(.subheadline.weight(.semibold))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color.accentColor)
+                            .opacity(todayHover ? 0.18 : 0.12))
+                }
+                .buttonStyle(.plain)
+                .rootsStandardInteraction()
+                .keyboardShortcut("t", modifiers: [.command])
+                .onHover { hovering in
+                    withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { todayHover = hovering }
+                }
+
+                Button { shift(by: 1) } label: {
+                    calendarButtonLabel(
+                        title: NSLocalizedString("common.button.next", comment: ""),
+                        systemImage: "chevron.right"
+                    )
+                    .foregroundStyle(chevronRightHover ? Color.accentColor : .primary)
+                    .scaleEffect(chevronRightHover ? 1.06 : 1.0)
+                }
+                .buttonStyle(.plain)
+                .rootsStandardInteraction()
+                .keyboardShortcut(.rightArrow, modifiers: [.command])
+                .onHover { hovering in
+                    withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { chevronRightHover = hovering }
+                }
+
+                Button { refreshCalendar() } label: {
+                    calendarButtonLabel(
+                        title: NSLocalizedString("timer.context.refresh_calendar", comment: ""),
+                        systemImage: isRefreshing ? "arrow.clockwise.circle.fill" : "arrow.clockwise"
+                    )
+                    .foregroundStyle(refreshHover ? Color.accentColor : .primary)
+                    .scaleEffect(refreshHover ? 1.06 : 1.0)
+                    .rotationEffect(.degrees(isRefreshing ? 360 : 0))
+                    .animation(
+                        isRefreshing ? .linear(duration: 1.0).repeatForever(autoreverses: false) : .default,
+                        value: isRefreshing
+                    )
+                }
+                .buttonStyle(.plain)
+                .rootsStandardInteraction()
+                .keyboardShortcut("r", modifiers: [.command])
+                .disabled(isRefreshing)
+                .onHover { hovering in
+                    withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { refreshHover = hovering }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .trailing)
+        }
+
+        private var headerTitle: String {
+            switch currentViewMode {
+            case .day:
+                focusedDate.formatted(.dateTime.weekday().month().day())
+            case .week:
+                weekTitle(for: focusedDate)
+            case .month:
+                monthTitle(for: focusedDate)
+            case .year:
+                String(Calendar.current.component(.year, from: focusedDate))
+            }
+        }
+
+        private var headerSubtitle: String {
+            currentViewMode == .week ? weekSubtitle(for: focusedDate) : ""
+        }
+
+        // MARK: - Event Sidebar
+
+        @ViewBuilder
+        private var eventSidebarView: some View {
+            VStack(alignment: .leading, spacing: 0) {
+                // Header with selected date
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(sidebarDateTitle)
+                        .font(.title3.weight(.semibold))
+                        .lineLimit(1)
+
+                    Text(sidebarDateSubtitle)
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 12)
+
+                Divider()
+
+                // Event list
+                eventListView
+            }
+            .frame(maxHeight: .infinity, alignment: .top)
+            .sidebarCardStyle()
+        }
+
+        @ViewBuilder
+        private var eventListView: some View {
+            let dayEvents = events(on: selectedDate ?? focusedDate)
+
+            if dayEvents.isEmpty {
+                // Empty state
+                VStack(spacing: 12) {
+                    Image(systemName: "calendar.badge.clock")
+                        .font(.system(size: emptyIconSize))
+                        .foregroundStyle(.tertiary)
+
+                    Text(NSLocalizedString("calendar.no_events.title", value: "No Events", comment: "No Events"))
+                        .font(DesignSystem.Typography.body)
+
+                    Text(NSLocalizedString(
+                        "calendar.no_events.message",
+                        value: "Add an assignment or event to get started",
+                        comment: "Add an assignment or event to get started"
+                    ))
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .padding()
+            } else {
+                ScrollView {
+                    VStack(spacing: 8) {
+                        ForEach(dayEvents) { event in
+                            sidebarEventRow(event: event)
+                        }
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 12)
+                }
+            }
+        }
+
+        private func sidebarEventRow(event: CalendarEvent) -> some View {
+            Button {
+                selectedEvent = event
+            } label: {
+                HStack(alignment: .top, spacing: 12) {
+                    // Time or "All-day"
+                    VStack(alignment: .leading, spacing: 2) {
+                        if calendar.isDateInToday(event.startDate) && event.startDate.timeIntervalSinceNow < 0 && event
+                            .endDate.timeIntervalSinceNow > 0
+                        {
+                            Text(NSLocalizedString("calendar.now", value: "Now", comment: "Now"))
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(Color.accentColor)
+                        } else if isAllDay(event: event) {
+                            Text(NSLocalizedString("calendar.all_day", value: "All Day", comment: "All Day"))
+                                .font(.caption.weight(.medium))
+                                .foregroundStyle(.secondary)
+                        } else {
+                            Text(event.startDate.formatted(date: .omitted, time: .shortened))
+                                .font(.caption.weight(.medium))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .frame(width: 50, alignment: .leading)
+
+                    // Category color indicator (outline SF Symbol)
+                    Image(systemName: categoryIcon(for: event.category))
+                        .font(.system(size: mediumTextSize))
+                        .foregroundStyle(Color.accentColor)
+                        .frame(width: 20)
+
+                    // Event details
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(event.title)
+                            .font(DesignSystem.Typography.body)
+                            .lineLimit(2)
+
+                        if let location = event.location, !location.isEmpty {
+                            HStack(spacing: 4) {
+                                Image(systemName: "mappin")
+                                    .font(.caption2)
+                                Text(location)
+                                    .font(.caption)
+                            }
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+                .background(
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .fill(DesignSystem.Materials.hud.opacity(0.5))
+                )
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .rootsStandardInteraction()
+        }
+
+        private var sidebarDateTitle: String {
+            let date = selectedDate ?? focusedDate
+            if calendar.isDateInToday(date) {
+                return "Today"
+            } else if calendar.isDateInTomorrow(date) {
+                return "Tomorrow"
+            } else if calendar.isDateInYesterday(date) {
+                return "Yesterday"
+            } else {
+                return date.formatted(.dateTime.weekday(.wide).month().day())
+            }
+        }
+
+        private var sidebarDateSubtitle: String {
+            let date = selectedDate ?? focusedDate
+            let dayEvents = events(on: date)
+            let count = dayEvents.count
+            return String.localizedStringWithFormat(
+                NSLocalizedString("events_count", comment: ""),
+                count
+            )
+        }
+
+        private func isAllDay(event: CalendarEvent) -> Bool {
+            let duration = event.endDate.timeIntervalSince(event.startDate)
+            return duration >= 86400 - 60 // Consider >= 23h59m as all-day
+        }
+
+        private func categoryIcon(for category: EventCategory) -> String {
+            switch category {
+            case .study: "book"
+            case .homework: "pencil"
+            case .exam: "doc.text"
+            case .lab: "flask"
+            case .class: "graduationcap"
+            case .reading: "book.pages"
+            case .review: "checkmark.circle"
+            case .other: "calendar"
+            }
+        }
+
+        @ViewBuilder
+        private func calendarButtonLabel(title: String, systemImage: String) -> some View {
+            switch settings.tabBarMode {
+            case .iconsOnly:
+                Image(systemName: systemImage)
+            case .textOnly:
+                Text(title)
+            case .iconsAndText:
+                HStack(spacing: DesignSystem.Spacing.xsmall) {
+                    Image(systemName: systemImage)
+                    Text(title)
+                }
+            }
+        }
+
+        @ViewBuilder
+        private func addEventButtonLabel() -> some View {
+            let title = NSLocalizedString("calendar.new_event", comment: "")
+            switch settings.tabBarMode {
+            case .iconsOnly:
+                Image(systemName: "plus")
+                    .font(.subheadline.weight(.semibold))
+                    .frame(width: 36, height: 36)
+                    .background(DesignSystem.Materials.hud.opacity(0.75), in: Circle())
+            case .textOnly:
+                Text(title)
+                    .font(.subheadline.weight(.semibold))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 7)
+                    .background(DesignSystem.Materials.hud.opacity(0.75), in: Capsule())
+            case .iconsAndText:
+                HStack(spacing: DesignSystem.Spacing.xsmall) {
+                    Image(systemName: "plus")
+                    Text(title)
+                }
+                .font(.subheadline.weight(.semibold))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 7)
+                .background(DesignSystem.Materials.hud.opacity(0.75), in: Capsule())
+            }
+        }
+
+        @ViewBuilder
+        private var gridContent: some View {
+            switch currentViewMode {
+            case .month:
+                MonthCalendarView(
+                    focusedDate: $focusedDate,
+                    selectedDate: $selectedDate,
+                    events: effectiveEvents,
+                    onSelectDate: { day in
+                        focusedDate = day
+                        selectedDate = day
+                        calendarManager.selectedDate = day
+                        selectedEvent = events(on: day).first
+                        updateMetrics()
+                    },
+                    onSelectEvent: { event in
+                        selectedEvent = event
+                        focusedDate = event.startDate
+                        selectedDate = event.startDate
+                        calendarManager.selectedDate = event.startDate
+                        updateMetrics()
+                    }
+                )
+            case .week:
+                WeekCalendarView(focusedDate: $focusedDate, events: effectiveEvents)
+            case .day:
+                CalendarDayView(date: focusedDate, events: filteredEvents)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            case .year:
+                CalendarYearView(currentYear: focusedDate)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
+
+        private func eventsFor(date: Date) -> [CalendarEvent] {
+            let start = calendar.startOfDay(for: date)
+            return effectiveEvents.filter { calendar.isDate($0.startDate, inSameDayAs: start) }
+        }
+
+        private func shift(by value: Int) {
+            switch currentViewMode {
+            case .month:
+                if let newDate = calendar.date(byAdding: .month, value: value, to: focusedDate) {
+                    focusedDate = newDate
+                    selectedDate = newDate
+                }
+            case .week:
+                if let newDate = calendar.date(byAdding: .weekOfYear, value: value, to: focusedDate) {
+                    focusedDate = newDate
+                    selectedDate = newDate
+                }
+            case .day:
+                if let newDate = calendar.date(byAdding: .day, value: value, to: focusedDate) {
+                    focusedDate = newDate
+                    selectedDate = newDate
+                }
+            case .year:
+                if let newDate = calendar.date(byAdding: .year, value: value, to: focusedDate) {
+                    focusedDate = newDate
+                    selectedDate = newDate
+                }
+            }
+        }
+
+        private func monthTitle(for date: Date) -> String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "LLLL yyyy"
+            return formatter.string(from: date)
+        }
+
+        private func weekTitle(for date: Date) -> String {
+            let start = Calendar.current.date(from: Calendar.current.dateComponents(
+                [.yearForWeekOfYear, .weekOfYear],
+                from: date
+            )) ?? date
+            let end = Calendar.current.date(byAdding: .day, value: 6, to: start) ?? date
+            let f = DateFormatter()
+            f.dateFormat = "EEE, d MMM"
+            let startStr = f.string(from: start)
+            f.dateFormat = "EEE, d MMM"
+            let endStr = f.string(from: end)
+            return "\(startStr) – \(endStr)"
+        }
+
+        private func weekSubtitle(for date: Date) -> String {
+            let f = DateFormatter()
+            f.dateFormat = "LLLL yyyy"
+            return f.string(from: date)
+        }
+
+        private func jumpToToday() {
+            let today = Date()
+            focusedDate = today
+            selectedDate = today
+            calendarManager.selectedDate = today
+        }
+
+        private func refreshCalendar() {
+            guard !isRefreshing else { return }
+
+            isRefreshing = true
+            _Concurrency.Task {
+                await deviceCalendar.refreshEventsForVisibleRange(reason: "manual_refresh")
+                invalidateEventsCache()
+                hydrateEventsIncrementally()
+
+                await MainActor.run {
+                    // Keep spinning for a minimum duration for visual feedback
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        isRefreshing = false
+                    }
+                }
+            }
+        }
+
+        private var effectiveEvents: [CalendarEvent] {
+            syncedEvents.isEmpty ? events : syncedEvents
+        }
+
+        private func requestAccessAndSync() {
+            _Concurrency.Task {
+                await calendarManager.requestAccess()
+            }
+        }
+
+        private func syncEvents() {
+            hydrateEventsIncrementally()
+        }
+
+        private func hydrateEventsIncrementally() {
+            guard !isHydratingInitial else { return }
+            isHydratingInitial = true
+
+            let cal = Calendar.current
+            let start = cal.date(byAdding: .day, value: -1, to: Date()) ?? Date()
+            let end = cal.date(byAdding: .day, value: 3, to: Date()) ?? Date()
+            let targetCalendars = selectedEventCalendars()
+
+            fetchEventsAsync(
+                start: start,
+                end: end,
+                targetCalendars: targetCalendars,
+                includeReminders: false,
+                reason: "initialRange"
+            ) { ekEvents, events in
+                self.applyEvents(ekEvents, events: events)
+                self.loadedEventCount = events.count
+                if self.dataReadyElapsed == nil {
+                    self.dataReadyElapsed = Date().timeIntervalSince(self.openTimestamp)
+                }
+                self.isHydratingInitial = false
+                self.loadVisibleRangeEvents()
+            }
+        }
+
+        private func loadVisibleRangeEvents() {
+            guard !isHydratingFull else { return }
+            isHydratingFull = true
+
+            let window = visibleInterval()
+            let targetCalendars = selectedEventCalendars()
+
+            fetchEventsAsync(
+                start: window.start,
+                end: window.end,
+                targetCalendars: targetCalendars,
+                includeReminders: true,
+                reason: "visibleRange"
+            ) { ekEvents, events in
+                self.applyEvents(ekEvents, events: events)
+                self.loadedEventCount = events.count
+                let elapsed = Date().timeIntervalSince(self.openTimestamp)
+                if self.dataReadyElapsed == nil { self.dataReadyElapsed = elapsed }
+                self.fullDataReadyElapsed = elapsed
+                self.isHydratingFull = false
+            }
+        }
+
+        private func selectedEventCalendars() -> [EKCalendar]? {
+            let selectedCalId = calendarManager.selectedCalendarID
+            guard !selectedCalId.isEmpty else { return nil }
+            return eventStore.calendars(for: .event).filter { $0.calendarIdentifier == selectedCalId }
+        }
+
+        private func markFirstFrame() {
+            DispatchQueue.main.async {
+                if self.firstFrameElapsed == nil {
+                    self.firstFrameElapsed = Date().timeIntervalSince(self.openTimestamp)
+                }
+            }
+        }
+
+        private func fetchEventsAsync(
+            start: Date,
+            end: Date,
+            targetCalendars: [EKCalendar]?,
+            includeReminders: Bool,
+            reason _: String,
+            completion: @escaping ([EKEvent], [CalendarEvent]) -> Void
+        ) {
+            // Guard permissions early
+            let hasEventAccess: Bool = if #available(macOS 14.0, *) {
+                calendarManager.eventAuthorizationStatus == .fullAccess || calendarManager
+                    .eventAuthorizationStatus == .writeOnly
+            } else {
+                calendarManager.eventAuthorizationStatus == .fullAccess || calendarManager
+                    .eventAuthorizationStatus == .writeOnly
+            }
+            let hasReminderAccess: Bool = if #available(macOS 14.0, *) {
+                calendarManager.reminderAuthorizationStatus == .fullAccess || calendarManager
+                    .reminderAuthorizationStatus == .writeOnly
+            } else {
+                calendarManager.reminderAuthorizationStatus == .fullAccess || calendarManager
+                    .reminderAuthorizationStatus == .writeOnly
+            }
+
+            if !(hasEventAccess || hasReminderAccess) {
+                DebugLogger.log("📅 [CalendarPageView] fetchEventsAsync called without permissions")
+                completion([], [])
+                return
+            }
+
+            let store = eventStore
+            DispatchQueue.global(qos: .userInitiated).async {
+                let predicate = store.predicateForEvents(withStart: start, end: end, calendars: targetCalendars)
+                let ekEvents = store.events(matching: predicate)
+
+                DispatchQueue.main.async {
+                    let mappedEvents = ekEvents.map { self.mapEventInline($0) }
+                    guard includeReminders && hasReminderAccess else {
+                        completion(ekEvents, mappedEvents)
+                        return
+                    }
+
+                    let reminderCalendars: [EKCalendar]? = {
+                        if calendarManager.selectedReminderListID.isEmpty { return nil }
+                        return store.calendars(for: .reminder)
+                            .filter { $0.calendarIdentifier == calendarManager.selectedReminderListID }
+                    }()
+
+                    let reminderPredicate = store.predicateForIncompleteReminders(
+                        withDueDateStarting: start,
+                        ending: end,
+                        calendars: reminderCalendars
+                    )
+                    store.fetchReminders(matching: reminderPredicate) { reminders in
+                        let mappedReminders = reminders?.compactMap { reminder -> CalendarEvent? in
+                            guard let dueDate = reminder.dueDateComponents?.date else { return nil }
+                            return CalendarEvent(
+                                title: reminder.title,
+                                startDate: dueDate,
+                                endDate: dueDate,
+                                location: reminder.location,
+                                notes: reminder.notes,
+                                url: nil,
+                                alarms: nil,
+                                travelTime: nil,
+                                ekIdentifier: reminder.calendarItemIdentifier,
+                                isReminder: true,
+                                category: nil,
+                                canEdit: reminder.calendar?.allowsContentModifications ?? false,
+                                isRecurring: false
+                            )
+                        } ?? []
+
+                        DispatchQueue.main.async {
+                            completion(ekEvents, mappedEvents + mappedReminders)
+                        }
+                    }
+                }
+            }
+        }
+
+        /// Maps an EKEvent to our CalendarEvent model, decoding notes/category and preserving editability/recurrence
+        /// flags.
+        private func mapEventInline(_ ek: EKEvent) -> CalendarEvent {
+            let (cleanNotes, storedCategory) = calendarManager.decodeNotesWithCategory(notes: ek.notes)
+            return CalendarEvent(
+                title: ek.title,
+                startDate: ek.startDate,
+                endDate: ek.endDate,
+                location: ek.location,
+                notes: cleanNotes,
+                url: ek.url,
+                alarms: ek.alarms,
+                travelTime: nil,
+                ekIdentifier: ek.eventIdentifier,
+                isReminder: false,
+                category: storedCategory,
+                canEdit: ek.calendar?.allowsContentModifications ?? false,
+                isRecurring: !(ek.recurrenceRules?.isEmpty ?? true)
+            )
+        }
+
+        private func applyEvents(_ ekEvents: [EKEvent], events: [CalendarEvent]) {
+            self.syncedEvents = events
+            self.hydratedEKEvents = ekEvents
+            let dates = events.map { calendar.startOfDay(for: $0.startDate) }
+            _Concurrency.Task { @MainActor in
+                eventsStore.update(dates: dates)
+            }
+            updateMetrics()
+        }
+
+        private func formattedTimeRange(start: Date, end: Date) -> String {
+            let use24 = AppSettingsModel.shared.use24HourTime
+            let f = DateFormatter()
+            f.dateFormat = use24 ? "HH:mm" : "h:mm a"
+            return "\(f.string(from: start)) - \(f.string(from: end))"
+        }
+
+        private func events(on day: Date) -> [CalendarEvent] {
+            let startOfDay = calendar.startOfDay(for: day)
+            let dayKey = dateKey(for: startOfDay)
+
+            // Return cached if available
+            if let cached = eventsByDay[dayKey] {
+                return cached
+            }
+
+            // Compute without caching during view render
+            // (prevents "modifying state during view update" warning)
+            let filtered = effectiveEvents
+                .filter { calendar.isDate($0.startDate, inSameDayAs: startOfDay) }
+                .sorted { $0.startDate < $1.startDate }
+
+            return filtered
+        }
+
+        private func dateKey(for date: Date) -> String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            return formatter.string(from: date)
+        }
+
+        private func invalidateEventsCache() {
+            eventsByDay.removeAll()
+            updateFilteredEventsCache()
+        }
+
+        private func visibleInterval() -> DateInterval {
+            switch currentViewMode {
+            case .month:
+                if let interval = calendar.dateInterval(of: .month, for: focusedDate) {
+                    return interval
+                }
+            case .week:
+                let start = calendar.date(from: calendar.dateComponents(
+                    [.yearForWeekOfYear, .weekOfYear],
+                    from: focusedDate
+                )) ?? focusedDate
+                let end = calendar.date(byAdding: .day, value: 7, to: start) ?? focusedDate
+                return DateInterval(start: start, end: end)
+            case .day:
+                let start = calendar.startOfDay(for: focusedDate)
+                let end = calendar.date(byAdding: .day, value: 1, to: start) ?? focusedDate
+                return DateInterval(start: start, end: end)
+            case .year:
+                if let interval = calendar.dateInterval(of: .year, for: focusedDate) {
+                    return interval
+                }
+            @unknown default:
+                break
+            }
+            return DateInterval(start: focusedDate, end: focusedDate.addingTimeInterval(24 * 3600))
+        }
+
+        private func updateMetrics() {
+            let startTime = CFAbsoluteTimeGetCurrent()
+
+            // Capture values for background computation
+            let source = hydratedEKEvents.isEmpty ? filteredEvents : hydratedEKEvents
+            let dateToProcess = focusedDate
+
+            Task.detached(priority: .userInitiated) {
+                // Heavy computation off main thread
+                let calculatedMetrics = CalendarStats.calculate(from: source, for: dateToProcess)
+
+                let duration = (CFAbsoluteTimeGetCurrent() - startTime) * 1000
+
+                // Update UI on main thread
+                await MainActor.run {
+                    self.metrics = calculatedMetrics
+                    if duration > 16 {
+                        DebugLogger.log("⚠️ Calendar metrics calculation took \(String(format: "%.2f", duration))ms")
+                    }
+                }
+            }
+        }
+
+        private func formattedMillis(_ interval: TimeInterval?) -> String {
+            guard let interval else { return "—" }
+            return String(format: "%.0f ms", interval * 1000)
+        }
+
+        private func logPerformanceMetrics() {
+            // Schedule logging after a brief delay to ensure metrics are captured
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let firstFrame = self.formattedMillis(self.firstFrameElapsed)
+                let dataReady = self.formattedMillis(self.dataReadyElapsed)
+                let fullReady = self.formattedMillis(self.fullDataReadyElapsed)
+                let eventCount = self.loadedEventCount
+
+                print("📅 Calendar Performance:")
+                print("   First frame: \(firstFrame)")
+                print("   Data ready: \(dataReady)")
+                print("   Full ready: \(fullReady)")
+                print("   Events: \(eventCount)")
+            }
+        }
+    }
+
+    // MARK: - Month View
+
+    private struct MonthCalendarSplitView: View {
+        @Binding var focusedDate: Date
+        @Binding var selectedDate: Date?
+        let events: [CalendarEvent]
+        let onSelectDate: (Date) -> Void
+        let onSelectEvent: (CalendarEvent) -> Void
+        let onNewEvent: () -> Void
+        let timeFormatter: (Date, Date) -> String
+        @State private var selectedEvent: CalendarEvent?
+
+        private let calendar = Calendar.current
+
+        var body: some View {
+            NavigationSplitView {
+                sidebar
+            } detail: {
+                MonthCalendarView(
+                    focusedDate: $focusedDate,
+                    selectedDate: $selectedDate,
+                    events: events,
+                    onSelectDate: { day in
+                        selectedDate = day
+                        onSelectDate(day)
+                        selectedEvent = events(on: day).first
+                    },
+                    onSelectEvent: { event in
+                        selectedEvent = event
+                        onSelectEvent(event)
+                    }
+                )
+            }
+            .navigationSplitViewStyle(.balanced)
+            .hideSplitViewDivider()
+        }
+
+        private var sidebar: some View {
+            VStack(alignment: .leading, spacing: 0) {
+                // Section header with New Event button
+                HStack(alignment: .top, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(NSLocalizedString(
+                            "calendar.selected_date",
+                            value: "Selected Date",
+                            comment: "Selected Date"
+                        ))
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+
+                        if let day = selectedDate {
+                            Text(day.formatted(.dateTime.weekday().month().day()))
+                                .font(.title3.weight(.bold))
+                                .foregroundStyle(.primary)
+                        } else {
+                            Text(NSLocalizedString(
+                                "calendar.no_date_selected",
+                                value: "No Date Selected",
+                                comment: "No Date Selected"
+                            ))
+                            .font(.title3.weight(.bold))
+                            .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    Spacer()
+
+                    Button {
+                        onNewEvent()
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.body.weight(.semibold))
+                            .frame(width: 32, height: 32)
+                            .background(Circle().fill(DesignSystem.Materials.hud.opacity(0.75)))
+                    }
+                    .buttonStyle(.plain)
+                    .rootsStandardInteraction()
+                    .help("New Event")
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 12)
+
+                Divider()
+
+                // Events list
+                ScrollView {
+                    if let day = selectedDate {
+                        let eventsForDay = events(on: day)
+                        if eventsForDay.isEmpty {
+                            VStack(spacing: DesignSystem.Layout.spacing.small) {
+                                Image(systemName: "calendar.badge.exclamationmark")
+                                    .font(.title2)
+                                    .foregroundStyle(.tertiary)
+                                Text(NSLocalizedString("calendar.no_events", value: "No Events", comment: "No Events"))
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.top, 40)
+                        } else {
+                            LazyVStack(spacing: DesignSystem.Layout.spacing.small) {
+                                ForEach(eventsForDay) { event in
+                                    Button {
+                                        selectedEvent = event
+                                        onSelectEvent(event)
+                                    } label: {
+                                        EventRow(event: event)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: DesignSystem.Corners.pill, style: .continuous)
+                                            .fill(event.id == selectedEvent?.id ? .accentQuaternary : Color.clear)
+                                    )
+                                }
+                            }
+                            .padding(12)
+                        }
+                    } else {
+                        VStack(spacing: DesignSystem.Layout.spacing.small) {
+                            Image(systemName: "calendar")
+                                .font(.title2)
+                                .foregroundStyle(.tertiary)
+                            Text(NSLocalizedString(
+                                "calendar.select_day",
+                                value: "Select a day",
+                                comment: "Select a day"
+                            ))
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 40)
+                    }
+                }
+                if let event = selectedEvent {
+                    Divider()
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(NSLocalizedString("calendar.details", value: "Details", comment: "Details"))
+                            .font(DesignSystem.Typography.subHeader)
+                        Text(timeFormatter(event.startDate, event.endDate))
+                            .font(DesignSystem.Typography.body)
+                        if let location = event.location, !location.isEmpty {
+                            Text(String(format: NSLocalizedString("calendar.location_label", comment: ""), location))
+                                .font(DesignSystem.Typography.body)
+                        }
+                        if let notes = event.notes, !notes.isEmpty {
+                            Text(notes)
+                                .font(DesignSystem.Typography.body)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                }
+            }
+            .frame(minWidth: 260, maxWidth: 280)
+            .glassCard(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
+        }
+
+        private func events(on day: Date) -> [CalendarEvent] {
+            events
+                .filter { calendar.isDate($0.startDate, inSameDayAs: day) }
+                .sorted { $0.startDate < $1.startDate }
+        }
+    }
+
+    private struct MonthCalendarView: View {
+        @Binding var focusedDate: Date
+        @Binding var selectedDate: Date?
+        let events: [CalendarEvent]
+        let onSelectDate: (Date) -> Void
+        let onSelectEvent: (CalendarEvent) -> Void
+        @EnvironmentObject var eventsStore: EventsCountStore
+        private let calendar = Calendar.current
+        private let columns = Array(repeating: GridItem(.flexible(), spacing: 6), count: 7)
+
+        private var todayDate: Date {
+            calendar.startOfDay(for: Date())
+        }
+
+        var body: some View {
+            GeometryReader { geometry in
+                let cellSize = (geometry.size.width - (6 * 12)) / 7 // 6 spacings of 12pt between 7 columns
+                let gridHeight = cellSize * 6 + (5 * 12) // 6 rows with 5 spacings
+
+                VStack(alignment: .leading, spacing: 0) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(monthHeader)
+                            .font(DesignSystem.Typography.subHeader)
+                        weekdayHeader
+                        LazyVGrid(columns: columns, spacing: 12) {
+                            ForEach(days) { day in
+                                let normalized = calendar.startOfDay(for: day.date)
+                                let count = eventsStore.eventsByDate[normalized] ?? events(for: day.date).count
+                                let isToday = calendar.isDate(normalized, inSameDayAs: todayDate)
+                                let isSelected = selectedDate
+                                    .map { calendar.isDate(normalized, inSameDayAs: $0) } ?? false
+                                let calendarDay = CalendarDay(
+                                    date: day.date,
+                                    isToday: isToday,
+                                    isSelected: isSelected,
+                                    hasEvents: count > 0,
+                                    densityLevel: EventDensityLevel.fromCount(count),
+                                    isInCurrentMonth: day.isCurrentMonth
+                                )
+
+                                Button {
+                                    withAnimation(DesignSystem.Motion.snappyEase) {
+                                        focusedDate = day.date
+                                    }
+                                    onSelectDate(day.date)
+                                } label: {
+                                    MonthDayCell(day: calendarDay)
+                                }
+                                .buttonStyle(.plain)
+                                .frame(width: cellSize, height: cellSize)
+                                .background(
+                                    RoundedRectangle(
+                                        cornerRadius: DesignSystem.Layout.cornerRadiusSmall,
+                                        style: .continuous
+                                    )
+                                    .fill(isSelected ? DesignSystem.Materials.surfaceHover : DesignSystem.Materials
+                                        .surface)
+                                    .overlay(
+                                        RoundedRectangle(
+                                            cornerRadius: DesignSystem.Layout.cornerRadiusSmall,
+                                            style: .continuous
+                                        )
+                                        .strokeBorder(Color.primary.opacity(0.1), lineWidth: 1)
+                                    )
+                                )
+                            }
+                        }
+                        .frame(height: gridHeight)
+                    }
+                }
+            }
+        }
+
+        private var monthHeader: String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "LLLL yyyy"
+            return formatter.string(from: focusedDate)
+        }
+
+        private var weekdayHeader: some View {
+            let symbols = calendar.shortWeekdaySymbols
+            let first = calendar.firstWeekday - 1
+            let ordered = Array(symbols[first ..< symbols.count] + symbols[0 ..< first])
+            return HStack(spacing: 6) {
+                ForEach(ordered, id: \.self) { symbol in
+                    Text(symbol.uppercased())
+                        .font(.caption2.weight(.semibold))
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity)
+                }
+            }
+        }
+
+        private var days: [DayItem] {
+            // Generate a safe, non-duplicating grid of days covering the month view
+            guard let monthInterval = calendar.dateInterval(of: .month, for: focusedDate) else { return [] }
+            let monthStart = calendar.startOfDay(for: monthInterval.start)
+            guard let startOfWeek = calendar.date(from: calendar.dateComponents(
+                [.yearForWeekOfYear, .weekOfYear],
+                from: monthStart
+            )) else { return [] }
+
+            // last day of month is monthInterval.end - 1 second
+            let lastOfMonth = calendar.date(byAdding: .second, value: -1, to: monthInterval.end) ?? monthInterval.end
+            guard let endOfWeekStart = calendar.date(from: calendar.dateComponents(
+                [.yearForWeekOfYear, .weekOfYear],
+                from: lastOfMonth
+            )),
+                let endOfWeek = calendar.date(byAdding: .day, value: 7, to: endOfWeekStart) else { return [] }
+
+            var items: [DayItem] = []
+            var seen = Set<Date>()
+            var current = startOfWeek
+
+            while current < endOfWeek && items.count < 42 {
+                let s = calendar.startOfDay(for: current)
+                if !seen.contains(s) {
+                    let isCurrentMonth = calendar.isDate(s, equalTo: focusedDate, toGranularity: .month)
+                    items.append(dayItem(for: s, isCurrentMonth: isCurrentMonth))
+                    seen.insert(s)
+                }
+                guard let next = calendar.date(byAdding: .day, value: 1, to: current) else { break }
+                current = next
+            }
+
+            // Ensure full weeks
+            while items.count % 7 != 0 {
+                if let last = items.last?.date, let next = calendar.date(byAdding: .day, value: 1, to: last) {
+                    let s = calendar.startOfDay(for: next)
+                    if !seen.contains(s) {
+                        let isCurrentMonth = calendar.isDate(s, equalTo: focusedDate, toGranularity: .month)
+                        items.append(dayItem(for: s, isCurrentMonth: isCurrentMonth))
+                        seen.insert(s)
+                    } else { break }
+                } else { break }
+            }
+
+            return items
+        }
+
+        private func dayItem(for date: Date, isCurrentMonth: Bool) -> DayItem {
+            DayItem(id: UUID(), date: date, isCurrentMonth: isCurrentMonth, isToday: calendar.isDateInToday(date))
+        }
+
+        private func events(for date: Date) -> [CalendarEvent] {
+            events.filter { calendar.isDate($0.startDate, inSameDayAs: date) }
+        }
+
+        private func categoryColor(for title: String) -> Color {
+            if let category = parseEventCategory(from: title) {
+                return category.color
+            }
+            return Color.accentColor
+        }
+
+        private struct DayItem: Hashable, Identifiable {
+            let id: UUID
+            let date: Date
+            let isCurrentMonth: Bool
+            let isToday: Bool
+        }
+    }
+
+    // MARK: - Week View
+
+    private struct WeekCalendarView: View {
+        @Binding var focusedDate: Date
+        let events: [CalendarEvent]
+        @EnvironmentObject var settings: AppSettingsModel
+        @Environment(\.colorScheme) private var colorScheme
+        private let calendar = Calendar.current
+
+        private struct PlaceholderBlock: Identifiable {
+            let id = UUID()
+            let dayIndex: Int
+            let startHour: Double
+            let duration: Double
+            let title: String
+        }
+
+        private let placeholders: [PlaceholderBlock] = [
+            .init(dayIndex: 1, startHour: 9, duration: 1.5, title: "Lecture"),
+            .init(dayIndex: 3, startHour: 14, duration: 2, title: "Lab"),
+            .init(dayIndex: 5, startHour: 19, duration: 1.5, title: "Study Block")
+        ]
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(weekTitle)
+                    .font(DesignSystem.Typography.subHeader)
+
+                WeekHeaderView(weekDays: weekDays, focusedDate: $focusedDate, calendar: calendar, events: events)
+
+                Divider()
+                    .overlay(Rectangle().fill(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.26))
+                        .frame(height: 1))
+
+                ScrollView {
+                    ZStack(alignment: .topLeading) {
+                        timeGrid
+                        eventOverlay
+                    }
+                }
+            }
+        }
+
+        private var weekDays: [Date] {
+            let start = calendar.date(from: calendar.dateComponents(
+                [.yearForWeekOfYear, .weekOfYear],
+                from: focusedDate
+            )) ?? focusedDate
+            return (0 ..< 7).compactMap { calendar.date(byAdding: .day, value: $0, to: start) }
+        }
+
+        private var weekTitle: String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "d MMM"
+            guard let start = weekDays.first,
+                  let end = calendar.date(byAdding: .day, value: 6, to: start)
+            else {
+                return formatter.string(from: focusedDate)
+            }
+            return "\(formatter.string(from: start)) – \(formatter.string(from: end))"
+        }
+
+        private var timeGrid: some View {
+            let hours = Array(6 ... 23)
+            return VStack(alignment: .leading, spacing: 22) {
+                ForEach(hours, id: \.self) { hour in
+                    HStack(alignment: .top, spacing: DesignSystem.Layout.spacing.small) {
+                        Text(formatHour(Double(hour)))
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                            .frame(width: 50, alignment: .trailing)
+                        Rectangle()
+                            .fill(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.18))
+                            .frame(height: 1)
+                    }
+                }
+            }
+            .padding(.bottom, 20)
+        }
+
+        private var eventOverlay: some View {
+            GeometryReader { proxy in
+                let width = proxy.size.width - 60
+                let columnWidth = width / 7
+                let hourHeight: CGFloat = 22
+
+                VStack(alignment: .leading, spacing: 0) {
+                    ForEach(placeholders) { block in
+                        let yOffset = CGFloat(block.startHour - 6) * hourHeight
+                        RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
+                            .fill(.accentTertiary)
+                            .overlay(
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(block.title).font(.caption.weight(.semibold))
+                                    Text(formatHour(block.startHour)).font(.caption2).foregroundColor(.secondary)
+                                }
+                                .padding(DesignSystem.Layout.spacing.small)
+                            )
+                            .frame(width: columnWidth - 8)
+                            .frame(height: CGFloat(block.duration) * hourHeight)
+                            .offset(x: 60 + CGFloat(block.dayIndex) * columnWidth, y: yOffset)
+                    }
+                }
+            }
+        }
+
+        private func dayPill(for date: Date) -> some View {
+            let isToday = calendar.isDateInToday(date)
+            let day = calendar.component(.day, from: date)
+            let weekdaySymbol = calendar.shortWeekdaySymbols[(calendar.component(.weekday, from: date) - 1 + 7) % 7]
+            return VStack(spacing: 6) {
+                Text(weekdaySymbol.uppercased())
+                    .font(.caption2.weight(.semibold))
+                    .foregroundColor(.secondary)
+                Text(verbatim: "\(day)")
+                    .font(DesignSystem.Typography.subHeader)
+                    .frame(width: 38, height: 38)
+                    .background(
+                        Circle()
+                            .fill(isToday ? Color.accentColor.opacity(0.9) : .secondaryBackground.opacity(0.08))
+                    )
+                    .foregroundColor(isToday ? .white : .primary.opacity(0.8))
+            }
+            .padding(DesignSystem.Layout.spacing.small)
+            .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusSmall)
+        }
+
+        private func formatHour(_ hour: Double) -> String {
+            let base = calendar.date(
+                bySettingHour: Int(hour),
+                minute: Int((hour.truncatingRemainder(dividingBy: 1)) * 60),
+                second: 0,
+                of: focusedDate
+            ) ?? focusedDate
+            let formatter = DateFormatter()
+            formatter.dateFormat = AppSettingsModel.shared.use24HourTime ? "HH:mm" : "h a"
+            return formatter.string(from: base)
+        }
+    }
+
+    // MARK: - Sidebar & Event Detail
+
+    private struct CalendarSidebarView: View {
+        let selectedDate: Date
+        let events: [CalendarEvent]
+        let onSelectEvent: (CalendarEvent) -> Void
+        @Environment(\.colorScheme) private var colorScheme
+        private var neutralLine: Color { DesignSystem.Colors.neutralLine(for: colorScheme) }
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: 0) {
+                // Section header
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(NSLocalizedString("calendar.selected_date", value: "Selected Date", comment: "Selected Date"))
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+
+                    Text(selectedDate.formatted(.dateTime.weekday().month().day()))
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(.primary)
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 12)
+
+                Rectangle()
+                    .fill(neutralLine.opacity(0.26))
+                    .frame(height: 1)
+
+                // Events list
+                ScrollView {
+                    if events.isEmpty {
+                        VStack(spacing: DesignSystem.Layout.spacing.small) {
+                            Image(systemName: "calendar.badge.exclamationmark")
+                                .font(.title2)
+                                .foregroundStyle(.tertiary)
+                            Text(NSLocalizedString("calendar.no_events", value: "No Events", comment: "No Events"))
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 40)
+                    } else {
+                        LazyVStack(spacing: DesignSystem.Layout.spacing.small) {
+                            ForEach(events) { event in
+                                Button {
+                                    onSelectEvent(event)
+                                } label: {
+                                    EventRow(event: event)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding(12)
+                    }
+                }
+            }
+            .sidebarCardStyle()
+        }
+    }
+
+    private struct EventRow: View {
+        let event: CalendarEvent
+        @State private var isHovered = false
+
+        var body: some View {
+            HStack(alignment: .top, spacing: DesignSystem.Layout.spacing.small) {
+                Circle()
+                    .fill(Color.accentColor)
+                    .frame(width: 6, height: 6)
+                    .padding(.top, 6)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(event.title)
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.primary)
+
+                    Text(timeRange)
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(.secondary)
+
+                    if let location = event.location, !location.isEmpty {
+                        HStack(spacing: 4) {
+                            Image(systemName: "mappin")
+                                .font(.caption2)
+                            Text(location)
+                                .font(DesignSystem.Typography.caption)
+                        }
+                        .foregroundStyle(.tertiary)
+                    }
+                }
+
+                Spacer()
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
+                    .fill(isHovered ? .secondaryBackground.opacity(0.15) : Color.clear)
+            )
+            .onHover { hovering in
+                withAnimation(DesignSystem.Motion.snappyEase) {
+                    isHovered = hovering
+                }
+            }
+        }
+
+        private var timeRange: String {
+            let formatter = DateFormatter()
+            formatter.timeStyle = .short
+            return "\(formatter.string(from: event.startDate)) – \(formatter.string(from: event.endDate))"
+        }
+    }
+
+    private struct EventDetailView: View {
+        let item: CalendarEvent
+        @Binding var isPresented: Bool
+        @EnvironmentObject private var calendarManager: CalendarManager
+        @EnvironmentObject private var settings: AppSettingsModel
+        @State private var showDeleteConfirm = false
+        @State private var showScopeSelection = false
+        @State private var showEdit = false
+        @State private var errorMessage: String?
+        @State private var showError = false
+        @State private var selectedScope: EventDeletionService.RecurringDeletionScope?
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: 16) {
+                // Header
+                HStack {
+                    Text(item.title)
+                        .font(.title2.weight(.bold))
+                        .foregroundStyle(.primary)
+
+                    Spacer()
+
+                    Button {
+                        isPresented = false
+                    } label: {
+                        eventDetailCloseLabel()
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                Divider()
+
+                // Date and time
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack(spacing: DesignSystem.Layout.spacing.small) {
+                        Image(systemName: "calendar")
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                            .frame(width: 24)
+                        Text(dateRange)
+                            .font(.body)
+                            .foregroundStyle(.primary)
+                    }
+
+                    HStack(spacing: DesignSystem.Layout.spacing.small) {
+                        Image(systemName: "clock")
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                            .frame(width: 24)
+                        Text(timeRange)
+                            .font(.body)
+                            .foregroundStyle(.primary)
+                    }
+
+                    if let location = item.location, !location.isEmpty {
+                        HStack(spacing: DesignSystem.Layout.spacing.small) {
+                            Image(systemName: "mappin.circle.fill")
+                                .font(.body)
+                                .foregroundStyle(.red)
+                                .symbolRenderingMode(.hierarchical)
+                                .frame(width: 24)
+                            Text(location)
+                                .font(.body)
+                                .foregroundStyle(.primary)
+                        }
+                    }
+
+                    if let url = item.url {
+                        HStack(spacing: DesignSystem.Layout.spacing.small) {
+                            Image(systemName: "link.circle.fill")
+                                .font(.body)
+                                .foregroundStyle(.blue)
+                                .symbolRenderingMode(.hierarchical)
+                                .frame(width: 24)
+                            Link(url.absoluteString, destination: url)
+                                .font(.body)
+                                .foregroundStyle(.blue)
+                        }
+                    }
+
+                    if let alarms = item.alarms, !alarms.isEmpty {
+                        HStack(spacing: DesignSystem.Layout.spacing.small) {
+                            Image(systemName: "bell.fill")
+                                .font(.body)
+                                .foregroundStyle(.orange)
+                                .symbolRenderingMode(.hierarchical)
+                                .frame(width: 24)
+                            Text(alarms.compactMap { alarm in
+                                CalendarManager.AlertOption.from(alarm: alarm).rawValue
+                            }.joined(separator: ", "))
+                                .font(.body)
+                                .foregroundStyle(.primary)
+                        }
+                    }
+
+                    if let travelTime = item.travelTime, travelTime > 0 {
+                        HStack(spacing: DesignSystem.Layout.spacing.small) {
+                            Image(systemName: "car.fill")
+                                .font(.body)
+                                .foregroundStyle(.green)
+                                .symbolRenderingMode(.hierarchical)
+                                .frame(width: 24)
+                            Text(String(
+                                format: NSLocalizedString("calendar.travel_time", comment: ""),
+                                CalendarManager.TravelTimeOption.from(interval: travelTime).rawValue
+                            ))
+                            .font(.body)
+                            .foregroundStyle(.primary)
+                        }
+                    }
+                }
+
+                if let notes = item.notes, !notes.isEmpty {
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+                        Text(NSLocalizedString("calendar.notes", value: "Notes", comment: "Notes"))
+                            .font(DesignSystem.Typography.subHeader)
+                            .foregroundStyle(.primary)
+
+                        ScrollView {
+                            Text(notes)
+                                .font(.body)
+                                .foregroundStyle(.secondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        .frame(maxHeight: 200)
+                    }
+                }
+
+                Spacer()
+
+                if item.ekIdentifier != nil {
+                    if !item.canEdit {
+                        Divider()
+                        HStack(spacing: 8) {
+                            Image(systemName: "lock.fill")
+                                .foregroundStyle(.secondary)
+                            Text(NSLocalizedString("calendar.readonly", value: "calendar.readonly", comment: ""))
+                                .font(.footnote.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    Divider()
+                    HStack {
+                        Button {
+                            if item.canEdit {
+                                showEdit = true
+                            } else {
+                                errorMessage = "This calendar does not allow edits."
+                                showError = true
+                            }
+                        } label: {
+                            Label(NSLocalizedString("Edit", value: "Edit", comment: ""), systemImage: "pencil")
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(!item.canEdit)
+                        Spacer()
+                        Button(role: .destructive) {
+                            handleDelete()
+                        } label: {
+                            Label(NSLocalizedString("Delete", value: "Delete", comment: ""), systemImage: "trash")
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(.red)
+                    }
+                    // Scope selection for recurring events (shown first)
+                    .confirmationDialog(
+                        NSLocalizedString("event.delete.scope_selection_title", comment: ""),
+                        isPresented: $showScopeSelection,
+                        titleVisibility: .visible
+                    ) {
+                        Button(NSLocalizedString("event.delete.scope.this_event", comment: "")) {
+                            selectedScope = .thisEvent
+                            showDeleteConfirm = true
+                        }
+                        Button(NSLocalizedString("event.delete.scope.future_events", comment: "")) {
+                            selectedScope = .futureEvents
+                            showDeleteConfirm = true
+                        }
+                        Button(NSLocalizedString("event.delete.scope.all_events", comment: "")) {
+                            selectedScope = .allEvents
+                            showDeleteConfirm = true
+                        }
+                        Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) {}
+                    } message: {
+                        Text(NSLocalizedString("event.delete.scope_selection_message", comment: ""))
+                    }
+                    // Final confirmation (shown after scope selection or immediately for non-recurring)
+                    .confirmationDialog(
+                        NSLocalizedString("event.delete.confirm_title", comment: ""),
+                        isPresented: $showDeleteConfirm,
+                        titleVisibility: .visible
+                    ) {
+                        Button(NSLocalizedString("Delete", value: "Delete", comment: ""), role: .destructive) {
+                            performDelete()
+                        }
+                        Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) {}
+                    } message: {
+                        Text(confirmationMessage)
+                    }
+                }
+            }
+            .padding(DesignSystem.Layout.spacing.large)
+            .frame(minWidth: 420, minHeight: 320)
+            .glassCard(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
+            .sheet(isPresented: $showEdit) {
+                EventEditSheet(item: item) { updated, span in
+                    _Concurrency.Task {
+                        guard let id = item.ekIdentifier else {
+                            await MainActor.run {
+                                errorMessage = "Event identifier not found"
+                                showError = true
+                            }
+                            return
+                        }
+
+                        do {
+                            try await calendarManager.updateEvent(
+                                identifier: id,
+                                title: updated.title,
+                                startDate: updated.startDate,
+                                endDate: updated.endDate,
+                                isAllDay: updated.isAllDay,
+                                location: updated.location,
+                                notes: updated.notes,
+                                url: updated.url,
+                                primaryAlert: updated.primaryAlert,
+                                secondaryAlert: updated.secondaryAlert,
+                                travelTime: updated.travelTime.timeInterval,
+                                recurrence: updated.recurrence,
+                                category: updated.category,
+                                span: span
+                            )
+                            await MainActor.run {
+                                isPresented = false
+                            }
+                        } catch {
+                            await MainActor.run {
+                                errorMessage = "Failed to save event: \(error.localizedDescription)"
+                                showError = true
+                            }
+                        }
+                    }
+                }
+            }
+            .alert("Error", isPresented: $showError, presenting: errorMessage) { _ in
+                Button(NSLocalizedString("OK", value: "OK", comment: ""), role: .cancel) {}
+            } message: { message in
+                Text(message)
+            }
+        }
+
+        private var dateRange: String {
+            let f = DateFormatter()
+            f.dateFormat = "EEEE, MMMM d, yyyy"
+            return f.string(from: item.startDate)
+        }
+
+        private var timeRange: String {
+            let f = DateFormatter()
+            f.timeStyle = .short
+            return "\(f.string(from: item.startDate)) – \(f.string(from: item.endDate))"
+        }
+
+        // MARK: - Delete Handling
+
+        private func handleDelete() {
+            // Step 1: If recurring, show scope selection first
+            if item.isRecurring {
+                showScopeSelection = true
+            } else {
+                // Non-recurring: skip to confirmation
+                selectedScope = .thisEvent
+                showDeleteConfirm = true
+            }
+        }
+
+        private var confirmationMessage: String {
+            if item.isReminder {
+                return NSLocalizedString("event.delete.confirm_message_reminder", comment: "")
+            }
+
+            guard item.isRecurring, let scope = selectedScope else {
+                return NSLocalizedString("event.delete.confirm_message_single", comment: "")
+            }
+
+            switch scope {
+            case .thisEvent:
+                return NSLocalizedString("event.delete.confirm_message_this", comment: "")
+            case .futureEvents:
+                return NSLocalizedString("event.delete.confirm_message_future", comment: "")
+            case .allEvents:
+                return NSLocalizedString("event.delete.confirm_message_all", comment: "")
+            }
+        }
+
+        private func performDelete() {
+            guard let identifier = item.ekIdentifier else {
+                errorMessage = "Event identifier not found"
+                showError = true
+                return
+            }
+
+            _Concurrency.Task {
+                let result = await EventDeletionService.shared.deleteEvent(
+                    eventId: identifier,
+                    isReminder: item.isReminder,
+                    presentConfirmation: { _, _ in true }, // Already confirmed via dialog
+                    presentScopeSelection: { selectedScope }
+                )
+
+                await MainActor.run {
+                    switch result {
+                    case .deleted:
+                        isPresented = false
+                    case .cancelled:
+                        break
+                    case let .failed(error):
+                        errorMessage = error.localizedDescription
+                        showError = true
+                    }
+                }
+            }
+        }
+
+        @ViewBuilder
+        private func eventDetailCloseLabel() -> some View {
+            let title = NSLocalizedString("common.button.close", comment: "")
+            switch settings.tabBarMode {
+            case .iconsOnly:
+                Image(systemName: "xmark.circle.fill")
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+                    .symbolRenderingMode(.hierarchical)
+            case .textOnly:
+                Text(title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            case .iconsAndText:
+                HStack(spacing: DesignSystem.Spacing.xsmall) {
+                    Image(systemName: "xmark.circle.fill")
+                        .symbolRenderingMode(.hierarchical)
+                    Text(title)
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    // MARK: - Event Chips
+
+    private struct EventChipsRow: View {
+        var title: String
+        var events: [CalendarEvent]
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+                Text(title)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundColor(.secondary)
+                if events.isEmpty {
+                    Text(NSLocalizedString("calendar.no_events_yet", value: "calendar.no_events_yet", comment: ""))
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundColor(.secondary)
+                } else {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: DesignSystem.Layout.spacing.small) {
+                            ForEach(events) { event in
+                                HStack(spacing: DesignSystem.Layout.spacing.small) {
+                                    Circle()
+                                        .fill(Color.accentColor.opacity(0.9))
+                                        .frame(width: 8, height: 8)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(event.title)
+                                            .font(.caption.weight(.semibold))
+                                        Text(event
+                                            .formattedTimeRange() +
+                                            (event.location != nil ? " · \(event.location!)" : ""))
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                        .fill(.secondaryBackground.opacity(0.06))
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Editable Event Sheet
+
+    private struct EventEditSheet: View {
+        @Environment(\.dismiss) private var dismiss
+        let item: CalendarEvent
+        var onSave: (EditableEvent, EKSpan) -> Void
+
+        @State private var title: String
+        @State private var category: EventCategory
+        @State private var startDate: Date
+        @State private var endDate: Date
+        @State private var isAllDay: Bool
+        @State private var location: String
+        @State private var notes: String
+        @State private var urlString: String
+        @State private var primaryAlert: CalendarManager.AlertOption
+        @State private var secondaryAlert: CalendarManager.AlertOption
+        @State private var travelTime: CalendarManager.TravelTimeOption
+        @State private var recurrence: CalendarManager.RecurrenceOption = .none
+        @State private var urlError: String?
+        @State private var pendingSave: EditableEvent?
+        @State private var showRecurrenceSpanPicker = false
+
+        init(item: CalendarEvent, onSave: @escaping (EditableEvent, EKSpan) -> Void) {
+            self.item = item
+            self.onSave = onSave
+            _title = State(initialValue: item.title)
+            _category = State(initialValue: item.category)
+            _startDate = State(initialValue: item.startDate)
+            _endDate = State(initialValue: item.endDate)
+            _isAllDay = State(initialValue: false)
+            _location = State(initialValue: item.location ?? "")
+            _notes = State(initialValue: item.notes ?? "")
+            _urlString = State(initialValue: item.url?.absoluteString ?? "")
+            _primaryAlert = State(initialValue: item.alarms?.first
+                .map { CalendarManager.AlertOption.from(alarm: $0) } ?? .none)
+            _secondaryAlert = State(initialValue: item.alarms?.dropFirst().first
+                .map { CalendarManager.AlertOption.from(alarm: $0) } ?? .none)
+            _travelTime = State(initialValue: CalendarManager.TravelTimeOption.from(interval: item.travelTime))
+        }
+
+        private var isValidURL: Bool {
+            guard !urlString.isEmpty else { return true }
+            return URL(string: urlString) != nil
+        }
+
+        private var canSave: Bool {
+            !title.isEmpty && isValidURL
+        }
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack {
+                    Text(NSLocalizedString("calendar.edit_event", value: "calendar.edit_event", comment: ""))
+                        .font(.title2.weight(.semibold))
+                    Spacer()
+                }
+                if !item.canEdit {
+                    Label(
+                        NSLocalizedString(
+                            "This calendar is read-only; changes cannot be saved.",
+                            value: "This calendar is read-only; changes cannot be saved.",
+                            comment: ""
+                        ),
+                        systemImage: "lock.fill"
+                    )
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                }
+
+                TextField("Title", text: $title)
+                    .textFieldStyle(.roundedBorder)
+                    .font(.body.weight(.medium))
+
+                Picker("Category", selection: $category) {
+                    ForEach(EventCategory.allCases) { cat in
+                        Text(cat.rawValue).tag(cat)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                Divider()
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(NSLocalizedString("calendar.time", value: "calendar.time", comment: ""))
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+
+                    Toggle(
+                        NSLocalizedString("macos.calendar.all_day", value: "All Day", comment: "All Day toggle"),
+                        isOn: $isAllDay
+                    )
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        DatePicker(
+                            "Start",
+                            selection: $startDate,
+                            displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute]
+                        )
+                        DatePicker(
+                            "End",
+                            selection: $endDate,
+                            in: startDate...,
+                            displayedComponents: isAllDay ? [.date] : [.date, .hourAndMinute]
+                        )
+                    }
+                }
+
+                Divider()
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(NSLocalizedString("calendar.details", value: "calendar.details", comment: ""))
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+
+                    TextField("Location", text: $location)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        TextField("URL", text: $urlString)
+                            .textContentType(.URL)
+
+                        if !urlString.isEmpty && !isValidURL {
+                            Text(NSLocalizedString("calendar.invalid_url", value: "calendar.invalid_url", comment: ""))
+                                .font(.caption)
+                                .foregroundColor(.red)
+                        }
+                    }
+
+                    TextField("Notes", text: $notes, axis: .vertical)
+                        .lineLimit(2, reservesSpace: true)
+                }
+
+                Divider()
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(NSLocalizedString("calendar.options", value: "calendar.options", comment: ""))
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .textCase(.uppercase)
+
+                    Picker("Repeat", selection: $recurrence) {
+                        ForEach(CalendarManager.RecurrenceOption.allCases) { opt in
+                            Text(opt.rawValue.capitalized).tag(opt)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Picker("Primary Alert", selection: $primaryAlert) {
+                            ForEach(CalendarManager.AlertOption.allCases) { opt in
+                                Text(opt.rawValue).tag(opt)
+                            }
+                        }
+
+                        if primaryAlert != .none {
+                            Picker("Secondary Alert", selection: $secondaryAlert) {
+                                ForEach(CalendarManager.AlertOption.allCases) { opt in
+                                    Text(opt.rawValue).tag(opt)
+                                }
+                            }
+                        }
+                    }
+
+                    Picker("Travel Time", selection: $travelTime) {
+                        ForEach(CalendarManager.TravelTimeOption.allCases) { opt in
+                            Text(opt.rawValue).tag(opt)
+                        }
+                    }
+                }
+
+                Divider()
+                    .padding(.top, 4)
+
+                HStack {
+                    Button(NSLocalizedString("common.button.cancel", comment: "")) {
+                        dismiss()
+                    }
+                    .keyboardShortcut(.cancelAction)
+
+                    Spacer()
+
+                    Button(NSLocalizedString("common.button.save", comment: "")) {
+                        let updated = EditableEvent(
+                            title: title.isEmpty ? item.title : title,
+                            category: category,
+                            startDate: startDate,
+                            endDate: endDate,
+                            isAllDay: isAllDay,
+                            location: location.isEmpty ? nil : location,
+                            notes: notes.isEmpty ? nil : notes,
+                            url: urlString.isEmpty ? nil : urlString,
+                            primaryAlert: primaryAlert,
+                            secondaryAlert: secondaryAlert,
+                            travelTime: travelTime,
+                            recurrence: recurrence
+                        )
+
+                        if item.isRecurring {
+                            pendingSave = updated
+                            showRecurrenceSpanPicker = true
+                        } else {
+                            onSave(updated, .thisEvent)
+                            dismiss()
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .keyboardShortcut(.defaultAction)
+                    .disabled(!canSave || !item.canEdit)
+                }
+            }
+            .padding()
+            .frame(minWidth: 440)
+            .confirmationDialog(
+                "Apply changes to this event or future events?",
+                isPresented: $showRecurrenceSpanPicker,
+                titleVisibility: .visible
+            ) {
+                Button(NSLocalizedString("This Event Only", value: "This Event Only", comment: "")) {
+                    if let pendingSave {
+                        onSave(pendingSave, .thisEvent)
+                        dismiss()
+                        self.pendingSave = nil
+                    }
+                }
+                Button(NSLocalizedString("This and Future Events", value: "This and Future Events", comment: "")) {
+                    if let pendingSave {
+                        onSave(pendingSave, .futureEvents)
+                        dismiss()
+                        self.pendingSave = nil
+                    }
+                }
+                Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) {
+                    pendingSave = nil
+                }
+            }
+        }
+
+        struct EditableEvent {
+            var title: String
+            var category: EventCategory
+            var startDate: Date
+            var endDate: Date
+            var isAllDay: Bool
+            var location: String?
+            var notes: String?
+            var url: String?
+            var primaryAlert: CalendarManager.AlertOption
+            var secondaryAlert: CalendarManager.AlertOption
+            var travelTime: CalendarManager.TravelTimeOption
+            var recurrence: CalendarManager.RecurrenceOption
+        }
+    }
+
+    // MARK: - Sample Data
+
+    private extension CalendarPageView {
+        static var sampleEvents: [CalendarEvent] { [] }
+    }
+
+    private extension CalendarEvent {
+        func formattedTimeRange(use24HourTime: Bool = false) -> String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = use24HourTime ? "HH:mm" : "h:mm a"
+            return "\(formatter.string(from: startDate)) – \(formatter.string(from: endDate))"
+        }
+    }
+
+    // MARK: - Week Header View & Styles
+
+    private struct DayColumnStyle: ViewModifier {
+        let cornerRadius: CGFloat = 14
+        let height: CGFloat = 80
+        func body(content: Content) -> some View {
+            content
+                .frame(maxWidth: .infinity)
+                .frame(height: height)
+                .padding(DesignSystem.Layout.spacing.small)
+                .glassChrome(cornerRadius: cornerRadius)
+        }
+    }
+
+    private extension View {
+        func dayColumnStyle() -> some View { modifier(DayColumnStyle()) }
+    }
+
+    private struct WeekHeaderView: View {
+        let weekDays: [Date]
+        @Binding var focusedDate: Date
+        let calendar: Calendar
+        let events: [CalendarEvent]
+        private let spacing: CGFloat = 8
+
+        var body: some View {
+            HStack(spacing: spacing) {
+                ForEach(weekDays, id: \.self) { date in
+                    let count = eventsCount(for: date)
+                    let day = CalendarDay(
+                        date: date,
+                        isToday: calendar.isDateInToday(date),
+                        isSelected: calendar.isDate(date, inSameDayAs: focusedDate),
+                        hasEvents: count > 0,
+                        densityLevel: EventDensityLevel.fromCount(count),
+                        isInCurrentMonth: true
+                    )
+                    Button {
+                        withAnimation(DesignSystem.Motion.snappyEase) {
+                            focusedDate = date
+                        }
+                    } label: {
+                        DayHeaderCard(day: day)
+                    }
+                    .buttonStyle(.plain)
+                    .frame(maxWidth: .infinity)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 4)
+        }
+
+        private func eventsCount(for date: Date) -> Int {
+            let start = calendar.startOfDay(for: date)
+            return events.filter { calendar.isDate($0.startDate, inSameDayAs: start) }.count
+        }
+    }
+
+    // MARK: - Modern Calendar Entry
+
+    struct CalendarView: View {
+        private static let debugDateFormatter: DateFormatter = {
+            let f = DateFormatter()
+            f.dateStyle = .short
+            f.timeStyle = .medium
+            return f
+        }()
+
+        @EnvironmentObject private var calendarManager: CalendarManager
+        @EnvironmentObject private var deviceCalendar: DeviceCalendarManager
+        @EnvironmentObject private var settings: AppSettingsModel
+        @State private var viewMode: CalendarViewMode = .month
+        @State private var currentMonth: Date = .init()
+        @State private var selectedEvent: CalendarEvent? = nil
+        @State private var keyMonitor: Any?
+
+        // Computed property to filter events based on settings
+        private var filteredEvents: [EKEvent] {
+            let allEvents = deviceCalendar.events
+            guard settings.showOnlySchoolCalendar else { return allEvents }
+            guard !calendarManager.selectedCalendarID.isEmpty else { return allEvents }
+            return allEvents.filter { event in
+                guard let calendar = event.calendar else { return false }
+                return calendar.calendarIdentifier == calendarManager.selectedCalendarID
+            }
+        }
+
+        private var monthEvents: [EKEvent] {
+            displayEKEvents
+        }
+
+        private var calendarEvents: [CalendarEvent] {
+            displayEKEvents.map {
+                CalendarEvent(
+                    title: $0.title,
+                    startDate: $0.startDate,
+                    endDate: $0.endDate,
+                    location: $0.location,
+                    notes: $0.notes,
+                    url: $0.url,
+                    alarms: $0.alarms,
+                    travelTime: nil,
+                    ekIdentifier: $0.eventIdentifier,
+                    isReminder: false,
+                    category: nil,
+                    canEdit: $0.calendar?.allowsContentModifications ?? false,
+                    isRecurring: !($0.recurrenceRules?.isEmpty ?? true)
+                )
+            }
+        }
+
+        private var displayEKEvents: [EKEvent] {
+            filteredEvents
+        }
+
+        private var isLoading: Bool {
+            calendarManager.isLoading
+        }
+
+        var body: some View {
+            ScrollView {
+                VStack(spacing: 20) {
+                    CalendarStatsRow()
+                        .frame(height: 100)
+
+                    HStack(spacing: 20) {
+                        DayDetailSidebar(
+                            date: calendarManager.selectedDate ?? Date(),
+                            events: sidebarEvents(for: calendarManager.selectedDate ?? Date())
+                        ) { event in
+                            selectedEvent = event
+                        }
+
+                        VStack(spacing: 0) {
+                            CalendarHeader(
+                                viewMode: $viewMode,
+                                currentMonth: $currentMonth,
+                                onPrevious: { step(by: -1) },
+                                onNext: { step(by: 1) },
+                                onToday: { jumpToToday() },
+                                onSearch: nil
+                            )
+                            .padding()
+
+                            if isLoading {
+                                loadingState
+                            } else if !calendarManager.isAuthorized {
+                                CalendarEmptyState(
+                                    title: "Calendar access needed",
+                                    message: "Grant permission to pull your events. You can do this in Settings → Privacy."
+                                )
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            } else if displayEKEvents.isEmpty {
+                                CalendarEmptyState(
+                                    title: "No events found",
+                                    message: "Nothing is scheduled for this calendar yet. Create an event to see it here."
+                                )
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            } else {
+                                switch viewMode {
+                                case .day:
+                                    CalendarDayView(
+                                        date: calendarManager.selectedDate ?? Date(),
+                                        events: displayEKEvents.filter { Calendar.current.isDate(
+                                            $0.startDate,
+                                            inSameDayAs: calendarManager.selectedDate ?? Date()
+                                        ) },
+                                        onSelectEvent: { ek in selectedEvent = mapEventInline(ek) }
+                                    )
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                case .week:
+                                    CalendarWeekView(
+                                        currentDate: currentMonth,
+                                        events: displayEKEvents,
+                                        onSelectEvent: { ek in selectedEvent = mapEventInline(ek) }
+                                    )
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                case .month:
+                                    CalendarGrid(currentMonth: $currentMonth, events: monthEvents)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                        .padding(.horizontal, 8)
+                                case .year:
+                                    CalendarYearView(currentYear: currentMonth)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                @unknown default:
+                                    CalendarGrid(currentMonth: $currentMonth, events: monthEvents)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                }
+                            }
+                        }
+                        .background(DesignSystem.Materials.card)
+                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .frame(maxWidth: .infinity, alignment: .top)
+                .padding(20)
+                // Reserve space so the floating tab bar in the root ContentView stays visible.
+                .padding(.bottom, 120)
+            }
+            .onAppear {
+                calendarManager.selectedDate = calendarManager.selectedDate ?? Date()
+                currentMonth = calendarManager.selectedDate ?? Date()
+                calendarManager.ensureMonthCache(for: currentMonth)
+                startKeyboardMonitoring()
+            }
+            .overlay(alignment: .topTrailing) {
+                if AppSettingsModel.shared.devModeEnabled {
+                    VStack(alignment: .trailing, spacing: 6) {
+                        HStack(spacing: 8) {
+                            Text(DeviceCalendarManager.shared.isAuthorized ? "Authorized" : "Unauthorized")
+                                .font(.caption2)
+                                .foregroundColor(.white)
+                                .padding(6)
+                                .background(RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.45)))
+
+                            Text(String(
+                                format: NSLocalizedString("calendar.debug.events_count", comment: ""),
+                                DeviceCalendarManager.shared.events.count
+                            ))
+                            .font(.caption2)
+                            .foregroundColor(.white)
+                            .padding(6)
+                            .background(RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.45)))
+                        }
+
+                        Text(DeviceCalendarManager.shared.lastRefreshAt.map { String(
+                            format: NSLocalizedString("calendar.debug.last_refresh", comment: ""),
+                            Self.debugDateFormatter.string(from: $0)
+                        ) } ?? NSLocalizedString("calendar.debug.last_refresh_never", comment: ""))
+                            .font(.caption2)
+                            .foregroundColor(.white.opacity(0.85))
+                            .padding(6)
+                            .background(RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.35)))
+
+                        Text(DeviceCalendarManager.shared
+                            .isObservingStoreChanges ? "Observer: registered" : "Observer: not registered")
+                            .font(.caption2)
+                            .foregroundColor(.white)
+                            .padding(6)
+                            .background(RoundedRectangle(cornerRadius: 6).fill(Color.black.opacity(0.35)))
+                    }
+                    .padding(8)
+                    .opacity(0.8)
+                }
+            }
+            .onDisappear {
+                stopKeyboardMonitoring()
+            }
+            .onChange(of: currentMonth) { _, newValue in
+                calendarManager.ensureMonthCache(for: newValue)
+            }
+            .sheet(item: $selectedEvent) { event in
+                EventDetailView(
+                    item: event,
+                    isPresented: Binding(get: { selectedEvent != nil }, set: { if !$0 { selectedEvent = nil } })
+                )
+            }
+        }
+
+        private var loadingState: some View {
+            VStack(spacing: 12) {
+                ProgressView()
+                Text(NSLocalizedString("calendar.loading", value: "calendar.loading", comment: ""))
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
-            Spacer(minLength: 0)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding()
         }
-        .padding(12)
-        .glassCard(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
+
+        private func step(by value: Int) {
+            var components = DateComponents()
+            switch viewMode {
+            case .day:
+                components.day = value
+            case .week:
+                components.day = value * 7
+            case .month:
+                components.month = value
+            case .year:
+                components.year = value
+            }
+            if let newDate = Calendar.current.date(byAdding: components, to: currentMonth) {
+                currentMonth = newDate
+                calendarManager.selectedDate = newDate
+            }
+        }
+
+        private func jumpToToday() {
+            let today = Date()
+            currentMonth = today
+            calendarManager.selectedDate = today
+        }
+
+        // MARK: - Keyboard navigation (arrow keys)
+
+        #if os(macOS)
+            private func startKeyboardMonitoring() {
+                guard keyMonitor == nil else { return }
+                keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+                    switch event.keyCode {
+                    case 123: // left
+                        step(by: -1)
+                        return nil
+                    case 124: // right
+                        step(by: 1)
+                        return nil
+                    default:
+                        return event
+                    }
+                }
+            }
+
+            private func stopKeyboardMonitoring() {
+                if let monitor = keyMonitor {
+                    NSEvent.removeMonitor(monitor)
+                    keyMonitor = nil
+                }
+            }
+        #endif
+
+        private func eventsForDay(_ date: Date) -> [EKEvent] {
+            displayEKEvents.filter { Calendar.current.isDate($0.startDate, inSameDayAs: date) }
+        }
+
+        private func sidebarEvents(for date: Date) -> [CalendarEvent] {
+            let startOfDay = Calendar.current.startOfDay(for: date)
+            return calendarEvents
+                .filter { Calendar.current.isDate($0.startDate, inSameDayAs: startOfDay) }
+                .sorted { $0.startDate < $1.startDate }
+        }
+
+        private func mapEventInline(_ ek: EKEvent) -> CalendarEvent {
+            let (cleanNotes, storedCategory) = calendarManager.decodeNotesWithCategory(notes: ek.notes)
+            return CalendarEvent(
+                title: ek.title,
+                startDate: ek.startDate,
+                endDate: ek.endDate,
+                location: ek.location,
+                notes: cleanNotes,
+                url: ek.url,
+                alarms: ek.alarms,
+                travelTime: nil,
+                ekIdentifier: ek.eventIdentifier,
+                isReminder: false,
+                category: storedCategory,
+                canEdit: ek.calendar?.allowsContentModifications ?? false,
+                isRecurring: !(ek.recurrenceRules?.isEmpty ?? true)
+            )
+        }
+
+        private func eventCategoryLabel(for title: String) -> String {
+            let lower = title.lowercased()
+            let pairs: [(String, String)] = [
+                ("exam", "Exam"),
+                ("midterm", "Exam"),
+                ("final", "Exam"),
+                ("class", "Class"),
+                ("lecture", "Class"),
+                ("lab", "Class"),
+                ("study", "Study"),
+                ("read", "Reading"),
+                ("homework", "Homework"),
+                ("assignment", "Homework"),
+                ("problem set", "Homework"),
+                ("practice test", "Practice Test"),
+                ("mock", "Practice Test"),
+                ("quiz", "Practice Test"),
+                ("meeting", "Meeting"),
+                ("sync", "Meeting"),
+                ("1:1", "Meeting"),
+                ("one-on-one", "Meeting")
+            ]
+            for (key, label) in pairs {
+                if lower.contains(key) { return label }
+            }
+            return "Other"
+        }
+
+        private func categoryColor(for title: String) -> Color {
+            if let category = parseEventCategory(from: title) {
+                return category.color
+            }
+            return Color.accentColor
+        }
     }
-}
+
+    struct CalendarPageView_Previews: PreviewProvider {
+        static var previews: some View {
+            Group {
+                CalendarPageView()
+                    .environmentObject(AppSettingsModel.shared)
+                    .environmentObject(EventsCountStore())
+                    .environmentObject(CalendarManager.shared)
+                    .previewLayout(.sizeThatFits)
+                    .frame(width: 1100, height: 720)
+
+                CalendarPageView()
+                    .environmentObject(AppSettingsModel.shared)
+                    .environmentObject(EventsCountStore())
+                    .environmentObject(CalendarManager.shared)
+                    .preferredColorScheme(.dark)
+                    .previewLayout(.sizeThatFits)
+                    .frame(width: 1100, height: 720)
+            }
+        }
+    }
+
+    private struct NewEventPlaceholder: View {
+        var date: Date
+        var onDismiss: () -> Void
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(NSLocalizedString("calendar.new_event", value: "New Event", comment: "New Event"))
+                    .font(.title2.weight(.semibold))
+                Text(date.formatted(date: .long, time: .omitted))
+                    .foregroundStyle(.secondary)
+                Text(NSLocalizedString("calendar.message.event_creation", comment: ""))
+                    .foregroundStyle(.secondary)
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button(NSLocalizedString("common.button.close", comment: "")) { onDismiss() }
+                        .keyboardShortcut(.cancelAction)
+                }
+            }
+            .padding(DesignSystem.Layout.padding.window)
+        }
+    }
+
+    private struct CalendarEmptyState: View {
+        let title: String
+        let message: String
+
+        var body: some View {
+            VStack(spacing: 10) {
+                Image(systemName: "calendar.badge.exclamationmark")
+                    .font(.title2)
+                    .foregroundStyle(.secondary)
+                Text(title)
+                    .font(.headline)
+                Text(message)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding()
+        }
+    }
+
+    // MARK: - Shared Day Helpers
+
+    struct CalendarDay: Hashable {
+        var date: Date
+        var isToday: Bool
+        var isSelected: Bool
+        var hasEvents: Bool
+        var densityLevel: EventDensityLevel
+        var isInCurrentMonth: Bool
+    }
+
+    private struct DayHeaderCard: View {
+        let day: CalendarDay
+        private let calendar = Calendar.current
+        @State private var hovering = false
+
+        var body: some View {
+            VStack(spacing: 6) {
+                Text(weekdaySymbol.uppercased())
+                    .font(.caption2.weight(.semibold))
+                    .foregroundColor(day.isSelected ? .white : .secondary)
+                Text(verbatim: "\(calendar.component(.day, from: day.date))")
+                    .font(DesignSystem.Typography.subHeader)
+                    .frame(width: 38, height: 38)
+                    .background(
+                        Circle()
+                            .fill(day.isSelected ? Color.accentColor : Color.clear)
+                            .background(
+                                Circle().fill(DesignSystem.Materials.hud)
+                            )
+                    )
+                    .foregroundColor(day.isSelected ? .white : .primary.opacity(0.8))
+            }
+            .padding(DesignSystem.Layout.spacing.small)
+            .frame(maxWidth: .infinity)
+            .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusSmall)
+            .scaleEffect(hovering ? 1.02 : 1.0)
+            .animation(.easeInOut(duration: DesignSystem.Motion.instant), value: hovering)
+            .onHover { hovering = $0 }
+        }
+
+        private var weekdaySymbol: String {
+            Calendar.current.shortWeekdaySymbols[(Calendar.current.component(.weekday, from: day.date) - 1 + 7) % 7]
+        }
+    }
+
+    private struct MonthDayCell: View {
+        let day: CalendarDay
+        private let calendar = Calendar.current
+        @State private var hovering = false
+
+        var body: some View {
+            ZStack(alignment: .topTrailing) {
+                Text(dayNumber)
+                    .font(DesignSystem.Typography.body)
+                    .frame(width: 32, height: 32)
+                    .foregroundColor(textColor)
+                    .background(
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                .fill(DesignSystem.Materials.hud)
+
+                            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                                .fill(backgroundFill)
+                                .padding(2)
+                        }
+                        .shadow(color: shadowColor, radius: shadowRadius, x: 0, y: shadowY)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .strokeBorder(outlineColor, lineWidth: outlineWidth)
+                    )
+                    .padding(.top, 6)
+                    .padding(.trailing, 6)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+            .contentShape(Rectangle())
+            .scaleEffect(hovering ? 1.01 : 1.0)
+            .animation(.easeInOut(duration: DesignSystem.Motion.instant), value: hovering)
+            .onHover { hovering = $0 }
+        }
+
+        private var dayNumber: String { String(calendar.component(.day, from: day.date)) }
+
+        private var textColor: Color {
+            if day.isSelected { return .white }
+            if !day.isInCurrentMonth { return .secondary.opacity(0.5) }
+            if day.isToday { return .primary }
+            return .primary
+        }
+
+        private var backgroundFill: Color {
+            if day.isSelected { return .accentColor }
+            if day.isToday { return .clear }
+            return .clear
+        }
+
+        private var outlineColor: Color {
+            if day.isSelected { return Color.accentColor.opacity(0.3) }
+            if day.isToday { return Color.accentColor }
+            return .clear
+        }
+
+        private var outlineWidth: CGFloat {
+            if day.isSelected { return 2.5 }
+            if day.isToday { return 2.0 }
+            return 0
+        }
+
+        private var shadowColor: Color {
+            if day.isSelected { return Color.accentColor.opacity(0.4) }
+            return .clear
+        }
+
+        private var shadowRadius: CGFloat {
+            day.isSelected ? 6 : 0
+        }
+
+        private var shadowY: CGFloat {
+            day.isSelected ? 3 : 0
+        }
+    }
+
+    // MARK: - Metrics
+
+    private struct CalendarStats {
+        let averagePerDay: Double
+        let totalItems: Int
+        let busiestDayName: String
+        let busiestDayCount: Int
+
+        static let empty = CalendarStats(averagePerDay: 0, totalItems: 0, busiestDayName: "—", busiestDayCount: 0)
+
+        nonisolated static func calculate(from events: [EKEvent], for date: Date) -> CalendarStats {
+            let calendar = Calendar.current
+            let range = calendar.range(of: .day, in: .month, for: date) ?? 0 ..< 0
+            let numDaysInMonth = range.count
+
+            let components = calendar.dateComponents([.year, .month], from: date)
+            let monthEvents = events.filter { event in
+                let eventComponents = calendar.dateComponents([.year, .month], from: event.startDate)
+                return eventComponents.year == components.year && eventComponents.month == components.month
+            }
+
+            let total = monthEvents.count
+            let average = numDaysInMonth > 0 ? Double(total) / Double(numDaysInMonth) : 0.0
+
+            let eventsByDay = Dictionary(grouping: monthEvents) { event in
+                calendar.component(.day, from: event.startDate)
+            }
+
+            if let maxEntry = eventsByDay.max(by: { $0.value.count < $1.value.count }) {
+                var dayComponents = components
+                dayComponents.day = maxEntry.key
+                if let busyDate = calendar.date(from: dayComponents) {
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "MMM d"
+                    return CalendarStats(
+                        averagePerDay: average,
+                        totalItems: total,
+                        busiestDayName: formatter.string(from: busyDate),
+                        busiestDayCount: maxEntry.value.count
+                    )
+                }
+            }
+
+            return CalendarStats(
+                averagePerDay: average,
+                totalItems: total,
+                busiestDayName: "—",
+                busiestDayCount: 0
+            )
+        }
+    }
+
+    private struct MetricsRow: View {
+        var metrics: CalendarStats
+        private let columns = [GridItem(.adaptive(minimum: 180), spacing: 12)]
+
+        var body: some View {
+            LazyVGrid(columns: columns, spacing: 12) {
+                MetricCard(
+                    title: "Average / Day",
+                    value: String(format: "%.1f", metrics.averagePerDay),
+                    subtitle: "This month",
+                    systemImage: "chart.bar.xaxis"
+                )
+                MetricCard(
+                    title: "Total This Month",
+                    value: "\(metrics.totalItems)",
+                    subtitle: "Calendar items",
+                    systemImage: "calendar"
+                )
+                MetricCard(
+                    title: "Busiest Day",
+                    value: metrics.busiestDayName,
+                    subtitle: busiestSubtitle,
+                    systemImage: "flame"
+                )
+            }
+            .transition(DesignSystem.Motion.slideUpTransition)
+            .animation(DesignSystem.Motion.standardEase, value: metrics.totalItems)
+        }
+
+        private var busiestSubtitle: String {
+            metrics.busiestDayCount > 0 ? "\(metrics.busiestDayCount) items" : "No items"
+        }
+    }
+
+    private struct MetricCard: View {
+        var title: String
+        var value: String
+        var subtitle: String
+        var systemImage: String
+
+        var body: some View {
+            HStack(alignment: .center, spacing: 12) {
+                Image(systemName: systemImage)
+                    .font(DesignSystem.Typography.body)
+                    .foregroundStyle(.secondary)
+                    .frame(width: 28, height: 28)
+                    .background(Circle().fill(RootsColor.subtleFill))
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .font(DesignSystem.Typography.caption)
+                        .foregroundStyle(.secondary)
+                    Text(value)
+                        .font(.title3.weight(.semibold))
+                    Text(subtitle)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(12)
+            .glassCard(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
+        }
+    }
 #endif

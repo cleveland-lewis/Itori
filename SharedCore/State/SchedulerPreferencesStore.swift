@@ -5,13 +5,14 @@ final class SchedulerPreferencesStore {
     private init() { load() }
 
     private let fileURL: URL? = {
-        guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return nil }
+        guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+        else { return nil }
         let appDir = dir.appendingPathComponent("Itori", isDirectory: true)
         try? FileManager.default.createDirectory(at: appDir, withIntermediateDirectories: true)
         return appDir.appendingPathComponent("scheduler_prefs.json")
     }()
 
-    var preferences: SchedulerPreferences = SchedulerPreferences.default()
+    var preferences: SchedulerPreferences = .default()
 
     func updateEnergyProfile(_ energy: [Int: Double]) {
         preferences.learnedEnergyProfile = energy
@@ -69,23 +70,23 @@ final class SchedulerPreferencesStore {
     private func energyDelta(for level: String) -> Double {
         switch level.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
         case "high":
-            return 0.35
+            0.35
         case "low":
-            return -0.35
+            -0.35
         default:
-            return 0.0
+            0.0
         }
     }
 
     private func applySessionPreferences(to profile: [Int: Double], settings: AppSettingsModel) -> [Int: Double] {
         var adjusted = profile
         if settings.preferMorningSessions {
-            for hour in 7...11 {
+            for hour in 7 ... 11 {
                 adjusted[hour] = min(1.0, (adjusted[hour] ?? 0.5) + 0.15)
             }
         }
         if settings.preferEveningSessions {
-            for hour in 18...22 {
+            for hour in 18 ... 22 {
                 adjusted[hour] = min(1.0, (adjusted[hour] ?? 0.5) + 0.15)
             }
         }
@@ -94,7 +95,7 @@ final class SchedulerPreferencesStore {
 
     private func mediumEnergyProfile() -> [Int: Double] {
         var profile: [Int: Double] = [:]
-        for hour in 0..<24 {
+        for hour in 0 ..< 24 {
             profile[hour] = 0.5
         }
         return profile

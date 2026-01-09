@@ -1,10 +1,10 @@
 import SwiftUI
 #if os(macOS)
-import AppKit
+    import AppKit
 #elseif os(watchOS)
-import SwiftUI
+    import SwiftUI
 #else
-import UIKit
+    import UIKit
 #endif
 
 enum DesignMaterial: String, CaseIterable, Identifiable, Hashable {
@@ -13,32 +13,32 @@ enum DesignMaterial: String, CaseIterable, Identifiable, Hashable {
 
     var material: Material {
         switch self {
-        case .ultraThin: return .ultraThinMaterial
-        case .regular: return .regularMaterial
-        case .thick: return .thickMaterial
+        case .ultraThin: .ultraThinMaterial
+        case .regular: .regularMaterial
+        case .thick: .thickMaterial
         }
     }
 
     var name: String {
         switch self {
-        case .ultraThin: return "Ultra Thin"
-        case .regular: return "Regular"
-        case .thick: return "Thick"
+        case .ultraThin: "Ultra Thin"
+        case .regular: "Regular"
+        case .thick: "Thick"
         }
     }
 }
 
-struct DesignSystem {
+enum DesignSystem {
     // Global empty state message used across the app
     static let emptyStateMessage = "No data available"
 
-    struct Colors {
+    enum Colors {
         static let primary = Color("Primary")
         static let secondary = Color("Secondary")
         static let destructive = Color.red
         static let subtle = Color("Subtle")
         static let neutral = Color("Neutral")
-        
+
         /// Global accent color - inherits the app-wide accent
         /// Apply this to all generic UI elements (buttons, toggles, selections, etc.)
         /// DO NOT use for semantic colors (event categories, course colors, status indicators)
@@ -47,48 +47,53 @@ struct DesignSystem {
         // Semantic macOS / iOS colors to match Apple HIG
         static var appBackground: Color {
             #if os(macOS)
-            return Color(nsColor: .windowBackgroundColor)
+                return Color(nsColor: .windowBackgroundColor)
             #elseif os(watchOS)
-            return Color.black
+                return Color.black
             #else
-            return Color(uiColor: .systemBackground)
+                return Color(uiColor: .systemBackground)
             #endif
         }
 
         static var sidebarBackground: Color {
             #if os(macOS)
-            return Color(nsColor: .controlBackgroundColor)
+                return Color(nsColor: .controlBackgroundColor)
             #elseif os(watchOS)
-            return Color.black
+                return Color.black
             #else
-            return Color(uiColor: .secondarySystemBackground)
+                return Color(uiColor: .secondarySystemBackground)
             #endif
         }
 
         static var cardBackground: Color {
             #if os(macOS)
-            return Color(nsColor: NSColor(calibratedRed: 39.0 / 255.0, green: 39.0 / 255.0, blue: 40.0 / 255.0, alpha: 1.0))
+                return Color(nsColor: NSColor(
+                    calibratedRed: 39.0 / 255.0,
+                    green: 39.0 / 255.0,
+                    blue: 40.0 / 255.0,
+                    alpha: 1.0
+                ))
             #elseif os(watchOS)
-            return Color.black.opacity(0.85)
+                return Color.black.opacity(0.85)
             #else
-            return Color(uiColor: .secondarySystemBackground).opacity(0.92)
+                return Color(uiColor: .secondarySystemBackground).opacity(0.92)
             #endif
         }
 
         static var groupedBackground: Color {
             #if os(macOS)
-            return Color(nsColor: .underPageBackgroundColor)
+                return Color(nsColor: .underPageBackgroundColor)
             #elseif os(watchOS)
-            return Color.black
+                return Color.black
             #else
-            return Color(uiColor: .systemGroupedBackground)
+                return Color(uiColor: .systemGroupedBackground)
             #endif
         }
 
         static var liquidMaterial: Material { DesignSystem.Materials.hud }
 
-        static func background(for colorScheme: ColorScheme) -> Color {
-            return appBackground
+        static func background(for _: ColorScheme) -> Color {
+            appBackground
         }
 
         /// Semantic neutral line color that inverts by color scheme:
@@ -96,41 +101,42 @@ struct DesignSystem {
         /// - Dark mode: white (matches light-mode app background)
         static func neutralLine(for colorScheme: ColorScheme) -> Color {
             #if os(macOS)
-            func resolvedBackground(_ appearanceName: NSAppearance.Name) -> NSColor {
-                var color = NSColor.windowBackgroundColor
-                if let appearance = NSAppearance(named: appearanceName) {
-                    appearance.performAsCurrentDrawingAppearance {
-                        color = NSColor.windowBackgroundColor
+                func resolvedBackground(_ appearanceName: NSAppearance.Name) -> NSColor {
+                    var color = NSColor.windowBackgroundColor
+                    if let appearance = NSAppearance(named: appearanceName) {
+                        appearance.performAsCurrentDrawingAppearance {
+                            color = NSColor.windowBackgroundColor
+                        }
                     }
+                    return color
                 }
-                return color
-            }
-            let lightBackground = resolvedBackground(.aqua)
-            let darkBackground = resolvedBackground(.darkAqua)
-            // Invert: light scheme gets the dark background (charcoal), dark scheme gets light background (white)
-            return colorScheme == .dark ? Color(lightBackground) : Color(darkBackground)
+                let lightBackground = resolvedBackground(.aqua)
+                let darkBackground = resolvedBackground(.darkAqua)
+                // Invert: light scheme gets the dark background (charcoal), dark scheme gets light background (white)
+                return colorScheme == .dark ? Color(lightBackground) : Color(darkBackground)
             #elseif os(watchOS)
-            return Color.gray.opacity(colorScheme == .dark ? 0.6 : 0.4)
+                return Color.gray.opacity(colorScheme == .dark ? 0.6 : 0.4)
             #else
-            let lightTrait = UITraitCollection(userInterfaceStyle: .light)
-            let darkTrait = UITraitCollection(userInterfaceStyle: .dark)
-            let light = UIColor.systemBackground.resolvedColor(with: lightTrait)
-            let dark = UIColor.systemBackground.resolvedColor(with: darkTrait)
-            return colorScheme == .dark ? Color(light) : Color(dark)
+                let lightTrait = UITraitCollection(userInterfaceStyle: .light)
+                let darkTrait = UITraitCollection(userInterfaceStyle: .dark)
+                let light = UIColor.systemBackground.resolvedColor(with: lightTrait)
+                let dark = UIColor.systemBackground.resolvedColor(with: darkTrait)
+                return colorScheme == .dark ? Color(light) : Color(dark)
             #endif
         }
     }
 
     // MARK: - Layout (8pt Grid)
-    struct Layout {
-        struct spacing {
+
+    enum Layout {
+        enum spacing {
             static let small: CGFloat = 8
             static let medium: CGFloat = 16
             static let large: CGFloat = 24
             static let extraLarge: CGFloat = 32
         }
 
-        struct padding {
+        enum padding {
             static let window: CGFloat = 20
             static let card: CGFloat = 16
         }
@@ -140,13 +146,13 @@ struct DesignSystem {
         static let cornerRadiusLarge: CGFloat = 24
 
         // Shared sizing tokens for rows and pills
-        struct rowHeight {
+        enum rowHeight {
             static let small: CGFloat = 32
             static let medium: CGFloat = 44
             static let large: CGFloat = 56
         }
 
-        struct radii {
+        enum radii {
             static let card: CGFloat = 22
             static let block: CGFloat = 15
             static let pill: CGFloat = 10
@@ -154,7 +160,7 @@ struct DesignSystem {
     }
 
     // Backwards-compatible spacing tokens
-    struct Spacing {
+    enum Spacing {
         static let xsmall: CGFloat = 4
         static let small: CGFloat = Layout.spacing.small
         static let medium: CGFloat = Layout.spacing.medium
@@ -162,7 +168,8 @@ struct DesignSystem {
     }
 
     // MARK: - Typography (Semantic Styles)
-    struct Typography {
+
+    enum Typography {
         static let display = Font.largeTitle.weight(.bold)
         static let header = Font.title2.bold()
         static let subHeader = Font.headline.weight(.medium)
@@ -173,15 +180,17 @@ struct DesignSystem {
         static let title = Font.title2.weight(.semibold)
     }
 
-    struct Materials {
+    enum Materials {
         // Semantic materials aligned to Apple HIG guidance
         static let sidebar: Material = .ultraThinMaterial
         static var card: AnyShapeStyle {
-            return AnyShapeStyle(.regularMaterial)
+            AnyShapeStyle(.regularMaterial)
         }
+
         static var cardOpacity: Double {
-            return 0.88
+            0.88
         }
+
         static let popup: Material = .thickMaterial
         static let hud: Material = .ultraThinMaterial
         // Surface materials used by smaller components
@@ -189,7 +198,7 @@ struct DesignSystem {
         static let surfaceHover: Material = .thickMaterial
     }
 
-    struct Corners {
+    enum Corners {
         static let small: CGFloat = Layout.cornerRadiusSmall
         static let medium: CGFloat = Layout.cornerRadiusStandard
         static let large: CGFloat = Layout.cornerRadiusLarge
@@ -198,12 +207,12 @@ struct DesignSystem {
         static let pill: CGFloat = Layout.radii.pill
     }
 
-    struct Icons {
+    enum Icons {
         static let primary = Image(systemName: "star.fill")
         static let settings = Image(systemName: "gearshape")
     }
 
-    struct Cards {
+    enum Cards {
         static let cornerRadius: CGFloat = Corners.medium
         static let inset: CGFloat = Spacing.small
         static let defaultHeight: CGFloat = 260

@@ -11,41 +11,40 @@ import XCTest
 /// Base test case with common setup and utilities for all tests
 @MainActor
 class BaseTestCase: XCTestCase {
-    
     // MARK: - Properties
-    
+
     /// Shared mock data factory for creating test objects
     var mockData: MockDataFactory!
-    
+
     /// Test-specific UserDefaults to avoid polluting real data
     var testDefaults: UserDefaults!
-    
+
     /// Test calendar for date manipulation
     var calendar: Calendar!
 
     private var testEnvironment: TestEnvironment?
-    
+
     // MARK: - Lifecycle
-    
+
     override func setUpWithError() throws {
         try super.setUpWithError()
 
         let environment = TestEnvironment()
         environment.start()
         testEnvironment = environment
-        
+
         // Create isolated test defaults
         let suiteName = "com.itori.test.\(UUID().uuidString)"
         testDefaults = UserDefaults(suiteName: suiteName)
-        
+
         // Set up calendar for consistent date handling
         calendar = Calendar.current
         calendar.timeZone = TimeZone(identifier: "UTC")!
-        
+
         // Initialize mock data factory
         mockData = MockDataFactory(calendar: calendar)
     }
-    
+
     override func tearDownWithError() throws {
         // Clean up test defaults
         if let suiteName = testDefaults.dictionaryRepresentation().keys.first {
@@ -57,12 +56,12 @@ class BaseTestCase: XCTestCase {
 
         testEnvironment?.stop()
         testEnvironment = nil
-        
+
         try super.tearDownWithError()
     }
-    
+
     // MARK: - Helper Methods
-    
+
     /// Wait for async operation with timeout
     func wait(
         for condition: @escaping () -> Bool,
@@ -70,18 +69,18 @@ class BaseTestCase: XCTestCase {
         description: String = "Condition not met"
     ) throws {
         let expectation = XCTestExpectation(description: description)
-        
+
         Task {
             while !condition() {
                 try? await Task.sleep(nanoseconds: 100_000_000) // 0.1s
             }
             expectation.fulfill()
         }
-        
+
         let result = XCTWaiter.wait(for: [expectation], timeout: timeout)
         XCTAssertEqual(result, .completed, description)
     }
-    
+
     /// Create a date from components for consistent testing
     func date(
         year: Int,
@@ -101,7 +100,7 @@ class BaseTestCase: XCTestCase {
         )
         return calendar.date(from: components)!
     }
-    
+
     /// Assert that two dates are equal within a tolerance
     func assertDatesEqual(
         _ date1: Date?,
@@ -111,11 +110,11 @@ class BaseTestCase: XCTestCase {
         file: StaticString = #file,
         line: UInt = #line
     ) {
-        guard let date1 = date1, let date2 = date2 else {
+        guard let date1, let date2 else {
             XCTAssertEqual(date1, date2, message, file: file, line: line)
             return
         }
-        
+
         let difference = abs(date1.timeIntervalSince(date2))
         XCTAssertLessThanOrEqual(
             difference,
@@ -125,7 +124,7 @@ class BaseTestCase: XCTestCase {
             line: line
         )
     }
-    
+
     /// Assert that a collection contains an element matching a predicate
     func assertContains<T>(
         _ collection: [T],

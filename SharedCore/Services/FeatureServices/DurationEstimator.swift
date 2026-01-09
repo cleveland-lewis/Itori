@@ -1,8 +1,7 @@
 import Foundation
 
 /// Provides smart duration estimates based on category, course type, and learning data
-struct DurationEstimator {
-    
+enum DurationEstimator {
     /// Get estimated duration for an assignment
     static func estimatedDuration(
         category: AssignmentCategory,
@@ -14,17 +13,17 @@ struct DurationEstimator {
         if let learned = learningData[key], learned.hasEnoughData {
             return Int(learned.averageMinutes.rounded())
         }
-        
+
         // Otherwise use base × multiplier
         let base = category.baseEstimateMinutes
         let multiplier = course.courseType.durationMultiplier(for: category)
         let estimated = Double(base) * multiplier
-        
+
         // Round to step size
         let stepSize = category.stepSize
         return Int((estimated / Double(stepSize)).rounded()) * stepSize
     }
-    
+
     /// Get decomposition hint text
     static func decompositionHint(
         category: AssignmentCategory,
@@ -33,14 +32,14 @@ struct DurationEstimator {
     ) -> String {
         let now = Date()
         let daysUntilDue = Calendar.current.dateComponents([.day], from: now, to: dueDate).day ?? 0
-        
+
         switch category {
         case .reading:
             return "Typically: 1 × \(estimatedMinutes)m same day"
-            
+
         case .homework:
             return "Typically: 2 × \(estimatedMinutes)m over 2 days"
-            
+
         case .review:
             if daysUntilDue >= 7 {
                 let sessionTime = estimatedMinutes / 3
@@ -48,7 +47,7 @@ struct DurationEstimator {
             } else {
                 return "Typically: 2 × \(estimatedMinutes / 2)m over \(min(daysUntilDue, 2)) days"
             }
-            
+
         case .project:
             if daysUntilDue >= 14 {
                 let sessionTime = estimatedMinutes / 4
@@ -58,7 +57,7 @@ struct DurationEstimator {
                 let sessionTime = estimatedMinutes / sessions
                 return "Typically: \(sessions) × \(sessionTime)m compressed"
             }
-            
+
         case .exam:
             if daysUntilDue >= 10 {
                 let sessionTime = estimatedMinutes / 5
@@ -68,14 +67,15 @@ struct DurationEstimator {
                 let sessionTime = estimatedMinutes / sessions
                 return "Typically: \(sessions) × \(sessionTime)m compressed"
             }
-            
+
         case .quiz:
             return "Typically: 1 × \(estimatedMinutes)m within 24h of due"
+
         case .practiceTest:
             return "Typically: 1 × \(estimatedMinutes)m scheduled in the week before"
         }
     }
-    
+
     /// Generate learning data key
     static func learningKey(courseId: UUID, category: AssignmentCategory) -> String {
         "\(courseId.uuidString)_\(category.rawValue)"
@@ -88,7 +88,7 @@ struct CategoryLearningData: Codable {
     let category: AssignmentCategory
     var completedCount: Int = 0
     var averageMinutes: Double = 0
-    
+
     /// EWMA (Exponentially Weighted Moving Average)
     mutating func record(actualMinutes: Int) {
         let alpha = 0.3 // Weight for new data
@@ -99,54 +99,56 @@ struct CategoryLearningData: Codable {
         }
         completedCount += 1
     }
-    
+
     var hasEnoughData: Bool {
         completedCount >= 3
     }
 }
 
 // MARK: - AssignmentCategory Extensions
+
 extension AssignmentCategory {
     /// Base estimate in minutes for first session
     var baseEstimateMinutes: Int {
         switch self {
-        case .reading: return 45
-        case .homework: return 75
-        case .review: return 60
-        case .project: return 120
-        case .exam: return 180
-        case .quiz: return 30
-        case .practiceTest: return 50
+        case .reading: 45
+        case .homework: 75
+        case .review: 60
+        case .project: 120
+        case .exam: 180
+        case .quiz: 30
+        case .practiceTest: 50
         }
     }
-    
+
     /// Step size for duration picker
     var stepSize: Int {
         switch self {
-        case .reading, .review, .quiz: return 5
-        case .homework: return 10
-        case .project, .exam: return 15
-        case .practiceTest: return 10
+        case .reading, .review, .quiz: 5
+        case .homework: 10
+        case .project, .exam: 15
+        case .practiceTest: 10
         }
     }
 }
 
 // MARK: - CourseType Extensions
+
 extension CourseType {
     /// Get duration multiplier for a specific category
     func durationMultiplier(for category: AssignmentCategory) -> Double {
         let multipliers = durationMultipliers
         return multipliers[category] ?? 1.0
     }
-    
+
     /// All multipliers for this course type
     var durationMultipliers: [AssignmentCategory: Double] {
         switch self {
         case .regular:
-            return [:] // All 1.0
-            
+            [:] // All 1.0
+
         case .honors, .ap, .ib:
-            return [
+            [
                 .reading: 1.2,
                 .homework: 1.2,
                 .review: 1.2,
@@ -155,9 +157,9 @@ extension CourseType {
                 .quiz: 1.2,
                 .practiceTest: 1.2
             ]
-            
+
         case .seminar:
-            return [
+            [
                 .reading: 1.4,
                 .homework: 0.9,
                 .review: 1.2,
@@ -166,9 +168,9 @@ extension CourseType {
                 .quiz: 1.0,
                 .practiceTest: 1.0
             ]
-            
+
         case .lab:
-            return [
+            [
                 .reading: 0.9,
                 .homework: 1.1,
                 .review: 1.0,
@@ -177,9 +179,9 @@ extension CourseType {
                 .quiz: 1.0,
                 .practiceTest: 1.0
             ]
-            
+
         default:
-            return [:]
+            [:]
         }
     }
 }

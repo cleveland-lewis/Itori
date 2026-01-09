@@ -19,9 +19,13 @@ struct AssignmentDetailWindowView: View {
                 }
             }
 
-            Section(header: Text(NSLocalizedString("assignmentdetailwindow.details", value: "Details", comment: "Details"))) {
+            Section(header: Text(NSLocalizedString(
+                "assignmentdetailwindow.details",
+                value: "Details",
+                comment: "Details"
+            ))) {
                 DetailRow(label: "Title", value: task.title)
-                if let courseLabel = courseLabel {
+                if let courseLabel {
                     DetailRow(label: "Course", value: courseLabel)
                 }
                 DetailRow(label: "Type", value: typeLabel(task.type))
@@ -32,17 +36,29 @@ struct AssignmentDetailWindowView: View {
                 }
             }
 
-            Section(header: Text(NSLocalizedString("assignmentdetailwindow.time.effort", value: "Time & Effort", comment: "Time & Effort"))) {
+            Section(header: Text(NSLocalizedString(
+                "assignmentdetailwindow.time.effort",
+                value: "Time & Effort",
+                comment: "Time & Effort"
+            ))) {
                 DetailRow(label: timeEstimateLabel(task.type), value: "\(task.estimatedMinutes) min")
                 DetailRow(label: "Priority", value: priorityLabel(task.importance))
             }
 
             if let earned = task.gradeEarnedPoints,
                let possible = task.gradePossiblePoints,
-               possible > 0 {
-                Section(header: Text(NSLocalizedString("assignmentdetailwindow.grade", value: "Grade", comment: "Grade"))) {
+               possible > 0
+            {
+                Section(header: Text(NSLocalizedString(
+                    "assignmentdetailwindow.grade",
+                    value: "Grade",
+                    comment: "Grade"
+                ))) {
                     let gradePercent = (earned / possible) * 100
-                    DetailRow(label: "Score", value: String(format: "%.1f%% (%.1f/%.1f)", gradePercent, earned, possible))
+                    DetailRow(
+                        label: "Score",
+                        value: String(format: "%.1f%% (%.1f/%.1f)", gradePercent, earned, possible)
+                    )
                     if let weight = task.gradeWeightPercent {
                         DetailRow(label: "Weight", value: String(format: "%.1f%% of course", weight))
                     }
@@ -51,7 +67,14 @@ struct AssignmentDetailWindowView: View {
 
             Section {
                 Button(role: .destructive, action: onDelete) {
-                    Label(NSLocalizedString("assignmentdetailwindow.label.delete.assignment", value: "Delete Assignment", comment: "Delete Assignment"), systemImage: "trash")
+                    Label(
+                        NSLocalizedString(
+                            "assignmentdetailwindow.label.delete.assignment",
+                            value: "Delete Assignment",
+                            comment: "Delete Assignment"
+                        ),
+                        systemImage: "trash"
+                    )
                 }
             }
         }
@@ -83,33 +106,33 @@ struct AssignmentDetailWindowView: View {
 
     private func typeLabel(_ type: TaskType) -> String {
         switch type {
-        case .homework: return "Homework"
-        case .quiz: return "Quiz"
-        case .exam: return "Exam"
-        case .reading: return "Reading"
-        case .review: return "Review"
-        case .study: return "Study"
-        case .project: return "Project"
-        case .practiceTest: return "Practice Test"
+        case .homework: "Homework"
+        case .quiz: "Quiz"
+        case .exam: "Exam"
+        case .reading: "Reading"
+        case .review: "Review"
+        case .study: "Study"
+        case .project: "Project"
+        case .practiceTest: "Practice Test"
         }
     }
 
     private func timeEstimateLabel(_ type: TaskType) -> String {
         switch type {
         case .exam, .quiz:
-            return "Estimated Study Time"
+            "Estimated Study Time"
         case .homework, .reading, .project, .review, .study:
-            return "Estimated Work Time"
+            "Estimated Work Time"
         case .practiceTest:
-            return "Estimated Test Time"
+            "Estimated Test Time"
         }
     }
 
     private func priorityLabel(_ value: Double) -> String {
         switch value {
-        case ..<0.4: return "Low"
-        case ..<0.7: return "Medium"
-        default: return "High"
+        case ..<0.4: "Low"
+        case ..<0.7: "Medium"
+        default: "High"
         }
     }
 

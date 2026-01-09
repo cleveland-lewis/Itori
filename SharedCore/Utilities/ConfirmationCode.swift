@@ -23,15 +23,15 @@ enum ConfirmationCode {
         }
 
         return stride(from: 0, to: totalCount, by: groupSize)
-            .map { String(result[$0..<$0 + groupSize]) }
+            .map { String(result[$0 ..< $0 + groupSize]) }
             .joined(separator: "-")
     }
 
     private static func fallbackCode(groupSize: Int, groups: Int) -> String {
         let totalCount = groupSize * groups
-        let chars = (0..<totalCount).compactMap { _ in alphabet.randomElement() }
+        let chars = (0 ..< totalCount).compactMap { _ in alphabet.randomElement() }
         return stride(from: 0, to: totalCount, by: groupSize)
-            .map { String(chars[$0..<$0 + groupSize]) }
+            .map { String(chars[$0 ..< $0 + groupSize]) }
             .joined(separator: "-")
     }
 }

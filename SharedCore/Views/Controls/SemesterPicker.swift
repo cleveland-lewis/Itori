@@ -28,7 +28,9 @@ struct SemesterPicker: View {
             }
         } label: {
             HStack {
-                Text(selectedSemesterId.flatMap { id in coursesStore.semesters.first(where: { $0.id == id })?.name } ?? "Select semester")
+                Text(selectedSemesterId.flatMap { id in
+                    coursesStore.semesters.first(where: { $0.id == id })?.name
+                } ?? "Select semester")
                 Image(systemName: "chevron.down")
             }
             .padding(.vertical, 6)

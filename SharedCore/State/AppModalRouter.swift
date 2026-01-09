@@ -1,5 +1,5 @@
-import Foundation
 import Combine
+import Foundation
 
 @MainActor
 final class AppModalRouter: ObservableObject {
@@ -23,9 +23,9 @@ enum AppModalRoute: Hashable, Identifiable {
 
     var id: String {
         switch self {
-        case .addAssignment: return "addAssignment"
-        case .addGrade: return "addGrade"
-        case .planner: return "planner"
+        case .addAssignment: "addAssignment"
+        case .addGrade: "addGrade"
+        case .planner: "planner"
         }
     }
 }

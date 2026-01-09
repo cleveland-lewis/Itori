@@ -1,391 +1,510 @@
 #if os(macOS)
-import SwiftUI
-import StoreKit
+    import StoreKit
+    import SwiftUI
 
-struct MacOSSubscriptionView: View {
-    @ScaledMetric private var emptyIconSize: CGFloat = 48
+    struct MacOSSubscriptionView: View {
+        @ScaledMetric private var emptyIconSize: CGFloat = 48
 
-    @ScaledMetric private var mediumTextSize: CGFloat = 16
+        @ScaledMetric private var mediumTextSize: CGFloat = 16
 
-    @ScaledMetric private var heroIconSize: CGFloat = 60
+        @ScaledMetric private var heroIconSize: CGFloat = 60
 
-    @ScaledMetric private var heroTitleSize: CGFloat = 32
+        @ScaledMetric private var heroTitleSize: CGFloat = 32
 
-    @ScaledMetric private var pricingSize: CGFloat = 36
+        @ScaledMetric private var pricingSize: CGFloat = 36
 
-    
-    @StateObject private var subscriptionManager = SubscriptionManager.shared
-    @Environment(\.dismiss) private var dismiss
-    
-    @State private var isPurchasing = false
-    @State private var showError = false
-    @State private var errorMessage = ""
-    @State private var showRestoreSuccess = false
-    
-    var body: some View {
-        VStack(spacing: 32) {
-            headerSection
-            
-            statusBanner
-            
-            pricingOverview
-            
-            if !subscriptionManager.availableSubscriptions.isEmpty {
-                subscriptionPlans
-            } else {
-                loadingPlaceholder
+        @StateObject private var subscriptionManager = SubscriptionManager.shared
+        @Environment(\.dismiss) private var dismiss
+
+        @State private var isPurchasing = false
+        @State private var showError = false
+        @State private var errorMessage = ""
+        @State private var showRestoreSuccess = false
+
+        var body: some View {
+            VStack(spacing: 32) {
+                headerSection
+
+                statusBanner
+
+                pricingOverview
+
+                if !subscriptionManager.availableSubscriptions.isEmpty {
+                    subscriptionPlans
+                } else {
+                    loadingPlaceholder
+                }
+
+                featuresSection
+
+                restoreButton
             }
-            
-            featuresSection
-            
-            restoreButton
+            .frame(maxWidth: 600)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color(nsColor: .windowBackgroundColor))
+            .alert("Error", isPresented: $showError) {
+                Button(NSLocalizedString("OK", value: "OK", comment: ""), role: .cancel) {}
+            } message: {
+                Text(errorMessage)
+            }
+            .alert("Restored", isPresented: $showRestoreSuccess) {
+                Button(NSLocalizedString("OK", value: "OK", comment: ""), role: .cancel) {}
+            } message: {
+                Text(NSLocalizedString(
+                    "macossubscription.your.purchases.have.been.restored",
+                    value: "Your purchases have been restored.",
+                    comment: "Your purchases have been restored."
+                ))
+            }
         }
-        .frame(maxWidth: 600)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(nsColor: .windowBackgroundColor))
-        .alert("Error", isPresented: $showError) {
-            Button(NSLocalizedString("OK", value: "OK", comment: ""), role: .cancel) { }
-        } message: {
-            Text(errorMessage)
-        }
-        .alert("Restored", isPresented: $showRestoreSuccess) {
-            Button(NSLocalizedString("OK", value: "OK", comment: ""), role: .cancel) { }
-        } message: {
-            Text(NSLocalizedString("macossubscription.your.purchases.have.been.restored", value: "Your purchases have been restored.", comment: "Your purchases have been restored."))
-        }
-    }
-    
-    private var headerSection: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "sparkles")
-                .font(.system(size: heroIconSize))
-                .foregroundStyle(
-                    LinearGradient(
-                        colors: [.blue, .purple],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
+
+        private var headerSection: some View {
+            VStack(spacing: 16) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: heroIconSize))
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [.blue, .purple],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
                     )
-                )
-            
-            Text(NSLocalizedString("macossubscription.unlock.premium", value: "Unlock Premium", comment: "Unlock Premium"))
+
+                Text(NSLocalizedString(
+                    "macossubscription.unlock.premium",
+                    value: "Unlock Premium",
+                    comment: "Unlock Premium"
+                ))
                 .font(.system(size: heroTitleSize, weight: .bold))
-            
-            Text(NSLocalizedString("macossubscription.get.unlimited.access.to.all", value: "Get unlimited access to all features and priority support", comment: "Get unlimited access to all features and priority ..."))
+
+                Text(NSLocalizedString(
+                    "macossubscription.get.unlimited.access.to.all",
+                    value: "Get unlimited access to all features and priority support",
+                    comment: "Get unlimited access to all features and priority ..."
+                ))
                 .font(.title3)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+            }
         }
-    }
-    
-    @ViewBuilder
-    private var statusBanner: some View {
-        switch subscriptionManager.subscriptionStatus {
-        case .subscribed(let expirationDate):
-            VStack(spacing: 8) {
-                HStack {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
-                    Text(NSLocalizedString("macossubscription.active.subscription", value: "Active Subscription", comment: "Active Subscription"))
+
+        @ViewBuilder
+        private var statusBanner: some View {
+            switch subscriptionManager.subscriptionStatus {
+            case let .subscribed(expirationDate):
+                VStack(spacing: 8) {
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                        Text(NSLocalizedString(
+                            "macossubscription.active.subscription",
+                            value: "Active Subscription",
+                            comment: "Active Subscription"
+                        ))
                         .font(.headline)
-                    Spacer()
-                }
-                
-                if let expiration = expirationDate {
-                    Text(String(format: NSLocalizedString("macos.subscription.renews_date", value: "Renews %@", comment: "Subscription renewal date"), expiration.formatted(date: .abbreviated, time: .omitted)))
+                        Spacer()
+                    }
+
+                    if let expiration = expirationDate {
+                        Text(String(
+                            format: NSLocalizedString(
+                                "macos.subscription.renews_date",
+                                value: "Renews %@",
+                                comment: "Subscription renewal date"
+                            ),
+                            expiration.formatted(date: .abbreviated, time: .omitted)
+                        ))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                }
-            }
-            .padding(20)
-            .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(Color.green.opacity(0.1))
-            )
-            
-        case .expired:
-            HStack {
-                Image(systemName: "exclamationmark.circle.fill")
-                    .foregroundStyle(.orange)
-                Text(NSLocalizedString("macossubscription.subscription.expired", value: "Subscription Expired", comment: "Subscription Expired"))
-                    .font(.headline)
-                Spacer()
-            }
-            .padding(20)
-            .background(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(Color.orange.opacity(0.1))
-            )
-            
-        default:
-            EmptyView()
-        }
-    }
-
-    private var pricingOverview: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(NSLocalizedString("macossubscription.pricing.title", value: "Student Pricing", comment: "Pricing header"))
-                .font(.title3.bold())
-            
-            MacPricingRow(title: NSLocalizedString("macossubscription.pricing.monthly", value: "Monthly", comment: "Monthly plan title"), price: "$5.99", detail: NSLocalizedString("macossubscription.pricing.monthly.detail", value: "per month", comment: "Monthly plan detail"))
-            MacPricingRow(title: NSLocalizedString("macossubscription.pricing.semester", value: "Semester", comment: "Semester plan title"), price: "$25", detail: NSLocalizedString("macossubscription.pricing.semester.detail", value: "every 6 months", comment: "Semester plan detail"))
-            MacPricingRow(title: NSLocalizedString("macossubscription.pricing.yearly", value: "Yearly", comment: "Yearly plan title"), price: "$40", detail: NSLocalizedString("macossubscription.pricing.yearly.detail", value: "per year", comment: "Yearly plan detail"))
-            MacPricingRow(title: NSLocalizedString("macossubscription.pricing.lifetime", value: "Lifetime", comment: "Lifetime plan title"), price: "$199", detail: NSLocalizedString("macossubscription.pricing.lifetime.detail", value: "one-time", comment: "Lifetime plan detail"))
-            
-            Text(NSLocalizedString("macossubscription.pricing.includes", value: "Includes iOS, iPadOS, and macOS. watchOS support coming soon.", comment: "Pricing includes blurb"))
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-        .padding(20)
-        .background(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(Color(nsColor: .controlBackgroundColor))
-        )
-    }
-    
-    private var subscriptionPlans: some View {
-        HStack(spacing: 16) {
-            ForEach(subscriptionManager.availableSubscriptions, id: \.id) { product in
-                MacSubscriptionPlanCard(
-                    product: product,
-                    isPurchasing: isPurchasing,
-                    isCurrentPlan: subscriptionManager.purchasedSubscriptions.contains(where: { $0.id == product.id }),
-                    onPurchase: {
-                        Task {
-                            await purchaseSubscription(product)
-                        }
                     }
+                }
+                .padding(20)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Color.green.opacity(0.1))
                 )
+
+            case .expired:
+                HStack {
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .foregroundStyle(.orange)
+                    Text(NSLocalizedString(
+                        "macossubscription.subscription.expired",
+                        value: "Subscription Expired",
+                        comment: "Subscription Expired"
+                    ))
+                    .font(.headline)
+                    Spacer()
+                }
+                .padding(20)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Color.orange.opacity(0.1))
+                )
+
+            default:
+                EmptyView()
             }
         }
-    }
-    
-    private var loadingPlaceholder: some View {
-        VStack(spacing: 16) {
-            ProgressView()
-                .controlSize(.large)
-            Text(NSLocalizedString("macossubscription.loading.subscription.options", value: "Loading subscription options...", comment: "Loading subscription options..."))
+
+        private var pricingOverview: some View {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(NSLocalizedString(
+                    "macossubscription.pricing.title",
+                    value: "Student Pricing",
+                    comment: "Pricing header"
+                ))
+                .font(.title3.bold())
+
+                MacPricingRow(
+                    title: NSLocalizedString(
+                        "macossubscription.pricing.monthly",
+                        value: "Monthly",
+                        comment: "Monthly plan title"
+                    ),
+                    price: "$5.99",
+                    detail: NSLocalizedString(
+                        "macossubscription.pricing.monthly.detail",
+                        value: "per month",
+                        comment: "Monthly plan detail"
+                    )
+                )
+                MacPricingRow(
+                    title: NSLocalizedString(
+                        "macossubscription.pricing.semester",
+                        value: "Semester",
+                        comment: "Semester plan title"
+                    ),
+                    price: "$25",
+                    detail: NSLocalizedString(
+                        "macossubscription.pricing.semester.detail",
+                        value: "every 6 months",
+                        comment: "Semester plan detail"
+                    )
+                )
+                MacPricingRow(
+                    title: NSLocalizedString(
+                        "macossubscription.pricing.yearly",
+                        value: "Yearly",
+                        comment: "Yearly plan title"
+                    ),
+                    price: "$40",
+                    detail: NSLocalizedString(
+                        "macossubscription.pricing.yearly.detail",
+                        value: "per year",
+                        comment: "Yearly plan detail"
+                    )
+                )
+                MacPricingRow(
+                    title: NSLocalizedString(
+                        "macossubscription.pricing.lifetime",
+                        value: "Lifetime",
+                        comment: "Lifetime plan title"
+                    ),
+                    price: "$199",
+                    detail: NSLocalizedString(
+                        "macossubscription.pricing.lifetime.detail",
+                        value: "one-time",
+                        comment: "Lifetime plan detail"
+                    )
+                )
+
+                Text(NSLocalizedString(
+                    "macossubscription.pricing.includes",
+                    value: "Includes iOS, iPadOS, and macOS. watchOS support coming soon.",
+                    comment: "Pricing includes blurb"
+                ))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 60)
-    }
-    
-    private var featuresSection: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            Text(NSLocalizedString("macossubscription.premium.features", value: "Premium Features", comment: "Premium Features"))
-                .font(.title2.bold())
-            
-            VStack(spacing: 16) {
-                MacFeatureRow(icon: "brain.head.profile", title: "AI-Powered Study Plans", description: "Intelligent scheduling optimized for your learning patterns")
-                MacFeatureRow(icon: "calendar.badge.clock", title: "Advanced Planning", description: "Auto-schedule assignments with smart conflict resolution")
-                MacFeatureRow(icon: "chart.bar.fill", title: "Analytics & Insights", description: "Track your progress with detailed statistics and reports")
-                MacFeatureRow(icon: "square.stack.3d.up", title: "Unlimited Storage", description: "Store all your assignments and study materials without limits")
-                MacFeatureRow(icon: "person.badge.shield.checkmark", title: "Priority Support", description: "Get help faster with priority email and chat support")
             }
+            .padding(20)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(Color(nsColor: .controlBackgroundColor))
+            )
         }
-    }
-    
-    private var restoreButton: some View {
-        Button(NSLocalizedString("macossubscription.button.restore.purchases", value: "Restore Purchases", comment: "Restore Purchases")) {
-            Task {
-                await restorePurchases()
-            }
-        }
-        .buttonStyle(.link)
-    }
-    
-    // MARK: - Actions
-    
-    private func purchaseSubscription(_ product: Product) async {
-        isPurchasing = true
-        
-        do {
-            let transaction = try await subscriptionManager.purchase(product)
-            
-            if transaction != nil {
-                showRestoreSuccess = true
-            }
-        } catch {
-            errorMessage = "Failed to complete purchase. Please try again."
-            showError = true
-        }
-        
-        isPurchasing = false
-    }
-    
-    private func restorePurchases() async {
-        do {
-            try await subscriptionManager.restorePurchases()
-            showRestoreSuccess = true
-        } catch {
-            errorMessage = "Failed to restore purchases. Please try again."
-            showError = true
-        }
-    }
-}
 
-// MARK: - Mac Subscription Plan Card
-
-private struct MacSubscriptionPlanCard: View {
-    let product: Product
-    let isPurchasing: Bool
-    let isCurrentPlan: Bool
-    let onPurchase: () -> Void
-    
-    private var isYearly: Bool {
-        guard let subscription = product.subscription else { return false }
-        return subscription.subscriptionPeriod.unit == .year
-    }
-    
-    private var savingsText: String? {
-        guard isYearly else { return nil }
-        return "Best Value"
-    }
-    
-    var body: some View {
-        VStack(spacing: 20) {
-            VStack(spacing: 8) {
-                if let savings = savingsText {
-                    Text(savings)
-                        .font(.caption.weight(.bold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 4)
-                        .background(Color.green)
-                        .clipShape(Capsule())
+        private var subscriptionPlans: some View {
+            HStack(spacing: 16) {
+                ForEach(subscriptionManager.availableSubscriptions, id: \.id) { product in
+                    MacSubscriptionPlanCard(
+                        product: product,
+                        isPurchasing: isPurchasing,
+                        isCurrentPlan: subscriptionManager.purchasedSubscriptions
+                            .contains(where: { $0.id == product.id }),
+                        onPurchase: {
+                            Task {
+                                await purchaseSubscription(product)
+                            }
+                        }
+                    )
                 }
-                
-                Text(product.displayName)
-                    .font(.title2.bold())
-                
-                Text(product.displayPrice)
-                    .font(.system(size: pricingSize, weight: .bold))
-                
-                Text(subscriptionPeriod)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
             }
-            
-            Divider()
-            
-            if isCurrentPlan {
-                HStack {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
-                    Text(NSLocalizedString("macossubscription.current.plan", value: "Current Plan", comment: "Current Plan"))
+        }
+
+        private var loadingPlaceholder: some View {
+            VStack(spacing: 16) {
+                ProgressView()
+                    .controlSize(.large)
+                Text(NSLocalizedString(
+                    "macossubscription.loading.subscription.options",
+                    value: "Loading subscription options...",
+                    comment: "Loading subscription options..."
+                ))
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 60)
+        }
+
+        private var featuresSection: some View {
+            VStack(alignment: .leading, spacing: 20) {
+                Text(NSLocalizedString(
+                    "macossubscription.premium.features",
+                    value: "Premium Features",
+                    comment: "Premium Features"
+                ))
+                .font(.title2.bold())
+
+                VStack(spacing: 16) {
+                    MacFeatureRow(
+                        icon: "brain.head.profile",
+                        title: "AI-Powered Study Plans",
+                        description: "Intelligent scheduling optimized for your learning patterns"
+                    )
+                    MacFeatureRow(
+                        icon: "calendar.badge.clock",
+                        title: "Advanced Planning",
+                        description: "Auto-schedule assignments with smart conflict resolution"
+                    )
+                    MacFeatureRow(
+                        icon: "chart.bar.fill",
+                        title: "Analytics & Insights",
+                        description: "Track your progress with detailed statistics and reports"
+                    )
+                    MacFeatureRow(
+                        icon: "square.stack.3d.up",
+                        title: "Unlimited Storage",
+                        description: "Store all your assignments and study materials without limits"
+                    )
+                    MacFeatureRow(
+                        icon: "person.badge.shield.checkmark",
+                        title: "Priority Support",
+                        description: "Get help faster with priority email and chat support"
+                    )
+                }
+            }
+        }
+
+        private var restoreButton: some View {
+            Button(NSLocalizedString(
+                "macossubscription.button.restore.purchases",
+                value: "Restore Purchases",
+                comment: "Restore Purchases"
+            )) {
+                Task {
+                    await restorePurchases()
+                }
+            }
+            .buttonStyle(.link)
+        }
+
+        // MARK: - Actions
+
+        private func purchaseSubscription(_ product: Product) async {
+            isPurchasing = true
+
+            do {
+                let transaction = try await subscriptionManager.purchase(product)
+
+                if transaction != nil {
+                    showRestoreSuccess = true
+                }
+            } catch {
+                errorMessage = "Failed to complete purchase. Please try again."
+                showError = true
+            }
+
+            isPurchasing = false
+        }
+
+        private func restorePurchases() async {
+            do {
+                try await subscriptionManager.restorePurchases()
+                showRestoreSuccess = true
+            } catch {
+                errorMessage = "Failed to restore purchases. Please try again."
+                showError = true
+            }
+        }
+    }
+
+    // MARK: - Mac Subscription Plan Card
+
+    private struct MacSubscriptionPlanCard: View {
+        let product: Product
+        let isPurchasing: Bool
+        let isCurrentPlan: Bool
+        let onPurchase: () -> Void
+
+        private var isYearly: Bool {
+            guard let subscription = product.subscription else { return false }
+            return subscription.subscriptionPeriod.unit == .year
+        }
+
+        private var savingsText: String? {
+            guard isYearly else { return nil }
+            return "Best Value"
+        }
+
+        var body: some View {
+            VStack(spacing: 20) {
+                VStack(spacing: 8) {
+                    if let savings = savingsText {
+                        Text(savings)
+                            .font(.caption.weight(.bold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 4)
+                            .background(Color.green)
+                            .clipShape(Capsule())
+                    }
+
+                    Text(product.displayName)
+                        .font(.title2.bold())
+
+                    Text(product.displayPrice)
+                        .font(.system(size: pricingSize, weight: .bold))
+
+                    Text(subscriptionPeriod)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                Divider()
+
+                if isCurrentPlan {
+                    HStack {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(.green)
+                        Text(NSLocalizedString(
+                            "macossubscription.current.plan",
+                            value: "Current Plan",
+                            comment: "Current Plan"
+                        ))
                         .font(.headline)
                         .foregroundStyle(.green)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-            } else {
-                Button {
-                    onPurchase()
-                } label: {
-                    Group {
-                        if isPurchasing {
-                            ProgressView()
-                                .controlSize(.small)
-                                .tint(.white)
-                        } else {
-                            Text(actionLabel)
-                                .font(.headline)
-                        }
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
+                } else {
+                    Button {
+                        onPurchase()
+                    } label: {
+                        Group {
+                            if isPurchasing {
+                                ProgressView()
+                                    .controlSize(.small)
+                                    .tint(.white)
+                            } else {
+                                Text(actionLabel)
+                                    .font(.headline)
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .disabled(isPurchasing)
                 }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .disabled(isPurchasing)
+            }
+            .padding(24)
+            .frame(maxWidth: .infinity)
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color(nsColor: .controlBackgroundColor))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(isYearly ? Color.accentColor : Color.clear, lineWidth: 2)
+                    )
+            )
+        }
+
+        private var subscriptionPeriod: String {
+            guard let subscription = product.subscription else {
+                return "one-time"
+            }
+
+            let period = subscription.subscriptionPeriod
+            switch period.unit {
+            case .month:
+                return period.value == 6 ? "per semester" : "per month"
+            case .year:
+                return "per year"
+            default:
+                return ""
             }
         }
-        .padding(24)
-        .frame(maxWidth: .infinity)
-        .background(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color(nsColor: .controlBackgroundColor))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16, style: .continuous)
-                        .stroke(isYearly ? Color.accentColor : Color.clear, lineWidth: 2)
-                )
-        )
-    }
-    
-    private var subscriptionPeriod: String {
-        guard let subscription = product.subscription else {
-            return "one-time"
-        }
-        
-        let period = subscription.subscriptionPeriod
-        switch period.unit {
-        case .month:
-            return period.value == 6 ? "per semester" : "per month"
-        case .year:
-            return "per year"
-        default:
-            return ""
+
+        private var actionLabel: String {
+            product.subscription == nil
+                ? NSLocalizedString("macossubscription.purchase", value: "Purchase", comment: "Purchase")
+                : NSLocalizedString("macossubscription.subscribe", value: "Subscribe", comment: "Subscribe")
         }
     }
-    
-    private var actionLabel: String {
-        product.subscription == nil
-            ? NSLocalizedString("macossubscription.purchase", value: "Purchase", comment: "Purchase")
-            : NSLocalizedString("macossubscription.subscribe", value: "Subscribe", comment: "Subscribe")
+
+    // MARK: - Mac Feature Row
+
+    private struct MacFeatureRow: View {
+        let icon: String
+        let title: String
+        let description: String
+
+        var body: some View {
+            HStack(spacing: 16) {
+                Image(systemName: icon)
+                    .font(.title)
+                    .foregroundStyle(Color.accentColor)
+                    .frame(width: 40, height: 40)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .font(.headline)
+                    Text(description)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+            }
+        }
     }
-}
 
-// MARK: - Mac Feature Row
+    private struct MacPricingRow: View {
+        let title: String
+        let price: String
+        let detail: String
 
-private struct MacFeatureRow: View {
-    let icon: String
-    let title: String
-    let description: String
-    
-    var body: some View {
-        HStack(spacing: 16) {
-            Image(systemName: icon)
-                .font(.title)
-                .foregroundStyle(Color.accentColor)
-                .frame(width: 40, height: 40)
-            
-            VStack(alignment: .leading, spacing: 4) {
+        var body: some View {
+            HStack {
                 Text(title)
                     .font(.headline)
-                Text(description)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-            
-            Spacer()
-        }
-    }
-}
-
-private struct MacPricingRow: View {
-    let title: String
-    let price: String
-    let detail: String
-    
-    var body: some View {
-        HStack {
-            Text(title)
-                .font(.headline)
-            Spacer()
-            VStack(alignment: .trailing, spacing: 2) {
-                Text(price)
-                    .font(.headline)
-                Text(detail)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                Spacer()
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(price)
+                        .font(.headline)
+                    Text(detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
     }
-}
 
-#Preview {
-    MacOSSubscriptionView()
-}
+    #Preview {
+        MacOSSubscriptionView()
+    }
 #endif

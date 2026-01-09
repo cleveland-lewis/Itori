@@ -13,28 +13,28 @@ public enum TimerMode: String, CaseIterable, Identifiable, Codable {
 
     public var displayName: String {
         switch self {
-        case .pomodoro: return "Pomodoro"
-        case .timer: return "Timer"
-        case .stopwatch: return "Stopwatch"
-        case .focus: return "Focus"
+        case .pomodoro: "Pomodoro"
+        case .timer: "Timer"
+        case .stopwatch: "Stopwatch"
+        case .focus: "Focus"
         }
     }
 
     public var systemImage: String {
         switch self {
-        case .pomodoro: return "hourglass"
-        case .timer: return "timer"
-        case .stopwatch: return "stopwatch"
-        case .focus: return "brain.head.profile"
+        case .pomodoro: "hourglass"
+        case .timer: "timer"
+        case .stopwatch: "stopwatch"
+        case .focus: "brain.head.profile"
         }
     }
-    
+
     public var defaultDuration: Int? {
         switch self {
-        case .pomodoro: return 25 * 60 // 25 minutes
-        case .timer: return 10 * 60 // 10 minutes
-        case .stopwatch: return nil // No duration
-        case .focus: return nil // Custom duration
+        case .pomodoro: 25 * 60 // 25 minutes
+        case .timer: 10 * 60 // 10 minutes
+        case .stopwatch: nil // No duration
+        case .focus: nil // Custom duration
         }
     }
 }
@@ -48,9 +48,9 @@ public enum TimerDisplayStyle: String, CaseIterable, Identifiable, Codable {
     public var label: String {
         switch self {
         case .digital:
-            return NSLocalizedString("timer.display.digital", comment: "")
+            NSLocalizedString("timer.display.digital", comment: "")
         case .analog:
-            return NSLocalizedString("timer.display.analog", comment: "")
+            NSLocalizedString("timer.display.analog", comment: "")
         }
     }
 }
@@ -68,7 +68,18 @@ struct TimerActivity: Identifiable, Hashable, Codable {
     var emoji: String?
     var isPinned: Bool
 
-    init(id: UUID = UUID(), name: String, note: String? = nil, courseID: UUID? = nil, assignmentID: UUID? = nil, studyCategory: StudyCategory? = nil, collectionID: UUID? = nil, colorHex: String? = nil, emoji: String? = nil, isPinned: Bool = false) {
+    init(
+        id: UUID = UUID(),
+        name: String,
+        note: String? = nil,
+        courseID: UUID? = nil,
+        assignmentID: UUID? = nil,
+        studyCategory: StudyCategory? = nil,
+        collectionID: UUID? = nil,
+        colorHex: String? = nil,
+        emoji: String? = nil,
+        isPinned: Bool = false
+    ) {
         self.id = id
         self.name = name
         self.note = note
@@ -127,7 +138,17 @@ struct FocusSession: Identifiable, Hashable, Codable {
     var actualDuration: TimeInterval?
     var interruptions: Int = 0
 
-    init(id: UUID = UUID(), activityID: UUID? = nil, mode: TimerMode = .pomodoro, plannedDuration: TimeInterval? = nil, startedAt: Date? = nil, endedAt: Date? = nil, state: State = .idle, actualDuration: TimeInterval? = nil, interruptions: Int = 0) {
+    init(
+        id: UUID = UUID(),
+        activityID: UUID? = nil,
+        mode: TimerMode = .pomodoro,
+        plannedDuration: TimeInterval? = nil,
+        startedAt: Date? = nil,
+        endedAt: Date? = nil,
+        state: State = .idle,
+        actualDuration: TimeInterval? = nil,
+        interruptions: Int = 0
+    ) {
         self.id = id
         self.activityID = activityID
         self.mode = mode

@@ -1,5 +1,5 @@
-import XCTest
 import EventKit
+import XCTest
 @testable import SharedCore
 
 @MainActor
@@ -40,7 +40,7 @@ final class CalendarScheduleDiffTests: XCTestCase {
         let diff = CalendarRefreshCoordinator.shared.buildScheduleDiff(
             proposed: proposed,
             existingEvents: existing,
-            within: startDate...endDate
+            within: startDate ... endDate
         )
 
         XCTAssertTrue(diff.addedBlocks.isEmpty)
@@ -62,7 +62,7 @@ final class CalendarScheduleDiffTests: XCTestCase {
             featureStateVersion: 0,
             summaryText: "test",
             targetCalendarID: "calendarA",
-            range: now...now.addingTimeInterval(3600)
+            range: now ... now.addingTimeInterval(3600)
         )
 
         let suggestionB = PendingScheduleSuggestion(
@@ -73,7 +73,7 @@ final class CalendarScheduleDiffTests: XCTestCase {
             featureStateVersion: 0,
             summaryText: "test",
             targetCalendarID: "calendarB",
-            range: now...now.addingTimeInterval(7200)
+            range: now ... now.addingTimeInterval(7200)
         )
 
         XCTAssertTrue(coordinator.stageSuggestion(suggestionA))
@@ -116,12 +116,12 @@ final class CalendarScheduleDiffTests: XCTestCase {
         let firstDiff = CalendarRefreshCoordinator.shared.buildScheduleDiff(
             proposed: proposed,
             existingEvents: appliedEvents,
-            within: startDate...endDate
+            within: startDate ... endDate
         )
         let secondDiff = CalendarRefreshCoordinator.shared.buildScheduleDiff(
             proposed: proposed,
             existingEvents: appliedEvents,
-            within: startDate...endDate
+            within: startDate ... endDate
         )
 
         XCTAssertEqual(firstDiff.changeCount, 0)

@@ -10,7 +10,12 @@ func assertCriticalDataExists(_ label: String, exists: Bool, details: String? = 
 
 func reportUnschedulableTasks(_ tasks: [String], semesterId: UUID) {
     if !tasks.isEmpty {
-        LOG_SCHEDULER(.error, "UnschedulableTasks", "Could not schedule tasks: \(tasks.joined(separator: ", "))", metadata: ["semester": semesterId.uuidString])
+        LOG_SCHEDULER(
+            .error,
+            "UnschedulableTasks",
+            "Could not schedule tasks: \(tasks.joined(separator: ", "))",
+            metadata: ["semester": semesterId.uuidString]
+        )
     }
 }
 

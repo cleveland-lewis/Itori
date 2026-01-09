@@ -6,12 +6,12 @@ enum AnalyticsTimeRange: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .today: return "Today"
-        case .thisWeek: return "This Week"
-        case .last7Days: return "Last 7 Days"
-        case .thisMonth: return "This Month"
-        case .thisYear: return "This Year"
-        case .allTime: return "All Time"
+        case .today: "Today"
+        case .thisWeek: "This Week"
+        case .last7Days: "Last 7 Days"
+        case .thisMonth: "This Month"
+        case .thisYear: "This Year"
+        case .allTime: "All Time"
         }
     }
 }
@@ -33,7 +33,7 @@ final class AnalyticsService {
     func getCategoryDistribution(range: AnalyticsTimeRange) -> [(category: String, seconds: Double)] {
         let sessions = filteredSessions(for: range)
         let grouped = Dictionary(grouping: sessions, by: { $0.category })
-        return grouped.map { (key, value) in
+        return grouped.map { key, value in
             (category: key, seconds: value.reduce(0) { $0 + $1.seconds })
         }
         .sorted { $0.seconds > $1.seconds }
@@ -77,7 +77,8 @@ final class AnalyticsService {
             guard let weekStart = calendar.dateInterval(of: .weekOfYear, for: now)?.start else { return sampleSessions }
             return sampleSessions.filter { $0.date >= weekStart }
         case .last7Days:
-            guard let start = calendar.date(byAdding: .day, value: -6, to: calendar.startOfDay(for: now)) else { return sampleSessions }
+            guard let start = calendar.date(byAdding: .day, value: -6, to: calendar.startOfDay(for: now))
+            else { return sampleSessions }
             return sampleSessions.filter { $0.date >= start }
         case .thisMonth:
             guard let monthStart = calendar.dateInterval(of: .month, for: now)?.start else { return sampleSessions }

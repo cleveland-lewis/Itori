@@ -31,30 +31,30 @@ class MockBiometricAuth {
     var failureError: MockBiometricError = .authenticationFailed
     var evaluateCallCount = 0
     var canEvaluateCallCount = 0
-    
+
     func canEvaluateBiometric() -> (Bool, BiometricType) {
         canEvaluateCallCount += 1
         return (isAvailable, biometricType)
     }
-    
-    func evaluatePolicy(reason: String) async throws -> Bool {
+
+    func evaluatePolicy(reason _: String) async throws -> Bool {
         evaluateCallCount += 1
-        
+
         if !isAvailable {
             throw MockBiometricError.notAvailable
         }
-        
+
         if biometricType == .none {
             throw MockBiometricError.biometryNotEnrolled
         }
-        
+
         if !shouldSucceed {
             throw failureError
         }
-        
+
         return true
     }
-    
+
     func reset() {
         isAvailable = true
         biometricType = .faceID

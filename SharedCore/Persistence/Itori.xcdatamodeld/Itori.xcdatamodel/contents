@@ -36,6 +36,7 @@
         <relationship name="semester" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Semester" inverseName="courses" inverseEntity="Semester"/>
     </entity>
     <entity name="Assignment" representedClassName="AssignmentMO" syncable="YES" codeGenerationType="class">
+        <attribute name="attachmentData" optional="YES" attributeType="Binary"/>
         <attribute name="calendarEventIdentifier" optional="YES" attributeType="String"/>
         <attribute name="category" optional="YES" attributeType="String"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -52,9 +53,13 @@
         <attribute name="locked" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="maxBlockMinutes" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="minBlockMinutes" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="moduleIdsData" optional="YES" attributeType="Binary"/>
+        <attribute name="notes" optional="YES" attributeType="String"/>
         <attribute name="recurrenceData" optional="YES" attributeType="Binary"/>
-        <attribute name="recurrenceIndex" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="recurrenceIndex" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="recurrenceSeriesID" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="sourceFingerprint" optional="YES" attributeType="String"/>
+        <attribute name="sourceUniqueKey" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>
         <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
