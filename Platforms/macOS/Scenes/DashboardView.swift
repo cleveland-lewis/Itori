@@ -2,7 +2,6 @@
     import _Concurrency
     import Charts
     import Combine
-    import CoreData
     import EventKit
     import Foundation
     import SwiftUI
