@@ -107,120 +107,6 @@
                                 .frame(maxWidth: .infinity)
                                 .layoutPriority(1)
 
-struct CoursesPageView: View {
-    @EnvironmentObject private var settings: AppSettingsModel
-    @EnvironmentObject private var settingsCoordinator: SettingsCoordinator
-    @EnvironmentObject private var coursesStore: CoursesStore
-    @EnvironmentObject private var assignmentsStore: AssignmentsStore
-    @EnvironmentObject private var timerManager: TimerManager
-    @EnvironmentObject private var calendarManager: CalendarManager
-    @EnvironmentObject private var gradesStore: GradesStore
-    @EnvironmentObject private var plannerCoordinator: PlannerCoordinator
-    @EnvironmentObject private var parsingStore: SyllabusParsingStore
-
-    @State private var showingAddTaskSheet = false
-    @State private var addTaskType: TaskType = .homework
-    @State private var addTaskCourseId: UUID? = nil
-    @State private var showingGradeSheet = false
-    @State private var gradePercentInput: Double = 90
-    @State private var gradeLetterInput: String = "A"
-    @State private var showingParsedAssignmentsReview = false
-    @State private var showingCreateModuleSheet = false
-    @State private var showingFileImporter = false
-    @State private var selectedModuleId: UUID? = nil
-    @State private var showingBatchReview = false
-
-    @State private var selectedCourseId: UUID? = nil
-    @State private var searchText: String = ""
-    @State private var showNewCourseSheet: Bool = false
-    @State private var editingCourse: CoursePageCourse? = nil
-
-    var body: some View {
-        GeometryReader { proxy in
-            let width = proxy.size.width
-            let isStacked = width < 820
-            let ratios: (CGFloat, CGFloat) = {
-                if isStacked { return (1, 1) }
-                if width < 1200 { return (0.4, 0.6) }
-                return (1.0 / 3.0, 2.0 / 3.0)
-            }()
-
-            let sidebarWidth = isStacked ? width : max(240, width * ratios.0)
-
-            ZStack {
-                Color.primaryBackground.ignoresSafeArea()
-
-                if isStacked {
-                    VStack(spacing: RootsSpacing.l) {
-                        sidebarView
-                            .frame(maxWidth: .infinity)
-                            .layoutPriority(1)
-
-                        rightColumn
-                            .frame(maxWidth: .infinity, alignment: .topLeading)
-                            .layoutPriority(2)
-                    }
-                    .frame(maxWidth: min(proxy.size.width, 1400))
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, responsivePadding(for: proxy.size.width))
-                    .padding(.vertical, RootsSpacing.l)
-                } else {
-                    HStack(alignment: .top, spacing: RootsSpacing.l) {
-                        sidebarView
-                            .frame(width: sidebarWidth)
-                            .layoutPriority(1)
-
-                        rightColumn
-                            .frame(maxWidth: .infinity, alignment: .topLeading)
-                            .layoutPriority(2)
-                    }
-                    .frame(maxWidth: min(proxy.size.width, 1400))
-                    .frame(maxWidth: .infinity)
-                    .padding(.horizontal, responsivePadding(for: proxy.size.width))
-                    .padding(.vertical, RootsSpacing.l)
-                }
-            }
-        }
-        .sheet(isPresented: $showNewCourseSheet) {
-            CourseEditorSheet(course: editingCourse) { updated in
-                persistCourse(updated)
-                selectedCourseId = updated.id
-            }
-        }
-        .sheet(isPresented: $showingAddTaskSheet) {
-            AddAssignmentView(initialType: addTaskType, preselectedCourseId: addTaskCourseId) { task in
-                assignmentsStore.addTask(task)
-            }
-            .environmentObject(coursesStore)
-        }
-        .sheet(isPresented: $showingGradeSheet) {
-            gradeEntrySheet
-        }
-        .sheet(isPresented: $showingParsedAssignmentsReview) {
-            if let courseId = selectedCourseId {
-                ParsedAssignmentsReviewView(courseId: courseId)
-                    .environmentObject(parsingStore)
-                    .environmentObject(assignmentsStore)
-                    .environmentObject(coursesStore)
-            }
-        }
-        .sheet(isPresented: $showingCreateModuleSheet) {
-            if let courseId = selectedCourseId {
-                CreateModuleSheet(courseId: courseId) { module in
-                    coursesStore.addOutlineNode(module)
-                }
-            }
-        }
-        .sheet(isPresented: $showingBatchReview) {
-            if let batchState = FileParsingService.shared.batchReviewItems {
-                BatchReviewSheet(
-                    state: batchState,
-                    onApprove: {
-                        await FileParsingService.shared.approveBatchReview(batchState)
-                    },
-                    onCancel: {
-                        Task {
-                            await FileParsingService.shared.cancelBatchReview()
                             rightColumn
                                 .frame(maxWidth: .infinity, alignment: .topLeading)
                                 .layoutPriority(2)
@@ -243,75 +129,6 @@ struct CoursesPageView: View {
                         .frame(maxWidth: .infinity)
                         .padding(.horizontal, responsivePadding(for: proxy.size.width))
                         .padding(.vertical, RootsSpacing.l)
-                    }
-                }
-            }
-        }
-        .onReceive(FileParsingService.shared.$batchReviewItems) { batchState in
-            showingBatchReview = batchState != nil
-        }
-        .fileImporter(
-            isPresented: $showingFileImporter,
-            allowedContentTypes: [.item],
-            allowsMultipleSelection: true
-        ) { result in
-            handleFileImport(result)
-        }
-        .onAppear {
-            if selectedCourseId == nil {
-                selectedCourseId = filteredCourses.first?.id
-                            rightColumn
-                                .frame(maxWidth: .infinity, alignment: .topLeading)
-                                .layoutPriority(2)
-                        }
-                        .frame(maxWidth: min(proxy.size.width, 1400))
-                        .frame(maxWidth: .infinity)
-                        .padding(.horizontal, responsivePadding(for: proxy.size.width))
-                        .padding(.vertical, RootsSpacing.l)
-                    } else {
-                        HStack(alignment: .top, spacing: RootsSpacing.l) {
-                            sidebarView
-                                .frame(width: sidebarWidth)
-                                .layoutPriority(1)
-
-                            rightColumn
-                                .frame(maxWidth: .infinity, alignment: .topLeading)
-                                .layoutPriority(2)
-                        }
-                        .frame(maxWidth: min(proxy.size.width, 1400))
-                        .frame(maxWidth: .infinity)
-                        .padding(.horizontal, responsivePadding(for: proxy.size.width))
-                        .padding(.vertical, RootsSpacing.l)
-                    }
-                }
-            }
-            .sheet(isPresented: $showNewCourseSheet) {
-                CourseEditorSheet(course: editingCourse) { updated in
-                    persistCourse(updated)
-                    selectedCourseId = updated.id
-                }
-            }
-            .sheet(isPresented: $showingAddTaskSheet) {
-                AddAssignmentView(initialType: addTaskType, preselectedCourseId: addTaskCourseId) { task in
-                    assignmentsStore.addTask(task)
-                }
-                .environmentObject(coursesStore)
-            }
-            .sheet(isPresented: $showingGradeSheet) {
-                gradeEntrySheet
-            }
-            .sheet(isPresented: $showingParsedAssignmentsReview) {
-                if let courseId = selectedCourseId {
-                    ParsedAssignmentsReviewView(courseId: courseId)
-                        .environmentObject(parsingStore)
-                        .environmentObject(assignmentsStore)
-                        .environmentObject(coursesStore)
-                }
-            }
-            .sheet(isPresented: $showingCreateModuleSheet) {
-                if let courseId = selectedCourseId {
-                    CreateModuleSheet(courseId: courseId) { module in
-                        coursesStore.addOutlineNode(module)
                     }
                 }
             }
@@ -1360,7 +1177,7 @@ struct CoursesPageView: View {
                 actionBar
             }
             .frame(maxWidth: 580, maxHeight: 420)
-            .frame(minWidth: WindowSizing.minPopupWidth, minHeight: WindowSizing.minPopupHeight)
+            .frame(minWidth: RootsWindowSizing.minPopupWidth, minHeight: RootsWindowSizing.minPopupHeight)
             .onAppear(perform: loadDraft)
             .onChange(of: semesterId) { _, newValue in
                 if let id = newValue, let match = coursesStore.semesters.first(where: { $0.id == id }) {
