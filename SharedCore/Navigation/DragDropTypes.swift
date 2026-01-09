@@ -69,7 +69,7 @@ nonisolated struct TransferableCourse: Codable, Sendable {
 }
 
 @MainActor
-@preconcurrency extension TransferableAssignment: Transferable {
+extension TransferableAssignment: @preconcurrency Transferable {
     static var transferRepresentation: some TransferRepresentation {
         CodableRepresentation(contentType: .itoriAssignment)
         DataRepresentation(exportedContentType: .plainText) { payload in
@@ -79,7 +79,7 @@ nonisolated struct TransferableCourse: Codable, Sendable {
 }
 
 @MainActor
-@preconcurrency extension TransferableCourse: Transferable {
+extension TransferableCourse: @preconcurrency Transferable {
     static var transferRepresentation: some TransferRepresentation {
         CodableRepresentation(contentType: .itoriCourse)
         DataRepresentation(exportedContentType: .plainText) { payload in
