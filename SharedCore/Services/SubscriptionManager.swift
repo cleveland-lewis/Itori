@@ -9,34 +9,18 @@ final class SubscriptionManager: ObservableObject {
     @Published private(set) var subscriptionStatus: SubscriptionStatus = .unknown
     @Published private(set) var availableSubscriptions: [Product] = []
     @Published private(set) var purchasedSubscriptions: [Product] = []
-    
-    private var updateListenerTask: Task<Void, Error>? = nil
-    
+
+    private var updateListenerTask: Task<Void, Error>?
+
     // Product identifiers - must match App Store Connect configuration exactly
     // These IDs correspond to the StoreKit configuration in Config/ItoriSubscriptions.storekit
     private let productIdentifiers = [
-        "com.itori.subscription.monthly",  // Monthly subscription: $4.99/month
-        "com.itori.subscription.yearly"    // Yearly subscription: $49.99/year (17% savings)
+        "com.itori.subscription.monthly", // Monthly subscription: $4.99/month
+        "com.itori.subscription.yearly", // Yearly subscription: $49.99/year (17% savings)
         "6757490466",
         "6757490562",
         "6757490611",
         "6757490125"
-
-    private var updateListenerTask: Task<Void, Error>?
-
-    // Product identifiers - must match App Store Connect configuration exactly
-    // These IDs correspond to the StoreKit configuration in Config/ItoriSubscriptions.storekit
-    private let productIdentifiers = [
-        "com.itori.subscription.monthly", // Monthly subscription: $4.99/month
-        "com.itori.subscription.yearly" // Yearly subscription: $49.99/year (17% savings)
-
-    private var updateListenerTask: Task<Void, Error>?
-
-    // Product identifiers - must match App Store Connect configuration exactly
-    // These IDs correspond to the StoreKit configuration in Config/ItoriSubscriptions.storekit
-    private let productIdentifiers = [
-        "com.itori.subscription.monthly", // Monthly subscription: $4.99/month
-        "com.itori.subscription.yearly" // Yearly subscription: $49.99/year (17% savings)
     ]
 
     enum SubscriptionStatus {
