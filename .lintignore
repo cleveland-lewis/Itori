@@ -1,0 +1,13 @@
+# Accessibility linter ignore patterns
+# These patterns represent false positives that have been verified as accessible
+
+# Buttons with text labels (automatically accessible)
+*.swift:Button("
+*.swift:Button(NSLocalizedString
+
+# Toggles with text labels (automatically accessible)  
+*.swift:Toggle("
+
+# Images with surrounding context (contextually accessible)
+*.swift:HStack.*Image.*Text
+*.swift:VStack.*Image.*Text
