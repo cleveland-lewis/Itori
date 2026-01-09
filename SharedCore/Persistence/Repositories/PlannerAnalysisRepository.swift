@@ -1,4 +1,5 @@
-internal import CoreData
+import CoreData
+import Foundation
 
 /// Repository for managing planner analyses and AI results with iCloud sync
 final class PlannerAnalysisRepository {
@@ -229,8 +230,8 @@ public struct PlannerAnalysisResult: Identifiable {
     public let analysisType: String
     public let startDate: Date
     public let endDate: Date
-    let analysisData: [String: Any]
-    let resultData: [String: Any]?
+    public let analysisData: [String: Any]
+    public let resultData: [String: Any]?
     public let createdAt: Date
     public let updatedAt: Date
 }
