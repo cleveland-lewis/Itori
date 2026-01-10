@@ -309,12 +309,12 @@ public final class AIRouter: ObservableObject {
         // Register Apple Intelligence provider
         providers["apple"] = AppleIntelligenceProvider()
 
-        // Register local providers
-        #if os(macOS)
-            providers["local-macos"] = LocalModelProvider_macOS()
-        #else
-            providers["local-ios"] = LocalModelProvider_iOS()
-        #endif
+        // Note: Local providers will be added when implemented
+        // #if os(macOS)
+        //     providers["local-macos"] = LocalModelProvider_macOS()
+        // #else
+        //     providers["local-ios"] = LocalModelProvider_iOS()
+        // #endif
 
         // BYO provider will be registered when user configures
     }

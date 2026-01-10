@@ -13,7 +13,7 @@ struct PlanGraphSchedulerIntegration {
     /// - Returns: Array of tasks that are eligible for scheduling
     static func getSchedulableTasks(
         _ tasks: [AppTask],
-        planStore: AssignmentPlanStore = .shared
+        planStore: AssignmentPlanStore
     ) -> [AppTask] {
         var schedulable: [AppTask] = []
 
@@ -76,7 +76,7 @@ struct PlanGraphSchedulerIntegration {
     static func getNewlyUnblockedTasks(
         after completedTaskId: UUID,
         from allTasks: [AppTask],
-        planStore: AssignmentPlanStore = .shared
+        planStore: AssignmentPlanStore
     ) -> [UUID] {
         var newlyUnblocked: [UUID] = []
 
@@ -134,7 +134,7 @@ struct PlanGraphSchedulerIntegration {
     static func isScheduledBlockValid(
         _ block: ScheduledBlock,
         allTasks: [AppTask],
-        planStore: AssignmentPlanStore = .shared
+        planStore: AssignmentPlanStore
     ) -> Bool {
         // Find the task for this block
         guard let task = allTasks.first(where: { $0.id == block.taskId }) else {
@@ -175,7 +175,7 @@ struct PlanGraphSchedulerIntegration {
     static func removeInvalidBlocks(
         from result: ScheduleResult,
         allTasks: [AppTask],
-        planStore: AssignmentPlanStore = .shared
+        planStore: AssignmentPlanStore
     ) -> ScheduleResult {
         let validBlocks = result.blocks.filter { block in
             isScheduledBlockValid(block, allTasks: allTasks, planStore: planStore)
@@ -207,7 +207,7 @@ struct PlanGraphSchedulerIntegration {
     /// - Returns: String describing why task is blocked, or nil if not blocked
     static func getBlockedReason(
         for taskId: UUID,
-        planStore: AssignmentPlanStore = .shared
+        planStore: AssignmentPlanStore
     ) -> String? {
         guard let plan = planStore.getPlan(for: taskId),
               plan.sequenceEnforcementEnabled
@@ -243,7 +243,7 @@ struct PlanGraphSchedulerIntegration {
     /// - Returns: Dictionary with scheduling statistics
     static func getSchedulingStatistics(
         for tasks: [AppTask],
-        planStore: AssignmentPlanStore = .shared
+        planStore: AssignmentPlanStore
     ) -> [String: Int] {
         var stats: [String: Int] = [
             "total_tasks": tasks.count,
@@ -298,7 +298,7 @@ extension AIScheduler {
         fixedEvents: [FixedEvent],
         constraints: Constraints,
         preferences: SchedulerPreferences = SchedulerPreferences.default(),
-        planStore: AssignmentPlanStore = .shared
+        planStore: AssignmentPlanStore
     ) -> ScheduleResult {
         // Filter tasks to only schedulable ones (not blocked)
         let schedulableTasks = PlanGraphSchedulerIntegration.getSchedulableTasks(

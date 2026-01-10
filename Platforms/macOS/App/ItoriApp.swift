@@ -126,7 +126,7 @@
         var body: some Scene {
             WindowGroup(id: "main") {
                 applyUITestOverrides(
-                    to: SidebarShell()
+                    to: ContentView()
                         .environmentObject(AssignmentsStore.shared)
                         .environmentObject(coursesStore)
                         .environmentObject(appSettings)
@@ -159,11 +159,11 @@
                             LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")
                         }
                         .accentColor(appAccentColor)
-                        .buttonStyle(.glassBlueProminent)
-                        .controlSize(.regular)
-                        .buttonBorderShape(.automatic)
+                        .buttonStyle(GlassBlueProminentButtonStyle())
+                        .controlSize(ControlSize.regular)
+                        .buttonBorderShape(ButtonBorderShape.automatic)
                         .tint(appAccentColor)
-                        .frame(minWidth: WindowSizing.minMainWidth, minHeight: WindowSizing.minMainHeight)
+                        .frame(minWidth: 1100, minHeight: 700)
                         .task {
                             LOG_LIFECYCLE(.info, "AppStartup", "Running startup tasks")
                             SchedulerAdaptationManager.shared.runAdaptiveSchedulerUpdateIfNeeded()

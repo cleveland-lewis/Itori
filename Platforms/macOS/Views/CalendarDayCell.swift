@@ -85,9 +85,9 @@
         var color: Color {
             switch self {
             case .none: Color.secondary.opacity(0.25)
-            case .low: RootsColor.calendarDensityLow
-            case .medium: RootsColor.calendarDensityMedium
-            case .high: RootsColor.calendarDensityHigh
+            case .low: Color.calendarDensityLow
+            case .medium: Color.calendarDensityMedium
+            case .high: Color.calendarDensityHigh
             }
         }
 

@@ -98,7 +98,7 @@
                         .font(.callout)
                     }
                 }
-                .padding(RootsSpacing.m)
+                .padding(ItariSpacing.m)
             }
             .frame(width: 420)
         }

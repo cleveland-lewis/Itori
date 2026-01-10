@@ -1013,7 +1013,7 @@ final class AssignmentsStore: ObservableObject {
                 let existingTasks = repo.fetchAll()
                 let currentTaskIds = Set(self.tasks.map(\.id))
                 for task in existingTasks where !currentTaskIds.contains(task.id) {
-                    try repo.delete(id: task.id)
+                    try repo.delete(task)
                 }
 
                 // Save/update all current tasks

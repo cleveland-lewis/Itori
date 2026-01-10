@@ -376,7 +376,7 @@
                         .font(.title2.bold())
 
                     Text(product.displayPrice)
-                        .font(.system(size: pricingSize, weight: .bold))
+                        .font(.system(size: 48, weight: .bold))
 
                     Text(subscriptionPeriod)
                         .font(.subheadline)

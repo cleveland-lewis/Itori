@@ -1437,7 +1437,7 @@
                 ),
                 subtitle: NSLocalizedString("planner.task_sheet.subtitle", comment: "")
             ) {
-                VStack(alignment: .leading, spacing: RootsSpacing.l) {
+                VStack(alignment: .leading, spacing: ItariSpacing.l) {
                     taskSection
                     courseSection
                     timingSection
@@ -1458,7 +1458,7 @@
 
         // Sections
         private var taskSection: some View {
-            VStack(alignment: .leading, spacing: RootsSpacing.m) {
+            VStack(alignment: .leading, spacing: ItariSpacing.m) {
                 Text(NSLocalizedString("planner.task_sheet.section.task", comment: "")).rootsSectionHeader()
                 RootsFormRow(label: NSLocalizedString("planner.task_sheet.field.title", comment: "")) {
                     TextField(NSLocalizedString("planner.task_sheet.field.title", comment: ""), text: $draft.title)
@@ -1477,7 +1477,7 @@
         }
 
         private var courseSection: some View {
-            VStack(alignment: .leading, spacing: RootsSpacing.m) {
+            VStack(alignment: .leading, spacing: ItariSpacing.m) {
                 Text(NSLocalizedString("planner.task_sheet.section.course", comment: "")).rootsSectionHeader()
                 RootsFormRow(label: NSLocalizedString("planner.task_sheet.field.course", comment: "")) {
                     Picker(
@@ -1509,7 +1509,7 @@
         }
 
         private var timingSection: some View {
-            VStack(alignment: .leading, spacing: RootsSpacing.m) {
+            VStack(alignment: .leading, spacing: ItariSpacing.m) {
                 Text(NSLocalizedString("planner.task_sheet.section.timing", comment: "")).rootsSectionHeader()
                 RootsFormRow(label: NSLocalizedString("planner.task_sheet.field.due_date", comment: "")) {
                     DatePicker("", selection: $draft.dueDate, in: Date()..., displayedComponents: .date)

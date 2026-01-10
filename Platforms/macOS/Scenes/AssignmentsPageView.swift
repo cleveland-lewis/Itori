@@ -173,7 +173,7 @@
                 let leftWidth = min(max(width * 0.22, 240), 320)
                 let rightWidth = min(max(width * 0.3, 320), 420)
 
-                VStack(spacing: RootsSpacing.l) {
+                VStack(spacing: ItariSpacing.l) {
                     topControls
 
                     HStack(alignment: .top, spacing: 16) {
@@ -194,7 +194,7 @@
                 .frame(maxWidth: min(proxy.size.width, 1400))
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, responsivePadding(for: proxy.size.width))
-                .padding(.vertical, RootsSpacing.l)
+                .padding(.vertical, ItariSpacing.l)
                 .rootsSystemBackground()
             }
             .tint(.blue)
@@ -232,7 +232,7 @@
         // MARK: Top Controls
 
         private var topControls: some View {
-            HStack(spacing: RootsSpacing.m) {
+            HStack(spacing: ItariSpacing.m) {
                 Picker(
                     "assignments.segment.label".localized,
                     selection: $selectedSegment.animation(DesignSystem.Motion.standardSpring)
@@ -759,7 +759,7 @@
                     )
                     .overlay(
                         RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                            .stroke(RootsColor.glassBorder(for: colorScheme), lineWidth: 1)
+                            .stroke(Color.glassBorder(for: colorScheme), lineWidth: 1)
                     )
                     .onTapGesture {
                         onSelectCourse(item.course)
@@ -1319,7 +1319,7 @@
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                 Text(NSLocalizedString("assignments.detail.actions", value: "assignments.detail.actions", comment: ""))
                     .rootsSectionHeader()
-                HStack(spacing: RootsSpacing.s) {
+                HStack(spacing: ItariSpacing.s) {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(NSLocalizedString(
                             "assignments.detail.state",
@@ -1521,8 +1521,8 @@
                 subtitle: "assignments.editor.subtitle".localized
             ) {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: RootsSpacing.l) {
-                        VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                    VStack(alignment: .leading, spacing: ItariSpacing.l) {
+                        VStack(alignment: .leading, spacing: ItariSpacing.m) {
                             Text(NSLocalizedString(
                                 "assignments.editor.section.task",
                                 value: "assignments.editor.section.task",
@@ -1543,7 +1543,7 @@
                             }
                         }
 
-                        VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                        VStack(alignment: .leading, spacing: ItariSpacing.m) {
                             Text(NSLocalizedString(
                                 "assignments.editor.section.timing",
                                 value: "assignments.editor.section.timing",
@@ -1597,7 +1597,7 @@
                             }
                         }
 
-                        VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                        VStack(alignment: .leading, spacing: ItariSpacing.m) {
                             Text(NSLocalizedString(
                                 "assignments.editor.section.status",
                                 value: "assignments.editor.section.status",
@@ -1613,7 +1613,7 @@
                             }
                         }
 
-                        VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                        VStack(alignment: .leading, spacing: ItariSpacing.m) {
                             Text(NSLocalizedString(
                                 "assignments.editor.field.notes",
                                 value: "assignments.editor.field.notes",
@@ -1629,7 +1629,7 @@
                                         cornerRadius: DesignSystem.Cards.cardCornerRadius,
                                         style: .continuous
                                     )
-                                    .fill(RootsColor.inputBackground)
+                                    .fill(Color.inputBackground)
                                 )
                                 .clipShape(RoundedRectangle(
                                     cornerRadius: DesignSystem.Cards.cardCornerRadius,

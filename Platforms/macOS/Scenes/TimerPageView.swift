@@ -1097,8 +1097,8 @@
                         // Add bottomSummary
                         bottomSummary
                     }
-                    .padding(.horizontal, RootsSpacing.pagePadding)
-                    .padding(.vertical, RootsSpacing.l)
+                    .padding(.horizontal, ItariSpacing.pagePadding)
+                    .padding(.vertical, ItariSpacing.l)
                 }
             }
             .onAppear {

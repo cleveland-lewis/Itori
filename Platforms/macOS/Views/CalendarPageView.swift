@@ -178,7 +178,7 @@
 
         var body: some View {
             GeometryReader { proxy in
-                let verticalPadding = RootsSpacing.pagePadding
+                let verticalPadding = ItariSpacing.pagePadding
                 let topToolbarHeight = DesignSystem.Layout.rowHeight.large + 12
                 let topSectionSpacing: CGFloat = 16
                 let availableWidth = max(0, proxy.size.width - verticalPadding * 2)
@@ -2949,7 +2949,7 @@
                     .font(DesignSystem.Typography.body)
                     .foregroundStyle(.secondary)
                     .frame(width: 28, height: 28)
-                    .background(Circle().fill(RootsColor.subtleFill))
+                    .background(Circle().fill(Color.subtleFill))
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
                         .font(DesignSystem.Typography.caption)

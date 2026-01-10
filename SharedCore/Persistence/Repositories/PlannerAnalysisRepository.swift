@@ -1,4 +1,4 @@
-import CoreData
+public import CoreData
 import Foundation
 
 /// Repository for managing planner analyses and AI results with iCloud sync

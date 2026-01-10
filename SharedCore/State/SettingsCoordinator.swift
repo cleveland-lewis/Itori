@@ -3,6 +3,7 @@ import Combine
 #if os(macOS)
     import AppKit
 #endif
+import Combine
 
 @MainActor
 final class SettingsCoordinator: ObservableObject {

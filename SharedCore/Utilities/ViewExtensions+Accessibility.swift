@@ -244,7 +244,7 @@ private struct ContrastAwareForegroundModifier: ViewModifier {
 
 // Helper for type-erased shapes
 private struct AnyShape: Shape {
-    private let _path: (CGRect) -> Path
+    private let _path: @Sendable (CGRect) -> Path
 
     init(_ shape: some Shape) {
         _path = { rect in
@@ -259,7 +259,7 @@ private struct AnyShape: Shape {
 
 // MARK: - Gentle Mode (App-Specific, NOT System Accessibility)
 
-public extension AppSettingsModel {
+extension AppSettingsModel {
     /// Gentle mode is an app-specific UI preference for sensory sensitivity
     /// It's NOT a replacement for system accessibility settings
     var isGentleModeActive: Bool {

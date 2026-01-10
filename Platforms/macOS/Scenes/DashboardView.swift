@@ -43,7 +43,7 @@
         // Layout tokens
         private let cardSpacing: CGFloat = 12 // Spacing within rows (between cards horizontally)
         private let rowSpacing: CGFloat = 24 // Spacing between rows (vertically)
-        private let contentPadding: CGFloat = RootsSpacing.pagePadding
+        private let contentPadding: CGFloat = ItariSpacing.pagePadding
         private let bottomDockClearancePadding: CGFloat = 80
         private let cardMinHeight: CGFloat = 200
         private let row2MinHeight: CGFloat = 240
@@ -2068,7 +2068,7 @@
                             .rootsBodySecondary()
                         Text(row.1)
                             .font(DesignSystem.Typography.body)
-                            .foregroundStyle(RootsColor.textPrimary)
+                            .foregroundStyle(Color.textPrimary)
                     }
                 }
             }

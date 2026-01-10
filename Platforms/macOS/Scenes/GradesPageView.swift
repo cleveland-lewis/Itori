@@ -61,8 +61,8 @@
 
                         adaptiveColumns(width: proxy.size.width)
                     }
-                    .padding(.horizontal, RootsSpacing.pagePadding)
-                    .padding(.vertical, RootsSpacing.l)
+                    .padding(.horizontal, ItariSpacing.pagePadding)
+                    .padding(.vertical, ItariSpacing.l)
                 }
                 .rootsSystemBackground()
             }

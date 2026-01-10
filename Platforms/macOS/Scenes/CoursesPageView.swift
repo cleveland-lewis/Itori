@@ -102,7 +102,7 @@
                     Color.primaryBackground.ignoresSafeArea()
 
                     if isStacked {
-                        VStack(spacing: RootsSpacing.l) {
+                        VStack(spacing: ItariSpacing.l) {
                             sidebarView
                                 .frame(maxWidth: .infinity)
                                 .layoutPriority(1)
@@ -114,9 +114,9 @@
                         .frame(maxWidth: min(proxy.size.width, 1400))
                         .frame(maxWidth: .infinity)
                         .padding(.horizontal, responsivePadding(for: proxy.size.width))
-                        .padding(.vertical, RootsSpacing.l)
+                        .padding(.vertical, ItariSpacing.l)
                     } else {
-                        HStack(alignment: .top, spacing: RootsSpacing.l) {
+                        HStack(alignment: .top, spacing: ItariSpacing.l) {
                             sidebarView
                                 .frame(width: sidebarWidth)
                                 .layoutPriority(1)
@@ -128,7 +128,7 @@
                         .frame(maxWidth: min(proxy.size.width, 1400))
                         .frame(maxWidth: .infinity)
                         .padding(.horizontal, responsivePadding(for: proxy.size.width))
-                        .padding(.vertical, RootsSpacing.l)
+                        .padding(.vertical, ItariSpacing.l)
                     }
                 }
             }
@@ -169,7 +169,7 @@
                         onApprove: {
                             await FileParsingService.shared.approveBatchReview(batchState)
                         },
-                        onCancel: {
+                        onReject: {
                             Task {
                                 await FileParsingService.shared.cancelBatchReview()
                             }
@@ -273,13 +273,13 @@
         }
 
         private func placeholderModule(title: String, detail: String) -> some View {
-            VStack(alignment: .leading, spacing: RootsSpacing.s) {
+            VStack(alignment: .leading, spacing: ItariSpacing.s) {
                 Text(title)
                     .rootsSectionHeader()
                 Text(detail)
                     .rootsBodySecondary()
             }
-            .padding(RootsSpacing.m)
+            .padding(ItariSpacing.m)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: RootsRadius.card, style: .continuous)
@@ -467,7 +467,7 @@
                     }
 
                     // Read file data for fingerprinting
-                    var fileData: Data?
+                    let fileData: Data?
                     do {
                         fileData = try Data(contentsOf: url)
                     } catch {
@@ -586,8 +586,8 @@
                     .padding(.horizontal, 12)
                     .padding(.bottom, 8)
 
-                VStack(alignment: .leading, spacing: RootsSpacing.s) {
-                    HStack(spacing: RootsSpacing.s) {
+                VStack(alignment: .leading, spacing: ItariSpacing.s) {
+                    HStack(spacing: ItariSpacing.s) {
                         Button {
                             onNewCourse()
                         } label: {
@@ -612,9 +612,9 @@
                         .buttonStyle(.plain)
                         .frame(maxWidth: .infinity)
                     }
-                    .padding(.horizontal, RootsSpacing.m)
+                    .padding(.horizontal, ItariSpacing.m)
 
-                    VStack(spacing: RootsSpacing.s) {
+                    VStack(spacing: ItariSpacing.s) {
                         SidebarWidgetTile(
                             label: NSLocalizedString("courses.widget.current_semester", comment: ""),
                             value: currentSemesterName
@@ -624,12 +624,12 @@
                             value: totalCreditsText
                         )
                     }
-                    .padding(.horizontal, RootsSpacing.m)
-                    .padding(.bottom, RootsSpacing.s)
+                    .padding(.horizontal, ItariSpacing.m)
+                    .padding(.bottom, ItariSpacing.s)
                 }
 
                 Divider()
-                    .padding(.vertical, RootsSpacing.s)
+                    .padding(.vertical, ItariSpacing.s)
 
                 // Scrollable Course List
                 ScrollView {
@@ -660,10 +660,10 @@
                     .foregroundStyle(.secondary)
                 Text(value)
                     .font(DesignSystem.Typography.body.weight(.semibold))
-                    .foregroundStyle(RootsColor.textPrimary)
+                    .foregroundStyle(Color.textPrimary)
             }
-            .padding(.horizontal, RootsSpacing.m)
-            .padding(.vertical, RootsSpacing.s)
+            .padding(.horizontal, ItariSpacing.m)
+            .padding(.vertical, ItariSpacing.s)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(DesignSystem.Materials.card)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
@@ -688,7 +688,7 @@
                             .lineLimit(1)
                         Text(course.title)
                             .rootsCaption()
-                            .foregroundColor(RootsColor.textSecondary)
+                            .foregroundColor(Color.textSecondary)
                             .lineLimit(1)
                         Text(course.instructor)
                             .font(.caption2)
@@ -812,16 +812,16 @@
         }
 
         private var meetingsCard: some View {
-            VStack(alignment: .leading, spacing: RootsSpacing.m) {
+            VStack(alignment: .leading, spacing: ItariSpacing.m) {
                 sectionHeader(NSLocalizedString("courses.section.meetings", comment: ""))
 
                 if course.meetingTimes.isEmpty {
-                    VStack(alignment: .leading, spacing: RootsSpacing.s) {
+                    VStack(alignment: .leading, spacing: ItariSpacing.s) {
                         Text(NSLocalizedString("courses.empty.no_meetings", comment: "No meetings"))
                             .rootsBodySecondary()
                     }
                 } else {
-                    VStack(alignment: .leading, spacing: RootsSpacing.s) {
+                    VStack(alignment: .leading, spacing: ItariSpacing.s) {
                         ForEach(course.meetingTimes) { meeting in
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(String(
@@ -839,7 +839,7 @@
                     }
                 }
             }
-            .padding(RootsSpacing.l)
+            .padding(ItariSpacing.l)
             .frame(maxWidth: .infinity, alignment: .leading)
             .rootsCardBackground(radius: cardCorner)
         }
@@ -920,24 +920,24 @@
             Button {
                 action()
             } label: {
-                VStack(alignment: .leading, spacing: RootsSpacing.m) {
+                VStack(alignment: .leading, spacing: ItariSpacing.m) {
                     Image(systemName: systemImage)
                         .font(DesignSystem.Typography.body)
                         .frame(width: 32, height: 32)
                         .foregroundStyle(.white)
                         .background(
                             Circle()
-                                .fill(RootsColor.accent.opacity(0.9))
+                                .fill(Color.accent.opacity(0.9))
                         )
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text(title)
                             .rootsBody()
-                            .foregroundStyle(RootsColor.textPrimary)
+                            .foregroundStyle(Color.textPrimary)
 
                         Text(subtitle)
                             .rootsCaption()
-                            .foregroundStyle(RootsColor.textSecondary)
+                            .foregroundStyle(Color.textSecondary)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -945,8 +945,8 @@
             }
             .buttonStyle(RootsLiquidButtonStyle(
                 cornerRadius: 14,
-                verticalPadding: RootsSpacing.m,
-                horizontalPadding: RootsSpacing.m
+                verticalPadding: ItariSpacing.m,
+                horizontalPadding: ItariSpacing.m
             ))
         }
 
@@ -1168,7 +1168,7 @@
                 subtitle: NSLocalizedString("courses.form.subtitle", comment: "")
             ) {
                 ScrollView {
-                    VStack(alignment: .leading, spacing: RootsSpacing.l) {
+                    VStack(alignment: .leading, spacing: ItariSpacing.l) {
                         courseSection
                         detailsSection
                     }
@@ -1187,7 +1187,7 @@
         }
 
         private var courseSection: some View {
-            VStack(alignment: .leading, spacing: RootsSpacing.m) {
+            VStack(alignment: .leading, spacing: ItariSpacing.m) {
                 Text(NSLocalizedString("courses.section.course", comment: "Course")).rootsSectionHeader()
                 RootsFormRow(label: NSLocalizedString("courses.form.label.code", comment: "")) {
                     TextField("e.g. BIO 101", text: $code)
@@ -1227,7 +1227,7 @@
         }
 
         private var detailsSection: some View {
-            VStack(alignment: .leading, spacing: RootsSpacing.m) {
+            VStack(alignment: .leading, spacing: ItariSpacing.m) {
                 Text(NSLocalizedString("courses.section.details", comment: "Details")).rootsSectionHeader()
                 RootsFormRow(label: NSLocalizedString("courses.form.label.credits", comment: "")) {
                     Stepper(value: $credits, in: 1 ... 8) {
@@ -1338,14 +1338,14 @@
 
     private extension CoursesPageView {
         var gradeEntrySheet: some View {
-            VStack(alignment: .leading, spacing: RootsSpacing.m) {
+            VStack(alignment: .leading, spacing: ItariSpacing.m) {
                 Text(String(
                     format: NSLocalizedString("courses.grade.add_title", comment: ""),
                     currentSelection?.code ?? NSLocalizedString("planner.course.default", comment: "")
                 ))
                 .font(.title3.weight(.semibold))
 
-                VStack(alignment: .leading, spacing: RootsSpacing.s) {
+                VStack(alignment: .leading, spacing: ItariSpacing.s) {
                     Text(NSLocalizedString("courses.grade.percentage", comment: "Percentage"))
                         .font(.caption)
                         .foregroundStyle(.secondary)

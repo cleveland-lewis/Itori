@@ -1,3 +1,5 @@
+import Foundation
+
 @MainActor
 enum SampleDataSeeder {
     private enum SampleIds {
