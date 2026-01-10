@@ -3,6 +3,12 @@
     import Combine
     import SwiftUI
 
+    enum WindowSizing {
+        static let minMainWidth: CGFloat = 1100
+        static let minMainHeight: CGFloat = 700
+        static let maxMainContentWidth: CGFloat = 1400
+    }
+
     struct ContentView: View {
         @EnvironmentObject var settings: AppSettingsModel
         @EnvironmentObject var coursesStore: CoursesStore
@@ -23,7 +29,7 @@
         }
 
         var body: some View {
-            GeometryReader { proxy in
+            let mainContent = GeometryReader { proxy in
                 ZStack(alignment: .topLeading) {
                     Color.primaryBackground.ignoresSafeArea()
 
@@ -72,71 +78,73 @@
                     .zIndex(1)
                 }
             }
-            .interfacePreferences(interfacePreferences)
-            .frame(minWidth: WindowSizing.minMainWidth, minHeight: WindowSizing.minMainHeight)
-            .globalContextMenu()
-            .focusedSceneValue(\.selectedTab, $selectedTab)
-            .focusedValue(\.canCreateAssignment, true)
-            .onAppear {
-                setupNotificationObservers()
-                DispatchQueue.main.async {
-                    if let win = NSApp.keyWindow ?? NSApp.windows.first {
-                        win.title = ""
-                        win.titleVisibility = .hidden
-                        win.titlebarAppearsTransparent = true
+
+            return mainContent
+                .interfacePreferences(interfacePreferences)
+                .frame(minWidth: WindowSizing.minMainWidth, minHeight: WindowSizing.minMainHeight)
+                .globalContextMenu()
+                .focusedSceneValue(\.selectedTab, $selectedTab)
+                .focusedValue(\.canCreateAssignment, true)
+                .onAppear {
+                    setupNotificationObservers()
+                    DispatchQueue.main.async {
+                        if let win = NSApp.keyWindow ?? NSApp.windows.first {
+                            win.title = ""
+                            win.titleVisibility = .hidden
+                            win.titlebarAppearsTransparent = true
+                        }
+                    }
+                    if let initialTab = RootTab(rawValue: appModel.selectedPage.rawValue) {
+                        selectedTab = initialTab
                     }
                 }
-                if let initialTab = RootTab(rawValue: appModel.selectedPage.rawValue) {
-                    selectedTab = initialTab
-                }
-            }
-            .onChange(of: plannerCoordinator.requestedCourseId) { _, courseId in
-                selectedTab = .planner
-                plannerCoordinator.selectedCourseFilter = courseId
-            }
-            .onChange(of: plannerCoordinator.requestedDate) { _, date in
-                guard date != nil else { return }
-                selectedTab = .planner
-            }
-            .onReceive(appModel.$selectedPage) { page in
-                if let tab = RootTab(rawValue: page.rawValue), selectedTab != tab {
-                    selectedTab = tab
-                }
-            }
-            .onChange(of: modalRouter.route) { _, route in
-                guard let route else { return }
-                switch route {
-                case .planner:
+                .onChange(of: plannerCoordinator.requestedCourseId) { _, courseId in
                     selectedTab = .planner
-                    appModel.selectedPage = .planner
-                    modalRouter.clear()
-                case .addAssignment:
-                    selectedTab = .assignments
-                    appModel.selectedPage = .assignments
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        NotificationCenter.default.post(name: .addAssignmentRequested, object: nil)
-                        modalRouter.clear()
-                    }
-                case .addGrade:
-                    selectedTab = .grades
-                    appModel.selectedPage = .grades
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        NotificationCenter.default.post(name: .addGradeRequested, object: nil)
-                        modalRouter.clear()
+                    plannerCoordinator.selectedCourseFilter = courseId
+                }
+                .onChange(of: plannerCoordinator.requestedDate) { _, date in
+                    guard date != nil else { return }
+                    selectedTab = .planner
+                }
+                .onReceive(appModel.$selectedPage) { page in
+                    if let tab = RootTab(rawValue: page.rawValue), selectedTab != tab {
+                        selectedTab = tab
                     }
                 }
-            }
+                .onChange(of: modalRouter.route) { _, route in
+                    guard let route else { return }
+                    switch route {
+                    case .planner:
+                        selectedTab = .planner
+                        appModel.selectedPage = .planner
+                        modalRouter.clear()
+                    case .addAssignment:
+                        selectedTab = .assignments
+                        appModel.selectedPage = .assignments
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            NotificationCenter.default.post(name: .addAssignmentRequested, object: nil)
+                            modalRouter.clear()
+                        }
+                    case .addGrade:
+                        selectedTab = .grades
+                        appModel.selectedPage = .grades
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            NotificationCenter.default.post(name: .addGradeRequested, object: nil)
+                            modalRouter.clear()
+                        }
+                    }
+                }
             #if os(macOS)
-            .onKeyDown { event in
-                switch event.keyCode {
-                case 125: // down arrow
-                    scrollActiveView(by: 120)
-                case 126: // up arrow
-                    scrollActiveView(by: -120)
-                default:
-                    break
+                .onKeyDown { event in
+                    switch event.keyCode {
+                    case 125: // down arrow
+                        scrollActiveView(by: 120)
+                    case 126: // up arrow
+                        scrollActiveView(by: -120)
+                    default:
+                        break
+                    }
                 }
-            }
             #endif
         }
 
