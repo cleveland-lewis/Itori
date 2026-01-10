@@ -123,35 +123,36 @@
                 }
             }
 
+            let modulesSection = VStack(alignment: .leading, spacing: 8) {
+                Text(NSLocalizedString("Modules", value: "Modules", comment: ""))
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                if availableModules.isEmpty {
+                    Text(selectedCourseId == nil ? "Select a course to choose modules." :
+                        "No modules added for this course yet.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(availableModules) { module in
+                        Toggle(module.title, isOn: moduleBinding(module.id))
+                    }
+                }
+                if type == .exam || type == .quiz {
+                    Text(NSLocalizedString(
+                        "Exams and quizzes require at least one module.",
+                        value: "Exams and quizzes require at least one module.",
+                        comment: ""
+                    ))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+            }
+
             return ZStack {
                 AppCard {
                     VStack(alignment: .leading, spacing: 20) {
                         heroInputsSection
-
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(NSLocalizedString("Modules", value: "Modules", comment: ""))
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.secondary)
-                            if availableModules.isEmpty {
-                                Text(selectedCourseId == nil ? "Select a course to choose modules." :
-                                    "No modules added for this course yet.")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            } else {
-                                ForEach(availableModules) { module in
-                                    Toggle(module.title, isOn: moduleBinding(module.id))
-                                }
-                            }
-                            if type == .exam || type == .quiz {
-                                Text(NSLocalizedString(
-                                    "Exams and quizzes require at least one module.",
-                                    value: "Exams and quizzes require at least one module.",
-                                    comment: ""
-                                ))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            }
-                        }
+                        modulesSection
 
                         // Timing
                         VStack(alignment: .leading, spacing: 10) {
