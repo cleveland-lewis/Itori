@@ -489,10 +489,10 @@
             let accentGroup = SettingsGroup(title: "Accent Color", accent: accentColor) {
                 VStack(alignment: .leading, spacing: 12) {
                     SettingsRow(title: "Accent color", description: nil) {
-                        let swatchButtons = HStack(spacing: 12) {
+                        HStack(spacing: 12) {
                             ForEach(swatches, id: \.choice) { swatch in
                                 ColorSwatchButton(
-                                    swatch: swatch,
+                                    color: swatch.color,
                                     isSelected: settings.accentColorChoice == swatch.choice,
                                     onTap: {
                                         settings.accentColorChoice = swatch.choice
@@ -501,7 +501,6 @@
                                 )
                             }
                         }
-                        return swatchButtons
                     }
                 }
             }
@@ -702,14 +701,14 @@
 
     // Helper view to simplify type checking
     private struct ColorSwatchButton: View {
-        let swatch: (choice: AccentColorChoice, color: Color, name: String)
+        let color: Color
         let isSelected: Bool
         let onTap: () -> Void
 
         var body: some View {
             ZStack {
                 Circle()
-                    .fill(swatch.color)
+                    .fill(color)
                     .frame(width: 32, height: 32)
                 if isSelected {
                     Image(systemName: "checkmark.circle.fill")
@@ -720,7 +719,7 @@
             .onTapGesture(perform: onTap)
             .accessibilityElement(children: .combine)
             .accessibilityAddTraits(.isButton)
-            .accessibilityLabel("\(swatch.name) color")
+            .accessibilityLabel("Accent color")
             .accessibilityHint("Set accent color")
         }
     }
