@@ -268,7 +268,7 @@
                     } label: {
                         Text(segments[0])
                             .font(activeIndex == 0 ? .body : .caption)
-                            .foregroundColor(activeIndex == 0 ? RootsColor.textPrimary : RootsColor.textSecondary)
+                            .foregroundColor(activeIndex == 0 ? ItariColor.textPrimary : ItariColor.textSecondary)
                             .lineLimit(1)
                             .truncationMode(.tail)
                     }
@@ -277,14 +277,14 @@
 
                     Text(NSLocalizedString("settings.", value: ">", comment: ">"))
                         .rootsCaption()
-                        .foregroundColor(RootsColor.textSecondary)
+                        .foregroundColor(ItariColor.textSecondary)
 
                     Button {
                         onTap(1)
                     } label: {
                         Text(segments[1])
                             .font(activeIndex == 1 ? .body : .caption)
-                            .foregroundColor(activeIndex == 1 ? RootsColor.textPrimary : RootsColor.textSecondary)
+                            .foregroundColor(activeIndex == 1 ? ItariColor.textPrimary : ItariColor.textSecondary)
                             .lineLimit(1)
                             .truncationMode(.tail)
                     }
@@ -308,7 +308,7 @@
         private let labelWidth: CGFloat = 180
 
         var body: some View {
-            HStack(alignment: .firstTextBaseline, spacing: RootsSpacing.l) {
+            HStack(alignment: .firstTextBaseline, spacing: ItariSpacing.l) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
                         .rootsBodySecondary()
@@ -459,66 +459,69 @@
         ]
 
         var body: some View {
-            ScrollView {
+            let themeGroup = SettingsGroup(title: "Theme", accent: accentColor) {
+                VStack(alignment: .leading, spacing: 12) {
+                    SettingsRow(title: "Follow system appearance", description: nil) {
+                        Toggle(
+                            NSLocalizedString("settings.toggle.", value: "", comment: ""),
+                            isOn: Binding(get: { settings.interfaceStyle == .system }, set: { newValue in
+                                settings.interfaceStyle = newValue ? .system : .light
+                            })
+                        )
+                        .labelsHidden()
+                    }
+
+                    SettingsRow(
+                        title: "Mode",
+                        description: "Choose how Itori reacts to system appearance changes."
+                    ) {
+                        Picker("", selection: $settings.interfaceStyle) {
+                            ForEach(InterfaceStyle.allCases) { style in
+                                Text(style.label).tag(style)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+                        .labelsHidden()
+                    }
+                }
+            }
+
+            let accentGroup = SettingsGroup(title: "Accent Color", accent: accentColor) {
+                VStack(alignment: .leading, spacing: 12) {
+                    SettingsRow(title: "Accent color", description: nil) {
+                        HStack(spacing: 12) {
+                            ForEach(swatches, id: \.choice) { swatch in
+                                ZStack {
+                                    Circle()
+                                        .fill(swatch.color)
+                                        .frame(width: 32, height: 32)
+                                    if settings.accentColorChoice == swatch.choice {
+                                        Image(systemName: "checkmark.circle.fill")
+                                            .foregroundColor(.white)
+                                            .background(Circle().fill(Color.black.opacity(0.25)))
+                                    }
+                                }
+                                .onTapGesture {
+                                    settings.accentColorChoice = swatch.choice
+                                    settings.save()
+                                }
+                                .accessibilityElement(children: .combine)
+                                .accessibilityAddTraits(.isButton)
+                                .accessibilityLabel("\(swatch.name) color")
+                                .accessibilityHint("Set accent color")
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ScrollView {
                 VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.large) {
                     Text(NSLocalizedString("settings.appearance", value: "Appearance", comment: "Appearance"))
                         .font(.title2.weight(.semibold))
 
-                    SettingsGroup(title: "Theme", accent: accentColor) {
-                        VStack(alignment: .leading, spacing: 12) {
-                            SettingsRow(title: "Follow system appearance", description: nil) {
-                                Toggle(
-                                    NSLocalizedString("settings.toggle.", value: "", comment: ""),
-                                    isOn: Binding(get: { settings.interfaceStyle == .system }, set: { newValue in
-                                        settings.interfaceStyle = newValue ? .system : .light
-                                    })
-                                )
-                                .labelsHidden()
-                            }
-
-                            SettingsRow(
-                                title: "Mode",
-                                description: "Choose how Itori reacts to system appearance changes."
-                            ) {
-                                Picker("", selection: $settings.interfaceStyle) {
-                                    ForEach(InterfaceStyle.allCases) { style in
-                                        Text(style.label).tag(style)
-                                    }
-                                }
-                                .pickerStyle(.segmented)
-                                .labelsHidden()
-                            }
-                        }
-                    }
-
-                    SettingsGroup(title: "Accent Color", accent: accentColor) {
-                        VStack(alignment: .leading, spacing: 12) {
-                            SettingsRow(title: "Accent color", description: nil) {
-                                HStack(spacing: 12) {
-                                    ForEach(swatches, id: \.choice) { swatch in
-                                        ZStack {
-                                            Circle()
-                                                .fill(swatch.color)
-                                                .frame(width: 32, height: 32)
-                                            if settings.accentColorChoice == swatch.choice {
-                                                Image(systemName: "checkmark.circle.fill")
-                                                    .foregroundColor(.white)
-                                                    .background(Circle().fill(Color.black.opacity(0.25)))
-                                            }
-                                        }
-                                        .onTapGesture {
-                                            settings.accentColorChoice = swatch.choice
-                                            settings.save()
-                                        }
-                                        .accessibilityElement(children: .combine)
-                                        .accessibilityAddTraits(.isButton)
-                                        .accessibilityLabel("\(swatch.name) color")
-                                        .accessibilityHint("Set accent color")
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    themeGroup
+                    accentGroup
 
                     Spacer(minLength: 0)
                 }
