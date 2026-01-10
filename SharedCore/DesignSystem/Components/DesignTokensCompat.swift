@@ -479,25 +479,7 @@ struct AppPopupContainer<Content: View, Footer: View>: View {
     }
 }
 
-struct AppCard<Content: View>: View {
-    let content: Content
-    @Environment(\.colorScheme) private var colorScheme
-
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
-
-    var body: some View {
-        content
-            .padding(ItariSpacing.m)
-            .background(DesignSystem.Materials.card)
-            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard))
-            .overlay(
-                RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
-                    .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.18), lineWidth: 1)
-            )
-    }
-}
+// AppCard is defined in SharedCore/DesignSystem/Components/AppCard.swift
 
 struct AppLiquidButtonStyle: ButtonStyle {
     var cornerRadius: CGFloat = 8
