@@ -253,10 +253,10 @@ struct ItoriCard<Content: View>: View {
 }
 
 struct ItoriFloatingTabBar: View {
-    var items: [AppPage]
-    @Binding var selected: AppPage
+    var items: [RootTab]
+    @Binding var selected: RootTab
     var mode: TabBarMode
-    var onSelect: (AppPage) -> Void
+    var onSelect: (RootTab) -> Void
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
@@ -450,4 +450,239 @@ private extension View {
     func hoverTooltip(title: String) -> some View {
         modifier(HoverTooltipModifier(title: title))
     }
+}
+
+// MARK: - Missing App Components (Stubs)
+
+struct AppPopupContainer<Content: View, Footer: View>: View {
+    let title: String
+    let subtitle: String?
+    let content: Content
+    let footer: Footer
+
+    init(
+        title: String,
+        subtitle: String? = nil,
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder footer: () -> Footer
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.content = content()
+        self.footer = footer()
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            content
+        }
+    }
+}
+
+struct AppCard<Content: View>: View {
+    let content: Content
+    @Environment(\.colorScheme) private var colorScheme
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        content
+            .padding(ItariSpacing.m)
+            .background(DesignSystem.Materials.card)
+            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard))
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
+                    .stroke(DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.18), lineWidth: 1)
+            )
+    }
+}
+
+struct AppLiquidButtonStyle: ButtonStyle {
+    var cornerRadius: CGFloat = 8
+    var verticalPadding: CGFloat = 8
+    var horizontalPadding: CGFloat = 16
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding(.horizontal, horizontalPadding)
+            .padding(.vertical, verticalPadding)
+            .background(Color.accentColor.opacity(configuration.isPressed ? 0.7 : 1.0))
+            .foregroundColor(.white)
+            .cornerRadius(cornerRadius)
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.easeInOut(duration: 0.2), value: configuration.isPressed)
+    }
+}
+
+// MARK: - View Extensions
+
+extension View {
+    func rootsCardBackground(radius: CGFloat = 16) -> some View {
+        self
+            .background(DesignSystem.Materials.card)
+            .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: radius, style: .continuous)
+                    .stroke(Color.primary.opacity(0.1), lineWidth: 1)
+            )
+    }
+}
+
+// MARK: - Size Constants
+
+enum SizeConstants {
+    static let pricingSize: CGSize = .init(width: 280, height: 340)
+    static let largeIconSize: CGFloat = 48
+}
+
+// Compatibility aliases
+let pricingSize = SizeConstants.pricingSize
+let largeIconSize = SizeConstants.largeIconSize
+
+// MARK: - Additional View Extensions
+
+extension View {
+    func rootsSystemBackground() -> some View {
+        self.background(Color(NSColor.windowBackgroundColor))
+    }
+}
+
+// MARK: - Additional Size Constants
+
+extension SizeConstants {
+    static let normalTextSize: CGFloat = 14
+}
+
+extension WindowSizing {
+    static let minPopupWidth: CGFloat = 450
+    static let minPopupHeight: CGFloat = 500
+}
+
+let normalTextSize = SizeConstants.normalTextSize
+
+// MARK: - Form Components
+
+struct AppFormRow<Content: View>: View {
+    let labelText: String
+    let content: Content
+
+    init(label: String, @ViewBuilder content: () -> Content) {
+        self.labelText = label
+        self.content = content()
+    }
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Text(labelText)
+                .frame(width: 120, alignment: .trailing)
+                .foregroundStyle(.secondary)
+            content
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.vertical, 8)
+    }
+}
+
+extension Text {
+    func rootsSectionHeader() -> some View {
+        self
+            .font(.headline)
+            .foregroundStyle(.secondary)
+    }
+}
+
+// MARK: - Color Extensions
+
+extension Color {
+    static let calendarDensityLow = Color.gray.opacity(0.15)
+    static let subtleFill = Color.primary.opacity(0.05)
+}
+
+extension Text {
+    func rootsCaption() -> some View {
+        self
+            .font(.caption)
+            .foregroundStyle(.secondary)
+    }
+}
+
+// MARK: - Additional Text Extensions
+
+extension Text {
+    func rootsBody() -> some View {
+        self.font(.body)
+    }
+
+    func rootsBodySecondary() -> some View {
+        self.font(.body).foregroundStyle(.secondary)
+    }
+}
+
+// MARK: - Additional Constants
+
+enum AppRadius {
+    static let card: CGFloat = 16
+    static let button: CGFloat = 12
+}
+
+enum AppWindowSizing {
+    static let minPopupWidth: CGFloat = 500
+    static let minPopupHeight: CGFloat = 600
+}
+
+extension SizeConstants {
+    static let smallTextSize: CGFloat = 12
+    static let mediumTextSize: CGFloat = 16
+    static let emptyIconSize: CGFloat = 64
+}
+
+let smallTextSize = SizeConstants.smallTextSize
+let mediumTextSize = SizeConstants.mediumTextSize
+let emptyIconSize = SizeConstants.emptyIconSize
+
+struct BatchReviewSheet: View {
+    let state: Any
+    let onApprove: () async -> Void
+    let onReject: () -> Void
+
+    var body: some View {
+        VStack {
+            Text("Batch Review (Not Implemented)")
+            HStack {
+                Button("Reject", action: onReject)
+                Button("Approve") {
+                    Task { await onApprove() }
+                }
+            }
+        }
+        .padding()
+    }
+}
+
+// MARK: - Additional Color Constants
+
+extension Color {
+    static let textPrimary = Color.primary
+    static let textSecondary = Color.secondary
+    static let accent = Color.accentColor
+}
+
+extension Color {
+    static let calendarDensityMedium = Color.gray.opacity(0.25)
+    static let calendarDensityHigh = Color.gray.opacity(0.35)
+}
+
+// MARK: - Toggle Style
+
+struct AppAccentToggleStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Toggle(configuration)
+            .tint(.accentColor)
+    }
+}
+
+extension ToggleStyle where Self == AppAccentToggleStyle {
+    static var rootsAccent: AppAccentToggleStyle { AppAccentToggleStyle() }
 }

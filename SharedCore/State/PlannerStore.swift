@@ -1,4 +1,8 @@
+import Combine
 import Foundation
+#if canImport(Network)
+    import Network
+#endif
 
 struct StoredScheduledSession: Identifiable, Codable, Hashable {
     let id: UUID

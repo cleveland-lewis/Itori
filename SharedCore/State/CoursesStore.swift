@@ -1,6 +1,9 @@
 import Combine
 import Foundation
 import SwiftUI
+#if canImport(Network)
+    import Network
+#endif
 
 private struct CoursesPersistedData: Codable {
     var semesters: [Semester]

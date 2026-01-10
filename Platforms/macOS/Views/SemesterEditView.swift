@@ -16,7 +16,8 @@
         @State private var year: Int = Calendar.current.component(.year, from: Date())
         @State private var level: EducationLevel = .college
         @State private var startDate: Date = .init()
-        @State private var endDate: Date = .init().addingTimeInterval(60 * 60 * 24 * 120) // roughly +4 months
+        @State private var endDate: Date = .init()
+            .addingTimeInterval(TimeInterval(60 * 60 * 24 * 120)) // roughly +4 months
         @State private var showDeleteAlert = false
 
         // Computed Name

@@ -490,7 +490,7 @@ public struct AIHealthMonitor {
 public actor AIHealthMonitorWrapper {
     private var monitor = AIHealthMonitor()
 
-    public init() {}
+    public nonisolated init() {}
 
     public func recordLLMProviderAttempt(portId: String, providerId: String) {
         monitor.recordLLMProviderAttempt(portId: portId, providerId: providerId)

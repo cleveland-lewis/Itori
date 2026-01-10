@@ -1,3 +1,6 @@
+import Combine
+import Foundation
+
 @MainActor
 final class StorageAggregateStore: ObservableObject {
     static let shared = StorageAggregateStore()

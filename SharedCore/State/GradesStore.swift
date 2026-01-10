@@ -1,4 +1,9 @@
 internal import CoreData
+import Combine
+import Foundation
+#if canImport(Network)
+    import Network
+#endif
 
 struct GradeEntry: Identifiable, Codable, Hashable {
     var id: UUID { courseId }
@@ -183,7 +188,7 @@ final class GradesStore: ObservableObject {
                 let existingGrades = repo.fetchAll()
                 let currentCourseIds = Set(self.grades.map(\.courseId))
                 for grade in existingGrades where !currentCourseIds.contains(grade.courseId) {
-                    try repo.delete(courseId: grade.courseId)
+                    try repo.delete(grade)
                 }
 
                 // Save/update all current grades

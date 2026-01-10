@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 
 /// Centralized animation policy that respects system accessibility settings
