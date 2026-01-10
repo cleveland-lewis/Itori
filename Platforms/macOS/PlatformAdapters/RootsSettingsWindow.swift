@@ -489,28 +489,19 @@
             let accentGroup = SettingsGroup(title: "Accent Color", accent: accentColor) {
                 VStack(alignment: .leading, spacing: 12) {
                     SettingsRow(title: "Accent color", description: nil) {
-                        HStack(spacing: 12) {
+                        let swatchButtons = HStack(spacing: 12) {
                             ForEach(swatches, id: \.choice) { swatch in
-                                ZStack {
-                                    Circle()
-                                        .fill(swatch.color)
-                                        .frame(width: 32, height: 32)
-                                    if settings.accentColorChoice == swatch.choice {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .foregroundColor(.white)
-                                            .background(Circle().fill(Color.black.opacity(0.25)))
+                                ColorSwatchButton(
+                                    swatch: swatch,
+                                    isSelected: settings.accentColorChoice == swatch.choice,
+                                    onTap: {
+                                        settings.accentColorChoice = swatch.choice
+                                        settings.save()
                                     }
-                                }
-                                .onTapGesture {
-                                    settings.accentColorChoice = swatch.choice
-                                    settings.save()
-                                }
-                                .accessibilityElement(children: .combine)
-                                .accessibilityAddTraits(.isButton)
-                                .accessibilityLabel("\(swatch.name) color")
-                                .accessibilityHint("Set accent color")
+                                )
                             }
                         }
+                        return swatchButtons
                     }
                 }
             }
@@ -706,6 +697,31 @@
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .tint(accentColor)
+        }
+    }
+
+    // Helper view to simplify type checking
+    private struct ColorSwatchButton: View {
+        let swatch: (choice: AccentColorChoice, color: Color, name: String)
+        let isSelected: Bool
+        let onTap: () -> Void
+
+        var body: some View {
+            ZStack {
+                Circle()
+                    .fill(swatch.color)
+                    .frame(width: 32, height: 32)
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.white)
+                        .background(Circle().fill(Color.black.opacity(0.25)))
+                }
+            }
+            .onTapGesture(perform: onTap)
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel("\(swatch.name) color")
+            .accessibilityHint("Set accent color")
         }
     }
 #endif
