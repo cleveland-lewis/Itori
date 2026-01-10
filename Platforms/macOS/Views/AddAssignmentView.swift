@@ -106,26 +106,27 @@
         }
 
         var body: some View {
-            ZStack {
+            let heroInputsSection = VStack(alignment: .leading, spacing: 10) {
+                TextField("Title", text: $title)
+                    .font(.title3.weight(.semibold))
+                    .textFieldStyle(.plain)
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 12)
+                    .background(
+                        DesignSystem.Materials.card,
+                        in: RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    )
+
+                HStack(spacing: 12) {
+                    coursePicker
+                    categoryPicker
+                }
+            }
+
+            return ZStack {
                 AppCard {
                     VStack(alignment: .leading, spacing: 20) {
-                        // Hero inputs
-                        VStack(alignment: .leading, spacing: 10) {
-                            TextField("Title", text: $title)
-                                .font(.title3.weight(.semibold))
-                                .textFieldStyle(.plain)
-                                .padding(.vertical, 10)
-                                .padding(.horizontal, 12)
-                                .background(
-                                    DesignSystem.Materials.card,
-                                    in: RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                )
-
-                            HStack(spacing: 12) {
-                                coursePicker
-                                categoryPicker
-                            }
-                        }
+                        heroInputsSection
 
                         VStack(alignment: .leading, spacing: 8) {
                             Text(NSLocalizedString("Modules", value: "Modules", comment: ""))
