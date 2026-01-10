@@ -26,7 +26,7 @@
         }
 
         var body: some View {
-            RootsPopupContainer(
+            AppPopupContainer(
                 title: semesterToEdit == nil ? "New Semester" : "Edit Semester",
                 subtitle: "Set the term, year, and dates"
             ) {
@@ -83,7 +83,7 @@
         }
 
         private var termAndYearPickers: some View {
-            RootsCard {
+            AppCard {
                 VStack(spacing: DesignSystem.Spacing.medium) {
                     HStack {
                         Text(NSLocalizedString("semesteredit.term", value: "Term", comment: "Term"))
@@ -122,7 +122,7 @@
         }
 
         private var levelPicker: some View {
-            RootsCard {
+            AppCard {
                 HStack {
                     Text(NSLocalizedString(
                         "semesteredit.education.level",
@@ -144,7 +144,7 @@
         }
 
         private var dateSection: some View {
-            RootsCard {
+            AppCard {
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
                     Text(NSLocalizedString("semesteredit.duration", value: "Duration", comment: "Duration"))
                         .font(DesignSystem.Typography.subHeader)
@@ -174,7 +174,7 @@
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 4)
                 }
-                .buttonStyle(RootsLiquidButtonStyle())
+                .buttonStyle(AppLiquidButtonStyle())
 
                 if let s = semesterToEdit {
                     Button(
