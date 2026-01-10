@@ -62,18 +62,12 @@
                     // Floating tab bar stays at bottom; keep above content
                     VStack {
                         Spacer()
-                        let orderedTabs = settings.tabOrder.filter { settings.effectiveVisibleTabs.contains($0) }
-                        FloatingTabBar(
-                            items: orderedTabs,
-                            selected: $selectedTab,
-                            mode: settings.tabBarMode,
-                            onSelect: handleTabSelection
-                        )
-                        .frame(height: 72)
-                        .frame(maxWidth: 640)
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, proxy.safeAreaInsets.bottom == 0 ? 16 : proxy.safeAreaInsets.bottom)
-                        .frame(maxWidth: .infinity)
+                        FloatingTabBar(selectedTab: $selectedTab)
+                            .frame(height: 72)
+                            .frame(maxWidth: 640)
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, proxy.safeAreaInsets.bottom == 0 ? 16 : proxy.safeAreaInsets.bottom)
+                            .frame(maxWidth: .infinity)
                     }
                     .zIndex(1)
                 }
@@ -83,8 +77,8 @@
                 .interfacePreferences(interfacePreferences)
                 .frame(minWidth: WindowSizing.minMainWidth, minHeight: WindowSizing.minMainHeight)
                 .globalContextMenu()
-                .focusedSceneValue(\.selectedTab, $selectedTab)
-                .focusedValue(\.canCreateAssignment, true)
+                .focusedSceneValue(\FocusedValues.selectedTab, $selectedTab)
+                .focusedValue(\FocusedValues.canCreateAssignment, true)
                 .onAppear {
                     setupNotificationObservers()
                     DispatchQueue.main.async {
