@@ -45,7 +45,7 @@ public struct AIRedactor: Sendable {
         )
         result = emailResult.result
         bytesRemoved += emailResult.bytesRemoved
-        if !emailResult.isEmpty { patternsFound["email"] = emailResult.count }
+        if emailResult.count > 0 { patternsFound["email"] = emailResult.count }
 
         // Phone numbers (various formats)
         let phonePattern = #"\b(?:\+?1[-.\s]?)?(?:\([2-9][0-9]{2}\)|[2-9][0-9]{2})[-.\s]?[2-9][0-9]{2}[-.\s]?[0-9]{4}\b"#
@@ -56,7 +56,7 @@ public struct AIRedactor: Sendable {
         )
         result = phoneResult.result
         bytesRemoved += phoneResult.bytesRemoved
-        if !phoneResult.isEmpty { patternsFound["phone"] = phoneResult.count }
+        if phoneResult.count > 0 { patternsFound["phone"] = phoneResult.count }
 
         // SSN
         let ssnPattern = #"\b\d{3}-\d{2}-\d{4}\b"#
@@ -67,7 +67,7 @@ public struct AIRedactor: Sendable {
         )
         result = ssnResult.result
         bytesRemoved += ssnResult.bytesRemoved
-        if !ssnResult.isEmpty { patternsFound["ssn"] = ssnResult.count }
+        if ssnResult.count > 0 { patternsFound["ssn"] = ssnResult.count }
 
         // Credit card numbers
         let ccPattern = #"\b(?:\d{4}[-\s]?){3}\d{4}\b"#
@@ -78,7 +78,7 @@ public struct AIRedactor: Sendable {
         )
         result = ccResult.result
         bytesRemoved += ccResult.bytesRemoved
-        if !ccResult.isEmpty { patternsFound["credit_card"] = ccResult.count }
+        if ccResult.count > 0 { patternsFound["credit_card"] = ccResult.count }
 
         if level == .moderate || level == .aggressive {
             // Student IDs (various patterns)
@@ -90,7 +90,7 @@ public struct AIRedactor: Sendable {
             )
             result = idResult.result
             bytesRemoved += idResult.bytesRemoved
-            if !idResult.isEmpty { patternsFound["student_id"] = idResult.count }
+            if idResult.count > 0 { patternsFound["student_id"] = idResult.count }
         }
 
         if level == .aggressive {
@@ -104,7 +104,7 @@ public struct AIRedactor: Sendable {
             )
             result = addrResult.result
             bytesRemoved += addrResult.bytesRemoved
-            if !addrResult.isEmpty { patternsFound["address"] = addrResult.count }
+            if addrResult.count > 0 { patternsFound["address"] = addrResult.count }
 
             // Dates of birth (MM/DD/YYYY format)
             let dobPattern = #"\b(?:0[1-9]|1[0-2])/(?:0[1-9]|[12][0-9]|3[01])/(?:19|20)\d{2}\b"#
@@ -115,7 +115,7 @@ public struct AIRedactor: Sendable {
             )
             result = dobResult.result
             bytesRemoved += dobResult.bytesRemoved
-            if !dobResult.isEmpty { patternsFound["date_of_birth"] = dobResult.count }
+            if dobResult.count > 0 { patternsFound["date_of_birth"] = dobResult.count }
         }
 
         return RedactionResult(

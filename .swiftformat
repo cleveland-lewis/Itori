@@ -25,7 +25,7 @@
 --organizetypes struct,class,actor,enum,extension
 
 # Rules to enable
---enable isEmpty
+--disable isEmpty
 --enable redundantReturn
 --enable sortedImports
 --enable unusedArguments
