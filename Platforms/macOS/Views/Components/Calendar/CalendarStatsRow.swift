@@ -17,7 +17,7 @@ struct CalendarStatsRow: View {
 
     @ViewBuilder
     private func statCard(icon: String, title: String, value: String, tint: Color = .accentColor) -> some View {
-        RootsCard {
+        AppCard {
             HStack(alignment: .center, spacing: 12) {
                 Image(systemName: icon)
                     .font(.title3)
