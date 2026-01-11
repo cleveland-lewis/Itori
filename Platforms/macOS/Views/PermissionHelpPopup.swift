@@ -8,7 +8,7 @@
         @Environment(\.dismiss) var dismiss
 
         var body: some View {
-            RootsPopupContainer(title: "Permission Required", subtitle: "Itori needs permission to access your data") {
+            AppPopupContainer(title: "Permission Required", subtitle: "Itori needs permission to access your data") {
                 VStack(alignment: .leading, spacing: 12) {
                     Text(NSLocalizedString(
                         "ui.1.click.the.button.below.to.open.system.settings",
@@ -39,7 +39,7 @@
                             action()
                             dismiss()
                         }
-                        .buttonStyle(RootsLiquidButtonStyle())
+                        .buttonStyle(AppLiquidButtonStyle())
                     }
                 }
             } footer: {
