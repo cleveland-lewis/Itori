@@ -27,7 +27,7 @@ struct EnergyChart: View {
     @State private var selectedHour: Date? = nil
 
     var body: some View {
-        RootsChartContainer(title: title, summary: "Last 24 hours", trend: .up) {
+        ItoriChartContainer(title: title, summary: "Last 24 hours", trend: .up) {
             Chart {
                 ForEach(data) { point in
                     AreaMark(

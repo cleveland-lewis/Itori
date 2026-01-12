@@ -159,7 +159,7 @@ struct PlannerCalendarSyncTests {
             title: "Review",
             start: base,
             end: base.addingTimeInterval(1800),
-            notes: "[RootsPlanner]\nblock_id: \nsource: planner\n[/RootsPlanner]"
+            notes: "[ItoriPlanner]\nblock_id: \nsource: planner\n[/ItoriPlanner]"
         )
         let plan = PlannerCalendarSync.syncPlan(
             blocks: blocks,

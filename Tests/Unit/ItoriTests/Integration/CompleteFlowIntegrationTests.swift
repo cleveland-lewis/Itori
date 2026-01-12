@@ -240,7 +240,7 @@ final class CompleteFlowIntegrationTests: BaseTestCase {
         for block in calendarBlocks {
             XCTAssertFalse(block.title.isEmpty, "Block should have title")
             XCTAssertLessThan(block.start, block.end, "Block start should be before end")
-            XCTAssertTrue(block.notes.contains("[RootsPlanner]"), "Block should have metadata")
+            XCTAssertTrue(block.notes.contains("[ItoriPlanner]"), "Block should have metadata")
         }
 
         // STEP 8: Create sync plan (simulates syncing to calendar)

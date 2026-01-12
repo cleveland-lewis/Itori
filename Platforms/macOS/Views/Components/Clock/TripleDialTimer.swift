@@ -43,6 +43,7 @@ struct TripleDialTimer: View {
                 dialSize: dialSize
             )
         }
+        .frame(maxWidth: .infinity, alignment: .center)
         .padding(.vertical, 16)
     }
 }

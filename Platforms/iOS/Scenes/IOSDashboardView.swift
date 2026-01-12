@@ -164,7 +164,7 @@
         @ObservedObject private var tracker = StudyHoursTracker.shared
 
         private var studyHoursCard: some View {
-            RootsCard(
+            ItoriCard(
                 title: NSLocalizedString(
                     "ios.dashboard.study_time.title",
                     value: "Study Time",
@@ -224,7 +224,7 @@
         }
 
         private var assignmentStatusCard: some View {
-            RootsCard(title: nil, subtitle: nil, icon: nil) {
+            ItoriCard(title: nil, subtitle: nil, icon: nil) {
                 VStack(alignment: .leading, spacing: 12) {
                     cardHeader(title: "Assignment Status")
                     assignmentStatusChart
@@ -233,7 +233,7 @@
         }
 
         private var upcomingAssignmentsCard: some View {
-            RootsCard(title: nil, subtitle: nil, icon: nil) {
+            ItoriCard(title: nil, subtitle: nil, icon: nil) {
                 let items = upcomingAssignmentItems(limit: 6)
                 VStack(alignment: .leading, spacing: 12) {
                     Button {
@@ -314,7 +314,7 @@
         }
 
         private var plannerTodayCard: some View {
-            RootsCard(title: nil, subtitle: nil, icon: nil) {
+            ItoriCard(title: nil, subtitle: nil, icon: nil) {
                 HStack(alignment: .firstTextBaseline) {
                     HStack(spacing: ItariSpacing.s) {
                         Image(systemName: "list.bullet.rectangle")
@@ -362,7 +362,7 @@
         }
 
         private var workRemainingCard: some View {
-            RootsCard(
+            ItoriCard(
                 title: NSLocalizedString(
                     "ios.dashboard.work_sessions.title",
                     value: "Work Sessions",

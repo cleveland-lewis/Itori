@@ -162,8 +162,8 @@ struct TimeEstimationModel {
 
 /// Central analytics + planning engine. Consumes events, maintains rolling metrics, and offers planning insights.
 @MainActor
-final class RootsInsightsEngine: ObservableObject {
-    static let shared = RootsInsightsEngine()
+final class ItoriInsightsEngine: ObservableObject {
+    static let shared = ItoriInsightsEngine()
 
     private(set) var recentEvents: [InsightsEvent] = []
     private(set) var assignmentMetrics: [UUID: AssignmentMetrics] = [:]

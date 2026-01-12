@@ -10,15 +10,19 @@ final class PracticeTestStore: ObservableObject {
     @Published var isGenerating: Bool = false
     @Published var summary: PracticeTestSummary = .init()
     @Published var useAlgorithmicGenerator: Bool = true // Toggle for blueprint-first generation
+    @Published var useWebEnhancedGenerator: Bool = true // Toggle for web-enhanced generation
 
     private let llmService: LocalLLMService
     private let algorithmicGenerator: AlgorithmicTestGenerator
+    private let webEnhancedGenerator: WebEnhancedTestGenerator
     private let storageKey = "practice_tests_v1"
 
     init(
         llmService: LocalLLMService? = nil,
         algorithmicGenerator: AlgorithmicTestGenerator? = nil,
-        useAlgorithmicGenerator: Bool = true
+        webEnhancedGenerator: WebEnhancedTestGenerator? = nil,
+        useAlgorithmicGenerator: Bool = true,
+        useWebEnhancedGenerator: Bool = true
     ) {
         let resolvedService = llmService ?? LocalLLMService()
         self.llmService = resolvedService
@@ -26,7 +30,11 @@ final class PracticeTestStore: ObservableObject {
             llmService: resolvedService,
             enableDevLogs: false // Set to true for debugging
         )
+        self.webEnhancedGenerator = webEnhancedGenerator ?? WebEnhancedTestGenerator(
+            llmService: resolvedService
+        )
         self.useAlgorithmicGenerator = useAlgorithmicGenerator
+        self.useWebEnhancedGenerator = useWebEnhancedGenerator
         loadTests()
     }
 
@@ -52,7 +60,19 @@ final class PracticeTestStore: ObservableObject {
         do {
             let questions: [PracticeQuestion]
 
-            if useAlgorithmicGenerator {
+            if useWebEnhancedGenerator {
+                // Use web-enhanced generator (preferred method)
+                let result = await webEnhancedGenerator.generateTest(request: request)
+                
+                switch result {
+                case .success(let generatedQuestions):
+                    questions = generatedQuestions
+                    
+                case .failure(let error):
+                    throw error
+                }
+                
+            } else if useAlgorithmicGenerator {
                 // Use blueprint-first algorithmic generator
                 let result = await algorithmicGenerator.generateTest(request: request)
 

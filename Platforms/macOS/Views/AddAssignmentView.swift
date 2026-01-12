@@ -160,7 +160,7 @@
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(.secondary)
 
-                            RootsCard(compact: true) {
+                            ItoriCard(compact: true) {
                                 VStack(alignment: .leading, spacing: 12) {
                                     HStack {
                                         Text(NSLocalizedString(
@@ -375,7 +375,7 @@
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(.secondary)
 
-                            RootsCard(compact: true) {
+                            ItoriCard(compact: true) {
                                 HStack(spacing: 12) {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(NSLocalizedString(

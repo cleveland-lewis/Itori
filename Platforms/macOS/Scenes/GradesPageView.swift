@@ -64,7 +64,7 @@
                     .padding(.horizontal, ItariSpacing.pagePadding)
                     .padding(.vertical, ItariSpacing.l)
                 }
-                .rootsSystemBackground()
+                .itoriSystemBackground()
             }
             .sheet(isPresented: $showEditTargetSheet) {
                 if let course = courseToEditTarget, let detail = courseDetails.first(where: { $0.id == course.id }) {

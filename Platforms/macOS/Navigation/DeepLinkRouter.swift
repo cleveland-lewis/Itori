@@ -40,7 +40,7 @@ final class DeepLinkRouter {
     }
 
     func parse(url: URL) -> DeepLinkRoute {
-        guard url.scheme?.lowercased() == "roots" else {
+        guard url.scheme?.lowercased() == "itori" else {
             return .invalid("Unsupported scheme")
         }
         let components = URLComponents(url: url, resolvingAgainstBaseURL: false)

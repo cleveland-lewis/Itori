@@ -14,6 +14,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Only 5 markdown files allowed: README.md, CHANGELOG.md, BACKLOG.md, PRIVACY_POLICY.md, PRIVACY_POLICY_ENHANCED.md
   - New markdown files are blocked with helpful guidance to use CHANGELOG.md or GitHub issues
   - Completed work → CHANGELOG.md, TODO items → GitHub issues
+- Practice test generation system with web-enhanced research (2026-01-12)
+  - Web search integration using DuckDuckGo and Wikipedia APIs
+  - Generates original multiple-choice questions based on course topics
+  - Comprehensive explanations for each question
+  - Support for custom difficulty levels and topic selection
+  - Mock generation for offline/fallback scenarios
+
+### Changed
+- Replaced floating tab bar with native macOS sidebar navigation (2026-01-12)
+  - Native NavigationSplitView with collapsible sidebar
+  - Improved navigation accessibility and standard macOS behavior
+  - Energy indicator and settings moved to toolbar as glass pills
+- Renamed all "Roots" references to "Itori" throughout codebase (2026-01-12)
+  - Design system components (RootsRadius → ItoriRadius)
+  - Window layout classes (RootsWindowLayout → ItoriWindowLayout)
+  - Chart containers and UI components
+  - Settings window and button styles
+- Timer page improvements (2026-01-12)
+  - Added timer mode selector (Pomodoro vs. Custom Timer)
+  - Custom timer duration picker (1-120 minutes)
+  - Timer now counts down from selected duration
+  - Centered analog timer dials in card layout
+- Improved toolbar layout (2026-01-12)
+  - Energy indicator as separate glass pill
+  - Settings button as separate glass pill
+  - Better vertical alignment and spacing
+  - Added accessibility labels and hints to all toolbar buttons
+
+### Fixed
+- SwiftFormat compliance across all Swift files
+- Accessibility labels for toolbar buttons (energy indicator, settings)
+- File naming conventions (test_practice_generation.swift → TestPracticeGeneration.swift)
 
 ---
 

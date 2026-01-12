@@ -130,7 +130,7 @@ struct FanOutMenuItem: Identifiable {
     }
 }
 
-struct RootsFanOutMenu: View {
+struct ItoriFanOutMenu: View {
     let items: [FanOutMenuItem]
     var body: some View {
         HStack(spacing: 12) {

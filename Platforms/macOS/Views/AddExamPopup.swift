@@ -19,7 +19,7 @@
         @State private var createFlashcardDeck: Bool = true
 
         var body: some View {
-            RootsPopupContainer(title: "New Exam", subtitle: "Add exam details and study materials") {
+            ItoriPopupContainer(title: "New Exam", subtitle: "Add exam details and study materials") {
                 VStack(alignment: .leading, spacing: 12) {
                     TextField("Exam Title", text: $title)
 
@@ -52,7 +52,7 @@
                                 ))
                             }
                         }
-                        .buttonStyle(RootsLiquidButtonStyle())
+                        .buttonStyle(AppLiquidButtonStyle())
                         .fileImporter(isPresented: $showImporter, allowedContentTypes: [.pdf, .image]) { result in
                             switch result {
                             case let .success(url):
@@ -102,7 +102,7 @@
                             saveExam()
                             dismiss()
                         }
-                        .buttonStyle(RootsLiquidButtonStyle())
+                        .buttonStyle(AppLiquidButtonStyle())
                         .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
                     }
                 }

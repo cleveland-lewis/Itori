@@ -106,7 +106,7 @@
 
     // MARK: - ItoriSettingsWindow (Legacy Simple View - Deprecated)
 
-    struct RootsSettingsWindow: View {
+    struct ItoriSettingsWindow: View {
         @EnvironmentObject var settings: AppSettingsModel
         @EnvironmentObject var coursesStore: CoursesStore
         @Environment(\.dismiss) private var dismiss
@@ -276,7 +276,7 @@
                     .disabled(activeIndex == 0)
 
                     Text(NSLocalizedString("settings.", value: ">", comment: ">"))
-                        .rootsCaption()
+                        .itoriCaption()
                         .foregroundColor(ItariColor.textSecondary)
 
                     Button {
@@ -311,12 +311,12 @@
             HStack(alignment: .firstTextBaseline, spacing: ItariSpacing.l) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
-                        .rootsBodySecondary()
+                        .itoriBodySecondary()
                         .frame(width: labelWidth, alignment: Alignment.leading)
 
                     if let description {
                         Text(description)
-                            .rootsCaption()
+                            .itoriCaption()
                             .frame(width: labelWidth, alignment: Alignment.leading)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -342,14 +342,14 @@
         var body: some View {
             VStack(alignment: .leading, spacing: 12) {
                 Text(title)
-                    .rootsSectionHeader()
+                    .itoriSectionHeader()
                     .foregroundColor(accent)
 
                 VStack(alignment: .leading, spacing: 12) {
                     content
                 }
                 .padding(DesignSystem.Layout.padding.card)
-                .rootsCardBackground(radius: 18)
+                .itoriCardBackground(radius: 18)
             }
         }
     }
@@ -640,7 +640,7 @@
                                 value: "Manage all your courses, semesters, and academic settings from the Courses page.",
                                 comment: "Manage all your courses, semesters, and academic s..."
                             ))
-                            .rootsBody()
+                            .itoriBody()
                             .foregroundColor(.secondary)
 
                             Text(NSLocalizedString(

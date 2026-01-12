@@ -284,7 +284,7 @@ struct GradesAnalyticsView: View {
     // MARK: - Individual Charts
 
     private var gpaTrendChart: some View {
-        RootsChartContainer(
+        ItoriChartContainer(
             title: "GPA Trend",
             summary: "Your GPA over time"
         ) {
@@ -328,7 +328,7 @@ struct GradesAnalyticsView: View {
     }
 
     private var gradeDistributionChart: some View {
-        RootsChartContainer(
+        ItoriChartContainer(
             title: "Grade Distribution",
             summary: "Breakdown by letter grade"
         ) {
@@ -355,7 +355,7 @@ struct GradesAnalyticsView: View {
     }
 
     private var coursePerformanceChart: some View {
-        RootsChartContainer(
+        ItoriChartContainer(
             title: "Course Performance",
             summary: "Current grade by course"
         ) {
@@ -383,7 +383,7 @@ struct GradesAnalyticsView: View {
     }
 
     private var assignmentCompletionChart: some View {
-        RootsChartContainer(
+        ItoriChartContainer(
             title: "Assignment Completion",
             summary: "Completed vs. pending"
         ) {

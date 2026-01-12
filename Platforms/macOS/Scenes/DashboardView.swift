@@ -2065,7 +2065,7 @@
                 ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
                     VStack(alignment: .leading, spacing: DesignSystem.Spacing.xsmall) {
                         Text(row.0)
-                            .rootsBodySecondary()
+                            .itoriBodySecondary()
                         Text(row.1)
                             .font(DesignSystem.Typography.body)
                             .foregroundStyle(Color.textPrimary)
@@ -2109,8 +2109,8 @@
         var body: some View {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
                 Text(NSLocalizedString("dashboard.calendar.header", value: "dashboard.calendar.header", comment: ""))
-                    .rootsSectionHeader()
-                Text(monthHeader(for: selectedDate)).rootsBodySecondary()
+                    .itoriSectionHeader()
+                Text(monthHeader(for: selectedDate)).itoriBodySecondary()
 
                 LazyVGrid(columns: columns, spacing: DesignSystem.Layout.spacing.small) {
                     ForEach(dayItems) { item in
@@ -2135,10 +2135,10 @@
                     }
                 }
                 .padding(DesignSystem.Spacing.medium)
-                .rootsCardBackground(radius: 20)
+                .itoriCardBackground(radius: 20)
             }
             .padding(DesignSystem.Layout.padding.card)
-            .rootsCardBackground(radius: 22)
+            .itoriCardBackground(radius: 22)
         }
 
         private var eventsByDate: [Date: Int] {
@@ -2326,7 +2326,7 @@
                     value: "dashboard.assignments.due_today",
                     comment: ""
                 ))
-                .rootsSectionHeader()
+                .itoriSectionHeader()
 
                 if tasks.isEmpty {
                     Text(NSLocalizedString(
@@ -2334,7 +2334,7 @@
                         value: "dashboard.assignments.empty",
                         comment: ""
                     ))
-                    .rootsBodySecondary()
+                    .itoriBodySecondary()
                 } else {
                     ScrollView {
                         VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
@@ -2351,7 +2351,7 @@
                 }
             }
             .padding(DesignSystem.Layout.padding.card)
-            .rootsCardBackground(radius: 22)
+            .itoriCardBackground(radius: 22)
         }
     }
 
@@ -2361,11 +2361,11 @@
         var body: some View {
             VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
                 Text(NSLocalizedString("dashboard.events.upcoming", value: "dashboard.events.upcoming", comment: ""))
-                    .rootsSectionHeader()
+                    .itoriSectionHeader()
 
                 if events.isEmpty {
                     Text(NSLocalizedString("dashboard.events.empty", value: "dashboard.events.empty", comment: ""))
-                        .rootsBodySecondary()
+                        .itoriBodySecondary()
                 } else {
                     ScrollView {
                         VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
@@ -2375,16 +2375,16 @@
                                         Text(event.title)
                                             .font(DesignSystem.Typography.body)
                                         Text(event.time)
-                                            .rootsBodySecondary()
+                                            .itoriBodySecondary()
                                         if let location = event.location {
                                             Text(location)
-                                                .rootsCaption()
+                                                .itoriCaption()
                                         }
                                     }
                                     Spacer()
                                 }
                                 .padding(DesignSystem.Spacing.small)
-                                .rootsCardBackground(radius: 18)
+                                .itoriCardBackground(radius: 18)
                             }
                         }
                         .padding(.vertical, DesignSystem.Spacing.xsmall)
@@ -2453,14 +2453,14 @@
 
                     if let course = task.course {
                         Text(course)
-                            .rootsCaption()
+                            .itoriCaption()
                     }
                 }
 
                 Spacer()
             }
             .padding(DesignSystem.Spacing.small)
-            .rootsCardBackground(radius: 18)
+            .itoriCardBackground(radius: 18)
         }
     }
 

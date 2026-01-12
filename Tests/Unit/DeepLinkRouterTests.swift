@@ -18,7 +18,7 @@ final class DeepLinkRouterTests: XCTestCase {
     }
 
     func testDashboardRoute() {
-        let url = URL(string: "roots://dashboard")!
+        let url = URL(string: "itori://dashboard")!
         XCTAssertTrue(router.handle(
             url: url,
             appModel: appModel,
@@ -30,7 +30,7 @@ final class DeepLinkRouterTests: XCTestCase {
     }
 
     func testCalendarRouteWithDate() {
-        let url = URL(string: "roots://calendar?date=2024-12-25&view=month")!
+        let url = URL(string: "itori://calendar?date=2024-12-25&view=month")!
         XCTAssertTrue(router.handle(
             url: url,
             appModel: appModel,
@@ -43,7 +43,7 @@ final class DeepLinkRouterTests: XCTestCase {
     }
 
     func testPlannerRoute() {
-        let url = URL(string: "roots://planner")!
+        let url = URL(string: "itori://planner")!
         XCTAssertTrue(router.handle(
             url: url,
             appModel: appModel,
@@ -56,7 +56,7 @@ final class DeepLinkRouterTests: XCTestCase {
 
     func testAssignmentRoute() {
         let id = UUID()
-        let url = URL(string: "roots://assignment/\(id.uuidString)")!
+        let url = URL(string: "itori://assignment/\(id.uuidString)")!
         XCTAssertTrue(router.handle(
             url: url,
             appModel: appModel,
@@ -69,7 +69,7 @@ final class DeepLinkRouterTests: XCTestCase {
 
     func testCourseRoute() {
         let id = UUID()
-        let url = URL(string: "roots://course/\(id.uuidString)")!
+        let url = URL(string: "itori://course/\(id.uuidString)")!
         XCTAssertTrue(router.handle(
             url: url,
             appModel: appModel,
@@ -83,7 +83,7 @@ final class DeepLinkRouterTests: XCTestCase {
 
     func testFocusRoute() {
         let activityId = UUID()
-        let url = URL(string: "roots://focus?mode=pomodoro&activityId=\(activityId.uuidString)")!
+        let url = URL(string: "itori://focus?mode=pomodoro&activityId=\(activityId.uuidString)")!
         XCTAssertTrue(router.handle(
             url: url,
             appModel: appModel,
@@ -97,7 +97,7 @@ final class DeepLinkRouterTests: XCTestCase {
     }
 
     func testSettingsRoute() {
-        let url = URL(string: "roots://settings?section=developer")!
+        let url = URL(string: "itori://settings?section=developer")!
         XCTAssertTrue(router.handle(
             url: url,
             appModel: appModel,
@@ -119,7 +119,7 @@ final class DeepLinkRouterTests: XCTestCase {
     }
 
     func testMissingAssignmentId() {
-        let url = URL(string: "roots://assignment/")!
+        let url = URL(string: "itori://assignment/")!
         XCTAssertFalse(router.handle(
             url: url,
             appModel: appModel,
@@ -130,7 +130,7 @@ final class DeepLinkRouterTests: XCTestCase {
     }
 
     func testUnknownRoute() {
-        let url = URL(string: "roots://unknown")!
+        let url = URL(string: "itori://unknown")!
         XCTAssertFalse(router.handle(
             url: url,
             appModel: appModel,

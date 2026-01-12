@@ -677,7 +677,7 @@ extension CalendarManager {
 
 extension EKEvent {
     /// Safe identifier for UI lists even when eventIdentifier is nil (e.g., cached events).
-    var rootsIdentifier: String {
+    var itoriIdentifier: String {
         if !eventIdentifier.isEmpty { return eventIdentifier }
         if !calendarItemIdentifier.isEmpty { return calendarItemIdentifier }
         let time = startDate?.timeIntervalSince1970 ?? 0

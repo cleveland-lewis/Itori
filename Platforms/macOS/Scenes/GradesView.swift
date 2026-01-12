@@ -114,7 +114,7 @@
                     .padding(.vertical, DesignSystem.Spacing.large)
                 }
             }
-            .rootsSystemBackground()
+            .itoriSystemBackground()
         }
 
         private func responsivePadding(for width: CGFloat) -> CGFloat {

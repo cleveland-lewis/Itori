@@ -88,7 +88,7 @@ final class MissedEventDetectionService: ObservableObject {
     // MARK: - Detection Logic
 
     private func runGateCheck(reason: AutoRescheduleGateReason, provenance: AutoRescheduleProvenance) async {
-        await AutoRescheduleGate.run(reason: reason, provenance: provenance) { [weak self] in
+        _ = await AutoRescheduleGate.run(reason: reason, provenance: provenance) { [weak self] in
             await self?.checkForMissedSessions()
         }
     }

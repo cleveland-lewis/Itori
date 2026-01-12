@@ -498,51 +498,29 @@ struct AppLiquidButtonStyle: ButtonStyle {
     }
 }
 
-// MARK: - View Extensions
-
-extension View {
-    func rootsCardBackground(radius: CGFloat = 16) -> some View {
-        self
-            .background(DesignSystem.Materials.card)
-            .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: radius, style: .continuous)
-                    .stroke(Color.primary.opacity(0.1), lineWidth: 1)
-            )
-    }
-}
-
 // MARK: - Size Constants
 
 enum SizeConstants {
     static let pricingSize: CGSize = .init(width: 280, height: 340)
     static let largeIconSize: CGFloat = 48
+    static let normalTextSize: CGFloat = 14
+    static let smallTextSize: CGFloat = 12
+    static let mediumTextSize: CGFloat = 16
+    static let emptyIconSize: CGFloat = 64
 }
 
 // Compatibility aliases
 let pricingSize = SizeConstants.pricingSize
 let largeIconSize = SizeConstants.largeIconSize
-
-// MARK: - Additional View Extensions
-
-extension View {
-    func rootsSystemBackground() -> some View {
-        self.background(Color(NSColor.windowBackgroundColor))
-    }
-}
-
-// MARK: - Additional Size Constants
-
-extension SizeConstants {
-    static let normalTextSize: CGFloat = 14
-}
+let normalTextSize = SizeConstants.normalTextSize
+let smallTextSize = SizeConstants.smallTextSize
+let mediumTextSize = SizeConstants.mediumTextSize
+let emptyIconSize = SizeConstants.emptyIconSize
 
 extension WindowSizing {
     static let minPopupWidth: CGFloat = 450
     static let minPopupHeight: CGFloat = 500
 }
-
-let normalTextSize = SizeConstants.normalTextSize
 
 // MARK: - Form Components
 
@@ -568,10 +546,12 @@ struct AppFormRow<Content: View>: View {
 }
 
 extension Text {
-    func rootsSectionHeader() -> some View {
-        self
-            .font(.headline)
-            .foregroundStyle(.secondary)
+    func itoriSectionHeader() -> some View {
+        self.font(.headline).foregroundStyle(.secondary)
+    }
+    
+    func itoriBody() -> some View {
+        self.font(.body)
     }
 }
 
@@ -579,27 +559,9 @@ extension Text {
 
 extension Color {
     static let calendarDensityLow = Color.gray.opacity(0.15)
+    static let calendarDensityMedium = Color.gray.opacity(0.25)
+    static let calendarDensityHigh = Color.gray.opacity(0.35)
     static let subtleFill = Color.primary.opacity(0.05)
-}
-
-extension Text {
-    func rootsCaption() -> some View {
-        self
-            .font(.caption)
-            .foregroundStyle(.secondary)
-    }
-}
-
-// MARK: - Additional Text Extensions
-
-extension Text {
-    func rootsBody() -> some View {
-        self.font(.body)
-    }
-
-    func rootsBodySecondary() -> some View {
-        self.font(.body).foregroundStyle(.secondary)
-    }
 }
 
 // MARK: - Additional Constants
@@ -613,16 +575,6 @@ enum AppWindowSizing {
     static let minPopupWidth: CGFloat = 500
     static let minPopupHeight: CGFloat = 600
 }
-
-extension SizeConstants {
-    static let smallTextSize: CGFloat = 12
-    static let mediumTextSize: CGFloat = 16
-    static let emptyIconSize: CGFloat = 64
-}
-
-let smallTextSize = SizeConstants.smallTextSize
-let mediumTextSize = SizeConstants.mediumTextSize
-let emptyIconSize = SizeConstants.emptyIconSize
 
 struct BatchReviewSheet: View {
     let state: Any
@@ -651,11 +603,6 @@ extension Color {
     static let accent = Color.accentColor
 }
 
-extension Color {
-    static let calendarDensityMedium = Color.gray.opacity(0.25)
-    static let calendarDensityHigh = Color.gray.opacity(0.35)
-}
-
 // MARK: - Toggle Style
 
 struct AppAccentToggleStyle: ToggleStyle {
@@ -666,5 +613,5 @@ struct AppAccentToggleStyle: ToggleStyle {
 }
 
 extension ToggleStyle where Self == AppAccentToggleStyle {
-    static var rootsAccent: AppAccentToggleStyle { AppAccentToggleStyle() }
+    static var itoriAccent: AppAccentToggleStyle { AppAccentToggleStyle() }
 }

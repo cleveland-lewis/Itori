@@ -154,7 +154,7 @@ struct WiggleOnHoverModifier: ViewModifier {
     }
 }
 
-struct RootsGlassBackgroundModifier: ViewModifier {
+struct ItoriGlassBackgroundModifier: ViewModifier {
     @EnvironmentObject private var preferences: AppPreferences
     @EnvironmentObject private var settings: AppSettingsModel
     var cornerRadius: CGFloat = 20
@@ -197,7 +197,7 @@ extension View {
         modifier(WiggleOnHoverModifier())
     }
 
-    func rootsGlassBackground(cornerRadius: CGFloat = 20) -> some View {
-        modifier(RootsGlassBackgroundModifier(cornerRadius: cornerRadius))
+    func itoriGlassBackground(cornerRadius: CGFloat = 20) -> some View {
+        modifier(ItoriGlassBackgroundModifier(cornerRadius: cornerRadius))
     }
 }

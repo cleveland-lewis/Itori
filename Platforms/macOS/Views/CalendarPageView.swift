@@ -322,7 +322,7 @@
                     .scaleEffect(chevronLeftHover ? 1.06 : 1.0)
                 }
                 .buttonStyle(.plain)
-                .rootsStandardInteraction()
+                .itoriStandardInteraction()
                 .keyboardShortcut(.leftArrow, modifiers: [.command])
                 .onHover { hovering in
                     withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { chevronLeftHover = hovering }
@@ -337,7 +337,7 @@
                             .opacity(todayHover ? 0.18 : 0.12))
                 }
                 .buttonStyle(.plain)
-                .rootsStandardInteraction()
+                .itoriStandardInteraction()
                 .keyboardShortcut("t", modifiers: [.command])
                 .onHover { hovering in
                     withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { todayHover = hovering }
@@ -352,7 +352,7 @@
                     .scaleEffect(chevronRightHover ? 1.06 : 1.0)
                 }
                 .buttonStyle(.plain)
-                .rootsStandardInteraction()
+                .itoriStandardInteraction()
                 .keyboardShortcut(.rightArrow, modifiers: [.command])
                 .onHover { hovering in
                     withAnimation(.easeInOut(duration: DesignSystem.Motion.instant)) { chevronRightHover = hovering }
@@ -372,7 +372,7 @@
                     )
                 }
                 .buttonStyle(.plain)
-                .rootsStandardInteraction()
+                .itoriStandardInteraction()
                 .keyboardShortcut("r", modifiers: [.command])
                 .disabled(isRefreshing)
                 .onHover { hovering in
@@ -524,7 +524,7 @@
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .rootsStandardInteraction()
+            .itoriStandardInteraction()
         }
 
         private var sidebarDateTitle: String {
@@ -1099,7 +1099,7 @@
                             .background(Circle().fill(DesignSystem.Materials.hud.opacity(0.75)))
                     }
                     .buttonStyle(.plain)
-                    .rootsStandardInteraction()
+                    .itoriStandardInteraction()
                     .help("New Event")
                 }
                 .padding(.horizontal, 16)

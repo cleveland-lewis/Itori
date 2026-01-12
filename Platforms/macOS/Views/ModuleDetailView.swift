@@ -80,7 +80,7 @@
                         }
                     }
                     .padding(18)
-                    .rootsCardBackground(radius: cardCorner)
+                    .itoriCardBackground(radius: cardCorner)
 
                     // Files section
                     VStack(alignment: .leading, spacing: 16) {
@@ -144,7 +144,7 @@
                             .padding(.bottom, 18)
                         }
                     }
-                    .rootsCardBackground(radius: cardCorner)
+                    .itoriCardBackground(radius: cardCorner)
                 }
                 .padding(.trailing, 6)
                 .padding(.vertical, 12)

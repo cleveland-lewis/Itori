@@ -195,7 +195,7 @@
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, responsivePadding(for: proxy.size.width))
                 .padding(.vertical, ItariSpacing.l)
-                .rootsSystemBackground()
+                .itoriSystemBackground()
             }
             .tint(.blue)
             .accentColor(.blue)
@@ -353,7 +353,7 @@
                 }
                 .padding(4)
             }
-            .rootsCardBackground(radius: cardCorner)
+            .itoriCardBackground(radius: cardCorner)
         }
 
         private var assignmentListCard: some View {
@@ -684,13 +684,13 @@
             let planned = dueToday.filter { $0.status == .inProgress }
             let remaining = dueToday.filter { $0.status != .completed }
 
-            RootsCard(compact: true) {
+            ItoriCard(compact: true) {
                 HStack {
                     Text(NSLocalizedString(
                         "assignments.section.today",
                         value: "assignments.section.today",
                         comment: ""
-                    )).rootsSectionHeader()
+                    )).itoriSectionHeader()
                     Spacer()
                 }
 
@@ -700,7 +700,7 @@
                     planned.count,
                     remaining.count
                 ))
-                .rootsCaption()
+                .itoriCaption()
 
                 HStack(spacing: 6) {
                     ForEach(AssignmentUrgency.allCases, id: \.self) { urgency in
@@ -731,47 +731,77 @@
             let count: Int
         }
 
-        var body: some View {
-            let grouped = Dictionary(grouping: assignments.filter { ($0.status ?? .notStarted) != .archived }) {
-                $0.courseCode ?? "assignments.course.unknown".localized
+        private func buildCourseLoads() -> [CourseLoad] {
+            let activeAssignments = assignments.filter { ($0.status ?? .notStarted) != .archived }
+            let grouped = Dictionary(grouping: activeAssignments) { assignment in
+                assignment.courseCode ?? "assignments.course.unknown".localized
             }
-            .map { CourseLoad(course: $0.key, count: $0.value.count) }
-            .sorted { $0.count > $1.count }
-            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
-                Text(NSLocalizedString(
-                    "assignments.section.by_course",
-                    value: "assignments.section.by_course",
-                    comment: ""
-                )).rootsSectionHeader()
+            return grouped.map { CourseLoad(course: $0.key, count: $0.value.count) }
+                .sorted { $0.count > $1.count }
+        }
 
-                ForEach(grouped.prefix(4)) { item in
-                    HStack {
-                        Text(item.course)
-                            .font(.caption.weight(.semibold))
-                        Spacer()
-                        Text(verbatim: "\(item.count)").rootsCaption()
-                    }
-                    .padding(.vertical, 6)
-                    .padding(.horizontal, 10)
-                    .background(
-                        .regularMaterial,
-                        in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
-                            .stroke(Color.glassBorder(for: colorScheme), lineWidth: 1)
-                    )
-                    .onTapGesture {
-                        onSelectCourse(item.course)
-                    }
-                    .accessibilityElement(children: .combine)
-                    .accessibilityAddTraits(.isButton)
-                    .accessibilityLabel("\(item.course.name)")
-                    .accessibilityHint("Select course")
-                }
+        var body: some View {
+            let courseLoads = buildCourseLoads()
+            
+            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+                sectionHeader
+                courseList(courseLoads: courseLoads)
             }
-            .padding(12)
-            .rootsCardBackground(radius: 16)
+            .padding(DesignSystem.Layout.spacing.small)
+            .background(DesignSystem.Materials.card)
+            .clipShape(RoundedRectangle(
+                cornerRadius: DesignSystem.Cards.cardCornerRadius,
+                style: .continuous
+            ))
+            .overlay(cardBorder)
+        }
+        
+        private var sectionHeader: some View {
+            Text(NSLocalizedString(
+                "assignments.section.by_course",
+                value: "assignments.section.by_course",
+                comment: ""
+            )).itoriSectionHeader()
+        }
+        
+        private func courseList(courseLoads: [CourseLoad]) -> some View {
+            ForEach(courseLoads.prefix(4)) { item in
+                courseRow(item: item)
+            }
+        }
+        
+        private func courseRow(item: CourseLoad) -> some View {
+            HStack {
+                Text(item.course)
+                    .font(.caption.weight(.semibold))
+                Spacer()
+                Text(verbatim: "\(item.count)").itoriCaption()
+            }
+            .padding(.vertical, 6)
+            .padding(.horizontal, 10)
+            .background(
+                .regularMaterial,
+                in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
+                    .stroke(ItariColor.glassBorder(for: colorScheme), lineWidth: 1)
+            )
+            .onTapGesture {
+                onSelectCourse(item.course)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel(item.course)
+            .accessibilityHint("Select course")
+        }
+        
+        private var cardBorder: some View {
+            RoundedRectangle(
+                cornerRadius: DesignSystem.Cards.cardCornerRadius,
+                style: .continuous
+            )
+            .stroke(ItariColor.glassBorder(for: colorScheme), lineWidth: 1)
         }
     }
 
@@ -788,7 +818,7 @@
                     "assignments.section.upcoming_load",
                     value: "assignments.section.upcoming_load",
                     comment: ""
-                )).rootsSectionHeader()
+                )).itoriSectionHeader()
 
                 HStack(alignment: .bottom, spacing: 12) {
                     ForEach(next7, id: \.self) { day in
@@ -817,7 +847,7 @@
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding(16)
-            .rootsCardBackground(radius: 16)
+            .itoriCardBackground(radius: 16)
             .frame(maxWidth: .infinity)
         }
 
@@ -858,13 +888,13 @@
                 return due >= today
             }.count
 
-            RootsCard(compact: true) {
+            ItoriCard(compact: true) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(NSLocalizedString(
                         "assignments.section.upcoming",
                         value: "assignments.section.upcoming",
                         comment: ""
-                    )).rootsSectionHeader()
+                    )).itoriSectionHeader()
                     Text(verbatim: "\(upcoming)")
                         .font(.title.bold())
                     Text(NSLocalizedString(
@@ -892,13 +922,13 @@
                 return due < today && task.status != .completed
             }.count
 
-            RootsCard(compact: true) {
+            ItoriCard(compact: true) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(NSLocalizedString(
                         "assignments.section.missed",
                         value: "assignments.section.missed",
                         comment: ""
-                    )).rootsSectionHeader()
+                    )).itoriSectionHeader()
                     Text(verbatim: "\(missed)")
                         .font(.title.bold())
                     Text(NSLocalizedString(
@@ -1185,7 +1215,7 @@
             }
             .padding(DesignSystem.Layout.padding.card)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .rootsCardBackground(radius: cardCorner)
+            .itoriCardBackground(radius: cardCorner)
         }
 
         private func header(for assignment: Assignment) -> some View {
@@ -1318,7 +1348,7 @@
         private func actionsSection(for assignment: Assignment) -> some View {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                 Text(NSLocalizedString("assignments.detail.actions", value: "assignments.detail.actions", comment: ""))
-                    .rootsSectionHeader()
+                    .itoriSectionHeader()
                 HStack(spacing: ItariSpacing.s) {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(NSLocalizedString(
@@ -1515,7 +1545,7 @@
         @State private var status: AssignmentStatus = .notStarted
 
         var body: some View {
-            RootsPopupContainer(
+            ItoriPopupContainer(
                 title: assignment == nil ? "assignments.editor.title.new".localized : "assignments.editor.title.edit"
                     .localized,
                 subtitle: "assignments.editor.subtitle".localized
@@ -1527,13 +1557,13 @@
                                 "assignments.editor.section.task",
                                 value: "assignments.editor.section.task",
                                 comment: ""
-                            )).rootsSectionHeader()
-                            RootsFormRow(label: "assignments.editor.field.title".localized) {
+                            )).itoriSectionHeader()
+                            ItoriFormRow(label: "assignments.editor.field.title".localized) {
                                 TextField("assignments.editor.field.title".localized, text: $title)
                                     .textFieldStyle(.roundedBorder)
                             }
                             coursePickerRow
-                            RootsFormRow(label: "assignments.editor.field.category".localized) {
+                            ItoriFormRow(label: "assignments.editor.field.category".localized) {
                                 Picker("assignments.editor.field.category".localized, selection: $category) {
                                     ForEach(AssignmentCategory.allCases) { cat in
                                         Text(cat.localizedName).tag(cat)
@@ -1548,18 +1578,18 @@
                                 "assignments.editor.section.timing",
                                 value: "assignments.editor.section.timing",
                                 comment: ""
-                            )).rootsSectionHeader()
-                            RootsFormRow(label: "assignments.editor.field.due_date".localized) {
+                            )).itoriSectionHeader()
+                            ItoriFormRow(label: "assignments.editor.field.due_date".localized) {
                                 DatePicker("", selection: $dueDate)
                                     .labelsHidden()
                             }
-                            RootsFormRow(label: "assignments.editor.field.estimated".localized) {
+                            ItoriFormRow(label: "assignments.editor.field.estimated".localized) {
                                 Stepper(value: $estimatedMinutes, in: 15 ... 240, step: 15) {
                                     Text(String.localizedStringWithFormat(
                                         "assignments.editor.field.estimated_minutes".localized,
                                         estimatedMinutes
                                     ))
-                                    .rootsBody()
+                                    .itoriBody()
                                 }
                             } helper: {
                                 // Show category-driven suggestion
@@ -1576,10 +1606,10 @@
                                     profile.spreadDaysBeforeDue,
                                     category.localizedName
                                 ))
-                                .rootsCaption()
+                                .itoriCaption()
                                 .foregroundColor(.secondary)
                             }
-                            RootsFormRow(label: "assignments.editor.field.urgency".localized) {
+                            ItoriFormRow(label: "assignments.editor.field.urgency".localized) {
                                 Picker("", selection: $urgency) {
                                     ForEach(AssignmentUrgency.creationOptions) { u in
                                         Text(u.label).tag(u)
@@ -1587,11 +1617,11 @@
                                 }
                                 .pickerStyle(.menu)
                             }
-                            RootsFormRow(label: "assignments.editor.field.weight".localized) {
+                            ItoriFormRow(label: "assignments.editor.field.weight".localized) {
                                 TextField("assignments.editor.field.weight_placeholder".localized, text: $weightText)
                                     .textFieldStyle(.roundedBorder)
                             }
-                            RootsFormRow(label: "assignments.editor.field.lock".localized) {
+                            ItoriFormRow(label: "assignments.editor.field.lock".localized) {
                                 Toggle("assignments.detail.lock_due".localized, isOn: $isLocked)
                                     .toggleStyle(.switch)
                             }
@@ -1602,8 +1632,8 @@
                                 "assignments.editor.section.status",
                                 value: "assignments.editor.section.status",
                                 comment: ""
-                            )).rootsSectionHeader()
-                            RootsFormRow(label: "assignments.editor.field.status".localized) {
+                            )).itoriSectionHeader()
+                            ItoriFormRow(label: "assignments.editor.field.status".localized) {
                                 Picker("", selection: $status) {
                                     ForEach(AssignmentStatus.allCases) { s in
                                         Text(s.label).tag(s)
@@ -1618,7 +1648,7 @@
                                 "assignments.editor.field.notes",
                                 value: "assignments.editor.field.notes",
                                 comment: ""
-                            )).rootsSectionHeader()
+                            )).itoriSectionHeader()
                             TextEditor(text: $notes)
                                 .textEditorStyle(.plain)
                                 .scrollContentBackground(.hidden)
@@ -1629,7 +1659,7 @@
                                         cornerRadius: DesignSystem.Cards.cardCornerRadius,
                                         style: .continuous
                                     )
-                                    .fill(Color.inputBackground)
+                                    .fill(ItariColor.inputBackground)
                                 )
                                 .clipShape(RoundedRectangle(
                                     cornerRadius: DesignSystem.Cards.cardCornerRadius,
@@ -1698,7 +1728,7 @@
 
         private var coursePickerRow: some View {
             let activeCourses = currentSemesterCourses
-            return RootsFormRow(label: "assignments.editor.field.course".localized) {
+            return ItoriFormRow(label: "assignments.editor.field.course".localized) {
                 if activeCourses.isEmpty {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(NSLocalizedString(
@@ -1736,7 +1766,7 @@
                         value: "assignments.editor.course.helper",
                         comment: ""
                     ))
-                    .rootsCaption()
+                    .itoriCaption()
                     .foregroundStyle(.red)
                 }
             }

@@ -124,7 +124,7 @@ extension AssignmentPlanEngine {
                 let step2 = sortedSteps[j]
 
                 if let start1 = step1.recommendedStartDate,
-                   let due1 = step1.dueBy,
+                   let _ = step1.dueBy,
                    let start2 = step2.recommendedStartDate,
                    let due2 = step2.dueBy
                 {

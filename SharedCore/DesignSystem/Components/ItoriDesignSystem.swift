@@ -5,7 +5,7 @@ import SwiftUI
 
 // MARK: - Responsive Grid
 
-public struct RootsResponsiveGrid<Data: RandomAccessCollection, Content: View>: View where Data.Element: Identifiable,
+public struct ItoriResponsiveGrid<Data: RandomAccessCollection, Content: View>: View where Data.Element: Identifiable,
     Data.Index == Int
 {
     var items: Data

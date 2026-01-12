@@ -65,7 +65,7 @@ final class AutoRescheduleEngine: ObservableObject {
 
     /// Reschedule missed sessions using intelligent strategies
     func reschedule(_ missedSessions: [StoredScheduledSession]) async {
-        await AutoRescheduleGate.run(reason: .rescheduleEngine, provenance: .automatic) { [weak self] in
+        _ = await AutoRescheduleGate.run(reason: .rescheduleEngine, provenance: .automatic) { [weak self] in
             await self?.runReschedule(missedSessions)
         }
     }

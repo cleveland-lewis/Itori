@@ -212,7 +212,7 @@
                     showNewCourseSheet = true
                 }
             )
-            .rootsCardBackground(radius: RootsRadius.card)
+            .itoriCardBackground(radius: ItariRadius.card)
         }
 
         private var rightColumn: some View {
@@ -269,20 +269,20 @@
                         .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
-            .rootsCardBackground(radius: RootsRadius.card)
+            .itoriCardBackground(radius: ItariRadius.card)
         }
 
         private func placeholderModule(title: String, detail: String) -> some View {
             VStack(alignment: .leading, spacing: ItariSpacing.s) {
                 Text(title)
-                    .rootsSectionHeader()
+                    .itoriSectionHeader()
                 Text(detail)
-                    .rootsBodySecondary()
+                    .itoriBodySecondary()
             }
             .padding(ItariSpacing.m)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
-                RoundedRectangle(cornerRadius: RootsRadius.card, style: .continuous)
+                RoundedRectangle(cornerRadius: ItariRadius.card, style: .continuous)
                     .fill(.secondaryBackground)
             )
         }
@@ -467,9 +467,9 @@
                     }
 
                     // Read file data for fingerprinting
-                    let fileData: Data?
+                    let _: Data?
                     do {
-                        fileData = try Data(contentsOf: url)
+                        _ = try Data(contentsOf: url)
                     } catch {
                         print("Failed to read file data: \(error)")
                     }
@@ -684,10 +684,10 @@
 
                     VStack(alignment: .leading, spacing: 2) {
                         Text(course.code)
-                            .rootsBody()
+                            .itoriBody()
                             .lineLimit(1)
                         Text(course.title)
-                            .rootsCaption()
+                            .itoriCaption()
                             .foregroundColor(Color.textSecondary)
                             .lineLimit(1)
                         Text(course.instructor)
@@ -808,7 +808,7 @@
                 .foregroundStyle(.secondary)
             }
             .padding(18)
-            .rootsCardBackground(radius: cardCorner)
+            .itoriCardBackground(radius: cardCorner)
         }
 
         private var meetingsCard: some View {
@@ -818,7 +818,7 @@
                 if course.meetingTimes.isEmpty {
                     VStack(alignment: .leading, spacing: ItariSpacing.s) {
                         Text(NSLocalizedString("courses.empty.no_meetings", comment: "No meetings"))
-                            .rootsBodySecondary()
+                            .itoriBodySecondary()
                     }
                 } else {
                     VStack(alignment: .leading, spacing: ItariSpacing.s) {
@@ -831,7 +831,7 @@
                                 ))
                                 .font(DesignSystem.Typography.body)
                                 Text(meeting.type)
-                                    .rootsCaption()
+                                    .itoriCaption()
                             }
                             .padding(.vertical, 6)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -841,7 +841,7 @@
             }
             .padding(ItariSpacing.l)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .rootsCardBackground(radius: cardCorner)
+            .itoriCardBackground(radius: cardCorner)
         }
 
         private var syllabusCard: some View {
@@ -908,7 +908,7 @@
             }
             .padding(DesignSystem.Layout.padding.card)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .rootsCardBackground(radius: cardCorner)
+            .itoriCardBackground(radius: cardCorner)
         }
 
         private func quickActionTile(
@@ -932,18 +932,18 @@
 
                     VStack(alignment: .leading, spacing: 4) {
                         Text(title)
-                            .rootsBody()
+                            .itoriBody()
                             .foregroundStyle(Color.textPrimary)
 
                         Text(subtitle)
-                            .rootsCaption()
+                            .itoriCaption()
                             .foregroundStyle(Color.textSecondary)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(RootsLiquidButtonStyle(
+            .buttonStyle(AppLiquidButtonStyle(
                 cornerRadius: 14,
                 verticalPadding: ItariSpacing.m,
                 horizontalPadding: ItariSpacing.m
@@ -1160,7 +1160,7 @@
         }
 
         var body: some View {
-            RootsPopupContainer(
+            ItoriPopupContainer(
                 title: isNew ? NSLocalizedString("courses.form.new_title", comment: "") : NSLocalizedString(
                     "courses.form.edit_title",
                     comment: ""
@@ -1177,7 +1177,7 @@
                 actionBar
             }
             .frame(maxWidth: 580, maxHeight: 420)
-            .frame(minWidth: RootsWindowSizing.minPopupWidth, minHeight: RootsWindowSizing.minPopupHeight)
+            .frame(minWidth: AppWindowSizing.minPopupWidth, minHeight: AppWindowSizing.minPopupHeight)
             .onAppear(perform: loadDraft)
             .onChange(of: semesterId) { _, newValue in
                 if let id = newValue, let match = coursesStore.semesters.first(where: { $0.id == id }) {
@@ -1188,8 +1188,8 @@
 
         private var courseSection: some View {
             VStack(alignment: .leading, spacing: ItariSpacing.m) {
-                Text(NSLocalizedString("courses.section.course", comment: "Course")).rootsSectionHeader()
-                RootsFormRow(label: NSLocalizedString("courses.form.label.code", comment: "")) {
+                Text(NSLocalizedString("courses.section.course", comment: "Course")).itoriSectionHeader()
+                ItoriFormRow(label: NSLocalizedString("courses.form.label.code", comment: "")) {
                     TextField("e.g. BIO 101", text: $code)
                         .frame(width: 120)
                         .textFieldStyle(.roundedBorder)
@@ -1199,7 +1199,7 @@
                     text: NSLocalizedString("courses.form.validation.code_required", comment: "")
                 )
 
-                RootsFormRow(label: NSLocalizedString("courses.form.label.title", comment: "")) {
+                ItoriFormRow(label: NSLocalizedString("courses.form.label.title", comment: "")) {
                     TextField(NSLocalizedString("courses.form.placeholder.title", comment: ""), text: $title)
                         .textFieldStyle(.roundedBorder)
                 }
@@ -1208,18 +1208,18 @@
                     text: NSLocalizedString("courses.form.validation.title_required", comment: "")
                 )
 
-                RootsFormRow(label: NSLocalizedString("courses.form.label.instructor", comment: "")) {
+                ItoriFormRow(label: NSLocalizedString("courses.form.label.instructor", comment: "")) {
                     TextField(NSLocalizedString("courses.form.placeholder.instructor", comment: ""), text: $instructor)
                         .textFieldStyle(.roundedBorder)
                 }
 
-                RootsFormRow(label: NSLocalizedString("courses.form.label.email", comment: "")) {
+                ItoriFormRow(label: NSLocalizedString("courses.form.label.email", comment: "")) {
                     TextField("name@university.edu", text: $instructorEmail)
                         .textFieldStyle(.roundedBorder)
                         .textContentType(.emailAddress)
                 }
 
-                RootsFormRow(label: NSLocalizedString("courses.form.label.location", comment: "")) {
+                ItoriFormRow(label: NSLocalizedString("courses.form.label.location", comment: "")) {
                     TextField(NSLocalizedString("courses.form.placeholder.location", comment: ""), text: $location)
                         .textFieldStyle(.roundedBorder)
                 }
@@ -1228,21 +1228,21 @@
 
         private var detailsSection: some View {
             VStack(alignment: .leading, spacing: ItariSpacing.m) {
-                Text(NSLocalizedString("courses.section.details", comment: "Details")).rootsSectionHeader()
-                RootsFormRow(label: NSLocalizedString("courses.form.label.credits", comment: "")) {
+                Text(NSLocalizedString("courses.section.details", comment: "Details")).itoriSectionHeader()
+                ItoriFormRow(label: NSLocalizedString("courses.form.label.credits", comment: "")) {
                     Stepper(value: $credits, in: 1 ... 8) {
                         Text(String(format: NSLocalizedString("courses.info.credits_format", comment: ""), credits))
                     }
                     .frame(width: 120, alignment: .leading)
                 }
 
-                RootsFormRow(label: NSLocalizedString("courses.form.label.semester", comment: "")) {
+                ItoriFormRow(label: NSLocalizedString("courses.form.label.semester", comment: "")) {
                     SemesterPicker(selectedSemesterId: $semesterId)
                         .frame(maxWidth: 260)
                         .environmentObject(coursesStore)
                 }
 
-                RootsFormRow(label: NSLocalizedString("courses.form.label.color", comment: "")) {
+                ItoriFormRow(label: NSLocalizedString("courses.form.label.color", comment: "")) {
                     ColorTagPicker(selected: $colorTag)
                 }
             }

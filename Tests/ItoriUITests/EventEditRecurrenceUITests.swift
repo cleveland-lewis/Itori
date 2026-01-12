@@ -145,7 +145,7 @@ final class EventEditRecurrenceUITests: XCTestCase {
     
     /// Test round-trip: Create in Itori, verify event exists in system calendar
     /// Note: This test may require EventKit permissions and may be skipped in CI
-    func testRoundTripCreateInRoots() throws {
+    func testRoundTripCreateInItori() throws {
         // TODO: Implement test flow
         // 1. Create recurring event with alerts in Itori
         // 2. Query EventKit to verify event exists

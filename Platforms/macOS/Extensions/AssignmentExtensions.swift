@@ -38,7 +38,7 @@
             case .project: "assignments.category.project".localized
             case .exam: "assignments.category.exam".localized
             case .quiz: "assignments.category.quiz".localized
-            case .homework, .homework: "assignments.category.homework".localized
+            case .homework: "assignments.category.homework".localized
             case .reading: "assignments.category.reading".localized
             case .review: "assignments.category.review".localized
             case .practiceTest: "assignments.category.practice_test".localized

@@ -7,6 +7,8 @@
         static let minMainWidth: CGFloat = 1100
         static let minMainHeight: CGFloat = 700
         static let maxMainContentWidth: CGFloat = 1400
+        static let minSidebarWidth: CGFloat = 200
+        static let idealSidebarWidth: CGFloat = 220
     }
 
     struct ContentView: View {
@@ -20,7 +22,9 @@
         @EnvironmentObject private var modalRouter: AppModalRouter
         @EnvironmentObject private var preferences: AppPreferences
         @State private var selectedTab: RootTab = .dashboard
+        @State private var currentEnergyLevel: EnergyLevel = .medium
         @State private var settingsRotation: Double = 0
+        @State private var columnVisibility: NavigationSplitViewVisibility = .all
         @Environment(\.colorScheme) private var colorScheme
         @FocusedBinding(\.selectedTab) private var focusedTab: RootTab?
 
@@ -29,119 +33,201 @@
         }
 
         var body: some View {
-            let mainContent = GeometryReader { proxy in
-                ZStack(alignment: .topLeading) {
-                    Color.primaryBackground.ignoresSafeArea()
-
-                    // LAYER 1: Main content
-                    AppPageScaffold(
-                        title: selectedTab.title,
-                        quickActions: settings.quickActions,
-                        onQuickAction: performQuickAction,
-                        onSettings: {
-                            withAnimation(.easeInOut(duration: DesignSystem.Motion.deliberate)) {
-                                settingsRotation += 360
-                            }
-                            settingsCoordinator.show()
-                        }
-                    ) {
-                        currentPageView
-                            .accessibilityIdentifier("Page.\(selectedTab.rawValue)")
-                            .frame(
-                                maxWidth: WindowSizing.maxMainContentWidth,
-                                maxHeight: .infinity,
-                                alignment: .top
-                            )
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                            .padding(.horizontal, 12)
-                            .padding(.bottom, 72 + 32 + proxy.safeAreaInsets.bottom)
-                            .contentSafeInsetsForOverlay()
+            NavigationSplitView(columnVisibility: $columnVisibility) {
+                // Sidebar
+                sidebarContent
+            } detail: {
+                // Main content
+                detailContent
+            }
+            .interfacePreferences(interfacePreferences)
+            .frame(minWidth: WindowSizing.minMainWidth, minHeight: WindowSizing.minMainHeight)
+            .globalContextMenu()
+            .focusedSceneValue(\FocusedValues.selectedTab, $selectedTab)
+            .focusedValue(\FocusedValues.canCreateAssignment, true)
+            .onAppear {
+                setupNotificationObservers()
+                DispatchQueue.main.async {
+                    if let win = NSApp.keyWindow ?? NSApp.windows.first {
+                        win.title = "Itori"
+                        win.titleVisibility = .visible
+                        win.titlebarAppearsTransparent = false
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                    // Floating tab bar stays at bottom; keep above content
-                    VStack {
-                        Spacer()
-                        FloatingTabBar(selectedTab: $selectedTab)
-                            .frame(height: 72)
-                            .frame(maxWidth: 640)
-                            .padding(.horizontal, 16)
-                            .padding(.bottom, proxy.safeAreaInsets.bottom == 0 ? 16 : proxy.safeAreaInsets.bottom)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .zIndex(1)
+                }
+                if let initialTab = RootTab(rawValue: appModel.selectedPage.rawValue) {
+                    selectedTab = initialTab
                 }
             }
-
-            return mainContent
-                .interfacePreferences(interfacePreferences)
-                .frame(minWidth: WindowSizing.minMainWidth, minHeight: WindowSizing.minMainHeight)
-                .globalContextMenu()
-                .focusedSceneValue(\FocusedValues.selectedTab, $selectedTab)
-                .focusedValue(\FocusedValues.canCreateAssignment, true)
-                .onAppear {
-                    setupNotificationObservers()
-                    DispatchQueue.main.async {
-                        if let win = NSApp.keyWindow ?? NSApp.windows.first {
-                            win.title = ""
-                            win.titleVisibility = .hidden
-                            win.titlebarAppearsTransparent = true
-                        }
-                    }
-                    if let initialTab = RootTab(rawValue: appModel.selectedPage.rawValue) {
-                        selectedTab = initialTab
-                    }
+            .onChange(of: selectedTab) { _, newTab in
+                // Sync to appModel when sidebar selection changes
+                if let page = AppPage(rawValue: newTab.rawValue), appModel.selectedPage != page {
+                    appModel.selectedPage = page
                 }
-                .onChange(of: plannerCoordinator.requestedCourseId) { _, courseId in
+            }
+            .onChange(of: plannerCoordinator.requestedCourseId) { _, courseId in
+                selectedTab = .planner
+                plannerCoordinator.selectedCourseFilter = courseId
+            }
+            .onChange(of: plannerCoordinator.requestedDate) { _, date in
+                guard date != nil else { return }
+                selectedTab = .planner
+            }
+            .onReceive(appModel.$selectedPage) { page in
+                if let tab = RootTab(rawValue: page.rawValue), selectedTab != tab {
+                    selectedTab = tab
+                }
+            }
+            .onChange(of: modalRouter.route) { _, route in
+                guard let route else { return }
+                switch route {
+                case .planner:
                     selectedTab = .planner
-                    plannerCoordinator.selectedCourseFilter = courseId
-                }
-                .onChange(of: plannerCoordinator.requestedDate) { _, date in
-                    guard date != nil else { return }
-                    selectedTab = .planner
-                }
-                .onReceive(appModel.$selectedPage) { page in
-                    if let tab = RootTab(rawValue: page.rawValue), selectedTab != tab {
-                        selectedTab = tab
-                    }
-                }
-                .onChange(of: modalRouter.route) { _, route in
-                    guard let route else { return }
-                    switch route {
-                    case .planner:
-                        selectedTab = .planner
-                        appModel.selectedPage = .planner
+                    appModel.selectedPage = .planner
+                    modalRouter.clear()
+                case .addAssignment:
+                    selectedTab = .assignments
+                    appModel.selectedPage = .assignments
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        NotificationCenter.default.post(name: .addAssignmentRequested, object: nil)
                         modalRouter.clear()
-                    case .addAssignment:
-                        selectedTab = .assignments
-                        appModel.selectedPage = .assignments
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            NotificationCenter.default.post(name: .addAssignmentRequested, object: nil)
-                            modalRouter.clear()
-                        }
-                    case .addGrade:
-                        selectedTab = .grades
-                        appModel.selectedPage = .grades
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            NotificationCenter.default.post(name: .addGradeRequested, object: nil)
-                            modalRouter.clear()
-                        }
+                    }
+                case .addGrade:
+                    selectedTab = .grades
+                    appModel.selectedPage = .grades
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        NotificationCenter.default.post(name: .addGradeRequested, object: nil)
+                        modalRouter.clear()
                     }
                 }
+            }
             #if os(macOS)
-                .onKeyDown { event in
-                    switch event.keyCode {
-                    case 125: // down arrow
-                        scrollActiveView(by: 120)
-                    case 126: // up arrow
-                        scrollActiveView(by: -120)
-                    default:
-                        break
-                    }
+            .onKeyDown { event in
+                switch event.keyCode {
+                case 125: // down arrow
+                    scrollActiveView(by: 120)
+                case 126: // up arrow
+                    scrollActiveView(by: -120)
+                default:
+                    break
                 }
+            }
             #endif
         }
+        
+        // MARK: - Sidebar
+        
+        private var sidebarContent: some View {
+            List(selection: $selectedTab) {
+                ForEach(visibleTabs, id: \.self) { tab in
+                    NavigationLink(value: tab) {
+                        Label(tab.title, systemImage: tab.systemImage)
+                    }
+                    .accessibilityIdentifier("Sidebar.\(tab.rawValue)")
+                }
+            }
+            .listStyle(.sidebar)
+            .navigationTitle("Itori")
+            .navigationSplitViewColumnWidth(
+                min: WindowSizing.minSidebarWidth,
+                ideal: WindowSizing.idealSidebarWidth
+            )
+        }
+        
+        private var visibleTabs: [RootTab] {
+            RootTab.allCases.filter { tab in
+                // Filter flashcards based on settings
+                if tab == .flashcards {
+                    return settings.enableFlashcards
+                }
+                return true
+            }
+        }
+        
+        // MARK: - Detail Content
+        
+        private var detailContent: some View {
+            VStack(spacing: 0) {
+                // Main page content - toolbar integrated into NavigationSplitView
+                currentPageView
+                    .accessibilityIdentifier("Page.\(selectedTab.rawValue)")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .navigationTitle("")
+            .safeAreaInset(edge: .top, spacing: 0) {
+                Color.clear.frame(height: 20)
+            }
+            .toolbar {
+                ToolbarItem(placement: .automatic) {
+                    // Energy indicator - glass pill
+                    energyIndicator
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .frame(height: 30)
+                        .background(.ultraThinMaterial, in: Capsule())
+                        .overlay(
+                            Capsule()
+                                .strokeBorder(Color.primary.opacity(0.1), lineWidth: 0.5)
+                        )
+                }
+                
+                ToolbarItem(placement: .automatic) {
+                    // Settings button - glass pill
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: DesignSystem.Motion.deliberate)) {
+                            settingsRotation += 360
+                        }
+                        settingsCoordinator.show()
+                    }) {
+                        Image(systemName: "gear")
+                            .font(.title3)
+                            .foregroundStyle(.secondary)
+                            .rotationEffect(.degrees(settingsRotation))
+                            .frame(width: 20, height: 20)
+                    }
+                    .buttonStyle(.plain)
+                    .help("Settings")
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .frame(height: 30)
+                    .background(.ultraThinMaterial, in: Capsule())
+                    .overlay(
+                        Capsule()
+                            .strokeBorder(Color.primary.opacity(0.1), lineWidth: 0.5)
+                    )
+                }
+            }
+        }
+        
+        // MARK: - Energy Indicator
+        
+        private var energyIndicator: some View {
+            HStack(spacing: 6) {
+                ForEach(EnergyLevel.allCases, id: \.self) { level in
+                    Button(action: {
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                            currentEnergyLevel = level
+                        }
+                    }) {
+                        Circle()
+                            .fill(currentEnergyLevel == level ? level.color : Color.secondary.opacity(0.3))
+                            .frame(width: 10, height: 10)
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(
+                                        currentEnergyLevel == level ? level.color : Color.clear,
+                                        lineWidth: 2
+                                    )
+                                    .frame(width: 14, height: 14)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .help("\(level.label) Energy")
+                }
+            }
+        }
 
+        // MARK: - Page Views
+        
         @ViewBuilder
         private var currentPageView: some View {
             switch selectedTab {
@@ -165,97 +251,8 @@
                 PracticeTestPageView()
             }
         }
-
-        private func performQuickAction(_ action: QuickAction) {
-            switch action {
-            case .add_assignment:
-                LOG_UI(.info, "QuickAction", "Add Assignment")
-            case .add_course:
-                LOG_UI(.info, "QuickAction", "Add Course")
-            case .add_task:
-                LOG_UI(.info, "QuickAction", "Add Task")
-            case .add_grade:
-                LOG_UI(.info, "QuickAction", "Add Grade")
-            case .auto_schedule:
-                autoSchedule()
-            case .quick_note:
-                LOG_UI(.info, "QuickAction", "Quick Note")
-            case .open_new_note:
-                LOG_UI(.info, "QuickAction", "Open New Note")
-            }
-        }
-
-        private func autoSchedule() {
-            let assignments = assignmentsForPlanning()
-            guard !assignments.isEmpty else { return }
-            let settings = StudyPlanSettings()
-            let sessions = assignments.flatMap { PlannerEngine.generateSessions(for: $0, settings: settings) }
-            let result = PlannerEngine.scheduleSessionsWithStrategy(
-                sessions,
-                settings: settings,
-                energyProfile: defaultEnergyProfile()
-            )
-            plannerStore.persist(scheduled: result.scheduled, overflow: result.overflow)
-        }
-
-        private func assignmentsForPlanning() -> [Assignment] {
-            let today = Calendar.current.startOfDay(for: Date())
-            return assignmentsStore.tasks.compactMap { task in
-                guard !task.isCompleted, let due = task.due else { return nil }
-                if due < today { return nil }
-                return Assignment(
-                    id: task.id,
-                    courseId: task.courseId,
-                    title: task.title,
-                    dueDate: due,
-                    estimatedMinutes: task.estimatedMinutes,
-                    weightPercent: nil,
-                    category: category(for: task),
-                    urgency: urgency(for: task.importance),
-                    isLockedToDueDate: task.locked,
-                    plan: []
-                )
-            }
-        }
-
-        private func category(for task: AppTask) -> AssignmentCategory {
-            switch task.category {
-            case .exam: return .exam
-            case .quiz: return .quiz
-            case .homework: return .homework
-            case .reading: return .reading
-            case .review: return .review
-            case .practiceTest: return .practiceTest
-            case .study:
-                fallthrough
-            case .project: return .project
-            }
-        }
-
-        private func urgency(for value: Double) -> AssignmentUrgency {
-            switch value {
-            case ..<0.3: .low
-            case ..<0.6: .medium
-            case ..<0.85: .high
-            default: .critical
-            }
-        }
-
-        private func defaultEnergyProfile() -> [Int: Double] {
-            [
-                9: 0.55, 10: 0.65, 11: 0.7, 12: 0.6,
-                13: 0.5, 14: 0.55, 15: 0.65, 16: 0.7,
-                17: 0.6, 18: 0.5, 19: 0.45, 20: 0.4
-            ]
-        }
-
-        private func handleTabSelection(_ tab: RootTab) {
-            LOG_NAVIGATION(.info, "TabSelection", "User navigated to tab: \(tab.rawValue)")
-            selectedTab = tab
-            if let page = AppPage(rawValue: tab.rawValue), appModel.selectedPage != page {
-                appModel.selectedPage = page
-            }
-        }
+        
+        // MARK: - Helper Methods
 
         private func setupNotificationObservers() {
             NotificationCenter.default.addObserver(forName: .navigateToTab, object: nil, queue: .main) { notification in

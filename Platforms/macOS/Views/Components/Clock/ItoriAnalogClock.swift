@@ -6,7 +6,7 @@ enum AnalogDialStyle {
 }
 
 /// Configurable analog dial with clock/stopwatch styling.
-struct RootsAnalogClock: View {
+struct ItoriAnalogClock: View {
     var style: AnalogDialStyle = .stopwatch
     var diameter: CGFloat = 200
     var showSecondHand: Bool = true

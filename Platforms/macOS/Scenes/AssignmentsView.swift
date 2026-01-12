@@ -226,7 +226,7 @@
                 }
                 .padding(DesignSystem.Spacing.large)
             }
-            .rootsSystemBackground()
+            .itoriSystemBackground()
             .sheet(isPresented: $showingAddSheet) {
                 // wrap to avoid ambiguity with trailing closure initializers
                 AddAssignmentView(initialType: .reading, onSave: { task in

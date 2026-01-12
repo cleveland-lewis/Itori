@@ -363,7 +363,7 @@ final class CalendarRecurrenceTests: XCTestCase {
         // Test that category is properly encoded in notes
         let userNotes = "Remember to bring textbook"
         _ = EventCategory.study
-        let expectedPattern = "[RootsCategory:Study]"
+        let expectedPattern = "[ItoriCategory:Study]"
 
         // Simulate encoding
         let encodedNotes = userNotes + "\n" + expectedPattern
@@ -375,11 +375,11 @@ final class CalendarRecurrenceTests: XCTestCase {
     func testCategoryDecodingFromNotes() {
         // Test that category can be extracted from notes
         let userNotes = "Prepare presentation slides"
-        let categoryMarker = "[RootsCategory:Homework]"
+        let categoryMarker = "[ItoriCategory:Homework]"
         let encodedNotes = userNotes + "\n" + categoryMarker
 
         // Simulate decoding
-        let pattern = #"\[RootsCategory:(.*?)\]"#
+        let pattern = #"\[ItoriCategory:(.*?)\]"#
         let regex = try? NSRegularExpression(pattern: pattern, options: [])
         let range = NSRange(encodedNotes.startIndex..., in: encodedNotes)
 

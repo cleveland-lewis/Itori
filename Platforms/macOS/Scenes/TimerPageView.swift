@@ -29,6 +29,7 @@
         @State private var focusWindowController: NSWindowController? = nil
         @State private var focusWindowDelegate: FocusWindowDelegate? = nil
         @State private var currentBlockDuration: TimeInterval = 0
+        @State private var countdownDuration: TimeInterval = 600 // Default 10 minutes
 
         private var collections: [String] {
             var set: Set<String> = ["All"]
@@ -945,8 +946,13 @@
         private func startTimer() {
             guard !isRunning else { return }
             if mode != .stopwatch && remainingSeconds == 0 {
-                remainingSeconds = TimeInterval(settings.pomodoroFocusMinutes * 60)
-                currentBlockDuration = remainingSeconds
+                if mode == .countdown {
+                    remainingSeconds = countdownDuration
+                    currentBlockDuration = countdownDuration
+                } else {
+                    remainingSeconds = TimeInterval(settings.pomodoroFocusMinutes * 60)
+                    currentBlockDuration = remainingSeconds
+                }
             } else if mode == .pomodoro || mode == .countdown {
                 currentBlockDuration = max(currentBlockDuration, remainingSeconds)
             }
@@ -966,9 +972,14 @@
         private func resetTimer() {
             isRunning = false
             elapsedSeconds = 0
-            remainingSeconds = TimeInterval(settings.pomodoroFocusMinutes * 60)
+            if mode == .countdown {
+                remainingSeconds = countdownDuration
+                currentBlockDuration = countdownDuration
+            } else {
+                remainingSeconds = TimeInterval(settings.pomodoroFocusMinutes * 60)
+                currentBlockDuration = remainingSeconds
+            }
             isPomodorBreak = false
-            currentBlockDuration = remainingSeconds
         }
 
         private func completeCurrentBlock() {
@@ -986,8 +997,8 @@
                     currentBlockDuration = remainingSeconds
                 }
             case .countdown:
-                remainingSeconds = TimeInterval(settings.pomodoroFocusMinutes * 60)
-                currentBlockDuration = remainingSeconds
+                remainingSeconds = countdownDuration
+                currentBlockDuration = countdownDuration
             case .stopwatch:
                 elapsedSeconds = 0
                 currentBlockDuration = 0
@@ -1010,6 +1021,7 @@
                 completedPomodoroSessions: $completedPomodoroSessions,
                 isPomodorBreak: $isPomodorBreak,
                 isRunning: $isRunning,
+                countdownDuration: $countdownDuration,
                 accentColor: .accentColor,
                 activity: selectedActivity,
                 tasks: tasks,
@@ -1307,6 +1319,7 @@
         @Binding var completedPomodoroSessions: Int
         @Binding var isPomodorBreak: Bool
         @Binding var isRunning: Bool
+        @Binding var countdownDuration: TimeInterval
 
         var accentColor: Color
         var activity: LocalTimerActivity?
@@ -1320,14 +1333,21 @@
         @EnvironmentObject private var settings: AppSettingsModel
 
         private var clockTime: TimeInterval {
-            // When idle (not running), return 0 to show 12:00:00
-            guard isRunning else { return 0 }
+            // When idle (not running), show the full duration for countdown
+            guard isRunning else {
+                if mode == .countdown {
+                    return countdownDuration
+                }
+                return 0
+            }
 
             switch mode {
             case .stopwatch:
                 return elapsedSeconds
-            case .pomodoro, .countdown:
+            case .pomodoro:
                 return max(0, currentBlockDuration - remainingSeconds)
+            case .countdown:
+                return max(0, remainingSeconds) // Countdown shows remaining time
             }
         }
 
@@ -1341,6 +1361,28 @@
                                 .foregroundStyle(.secondary)
                                 .textCase(.uppercase)
                         }
+                        
+                        if mode == .countdown && !isRunning {
+                            // Duration selector for countdown mode
+                            HStack(spacing: 12) {
+                                ForEach([5, 10, 15, 20, 25, 30], id: \.self) { minutes in
+                                    Button(action: {
+                                        countdownDuration = TimeInterval(minutes * 60)
+                                    }) {
+                                        Text("\(minutes)m")
+                                            .font(.caption.weight(.medium))
+                                            .foregroundStyle(countdownDuration == TimeInterval(minutes * 60) ? .white : .primary)
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 6)
+                                            .background(
+                                                countdownDuration == TimeInterval(minutes * 60) ? accentColor : Color.secondary.opacity(0.2),
+                                                in: Capsule()
+                                            )
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                        }
 
                         // Clock/Timer display - ONLY difference between analog and digital
                         if settings.isTimerAnalog {
@@ -1349,7 +1391,7 @@
                                 accentColor: accentColor,
                                 dialSize: 118
                             )
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: .infinity, alignment: .center)
                             .frame(height: 240, alignment: .center)
                         } else {
                             GeometryReader { proxy in

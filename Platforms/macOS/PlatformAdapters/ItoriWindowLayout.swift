@@ -2,7 +2,7 @@
     import SwiftUI
 
     /// Minimal app window layout helper used by screens to provide stable sizes and background.
-    public struct RootsWindowLayout<Content: View>: View {
+    public struct ItoriWindowLayout<Content: View>: View {
         public static var sidebarWidth: CGFloat { 280 }
 
         let content: () -> Content

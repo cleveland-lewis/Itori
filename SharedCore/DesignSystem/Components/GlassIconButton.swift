@@ -7,7 +7,7 @@ struct GlassIconButton: View {
     var action: () -> Void
 
     var body: some View {
-        RootsHeaderButton(icon: systemName, size: 40) {
+        ItoriHeaderButton(icon: systemName, size: 40) {
             action()
         }
         .accessibilityLabelWithTooltip(accessibilityLabel ?? systemName)

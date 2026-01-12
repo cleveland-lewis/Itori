@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct RootsHoverEffect: ViewModifier {
+struct ItoriHoverEffect: ViewModifier {
     @State private var isHovered = false
 
     func body(content: Content) -> some View {
@@ -13,7 +13,7 @@ struct RootsHoverEffect: ViewModifier {
     }
 }
 
-struct RootsPressEffect: ViewModifier {
+struct ItoriPressEffect: ViewModifier {
     @State private var isPressed = false
 
     func body(content: Content) -> some View {
@@ -27,8 +27,8 @@ struct RootsPressEffect: ViewModifier {
 }
 
 extension View {
-    func rootsStandardInteraction() -> some View {
-        modifier(RootsHoverEffect())
-            .modifier(RootsPressEffect())
+    func itoriStandardInteraction() -> some View {
+        modifier(ItoriHoverEffect())
+            .modifier(ItoriPressEffect())
     }
 }

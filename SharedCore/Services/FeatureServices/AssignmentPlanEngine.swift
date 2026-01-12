@@ -51,7 +51,7 @@ enum AssignmentPlanEngine {
                 settings: settings
             )
 
-        case .homework, .homework:
+        case .homework:
             return generateHomeworkSteps(
                 assignmentId: assignment.id,
                 title: assignment.title,

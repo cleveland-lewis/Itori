@@ -1,7 +1,7 @@
 import Charts
 import SwiftUI
 
-struct RootsChartContainer<Content: View>: View {
+struct ItoriChartContainer<Content: View>: View {
     let title: String
     let summary: String?
     let trend: Trend?

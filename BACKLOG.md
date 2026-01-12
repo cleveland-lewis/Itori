@@ -6,6 +6,13 @@ Features and improvements deferred from v1.0.
 
 ## v1.1 Candidates
 
+### Practice Test Enhancements
+- Better distractor quality using common misconceptions
+- Question templates mapped to Bloom's taxonomy (20-30 templates)
+- Show research sources (Wikipedia URLs) in explanations
+- Comprehensive test suite for generation pipeline
+- Better error handling and retry logic
+
 ### Multi-Semester Selection
 - UI for selecting multiple active semesters
 - Dashboard shows aggregated stats across semesters
@@ -20,7 +27,35 @@ Features and improvements deferred from v1.0.
 
 ---
 
-## v1.2+ Candidates
+## v1.2 Candidates
+
+### Practice Test - Personalization
+- Assignment-aware question generation
+- Reference specific assignment titles in questions
+- Scenario-based questions (3-4 sentence contexts)
+- Question caching (7-day TTL)
+- Performance optimization
+
+### Practice Test - Adaptive Learning
+- Adaptive difficulty system (tracks performance)
+- Student analytics dashboard
+- Mastery visualization by topic
+- Weak area targeting
+- Study recommendations
+
+---
+
+## v1.3+ Candidates
+
+### Practice Test - Advanced Features
+- Spaced repetition integration (SM-2 algorithm)
+- AI tutor explanations for wrong answers
+- Difficulty calibration from real student data
+- Multi-language support (Spanish, French, German)
+- Collaborative question bank with ratings
+- Visual questions (diagrams, charts)
+- Voice-based practice tests
+- LMS integration (Canvas, Blackboard)
 
 ### Advanced iCloud Sync
 - Conflict resolution UI (user chooses version)

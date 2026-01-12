@@ -66,10 +66,10 @@
                     Image(systemName: systemImage)
                         .symbolEffect(.bounce, value: isHovered)
                 }
-                .rootsStandardInteraction()
+                .itoriStandardInteraction()
             }
             .accessibilityIdentifier(accessibilityID.isEmpty ? "" : accessibilityID)
-            .toggleStyle(.rootsAccent)
+            .toggleStyle(.itoriAccent)
             .tag(tab)
             .contentShape(RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
             .onHover { hovering in

@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum RootsGlassStyle {
+enum ItoriGlassStyle {
     static var cardCornerRadius: CGFloat { 16 }
     static var chromeCornerRadius: CGFloat { 12 }
 
@@ -21,7 +21,7 @@ struct GlassCardModifier: ViewModifier {
     var cornerRadius: CGFloat
 
     private var resolvedCornerRadius: CGFloat {
-        let baseRadius = RootsGlassStyle.cardCornerRadius
+        let baseRadius = ItoriGlassStyle.cardCornerRadius
         let preferredRadius = CGFloat(settings.cardCornerRadius)
         guard baseRadius > 0 else { return cornerRadius }
         let scale = preferredRadius / baseRadius
@@ -64,19 +64,19 @@ struct GlassCardModifier: ViewModifier {
                     RoundedRectangle(cornerRadius: resolvedCornerRadius, style: .continuous)
                         .stroke(Color.primary.opacity(policy.borderOpacity), lineWidth: policy.borderWidth)
                 )
-                .shadow(color: RootsGlassStyle.cardShadow, radius: 8, x: 0, y: 4)
+                .shadow(color: ItoriGlassStyle.cardShadow, radius: 8, x: 0, y: 4)
         #endif
     }
 }
 
 extension View {
     /// Glass card surface (for Dashboard cards, metrics, panels, popups).
-    func glassCard(cornerRadius: CGFloat = RootsGlassStyle.cardCornerRadius) -> some View {
+    func glassCard(cornerRadius: CGFloat = ItoriGlassStyle.cardCornerRadius) -> some View {
         self.modifier(GlassCardModifier(cornerRadius: cornerRadius))
     }
 
     /// Glass chrome surface (for tab bars, chips, navigation chrome).
-    func glassChrome(cornerRadius: CGFloat = RootsGlassStyle.chromeCornerRadius) -> some View {
+    func glassChrome(cornerRadius: CGFloat = ItoriGlassStyle.chromeCornerRadius) -> some View {
         self.modifier(GlassChromeModifier(cornerRadius: cornerRadius))
     }
 }
@@ -107,7 +107,7 @@ struct GlassChromeModifier: ViewModifier {
                     RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         .fill(policy.hudMaterial(colorScheme: colorScheme))
                 )
-                .shadow(color: RootsGlassStyle.chromeShadow, radius: 6, x: 0, y: 2)
+                .shadow(color: ItoriGlassStyle.chromeShadow, radius: 6, x: 0, y: 2)
         #endif
     }
 }

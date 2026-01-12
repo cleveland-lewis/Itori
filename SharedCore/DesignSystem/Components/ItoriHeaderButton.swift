@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct RootsHeaderButton: View {
+struct ItoriHeaderButton: View {
     let icon: String
     let size: CGFloat
     let action: () -> Void

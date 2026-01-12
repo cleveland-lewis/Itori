@@ -502,7 +502,7 @@ enum PlannerEngine {
             let slotsNeeded = max(1, Int(ceil(Double(session.estimatedMinutes) / 30.0)))
             let window = computeWindow(for: session)
             if window.1 < window.0 {
-                assertionFailure("Invalid scheduling window for session \(session.id)")
+                print("⚠️ Invalid scheduling window for session \(session.id): start=\(window.0), end=\(window.1)")
                 overflow.append(session)
                 continue
             }

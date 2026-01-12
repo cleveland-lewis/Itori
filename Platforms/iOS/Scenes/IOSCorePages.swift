@@ -812,7 +812,7 @@
         }
 
         private var assignmentStatusCard: some View {
-            RootsCard(title: nil, subtitle: nil, icon: nil) {
+            ItoriCard(title: nil, subtitle: nil, icon: nil) {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack {
                         Text(NSLocalizedString("Assignment Status", value: "Assignment Status", comment: ""))

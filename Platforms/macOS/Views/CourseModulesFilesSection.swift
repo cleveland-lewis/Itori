@@ -89,7 +89,7 @@
                     }
                 }
                 .padding(.bottom, 18)
-                .rootsCardBackground(radius: cardCorner)
+                .itoriCardBackground(radius: cardCorner)
 
                 // Files List (Course-level files)
                 if !files.isEmpty {
@@ -111,7 +111,7 @@
                         .frame(maxHeight: 200)
                     }
                     .padding(.bottom, 18)
-                    .rootsCardBackground(radius: cardCorner)
+                    .itoriCardBackground(radius: cardCorner)
                 }
             }
         }

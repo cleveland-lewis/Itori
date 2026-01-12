@@ -177,7 +177,7 @@
                     .accessibilityLabel(NSLocalizedString("ios.timer.mode", comment: "Mode"))
                 }
                 if displayStyle == .analog {
-                    RootsAnalogClock(
+                    ItoriAnalogClock(
                         style: .stopwatch,
                         diameter: max(180, timerDialDiameter),
                         showSecondHand: true,
@@ -629,7 +629,7 @@
 
                         // Clock/Timer display - ONLY difference between analog and digital
                         if displayStyle == .analog {
-                            RootsAnalogClock(
+                            ItoriAnalogClock(
                                 style: .stopwatch,
                                 diameter: min(max(220, timerDialDiameter), 520),
                                 showSecondHand: true,

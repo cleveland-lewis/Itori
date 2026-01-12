@@ -50,7 +50,7 @@
                 }
                 .padding(DesignSystem.Spacing.large)
             }
-            .rootsSystemBackground()
+            .itoriSystemBackground()
             .sheet(isPresented: $showingAddSheet) {
                 AddAssignmentView(initialType: .reading, onSave: { task in
                     AssignmentsStore.shared.addTask(task)
