@@ -11,6 +11,7 @@
         @State private var isNewCourse: Bool
 
         @State private var selectedColor: Color = .accentColor
+        @State private var showFileImporter = false
 
         init(course: Course?, semester: Semester? = nil, coursesStore: CoursesStore) {
             self.coursesStore = coursesStore
@@ -102,7 +103,7 @@
                                 .font(.headline)
 
                             Button {
-                                selectSyllabusFile()
+                                showFileImporter = true
                             } label: {
                                 Label(
                                     NSLocalizedString(
@@ -146,6 +147,20 @@
                         .disabled(course.title.isEmpty || course.code.isEmpty)
                     }
                 }
+                .fileImporter(
+                    isPresented: $showFileImporter,
+                    allowedContentTypes: [.pdf, .text, .plainText, .rtf, .html, .url],
+                    allowsMultipleSelection: false
+                ) { result in
+                    switch result {
+                    case let .success(urls):
+                        if let url = urls.first {
+                            course.syllabus = url.path
+                        }
+                    case let .failure(error):
+                        DebugLogger.log("❌ File import failed: \(error)")
+                    }
+                }
             }
             .frame(minWidth: 500, minHeight: 600)
         }
@@ -160,22 +175,6 @@
             }
 
             dismiss()
-        }
-
-        private func selectSyllabusFile() {
-            let panel = NSOpenPanel()
-            panel.allowsMultipleSelection = false
-            panel.canChooseDirectories = false
-            panel.canChooseFiles = true
-            panel.allowedContentTypes = [.pdf, .text, .plainText, .rtf, .html, .url]
-            panel.message = "Select syllabus file"
-
-            panel.begin { response in
-                if response == .OK, let url = panel.url {
-                    // Store the file path or bookmark
-                    course.syllabus = url.path
-                }
-            }
         }
     }
 
