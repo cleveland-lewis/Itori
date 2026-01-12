@@ -565,6 +565,7 @@
                     onDelete: {
                         assignmentsStore.removeTask(id: task.id)
                         selectedTask = nil
+                        FeedbackManager.shared.trigger(event: .taskDeleted)
                     },
                     onToggleCompletion: {
                         toggleCompletion(task)
@@ -585,6 +586,11 @@
             var updated = task
             updated.isCompleted.toggle()
             assignmentsStore.updateTask(updated)
+
+            // Trigger haptic feedback
+            if updated.isCompleted {
+                FeedbackManager.shared.trigger(event: .taskCompleted)
+            }
         }
 
         private func openPlanner(for task: AppTask) {
@@ -610,6 +616,7 @@
                 let task = sortedTasks[index]
                 assignmentsStore.removeTask(id: task.id)
             }
+            FeedbackManager.shared.trigger(event: .taskDeleted)
         }
 
         private var filteredTasks: [AppTask] {
@@ -635,6 +642,7 @@
             let task = draft.makeTask(existing: editingTask)
             if editingTask == nil {
                 assignmentsStore.addTask(task)
+                FeedbackManager.shared.trigger(event: .taskCreated)
             } else {
                 assignmentsStore.updateTask(task)
             }

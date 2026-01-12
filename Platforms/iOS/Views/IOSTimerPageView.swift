@@ -245,23 +245,35 @@
         private var controlRow: some View {
             HStack(spacing: 12) {
                 if isRunning {
-                    Button(NSLocalizedString("ios.timer.pause", comment: "Pause")) { viewModel.pauseSession() }
-                        .buttonStyle(.bordered)
-                        .accessibilityIdentifier("Timer.Pause")
+                    Button(NSLocalizedString("ios.timer.pause", comment: "Pause")) {
+                        viewModel.pauseSession()
+                        FeedbackManager.shared.trigger(event: .timerStopped)
+                    }
+                    .buttonStyle(.bordered)
+                    .accessibilityIdentifier("Timer.Pause")
                 } else if isPaused {
-                    Button(NSLocalizedString("ios.timer.resume", comment: "Resume")) { viewModel.resumeSession() }
-                        .buttonStyle(.borderedProminent)
-                        .accessibilityIdentifier("Timer.Resume")
+                    Button(NSLocalizedString("ios.timer.resume", comment: "Resume")) {
+                        viewModel.resumeSession()
+                        FeedbackManager.shared.trigger(event: .timerStarted)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .accessibilityIdentifier("Timer.Resume")
                 } else {
-                    Button(NSLocalizedString("ios.timer.start", comment: "Start")) { viewModel.startSession() }
-                        .buttonStyle(.borderedProminent)
-                        .accessibilityIdentifier("Timer.Start")
+                    Button(NSLocalizedString("ios.timer.start", comment: "Start")) {
+                        viewModel.startSession()
+                        FeedbackManager.shared.trigger(event: .timerStarted)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .accessibilityIdentifier("Timer.Start")
                 }
 
-                Button(NSLocalizedString("ios.timer.stop", comment: "Stop")) { viewModel.endSession(completed: false) }
-                    .buttonStyle(.bordered)
-                    .disabled(sessionState == .idle)
-                    .accessibilityIdentifier("Timer.Stop")
+                Button(NSLocalizedString("ios.timer.stop", comment: "Stop")) {
+                    viewModel.endSession(completed: false)
+                    FeedbackManager.shared.trigger(event: .timerStopped)
+                }
+                .buttonStyle(.bordered)
+                .disabled(sessionState == .idle)
+                .accessibilityIdentifier("Timer.Stop")
 
                 if viewModel.currentMode == .pomodoro {
                     Button(NSLocalizedString("ios.timer.skip", comment: "Skip")) { viewModel.skipSegment() }
