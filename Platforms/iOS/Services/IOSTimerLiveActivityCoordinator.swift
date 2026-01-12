@@ -9,14 +9,16 @@ import Foundation
         private let liveActivityManager = IOSTimerLiveActivityManager()
         private var observer: NSObjectProtocol?
 
-        private init(viewModel: TimerPageViewModel = .shared) {
-            self.viewModel = viewModel
+        private init() {
+            self.viewModel = TimerPageViewModel.shared
             observer = NotificationCenter.default.addObserver(
                 forName: .timerSessionDidUpdate,
                 object: nil,
                 queue: .main
             ) { [weak self] _ in
-                self?.syncLiveActivity()
+                Task { @MainActor in
+                    self?.syncLiveActivity()
+                }
             }
             syncLiveActivity()
         }
