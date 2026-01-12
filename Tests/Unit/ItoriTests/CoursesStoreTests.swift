@@ -257,6 +257,9 @@ final class CoursesStoreTests: BaseTestCase {
         store.addSemester(active)
         store.addSemester(archived)
 
+        // Mark semester as active
+        store.activeSemesterIds.insert(active.id)
+
         XCTAssertEqual(store.activeSemesters.count, 1)
         XCTAssertEqual(store.activeSemesters.first?.id, active.id)
     }

@@ -515,7 +515,8 @@ final class CompleteFlowIntegrationTests: BaseTestCase {
                 title: block.title,
                 start: block.start,
                 end: block.end,
-                notes: block.notes
+                notes: block.notes,
+                url: nil
             )
         }
 

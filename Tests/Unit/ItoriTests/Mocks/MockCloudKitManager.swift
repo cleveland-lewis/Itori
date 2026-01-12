@@ -23,6 +23,9 @@ class MockCloudKitManager {
     var fetchCallCount = 0
     var conflictResolver: ((Data, Data) -> Data)?
 
+    // Track if conflict detection is enabled (for testing conflict scenarios)
+    var detectConflicts = false
+
     var isConnected = true
     var quotaRemaining: Int64 = 1_000_000_000 // 1GB
 
@@ -41,9 +44,21 @@ class MockCloudKitManager {
             throw failureError
         }
 
-        // Last write wins - always update the data
-        syncedData[key] = data
-        quotaRemaining -= Int64(data.count)
+        // Check for conflicts only if detectConflicts is enabled
+        if detectConflicts, let existingData = syncedData[key] {
+            if let resolver = conflictResolver {
+                // Use conflict resolver if provided
+                syncedData[key] = resolver(existingData, data)
+                quotaRemaining -= Int64(data.count)
+            } else {
+                // No resolver - throw conflict error
+                throw MockCloudKitError.conflictDetected
+            }
+        } else {
+            // Normal operation: last write wins
+            syncedData[key] = data
+            quotaRemaining -= Int64(data.count)
+        }
     }
 
     func fetchFromCloud(key: String) async throws -> Data? {

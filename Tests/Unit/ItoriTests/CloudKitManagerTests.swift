@@ -88,6 +88,9 @@ final class CloudKitManagerTests: XCTestCase {
         let data1 = "Original".data(using: .utf8)!
         let data2 = "Modified".data(using: .utf8)!
 
+        // Enable conflict detection for this test
+        mockCloudKit.detectConflicts = true
+
         try? await mockCloudKit.syncToCloud(key: "conflict_key", data: data1)
 
         do {
@@ -104,7 +107,8 @@ final class CloudKitManagerTests: XCTestCase {
         let data1 = "Original".data(using: .utf8)!
         let data2 = "Modified".data(using: .utf8)!
 
-        // Set resolver to always prefer newer data
+        // Enable conflict detection and set resolver to always prefer newer data
+        mockCloudKit.detectConflicts = true
         mockCloudKit.conflictResolver = { _, new in new }
 
         try await mockCloudKit.syncToCloud(key: "conflict_key", data: data1)
