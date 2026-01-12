@@ -14,17 +14,16 @@
 
         @State private var title: String = ""
         @State private var code: String = ""
-        @State private var instructor: String = ""
-        @State private var term: String = ""
-        @State private var credits: Int = 3
         @State private var color: Color = .accentColor
-        @State private var isArchived: Bool = false
         @State private var attachments: [Attachment] = []
-        @State private var showDiscardDialog = false
 
         init(mode: Mode, onSave: @escaping (Course) -> Void) {
             self.mode = mode
             self.onSave = onSave
+        }
+
+        private var isSaveDisabled: Bool {
+            title.trimmingCharacters(in: .whitespaces).isEmpty
         }
 
         private var hasUnsavedChanges: Bool {
@@ -34,99 +33,66 @@
         }
 
         var body: some View {
-            VStack(alignment: .leading, spacing: 16) {
-                Text(title)
-                    .font(DesignSystem.Typography.header)
+            StandardSheetContainer(
+                title: titleText,
+                primaryActionTitle: "Save",
+                primaryAction: saveCourse,
+                primaryActionDisabled: isSaveDisabled,
+                hasUnsavedChanges: hasUnsavedChanges,
+                onDismiss: { dismiss() }
+            ) {
+                VStack(alignment: .leading, spacing: 16) {
+                    // Title
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Course Name")
+                            .font(.system(size: 13, weight: .medium))
+                        TextField("", text: $title, prompt: Text("Introduction to Computer Science"))
+                            .textFieldStyle(.roundedBorder)
+                    }
 
-                Form {
-                    TextField("Course Title", text: $title)
-                    TextField("Course Code", text: $code)
-                    // Instructor/term/credits not used in new Course model — omit
+                    // Code
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack(spacing: 4) {
+                            Text("Course Code")
+                                .font(.system(size: 13, weight: .medium))
+                            InfoButton(text: "Optional short identifier like CS101")
+                        }
+                        TextField("", text: $code, prompt: Text("CS101"))
+                            .textFieldStyle(.roundedBorder)
+                    }
 
+                    // Color
                     ColorPicker("Color", selection: $color)
+                        .font(.system(size: 13))
 
-                    Toggle(
-                        NSLocalizedString(
-                            "addeditcourse.toggle.archived.placeholder",
-                            value: "Archived (placeholder)",
-                            comment: "Archived (placeholder)"
-                        ),
-                        isOn: $isArchived
-                    )
-                }
-                .formStyle(.grouped)
+                    // Materials (if any)
+                    if !attachments.isEmpty {
+                        Divider()
 
-                // Course Materials Section
-                VStack(alignment: .leading, spacing: 12) {
-                    Text(NSLocalizedString(
-                        "addeditcourse.course.materials",
-                        value: "Course Materials",
-                        comment: "Course Materials"
-                    ))
-                    .font(DesignSystem.Typography.subHeader)
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Materials")
+                                .font(.system(size: 13, weight: .semibold))
+                                .foregroundStyle(.secondary)
+                                .textCase(.uppercase)
+                                .tracking(0.5)
 
-                    AttachmentListView(attachments: $attachments, courseId: nil)
-                }
-                .padding(.vertical, 8)
-
-                HStack {
-                    Button(NSLocalizedString("addeditcourse.button.cancel", value: "Cancel", comment: "Cancel")) {
-                        if hasUnsavedChanges {
-                            showDiscardDialog = true
-                        } else {
-                            dismiss()
+                            AttachmentListView(attachments: $attachments, courseId: nil)
                         }
                     }
-                    Spacer()
-                    Button(NSLocalizedString("addeditcourse.button.save", value: "Save", comment: "Save")) {
-                        saveCourse()
-                    }
-                    .keyboardShortcut(.defaultAction)
                 }
-            }
-            .padding(DesignSystem.Layout.padding.card)
-            .frame(minWidth: 420)
-            .interactiveDismissDisabled(hasUnsavedChanges)
-            .confirmationDialog(
-                "Discard changes?",
-                isPresented: $showDiscardDialog,
-                titleVisibility: .visible
-            ) {
-                Button(NSLocalizedString(
-                    "addeditcourse.button.save.and.close",
-                    value: "Save and Close",
-                    comment: "Save and Close"
-                )) {
-                    saveCourse()
-                }
-                Button(
-                    NSLocalizedString("Discard Changes", value: "Discard Changes", comment: ""),
-                    role: .destructive
-                ) {
-                    dismiss()
-                }
-                Button(NSLocalizedString("Cancel", value: "Cancel", comment: ""), role: .cancel) {}
-            } message: {
-                Text(NSLocalizedString(
-                    "addeditcourse.you.have.unsaved.edits.save",
-                    value: "You have unsaved edits. Save before closing to avoid losing them.",
-                    comment: "You have unsaved edits. Save before closing to avo..."
-                ))
             }
             .onAppear {
                 if case let .edit(existing) = mode {
                     title = existing.title
                     code = existing.code
                     attachments = existing.attachments
-                    // colorHex -> Color mapping not implemented; keep color default
-                    isArchived = false
                 }
             }
         }
 
         private var titleText: String {
             switch mode {
-            case .new: "Add Course"
+            case .new: "New Course"
             case .edit: "Edit Course"
             }
         }

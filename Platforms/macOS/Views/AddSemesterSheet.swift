@@ -13,94 +13,135 @@
 
         private var computedName: String { "\(term.rawValue) \(year)" }
 
+        private var isSaveDisabled: Bool {
+            endDate < startDate
+        }
+
         var body: some View {
-            VStack {
-                AppCard {
+            StandardSheetContainer(
+                title: "New Semester",
+                primaryActionTitle: "Save",
+                primaryAction: saveSemester,
+                primaryActionDisabled: isSaveDisabled,
+                onDismiss: { dismiss() }
+            ) {
+                VStack(alignment: .leading, spacing: 20) {
+                    // Semester Name Preview
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Semester Name")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(.secondary)
+                            .textCase(.uppercase)
+                            .tracking(0.5)
+
+                        Text(computedName)
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundStyle(.primary)
+                    }
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.accentColor.opacity(0.08))
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+
+                    Divider()
+
+                    // Term and Year
                     VStack(alignment: .leading, spacing: 12) {
-                        Text(NSLocalizedString("ui.new.semester", value: "New Semester", comment: "New Semester"))
-                            .font(.title3.bold())
-
-                        HStack {
-                            Text(computedName)
-                                .font(DesignSystem.Typography.subHeader)
-                            Spacer()
-                        }
-
                         Picker("Term", selection: $term) {
                             ForEach(SemesterType.allCases) { t in
                                 Text(t.rawValue).tag(t)
                             }
                         }
-
-                        Stepper("Year: \(year)", value: $year, in: 2000 ... 2100) { _ in
-                            // update start/end defaults when year changes
-                            var comps = Calendar.current.dateComponents([.year, .month, .day], from: startDate)
-                            comps.year = year
-                            switch term {
-                            case .fall:
-                                comps.month = 9
-                                comps.day = 1
-                            case .winter:
-                                comps.month = 1
-                                comps.day = 6
-                            case .spring:
-                                comps.month = 1
-                                comps.day = 15
-                            case .summerI:
-                                comps.month = 6
-                                comps.day = 1
-                            case .summerII:
-                                comps.month = 7
-                                comps.day = 1
-                            }
-                            if let newStart = Calendar.current.date(from: comps) {
-                                startDate = newStart
-                                endDate = Calendar.current.date(byAdding: .month, value: 4, to: newStart) ?? newStart
-                            }
+                        .pickerStyle(.segmented)
+                        .onChange(of: term) { _, _ in
+                            updateDatesForTerm()
                         }
 
-                        Text(NSLocalizedString("ui.start.date", value: "Start date", comment: "Start date"))
-                        DatePicker("Start", selection: $startDate, displayedComponents: .date)
-
-                        Text(NSLocalizedString("ui.end.date", value: "End date", comment: "End date"))
-                        DatePicker("End", selection: $endDate, displayedComponents: .date)
-
-                        Toggle(
-                            NSLocalizedString(
-                                "ui.toggle.set.as.current.semester",
-                                value: "Set as current semester",
-                                comment: "Set as current semester"
-                            ),
-                            isOn: $markAsCurrent
-                        )
-
-                        HStack {
-                            Spacer()
-                            Button(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel")) {
-                                dismiss()
+                        Stepper("Year: \(year)", value: $year, in: 2000 ... 2100)
+                            .font(.system(size: 15))
+                            .onChange(of: year) { _, _ in
+                                updateDatesForTerm()
                             }
-                            Button(NSLocalizedString("ui.button.save", value: "Save", comment: "Save")) {
-                                guard endDate >= startDate else { return }
-                                let sem = Semester(
-                                    startDate: startDate,
-                                    endDate: endDate,
-                                    isCurrent: markAsCurrent,
-                                    educationLevel: .college,
-                                    semesterTerm: term,
-                                    academicYear: "\(year)-\(year + 1)"
-                                )
-                                coursesStore.addSemester(sem)
-                                if markAsCurrent { coursesStore.setCurrentSemester(sem) }
-                                dismiss()
-                            }
-                            .buttonStyle(.glassBlueProminent)
-                        }
-                        .font(.callout)
                     }
+
+                    Divider()
+
+                    // Dates
+                    VStack(alignment: .leading, spacing: 12) {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Start Date")
+                                .font(.system(size: 13))
+                                .foregroundStyle(.secondary)
+                            DatePicker("", selection: $startDate, displayedComponents: .date)
+                                .datePickerStyle(.field)
+                                .labelsHidden()
+                        }
+
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("End Date")
+                                .font(.system(size: 13))
+                                .foregroundStyle(.secondary)
+                            DatePicker("", selection: $endDate, displayedComponents: .date)
+                                .datePickerStyle(.field)
+                                .labelsHidden()
+                        }
+
+                        if endDate < startDate {
+                            Text("End date must be after start date")
+                                .font(.system(size: 12))
+                                .foregroundStyle(.red)
+                        }
+                    }
+
+                    Divider()
+
+                    // Options
+                    Toggle("Set as current semester", isOn: $markAsCurrent)
+                        .font(.system(size: 15))
                 }
-                .padding(ItariSpacing.m)
             }
-            .frame(width: 420)
+        }
+
+        private func updateDatesForTerm() {
+            var comps = Calendar.current.dateComponents([.year, .month, .day], from: startDate)
+            comps.year = year
+            switch term {
+            case .fall:
+                comps.month = 9
+                comps.day = 1
+            case .winter:
+                comps.month = 1
+                comps.day = 6
+            case .spring:
+                comps.month = 1
+                comps.day = 15
+            case .summerI:
+                comps.month = 6
+                comps.day = 1
+            case .summerII:
+                comps.month = 7
+                comps.day = 1
+            }
+            if let newStart = Calendar.current.date(from: comps) {
+                startDate = newStart
+                endDate = Calendar.current.date(byAdding: .month, value: 4, to: newStart) ?? newStart
+            }
+        }
+
+        private func saveSemester() {
+            guard endDate >= startDate else { return }
+            let sem = Semester(
+                startDate: startDate,
+                endDate: endDate,
+                isCurrent: markAsCurrent,
+                educationLevel: .college,
+                semesterTerm: term,
+                academicYear: "\(year)-\(year + 1)"
+            )
+            coursesStore.addSemester(sem)
+            if markAsCurrent { coursesStore.setCurrentSemester(sem) }
+            dismiss()
         }
     }
 #endif
