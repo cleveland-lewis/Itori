@@ -40,9 +40,9 @@
         @ScaledMetric private var headlineSize: CGFloat = 28
         @ScaledMetric private var largeHeadlineSize: CGFloat = 36
 
-        // Layout tokens
-        private let cardSpacing: CGFloat = 12 // Spacing within rows (between cards horizontally)
-        private let rowSpacing: CGFloat = 24 // Spacing between rows (vertically)
+        // Layout tokens - Native macOS spacing
+        private let cardSpacing: CGFloat = 20 // Spacing within rows (between cards horizontally)
+        private let rowSpacing: CGFloat = 20 // Spacing between rows (vertically)
         private let contentPadding: CGFloat = ItariSpacing.pagePadding
         private let bottomDockClearancePadding: CGFloat = 80
         private let cardMinHeight: CGFloat = 200
