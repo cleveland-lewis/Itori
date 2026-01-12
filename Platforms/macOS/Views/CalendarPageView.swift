@@ -178,10 +178,12 @@
 
         var body: some View {
             GeometryReader { proxy in
-                let verticalPadding = ItariSpacing.pagePadding
+                let horizontalPadding = ItariSpacing.pagePadding
+                let topPadding: CGFloat = 16
+                let bottomPadding: CGFloat = 16
                 let topToolbarHeight = DesignSystem.Layout.rowHeight.large + 12
-                let topSectionSpacing: CGFloat = 16
-                let availableWidth = max(0, proxy.size.width - verticalPadding * 2)
+                let topSectionSpacing: CGFloat = 12
+                let availableWidth = max(0, proxy.size.width - horizontalPadding * 2)
                 let sidebarWidth = max(220, min(280, availableWidth * 0.28))
                 let gridPadding = max(8, min(16, availableWidth * 0.02))
                 let loadingHeight: CGFloat = (isHydratingInitial || isHydratingFull) ? 24 : 0
@@ -189,11 +191,12 @@
                     + (loadingHeight > 0 ? loadingHeight + topSectionSpacing : 0)
                 let panelHeight = max(
                     0,
-                    proxy.size.height - verticalPadding * 2 - topSectionsHeight - topSectionSpacing
+                    proxy.size.height - topPadding - bottomPadding - topSectionsHeight - topSectionSpacing
                 )
 
-                VStack(spacing: topSectionSpacing) {
+                VStack(spacing: 0) {
                     headerView
+                        .padding(.bottom, topSectionSpacing)
 
                     if isHydratingInitial || isHydratingFull {
                         HStack(spacing: 8) {
@@ -204,14 +207,15 @@
                             Spacer()
                         }
                         .padding(.horizontal, 4)
+                        .padding(.bottom, topSectionSpacing)
                     }
 
-                    // Main content: sidebar + calendar grid (equal height cards)
+                    // Main content: sidebar + calendar grid - fill remaining space
                     HStack(alignment: .top, spacing: 16) {
                         // Left sidebar showing events for selected date
                         eventSidebarView
                             .frame(width: sidebarWidth)
-                            .frame(height: panelHeight, alignment: .top)
+                            .frame(maxHeight: .infinity, alignment: .top)
 
                         // Main calendar grid
                         VStack(spacing: 12) {
@@ -228,11 +232,12 @@
                             RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
                                 .stroke(Color.primary.opacity(0.06), lineWidth: 1)
                         )
-                        .frame(height: panelHeight, alignment: .top)
                     }
-                    .frame(maxWidth: .infinity)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                 }
-                .padding(verticalPadding)
+                .padding(.horizontal, horizontalPadding)
+                .padding(.top, topPadding)
+                .padding(.bottom, bottomPadding)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             }
             .sheet(isPresented: $showingNewEventSheet) {
