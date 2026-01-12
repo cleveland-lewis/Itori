@@ -158,7 +158,7 @@ final class FileParsingService: ObservableObject {
 
     // MARK: - Parsing Implementation
 
-    private func performParsing(for file: CourseFile) async throws -> ParseResults {
+    func performParsing(for file: CourseFile) async throws -> ParseResults {
         // Determine file type and route to appropriate parser
         let fileExtension = file.url.pathExtension.lowercased()
 
