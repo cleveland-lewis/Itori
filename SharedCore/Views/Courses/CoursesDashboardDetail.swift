@@ -46,7 +46,14 @@ struct CoursesDashboardDetail: View {
 
                 HStack(spacing: 16) {
                     Label {
-                        Text(String(format: NSLocalizedString("course.credits", value: "%.1f Credits", comment: "Course credits"), course.credits))
+                        Text(String(
+                            format: NSLocalizedString(
+                                "course.credits",
+                                value: "%.1f Credits",
+                                comment: "Course credits"
+                            ),
+                            course.credits
+                        ))
                     } icon: {
                         Image(systemName: "book.fill")
                     }
@@ -103,18 +110,25 @@ struct CoursesDashboardDetail: View {
     private var meetingsCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Label(NSLocalizedString("ui.label.meetings", value: "Meetings", comment: "Meetings"), systemImage: "clock.fill")
-                    .font(DesignSystem.Typography.body)
-                    .foregroundStyle(.primary)
+                Label(
+                    NSLocalizedString("ui.label.meetings", value: "Meetings", comment: "Meetings"),
+                    systemImage: "clock.fill"
+                )
+                .font(DesignSystem.Typography.body)
+                .foregroundStyle(.primary)
 
                 Spacer()
             }
 
             if course.meetings.isEmpty {
-                Text(NSLocalizedString("ui.no.scheduled.meetings", value: "No scheduled meetings", comment: "No scheduled meetings"))
-                    .font(DesignSystem.Typography.caption)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text(NSLocalizedString(
+                    "ui.no.scheduled.meetings",
+                    value: "No scheduled meetings",
+                    comment: "No scheduled meetings"
+                ))
+                .font(DesignSystem.Typography.caption)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
             } else {
                 VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                     ForEach(course.meetings) { meeting in
@@ -130,7 +144,10 @@ struct CoursesDashboardDetail: View {
                         .padding(.vertical, 6)
                         .padding(.horizontal, 10)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color(nsColor: .controlBackgroundColor).opacity(0.3), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        .background(
+                            Color(nsColor: .controlBackgroundColor).opacity(0.3),
+                            in: RoundedRectangle(cornerRadius: 8, style: .continuous)
+                        )
                     }
                 }
             }
@@ -157,9 +174,16 @@ struct CoursesDashboardDetail: View {
 
     private var syllabusCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label(NSLocalizedString("ui.label.syllabus.breakdown", value: "Syllabus Breakdown", comment: "Syllabus Breakdown"), systemImage: "chart.bar.fill")
-                .font(DesignSystem.Typography.body)
-                .foregroundStyle(.primary)
+            Label(
+                NSLocalizedString(
+                    "ui.label.syllabus.breakdown",
+                    value: "Syllabus Breakdown",
+                    comment: "Syllabus Breakdown"
+                ),
+                systemImage: "chart.bar.fill"
+            )
+            .font(DesignSystem.Typography.body)
+            .foregroundStyle(.primary)
 
             VStack(spacing: 12) {
                 syllabusProgressBar(
@@ -243,9 +267,12 @@ struct CoursesDashboardDetail: View {
 
     private var analyticsColumn: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label(NSLocalizedString("ui.label.analytics", value: "Analytics", comment: "Analytics"), systemImage: "chart.xyaxis.line")
-                .font(DesignSystem.Typography.body)
-                .foregroundStyle(.primary)
+            Label(
+                NSLocalizedString("ui.label.analytics", value: "Analytics", comment: "Analytics"),
+                systemImage: "chart.xyaxis.line"
+            )
+            .font(DesignSystem.Typography.body)
+            .foregroundStyle(.primary)
 
             if hasAnalyticsData {
                 VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
@@ -279,18 +306,29 @@ struct CoursesDashboardDetail: View {
                 }
             } else {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text(NSLocalizedString("ui.no.analytics.yet", value: "No analytics yet.", comment: "No analytics yet."))
-                        .font(.subheadline.weight(.semibold))
-                    Text(NSLocalizedString("ui.well.show.assignment.progress.and", value: "We’ll show assignment progress and study time once this course has data.", comment: "We’ll show assignment progress and study time once..."))
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                    Text(NSLocalizedString(
+                        "ui.no.analytics.yet",
+                        value: "No analytics yet.",
+                        comment: "No analytics yet."
+                    ))
+                    .font(.subheadline.weight(.semibold))
+                    Text(NSLocalizedString(
+                        "ui.well.show.assignment.progress.and",
+                        value: "We’ll show assignment progress and study time once this course has data.",
+                        comment: "We’ll show assignment progress and study time once..."
+                    ))
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(nsColor: .controlBackgroundColor).opacity(0.3), in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+        .background(
+            Color(nsColor: .controlBackgroundColor).opacity(0.3),
+            in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
+        )
     }
 
     private func analyticRow(title: String, value: String, icon: String, color: Color) -> some View {
@@ -314,16 +352,19 @@ struct CoursesDashboardDetail: View {
 
     private var hasAnalyticsData: Bool {
         course.analytics.assignmentsTotal > 0
-        || course.analytics.assignmentsCompleted > 0
-        || course.analytics.averageScore > 0
-        || course.analytics.hoursStudied > 0
+            || course.analytics.assignmentsCompleted > 0
+            || course.analytics.averageScore > 0
+            || course.analytics.hoursStudied > 0
     }
 
     private var instructorNotesColumn: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label(NSLocalizedString("ui.label.instructor.notes", value: "Instructor Notes", comment: "Instructor Notes"), systemImage: "note.text")
-                .font(DesignSystem.Typography.body)
-                .foregroundStyle(.primary)
+            Label(
+                NSLocalizedString("ui.label.instructor.notes", value: "Instructor Notes", comment: "Instructor Notes"),
+                systemImage: "note.text"
+            )
+            .font(DesignSystem.Typography.body)
+            .foregroundStyle(.primary)
 
             if let notes = course.instructorNotes {
                 Text(notes)
@@ -331,28 +372,46 @@ struct CoursesDashboardDetail: View {
                     .foregroundStyle(.secondary)
                     .lineSpacing(4)
             } else {
-                Text(NSLocalizedString("ui.no.notes.available", value: "No notes available", comment: "No notes available"))
-                    .font(DesignSystem.Typography.body)
-                    .foregroundStyle(.tertiary)
-                    .italic()
+                Text(NSLocalizedString(
+                    "ui.no.notes.available",
+                    value: "No notes available",
+                    comment: "No notes available"
+                ))
+                .font(DesignSystem.Typography.body)
+                .foregroundStyle(.tertiary)
+                .italic()
             }
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(nsColor: .controlBackgroundColor).opacity(0.3), in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+        .background(
+            Color(nsColor: .controlBackgroundColor).opacity(0.3),
+            in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
+        )
     }
 
     private var deadlinesColumn: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Label(NSLocalizedString("ui.label.upcoming.deadlines", value: "Upcoming Deadlines", comment: "Upcoming Deadlines"), systemImage: "calendar.badge.exclamationmark")
-                .font(DesignSystem.Typography.body)
-                .foregroundStyle(.primary)
+            Label(
+                NSLocalizedString(
+                    "ui.label.upcoming.deadlines",
+                    value: "Upcoming Deadlines",
+                    comment: "Upcoming Deadlines"
+                ),
+                systemImage: "calendar.badge.exclamationmark"
+            )
+            .font(DesignSystem.Typography.body)
+            .foregroundStyle(.primary)
 
             if course.upcomingDeadlines.isEmpty {
-                Text(NSLocalizedString("ui.no.upcoming.deadlines", value: "No upcoming deadlines", comment: "No upcoming deadlines"))
-                    .font(DesignSystem.Typography.body)
-                    .foregroundStyle(.tertiary)
-                    .italic()
+                Text(NSLocalizedString(
+                    "ui.no.upcoming.deadlines",
+                    value: "No upcoming deadlines",
+                    comment: "No upcoming deadlines"
+                ))
+                .font(DesignSystem.Typography.body)
+                .foregroundStyle(.tertiary)
+                .italic()
             } else {
                 VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                     ForEach(course.upcomingDeadlines.prefix(3)) { deadline in
@@ -363,15 +422,18 @@ struct CoursesDashboardDetail: View {
         }
         .padding(14)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(nsColor: .controlBackgroundColor).opacity(0.3), in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous))
+        .background(
+            Color(nsColor: .controlBackgroundColor).opacity(0.3),
+            in: RoundedRectangle(cornerRadius: DesignSystem.Layout.cornerRadiusStandard, style: .continuous)
+        )
     }
 
     private func deadlineTypeColor(_ type: CourseDeadline.DeadlineType) -> Color {
         switch type {
-        case .assignment: return .blue
-        case .exam: return .red
-        case .project: return .green
-        case .quiz: return .orange
+        case .assignment: .blue
+        case .exam: .red
+        case .project: .green
+        case .quiz: .orange
         }
     }
 }
@@ -403,12 +465,12 @@ private extension CoursesDashboardDetail {
     }
 
     var deadlineBackgroundColor: Color {
-    #if os(macOS)
-        return Color(nsColor: .textBackgroundColor).opacity(0.5)
-    #elseif canImport(UIKit)
-        return Color(uiColor: .secondarySystemBackground).opacity(0.5)
-    #else
-        return Color.gray.opacity(0.2)
-    #endif
+        #if os(macOS)
+            return Color(nsColor: .textBackgroundColor).opacity(0.5)
+        #elseif canImport(UIKit)
+            return Color(uiColor: .secondarySystemBackground).opacity(0.5)
+        #else
+            return Color.gray.opacity(0.2)
+        #endif
     }
 }

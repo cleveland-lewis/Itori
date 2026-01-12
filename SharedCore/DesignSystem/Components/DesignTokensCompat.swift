@@ -549,7 +549,7 @@ extension Text {
     func itoriSectionHeader() -> some View {
         self.font(.headline).foregroundStyle(.secondary)
     }
-    
+
     func itoriBody() -> some View {
         self.font(.body)
     }

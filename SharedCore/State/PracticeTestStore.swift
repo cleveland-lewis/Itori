@@ -63,15 +63,15 @@ final class PracticeTestStore: ObservableObject {
             if useWebEnhancedGenerator {
                 // Use web-enhanced generator (preferred method)
                 let result = await webEnhancedGenerator.generateTest(request: request)
-                
+
                 switch result {
-                case .success(let generatedQuestions):
+                case let .success(generatedQuestions):
                     questions = generatedQuestions
-                    
-                case .failure(let error):
+
+                case let .failure(error):
                     throw error
                 }
-                
+
             } else if useAlgorithmicGenerator {
                 // Use blueprint-first algorithmic generator
                 let result = await algorithmicGenerator.generateTest(request: request)

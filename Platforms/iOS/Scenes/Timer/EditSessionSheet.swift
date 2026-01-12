@@ -47,13 +47,25 @@
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button(NSLocalizedString("Cancel", value: "Cancel", comment: "")) { dismiss() }
-                            .accessibilityLabel(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel button"))
+                            .accessibilityLabel(NSLocalizedString(
+                                "ui.button.cancel",
+                                value: "Cancel",
+                                comment: "Cancel button"
+                            ))
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(NSLocalizedString("Save", value: "Save", comment: "")) { saveChanges() }
                             .disabled(endDate < startDate)
-                            .accessibilityLabel(NSLocalizedString("ui.button.save", value: "Save", comment: "Save button"))
-                            .accessibilityHint(NSLocalizedString("editsession.save.hint", value: "Saves the updated session times", comment: "Hint for save button"))
+                            .accessibilityLabel(NSLocalizedString(
+                                "ui.button.save",
+                                value: "Save",
+                                comment: "Save button"
+                            ))
+                            .accessibilityHint(NSLocalizedString(
+                                "editsession.save.hint",
+                                value: "Saves the updated session times",
+                                comment: "Hint for save button"
+                            ))
                     }
                 }
             }

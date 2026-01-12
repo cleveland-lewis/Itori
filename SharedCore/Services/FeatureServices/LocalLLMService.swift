@@ -485,25 +485,25 @@ final class LocalLLMService: ObservableObject {
             return keywords.isEmpty ? false : Double(matchCount) / Double(keywords.count) >= 0.4
         }
     }
-    
+
     // MARK: - Custom Prompt Generation for Web-Enhanced Tests
-    
+
     /// Generate questions using a custom prompt (for web-enhanced generation)
     func generateWithCustomPrompt(_ prompt: String) async throws -> String {
         guard isAvailable else {
             throw LLMError.modelUnavailable
         }
-        
+
         do {
             // Call the backend with the custom prompt
             let llmResponse = try await backend.generate(prompt: prompt)
-            
+
             guard !llmResponse.text.isEmpty else {
                 throw LLMError.invalidResponse
             }
-            
+
             return llmResponse.text
-            
+
         } catch {
             throw LLMError.backendError(error)
         }

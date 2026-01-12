@@ -281,7 +281,11 @@
                             .font(.body.weight(.medium))
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel(NSLocalizedString("ui.button.previous.month", value: "Previous month", comment: "Previous month button"))
+                    .accessibilityLabel(NSLocalizedString(
+                        "ui.button.previous.month",
+                        value: "Previous month",
+                        comment: "Previous month button"
+                    ))
 
                     Button(NSLocalizedString("Today", value: "Today", comment: ""), action: onToday)
                         .buttonStyle(.bordered)
@@ -291,7 +295,11 @@
                             .font(.body.weight(.medium))
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel(NSLocalizedString("ui.button.next.month", value: "Next month", comment: "Next month button"))
+                    .accessibilityLabel(NSLocalizedString(
+                        "ui.button.next.month",
+                        value: "Next month",
+                        comment: "Next month button"
+                    ))
                 }
             }
         }

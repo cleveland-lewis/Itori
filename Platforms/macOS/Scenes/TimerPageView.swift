@@ -1361,7 +1361,7 @@
                                 .foregroundStyle(.secondary)
                                 .textCase(.uppercase)
                         }
-                        
+
                         if mode == .countdown && !isRunning {
                             // Duration selector for countdown mode
                             HStack(spacing: 12) {
@@ -1371,11 +1371,13 @@
                                     }) {
                                         Text("\(minutes)m")
                                             .font(.caption.weight(.medium))
-                                            .foregroundStyle(countdownDuration == TimeInterval(minutes * 60) ? .white : .primary)
+                                            .foregroundStyle(countdownDuration == TimeInterval(minutes * 60) ? .white :
+                                                .primary)
                                             .padding(.horizontal, 12)
                                             .padding(.vertical, 6)
                                             .background(
-                                                countdownDuration == TimeInterval(minutes * 60) ? accentColor : Color.secondary.opacity(0.2),
+                                                countdownDuration == TimeInterval(minutes * 60) ? accentColor : Color
+                                                    .secondary.opacity(0.2),
                                                 in: Capsule()
                                             )
                                     }

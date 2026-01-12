@@ -113,9 +113,9 @@
             }
             #endif
         }
-        
+
         // MARK: - Sidebar
-        
+
         private var sidebarContent: some View {
             List(selection: $selectedTab) {
                 ForEach(visibleTabs, id: \.self) { tab in
@@ -132,7 +132,7 @@
                 ideal: WindowSizing.idealSidebarWidth
             )
         }
-        
+
         private var visibleTabs: [RootTab] {
             RootTab.allCases.filter { tab in
                 // Filter flashcards based on settings
@@ -142,9 +142,9 @@
                 return true
             }
         }
-        
+
         // MARK: - Detail Content
-        
+
         private var detailContent: some View {
             VStack(spacing: 0) {
                 // Main page content - toolbar integrated into NavigationSplitView
@@ -169,7 +169,7 @@
                                 .strokeBorder(Color.primary.opacity(0.1), lineWidth: 0.5)
                         )
                 }
-                
+
                 ToolbarItem(placement: .automatic) {
                     // Settings button - glass pill
                     Button(action: {
@@ -186,6 +186,8 @@
                     }
                     .buttonStyle(.plain)
                     .help("Settings")
+                    .accessibilityLabel("Settings")
+                    .accessibilityHint("Open application settings")
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .frame(height: 30)
@@ -197,9 +199,9 @@
                 }
             }
         }
-        
+
         // MARK: - Energy Indicator
-        
+
         private var energyIndicator: some View {
             HStack(spacing: 6) {
                 ForEach(EnergyLevel.allCases, id: \.self) { level in
@@ -222,12 +224,14 @@
                     }
                     .buttonStyle(.plain)
                     .help("\(level.label) Energy")
+                    .accessibilityLabel("\(level.label) Energy")
+                    .accessibilityHint("Set your current energy level to \(level.label.lowercased())")
                 }
             }
         }
 
         // MARK: - Page Views
-        
+
         @ViewBuilder
         private var currentPageView: some View {
             switch selectedTab {
@@ -251,7 +255,7 @@
                 PracticeTestPageView()
             }
         }
-        
+
         // MARK: - Helper Methods
 
         private func setupNotificationObservers() {

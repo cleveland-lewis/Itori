@@ -742,7 +742,7 @@
 
         var body: some View {
             let courseLoads = buildCourseLoads()
-            
+
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
                 sectionHeader
                 courseList(courseLoads: courseLoads)
@@ -755,7 +755,7 @@
             ))
             .overlay(cardBorder)
         }
-        
+
         private var sectionHeader: some View {
             Text(NSLocalizedString(
                 "assignments.section.by_course",
@@ -763,13 +763,13 @@
                 comment: ""
             )).itoriSectionHeader()
         }
-        
+
         private func courseList(courseLoads: [CourseLoad]) -> some View {
             ForEach(courseLoads.prefix(4)) { item in
                 courseRow(item: item)
             }
         }
-        
+
         private func courseRow(item: CourseLoad) -> some View {
             HStack {
                 Text(item.course)
@@ -795,7 +795,7 @@
             .accessibilityLabel(item.course)
             .accessibilityHint("Select course")
         }
-        
+
         private var cardBorder: some View {
             RoundedRectangle(
                 cornerRadius: DesignSystem.Cards.cardCornerRadius,
