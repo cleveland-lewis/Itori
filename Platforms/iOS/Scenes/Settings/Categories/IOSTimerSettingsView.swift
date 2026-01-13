@@ -6,6 +6,26 @@ import SwiftUI
         @EnvironmentObject var settings: AppSettingsModel
         @AppStorage("timer.display.style") private var timerDisplayStyleRaw: String = TimerDisplayStyle.digital.rawValue
 
+        // Timer duration options in minutes
+        private var timerDurationOptions: [Int] {
+            var options: [Int] = []
+            // 1-10 minutes (every minute)
+            options += Array(1 ... 10)
+            // 15-60 minutes (every 5 minutes)
+            options += stride(from: 15, through: 60, by: 5)
+            // 75-180 minutes (every 15 minutes)
+            options += stride(from: 75, through: 180, by: 15)
+
+            // Ensure current value is in the list
+            let currentValue = settings.timerDurationMinutes
+            if !options.contains(currentValue) {
+                options.append(currentValue)
+                options.sort()
+            }
+
+            return options
+        }
+
         var body: some View {
             List {
                 Section {
@@ -65,17 +85,16 @@ import SwiftUI
                 }
 
                 Section {
-                    HStack {
-                        Text(NSLocalizedString("settings.timer.timer_duration", comment: "Timer Duration"))
-                        Spacer()
-                        Text("\(settings.timerDurationMinutes) " + NSLocalizedString("time.minutes", comment: "min"))
-                            .foregroundColor(.secondary)
+                    Picker(
+                        NSLocalizedString("settings.timer.timer_duration", comment: "Timer Duration"),
+                        selection: $settings.timerDurationMinutes
+                    ) {
+                        ForEach(timerDurationOptions, id: \.self) { minutes in
+                            Text("\(minutes) " + NSLocalizedString("time.minutes", comment: "min"))
+                                .tag(minutes)
+                        }
                     }
-
-                    Slider(value: Binding(
-                        get: { Double(settings.timerDurationMinutes) },
-                        set: { settings.timerDurationMinutes = Int($0) }
-                    ), in: 1 ... 180, step: 1)
+                    .pickerStyle(.wheel)
                 } header: {
                     Text(NSLocalizedString("settings.timer.timer_duration", comment: "Timer Duration"))
                 }

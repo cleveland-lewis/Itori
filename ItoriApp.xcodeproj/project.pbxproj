@@ -13,7 +13,6 @@
 		1A58B1622EF58EAC0077C827 /* Notification+Names.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A58B1612EF58EAB0077C827 /* Notification+Names.swift */; };
 		1AE3D13A2F0F3C37000BBED7 /* ItoriWatch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1AE3D11A2F0F3C35000BBED7 /* ItoriWatch Watch App.app */; platformFilters = (ios, iossimulator, watchos, watchsimulator, ); settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1AE3D1902F0F3C37000BBED7 /* ItoriWatch Watch App/Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1AE3D18F2F0F3C37000BBED7 /* ItoriWatch Watch App/Assets.xcassets */; };
-		1B0A00112F111111 /* ItoriWatch Widget Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1B0A00132F111111 /* ItoriWatch Widget Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,13 +51,6 @@
 			remoteGlobalIDString = 1AE3D1192F0F3C35000BBED7;
 			remoteInfo = "ItoriWatch Watch App";
 		};
-		1B0A001A2F111111 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1AD7D42C2EDD328800D403F3 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1B0A00162F111111;
-			remoteInfo = "ItoriWatch Widget Extension";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -79,7 +71,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				1B0A00112F111111 /* ItoriWatch Widget Extension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -97,7 +88,6 @@
 		1AE3D1262F0F3C37000BBED7 /* ItoriWatch Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ItoriWatch Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AE3D1302F0F3C37000BBED7 /* ItoriWatch Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ItoriWatch Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AE3D18F2F0F3C37000BBED7 /* ItoriWatch Watch App/Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "ItoriWatch Watch App/Assets.xcassets"; sourceTree = "<group>"; };
-		1B0A00132F111111 /* ItoriWatch Widget Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "ItoriWatch Widget Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -160,21 +150,6 @@
 			path = "ItoriWatch Watch App";
 			sourceTree = "<group>";
 		};
-		1AE3D1292F0F3C37000BBED7 /* ItoriWatch Watch AppTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "ItoriWatch Watch AppTests";
-			sourceTree = "<group>";
-		};
-		1AE3D1332F0F3C37000BBED7 /* ItoriWatch Watch AppUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "ItoriWatch Watch AppUITests";
-			sourceTree = "<group>";
-		};
-		1B0A00142F111111 /* Platforms/watchOS/Widget */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Platforms/watchOS/Widget;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -220,13 +195,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1B0A00152F111111 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -247,12 +215,9 @@
 				1AD7D46B2EDD328800D403F3 /* SharedCore */,
 				1AD7D46C2EDD328800D403F3 /* Platforms/macOS */,
 				0C39BF544BB34BC69FE56ED2 /* Platforms/watchOS */,
-				1B0A00142F111111 /* Platforms/watchOS/Widget */,
 				1AD7D4462EDD328A00D403F3 /* Tests/Unit/ItoriTests */,
 				1AD7D4502EDD328A00D403F3 /* Tests/ItoriUITests */,
 				1AE3D11B2F0F3C35000BBED7 /* ItoriWatch Watch App */,
-				1AE3D1292F0F3C37000BBED7 /* ItoriWatch Watch AppTests */,
-				1AE3D1332F0F3C37000BBED7 /* ItoriWatch Watch AppUITests */,
 				1AD7D4352EDD328800D403F3 /* Products */,
 				1A58B1612EF58EAB0077C827 /* Notification+Names.swift */,
 				1A58C8A92EF5D2760077C827 /* Recovered References */,
@@ -265,7 +230,6 @@
 				1AD7D4342EDD328800D403F3 /* Itori.app */,
 				1AD7D4432EDD328A00D403F3 /* ItoriTests.xctest */,
 				1AD7D44D2EDD328A00D403F3 /* ItoriUITests.xctest */,
-				1B0A00132F111111 /* ItoriWatch Widget Extension.appex */,
 				1AE3D11A2F0F3C35000BBED7 /* ItoriWatch Watch App.app */,
 				1AE3D1262F0F3C37000BBED7 /* ItoriWatch Watch AppTests.xctest */,
 				1AE3D1302F0F3C37000BBED7 /* ItoriWatch Watch AppUITests.xctest */,
@@ -360,7 +324,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				1B0A00192F111111 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				1AE3D11B2F0F3C35000BBED7 /* ItoriWatch Watch App */,
@@ -385,9 +348,6 @@
 			dependencies = (
 				1AE3D1282F0F3C37000BBED7 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				1AE3D1292F0F3C37000BBED7 /* ItoriWatch Watch AppTests */,
-			);
 			name = "ItoriWatch Watch AppTests";
 			packageProductDependencies = (
 			);
@@ -408,37 +368,12 @@
 			dependencies = (
 				1AE3D1322F0F3C37000BBED7 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				1AE3D1332F0F3C37000BBED7 /* ItoriWatch Watch AppUITests */,
-			);
 			name = "ItoriWatch Watch AppUITests";
 			packageProductDependencies = (
 			);
 			productName = "ItoriWatch Watch AppUITests";
 			productReference = 1AE3D1302F0F3C37000BBED7 /* ItoriWatch Watch AppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
-		};
-		1B0A00162F111111 /* ItoriWatch Widget Extension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1B0A001D2F111111 /* Build configuration list for PBXNativeTarget "ItoriWatch Widget Extension" */;
-			buildPhases = (
-				1B0A00182F111111 /* Sources */,
-				1B0A00152F111111 /* Frameworks */,
-				1B0A00172F111111 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				1B0A00142F111111 /* Platforms/watchOS/Widget */,
-			);
-			name = "ItoriWatch Widget Extension";
-			packageProductDependencies = (
-			);
-			productName = "ItoriWatch Widget Extension";
-			productReference = 1B0A00132F111111 /* ItoriWatch Widget Extension.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -471,9 +406,6 @@
 					1AE3D12F2F0F3C37000BBED7 = {
 						CreatedOnToolsVersion = 26.2;
 						TestTargetID = 1AE3D1192F0F3C35000BBED7;
-					};
-					1B0A00162F111111 = {
-						CreatedOnToolsVersion = 26.2;
 					};
 				};
 			};
@@ -517,7 +449,6 @@
 				1AD7D4332EDD328800D403F3 /* Itori */,
 				1AD7D4422EDD328A00D403F3 /* ItoriTests */,
 				1AD7D44C2EDD328A00D403F3 /* ItoriUITests */,
-				1B0A00162F111111 /* ItoriWatch Widget Extension */,
 				1AE3D1192F0F3C35000BBED7 /* ItoriWatch Watch App */,
 				1AE3D1252F0F3C37000BBED7 /* ItoriWatch Watch AppTests */,
 				1AE3D12F2F0F3C37000BBED7 /* ItoriWatch Watch AppUITests */,
@@ -572,13 +503,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1B0A00172F111111 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -625,13 +549,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1B0A00182F111111 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -659,11 +576,6 @@
 			isa = PBXTargetDependency;
 			target = 1AE3D1192F0F3C35000BBED7 /* ItoriWatch Watch App */;
 			targetProxy = 1AE3D1382F0F3C37000BBED7 /* PBXContainerItemProxy */;
-		};
-		1B0A00192F111111 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1B0A00162F111111 /* ItoriWatch Widget Extension */;
-			targetProxy = 1B0A001A2F111111 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1265,71 +1177,6 @@
 			};
 			name = Release;
 		};
-		1B0A001B2F111111 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Config/Itori-watchOS.entitlements";
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = V9ZWYKRGTL;
-				EXCLUDED_RESOURCE_FILE_NAMES = Info.plist;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = "Config/watchOS/ItoriWatchWidget-Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = clewisiii.Itori.watchkitapp.widget;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 26.2;
-			};
-			name = Debug;
-		};
-		1B0A001C2F111111 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = "Config/Itori-watchOS.entitlements";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = V9ZWYKRGTL;
-				EXCLUDED_RESOURCE_FILE_NAMES = Info.plist;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = "Config/watchOS/ItoriWatchWidget-Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = clewisiii.Itori.watchkitapp.widget;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 26.2;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1392,15 +1239,6 @@
 			buildConfigurations = (
 				1AE3D1432F0F3C37000BBED7 /* Debug */,
 				1AE3D1442F0F3C37000BBED7 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		1B0A001D2F111111 /* Build configuration list for PBXNativeTarget "ItoriWatch Widget Extension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1B0A001B2F111111 /* Debug */,
-				1B0A001C2F111111 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

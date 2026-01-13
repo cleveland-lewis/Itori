@@ -45,9 +45,10 @@ final class PersistenceController {
         isCloudKitEnabled = iCloudSyncEnabled
 
         if iCloudSyncEnabled {
-            description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
+            let cloudKitOptions = NSPersistentCloudKitContainerOptions(
                 containerIdentifier: cloudKitContainerIdentifier
             )
+            description.cloudKitContainerOptions = cloudKitOptions
         } else {
             description.cloudKitContainerOptions = nil
         }
@@ -58,16 +59,41 @@ final class PersistenceController {
         description.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
 
         var loadError: Error?
+        let semaphore = DispatchSemaphore(value: 0)
+
         container.loadPersistentStores { _, error in
             loadError = error
+            semaphore.signal()
+        }
+
+        // Wait for load to complete with timeout
+        let timeout = DispatchTime.now() + .seconds(10)
+        let result = semaphore.wait(timeout: timeout)
+
+        if result == .timedOut {
+            LOG_DATA(.error, "Persistence", "Persistent store load timed out - proceeding without CloudKit")
+            loadError = NSError(
+                domain: "PersistenceController",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Store load timed out"]
+            )
         }
 
         if let error = loadError {
             LOG_DATA(.error, "Persistence", "Persistent store load failed: \(error.localizedDescription)")
-            print("[Persistence] Full error: \(error)")
 
-            // If CloudKit failed, recreate container without CloudKit
-            if iCloudSyncEnabled {
+            // Check if it's the specific "client went away" error we can ignore
+            let nsError = error as NSError
+            if nsError.domain == "CKErrorDomain" && nsError.code == 1 {
+                // Internal CloudKit error during initialization - can be safely ignored
+                LOG_DATA(.info, "Persistence", "Ignoring CloudKit initialization error (client went away)")
+                loadError = nil // Clear the error
+            } else {
+                print("[Persistence] Full error: \(error)")
+            }
+
+            // If CloudKit failed with non-ignorable error, recreate container without CloudKit
+            if iCloudSyncEnabled && loadError != nil {
                 LOG_DATA(.info, "Persistence", "Retrying without CloudKit - creating new container.")
                 isCloudKitEnabled = false
 

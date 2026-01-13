@@ -27,6 +27,16 @@ final class WebEnhancedTestGenerator: ObservableObject {
         self.llmService = llmService
     }
 
+    nonisolated init(useMockData _: Bool) {
+        self.webSearchService = .init()
+        self.llmService = .init()
+    }
+
+    nonisolated init(backend: LLMBackend) {
+        self.webSearchService = .init()
+        self.llmService = .init(backend: backend)
+    }
+
     // MARK: - Main Generation Flow
 
     func generateTest(request: PracticeTestRequest) async -> Result<[PracticeQuestion], TestGenerationError> {

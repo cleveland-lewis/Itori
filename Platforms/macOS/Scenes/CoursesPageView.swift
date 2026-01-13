@@ -502,7 +502,34 @@
 
         private func beginAddFilesForModule(_ moduleId: UUID) {
             selectedModuleId = moduleId
+
+            // Try SwiftUI fileImporter first
             showingFileImporter = true
+
+            // Fallback to NSOpenPanel after a short delay if SwiftUI fails
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                if self.showingFileImporter {
+                    // SwiftUI fileImporter might have failed, try NSOpenPanel
+                    self.showNSOpenPanel()
+                }
+            }
+        }
+
+        private func showNSOpenPanel() {
+            let panel = NSOpenPanel()
+            panel.allowsMultipleSelection = true
+            panel.canChooseDirectories = false
+            panel.canChooseFiles = true
+            panel.message = "Select files to add to course"
+
+            panel.begin { response in
+                self.showingFileImporter = false
+
+                if response == .OK {
+                    let urls = panel.urls
+                    self.handleFileImport(.success(urls))
+                }
+            }
         }
 
         private var emptyDetailState: some View {

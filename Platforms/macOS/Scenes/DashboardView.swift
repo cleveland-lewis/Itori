@@ -60,15 +60,16 @@
             GeometryReader { proxy in
                 let isNarrow = proxy.size.width < 980
                 let rowHeights = dashboardRowHeights(totalHeight: proxy.size.height)
-                let row2LeftCardMaxHeight = shouldShowEnergyCard
-                    ? (rowHeights.row2 / 2 - cardSpacing / 2)
+                // Calculate height for left column cards when energy card is shown
+                // Total height divided by 2, minus half the spacing between them
+                let row2LeftCardHeight = shouldShowEnergyCard
+                    ? ((rowHeights.row2 - cardSpacing) / 2)
                     : rowHeights.row2
                 ScrollView(.vertical, showsIndicators: true) {
-                    VStack(spacing: 0) {
+                    VStack(spacing: rowSpacing) {
                         // ROW 1: STATUS STRIP REMOVED - User requested removal of today summary
                         // statusStrip
                         //     .animateEntry(isLoaded: isLoaded, index: 0)
-                        //     .padding(.bottom, cardSpacing)
                         //     .frame(maxWidth: .infinity, alignment: .leading)
 
                         // ROW 2: TODAY'S WORK + CALENDAR
@@ -89,31 +90,25 @@
                                 }
                             } else {
                                 HStack(alignment: .top, spacing: cardSpacing) {
-                                    VStack(spacing: cardSpacing) {
+                                    VStack(alignment: .leading, spacing: cardSpacing) {
                                         if shouldShowEnergyCard {
                                             energyCard
                                                 .animateEntry(isLoaded: isLoaded, index: 1)
-                                                .frame(maxWidth: .infinity)
-                                                .frame(minHeight: cardMinHeight)
-                                                .frame(maxHeight: row2LeftCardMaxHeight)
+                                                .frame(maxWidth: .infinity, idealHeight: row2LeftCardHeight)
                                         }
                                         plannerTodayCard
                                             .animateEntry(isLoaded: isLoaded, index: 2)
-                                            .frame(maxWidth: .infinity)
-                                            .frame(minHeight: cardMinHeight)
-                                            .frame(maxHeight: row2LeftCardMaxHeight)
+                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
                                     }
+                                    .frame(maxWidth: .infinity, maxHeight: rowHeights.row2)
 
                                     calendarCard
                                         .animateEntry(isLoaded: isLoaded, index: 3)
-                                        .frame(maxWidth: .infinity)
-                                        .frame(minHeight: cardMinHeight)
-                                        .frame(maxHeight: rowHeights.row2)
+                                        .frame(maxWidth: .infinity, maxHeight: rowHeights.row2)
                                 }
-                                .frame(maxHeight: rowHeights.row2)
+                                .frame(maxWidth: .infinity, maxHeight: rowHeights.row2)
                             }
                         }
-                        .padding(.bottom, rowSpacing)
                         .animation(.easeInOut(duration: 0.25), value: shouldShowEnergyCard)
 
                         // ROW 3: WEEKLY WORKLOAD + UPCOMING
@@ -131,19 +126,14 @@
                                 HStack(alignment: .top, spacing: cardSpacing) {
                                     workloadCard
                                         .animateEntry(isLoaded: isLoaded, index: 4)
-                                        .frame(maxWidth: .infinity)
-                                        .frame(minHeight: cardMinHeight)
-                                        .frame(maxHeight: rowHeights.row3)
+                                        .frame(maxWidth: .infinity, maxHeight: rowHeights.row3)
                                     assignmentsCard
                                         .animateEntry(isLoaded: isLoaded, index: 5)
-                                        .frame(maxWidth: .infinity)
-                                        .frame(minHeight: cardMinHeight)
-                                        .frame(maxHeight: rowHeights.row3)
+                                        .frame(maxWidth: .infinity, maxHeight: rowHeights.row3)
                                 }
-                                .frame(maxHeight: rowHeights.row3)
+                                .frame(maxWidth: .infinity, maxHeight: rowHeights.row3)
                             }
                         }
-                        .padding(.bottom, rowSpacing)
 
                         // ROW 4: STUDY TIME + TODAY
                         Group {
@@ -163,32 +153,25 @@
                                     if shouldShowProductivityInsights {
                                         studyHoursCard
                                             .animateEntry(isLoaded: isLoaded, index: 6)
-                                            .frame(maxWidth: .infinity)
-                                            .frame(minHeight: cardMinHeight)
-                                            .frame(maxHeight: rowHeights.row4)
+                                            .frame(maxWidth: .infinity, maxHeight: rowHeights.row4)
                                     }
 
                                     workRemainingCard
                                         .animateEntry(isLoaded: isLoaded, index: 7)
-                                        .frame(maxWidth: .infinity)
-                                        .frame(minHeight: cardMinHeight)
-                                        .frame(maxHeight: rowHeights.row4)
+                                        .frame(maxWidth: .infinity, maxHeight: rowHeights.row4)
                                 }
-                                .frame(maxHeight: rowHeights.row4)
+                                .frame(maxWidth: .infinity, maxHeight: rowHeights.row4)
                             }
                         }
-                        .padding(.bottom, rowSpacing)
 
                         // ROW 5: GRADES
                         Group {
                             gradeWidgetCard
                                 .frame(maxWidth: .infinity)
                                 .animateEntry(isLoaded: isLoaded, index: 8)
-                                .frame(minHeight: cardMinHeight)
                                 .frame(maxHeight: isNarrow ? .infinity : rowHeights.row5)
                         }
                         .frame(maxHeight: isNarrow ? nil : rowHeights.row5)
-                        .padding(.bottom, rowSpacing)
 
                         // Version dropdown footer
                         VersionDropdownView()
@@ -196,9 +179,8 @@
                             .padding(.top, 32)
                             .padding(.bottom, bottomDockClearancePadding)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     .frame(maxWidth: min(proxy.size.width, 1400))
-                    .frame(maxWidth: .infinity) // Center the constrained content
+                    .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.horizontal, responsivePadding(for: proxy.size.width))
                     .frame(minHeight: max(proxy.size.height - bottomDockClearancePadding, 0))
                 }
@@ -660,7 +642,16 @@
                 title: NSLocalizedString("dashboard.section.weekly_workload", comment: ""),
                 isLoading: !isLoaded
             ) {
-                weeklyWorkloadChart
+                let buckets = weeklyWorkloadBuckets()
+                if buckets.isEmpty {
+                    DashboardEmptyState(
+                        title: NSLocalizedString("dashboard.empty.no_workload", value: "No workload data", comment: ""),
+                        systemImage: "chart.bar",
+                        description: "Add assignments with due dates to see your weekly workload."
+                    )
+                } else {
+                    weeklyWorkloadChart
+                }
             }
             .accessibilityElement(children: .contain)
             .accessibilityLabelWithTooltip("Weekly workload forecast")

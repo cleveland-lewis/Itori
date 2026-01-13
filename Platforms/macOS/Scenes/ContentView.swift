@@ -9,6 +9,8 @@
         static let maxMainContentWidth: CGFloat = 1400
         static let minSidebarWidth: CGFloat = 200
         static let idealSidebarWidth: CGFloat = 220
+        static let minPopupWidth: CGFloat = 450
+        static let minPopupHeight: CGFloat = 500
     }
 
     struct ContentView: View {

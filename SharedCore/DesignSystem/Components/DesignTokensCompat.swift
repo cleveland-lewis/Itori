@@ -517,11 +517,6 @@ let smallTextSize = SizeConstants.smallTextSize
 let mediumTextSize = SizeConstants.mediumTextSize
 let emptyIconSize = SizeConstants.emptyIconSize
 
-extension WindowSizing {
-    static let minPopupWidth: CGFloat = 450
-    static let minPopupHeight: CGFloat = 500
-}
-
 // MARK: - Form Components
 
 struct AppFormRow<Content: View>: View {

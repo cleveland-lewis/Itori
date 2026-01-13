@@ -160100,6 +160100,50 @@
           }
         }
       }
+    },
+    "dashboard.section.todays_work": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today's Work"
+          }
+        }
+      }
+    },
+    "dashboard.empty.calendar": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No events today"
+          }
+        }
+      }
+    },
+    "dashboard.empty.events": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No upcoming events"
+          }
+        }
+      }
+    },
+    "dashboard.empty.tasks": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No tasks due"
+          }
+        }
+      }
     }
   },
   "version": "1.1"
