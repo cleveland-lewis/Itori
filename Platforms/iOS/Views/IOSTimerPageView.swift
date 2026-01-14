@@ -148,7 +148,7 @@
                         .accessibilityIdentifier("Timer.Status")
                     Spacer()
                     Menu {
-                        ForEach(TimerMode.allCases) { mode in
+                        ForEach(TimerMode.allCases.filter { $0 != .focus }) { mode in
                             Button {
                                 viewModel.currentMode = mode
                             } label: {
@@ -158,17 +158,23 @@
 
                         Divider()
 
-                        Picker(
-                            selection: $timerDisplayStyleRaw,
-                            label: Text(NSLocalizedString(
-                                "timer.display.style",
-                                value: "Display",
-                                comment: "Display style picker"
-                            ))
-                        ) {
-                            ForEach(TimerDisplayStyle.allCases) { style in
-                                Text(style.label).tag(style.rawValue)
-                            }
+                        Button {
+                            timerDisplayStyleRaw = TimerDisplayStyle.analog.rawValue
+                        } label: {
+                            Label(
+                                "Analog",
+                                systemImage: timerDisplayStyleRaw == TimerDisplayStyle.analog.rawValue ? "checkmark" : ""
+                            )
+                        }
+
+                        Button {
+                            timerDisplayStyleRaw = TimerDisplayStyle.digital.rawValue
+                        } label: {
+                            Label(
+                                "Digital",
+                                systemImage: timerDisplayStyleRaw == TimerDisplayStyle.digital
+                                    .rawValue ? "checkmark" : ""
+                            )
                         }
                     } label: {
                         Image(systemName: "ellipsis.circle")
@@ -176,33 +182,44 @@
                     }
                     .accessibilityLabel(NSLocalizedString("ios.timer.mode", comment: "Mode"))
                 }
-                if displayStyle == .analog {
-                    ItoriAnalogClock(
-                        style: .stopwatch,
-                        diameter: max(180, timerDialDiameter),
-                        showSecondHand: true,
-                        accentColor: .accentColor,
-                        timerSeconds: timerDialSeconds
-                    )
-                    .accessibilityIdentifier("Timer.Clock")
-                    .accessibilityLabel("Timer display")
-                    .accessibilityValue(timeString(for: viewModel.sessionRemaining, elapsed: viewModel.sessionElapsed))
-                    .frame(maxWidth: .infinity)
+
+                // Show time picker for timer mode when idle
+                if viewModel.currentMode == .timer && sessionState == .idle {
+                    timerDurationPicker
                 } else {
-                    Text(timeString(for: viewModel.sessionRemaining, elapsed: viewModel.sessionElapsed))
-                        .font(.system(size: timerTextSize, weight: .bold, design: .rounded))
-                        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-                        .monospacedDigit()
-                        .accessibilityIdentifier("Timer.Time")
-                        .accessibilityLabel("Timer")
+                    // Show timer display
+                    if displayStyle == .analog {
+                        ItoriAnalogClock(
+                            style: .stopwatch,
+                            diameter: max(180, timerDialDiameter),
+                            showSecondHand: true,
+                            accentColor: .accentColor,
+                            timerSeconds: timerDialSeconds
+                        )
+                        .accessibilityIdentifier("Timer.Clock")
+                        .accessibilityLabel("Timer display")
                         .accessibilityValue(timeString(
                             for: viewModel.sessionRemaining,
                             elapsed: viewModel.sessionElapsed
                         ))
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .minimumScaleFactor(0.5)
-                        .lineLimit(1)
+                        .frame(maxWidth: .infinity)
+                    } else {
+                        Text(timeString(for: viewModel.sessionRemaining, elapsed: viewModel.sessionElapsed))
+                            .font(.system(size: timerTextSize, weight: .bold, design: .rounded))
+                            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+                            .monospacedDigit()
+                            .accessibilityIdentifier("Timer.Time")
+                            .accessibilityLabel("Timer")
+                            .accessibilityValue(timeString(
+                                for: viewModel.sessionRemaining,
+                                elapsed: viewModel.sessionElapsed
+                            ))
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .minimumScaleFactor(0.5)
+                            .lineLimit(1)
+                    }
                 }
+
                 if viewModel.currentMode == .pomodoro {
                     Text(viewModel
                         .isOnBreak ? NSLocalizedString("ios.timer.break", comment: "Break") : NSLocalizedString(
@@ -240,6 +257,81 @@
             .sheet(isPresented: $showingFocusPage) {
                 focusPage
             }
+        }
+
+        private var timerDurationPicker: some View {
+            VStack(spacing: 16) {
+                Text("Set Timer Duration")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+
+                HStack(spacing: 0) {
+                    // Hours picker
+                    Picker("Hours", selection: Binding(
+                        get: { Int(viewModel.timerDuration) / 3600 },
+                        set: { newHours in
+                            let minutes = (Int(viewModel.timerDuration) % 3600) / 60
+                            let seconds = Int(viewModel.timerDuration) % 60
+                            viewModel.timerDuration = TimeInterval(newHours * 3600 + minutes * 60 + seconds)
+                        }
+                    )) {
+                        ForEach(0 ..< 24) { hour in
+                            Text("\(hour)").tag(hour)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .frame(maxWidth: .infinity)
+
+                    Text("h")
+                        .font(.title3)
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal, 8)
+
+                    // Minutes picker
+                    Picker("Minutes", selection: Binding(
+                        get: { (Int(viewModel.timerDuration) % 3600) / 60 },
+                        set: { newMinutes in
+                            let hours = Int(viewModel.timerDuration) / 3600
+                            let seconds = Int(viewModel.timerDuration) % 60
+                            viewModel.timerDuration = TimeInterval(hours * 3600 + newMinutes * 60 + seconds)
+                        }
+                    )) {
+                        ForEach(0 ..< 60) { minute in
+                            Text("\(minute)").tag(minute)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .frame(maxWidth: .infinity)
+
+                    Text("m")
+                        .font(.title3)
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal, 8)
+
+                    // Seconds picker
+                    Picker("Seconds", selection: Binding(
+                        get: { Int(viewModel.timerDuration) % 60 },
+                        set: { newSeconds in
+                            let hours = Int(viewModel.timerDuration) / 3600
+                            let minutes = (Int(viewModel.timerDuration) % 3600) / 60
+                            viewModel.timerDuration = TimeInterval(hours * 3600 + minutes * 60 + newSeconds)
+                        }
+                    )) {
+                        ForEach(0 ..< 60) { second in
+                            Text("\(second)").tag(second)
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .frame(maxWidth: .infinity)
+
+                    Text("s")
+                        .font(.title3)
+                        .foregroundColor(.secondary)
+                        .padding(.leading, 8)
+                }
+                .frame(height: 150)
+            }
+            .padding(.vertical, 8)
         }
 
         private var controlRow: some View {

@@ -37,6 +37,8 @@
             GeometryReader { proxy in
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: dashboardSpacing) {
+                        heroHeader
+
                         plannerTodayCard
                         quickStatsRow
 
@@ -51,7 +53,7 @@
                     }
                     .frame(maxWidth: min(720, proxy.size.width - 32))
                     .frame(maxWidth: .infinity)
-                    .padding(.top, overlayInsets.top + 60)
+                    .padding(.top, overlayInsets.top + 16)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 20)
                 }
@@ -116,30 +118,43 @@
         }
 
         private var heroHeader: some View {
-            ZStack(alignment: .bottomLeading) {
-                RoundedRectangle(cornerRadius: 26, style: .continuous)
-                    .fill(.thickMaterial)
+            VStack(alignment: .leading, spacing: 12) {
+                Text(greeting)
+                    .font(.system(size: 34, weight: .bold, design: .rounded))
+                    .foregroundStyle(.primary)
 
-                VStack(alignment: .leading, spacing: 10) {
-                    Text(greeting)
-                        .font(.largeTitle.weight(.bold))
-                    Text(formattedDate)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-
-                    HStack(spacing: 10) {
-                        Label { Text(verbatim: "\(todayEventCount) events") } icon: { Image(systemName: "calendar") }
-                        Label { Text(verbatim: "\(todayTaskCount) tasks") } icon: {
-                            Image(systemName: "checkmark.circle")
-                        }
-                    }
-                    .font(.footnote.weight(.semibold))
+                Text(formattedDate)
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
-                    .padding(.top, 4)
+
+                HStack(spacing: 16) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "calendar")
+                            .font(.caption)
+                        Text(verbatim: "\(todayEventCount)")
+                            .font(.subheadline.weight(.semibold))
+                            .monospacedDigit()
+                        Text("events")
+                            .font(.subheadline)
+                    }
+                    .foregroundStyle(.secondary)
+
+                    HStack(spacing: 6) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.caption)
+                        Text(verbatim: "\(todayTaskCount)")
+                            .font(.subheadline.weight(.semibold))
+                            .monospacedDigit()
+                        Text("tasks")
+                            .font(.subheadline)
+                    }
+                    .foregroundStyle(.secondary)
                 }
-                .padding(metrics.cardPadding)
+                .padding(.top, 4)
             }
-            .frame(maxWidth: .infinity, minHeight: 150)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 4)
+            .padding(.vertical, 8)
         }
 
         private var quickStatsRow: some View {

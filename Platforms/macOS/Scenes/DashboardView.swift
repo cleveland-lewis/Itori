@@ -94,19 +94,22 @@
                                         if shouldShowEnergyCard {
                                             energyCard
                                                 .animateEntry(isLoaded: isLoaded, index: 1)
-                                                .frame(maxWidth: .infinity, idealHeight: row2LeftCardHeight)
+                                                .frame(minHeight: row2LeftCardHeight, maxHeight: row2LeftCardHeight)
+                                                .frame(maxWidth: .infinity)
                                         }
                                         plannerTodayCard
                                             .animateEntry(isLoaded: isLoaded, index: 2)
-                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                            .frame(minHeight: row2LeftCardHeight, maxHeight: .infinity)
+                                            .frame(maxWidth: .infinity)
                                     }
-                                    .frame(maxWidth: .infinity, maxHeight: rowHeights.row2)
+                                    .frame(maxWidth: .infinity, minHeight: rowHeights.row2, maxHeight: rowHeights.row2)
 
                                     calendarCard
                                         .animateEntry(isLoaded: isLoaded, index: 3)
-                                        .frame(maxWidth: .infinity, maxHeight: rowHeights.row2)
+                                        .frame(minHeight: rowHeights.row2, maxHeight: rowHeights.row2)
+                                        .frame(maxWidth: .infinity)
                                 }
-                                .frame(maxWidth: .infinity, maxHeight: rowHeights.row2)
+                                .frame(maxWidth: .infinity, minHeight: rowHeights.row2, maxHeight: rowHeights.row2)
                             }
                         }
                         .animation(.easeInOut(duration: 0.25), value: shouldShowEnergyCard)
@@ -126,12 +129,14 @@
                                 HStack(alignment: .top, spacing: cardSpacing) {
                                     workloadCard
                                         .animateEntry(isLoaded: isLoaded, index: 4)
-                                        .frame(maxWidth: .infinity, maxHeight: rowHeights.row3)
+                                        .frame(minHeight: rowHeights.row3, maxHeight: rowHeights.row3)
+                                        .frame(maxWidth: .infinity)
                                     assignmentsCard
                                         .animateEntry(isLoaded: isLoaded, index: 5)
-                                        .frame(maxWidth: .infinity, maxHeight: rowHeights.row3)
+                                        .frame(minHeight: rowHeights.row3, maxHeight: rowHeights.row3)
+                                        .frame(maxWidth: .infinity)
                                 }
-                                .frame(maxWidth: .infinity, maxHeight: rowHeights.row3)
+                                .frame(maxWidth: .infinity, minHeight: rowHeights.row3, maxHeight: rowHeights.row3)
                             }
                         }
 
@@ -153,14 +158,16 @@
                                     if shouldShowProductivityInsights {
                                         studyHoursCard
                                             .animateEntry(isLoaded: isLoaded, index: 6)
-                                            .frame(maxWidth: .infinity, maxHeight: rowHeights.row4)
+                                            .frame(minHeight: rowHeights.row4, maxHeight: rowHeights.row4)
+                                            .frame(maxWidth: .infinity)
                                     }
 
                                     workRemainingCard
                                         .animateEntry(isLoaded: isLoaded, index: 7)
-                                        .frame(maxWidth: .infinity, maxHeight: rowHeights.row4)
+                                        .frame(minHeight: rowHeights.row4, maxHeight: rowHeights.row4)
+                                        .frame(maxWidth: .infinity)
                                 }
-                                .frame(maxWidth: .infinity, maxHeight: rowHeights.row4)
+                                .frame(maxWidth: .infinity, minHeight: rowHeights.row4, maxHeight: rowHeights.row4)
                             }
                         }
 
@@ -169,9 +176,12 @@
                             gradeWidgetCard
                                 .frame(maxWidth: .infinity)
                                 .animateEntry(isLoaded: isLoaded, index: 8)
-                                .frame(maxHeight: isNarrow ? .infinity : rowHeights.row5)
+                                .frame(
+                                    minHeight: isNarrow ? cardMinHeight : rowHeights.row5,
+                                    maxHeight: isNarrow ? .infinity : rowHeights.row5
+                                )
                         }
-                        .frame(maxHeight: isNarrow ? nil : rowHeights.row5)
+                        .frame(minHeight: isNarrow ? nil : rowHeights.row5, maxHeight: isNarrow ? nil : rowHeights.row5)
 
                         // Version dropdown footer
                         VersionDropdownView()
