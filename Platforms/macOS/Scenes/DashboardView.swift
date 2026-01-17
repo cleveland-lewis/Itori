@@ -24,6 +24,8 @@
         @State private var showAddGradeSheet = false
         @State private var showAddEventSheet = false
         @State private var showAddTaskSheet = false
+        @State private var showEditAssignmentSheet = false
+        @State private var editingAssignment: AppTask? = nil
         @ObservedObject private var studyHoursTracker = StudyHoursTracker.shared
         @ObservedObject private var plannerStore = PlannerStore.shared
         @ObservedObject private var calendarAuth = CalendarAuthorizationManager.shared
@@ -59,12 +61,6 @@
             // Fixed hierarchy grid - no ad-hoc cards
             GeometryReader { proxy in
                 let isNarrow = proxy.size.width < 980
-                let rowHeights = dashboardRowHeights(totalHeight: proxy.size.height)
-                // Calculate height for left column cards when energy card is shown
-                // Total height divided by 2, minus half the spacing between them
-                let row2LeftCardHeight = shouldShowEnergyCard
-                    ? ((rowHeights.row2 - cardSpacing) / 2)
-                    : rowHeights.row2
                 ScrollView(.vertical, showsIndicators: true) {
                     VStack(spacing: rowSpacing) {
                         // ROW 1: STATUS STRIP REMOVED - User requested removal of today summary
@@ -94,22 +90,22 @@
                                         if shouldShowEnergyCard {
                                             energyCard
                                                 .animateEntry(isLoaded: isLoaded, index: 1)
-                                                .frame(minHeight: row2LeftCardHeight, maxHeight: row2LeftCardHeight)
+                                                .frame(minHeight: row2MinHeight)
                                                 .frame(maxWidth: .infinity)
                                         }
                                         plannerTodayCard
                                             .animateEntry(isLoaded: isLoaded, index: 2)
-                                            .frame(minHeight: row2LeftCardHeight, maxHeight: .infinity)
+                                            .frame(minHeight: row2MinHeight)
                                             .frame(maxWidth: .infinity)
                                     }
-                                    .frame(maxWidth: .infinity, minHeight: rowHeights.row2, maxHeight: rowHeights.row2)
+                                    .frame(maxWidth: .infinity)
 
                                     calendarCard
                                         .animateEntry(isLoaded: isLoaded, index: 3)
-                                        .frame(minHeight: rowHeights.row2, maxHeight: rowHeights.row2)
+                                        .frame(minHeight: row2MinHeight)
                                         .frame(maxWidth: .infinity)
                                 }
-                                .frame(maxWidth: .infinity, minHeight: rowHeights.row2, maxHeight: rowHeights.row2)
+                                .frame(maxWidth: .infinity)
                             }
                         }
                         .animation(.easeInOut(duration: 0.25), value: shouldShowEnergyCard)
@@ -129,14 +125,14 @@
                                 HStack(alignment: .top, spacing: cardSpacing) {
                                     workloadCard
                                         .animateEntry(isLoaded: isLoaded, index: 4)
-                                        .frame(minHeight: rowHeights.row3, maxHeight: rowHeights.row3)
+                                        .frame(minHeight: row3MinHeight)
                                         .frame(maxWidth: .infinity)
                                     assignmentsCard
                                         .animateEntry(isLoaded: isLoaded, index: 5)
-                                        .frame(minHeight: rowHeights.row3, maxHeight: rowHeights.row3)
+                                        .frame(minHeight: row3MinHeight)
                                         .frame(maxWidth: .infinity)
                                 }
-                                .frame(maxWidth: .infinity, minHeight: rowHeights.row3, maxHeight: rowHeights.row3)
+                                .frame(maxWidth: .infinity)
                             }
                         }
 
@@ -158,16 +154,16 @@
                                     if shouldShowProductivityInsights {
                                         studyHoursCard
                                             .animateEntry(isLoaded: isLoaded, index: 6)
-                                            .frame(minHeight: rowHeights.row4, maxHeight: rowHeights.row4)
+                                            .frame(minHeight: row4MinHeight)
                                             .frame(maxWidth: .infinity)
                                     }
 
                                     workRemainingCard
                                         .animateEntry(isLoaded: isLoaded, index: 7)
-                                        .frame(minHeight: rowHeights.row4, maxHeight: rowHeights.row4)
+                                        .frame(minHeight: row4MinHeight)
                                         .frame(maxWidth: .infinity)
                                 }
-                                .frame(maxWidth: .infinity, minHeight: rowHeights.row4, maxHeight: rowHeights.row4)
+                                .frame(maxWidth: .infinity)
                             }
                         }
 
@@ -176,12 +172,8 @@
                             gradeWidgetCard
                                 .frame(maxWidth: .infinity)
                                 .animateEntry(isLoaded: isLoaded, index: 8)
-                                .frame(
-                                    minHeight: isNarrow ? cardMinHeight : rowHeights.row5,
-                                    maxHeight: isNarrow ? .infinity : rowHeights.row5
-                                )
+                                .frame(minHeight: row5MinHeight)
                         }
-                        .frame(minHeight: isNarrow ? nil : rowHeights.row5, maxHeight: isNarrow ? nil : rowHeights.row5)
 
                         // Version dropdown footer
                         VersionDropdownView()
@@ -192,7 +184,8 @@
                     .frame(maxWidth: min(proxy.size.width, 1400))
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.horizontal, responsivePadding(for: proxy.size.width))
-                    .frame(minHeight: max(proxy.size.height - bottomDockClearancePadding, 0))
+                    .padding(.top, 20)
+                    .padding(.bottom, bottomDockClearancePadding)
                 }
             }
             .background(.primaryBackground)
@@ -201,6 +194,14 @@
                     assignmentsStore.addTask(task)
                 }
                 .environmentObject(coursesStore)
+            }
+            .sheet(isPresented: $showEditAssignmentSheet) {
+                if let task = editingAssignment {
+                    AddAssignmentView(editingTask: task) { updatedTask in
+                        assignmentsStore.updateTask(updatedTask)
+                    }
+                    .environmentObject(coursesStore)
+                }
             }
             .sheet(isPresented: $showAddTaskSheet) {
                 AddAssignmentView(initialType: .project) { task in
@@ -1194,33 +1195,44 @@
         }
 
         private func upcomingAssignmentRow(_ item: UpcomingAssignmentItem) -> some View {
-            HStack(spacing: DesignSystem.Spacing.medium) {
-                Circle()
-                    .fill(item.courseColor)
-                    .frame(width: 8, height: 8)
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(item.title)
-                        .font(.subheadline.weight(.semibold))
-                        .lineLimit(1)
-                    Text(item.courseCode?.isEmpty == false ? item.courseCode! : item.courseTitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+            Button {
+                // Find the actual task and open edit sheet
+                if let task = assignmentsStore.tasks.first(where: { $0.id == item.id }) {
+                    editingAssignment = task
+                    showEditAssignmentSheet = true
                 }
+            } label: {
+                HStack(spacing: DesignSystem.Spacing.medium) {
+                    Circle()
+                        .fill(item.courseColor)
+                        .frame(width: 8, height: 8)
 
-                Spacer()
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(item.title)
+                            .font(.subheadline.weight(.semibold))
+                            .lineLimit(1)
+                        Text(item.courseCode?.isEmpty == false ? item.courseCode! : item.courseTitle)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
 
-                if let dueDate = item.dueDate {
-                    Text(formattedDueDate(dueDate, hasExplicitTime: item.hasExplicitDueTime))
-                        .font(.caption.weight(.semibold))
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(
-                            Capsule()
-                                .fill(.secondaryBackground)
-                        )
+                    Spacer()
+
+                    if let dueDate = item.dueDate {
+                        Text(formattedDueDate(dueDate, hasExplicitTime: item.hasExplicitDueTime))
+                            .font(.caption.weight(.semibold))
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(
+                                Capsule()
+                                    .fill(.secondaryBackground)
+                            )
+                    }
                 }
             }
+            .buttonStyle(.plain)
+            .contentShape(Rectangle())
+            .help("Click to view assignment details")
         }
 
         private func courseTitle(for courseId: UUID?) -> String {
@@ -2040,22 +2052,6 @@
             case medium = "Medium"
             case low = "Low"
         }
-
-        private func dashboardRowHeights(totalHeight: CGFloat)
-            -> (row2: CGFloat, row3: CGFloat, row4: CGFloat, row5: CGFloat)
-        {
-            let spacingTotal = cardSpacing * 4
-            let minTotal = row2MinHeight + row3MinHeight + row4MinHeight + row5MinHeight + spacingTotal
-            let available = max(0, totalHeight - bottomDockClearancePadding)
-            let extra = max(0, available - minTotal)
-            let extraPerRow = extra / 4
-            return (
-                row2MinHeight + extraPerRow,
-                row3MinHeight + extraPerRow,
-                row4MinHeight + extraPerRow,
-                row5MinHeight + extraPerRow
-            )
-        }
     }
 
     struct DashboardTileBody: View {
@@ -2215,7 +2211,7 @@
         @Binding var selectedDate: Date
         var events: [DashboardEvent]
         private let calendar = Calendar.current
-        private let columns = Array(repeating: GridItem(.flexible(), spacing: DesignSystem.Spacing.xsmall), count: 7)
+        private let columns = Array(repeating: GridItem(.flexible(), spacing: 4), count: 7)
 
         var body: some View {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
@@ -2225,7 +2221,7 @@
                     .foregroundStyle(.secondary)
 
                 // Calendar grid - no nested card background
-                LazyVGrid(columns: columns, spacing: DesignSystem.Spacing.xsmall) {
+                LazyVGrid(columns: columns, spacing: 4) {
                     ForEach(dayItems) { item in
                         let day = item.date
                         let isInMonth = calendar.isDate(day, equalTo: selectedDate, toGranularity: .month)
@@ -2245,6 +2241,7 @@
                             )
                         }
                         .buttonStyle(.plain)
+                        .aspectRatio(1.0, contentMode: .fit)
                     }
                 }
             }

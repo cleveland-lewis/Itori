@@ -2,6 +2,33 @@
 
 All notable changes to Itori will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- macOS Dashboard: Clickable assignments in "Upcoming Assignments" card - click any assignment to view/edit details
+- macOS Dashboard: Modern popup UI for assignment creation and editing with SF Symbols icons and organized sections
+- macOS Dashboard: Parsing status indicators for uploaded syllabus files (progress spinner and success badge)
+- macOS Course Detail: Automatic syllabus parsing trigger when importing files
+- macOS Course Detail: Real-time parsing status UI with assignment count display
+- AddAssignmentView: Support for editing existing assignments (reuses same form for create/edit)
+
+### Fixed
+- macOS Dashboard: Fixed scrunched card layout by removing fixed height constraints - cards now properly expand
+- macOS Dashboard: Fixed calendar date overflow - dates now fit properly within card boundaries with square aspect ratio
+- macOS Dashboard: Responsive layout improvements - proper spacing between cards and sections
+- macOS Course Import: Syllabus parsing now automatically triggered on file upload (was not being called)
+- macOS Course Import: Added secure file access for sandboxed app file operations
+
+### Changed
+- macOS Dashboard: Removed `dashboardRowHeights()` function - cards use natural sizing with minimum heights
+- macOS Dashboard: Updated calendar grid spacing from variable to fixed 4pt for better fit
+- macOS Dashboard: Calendar date cells now maintain 1:1 aspect ratio
+- AddAssignmentView: Complete UI redesign - NavigationStack with toolbar instead of AppCard layout
+- AddAssignmentView: Sections now clearly separated with SF Symbols icons and dividers
+- AddAssignmentView: Responsive frame sizing (600-800px wide, 500-700px tall)
+
+## [Previous versions...]
+
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 

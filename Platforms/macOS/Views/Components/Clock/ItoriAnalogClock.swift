@@ -82,24 +82,30 @@ struct ItoriAnalogClock: View {
         }
     }
 
-    /// Converts timer seconds to clock components (hours on 12-hour face, minutes, seconds)
-    /// Defaults to 12:00:00 when timerSeconds is 0 or very small
+    /// Converts timer seconds to clock hand positions for analog display
+    /// Each hand completes one revolution at different intervals:
+    /// - Seconds hand: 1 revolution per 1 second
+    /// - Minutes hand: 1 revolution per 60 seconds (1 minute)
+    /// - Hours hand: 1 revolution per 3600 seconds (1 hour)
+    /// Returns fractional values from 0.0 to 1.0 representing the position in each revolution
     private func timeComponents(from timerSeconds: TimeInterval) -> (hours: Double, minutes: Double, seconds: Double) {
-        guard timerSeconds >= 1.0 else {
+        guard timerSeconds >= 0.0 else {
             return (hours: 0.0, minutes: 0.0, seconds: 0.0)
         }
 
-        let totalSeconds = Int(timerSeconds)
-        let s = Double(totalSeconds % 60)
-        let m = Double((totalSeconds / 60) % 60)
-        let h = Double((totalSeconds / 3600) % 12)
+        // Seconds hand: completes 1 revolution per second
+        // Position within current second (fractional part)
+        let secondsFractional = timerSeconds.truncatingRemainder(dividingBy: 1.0)
 
-        let fractionalSeconds = timerSeconds - Double(totalSeconds)
-        let seconds = s + fractionalSeconds
-        let minutes = m + seconds / 60.0
-        let hours = h + minutes / 60.0
+        // Minutes hand: completes 1 revolution per 60 seconds
+        // Position within current minute
+        let minutesFractional = timerSeconds.truncatingRemainder(dividingBy: 60.0) / 60.0
 
-        return (hours: hours, minutes: minutes, seconds: seconds)
+        // Hours hand: completes 1 revolution per 3600 seconds (1 hour)
+        // Position within current hour
+        let hoursFractional = timerSeconds.truncatingRemainder(dividingBy: 3600.0) / 3600.0
+
+        return (hours: hoursFractional, minutes: minutesFractional, seconds: secondsFractional)
     }
 }
 
@@ -422,19 +428,19 @@ struct AnalogClockHands: View {
         let ringOffset: CGFloat = radius * (isStopwatch ? 0.21 : 0.235)
 
         ZStack {
-            // Hour hand
+            // Hour hand - 1 revolution per hour (3600 seconds)
             Capsule(style: .continuous)
                 .fill(Color.primary.opacity(0.88))
                 .frame(width: isStopwatch ? 5.0 : 6.5, height: radius * 0.46)
                 .offset(y: -radius * 0.23)
-                .rotationEffect(.degrees((hours / 12) * 360))
+                .rotationEffect(.degrees(hours * 360))
 
-            // Minute hand
+            // Minute hand - 1 revolution per minute (60 seconds)
             Capsule(style: .continuous)
                 .fill(Color.primary.opacity(0.82))
                 .frame(width: isStopwatch ? 2.8 : 3.5, height: radius * 0.7)
                 .offset(y: -radius * 0.35)
-                .rotationEffect(.degrees((minutes / 60) * 360))
+                .rotationEffect(.degrees(minutes * 360))
 
             if showSecondHand {
                 ZStack {
@@ -453,7 +459,7 @@ struct AnalogClockHands: View {
                         .frame(width: ringSize, height: ringSize)
                         .offset(y: ringOffset)
                 }
-                .rotationEffect(.degrees((seconds / 60) * 360))
+                .rotationEffect(.degrees(seconds * 360))
             }
 
             ZStack {

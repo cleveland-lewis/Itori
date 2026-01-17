@@ -8,6 +8,7 @@
 
         @EnvironmentObject private var assignmentsStore: AssignmentsStore
         @EnvironmentObject private var dataManager: CoursesStore
+        @EnvironmentObject private var parsingStore: SyllabusParsingStore
         @State private var draftCourse: Course
         @State private var showingSyllabusImporter = false
 
@@ -215,6 +216,42 @@
                         .buttonStyle(.borderedProminent)
                     }
 
+                    // Parsing status indicator
+                    if let job = parsingStore.parsingJobs
+                        .first(where: { $0.courseId == draftCourse.id && $0.status == .running })
+                    {
+                        HStack(spacing: 8) {
+                            ProgressView()
+                                .controlSize(.small)
+                            Text("Parsing syllabus...")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.vertical, 4)
+                    }
+
+                    // Show parsed assignments ready for review
+                    let pendingAssignments = parsingStore.parsedAssignmentsByCourse(draftCourse.id)
+                    if !pendingAssignments.isEmpty {
+                        HStack(spacing: 8) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                            Text("\(pendingAssignments.count) assignment(s) ready to import")
+                                .font(.caption)
+                            Spacer()
+                            Button("Review") {
+                                LOG_UI(
+                                    .info,
+                                    "CourseDetailView",
+                                    "Review button tapped - parsed assignments review not yet implemented"
+                                )
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                        }
+                        .padding(.vertical, 4)
+                    }
+
                     AttachmentListView(attachments: $draftCourse.attachments, courseId: draftCourse.id)
                 }
             }
@@ -290,11 +327,27 @@
                 if fm.fileExists(atPath: destURL.path) {
                     try fm.removeItem(at: destURL)
                 }
+
+                // Secure access to the file
+                let didStartAccess = url.startAccessingSecurityScopedResource()
+                defer {
+                    if didStartAccess {
+                        url.stopAccessingSecurityScopedResource()
+                    }
+                }
+
                 try fm.copyItem(at: url, to: destURL)
                 let attachment = Attachment(name: url.lastPathComponent, localURL: destURL, tag: .syllabus)
                 draftCourse.attachments.append(attachment)
+
+                // START PARSING: Create job and trigger parsing
+                let job = parsingStore.createJob(courseId: draftCourse.id, fileId: attachment.id)
+                parsingStore.startParsing(job: job, fileURL: destURL)
+
+                LOG_UI(.info, "CourseDetailView", "Started parsing syllabus: \(url.lastPathComponent)")
             } catch {
                 DebugLogger.log("Failed to import syllabus: \(error)")
+                LOG_UI(.error, "CourseDetailView", "Failed to import syllabus: \(error.localizedDescription)")
             }
         }
 

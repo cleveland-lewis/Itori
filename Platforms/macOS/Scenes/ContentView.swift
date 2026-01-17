@@ -24,7 +24,6 @@
         @EnvironmentObject private var modalRouter: AppModalRouter
         @EnvironmentObject private var preferences: AppPreferences
         @State private var selectedTab: RootTab = .dashboard
-        @State private var currentEnergyLevel: EnergyLevel = .medium
         @State private var settingsRotation: Double = 0
         @State private var columnVisibility: NavigationSplitViewVisibility = .all
         @Environment(\.colorScheme) private var colorScheme
@@ -53,7 +52,7 @@
                     if let win = NSApp.keyWindow ?? NSApp.windows.first {
                         win.title = "Itori"
                         win.titleVisibility = .visible
-                        win.titlebarAppearsTransparent = false
+                        win.titlebarAppearsTransparent = true
                     }
                 }
                 if let initialTab = RootTab(rawValue: appModel.selectedPage.rawValue) {
@@ -128,7 +127,7 @@
                 }
             }
             .listStyle(.sidebar)
-            .navigationTitle("Itori")
+            .navigationTitle("")
             .navigationSplitViewColumnWidth(
                 min: WindowSizing.minSidebarWidth,
                 ideal: WindowSizing.idealSidebarWidth
@@ -159,8 +158,7 @@
                 Color.clear.frame(height: 20)
             }
             .toolbar {
-                ToolbarItem(placement: .automatic) {
-                    // Energy indicator - glass pill
+                ToolbarItem(placement: .navigation) {
                     energyIndicator
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
@@ -205,31 +203,46 @@
         // MARK: - Energy Indicator
 
         private var energyIndicator: some View {
-            HStack(spacing: 6) {
-                ForEach(EnergyLevel.allCases, id: \.self) { level in
-                    Button(action: {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            currentEnergyLevel = level
-                        }
-                    }) {
-                        Circle()
-                            .fill(currentEnergyLevel == level ? level.color : Color.secondary.opacity(0.3))
-                            .frame(width: 10, height: 10)
-                            .overlay(
-                                Circle()
-                                    .strokeBorder(
-                                        currentEnergyLevel == level ? level.color : Color.clear,
-                                        lineWidth: 2
-                                    )
-                                    .frame(width: 14, height: 14)
-                            )
-                    }
-                    .buttonStyle(.plain)
-                    .help("\(level.label) Energy")
-                    .accessibilityLabel("\(level.label) Energy")
-                    .accessibilityHint("Set your current energy level to \(level.label.lowercased())")
+            Button(action: {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                    advanceEnergyLevel()
                 }
+            }) {
+                Image(systemName: "bolt.fill")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(energyColor)
             }
+            .buttonStyle(.plain)
+            .help("\(energyLabel) Energy")
+            .accessibilityLabel("\(energyLabel) Energy")
+            .accessibilityHint("Click to change your current energy level")
+        }
+
+        private var energyLabel: String {
+            switch settings.defaultEnergyLevel.lowercased() {
+            case "high": "High"
+            case "low": "Low"
+            default: "Medium"
+            }
+        }
+
+        private var energyColor: Color {
+            switch energyLabel {
+            case "High": .green
+            case "Low": .red
+            default: .yellow
+            }
+        }
+
+        private func advanceEnergyLevel() {
+            let next = switch energyLabel {
+            case "High": "Medium"
+            case "Medium": "Low"
+            default: "High"
+            }
+            settings.defaultEnergyLevel = next
+            settings.energySelectionConfirmed = true
+            settings.save()
         }
 
         // MARK: - Page Views
