@@ -11,6 +11,12 @@ All notable changes to Itori will be documented in this file.
 - macOS Course Detail: Automatic syllabus parsing trigger when importing files
 - macOS Course Detail: Real-time parsing status UI with assignment count display
 - AddAssignmentView: Support for editing existing assignments (reuses same form for create/edit)
+- **Syllabus Parsing: Real PDF text extraction and assignment detection** (2026-01-17)
+  - Extracts text from PDF files using PDFTextExtractor
+  - Detects assignment patterns (homework, project, exam, quiz, test, etc.)
+  - Extracts due dates with multiple format support (MM/dd/yyyy, Month day year, etc.)
+  - Automatically infers assignment types based on keywords
+  - Provides detailed logging of parsing progress and results
 
 ### Fixed
 - macOS Dashboard: Fixed scrunched card layout by removing fixed height constraints - cards now properly expand
@@ -18,6 +24,8 @@ All notable changes to Itori will be documented in this file.
 - macOS Dashboard: Responsive layout improvements - proper spacing between cards and sections
 - macOS Course Import: Syllabus parsing now automatically triggered on file upload (was not being called)
 - macOS Course Import: Added secure file access for sandboxed app file operations
+- **macOS Dashboard: Fixed "invalid reuse after initialization failure" error with sheet(item:)** (2026-01-17)
+- **Syllabus Parsing: Now actually reads and parses PDF content instead of returning mock data** (2026-01-17)
 
 ### Changed
 - macOS Dashboard: Removed `dashboardRowHeights()` function - cards use natural sizing with minimum heights
