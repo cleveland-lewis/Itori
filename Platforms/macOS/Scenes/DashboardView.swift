@@ -24,7 +24,6 @@
         @State private var showAddGradeSheet = false
         @State private var showAddEventSheet = false
         @State private var showAddTaskSheet = false
-        @State private var showEditAssignmentSheet = false
         @State private var editingAssignment: AppTask? = nil
         @ObservedObject private var studyHoursTracker = StudyHoursTracker.shared
         @ObservedObject private var plannerStore = PlannerStore.shared
@@ -195,13 +194,12 @@
                 }
                 .environmentObject(coursesStore)
             }
-            .sheet(isPresented: $showEditAssignmentSheet) {
-                if let task = editingAssignment {
-                    AddAssignmentView(editingTask: task) { updatedTask in
-                        assignmentsStore.updateTask(updatedTask)
-                    }
-                    .environmentObject(coursesStore)
+            .sheet(item: $editingAssignment) { task in
+                AddAssignmentView(editingTask: task) { updatedTask in
+                    assignmentsStore.updateTask(updatedTask)
+                    editingAssignment = nil
                 }
+                .environmentObject(coursesStore)
             }
             .sheet(isPresented: $showAddTaskSheet) {
                 AddAssignmentView(initialType: .project) { task in
@@ -1199,7 +1197,6 @@
                 // Find the actual task and open edit sheet
                 if let task = assignmentsStore.tasks.first(where: { $0.id == item.id }) {
                     editingAssignment = task
-                    showEditAssignmentSheet = true
                 }
             } label: {
                 HStack(spacing: DesignSystem.Spacing.medium) {
