@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import PDFKit
 import SwiftUI
 import UserNotifications
 
@@ -115,10 +116,7 @@ final class SyllabusParsingStore: ObservableObject {
     }
 
     private func parseFile(fileURL: URL?, jobId: UUID, courseId: UUID) async throws -> [ParsedAssignment] {
-        // Simple algorithmic parser (no LLM)
-        // This is a placeholder - real implementation would parse PDF/text
-
-        guard fileURL != nil else {
+        guard let fileURL else {
             throw NSError(
                 domain: "SyllabusParser",
                 code: 1,
@@ -126,28 +124,159 @@ final class SyllabusParsingStore: ObservableObject {
             )
         }
 
-        // Simulate parsing delay
-        try await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
+        LOG_DATA(.info, "SyllabusParsingStore", "Starting to parse file: \(fileURL.lastPathComponent)")
 
-        // Return sample parsed assignments
-        return [
-            ParsedAssignment(
-                jobId: jobId,
-                courseId: courseId,
-                title: "Assignment 1",
-                dueDate: Calendar.current.date(byAdding: .day, value: 7, to: Date()),
-                inferredType: "Homework",
-                provenanceAnchor: "Assignment 1 - Due Week 2"
-            ),
-            ParsedAssignment(
-                jobId: jobId,
-                courseId: courseId,
-                title: "Midterm Exam",
-                dueDate: Calendar.current.date(byAdding: .day, value: 30, to: Date()),
-                inferredType: "Exam",
-                provenanceAnchor: "Midterm - Week 5"
+        // Extract text from PDF
+        let extractor = PDFTextExtractor()
+        let extractedText: ExtractedPDFText
+
+        do {
+            extractedText = try extractor.extract(from: fileURL)
+            LOG_DATA(
+                .info,
+                "SyllabusParsingStore",
+                "Extracted \(extractedText.pageCount) pages, \(extractedText.text.count) characters"
             )
+        } catch {
+            LOG_DATA(.error, "SyllabusParsingStore", "PDF extraction failed: \(error.localizedDescription)")
+            throw NSError(
+                domain: "SyllabusParser",
+                code: 2,
+                userInfo: [NSLocalizedDescriptionKey: "Failed to extract text from PDF: \(error.localizedDescription)"]
+            )
+        }
+
+        // Parse assignments from text
+        var parsedAssignments: [ParsedAssignment] = []
+        let text = extractedText.text
+        let lines = text.components(separatedBy: .newlines)
+
+        // Look for assignment patterns
+        let assignmentPatterns = [
+            "assignment",
+            "homework",
+            "hw",
+            "project",
+            "essay",
+            "paper",
+            "quiz",
+            "exam",
+            "test",
+            "midterm",
+            "final"
         ]
+
+        let datePattern = try? NSRegularExpression(
+            pattern: #"(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})|(\w+ \d{1,2},? \d{4})|(\d{1,2} \w+ \d{4})"#,
+            options: [.caseInsensitive]
+        )
+
+        for (index, line) in lines.enumerated() {
+            let lowercaseLine = line.lowercased()
+
+            // Check if line contains assignment keywords
+            guard assignmentPatterns.contains(where: { lowercaseLine.contains($0) }) else {
+                continue
+            }
+
+            // Extract title (clean up the line)
+            var title = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            if title.count > 100 {
+                title = String(title.prefix(100)) + "..."
+            }
+
+            // Try to find a date nearby (within next 3 lines)
+            var dueDate: Date?
+            let searchRange = index ..< min(index + 4, lines.count)
+            for i in searchRange {
+                if let date = extractDate(from: lines[i], using: datePattern) {
+                    dueDate = date
+                    break
+                }
+            }
+
+            // Infer type
+            let inferredType = if lowercaseLine.contains("exam") || lowercaseLine.contains("test") || lowercaseLine
+                .contains("midterm") || lowercaseLine.contains("final")
+            {
+                "Exam"
+            } else if lowercaseLine.contains("quiz") {
+                "Quiz"
+            } else if lowercaseLine.contains("project") || lowercaseLine.contains("essay") || lowercaseLine
+                .contains("paper")
+            {
+                "Project"
+            } else {
+                "Homework"
+            }
+
+            parsedAssignments.append(ParsedAssignment(
+                jobId: jobId,
+                courseId: courseId,
+                title: title,
+                dueDate: dueDate,
+                inferredType: inferredType,
+                provenanceAnchor: line
+            ))
+        }
+
+        LOG_DATA(.info, "SyllabusParsingStore", "Parsed \(parsedAssignments.count) assignments from file")
+
+        // If no assignments found, return some sample data so user knows parsing ran
+        if parsedAssignments.isEmpty {
+            LOG_DATA(.info, "SyllabusParsingStore", "No assignments found in file, returning sample data")
+            return [
+                ParsedAssignment(
+                    jobId: jobId,
+                    courseId: courseId,
+                    title: "No assignments found - check syllabus format",
+                    dueDate: nil,
+                    inferredType: "Note",
+                    provenanceAnchor: "Parsing completed but no assignments detected"
+                )
+            ]
+        }
+
+        return parsedAssignments
+    }
+
+    private func extractDate(from text: String, using regex: NSRegularExpression?) -> Date? {
+        guard let regex else { return nil }
+
+        let range = NSRange(text.startIndex..., in: text)
+        guard let match = regex.firstMatch(in: text, range: range) else {
+            return nil
+        }
+
+        let matchedString = (text as NSString).substring(with: match.range)
+
+        // Try multiple date formats
+        let formatters: [DateFormatter] = {
+            let formats = [
+                "MM/dd/yyyy",
+                "M/d/yyyy",
+                "MM-dd-yyyy",
+                "M-d-yyyy",
+                "MMMM d, yyyy",
+                "MMM d, yyyy",
+                "d MMMM yyyy",
+                "d MMM yyyy"
+            ]
+            return formats.map { format in
+                let formatter = DateFormatter()
+                formatter.dateFormat = format
+                formatter.locale = Locale(identifier: "en_US_POSIX")
+                return formatter
+            }
+        }()
+
+        for formatter in formatters {
+            if let date = formatter.date(from: matchedString) {
+                return date
+            }
+        }
+
+        return nil
     }
 
     private func sendCompletionNotification(courseId: UUID) async {
