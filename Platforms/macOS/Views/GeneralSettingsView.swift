@@ -41,10 +41,22 @@
 
             var displayName: String {
                 switch self {
-                case .oneWeek: NSLocalizedString("settings.planner.lookahead.1week", comment: "1 Week")
-                case .twoWeeks: NSLocalizedString("settings.planner.lookahead.2weeks", comment: "2 Weeks")
-                case .oneMonth: NSLocalizedString("settings.planner.lookahead.1month", comment: "1 Month")
-                case .twoMonths: NSLocalizedString("settings.planner.lookahead.2months", comment: "2 Months")
+                case .oneWeek: NSLocalizedString("settings.planner.lookahead.1week", value: "1 Week", comment: "1 Week")
+                case .twoWeeks: NSLocalizedString(
+                        "settings.planner.lookahead.2weeks",
+                        value: "2 Weeks",
+                        comment: "2 Weeks"
+                    )
+                case .oneMonth: NSLocalizedString(
+                        "settings.planner.lookahead.1month",
+                        value: "1 Month",
+                        comment: "1 Month"
+                    )
+                case .twoMonths: NSLocalizedString(
+                        "settings.planner.lookahead.2months",
+                        value: "2 Months",
+                        comment: "2 Months"
+                    )
                 }
             }
         }

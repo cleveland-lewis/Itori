@@ -896,7 +896,7 @@
                     }
                 ))
                 .scrollContentBackground(.hidden)
-                .frame(minHeight: 120)
+                .frame(maxWidth: .infinity, minHeight: 120, alignment: .leading)
                 .padding(12)
                 .background(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)

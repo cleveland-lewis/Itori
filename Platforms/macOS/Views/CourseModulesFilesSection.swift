@@ -82,8 +82,8 @@
                                     }
                                 }
                             }
-                            .padding(.horizontal, 12)
-                            .padding(.bottom, 12)
+                            .padding(.horizontal, 18)
+                            .padding(.bottom, 18)
                         }
                         .frame(maxHeight: 280)
                     }
@@ -105,8 +105,8 @@
                                     FileRow(file: file)
                                 }
                             }
-                            .padding(.horizontal, 12)
-                            .padding(.bottom, 12)
+                            .padding(.horizontal, 18)
+                            .padding(.bottom, 18)
                         }
                         .frame(maxHeight: 200)
                     }
