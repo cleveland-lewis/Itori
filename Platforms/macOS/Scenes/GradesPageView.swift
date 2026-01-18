@@ -895,7 +895,9 @@
                         self.detail = updated
                     }
                 ))
+                .scrollContentBackground(.hidden)
                 .frame(minHeight: 120)
+                .padding(12)
                 .background(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .fill(.secondaryBackground)
