@@ -203,19 +203,34 @@
         // MARK: - Energy Indicator
 
         private var energyIndicator: some View {
-            Button(action: {
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                    advanceEnergyLevel()
+            Menu {
+                Button {
+                    setEnergyLevel("High")
+                } label: {
+                    Label("High", systemImage: energyLabel == "High" ? "checkmark" : "")
                 }
-            }) {
+
+                Button {
+                    setEnergyLevel("Medium")
+                } label: {
+                    Label("Medium", systemImage: energyLabel == "Medium" ? "checkmark" : "")
+                }
+
+                Button {
+                    setEnergyLevel("Low")
+                } label: {
+                    Label("Low", systemImage: energyLabel == "Low" ? "checkmark" : "")
+                }
+            } label: {
                 Image(systemName: "bolt.fill")
                     .font(.system(size: 14, weight: .bold))
                     .foregroundStyle(energyColor)
             }
-            .buttonStyle(.plain)
-            .help("\(energyLabel) Energy")
+            .menuStyle(.borderlessButton)
+            .menuIndicator(.hidden)
+            .help("\(energyLabel) Energy - Click to change")
             .accessibilityLabel("\(energyLabel) Energy")
-            .accessibilityHint("Click to change your current energy level")
+            .accessibilityHint("Opens menu to change your current energy level")
         }
 
         private var energyLabel: String {
@@ -234,15 +249,12 @@
             }
         }
 
-        private func advanceEnergyLevel() {
-            let next = switch energyLabel {
-            case "High": "Medium"
-            case "Medium": "Low"
-            default: "High"
+        private func setEnergyLevel(_ level: String) {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                settings.defaultEnergyLevel = level
+                settings.energySelectionConfirmed = true
+                settings.save()
             }
-            settings.defaultEnergyLevel = next
-            settings.energySelectionConfirmed = true
-            settings.save()
         }
 
         // MARK: - Page Views
