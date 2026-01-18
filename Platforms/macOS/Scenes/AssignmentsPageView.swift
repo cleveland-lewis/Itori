@@ -145,14 +145,15 @@
         @EnvironmentObject private var assignmentsStore: AssignmentsStore
         @EnvironmentObject private var appModel: AppModel
         @EnvironmentObject private var settingsCoordinator: SettingsCoordinator
+        @Environment(\.appLayout) private var appLayout
 
         @State private var assignments: [Assignment] = []
         @State private var courseDeletedCancellable: AnyCancellable? = nil
-        @State private var selectedSegment: AssignmentSegment = .all
+        @State private var selectedSegment: AssignmentSegment = .upcoming
         @State private var selectedAssignment: Assignment? = nil
         @State private var searchText: String = ""
-        @State private var showNewAssignmentSheet: Bool = false
-        @State private var editingAssignment: Assignment? = nil
+        @State private var showAddAssignmentSheet: Bool = false
+        @State private var editingTask: AppTask? = nil
         @State private var sortOption: AssignmentSortOption = .byDueDate
         @State private var filterStatus: AssignmentStatus? = nil
         @State private var filterCourse: String? = nil
@@ -194,15 +195,24 @@
                 .frame(maxWidth: min(proxy.size.width, 1400))
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, responsivePadding(for: proxy.size.width))
-                .padding(.vertical, ItariSpacing.l)
+                .padding(.top, appLayout.topContentInset)
+                .padding(.bottom, ItariSpacing.l)
                 .itoriSystemBackground()
             }
-            .tint(.blue)
-            .accentColor(.blue)
-            .sheet(isPresented: $showNewAssignmentSheet) {
-                AssignmentEditorSheet(assignment: editingAssignment) { newAssignment in
-                    upsertAssignment(newAssignment)
+            .tint(settings.activeAccentColor)
+            .accentColor(settings.activeAccentColor)
+            .sheet(isPresented: $showAddAssignmentSheet) {
+                AddAssignmentView(initialType: .homework) { task in
+                    assignmentsStore.addTask(task)
                 }
+                .environmentObject(coursesStore)
+            }
+            .sheet(item: $editingTask) { task in
+                AddAssignmentView(editingTask: task) { updatedTask in
+                    assignmentsStore.updateTask(updatedTask)
+                    editingTask = nil
+                }
+                .environmentObject(coursesStore)
             }
             .onChange(of: appModel.requestedAssignmentDueDate) { _, dueDate in
                 guard let dueDate else { return }
@@ -273,8 +283,7 @@
                 Spacer(minLength: 12)
 
                 Button {
-                    editingAssignment = nil
-                    showNewAssignmentSheet = true
+                    showAddAssignmentSheet = true
                 } label: {
                     Image(systemName: "plus")
                         .font(.title3.weight(.semibold))
@@ -283,24 +292,6 @@
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabelWithTooltip("assignments.action.new".localized)
-
-                Button {
-                    autoPlanSelectedAssignments()
-                } label: {
-                    Label(
-                        NSLocalizedString(
-                            "assignments.action.plan_day",
-                            value: "assignments.action.plan_day",
-                            comment: ""
-                        ),
-                        systemImage: "calendar.badge.clock"
-                    )
-                    .font(DesignSystem.Typography.body)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                }
-                .buttonStyle(.itariLiquid)
-                .controlSize(.regular)
             }
         }
 
@@ -358,7 +349,71 @@
 
         private var assignmentListCard: some View {
             VStack(alignment: .leading, spacing: 12) {
-                if filteredAndSortedAssignments.isEmpty {
+                urgencyLegend
+
+                if selectedSegment == .upcoming {
+                    if upcomingSections.allSatisfy(\.items.isEmpty) {
+                        // Empty state
+                        VStack(spacing: 16) {
+                            Image(systemName: "tray")
+                                .font(.system(size: emptyIconSize))
+                                .foregroundStyle(.secondary)
+
+                            Text(NSLocalizedString("assignments.empty.no_assignments", comment: ""))
+                                .font(.title3.weight(.semibold))
+                                .foregroundStyle(.primary)
+
+                            Text(NSLocalizedString("assignments.empty.create_first", comment: ""))
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .padding()
+                    } else {
+                        ScrollView {
+                            VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.small) {
+                                ForEach(upcomingSections.indices, id: \.self) { index in
+                                    let section = upcomingSections[index]
+                                    if !section.items.isEmpty {
+                                        Text(section.title)
+                                            .font(.caption.weight(.semibold))
+                                            .foregroundStyle(.secondary)
+                                            .padding(.top, index == 0 ? 0 : 8)
+
+                                        VStack(spacing: DesignSystem.Layout.spacing.small) {
+                                            ForEach(section.items) { assignment in
+                                                AssignmentsPageRow(
+                                                    assignment: assignment,
+                                                    isSelected: assignment.id == selectedAssignment?.id || selectedIDs
+                                                        .contains(assignment.id),
+                                                    onToggleComplete: { toggleCompletion(for: assignment) },
+                                                    onSelect: { selectedAssignment = assignment },
+                                                    leadingAction: settings.assignmentSwipeLeading,
+                                                    trailingAction: settings.assignmentSwipeTrailing,
+                                                    onPerformAction: { performSwipeAction($0, assignment: assignment) },
+                                                    onSaveGrade: { earned, possible in
+                                                        saveGrade(for: assignment, earned: earned, possible: possible)
+                                                    }
+                                                )
+                                                .background(
+                                                    GeometryReader { geo in
+                                                        Color.clear
+                                                            .preference(
+                                                                key: AssignmentFramePreference.self,
+                                                                value: [assignment.id: geo
+                                                                    .frame(in: .named("assignmentsArea"))]
+                                                            )
+                                                    }
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            .padding(.vertical, 4)
+                        }
+                    }
+                } else if filteredAndSortedAssignments.isEmpty {
                     // Empty state
                     VStack(spacing: 16) {
                         Image(systemName: "tray")
@@ -419,6 +474,25 @@
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
 
+        private var urgencyLegend: some View {
+            HStack(spacing: 12) {
+                Spacer()
+
+                ForEach(AssignmentUrgency.allCases, id: \.self) { urgency in
+                    HStack(spacing: 6) {
+                        Circle()
+                            .fill(urgency.color)
+                            .frame(width: 8, height: 8)
+                        Text(urgency.label)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                Spacer()
+            }
+        }
+
         private var detailPanel: some View {
             AssignmentDetailPanel(
                 assignment: Binding(
@@ -429,8 +503,7 @@
                     upsertAssignment(updated)
                 },
                 onEdit: { toEdit in
-                    editingAssignment = toEdit
-                    showNewAssignmentSheet = true
+                    openEditor(for: toEdit)
                 },
                 onDelete: { toDelete in
                     deleteAssignment(toDelete)
@@ -453,7 +526,7 @@
                 switch selectedSegment {
                 case .upcoming:
                     assignment.status != .completed &&
-                        assignment.dueDate >= tomorrow &&
+                        assignment.dueDate >= todayStart &&
                         assignment.dueDate <= upcomingEnd
                 case .all:
                     assignment.status != .archived
@@ -493,6 +566,46 @@
             }
 
             return result
+        }
+
+        private var upcomingSections: [(title: String, items: [Assignment])] {
+            let calendar = Calendar.current
+            let todayStart = calendar.startOfDay(for: Date())
+            let tomorrowStart = calendar.date(byAdding: .day, value: 1, to: todayStart) ?? Date()
+            let dayAfterTomorrow = calendar.date(byAdding: .day, value: 2, to: todayStart) ?? Date()
+            let upcomingEnd = calendar.date(byAdding: .day, value: 7, to: todayStart) ?? Date()
+
+            var result = assignments.filter { $0.status != .archived }
+
+            if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                let q = searchText.lowercased()
+                result = result.filter {
+                    $0.title.lowercased().contains(q) ||
+                        ($0.courseCode ?? "").lowercased().contains(q) ||
+                        ($0.courseName ?? "").lowercased().contains(q) ||
+                        $0.category.localizedName.lowercased().contains(q)
+                }
+            }
+
+            if let filterStatus {
+                result = result.filter { $0.status == filterStatus }
+            }
+            if let filterCourse {
+                result = result.filter { $0.courseCode == filterCourse || $0.courseName == filterCourse }
+            }
+
+            result = result.filter { $0.status != .completed && $0.dueDate >= todayStart && $0.dueDate <= upcomingEnd }
+                .sorted { $0.dueDate < $1.dueDate }
+
+            let todayItems = result.filter { calendar.isDateInToday($0.dueDate) }
+            let tomorrowItems = result.filter { calendar.isDateInTomorrow($0.dueDate) }
+            let weekItems = result.filter { $0.dueDate >= dayAfterTomorrow && $0.dueDate <= upcomingEnd }
+
+            return [
+                (title: "Today", items: todayItems),
+                (title: "Tomorrow", items: tomorrowItems),
+                (title: "This Week", items: weekItems)
+            ]
         }
 
         private var uniqueCourses: [String] {
@@ -553,8 +666,7 @@
             case .complete:
                 toggleCompletion(for: assignment)
             case .edit:
-                editingAssignment = assignment
-                showNewAssignmentSheet = true
+                openEditor(for: assignment)
             case .delete:
                 deleteAssignment(assignment)
             case .openDetail:
@@ -586,6 +698,14 @@
                 assignmentsStore.addTask(task)
             }
             selectedAssignment = ensurePlan(assignment)
+        }
+
+        private func openEditor(for assignment: Assignment) {
+            if let task = assignmentsStore.tasks.first(where: { $0.id == assignment.id }) {
+                editingTask = task
+            } else {
+                editingTask = AssignmentConverter.toAppTask(assignment)
+            }
         }
 
         private func deleteAssignment(_ assignment: Assignment) {
@@ -905,6 +1025,7 @@
                     .font(.footnote)
                     .foregroundColor(.secondary)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -939,6 +1060,7 @@
                     .font(.footnote)
                     .foregroundColor(.secondary)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -970,6 +1092,7 @@
                         .fill(urgencyColor)
                         .frame(width: 4)
                         .cornerRadius(2)
+                        .padding(.vertical, 6)
 
                     Button(action: onToggleComplete) {
                         Image(systemName: assignment.status == .completed ? "checkmark.square.fill" : "square")
@@ -1026,12 +1149,12 @@
                 .padding(.horizontal, 10)
                 .frame(height: DesignSystem.Layout.rowHeight.medium)
                 .background(
-                    RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
                         .fill(isSelected ? Color(nsColor: NSColor.unemphasizedSelectedContentBackgroundColor)
                             .opacity(0.14) : Color(nsColor: NSColor.alternatingContentBackgroundColors[0]).opacity(0.9))
                 )
                 .overlay(
-                    RoundedRectangle(cornerRadius: DesignSystem.Corners.block, style: .continuous)
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
                         .stroke(.separatorColor.opacity(0.35), lineWidth: 1)
                 )
             }

@@ -410,25 +410,6 @@ extension FocusSession: StorageListable {
     }
 }
 
-extension LocalTimerSession: StorageListable {
-    public var displayTitle: String {
-        let minutes = Int(duration / 60)
-        return "Timer: \(minutes)m"
-    }
-
-    public var entityType: StorageEntityType { .timerSession }
-
-    public var contextDescription: String? {
-        mode.label
-    }
-
-    public var primaryDate: Date { startDate }
-
-    public var statusDescription: String? {
-        isBreakSession ? "Break" : nil
-    }
-}
-
 // MARK: - TestBlueprint
 
 extension TestBlueprint: Identifiable {}

@@ -7,6 +7,8 @@
         @EnvironmentObject private var sheetRouter: IOSSheetRouter
         @State private var selectedDeck: FlashcardDeck?
         @State private var showingAddDeck = false
+        @State private var editingDeck: FlashcardDeck?
+        @State private var deletingDeck: FlashcardDeck?
         @State private var searchText = ""
 
         private var filteredDecks: [FlashcardDeck] {
@@ -43,6 +45,26 @@
                 }
                 .sheet(isPresented: $showingAddDeck) {
                     IOSAddDeckSheet()
+                }
+                .sheet(item: $editingDeck) { deck in
+                    IOSDeckEditSheet(deck: deck)
+                }
+                .alert(item: $deletingDeck) { deck in
+                    Alert(
+                        title: Text("Delete Deck?"),
+                        message: Text(String(
+                            format: NSLocalizedString(
+                                "flashcards.delete_deck.warning",
+                                value: "This will permanently delete \"%@\" and all its cards. This action cannot be undone.",
+                                comment: "Delete deck warning"
+                            ),
+                            deck.title
+                        )),
+                        primaryButton: .destructive(Text("Delete")) {
+                            manager.deleteDeck(deck.id)
+                        },
+                        secondaryButton: .cancel()
+                    )
                 }
             }
         }
@@ -98,7 +120,11 @@
             List {
                 ForEach(filteredDecks) { deck in
                     NavigationLink(destination: IOSDeckDetailView(deck: deck)) {
-                        DeckRowView(deck: deck)
+                        DeckRowView(
+                            deck: deck,
+                            onEdit: { editingDeck = deck },
+                            onDelete: { deletingDeck = deck }
+                        )
                     }
                 }
                 .onDelete(perform: deleteDecks)
@@ -116,6 +142,8 @@
 
     struct DeckRowView: View {
         let deck: FlashcardDeck
+        let onEdit: () -> Void
+        let onDelete: () -> Void
 
         private var dueCount: Int {
             deck.cards.filter { $0.dueDate <= Date() }.count
@@ -167,7 +195,167 @@
                 "\(deck.title), \(deck.cards.count) cards\(dueCount > 0 ? ", \(dueCount) due now" : "")"
             )
             .accessibilityHint("Tap to study this deck")
+            .contextMenu {
+                Button(NSLocalizedString("ui.label.edit.deck", value: "Edit Deck", comment: "Edit Deck")) {
+                    onEdit()
+                }
+                Button(role: .destructive) {
+                    onDelete()
+                } label: {
+                    Text(NSLocalizedString("ui.label.delete.deck", value: "Delete Deck", comment: "Delete Deck"))
+                }
+            }
         }
+    }
+
+    struct IOSDeckEditSheet: View {
+        @StateObject private var manager = FlashcardManager.shared
+        @StateObject private var coursesStore = CoursesStore.shared ?? CoursesStore()
+        @Environment(\.dismiss) private var dismiss
+        let deck: FlashcardDeck
+
+        @State private var title = ""
+        @State private var selectedCourseId: UUID?
+        @State private var exportItem: ExportItem?
+        @State private var exportError: String?
+
+        var body: some View {
+            NavigationStack {
+                Form {
+                    Section {
+                        TextField("Deck Title", text: $title)
+                    } header: {
+                        Text(NSLocalizedString("iosflashcards.deck.name", value: "Deck Name", comment: "Deck Name"))
+                    }
+
+                    Section {
+                        Picker("Course (Optional)", selection: $selectedCourseId) {
+                            Text(NSLocalizedString("iosflashcards.none", value: "None", comment: "None"))
+                                .tag(nil as UUID?)
+                            ForEach(coursesStore.activeCourses) { course in
+                                Text(course.title).tag(course.id as UUID?)
+                            }
+                        }
+                    } header: {
+                        Text(NSLocalizedString(
+                            "iosflashcards.link.to.course",
+                            value: "Link to Course",
+                            comment: "Link to Course"
+                        ))
+                    }
+
+                    Section {
+                        Button {
+                            exportToAnki()
+                        } label: {
+                            Label(
+                                NSLocalizedString(
+                                    "ui.label.export.to.anki.format",
+                                    value: "Export to Anki Format",
+                                    comment: "Export to Anki Format"
+                                ),
+                                systemImage: "square.and.arrow.up"
+                            )
+                        }
+                    } header: {
+                        Text(NSLocalizedString("iosflashcards.export", value: "Export", comment: "Export"))
+                    }
+
+                    Section {
+                        LabeledContent("Total Cards", value: "\(deck.cards.count)")
+                        LabeledContent("New Cards", value: "\(deck.cards.filter { $0.repetition == 0 }.count)")
+                        LabeledContent(
+                            "Learning",
+                            value: "\(deck.cards.filter { $0.repetition > 0 && $0.repetition < 3 }.count)"
+                        )
+                        LabeledContent("Review", value: "\(deck.cards.filter { $0.repetition >= 3 }.count)")
+                    } header: {
+                        Text(NSLocalizedString("iosflashcards.statistics", value: "Statistics", comment: "Statistics"))
+                    }
+                }
+                .navigationTitle("Edit Deck")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(NSLocalizedString("iosflashcards.button.cancel", value: "Cancel", comment: "Cancel")) {
+                            dismiss()
+                        }
+                    }
+
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(NSLocalizedString("ui.button.save", value: "Save", comment: "Save")) {
+                            var updated = deck
+                            updated.title = title
+                            updated.courseID = selectedCourseId
+                            manager.updateDeck(updated)
+                            dismiss()
+                        }
+                        .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
+                    }
+                }
+                .onAppear {
+                    title = deck.title
+                    selectedCourseId = deck.courseID
+                }
+                .sheet(item: $exportItem) { item in
+                    ShareSheet(items: [item.url]) {
+                        try? FileManager.default.removeItem(at: item.url)
+                    }
+                }
+                .alert(
+                    NSLocalizedString("flashcards.export.failed", value: "Export Failed", comment: "Export Failed"),
+                    isPresented: Binding(
+                        get: { exportError != nil },
+                        set: { if !$0 { exportError = nil } }
+                    )
+                ) {
+                    Button(NSLocalizedString("common.ok", value: "OK", comment: "OK"), role: .cancel) {
+                        exportError = nil
+                    }
+                } message: {
+                    Text(exportError ?? NSLocalizedString(
+                        "flashcards.export.failed.message",
+                        value: "Unable to export this deck right now.",
+                        comment: "Export deck failed message"
+                    ))
+                }
+            }
+        }
+
+        private func exportToAnki() {
+            let exportedText = manager.exportToAnki(deck: deck)
+            let safeTitle = deck.title
+                .replacingOccurrences(of: "/", with: "-")
+                .replacingOccurrences(of: ":", with: "-")
+            let url = FileManager.default.temporaryDirectory
+                .appendingPathComponent("\(safeTitle).csv")
+            do {
+                try exportedText.write(to: url, atomically: true, encoding: .utf8)
+                exportItem = ExportItem(url: url)
+            } catch {
+                exportError = error.localizedDescription
+            }
+        }
+    }
+
+    private struct ExportItem: Identifiable {
+        let id = UUID()
+        let url: URL
+    }
+
+    private struct ShareSheet: UIViewControllerRepresentable {
+        let items: [Any]
+        let completion: () -> Void
+
+        func makeUIViewController(context _: Context) -> UIActivityViewController {
+            let controller = UIActivityViewController(activityItems: items, applicationActivities: nil)
+            controller.completionWithItemsHandler = { _, _, _, _ in
+                completion()
+            }
+            return controller
+        }
+
+        func updateUIViewController(_: UIActivityViewController, context _: Context) {}
     }
 
     struct IOSAddDeckSheet: View {

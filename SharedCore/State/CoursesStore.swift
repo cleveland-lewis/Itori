@@ -286,6 +286,9 @@ final class CoursesStore: ObservableObject {
             }
 
             LOG_PERSISTENCE(.info, "CoursesLoad", "Initial load complete - data published")
+
+            // Migrate unassigned assignments to the first current-semester course.
+            AssignmentsStore.shared.migrateUnassignedTasksToCurrentSemesterCourse()
         }
 
         // PHASE 2: Defer iCloud and expensive operations

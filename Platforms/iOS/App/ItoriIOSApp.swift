@@ -62,7 +62,7 @@
                     .environmentObject(toastRouter)
                     .environmentObject(filterState)
                     .environmentObject(IntelligentSchedulingCoordinator.shared)
-                    .tint(.accentColor)
+                    .tint(AppSettingsModel.shared.activeAccentColor)
                     .task {
                         // OPTIMIZATION: Defer non-essential initialization until after first frame
                         await initializeBackgroundServices()

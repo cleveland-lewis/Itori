@@ -1,4 +1,5 @@
 #if os(macOS)
+    import Combine
     import SwiftUI
 
     struct InterfaceSettingsView: View {
@@ -6,57 +7,66 @@
         @EnvironmentObject var preferences: AppPreferences
         @State private var glassIntensity: Double = 0.5
 
-        enum AccentColorOption: String, CaseIterable, Identifiable {
-            case blue = "Blue"
-            case purple = "Purple"
-            case pink = "Pink"
-            case red = "Red"
-            case orange = "Orange"
-            case yellow = "Yellow"
-            case green = "Green"
-            case teal = "Teal"
-
-            var id: String { rawValue }
-
-            var color: Color {
-                switch self {
-                case .blue: .blue
-                case .purple: .purple
-                case .pink: .pink
-                case .red: .red
-                case .orange: .orange
-                case .yellow: .yellow
-                case .green: .green
-                case .teal: .teal
-                }
-            }
-        }
-
-        @State private var selectedAccentColor: AccentColorOption = .blue
-
         var body: some View {
             Form {
                 Section("Appearance") {
-                    Picker("Accent Color", selection: $preferences.accentColorName) {
-                        ForEach(AppPreferences.AppAccent.allCases) { accent in
-                            HStack {
-                                Circle().fill(accent.color).frame(width: 12, height: 12)
-                                Text(accent.rawValue)
-                            }
-                            .tag(accent.rawValue)
+                    Picker("Theme", selection: $settings.interfaceStyle) {
+                        ForEach(
+                            [InterfaceStyle.system, InterfaceStyle.light, InterfaceStyle.dark],
+                            id: \.self
+                        ) { style in
+                            Text(style.label).tag(style)
                         }
                     }
-                    .onChange(of: preferences.accentColorName) { _, _ in
-                        // AppStorage in AppPreferences already persists; UI will read preferences.currentAccentColor
+                    .onChange(of: settings.interfaceStyle) { _, newValue in
+                        settings.save()
+                        applyInterfaceStyle(newValue)
+                    }
+
+                    Picker("Accent Color", selection: Binding(
+                        get: { settings.accentColorChoice },
+                        set: { newValue in
+                            settings.objectWillChange.send()
+                            settings.accentColorChoice = newValue
+                            settings.save()
+                        }
+                    )) {
+                        ForEach(AppAccentColor.allCases.filter {
+                            // Only show the commonly used colors
+                            [.blue, .purple, .pink, .red, .orange, .yellow, .green, .aqua].contains($0)
+                        }) { accent in
+                            HStack {
+                                Circle().fill(accent.color).frame(width: 12, height: 12)
+                                Text(accent.label)
+                            }
+                            .tag(accent)
+                        }
                     }
                 }
             }
             .formStyle(.grouped)
             .navigationTitle("Interface")
             .onAppear {
-                // Load current values
-                selectedAccentColor = AccentColorOption(rawValue: preferences.accentColorName) ?? .blue
+                applyInterfaceStyle(settings.interfaceStyle)
             }
+        }
+
+        private func applyInterfaceStyle(_ style: InterfaceStyle) {
+            #if os(macOS)
+                let appearance: NSAppearance? = switch style {
+                case .system, .auto:
+                    nil // Use system default
+                case .light:
+                    NSAppearance(named: .aqua)
+                case .dark:
+                    NSAppearance(named: .darkAqua)
+                }
+
+                // Apply to all windows
+                for window in NSApplication.shared.windows {
+                    window.appearance = appearance
+                }
+            #endif
         }
     }
 

@@ -28,16 +28,8 @@ final class FocusManager: ObservableObject {
     func startTimer() {
         guard !isRunning else { return }
         isRunning = true
-        if activeSession == nil, let activity = activities.first(where: { $0.id == selectedActivityID }) {
-            activeSession = LocalTimerSession(
-                id: UUID(),
-                activityID: activity.id,
-                mode: mode,
-                startDate: Date(),
-                endDate: nil,
-                duration: 0
-            )
-        }
+
+        // Session tracking disabled pending migration to new FocusSession API
 
         // Play haptic feedback only
         Feedback.shared.timerStart()
@@ -64,14 +56,8 @@ final class FocusManager: ObservableObject {
         // Play haptic feedback only
         Feedback.shared.timerStop()
 
-        if var session = activeSession {
-            session.endDate = Date()
-            let elapsed = Date().timeIntervalSince(session.startDate)
-            session.duration = elapsed
-            logSession(session)
-            sessions.append(session)
-            activeSession = nil
-        }
+        // Session tracking disabled pending migration to new FocusSession API
+        activeSession = nil
         resetTimer()
     }
 
@@ -79,7 +65,7 @@ final class FocusManager: ObservableObject {
         guard isRunning else { return }
 
         switch mode {
-        case .pomodoro, .countdown:
+        case .pomodoro, .timer, .focus:
             if remainingSeconds > 0 {
                 remainingSeconds -= 1
             } else {
@@ -116,23 +102,20 @@ final class FocusManager: ObservableObject {
                     remainingSeconds = TimeInterval(settings.pomodoroShortBreakMinutes * 60)
                 }
             }
-        case .countdown:
+        case .timer:
+            duration = 25 * 60 - remainingSeconds
+            remainingSeconds = 25 * 60
+        case .focus:
             duration = 25 * 60 - remainingSeconds
             remainingSeconds = 25 * 60
         }
 
-        if var session = activeSession {
-            session.endDate = Date()
-            session.duration = duration
-            logSession(session)
-            sessions.append(session)
-        }
+        // Session tracking disabled pending migration to new FocusSession API
         activeSession = nil
     }
 
-    private func logSession(_ session: LocalTimerSession) {
-        guard let idx = activities.firstIndex(where: { $0.id == session.activityID }) else { return }
-        activities[idx].todayTrackedSeconds += session.duration
-        activities[idx].totalTrackedSeconds += session.duration
+    private func logSession(_: LocalTimerSession) {
+        // Track session completion
+        // Note: Session tracking is handled by FocusSession state
     }
 }

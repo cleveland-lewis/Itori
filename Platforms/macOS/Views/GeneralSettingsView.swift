@@ -61,9 +61,34 @@
             }
         }
 
+        enum BreakDuration: String, CaseIterable, Identifiable {
+            case five = "5 minutes"
+            case ten = "10 minutes"
+            case fifteen = "15 minutes"
+
+            var id: String { rawValue }
+
+            var minutes: Int {
+                switch self {
+                case .five: 5
+                case .ten: 10
+                case .fifteen: 15
+                }
+            }
+        }
+
+        enum EnergyLevel: String, CaseIterable, Identifiable {
+            case low = "Low"
+            case medium = "Medium"
+            case high = "High"
+
+            var id: String { rawValue }
+        }
+
         @State private var startOfWeek: StartOfWeek = .sunday
         @State private var defaultView: DefaultView = .dashboard
-        @State private var plannerLookahead: PlannerLookahead = .twoWeeks
+        @State private var breakDuration: BreakDuration = .five
+        @State private var energyLevel: EnergyLevel = .medium
 
         var body: some View {
             Form {
@@ -85,16 +110,6 @@
                     }
                     .onChange(of: defaultView) { _, newValue in
                         settings.defaultView = newValue.rawValue
-                        settings.save()
-                    }
-
-                    Picker("Scheduler Lookahead", selection: $plannerLookahead) {
-                        ForEach(PlannerLookahead.allCases) { option in
-                            Text(option.displayName).tag(option)
-                        }
-                    }
-                    .onChange(of: plannerLookahead) { _, newValue in
-                        settings.plannerHorizon = newValue.rawValue
                         settings.save()
                     }
                 }
@@ -125,10 +140,9 @@
                             settings.save()
                         }
                     ), displayedComponents: .hourAndMinute)
-                    VStack(alignment: .leading, spacing: 8) {
+                    HStack(alignment: .center) {
                         Text("Days")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
+                        Spacer(minLength: 12)
                         HStack(spacing: 6) {
                             ForEach(weekdayOptions, id: \.index) { day in
                                 Button(day.label) {
@@ -159,6 +173,95 @@
                     }
                 }
 
+                Section {
+                    Picker("Break Duration", selection: $breakDuration) {
+                        ForEach(BreakDuration.allCases) { duration in
+                            Text(duration.rawValue).tag(duration)
+                        }
+                    }
+                    .onChange(of: breakDuration) { _, newValue in
+                        settings.defaultBreakDuration = newValue.minutes
+                        settings.save()
+                    }
+
+                    Picker("Default Energy Level", selection: $energyLevel) {
+                        ForEach(EnergyLevel.allCases) { level in
+                            HStack {
+                                energyIcon(for: level)
+                                Text(level.rawValue)
+                            }
+                            .tag(level)
+                        }
+                    }
+                    .onChange(of: energyLevel) { _, newValue in
+                        settings.defaultEnergyLevel = newValue.rawValue
+                        settings.save()
+                    }
+                } header: {
+                    Text(NSLocalizedString(
+                        "settings.study.session.defaults",
+                        value: "Study Session Defaults",
+                        comment: "Study Session Defaults"
+                    ))
+                } footer: {
+                    Text(NSLocalizedString(
+                        "settings.these.settings.determine.your.default",
+                        value: "These settings determine your default study session configuration. You can adjust them for individual sessions.",
+                        comment: "These settings determine your default study sessio..."
+                    ))
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundStyle(.secondary)
+                }
+
+                Section {
+                    Toggle(
+                        NSLocalizedString(
+                            "settings.toggle.autoschedule.breaks",
+                            value: "Auto-Schedule Breaks",
+                            comment: "Auto-Schedule Breaks"
+                        ),
+                        isOn: $settings.autoScheduleBreaks
+                    )
+                    .onChange(of: settings.autoScheduleBreaks) { _, _ in
+                        settings.save()
+                    }
+                } header: {
+                    Text(NSLocalizedString(
+                        "settings.study.features",
+                        value: "Study Features",
+                        comment: "Study Features"
+                    ))
+                } footer: {
+                    Text(NSLocalizedString(
+                        "settings.auto.breaks.description",
+                        value: "Automatically schedule breaks during study sessions to maintain focus and productivity.",
+                        comment: "Auto-schedule breaks description"
+                    ))
+                    .font(DesignSystem.Typography.caption)
+                    .foregroundStyle(.secondary)
+                }
+
+                Section {
+                    Toggle(
+                        NSLocalizedString(
+                            "settings.toggle.weekly.summary.notifications",
+                            value: "Weekly Summary Notifications",
+                            comment: "Weekly Summary Notifications"
+                        ),
+                        isOn: $settings.weeklySummaryNotifications
+                    )
+                    .onChange(of: settings.weeklySummaryNotifications) { _, _ in
+                        settings.save()
+                        NotificationManager.shared.updateSmartNotificationSchedules()
+                    }
+                } header: {
+                    Text(NSLocalizedString(
+                        "settings.notifications",
+                        value: "Notifications",
+                        comment: "Notifications"
+                    ))
+                }
+
                 Section("Auto-Reschedule") {
                     Toggle(
                         NSLocalizedString(
@@ -182,13 +285,18 @@
                     .help("Automatically reschedule missed tasks to available time slots")
 
                     if settings.enableAutoReschedule {
-                        HStack {
-                            Text(NSLocalizedString(
-                                "settings.check.interval",
-                                value: "Check Interval",
-                                comment: "Check Interval"
-                            ))
-                            Spacer()
+                        HStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(NSLocalizedString(
+                                    "settings.check.interval",
+                                    value: "Check Interval",
+                                    comment: "Check Interval"
+                                ))
+                                Text("How often to scan for missed tasks.")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             Stepper(value: Binding(
                                 get: { settings.autoRescheduleCheckInterval },
                                 set: { newValue in
@@ -201,7 +309,7 @@
                                 }
                             ), in: 1 ... 60) {
                                 Text(verbatim: "\(settings.autoRescheduleCheckInterval) min")
-                                    .frame(minWidth: 60, alignment: .trailing)
+                                    .frame(width: 60, alignment: .trailing)
                             }
                         }
 
@@ -221,13 +329,18 @@
                         .help("Move lower priority tasks to make room for high-priority missed tasks")
 
                         if settings.autoReschedulePushLowerPriority {
-                            HStack {
-                                Text(NSLocalizedString(
-                                    "settings.max.tasks.to.push",
-                                    value: "Max Tasks to Push",
-                                    comment: "Max Tasks to Push"
-                                ))
-                                Spacer()
+                            HStack(spacing: 12) {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(NSLocalizedString(
+                                        "settings.max.tasks.to.push",
+                                        value: "Max Tasks to Push",
+                                        comment: "Max Tasks to Push"
+                                    ))
+                                    Text("Limit how many lower-priority tasks can move.")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
                                 Stepper(value: Binding(
                                     get: { settings.autoRescheduleMaxPushCount },
                                     set: { newValue in
@@ -236,7 +349,7 @@
                                     }
                                 ), in: 0 ... 5) {
                                     Text(verbatim: "\(settings.autoRescheduleMaxPushCount)")
-                                        .frame(minWidth: 30, alignment: .trailing)
+                                        .frame(width: 30, alignment: .trailing)
                                 }
                             }
                         }
@@ -268,7 +381,7 @@
             .onAppear {
                 startOfWeek = StartOfWeek(rawValue: settings.startOfWeek) ?? .sunday
                 defaultView = DefaultView(rawValue: settings.defaultView) ?? .dashboard
-                plannerLookahead = PlannerLookahead(rawValue: settings.plannerHorizon) ?? .twoWeeks
+                loadProfileDefaults()
             }
             .sheet(isPresented: $showResetSheet) {
                 VStack(spacing: 18) {
@@ -404,6 +517,35 @@
             }
             settings.workdayWeekdays = Array(days).sorted()
             settings.save()
+        }
+
+        private func energyIcon(for level: EnergyLevel) -> some View {
+            Group {
+                switch level {
+                case .low:
+                    Image(systemName: "battery.25")
+                        .foregroundStyle(.orange)
+                case .medium:
+                    Image(systemName: "battery.50")
+                        .foregroundStyle(.yellow)
+                case .high:
+                    Image(systemName: "battery.100")
+                        .foregroundStyle(.green)
+                }
+            }
+            .font(DesignSystem.Typography.body)
+        }
+
+        private func loadProfileDefaults() {
+            let breakDurationValue = settings.defaultBreakDuration
+            switch breakDurationValue {
+            case 5: breakDuration = .five
+            case 10: breakDuration = .ten
+            case 15: breakDuration = .fifteen
+            default: breakDuration = .five
+            }
+
+            energyLevel = EnergyLevel(rawValue: settings.defaultEnergyLevel) ?? .medium
         }
     }
 

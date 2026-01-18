@@ -600,7 +600,7 @@ enum PlannerEngine {
         energyProfile: [Int: Double],
         useAI: Bool? = nil
     ) -> (scheduled: [ScheduledSession], overflow: [PlannerSession]) {
-        let shouldUseAI = useAI ?? AppSettingsModel.shared.enableAIPlanner
+        let shouldUseAI = useAI ?? AppSettingsModel.shared.enableLLMAssistance
 
         var result: (scheduled: [ScheduledSession], overflow: [PlannerSession])
 
@@ -687,11 +687,18 @@ enum PlannerEngine {
 
         let deepWorkEnabled = AppSettingsModel.shared.enableDeepWorkMode
         let workdays = Set(AppSettingsModel.shared.workdayWeekdays)
+
+        // Get workday start and end times from settings
+        let workdayStart = AppSettingsModel.shared.defaultWorkdayStart
+        let workdayEnd = AppSettingsModel.shared.defaultWorkdayEnd
+        let dayStartHour = workdayStart.hour ?? 9
+        let dayEndHour = workdayEnd.hour ?? 21
+
         let constraints = Constraints(
             horizonStart: now,
             horizonEnd: horizonEnd,
-            dayStartHour: 9,
-            dayEndHour: 21,
+            dayStartHour: dayStartHour,
+            dayEndHour: dayEndHour,
             allowedWeekdays: workdays,
             maxStudyMinutesPerDay: 480,
             maxStudyMinutesPerBlock: deepWorkEnabled ? 180 : 120,

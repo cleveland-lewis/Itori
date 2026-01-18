@@ -19,29 +19,35 @@ import SwiftUI
                         Text(NSLocalizedString("settings.planner.horizon.1_month", comment: "1 Month"))
                             .tag(PlannerHorizon.oneMonth)
                     } label: {
-                        Text(NSLocalizedString("settings.planner.horizon", comment: "Planning Horizon"))
+                        HStack {
+                            Text(NSLocalizedString(
+                                "settings.planner.planning_ahead",
+                                value: "Planning Ahead",
+                                comment: "Planning Ahead"
+                            ))
+                            Image(systemName: "info.circle")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 } header: {
                     Text(NSLocalizedString("settings.planner.scheduling.header", comment: "Scheduling"))
                 } footer: {
                     Text(NSLocalizedString(
-                        "settings.planner.scheduling.footer",
-                        comment: "How far ahead to schedule tasks and study sessions"
+                        "settings.planner.planning_ahead.footer",
+                        value: "How far ahead the planner will schedule events",
+                        comment: "Planning ahead footer explaining the feature"
                     ))
                 }
 
                 Section {
-                    Toggle(isOn: $settings.enableAIPlannerStorage) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(NSLocalizedString("settings.planner.ai", comment: "LLM-Assisted Planning"))
-                            Text(NSLocalizedString(
-                                "settings.planner.ai.detail",
-                                comment: "Use intelligent suggestions for task scheduling"
-                            ))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        }
-                    }
+                    Text(NSLocalizedString(
+                        "settings.llm.settings.moved",
+                        value: "LLM assistance is configured in Settings → LLM.",
+                        comment: "Planner settings LLM configuration note"
+                    ))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
 
                     Toggle(isOn: $settings.autoScheduleBreaksStorage) {
                         VStack(alignment: .leading, spacing: 4) {
@@ -59,25 +65,6 @@ import SwiftUI
                 }
 
                 Section {
-                    Toggle(isOn: $settings.showEnergyPanelStorage) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(NSLocalizedString("settings.planner.energy_tracking", comment: "Energy Tracking"))
-                            Text(NSLocalizedString(
-                                "settings.planner.energy_tracking.detail",
-                                comment: "Track and optimize based on your energy levels"
-                            ))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        }
-                    }
-                    Text(NSLocalizedString(
-                        "settings.planner.energy_panel.footer",
-                        value: "Turning off Energy Panel will make the planning algorithm default to medium energy for all days.",
-                        comment: "Energy panel footer"
-                    ))
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-
                     Toggle(isOn: $settings.trackStudyHoursStorage) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(NSLocalizedString("settings.planner.track_hours", comment: "Track Study Hours"))

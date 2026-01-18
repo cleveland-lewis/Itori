@@ -54,6 +54,9 @@
             .sheet(isPresented: $showingBYOConfig) {
                 byoConfigurationSheet
             }
+            .onAppear {
+                loadBYOConfiguration()
+            }
             .alert(
                 NSLocalizedString(
                     "settings.llm.disable.alert.title",
@@ -171,7 +174,7 @@
 
         private var modeSelectionSection: some View {
             VStack(alignment: .leading, spacing: 16) {
-                Text(NSLocalizedString("settings.llm.mode.title", value: "AI Mode", comment: "AI mode section title"))
+                Text(NSLocalizedString("settings.llm.mode.title", value: "Mode", comment: "AI mode section title"))
                     .font(.headline)
 
                 ForEach(AIMode.allCases) { mode in
@@ -183,7 +186,7 @@
                                 .foregroundStyle(router.mode == mode ? Color.accentColor : .secondary)
 
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(mode.displayName)
+                                Text(modeTitle(for: mode))
                                     .font(.body.weight(.medium))
                                     .foregroundStyle(.primary)
 
@@ -202,6 +205,19 @@
                     }
                     .buttonStyle(.plain)
                 }
+            }
+        }
+
+        private func modeTitle(for mode: AIMode) -> String {
+            switch mode {
+            case .byoOnly:
+                NSLocalizedString(
+                    "settings.llm.mode.external",
+                    value: "External Provider",
+                    comment: "LLM mode label for external provider"
+                )
+            default:
+                mode.displayName
             }
         }
 
@@ -421,6 +437,12 @@
                             comment: "Remove BYO configuration button"
                         )) {
                             AIRouter.shared.removeBYOProvider()
+                            // Clear persisted configuration
+                            UserDefaults.standard.removeObject(forKey: "byoProviderType")
+                            UserDefaults.standard.removeObject(forKey: "byoProviderAPIKey")
+                            UserDefaults.standard.removeObject(forKey: "byoProviderEndpoint")
+                            byoAPIKey = ""
+                            byoEndpoint = ""
                         }
                         .foregroundStyle(.red)
                     }
@@ -628,8 +650,41 @@
             )
 
             router.registerBYOProvider(provider)
+
+            // Persist configuration
+            UserDefaults.standard.set(byoType.rawValue, forKey: "byoProviderType")
+            UserDefaults.standard.set(byoAPIKey, forKey: "byoProviderAPIKey")
+            UserDefaults.standard.set(byoEndpoint, forKey: "byoProviderEndpoint")
+
             showingBYOConfig = false
             connectionResult = nil
+        }
+
+        private func loadBYOConfiguration() {
+            // Load saved BYO configuration
+            if let typeRaw = UserDefaults.standard.string(forKey: "byoProviderType"),
+               let type = BYOProviderType(rawValue: typeRaw)
+            {
+                byoType = type
+            }
+
+            if let apiKey = UserDefaults.standard.string(forKey: "byoProviderAPIKey"), !apiKey.isEmpty {
+                byoAPIKey = apiKey
+            }
+
+            if let endpoint = UserDefaults.standard.string(forKey: "byoProviderEndpoint") {
+                byoEndpoint = endpoint
+            }
+
+            // Register provider if configured
+            if !byoAPIKey.isEmpty {
+                let provider = BYOProvider(
+                    type: byoType,
+                    apiKey: byoAPIKey,
+                    endpoint: byoEndpoint.isEmpty ? nil : byoEndpoint
+                )
+                router.registerBYOProvider(provider)
+            }
         }
     }
 

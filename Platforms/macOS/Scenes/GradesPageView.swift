@@ -36,6 +36,7 @@
         @EnvironmentObject private var assignmentsStore: AssignmentsStore
         @EnvironmentObject private var coursesStore: CoursesStore
         @EnvironmentObject private var gradesStore: GradesStore
+        @Environment(\.appLayout) private var appLayout
 
         @State private var allCourses: [GradeCourseSummary] = []
         @State private var courseDetails: [CourseGradeDetail] = []
@@ -50,6 +51,7 @@
         @State private var showNewCourseSheet: Bool = false
         @State private var editingCourse: Course? = nil
         @State private var courseDeletedCancellable: AnyCancellable? = nil
+        @State private var showExportSheet: Bool = false
 
         private let cardCorner: CGFloat = 24
 
@@ -62,16 +64,32 @@
                         adaptiveColumns(width: proxy.size.width)
                     }
                     .padding(.horizontal, ItariSpacing.pagePadding)
-                    .padding(.vertical, ItariSpacing.l)
+                    .padding(.top, appLayout.topContentInset)
+                    .padding(.bottom, ItariSpacing.l)
                 }
                 .itoriSystemBackground()
             }
-            .sheet(isPresented: $showEditTargetSheet) {
+            .sheet(isPresented: Binding(
+                get: {
+                    showEditTargetSheet &&
+                        courseToEditTarget != nil &&
+                        courseDetails.contains(where: { $0.id == courseToEditTarget?.id })
+                },
+                set: { newValue in
+                    showEditTargetSheet = newValue
+                    if !newValue {
+                        courseToEditTarget = nil
+                    }
+                }
+            )) {
                 if let course = courseToEditTarget, let detail = courseDetails.first(where: { $0.id == course.id }) {
                     EditTargetGradeSheet(course: course, detail: detail) { updatedTarget, letter, components in
                         updateTarget(for: course, to: updatedTarget, letter: letter, components: components)
                     }
                 }
+            }
+            .sheet(isPresented: $showExportSheet) {
+                GradesExportSheet(courses: allCourses, courseDetails: courseDetails)
             }
             .sheet(isPresented: $showNewCourseSheet) {
                 let editorModel = editingCourse.flatMap(courseEditorModel(from:))
@@ -137,7 +155,7 @@
                     .frame(maxWidth: 260)
 
                 Button {
-                    // stub export/share functionality
+                    showExportSheet = true
                 } label: {
                     Image(systemName: "square.and.arrow.up")
                         .font(.body)
@@ -785,7 +803,7 @@
                 Button(NSLocalizedString("grades.button.edit.target", value: "Edit target", comment: "Edit target")) {
                     onEditTarget(course)
                 }
-                .buttonStyle(.itoriLiquidProminent)
+                .buttonStyle(.itariLiquid)
                 .controlSize(.small)
             }
         }
@@ -918,69 +936,120 @@
         var onSave: (Double?, String?, [GradeComponent]) -> Void
         @Environment(\.dismiss) private var dismiss
 
-        @State private var targetPercent: Double = 90
-        @State private var letter: String = "A"
-        @State private var components: [GradeComponent] = []
+        @State private var targetPercent: Double
+        @State private var letter: String
+        @State private var components: [GradeComponent]
 
         private let letters = ["A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "F"]
+
+        init(
+            course: GradeCourseSummary,
+            detail: CourseGradeDetail,
+            onSave: @escaping (Double?, String?, [GradeComponent]) -> Void
+        ) {
+            self.course = course
+            self.detail = detail
+            self.onSave = onSave
+            _targetPercent = State(initialValue: course.targetPercentage ?? 90)
+            _letter = State(initialValue: course.letterGrade ?? "A")
+            _components = State(initialValue: detail.components)
+        }
 
         var body: some View {
             NavigationStack {
                 Form {
-                    Section("Target") {
-                        Slider(value: $targetPercent, in: 0 ... 100, step: 1) {
-                            Text(NSLocalizedString("grades.target", value: "Target %", comment: "Target %"))
+                    Section {
+                        VStack(alignment: .leading, spacing: 12) {
+                            HStack {
+                                Text(NSLocalizedString("grades.target", value: "Target %", comment: "Target %"))
+                                    .font(.body)
+                                Spacer()
+                                Text(verbatim: "\(Int(targetPercent))%")
+                                    .font(.headline)
+                                    .foregroundColor(.accentColor)
+                            }
+                            Slider(value: $targetPercent, in: 0 ... 100, step: 1)
                         }
-                        Text(verbatim: "\(Int(targetPercent))%")
-                            .font(.headline)
+                    } header: {
+                        Text("Target Grade")
                     }
 
-                    Section("Components") {
-                        VStack(spacing: 8) {
+                    Section {
+                        VStack(alignment: .leading, spacing: 12) {
                             ForEach($components) { $comp in
-                                HStack(spacing: 8) {
-                                    TextField("Name", text: Binding(get: { comp.name }, set: { comp.name = $0 }))
-                                        .frame(width: 140)
-                                    Stepper(
-                                        value: Binding(
-                                            get: { Int(comp.weightPercent) },
-                                            set: { comp.weightPercent = Double($0) }
-                                        ),
-                                        in: 0 ... 100
-                                    ) {
-                                        Text(verbatim: "\(Int(comp.weightPercent))%")
-                                    }
-                                    Slider(
-                                        value: Binding(
-                                            get: { comp.earnedPercent ?? 0 },
-                                            set: { comp.earnedPercent = $0 }
-                                        ),
-                                        in: 0 ... 100
-                                    )
-                                    .frame(maxWidth: 160)
-                                    TextField(
-                                        "\(Int(comp.earnedPercent ?? 0))%",
-                                        text: Binding(
-                                            get: { String(Int(comp.earnedPercent ?? 0)) },
-                                            set: { comp.earnedPercent = Double($0) ?? comp.earnedPercent }
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack {
+                                        TextField(
+                                            "Component Name",
+                                            text: Binding(get: { comp.name }, set: { comp.name = $0 })
                                         )
-                                    )
-                                    .frame(width: 50)
-                                    Button(role: .destructive) {
-                                        components.removeAll(where: { $0.id == comp.id })
-                                    } label: {
-                                        Image(systemName: "trash")
-                                            .accessibilityLabel("Delete component")
+                                        .textFieldStyle(.roundedBorder)
+                                        Spacer()
+                                        Button(role: .destructive) {
+                                            components.removeAll(where: { $0.id == comp.id })
+                                        } label: {
+                                            Image(systemName: "trash")
+                                                .foregroundColor(.red)
+                                        }
+                                        .buttonStyle(.plain)
+                                        .accessibilityLabel("Delete component")
                                     }
+
+                                    HStack(spacing: 16) {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text("Weight")
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                            HStack {
+                                                Slider(
+                                                    value: Binding(
+                                                        get: { comp.weightPercent },
+                                                        set: { comp.weightPercent = $0 }
+                                                    ),
+                                                    in: 0 ... 100,
+                                                    step: 1
+                                                )
+                                                Text(verbatim: "\(Int(comp.weightPercent))%")
+                                                    .font(.body)
+                                                    .foregroundColor(.primary)
+                                                    .frame(width: 50, alignment: .trailing)
+                                            }
+                                        }
+
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text("Score")
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                            HStack {
+                                                Slider(
+                                                    value: Binding(
+                                                        get: { comp.earnedPercent ?? 0 },
+                                                        set: { comp.earnedPercent = $0 }
+                                                    ),
+                                                    in: 0 ... 100,
+                                                    step: 1
+                                                )
+                                                Text(verbatim: "\(Int(comp.earnedPercent ?? 0))%")
+                                                    .font(.body)
+                                                    .foregroundColor(.primary)
+                                                    .frame(width: 50, alignment: .trailing)
+                                            }
+                                        }
+                                    }
+
+                                    Divider()
+                                        .padding(.top, 4)
                                 }
                             }
 
-                            Button { components.append(GradeComponent(
-                                id: UUID(),
-                                name: "New",
-                                weightPercent: 0,
-                                earnedPercent: nil
-                            )) } label: {
+                            Button {
+                                components.append(GradeComponent(
+                                    id: UUID(),
+                                    name: "New Component",
+                                    weightPercent: 0,
+                                    earnedPercent: nil
+                                ))
+                            } label: {
                                 Label(
                                     NSLocalizedString(
                                         "grades.label.add.component",
@@ -990,17 +1059,24 @@
                                     systemImage: "plus"
                                 )
                             }
-                            .tint(.accentColor)
+                            .buttonStyle(.plain)
+                            .foregroundColor(.accentColor)
                         }
+                    } header: {
+                        Text("Grade Components")
                     }
 
-                    Section("Letter") {
-                        Picker("Letter", selection: $letter) {
+                    Section {
+                        Picker(selection: $letter) {
                             ForEach(letters, id: \.self) { l in
                                 Text(l).tag(l)
                             }
+                        } label: {
+                            Text("Letter Grade")
                         }
                         .pickerStyle(.segmented)
+                    } header: {
+                        Text("Letter Grade")
                     }
 
                     Section {
@@ -1013,6 +1089,7 @@
                         .foregroundColor(.secondary)
                     }
                 }
+                .formStyle(.grouped)
                 .navigationTitle("Edit Target for \(course.courseCode)")
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
@@ -1027,12 +1104,380 @@
                         }
                     }
                 }
-                .onAppear {
-                    targetPercent = course.targetPercentage ?? 90
-                    letter = course.letterGrade ?? "A"
-                    components = detail.components
+            }
+        }
+    }
+
+    // MARK: - Grades Export Sheet
+
+    struct GradesExportSheet: View {
+        var courses: [GradeCourseSummary]
+        var courseDetails: [CourseGradeDetail]
+
+        @Environment(\.dismiss) private var dismiss
+        @State private var selectedSemester: String = "All Semesters"
+        @State private var filterCompleted: Bool = true
+        @State private var filterIncomplete: Bool = true
+        @State private var filterWithGrades: Bool = true
+        @State private var filterWithoutGrades: Bool = true
+        @State private var sortBy: ExportSortOption = .courseCode
+        @State private var sortAscending: Bool = true
+        @State private var includeComponents: Bool = true
+        @State private var includeTargets: Bool = true
+        @State private var includeNotes: Bool = false
+        @State private var exportFormat: ExportFormat = .csv
+        @State private var showingShareSheet: Bool = false
+
+        enum ExportSortOption: String, CaseIterable, Identifiable {
+            case courseCode = "Course Code"
+            case courseTitle = "Course Title"
+            case currentGrade = "Current Grade"
+            case targetGrade = "Target Grade"
+            case creditHours = "Credit Hours"
+
+            var id: String { rawValue }
+        }
+
+        enum ExportFormat: String, CaseIterable, Identifiable {
+            case csv = "CSV (Comma Separated)"
+            case tsv = "TSV (Tab Separated)"
+            case json = "JSON"
+            case excel = "Excel (.xlsx)"
+            case pdf = "PDF Document"
+
+            var id: String { rawValue }
+
+            var fileExtension: String {
+                switch self {
+                case .csv: "csv"
+                case .tsv: "tsv"
+                case .json: "json"
+                case .excel: "xlsx"
+                case .pdf: "pdf"
                 }
             }
+        }
+
+        var filteredCourses: [GradeCourseSummary] {
+            var filtered = courses
+
+            // Apply completion filter
+            filtered = filtered.filter { course in
+                let hasGrade = course.currentPercentage != nil
+                if hasGrade {
+                    return filterWithGrades
+                } else {
+                    return filterWithoutGrades
+                }
+            }
+
+            // Sort
+            filtered.sort { c1, c2 in
+                let comparison: Bool = switch sortBy {
+                case .courseCode:
+                    c1.courseCode < c2.courseCode
+                case .courseTitle:
+                    c1.courseTitle < c2.courseTitle
+                case .currentGrade:
+                    (c1.currentPercentage ?? 0) < (c2.currentPercentage ?? 0)
+                case .targetGrade:
+                    (c1.targetPercentage ?? 0) < (c2.targetPercentage ?? 0)
+                case .creditHours:
+                    c1.creditHours < c2.creditHours
+                }
+                return sortAscending ? comparison : !comparison
+            }
+
+            return filtered
+        }
+
+        var body: some View {
+            NavigationStack {
+                Form {
+                    Section {
+                        Picker("Semester", selection: $selectedSemester) {
+                            Text("All Semesters").tag("All Semesters")
+                            Text("Current Semester").tag("Current Semester")
+                            Text("Fall 2025").tag("Fall 2025")
+                            Text("Spring 2026").tag("Spring 2026")
+                        }
+                    } header: {
+                        Text("Time Range")
+                    }
+
+                    Section {
+                        Toggle("Courses with grades", isOn: $filterWithGrades)
+                        Toggle("Courses without grades", isOn: $filterWithoutGrades)
+                    } header: {
+                        Text("Filter by Grade Status")
+                    } footer: {
+                        Text("\(filteredCourses.count) course(s) will be exported")
+                            .font(.caption)
+                    }
+
+                    Section {
+                        Picker("Sort by", selection: $sortBy) {
+                            ForEach(ExportSortOption.allCases) { option in
+                                Text(option.rawValue).tag(option)
+                            }
+                        }
+
+                        Picker("Order", selection: $sortAscending) {
+                            Text("Ascending").tag(true)
+                            Text("Descending").tag(false)
+                        }
+                        .pickerStyle(.segmented)
+                    } header: {
+                        Text("Sort Options")
+                    }
+
+                    Section {
+                        Toggle("Include grade components", isOn: $includeComponents)
+                        Toggle("Include target grades", isOn: $includeTargets)
+                        Toggle("Include notes", isOn: $includeNotes)
+                    } header: {
+                        Text("Export Details")
+                    }
+
+                    Section {
+                        Picker("Export Format", selection: $exportFormat) {
+                            ForEach(ExportFormat.allCases) { format in
+                                HStack {
+                                    Image(systemName: iconForFormat(format))
+                                        .frame(width: 20)
+                                    Text(format.rawValue)
+                                }
+                                .tag(format)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                    } header: {
+                        Text("Format")
+                    } footer: {
+                        Text(descriptionForFormat(exportFormat))
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    Section {
+                        Button {
+                            exportAndShare()
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Image(systemName: "square.and.arrow.up")
+                                Text("Export & Share")
+                                    .font(.headline)
+                                Spacer()
+                            }
+                        }
+                        .buttonStyle(ItoriLiquidProminentButtonStyle())
+                        .disabled(filteredCourses.isEmpty)
+                    }
+                }
+                .formStyle(.grouped)
+                .navigationTitle("Export Grades")
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") {
+                            dismiss()
+                        }
+                    }
+                }
+            }
+            .frame(minWidth: 500, minHeight: 600)
+        }
+
+        private func iconForFormat(_ format: ExportFormat) -> String {
+            switch format {
+            case .csv, .tsv: "tablecells"
+            case .json: "curlybraces"
+            case .excel: "doc.text"
+            case .pdf: "doc.richtext"
+            }
+        }
+
+        private func descriptionForFormat(_ format: ExportFormat) -> String {
+            switch format {
+            case .csv:
+                "Compatible with Excel, Google Sheets, and most spreadsheet applications"
+            case .tsv:
+                "Tab-separated format, ideal for importing into databases"
+            case .json:
+                "Structured data format, perfect for programmatic access"
+            case .excel:
+                "Native Excel format with formatting and multiple sheets"
+            case .pdf:
+                "Formatted document ready for printing or sharing"
+            }
+        }
+
+        private func exportAndShare() {
+            let fileURL = generateExportFile()
+
+            #if os(macOS)
+                let sharingPicker = NSSharingServicePicker(items: [fileURL])
+                if let contentView = NSApp.keyWindow?.contentView {
+                    sharingPicker.show(relativeTo: .zero, of: contentView, preferredEdge: .minY)
+                }
+            #endif
+        }
+
+        private func generateExportFile() -> URL {
+            let fileName = "Grades_Export_\(Date().formatted(date: .numeric, time: .omitted).replacingOccurrences(of: "/", with: "-")).\(exportFormat.fileExtension)"
+            let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+
+            switch exportFormat {
+            case .csv:
+                generateCSV(to: fileURL)
+            case .tsv:
+                generateTSV(to: fileURL)
+            case .json:
+                generateJSON(to: fileURL)
+            case .excel:
+                generateExcel(to: fileURL)
+            case .pdf:
+                generatePDF(to: fileURL)
+            }
+
+            return fileURL
+        }
+
+        private func generateCSV(to url: URL) {
+            var csvText = "Course Code,Course Title,Current Grade,Target Grade,Letter Grade,Credit Hours"
+
+            if includeComponents {
+                csvText += ",Components"
+            }
+            if includeTargets {
+                csvText += ",Target Details"
+            }
+            if includeNotes {
+                csvText += ",Notes"
+            }
+            csvText += "\n"
+
+            for course in filteredCourses {
+                var row = [
+                    course.courseCode,
+                    course.courseTitle,
+                    course.currentPercentage.map { String(format: "%.2f", $0) } ?? "",
+                    course.targetPercentage.map { String(format: "%.2f", $0) } ?? "",
+                    course.letterGrade ?? "",
+                    String(course.creditHours)
+                ]
+
+                if includeComponents {
+                    let detail = courseDetails.first(where: { $0.id == course.id })
+                    let componentsStr = detail?.components.map { "\($0.name): \(Int($0.weightPercent))%" }
+                        .joined(separator: "; ") ?? ""
+                    row.append(componentsStr)
+                }
+
+                if includeTargets {
+                    row.append(course.targetPercentage.map { String(format: "%.2f%%", $0) } ?? "")
+                }
+
+                if includeNotes {
+                    let detail = courseDetails.first(where: { $0.id == course.id })
+                    row.append(detail?.notes.replacingOccurrences(of: "\"", with: "\"\"") ?? "")
+                }
+
+                csvText += row.map { "\"\($0)\"" }.joined(separator: ",") + "\n"
+            }
+
+            try? csvText.write(to: url, atomically: true, encoding: .utf8)
+        }
+
+        private func generateTSV(to url: URL) {
+            var tsvText = "Course Code\tCourse Title\tCurrent Grade\tTarget Grade\tLetter Grade\tCredit Hours"
+
+            if includeComponents {
+                tsvText += "\tComponents"
+            }
+            if includeTargets {
+                tsvText += "\tTarget Details"
+            }
+            if includeNotes {
+                tsvText += "\tNotes"
+            }
+            tsvText += "\n"
+
+            for course in filteredCourses {
+                var row = [
+                    course.courseCode,
+                    course.courseTitle,
+                    course.currentPercentage.map { String(format: "%.2f", $0) } ?? "",
+                    course.targetPercentage.map { String(format: "%.2f", $0) } ?? "",
+                    course.letterGrade ?? "",
+                    String(course.creditHours)
+                ]
+
+                if includeComponents {
+                    let detail = courseDetails.first(where: { $0.id == course.id })
+                    let componentsStr = detail?.components.map { "\($0.name): \(Int($0.weightPercent))%" }
+                        .joined(separator: "; ") ?? ""
+                    row.append(componentsStr)
+                }
+
+                if includeTargets {
+                    row.append(course.targetPercentage.map { String(format: "%.2f%%", $0) } ?? "")
+                }
+
+                if includeNotes {
+                    let detail = courseDetails.first(where: { $0.id == course.id })
+                    row.append(detail?.notes ?? "")
+                }
+
+                tsvText += row.joined(separator: "\t") + "\n"
+            }
+
+            try? tsvText.write(to: url, atomically: true, encoding: .utf8)
+        }
+
+        private func generateJSON(to url: URL) {
+            let exportData = filteredCourses.map { course -> [String: Any] in
+                var data: [String: Any] = [
+                    "courseCode": course.courseCode,
+                    "courseTitle": course.courseTitle,
+                    "currentGrade": course.currentPercentage as Any,
+                    "targetGrade": course.targetPercentage as Any,
+                    "letterGrade": course.letterGrade as Any,
+                    "creditHours": course.creditHours
+                ]
+
+                if includeComponents, let detail = courseDetails.first(where: { $0.id == course.id }) {
+                    data["components"] = detail.components.map { comp in
+                        [
+                            "name": comp.name,
+                            "weight": comp.weightPercent,
+                            "earned": comp.earnedPercent as Any
+                        ]
+                    }
+                }
+
+                if includeNotes, let detail = courseDetails.first(where: { $0.id == course.id }) {
+                    data["notes"] = detail.notes
+                }
+
+                return data
+            }
+
+            if let jsonData = try? JSONSerialization.data(withJSONObject: exportData, options: .prettyPrinted) {
+                try? jsonData.write(to: url)
+            }
+        }
+
+        private func generateExcel(to url: URL) {
+            // Placeholder - would require external library like xlsxwriter
+            // For now, generate CSV as fallback
+            generateCSV(to: url)
+        }
+
+        private func generatePDF(to url: URL) {
+            // Placeholder - would require PDF generation
+            // For now, generate CSV as fallback
+            generateCSV(to: url)
         }
     }
 

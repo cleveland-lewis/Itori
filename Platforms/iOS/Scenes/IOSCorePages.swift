@@ -444,6 +444,9 @@
                         filterState: filterState
                     )
                 }
+                Section {
+                    urgencyLegend
+                }
                 if assignmentsStore.tasks.isEmpty {
                     ContentUnavailableView {
                         Label(
@@ -659,7 +662,15 @@
             guard let due = task.due else { return "" }
             let formatter = DateFormatter()
             formatter.dateStyle = .medium
-            formatter.timeStyle = task.hasExplicitDueTime ? .short : .none
+            if task.hasExplicitDueTime {
+                formatter.timeStyle = .short
+                // Override for 24-hour time preference
+                if AppSettingsModel.shared.use24HourTime {
+                    formatter.dateFormat = "MMM d, yyyy, HH:mm"
+                }
+            } else {
+                formatter.timeStyle = .none
+            }
             let dateText = formatter.string(from: task.hasExplicitDueTime ? (task.effectiveDueDateTime ?? due) : due)
             return dateText
         }
@@ -670,16 +681,28 @@
             FeedbackManager.shared.trigger(event: .dataRefreshed)
         }
 
-        private func urgencyColor(for task: AppTask) -> Color {
-            guard let due = task.effectiveDueDateTime else { return .secondary.opacity(0.6) }
-            let days = Calendar.current.dateComponents([.day], from: Date(), to: due).day ?? 0
+        private var urgencyLegend: some View {
+            HStack(spacing: 12) {
+                Text(NSLocalizedString(
+                    "assignments.legend.title",
+                    value: "Legend",
+                    comment: "Assignments urgency color legend title"
+                ))
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
 
-            switch days {
-            case ..<0: return .red.opacity(0.8) // Overdue
-            case 0: return .orange.opacity(0.9) // Today
-            case 1 ... 2: return .yellow.opacity(0.8) // Soon
-            case 3 ... 7: return .blue.opacity(0.7) // This week
-            default: return .secondary.opacity(0.6) // Later
+                ForEach(AssignmentUrgency.allCases, id: \.self) { urgency in
+                    HStack(spacing: 6) {
+                        Circle()
+                            .fill(urgency.color)
+                            .frame(width: 8, height: 8)
+                        Text(urgency.label)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                Spacer(minLength: 0)
             }
         }
     }
@@ -1540,6 +1563,10 @@
             let formatter = DateFormatter()
             formatter.dateStyle = .medium
             formatter.timeStyle = .short
+            // Override for 24-hour time preference
+            if AppSettingsModel.shared.use24HourTime {
+                formatter.dateFormat = "MMM d, yyyy, HH:mm"
+            }
             return formatter.string(from: date)
         }
     }
@@ -1664,7 +1691,15 @@
             guard let due = task.due else { return "" }
             let formatter = DateFormatter()
             formatter.dateStyle = .long
-            formatter.timeStyle = task.hasExplicitDueTime ? .short : .none
+            if task.hasExplicitDueTime {
+                formatter.timeStyle = .short
+                // Override for 24-hour time preference
+                if AppSettingsModel.shared.use24HourTime {
+                    formatter.dateFormat = "MMMM d, yyyy 'at' HH:mm"
+                }
+            } else {
+                formatter.timeStyle = .none
+            }
             let dateText = formatter.string(from: task.hasExplicitDueTime ? (task.effectiveDueDateTime ?? due) : due)
             return dateText
         }
@@ -2093,7 +2128,6 @@
                                 .tag(TaskType.practiceTest)
                         }
                         Picker("Course", selection: $draft.courseId) {
-                            Text(NSLocalizedString("No Course", value: "No Course", comment: "")).tag(UUID?.none)
                             ForEach(courses) { course in
                                 Text(course.code.isEmpty ? course.title : course.code)
                                     .tag(Optional(course.id))
@@ -2319,7 +2353,8 @@
                 guard draft.type == .exam || draft.type == .quiz else { return true }
                 return draft.courseId != nil && !draft.moduleIds.isEmpty
             }()
-            return titleValid && dateValid && modulesValid
+            let courseValid = draft.courseId != nil
+            return titleValid && dateValid && courseValid && modulesValid
         }
 
         private var estimatedMinutesBinding: Binding<Int> {
@@ -2970,42 +3005,24 @@
 
         var body: some View {
             if differentiateWithoutColor {
-                Image(systemName: urgencyIcon)
+                Image(systemName: urgency.systemIcon)
                     .font(.caption2)
-                    .foregroundStyle(urgencyColor)
+                    .foregroundStyle(urgency.color)
                     .frame(width: 12, height: 12)
                     .accessibilityHidden(true)
             } else {
                 Circle()
-                    .fill(urgencyColor)
+                    .fill(urgency.color)
                     .frame(width: 8, height: 8)
                     .accessibilityHidden(true)
             }
         }
 
-        private var urgencyColor: Color {
-            guard let due = task.effectiveDueDateTime else { return .secondary.opacity(0.6) }
-            let days = Calendar.current.dateComponents([.day], from: Date(), to: due).day ?? 0
-
-            switch days {
-            case ..<0: return .red.opacity(0.8)
-            case 0: return .orange.opacity(0.9)
-            case 1 ... 2: return .yellow.opacity(0.8)
-            case 3 ... 7: return .blue.opacity(0.7)
-            default: return .secondary.opacity(0.6)
-            }
-        }
-
-        private var urgencyIcon: String {
-            guard let due = task.effectiveDueDateTime else { return "circle.fill" }
-            let days = Calendar.current.dateComponents([.day], from: Date(), to: due).day ?? 0
-
-            switch days {
-            case ..<0: return "exclamationmark.triangle.fill" // Overdue
-            case 0: return "exclamationmark.circle.fill" // Today
-            case 1 ... 2: return "clock.fill" // Soon
-            case 3 ... 7: return "calendar.circle.fill" // This week
-            default: return "circle.fill" // Later
+        private var urgency: AssignmentUrgency {
+            switch task.importance {
+            case ..<0.4: .low
+            case ..<0.7: .medium
+            default: .high
             }
         }
     }

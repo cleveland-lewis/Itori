@@ -16,6 +16,10 @@ struct ItoriCommands: Commands {
     @FocusedValue(\.canDeleteItem) var canDeleteItem: Bool?
 
     var body: some Commands {
+        // Remove default toolbar/sidebar menus
+        CommandGroup(replacing: .toolbar) {}
+        CommandGroup(replacing: .sidebar) {}
+
         // Replace default New Item with Add menu items
         CommandGroup(replacing: .newItem) {
             Button(AppShortcut.newAssignment.title) {

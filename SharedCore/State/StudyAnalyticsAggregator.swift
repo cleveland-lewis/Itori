@@ -87,15 +87,19 @@ enum StudyAnalyticsAggregator {
         }
 
         for session in sessions {
-            guard let end = session.endDate else { continue }
+            guard let startDate = session.startedAt, let end = session.endedAt else { continue }
             // clamp session into buckets by overlap
             for i in 0 ..< result.count {
-                if session.startDate < result[i].end && end > result[i].start {
+                if startDate < result[i].end && end > result[i].start {
                     // overlap duration
-                    let s = max(session.startDate, result[i].start)
+                    let s = max(startDate, result[i].start)
                     let e = min(end, result[i].end)
                     let overlapped = e.timeIntervalSince(s)
-                    let cat = activityMap[session.activityID]?.category ?? "Uncategorized"
+                    let cat: String = if let actID = session.activityID, let activity = activityMap[actID] {
+                        activity.studyCategory?.rawValue ?? "Uncategorized"
+                    } else {
+                        "Uncategorized"
+                    }
                     result[i].categoryDurations[cat, default: 0] += overlapped
                 }
             }

@@ -265,6 +265,70 @@ import SwiftUI
                     }
                 }
 
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(NSLocalizedString(
+                            "settings.check.interval",
+                            value: "Check Interval",
+                            comment: "Check Interval"
+                        ))
+                        Text("How often to scan for missed tasks.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    Stepper(value: Binding(
+                        get: { settings.autoRescheduleCheckInterval },
+                        set: { newValue in
+                            settings.autoRescheduleCheckInterval = max(1, min(60, newValue))
+                            settings.save()
+                        }
+                    ), in: 1 ... 60) {
+                        Text(verbatim: "\(settings.autoRescheduleCheckInterval) min")
+                            .frame(width: 60, alignment: .trailing)
+                    }
+                }
+
+                Toggle(
+                    NSLocalizedString(
+                        "settings.toggle.allow.pushing.lower.priority.tasks",
+                        value: "Allow Pushing Lower Priority Tasks",
+                        comment: "Allow Pushing Lower Priority Tasks"
+                    ),
+                    isOn: Binding(
+                        get: { settings.autoReschedulePushLowerPriority },
+                        set: { settings.autoReschedulePushLowerPriority = $0
+                            settings.save()
+                        }
+                    )
+                )
+
+                if settings.autoReschedulePushLowerPriority {
+                    HStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(NSLocalizedString(
+                                "settings.max.tasks.to.push",
+                                value: "Max Tasks to Push",
+                                comment: "Max Tasks to Push"
+                            ))
+                            Text("Limit how many lower-priority tasks can move.")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        Stepper(value: Binding(
+                            get: { settings.autoRescheduleMaxPushCount },
+                            set: { newValue in
+                                settings.autoRescheduleMaxPushCount = max(0, min(5, newValue))
+                                settings.save()
+                            }
+                        ), in: 0 ... 5) {
+                            Text(verbatim: "\(settings.autoRescheduleMaxPushCount)")
+                                .frame(width: 30, alignment: .trailing)
+                        }
+                    }
+                }
+
                 Button {
                     Task {
                         await coordinator.checkOverdueTasks()

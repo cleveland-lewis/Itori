@@ -204,6 +204,10 @@ struct PlannerSceneContent: View {
         let formatter = DateFormatter()
         formatter.timeStyle = .short
         formatter.dateStyle = .none
+        // Override for 24-hour time preference
+        if AppSettingsModel.shared.use24HourTime {
+            formatter.dateFormat = "HH:mm"
+        }
         return "\(formatter.string(from: session.start)) – \(formatter.string(from: session.end))"
     }
 }

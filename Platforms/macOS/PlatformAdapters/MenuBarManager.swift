@@ -106,7 +106,7 @@
                 timeString = String(format: "%02d:%02d", minutes, seconds)
                 iconName = isPomodorBreak ? "pause.circle" : "timer"
 
-            case .countdown:
+            case .timer:
                 let minutes = Int(remainingSeconds) / 60
                 let seconds = Int(remainingSeconds) % 60
                 timeString = String(format: "%02d:%02d", minutes, seconds)
@@ -117,9 +117,15 @@
                 let seconds = Int(elapsedSeconds) % 60
                 timeString = String(format: "%02d:%02d", minutes, seconds)
                 iconName = "stopwatch"
+
+            case .focus:
+                let minutes = Int(remainingSeconds) / 60
+                let seconds = Int(remainingSeconds) % 60
+                timeString = String(format: "%02d:%02d", minutes, seconds)
+                iconName = "brain.head.profile"
             }
 
-            button.image = NSImage(systemSymbolName: iconName, accessibilityDescription: mode.label)
+            button.image = NSImage(systemSymbolName: iconName, accessibilityDescription: mode.displayName)
             button.title = timeString
         }
     }

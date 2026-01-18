@@ -430,26 +430,35 @@ final class PlannerStore: ObservableObject {
             return
         }
 
-        do {
-            let data = try Data(contentsOf: url)
-            let payload = try JSONDecoder().decode(Persisted.self, from: data)
+        // Perform file I/O on background thread to avoid blocking main thread
+        Task.detached(priority: .utility) { [weak self, url, storageURL = self.storageURL] in
+            do {
+                let data = try Data(contentsOf: url)
+                let payload = try JSONDecoder().decode(Persisted.self, from: data)
 
-            // Check for conflicts before merging
-            if shouldPreserveConflict(cloudScheduled: payload.scheduled, cloudOverflow: payload.overflow) {
-                preserveConflictFile(cloudData: data)
+                // Switch to main actor to update UI state
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
+
+                    // Check for conflicts before merging
+                    if self.shouldPreserveConflict(cloudScheduled: payload.scheduled, cloudOverflow: payload.overflow) {
+                        self.preserveConflictFile(cloudData: data)
+                    }
+
+                    // iCloud is source of truth on launch when enabled
+                    self.scheduled = payload.scheduled
+                    self.overflow = payload.overflow
+
+                    DebugLogger
+                        .log("✅ Loaded \(self.scheduled.count) scheduled, \(self.overflow.count) overflow from iCloud")
+                }
+
+                // Save to local for offline access (on background thread)
+                try data.write(to: storageURL, options: [.atomic])
+            } catch {
+                // Silent failure - fall back to local
+                DebugLogger.log("⚠️ Failed to load from iCloud (using local): \(error.localizedDescription)")
             }
-
-            // iCloud is source of truth on launch when enabled
-            scheduled = payload.scheduled
-            overflow = payload.overflow
-
-            // Save to local for offline access
-            try data.write(to: storageURL, options: [.atomic])
-
-            DebugLogger.log("✅ Loaded \(scheduled.count) scheduled, \(overflow.count) overflow from iCloud")
-        } catch {
-            // Silent failure - fall back to local
-            DebugLogger.log("⚠️ Failed to load from iCloud (using local): \(error.localizedDescription)")
         }
     }
 
@@ -558,9 +567,8 @@ final class PlannerStore: ObservableObject {
     private func setupiCloudMonitoring() {
         guard isSyncEnabled else { return }
         iCloudMonitor = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in
-            Task { @MainActor [weak self] in
-                self?.loadFromiCloud()
-            }
+            // Load from iCloud on background thread - no @MainActor needed
+            self?.loadFromiCloud()
         }
     }
 

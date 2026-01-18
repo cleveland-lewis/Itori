@@ -46,8 +46,7 @@
     struct ItoriApp: App {
         @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-        // Use system accent color instead of hardcoded blue
-        private let appAccentColor: Color = .accentColor
+        // Accent color is driven by user settings.
 
         @StateObject private var coursesStore: CoursesStore
         @StateObject private var appSettings = AppSettingsModel.shared
@@ -86,6 +85,22 @@
             let focus = FocusManager()
             _focusManager = StateObject(wrappedValue: focus)
             menuBarManager = MenuBarManager(focusManager: focus, assignmentsStore: assignments, settings: settings)
+
+            // Apply interface style on launch
+            Self.applyInterfaceStyle(settings.interfaceStyle)
+        }
+
+        private static func applyInterfaceStyle(_ style: InterfaceStyle) {
+            let appearance: NSAppearance? = switch style {
+            case .system, .auto:
+                nil // Use system default
+            case .light:
+                NSAppearance(named: .aqua)
+            case .dark:
+                NSAppearance(named: .darkAqua)
+            }
+
+            NSApp.appearance = appearance
         }
 
         #if !DISABLE_SWIFTDATA
@@ -158,11 +173,11 @@
                         .onAppear {
                             LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")
                         }
-                        .accentColor(appAccentColor)
+                        .accentColor(appSettings.activeAccentColor)
                         .buttonStyle(GlassBlueProminentButtonStyle())
                         .controlSize(ControlSize.regular)
                         .buttonBorderShape(ButtonBorderShape.automatic)
-                        .tint(appAccentColor)
+                        .tint(appSettings.activeAccentColor)
                         .frame(minWidth: 1100, minHeight: 700)
                         .task {
                             LOG_LIFECYCLE(.info, "AppStartup", "Running startup tasks")

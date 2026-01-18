@@ -147,35 +147,32 @@ struct DashboardEmptyState: View {
     var actionTitle: String?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.secondary)
+        VStack(spacing: 16) {
+            Image(systemName: systemImage)
+                .font(.system(size: 48))
+                .foregroundStyle(.tertiary)
 
-            if !description.isEmpty {
-                Text(description)
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
-            }
+            VStack(spacing: 8) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
 
-            VStack(alignment: .leading, spacing: 6) {
-                RoundedRectangle(cornerRadius: 3)
-                    .fill(.tertiary.opacity(0.35))
-                    .frame(height: 6)
-                RoundedRectangle(cornerRadius: 3)
-                    .fill(.tertiary.opacity(0.25))
-                    .frame(width: 140, height: 6)
+                if !description.isEmpty {
+                    Text(description)
+                        .font(.subheadline)
+                        .foregroundStyle(.tertiary)
+                        .multilineTextAlignment(.center)
+                }
             }
 
             if let action, let actionTitle {
                 Button(actionTitle, action: action)
-                    .buttonStyle(.plain)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .padding(.top, 2)
+                    .buttonStyle(.itariLiquid)
+                    .padding(.top, 4)
             }
         }
-        .frame(maxWidth: .infinity, minHeight: 100, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 180)
+        .padding(.vertical, 20)
     }
 }
 

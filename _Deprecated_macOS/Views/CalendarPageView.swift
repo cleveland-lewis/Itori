@@ -50,7 +50,18 @@ enum CalendarViewMode: String, CaseIterable, Identifiable {
     case month = "Month"
     case year = "Year"
     var id: String { rawValue }
-    var title: String { rawValue.capitalized }
+    var title: String {
+        switch self {
+        case .day:
+            NSLocalizedString("calendar.view.day", value: "Day", comment: "Calendar day view")
+        case .week:
+            NSLocalizedString("calendar.view.week", value: "Week", comment: "Calendar week view")
+        case .month:
+            NSLocalizedString("calendar.view.month", value: "Month", comment: "Calendar month view")
+        case .year:
+            NSLocalizedString("calendar.view.year", value: "Year", comment: "Calendar year view")
+        }
+    }
 }
 
 public struct CalendarEvent: Identifiable, Hashable {
@@ -2828,21 +2839,21 @@ private struct EventEditSheet: View {
                 
                 Picker("Repeat", selection: $recurrence) {
                     ForEach(CalendarManager.RecurrenceOption.allCases) { opt in
-                        Text(opt.rawValue.capitalized).tag(opt)
+                        Text(opt.localizedTitle).tag(opt)
                     }
                 }
                 
                 VStack(alignment: .leading, spacing: 6) {
                     Picker("Primary Alert", selection: $primaryAlert) {
                         ForEach(CalendarManager.AlertOption.allCases) { opt in
-                            Text(opt.rawValue).tag(opt)
+                            Text(opt.localizedTitle).tag(opt)
                         }
                     }
                     
                     if primaryAlert != .none {
                         Picker("Secondary Alert", selection: $secondaryAlert) {
                             ForEach(CalendarManager.AlertOption.allCases) { opt in
-                                Text(opt.rawValue).tag(opt)
+                                Text(opt.localizedTitle).tag(opt)
                             }
                         }
                     }
@@ -2850,7 +2861,7 @@ private struct EventEditSheet: View {
                 
                 Picker("Travel Time", selection: $travelTime) {
                     ForEach(CalendarManager.TravelTimeOption.allCases) { opt in
-                        Text(opt.rawValue).tag(opt)
+                        Text(opt.localizedTitle).tag(opt)
                     }
                 }
             }

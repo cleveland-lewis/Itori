@@ -159,6 +159,10 @@
         private var timeRange: String {
             let formatter = DateFormatter()
             formatter.timeStyle = .short
+            // Override for 24-hour time preference
+            if AppSettingsModel.shared.use24HourTime {
+                formatter.dateFormat = "HH:mm"
+            }
             return "\(formatter.string(from: event.startDate)) – \(formatter.string(from: event.endDate))"
         }
     }

@@ -7,6 +7,7 @@
         @ObservedObject var store: PracticeTestStore
 
         @State private var selectedCourse: Course?
+        @State private var selectedModule: CourseOutlineNode?
         @State private var selectedTopics: [String] = []
         @State private var customTopic: String = ""
         @State private var difficulty: PracticeTestDifficulty = .medium
@@ -18,6 +19,7 @@
             NavigationStack {
                 Form {
                     courseSelectionSection
+                    moduleSelectionSection
                     topicsSection
                     settingsSection
                     infoSection
@@ -72,10 +74,68 @@
                             Text(course.code.isEmpty ? course.title : course.code).tag(course as Course?)
                         }
                     }
+                    .onChange(of: selectedCourse) { _, _ in
+                        selectedModule = nil
+                    }
                 }
             } header: {
                 Text(NSLocalizedString("iospracticetestgenerator.course", value: "Course", comment: "Course"))
             }
+        }
+
+        // MARK: - Module Selection
+
+        private var moduleSelectionSection: some View {
+            Section {
+                if let course = selectedCourse {
+                    let modules = availableModules(for: course)
+
+                    if modules.isEmpty {
+                        Text(NSLocalizedString(
+                            "iospracticetestgenerator.no_modules",
+                            value: "No modules available for this course.",
+                            comment: "No modules available"
+                        ))
+                        .foregroundStyle(.secondary)
+                        .font(.callout)
+                    } else {
+                        Picker("Module", selection: $selectedModule) {
+                            Text(NSLocalizedString(
+                                "iospracticetestgenerator.select.a.module",
+                                value: "Select a module",
+                                comment: "Select a module"
+                            )).tag(nil as CourseOutlineNode?)
+                            ForEach(modules) { module in
+                                Text(module.title).tag(module as CourseOutlineNode?)
+                            }
+                        }
+                    }
+                } else {
+                    Text(NSLocalizedString(
+                        "iospracticetestgenerator.select_course_first",
+                        value: "Select a course first",
+                        comment: "Select course first"
+                    ))
+                    .foregroundStyle(.secondary)
+                    .font(.callout)
+                }
+            } header: {
+                Text(NSLocalizedString("iospracticetestgenerator.module", value: "Module", comment: "Module"))
+            } footer: {
+                if selectedModule != nil {
+                    Text(NSLocalizedString(
+                        "iospracticetestgenerator.module.help",
+                        value: "Questions will be generated from this module's content",
+                        comment: "Module help"
+                    ))
+                }
+            }
+        }
+
+        private func availableModules(for course: Course) -> [CourseOutlineNode] {
+            coursesStore.outlineNodes
+                .filter { $0.courseId == course.id && $0.type == .module }
+                .sorted { $0.sortIndex < $1.sortIndex }
         }
 
         // MARK: - Topics
@@ -185,15 +245,18 @@
         }
 
         private var canGenerate: Bool {
-            selectedCourse != nil
+            selectedCourse != nil && selectedModule != nil
         }
 
         private func generateTest() {
-            guard let course = selectedCourse else { return }
+            guard let course = selectedCourse,
+                  let module = selectedModule else { return }
 
             let request = PracticeTestRequest(
                 courseId: course.id,
                 courseName: course.code.isEmpty ? course.title : course.code,
+                moduleId: module.id,
+                moduleName: module.title,
                 topics: selectedTopics,
                 difficulty: difficulty,
                 questionCount: questionCount,

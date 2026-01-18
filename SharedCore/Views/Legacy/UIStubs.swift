@@ -1,5 +1,8 @@
 import EventKit
 import SwiftUI
+#if os(macOS)
+    import AppKit
+#endif
 
 // Lightweight stubs for missing design components used throughout the app.
 // These are minimal implementations to allow the project to compile; substitute
@@ -55,6 +58,8 @@ extension View {
 struct AttachmentListView: View {
     @Binding var attachments: [Attachment]
     var courseId: UUID?
+    @State private var showingFilePicker = false
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             ForEach(attachments) { attachment in
@@ -62,10 +67,23 @@ struct AttachmentListView: View {
                     Image(systemName: "paperclip")
                     Text(attachment.name ?? "Attachment")
                     Spacer()
+                    Button {
+                        if let index = attachments.firstIndex(where: { $0.id == attachment.id }) {
+                            attachments.remove(at: index)
+                        }
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             Button {
-                attachments.append(Attachment(name: "New Attachment"))
+                #if os(macOS)
+                    showNativeFilePicker()
+                #else
+                    attachments.append(Attachment(name: "New Attachment"))
+                #endif
             } label: {
                 Label(
                     NSLocalizedString("ui.label.add.attachment", value: "Add Attachment", comment: "Add Attachment"),
@@ -74,6 +92,28 @@ struct AttachmentListView: View {
             }
         }
     }
+
+    #if os(macOS)
+        private func showNativeFilePicker() {
+            let panel = NSOpenPanel()
+            panel.allowsMultipleSelection = true
+            panel.canChooseDirectories = false
+            panel.canChooseFiles = true
+            panel.message = "Select files to attach"
+
+            panel.begin { response in
+                if response == .OK {
+                    for url in panel.urls {
+                        let attachment = Attachment(
+                            name: url.lastPathComponent,
+                            localURL: url
+                        )
+                        attachments.append(attachment)
+                    }
+                }
+            }
+        }
+    #endif
 }
 
 // Flashcard models to satisfy manager usage.

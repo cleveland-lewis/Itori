@@ -14,9 +14,7 @@
         case calendar
         case planner
         case semesters
-        case profiles
         case ai
-        case integrations
         case notifications
         case privacy
         case storage
@@ -38,9 +36,7 @@
             case .calendar: "calendar"
             case .planner: "calendar.badge.clock"
             case .semesters: "calendar.circle"
-            case .profiles: "person.text.rectangle"
             case .ai: "brain"
-            case .integrations: "puzzlepiece.extension"
             case .notifications: "bell.badge"
             case .privacy: "hand.raised"
             case .storage: "externaldrive"
@@ -79,14 +75,12 @@
                         CoursesSettingsView()
                     case .semesters:
                         SemestersSettingsView()
+                    case .grades:
+                        GradesSettingsView()
                     case .interface:
                         InterfaceSettingsView()
-                    case .profiles:
-                        ProfilesSettingsView()
                     case .ai:
                         AISettingsView()
-                    case .integrations:
-                        IntegrationsSettingsView()
                     case .notifications:
                         NotificationsSettingsView()
                     case .privacy:

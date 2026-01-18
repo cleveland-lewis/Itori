@@ -4,6 +4,7 @@
     struct FlashcardsView: View {
         @StateObject private var manager = FlashcardManager.shared
         @EnvironmentObject private var coursesStore: CoursesStore
+        @Environment(\.appLayout) private var appLayout
         @State private var selectedDeck: FlashcardDeck?
         @State private var showingAddDeck = false
         @State private var showingStudySession = false
@@ -37,6 +38,7 @@
                     DeckDetailView(deck: deck) {
                         selectedDeck = nil
                     }
+                    .padding(.top, appLayout.topContentInset)
                 } else {
                     deckSelectionView
                 }
@@ -93,6 +95,7 @@
                                     CourseCardView(course: course) {
                                         createDeckForCourse(course)
                                     }
+                                    .padding(.top, appLayout.topContentInset)
                                 }
                             }
                             .padding(.horizontal)

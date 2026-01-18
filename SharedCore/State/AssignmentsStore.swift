@@ -74,6 +74,53 @@ final class AssignmentsStore: ObservableObject {
         }
     }
 
+    @MainActor
+    func migrateUnassignedTasksToCurrentSemesterCourse() {
+        guard let coursesStore = CoursesStore.shared,
+              let targetCourseId = coursesStore.currentSemesterCourses.first?.id
+        else { return }
+        guard tasks.contains(where: { $0.courseId == nil }) else { return }
+
+        tasks = tasks.map { task in
+            guard task.courseId == nil else { return task }
+            // Create new task with updated courseId
+            return AppTask(
+                id: task.id,
+                title: task.title,
+                courseId: targetCourseId,
+                moduleIds: task.moduleIds,
+                due: task.due,
+                estimatedMinutes: task.estimatedMinutes,
+                minBlockMinutes: task.minBlockMinutes,
+                maxBlockMinutes: task.maxBlockMinutes,
+                difficulty: task.difficulty,
+                importance: task.importance,
+                type: task.type,
+                locked: task.locked,
+                attachments: task.attachments,
+                isCompleted: task.isCompleted,
+                gradeWeightPercent: task.gradeWeightPercent,
+                gradePossiblePoints: task.gradePossiblePoints,
+                gradeEarnedPoints: task.gradeEarnedPoints,
+                category: task.category,
+                dueTimeMinutes: task.dueTimeMinutes,
+                recurrence: task.recurrence,
+                recurrenceSeriesID: task.recurrenceSeriesID,
+                recurrenceIndex: task.recurrenceIndex,
+                calendarEventIdentifier: task.calendarEventIdentifier,
+                sourceUniqueKey: task.sourceUniqueKey,
+                sourceFingerprint: task.sourceFingerprint,
+                notes: task.notes,
+                needsReview: task.needsReview,
+                alarmDate: task.alarmDate,
+                alarmEnabled: task.alarmEnabled,
+                alarmSound: task.alarmSound,
+                deletedAt: task.deletedAt
+            )
+        }
+        debugLog("✅ Migrated unassigned tasks to current semester course: \(targetCourseId)")
+    }
+
     private var cacheURL: URL? = {
         guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
         else { return nil }

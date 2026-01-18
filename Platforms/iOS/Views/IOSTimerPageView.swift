@@ -148,7 +148,7 @@
                         .accessibilityIdentifier("Timer.Status")
                     Spacer()
                     Menu {
-                        ForEach(TimerMode.allCases.filter { $0 != .focus }) { mode in
+                        ForEach(TimerMode.userSelectableModes) { mode in
                             Button {
                                 viewModel.currentMode = mode
                             } label: {
@@ -183,9 +183,11 @@
                     .accessibilityLabel(NSLocalizedString("ios.timer.mode", comment: "Mode"))
                 }
 
-                // Show time picker for timer mode when idle
-                if viewModel.currentMode == .timer && sessionState == .idle {
+                // Show time picker for timer mode
+                if viewModel.currentMode == .timer {
                     timerDurationPicker
+                        .disabled(sessionState != .idle)
+                        .opacity(sessionState != .idle ? 0.6 : 1)
                 } else {
                     // Show timer display
                     if displayStyle == .analog {

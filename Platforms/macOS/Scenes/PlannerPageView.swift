@@ -267,6 +267,7 @@
         @EnvironmentObject var plannerCoordinator: PlannerCoordinator
         @EnvironmentObject var coursesStore: CoursesStore
         @Environment(\.colorScheme) private var colorScheme
+        @Environment(\.appLayout) private var appLayout
         @StateObject private var dayProgress = DayProgressModel()
 
         @State private var selectedDate: Date = .init()
@@ -386,7 +387,6 @@
                         ScrollView(showsIndicators: false) {
                             VStack(alignment: .leading, spacing: DesignSystem.Spacing.medium) {
                                 headerBar
-                                    .padding(.top, DesignSystem.Layout.spacing.small)
 
                                 HStack(alignment: .top, spacing: 18) {
                                     timelineCard
@@ -405,6 +405,7 @@
                             }
                             .frame(maxWidth: min(geometry.size.width, 1400))
                             .frame(maxWidth: .infinity)
+                            .padding(.top, appLayout.topContentInset)
                             .padding(.horizontal, responsivePadding(for: geometry.size.width))
                             .padding(.bottom, DesignSystem.Layout.spacing.large)
                         }
@@ -482,6 +483,8 @@
                     .buttonStyle(.plain)
                 }
 
+                Spacer()
+
                 HStack(spacing: DesignSystem.Layout.spacing.small) {
                     Button {
                         showNewTaskSheet()
@@ -499,23 +502,24 @@
                     Button {
                         runAIScheduler()
                     } label: {
-                        Text(isRunningPlanner ? NSLocalizedString("planner.action.planning", comment: "") :
-                            NSLocalizedString(
-                                "planner.action.plan_day",
-                                comment: ""
-                            ))
-                            .font(DesignSystem.Typography.body)
-                            .frame(height: 36)
-                            .frame(minWidth: 120)
+                        Label(
+                            isRunningPlanner ? NSLocalizedString("planner.action.planning", comment: "") :
+                                NSLocalizedString(
+                                    "planner.action.plan_day",
+                                    comment: ""
+                                ),
+                            systemImage: "calendar.badge.clock"
+                        )
+                        .font(DesignSystem.Typography.body)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
                     }
-                    .buttonStyle(.itariLiquid)
-                    .tint(.accentColor)
+                    .buttonStyle(.itoriLiquidProminent)
                     .controlSize(.regular)
                     .disabled(isRunningPlanner)
                     .opacity(isRunningPlanner ? 0.85 : 1)
                 }
             }
-            .padding(.horizontal, DesignSystem.Layout.padding.card)
         }
 
         var subtitleText: String {

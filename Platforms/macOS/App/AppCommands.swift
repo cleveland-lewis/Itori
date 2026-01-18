@@ -4,6 +4,11 @@
     struct AppCommands: Commands {
         var body: some Commands {
             CommandMenu("Add") {
+                Button(NSLocalizedString("ui.button.add.grade", value: "Add Grade", comment: "Add Grade")) {
+                    NotificationCenter.default.post(name: .addGradeRequested, object: nil)
+                }
+                .keyboardShortcut("g", modifiers: [.command, .shift])
+
                 Button(NSLocalizedString(
                     "ui.button.add.assignment",
                     value: "Add Assignment",
@@ -12,11 +17,6 @@
                     NotificationCenter.default.post(name: .addAssignmentRequested, object: nil)
                 }
                 .keyboardShortcut("n", modifiers: [.command])
-
-                Button(NSLocalizedString("ui.button.add.grade", value: "Add Grade", comment: "Add Grade")) {
-                    NotificationCenter.default.post(name: .addGradeRequested, object: nil)
-                }
-                .keyboardShortcut("g", modifiers: [.command, .shift])
 
                 Button(NSLocalizedString(
                     "ui.button.add.work.session",

@@ -13,6 +13,7 @@
         @EnvironmentObject private var coursesStore: CoursesStore
         @EnvironmentObject private var gradesStore: GradesStore
         @EnvironmentObject private var appModel: AppModel
+        @Environment(\.appLayout) private var appLayout
         @State private var isLoaded = false
         @State private var cancellables: Set<AnyCancellable> = []
         @State private var todayBounce = false
@@ -183,7 +184,7 @@
                     .frame(maxWidth: min(proxy.size.width, 1400))
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.horizontal, responsivePadding(for: proxy.size.width))
-                    .padding(.top, 20)
+                    .padding(.top, appLayout.topContentInset)
                     .padding(.bottom, bottomDockClearancePadding)
                 }
             }
@@ -1391,14 +1392,14 @@
                 if sessions.isEmpty {
                     DashboardEmptyState(
                         title: NSLocalizedString("dashboard.planner.no_tasks", comment: ""),
-                        systemImage: "calendar.badge.clock",
+                        systemImage: "doc.text",
                         description: NSLocalizedString(
                             "dashboard.planner.no_tasks.description",
                             value: "Your planner will show today's sessions here.",
                             comment: ""
                         )
                     )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } else {
                     VStack(alignment: .leading, spacing: 10) {
                         ForEach(sessions.prefix(4), id: \.id) { session in
@@ -1939,7 +1940,15 @@
         private func formattedDueDate(_ date: Date, hasExplicitTime: Bool) -> String {
             let formatter = DateFormatter()
             formatter.dateStyle = .short
-            formatter.timeStyle = hasExplicitTime ? .short : .none
+            if hasExplicitTime {
+                formatter.timeStyle = .short
+                // Override for 24-hour time preference
+                if settings.use24HourTime {
+                    formatter.dateFormat = "M/d/yy, HH:mm"
+                }
+            } else {
+                formatter.timeStyle = .none
+            }
             return formatter.string(from: date)
         }
 

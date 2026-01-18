@@ -13,17 +13,7 @@
         var activities: [LocalTimerActivity]
 
         private func buildSlices() -> [CourseStudySlice] {
-            let grouped = Dictionary(grouping: activities) { $0.courseCode ?? "Unassigned" }
-            var slices: [CourseStudySlice] = []
-            for (key, list) in grouped {
-                let minutes = list.reduce(0) { $0 + $1.todayTrackedSeconds } / 60.0
-                if minutes <= 0 { continue }
-                let color = list.first?.colorTag.color ?? deterministicColor(for: key)
-                slices.append(CourseStudySlice(id: key, courseName: key, minutes: minutes, color: color))
-            }
-            // stable sort by minutes desc
-            slices.sort { $0.minutes > $1.minutes }
-            return slices
+            []
         }
 
         private func deterministicColor(for key: String) -> Color {

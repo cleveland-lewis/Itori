@@ -15,11 +15,6 @@ struct GradesAnalyticsView: View {
     @State private var showWeightedGPA: Bool = true
     @State private var selectedDateRange: DateRangeFilter = .allTime
 
-    // MARK: - What-If Simulator State
-
-    @State private var whatIfMode: Bool = false
-    @State private var whatIfAssignments: [UUID: Double] = [:] // taskId -> hypothetical grade
-
     // MARK: - Interaction State
 
     @State private var selectedChartElement: String?
@@ -31,11 +26,6 @@ struct GradesAnalyticsView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {
                     header
-
-                    // What-If Banner
-                    if whatIfMode {
-                        whatIfBanner
-                    }
 
                     filterControls
 
@@ -86,57 +76,6 @@ struct GradesAnalyticsView: View {
             .buttonStyle(.plain)
             .accessibilityLabelWithTooltip("Close")
         }
-    }
-
-    // MARK: - What-If Banner
-
-    private var whatIfBanner: some View {
-        HStack(spacing: 12) {
-            Image(systemName: "wand.and.stars")
-                .foregroundStyle(Color.accentColor)
-                .symbolRenderingMode(.hierarchical)
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(NSLocalizedString(
-                    "gradesanalytics.whatif.mode.active",
-                    value: "What-If Mode Active",
-                    comment: "What-If Mode Active"
-                ))
-                .font(.subheadline.weight(.semibold))
-
-                Text(NSLocalizedString(
-                    "gradesanalytics.hypothetical.grades.wont.be.saved",
-                    value: "Hypothetical grades won't be saved",
-                    comment: "Hypothetical grades won't be saved"
-                ))
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            }
-
-            Spacer()
-
-            Button(NSLocalizedString("gradesanalytics.button.reset", value: "Reset", comment: "Reset")) {
-                resetWhatIfMode()
-            }
-            .buttonStyle(.itariLiquid)
-            .tint(.accentColor)
-            .controlSize(.small)
-
-            Button {
-                whatIfMode = false
-            } label: {
-                Image(systemName: "xmark")
-            }
-            .buttonStyle(.plain)
-            .foregroundStyle(.secondary)
-        }
-        .padding()
-        .background(Color.accentColor.opacity(0.15))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
-        )
     }
 
     // MARK: - Filter Controls
@@ -211,25 +150,6 @@ struct GradesAnalyticsView: View {
                 .controlSize(.regular)
 
                 Spacer()
-
-                // What-If Mode Toggle
-                Button {
-                    whatIfMode.toggle()
-                    if whatIfMode {
-                        whatIfAssignments = [:]
-                    }
-                } label: {
-                    Label(
-                        NSLocalizedString(
-                            "gradesanalytics.label.whatif.mode",
-                            value: "What-If Mode",
-                            comment: "What-If Mode"
-                        ),
-                        systemImage: "wand.and.stars"
-                    )
-                }
-                .buttonStyle(.itoriLiquidProminent)
-                .tint(whatIfMode ? Color.accentColor : .secondary)
 
                 // Risk Breakdown Toggle
                 Button {
@@ -568,7 +488,9 @@ struct GradesAnalyticsView: View {
         icon: String,
         description: String
     ) -> some View {
-        HStack(alignment: .top, spacing: 12) {
+        let tasks = filteredTasks()
+
+        return HStack(alignment: .top, spacing: 12) {
             Image(systemName: icon)
                 .font(.title2)
                 .foregroundStyle(color)
@@ -589,9 +511,19 @@ struct GradesAnalyticsView: View {
                     .foregroundStyle(.secondary)
 
                 if !courses.isEmpty {
-                    Text(courses.map(\.code).joined(separator: ", "))
-                        .font(.caption.bold())
-                        .foregroundStyle(color)
+                    VStack(alignment: .leading, spacing: 2) {
+                        ForEach(courses, id: \.id) { course in
+                            if let grade = coursePercent(for: course.id, tasks: tasks, weighted: showWeightedGPA) {
+                                Text("\(course.code): \(String(format: "%.1f", grade))%")
+                                    .font(.caption.bold())
+                                    .foregroundStyle(color)
+                            } else {
+                                Text("\(course.code): No grades")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
                 }
             }
 
@@ -605,6 +537,11 @@ struct GradesAnalyticsView: View {
     private func getCoursesAtRisk(threshold: Double, max: Double? = nil) -> [Course] {
         let tasks = filteredTasks()
         return filteredCourses().filter { course in
+            // Only include courses from active semesters
+            guard coursesStore.activeSemesters.contains(where: { $0.id == course.semesterId }) else {
+                return false
+            }
+
             if let grade = coursePercent(for: course.id, tasks: tasks, weighted: showWeightedGPA) {
                 if let max {
                     return grade < threshold && grade >= max
@@ -614,12 +551,6 @@ struct GradesAnalyticsView: View {
             }
             return false
         }
-    }
-
-    // MARK: - What-If Functions
-
-    private func resetWhatIfMode() {
-        whatIfAssignments = [:]
     }
 
     // MARK: - Helpers

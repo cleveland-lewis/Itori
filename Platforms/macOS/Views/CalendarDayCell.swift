@@ -14,11 +14,11 @@
             let isToday = calendar.isDateInToday(date)
             let a11yContent = VoiceOverLabels.dateCell(date: date, eventCount: eventCount)
 
-            ZStack(alignment: .topLeading) {
+            ZStack(alignment: .topTrailing) {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .fill(isSelected ? Color.accentColor.opacity(0.15) : Color.clear)
 
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .trailing, spacing: 0) {
                     Text(dayString)
                         .font(.system(size: 12, weight: isToday ? .semibold : .regular))
                         .foregroundColor(textColor(isToday: isToday))
@@ -42,7 +42,7 @@
                     }
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .stroke(isSelected ? Color.accentColor.opacity(0.5) : Color.clear, lineWidth: isSelected ? 1.5 : 0)

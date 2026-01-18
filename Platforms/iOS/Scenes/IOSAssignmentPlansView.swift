@@ -142,7 +142,15 @@ struct AssignmentPlanCard: View {
     private func formatDueDisplay(for assignment: Assignment) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
-        formatter.timeStyle = assignment.hasExplicitDueTime ? .short : .none
+        if assignment.hasExplicitDueTime {
+            formatter.timeStyle = .short
+            // Override for 24-hour time preference
+            if AppSettingsModel.shared.use24HourTime {
+                formatter.dateFormat = "MMM d, yyyy, HH:mm"
+            }
+        } else {
+            formatter.timeStyle = .none
+        }
         let date = assignment.hasExplicitDueTime ? assignment.effectiveDueDateTime : assignment.dueDate
         return formatter.string(from: date)
     }

@@ -42,7 +42,18 @@
         case month = "Month"
         case year = "Year"
         var id: String { rawValue }
-        var title: String { rawValue.capitalized }
+        var title: String {
+            switch self {
+            case .day:
+                NSLocalizedString("calendar.view.day", value: "Day", comment: "Calendar day view")
+            case .week:
+                NSLocalizedString("calendar.view.week", value: "Week", comment: "Calendar week view")
+            case .month:
+                NSLocalizedString("calendar.view.month", value: "Month", comment: "Calendar month view")
+            case .year:
+                NSLocalizedString("calendar.view.year", value: "Year", comment: "Calendar year view")
+            }
+        }
     }
 
     public struct CalendarEvent: Identifiable, Hashable {
@@ -100,6 +111,7 @@
         @ScaledMetric private var mediumTextSize: CGFloat = 16
 
         @EnvironmentObject var settings: AppSettingsModel
+        @Environment(\.appLayout) private var appLayout
 
         @EnvironmentObject var eventsStore: EventsCountStore
         @EnvironmentObject var calendarManager: CalendarManager
@@ -179,7 +191,7 @@
         var body: some View {
             GeometryReader { proxy in
                 let horizontalPadding = ItariSpacing.pagePadding
-                let topPadding: CGFloat = 16
+                let topPadding = appLayout.topContentInset
                 let bottomPadding: CGFloat = 16
                 let topToolbarHeight = DesignSystem.Layout.rowHeight.large + 12
                 let topSectionSpacing: CGFloat = 12
@@ -1609,6 +1621,10 @@
         private var timeRange: String {
             let formatter = DateFormatter()
             formatter.timeStyle = .short
+            // Override for 24-hour time preference
+            if AppSettingsModel.shared.use24HourTime {
+                formatter.dateFormat = "HH:mm"
+            }
             return "\(formatter.string(from: event.startDate)) – \(formatter.string(from: event.endDate))"
         }
     }
@@ -1701,7 +1717,7 @@
                                 .symbolRenderingMode(.hierarchical)
                                 .frame(width: 24)
                             Text(alarms.compactMap { alarm in
-                                CalendarManager.AlertOption.from(alarm: alarm).rawValue
+                                CalendarManager.AlertOption.from(alarm: alarm).localizedTitle
                             }.joined(separator: ", "))
                                 .font(.body)
                                 .foregroundStyle(.primary)
@@ -1876,6 +1892,10 @@
         private var timeRange: String {
             let f = DateFormatter()
             f.timeStyle = .short
+            // Override for 24-hour time preference
+            if AppSettingsModel.shared.use24HourTime {
+                f.dateFormat = "HH:mm"
+            }
             return "\(f.string(from: item.startDate)) – \(f.string(from: item.endDate))"
         }
 
@@ -2156,21 +2176,21 @@
 
                     Picker("Repeat", selection: $recurrence) {
                         ForEach(CalendarManager.RecurrenceOption.allCases) { opt in
-                            Text(opt.rawValue.capitalized).tag(opt)
+                            Text(opt.localizedTitle).tag(opt)
                         }
                     }
 
                     VStack(alignment: .leading, spacing: 6) {
                         Picker("Primary Alert", selection: $primaryAlert) {
                             ForEach(CalendarManager.AlertOption.allCases) { opt in
-                                Text(opt.rawValue).tag(opt)
+                                Text(opt.localizedTitle).tag(opt)
                             }
                         }
 
                         if primaryAlert != .none {
                             Picker("Secondary Alert", selection: $secondaryAlert) {
                                 ForEach(CalendarManager.AlertOption.allCases) { opt in
-                                    Text(opt.rawValue).tag(opt)
+                                    Text(opt.localizedTitle).tag(opt)
                                 }
                             }
                         }
@@ -2178,7 +2198,7 @@
 
                     Picker("Travel Time", selection: $travelTime) {
                         ForEach(CalendarManager.TravelTimeOption.allCases) { opt in
-                            Text(opt.rawValue).tag(opt)
+                            Text(opt.localizedTitle).tag(opt)
                         }
                     }
                 }

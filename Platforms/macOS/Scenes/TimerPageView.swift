@@ -3,6 +3,11 @@
     import Combine
     import SwiftUI
 
+    // Type aliases for clarity
+    typealias LocalTimerActivity = TimerActivity
+    typealias LocalTimerSession = FocusSession
+    typealias LocalTimerMode = TimerMode
+
     struct TimerPageView: View {
         @Environment(\.colorScheme) private var colorScheme
         @EnvironmentObject private var settings: AppSettingsModel
@@ -10,6 +15,7 @@
         @EnvironmentObject private var calendarManager: CalendarManager
         @EnvironmentObject private var appModel: AppModel
         @EnvironmentObject private var settingsCoordinator: SettingsCoordinator
+        @Environment(\.appLayout) private var appLayout
 
         @State private var mode: LocalTimerMode = .pomodoro
         @State private var activities: [LocalTimerActivity] = []
@@ -32,9 +38,7 @@
         @State private var countdownDuration: TimeInterval = 600 // Default 10 minutes
 
         private var collections: [String] {
-            var set: Set<String> = ["All"]
-            set.formUnion(activities.map(\.category))
-            return Array(set).sorted()
+            ["All"]
         }
 
         @State private var cachedPinnedActivities: [LocalTimerActivity] = []
@@ -107,13 +111,10 @@
 
             let query = searchText.lowercased()
             cachedFilteredActivities = activities.filter { activity in
-                // Only show planner-created activities (those with assignmentTitle)
+                // Filter by name and collection
                 (!activity.isPinned) &&
-                    (activity.assignmentTitle != nil) &&
-                    (selectedCollection == "All" || activity.category.lowercased()
-                        .contains(selectedCollection.lowercased())) &&
-                    (query.isEmpty || activity.name.lowercased().contains(query) || activity.category.lowercased()
-                        .contains(query))
+                    (activity.assignmentID != nil) && // Only show assignment-linked activities
+                    (query.isEmpty || activity.name.lowercased().contains(query))
             }
         }
 
@@ -148,7 +149,7 @@
         // MARK: - Subviews
 
         private var totalToday: TimeInterval {
-            activities.reduce(0) { $0 + $1.todayTrackedSeconds }
+            0
         }
 
         private var currentActivity: LocalTimerActivity? {
@@ -583,13 +584,7 @@
                             Text(activity.name)
                                 .font(DesignSystem.Typography.caption.weight(.medium))
                                 .foregroundStyle(.primary)
-                            if let course = activity.courseCode {
-                                Text(NSLocalizedString("timer.", value: "•", comment: "•"))
-                                    .foregroundStyle(.secondary)
-                                Text(course)
-                                    .font(DesignSystem.Typography.caption)
-                                    .foregroundStyle(.secondary)
-                            }
+                            // Course code display removed - courseID is UUID
                         }
                         .padding(.horizontal, 14)
                         .padding(.vertical, 8)
@@ -720,7 +715,10 @@
                                         .padding(.horizontal, 12)
                                         .padding(.top, 4)
 
-                                        ForEach(LocalTimerMode.allCases, id: \.self) { timerMode in
+                                        ForEach(
+                                            [TimerMode.pomodoro, TimerMode.timer, TimerMode.stopwatch] as [TimerMode],
+                                            id: \.self
+                                        ) { timerMode in
                                             Button(action: {
                                                 mode = timerMode
                                                 showingModeMenu = false
@@ -733,7 +731,7 @@
                                                     } else {
                                                         Spacer().frame(width: 16)
                                                     }
-                                                    Text(timerMode.label)
+                                                    Text(timerMode.displayName)
                                                         .frame(maxWidth: .infinity, alignment: .leading)
                                                 }
                                                 .padding(.horizontal, 12)
@@ -897,7 +895,7 @@
                             .foregroundStyle(.secondary)
                             .textCase(.uppercase)
                     } else {
-                        Text(mode.label)
+                        Text(mode.displayName)
                             .font(.headline.weight(.medium))
                     }
 
@@ -920,7 +918,7 @@
             switch mode {
             case .stopwatch:
                 elapsedSeconds
-            case .pomodoro, .countdown:
+            case .pomodoro, .timer, .focus:
                 max(0, currentBlockDuration - remainingSeconds)
             }
         }
@@ -936,7 +934,7 @@
                 } else {
                     return String(format: "%02d:%02d", m, s)
                 }
-            case .pomodoro, .countdown:
+            case .pomodoro, .timer, .focus:
                 let m = Int(remainingSeconds) / 60
                 let s = Int(remainingSeconds) % 60
                 return String(format: "%02d:%02d", m, s)
@@ -946,14 +944,14 @@
         private func startTimer() {
             guard !isRunning else { return }
             if mode != .stopwatch && remainingSeconds == 0 {
-                if mode == .countdown {
+                if mode == .timer {
                     remainingSeconds = countdownDuration
                     currentBlockDuration = countdownDuration
                 } else {
                     remainingSeconds = TimeInterval(settings.pomodoroFocusMinutes * 60)
                     currentBlockDuration = remainingSeconds
                 }
-            } else if mode == .pomodoro || mode == .countdown {
+            } else if mode == .pomodoro || mode == .timer {
                 currentBlockDuration = max(currentBlockDuration, remainingSeconds)
             }
             if mode == .stopwatch {
@@ -972,7 +970,7 @@
         private func resetTimer() {
             isRunning = false
             elapsedSeconds = 0
-            if mode == .countdown {
+            if mode == .timer {
                 remainingSeconds = countdownDuration
                 currentBlockDuration = countdownDuration
             } else {
@@ -996,7 +994,7 @@
                     remainingSeconds = TimeInterval(settings.pomodoroShortBreakMinutes * 60)
                     currentBlockDuration = remainingSeconds
                 }
-            case .countdown:
+            case .timer, .focus:
                 remainingSeconds = countdownDuration
                 currentBlockDuration = countdownDuration
             case .stopwatch:
@@ -1064,7 +1062,7 @@
             guard isRunning else { return }
 
             switch mode {
-            case .pomodoro, .countdown:
+            case .pomodoro, .timer, .focus:
                 if remainingSeconds > 0 {
                     remainingSeconds -= 1
                 } else {
@@ -1085,7 +1083,7 @@
                             comment: "Selected activity summary with today's time"
                         ),
                         activity.name,
-                        formattedDuration(activity.todayTrackedSeconds)
+                        "N/A"
                     ))
                     .font(DesignSystem.Typography.caption)
                     .foregroundColor(.secondary)
@@ -1110,7 +1108,8 @@
                         bottomSummary
                     }
                     .padding(.horizontal, ItariSpacing.pagePadding)
-                    .padding(.vertical, ItariSpacing.l)
+                    .padding(.top, appLayout.topContentInset)
+                    .padding(.bottom, ItariSpacing.l)
                 }
             }
             .onAppear {
@@ -1290,10 +1289,14 @@
         }
 
         private func totalDuration(in range: ClosedRange<Date>) -> Double {
-            sessions.reduce(0) { partial, session in
-                let end = session.endDate ?? session.startDate.addingTimeInterval(session.duration)
-                let overlaps = session.startDate <= range.upperBound && end >= range.lowerBound
-                return overlaps ? partial + session.workSeconds : partial
+            sessions.reduce(0.0) { partial, session in
+                guard let startDate = session.startedAt,
+                      let endDate = session.endedAt
+                else {
+                    return partial
+                }
+                let overlaps = startDate <= range.upperBound && endDate >= range.lowerBound
+                return overlaps ? partial + (session.actualDuration ?? 0) : partial
             }
         }
 
@@ -1335,7 +1338,7 @@
         private var clockTime: TimeInterval {
             // When idle (not running), show the full duration for countdown
             guard isRunning else {
-                if mode == .countdown {
+                if mode == .timer {
                     return countdownDuration
                 }
                 return 0
@@ -1346,7 +1349,7 @@
                 return elapsedSeconds
             case .pomodoro:
                 return max(0, currentBlockDuration - remainingSeconds)
-            case .countdown:
+            case .timer, .focus:
                 return max(0, remainingSeconds) // Countdown shows remaining time
             }
         }
@@ -1362,7 +1365,7 @@
                                 .textCase(.uppercase)
                         }
 
-                        if mode == .countdown && !isRunning {
+                        if mode == .timer && !isRunning {
                             // Duration selector for countdown mode
                             HStack(spacing: 12) {
                                 ForEach([5, 10, 15, 20, 25, 30], id: \.self) { minutes in
@@ -1422,7 +1425,7 @@
                                 "\(completedPomodoroSessions) of \(pomodoroSessions) completed"
                             )
                         } else {
-                            Text(verbatim: "\(mode.label) running")
+                            Text(verbatim: "\(mode.displayName) running")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -1492,11 +1495,7 @@
                         Text(activity.name)
                             .font(.title3.weight(.semibold))
                             .lineLimit(2)
-                        if let course = activity.courseCode {
-                            Text(course)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
+                        // Course display removed - courseID is UUID, not display code
 
                         if tasks.isEmpty {
                             Text(NSLocalizedString("timer.focus.no_linked_tasks", comment: "No tasks"))
@@ -1556,7 +1555,7 @@
                 } else {
                     return String(format: "%02d:%02d", m, s)
                 }
-            case .pomodoro, .countdown:
+            case .pomodoro, .timer, .focus:
                 let m = Int(remainingSeconds) / 60
                 let s = Int(remainingSeconds) % 60
                 return String(format: "%02d:%02d", m, s)

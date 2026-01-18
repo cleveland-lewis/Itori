@@ -375,12 +375,12 @@ extension LocalTimerSession {
     ) -> StudySessionSnapshot {
         StudySessionSnapshot(
             id: id,
-            activityId: activity?.id ?? activityID,
+            activityId: activity?.id ?? activityID ?? UUID(),
             courseId: courseId,
             assignmentId: assignmentId,
             mode: mode.rawValue,
-            startDate: startDate,
-            endDate: endDate ?? startDate
+            startDate: startedAt ?? Date(),
+            endDate: endedAt ?? startedAt ?? Date()
         )
     }
 }

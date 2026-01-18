@@ -1104,7 +1104,15 @@
             guard let due = task.due else { return "" }
             let formatter = DateFormatter()
             formatter.dateStyle = .medium
-            formatter.timeStyle = task.hasExplicitDueTime ? .short : .none
+            if task.hasExplicitDueTime {
+                formatter.timeStyle = .short
+                // Override for 24-hour time preference
+                if settings.use24HourTime {
+                    formatter.dateFormat = "MMM d, yyyy, HH:mm"
+                }
+            } else {
+                formatter.timeStyle = .none
+            }
             let dateText = formatter.string(from: task.hasExplicitDueTime ? (task.effectiveDueDateTime ?? due) : due)
             return dateText
         }
@@ -1112,7 +1120,15 @@
         private func formattedDueDate(_ date: Date, hasExplicitTime: Bool) -> String {
             let formatter = DateFormatter()
             formatter.dateStyle = .short
-            formatter.timeStyle = hasExplicitTime ? .short : .none
+            if hasExplicitTime {
+                formatter.timeStyle = .short
+                // Override for 24-hour time preference
+                if settings.use24HourTime {
+                    formatter.dateFormat = "M/d/yy, HH:mm"
+                }
+            } else {
+                formatter.timeStyle = .none
+            }
             return formatter.string(from: date)
         }
 

@@ -486,6 +486,19 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         case none, daily, weekly, monthly
         var id: String { rawValue }
 
+        var localizedTitle: String {
+            switch self {
+            case .none:
+                NSLocalizedString("calendar.recurrence.none", value: "None", comment: "No recurrence")
+            case .daily:
+                NSLocalizedString("calendar.recurrence.daily", value: "Daily", comment: "Daily recurrence")
+            case .weekly:
+                NSLocalizedString("calendar.recurrence.weekly", value: "Weekly", comment: "Weekly recurrence")
+            case .monthly:
+                NSLocalizedString("calendar.recurrence.monthly", value: "Monthly", comment: "Monthly recurrence")
+            }
+        }
+
         var rule: EKRecurrenceRule? {
             switch self {
             case .none:
@@ -512,6 +525,41 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         case twoDays = "2 days before"
 
         var id: String { rawValue }
+
+        var localizedTitle: String {
+            switch self {
+            case .none:
+                NSLocalizedString("calendar.alert.none", value: "None", comment: "No alert")
+            case .atTime:
+                NSLocalizedString("calendar.alert.at_time", value: "At time of event", comment: "Alert at event time")
+            case .fiveMinutes:
+                NSLocalizedString(
+                    "calendar.alert.5_minutes",
+                    value: "5 minutes before",
+                    comment: "Alert 5 minutes before"
+                )
+            case .fifteenMinutes:
+                NSLocalizedString(
+                    "calendar.alert.15_minutes",
+                    value: "15 minutes before",
+                    comment: "Alert 15 minutes before"
+                )
+            case .thirtyMinutes:
+                NSLocalizedString(
+                    "calendar.alert.30_minutes",
+                    value: "30 minutes before",
+                    comment: "Alert 30 minutes before"
+                )
+            case .oneHour:
+                NSLocalizedString("calendar.alert.1_hour", value: "1 hour before", comment: "Alert 1 hour before")
+            case .twoHours:
+                NSLocalizedString("calendar.alert.2_hours", value: "2 hours before", comment: "Alert 2 hours before")
+            case .oneDay:
+                NSLocalizedString("calendar.alert.1_day", value: "1 day before", comment: "Alert 1 day before")
+            case .twoDays:
+                NSLocalizedString("calendar.alert.2_days", value: "2 days before", comment: "Alert 2 days before")
+            }
+        }
 
         var alarm: EKAlarm? {
             switch self {
@@ -562,6 +610,23 @@ final class CalendarManager: ObservableObject, LoadableViewModel {
         case twoHours = "2 hours"
 
         var id: String { rawValue }
+
+        var localizedTitle: String {
+            switch self {
+            case .none:
+                NSLocalizedString("calendar.travel.none", value: "None", comment: "No travel time")
+            case .fifteenMinutes:
+                NSLocalizedString("calendar.travel.15_minutes", value: "15 minutes", comment: "15 minutes travel time")
+            case .thirtyMinutes:
+                NSLocalizedString("calendar.travel.30_minutes", value: "30 minutes", comment: "30 minutes travel time")
+            case .oneHour:
+                NSLocalizedString("calendar.travel.1_hour", value: "1 hour", comment: "1 hour travel time")
+            case .oneAndHalfHours:
+                NSLocalizedString("calendar.travel.1_5_hours", value: "1.5 hours", comment: "1.5 hours travel time")
+            case .twoHours:
+                NSLocalizedString("calendar.travel.2_hours", value: "2 hours", comment: "2 hours travel time")
+            }
+        }
 
         var timeInterval: TimeInterval? {
             switch self {

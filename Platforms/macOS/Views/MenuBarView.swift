@@ -17,13 +17,13 @@ struct MenuBarView: View {
 
     private var totalStudyTimeToday: String {
         let todaySessions = viewModel.sessions.filter {
-            guard let endedAt = $0.endDate else { return false }
+            guard let endedAt = $0.endedAt else { return false }
             return Calendar.current.isDateInToday(endedAt)
         }
 
-        // Sum only work time (excludes break time for Pomodoro)
+        // Sum only actual duration
         let totalSeconds = todaySessions.reduce(0.0) { total, session in
-            total + session.workSeconds
+            total + (session.actualDuration ?? session.plannedDuration ?? 0)
         }
 
         let hours = Int(totalSeconds) / 3600
@@ -40,7 +40,7 @@ struct MenuBarView: View {
             HStack(spacing: 8) {
                 Image(systemName: modeIcon)
                     .foregroundColor(.secondary)
-                Text(viewModel.mode.label)
+                Text(viewModel.mode.displayName)
                     .font(.headline)
                 Spacer()
                 Text(viewModel.isRunning ? "Running" : "Paused")
@@ -98,7 +98,7 @@ struct MenuBarView: View {
                     HStack(spacing: 8) {
                         Image(systemName: "circle.fill")
                             .font(.caption)
-                            .foregroundColor(Color(activity.colorTag.color))
+                            .foregroundColor(activity.colorHex.map { Color(hex: $0) } ?? .gray)
                         Text(NSLocalizedString("menubar.activity", value: "Activity:", comment: "Activity:"))
                             .font(.subheadline)
                         Spacer()
@@ -136,10 +136,12 @@ struct MenuBarView: View {
         switch viewModel.mode {
         case .pomodoro:
             "timer"
-        case .countdown:
+        case .timer:
             "timer"
         case .stopwatch:
             "stopwatch"
+        case .focus:
+            "brain.head.profile"
         }
     }
 }

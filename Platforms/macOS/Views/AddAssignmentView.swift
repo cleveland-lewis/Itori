@@ -49,6 +49,7 @@
                 _due = State(initialValue: task.due ?? Date())
                 _estimatedMinutes = State(initialValue: task.estimatedMinutes)
                 _selectedCourseId = State(initialValue: task.courseId)
+                _selectedModuleIds = State(initialValue: Set(task.moduleIds))
                 _type = State(initialValue: task.type)
                 _attachments = State(initialValue: task.attachments)
                 _notes = State(initialValue: task.notes ?? "")
@@ -100,13 +101,13 @@
         }
 
         private var isSaveDisabled: Bool {
-            // Only require title - course is now optional for personal tasks
             let titleEmpty = title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            let courseMissing = selectedCourseId == nil
             let modulesValid: Bool = {
                 guard type == .exam || type == .quiz else { return true }
                 return !selectedModuleIds.isEmpty
             }()
-            return titleEmpty || !modulesValid
+            return titleEmpty || courseMissing || !modulesValid
         }
 
         private var hasUnsavedChanges: Bool {
@@ -161,15 +162,16 @@
                                     coursePicker
                                         .frame(maxWidth: .infinity)
                                 }
+                                .frame(maxWidth: .infinity)
 
-                                // Type Picker
+                                // Type Picker - moved to right side
                                 VStack(alignment: .leading, spacing: 6) {
                                     Text("Type")
                                         .font(.caption.weight(.semibold))
                                         .foregroundStyle(.secondary)
                                     categoryPicker
-                                        .frame(maxWidth: .infinity)
                                 }
+                                .frame(width: 200, alignment: .trailing)
                             }
                         }
                         .padding(.horizontal, 20)
@@ -188,7 +190,7 @@
                             VStack(spacing: 0) {
                                 HStack {
                                     Image(systemName: "clock")
-                                        .foregroundStyle(.blue)
+                                        .foregroundStyle(settings.activeAccentColor)
                                         .frame(width: 24)
                                     Text("Due")
                                         .font(.subheadline)
@@ -196,6 +198,8 @@
                                     DatePicker("", selection: $due, displayedComponents: [.date, .hourAndMinute])
                                         .datePickerStyle(.compact)
                                         .labelsHidden()
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                    Spacer()
                                 }
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 12)
@@ -205,7 +209,7 @@
 
                                 HStack {
                                     Image(systemName: "timer")
-                                        .foregroundStyle(.orange)
+                                        .foregroundStyle(settings.activeAccentColor)
                                         .frame(width: 24)
                                     Text("Estimated Time")
                                         .font(.subheadline)
@@ -223,7 +227,7 @@
 
                                 HStack {
                                     Image(systemName: "lock.fill")
-                                        .foregroundStyle(.purple)
+                                        .foregroundStyle(settings.activeAccentColor)
                                         .frame(width: 24)
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text("Lock to Due Date")
@@ -390,16 +394,6 @@
                     .buttonStyle(.itariLiquid)
                 } else {
                     Picker("Course", selection: $selectedCourseId) {
-                        // Add "Personal (No Course)" option
-                        Text(NSLocalizedString(
-                            "addassignment.personal.no.course",
-                            value: "Personal (No Course)",
-                            comment: "Personal (No Course)"
-                        ))
-                        .tag(UUID?(nil))
-
-                        Divider()
-
                         ForEach(coursesStore.activeCourses, id: \.id) { c in
                             Text(verbatim: "\(c.code) · \(c.title)").tag(Optional(c.id))
                         }
@@ -520,14 +514,13 @@
 
         private func saveTask() {
             let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard !trimmed.isEmpty else { return }
-            // Allow nil courseId for personal tasks
+            guard !trimmed.isEmpty, let courseId = selectedCourseId else { return }
             if (type == .exam || type == .quiz) && selectedModuleIds.isEmpty { return }
 
             let task = AppTask(
                 id: editingTask?.id ?? UUID(), // Preserve ID if editing
                 title: trimmed,
-                courseId: selectedCourseId, // Can be nil for personal tasks
+                courseId: courseId,
                 moduleIds: Array(selectedModuleIds),
                 due: due,
                 estimatedMinutes: estimatedMinutes,

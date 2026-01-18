@@ -53,7 +53,7 @@ public final class BYOProvider: AIProvider {
         self.type = type
         self.apiKey = apiKey
         self.endpoint = endpoint
-        self.name = "BYO (\(type.displayName))"
+        self.name = "External Provider (\(type.displayName))"
     }
 
     public func generate(

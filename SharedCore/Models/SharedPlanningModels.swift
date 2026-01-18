@@ -49,10 +49,10 @@ public enum AssignmentUrgency: String, Codable, CaseIterable, Hashable, Identifi
 
         public var systemIcon: String {
             switch self {
-            case .low: "checkmark.circle.fill"
-            case .medium: "exclamationmark.circle.fill"
-            case .high: "exclamationmark.triangle.fill"
-            case .critical: "exclamationmark.octagon.fill"
+            case .low: "arrow.down.circle"
+            case .medium: "minus.circle"
+            case .high: "arrow.up.circle"
+            case .critical: "exclamationmark.circle"
             }
         }
 

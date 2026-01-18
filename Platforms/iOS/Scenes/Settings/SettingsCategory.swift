@@ -7,6 +7,7 @@
         case planner
         case courses
         case semesters
+        case grades
         case interface
         case notifications
         case privacy
@@ -27,6 +28,8 @@
                 NSLocalizedString("settings.category.courses", comment: "Courses")
             case .semesters:
                 NSLocalizedString("settings.category.semesters", value: "Semesters", comment: "Semesters")
+            case .grades:
+                NSLocalizedString("settings.category.grades", value: "Grades", comment: "Grades")
             case .interface:
                 NSLocalizedString("settings.category.interface", comment: "Interface")
             case .notifications:
@@ -47,6 +50,7 @@
             case .planner: "pencil.and.list.clipboard"
             case .courses: "books.vertical"
             case .semesters: "graduationcap"
+            case .grades: "chart.bar.doc.horizontal"
             case .interface: "sidebar.left"
             case .notifications: "bell.badge"
             case .privacy: "lock.shield"
@@ -68,6 +72,8 @@
                 IOSCoursesSettingsView()
             case .semesters:
                 IOSSemestersSettingsView()
+            case .grades:
+                IOSGradesSettingsView()
             case .interface:
                 IOSInterfaceSettingsView()
             case .notifications:

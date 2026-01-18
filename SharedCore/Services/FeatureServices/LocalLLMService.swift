@@ -80,6 +80,9 @@ final class LocalLLMService: ObservableObject {
 
     /// Generate practice questions using local LLM (legacy method)
     func generateQuestions(request: PracticeTestRequest) async throws -> [PracticeQuestion] {
+        guard AppSettingsModel.shared.enableLLMAssistance else {
+            throw LLMError.modelUnavailable
+        }
         guard isAvailable else {
             throw LLMError.modelUnavailable
         }
@@ -97,6 +100,9 @@ final class LocalLLMService: ObservableObject {
         context: GenerationContext,
         repairInstructions: [ValidationError]?
     ) async throws -> QuestionDraft {
+        guard AppSettingsModel.shared.enableLLMAssistance else {
+            throw LLMError.modelUnavailable
+        }
         guard isAvailable else {
             throw LLMError.modelUnavailable
         }

@@ -7,10 +7,9 @@
         case planner
         case courses
         case semesters
+        case grades
         case interface
-        case profiles
         case ai
-        case integrations
         case notifications
         case privacy
         case storage
@@ -28,10 +27,9 @@
             case .planner: "Planner"
             case .courses: "Courses"
             case .semesters: "Semesters"
+            case .grades: "Grades"
             case .interface: "Interface"
-            case .profiles: "Profile"
             case .ai: "LLM"
-            case .integrations: "Integrations"
             case .notifications: "Notifications"
             case .privacy: "Privacy"
             case .storage: "Storage"
@@ -48,10 +46,9 @@
             case .planner: "pencil.and.list.clipboard"
             case .courses: "books.vertical"
             case .semesters: "graduationcap"
+            case .grades: "chart.bar.doc.horizontal"
             case .interface: "macwindow"
-            case .profiles: "person.crop.circle"
             case .ai: "cpu.fill"
-            case .integrations: "arrow.triangle.2.circlepath.circle"
             case .notifications: "bell.badge"
             case .privacy: "lock.shield"
             case .storage: "externaldrive"

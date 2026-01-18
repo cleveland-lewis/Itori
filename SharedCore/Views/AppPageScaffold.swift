@@ -13,6 +13,8 @@ import SwiftUI
 
         private let buttonSpacing: CGFloat = 10
         private let collapseWidth: CGFloat = 720
+        private let headerButtonSize: CGFloat = 40
+        private let energyPillHeight: CGFloat = 32
         @State private var measuredHeaderHeight: CGFloat = 56
 
         init(
@@ -107,7 +109,7 @@ import SwiftUI
                 Image(systemName: "ellipsis.circle")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.primary)
-                    .frame(width: 44, height: 44)
+                    .frame(width: headerButtonSize, height: headerButtonSize)
                     .background(.ultraThinMaterial, in: Circle())
             }
             .buttonStyle(.plain)
@@ -129,7 +131,7 @@ import SwiftUI
                 Image(systemName: "plus")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.primary)
-                    .frame(width: 44, height: 44)
+                    .frame(width: headerButtonSize, height: headerButtonSize)
                     .background(.ultraThinMaterial, in: Circle())
             }
             .buttonStyle(.plain)
@@ -154,7 +156,7 @@ import SwiftUI
                             .font(.system(size: 12, weight: .semibold))
                             .foregroundColor(.primary)
                             .padding(.horizontal, 12)
-                            .frame(height: 36)
+                            .frame(height: energyPillHeight)
                             .background(.ultraThinMaterial, in: Capsule())
                     }
                     .buttonStyle(.plain)
@@ -180,7 +182,7 @@ import SwiftUI
                 Image(systemName: "gearshape")
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(.primary)
-                    .frame(width: 44, height: 44)
+                    .frame(width: headerButtonSize, height: headerButtonSize)
                     .background(.ultraThinMaterial, in: Circle())
             }
             .buttonStyle(.plain)

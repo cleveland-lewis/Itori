@@ -130,8 +130,9 @@
                 }
             }
             .sheet(isPresented: $showingAddSemester) {
-                AddSemesterSheet()
+                SemesterEditorView(semesterToEdit: nil)
                     .environmentObject(coursesStore)
+                    .frame(width: 500, height: 650)
             }
             .sheet(isPresented: $showingAddCourse) {
                 AddCourseSheet()

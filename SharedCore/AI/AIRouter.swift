@@ -21,7 +21,7 @@ public enum AIMode: String, Codable, CaseIterable, Identifiable {
         case .localOnly:
             "Local Only (Offline)"
         case .byoOnly:
-            "BYO Provider"
+            "External Provider"
         }
     }
 
@@ -163,10 +163,10 @@ public final class AIRouter: ObservableObject {
             return try await selectLocalProvider()
         case .byoOnly:
             guard let byo = providers["byo"] else {
-                throw AIError.providerNotConfigured("BYO Provider")
+                throw AIError.providerNotConfigured("External Provider")
             }
             guard await byo.isAvailable() else {
-                throw AIError.providerUnavailable("BYO Provider")
+                throw AIError.providerUnavailable("External Provider")
             }
             return byo
         }

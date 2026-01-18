@@ -161,8 +161,7 @@
                 ToolbarItem(placement: .navigation) {
                     energyIndicator
                         .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .frame(height: 30)
+                        .padding(.vertical, 6)
                         .background(.ultraThinMaterial, in: Capsule())
                         .overlay(
                             Capsule()
@@ -189,8 +188,7 @@
                     .accessibilityLabel("Settings")
                     .accessibilityHint("Open application settings")
                     .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .frame(height: 30)
+                    .padding(.vertical, 6)
                     .background(.ultraThinMaterial, in: Capsule())
                     .overlay(
                         Capsule()

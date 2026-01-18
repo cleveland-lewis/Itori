@@ -11,6 +11,11 @@ public enum TimerMode: String, CaseIterable, Identifiable, Codable {
 
     public var id: String { rawValue }
 
+    /// User-selectable timer modes (excludes focus)
+    public static var userSelectableModes: [TimerMode] {
+        [.pomodoro, .timer, .stopwatch]
+    }
+
     public var displayName: String {
         switch self {
         case .pomodoro: "Pomodoro"

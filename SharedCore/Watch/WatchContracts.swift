@@ -18,8 +18,8 @@ public enum EnergyLevel: String, Codable, CaseIterable {
 
     public var color: Color {
         switch self {
-        case .low: .orange
-        case .medium: .blue
+        case .low: .red
+        case .medium: .yellow
         case .high: .green
         }
     }

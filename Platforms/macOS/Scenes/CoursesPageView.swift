@@ -68,6 +68,7 @@
         @EnvironmentObject private var gradesStore: GradesStore
         @EnvironmentObject private var plannerCoordinator: PlannerCoordinator
         @EnvironmentObject private var parsingStore: SyllabusParsingStore
+        @Environment(\.appLayout) private var appLayout
 
         @State private var showingAddTaskSheet = false
         @State private var addTaskType: TaskType = .homework
@@ -114,7 +115,8 @@
                         .frame(maxWidth: min(proxy.size.width, 1400))
                         .frame(maxWidth: .infinity)
                         .padding(.horizontal, responsivePadding(for: proxy.size.width))
-                        .padding(.vertical, ItariSpacing.l)
+                        .padding(.top, appLayout.topContentInset)
+                        .padding(.bottom, ItariSpacing.l)
                     } else {
                         HStack(alignment: .top, spacing: ItariSpacing.l) {
                             sidebarView
@@ -128,7 +130,8 @@
                         .frame(maxWidth: min(proxy.size.width, 1400))
                         .frame(maxWidth: .infinity)
                         .padding(.horizontal, responsivePadding(for: proxy.size.width))
-                        .padding(.vertical, ItariSpacing.l)
+                        .padding(.top, appLayout.topContentInset)
+                        .padding(.bottom, ItariSpacing.l)
                     }
                 }
             }

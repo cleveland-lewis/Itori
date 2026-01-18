@@ -170,6 +170,30 @@ struct GlassStrength: Equatable {
     var dark: Double
 }
 
+enum GradeScale: String, CaseIterable, Identifiable {
+    case fourPoint = "4.0"
+    case letter = "Letter"
+    case percentage = "Percentage"
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .fourPoint: "4.0 Scale"
+        case .letter: "Letter Grades (A-F)"
+        case .percentage: "Percentage (%)"
+        }
+    }
+
+    var description: String {
+        switch self {
+        case .fourPoint: "Display grades on a 4.0 GPA scale"
+        case .letter: "Display grades as letter grades (A, B, C, etc.)"
+        case .percentage: "Display grades as percentages"
+        }
+    }
+}
+
 enum AppAccentColor: String, CaseIterable, Identifiable {
     case multicolor
     case graphite
@@ -310,6 +334,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         case defaultEnergyLevelStorage
         case energySelectionConfirmedStorage
         case workdayWeekdaysStorage
+        case gradeScaleRaw
     }
 
     private static func components(from color: Color) -> (red: Double, green: Double, blue: Double, alpha: Double)? {
@@ -398,6 +423,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     var tabOrderRaw: String = "dashboard,planner,assignments,courses,grades,calendar"
     var quickActionsRaw: String = "add_assignment,add_course,quick_note"
     var enableGlassEffectsStorage: Bool = true
+    var gradeScaleRaw: String = GradeScale.fourPoint.rawValue
     var cardRadiusRaw: String = CardRadius.medium.rawValue
     var animationSoftnessStorage: Double = 0.42
     var typographyModeRaw: String = TypographyMode.system.rawValue
@@ -620,6 +646,14 @@ final class AppSettingsModel: ObservableObject, Codable {
 
     var activeAccentColor: Color {
         isCustomAccentEnabled ? customAccentColor : accentColorChoice.color
+    }
+
+    var gradeScale: GradeScale {
+        get { GradeScale(rawValue: gradeScaleRaw) ?? .fourPoint }
+        set {
+            gradeScaleRaw = newValue.rawValue
+            objectWillChange.send()
+        }
     }
 
     var interfaceStyle: InterfaceStyle {

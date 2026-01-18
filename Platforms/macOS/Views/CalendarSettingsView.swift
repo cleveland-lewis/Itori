@@ -6,6 +6,7 @@
         @EnvironmentObject var calendarManager: CalendarManager
         @EnvironmentObject var settings: AppSettingsModel
         @State private var showingRevokeAlert = false
+        @State private var isRequestingAccess = false
 
         private var isAuthorized: Bool {
             calendarManager.eventAuthorizationStatus == .fullAccess || calendarManager
@@ -15,24 +16,47 @@
         var body: some View {
             Form {
                 Section("Calendar Sync") {
-                    Toggle(
-                        NSLocalizedString(
-                            "settings.toggle.enable.calendar.sync",
-                            value: "Enable Calendar Sync",
-                            comment: "Enable Calendar Sync"
-                        ),
-                        isOn: Binding(
-                            get: { isAuthorized },
-                            set: { newValue in
-                                if newValue {
-                                    _Concurrency.Task { await calendarManager.requestAccess() }
-                                } else {
-                                    showingRevokeAlert = true
-                                }
+                    if !isAuthorized && !isRequestingAccess {
+                        Button(NSLocalizedString(
+                            "settings.button.connect.calendar",
+                            value: "Connect Calendar",
+                            comment: "Connect Calendar"
+                        )) {
+                            isRequestingAccess = true
+                            Task { @MainActor in
+                                await calendarManager.requestAccess()
+                                isRequestingAccess = false
                             }
+                        }
+                        .buttonStyle(.borderedProminent)
+                    } else if isRequestingAccess {
+                        HStack {
+                            ProgressView()
+                                .controlSize(.small)
+                            Text("Requesting access...")
+                                .foregroundStyle(.secondary)
+                        }
+                    } else {
+                        Toggle(
+                            NSLocalizedString(
+                                "settings.toggle.enable.calendar.sync",
+                                value: "Enable Calendar Sync",
+                                comment: "Enable Calendar Sync"
+                            ),
+                            isOn: .constant(true)
                         )
-                    )
-                    .toggleStyle(.switch)
+                        .disabled(true)
+                        .toggleStyle(.switch)
+
+                        Button(NSLocalizedString(
+                            "settings.button.disconnect",
+                            value: "Disconnect",
+                            comment: "Disconnect"
+                        )) {
+                            showingRevokeAlert = true
+                        }
+                        .buttonStyle(.link)
+                    }
 
                     HStack {
                         Text(NSLocalizedString("settings.status", value: "Status:", comment: "Status:"))

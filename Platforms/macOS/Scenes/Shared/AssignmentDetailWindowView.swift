@@ -99,7 +99,15 @@ struct AssignmentDetailWindowView: View {
         guard let due = task.due else { return "" }
         let formatter = DateFormatter()
         formatter.dateStyle = .long
-        formatter.timeStyle = task.hasExplicitDueTime ? .short : .none
+        if task.hasExplicitDueTime {
+            formatter.timeStyle = .short
+            // Override for 24-hour time preference
+            if AppSettingsModel.shared.use24HourTime {
+                formatter.dateFormat = "MMMM d, yyyy 'at' HH:mm"
+            }
+        } else {
+            formatter.timeStyle = .none
+        }
         let date = task.hasExplicitDueTime ? (task.effectiveDueDateTime ?? due) : due
         return formatter.string(from: date)
     }

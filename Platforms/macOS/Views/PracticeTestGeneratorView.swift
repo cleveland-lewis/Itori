@@ -8,6 +8,7 @@
         @ObservedObject var store: PracticeTestStore
 
         @State private var selectedCourse: Course?
+        @State private var selectedModule: CourseOutlineNode?
         @State private var selectedTopics: [String] = []
         @State private var customTopic: String = ""
         @State private var difficulty: PracticeTestDifficulty = .medium
@@ -25,6 +26,7 @@
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
                         courseSelectionSection
+                        moduleSelectionSection
                         topicsSection
                         settingsSection
                         questionTypesSection
@@ -96,8 +98,69 @@
                         }
                     }
                     .labelsHidden()
+                    .onChange(of: selectedCourse) { _, _ in
+                        // Reset module selection when course changes
+                        selectedModule = nil
+                    }
                 }
             }
+        }
+
+        // MARK: - Module Selection
+
+        private var moduleSelectionSection: some View {
+            VStack(alignment: .leading, spacing: 12) {
+                Label(
+                    NSLocalizedString("practice.generator.section.module", comment: "Module"),
+                    systemImage: "book.pages"
+                )
+                .font(.headline)
+
+                if let course = selectedCourse {
+                    let modules = availableModules(for: course)
+
+                    if modules.isEmpty {
+                        Text(NSLocalizedString(
+                            "practice.generator.module.no_modules",
+                            comment: "No modules available for this course."
+                        ))
+                        .foregroundStyle(.secondary)
+                        .font(.caption)
+                    } else {
+                        Picker(
+                            NSLocalizedString("practice.generator.module.select", comment: "Select Module"),
+                            selection: $selectedModule
+                        ) {
+                            Text(NSLocalizedString("practice.generator.module.select", comment: "Select a module"))
+                                .tag(nil as CourseOutlineNode?)
+                            ForEach(modules) { module in
+                                Text(module.title).tag(module as CourseOutlineNode?)
+                            }
+                        }
+                        .labelsHidden()
+
+                        Text(NSLocalizedString(
+                            "practice.generator.module.help",
+                            comment: "Select the module to generate questions from"
+                        ))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    }
+                } else {
+                    Text(NSLocalizedString(
+                        "practice.generator.module.select_course_first",
+                        comment: "Select a course first"
+                    ))
+                    .foregroundStyle(.secondary)
+                    .font(.caption)
+                }
+            }
+        }
+
+        private func availableModules(for course: Course) -> [CourseOutlineNode] {
+            coursesStore.outlineNodes
+                .filter { $0.courseId == course.id && $0.type == .module }
+                .sorted { $0.sortIndex < $1.sortIndex }
         }
 
         // MARK: - Topics
@@ -300,15 +363,19 @@
 
         private var canGenerate: Bool {
             selectedCourse != nil &&
+                selectedModule != nil &&
                 (includeMultipleChoice || includeShortAnswer || includeExplanation)
         }
 
         private func generateTest() {
-            guard let course = selectedCourse else { return }
+            guard let course = selectedCourse,
+                  let module = selectedModule else { return }
 
             let request = PracticeTestRequest(
                 courseId: course.id,
                 courseName: course.code,
+                moduleId: module.id,
+                moduleName: module.title,
                 topics: selectedTopics,
                 difficulty: difficulty,
                 questionCount: questionCount,

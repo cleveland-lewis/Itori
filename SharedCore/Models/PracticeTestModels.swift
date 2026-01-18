@@ -129,6 +129,8 @@ struct PracticeTest: Identifiable, Codable {
 struct PracticeTestRequest {
     var courseId: UUID
     var courseName: String
+    var moduleId: UUID?
+    var moduleName: String?
     var topics: [String]
     var difficulty: PracticeTestDifficulty
     var questionCount: Int
@@ -139,6 +141,8 @@ struct PracticeTestRequest {
     init(
         courseId: UUID,
         courseName: String,
+        moduleId: UUID? = nil,
+        moduleName: String? = nil,
         topics: [String] = [],
         difficulty: PracticeTestDifficulty = .medium,
         questionCount: Int = 10,
@@ -148,6 +152,8 @@ struct PracticeTestRequest {
     ) {
         self.courseId = courseId
         self.courseName = courseName
+        self.moduleId = moduleId
+        self.moduleName = moduleName
         self.topics = topics
         self.difficulty = difficulty
         self.questionCount = questionCount

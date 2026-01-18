@@ -55,10 +55,9 @@
                             get: { settings.date(from: settings.defaultWorkdayEnd) },
                             set: { settings.defaultWorkdayEnd = settings.components(from: $0) }
                         ), displayedComponents: [.hourAndMinute])
-                        VStack(alignment: .leading, spacing: 8) {
+                        HStack(alignment: .center) {
                             Text("Days")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                            Spacer(minLength: 12)
                             HStack(spacing: 6) {
                                 ForEach(weekdayOptions, id: \.index) { day in
                                     Button(day.label) {

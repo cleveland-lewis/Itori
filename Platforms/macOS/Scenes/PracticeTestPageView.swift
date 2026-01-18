@@ -5,6 +5,7 @@
     struct PracticeTestPageView: View {
         @EnvironmentObject private var appModel: AppModel
         @EnvironmentObject private var coursesStore: CoursesStore
+        @Environment(\.appLayout) private var appLayout
         @StateObject private var practiceStore = PracticeTestStore.shared
         @StateObject private var scheduledTestsStore = ScheduledTestsStore.shared
         @State private var showingGenerator = false
@@ -80,6 +81,7 @@
                     }
                 }
                 .padding()
+                .padding(.top, appLayout.topContentInset)
             }
             .sheet(isPresented: $showingGenerator) {
                 PracticeTestGeneratorView(store: practiceStore)
