@@ -125,6 +125,38 @@
                             settings.save()
                         }
                     ), displayedComponents: .hourAndMinute)
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Days")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        HStack(spacing: 6) {
+                            ForEach(weekdayOptions, id: \.index) { day in
+                                Button(day.label) {
+                                    toggleWorkday(day.index)
+                                }
+                                .buttonStyle(.plain)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(
+                                    Capsule()
+                                        .fill(
+                                            settings.workdayWeekdays.contains(day.index)
+                                                ? Color.accentColor.opacity(0.2)
+                                                : Color.secondary.opacity(0.1)
+                                        )
+                                )
+                                .overlay(
+                                    Capsule()
+                                        .stroke(
+                                            settings.workdayWeekdays.contains(day.index)
+                                                ? Color.accentColor
+                                                : Color.secondary.opacity(0.3),
+                                            lineWidth: 1
+                                        )
+                                )
+                            }
+                        }
+                    }
                 }
 
                 Section("Auto-Reschedule") {
@@ -355,6 +387,24 @@
         private var resetCodeMatches: Bool {
             resetInput.trimmingCharacters(in: .whitespacesAndNewlines) == resetCode
         }
+    }
+
+    private var weekdayOptions: [(index: Int, label: String)] {
+        Calendar.current.shortWeekdaySymbols.enumerated().map { idx, label in
+            (index: idx + 1, label: label)
+        }
+    }
+
+    private func toggleWorkday(_ index: Int) {
+        var days = Set(settings.workdayWeekdays)
+        if days.contains(index) {
+            if days.count == 1 { return }
+            days.remove(index)
+        } else {
+            days.insert(index)
+        }
+        settings.workdayWeekdays = Array(days).sorted()
+        settings.save()
     }
 
     #if !DISABLE_PREVIEWS

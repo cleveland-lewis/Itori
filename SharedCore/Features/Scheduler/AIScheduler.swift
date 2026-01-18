@@ -411,6 +411,7 @@ struct Constraints {
     let horizonEnd: Date
     let dayStartHour: Int
     let dayEndHour: Int
+    let allowedWeekdays: Set<Int>
     let maxStudyMinutesPerDay: Int
     let maxStudyMinutesPerBlock: Int
     let minGapBetweenBlocksMinutes: Int
@@ -694,6 +695,13 @@ enum AIScheduler {
 
         var current = start
         while current <= end {
+            let weekday = calendar.component(.weekday, from: current)
+            if !constraints.allowedWeekdays.isEmpty, !constraints.allowedWeekdays.contains(weekday) {
+                guard let next = calendar.date(byAdding: .day, value: 1, to: current) else { break }
+                current = next
+                continue
+            }
+
             let dayStart = calendar.date(bySettingHour: constraints.dayStartHour, minute: 0, second: 0, of: current)!
             let dayEnd = calendar.date(bySettingHour: constraints.dayEndHour, minute: 0, second: 0, of: current)!
 

@@ -60,16 +60,6 @@
 
         private var headerSection: some View {
             VStack(spacing: 16) {
-                Image(systemName: "sparkles")
-                    .font(.system(size: heroIconSize))
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: [.blue, .purple],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-
                 Text(NSLocalizedString(
                     "macossubscription.unlock.premium",
                     value: "Unlock Premium",
@@ -152,7 +142,7 @@
             VStack(alignment: .leading, spacing: 12) {
                 Text(NSLocalizedString(
                     "macossubscription.pricing.title",
-                    value: "Student Pricing",
+                    value: "Pricing",
                     comment: "Pricing header"
                 ))
                 .font(.title3.bold())

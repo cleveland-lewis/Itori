@@ -686,11 +686,13 @@ enum PlannerEngine {
         let horizonEnd = calendar.date(byAdding: .day, value: 14, to: now) ?? now
 
         let deepWorkEnabled = AppSettingsModel.shared.enableDeepWorkMode
+        let workdays = Set(AppSettingsModel.shared.workdayWeekdays)
         let constraints = Constraints(
             horizonStart: now,
             horizonEnd: horizonEnd,
             dayStartHour: 9,
             dayEndHour: 21,
+            allowedWeekdays: workdays,
             maxStudyMinutesPerDay: 480,
             maxStudyMinutesPerBlock: deepWorkEnabled ? 180 : 120,
             minGapBetweenBlocksMinutes: deepWorkEnabled ? 10 : 5,

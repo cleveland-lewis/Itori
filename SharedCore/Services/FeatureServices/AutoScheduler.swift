@@ -35,6 +35,7 @@ enum AutoScheduler {
         daysToPlan: Int = 7,
         workDayStart: Int = 9,
         workDayEnd: Int = 17,
+        allowedWeekdays: Set<Int> = [],
         maxStudyMinutesPerDay: Int = 360
     ) -> ScheduleDiff {
         var proposedBlocks: [ProposedBlock] = []
@@ -48,7 +49,8 @@ enum AutoScheduler {
             startDate: startDate,
             days: daysToPlan,
             startHour: workDayStart,
-            endHour: workDayEnd
+            endHour: workDayEnd,
+            allowedWeekdays: allowedWeekdays
         )
 
         var minutesScheduledPerDay: [Date: Int] = [:] // key = start of day
@@ -129,13 +131,18 @@ enum AutoScheduler {
         startDate: Date,
         days: Int,
         startHour: Int,
-        endHour: Int
+        endHour: Int,
+        allowedWeekdays: Set<Int>
     ) -> [TimeSlot] {
         let calendar = Calendar.current
         var slots: [TimeSlot] = []
 
         for offset in 0 ..< days {
             guard let day = calendar.date(byAdding: .day, value: offset, to: startDate) else { continue }
+            let weekday = calendar.component(.weekday, from: day)
+            if !allowedWeekdays.isEmpty, !allowedWeekdays.contains(weekday) {
+                continue
+            }
             guard let windowStart = calendar.date(bySettingHour: startHour, minute: 0, second: 0, of: day),
                   let windowEnd = calendar.date(bySettingHour: endHour, minute: 0, second: 0, of: day) else { continue }
 

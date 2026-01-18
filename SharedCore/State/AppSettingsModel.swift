@@ -309,6 +309,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         case showSampleDataStorage
         case defaultEnergyLevelStorage
         case energySelectionConfirmedStorage
+        case workdayWeekdaysStorage
     }
 
     private static func components(from color: Color) -> (red: Double, green: Double, blue: Double, alpha: Double)? {
@@ -372,6 +373,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         static let workdayStartMinute = "Itori.settings.workday.start.minute"
         static let workdayEndHour = "Itori.settings.workday.end.hour"
         static let workdayEndMinute = "Itori.settings.workday.end.minute"
+        static let workdayWeekdays = "Itori.settings.workday.weekdays"
         static let showEnergyPanel = "Itori.settings.showEnergyPanel"
         static let highContrastMode = "Itori.settings.highContrastMode"
         static let enableAIPlanner = "Itori.settings.enableAIPlanner"
@@ -421,6 +423,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage(Keys.workdayStartMinute) var workdayStartMinuteStorage: Int = 0
     @AppStorage(Keys.workdayEndHour) var workdayEndHourStorage: Int = 22
     @AppStorage(Keys.workdayEndMinute) var workdayEndMinuteStorage: Int = 0
+    @AppStorage(Keys.workdayWeekdays) var workdayWeekdaysStorage: String = "2,3,4,5,6"
     @AppStorage(Keys.showEnergyPanel) var showEnergyPanelStorage: Bool = true
     @AppStorage(Keys.highContrastMode) var highContrastModeStorage: Bool = false
     @AppStorage(Keys.enableAIPlanner) var enableAIPlannerStorage: Bool = false
@@ -996,6 +999,23 @@ final class AppSettingsModel: ObservableObject, Codable {
         set {
             if let h = newValue.hour { workdayEndHourStorage = h }
             if let m = newValue.minute { workdayEndMinuteStorage = m }
+        }
+    }
+
+    var workdayWeekdays: [Int] {
+        get {
+            let parsed = workdayWeekdaysStorage
+                .split(separator: ",")
+                .compactMap { Int($0) }
+                .filter { (1 ... 7).contains($0) }
+            let unique = Array(Set(parsed)).sorted()
+            return unique.isEmpty ? [2, 3, 4, 5, 6] : unique
+        }
+        set {
+            let sanitized = Array(Set(newValue.filter { (1 ... 7).contains($0) })).sorted()
+            workdayWeekdaysStorage = (sanitized.isEmpty ? [2, 3, 4, 5, 6] : sanitized)
+                .map(String.init)
+                .joined(separator: ",")
         }
     }
 
@@ -1675,6 +1695,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         try container.encode(showSampleDataStorage, forKey: .showSampleDataStorage)
         try container.encode(defaultEnergyLevelStorage, forKey: .defaultEnergyLevelStorage)
         try container.encode(energySelectionConfirmedStorage, forKey: .energySelectionConfirmedStorage)
+        try container.encode(workdayWeekdaysStorage, forKey: .workdayWeekdaysStorage)
     }
 
     required init(from decoder: Decoder) throws {
@@ -1822,6 +1843,10 @@ final class AppSettingsModel: ObservableObject, Codable {
             Bool.self,
             forKey: .energySelectionConfirmedStorage
         ) ?? false
+        workdayWeekdaysStorage = try container.decodeIfPresent(
+            String.self,
+            forKey: .workdayWeekdaysStorage
+        ) ?? "2,3,4,5,6"
     }
 
     func resetUserDefaults() {
@@ -1928,6 +1953,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         workdayStartMinuteStorage = fresh.workdayStartMinuteStorage
         workdayEndHourStorage = fresh.workdayEndHourStorage
         workdayEndMinuteStorage = fresh.workdayEndMinuteStorage
+        workdayWeekdaysStorage = fresh.workdayWeekdaysStorage
         showEnergyPanelStorage = fresh.showEnergyPanelStorage
         highContrastModeStorage = fresh.highContrastModeStorage
         startOfWeekStorage = fresh.startOfWeekStorage

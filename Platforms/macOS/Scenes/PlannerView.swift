@@ -346,6 +346,7 @@
                 horizonEnd: end,
                 dayStartHour: 7,
                 dayEndHour: 23,
+                allowedWeekdays: Set(AppSettingsModel.shared.workdayWeekdays),
                 maxStudyMinutesPerDay: 6 * 60,
                 maxStudyMinutesPerBlock: maxBlockMinutes,
                 minGapBetweenBlocksMinutes: 10,

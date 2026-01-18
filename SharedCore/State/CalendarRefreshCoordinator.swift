@@ -104,7 +104,8 @@ final class CalendarRefreshCoordinator: ObservableObject {
             startDate: startDate,
             daysToPlan: daysToPlan,
             workDayStart: workStartHour,
-            workDayEnd: workEndHour
+            workDayEnd: workEndHour,
+            allowedWeekdays: Set(settings.workdayWeekdays)
         )
 
         guard let targetCalendar = targetCalendar() else { return }
@@ -114,6 +115,7 @@ final class CalendarRefreshCoordinator: ObservableObject {
             endDate: endDate,
             workDayStart: workStartHour,
             workDayEnd: workEndHour,
+            allowedWeekdays: settings.workdayWeekdays,
             maxStudyMinutesPerDay: 360
         )
         let diff = buildScheduleDiff(
@@ -395,6 +397,7 @@ final class CalendarRefreshCoordinator: ObservableObject {
         endDate: Date,
         workDayStart: Int,
         workDayEnd: Int,
+        allowedWeekdays: [Int],
         maxStudyMinutesPerDay: Int
     ) -> String {
         struct HashInput: Codable {
@@ -403,6 +406,7 @@ final class CalendarRefreshCoordinator: ObservableObject {
             let endDate: Date
             let workDayStart: Int
             let workDayEnd: Int
+            let allowedWeekdays: [Int]
             let maxStudyMinutesPerDay: Int
         }
         struct HashTask: Codable {
@@ -425,6 +429,7 @@ final class CalendarRefreshCoordinator: ObservableObject {
             endDate: endDate,
             workDayStart: workDayStart,
             workDayEnd: workDayEnd,
+            allowedWeekdays: allowedWeekdays.sorted(),
             maxStudyMinutesPerDay: maxStudyMinutesPerDay
         )
 
