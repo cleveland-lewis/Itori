@@ -1,4 +1,5 @@
 #if os(macOS)
+    import AppKit
     import StoreKit
     import SwiftUI
 
@@ -42,6 +43,10 @@
             .frame(maxWidth: 600)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color(nsColor: .windowBackgroundColor))
+            .task {
+                await subscriptionManager.loadProducts()
+                await subscriptionManager.updateSubscriptionStatus()
+            }
             .alert("Error", isPresented: $showError) {
                 Button(NSLocalizedString("OK", value: "OK", comment: ""), role: .cancel) {}
             } message: {
@@ -108,6 +113,8 @@
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
+
+                    manageSubscriptionButton
                 }
                 .padding(20)
                 .background(
@@ -116,13 +123,79 @@
                 )
 
             case .expired:
+                VStack(spacing: 8) {
+                    HStack {
+                        Image(systemName: "exclamationmark.circle.fill")
+                            .foregroundStyle(.orange)
+                        Text(NSLocalizedString(
+                            "macossubscription.subscription.expired",
+                            value: "Subscription Expired",
+                            comment: "Subscription Expired"
+                        ))
+                        .font(.headline)
+                        Spacer()
+                    }
+
+                    manageSubscriptionButton
+                }
+                .padding(20)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Color.orange.opacity(0.1))
+                )
+
+            case .inGracePeriod:
+                VStack(spacing: 8) {
+                    HStack {
+                        Image(systemName: "clock.arrow.circlepath")
+                            .foregroundStyle(.orange)
+                        Text(NSLocalizedString(
+                            "macossubscription.billing.grace_period",
+                            value: "Billing Grace Period",
+                            comment: "Subscription billing grace period"
+                        ))
+                        .font(.headline)
+                        Spacer()
+                    }
+
+                    manageSubscriptionButton
+                }
+                .padding(20)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Color.orange.opacity(0.1))
+                )
+
+            case .inBillingRetry:
+                VStack(spacing: 8) {
+                    HStack {
+                        Image(systemName: "creditcard.trianglebadge.exclamationmark")
+                            .foregroundStyle(.orange)
+                        Text(NSLocalizedString(
+                            "macossubscription.billing.issue",
+                            value: "Billing Issue",
+                            comment: "Subscription billing retry issue"
+                        ))
+                        .font(.headline)
+                        Spacer()
+                    }
+
+                    manageSubscriptionButton
+                }
+                .padding(20)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Color.orange.opacity(0.1))
+                )
+
+            case .notSubscribed:
                 HStack {
-                    Image(systemName: "exclamationmark.circle.fill")
-                        .foregroundStyle(.orange)
+                    Image(systemName: "seal")
+                        .foregroundStyle(.secondary)
                     Text(NSLocalizedString(
-                        "macossubscription.subscription.expired",
-                        value: "Subscription Expired",
-                        comment: "Subscription Expired"
+                        "macossubscription.status.not_subscribed",
+                        value: "No active subscription",
+                        comment: "No active subscription status"
                     ))
                     .font(.headline)
                     Spacer()
@@ -130,7 +203,24 @@
                 .padding(20)
                 .background(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(Color.orange.opacity(0.1))
+                        .fill(Color(nsColor: .controlBackgroundColor))
+                )
+
+            case .unknown:
+                HStack(spacing: 12) {
+                    ProgressView()
+                    Text(NSLocalizedString(
+                        "macossubscription.status.checking",
+                        value: "Checking subscription status...",
+                        comment: "Checking subscription status"
+                    ))
+                    .font(.headline)
+                    Spacer()
+                }
+                .padding(20)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Color(nsColor: .controlBackgroundColor))
                 )
 
             default:
@@ -301,6 +391,18 @@
             .buttonStyle(.link)
         }
 
+        private var manageSubscriptionButton: some View {
+            Button(NSLocalizedString(
+                "macossubscription.button.manage",
+                value: "Manage Subscription",
+                comment: "Manage subscription button"
+            )) {
+                openAppStoreSubscriptions()
+            }
+            .buttonStyle(.link)
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+
         // MARK: - Actions
 
         private func purchaseSubscription(_ product: Product) async {
@@ -328,6 +430,11 @@
                 errorMessage = "Failed to restore purchases. Please try again."
                 showError = true
             }
+        }
+
+        private func openAppStoreSubscriptions() {
+            guard let url = URL(string: "https://apps.apple.com/account/subscriptions") else { return }
+            NSWorkspace.shared.open(url)
         }
     }
 

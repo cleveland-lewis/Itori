@@ -170,33 +170,6 @@ import SwiftUI
                     }
 
                     Section {
-                        Toggle(isOn: $settings.lockCalendarPickerToSchool) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(NSLocalizedString(
-                                    "settings.calendar.lock_picker",
-                                    comment: "Lock Calendar Picker to School"
-                                ))
-                                Text(settings.lockCalendarPickerToSchool
-                                    ? NSLocalizedString(
-                                        "settings.calendar.lock_picker.enabled",
-                                        comment: "New events will always be saved to the school calendar"
-                                    )
-                                    : NSLocalizedString(
-                                        "settings.calendar.lock_picker.disabled",
-                                        comment: "Users can choose which calendar to save new events to"
-                                    ))
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                        .onChange(of: settings.lockCalendarPickerToSchool) { _, _ in
-                            settings.save()
-                        }
-                    } header: {
-                        Text(NSLocalizedString("settings.calendar.picker_lock.header", comment: "Event Creation"))
-                    }
-
-                    Section {
                         Button(role: .destructive) {
                             showRevokeConfirmation = true
                         } label: {

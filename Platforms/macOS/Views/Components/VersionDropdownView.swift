@@ -99,7 +99,7 @@
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 6)
                             }
-                            .buttonStyle(.itariLiquid)
+                            .buttonStyle(.itoriLiquidProminent)
                             .disabled(isCheckingForUpdates)
 
                             Button(action: openReleaseNotes) {

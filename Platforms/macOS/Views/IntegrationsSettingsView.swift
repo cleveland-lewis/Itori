@@ -61,6 +61,9 @@
                 }
             }
             .formStyle(.grouped)
+            .listSectionSpacing(10)
+            .scrollContentBackground(.hidden)
+            .background(Color(nsColor: .controlBackgroundColor))
             .navigationTitle("Integrations")
             .frame(minWidth: 500, maxWidth: 700)
             .onAppear {

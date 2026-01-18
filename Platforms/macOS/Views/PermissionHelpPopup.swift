@@ -39,7 +39,7 @@
                             action()
                             dismiss()
                         }
-                        .buttonStyle(AppLiquidButtonStyle())
+                        .buttonStyle(.itariLiquid)
                     }
                 }
             } footer: {

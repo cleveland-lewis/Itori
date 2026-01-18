@@ -174,7 +174,6 @@
                             LOG_LIFECYCLE(.info, "ViewLifecycle", "Main window appeared")
                         }
                         .accentColor(appSettings.activeAccentColor)
-                        .buttonStyle(GlassBlueProminentButtonStyle())
                         .controlSize(ControlSize.regular)
                         .buttonBorderShape(ButtonBorderShape.automatic)
                         .tint(appSettings.activeAccentColor)

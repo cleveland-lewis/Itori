@@ -100,7 +100,7 @@
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
                         }
-                        .buttonStyle(.itariLiquid)
+                        .buttonStyle(.itoriLiquidProminent)
                         .controlSize(.small)
                     }
                 }

@@ -156,7 +156,7 @@
                 )) {
                     clearDependencies()
                 }
-                .buttonStyle(.itariLiquid)
+                .buttonStyle(.itoriLiquidProminent)
                 .controlSize(.small)
             }
             .padding(DesignSystem.Layout.padding.card)

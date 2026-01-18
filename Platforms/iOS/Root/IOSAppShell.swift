@@ -93,10 +93,6 @@
                                         .foregroundColor(.primary)
                                         .padding(.horizontal, 14)
                                         .padding(.vertical, 10)
-                                        .background(
-                                            .ultraThinMaterial,
-                                            in: RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                        )
                                 }
                             }
                         }

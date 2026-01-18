@@ -53,3 +53,12 @@ extension Space {
     static let chartLabelSpacing: CGFloat = Space.xs // 8
     static let chartLegendGap: CGFloat = Space.md // 16
 }
+
+// MARK: - Form Spacing (macOS)
+
+#if os(macOS)
+    extension Space {
+        static let formSectionSpacing: CGFloat = 10
+        static let formRowSpacing: CGFloat = 6
+    }
+#endif

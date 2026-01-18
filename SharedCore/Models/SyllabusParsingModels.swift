@@ -15,6 +15,7 @@ struct SyllabusParsingJob: Identifiable, Codable {
     var id: UUID
     var courseId: UUID
     var fileId: UUID
+    var contentFingerprint: String?
     var status: ParsingJobStatus
     var startedAt: Date?
     var completedAt: Date?
@@ -25,6 +26,7 @@ struct SyllabusParsingJob: Identifiable, Codable {
         id: UUID = UUID(),
         courseId: UUID,
         fileId: UUID,
+        contentFingerprint: String? = nil,
         status: ParsingJobStatus = .queued,
         startedAt: Date? = nil,
         completedAt: Date? = nil,
@@ -34,6 +36,7 @@ struct SyllabusParsingJob: Identifiable, Codable {
         self.id = id
         self.courseId = courseId
         self.fileId = fileId
+        self.contentFingerprint = contentFingerprint
         self.status = status
         self.startedAt = startedAt
         self.completedAt = completedAt

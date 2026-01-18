@@ -174,7 +174,7 @@
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 4)
                 }
-                .buttonStyle(AppLiquidButtonStyle())
+                .buttonStyle(.itoriLiquidProminent)
 
                 if let s = semesterToEdit {
                     Button(

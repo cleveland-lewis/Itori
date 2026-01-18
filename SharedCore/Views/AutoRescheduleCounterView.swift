@@ -154,7 +154,7 @@ import SwiftUI
                                     AutoRescheduleActivityCounter.shared.reset()
                                     refreshCounters()
                                 }
-                                .buttonStyle(.itariLiquid)
+                                .buttonStyle(.itoriLiquidProminent)
                                 .foregroundColor(.red)
                                 .frame(maxWidth: .infinity)
                             }

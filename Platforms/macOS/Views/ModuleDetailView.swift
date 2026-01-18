@@ -105,7 +105,7 @@
                                 )
                                 .font(.caption.weight(.medium))
                             }
-                            .buttonStyle(.itariLiquid)
+                            .buttonStyle(.itoriLiquidProminent)
                         }
                         .padding(.horizontal, 18)
                         .padding(.top, 18)

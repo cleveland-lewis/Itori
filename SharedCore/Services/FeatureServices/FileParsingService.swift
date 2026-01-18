@@ -6,7 +6,7 @@ import Foundation
 
 // MARK: - Parsed Data Models
 
-struct ParsedAssignmentItem: Identifiable {
+struct ParsedAssignmentItem: Identifiable, Codable {
     let id = UUID()
     let title: String
     let dueDate: Date?
@@ -23,7 +23,7 @@ struct ParsedAssignmentItem: Identifiable {
     }
 }
 
-struct ParsedAssessmentEvent: Identifiable {
+struct ParsedAssessmentEvent: Identifiable, Codable {
     let id = UUID()
     let title: String
     let date: Date?
@@ -39,23 +39,28 @@ struct ParsedAssessmentEvent: Identifiable {
     }
 }
 
-struct ParsedTopic {
+struct ParsedTopic: Codable {
     let title: String
     let keywords: [String]
     let sourceFingerprint: String
 }
 
-struct ParsedRubric {
+struct ParsedRubric: Codable {
     let criteria: [String]
     let weights: [Double]
     let sourceFingerprint: String
 }
 
-struct ParseResults {
+struct ParseResults: Codable {
     var assignments: [ParsedAssignmentItem] = []
     var events: [ParsedAssessmentEvent] = []
     var topics: [ParsedTopic] = []
     var rubrics: [ParsedRubric] = []
+}
+
+private struct StoredParseResults: Codable {
+    let fingerprint: String
+    let results: ParseResults
 }
 
 // MARK: - File Parsing Service
@@ -69,6 +74,7 @@ final class FileParsingService: ObservableObject {
     @Published var batchReviewItems: BatchReviewState?
 
     private var parsingQueue: [UUID: Task<Void, Never>] = [:]
+    private let repository = CourseModuleRepository()
 
     private init() {}
 
@@ -95,25 +101,52 @@ final class FileParsingService: ObservableObject {
             return
         }
 
+        var fileToParse = file
+        let fingerprint = calculateFingerprint(for: file)
+        if fingerprint != file.contentFingerprint {
+            fileToParse.contentFingerprint = fingerprint
+            fileToParse.updatedAt = Date()
+            CoursesStore.shared?.updateFile(fileToParse)
+        }
+
+        if !force, let cached = await loadCachedResults(for: fileToParse) {
+            let totalItems = cached.assignments.count + cached.events.count
+            if totalItems > 200 {
+                await MainActor.run {
+                    self.batchReviewItems = BatchReviewState(
+                        fileId: fileToParse.id,
+                        fileName: fileToParse.filename,
+                        courseId: fileToParse.courseId,
+                        results: cached,
+                        fingerprint: fileToParse.contentFingerprint
+                    )
+                }
+            }
+            DebugLogger.log("📄 FileParsingService: Using cached parse results for \(fileToParse.displayName)")
+            return
+        }
+
         // Cancel existing job if forcing
         if force {
             parsingQueue[file.id]?.cancel()
         }
 
-        activeParsingJobs.insert(file.id)
-        parsingProgress[file.id] = 0.0
+        activeParsingJobs.insert(fileToParse.id)
+        parsingProgress[fileToParse.id] = 0.0
 
         // Update status to parsing
-        await updateFileParseStatus(file.id, status: .parsing, error: nil)
+        await updateFileParseStatus(fileToParse.id, status: .parsing, error: nil)
 
         let task = Task {
             do {
                 // Simulate progress updates
-                await updateProgress(file.id, progress: 0.1)
+                await updateProgress(fileToParse.id, progress: 0.1)
 
-                let results = try await performParsing(for: file)
+                let results = try await performParsing(for: fileToParse)
 
-                await updateProgress(file.id, progress: 0.7)
+                await updateProgress(fileToParse.id, progress: 0.7)
+
+                await storeParseResults(results, for: fileToParse)
 
                 // Check if we have too many items (batch review threshold)
                 let totalItems = results.assignments.count + results.events.count
@@ -121,38 +154,80 @@ final class FileParsingService: ObservableObject {
                     // Create batch review state instead of auto-scheduling
                     await MainActor.run {
                         self.batchReviewItems = BatchReviewState(
-                            fileId: file.id,
-                            fileName: file.filename,
-                            courseId: file.courseId,
+                            fileId: fileToParse.id,
+                            fileName: fileToParse.filename,
+                            courseId: fileToParse.courseId,
                             results: results,
-                            fingerprint: file.contentFingerprint
+                            fingerprint: fileToParse.contentFingerprint
                         )
                     }
                     DebugLogger.log("⚠️ FileParsingService: \(totalItems) items found - batch review required")
-                } else if file.category == .syllabus || file.category == .assignmentList {
+                } else if fileToParse.category == .syllabus || fileToParse.category == .assignmentList {
                     // Auto-schedule for normal amounts
-                    await scheduleItems(from: results, courseId: file.courseId, fingerprint: file.contentFingerprint)
+                    await scheduleItems(
+                        from: results,
+                        courseId: fileToParse.courseId,
+                        fingerprint: fileToParse.contentFingerprint
+                    )
                 }
 
-                await updateProgress(file.id, progress: 1.0)
-                await updateFileParseStatus(file.id, status: .parsed, error: nil)
-                DebugLogger.log("✅ FileParsingService: Successfully parsed file \(file.displayName)")
+                await updateProgress(fileToParse.id, progress: 1.0)
+                await updateFileParseStatus(fileToParse.id, status: .parsed, error: nil)
+                DebugLogger.log("✅ FileParsingService: Successfully parsed file \(fileToParse.displayName)")
             } catch {
-                await updateFileParseStatus(file.id, status: .failed, error: error.localizedDescription)
-                DebugLogger.log("❌ FileParsingService: Failed to parse file \(file.displayName): \(error)")
+                await updateFileParseStatus(fileToParse.id, status: .failed, error: error.localizedDescription)
+                DebugLogger.log("❌ FileParsingService: Failed to parse file \(fileToParse.displayName): \(error)")
             }
 
-            activeParsingJobs.remove(file.id)
-            parsingProgress.removeValue(forKey: file.id)
-            parsingQueue.removeValue(forKey: file.id)
+            activeParsingJobs.remove(fileToParse.id)
+            parsingProgress.removeValue(forKey: fileToParse.id)
+            parsingQueue.removeValue(forKey: fileToParse.id)
         }
 
-        parsingQueue[file.id] = task
+        parsingQueue[fileToParse.id] = task
     }
 
     private func updateProgress(_ fileId: UUID, progress: Double) async {
         await MainActor.run {
             parsingProgress[fileId] = progress
+        }
+    }
+
+    private func storeParseResults(_ results: ParseResults, for file: CourseFile) async {
+        let stored = StoredParseResults(fingerprint: file.contentFingerprint, results: results)
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+
+        do {
+            let data = try encoder.encode(stored)
+            let json = String(data: data, encoding: .utf8)
+            try await repository.saveParseResult(
+                fileId: file.id,
+                parseType: file.category.rawValue,
+                success: true,
+                extractedText: nil,
+                contentJSON: json,
+                errorMessage: nil
+            )
+        } catch {
+            DebugLogger.log("❌ FileParsingService: Failed to store parse results: \(error)")
+        }
+    }
+
+    private func loadCachedResults(for file: CourseFile) async -> ParseResults? {
+        do {
+            guard let json = try await repository.fetchLatestParseResult(fileId: file.id),
+                  let data = json.data(using: .utf8)
+            else { return nil }
+
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            let stored = try decoder.decode(StoredParseResults.self, from: data)
+            guard stored.fingerprint == file.contentFingerprint else { return nil }
+            return stored.results
+        } catch {
+            DebugLogger.log("❌ FileParsingService: Failed to load cached parse results: \(error)")
+            return nil
         }
     }
 
@@ -274,7 +349,22 @@ final class FileParsingService: ObservableObject {
 
     private func parsePDF(_ file: CourseFile) async throws -> ParseResults {
         #if canImport(PDFKit)
+            // Start accessing security-scoped resource if needed
+            let accessing = file.url.startAccessingSecurityScopedResource()
+            defer {
+                if accessing {
+                    file.url.stopAccessingSecurityScopedResource()
+                }
+            }
+
+            // Verify file exists
+            guard FileManager.default.fileExists(atPath: file.url.path) else {
+                DebugLogger.log("❌ PDF file does not exist at path: \(file.url.path)")
+                throw ParsingError.cannotOpenPDF
+            }
+
             guard let pdfDocument = PDFDocument(url: file.url) else {
+                DebugLogger.log("❌ PDFDocument failed to initialize from URL: \(file.url.path)")
                 throw ParsingError.cannotOpenPDF
             }
 
@@ -398,8 +488,52 @@ final class FileParsingService: ObservableObject {
     // MARK: - Helper Methods
 
     func calculateFingerprint(for file: CourseFile) -> String {
-        // TODO: Implement fingerprinting logic
-        file.id.uuidString
+        guard let url = resolveFileURL(from: file) else {
+            return file.id.uuidString
+        }
+
+        let scoped = url.startAccessingSecurityScopedResource()
+        defer {
+            if scoped {
+                url.stopAccessingSecurityScopedResource()
+            }
+        }
+
+        do {
+            let data = try Data(contentsOf: url)
+            return data.sha256Hash()
+        } catch {
+            DebugLogger.log("❌ FileParsingService: Failed to hash file \(file.filename): \(error)")
+            return file.id.uuidString
+        }
+    }
+
+    private func resolveFileURL(from file: CourseFile) -> URL? {
+        guard let urlString = file.localURL else { return nil }
+
+        if let bookmarkData = Data(base64Encoded: urlString) {
+            var isStale = false
+            if let resolved = try? URL(
+                resolvingBookmarkData: bookmarkData,
+                options: [.withSecurityScope],
+                relativeTo: nil,
+                bookmarkDataIsStale: &isStale
+            ) {
+                return resolved
+            }
+        }
+
+        if let url = URL(string: urlString) {
+            if url.isFileURL {
+                return url
+            }
+            if FileManager.default.fileExists(atPath: url.path) {
+                return url
+            }
+        }
+
+        let fileURL = URL(fileURLWithPath: urlString)
+        return FileManager.default.fileExists(atPath: fileURL.path) ? fileURL : nil
     }
 
     func queueFileForParsing(_: CourseFile, courseId _: UUID) {
@@ -467,7 +601,7 @@ enum ParsingError: LocalizedError {
         case let .missingRequiredColumn(column):
             "Missing required column: \(column)"
         case .cannotOpenPDF:
-            "Cannot open PDF file"
+            "Cannot open PDF file. The file may be corrupted, password-protected, or you may not have permission to access it."
         case .pdfNotSupported:
             "PDF parsing not supported on this platform"
         }

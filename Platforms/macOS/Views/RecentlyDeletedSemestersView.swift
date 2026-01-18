@@ -50,7 +50,7 @@
                                 ) {
                                     coursesStore.permanentlyDeleteSemester(semester.id)
                                 }
-                                .buttonStyle(.itariLiquid)
+                                .buttonStyle(.itoriLiquidProminent)
                             }
                         }
                         .padding(.vertical, 6)

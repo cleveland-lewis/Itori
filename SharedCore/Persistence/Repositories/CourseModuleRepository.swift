@@ -314,6 +314,20 @@ final class CourseModuleRepository {
         }
     }
 
+    /// Fetch latest parse result JSON for a file
+    func fetchLatestParseResult(fileId: UUID) async throws -> String? {
+        let context = persistenceController.newBackgroundContext()
+
+        return try await context.perform {
+            let request = FileParseResultMO.fetchRequest()
+            request.predicate = NSPredicate(format: "fileId == %@", fileId as CVarArg)
+            request.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
+            request.fetchLimit = 1
+
+            return try context.fetch(request).first?.contentJSON
+        }
+    }
+
     // MARK: - Private Helpers
 
     private func toDomain(_ mo: CourseOutlineNodeMO) -> CourseOutlineNode {

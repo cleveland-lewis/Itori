@@ -152,7 +152,7 @@ import SwiftUI
                                     : NSLocalizedString("common.copy", value: "Copy", comment: "Copy"))
                                     .font(.caption.weight(.semibold))
                             }
-                            .buttonStyle(.itariLiquid)
+                            .buttonStyle(.itoriLiquidProminent)
                             .controlSize(.small)
                             Spacer()
                         }

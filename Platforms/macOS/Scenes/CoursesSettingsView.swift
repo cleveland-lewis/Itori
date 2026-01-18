@@ -90,6 +90,9 @@
                 }
             }
             .formStyle(.grouped)
+            .listSectionSpacing(10)
+            .scrollContentBackground(.hidden)
+            .background(Color(nsColor: .controlBackgroundColor))
             .sheet(item: $editingCourse) { course in
                 CourseEditView(course: course, coursesStore: coursesStore)
             }

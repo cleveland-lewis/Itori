@@ -377,6 +377,9 @@
                 }
             }
             .formStyle(.grouped)
+            .listSectionSpacing(10)
+            .scrollContentBackground(.hidden)
+            .background(Color(nsColor: .controlBackgroundColor))
             .navigationTitle("General")
             .onAppear {
                 startOfWeek = StartOfWeek(rawValue: settings.startOfWeek) ?? .sunday
@@ -433,7 +436,7 @@
                                 Text(didCopyResetCode ? "Copied" : "Copy")
                                     .font(.caption.weight(.semibold))
                             }
-                            .buttonStyle(.itariLiquid)
+                            .buttonStyle(.itoriLiquidProminent)
                             .controlSize(.small)
                             Spacer()
                         }

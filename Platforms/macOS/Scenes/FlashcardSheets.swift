@@ -65,6 +65,9 @@
                     }
                 }
                 .formStyle(.grouped)
+                .listSectionSpacing(10)
+                .scrollContentBackground(.hidden)
+                .background(Color(nsColor: .controlBackgroundColor))
 
                 // Actions
                 HStack {
@@ -171,6 +174,9 @@
                     }
                 }
                 .formStyle(.grouped)
+                .listSectionSpacing(10)
+                .scrollContentBackground(.hidden)
+                .background(Color(nsColor: .controlBackgroundColor))
 
                 // Actions
                 HStack {
@@ -181,7 +187,7 @@
                     )) {
                         resetProgress()
                     }
-                    .buttonStyle(.itariLiquid)
+                    .buttonStyle(.itoriLiquidProminent)
                     .foregroundStyle(.orange)
 
                     Spacer()
@@ -321,6 +327,9 @@
                     }
                 }
                 .formStyle(.grouped)
+                .listSectionSpacing(10)
+                .scrollContentBackground(.hidden)
+                .background(Color(nsColor: .controlBackgroundColor))
             }
             .frame(width: 500, height: 500)
             .onAppear {

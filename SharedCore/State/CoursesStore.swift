@@ -1026,14 +1026,7 @@ extension CoursesStore {
                 let parsingStore = SyllabusParsingStore.shared
                 let job = parsingStore.createJob(courseId: courseId, fileId: fileId)
 
-                // Get file URL from localURL if available
-                let fileURL: URL? = if let urlString = courseFiles[index].localURL {
-                    URL(fileURLWithPath: urlString)
-                } else {
-                    nil
-                }
-
-                parsingStore.startParsing(job: job, fileURL: fileURL)
+                parsingStore.startParsing(job: job, file: courseFiles[index])
             }
         }
 

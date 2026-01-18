@@ -547,7 +547,7 @@ final class AppSettingsModel: ObservableObject, Codable {
     @AppStorage("Itori.settings.practiceTestTimeMultiplier") var practiceTestTimeMultiplierStorage: Double = 1.0
 
     // Calendar UI filter setting
-    @AppStorage("Itori.settings.showOnlySchoolCalendar") var showOnlySchoolCalendarStorage: Bool = false
+    @AppStorage("Itori.settings.showOnlySchoolCalendar") var showOnlySchoolCalendarStorage: Bool = true
 
     // Calendar picker admin-lock setting
     @AppStorage("Itori.settings.lockCalendarPickerToSchool") var lockCalendarPickerToSchoolStorage: Bool = false
@@ -1844,7 +1844,7 @@ final class AppSettingsModel: ObservableObject, Codable {
         showOnlySchoolCalendarStorage = try container.decodeIfPresent(
             Bool.self,
             forKey: .showOnlySchoolCalendarStorage
-        ) ?? false
+        ) ?? true
         lockCalendarPickerToSchoolStorage = try container.decodeIfPresent(
             Bool.self,
             forKey: .lockCalendarPickerToSchoolStorage

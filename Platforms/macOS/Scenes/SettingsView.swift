@@ -145,6 +145,7 @@
                 #else
                         .listStyle(.plain)
                 #endif
+                        .listSectionSpacing(10)
                         .navigationTitle("Settings")
                         .onChange(of: settings.use24HourTime) { _, _ in scheduleSettingsSave() }
                         .onChange(of: settings.highContrastMode) { _, _ in scheduleSettingsSave() }
@@ -229,6 +230,7 @@
                     }
                 }
             }
+            .listSectionSpacing(10)
             .navigationTitle("Developer")
         }
     }

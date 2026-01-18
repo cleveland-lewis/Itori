@@ -803,7 +803,7 @@
                 Button(NSLocalizedString("grades.button.edit.target", value: "Edit target", comment: "Edit target")) {
                     onEditTarget(course)
                 }
-                .buttonStyle(.itariLiquid)
+                .buttonStyle(.itoriLiquidProminent)
                 .controlSize(.small)
             }
         }
@@ -1090,6 +1090,9 @@
                     }
                 }
                 .formStyle(.grouped)
+                .listSectionSpacing(10)
+                .scrollContentBackground(.hidden)
+                .background(Color(nsColor: .controlBackgroundColor))
                 .navigationTitle("Edit Target for \(course.courseCode)")
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
@@ -1276,6 +1279,9 @@
                     }
                 }
                 .formStyle(.grouped)
+                .listSectionSpacing(10)
+                .scrollContentBackground(.hidden)
+                .background(Color(nsColor: .controlBackgroundColor))
                 .navigationTitle("Export Grades")
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {

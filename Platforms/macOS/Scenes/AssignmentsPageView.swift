@@ -1499,7 +1499,7 @@
                                 }
                             }
                         }
-                        .buttonStyle(.itariLiquid)
+                        .buttonStyle(.itoriLiquidProminent)
                         .controlSize(.small)
                     }
                     VStack(alignment: .leading, spacing: 6) {
@@ -1517,7 +1517,7 @@
                         )) {
                             plannerCoordinator.openPlanner(for: assignment.dueDate, courseId: assignment.courseId)
                         }
-                        .buttonStyle(.itoriLiquidProminent)
+                        .buttonStyle(.itariLiquid)
                         .controlSize(.small)
                         .accessibilityLabelWithTooltip("assignments.detail.planner_accessibility".localized)
                     }
@@ -1536,7 +1536,7 @@
                         )) {
                             appModel.selectedPage = .timer
                         }
-                        .buttonStyle(.itoriLiquidProminent)
+                        .buttonStyle(.itariLiquid)
                         .controlSize(.small)
                         .accessibilityLabelWithTooltip("assignments.detail.timer_accessibility".localized)
                     }
@@ -1577,7 +1577,7 @@
                         self.assignment = updated
                     }
                 }
-                .buttonStyle(.itariLiquid)
+                .buttonStyle(.itoriLiquidProminent)
                 .controlSize(.small)
 
                 Divider()

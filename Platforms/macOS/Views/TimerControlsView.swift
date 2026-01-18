@@ -123,7 +123,7 @@
                     .frame(maxWidth: .infinity)
                     .contentShape(Rectangle())
             }
-            .buttonStyle(GlassBlueProminentButtonStyle())
+            .buttonStyle(.itoriLiquidProminent)
             .animationPolicy(.essential, value: isRunning)
         }
 
@@ -133,7 +133,8 @@
             prominent: Bool,
             action: @escaping () -> Void
         ) -> some View {
-            let style = prominent ? AnyButtonStyle(GlassBlueProminentButtonStyle()) : AnyButtonStyle(GlassButtonStyle())
+            let style = prominent ? AnyButtonStyle(ItoriLiquidProminentButtonStyle()) :
+                AnyButtonStyle(ItoriLiquidButtonStyle())
             return Button(action: action) {
                 Label(label, systemImage: systemImage)
                     .frame(maxWidth: .infinity)

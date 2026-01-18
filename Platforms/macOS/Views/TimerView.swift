@@ -26,7 +26,7 @@
                             } label: {
                                 Image(systemName: "plus")
                             }
-                            .buttonStyle(.itariLiquid)
+                            .buttonStyle(.itoriLiquidProminent)
                             .controlSize(.small)
                         }
 
@@ -73,12 +73,12 @@
                     Button(action: toggleRunning) {
                         Label(isRunning ? "Pause" : "Start", systemImage: isRunning ? "pause.fill" : "play.fill")
                     }
-                    .buttonStyle(LegacyGlassProminentButtonStyle())
+                    .buttonStyle(.itoriLiquidProminent)
 
                     Button(NSLocalizedString("timer.button.reset", value: "Reset", comment: "Reset")) {
                         reset()
                     }
-                    .buttonStyle(GlassButtonStyle())
+                    .buttonStyle(.itoriLiquidProminent)
                 }
             }
             .padding(DesignSystem.Layout.padding.card)

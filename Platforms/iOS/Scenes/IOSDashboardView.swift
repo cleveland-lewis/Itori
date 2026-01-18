@@ -1023,7 +1023,7 @@
                             Text(NSLocalizedString("Edit", value: "Edit", comment: "Edit session"))
                                 .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(.itoriLiquidProminent)
+                        .buttonStyle(.itariLiquid)
 
                         Spacer()
                     }

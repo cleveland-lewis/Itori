@@ -45,6 +45,9 @@
                 }
             }
             .formStyle(.grouped)
+            .listSectionSpacing(10)
+            .scrollContentBackground(.hidden)
+            .background(Color(nsColor: .controlBackgroundColor))
             .navigationTitle("Interface")
             .onAppear {
                 applyInterfaceStyle(settings.interfaceStyle)

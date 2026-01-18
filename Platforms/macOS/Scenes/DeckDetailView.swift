@@ -149,7 +149,7 @@
                     } label: {
                         Image(systemName: "plus")
                     }
-                    .buttonStyle(.itariLiquid)
+                    .buttonStyle(.itoriLiquidProminent)
                     .help("Add new card")
                     .accessibilityLabel("Add new card")
 

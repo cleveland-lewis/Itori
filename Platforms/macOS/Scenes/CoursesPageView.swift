@@ -970,14 +970,11 @@
                             .foregroundStyle(Color.textSecondary)
                     }
                 }
+                .padding(ItariSpacing.m)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(AppLiquidButtonStyle(
-                cornerRadius: 14,
-                verticalPadding: ItariSpacing.m,
-                horizontalPadding: ItariSpacing.m
-            ))
+            .buttonStyle(.itoriLiquidProminent)
         }
 
         private func sectionHeader(_ title: String) -> some View {

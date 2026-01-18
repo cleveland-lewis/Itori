@@ -611,7 +611,7 @@ import SwiftUI
                             )
                             .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(.itariLiquid)
+                        .buttonStyle(.itoriLiquidProminent)
 
                         Button(action: { /* Mark as fixed */ }) {
                             Label(
@@ -634,7 +634,7 @@ import SwiftUI
                             ))
                             .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(.itariLiquid)
+                        .buttonStyle(.itoriLiquidProminent)
                         .tint(.red)
                     }
                 }

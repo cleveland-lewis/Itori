@@ -352,7 +352,7 @@
                                     try? modelManager.deleteModel(modelType)
                                 }
                             }
-                            .foregroundStyle(.red)
+                            .buttonStyle(.itoriLiquidProminent)
                         } else {
                             Button(NSLocalizedString(
                                 "settings.llm.model.button.download",
@@ -418,7 +418,7 @@
                     )) {
                         showingBYOConfig = true
                     }
-                    .buttonStyle(.itoriLiquidProminent)
+                    .buttonStyle(.itariLiquid)
                 }
 
                 if checkBYOProvider() {
@@ -444,7 +444,7 @@
                             byoAPIKey = ""
                             byoEndpoint = ""
                         }
-                        .foregroundStyle(.red)
+                        .buttonStyle(.itoriLiquidProminent)
                     }
                     .padding()
                     .background(

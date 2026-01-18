@@ -18,7 +18,7 @@
                             systemImage: "plus"
                         )
                     }
-                    .buttonStyle(GlassButtonStyle())
+                    .buttonStyle(.itoriLiquidProminent)
                 }
 
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -52,7 +52,7 @@
                     )
                     .font(.footnote.weight(.semibold))
                 }
-                .buttonStyle(GlassButtonStyle())
+                .buttonStyle(.itoriLiquidProminent)
 
                 List {
                     ForEach(viewModel.filteredActivities) { activity in

@@ -31,7 +31,7 @@
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
                     }
-                    .buttonStyle(.itariLiquid)
+                    .buttonStyle(.itoriLiquidProminent)
 
                     Button(action: onAddFiles) {
                         Label(
@@ -42,7 +42,7 @@
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
                     }
-                    .buttonStyle(.itariLiquid)
+                    .buttonStyle(.itoriLiquidProminent)
                 }
 
                 // Modules List
@@ -321,6 +321,37 @@
             .onHover { hovering in
                 isHovered = hovering
             }
+            .contextMenu {
+                Button {
+                    openFile()
+                } label: {
+                    Label(
+                        NSLocalizedString("ui.label.open.file", value: "Open File", comment: "Open File"),
+                        systemImage: "arrow.up.right.square"
+                    )
+                }
+
+                Button {
+                    parseFile()
+                } label: {
+                    Label(
+                        NSLocalizedString("ui.label.parse.file", value: "Parse File", comment: "Parse File"),
+                        systemImage: "doc.text.magnifyingglass"
+                    )
+                }
+                .disabled(file.parseStatus == .parsing)
+
+                Divider()
+
+                Button(role: .destructive) {
+                    deleteFile()
+                } label: {
+                    Label(
+                        NSLocalizedString("ui.label.delete.file", value: "Delete File", comment: "Delete File"),
+                        systemImage: "trash"
+                    )
+                }
+            }
             .alert("Parse Error", isPresented: $showErrorAlert) {
                 Button(NSLocalizedString("OK", value: "OK", comment: ""), role: .cancel) {}
             } message: {
@@ -356,6 +387,38 @@
             }
 
             NSWorkspace.shared.open(url)
+        }
+
+        private func parseFile() {
+            Task {
+                let fingerprint = parsingService.calculateFingerprint(for: file)
+                if fingerprint != file.contentFingerprint {
+                    var updatedFile = file
+                    updatedFile.contentFingerprint = fingerprint
+                    updatedFile.updatedAt = Date()
+                    file = updatedFile
+
+                    if let coursesStore = CoursesStore.shared {
+                        coursesStore.updateFile(updatedFile)
+                    }
+                }
+
+                await parsingService.parseFile(file, force: true)
+            }
+        }
+
+        private func deleteFile() {
+            // Delete from file system
+            if let urlString = file.localURL,
+               let url = URL(string: urlString)
+            {
+                try? FileManager.default.removeItem(at: url)
+            }
+
+            // Delete from store
+            if let coursesStore = CoursesStore.shared {
+                coursesStore.deleteFile(file.id)
+            }
         }
 
         private var fileIcon: String {

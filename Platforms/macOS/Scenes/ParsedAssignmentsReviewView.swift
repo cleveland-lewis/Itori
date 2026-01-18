@@ -377,6 +377,9 @@
                     TextField(NSLocalizedString("assignments.form.type", comment: ""), text: $inferredType)
                 }
                 .formStyle(.grouped)
+                .listSectionSpacing(10)
+                .scrollContentBackground(.hidden)
+                .background(Color(nsColor: .controlBackgroundColor))
 
                 HStack {
                     Button(NSLocalizedString("assignments.action.cancel", comment: "")) {

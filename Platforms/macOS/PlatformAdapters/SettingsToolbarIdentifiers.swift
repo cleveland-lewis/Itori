@@ -5,6 +5,7 @@
         case general
         case calendar
         case planner
+        case timer
         case courses
         case semesters
         case grades
@@ -25,6 +26,7 @@
             case .general: "General"
             case .calendar: "Calendar"
             case .planner: "Planner"
+            case .timer: "Timer"
             case .courses: "Courses"
             case .semesters: "Semesters"
             case .grades: "Grades"
@@ -44,6 +46,7 @@
             case .general: "gearshape"
             case .calendar: "calendar"
             case .planner: "pencil.and.list.clipboard"
+            case .timer: "timer"
             case .courses: "books.vertical"
             case .semesters: "graduationcap"
             case .grades: "chart.bar.doc.horizontal"

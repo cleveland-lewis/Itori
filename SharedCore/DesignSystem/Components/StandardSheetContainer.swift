@@ -74,6 +74,7 @@ struct StandardSheetContainer<Content: View>: View {
                 Button("Cancel") {
                     handleDismiss()
                 }
+                .buttonStyle(.itariLiquid)
                 .keyboardShortcut(.escape)
 
                 Spacer()

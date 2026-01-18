@@ -167,7 +167,7 @@ struct DashboardEmptyState: View {
 
             if let action, let actionTitle {
                 Button(actionTitle, action: action)
-                    .buttonStyle(.itariLiquid)
+                    .buttonStyle(.itoriLiquidProminent)
                     .padding(.top, 4)
             }
         }

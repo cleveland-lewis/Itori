@@ -108,6 +108,9 @@
                 }
             }
             .formStyle(.grouped)
+            .listSectionSpacing(10)
+            .scrollContentBackground(.hidden)
+            .background(Color(nsColor: .controlBackgroundColor))
             .sheet(item: $editingSemester) { semester in
                 SemesterEditorView(semesterToEdit: semester)
                     .environmentObject(coursesStore)

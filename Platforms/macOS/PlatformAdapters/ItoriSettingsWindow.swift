@@ -71,6 +71,8 @@
                         CalendarSettingsView()
                     case .planner:
                         PlannerSettingsView()
+                    case .timer:
+                        TimerSettingsView()
                     case .courses:
                         CoursesSettingsView()
                     case .semesters:

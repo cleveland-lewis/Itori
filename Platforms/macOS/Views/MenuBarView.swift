@@ -125,7 +125,7 @@ struct MenuBarView: View {
                 Button(NSLocalizedString("menubar.button.end", value: "End", comment: "End")) {
                     NotificationCenter.default.post(name: .timerEndRequested, object: nil)
                 }
-                .buttonStyle(.itariLiquid)
+                .buttonStyle(.itoriLiquidProminent)
             }
         }
         .padding()

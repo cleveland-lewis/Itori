@@ -391,7 +391,7 @@
                         }
                         .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.itariLiquid)
+                    .buttonStyle(.itoriLiquidProminent)
                 } else {
                     Picker("Course", selection: $selectedCourseId) {
                         ForEach(coursesStore.activeCourses, id: \.id) { c in

@@ -5,6 +5,7 @@ import SwiftUI
 
     struct IOSStorageSettingsView: View {
         @EnvironmentObject var settings: AppSettingsModel
+        @EnvironmentObject var timerManager: TimerManager
         @State private var storageSize: String = NSLocalizedString(
             "settings.storage.calculating",
             value: "Calculating...",
@@ -22,6 +23,13 @@ import SwiftUI
             comment: "Storage status disconnected"
         )
         @State private var syncTimeoutWorkItem: DispatchWorkItem?
+
+        // Reset data state
+        @State private var showResetAlert = false
+        @State private var resetCode: String = ""
+        @State private var resetInput: String = ""
+        @State private var isResetting = false
+
         #if DEBUG
             @StateObject private var syncMonitor = SyncMonitor.shared
         #endif
@@ -229,6 +237,36 @@ import SwiftUI
                         comment: "Export your data as a backup file"
                     ))
                 }
+
+                Section {
+                    Button(role: .destructive) {
+                        resetCode = ConfirmationCode.generate()
+                        resetInput = ""
+                        showResetAlert = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "exclamationmark.triangle")
+                            Text(NSLocalizedString(
+                                "settings.reset.all.data",
+                                value: "Reset All Data",
+                                comment: "Reset All Data"
+                            ))
+                        }
+                        .foregroundStyle(.red)
+                    }
+                } header: {
+                    Text(NSLocalizedString(
+                        "settings.storage.danger_zone.header",
+                        value: "Danger Zone",
+                        comment: "Danger Zone"
+                    ))
+                } footer: {
+                    Text(NSLocalizedString(
+                        "settings.storage.reset.footer",
+                        value: "This will permanently delete all your data including courses, assignments, and settings.",
+                        comment: "Reset data warning footer"
+                    ))
+                }
             }
             .listStyle(.insetGrouped)
             .navigationTitle(NSLocalizedString("settings.category.storage", comment: "Storage"))
@@ -254,6 +292,37 @@ import SwiftUI
                 statusLabel = statusLabelFor(enabled: enabled, reason: reason)
                 syncTimeoutWorkItem?.cancel()
             }
+            .alert(
+                NSLocalizedString("settings.reset.all.data", value: "Reset All Data", comment: "Reset All Data"),
+                isPresented: $showResetAlert
+            ) {
+                TextField("Enter code: \(resetCode)", text: $resetInput)
+                    .autocorrectionDisabled()
+                #if os(iOS)
+                    .textInputAutocapitalization(.never)
+                #endif
+                Button(NSLocalizedString("settings.button.cancel", value: "Cancel", comment: "Cancel"), role: .cancel) {
+                    showResetAlert = false
+                    resetInput = ""
+                }
+                Button(
+                    NSLocalizedString("settings.button.reset.now", value: "Reset Now", comment: "Reset Now"),
+                    role: .destructive
+                ) {
+                    performReset()
+                }
+                .disabled(!resetCodeMatches || isResetting)
+            } message: {
+                Text(NSLocalizedString(
+                    "settings.this.will.remove.all.app",
+                    value: "This will remove all app data including courses, assignments, settings, and cached sessions. This action cannot be undone.",
+                    comment: "Reset warning message"
+                ) + "\n\n" + String(format: NSLocalizedString(
+                    "settings.type.code.confirm",
+                    value: "Type \"%@\" to confirm",
+                    comment: "Type code to confirm"
+                ), resetCode))
+            }
             .sheet(isPresented: $showingExportSheet) {
                 exportView
             }
@@ -276,6 +345,21 @@ import SwiftUI
                     comment: "Unable to create the export file right now."
                 ))
             }
+        }
+
+        private func performReset() {
+            guard resetCodeMatches else { return }
+            isResetting = true
+            AppModel.shared.requestReset()
+            timerManager.stop()
+            // Reset UI state
+            resetInput = ""
+            showResetAlert = false
+            isResetting = false
+        }
+
+        private var resetCodeMatches: Bool {
+            resetInput.trimmingCharacters(in: .whitespacesAndNewlines) == resetCode
         }
 
         private func statusLabelFor(enabled: Bool, reason: String?) -> String {

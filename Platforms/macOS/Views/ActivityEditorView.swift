@@ -116,6 +116,7 @@
                         }
                     }
                 }
+                .listSectionSpacing(10)
                 .navigationTitle(isEditing ? "Edit Activity" : "New Activity")
                 #if os(iOS) || os(tvOS)
                     .navigationBarTitleDisplayMode(.inline)
@@ -132,7 +133,7 @@
                             Button(NSLocalizedString("activityeditor.button.save", value: "Save", comment: "Save")) {
                                 save()
                             }
-                            .buttonStyle(LegacyGlassProminentButtonStyle())
+                            .buttonStyle(.itoriLiquidProminent)
                         }
                     }
             }

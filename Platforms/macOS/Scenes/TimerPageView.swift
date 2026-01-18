@@ -658,7 +658,7 @@
                                 }
                                 .font(.title2)
                             }
-                            .buttonStyle(.itariLiquid)
+                            .buttonStyle(.itoriLiquidProminent)
                             .help("Pause the timer (it can be resumed)")
                             .accessibilityLabel("Pause timer")
                             .accessibilityHint("Pauses the running timer")
@@ -671,7 +671,7 @@
                                 }
                                 .font(.title2)
                             }
-                            .buttonStyle(.itariLiquid)
+                            .buttonStyle(.itoriLiquidProminent)
                             .help("Stop and reset the timer")
                             .accessibilityLabel("Stop timer")
                             .accessibilityHint("Stops and resets the timer")
@@ -1442,7 +1442,7 @@
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 12)
                             }
-                            .buttonStyle(.itariLiquid)
+                            .buttonStyle(.itoriLiquidProminent)
                             .controlSize(.large)
                             .keyboardShortcut(.space, modifiers: [])
                         } else {
@@ -1467,7 +1467,7 @@
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
                         }
-                        .buttonStyle(.itariLiquid)
+                        .buttonStyle(.itoriLiquidProminent)
                         .controlSize(.large)
                         .keyboardShortcut("r", modifiers: [.command])
                     }

@@ -61,7 +61,7 @@
                             SchedulerPreferencesStore.shared.save()
                             SchedulerFeedbackStore.shared.clear()
                         }
-                        .buttonStyle(.itariLiquid)
+                        .buttonStyle(.itoriLiquidProminent)
                     }
 
                     // Mode picker

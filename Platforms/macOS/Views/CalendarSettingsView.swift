@@ -28,7 +28,7 @@
                                 isRequestingAccess = false
                             }
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                     } else if isRequestingAccess {
                         HStack {
                             ProgressView()
@@ -55,7 +55,7 @@
                         )) {
                             showingRevokeAlert = true
                         }
-                        .buttonStyle(.link)
+                        .buttonStyle(.itoriLiquidProminent)
                     }
 
                     HStack {
@@ -184,31 +184,12 @@
                     }
 
                     AssignmentSyncSection()
-
-                    Section("Calendar Picker Lock") {
-                        Toggle(
-                            NSLocalizedString(
-                                "settings.toggle.lock.calendar.picker.to.school",
-                                value: "Lock Calendar Picker to School",
-                                comment: "Lock Calendar Picker to School"
-                            ),
-                            isOn: $settings.lockCalendarPickerToSchool
-                        )
-                        .toggleStyle(.switch)
-                        .onChange(of: settings.lockCalendarPickerToSchool) { _, _ in
-                            settings.save()
-                        }
-
-                        Text(settings
-                            .lockCalendarPickerToSchool ?
-                            "New events will always be saved to the school calendar. Users cannot select a different calendar." :
-                            "Users can choose which calendar to save new events to.")
-                            .font(DesignSystem.Typography.caption)
-                            .foregroundStyle(.secondary)
-                    }
                 }
             }
             .formStyle(.grouped)
+            .listSectionSpacing(10)
+            .scrollContentBackground(.hidden)
+            .background(Color(nsColor: .controlBackgroundColor))
             .navigationTitle("Calendar")
             .alert("Disable Calendar Sync", isPresented: $showingRevokeAlert) {
                 Button(NSLocalizedString(
@@ -311,7 +292,8 @@
                                 await syncManager.performFullSync()
                             }
                         }
-                        .buttonStyle(.itariLiquid)
+                        .buttonStyle(.itariLiquidProminent)
+                        .tint(.accentColor)
                         .controlSize(.small)
                     }
                     .padding(.top, 4)

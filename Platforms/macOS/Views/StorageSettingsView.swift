@@ -3,10 +3,18 @@
 
     struct StorageSettingsView: View {
         @EnvironmentObject var settings: AppSettingsModel
+        @EnvironmentObject var timerManager: TimerManager
         @State private var cloudKitEnabled = PersistenceController.shared.isCloudKitEnabled
         @State private var cloudKitStatusMessage = PersistenceController.shared.lastCloudKitStatusMessage ?? "Disabled by user"
         @State private var statusLabel: String = "Disconnected"
         @State private var syncTimeoutWorkItem: DispatchWorkItem?
+
+        // Reset data state
+        @State private var showResetSheet = false
+        @State private var resetCode: String = ""
+        @State private var resetInput: String = ""
+        @State private var isResetting = false
+        @State private var didCopyResetCode = false
 
         var body: some View {
             Form {
@@ -85,12 +93,29 @@
                             UserDefaults.standard.removeObject(forKey: "debug.logs")
                             UserDefaults.standard.removeObject(forKey: "analytics.events")
                         }
-                        .buttonStyle(.itariLiquid)
+                        .buttonStyle(.itoriLiquidProminent)
                         .controlSize(.small)
+                    }
+                }
+
+                Section("Danger Zone") {
+                    Button(role: .destructive) {
+                        resetInput = ""
+                        showResetSheet = true
+                    } label: {
+                        Text(NSLocalizedString(
+                            "settings.reset.all.data",
+                            value: "Reset All Data",
+                            comment: "Reset All Data"
+                        ))
+                        .fontWeight(.semibold)
                     }
                 }
             }
             .formStyle(.grouped)
+            .listSectionSpacing(10)
+            .scrollContentBackground(.hidden)
+            .background(Color(nsColor: .controlBackgroundColor))
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .onReceive(NotificationCenter.default.publisher(for: .iCloudSyncStatusChanged)) { notification in
                 if let enabled = notification.object as? Bool {
@@ -109,6 +134,120 @@
             .onAppear {
                 statusLabel = statusLabelFor(enabled: cloudKitEnabled, reason: cloudKitStatusMessage)
             }
+            .sheet(isPresented: $showResetSheet) {
+                VStack(spacing: 18) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(NSLocalizedString(
+                            "settings.reset.all.data",
+                            value: "Reset All Data",
+                            comment: "Reset All Data"
+                        ))
+                        .font(.title2.weight(.bold))
+                        Text(NSLocalizedString(
+                            "settings.this.will.remove.all.app",
+                            value: "This will remove all app data including courses, assignments, settings, and cached sessions. This action cannot be undone.",
+                            comment: "This will remove all app data including courses, a..."
+                        ))
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    }
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(NSLocalizedString(
+                            "settings.type.the.code.to.confirm",
+                            value: "Type the code to confirm",
+                            comment: "Type the code to confirm"
+                        ))
+                        .font(.headline.weight(.semibold))
+                        HStack {
+                            Text(resetCode)
+                                .font(.system(.title3, design: .monospaced).weight(.bold))
+                                .foregroundColor(.primary)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 8)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                        .fill(Color.red.opacity(0.15))
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                        .strokeBorder(Color.red.opacity(0.5), lineWidth: 1)
+                                )
+                            Button {
+                                Clipboard.copy(resetCode)
+                                didCopyResetCode = true
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                    didCopyResetCode = false
+                                }
+                            } label: {
+                                Text(didCopyResetCode ? "Copied" : "Copy")
+                                    .font(.caption.weight(.semibold))
+                            }
+                            .buttonStyle(.itoriLiquidProminent)
+                            .controlSize(.small)
+                            Spacer()
+                        }
+                        TextField("Enter code exactly", text: $resetInput)
+                            .textFieldStyle(.roundedBorder)
+                            .font(.system(.body, design: .monospaced))
+                            .disableAutocorrection(true)
+                    }
+
+                    HStack(spacing: 12) {
+                        Button(NSLocalizedString("settings.button.cancel", value: "Cancel", comment: "Cancel")) {
+                            showResetSheet = false
+                        }
+                        .buttonStyle(.itariLiquid)
+                        Spacer()
+                        Button(NSLocalizedString(
+                            "settings.button.reset.now",
+                            value: "Reset Now",
+                            comment: "Reset Now"
+                        )) {
+                            performReset()
+                        }
+                        .buttonStyle(.itoriLiquidProminent)
+                        .tint(.red)
+                        .keyboardShortcut(.defaultAction)
+                        .disabled(!resetCodeMatches || isResetting)
+                    }
+                }
+                .padding(26)
+                .frame(minWidth: 440, maxWidth: 520)
+                .background(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .fill(DesignSystem.Materials.card)
+                )
+                .padding()
+                .onAppear {
+                    if resetCode.isEmpty {
+                        resetCode = ConfirmationCode.generate()
+                    }
+                }
+            }
+            .onChange(of: showResetSheet) { _, isPresented in
+                if !isPresented {
+                    resetCode = ""
+                    resetInput = ""
+                    didCopyResetCode = false
+                }
+            }
+        }
+
+        private func performReset() {
+            guard resetCodeMatches else { return }
+            isResetting = true
+            AppModel.shared.requestReset()
+            timerManager.stop()
+            // Reset UI state
+            resetInput = ""
+            showResetSheet = false
+            isResetting = false
+        }
+
+        private var resetCodeMatches: Bool {
+            resetInput.trimmingCharacters(in: .whitespacesAndNewlines) == resetCode
         }
 
         private func scheduleSyncTimeout() {

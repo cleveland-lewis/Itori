@@ -75,7 +75,7 @@
                                 systemImage: "plus"
                             )
                         }
-                        .buttonStyle(LegacyGlassProminentButtonStyle())
+                        .buttonStyle(.itoriLiquidProminent)
                     }
                 }
             }

@@ -74,7 +74,7 @@
                         systemImage: "arrow.clockwise"
                     )
                 }
-                .buttonStyle(.itariLiquid)
+                .buttonStyle(.itoriLiquidProminent)
             }
             .padding()
             .background(.ultraThinMaterial)

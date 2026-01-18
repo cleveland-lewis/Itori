@@ -506,6 +506,9 @@
                     }
                 }
                 .formStyle(.grouped)
+                .listSectionSpacing(10)
+                .scrollContentBackground(.hidden)
+                .background(Color(nsColor: .controlBackgroundColor))
                 .scrollDisabled(true)
 
                 Spacer()

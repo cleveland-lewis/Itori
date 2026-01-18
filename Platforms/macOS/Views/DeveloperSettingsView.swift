@@ -289,6 +289,9 @@
                 }
             }
             .formStyle(.grouped)
+            .listSectionSpacing(10)
+            .scrollContentBackground(.hidden)
+            .background(Color(nsColor: .controlBackgroundColor))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .navigationTitle("Developer")
         }

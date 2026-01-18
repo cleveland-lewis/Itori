@@ -114,7 +114,7 @@
                                     systemImage: "doc.badge.plus"
                                 )
                             }
-                            .buttonStyle(.itariLiquid)
+                            .buttonStyle(.itoriLiquidProminent)
 
                             if let syllabus = course.syllabus, !syllabus.isEmpty {
                                 Text(syllabus)
@@ -132,6 +132,9 @@
                     }
                 }
                 .formStyle(.grouped)
+                .listSectionSpacing(10)
+                .scrollContentBackground(.hidden)
+                .background(Color(nsColor: .controlBackgroundColor))
                 .navigationTitle(isNewCourse ? "New Course" : "Edit Course")
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {

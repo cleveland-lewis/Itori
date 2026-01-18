@@ -183,7 +183,7 @@
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
                         }
-                        .buttonStyle(.itariLiquid)
+                        .buttonStyle(.itoriLiquidProminent)
                         .tint(item.color)
                         .keyboardShortcut(KeyEquivalent(Character(item.key)), modifiers: [])
                     }

@@ -34,6 +34,32 @@ final class SyllabusParsingStore: ObservableObject {
         return job
     }
 
+    func startParsing(job: SyllabusParsingJob, file: CourseFile) {
+        let fingerprint = FileParsingService.shared.calculateFingerprint(for: file)
+        if let jobIndex = parsingJobs.firstIndex(where: { $0.id == job.id }) {
+            parsingJobs[jobIndex].contentFingerprint = fingerprint
+            persist()
+        }
+
+        if fingerprint != file.contentFingerprint {
+            var updatedFile = file
+            updatedFile.contentFingerprint = fingerprint
+            updatedFile.updatedAt = Date()
+            CoursesStore.shared?.updateFile(updatedFile)
+        }
+
+        if let existing = parsingJobs.first(where: { $0.id == job.id }),
+           existing.status == .succeeded,
+           existing.contentFingerprint == fingerprint,
+           !parsedAssignmentsByJob(job.id).isEmpty
+        {
+            return
+        }
+
+        let fileURL = resolveFileURL(for: file)
+        startParsing(job: job, fileURL: fileURL)
+    }
+
     func updateJobStatus(_ jobId: UUID, status: ParsingJobStatus, errorMessage: String? = nil) {
         guard let index = parsingJobs.firstIndex(where: { $0.id == jobId }) else { return }
 
@@ -99,6 +125,17 @@ final class SyllabusParsingStore: ObservableObject {
         // Simulate parsing with basic heuristics
         Task {
             do {
+                var didStartSecurityScope = false
+                if let fileURL, fileURL.startAccessingSecurityScopedResource() {
+                    didStartSecurityScope = true
+                }
+
+                defer {
+                    if didStartSecurityScope {
+                        fileURL?.stopAccessingSecurityScopedResource()
+                    }
+                }
+
                 let assignments = try await parseFile(fileURL: fileURL, jobId: job.id, courseId: job.courseId)
 
                 for assignment in assignments {
@@ -277,6 +314,34 @@ final class SyllabusParsingStore: ObservableObject {
         }
 
         return nil
+    }
+
+    private func resolveFileURL(for file: CourseFile) -> URL? {
+        guard let urlString = file.localURL else { return nil }
+
+        if let bookmarkData = Data(base64Encoded: urlString) {
+            var isStale = false
+            if let resolved = try? URL(
+                resolvingBookmarkData: bookmarkData,
+                options: [.withSecurityScope],
+                relativeTo: nil,
+                bookmarkDataIsStale: &isStale
+            ) {
+                return resolved
+            }
+        }
+
+        if let url = URL(string: urlString) {
+            if url.isFileURL {
+                return url
+            }
+            if FileManager.default.fileExists(atPath: url.path) {
+                return url
+            }
+        }
+
+        let fileURL = URL(fileURLWithPath: urlString)
+        return FileManager.default.fileExists(atPath: fileURL.path) ? fileURL : nil
     }
 
     private func sendCompletionNotification(courseId: UUID) async {

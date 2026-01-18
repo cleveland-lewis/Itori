@@ -40,7 +40,7 @@ import SwiftUI
                                     comment: "Open Settings"
                                 ))
                             }
-                            .buttonStyle(.itoriLiquidProminent)
+                            .buttonStyle(.itariLiquid)
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 20)

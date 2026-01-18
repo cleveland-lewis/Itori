@@ -8,21 +8,9 @@
 
         var body: some View {
             Form {
-                Section {
-                    Text(NSLocalizedString(
-                        "settings.configure.when.and.how.itori",
-                        value: "Configure when and how Itori sends you notifications.",
-                        comment: "Configure when and how Itori sends you notificatio..."
-                    ))
-                    .foregroundStyle(.secondary)
-                }
-                .listRowBackground(Color.clear)
-
                 masterToggleSection
 
                 if settings.notificationsEnabled {
-                    timerSection
-                    pomodoroSection
                     assignmentSection
                     badgeSection
                     dailyOverviewSection
@@ -30,14 +18,22 @@
                 }
             }
             .formStyle(.grouped)
+            .listSectionSpacing(10)
+            .scrollContentBackground(.hidden)
+            .background(Color(nsColor: .controlBackgroundColor))
             .navigationTitle("Notifications")
+            .navigationSubtitle(NSLocalizedString(
+                "settings.configure.when.and.how.itori",
+                value: "Configure when and how Itori sends you notifications.",
+                comment: "Configure when and how Itori sends you notificatio..."
+            ))
             .onAppear {
                 notificationManager.refreshAuthorizationStatus()
             }
         }
 
         private var masterToggleSection: some View {
-            Section("General") {
+            Section {
                 Toggle(
                     NSLocalizedString(
                         "settings.toggle.enable.notifications",
@@ -89,58 +85,6 @@
                 "Notifications could not be enabled (\(message)). You can enable them in System Settings."
             case .notRequested, .granted:
                 "Notifications may be disabled in System Settings. Please enable them to receive alerts."
-            }
-        }
-
-        private var timerSection: some View {
-            Section("Timer") {
-                Toggle(
-                    NSLocalizedString(
-                        "settings.toggle.timer.complete.alerts",
-                        value: "Timer Complete Alerts",
-                        comment: "Timer Complete Alerts"
-                    ),
-                    isOn: $settings.timerAlertsEnabled
-                )
-                .toggleStyle(.switch)
-                .onChange(of: settings.timerAlertsEnabled) { _, _ in
-                    settings.save()
-                }
-
-                Text(NSLocalizedString(
-                    "settings.get.notified.when.countdown.or",
-                    value: "Get notified when countdown or stopwatch timers complete",
-                    comment: "Get notified when countdown or stopwatch timers co..."
-                ))
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding(.leading, 20)
-            }
-        }
-
-        private var pomodoroSection: some View {
-            Section("Pomodoro") {
-                Toggle(
-                    NSLocalizedString(
-                        "settings.toggle.pomodoro.alerts",
-                        value: "Pomodoro Alerts",
-                        comment: "Pomodoro Alerts"
-                    ),
-                    isOn: $settings.pomodoroAlertsEnabled
-                )
-                .toggleStyle(.switch)
-                .onChange(of: settings.pomodoroAlertsEnabled) { _, _ in
-                    settings.save()
-                }
-
-                Text(NSLocalizedString(
-                    "settings.get.notified.when.work.sessions",
-                    value: "Get notified when work sessions and breaks complete",
-                    comment: "Get notified when work sessions and breaks complet..."
-                ))
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding(.leading, 20)
             }
         }
 

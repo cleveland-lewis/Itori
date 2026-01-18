@@ -5,6 +5,7 @@
         case general
         case calendar
         case planner
+        case timer
         case courses
         case semesters
         case grades
@@ -24,6 +25,8 @@
                 NSLocalizedString("settings.category.calendar", comment: "Calendar")
             case .planner:
                 NSLocalizedString("settings.category.planner", comment: "Planner")
+            case .timer:
+                NSLocalizedString("settings.category.timer", comment: "Timer")
             case .courses:
                 NSLocalizedString("settings.category.courses", comment: "Courses")
             case .semesters:
@@ -48,6 +51,7 @@
             case .general: "gearshape"
             case .calendar: "calendar"
             case .planner: "pencil.and.list.clipboard"
+            case .timer: "timer"
             case .courses: "books.vertical"
             case .semesters: "graduationcap"
             case .grades: "chart.bar.doc.horizontal"
@@ -68,6 +72,8 @@
                 IOSCalendarSettingsView()
             case .planner:
                 IOSPlannerSettingsView()
+            case .timer:
+                IOSTimerSettingsView()
             case .courses:
                 IOSCoursesSettingsView()
             case .semesters:

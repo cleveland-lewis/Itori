@@ -160397,6 +160397,18 @@
           }
         }
       }
+    },
+    "assignments.course.unknown": {
+      "comment": "Unknown course",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unknown Course"
+          }
+        }
+      }
     }
   },
   "version": "1.1"

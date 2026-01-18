@@ -74,7 +74,7 @@ struct PendingScheduleSuggestionStrip: View {
                 Button(NSLocalizedString("schedulesuggestions.button.dismiss", value: "Dismiss", comment: "Dismiss")) {
                     onDismiss()
                 }
-                .foregroundStyle(.secondary)
+                .buttonStyle(.itoriLiquidProminent)
                 Spacer()
             }
         }
