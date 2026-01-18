@@ -13,7 +13,7 @@ struct InfoButton: View {
                 .font(.system(size: 13))
                 .foregroundStyle(.secondary)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.itariLiquid)
         .help(text)
         .popover(isPresented: $isHovering, arrowEdge: .trailing) {
             Text(text)

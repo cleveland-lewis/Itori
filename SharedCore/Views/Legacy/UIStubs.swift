@@ -75,7 +75,7 @@ struct AttachmentListView: View {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundStyle(.secondary)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.itariLiquid)
                 }
             }
             Button {
@@ -285,7 +285,7 @@ struct AddEventPopup: View {
                 Button(NSLocalizedString("ui.button.cancel", value: "Cancel", comment: "Cancel")) {
                     dismiss()
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.itariLiquid)
                 .foregroundColor(.secondary)
             }
             .padding(.horizontal, 20)

@@ -70,6 +70,7 @@
                 .listStyle(.insetGrouped)
                 .navigationTitle(NSLocalizedString("ios.settings.title", comment: "Settings"))
                 .navigationBarTitleDisplayMode(.large)
+                .background(Color(UIColor.systemGroupedBackground))
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {

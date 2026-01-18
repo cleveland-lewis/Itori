@@ -1791,9 +1791,10 @@
         private func syncEvents() {
             let todayEvents = todaysCalendarEvents()
             let mapped = todayEvents.map { event in
+                let timeFormatter = DateFormatter.itoriShortTime
                 DashboardEvent(
                     title: event.title,
-                    time: "\(event.startDate.formatted(date: .omitted, time: .shortened)) – \(event.endDate.formatted(date: .omitted, time: .shortened))",
+                    time: "\(timeFormatter.string(from: event.startDate)) – \(timeFormatter.string(from: event.endDate))",
                     location: event.location,
                     date: event.startDate
                 )

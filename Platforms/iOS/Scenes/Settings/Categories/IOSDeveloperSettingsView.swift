@@ -6,6 +6,7 @@ import SwiftUI
     struct IOSDeveloperSettingsView: View {
         @EnvironmentObject var settings: AppSettingsModel
         @State private var showResetAlert = false
+        @StateObject private var syncMonitor = SyncMonitor.shared
 
         var body: some View {
             List {
@@ -90,8 +91,82 @@ import SwiftUI
                         comment: "Reset settings footer"
                     ))
                 }
+
+                Section {
+                    HStack {
+                        Text(NSLocalizedString(
+                            "settings.storage.debug.cloudkit",
+                            value: "CloudKit",
+                            comment: "CloudKit debug label"
+                        ))
+                        Spacer()
+                        Text(syncMonitor.isCloudKitActive
+                            ? NSLocalizedString(
+                                "settings.storage.debug.active",
+                                value: "Active",
+                                comment: "CloudKit active"
+                            )
+                            : NSLocalizedString(
+                                "settings.storage.debug.inactive",
+                                value: "Inactive",
+                                comment: "CloudKit inactive"
+                            ))
+                            .foregroundColor(syncMonitor.isCloudKitActive ? .green : .secondary)
+                    }
+                    if let lastSync = syncMonitor.lastRemoteChange {
+                        HStack {
+                            Text(NSLocalizedString(
+                                "settings.storage.debug.last_sync",
+                                value: "Last Sync",
+                                comment: "CloudKit last sync label"
+                            ))
+                            Spacer()
+                            Text(lastSync.formatted(.relative(presentation: .numeric)))
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    if let lastError = syncMonitor.lastError {
+                        HStack(alignment: .top) {
+                            Text(NSLocalizedString(
+                                "settings.storage.debug.last_error",
+                                value: "Last Error",
+                                comment: "CloudKit last error label"
+                            ))
+                            Spacer()
+                            Text(lastError)
+                                .foregroundColor(.red)
+                                .multilineTextAlignment(.trailing)
+                        }
+                    }
+                    if let latest = syncMonitor.syncEvents.first {
+                        HStack(alignment: .top) {
+                            Text(NSLocalizedString(
+                                "settings.storage.debug.latest_event",
+                                value: "Latest Event",
+                                comment: "CloudKit latest event label"
+                            ))
+                            Spacer()
+                            Text(latest.details)
+                                .foregroundColor(.secondary)
+                                .multilineTextAlignment(.trailing)
+                        }
+                    }
+                } header: {
+                    Text(NSLocalizedString(
+                        "settings.storage.debug.header",
+                        value: "iCloud Debug",
+                        comment: "CloudKit debug header"
+                    ))
+                } footer: {
+                    Text(NSLocalizedString(
+                        "settings.storage.debug.footer",
+                        value: "Debug-only iCloud status and recent sync activity.",
+                        comment: "CloudKit debug footer"
+                    ))
+                }
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString("settings.category.developer", comment: "Developer"))
             .navigationBarTitleDisplayMode(.inline)
             .alert(

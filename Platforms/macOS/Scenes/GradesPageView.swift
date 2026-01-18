@@ -1090,7 +1090,7 @@
                     }
                 }
                 .formStyle(.grouped)
-                .listSectionSpacing(10)
+                .compactFormSections()
                 .scrollContentBackground(.hidden)
                 .background(Color(nsColor: .controlBackgroundColor))
                 .navigationTitle("Edit Target for \(course.courseCode)")
@@ -1279,7 +1279,7 @@
                     }
                 }
                 .formStyle(.grouped)
-                .listSectionSpacing(10)
+                .compactFormSections()
                 .scrollContentBackground(.hidden)
                 .background(Color(nsColor: .controlBackgroundColor))
                 .navigationTitle("Export Grades")

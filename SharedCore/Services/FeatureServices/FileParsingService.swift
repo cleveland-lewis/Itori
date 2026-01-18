@@ -513,9 +513,15 @@ final class FileParsingService: ObservableObject {
 
         if let bookmarkData = Data(base64Encoded: urlString) {
             var isStale = false
+            #if os(macOS)
+                let options: URL.BookmarkResolutionOptions = [.withSecurityScope]
+            #else
+                let options: URL.BookmarkResolutionOptions = []
+            #endif
+
             if let resolved = try? URL(
                 resolvingBookmarkData: bookmarkData,
-                options: [.withSecurityScope],
+                options: options,
                 relativeTo: nil,
                 bookmarkDataIsStale: &isStale
             ) {

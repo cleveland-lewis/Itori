@@ -78,6 +78,7 @@ import SwiftUI
                 }
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString("settings.category.courses", comment: "Courses"))
             .navigationBarTitleDisplayMode(.inline)
         }

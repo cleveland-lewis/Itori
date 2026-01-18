@@ -34,7 +34,7 @@ public struct EstimationInfoView: View {
                         Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                             .foregroundColor(.secondary)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.itariLiquid)
                 }
             }
 

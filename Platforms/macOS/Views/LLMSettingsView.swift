@@ -164,7 +164,7 @@
                 }
             }
             .formStyle(.grouped)
-            .listSectionSpacing(10)
+            .compactFormSections()
             .scrollContentBackground(.hidden)
             .background(Color(nsColor: .controlBackgroundColor))
             .frame(minWidth: 500, minHeight: 600)

@@ -40,7 +40,7 @@
             case .privacy:
                 NSLocalizedString("settings.category.privacy", comment: "Privacy")
             case .storage:
-                NSLocalizedString("settings.category.storage", comment: "Storage")
+                NSLocalizedString("settings.category.storage", value: "Data", comment: "Storage")
             case .developer:
                 NSLocalizedString("settings.category.developer", comment: "Developer")
             }

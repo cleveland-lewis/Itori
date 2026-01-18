@@ -49,6 +49,7 @@ import SwiftUI
                 }
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString("settings.category.flashcards", comment: "Flashcards"))
             .navigationBarTitleDisplayMode(.inline)
         }

@@ -112,7 +112,7 @@ import SwiftUI
                     .frame(width: headerButtonSize, height: headerButtonSize)
                     .background(.ultraThinMaterial, in: Circle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.itariLiquid)
             .accessibilityLabelWithTooltip("Quick add and settings")
             .conditionalHelp("Quick add and settings")
             .accessibilityHint("Opens quick actions and settings")
@@ -134,7 +134,7 @@ import SwiftUI
                     .frame(width: headerButtonSize, height: headerButtonSize)
                     .background(.ultraThinMaterial, in: Circle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.itariLiquid)
             .accessibilityLabelWithTooltip("Quick add")
             .conditionalHelp("Quick add")
             .accessibilityHint("Opens quick add actions")
@@ -159,7 +159,7 @@ import SwiftUI
                             .frame(height: energyPillHeight)
                             .background(.ultraThinMaterial, in: Capsule())
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.itariLiquid)
                     .accessibilityLabelWithTooltip("Energy level")
                     .conditionalHelp("Energy level")
                 }
@@ -185,7 +185,7 @@ import SwiftUI
                     .frame(width: headerButtonSize, height: headerButtonSize)
                     .background(.ultraThinMaterial, in: Circle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.itariLiquid)
             .accessibilityLabelWithTooltip("Settings")
             .conditionalHelp("Settings")
             .accessibilityHint("Opens settings")

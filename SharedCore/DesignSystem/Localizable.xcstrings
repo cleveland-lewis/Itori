@@ -133810,6 +133810,12 @@
             "state": "translated",
             "value": "課程"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "value": "Courses",
+            "state": "translated"
+          }
         }
       }
     },
@@ -134029,6 +134035,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "設置.類別.開發者"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "value": "Developer",
+            "state": "translated"
           }
         }
       }
@@ -134690,6 +134702,12 @@
             "state": "translated",
             "value": "設置.類別.規劃器"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "value": "Planner",
+            "state": "translated"
+          }
         }
       }
     },
@@ -135204,7 +135222,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Storage"
+            "value": "Data"
           }
         },
         "es": {
@@ -145713,7 +145731,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Data Storage"
+            "value": "Data"
           }
         },
         "es": {
@@ -148413,7 +148431,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Storage"
+            "value": "Data"
           }
         },
         "es": {
@@ -148763,7 +148781,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Clearing cache can free up storage space and may improve performance"
+            "value": "Clearing cache can free up data space and may improve performance"
           }
         },
         "es": {
@@ -149066,7 +149084,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Storage Used"
+            "value": "Data Used"
           }
         },
         "es": {
@@ -160406,6 +160424,54 @@
           "stringUnit": {
             "state": "translated",
             "value": "Unknown Course"
+          }
+        }
+      }
+    },
+    "settings.reset.all.data.hint": {
+      "comment": "Accessibility hint for reset all data button",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permanently deletes all app data"
+          }
+        }
+      }
+    },
+    "ui.label.open.file.hint": {
+      "comment": "Accessibility hint for open file button",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens the file in its default application"
+          }
+        }
+      }
+    },
+    "ui.label.parse.file.hint": {
+      "comment": "Accessibility hint for parse file button",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extracts assignments and events from the file"
+          }
+        }
+      }
+    },
+    "ui.label.delete.file.hint": {
+      "comment": "Accessibility hint for delete file button",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permanently removes this file"
           }
         }
       }

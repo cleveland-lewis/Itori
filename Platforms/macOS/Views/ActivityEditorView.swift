@@ -116,7 +116,7 @@
                         }
                     }
                 }
-                .listSectionSpacing(10)
+                .compactFormSections()
                 .navigationTitle(isEditing ? "Edit Activity" : "New Activity")
                 #if os(iOS) || os(tvOS)
                     .navigationBarTitleDisplayMode(.inline)

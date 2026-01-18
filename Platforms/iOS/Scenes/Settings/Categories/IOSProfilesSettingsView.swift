@@ -73,6 +73,7 @@ import SwiftUI
                 }
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString("settings.category.profiles", comment: "Profiles"))
             .navigationBarTitleDisplayMode(.inline)
         }

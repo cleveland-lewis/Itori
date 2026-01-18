@@ -55,6 +55,13 @@
                             }
                         }
                         .pickerStyle(.menu)
+                        Text(NSLocalizedString(
+                            "ui.module.type.hint",
+                            value: "Types are purely aesthetic.",
+                            comment: "Module type hint"
+                        ))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     }
                 }
                 .padding(16)

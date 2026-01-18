@@ -220,7 +220,7 @@
                             .accessibilityHidden(true)
                     }
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.itariLiquid)
 
                 if isExpanded {
                     Divider()
@@ -332,8 +332,10 @@
         private func formattedDate(_ date: Date) -> String {
             let formatter = DateFormatter()
             formatter.dateStyle = .medium
-            formatter.timeStyle = .short
-            return formatter.string(from: date)
+            formatter.timeStyle = .none
+            let datePart = formatter.string(from: date)
+            let timePart = AppSettingsModel.shared.formattedTime(date)
+            return "\(datePart) \(timePart)"
         }
     }
 

@@ -193,7 +193,7 @@
                     }
 
                     HStack(spacing: 12) {
-                        Label(test.scheduledAt.formatted(date: .abbreviated, time: .shortened), systemImage: "clock")
+                        Label(formattedScheduleDate(test.scheduledAt), systemImage: "clock")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
 
@@ -249,6 +249,15 @@
             case .archived:
                 Color.secondary.opacity(0.1)
             }
+        }
+
+        private func formattedScheduleDate(_ date: Date) -> String {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .abbreviated
+            formatter.timeStyle = .none
+            let datePart = formatter.string(from: date)
+            let timePart = AppSettingsModel.shared.formattedTime(date)
+            return "\(datePart) \(timePart)"
         }
     }
 

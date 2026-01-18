@@ -44,6 +44,7 @@
                     }
                     .buttonStyle(.itoriLiquidProminent)
                 }
+                .padding(.horizontal, 18)
 
                 // Modules List
                 VStack(alignment: .leading, spacing: 12) {
@@ -190,7 +191,7 @@
 
                 // File info
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(file.filename)
+                    Text(fileDisplayName)
                         .font(.body)
                         .foregroundStyle(.primary)
                         .lineLimit(1)
@@ -330,6 +331,12 @@
                         systemImage: "arrow.up.right.square"
                     )
                 }
+                .accessibilityLabel(NSLocalizedString("ui.label.open.file", value: "Open File", comment: "Open File"))
+                .accessibilityHint(NSLocalizedString(
+                    "ui.label.open.file.hint",
+                    value: "Opens the file in its default application",
+                    comment: "Accessibility hint for open file"
+                ))
 
                 Button {
                     parseFile()
@@ -340,6 +347,16 @@
                     )
                 }
                 .disabled(file.parseStatus == .parsing)
+                .accessibilityLabel(NSLocalizedString(
+                    "ui.label.parse.file",
+                    value: "Parse File",
+                    comment: "Parse File"
+                ))
+                .accessibilityHint(NSLocalizedString(
+                    "ui.label.parse.file.hint",
+                    value: "Extracts assignments and events from the file",
+                    comment: "Accessibility hint for parse file"
+                ))
 
                 Divider()
 
@@ -351,6 +368,16 @@
                         systemImage: "trash"
                     )
                 }
+                .accessibilityLabel(NSLocalizedString(
+                    "ui.label.delete.file",
+                    value: "Delete File",
+                    comment: "Delete File"
+                ))
+                .accessibilityHint(NSLocalizedString(
+                    "ui.label.delete.file.hint",
+                    value: "Permanently removes this file",
+                    comment: "Accessibility hint for delete file"
+                ))
             }
             .alert("Parse Error", isPresented: $showErrorAlert) {
                 Button(NSLocalizedString("OK", value: "OK", comment: ""), role: .cancel) {}
@@ -432,6 +459,14 @@
             case "png", "jpg", "jpeg": return "photo"
             default: return "doc"
             }
+        }
+
+        private var fileDisplayName: String {
+            let filename = file.filename
+            guard let lastDotIndex = filename.lastIndex(of: ".") else {
+                return filename
+            }
+            return String(filename[..<lastDotIndex])
         }
     }
 

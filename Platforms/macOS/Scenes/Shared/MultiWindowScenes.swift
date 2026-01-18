@@ -201,13 +201,7 @@ struct PlannerSceneContent: View {
     }
 
     private func timeRange(for session: StoredScheduledSession) -> String {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        formatter.dateStyle = .none
-        // Override for 24-hour time preference
-        if AppSettingsModel.shared.use24HourTime {
-            formatter.dateFormat = "HH:mm"
-        }
+        let formatter = DateFormatter.itoriShortTime
         return "\(formatter.string(from: session.start)) – \(formatter.string(from: session.end))"
     }
 }

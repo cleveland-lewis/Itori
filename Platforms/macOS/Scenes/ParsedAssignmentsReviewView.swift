@@ -180,7 +180,12 @@
             else {
                 return NSLocalizedString("assignments.parse.unknown_source", comment: "")
             }
-            return file.filename
+            // Strip file extension from filename
+            let filename = file.filename
+            guard let lastDotIndex = filename.lastIndex(of: ".") else {
+                return filename
+            }
+            return String(filename[..<lastDotIndex])
         }
 
         private func importApprovedAssignments() {
@@ -377,7 +382,7 @@
                     TextField(NSLocalizedString("assignments.form.type", comment: ""), text: $inferredType)
                 }
                 .formStyle(.grouped)
-                .listSectionSpacing(10)
+                .compactFormSections()
                 .scrollContentBackground(.hidden)
                 .background(Color(nsColor: .controlBackgroundColor))
 

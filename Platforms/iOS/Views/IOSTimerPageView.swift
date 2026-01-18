@@ -516,7 +516,7 @@
                             Color(uiColor: .tertiarySystemGroupedBackground))
                 )
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.itoriLiquidProminent)
             .contextMenu {
                 Button {
                     togglePin(activity)
@@ -562,7 +562,7 @@
                     } label: {
                         collectionChip(title: "All", isSelected: selectedCollectionID == nil)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.itoriLiquidProminent)
 
                     ForEach(viewModel.collections) { collection in
                         Button {
@@ -570,7 +570,7 @@
                         } label: {
                             collectionChip(title: collection.name, isSelected: selectedCollectionID == collection.id)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.itoriLiquidProminent)
                     }
                 }
             }
@@ -666,12 +666,8 @@
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(uiColor: .secondarySystemBackground))
-                    )
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.itariLiquid)
 
                 Button {
                     showingAddSession = true
@@ -682,12 +678,8 @@
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color(uiColor: .secondarySystemBackground))
-                    )
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.itariLiquid)
             }
             .sheet(isPresented: $showingRecentSessions) {
                 RecentSessionsView(viewModel: viewModel)

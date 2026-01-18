@@ -30,12 +30,14 @@ import SwiftUI
 
                             Text(NSLocalizedString(
                                 "settings.calendar.not_authorized.title",
+                                value: "Calendar Access Required",
                                 comment: "Calendar Access Required"
                             ))
                             .font(.headline)
 
                             Text(NSLocalizedString(
                                 "settings.calendar.not_authorized.message",
+                                value: "Grant calendar access to sync events with your schedule",
                                 comment: "Grant calendar access to sync events with your schedule"
                             ))
                             .font(.subheadline)
@@ -47,7 +49,11 @@ import SwiftUI
                                     _ = await deviceCalendar.requestFullAccessIfNeeded()
                                 }
                             } label: {
-                                Text(NSLocalizedString("settings.calendar.request_access", comment: "Request Access"))
+                                Text(NSLocalizedString(
+                                    "settings.calendar.request_access",
+                                    value: "Request Access",
+                                    comment: "Request Access"
+                                ))
                             }
                             .buttonStyle(.itoriLiquidProminent)
                         }
@@ -69,8 +75,12 @@ import SwiftUI
                                 }
                             }
                         )) {
-                            Text(NSLocalizedString("settings.calendar.select_calendar", comment: "Select a Calendar"))
-                                .tag(String?.none)
+                            Text(NSLocalizedString(
+                                "settings.calendar.select_calendar",
+                                value: "Select a Calendar",
+                                comment: "Select a Calendar"
+                            ))
+                            .tag(String?.none)
 
                             ForEach(deviceCalendar.getAvailableCalendars(), id: \.calendarIdentifier) { calendar in
                                 HStack {
@@ -94,14 +104,20 @@ import SwiftUI
                         } label: {
                             Text(NSLocalizedString(
                                 "settings.calendar.school_calendar.label",
+                                value: "School Calendar",
                                 comment: "School Calendar"
                             ))
                         }
                     } header: {
-                        Text(NSLocalizedString("settings.calendar.school_calendar.header", comment: "School Calendar"))
+                        Text(NSLocalizedString(
+                            "settings.calendar.school_calendar.header",
+                            value: "School Calendar",
+                            comment: "School Calendar"
+                        ))
                     } footer: {
                         Text(NSLocalizedString(
                             "settings.calendar.school_calendar.footer",
+                            value: "Select the calendar to use for event tracking and scheduling",
                             comment: "Select the calendar to use for event tracking and scheduling"
                         ))
                     }
@@ -123,18 +139,43 @@ import SwiftUI
                                 }
                             }
                         )) {
-                            Text(NSLocalizedString("settings.calendar.range.1_week", comment: "1 Week")).tag(0)
-                            Text(NSLocalizedString("settings.calendar.range.2_weeks", comment: "2 Weeks")).tag(1)
-                            Text(NSLocalizedString("settings.calendar.range.1_month", comment: "1 Month")).tag(2)
-                            Text(NSLocalizedString("settings.calendar.range.2_months", comment: "2 Months")).tag(3)
+                            Text(NSLocalizedString(
+                                "settings.calendar.range.1_week",
+                                value: "1 Week",
+                                comment: "1 Week"
+                            )).tag(0)
+                            Text(NSLocalizedString(
+                                "settings.calendar.range.2_weeks",
+                                value: "2 Weeks",
+                                comment: "2 Weeks"
+                            )).tag(1)
+                            Text(NSLocalizedString(
+                                "settings.calendar.range.1_month",
+                                value: "1 Month",
+                                comment: "1 Month"
+                            )).tag(2)
+                            Text(NSLocalizedString(
+                                "settings.calendar.range.2_months",
+                                value: "2 Months",
+                                comment: "2 Months"
+                            )).tag(3)
                         } label: {
-                            Text(NSLocalizedString("settings.calendar.refresh_range", comment: "Refresh Range"))
+                            Text(NSLocalizedString(
+                                "settings.calendar.refresh_range",
+                                value: "Refresh Range",
+                                comment: "Refresh Range"
+                            ))
                         }
                     } header: {
-                        Text(NSLocalizedString("settings.calendar.scheduling.header", comment: "Scheduling"))
+                        Text(NSLocalizedString(
+                            "settings.calendar.scheduling.header",
+                            value: "Scheduling",
+                            comment: "Scheduling"
+                        ))
                     } footer: {
                         Text(NSLocalizedString(
                             "settings.calendar.scheduling.footer",
+                            value: "How far ahead to scan for events when refreshing",
                             comment: "How far ahead to scan for events when refreshing"
                         ))
                     }
@@ -144,15 +185,18 @@ import SwiftUI
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(NSLocalizedString(
                                     "settings.calendar.show_only_school",
+                                    value: "Show Only School Calendar",
                                     comment: "Show Only School Calendar"
                                 ))
                                 Text(settings.showOnlySchoolCalendar
                                     ? NSLocalizedString(
                                         "settings.calendar.show_only_school.enabled",
+                                        value: "Calendar UI will only show events from your school calendar",
                                         comment: "Calendar UI will only show events from your school calendar"
                                     )
                                     : NSLocalizedString(
                                         "settings.calendar.show_only_school.disabled",
+                                        value: "Calendar UI will show events from all calendars",
                                         comment: "Calendar UI will show events from all calendars"
                                     ))
                                     .font(.caption)
@@ -166,7 +210,11 @@ import SwiftUI
                             }
                         }
                     } header: {
-                        Text(NSLocalizedString("settings.calendar.view_filter.header", comment: "Calendar View"))
+                        Text(NSLocalizedString(
+                            "settings.calendar.view_filter.header",
+                            value: "Calendar View",
+                            comment: "Calendar View"
+                        ))
                     }
 
                     Section {
@@ -176,6 +224,7 @@ import SwiftUI
                             HStack {
                                 Text(NSLocalizedString(
                                     "settings.calendar.revoke_access",
+                                    value: "Revoke Calendar Access",
                                     comment: "Revoke Calendar Access"
                                 ))
                                 Spacer()
@@ -184,29 +233,40 @@ import SwiftUI
                     } footer: {
                         Text(NSLocalizedString(
                             "settings.calendar.revoke_access.footer",
+                            value: "Remove calendar access and clear all synced events. You'll need to manually revoke permission in iOS Settings.",
                             comment: "Remove calendar access and clear all synced events. You'll need to manually revoke permission in iOS Settings."
                         ))
                     }
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle(NSLocalizedString("settings.category.calendar", comment: "Calendar"))
+            .background(Color(UIColor.systemGroupedBackground))
+            .navigationTitle(NSLocalizedString("settings.category.calendar", value: "Calendar", comment: "Calendar"))
             .navigationBarTitleDisplayMode(.inline)
             .confirmationDialog(
-                NSLocalizedString("settings.calendar.revoke_access.confirm.title", comment: "Revoke Calendar Access?"),
+                NSLocalizedString(
+                    "settings.calendar.revoke_access.confirm.title",
+                    value: "Revoke Calendar Access?",
+                    comment: "Revoke Calendar Access?"
+                ),
                 isPresented: $showRevokeConfirmation,
                 titleVisibility: .visible
             ) {
                 Button(
-                    NSLocalizedString("settings.calendar.revoke_access.confirm.button", comment: "Revoke Access"),
+                    NSLocalizedString(
+                        "settings.calendar.revoke_access.confirm.button",
+                        value: "Revoke Access",
+                        comment: "Revoke Access"
+                    ),
                     role: .destructive
                 ) {
                     deviceCalendar.revokeAccess()
                 }
-                Button(NSLocalizedString("common.cancel", comment: "Cancel"), role: .cancel) {}
+                Button(NSLocalizedString("common.cancel", value: "Cancel", comment: "Cancel"), role: .cancel) {}
             } message: {
                 Text(NSLocalizedString(
                     "settings.calendar.revoke_access.confirm.message",
+                    value: "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Itori > Calendars.",
                     comment: "This will clear all synced calendar data. You'll need to manually revoke permission in iOS Settings > Itori > Calendars."
                 ))
             }

@@ -99,6 +99,7 @@ import SwiftUI
                 }
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString(
                 "settings.category.active_semesters",
                 value: "Active Semesters",

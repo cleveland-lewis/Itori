@@ -7,28 +7,10 @@ import SwiftUI
 
         var body: some View {
             List {
-                Section {
-                    Picker("Grade Display Format", selection: Binding(
-                        get: { settings.gradeScale },
-                        set: { newValue in
-                            settings.gradeScale = newValue
-                            settings.save()
-                        }
-                    )) {
-                        ForEach(GradeScale.allCases) { scale in
-                            Text(scale.label).tag(scale)
-                        }
-                    }
-                    .pickerStyle(.inline)
-                } header: {
-                    Text("Grade Scale")
-                } footer: {
-                    Text(settings.gradeScale.description)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
+                // Empty for now - Grade Display Format removed
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString("settings.category.grades", value: "Grades", comment: "Grades"))
             .navigationBarTitleDisplayMode(.inline)
         }

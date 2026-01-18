@@ -29,7 +29,7 @@ struct GlassAccentIconButton: View {
                 .contentShape(Circle())
             #endif
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.itariLiquid)
         .onHover { hovering in
             #if canImport(AppKit)
                 if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }
@@ -68,7 +68,7 @@ struct GlassSecondaryIconButton: View {
                 .contentShape(Circle())
             #endif
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.itariLiquid)
         .onHover { hovering in
             #if canImport(AppKit)
                 if hovering { NSCursor.pointingHand.push() } else { NSCursor.pop() }

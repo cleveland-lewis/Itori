@@ -118,6 +118,7 @@
                     .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 20)
         }
 
         private var assignmentsCard: some View {

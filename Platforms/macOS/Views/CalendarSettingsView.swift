@@ -187,7 +187,7 @@
                 }
             }
             .formStyle(.grouped)
-            .listSectionSpacing(10)
+            .compactFormSections()
             .scrollContentBackground(.hidden)
             .background(Color(nsColor: .controlBackgroundColor))
             .navigationTitle("Calendar")
@@ -292,7 +292,7 @@
                                 await syncManager.performFullSync()
                             }
                         }
-                        .buttonStyle(.itariLiquidProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                         .tint(.accentColor)
                         .controlSize(.small)
                     }

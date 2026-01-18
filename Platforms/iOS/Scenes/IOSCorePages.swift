@@ -478,7 +478,7 @@
                                     .foregroundStyle(task.isCompleted ? Color.accentColor : Color.secondary)
                                     .accessibilityHidden(true)
                             }
-                            .buttonStyle(.plain)
+                            .buttonStyle(.itoriLiquidProminent)
                             .accessibilityLabel(task.isCompleted ? "Mark as incomplete" : "Mark as complete")
                             .accessibilityHint(task.isCompleted ? "Marks task as not done" : "Marks task as done")
                             .accessibilityAddTraits(.isButton)
@@ -1078,7 +1078,7 @@
                                     .fill(Color(uiColor: .secondarySystemGroupedBackground))
                             )
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.itariLiquid)
                         .accessibilityElement(children: .combine)
                         .accessibilityLabel(String(
                             format: NSLocalizedString(
@@ -1237,7 +1237,7 @@
                         .fill(Color(uiColor: .secondarySystemGroupedBackground))
                 )
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.itariLiquid)
             .accessibilityElement(children: .combine)
             .accessibilityLabel(
                 "Ready to start, \(test.courseName), \(test.questionCount) questions, \(test.difficulty.rawValue) difficulty"
@@ -1289,7 +1289,7 @@
                         .fill(Color(uiColor: .secondarySystemGroupedBackground))
                 )
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.itariLiquid)
             .fullScreenCover(isPresented: Binding(
                 get: { test.status == .inProgress },
                 set: { _ in }
@@ -1335,7 +1335,7 @@
                         .fill(Color(uiColor: .secondarySystemGroupedBackground))
                 )
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.itariLiquid)
             .fullScreenCover(isPresented: Binding(
                 get: { test.status == .submitted },
                 set: { _ in }
@@ -1375,13 +1375,8 @@
                         .font(.subheadline.bold())
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 8)
-                        .background(
-                            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                .fill(Color.blue)
-                        )
-                        .foregroundStyle(.white)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.itoriLiquidProminent)
             }
             .padding(metrics.cardPadding)
             .background(
@@ -1419,13 +1414,8 @@
                         .font(.subheadline.bold())
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
-                        .background(
-                            Capsule()
-                                .fill(Color.blue)
-                        )
-                        .foregroundStyle(.white)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.itoriLiquidProminent)
             }
             .frame(maxWidth: .infinity)
             .padding(32)
@@ -1598,7 +1588,7 @@
                                     Text(task.isCompleted ? "Completed" : "Mark as Complete")
                                 }
                             }
-                            .buttonStyle(.plain)
+                            .buttonStyle(.itoriLiquidProminent)
                             .accessibilityLabel(task.isCompleted ? "Mark as incomplete" : "Mark as complete")
                             .accessibilityHint(task.isCompleted ? "Marks task as not done" : "Marks task as done")
                             .accessibilityAddTraits(.isButton)

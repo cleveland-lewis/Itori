@@ -397,7 +397,7 @@
                 }
                 .padding(.vertical, 4)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.itariLiquid)
         }
 
         private var durationString: String {
@@ -415,10 +415,7 @@
         }
 
         private var timeFormatter: DateFormatter {
-            let formatter = DateFormatter()
-            formatter.dateStyle = .none
-            formatter.timeStyle = .short
-            return formatter
+            DateFormatter.itoriShortTime
         }
     }
 #endif

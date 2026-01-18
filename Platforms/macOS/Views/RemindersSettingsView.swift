@@ -107,7 +107,7 @@
                 }
             }
             .listStyle(.sidebar)
-            .listSectionSpacing(10)
+            .compactFormSections()
             .alert("Disable Reminders Sync", isPresented: $showingRevokeAlert) {
                 Button(NSLocalizedString(
                     "settings.button.open.system.settings",

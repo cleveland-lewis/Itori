@@ -39,7 +39,7 @@ enum PlannerCalendarSync {
     static let plannerSource = "planner"
     static let metadataStart = "[ItoriPlanner]"
     static let metadataEnd = "[/ItoriPlanner]"
-    static let metadataURLScheme = "itori-planner"
+    static let metadataURLScheme = "itori"
 
     static func buildBlocks(
         from sessions: [StoredScheduledSession],
@@ -322,7 +322,7 @@ enum PlannerCalendarSync {
     static func metadataURL(for block: PlannerCalendarBlock) -> URL? {
         var components = URLComponents()
         components.scheme = metadataURLScheme
-        components.host = "planner"
+        components.path = "/planner"
         components.queryItems = [
             URLQueryItem(name: "block_id", value: block.id),
             URLQueryItem(name: "source", value: plannerSource),

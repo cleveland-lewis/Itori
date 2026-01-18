@@ -122,6 +122,7 @@
             .sheet(isPresented: $showSettingsSheet) {
                 SettingsRootView()
                     .environmentObject(settings)
+                    .environmentObject(coursesStore)
             }
 
             contentView

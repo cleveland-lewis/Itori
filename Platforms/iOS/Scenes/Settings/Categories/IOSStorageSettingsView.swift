@@ -16,6 +16,11 @@ import SwiftUI
         @State private var showingExportSheet = false
         @State private var shareItem: ShareItem?
         @State private var isExporting = false
+        @State private var exportIncludeTasks = true
+        @State private var exportIncludeCourses = true
+        @State private var exportIncludeSemesters = true
+        @State private var exportIncludePlannerSessions = true
+        @State private var exportIncludeSettings = true
         @State private var exportError: String?
         @State private var statusLabel: String = NSLocalizedString(
             "settings.storage.status.disconnected",
@@ -30,15 +35,11 @@ import SwiftUI
         @State private var resetInput: String = ""
         @State private var isResetting = false
 
-        #if DEBUG
-            @StateObject private var syncMonitor = SyncMonitor.shared
-        #endif
-
         var body: some View {
             List {
                 Section {
                     HStack {
-                        Text(NSLocalizedString("settings.storage.used", comment: "Storage Used"))
+                        Text(NSLocalizedString("settings.storage.used", value: "Data Used", comment: "Storage Used"))
                         Spacer()
                         Text(storageSize)
                             .foregroundColor(.secondary)
@@ -55,7 +56,7 @@ import SwiftUI
                             .lineLimit(1)
                     }
                 } header: {
-                    Text(NSLocalizedString("settings.storage.info.header", comment: "Storage"))
+                    Text(NSLocalizedString("settings.storage.info.header", value: "Data", comment: "Storage"))
                 }
 
                 Section {
@@ -94,7 +95,7 @@ import SwiftUI
                     .font(.caption2)
                     .foregroundColor(.secondary)
                 } header: {
-                    Text(NSLocalizedString("settings.privacy.data.header", comment: "Data Storage"))
+                    Text(NSLocalizedString("settings.privacy.data.header", value: "Data", comment: "Data Storage"))
                 } footer: {
                     if PersistenceController.shared.isCloudKitEnabled {
                         Text(NSLocalizedString(
@@ -110,88 +111,17 @@ import SwiftUI
                     }
                 }
 
-                #if DEBUG
-                    Section {
-                        HStack {
-                            Text(NSLocalizedString(
-                                "settings.storage.debug.cloudkit",
-                                value: "CloudKit",
-                                comment: "CloudKit debug label"
-                            ))
-                            Spacer()
-                            Text(syncMonitor.isCloudKitActive
-                                ? NSLocalizedString(
-                                    "settings.storage.debug.active",
-                                    value: "Active",
-                                    comment: "CloudKit active"
-                                )
-                                : NSLocalizedString(
-                                    "settings.storage.debug.inactive",
-                                    value: "Inactive",
-                                    comment: "CloudKit inactive"
-                                ))
-                                .foregroundColor(syncMonitor.isCloudKitActive ? .green : .secondary)
-                        }
-                        if let lastSync = syncMonitor.lastRemoteChange {
-                            HStack {
-                                Text(NSLocalizedString(
-                                    "settings.storage.debug.last_sync",
-                                    value: "Last Sync",
-                                    comment: "CloudKit last sync label"
-                                ))
-                                Spacer()
-                                Text(lastSync.formatted(.relative(presentation: .numeric)))
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                        if let lastError = syncMonitor.lastError {
-                            HStack(alignment: .top) {
-                                Text(NSLocalizedString(
-                                    "settings.storage.debug.last_error",
-                                    value: "Last Error",
-                                    comment: "CloudKit last error label"
-                                ))
-                                Spacer()
-                                Text(lastError)
-                                    .foregroundColor(.red)
-                                    .multilineTextAlignment(.trailing)
-                            }
-                        }
-                        if let latest = syncMonitor.syncEvents.first {
-                            HStack(alignment: .top) {
-                                Text(NSLocalizedString(
-                                    "settings.storage.debug.latest_event",
-                                    value: "Latest Event",
-                                    comment: "CloudKit latest event label"
-                                ))
-                                Spacer()
-                                Text(latest.details)
-                                    .foregroundColor(.secondary)
-                                    .multilineTextAlignment(.trailing)
-                            }
-                        }
-                    } header: {
-                        Text(NSLocalizedString(
-                            "settings.storage.debug.header",
-                            value: "iCloud Debug",
-                            comment: "CloudKit debug header"
-                        ))
-                    } footer: {
-                        Text(NSLocalizedString(
-                            "settings.storage.debug.footer",
-                            value: "Debug-only iCloud status and recent sync activity.",
-                            comment: "CloudKit debug footer"
-                        ))
-                    }
-                #endif
-
                 Section {
                     Button {
                         showingClearCacheConfirmation = true
                     } label: {
                         HStack {
                             Image(systemName: "trash")
-                            Text(NSLocalizedString("settings.storage.clear_cache", comment: "Clear Cache"))
+                            Text(NSLocalizedString(
+                                "settings.storage.clear_cache",
+                                value: "Clear Cache",
+                                comment: "Clear Cache"
+                            ))
                         }
                     }
                     .confirmationDialog(
@@ -212,10 +142,15 @@ import SwiftUI
                         ))
                     }
                 } header: {
-                    Text(NSLocalizedString("settings.storage.maintenance.header", comment: "Maintenance"))
+                    Text(NSLocalizedString(
+                        "settings.storage.maintenance.header",
+                        value: "Maintenance",
+                        comment: "Maintenance"
+                    ))
                 } footer: {
                     Text(NSLocalizedString(
                         "settings.storage.maintenance.footer",
+                        value: "Clearing cache can free up data space and may improve performance",
                         comment: "Clearing cache can free up storage space and may improve performance"
                     ))
                 }
@@ -226,14 +161,19 @@ import SwiftUI
                     } label: {
                         HStack {
                             Image(systemName: "square.and.arrow.up")
-                            Text(NSLocalizedString("settings.storage.export", comment: "Export Data"))
+                            Text(NSLocalizedString(
+                                "settings.storage.export",
+                                value: "Export Data",
+                                comment: "Export Data"
+                            ))
                         }
                     }
                 } header: {
-                    Text(NSLocalizedString("settings.storage.backup.header", comment: "Backup"))
+                    Text(NSLocalizedString("settings.storage.backup.header", value: "Backup", comment: "Backup"))
                 } footer: {
                     Text(NSLocalizedString(
                         "settings.storage.backup.footer",
+                        value: "Export your data as a backup file",
                         comment: "Export your data as a backup file"
                     ))
                 }
@@ -246,6 +186,7 @@ import SwiftUI
                     } label: {
                         HStack {
                             Image(systemName: "exclamationmark.triangle")
+                                .accessibilityHidden(true)
                             Text(NSLocalizedString(
                                 "settings.reset.all.data",
                                 value: "Reset All Data",
@@ -254,6 +195,16 @@ import SwiftUI
                         }
                         .foregroundStyle(.red)
                     }
+                    .accessibilityLabel(NSLocalizedString(
+                        "settings.reset.all.data",
+                        value: "Reset All Data",
+                        comment: "Reset All Data"
+                    ))
+                    .accessibilityHint(NSLocalizedString(
+                        "settings.reset.all.data.hint",
+                        value: "Permanently deletes all app data",
+                        comment: "Accessibility hint for reset button"
+                    ))
                 } header: {
                     Text(NSLocalizedString(
                         "settings.storage.danger_zone.header",
@@ -269,7 +220,8 @@ import SwiftUI
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle(NSLocalizedString("settings.category.storage", comment: "Storage"))
+            .background(Color(UIColor.systemGroupedBackground))
+            .navigationTitle(NSLocalizedString("settings.category.storage", value: "Data", comment: "Storage"))
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 calculateStorageSize()
@@ -413,6 +365,11 @@ import SwiftUI
 
         private var exportView: some View {
             NavigationStack {
+                let hasSelection = exportIncludeTasks
+                    || exportIncludeCourses
+                    || exportIncludeSemesters
+                    || exportIncludePlannerSessions
+                    || exportIncludeSettings
                 VStack(spacing: 20) {
                     Image(systemName: "square.and.arrow.up.circle")
                         .font(.largeTitle)
@@ -424,10 +381,51 @@ import SwiftUI
 
                     Text(NSLocalizedString(
                         "settings.storage.export.message",
+                        value: "Your data will be exported as a JSON file that you can save or share.",
                         comment: "Your data will be exported as a JSON file that you can save or share."
                     ))
                     .multilineTextAlignment(.center)
                     .foregroundColor(.secondary)
+                    .padding(.horizontal)
+
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(NSLocalizedString(
+                            "settings.storage.export.customize",
+                            value: "Customize Export",
+                            comment: "Customize export section title"
+                        ))
+                        .font(.headline)
+
+                        Toggle(NSLocalizedString(
+                            "settings.storage.export.include.tasks",
+                            value: "Tasks",
+                            comment: "Export include tasks toggle"
+                        ), isOn: $exportIncludeTasks)
+
+                        Toggle(NSLocalizedString(
+                            "settings.storage.export.include.courses",
+                            value: "Courses",
+                            comment: "Export include courses toggle"
+                        ), isOn: $exportIncludeCourses)
+
+                        Toggle(NSLocalizedString(
+                            "settings.storage.export.include.semesters",
+                            value: "Semesters",
+                            comment: "Export include semesters toggle"
+                        ), isOn: $exportIncludeSemesters)
+
+                        Toggle(NSLocalizedString(
+                            "settings.storage.export.include.sessions",
+                            value: "Planner Sessions",
+                            comment: "Export include planner sessions toggle"
+                        ), isOn: $exportIncludePlannerSessions)
+
+                        Toggle(NSLocalizedString(
+                            "settings.storage.export.include.settings",
+                            value: "Settings",
+                            comment: "Export include settings toggle"
+                        ), isOn: $exportIncludeSettings)
+                    }
                     .padding(.horizontal)
 
                     Button {
@@ -439,13 +437,17 @@ import SwiftUI
                             ProgressView()
                                 .frame(maxWidth: .infinity)
                         } else {
-                            Text(NSLocalizedString("settings.storage.export.button", comment: "Export Now"))
-                                .frame(maxWidth: .infinity)
+                            Text(NSLocalizedString(
+                                "settings.storage.export.button",
+                                value: "Export Now",
+                                comment: "Export Now"
+                            ))
+                            .frame(maxWidth: .infinity)
                         }
                     }
                     .buttonStyle(.itoriLiquidProminent)
                     .padding(.horizontal)
-                    .disabled(isExporting)
+                    .disabled(isExporting || !hasSelection)
                 }
                 .padding()
                 .toolbar {
@@ -505,7 +507,6 @@ import SwiftUI
             isExporting = true
             defer { isExporting = false }
 
-            let assignments = AssignmentsStore.shared.tasks
             guard let coursesStore = CoursesStore.shared else {
                 exportError = NSLocalizedString(
                     "settings.storage.export.error.data",
@@ -515,14 +516,16 @@ import SwiftUI
                 return
             }
 
+            let assignments = AssignmentsStore.shared.tasks
+
             let payload = StorageDataExport(
                 exportedAt: Date(),
-                tasks: assignments,
-                semesters: coursesStore.semesters,
-                courses: coursesStore.courses,
-                scheduledSessions: PlannerStore.shared.scheduled,
-                overflowSessions: PlannerStore.shared.overflow,
-                settings: AppSettingsModel.shared
+                tasks: exportIncludeTasks ? assignments : nil,
+                semesters: exportIncludeSemesters ? coursesStore.semesters : nil,
+                courses: exportIncludeCourses ? coursesStore.courses : nil,
+                scheduledSessions: exportIncludePlannerSessions ? PlannerStore.shared.scheduled : nil,
+                overflowSessions: exportIncludePlannerSessions ? PlannerStore.shared.overflow : nil,
+                settings: exportIncludeSettings ? AppSettingsModel.shared : nil
             )
 
             do {
@@ -541,12 +544,12 @@ import SwiftUI
 
     private struct StorageDataExport: Codable {
         let exportedAt: Date
-        let tasks: [AppTask]
-        let semesters: [Semester]
-        let courses: [Course]
-        let scheduledSessions: [StoredScheduledSession]
-        let overflowSessions: [StoredOverflowSession]
-        let settings: AppSettingsModel
+        let tasks: [AppTask]?
+        let semesters: [Semester]?
+        let courses: [Course]?
+        let scheduledSessions: [StoredScheduledSession]?
+        let overflowSessions: [StoredOverflowSession]?
+        let settings: AppSettingsModel?
     }
 
     private struct ShareItem: Identifiable {

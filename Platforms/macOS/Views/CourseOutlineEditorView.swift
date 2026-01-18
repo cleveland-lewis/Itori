@@ -231,7 +231,7 @@
                     }
                 }
             }
-            .listSectionSpacing(10)
+            .compactFormSections()
             .padding()
             .frame(width: 400, height: 150)
             .toolbar {
@@ -277,7 +277,7 @@
             Form {
                 TextField("Title", text: $newTitle)
             }
-            .listSectionSpacing(10)
+            .compactFormSections()
             .padding()
             .frame(width: 400, height: 100)
             .toolbar {

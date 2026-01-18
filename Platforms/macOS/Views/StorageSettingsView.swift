@@ -110,10 +110,20 @@
                         ))
                         .fontWeight(.semibold)
                     }
+                    .accessibilityLabel(NSLocalizedString(
+                        "settings.reset.all.data",
+                        value: "Reset All Data",
+                        comment: "Reset All Data"
+                    ))
+                    .accessibilityHint(NSLocalizedString(
+                        "settings.reset.all.data.hint",
+                        value: "Permanently deletes all app data",
+                        comment: "Accessibility hint for reset button"
+                    ))
                 }
             }
             .formStyle(.grouped)
-            .listSectionSpacing(10)
+            .compactFormSections()
             .scrollContentBackground(.hidden)
             .background(Color(nsColor: .controlBackgroundColor))
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

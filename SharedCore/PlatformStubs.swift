@@ -68,6 +68,25 @@ import SwiftUI
     #endif
 
     #if os(watchOS)
+        // For watchOS compatibility
+        public enum LocalTimerMode: String, CaseIterable, Identifiable, Codable {
+            case pomodoro
+            case timer
+            case stopwatch
+            case focus
+
+            public var id: String { rawValue }
+
+            public var label: String {
+                switch self {
+                case .pomodoro: "Pomodoro"
+                case .timer: "Timer"
+                case .stopwatch: "Stopwatch"
+                case .focus: "Focus"
+                }
+            }
+        }
+
         public struct LocalTimerSession: Identifiable, Codable, Hashable {
             public enum Mode: String, Codable, Hashable {
                 case work, breakMode = "break", other

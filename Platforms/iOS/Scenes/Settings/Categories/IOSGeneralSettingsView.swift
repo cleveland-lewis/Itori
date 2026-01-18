@@ -54,6 +54,43 @@ import SwiftUI
                         }
                         .labelsHidden()
                     }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(NSLocalizedString("settings.general.workday_days", value: "Days", comment: "Days"))
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+
+                        HStack(spacing: 8) {
+                            ForEach(weekdayOptions, id: \.index) { day in
+                                Button {
+                                    toggleWorkday(day.index)
+                                } label: {
+                                    Text(day.label)
+                                        .font(.caption.weight(.medium))
+                                        .frame(minWidth: 32)
+                                        .padding(.vertical, 8)
+                                        .padding(.horizontal, 4)
+                                        .background(
+                                            Capsule()
+                                                .fill(settings.workdayWeekdays.contains(day.index)
+                                                    ? Color.accentColor.opacity(0.2)
+                                                    : Color.secondary.opacity(0.1))
+                                        )
+                                        .overlay(
+                                            Capsule()
+                                                .strokeBorder(
+                                                    settings.workdayWeekdays.contains(day.index)
+                                                        ? Color.accentColor
+                                                        : Color.secondary.opacity(0.3),
+                                                    lineWidth: 1.5
+                                                )
+                                        )
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                    .padding(.vertical, 4)
                 } header: {
                     Text(NSLocalizedString("settings.general.workday.header", comment: "Workday Hours"))
                 } footer: {
@@ -61,22 +98,6 @@ import SwiftUI
                         "settings.general.workday.footer",
                         comment: "Affects planner scheduling and energy tracking"
                     ))
-                }
-
-                Section {
-                    Toggle(isOn: binding(for: \.highContrastModeStorage)) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(NSLocalizedString("settings.general.high_contrast", comment: "High Contrast"))
-                            Text(NSLocalizedString(
-                                "settings.general.high_contrast.detail",
-                                comment: "Increase visual contrast for better readability"
-                            ))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        }
-                    }
-                } header: {
-                    Text(NSLocalizedString("settings.general.display.header", comment: "Display"))
                 }
 
                 Section(NSLocalizedString(
@@ -98,6 +119,7 @@ import SwiftUI
                 }
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString("settings.category.general", comment: "General"))
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showResetSheet) {
@@ -243,6 +265,24 @@ import SwiftUI
 
         private var resetCodeMatches: Bool {
             resetInput.trimmingCharacters(in: .whitespacesAndNewlines) == resetCode
+        }
+
+        private var weekdayOptions: [(index: Int, label: String)] {
+            Calendar.current.shortWeekdaySymbols.enumerated().map { idx, label in
+                (index: idx + 1, label: label)
+            }
+        }
+
+        private func toggleWorkday(_ index: Int) {
+            var days = Set(settings.workdayWeekdays)
+            if days.contains(index) {
+                if days.count == 1 { return }
+                days.remove(index)
+            } else {
+                days.insert(index)
+            }
+            settings.workdayWeekdays = Array(days).sorted()
+            settings.save()
         }
     }
 

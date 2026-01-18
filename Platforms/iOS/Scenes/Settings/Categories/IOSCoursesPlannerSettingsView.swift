@@ -106,6 +106,7 @@ import SwiftUI
                 }
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString("settings.category.courses_planner", comment: "Courses & Planner"))
             .navigationBarTitleDisplayMode(.inline)
         }

@@ -35,6 +35,7 @@ import SwiftUI
                 )
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString("settings.category.planner", comment: "Planner"))
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showingNotifications) {

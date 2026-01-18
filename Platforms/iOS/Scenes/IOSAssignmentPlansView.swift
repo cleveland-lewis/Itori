@@ -56,7 +56,7 @@ struct AssignmentPlanCard: View {
                         .foregroundStyle(.secondary)
                         .accessibilityHidden(true)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.itariLiquid)
                 .accessibilityLabel(isExpanded ? NSLocalizedString(
                     "iosassignmentplans.button.collapse.plan",
                     value: "Collapse plan",
@@ -175,7 +175,7 @@ struct PlanStepRow: View {
                     .font(.title3)
                     .accessibilityHidden(true)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.itoriLiquidProminent)
             .disabled(isBlocked)
             .accessibilityLabel(isBlocked ? NSLocalizedString(
                 "iosassignmentplans.button.step.locked",

@@ -77,6 +77,7 @@
             case .general: GeneralSettingsView()
             case .calendar: CalendarSettingsView()
             case .planner: PlannerSettingsView()
+            case .timer: TimerSettingsView()
             case .courses: CoursesSettingsView()
             case .semesters: SemestersSettingsView()
             case .grades: GradesSettingsView()

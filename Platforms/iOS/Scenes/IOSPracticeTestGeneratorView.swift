@@ -154,7 +154,7 @@
                                     .foregroundStyle(.secondary)
                                     .accessibilityHidden(true)
                             }
-                            .buttonStyle(.plain)
+                            .buttonStyle(.itoriLiquidProminent)
                             .accessibilityLabel("Remove \(topic)")
                             .accessibilityHint("Removes this topic from the test")
                         }

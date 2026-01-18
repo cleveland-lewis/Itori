@@ -102,10 +102,7 @@ final class FocusManager: ObservableObject {
                     remainingSeconds = TimeInterval(settings.pomodoroShortBreakMinutes * 60)
                 }
             }
-        case .timer:
-            duration = 25 * 60 - remainingSeconds
-            remainingSeconds = 25 * 60
-        case .focus:
+        case .timer, .focus:
             duration = 25 * 60 - remainingSeconds
             remainingSeconds = 25 * 60
         }

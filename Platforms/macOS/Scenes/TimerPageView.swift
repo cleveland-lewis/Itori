@@ -3,11 +3,6 @@
     import Combine
     import SwiftUI
 
-    // Type aliases for clarity
-    typealias LocalTimerActivity = TimerActivity
-    typealias LocalTimerSession = FocusSession
-    typealias LocalTimerMode = TimerMode
-
     struct TimerPageView: View {
         @Environment(\.colorScheme) private var colorScheme
         @EnvironmentObject private var settings: AppSettingsModel

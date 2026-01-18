@@ -38,7 +38,7 @@ struct CircleIconButton: View {
                 }
                 .contentShape(Circle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.itariLiquid)
         .focusEffectDisabled(true)
         .accessibilityLabelWithTooltip(accessibilityLabel ?? icon)
     }

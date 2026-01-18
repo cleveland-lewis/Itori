@@ -23,9 +23,6 @@
         @State private var selectedAssignmentId: UUID? = nil
         @State private var selectedSession: StoredScheduledSession? = nil
 
-        @AppStorage("dashboard.greeting.dateKey") private var greetingDateKey: String = ""
-        @AppStorage("dashboard.greeting.text") private var storedGreeting: String = ""
-
         private let calendar = Calendar.current
         private let dashboardSpacing: CGFloat = 16
 
@@ -118,43 +115,7 @@
         }
 
         private var heroHeader: some View {
-            VStack(alignment: .leading, spacing: 12) {
-                Text(greeting)
-                    .font(.system(size: 34, weight: .bold, design: .rounded))
-                    .foregroundStyle(.primary)
-
-                Text(formattedDate)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-
-                HStack(spacing: 16) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "calendar")
-                            .font(.caption)
-                        Text(verbatim: "\(todayEventCount)")
-                            .font(.subheadline.weight(.semibold))
-                            .monospacedDigit()
-                        Text("events")
-                            .font(.subheadline)
-                    }
-                    .foregroundStyle(.secondary)
-
-                    HStack(spacing: 6) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.caption)
-                        Text(verbatim: "\(todayTaskCount)")
-                            .font(.subheadline.weight(.semibold))
-                            .monospacedDigit()
-                        Text("tasks")
-                            .font(.subheadline)
-                    }
-                    .foregroundStyle(.secondary)
-                }
-                .padding(.top, 4)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 4)
-            .padding(.vertical, 8)
+            EmptyView()
         }
 
         private var quickStatsRow: some View {
@@ -262,12 +223,12 @@
                                     .font(.headline)
                                     .accessibilityHidden(true)
                             }
-                            .buttonStyle(.plain)
+                            .buttonStyle(.itoriLiquidProminent)
                             .accessibilityLabel("Add assignment")
                             .accessibilityHint("Opens form to create a new assignment")
                         ))
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.itariLiquid)
 
                     if items.isEmpty {
                         VStack(spacing: 12) {
@@ -309,7 +270,7 @@
                             } label: {
                                 upcomingAssignmentRow(item)
                             }
-                            .buttonStyle(.plain)
+                            .buttonStyle(.itariLiquid)
                         }
                     }
 
@@ -321,7 +282,7 @@
                             }
                             .font(.caption.weight(.semibold))
                             .foregroundStyle(.secondary)
-                            .buttonStyle(.plain)
+                            .buttonStyle(.itariLiquid)
                         }
                     }
                 }
@@ -535,82 +496,6 @@
 
         private var backgroundView: some View {
             DesignSystem.Colors.appBackground
-        }
-
-        private var greeting: String {
-            let todayKey = dateKey(for: Date())
-            if greetingDateKey == todayKey, !storedGreeting.isEmpty {
-                return storedGreeting
-            }
-
-            let hour = calendar.component(.hour, from: Date())
-            let greetings: [String] = switch hour {
-            case 5 ..< 12:
-                [
-                    NSLocalizedString("ios.dashboard.greeting.morning.1", comment: "Good morning"),
-                    NSLocalizedString("ios.dashboard.greeting.morning.2", comment: "Rise and shine"),
-                    NSLocalizedString("ios.dashboard.greeting.morning.3", comment: "Morning"),
-                    NSLocalizedString("ios.dashboard.greeting.morning.4", comment: "Start strong today"),
-                    NSLocalizedString("ios.dashboard.greeting.morning.5", comment: "Welcome back")
-                ]
-            case 12 ..< 17:
-                [
-                    NSLocalizedString("ios.dashboard.greeting.afternoon.1", comment: "Good afternoon"),
-                    NSLocalizedString("ios.dashboard.greeting.afternoon.2", comment: "Afternoon"),
-                    NSLocalizedString("ios.dashboard.greeting.afternoon.3", comment: "Keep it up"),
-                    NSLocalizedString("ios.dashboard.greeting.afternoon.4", comment: "Stay focused"),
-                    NSLocalizedString("ios.dashboard.greeting.afternoon.5", comment: "Making progress")
-                ]
-            case 17 ..< 22:
-                [
-                    NSLocalizedString("ios.dashboard.greeting.evening.1", comment: "Good evening"),
-                    NSLocalizedString("ios.dashboard.greeting.evening.2", comment: "Evening"),
-                    NSLocalizedString("ios.dashboard.greeting.evening.3", comment: "Wrapping up"),
-                    NSLocalizedString("ios.dashboard.greeting.evening.4", comment: "Almost there"),
-                    NSLocalizedString("ios.dashboard.greeting.evening.5", comment: "Finish strong")
-                ]
-            default:
-                [
-                    NSLocalizedString("ios.dashboard.greeting.night.1", comment: "Hello"),
-                    NSLocalizedString("ios.dashboard.greeting.night.2", comment: "Welcome back"),
-                    NSLocalizedString("ios.dashboard.greeting.night.3", comment: "Still working"),
-                    NSLocalizedString("ios.dashboard.greeting.night.4", comment: "Burning the midnight oil")
-                ]
-            }
-
-            let selection = greetings.randomElement() ?? NSLocalizedString(
-                "ios.dashboard.greeting.default",
-                comment: "Hello"
-            )
-            greetingDateKey = todayKey
-            storedGreeting = selection
-            return selection
-        }
-
-        private func dateKey(for date: Date) -> String {
-            let cutoffHour = 4
-            let adjustedDate = calendar.date(byAdding: .hour, value: -cutoffHour, to: date) ?? date
-            let comps = calendar.dateComponents([.year, .month, .day], from: adjustedDate)
-            let year = comps.year ?? 0
-            let month = comps.month ?? 0
-            let day = comps.day ?? 0
-            return String(format: "%04d-%02d-%02d", year, month, day)
-        }
-
-        private var formattedDate: String {
-            LocaleFormatters.fullDate.string(from: Date())
-        }
-
-        private var todayEventCount: Int {
-            filteredCalendarEvents.filter { calendar.isDateInToday($0.startDate) }.count
-        }
-
-        private var todayTaskCount: Int {
-            assignmentsStore.tasks.filter { task in
-                guard task.type != .practiceTest else { return false }
-                guard let due = task.due else { return false }
-                return calendar.isDateInToday(due) && !task.isCompleted
-            }.count
         }
 
         private var weekEventCount: Int {

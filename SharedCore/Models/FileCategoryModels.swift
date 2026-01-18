@@ -79,10 +79,10 @@ enum ParseStatus: String, Codable {
     var displayName: String {
         switch self {
         case .notParsed: "Not Parsed"
-        case .queued: "Queued"
-        case .parsing: "Parsing..."
+        case .queued: "Parsing"
+        case .parsing: "Parsing"
         case .parsed: "Parsed"
-        case .failed: "Failed"
+        case .failed: "Error parsing"
         }
     }
 

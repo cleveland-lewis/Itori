@@ -69,7 +69,7 @@ struct CoursesDashboardFloatingNav: View {
                 )
                 .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.itariLiquid)
         .help(tab.rawValue)
     }
 }

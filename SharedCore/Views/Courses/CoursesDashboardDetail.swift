@@ -163,7 +163,7 @@ struct CoursesDashboardDetail: View {
                 }
                 .foregroundStyle(Color.accentColor)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.itoriLiquidProminent)
         }
         .padding(DesignSystem.Layout.padding.card)
         .frame(maxWidth: .infinity, alignment: .leading)

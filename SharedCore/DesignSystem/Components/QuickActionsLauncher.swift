@@ -97,7 +97,7 @@ struct QuickActionsLauncher: View {
                         .opacity(focusedAction == .action(action) ? 0.7 : 0)
                 )
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.itoriLiquidProminent)
         .focusable(true)
         .focused($focusedAction, equals: .action(action))
         .focusEffectDisabled(true)

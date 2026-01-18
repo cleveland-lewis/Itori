@@ -370,7 +370,7 @@ struct ItoriTabBarItem: View {
             .scaleEffect(isHovering ? 1.03 : 1.0)
             .contentShape(Capsule(style: .continuous))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.itariLiquid)
         .focusable(true)
         .focused($isFocused)
         .accessibilityIdentifier(accessibilityID)

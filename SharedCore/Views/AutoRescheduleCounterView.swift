@@ -23,7 +23,7 @@ import SwiftUI
                                 .font(.subheadline)
                         }
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.itariLiquid)
                     .foregroundStyle(.blue)
                     .help("Back to Developer Settings")
 

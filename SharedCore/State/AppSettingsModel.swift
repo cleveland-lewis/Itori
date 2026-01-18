@@ -658,7 +658,10 @@ final class AppSettingsModel: ObservableObject, Codable {
 
     var interfaceStyle: InterfaceStyle {
         get { InterfaceStyle(rawValue: interfaceStyleRaw) ?? .system }
-        set { interfaceStyleRaw = newValue.rawValue }
+        set {
+            interfaceStyleRaw = newValue.rawValue
+            objectWillChange.send()
+        }
     }
 
     var glassStrength: GlassStrength {
@@ -1021,23 +1024,89 @@ final class AppSettingsModel: ObservableObject, Codable {
     }
 
     var defaultWorkdayStart: DateComponents {
-        get { DateComponents(hour: workdayStartHourStorage, minute: workdayStartMinuteStorage) }
+        get {
+            // Try to get from iCloud first if sync is enabled
+            if enableICloudSync {
+                if let hourCloud = NSUbiquitousKeyValueStore.default
+                    .object(forKey: "Itori.settings.workday.startHour") as? Int,
+                    let minuteCloud = NSUbiquitousKeyValueStore.default
+                    .object(forKey: "Itori.settings.workday.startMinute") as? Int
+                {
+                    return DateComponents(hour: hourCloud, minute: minuteCloud)
+                }
+            }
+            return DateComponents(hour: workdayStartHourStorage, minute: workdayStartMinuteStorage)
+        }
         set {
-            if let h = newValue.hour { workdayStartHourStorage = h }
-            if let m = newValue.minute { workdayStartMinuteStorage = m }
+            if let h = newValue.hour {
+                workdayStartHourStorage = h
+                if enableICloudSync {
+                    NSUbiquitousKeyValueStore.default.set(h, forKey: "Itori.settings.workday.startHour")
+                }
+            }
+            if let m = newValue.minute {
+                workdayStartMinuteStorage = m
+                if enableICloudSync {
+                    NSUbiquitousKeyValueStore.default.set(m, forKey: "Itori.settings.workday.startMinute")
+                }
+            }
+            if enableICloudSync {
+                NSUbiquitousKeyValueStore.default.synchronize()
+            }
         }
     }
 
     var defaultWorkdayEnd: DateComponents {
-        get { DateComponents(hour: workdayEndHourStorage, minute: workdayEndMinuteStorage) }
+        get {
+            // Try to get from iCloud first if sync is enabled
+            if enableICloudSync {
+                if let hourCloud = NSUbiquitousKeyValueStore.default
+                    .object(forKey: "Itori.settings.workday.endHour") as? Int,
+                    let minuteCloud = NSUbiquitousKeyValueStore.default
+                    .object(forKey: "Itori.settings.workday.endMinute") as? Int
+                {
+                    return DateComponents(hour: hourCloud, minute: minuteCloud)
+                }
+            }
+            return DateComponents(hour: workdayEndHourStorage, minute: workdayEndMinuteStorage)
+        }
         set {
-            if let h = newValue.hour { workdayEndHourStorage = h }
-            if let m = newValue.minute { workdayEndMinuteStorage = m }
+            if let h = newValue.hour {
+                workdayEndHourStorage = h
+                if enableICloudSync {
+                    NSUbiquitousKeyValueStore.default.set(h, forKey: "Itori.settings.workday.endHour")
+                }
+            }
+            if let m = newValue.minute {
+                workdayEndMinuteStorage = m
+                if enableICloudSync {
+                    NSUbiquitousKeyValueStore.default.set(m, forKey: "Itori.settings.workday.endMinute")
+                }
+            }
+            if enableICloudSync {
+                NSUbiquitousKeyValueStore.default.synchronize()
+            }
         }
     }
 
     var workdayWeekdays: [Int] {
         get {
+            // Try to get from iCloud first if sync is enabled
+            if enableICloudSync {
+                if let cloudValue = NSUbiquitousKeyValueStore.default
+                    .string(forKey: "Itori.settings.workday.weekdays")
+                {
+                    let parsed = cloudValue
+                        .split(separator: ",")
+                        .compactMap { Int($0) }
+                        .filter { (1 ... 7).contains($0) }
+                    let unique = Array(Set(parsed)).sorted()
+                    if !unique.isEmpty {
+                        return unique
+                    }
+                }
+            }
+
             let parsed = workdayWeekdaysStorage
                 .split(separator: ",")
                 .compactMap { Int($0) }
@@ -1047,9 +1116,16 @@ final class AppSettingsModel: ObservableObject, Codable {
         }
         set {
             let sanitized = Array(Set(newValue.filter { (1 ... 7).contains($0) })).sorted()
-            workdayWeekdaysStorage = (sanitized.isEmpty ? [2, 3, 4, 5, 6] : sanitized)
+            let value = (sanitized.isEmpty ? [2, 3, 4, 5, 6] : sanitized)
                 .map(String.init)
                 .joined(separator: ",")
+            workdayWeekdaysStorage = value
+
+            // Sync to iCloud if enabled
+            if enableICloudSync {
+                NSUbiquitousKeyValueStore.default.set(value, forKey: "Itori.settings.workday.weekdays")
+                NSUbiquitousKeyValueStore.default.synchronize()
+            }
         }
     }
 
@@ -1633,6 +1709,67 @@ final class AppSettingsModel: ObservableObject, Codable {
                             self.objectWillChange.send()
                         } else {
                             print("[EnergySync] Energy selection confirmed unchanged: \(cloudValue)")
+                        }
+
+                    case "Itori.settings.workday.startHour":
+                        if let cloudValue = NSUbiquitousKeyValueStore.default.object(forKey: key) as? Int {
+                            let oldValue = self.workdayStartHourStorage
+                            if cloudValue != oldValue {
+                                print(
+                                    "[WorkdaySync] Start hour changed from another device: \(oldValue) → \(cloudValue)"
+                                )
+                                self.workdayStartHourStorage = cloudValue
+                                self.objectWillChange.send()
+                                NotificationCenter.default.post(name: .plannerNeedsRecompute, object: nil)
+                            }
+                        }
+
+                    case "Itori.settings.workday.startMinute":
+                        if let cloudValue = NSUbiquitousKeyValueStore.default.object(forKey: key) as? Int {
+                            let oldValue = self.workdayStartMinuteStorage
+                            if cloudValue != oldValue {
+                                print(
+                                    "[WorkdaySync] Start minute changed from another device: \(oldValue) → \(cloudValue)"
+                                )
+                                self.workdayStartMinuteStorage = cloudValue
+                                self.objectWillChange.send()
+                                NotificationCenter.default.post(name: .plannerNeedsRecompute, object: nil)
+                            }
+                        }
+
+                    case "Itori.settings.workday.endHour":
+                        if let cloudValue = NSUbiquitousKeyValueStore.default.object(forKey: key) as? Int {
+                            let oldValue = self.workdayEndHourStorage
+                            if cloudValue != oldValue {
+                                print("[WorkdaySync] End hour changed from another device: \(oldValue) → \(cloudValue)")
+                                self.workdayEndHourStorage = cloudValue
+                                self.objectWillChange.send()
+                                NotificationCenter.default.post(name: .plannerNeedsRecompute, object: nil)
+                            }
+                        }
+
+                    case "Itori.settings.workday.endMinute":
+                        if let cloudValue = NSUbiquitousKeyValueStore.default.object(forKey: key) as? Int {
+                            let oldValue = self.workdayEndMinuteStorage
+                            if cloudValue != oldValue {
+                                print(
+                                    "[WorkdaySync] End minute changed from another device: \(oldValue) → \(cloudValue)"
+                                )
+                                self.workdayEndMinuteStorage = cloudValue
+                                self.objectWillChange.send()
+                                NotificationCenter.default.post(name: .plannerNeedsRecompute, object: nil)
+                            }
+                        }
+
+                    case "Itori.settings.workday.weekdays":
+                        if let cloudValue = NSUbiquitousKeyValueStore.default.string(forKey: key) {
+                            let oldValue = self.workdayWeekdaysStorage
+                            if cloudValue != oldValue {
+                                print("[WorkdaySync] Weekdays changed from another device: \(oldValue) → \(cloudValue)")
+                                self.workdayWeekdaysStorage = cloudValue
+                                self.objectWillChange.send()
+                                NotificationCenter.default.post(name: .plannerNeedsRecompute, object: nil)
+                            }
                         }
 
                     default:

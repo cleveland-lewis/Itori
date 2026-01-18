@@ -625,9 +625,8 @@
                                 .font(DesignSystem.Typography.body)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 10)
-                                .glassChrome(cornerRadius: DesignSystem.Layout.cornerRadiusStandard)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(.itoriLiquidProminent)
                         .frame(maxWidth: .infinity)
 
                         Button {
@@ -708,9 +707,10 @@
         var body: some View {
             Button(action: onTap) {
                 HStack(spacing: DesignSystem.Layout.spacing.small) {
-                    Circle()
+                    RoundedRectangle(cornerRadius: 6, style: .continuous)
                         .fill(course.colorTag.color.opacity(0.9))
-                        .frame(width: 12, height: 12)
+                        .frame(width: 8)
+                        .padding(.vertical, 6)
 
                     VStack(alignment: .leading, spacing: 2) {
                         Text(course.code)

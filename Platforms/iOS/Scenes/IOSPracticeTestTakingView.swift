@@ -199,7 +199,7 @@
                         )
                 )
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.itoriLiquidProminent)
         }
 
         // MARK: - Navigation
@@ -222,12 +222,8 @@
                         )
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .fill(Color(uiColor: .secondarySystemGroupedBackground))
-                        )
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.itariLiquid)
                 }
 
                 if currentQuestionIndex < test.questions.count - 1 {
@@ -243,13 +239,8 @@
                         .labelStyle(.titleAndIcon)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .fill(Color.blue)
-                        )
-                        .foregroundStyle(.white)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.itariLiquid)
                 }
             }
             .padding(.top, 8)

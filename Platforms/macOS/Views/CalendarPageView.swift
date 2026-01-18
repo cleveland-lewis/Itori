@@ -500,7 +500,7 @@
                                 .font(.caption.weight(.medium))
                                 .foregroundStyle(.secondary)
                         } else {
-                            Text(event.startDate.formatted(date: .omitted, time: .shortened))
+                            Text(DateFormatter.itoriShortTime.string(from: event.startDate))
                                 .font(.caption.weight(.medium))
                                 .foregroundStyle(.secondary)
                         }
@@ -1619,12 +1619,7 @@
         }
 
         private var timeRange: String {
-            let formatter = DateFormatter()
-            formatter.timeStyle = .short
-            // Override for 24-hour time preference
-            if AppSettingsModel.shared.use24HourTime {
-                formatter.dateFormat = "HH:mm"
-            }
+            let formatter = DateFormatter.itoriShortTime
             return "\(formatter.string(from: event.startDate)) – \(formatter.string(from: event.endDate))"
         }
     }
@@ -1890,13 +1885,8 @@
         }
 
         private var timeRange: String {
-            let f = DateFormatter()
-            f.timeStyle = .short
-            // Override for 24-hour time preference
-            if AppSettingsModel.shared.use24HourTime {
-                f.dateFormat = "HH:mm"
-            }
-            return "\(f.string(from: item.startDate)) – \(f.string(from: item.endDate))"
+            let formatter = DateFormatter.itoriShortTime
+            return "\(formatter.string(from: item.startDate)) – \(formatter.string(from: item.endDate))"
         }
 
         // MARK: - Delete Handling
@@ -2365,6 +2355,9 @@
             let f = DateFormatter()
             f.dateStyle = .short
             f.timeStyle = .medium
+            if AppSettingsModel.shared.use24HourTime {
+                f.dateFormat = "M/d/yy, HH:mm:ss"
+            }
             return f
         }()
 

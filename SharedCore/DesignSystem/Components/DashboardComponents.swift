@@ -196,7 +196,7 @@ struct DashboardCompactEmptyState: View {
                     .frame(width: 120, height: 6)
             }
             Button(state.actionTitle, action: state.action)
-                .buttonStyle(.plain)
+                .buttonStyle(.itariLiquid)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
                 .padding(.top, 2)
@@ -268,7 +268,7 @@ extension View {
             case .bordered:
                 self.buttonStyle(.itariLiquid)
             case .plain:
-                self.buttonStyle(.plain)
+                self.buttonStyle(.itariLiquid)
             }
         }
     }
@@ -302,7 +302,7 @@ struct UpcomingAssignmentsCard: View {
                             courseTitle: assignment.courseId.flatMap { courseTitles[$0] }
                         )
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.itariLiquid)
 
                     if assignment.id != assignments.prefix(5).last?.id {
                         Divider()
@@ -404,7 +404,7 @@ struct CalendarTimeCard: View {
                 }
             }
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.itariLiquid)
     }
 }
 
@@ -446,7 +446,7 @@ struct EnergyActionsCard: View {
                 .background(energyLevel == level ? level.color : Color.secondary.opacity(0.1))
                 .clipShape(RoundedRectangle(cornerRadius: 8))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.itoriLiquidProminent)
     }
 
     private var plannerButton: some View {
@@ -462,7 +462,7 @@ struct EnergyActionsCard: View {
                     .font(.caption)
             }
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.itariLiquid)
         .foregroundStyle(.primary)
     }
 }
@@ -512,7 +512,7 @@ struct DashboardCalendarEvent: Identifiable {
                             Image(systemName: "plus")
                         }
                         .accessibilityLabel("Add assignment")
-                        .buttonStyle(.plain)
+                        .buttonStyle(.itoriLiquidProminent)
                         .font(.headline)
                     } footer: {
                         DashboardQuickAction(

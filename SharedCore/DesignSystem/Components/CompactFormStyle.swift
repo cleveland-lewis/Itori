@@ -1,14 +1,16 @@
 import SwiftUI
 
 #if os(macOS)
-    extension Space {
-        static let formSectionSpacing: CGFloat = 10
-        static let formRowSpacing: CGFloat = 6
+    struct CompactFormSectionsModifier: ViewModifier {
+        func body(content: Content) -> some View {
+            content
+                .environment(\.defaultMinListHeaderHeight, 8)
+        }
     }
 
     extension View {
         func compactFormSections() -> some View {
-            self.environment(\.defaultMinListRowHeight, 24)
+            self.modifier(CompactFormSectionsModifier())
         }
     }
 #endif

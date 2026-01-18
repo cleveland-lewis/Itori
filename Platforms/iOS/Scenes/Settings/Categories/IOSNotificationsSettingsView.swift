@@ -264,6 +264,7 @@ import SwiftUI
                 }
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString("settings.category.notifications", comment: "Notifications"))
             .navigationBarTitleDisplayMode(.inline)
             .alert(

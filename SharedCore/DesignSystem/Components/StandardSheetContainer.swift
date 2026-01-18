@@ -48,7 +48,7 @@ struct StandardSheetContainer<Content: View>: View {
                         .foregroundStyle(.secondary)
                         .symbolRenderingMode(.hierarchical)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.itariLiquid)
                 .keyboardShortcut(.cancelAction)
                 .help("Close")
             }
@@ -160,7 +160,7 @@ struct CompactSheetContainer<Content: View>: View {
                         .foregroundStyle(.secondary)
                         .symbolRenderingMode(.hierarchical)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.itariLiquid)
                 .keyboardShortcut(.cancelAction)
             }
             .padding(16)

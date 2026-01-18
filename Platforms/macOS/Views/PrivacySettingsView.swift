@@ -97,7 +97,7 @@
                 }
             }
             .formStyle(.grouped)
-            .listSectionSpacing(10)
+            .compactFormSections()
             .scrollContentBackground(.hidden)
             .background(Color(nsColor: .controlBackgroundColor))
             .navigationTitle("Privacy")

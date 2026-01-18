@@ -230,13 +230,7 @@
             }
 
             private var timeString: String {
-                let formatter = DateFormatter()
-                formatter.timeStyle = .short
-                // Override for 24-hour time preference
-                if AppSettingsModel.shared.use24HourTime {
-                    formatter.dateFormat = "HH:mm"
-                }
-                return formatter.string(from: event.startDate)
+                DateFormatter.itoriShortTime.string(from: event.startDate)
             }
 
             private var categoryColor: Color {

@@ -109,8 +109,8 @@ import SwiftUI
                 }
 
                 // Layout Section
-                Section {
-                    if isPad {
+                if isPad {
+                    Section {
                         Toggle(isOn: $settings.showSidebarByDefaultStorage) {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(NSLocalizedString(
@@ -136,128 +136,13 @@ import SwiftUI
                             bottom: layoutMetrics.listRowVerticalPadding,
                             trailing: 16
                         ))
+                    } header: {
+                        Text(NSLocalizedString(
+                            "settings.interface.layout.header",
+                            value: "Layout",
+                            comment: "Layout header"
+                        ))
                     }
-
-                    Toggle(isOn: $settings.compactModeStorage) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(NSLocalizedString(
-                                "settings.interface.layout.compact",
-                                value: "Compact Mode",
-                                comment: "Compact mode"
-                            ))
-                            Text(NSLocalizedString(
-                                "settings.interface.layout.compact.detail",
-                                value: "Use denser layout with less spacing",
-                                comment: "Compact mode detail"
-                            ))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        }
-                    }
-                    .onChange(of: settings.compactModeStorage) { _, _ in
-                        settings.save()
-                    }
-                    .listRowInsets(EdgeInsets(
-                        top: layoutMetrics.listRowVerticalPadding,
-                        leading: 16,
-                        bottom: layoutMetrics.listRowVerticalPadding,
-                        trailing: 16
-                    ))
-
-                    Toggle(isOn: $settings.largeTapTargetsStorage) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(NSLocalizedString(
-                                "settings.interface.layout.large_taps",
-                                value: "Large Tap Targets",
-                                comment: "Large tap targets"
-                            ))
-                            Text(NSLocalizedString(
-                                "settings.interface.layout.large_taps.detail",
-                                value: "Increase button and control sizes for easier tapping",
-                                comment: "Large tap targets detail"
-                            ))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        }
-                    }
-                    .onChange(of: settings.largeTapTargetsStorage) { _, _ in
-                        settings.save()
-                    }
-                    .listRowInsets(EdgeInsets(
-                        top: layoutMetrics.listRowVerticalPadding,
-                        leading: 16,
-                        bottom: layoutMetrics.listRowVerticalPadding,
-                        trailing: 16
-                    ))
-                } header: {
-                    Text(NSLocalizedString(
-                        "settings.interface.layout.header",
-                        value: "Layout",
-                        comment: "Layout header"
-                    ))
-                } footer: {
-                    Text(NSLocalizedString(
-                        "settings.interface.layout.footer",
-                        value: "Layout changes apply immediately to all screens.",
-                        comment: "Layout footer"
-                    ))
-                }
-
-                // Interactions Section
-                Section {
-                    Toggle(isOn: $settings.showAnimationsStorage) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(NSLocalizedString(
-                                "settings.interface.interactions.animations",
-                                value: "Show Animations",
-                                comment: "Show animations"
-                            ))
-                            Text(NSLocalizedString(
-                                "settings.interface.interactions.animations.detail",
-                                value: "Enable optional UI animations (still respects Reduce Motion)",
-                                comment: "Show animations detail"
-                            ))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        }
-                    }
-                    .onChange(of: settings.showAnimationsStorage) { _, _ in
-                        settings.save()
-                    }
-                    .prefsListRowInsets()
-
-                    Toggle(isOn: $settings.enableHapticsStorage) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(NSLocalizedString(
-                                "settings.interface.interactions.haptics",
-                                value: "Enable Haptic Feedback",
-                                comment: "Enable haptics"
-                            ))
-                            Text(NSLocalizedString(
-                                "settings.interface.interactions.haptics.detail",
-                                value: "Provide tactile feedback for interactions",
-                                comment: "Enable haptics detail"
-                            ))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        }
-                    }
-                    .onChange(of: settings.enableHapticsStorage) { _, _ in
-                        settings.save()
-                    }
-                    .prefsListRowInsets()
-                } header: {
-                    Text(NSLocalizedString(
-                        "settings.interface.interactions.header",
-                        value: "Interactions",
-                        comment: "Interactions header"
-                    ))
-                } footer: {
-                    Text(NSLocalizedString(
-                        "settings.interface.interactions.footer",
-                        value: "Haptic feedback and animations respect accessibility settings.",
-                        comment: "Interactions footer"
-                    ))
                 }
 
                 Section {
@@ -292,6 +177,7 @@ import SwiftUI
                 }
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString("settings.category.interface", comment: "Interface"))
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {

@@ -79,6 +79,7 @@ import SwiftUI
                 }
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString("settings.category.privacy", comment: "Privacy"))
             .navigationBarTitleDisplayMode(.inline)
         }

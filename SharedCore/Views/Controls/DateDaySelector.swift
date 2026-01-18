@@ -41,7 +41,7 @@ private struct GhostIconButton: View {
                 .foregroundStyle(.primary)
                 .frame(width: size, height: size)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.itariLiquid)
         .contentShape(Circle())
         .background(
             Circle()

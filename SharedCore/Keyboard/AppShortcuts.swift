@@ -271,7 +271,7 @@ extension View {
             self
         }
         .keyboardShortcut(shortcut.keyEquivalent, modifiers: shortcut.modifiers)
-        .buttonStyle(.plain)
+        .buttonStyle(.itariLiquid)
     }
 
     func shortcutHelp(_ shortcut: AppShortcut) -> some View {

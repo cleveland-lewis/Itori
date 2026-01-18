@@ -30,6 +30,7 @@ import SwiftUI
                 }
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString("settings.category.reminders", comment: "Reminders"))
             .navigationBarTitleDisplayMode(.inline)
         }

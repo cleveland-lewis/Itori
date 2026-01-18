@@ -29,6 +29,16 @@ import SwiftUI
         var body: some View {
             List {
                 Section {
+                    Text(NSLocalizedString(
+                        "settings.timer.defaults.hint",
+                        value: "Pick the defaults for work sessions",
+                        comment: "Timer settings hint"
+                    ))
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+                }
+
+                Section {
                     HStack {
                         Text(NSLocalizedString("settings.timer.focus_duration", comment: "Focus Duration"))
                         Spacer()
@@ -141,6 +151,7 @@ import SwiftUI
                 }
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString("settings.category.timer", comment: "Timer"))
             .navigationBarTitleDisplayMode(.inline)
         }

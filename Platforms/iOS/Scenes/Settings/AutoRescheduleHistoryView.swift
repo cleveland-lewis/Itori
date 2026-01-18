@@ -199,10 +199,7 @@
         }
 
         private func formatTime(_ date: Date) -> String {
-            let formatter = DateFormatter()
-            formatter.timeStyle = .short
-            formatter.dateStyle = .none
-            return formatter.string(from: date)
+            DateFormatter.itoriShortTime.string(from: date)
         }
     }
 

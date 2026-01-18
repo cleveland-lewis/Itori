@@ -169,6 +169,7 @@
                 }
             }
             .listStyle(.insetGrouped)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle(NSLocalizedString("settings.category.appearance", comment: "Appearance"))
             .navigationBarTitleDisplayMode(.inline)
             .onChange(of: settings.showAnimationsStorage) { _, _ in

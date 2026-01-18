@@ -183,7 +183,7 @@
                         )
 
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(file.filename)
+                        Text(fileDisplayName)
                             .font(.body.weight(.medium))
                             .foregroundStyle(.primary)
                             .lineLimit(1)
@@ -246,6 +246,14 @@
             case "png", "jpg", "jpeg": return "photo"
             default: return "doc"
             }
+        }
+
+        private var fileDisplayName: String {
+            let filename = file.filename
+            guard let lastDotIndex = filename.lastIndex(of: ".") else {
+                return filename
+            }
+            return String(filename[..<lastDotIndex])
         }
     }
 
