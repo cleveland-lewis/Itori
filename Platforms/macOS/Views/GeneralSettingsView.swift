@@ -387,24 +387,24 @@
         private var resetCodeMatches: Bool {
             resetInput.trimmingCharacters(in: .whitespacesAndNewlines) == resetCode
         }
-    }
 
-    private var weekdayOptions: [(index: Int, label: String)] {
-        Calendar.current.shortWeekdaySymbols.enumerated().map { idx, label in
-            (index: idx + 1, label: label)
+        private var weekdayOptions: [(index: Int, label: String)] {
+            Calendar.current.shortWeekdaySymbols.enumerated().map { idx, label in
+                (index: idx + 1, label: label)
+            }
         }
-    }
 
-    private func toggleWorkday(_ index: Int) {
-        var days = Set(settings.workdayWeekdays)
-        if days.contains(index) {
-            if days.count == 1 { return }
-            days.remove(index)
-        } else {
-            days.insert(index)
+        private func toggleWorkday(_ index: Int) {
+            var days = Set(settings.workdayWeekdays)
+            if days.contains(index) {
+                if days.count == 1 { return }
+                days.remove(index)
+            } else {
+                days.insert(index)
+            }
+            settings.workdayWeekdays = Array(days).sorted()
+            settings.save()
         }
-        settings.workdayWeekdays = Array(days).sorted()
-        settings.save()
     }
 
     #if !DISABLE_PREVIEWS
