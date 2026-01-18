@@ -3,12 +3,10 @@ import SwiftUI
 // MARK: - Liquid Glass Button Style
 
 public struct ItoriLiquidButtonStyle: ButtonStyle {
-    public var cornerRadius: CGFloat = 12
     public var verticalPadding: CGFloat = 8
     public var horizontalPadding: CGFloat = 14
 
-    public init(cornerRadius: CGFloat = 12, verticalPadding: CGFloat = 8, horizontalPadding: CGFloat = 14) {
-        self.cornerRadius = cornerRadius
+    public init(verticalPadding: CGFloat = 8, horizontalPadding: CGFloat = 14) {
         self.verticalPadding = verticalPadding
         self.horizontalPadding = horizontalPadding
     }
@@ -16,7 +14,6 @@ public struct ItoriLiquidButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         ItoriLiquidButton(
             configuration: configuration,
-            cornerRadius: cornerRadius,
             vPad: verticalPadding,
             hPad: horizontalPadding
         )
@@ -24,7 +21,6 @@ public struct ItoriLiquidButtonStyle: ButtonStyle {
 
     private struct ItoriLiquidButton: View {
         let configuration: Configuration
-        let cornerRadius: CGFloat
         let vPad: CGFloat
         let hPad: CGFloat
         @State private var isHovering: Bool = false
@@ -41,23 +37,23 @@ public struct ItoriLiquidButtonStyle: ButtonStyle {
                 .padding(.horizontal, hPad)
                 .background {
                     #if os(macOS)
-                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                            .fill(AnyShapeStyle(DesignSystem.Colors.sidebarBackground))
+                        Capsule()
+                            .fill(.ultraThinMaterial)
                     #else
-                        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        Capsule()
                             .fill(highContrast
                                 ? AnyShapeStyle(Color.primary.opacity(0.08))
                                 : AnyShapeStyle(DesignSystem.Materials.hud))
                     #endif
                 }
                 .overlay(
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    Capsule()
                         .fill(Color.primary.opacity(isHovering ? 0.1 : 0))
                         .animation(.easeInOut(duration: 0.1), value: isHovering)
                 )
                 .overlay(
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .stroke(Color.primary.opacity(0.03))
+                    Capsule()
+                        .stroke(Color.primary.opacity(0.08))
                 )
             #if !os(macOS)
                 .shadow(color: Color.black.opacity(isHovering ? 0.06 : 0.03), radius: isHovering ? 10 : 6, x: 0, y: 4)
@@ -68,10 +64,81 @@ public struct ItoriLiquidButtonStyle: ButtonStyle {
                     value: configuration.isPressed
                 )
                 .animation(reducedMotion ? .none : DesignSystem.Motion.interactiveSpring, value: isHovering)
-                .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+                .contentShape(Capsule())
                 .onHover { hover in
                     isHovering = hover
                 }
+        }
+    }
+}
+
+public struct ItoriLiquidProminentButtonStyle: ButtonStyle {
+    public var verticalPadding: CGFloat = 8
+    public var horizontalPadding: CGFloat = 14
+
+    public init(verticalPadding: CGFloat = 8, horizontalPadding: CGFloat = 14) {
+        self.verticalPadding = verticalPadding
+        self.horizontalPadding = horizontalPadding
+    }
+
+    public func makeBody(configuration: Configuration) -> some View {
+        ItoriLiquidProminentButton(configuration: configuration, vPad: verticalPadding, hPad: horizontalPadding)
+    }
+
+    private struct ItoriLiquidProminentButton: View {
+        let configuration: Configuration
+        let vPad: CGFloat
+        let hPad: CGFloat
+        @State private var isHovering: Bool = false
+        @EnvironmentObject private var preferences: AppPreferences
+        @Environment(\.colorScheme) private var colorScheme
+
+        var body: some View {
+            let reducedMotion = preferences.reduceMotion
+            let baseTint = Color.accentColor
+            configuration.label
+                .font(DesignSystem.Typography.body)
+                .foregroundColor(.white)
+                .padding(.vertical, vPad)
+                .padding(.horizontal, hPad)
+                .background(
+                    ZStack {
+                        Capsule()
+                            .fill(
+                                LinearGradient(
+                                    colors: [baseTint.opacity(0.85), baseTint],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
+                        if !preferences.reduceTransparency {
+                            Capsule()
+                                .fill(DesignSystem.Materials.hud)
+                                .opacity(0.12)
+                        }
+                        Capsule()
+                            .strokeBorder(
+                                DesignSystem.Colors.neutralLine(for: colorScheme).opacity(0.35),
+                                lineWidth: 0.6
+                            )
+                    }
+                )
+                .overlay(
+                    Capsule()
+                        .fill(Color.white.opacity(configuration.isPressed ? 0.12 : 0.04))
+                )
+                .scaleEffect(reducedMotion ? 1.0 : (configuration.isPressed ? 0.97 : 1.0))
+                .animation(reducedMotion ? .none : .easeOut(duration: 0.15), value: configuration.isPressed)
+                .contentShape(Capsule())
+                .onHover { hover in
+                    isHovering = hover
+                }
+                .shadow(
+                    color: isHovering ? baseTint.opacity(0.25) : baseTint.opacity(0.15),
+                    radius: isHovering ? 12 : 8,
+                    x: 0,
+                    y: 6
+                )
         }
     }
 }
@@ -178,6 +245,10 @@ public struct ItoriAccentToggleStyle: ToggleStyle {
 // Convenience extensions for quick usage
 public extension ButtonStyle where Self == ItoriLiquidButtonStyle {
     static var itariLiquid: ItoriLiquidButtonStyle { ItoriLiquidButtonStyle() }
+}
+
+public extension ButtonStyle where Self == ItoriLiquidProminentButtonStyle {
+    static var itoriLiquidProminent: ItoriLiquidProminentButtonStyle { ItoriLiquidProminentButtonStyle() }
 }
 
 public extension ToggleStyle where Self == ItoriAccentToggleStyle {

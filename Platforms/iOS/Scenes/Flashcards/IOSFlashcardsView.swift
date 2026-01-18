@@ -87,7 +87,7 @@
                     )
                     .font(.headline)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
                 .controlSize(.large)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -475,7 +475,7 @@
                     Label(showingBack ? "Show Question" : "Show Answer", systemImage: "arrow.2.squarepath")
                         .font(.headline)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
 
                 Spacer()
 
@@ -614,7 +614,7 @@
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .controlSize(.large)
                     .padding(.horizontal)
                 } else {
@@ -708,7 +708,7 @@
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
                 .controlSize(.large)
                 .padding(.horizontal, 32)
             }

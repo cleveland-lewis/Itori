@@ -267,9 +267,9 @@ extension View {
         Group {
             switch type {
             case .borderedProminent:
-                self.buttonStyle(.borderedProminent)
+                self.buttonStyle(.itoriLiquidProminent)
             case .bordered:
-                self.buttonStyle(.bordered)
+                self.buttonStyle(.itariLiquid)
             case .plain:
                 self.buttonStyle(.plain)
             }

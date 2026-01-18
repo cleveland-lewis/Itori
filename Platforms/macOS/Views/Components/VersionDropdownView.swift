@@ -99,7 +99,7 @@
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 6)
                             }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.itariLiquid)
                             .disabled(isCheckingForUpdates)
 
                             Button(action: openReleaseNotes) {
@@ -116,7 +116,7 @@
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 6)
                             }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.itariLiquid)
                         }
 
                         // Additional info

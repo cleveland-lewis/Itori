@@ -351,7 +351,7 @@
                                     }
                                 }
                             }
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.itoriLiquidProminent)
                         }
                     }
 
@@ -402,7 +402,7 @@
                     )) {
                         showingBYOConfig = true
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                 }
 
                 if checkBYOProvider() {
@@ -496,7 +496,7 @@
                     Button(NSLocalizedString("Save", value: "Save", comment: "")) {
                         saveBYOProvider()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .disabled(byoAPIKey.isEmpty)
                 }
             }

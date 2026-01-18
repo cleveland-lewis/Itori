@@ -24,7 +24,7 @@ struct CalendarAccessBanner: View {
             Spacer()
 
             Button(actionTitle, action: action)
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
                 .controlSize(.small)
                 .accessibilityHint("Grants calendar access to show events")
         }

@@ -159,7 +159,7 @@
                         )) {
                             saveConfiguration()
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                     }
                 }
             }

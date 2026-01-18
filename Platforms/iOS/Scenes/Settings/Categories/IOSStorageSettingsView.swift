@@ -359,7 +359,7 @@ import SwiftUI
                                 .frame(maxWidth: .infinity)
                         }
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .padding(.horizontal)
                     .disabled(isExporting)
                 }

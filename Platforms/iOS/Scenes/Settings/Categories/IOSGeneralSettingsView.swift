@@ -152,7 +152,7 @@ import SwiftUI
                                     : NSLocalizedString("common.copy", value: "Copy", comment: "Copy"))
                                     .font(.caption.weight(.semibold))
                             }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.itariLiquid)
                             .controlSize(.small)
                             Spacer()
                         }
@@ -171,7 +171,7 @@ import SwiftUI
 
                     HStack(spacing: 12) {
                         Button(NSLocalizedString("common.cancel", comment: "Cancel")) { showResetSheet = false }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.itariLiquid)
                         Spacer()
                         Button(NSLocalizedString(
                             "settings.general.reset.confirm",
@@ -180,7 +180,7 @@ import SwiftUI
                         )) {
                             performReset()
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                         .tint(.red)
                         .disabled(!resetCodeMatches || isResetting)
                     }

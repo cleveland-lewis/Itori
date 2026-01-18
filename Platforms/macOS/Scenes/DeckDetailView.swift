@@ -140,7 +140,7 @@
                             systemImage: "brain.head.profile"
                         )
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .disabled(dueCards.isEmpty && newCards.isEmpty)
                     .help(dueCards.isEmpty && newCards.isEmpty ? "No cards to study" : "Start study session")
 
@@ -149,7 +149,7 @@
                     } label: {
                         Image(systemName: "plus")
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
                     .help("Add new card")
                     .accessibilityLabel("Add new card")
 
@@ -158,7 +158,7 @@
                     } label: {
                         Image(systemName: "gear")
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
                     .help("Deck settings")
                     .accessibilityLabel("Deck settings")
                 }
@@ -244,7 +244,7 @@
                         systemImage: "plus"
                     )
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
             }
             .padding(40)
             .frame(maxWidth: .infinity, maxHeight: .infinity)

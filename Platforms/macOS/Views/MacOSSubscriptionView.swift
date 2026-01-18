@@ -406,7 +406,7 @@
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .controlSize(.large)
                     .disabled(isPurchasing)
                 }

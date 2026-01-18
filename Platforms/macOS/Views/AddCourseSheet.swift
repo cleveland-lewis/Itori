@@ -36,7 +36,7 @@
                                 coursesStore.addCourse(title: title, code: code, to: sem)
                                 dismiss()
                             }
-                            .buttonStyle(.glassBlueProminent)
+                            .buttonStyle(.itoriLiquidProminent)
                         }
                         .font(.callout)
                     }

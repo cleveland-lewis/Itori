@@ -26,7 +26,7 @@
                             } label: {
                                 Image(systemName: "plus")
                             }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.itariLiquid)
                             .controlSize(.small)
                         }
 

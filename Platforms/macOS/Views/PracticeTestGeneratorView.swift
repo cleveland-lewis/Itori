@@ -290,7 +290,7 @@
                 Button(NSLocalizedString("practice.action.generate", comment: "Generate Test")) {
                     generateTest()
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
                 .disabled(!canGenerate)
                 .keyboardShortcut(.defaultAction)
             }

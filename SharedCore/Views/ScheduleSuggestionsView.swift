@@ -33,7 +33,7 @@ struct PendingScheduleSuggestionStrip: View {
                 Spacer()
 
                 Button(isExpanded ? "Hide" : "Preview") { isExpanded.toggle() }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
 
                 if hasConflicts {
                     if nonConflictingChanges > 0 {
@@ -42,7 +42,7 @@ struct PendingScheduleSuggestionStrip: View {
                             value: "Apply Non-Conflicting",
                             comment: "Apply Non-Conflicting"
                         )) { onApplyNonConflicting() }
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.itoriLiquidProminent)
                     }
                 } else {
                     Button(NSLocalizedString(
@@ -50,7 +50,7 @@ struct PendingScheduleSuggestionStrip: View {
                         value: "Apply (\(totalChanges) changes)",
                         comment: "Apply (\(totalChanges) changes)"
                     )) { onApply() }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                 }
             }
 

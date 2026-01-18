@@ -297,7 +297,7 @@
                             Button(NSLocalizedString("Add Assignment", value: "Add Assignment", comment: "")) {
                                 presentAddAssignment()
                             }
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.itoriLiquidProminent)
                             .controlSize(.small)
                         }
                         .frame(maxWidth: .infinity)
@@ -1023,7 +1023,7 @@
                             Text(NSLocalizedString("Edit", value: "Edit", comment: "Edit session"))
                                 .frame(maxWidth: .infinity)
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
 
                         Spacer()
                     }

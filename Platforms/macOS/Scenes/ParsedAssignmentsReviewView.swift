@@ -146,7 +146,7 @@
                     Button(NSLocalizedString("assignments.parse.add_parsed", comment: "")) {
                         importApprovedAssignments()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .disabled(approvedIds.isEmpty)
                     .padding(.leading, 16)
                 }
@@ -394,7 +394,7 @@
                         updated.inferredType = inferredType.isEmpty ? nil : inferredType
                         onSave(updated)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                 }
             }
             .padding()

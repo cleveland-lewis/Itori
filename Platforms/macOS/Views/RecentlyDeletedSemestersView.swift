@@ -42,7 +42,7 @@
                                 )) {
                                     coursesStore.recoverSemester(semester.id)
                                 }
-                                .buttonStyle(.borderedProminent)
+                                .buttonStyle(.itoriLiquidProminent)
 
                                 Button(
                                     NSLocalizedString("Delete Immediately", value: "Delete Immediately", comment: ""),
@@ -50,7 +50,7 @@
                                 ) {
                                     coursesStore.permanentlyDeleteSemester(semester.id)
                                 }
-                                .buttonStyle(.bordered)
+                                .buttonStyle(.itariLiquid)
                             }
                         }
                         .padding(.vertical, 6)

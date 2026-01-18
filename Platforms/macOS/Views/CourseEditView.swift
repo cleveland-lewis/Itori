@@ -114,7 +114,7 @@
                                     systemImage: "doc.badge.plus"
                                 )
                             }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.itariLiquid)
 
                             if let syllabus = course.syllabus, !syllabus.isEmpty {
                                 Text(syllabus)

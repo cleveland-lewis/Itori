@@ -460,7 +460,7 @@
                         Button(NSLocalizedString("Add First Task", value: "Add First Task", comment: "")) {
                             showingEditor = true
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                     }
                 } else {
                     ForEach(sortedTasks, id: \.id) { task in

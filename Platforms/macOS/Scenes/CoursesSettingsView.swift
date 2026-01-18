@@ -30,7 +30,7 @@
                                 )) {
                                     showingAddCourse = true
                                 }
-                                .buttonStyle(.borderedProminent)
+                                .buttonStyle(.itoriLiquidProminent)
                             }
                             .padding(.vertical, 40)
                             Spacer()
@@ -123,7 +123,7 @@
                             showingAddCourse = false
                             // Navigate to semesters section
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                     }
                     .padding(40)
                 }

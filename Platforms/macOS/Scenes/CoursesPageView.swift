@@ -1407,7 +1407,7 @@
                         }
                         showingGradeSheet = false
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                 }
             }
             .padding(24)

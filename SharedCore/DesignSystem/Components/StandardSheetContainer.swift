@@ -82,7 +82,7 @@ struct StandardSheetContainer<Content: View>: View {
                     Button(primaryActionTitle) {
                         primaryAction()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .keyboardShortcut(.defaultAction)
                     .disabled(primaryActionDisabled)
                 }
@@ -182,7 +182,7 @@ struct CompactSheetContainer<Content: View>: View {
                     Button(primaryActionTitle) {
                         primaryAction?()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .controlSize(.small)
                     .keyboardShortcut(.defaultAction)
                     .disabled(primaryActionDisabled)

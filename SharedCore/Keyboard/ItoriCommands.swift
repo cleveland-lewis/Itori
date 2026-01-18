@@ -16,7 +16,7 @@ struct ItoriCommands: Commands {
     @FocusedValue(\.canDeleteItem) var canDeleteItem: Bool?
 
     var body: some Commands {
-        // Replace default New Item
+        // Replace default New Item with Add menu items
         CommandGroup(replacing: .newItem) {
             Button(AppShortcut.newAssignment.title) {
                 NotificationCenter.default.post(name: .createNewAssignment, object: nil)
@@ -66,8 +66,8 @@ struct ItoriCommands: Commands {
             .disabled(!(canEditItem ?? false))
         }
 
-        // View menu for navigation
-        CommandMenu("View") {
+        // Pages menu (renamed from View)
+        CommandMenu("Pages") {
             Button(AppShortcut.dashboard.title) {
                 NotificationCenter.default.post(name: .switchToTab, object: RootTab.dashboard)
             }
@@ -106,24 +106,50 @@ struct ItoriCommands: Commands {
             .keyboardShortcut(AppShortcut.focusSearch.keyEquivalent, modifiers: AppShortcut.focusSearch.modifiers)
         }
 
-        // Go menu for navigation
-        CommandMenu("Go") {
-            Button(AppShortcut.goToday.title) {
-                NotificationCenter.default.post(name: .goToTodayNotification, object: nil)
+        // Timer menu
+        CommandMenu("Timer") {
+            Section("Start Session") {
+                Button("Pomodoro") {
+                    NotificationCenter.default.post(name: .startPomodoroSession, object: nil)
+                }
+                .keyboardShortcut("p", modifiers: [.command, .control])
+
+                Button("Timer") {
+                    NotificationCenter.default.post(name: .startCustomTimer, object: nil)
+                }
+                .keyboardShortcut("t", modifiers: [.command, .control])
+
+                Button("Stopwatch") {
+                    NotificationCenter.default.post(name: .startStopwatch, object: nil)
+                }
+                .keyboardShortcut("w", modifiers: [.command, .control])
             }
-            .keyboardShortcut(AppShortcut.goToday.keyEquivalent, modifiers: AppShortcut.goToday.modifiers)
 
             Divider()
 
-            Button(AppShortcut.previousPeriod.title) {
-                NotificationCenter.default.post(name: .navigatePrevious, object: nil)
-            }
-            .keyboardShortcut(AppShortcut.previousPeriod.keyEquivalent, modifiers: AppShortcut.previousPeriod.modifiers)
+            Section("Timer Controls") {
+                Button("Start/Pause") {
+                    NotificationCenter.default.post(name: .toggleTimerPlayPause, object: nil)
+                }
+                .keyboardShortcut(.space, modifiers: [.command])
 
-            Button(AppShortcut.nextPeriod.title) {
-                NotificationCenter.default.post(name: .navigateNext, object: nil)
+                Button("Stop Timer") {
+                    NotificationCenter.default.post(name: .stopTimer, object: nil)
+                }
+                .keyboardShortcut(.escape, modifiers: [.command])
+
+                Button("Reset Timer") {
+                    NotificationCenter.default.post(name: .resetTimer, object: nil)
+                }
+                .keyboardShortcut("r", modifiers: [.command, .control])
             }
-            .keyboardShortcut(AppShortcut.nextPeriod.keyEquivalent, modifiers: AppShortcut.nextPeriod.modifiers)
+
+            Divider()
+
+            Button("Go to Timer") {
+                NotificationCenter.default.post(name: .switchToTab, object: RootTab.timer)
+            }
+            .keyboardShortcut("0", modifiers: [.command, .option])
         }
     }
 }
@@ -180,5 +206,15 @@ extension Notification.Name {
     static let showItemInfo = Notification.Name("showItemInfo")
     static let switchToTab = Notification.Name("switchToTab")
     static let focusSearchField = Notification.Name("focusSearchField")
-    // Navigation notifications used by the Go menu
+
+    // Timer notifications
+    static let startPomodoroSession = Notification.Name("startPomodoroSession")
+    static let startCustomTimer = Notification.Name("startCustomTimer")
+    static let startStopwatch = Notification.Name("startStopwatch")
+    static let toggleTimerPlayPause = Notification.Name("toggleTimerPlayPause")
+    static let stopTimer = Notification.Name("stopTimer")
+    static let resetTimer = Notification.Name("resetTimer")
+
+    // Add menu notifications
+    static let addWorkSessionRequested = Notification.Name("addWorkSessionRequested")
 }

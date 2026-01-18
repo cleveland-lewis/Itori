@@ -701,7 +701,7 @@
                         await calendarManager.requestAccess()
                     }
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
                 .controlSize(.small)
             }
             .frame(maxWidth: .infinity)
@@ -721,7 +721,7 @@
                 Button(NSLocalizedString("dashboard.button.open_settings", comment: "")) {
                     calendarManager.openSystemPrivacySettings()
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.itariLiquid)
                 .controlSize(.small)
             }
             .frame(maxWidth: .infinity)
@@ -913,7 +913,7 @@
                         Button(NSLocalizedString("Add Assignment", value: "Add Assignment", comment: "")) {
                             showAddAssignmentSheet = true
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                         .controlSize(.small)
                     }
                     .frame(maxWidth: .infinity)
@@ -1731,7 +1731,7 @@
                     .padding(.horizontal, DesignSystem.Spacing.small)
                     .frame(minHeight: 34)
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.itoriLiquidProminent)
             .tint(.accentColor)
             .controlSize(.small)
             .transition(DesignSystem.Motion.slideTrailingTransition)

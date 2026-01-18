@@ -201,7 +201,7 @@
                                 systemImage: "gear"
                             )
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                         .tint(.accentColor)
                     }
                 }

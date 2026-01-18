@@ -604,7 +604,7 @@
                             .foregroundColor(.secondary)
                     }
                     Button(NSLocalizedString("settings.button.manage", value: "Manage…", comment: "Manage…")) {}
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                         .tint(accentColor)
                 }
 

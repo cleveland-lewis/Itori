@@ -86,7 +86,7 @@
                     Button(NSLocalizedString("practice.action.submit", comment: "Submit Test")) {
                         showingSubmitConfirmation = true
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .disabled(userAnswers.count < test.questions.count)
                     .alert(
                         NSLocalizedString("practice.taking.submit_confirm.title", comment: "Submit Practice Test?"),
@@ -254,7 +254,7 @@
                                     systemImage: "chevron.right"
                                 )
                             }
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.itoriLiquidProminent)
                         }
                     }
                 }

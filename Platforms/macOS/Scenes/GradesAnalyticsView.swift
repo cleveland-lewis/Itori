@@ -118,7 +118,7 @@ struct GradesAnalyticsView: View {
             Button(NSLocalizedString("gradesanalytics.button.reset", value: "Reset", comment: "Reset")) {
                 resetWhatIfMode()
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(.itariLiquid)
             .tint(.accentColor)
             .controlSize(.small)
 
@@ -228,7 +228,7 @@ struct GradesAnalyticsView: View {
                         systemImage: "wand.and.stars"
                     )
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
                 .tint(whatIfMode ? Color.accentColor : .secondary)
 
                 // Risk Breakdown Toggle
@@ -244,7 +244,7 @@ struct GradesAnalyticsView: View {
                         systemImage: "exclamationmark.triangle"
                     )
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.itariLiquid)
                 .tint(.accentColor)
             }
         }

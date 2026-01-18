@@ -113,7 +113,7 @@
                         }
                         .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
 
                     Button {
                         if let url = URL(string: "mailto:clevelandlewisiii@icloud.com") {
@@ -126,7 +126,7 @@
                         }
                         .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
                 }
 
                 // Copyright

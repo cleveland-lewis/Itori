@@ -61,7 +61,7 @@
                             Button(action: { showingAddSheet = true }) {
                                 Label(NSLocalizedString("assignments.action.add", comment: ""), systemImage: "plus")
                             }
-                            .buttonStyle(.glassBlueProminent)
+                            .buttonStyle(.itoriLiquidProminent)
 
                             Picker(NSLocalizedString("assignments.action.filter", comment: ""), selection: $filter) {
                                 ForEach(Filter.allCases) { f in

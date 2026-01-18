@@ -67,7 +67,7 @@
                                     systemImage: "plus"
                                 )
                             }
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.itoriLiquidProminent)
                         }
 
                         TextField(
@@ -171,7 +171,7 @@
                     } label: {
                         Label(NSLocalizedString("flashcards.action.new_deck", comment: "New Deck"), systemImage: "plus")
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                 }
             }
             .padding(40)
@@ -519,7 +519,7 @@
                     Button(NSLocalizedString("flashcards.add.button_create", comment: "Create")) {
                         createDeck()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .keyboardShortcut(.defaultAction)
                     .disabled(title.isEmpty)
                 }

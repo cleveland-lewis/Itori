@@ -85,7 +85,7 @@
                             UserDefaults.standard.removeObject(forKey: "debug.logs")
                             UserDefaults.standard.removeObject(forKey: "analytics.events")
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.itariLiquid)
                         .controlSize(.small)
                     }
                 }

@@ -90,7 +90,7 @@
                                         systemImage: "plus"
                                     )
                                 }
-                                .buttonStyle(.bordered)
+                                .buttonStyle(.itariLiquid)
                                 .controlSize(.small)
                             }
 

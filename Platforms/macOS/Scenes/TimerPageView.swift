@@ -663,7 +663,7 @@
                                 }
                                 .font(.title2)
                             }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.itariLiquid)
                             .help("Pause the timer (it can be resumed)")
                             .accessibilityLabel("Pause timer")
                             .accessibilityHint("Pauses the running timer")
@@ -676,7 +676,7 @@
                                 }
                                 .font(.title2)
                             }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.itariLiquid)
                             .help("Stop and reset the timer")
                             .accessibilityLabel("Stop timer")
                             .accessibilityHint("Stops and resets the timer")
@@ -831,7 +831,7 @@
                         .padding(.bottom, 4)
 
                         Button(NSLocalizedString("timer.action.start", comment: "Start"), action: startTimer)
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.itoriLiquidProminent)
                             .controlSize(.large)
                             .padding(.top, 4)
                     }
@@ -1439,7 +1439,7 @@
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 12)
                             }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.itariLiquid)
                             .controlSize(.large)
                             .keyboardShortcut(.space, modifiers: [])
                         } else {
@@ -1451,7 +1451,7 @@
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 12)
                             }
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.itoriLiquidProminent)
                             .controlSize(.large)
                             .keyboardShortcut(.space, modifiers: [])
                         }
@@ -1464,7 +1464,7 @@
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.itariLiquid)
                         .controlSize(.large)
                         .keyboardShortcut("r", modifiers: [.command])
                     }

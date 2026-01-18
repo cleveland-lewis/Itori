@@ -287,7 +287,7 @@
                                 await syncManager.performFullSync()
                             }
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.itariLiquid)
                         .controlSize(.small)
                     }
                     .padding(.top, 4)

@@ -3,28 +3,29 @@
 
     struct AppCommands: Commands {
         var body: some Commands {
-            CommandMenu("Study") {
-                Button(NSLocalizedString("ui.button.new.homework", value: "New Homework…", comment: "New Homework…")) {
-                    AppModel.shared.isPresentingAddHomework = true
+            CommandMenu("Add") {
+                Button(NSLocalizedString(
+                    "ui.button.add.assignment",
+                    value: "Add Assignment",
+                    comment: "Add Assignment"
+                )) {
+                    NotificationCenter.default.post(name: .addAssignmentRequested, object: nil)
                 }
-                .keyboardShortcut("h", modifiers: [.command, .shift])
+                .keyboardShortcut("n", modifiers: [.command])
 
-                Button(NSLocalizedString("ui.button.new.exam", value: "New Exam…", comment: "New Exam…")) {
-                    AppModel.shared.isPresentingAddExam = true
+                Button(NSLocalizedString("ui.button.add.grade", value: "Add Grade", comment: "Add Grade")) {
+                    NotificationCenter.default.post(name: .addGradeRequested, object: nil)
                 }
-                .keyboardShortcut("e", modifiers: [.command, .shift])
+                .keyboardShortcut("g", modifiers: [.command, .shift])
 
-                Divider()
-
-                Button(NSLocalizedString("ui.button.go.to.courses", value: "Go to Courses", comment: "Go to Courses")) {
-                    AppModel.shared.selectedPage = .courses
+                Button(NSLocalizedString(
+                    "ui.button.add.work.session",
+                    value: "Add Work Session",
+                    comment: "Add Work Session"
+                )) {
+                    NotificationCenter.default.post(name: .addWorkSessionRequested, object: nil)
                 }
-                .keyboardShortcut("1", modifiers: [.command, .option])
-
-                Button(NSLocalizedString("ui.button.go.to.grades", value: "Go to Grades", comment: "Go to Grades")) {
-                    AppModel.shared.selectedPage = .grades
-                }
-                .keyboardShortcut("2", modifiers: [.command, .option])
+                .keyboardShortcut("w", modifiers: [.command, .shift])
             }
         }
     }

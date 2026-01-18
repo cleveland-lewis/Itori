@@ -143,7 +143,7 @@ import SwiftUI
                                 )) {
                                     refreshCounters()
                                 }
-                                .buttonStyle(.borderedProminent)
+                                .buttonStyle(.itoriLiquidProminent)
                                 .frame(maxWidth: .infinity)
 
                                 Button(NSLocalizedString(
@@ -154,7 +154,7 @@ import SwiftUI
                                     AutoRescheduleActivityCounter.shared.reset()
                                     refreshCounters()
                                 }
-                                .buttonStyle(.bordered)
+                                .buttonStyle(.itariLiquid)
                                 .foregroundColor(.red)
                                 .frame(maxWidth: .infinity)
                             }

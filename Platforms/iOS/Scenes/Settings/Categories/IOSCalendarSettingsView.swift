@@ -49,7 +49,7 @@ import SwiftUI
                             } label: {
                                 Text(NSLocalizedString("settings.calendar.request_access", comment: "Request Access"))
                             }
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.itoriLiquidProminent)
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 20)

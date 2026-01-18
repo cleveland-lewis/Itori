@@ -453,7 +453,7 @@ struct AddEventPopup: View {
                 Button(NSLocalizedString("ui.button.add", value: "Add", comment: "Add")) {
                     createEvent()
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
                 .keyboardShortcut(.defaultAction)
                 .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
             }
@@ -684,7 +684,7 @@ struct AddGradeSheet: View {
                 )) {
                     onSave(first)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
                 .tint(.accentColor)
             } else {
                 Text(NSLocalizedString(

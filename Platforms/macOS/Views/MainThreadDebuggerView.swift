@@ -104,7 +104,7 @@
                             DebugLogger.log("🔍 TEST BUTTON clicked - manually calling enable()")
                             MainThreadDebugger.shared.enable()
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
 
                         Toggle(
                             NSLocalizedString(

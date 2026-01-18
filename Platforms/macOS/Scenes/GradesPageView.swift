@@ -200,7 +200,7 @@
                         .padding(.vertical, 10)
                         .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .tint(.accentColor)
 
                     Button {
@@ -217,7 +217,7 @@
                         .padding(.vertical, 10)
                         .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
                     .tint(.accentColor)
                 }
             }
@@ -785,7 +785,7 @@
                 Button(NSLocalizedString("grades.button.edit.target", value: "Edit target", comment: "Edit target")) {
                     onEditTarget(course)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
                 .controlSize(.small)
             }
         }

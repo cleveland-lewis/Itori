@@ -20,7 +20,7 @@
                                 ))
                             }
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                     }
 
                     LazyVStack(alignment: .leading, spacing: DesignSystem.Spacing.large) {

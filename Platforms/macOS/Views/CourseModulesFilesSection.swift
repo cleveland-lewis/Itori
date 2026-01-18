@@ -31,7 +31,7 @@
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
 
                     Button(action: onAddFiles) {
                         Label(
@@ -42,7 +42,7 @@
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
                 }
 
                 // Modules List

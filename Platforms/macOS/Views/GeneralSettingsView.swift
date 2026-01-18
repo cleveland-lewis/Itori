@@ -320,7 +320,7 @@
                                 Text(didCopyResetCode ? "Copied" : "Copy")
                                     .font(.caption.weight(.semibold))
                             }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.itariLiquid)
                             .controlSize(.small)
                             Spacer()
                         }
@@ -334,7 +334,7 @@
                         Button(NSLocalizedString("settings.button.cancel", value: "Cancel", comment: "Cancel")) {
                             showResetSheet = false
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.itariLiquid)
                         Spacer()
                         Button(NSLocalizedString(
                             "settings.button.reset.now",
@@ -343,7 +343,7 @@
                         )) {
                             performReset()
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                         .tint(.red)
                         .keyboardShortcut(.defaultAction)
                         .disabled(!resetCodeMatches || isResetting)

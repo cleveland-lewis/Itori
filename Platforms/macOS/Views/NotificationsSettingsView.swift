@@ -76,7 +76,7 @@
                     )) {
                         notificationManager.openNotificationSettings()
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
                 }
             }
         }

@@ -2218,7 +2218,7 @@
                             dismiss()
                         }
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .keyboardShortcut(.defaultAction)
                     .disabled(!canSave || !item.canEdit)
                 }

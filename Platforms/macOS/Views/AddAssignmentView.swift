@@ -351,7 +351,7 @@
                         Button(editingTask == nil ? "Create" : "Save") {
                             saveTask()
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                         .disabled(isSaveDisabled)
                     }
                 }
@@ -387,7 +387,7 @@
                         }
                         .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
                 } else {
                     Picker("Course", selection: $selectedCourseId) {
                         // Add "Personal (No Course)" option

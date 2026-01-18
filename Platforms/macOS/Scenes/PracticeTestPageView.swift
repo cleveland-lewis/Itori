@@ -127,7 +127,7 @@
                             systemImage: "plus.circle.fill"
                         )
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                 }
                 .padding(.horizontal)
 
@@ -167,7 +167,7 @@
                         systemImage: "plus.circle"
                     )
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
                 .controlSize(.large)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -378,7 +378,7 @@
                 Button(NSLocalizedString("practicetest.button.cancel", value: "Cancel", comment: "Cancel")) {
                     practiceStore.clearCurrentTest()
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.itariLiquid)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()
@@ -410,14 +410,14 @@
                     Button(NSLocalizedString("practicetest.button.go.back", value: "Go Back", comment: "Go Back")) {
                         practiceStore.clearCurrentTest()
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
 
                     Button(NSLocalizedString("practicetest.button.retry", value: "Retry", comment: "Retry")) {
                         Task {
                             await practiceStore.retryGeneration(testId: test.id)
                         }
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .tint(.accentColor)
                 }
             }

@@ -41,7 +41,7 @@
                                 )) {
                                     showingAddSemester = true
                                 }
-                                .buttonStyle(.borderedProminent)
+                                .buttonStyle(.itoriLiquidProminent)
                             }
                             .padding(.vertical, 40)
                             Spacer()

@@ -139,7 +139,7 @@
                                 .font(.headline)
                                 .frame(minWidth: 200)
                             }
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.itoriLiquidProminent)
                             .controlSize(.large)
                             .keyboardShortcut(.space, modifiers: [])
                         }
@@ -183,7 +183,7 @@
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 16)
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.itariLiquid)
                         .tint(item.color)
                         .keyboardShortcut(KeyEquivalent(Character(item.key)), modifiers: [])
                     }
@@ -218,7 +218,7 @@
                     Button(NSLocalizedString("studysession.button.done", value: "Done", comment: "Done")) {
                         dismiss()
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
                     .keyboardShortcut(.defaultAction)
 
                     Button(NSLocalizedString(
@@ -228,7 +228,7 @@
                     )) {
                         startSession()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                 }
             }
             .padding(40)
@@ -259,7 +259,7 @@
                 Button(NSLocalizedString("studysession.button.done", value: "Done", comment: "Done")) {
                     dismiss()
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
             }
             .padding(40)
             .frame(maxWidth: .infinity, maxHeight: .infinity)

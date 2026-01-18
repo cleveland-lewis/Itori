@@ -341,21 +341,21 @@
                         viewModel.pauseSession()
                         FeedbackManager.shared.trigger(event: .timerStopped)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
                     .accessibilityIdentifier("Timer.Pause")
                 } else if isPaused {
                     Button(NSLocalizedString("ios.timer.resume", comment: "Resume")) {
                         viewModel.resumeSession()
                         FeedbackManager.shared.trigger(event: .timerStarted)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .accessibilityIdentifier("Timer.Resume")
                 } else {
                     Button(NSLocalizedString("ios.timer.start", comment: "Start")) {
                         viewModel.startSession()
                         FeedbackManager.shared.trigger(event: .timerStarted)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .accessibilityIdentifier("Timer.Start")
                 }
 
@@ -363,13 +363,13 @@
                     viewModel.endSession(completed: false)
                     FeedbackManager.shared.trigger(event: .timerStopped)
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.itariLiquid)
                 .disabled(sessionState == .idle)
                 .accessibilityIdentifier("Timer.Stop")
 
                 if viewModel.currentMode == .pomodoro {
                     Button(NSLocalizedString("ios.timer.skip", comment: "Skip")) { viewModel.skipSegment() }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.itariLiquid)
                         .disabled(!isRunning)
                         .accessibilityIdentifier("Timer.Skip")
                 }
@@ -974,7 +974,7 @@
                             Button(NSLocalizedString("Advance 10k", value: "Advance 10k", comment: "")) {
                                 viewModel.debugAdvance(seconds: 10000)
                             }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.itariLiquid)
                             .accessibilityIdentifier("Timer.DebugAdvance")
                         }
                     }

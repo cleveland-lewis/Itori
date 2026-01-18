@@ -50,7 +50,7 @@
                             value: "planner.action.schedule",
                             comment: ""
                         )) { runScheduler() }
-                            .buttonStyle(.glassBlueProminent)
+                            .buttonStyle(.itoriLiquidProminent)
                         Button(NSLocalizedString("planner.button.relearn", value: "Re-learn", comment: "Re-learn")) {
                             var prefs = SchedulerPreferencesStore.shared.preferences
                             SchedulerLearner.updatePreferences(
@@ -61,7 +61,7 @@
                             SchedulerPreferencesStore.shared.save()
                             SchedulerFeedbackStore.shared.clear()
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.itariLiquid)
                     }
 
                     // Mode picker
@@ -200,7 +200,7 @@
                                                     #endif
                                                 }
                                             }
-                                            .buttonStyle(.bordered)
+                                            .buttonStyle(.itariLiquid)
                                         }
                                     }
                                     .onAppear {

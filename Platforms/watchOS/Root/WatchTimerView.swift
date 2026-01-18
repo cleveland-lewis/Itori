@@ -84,7 +84,7 @@
                                     )
                                     .frame(maxWidth: .infinity)
                                 }
-                                .buttonStyle(.borderedProminent)
+                                .buttonStyle(.itoriLiquidProminent)
                                 .tint(syncManager.isTimerPaused ? .green : .orange)
 
                                 // Stop button
@@ -95,7 +95,7 @@
                                     )
                                     .frame(maxWidth: .infinity)
                                 }
-                                .buttonStyle(.borderedProminent)
+                                .buttonStyle(.itoriLiquidProminent)
                                 .tint(.red)
                             }
                         }
@@ -125,7 +125,7 @@
                                 Label(NSLocalizedString("Start", value: "Start", comment: ""), systemImage: "play.fill")
                                     .frame(maxWidth: .infinity)
                             }
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.itoriLiquidProminent)
                             .tint(.green)
                         }
                     }

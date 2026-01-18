@@ -111,7 +111,7 @@ struct AssignmentPlanCard: View {
             )) {
                 onGeneratePlan()
             }
-            .buttonStyle(.borderedProminent)
+            .buttonStyle(.itoriLiquidProminent)
             .controlSize(.small)
         }
         .frame(maxWidth: .infinity)

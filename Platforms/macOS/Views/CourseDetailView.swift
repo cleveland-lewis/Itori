@@ -213,7 +213,7 @@
                                 systemImage: "square.and.arrow.down"
                             )
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                     }
 
                     // Parsing status indicator
@@ -246,7 +246,7 @@
                                     "Review button tapped - parsed assignments review not yet implemented"
                                 )
                             }
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.itariLiquid)
                             .controlSize(.small)
                         }
                         .padding(.vertical, 4)

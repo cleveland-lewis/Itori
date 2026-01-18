@@ -299,7 +299,7 @@
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.itariLiquid)
                 .controlSize(.regular)
             }
         }
@@ -1131,7 +1131,7 @@
                     Button(NSLocalizedString("assignments.grade.save", value: "assignments.grade.save", comment: "")) {
                         saveGrade()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .keyboardShortcut(.defaultAction)
                     .disabled(!isGradeValid)
                 }
@@ -1376,7 +1376,7 @@
                                 }
                             }
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.itariLiquid)
                         .controlSize(.small)
                     }
                     VStack(alignment: .leading, spacing: 6) {
@@ -1394,7 +1394,7 @@
                         )) {
                             plannerCoordinator.openPlanner(for: assignment.dueDate, courseId: assignment.courseId)
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                         .controlSize(.small)
                         .accessibilityLabelWithTooltip("assignments.detail.planner_accessibility".localized)
                     }
@@ -1413,7 +1413,7 @@
                         )) {
                             appModel.selectedPage = .timer
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                         .controlSize(.small)
                         .accessibilityLabelWithTooltip("assignments.detail.timer_accessibility".localized)
                     }
@@ -1454,7 +1454,7 @@
                         self.assignment = updated
                     }
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.itariLiquid)
                 .controlSize(.small)
 
                 Divider()
@@ -1470,7 +1470,7 @@
                     ))
                     .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
                 .controlSize(.small)
             }
         }

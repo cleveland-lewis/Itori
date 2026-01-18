@@ -93,7 +93,7 @@
                         systemImage: "plus.circle.fill"
                     )
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.itoriLiquidProminent)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()

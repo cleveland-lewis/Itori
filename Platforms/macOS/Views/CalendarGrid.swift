@@ -288,7 +288,7 @@
                     ))
 
                     Button(NSLocalizedString("Today", value: "Today", comment: ""), action: onToday)
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.itariLiquid)
 
                     Button(action: onNext) {
                         Image(systemName: "chevron.right")

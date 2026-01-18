@@ -78,7 +78,7 @@
                     Button(NSLocalizedString("ui.button.add.card", value: "Add Card", comment: "Add Card")) {
                         addCard()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .keyboardShortcut(.defaultAction)
                     .disabled(frontText.isEmpty || backText.isEmpty)
                 }
@@ -181,7 +181,7 @@
                     )) {
                         resetProgress()
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
                     .foregroundStyle(.orange)
 
                     Spacer()
@@ -194,7 +194,7 @@
                     Button(NSLocalizedString("ui.button.save", value: "Save", comment: "Save")) {
                         saveCard()
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(.itoriLiquidProminent)
                     .keyboardShortcut(.defaultAction)
                     .disabled(frontText.isEmpty || backText.isEmpty)
                 }
@@ -471,7 +471,7 @@
                                 systemImage: "arrow.down.doc"
                             )
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.itoriLiquidProminent)
                     }
                     .padding(.horizontal, 20)
                     .padding(.bottom, 20)

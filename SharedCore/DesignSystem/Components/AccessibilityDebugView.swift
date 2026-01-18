@@ -205,14 +205,14 @@ import SwiftUI
                             value: "Standard Button",
                             comment: "Standard Button"
                         )) {}
-                            .buttonStyle(.borderedProminent)
+                            .buttonStyle(.itoriLiquidProminent)
 
                         Button(NSLocalizedString(
                             "accessibilitydebug.button.secondary.button",
                             value: "Secondary Button",
                             comment: "Secondary Button"
                         )) {}
-                            .buttonStyle(.bordered)
+                            .buttonStyle(.itariLiquid)
                     }
 
                     // Card preview with glass effect

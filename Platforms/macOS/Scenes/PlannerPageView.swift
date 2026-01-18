@@ -508,7 +508,7 @@
                             .frame(height: 36)
                             .frame(minWidth: 120)
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.itariLiquid)
                     .tint(.accentColor)
                     .controlSize(.regular)
                     .disabled(isRunningPlanner)
