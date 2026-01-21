@@ -956,7 +956,29 @@
         }
 
         var body: some View {
-            NavigationStack {
+            VStack(spacing: 0) {
+                // Custom title bar
+                HStack {
+                    Text("Edit Target for \(course.courseCode)")
+                        .font(.headline)
+                    Spacer()
+                    Button(NSLocalizedString("grades.button.cancel", value: "Cancel", comment: "Cancel")) {
+                        dismiss()
+                    }
+                    .buttonStyle(.borderless)
+                    .accessibilityLabel("Cancel grade editing")
+                    Button(NSLocalizedString("grades.button.save", value: "Save", comment: "Save")) {
+                        onSave(targetPercent, letter, components)
+                        dismiss()
+                    }
+                    .buttonStyle(.itoriLiquidProminent)
+                    .accessibilityLabel("Save grade target changes")
+                }
+                .padding()
+                .background(Color(nsColor: .controlBackgroundColor))
+                
+                Divider()
+                
                 Form {
                     Section {
                         VStack(alignment: .leading, spacing: 12) {
@@ -1093,20 +1115,6 @@
                 .compactFormSections()
                 .scrollContentBackground(.hidden)
                 .background(Color(nsColor: .controlBackgroundColor))
-                .navigationTitle("Edit Target for \(course.courseCode)")
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(NSLocalizedString("grades.button.cancel", value: "Cancel", comment: "Cancel")) {
-                            dismiss()
-                        }
-                    }
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(NSLocalizedString("grades.button.save", value: "Save", comment: "Save")) {
-                            onSave(targetPercent, letter, components)
-                            dismiss()
-                        }
-                    }
-                }
             }
         }
     }
@@ -1195,7 +1203,23 @@
         }
 
         var body: some View {
-            NavigationStack {
+            VStack(spacing: 0) {
+                // Custom title bar
+                HStack {
+                    Text("Export Grades")
+                        .font(.headline)
+                    Spacer()
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                    .buttonStyle(.borderless)
+                    .accessibilityLabel("Cancel grade export")
+                }
+                .padding()
+                .background(Color(nsColor: .controlBackgroundColor))
+                
+                Divider()
+                
                 Form {
                     Section {
                         Picker("Semester", selection: $selectedSemester) {
@@ -1282,14 +1306,6 @@
                 .compactFormSections()
                 .scrollContentBackground(.hidden)
                 .background(Color(nsColor: .controlBackgroundColor))
-                .navigationTitle("Export Grades")
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") {
-                            dismiss()
-                        }
-                    }
-                }
             }
             .frame(minWidth: 500, minHeight: 600)
         }

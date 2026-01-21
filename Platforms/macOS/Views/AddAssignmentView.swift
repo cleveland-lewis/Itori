@@ -137,7 +137,33 @@
         }
 
         var body: some View {
-            NavigationStack {
+            VStack(spacing: 0) {
+                // Custom title bar
+                HStack {
+                    Text(editingTask == nil ? "New Assignment" : "Edit Assignment")
+                        .font(.headline)
+                    Spacer()
+                    Button("Cancel") {
+                        if hasUnsavedChanges {
+                            showDiscardDialog = true
+                        } else {
+                            dismiss()
+                        }
+                    }
+                    .buttonStyle(.borderless)
+                    .accessibilityLabel("Cancel assignment creation")
+                    Button(editingTask == nil ? "Create" : "Save") {
+                        saveTask()
+                    }
+                    .buttonStyle(.itoriLiquidProminent)
+                    .disabled(isSaveDisabled)
+                    .accessibilityLabel(editingTask == nil ? "Create new assignment" : "Save assignment changes")
+                }
+                .padding()
+                .background(Color(nsColor: .controlBackgroundColor))
+                
+                Divider()
+                
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
                         // MARK: - Header Section
@@ -339,34 +365,14 @@
                         .padding(.bottom, 20)
                     }
                 }
-                .navigationTitle(editingTask == nil ? "New Assignment" : "Edit Assignment")
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") {
-                            if hasUnsavedChanges {
-                                showDiscardDialog = true
-                            } else {
-                                dismiss()
-                            }
-                        }
-                    }
-
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(editingTask == nil ? "Create" : "Save") {
-                            saveTask()
-                        }
-                        .buttonStyle(.itoriLiquidProminent)
-                        .disabled(isSaveDisabled)
-                    }
+            }
+            .alert("Discard Changes?", isPresented: $showDiscardDialog) {
+                Button("Discard", role: .destructive) {
+                    dismiss()
                 }
-                .alert("Discard Changes?", isPresented: $showDiscardDialog) {
-                    Button("Discard", role: .destructive) {
-                        dismiss()
-                    }
-                    Button("Cancel", role: .cancel) {}
-                } message: {
-                    Text("You have unsaved changes. Are you sure you want to discard them?")
-                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("You have unsaved changes. Are you sure you want to discard them?")
             }
             .frame(minWidth: 600, idealWidth: 700, maxWidth: 800)
             .frame(minHeight: 500, idealHeight: 700)

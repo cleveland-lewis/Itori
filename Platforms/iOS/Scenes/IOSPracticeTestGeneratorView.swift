@@ -12,6 +12,7 @@
         @State private var customTopic: String = ""
         @State private var difficulty: PracticeTestDifficulty = .medium
         @State private var questionCount: Int = 10
+        @State private var showingProgress: Bool = false
 
         private let questionCountOptions = [5, 10, 15, 20, 25]
 
@@ -26,6 +27,7 @@
                 }
                 .navigationTitle("Generate Practice Test")
                 .navigationBarTitleDisplayMode(.inline)
+                .disabled(showingProgress)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         Button(NSLocalizedString(
@@ -35,6 +37,7 @@
                         )) {
                             dismiss()
                         }
+                        .disabled(showingProgress)
                     }
                     ToolbarItem(placement: .topBarTrailing) {
                         Button(NSLocalizedString(
@@ -44,8 +47,13 @@
                         )) {
                             generateTest()
                         }
-                        .disabled(!canGenerate)
+                        .disabled(!canGenerate || showingProgress)
                         .fontWeight(.semibold)
+                    }
+                }
+                .overlay {
+                    if showingProgress {
+                        generationProgressOverlay
                     }
                 }
             }
@@ -246,6 +254,88 @@
 
         private var canGenerate: Bool {
             selectedCourse != nil && selectedModule != nil
+        }
+
+        // MARK: - Progress Overlay
+
+        private var generationProgressOverlay: some View {
+            ZStack {
+                Color.black.opacity(0.3)
+                    .ignoresSafeArea()
+
+                VStack(spacing: 20) {
+                    ProgressView()
+                        .scaleEffect(1.5)
+                        .tint(.white)
+
+                    VStack(spacing: 8) {
+                        Text(NSLocalizedString(
+                            "iospracticetestgenerator.generating.test",
+                            value: "Generating Test...",
+                            comment: "Generating Test..."
+                        ))
+                        .font(.headline)
+                        .foregroundStyle(.white)
+
+                        if store.isGenerating {
+                            Text(progressPhaseDescription)
+                                .font(.subheadline)
+                                .foregroundStyle(.white.opacity(0.9))
+                                .multilineTextAlignment(.center)
+                        }
+                    }
+                }
+                .padding(30)
+                .background {
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(.ultraThinMaterial)
+                }
+                .padding(40)
+            }
+        }
+
+        private var progressPhaseDescription: String {
+            if let generator = store.webEnhancedGenerator {
+                switch generator.currentPhase {
+                case .idle:
+                    return NSLocalizedString(
+                        "iospracticetestgenerator.phase.preparing",
+                        value: "Preparing...",
+                        comment: "Preparing..."
+                    )
+                case .extractingContent:
+                    return NSLocalizedString(
+                        "iospracticetestgenerator.phase.extracting",
+                        value: "Extracting course content...",
+                        comment: "Extracting course content..."
+                    )
+                case .researchingTopics:
+                    return NSLocalizedString(
+                        "iospracticetestgenerator.phase.researching",
+                        value: "Researching topics online...",
+                        comment: "Researching topics online..."
+                    )
+                case .generatingQuestions:
+                    return NSLocalizedString(
+                        "iospracticetestgenerator.phase.generating",
+                        value: "Generating questions...",
+                        comment: "Generating questions..."
+                    )
+                case .validating:
+                    return NSLocalizedString(
+                        "iospracticetestgenerator.phase.validating",
+                        value: "Validating questions...",
+                        comment: "Validating questions..."
+                    )
+                case .complete:
+                    return NSLocalizedString(
+                        "iospracticetestgenerator.phase.complete",
+                        value: "Complete!",
+                        comment: "Complete!"
+                    )
+                }
+            }
+            return ""
         }
 
         private func generateTest() {

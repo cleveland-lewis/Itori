@@ -253,7 +253,7 @@
 
         private func formattedScheduleDate(_ date: Date) -> String {
             let formatter = DateFormatter()
-            formatter.dateStyle = .abbreviated
+            formatter.dateStyle = .short
             formatter.timeStyle = .none
             let datePart = formatter.string(from: date)
             let timePart = AppSettingsModel.shared.formattedTime(date)

@@ -160428,6 +160428,90 @@
         }
       }
     },
+    "assignments.urgency.low": {
+      "comment": "Low urgency assignment",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Low"
+          }
+        }
+      }
+    },
+    "assignments.urgency.medium": {
+      "comment": "Medium urgency assignment",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medium"
+          }
+        }
+      }
+    },
+    "assignments.urgency.high": {
+      "comment": "High urgency assignment",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "High"
+          }
+        }
+      }
+    },
+    "assignments.urgency.critical": {
+      "comment": "Critical urgency assignment",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Critical"
+          }
+        }
+      }
+    },
+    "assignments.plan.review_notes": {
+      "comment": "Study plan - review notes",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review Notes"
+          }
+        }
+      }
+    },
+    "assignments.plan.practice_problems": {
+      "comment": "Study plan - practice problems",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Practice Problems"
+          }
+        }
+      }
+    },
+    "assignments.plan.mock_test": {
+      "comment": "Study plan - mock test",
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mock Test"
+          }
+        }
+      }
+    },
     "settings.reset.all.data.hint": {
       "comment": "Accessibility hint for reset all data button",
       "extractionState": "manual",

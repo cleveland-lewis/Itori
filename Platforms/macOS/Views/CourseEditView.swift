@@ -42,7 +42,29 @@
         }
 
         var body: some View {
-            NavigationStack {
+            VStack(spacing: 0) {
+                // Custom title bar
+                HStack {
+                    Text(isNewCourse ? "New Course" : "Edit Course")
+                        .font(.headline)
+                    Spacer()
+                    Button(NSLocalizedString("courseedit.button.cancel", value: "Cancel", comment: "Cancel")) {
+                        dismiss()
+                    }
+                    .buttonStyle(.borderless)
+                    .accessibilityLabel("Cancel course editing")
+                    Button(isNewCourse ? "Add" : "Save") {
+                        saveCourse()
+                    }
+                    .disabled(course.title.isEmpty || course.code.isEmpty)
+                    .buttonStyle(.itoriLiquidProminent)
+                    .accessibilityLabel(isNewCourse ? "Add new course" : "Save course changes")
+                }
+                .padding()
+                .background(Color(nsColor: .controlBackgroundColor))
+                
+                Divider()
+                
                 Form {
                     Section("Basic Information") {
                         TextField("Course Title", text: $course.title)
@@ -135,21 +157,6 @@
                 .compactFormSections()
                 .scrollContentBackground(.hidden)
                 .background(Color(nsColor: .controlBackgroundColor))
-                .navigationTitle(isNewCourse ? "New Course" : "Edit Course")
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(NSLocalizedString("courseedit.button.cancel", value: "Cancel", comment: "Cancel")) {
-                            dismiss()
-                        }
-                    }
-
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button(isNewCourse ? "Add" : "Save") {
-                            saveCourse()
-                        }
-                        .disabled(course.title.isEmpty || course.code.isEmpty)
-                    }
-                }
                 .fileImporter(
                     isPresented: $showFileImporter,
                     allowedContentTypes: [.pdf, .text, .plainText, .rtf, .html, .url],

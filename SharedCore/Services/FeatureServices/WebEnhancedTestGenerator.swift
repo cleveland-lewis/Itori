@@ -203,7 +203,24 @@ final class WebEnhancedTestGenerator: ObservableObject {
             let validatedQuestions = validateQuestions(questions, request: request)
 
             if validatedQuestions.isEmpty {
-                return .failure(.validationFailed(message: "No valid questions could be generated"))
+                // Check if the issue is insufficient content
+                let hasMinimalResearch = research.topics.values.contains { topic in
+                    !topic.concepts.isEmpty || !topic.definitions.isEmpty
+                }
+                
+                if !hasMinimalResearch {
+                    return .failure(.validationFailed(
+                        message: "Not enough course content available to generate test questions. Please add more assignments, notes, or course materials to enable test generation."
+                    ))
+                } else if questions.isEmpty {
+                    return .failure(.validationFailed(
+                        message: "The AI was unable to generate questions from the available content. Try adding more detailed course materials or assignment descriptions."
+                    ))
+                } else {
+                    return .failure(.validationFailed(
+                        message: "No valid questions could be generated from the available content. The generated questions did not meet quality standards."
+                    ))
+                }
             }
 
             return .success(validatedQuestions)
@@ -310,24 +327,42 @@ final class WebEnhancedTestGenerator: ObservableObject {
         }
 
         let decoder = JSONDecoder()
-        let response = try decoder.decode(QuestionGenerationResponse.self, from: data)
+        do {
+            let response = try decoder.decode(QuestionGenerationResponse.self, from: data)
 
-        if response.status == "error" {
-            throw TestGenerationError.noInternetConnection(
-                message: response.message ?? "Unknown error"
+            if response.status == "error" {
+                throw TestGenerationError.noInternetConnection(
+                    message: response.message ?? "Unknown error"
+                )
+            }
+
+            return response.questions?.map { dto in
+                PracticeQuestion(
+                    prompt: dto.prompt,
+                    format: .multipleChoice,
+                    options: dto.options,
+                    correctAnswer: dto.correctAnswer,
+                    explanation: dto.explanation,
+                    bloomsLevel: dto.bloomLevel
+                )
+            } ?? []
+        } catch let DecodingError.keyNotFound(key, context) {
+            throw TestGenerationError.parsingFailed(
+                message: "Missing required field '\(key.stringValue)' in LLM response. Path: \(context.codingPath.map(\.stringValue).joined(separator: "."))"
+            )
+        } catch let DecodingError.typeMismatch(type, context) {
+            throw TestGenerationError.parsingFailed(
+                message: "Type mismatch for '\(context.codingPath.last?.stringValue ?? "unknown")': expected \(type)"
+            )
+        } catch let DecodingError.valueNotFound(type, context) {
+            throw TestGenerationError.parsingFailed(
+                message: "Missing value for '\(context.codingPath.last?.stringValue ?? "unknown")' (expected \(type))"
+            )
+        } catch {
+            throw TestGenerationError.parsingFailed(
+                message: "Failed to parse LLM response: \(error.localizedDescription). Response preview: \(String(jsonString.prefix(200)))"
             )
         }
-
-        return response.questions?.map { dto in
-            PracticeQuestion(
-                prompt: dto.prompt,
-                format: .multipleChoice,
-                options: dto.options,
-                correctAnswer: dto.correctAnswer,
-                explanation: dto.explanation,
-                bloomsLevel: dto.bloomLevel
-            )
-        } ?? []
     }
 
     private func extractJSON(from text: String) -> String {

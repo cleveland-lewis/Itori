@@ -501,6 +501,12 @@ final class LocalLLMService: ObservableObject {
         }
 
         do {
+            // Check if the prompt is requesting JSON (practice test generation)
+            if prompt.contains("practice test") || prompt.contains("JSON") || prompt.contains("questions") {
+                // Use generateJSON for structured output
+                return try await backend.generateJSON(prompt: prompt, schema: nil)
+            }
+            
             // Call the backend with the custom prompt
             let llmResponse = try await backend.generate(prompt: prompt)
 

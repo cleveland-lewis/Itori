@@ -36,6 +36,11 @@ class MockLLMBackend: LLMBackend {
         if prompt.contains("Topic:") {
             return generateSlotJSON(from: prompt)
         }
+        
+        // Generate practice test JSON if requested
+        if prompt.contains("practice test") || prompt.contains("Generate a practice test") {
+            return generatePracticeTestJSON()
+        }
 
         // Generic mock JSON
         return """
@@ -178,5 +183,39 @@ class MockLLMBackend: LLMBackend {
         }
 
         return (prompt, choices)
+    }
+    
+    private func generatePracticeTestJSON() -> String {
+        return """
+        {
+            "status": "success",
+            "questions": [
+                {
+                    "prompt": "What is the primary purpose of object-oriented programming?",
+                    "options": ["Code reusability and modularity", "Faster execution speed", "Reduced memory usage", "Simpler syntax"],
+                    "correct_answer": "Code reusability and modularity",
+                    "explanation": "Object-oriented programming focuses on organizing code into reusable, modular components through classes and objects.",
+                    "difficulty": "Medium",
+                    "bloomLevel": "Understand"
+                },
+                {
+                    "prompt": "Which data structure provides O(1) average-case time complexity for insertions and lookups?",
+                    "options": ["Hash table", "Binary search tree", "Linked list", "Array"],
+                    "correct_answer": "Hash table",
+                    "explanation": "Hash tables use hash functions to map keys to indices, providing constant-time average performance for basic operations.",
+                    "difficulty": "Easy",
+                    "bloomLevel": "Remember"
+                },
+                {
+                    "prompt": "What would happen if a recursive function lacks a proper base case?",
+                    "options": ["Stack overflow error", "Infinite loop warning", "Compilation error", "Optimized execution"],
+                    "correct_answer": "Stack overflow error",
+                    "explanation": "Without a base case, the recursive function continues calling itself indefinitely, eventually exhausting the call stack.",
+                    "difficulty": "Medium",
+                    "bloomLevel": "Analyze"
+                }
+            ]
+        }
+        """
     }
 }

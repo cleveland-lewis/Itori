@@ -56,7 +56,30 @@
         }
 
         var body: some View {
-            NavigationStack {
+            VStack(spacing: 0) {
+                // Custom title bar
+                HStack {
+                    Text(isEditing ? "Edit Activity" : "New Activity")
+                        .font(.headline)
+                    Spacer()
+                    Button(NSLocalizedString(
+                        "activityeditor.button.cancel",
+                        value: "Cancel",
+                        comment: "Cancel"
+                    )) { dismissView() }
+                        .buttonStyle(.borderless)
+                        .accessibilityLabel("Cancel activity editing")
+                    Button(NSLocalizedString("activityeditor.button.save", value: "Save", comment: "Save")) {
+                        save()
+                    }
+                    .buttonStyle(.itoriLiquidProminent)
+                    .accessibilityLabel(isEditing ? "Save activity changes" : "Create new activity")
+                }
+                .padding()
+                .background(Color(nsColor: .controlBackgroundColor))
+                
+                Divider()
+                
                 Form {
                     Section(header: Text(NSLocalizedString(
                         "activityeditor.details",
@@ -117,25 +140,6 @@
                     }
                 }
                 .compactFormSections()
-                .navigationTitle(isEditing ? "Edit Activity" : "New Activity")
-                #if os(iOS) || os(tvOS)
-                    .navigationBarTitleDisplayMode(.inline)
-                #endif
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button(NSLocalizedString(
-                                "activityeditor.button.cancel",
-                                value: "Cancel",
-                                comment: "Cancel"
-                            )) { dismissView() }
-                        }
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button(NSLocalizedString("activityeditor.button.save", value: "Save", comment: "Save")) {
-                                save()
-                            }
-                            .buttonStyle(.itoriLiquidProminent)
-                        }
-                    }
             }
         }
 

@@ -19,6 +19,7 @@ extension Notification.Name {
 
     // Planner settings
     static let plannerHorizonDidChange = Notification.Name("plannerHorizonDidChange")
+    static let plannerNeedsRecompute = Notification.Name("plannerNeedsRecompute")
 
     // Persistence settings
     static let coreDataSyncSettingChanged = Notification.Name("coreDataSyncSettingChanged")

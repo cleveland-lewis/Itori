@@ -1790,16 +1790,15 @@
 
         private func syncEvents() {
             let todayEvents = todaysCalendarEvents()
-            let mapped = todayEvents.map { event in
+            events = todayEvents.map { event in
                 let timeFormatter = DateFormatter.itoriShortTime
-                DashboardEvent(
+                return DashboardEvent(
                     title: event.title,
                     time: "\(timeFormatter.string(from: event.startDate)) – \(timeFormatter.string(from: event.endDate))",
                     location: event.location,
                     date: event.startDate
                 )
-            }
-            events = mapped.sorted { $0.date < $1.date }
+            }.sorted { $0.date < $1.date }
         }
 
         private func todaysCalendarEvents() -> [EKEvent] {
