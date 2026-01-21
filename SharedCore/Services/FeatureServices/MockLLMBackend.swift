@@ -195,24 +195,40 @@ class MockLLMBackend: LLMBackend {
                     "options": ["Code reusability and modularity", "Faster execution speed", "Reduced memory usage", "Simpler syntax"],
                     "correct_answer": "Code reusability and modularity",
                     "explanation": "Object-oriented programming focuses on organizing code into reusable, modular components through classes and objects.",
-                    "difficulty": "Medium",
-                    "bloomLevel": "Understand"
+                    "difficulty": "medium",
+                    "bloom_level": "Understand"
                 },
                 {
                     "prompt": "Which data structure provides O(1) average-case time complexity for insertions and lookups?",
                     "options": ["Hash table", "Binary search tree", "Linked list", "Array"],
                     "correct_answer": "Hash table",
                     "explanation": "Hash tables use hash functions to map keys to indices, providing constant-time average performance for basic operations.",
-                    "difficulty": "Easy",
-                    "bloomLevel": "Remember"
+                    "difficulty": "easy",
+                    "bloom_level": "Remember"
                 },
                 {
                     "prompt": "What would happen if a recursive function lacks a proper base case?",
                     "options": ["Stack overflow error", "Infinite loop warning", "Compilation error", "Optimized execution"],
                     "correct_answer": "Stack overflow error",
                     "explanation": "Without a base case, the recursive function continues calling itself indefinitely, eventually exhausting the call stack.",
-                    "difficulty": "Medium",
-                    "bloomLevel": "Analyze"
+                    "difficulty": "medium",
+                    "bloom_level": "Analyze"
+                },
+                {
+                    "prompt": "In algorithm analysis, what does Big-O notation primarily measure?",
+                    "options": ["Worst-case time complexity", "Best-case performance", "Average memory usage", "Code readability"],
+                    "correct_answer": "Worst-case time complexity",
+                    "explanation": "Big-O notation describes the upper bound of an algorithm's growth rate, focusing on worst-case scenarios as input size increases.",
+                    "difficulty": "medium",
+                    "bloom_level": "Understand"
+                },
+                {
+                    "prompt": "What is polymorphism in object-oriented programming?",
+                    "options": ["The ability of objects to take multiple forms", "Hiding implementation details", "Breaking problems into smaller parts", "Preventing inheritance"],
+                    "correct_answer": "The ability of objects to take multiple forms",
+                    "explanation": "Polymorphism allows objects of different classes to be treated as objects of a common parent class, enabling flexible and reusable code.",
+                    "difficulty": "medium",
+                    "bloom_level": "Understand"
                 }
             ]
         }
