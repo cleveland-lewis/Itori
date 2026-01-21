@@ -13,7 +13,8 @@
             case .grades: NSLocalizedString("tab.grades", value: "Grades", comment: "Sidebar tab")
             case .timer: NSLocalizedString("tab.timer", value: "Timer", comment: "Sidebar tab")
             case .flashcards: NSLocalizedString("tab.flashcards", value: "Flashcards", comment: "Sidebar tab")
-            case .practice: NSLocalizedString("tab.practice", value: "Practice", comment: "Sidebar tab")
+                // v1.1: Practice tests disabled
+                // case .practice: NSLocalizedString("tab.practice", value: "Practice", comment: "Sidebar tab")
             }
         }
 
@@ -27,7 +28,8 @@
             case .grades: "number.circle"
             case .timer: "timer"
             case .flashcards: "rectangle.stack"
-            case .practice: "list.clipboard"
+                // v1.1: Practice tests disabled
+                // case .practice: "list.clipboard"
             }
         }
 

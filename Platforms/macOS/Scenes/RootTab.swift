@@ -10,7 +10,8 @@
         case grades
         case timer
         case flashcards
-        case practice
+        // v1.1: Practice tests disabled - feature coming in v2.0
+        // case practice
 
         public var id: String { rawValue }
     }

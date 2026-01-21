@@ -276,8 +276,9 @@
                 TimerPageView()
             case .flashcards:
                 FlashcardsView()
-            case .practice:
-                PracticeTestPageView()
+                // v1.1: Practice tests disabled - feature coming in v2.0
+                // case .practice:
+                //     PracticeTestPageView()
             }
         }
 
