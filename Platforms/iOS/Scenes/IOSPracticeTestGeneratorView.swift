@@ -13,6 +13,8 @@
         @State private var difficulty: PracticeTestDifficulty = .medium
         @State private var questionCount: Int = 10
         @State private var showingProgress: Bool = false
+        @State private var estimatedTimeRemaining: TimeInterval = 0
+        @State private var generationStartTime: Date?
 
         private let questionCountOptions = [5, 10, 15, 20, 25]
 
@@ -263,10 +265,25 @@
                 Color.black.opacity(0.3)
                     .ignoresSafeArea()
 
-                VStack(spacing: 20) {
-                    ProgressView()
-                        .scaleEffect(1.5)
-                        .tint(.white)
+                VStack(spacing: 24) {
+                    // Circular progress indicator
+                    ZStack {
+                        Circle()
+                            .stroke(Color.white.opacity(0.3), lineWidth: 8)
+                            .frame(width: 100, height: 100)
+
+                        Circle()
+                            .trim(from: 0, to: progressPercentage)
+                            .stroke(Color.white, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                            .frame(width: 100, height: 100)
+                            .rotationEffect(.degrees(-90))
+                            .animation(.linear(duration: 0.5), value: progressPercentage)
+
+                        Text("\(Int(progressPercentage * 100))%")
+                            .font(.system(.title2, design: .rounded))
+                            .fontWeight(.bold)
+                            .foregroundStyle(.white)
+                    }
 
                     VStack(spacing: 8) {
                         Text(NSLocalizedString(
@@ -282,6 +299,14 @@
                                 .font(.subheadline)
                                 .foregroundStyle(.white.opacity(0.9))
                                 .multilineTextAlignment(.center)
+
+                            // Estimated time remaining
+                            if estimatedTimeRemaining > 0 {
+                                Text(formattedTimeRemaining)
+                                    .font(.caption)
+                                    .foregroundStyle(.white.opacity(0.8))
+                                    .padding(.top, 4)
+                            }
                         }
                     }
                 }
@@ -292,50 +317,153 @@
                 }
                 .padding(40)
             }
+            .onAppear {
+                startTimeEstimation()
+            }
+        }
+
+        private var progressPercentage: Double {
+            let generator = store.webEnhancedGenerator
+            switch generator.currentPhase {
+            case .idle: return 0.0
+            case .extractingContent: return 0.15
+            case .researchingTopics: return 0.35
+            case .generatingQuestions: return 0.60
+            case .validating: return 0.85
+            case .complete: return 1.0
+            }
+        }
+
+        private var formattedTimeRemaining: String {
+            let seconds = Int(estimatedTimeRemaining)
+            if seconds <= 0 {
+                return NSLocalizedString(
+                    "iospracticetestgenerator.time.finishing",
+                    value: "Finishing up...",
+                    comment: "Finishing up..."
+                )
+            } else if seconds < 60 {
+                return String(format: NSLocalizedString(
+                    "iospracticetestgenerator.time.seconds",
+                    value: "~%d seconds remaining",
+                    comment: "~%d seconds remaining"
+                ), seconds)
+            } else {
+                let minutes = seconds / 60
+                let remainingSeconds = seconds % 60
+                if remainingSeconds == 0 {
+                    return String(format: NSLocalizedString(
+                        "iospracticetestgenerator.time.minutes",
+                        value: "~%d minutes remaining",
+                        comment: "~%d minutes remaining"
+                    ), minutes)
+                } else {
+                    return String(format: NSLocalizedString(
+                        "iospracticetestgenerator.time.minutes_seconds",
+                        value: "~%d:%02d remaining",
+                        comment: "~%d:%02d remaining"
+                    ), minutes, remainingSeconds)
+                }
+            }
+        }
+
+        private func startTimeEstimation() {
+            generationStartTime = Date()
+            estimatedTimeRemaining = estimateGenerationTime()
+
+            // Update timer every second
+            Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+                Task { @MainActor [weak timer] in
+                    guard showingProgress else {
+                        timer?.invalidate()
+                        return
+                    }
+
+                    updateTimeEstimate()
+
+                    if estimatedTimeRemaining <= 0 || !store.isGenerating {
+                        timer?.invalidate()
+                    }
+                }
+            }
+        }
+
+        private func estimateGenerationTime() -> TimeInterval {
+            // Base time per question (in seconds)
+            let baseTimePerQuestion: TimeInterval = 3.0
+
+            // Phase time estimates
+            let extractionTime: TimeInterval = 2.0
+            let researchTime: TimeInterval = Double(selectedTopics.count) * 3.0 + 5.0 // More topics = more research
+            let validationTime: TimeInterval = 3.0
+
+            // Difficulty multipliers
+            let difficultyMultiplier = switch difficulty {
+            case .easy: 0.8
+            case .medium: 1.0
+            case .hard: 1.3
+            }
+
+            // Calculate total
+            let questionTime = Double(questionCount) * baseTimePerQuestion * difficultyMultiplier
+            let totalTime = extractionTime + researchTime + questionTime + validationTime
+
+            return totalTime
+        }
+
+        private func updateTimeEstimate() {
+            guard let startTime = generationStartTime else { return }
+
+            let elapsed = Date().timeIntervalSince(startTime)
+            let totalEstimate = estimateGenerationTime()
+
+            // Calculate remaining time based on elapsed time
+            let timeRemaining = max(0, totalEstimate - elapsed)
+
+            // Smooth the estimate to avoid jumps
+            estimatedTimeRemaining = timeRemaining
         }
 
         private var progressPhaseDescription: String {
-            if let generator = store.webEnhancedGenerator {
-                switch generator.currentPhase {
-                case .idle:
-                    return NSLocalizedString(
-                        "iospracticetestgenerator.phase.preparing",
-                        value: "Preparing...",
-                        comment: "Preparing..."
-                    )
-                case .extractingContent:
-                    return NSLocalizedString(
-                        "iospracticetestgenerator.phase.extracting",
-                        value: "Extracting course content...",
-                        comment: "Extracting course content..."
-                    )
-                case .researchingTopics:
-                    return NSLocalizedString(
-                        "iospracticetestgenerator.phase.researching",
-                        value: "Researching topics online...",
-                        comment: "Researching topics online..."
-                    )
-                case .generatingQuestions:
-                    return NSLocalizedString(
-                        "iospracticetestgenerator.phase.generating",
-                        value: "Generating questions...",
-                        comment: "Generating questions..."
-                    )
-                case .validating:
-                    return NSLocalizedString(
-                        "iospracticetestgenerator.phase.validating",
-                        value: "Validating questions...",
-                        comment: "Validating questions..."
-                    )
-                case .complete:
-                    return NSLocalizedString(
-                        "iospracticetestgenerator.phase.complete",
-                        value: "Complete!",
-                        comment: "Complete!"
-                    )
-                }
+            let generator = store.webEnhancedGenerator
+            switch generator.currentPhase {
+            case .idle:
+                return NSLocalizedString(
+                    "iospracticetestgenerator.phase.preparing",
+                    value: "Preparing...",
+                    comment: "Preparing..."
+                )
+            case .extractingContent:
+                return NSLocalizedString(
+                    "iospracticetestgenerator.phase.extracting",
+                    value: "Extracting course content...",
+                    comment: "Extracting course content..."
+                )
+            case .researchingTopics:
+                return NSLocalizedString(
+                    "iospracticetestgenerator.phase.researching",
+                    value: "Researching topics online...",
+                    comment: "Researching topics online..."
+                )
+            case .generatingQuestions:
+                return NSLocalizedString(
+                    "iospracticetestgenerator.phase.generating",
+                    value: "Generating questions...",
+                    comment: "Generating questions..."
+                )
+            case .validating:
+                return NSLocalizedString(
+                    "iospracticetestgenerator.phase.validating",
+                    value: "Validating questions...",
+                    comment: "Validating questions..."
+                )
+            case .complete:
+                return NSLocalizedString(
+                    "iospracticetestgenerator.phase.complete",
+                    value: "Complete!",
+                    comment: "Complete!"
+                )
             }
-            return ""
         }
 
         private func generateTest() {
@@ -355,11 +483,13 @@
                 includeExplanation: false
             )
 
+            showingProgress = true
+
             Task {
                 await store.generateTest(request: request)
+                showingProgress = false
+                dismiss()
             }
-
-            dismiss()
         }
     }
 

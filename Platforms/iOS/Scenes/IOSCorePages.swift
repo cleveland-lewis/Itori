@@ -1100,15 +1100,14 @@
                                 Text(NSLocalizedString("Practice Tests", value: "Practice Tests", comment: ""))
                                     .font(.headline)
                                 Spacer()
-                                Button {
-                                    showingGenerateTest = true
-                                } label: {
-                                    Image(systemName: "plus.circle.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.blue)
-                                }
-                                .accessibilityLabel("Generate new practice test")
-                                .accessibilityHint("Opens form to create a new practice test")
+                                // Practice test generation only available on macOS
+                                Text("macOS only")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(Color.secondary.opacity(0.1))
+                                    .clipShape(Capsule())
                             }
 
                             if practiceStore.isGenerating {
@@ -1116,7 +1115,7 @@
                             } else if let currentTest = practiceStore.currentTest {
                                 currentTestCard(currentTest)
                             } else if practiceStore.tests.isEmpty {
-                                emptyTestsCard
+                                macOSOnlyEmptyCard
                             } else {
                                 recentTestsList
                             }
@@ -1133,10 +1132,6 @@
                 .navigationTitle("Practice")
                 .sheet(isPresented: $showingScheduledTests) {
                     IOSScheduledTestsView()
-                }
-                .sheet(isPresented: $showingGenerateTest) {
-                    IOSPracticeTestGeneratorView(store: practiceStore)
-                        .environmentObject(coursesStore)
                 }
             }
         }
@@ -1385,7 +1380,37 @@
             )
         }
 
-        // MARK: - Empty Tests Card
+        // MARK: - macOS Only Empty Card
+
+        private var macOSOnlyEmptyCard: some View {
+            VStack(spacing: 12) {
+                Image(systemName: "desktopcomputer")
+                    .font(.largeTitle)
+                    .imageScale(.large)
+                    .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
+
+                Text(NSLocalizedString("Practice Test Generation", value: "Practice Test Generation", comment: ""))
+                    .font(.headline)
+
+                Text(NSLocalizedString(
+                    "Practice test generation is available on macOS only. Use the macOS version of Itori to generate AI-powered practice tests.",
+                    value: "Practice test generation is available on macOS only. Use the macOS version of Itori to generate AI-powered practice tests.",
+                    comment: ""
+                ))
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(32)
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color(uiColor: .secondarySystemGroupedBackground))
+            )
+        }
+
+        // MARK: - Empty Tests Card (deprecated - use macOSOnlyEmptyCard)
 
         private var emptyTestsCard: some View {
             VStack(spacing: 12) {

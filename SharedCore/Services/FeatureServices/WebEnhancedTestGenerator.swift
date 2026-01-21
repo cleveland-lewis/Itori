@@ -207,7 +207,7 @@ final class WebEnhancedTestGenerator: ObservableObject {
                 let hasMinimalResearch = research.topics.values.contains { topic in
                     !topic.concepts.isEmpty || !topic.definitions.isEmpty
                 }
-                
+
                 if !hasMinimalResearch {
                     return .failure(.validationFailed(
                         message: "Not enough course content available to generate test questions. Please add more assignments, notes, or course materials to enable test generation."

@@ -17,6 +17,17 @@ All notable changes to Itori will be documented in this file.
   - Extracts due dates with multiple format support (MM/dd/yyyy, Month day year, etc.)
   - Automatically infers assignment types based on keywords
   - Provides detailed logging of parsing progress and results
+- **Practice Test Generation: Time estimation and progress tracking** (2026-01-21)
+  - Circular progress indicator (0-100%) with animated ring
+  - Real-time phase updates: Extracting → Researching → Generating → Validating → Complete
+  - Estimated time remaining (updates every second)
+  - Time estimation algorithm based on question count, difficulty, and topic count
+  - Progress overlay disables form interaction during generation
+- **Network Access: Configured for practice test generation** (2026-01-21)
+  - Added NSLocalNetworkUsageDescription to Info.plist
+  - DuckDuckGo API integration for topic research
+  - Wikipedia API fallback for research
+  - macOS entitlements configured with network client capability
 
 ### Fixed
 - macOS Dashboard: Fixed scrunched card layout by removing fixed height constraints - cards now properly expand
@@ -34,6 +45,13 @@ All notable changes to Itori will be documented in this file.
 - AddAssignmentView: Complete UI redesign - NavigationStack with toolbar instead of AppCard layout
 - AddAssignmentView: Sections now clearly separated with SF Symbols icons and dividers
 - AddAssignmentView: Responsive frame sizing (600-800px wide, 500-700px tall)
+- **Practice Test Generation: Now macOS ONLY** (2026-01-21)
+  - iOS removed generation capability - shows "macOS only" badge and informational message
+  - iOS can still view and take tests created on macOS (synced via iCloud)
+  - Generation features require network access for API calls and local LLM processing
+  - Simplified development and testing by focusing on single platform
+- **PracticeTestStore: Made webEnhancedGenerator internal** (2026-01-21)
+  - Allows views to access currentPhase property for progress updates
 
 ## [Previous versions...]
 

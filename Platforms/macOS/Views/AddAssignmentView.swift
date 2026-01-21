@@ -161,9 +161,9 @@
                 }
                 .padding()
                 .background(Color(nsColor: .controlBackgroundColor))
-                
+
                 Divider()
-                
+
                 ScrollView {
                     VStack(alignment: .leading, spacing: 24) {
                         // MARK: - Header Section

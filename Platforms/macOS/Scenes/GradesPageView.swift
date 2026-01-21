@@ -976,9 +976,9 @@
                 }
                 .padding()
                 .background(Color(nsColor: .controlBackgroundColor))
-                
+
                 Divider()
-                
+
                 Form {
                     Section {
                         VStack(alignment: .leading, spacing: 12) {
@@ -1217,9 +1217,9 @@
                 }
                 .padding()
                 .background(Color(nsColor: .controlBackgroundColor))
-                
+
                 Divider()
-                
+
                 Form {
                     Section {
                         Picker("Semester", selection: $selectedSemester) {

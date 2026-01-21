@@ -77,9 +77,9 @@
                 }
                 .padding()
                 .background(Color(nsColor: .controlBackgroundColor))
-                
+
                 Divider()
-                
+
                 Form {
                     Section(header: Text(NSLocalizedString(
                         "activityeditor.details",

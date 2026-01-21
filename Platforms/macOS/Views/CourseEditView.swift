@@ -62,9 +62,9 @@
                 }
                 .padding()
                 .background(Color(nsColor: .controlBackgroundColor))
-                
+
                 Divider()
-                
+
                 Form {
                     Section("Basic Information") {
                         TextField("Course Title", text: $course.title)

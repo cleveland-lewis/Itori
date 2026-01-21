@@ -36,7 +36,7 @@ class MockLLMBackend: LLMBackend {
         if prompt.contains("Topic:") {
             return generateSlotJSON(from: prompt)
         }
-        
+
         // Generate practice test JSON if requested
         if prompt.contains("practice test") || prompt.contains("Generate a practice test") {
             return generatePracticeTestJSON()
@@ -184,9 +184,9 @@ class MockLLMBackend: LLMBackend {
 
         return (prompt, choices)
     }
-    
+
     private func generatePracticeTestJSON() -> String {
-        return """
+        """
         {
             "status": "success",
             "questions": [

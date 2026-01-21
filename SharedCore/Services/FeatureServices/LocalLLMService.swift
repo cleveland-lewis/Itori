@@ -506,7 +506,7 @@ final class LocalLLMService: ObservableObject {
                 // Use generateJSON for structured output
                 return try await backend.generateJSON(prompt: prompt, schema: nil)
             }
-            
+
             // Call the backend with the custom prompt
             let llmResponse = try await backend.generate(prompt: prompt)
 

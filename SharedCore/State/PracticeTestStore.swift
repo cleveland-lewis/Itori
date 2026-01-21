@@ -14,7 +14,7 @@ final class PracticeTestStore: ObservableObject {
 
     private let llmService: LocalLLMService
     private let algorithmicGenerator: AlgorithmicTestGenerator
-    private let webEnhancedGenerator: WebEnhancedTestGenerator
+    let webEnhancedGenerator: WebEnhancedTestGenerator
     private let storageKey = "practice_tests_v1"
 
     init(
