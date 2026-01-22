@@ -1024,7 +1024,8 @@
 
                     AreaMark(
                         x: .value("Day", point.day),
-                        y: .value("Minutes", point.minutes)
+                        yStart: .value("Min", 0),
+                        yEnd: .value("Minutes", point.minutes)
                     )
                     .foregroundStyle(
                         LinearGradient(
@@ -1036,7 +1037,9 @@
                             endPoint: .bottom
                         )
                     )
+                    .interpolationMethod(.catmullRom)
                 }
+                .chartYScale(domain: .automatic(includesZero: true))
                 .chartYAxis {
                     AxisMarks(position: .leading) { _ in
                         AxisGridLine()
@@ -1526,7 +1529,8 @@
 
                     AreaMark(
                         x: .value("Week", start),
-                        y: .value("GPA", point.gpa)
+                        yStart: .value("Min", 0),
+                        yEnd: .value("GPA", point.gpa)
                     )
                     .foregroundStyle(
                         LinearGradient(
@@ -1553,6 +1557,7 @@
                     }
                 }
             }
+            .chartYScale(domain: .automatic(includesZero: true))
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day, count: 7)) { value in
                     if let date = value.as(Date.self) {
@@ -1588,7 +1593,8 @@
 
                 AreaMark(
                     x: .value("Semester", point.label),
-                    y: .value("GPA", point.gpa)
+                    yStart: .value("Min", 0),
+                    yEnd: .value("GPA", point.gpa)
                 )
                 .foregroundStyle(
                     LinearGradient(
@@ -1614,6 +1620,7 @@
                     }
                 }
             }
+            .chartYScale(domain: .automatic(includesZero: true))
             .chartXAxis {
                 AxisMarks(values: points.map(\.label)) { value in
                     AxisValueLabel {

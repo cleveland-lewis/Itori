@@ -43,6 +43,37 @@
             case .developer: "hammer"
             }
         }
+        
+        var searchKeywords: [String] {
+            switch self {
+            case .general:
+                return ["general", "hover", "wiggle", "glass", "effects", "layout", "tab bar", "sidebar", "behavior", "interaction"]
+            case .appearance:
+                return ["appearance", "theme", "dark mode", "light mode", "accent", "color", "blue", "purple", "green", "pink", "orange", "yellow"]
+            case .interface:
+                return ["interface", "display", "compact", "dashboard", "24-hour", "time", "gpa", "hide"]
+            case .accounts:
+                return ["accounts", "email", "sync", "icloud", "manage"]
+            case .courses:
+                return ["courses", "classes", "academic", "semester", "grade scale", "codes"]
+            case .calendar:
+                return ["calendar", "events", "integration", "sync", "permissions"]
+            case .planner:
+                return ["planner", "schedule", "planning", "tasks", "workload"]
+            case .semesters:
+                return ["semesters", "terms", "academic year", "dates"]
+            case .ai:
+                return ["ai", "llm", "openai", "chatgpt", "assistant", "suggestions"]
+            case .notifications:
+                return ["notifications", "reminders", "alerts", "sounds", "badges"]
+            case .privacy:
+                return ["privacy", "permissions", "data", "security", "tracking"]
+            case .storage:
+                return ["storage", "data", "backup", "export", "import", "icloud"]
+            case .developer:
+                return ["developer", "debug", "logging", "advanced", "diagnostics"]
+            }
+        }
     }
 
     // MARK: - Comprehensive Settings Root View
@@ -173,6 +204,25 @@
         @Binding var query: String
         var accentColor: Color
 
+        private var filteredSections: [SettingsSection] {
+            guard !query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                return SettingsSection.allCases
+            }
+            
+            let searchQuery = query.lowercased()
+            return SettingsSection.allCases.filter { section in
+                // Search in section title
+                if section.title.lowercased().contains(searchQuery) {
+                    return true
+                }
+                
+                // Search in section keywords
+                return section.searchKeywords.contains { keyword in
+                    keyword.lowercased().contains(searchQuery)
+                }
+            }
+        }
+
         var body: some View {
             VStack(spacing: 12) {
                 TextField("Search Settings", text: $query)
@@ -180,15 +230,28 @@
                     .padding(.horizontal, 10)
                     .padding(.top, 12)
 
-                List(selection: $selection) {
-                    ForEach(SettingsSection.allCases, id: \.id) { section in
-                        HStack { sidebarRow(for: section) }
-                            .tag(section)
-                            .listRowSeparator(.hidden)
-                            .listRowBackground(Color.clear)
+                if filteredSections.isEmpty {
+                    VStack(spacing: 12) {
+                        Image(systemName: "magnifyingglass")
+                            .font(.title2)
+                            .foregroundStyle(.secondary)
+                        Text("No results for \"\(query)\"")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .padding(.top, 40)
+                } else {
+                    List(selection: $selection) {
+                        ForEach(filteredSections, id: \.id) { section in
+                            HStack { sidebarRow(for: section) }
+                                .tag(section)
+                                .listRowSeparator(.hidden)
+                                .listRowBackground(Color.clear)
+                        }
+                    }
+                    .listStyle(.sidebar)
                 }
-                .listStyle(.sidebar)
             }
             .padding(.horizontal, 6)
         }

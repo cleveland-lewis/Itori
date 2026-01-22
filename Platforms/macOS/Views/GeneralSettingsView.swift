@@ -362,6 +362,20 @@
                         .foregroundStyle(.secondary)
                 }
 
+                Section("Demo Data") {
+                    Button {
+                        loadSampleData()
+                    } label: {
+                        Label("Show Sample Data", systemImage: "sparkles")
+                            .fontWeight(.semibold)
+                    }
+                    .buttonStyle(.itoriLiquidProminent)
+                    
+                    Text("Load sample courses, assignments, and grades to explore the app. Your current data remains saved and can be restored.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                
                 Section("Danger Zone") {
                     Button(role: .destructive) {
                         resetInput = ""
@@ -549,6 +563,292 @@
             }
 
             energyLevel = EnergyLevel(rawValue: settings.defaultEnergyLevel) ?? .medium
+        }
+        
+        private func loadSampleData() {
+            let calendar = Calendar.current
+            let now = Date()
+            
+            // Create sample semesters if none exist
+            if coursesStore.semesters.isEmpty {
+                createSampleSemesters()
+            }
+            
+            // Use existing current semester or create one
+            let targetSemester: Semester
+            if let currentSemester = coursesStore.semesters.first(where: { $0.isCurrent }) {
+                targetSemester = currentSemester
+            } else if let firstSemester = coursesStore.semesters.first {
+                targetSemester = firstSemester
+                coursesStore.currentSemesterId = firstSemester.id
+            } else {
+                // Create a sample semester as fallback
+                let semesterStart = calendar.date(byAdding: .month, value: -2, to: now) ?? now
+                let semesterEnd = calendar.date(byAdding: .month, value: 2, to: now) ?? now
+                let semester = Semester(
+                    id: UUID(),
+                    name: "Spring 2026",
+                    startDate: semesterStart,
+                    endDate: semesterEnd,
+                    isArchived: false,
+                    isCurrent: true,
+                    educationLevel: .college,
+                    semesterTerm: .spring,
+                    academicYear: "2025-2026"
+                )
+                coursesStore.addSemester(semester)
+                coursesStore.currentSemesterId = semester.id
+                targetSemester = semester
+            }
+            
+            // Sample courses with different colors
+            let sampleCourses: [(title: String, code: String, color: String, instructor: String)] = [
+                ("Introduction to Computer Science", "CS 101", ColorTag.blue.hexValue, "Dr. Sarah Johnson"),
+                ("Calculus II", "MATH 201", ColorTag.purple.hexValue, "Prof. Michael Chen"),
+                ("World History", "HIST 150", ColorTag.green.hexValue, "Dr. Emily Rodriguez"),
+                ("Biology Lab", "BIO 120", ColorTag.orange.hexValue, "Prof. David Kim"),
+                ("Creative Writing", "ENG 225", ColorTag.pink.hexValue, "Dr. Jennifer Martinez")
+            ]
+            
+            var createdCourses: [Course] = []
+            for sample in sampleCourses {
+                let course = Course(
+                    id: UUID(),
+                    title: sample.title,
+                    code: sample.code,
+                    semesterId: targetSemester.id,
+                    colorHex: sample.color,
+                    isArchived: false,
+                    courseType: .regular,
+                    instructor: sample.instructor,
+                    location: "Main Campus",
+                    credits: 3.0,
+                    creditType: .credits,
+                    meetingTimes: nil,
+                    syllabus: nil,
+                    notes: nil,
+                    attachments: []
+                )
+                coursesStore.addCourse(course)
+                createdCourses.append(course)
+            }
+            
+            // Sample assignments with realistic due dates
+            let sampleAssignments: [(title: String, type: TaskType, daysFromNow: Int, courseIndex: Int, estimatedMinutes: Int)] = [
+                // Upcoming assignments
+                ("Final Project Proposal", .project, 3, 0, 120),
+                ("Weekly Problem Set", .homework, 2, 1, 90),
+                ("Essay Draft: Renaissance Art", .homework, 5, 2, 150),
+                ("Lab Report: Cell Division", .homework, 4, 3, 60),
+                ("Short Story Submission", .homework, 6, 4, 180),
+                
+                // This week
+                ("Midterm Exam", .exam, 7, 0, 120),
+                ("Quiz: Derivatives", .quiz, 1, 1, 30),
+                ("Reading: Chapter 12-14", .reading, 2, 2, 45),
+                
+                // Completed assignments
+                ("Database Design Project", .project, -7, 0, 240),
+                ("Integration Homework", .homework, -5, 1, 75),
+                ("History Presentation", .project, -10, 2, 90)
+            ]
+            
+            for sample in sampleAssignments {
+                let dueDate = calendar.date(byAdding: .day, value: sample.daysFromNow, to: now) ?? now
+                let course = createdCourses[sample.courseIndex]
+                
+                let task = AppTask(
+                    id: UUID(),
+                    title: sample.title,
+                    type: sample.type,
+                    category: sample.type,
+                    courseId: course.id,
+                    courseName: course.title,
+                    courseCode: course.code,
+                    due: dueDate,
+                    estimatedMinutes: sample.estimatedMinutes,
+                    isCompleted: sample.daysFromNow < 0,
+                    completedAt: sample.daysFromNow < 0 ? dueDate : nil,
+                    locked: false,
+                    hasExplicitDueTime: false,
+                    priority: .medium,
+                    tags: [],
+                    notes: nil,
+                    attachments: [],
+                    subtasks: [],
+                    dependencies: [],
+                    recurrence: nil,
+                    isPersonal: false,
+                    createdAt: calendar.date(byAdding: .day, value: sample.daysFromNow - 14, to: now) ?? now,
+                    updatedAt: now
+                )
+                assignmentsStore.addTask(task)
+            }
+            
+            // Sample grades
+            let sampleGrades: [(courseIndex: Int, percent: Double, letter: String)] = [
+                (0, 92.5, "A"),
+                (1, 88.0, "B+"),
+                (2, 95.0, "A"),
+                (3, 85.5, "B"),
+                (4, 90.0, "A-")
+            ]
+            
+            for sample in sampleGrades {
+                let course = createdCourses[sample.courseIndex]
+                gradesStore.upsert(
+                    courseId: course.id,
+                    percent: sample.percent,
+                    letter: sample.letter
+                )
+            }
+            
+            // Create sample plans for upcoming assignments
+            let upcomingTasks = assignmentsStore.tasks.filter { task in
+                guard let due = task.due else { return false }
+                return due > now && due < calendar.date(byAdding: .day, value: 8, to: now)!
+            }
+            
+            for task in upcomingTasks {
+                let plan = AssignmentPlan(
+                    assignmentId: task.id,
+                    steps: generateSamplePlanSteps(for: task),
+                    createdAt: now,
+                    updatedAt: now
+                )
+                AssignmentPlansStore.shared.savePlan(plan)
+            }
+            
+            // Trigger notifications
+            NotificationCenter.default.post(name: .init("SampleDataLoaded"), object: nil)
+        }
+        
+        private func createSampleSemesters() {
+            let calendar = Calendar.current
+            let now = Date()
+            let currentYear = calendar.component(.year, from: now)
+            let currentMonth = calendar.component(.month, from: now)
+            
+            // Determine which semesters to create based on current month
+            let semestersToCreate: [(term: SemesterTerm, year: Int, isCurrent: Bool)] = {
+                if currentMonth >= 1 && currentMonth <= 5 {
+                    // Spring semester - create Fall (previous), Spring (current), Summer (upcoming)
+                    return [
+                        (.fall, currentYear - 1, false),
+                        (.spring, currentYear, true),
+                        (.summer, currentYear, false)
+                    ]
+                } else if currentMonth >= 6 && currentMonth <= 7 {
+                    // Summer - create Spring (previous), Summer (current), Fall (upcoming)
+                    return [
+                        (.spring, currentYear, false),
+                        (.summer, currentYear, true),
+                        (.fall, currentYear, false)
+                    ]
+                } else {
+                    // Fall semester - create Summer (previous), Fall (current), Spring (next)
+                    return [
+                        (.summer, currentYear, false),
+                        (.fall, currentYear, true),
+                        (.spring, currentYear + 1, false)
+                    ]
+                }
+            }()
+            
+            for semesterInfo in semestersToCreate {
+                let semester = createSemester(
+                    term: semesterInfo.term,
+                    year: semesterInfo.year,
+                    isCurrent: semesterInfo.isCurrent
+                )
+                coursesStore.addSemester(semester)
+                
+                if semesterInfo.isCurrent {
+                    coursesStore.currentSemesterId = semester.id
+                }
+            }
+        }
+        
+        private func createSemester(term: SemesterTerm, year: Int, isCurrent: Bool) -> Semester {
+            let calendar = Calendar.current
+            
+            // Define semester date ranges
+            let (startMonth, startDay, endMonth, endDay, academicYearStart) = {
+                switch term {
+                case .spring:
+                    return (1, 15, 5, 15, year - 1) // Jan 15 - May 15
+                case .summer:
+                    return (6, 1, 7, 31, year - 1) // Jun 1 - Jul 31
+                case .fall:
+                    return (8, 20, 12, 15, year) // Aug 20 - Dec 15
+                case .winter:
+                    return (12, 16, 1, 14, year - 1) // Dec 16 - Jan 14
+                }
+            }()
+            
+            let startComponents = DateComponents(year: year, month: startMonth, day: startDay)
+            let endYear = term == .winter ? year + 1 : year
+            let endComponents = DateComponents(year: endYear, month: endMonth, day: endDay)
+            
+            let startDate = calendar.date(from: startComponents) ?? Date()
+            let endDate = calendar.date(from: endComponents) ?? Date()
+            
+            let academicYear = "\(academicYearStart)-\(academicYearStart + 1)"
+            
+            return Semester(
+                id: UUID(),
+                name: "\(term.rawValue.capitalized) \(year)",
+                startDate: startDate,
+                endDate: endDate,
+                isArchived: false,
+                isCurrent: isCurrent,
+                educationLevel: .college,
+                semesterTerm: term,
+                academicYear: academicYear
+            )
+        }
+        
+        private func generateSamplePlanSteps(for task: AppTask) -> [PlanStep] {
+            let baseSteps: [(String, Double)] = {
+                switch task.category {
+                case .project:
+                    return [
+                        ("Research and gather materials", 0.3),
+                        ("Create outline", 0.15),
+                        ("Write first draft", 0.35),
+                        ("Review and finalize", 0.2)
+                    ]
+                case .homework:
+                    return [
+                        ("Review lecture notes", 0.25),
+                        ("Solve problems", 0.6),
+                        ("Check work", 0.15)
+                    ]
+                case .reading:
+                    return [
+                        ("Read assigned chapters", 0.7),
+                        ("Take notes", 0.3)
+                    ]
+                case .exam:
+                    return [
+                        ("Review all materials", 0.4),
+                        ("Practice problems", 0.4),
+                        ("Mock test", 0.2)
+                    ]
+                default:
+                    return [("Complete assignment", 1.0)]
+                }
+            }()
+            
+            return baseSteps.enumerated().map { index, step in
+                PlanStep(
+                    id: UUID(),
+                    title: step.0,
+                    expectedMinutes: Int(Double(task.estimatedMinutes) * step.1),
+                    isCompleted: false,
+                    order: index
+                )
+            }
         }
     }
 

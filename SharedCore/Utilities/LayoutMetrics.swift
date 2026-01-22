@@ -70,8 +70,8 @@ public struct AppLayout {
         public static let macOS = AppLayout(
             overlayTopInset: 12,
             overlayTrailingInset: 24,
-            headerHeight: 56,
-            headerBottomSpacing: 6
+            headerHeight: 0,
+            headerBottomSpacing: 0
         )
     #endif
 
