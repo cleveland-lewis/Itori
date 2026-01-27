@@ -198,12 +198,14 @@
 
         private var overallColumn: some View {
             VStack(spacing: 12) {
+                let currentSemester = coursesStore.semesters.first(where: { $0.isCurrent })
                 GPABreakdownCard(
                     currentGPA: coursesStore.currentGPA,
                     academicYearGPA: coursesStore.currentGPA,
                     cumulativeGPA: coursesStore.currentGPA,
                     isLoading: gradesStore.isLoading,
-                    courseCount: coursesStore.activeCourses.count
+                    courseCount: coursesStore.activeCourses.count,
+                    semesterName: currentSemester?.defaultName
                 )
                 HStack(spacing: 12) {
                     Button {

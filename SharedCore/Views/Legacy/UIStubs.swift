@@ -674,15 +674,20 @@ struct GPABreakdownCard: View {
     var cumulativeGPA: Double
     var isLoading: Bool
     var courseCount: Int
+    var semesterName: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(NSLocalizedString("ui.gpa.overview", value: "GPA Overview", comment: "GPA Overview"))
                 .font(.headline)
-            Text(String(
-                format: NSLocalizedString("grades.summary.current", value: "Current: %.2f", comment: "Current GPA"),
-                currentGPA
-            ))
+            if let semesterName = semesterName {
+                Text(String(format: "%@: %.2f", semesterName, currentGPA))
+            } else {
+                Text(String(
+                    format: NSLocalizedString("grades.summary.current", value: "Current: %.2f", comment: "Current GPA"),
+                    currentGPA
+                ))
+            }
             Text(String(
                 format: NSLocalizedString("grades.summary.year", value: "Year: %.2f", comment: "Academic year GPA"),
                 academicYearGPA
@@ -695,7 +700,6 @@ struct GPABreakdownCard: View {
                 ),
                 cumulativeGPA
             ))
-            Text(verbatim: "Courses: \(courseCount)")
             if isLoading {
                 ProgressView().progressViewStyle(.circular)
             }

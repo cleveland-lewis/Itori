@@ -297,7 +297,7 @@
                     )
                     MacLicenseFeatureRow(
                         icon: "brain.head.profile",
-                        title: "AI-Powered Planning",
+                        title: "Automatic Planning",
                         description: "Auto-schedule study sessions based on your energy levels"
                     )
                     MacLicenseFeatureRow(

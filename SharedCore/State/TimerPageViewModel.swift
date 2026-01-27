@@ -16,6 +16,9 @@ final class TimerPageViewModel: ObservableObject {
     @Published var currentMode: TimerMode = .pomodoro
     @Published var currentSession: FocusSession?
     @Published var pastSessions: [FocusSession] = []
+    
+    // Phase A: Quick Timer Presets (behind feature flag)
+    @Published var customPresets: [TimerPreset] = []
 
     // Live clock
     @Published var now: Date = .init()
@@ -473,6 +476,8 @@ final class TimerPageViewModel: ObservableObject {
         var timerDuration: TimeInterval
         var pomodoroCompletedCycles: Int?
         var pomodoroMaxCycles: Int?
+        // Phase A: Custom presets
+        var customPresets: [TimerPreset]?
     }
 
     private var stateURL: URL {
@@ -513,6 +518,7 @@ final class TimerPageViewModel: ObservableObject {
                 self.timerDuration = decoded.timerDuration
                 self.pomodoroCompletedCycles = decoded.pomodoroCompletedCycles ?? 0
                 self.pomodoroMaxCycles = decoded.pomodoroMaxCycles ?? 4
+                self.customPresets = decoded.customPresets ?? []
                 if !sessionsToMigrate.isEmpty {
                     self.migrateSessions(sessionsToMigrate)
                 }
@@ -534,7 +540,8 @@ final class TimerPageViewModel: ObservableObject {
             longBreakDuration: longBreakDuration,
             timerDuration: timerDuration,
             pomodoroCompletedCycles: pomodoroCompletedCycles,
-            pomodoroMaxCycles: pomodoroMaxCycles
+            pomodoroMaxCycles: pomodoroMaxCycles,
+            customPresets: customPresets
         )
         let url = stateURL
         persistenceQueue.async {
@@ -593,6 +600,7 @@ final class TimerPageViewModel: ObservableObject {
                 self.timerDuration = decoded.timerDuration
                 self.pomodoroCompletedCycles = decoded.pomodoroCompletedCycles ?? 0
                 self.pomodoroMaxCycles = decoded.pomodoroMaxCycles ?? 4
+                self.customPresets = decoded.customPresets ?? []
             }
         }
     }
@@ -612,7 +620,8 @@ final class TimerPageViewModel: ObservableObject {
             longBreakDuration: longBreakDuration,
             timerDuration: timerDuration,
             pomodoroCompletedCycles: pomodoroCompletedCycles,
-            pomodoroMaxCycles: pomodoroMaxCycles
+            pomodoroMaxCycles: pomodoroMaxCycles,
+            customPresets: customPresets
         )))
         guard let payload else { return }
 
@@ -748,5 +757,35 @@ final class TimerPageViewModel: ObservableObject {
             LOG_DATA(.info, "Timer", "TimerSession entity not available - skipping persistence")
         }
         return entity
+    }
+    
+    // MARK: - Phase A: Quick Timer Presets
+    
+    /// Add a custom timer preset (Phase A feature)
+    func addPreset(_ preset: TimerPreset) {
+        customPresets.append(preset)
+        persistState()
+        LOG_UI(.info, "Timer", "Added custom preset: \(preset.name)")
+    }
+    
+    /// Update an existing preset
+    func updatePreset(_ preset: TimerPreset) {
+        if let index = customPresets.firstIndex(where: { $0.id == preset.id }) {
+            customPresets[index] = preset
+            persistState()
+            LOG_UI(.info, "Timer", "Updated preset: \(preset.name)")
+        }
+    }
+    
+    /// Delete a custom preset
+    func deletePreset(id: UUID) {
+        customPresets.removeAll { $0.id == id }
+        persistState()
+        LOG_UI(.info, "Timer", "Deleted preset: \(id)")
+    }
+    
+    /// Get all available presets (defaults + custom)
+    func allPresets() -> [TimerPreset] {
+        return TimerPreset.defaults + customPresets
     }
 }

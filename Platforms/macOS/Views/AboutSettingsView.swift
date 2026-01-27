@@ -23,13 +23,22 @@
             VStack(spacing: 32) {
                 // App icon and title
                 VStack(spacing: 16) {
-                    Image("ItoriAppIcon")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 128, height: 128)
-                        .cornerRadius(22)
-                        .shadow(radius: 4)
-                        .accessibilityLabel("Itori app icon")
+                    if let appIcon = NSImage(named: NSImage.applicationIconName) {
+                        Image(nsImage: appIcon)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 128, height: 128)
+                            .shadow(radius: 4)
+                            .accessibilityLabel("Itori app icon")
+                    } else {
+                        Image("ItoriAppIcon")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 128, height: 128)
+                            .cornerRadius(22)
+                            .shadow(radius: 4)
+                            .accessibilityLabel("Itori app icon")
+                    }
 
                     VStack(spacing: 4) {
                         Text(NSLocalizedString("about.app.name", value: "Itori", comment: "App name"))

@@ -46,6 +46,7 @@
         @State private var taskSearchText: String = ""
         @State private var taskDateFilter: TaskDateFilter = .today
         @State private var taskStatusFilter: TaskStatusFilter = .due
+        @State private var taskSortOrder: TaskSortOrder = .dueDate
         @State private var studyRange: StudyTimeRange = .thisWeek
         @State private var customRangeStart: Date = Calendar.current
             .date(byAdding: .day, value: -7, to: Date()) ?? Date()
@@ -74,6 +75,19 @@
                 case .due: "Due"
                 case .inProgress: "In Progress"
                 case .completed: "Completed"
+                }
+            }
+        }
+
+        private enum TaskSortOrder: String, CaseIterable, Identifiable {
+            case dueDate, title, priority
+
+            var id: String { rawValue }
+            var label: String {
+                switch self {
+                case .dueDate: "Due Date"
+                case .title: "Title"
+                case .priority: "Priority"
                 }
             }
         }
@@ -212,9 +226,21 @@
                         .font(DesignSystem.Typography.subHeader)
                         .lineLimit(1)
                     Spacer(minLength: 4)
+                    
+                    // Date Filter
                     Menu {
                         ForEach(TaskDateFilter.allCases) { filter in
-                            Button(filter.label) { taskDateFilter = filter }
+                            Button {
+                                taskDateFilter = filter
+                            } label: {
+                                HStack {
+                                    Text(filter.label)
+                                    if taskDateFilter == filter {
+                                        Image(systemName: "checkmark")
+                                            .accessibilityHidden(true)
+                                    }
+                                }
+                            }
                         }
                     } label: {
                         Label(
@@ -233,9 +259,20 @@
                     .menuStyle(.borderlessButton)
                     .help(String(format: "Date: %@", taskDateFilter.label))
 
+                    // Status Filter
                     Menu {
                         ForEach(TaskStatusFilter.allCases) { filter in
-                            Button(filter.label) { taskStatusFilter = filter }
+                            Button {
+                                taskStatusFilter = filter
+                            } label: {
+                                HStack {
+                                    Text(filter.label)
+                                    if taskStatusFilter == filter {
+                                        Image(systemName: "checkmark")
+                                            .accessibilityHidden(true)
+                                    }
+                                }
+                            }
                         }
                     } label: {
                         Label(
@@ -253,6 +290,38 @@
                     }
                     .menuStyle(.borderlessButton)
                     .help(String(format: "Status: %@", taskStatusFilter.label))
+                    
+                    // Sort Order
+                    Menu {
+                        ForEach(TaskSortOrder.allCases) { order in
+                            Button {
+                                taskSortOrder = order
+                            } label: {
+                                HStack {
+                                    Text(order.label)
+                                    if taskSortOrder == order {
+                                        Image(systemName: "checkmark")
+                                            .accessibilityHidden(true)
+                                    }
+                                }
+                            }
+                        }
+                    } label: {
+                        Label(
+                            String(
+                                format: NSLocalizedString(
+                                    "timer.sort.label",
+                                    value: "Sort: %@",
+                                    comment: "Sort label on timer"
+                                ),
+                                taskSortOrder.label
+                            ),
+                            systemImage: "arrow.up.arrow.down"
+                        )
+                        .labelStyle(.iconOnly)
+                    }
+                    .menuStyle(.borderlessButton)
+                    .help(String(format: "Sort: %@", taskSortOrder.label))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -439,7 +508,7 @@
             let tomorrowStart = calendar.date(byAdding: .day, value: 1, to: todayStart) ?? now
             let dayAfterStart = calendar.date(byAdding: .day, value: 2, to: todayStart) ?? now
 
-            return assignmentsStore.tasks.filter { task in
+            let filtered = assignmentsStore.tasks.filter { task in
                 let matchesSearch: Bool = {
                     let query = taskSearchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
                     guard !query.isEmpty else { return true }
@@ -473,8 +542,21 @@
                     return !task.isCompleted && (task.due == nil || (task.due ?? now) > now)
                 }
             }
-            .sorted { lhs, rhs in
-                (lhs.due ?? Date.distantFuture) < (rhs.due ?? Date.distantFuture)
+            
+            // Apply sorting
+            return filtered.sorted { lhs, rhs in
+                switch taskSortOrder {
+                case .dueDate:
+                    return (lhs.due ?? Date.distantFuture) < (rhs.due ?? Date.distantFuture)
+                case .title:
+                    return lhs.title.localizedCaseInsensitiveCompare(rhs.title) == .orderedAscending
+                case .priority:
+                    // Sort by importance first, then by due date
+                    if lhs.importance != rhs.importance {
+                        return lhs.importance > rhs.importance
+                    }
+                    return (lhs.due ?? Date.distantFuture) < (rhs.due ?? Date.distantFuture)
+                }
             }
         }
 

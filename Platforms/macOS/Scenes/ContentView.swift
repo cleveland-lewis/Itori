@@ -162,10 +162,9 @@
                     energyIndicator
                         .padding(.horizontal, 12)
                         .padding(.vertical, 6)
-                        .background(.ultraThinMaterial, in: Capsule())
                         .overlay(
                             Capsule()
-                                .strokeBorder(Color.primary.opacity(0.1), lineWidth: 0.5)
+                                .strokeBorder(energyColor.opacity(0.5), lineWidth: 0.5)
                         )
                 }
 
@@ -223,6 +222,7 @@
                 Image(systemName: "bolt.fill")
                     .font(.system(size: 14, weight: .bold))
                     .foregroundStyle(energyColor)
+                    .tint(energyColor)
             }
             .menuStyle(.borderlessButton)
             .menuIndicator(.hidden)
