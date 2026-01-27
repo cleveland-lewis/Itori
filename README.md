@@ -125,13 +125,13 @@ Itori/
 
 The project enforces code quality with pre-commit hooks that run automatically before each commit:
 
-- ✅ Repository hygiene (trailing whitespace, file sizes, naming)
-- ✅ Swift code quality (SwiftLint, SwiftFormat)
-- ✅ App rename enforcement (Roots → Itori)
-- ✅ Build sanity checks
-- ✅ Architectural guardrails (platform boundaries)
-- ✅ TODO/FIXME policy
-- ✅ Commit message discipline
+- [x] Repository hygiene (trailing whitespace, file sizes, naming)
+- [x] Swift code quality (SwiftLint, SwiftFormat)
+- [x] App rename enforcement (Roots → Itori)
+- [x] Build sanity checks
+- [x] Architectural guardrails (platform boundaries)
+- [x] TODO/FIXME policy
+- [x] Commit message discipline
 
 **Install hooks:**
 ```bash
