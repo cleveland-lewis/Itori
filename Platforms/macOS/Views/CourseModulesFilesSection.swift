@@ -201,7 +201,8 @@
                             .font(.caption2.weight(.medium))
                             .foregroundStyle(.secondary)
 
-                        // Parse status indicator
+                        // Parse status indicator - Disabled for v1
+                        /*
                         if file.parseStatus != .notParsed {
                             Text(NSLocalizedString("ui.", value: "•", comment: "•"))
                                 .font(.caption2)
@@ -224,6 +225,7 @@
                             }
                             .foregroundStyle(parseStatusColor)
                         }
+                        */
 
                         // Legacy indicators (if set)
                         if file.isSyllabus && file.category != .syllabus {
@@ -338,6 +340,8 @@
                     comment: "Accessibility hint for open file"
                 ))
 
+                // Parsing feature disabled for v1 - will be activated in future release
+                /*
                 Button {
                     parseFile()
                 } label: {
@@ -357,6 +361,7 @@
                     value: "Extracts assignments and events from the file",
                     comment: "Accessibility hint for parse file"
                 ))
+                */
 
                 Divider()
 

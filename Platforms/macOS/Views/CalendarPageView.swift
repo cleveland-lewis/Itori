@@ -1227,11 +1227,14 @@
                 let gridHeight = cellSize * 6 + (5 * 12) // 6 rows with 5 spacings
 
                 VStack(alignment: .leading, spacing: 0) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(monthHeader)
-                            .font(DesignSystem.Typography.subHeader)
-                        weekdayHeader
-                        LazyVGrid(columns: columns, spacing: 12) {
+                    Text(monthHeader)
+                        .font(DesignSystem.Typography.subHeader)
+                        .padding(.bottom, 12)
+                    
+                    weekdayHeader
+                        .padding(.bottom, 4)
+                    
+                    LazyVGrid(columns: columns, spacing: 12) {
                             ForEach(days) { day in
                                 let normalized = calendar.startOfDay(for: day.date)
                                 let count = eventsStore.eventsByDate[normalized] ?? events(for: day.date).count
@@ -1275,7 +1278,6 @@
                             }
                         }
                         .frame(height: gridHeight)
-                    }
                 }
             }
         }

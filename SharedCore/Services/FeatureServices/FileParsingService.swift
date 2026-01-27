@@ -96,6 +96,11 @@ final class FileParsingService: ObservableObject {
     // MARK: - Main Entry Points
 
     func parseFile(_ file: CourseFile, force: Bool = false) async {
+        // Parsing feature disabled for v1 - will be activated in a future release
+        DebugLogger.log("📄 FileParsingService: Parsing feature is currently disabled")
+        return
+        
+        /* Parsing implementation preserved for future activation
         guard !activeParsingJobs.contains(file.id) || force else {
             DebugLogger.log("📄 FileParsingService: Already parsing file \(file.id)")
             return
@@ -185,6 +190,7 @@ final class FileParsingService: ObservableObject {
         }
 
         parsingQueue[fileToParse.id] = task
+        */
     }
 
     private func updateProgress(_ fileId: UUID, progress: Double) async {
@@ -437,9 +443,83 @@ final class FileParsingService: ObservableObject {
 
     // MARK: - Auto-Scheduling
 
-    private func scheduleItems(from _: ParseResults, courseId _: UUID, fingerprint _: String) async {
-        // Deferred: AppTask scheduling integration
-        DebugLogger.log("📅 FileParsingService: Auto-scheduling temporarily disabled - needs AppTask refactor")
+    private func scheduleItems(from results: ParseResults, courseId: UUID, fingerprint: String) async {
+        await MainActor.run {
+            let assignmentsStore = AssignmentsStore.shared
+            
+            DebugLogger.log("📅 FileParsingService: Scheduling \(results.assignments.count) assignments and \(results.events.count) events")
+            
+            // Schedule assignments
+            for parsedItem in results.assignments {
+                // Check if assignment already exists by unique key
+                let existingTask = assignmentsStore.tasks.first { task in
+                    guard task.sourceFingerprint == fingerprint else { return false }
+                    return task.title.lowercased() == parsedItem.title.lowercased()
+                }
+                
+                if existingTask != nil {
+                    DebugLogger.log("⏭️ Skipping duplicate: \(parsedItem.title)")
+                    continue
+                }
+                
+                // Create new AppTask
+                let taskType = mapCategoryToTaskType(parsedItem.category)
+                let task = AppTask(
+                    id: UUID(),
+                    title: parsedItem.title,
+                    courseId: courseId,
+                    due: parsedItem.dueDate,
+                    estimatedMinutes: parsedItem.estimatedMinutes,
+                    minBlockMinutes: 30,
+                    maxBlockMinutes: 90,
+                    difficulty: 0.5,
+                    importance: 0.7,
+                    type: taskType,
+                    locked: false,
+                    category: taskType,
+                    sourceFingerprint: fingerprint,
+                    notes: parsedItem.notes
+                )
+                
+                assignmentsStore.addTask(task)
+                DebugLogger.log("✅ Scheduled: \(parsedItem.title)")
+            }
+            
+            // Schedule events (exams/quizzes)
+            for event in results.events {
+                let existingTask = assignmentsStore.tasks.first { task in
+                    guard task.sourceFingerprint == fingerprint else { return false }
+                    return task.title.lowercased() == event.title.lowercased()
+                }
+                
+                if existingTask != nil {
+                    DebugLogger.log("⏭️ Skipping duplicate event: \(event.title)")
+                    continue
+                }
+                
+                let taskType = mapCategoryToTaskType(event.type)
+                let task = AppTask(
+                    id: UUID(),
+                    title: event.title,
+                    courseId: courseId,
+                    due: event.date,
+                    estimatedMinutes: event.estimatedMinutes,
+                    minBlockMinutes: 45,
+                    maxBlockMinutes: 120,
+                    difficulty: 0.7,
+                    importance: 0.9,
+                    type: taskType,
+                    locked: false,
+                    category: taskType,
+                    sourceFingerprint: fingerprint
+                )
+                
+                assignmentsStore.addTask(task)
+                DebugLogger.log("✅ Scheduled event: \(event.title)")
+            }
+            
+            DebugLogger.log("✨ FileParsingService: Completed scheduling items")
+        }
     }
 
     private func mapCategoryToTaskType(_ category: AssignmentCategory) -> TaskType {
@@ -454,11 +534,22 @@ final class FileParsingService: ObservableObject {
         }
     }
 
-    private func updateFileParseStatus(_: UUID, status _: ParseStatus, error _: String?) async {
-        // Deferred: CourseFileStore integration
-        // await MainActor.run {
-        //     CourseFileStore.shared.updateParseStatus(fileId: fileId, status: status, error: error)
-        // }
+    private func updateFileParseStatus(_ fileId: UUID, status: ParseStatus, error: String?) async {
+        await MainActor.run {
+            if let coursesStore = CoursesStore.shared {
+                // Find the file across all courses
+                for course in coursesStore.courses {
+                    let files = coursesStore.courseFiles(for: course.id)
+                    if var file = files.first(where: { $0.id == fileId }) {
+                        file.parseStatus = status
+                        file.parseError = error
+                        file.updatedAt = Date()
+                        coursesStore.updateFile(file)
+                        break
+                    }
+                }
+            }
+        }
     }
 
     // MARK: - Batch Review Support

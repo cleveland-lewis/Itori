@@ -207,10 +207,11 @@
 
         private var activitiesColumn: some View {
             VStack(alignment: .leading, spacing: DesignSystem.Layout.spacing.medium) {
-                HStack(alignment: .firstTextBaseline) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
                     Text(NSLocalizedString("timer.label.activities", value: "Activities", comment: "Activities"))
                         .font(DesignSystem.Typography.subHeader)
-                    Spacer()
+                        .lineLimit(1)
+                    Spacer(minLength: 4)
                     Menu {
                         ForEach(TaskDateFilter.allCases) { filter in
                             Button(filter.label) { taskDateFilter = filter }
@@ -227,9 +228,10 @@
                             ),
                             systemImage: "calendar"
                         )
+                        .labelStyle(.iconOnly)
                     }
                     .menuStyle(.borderlessButton)
-                    .fixedSize()
+                    .help(String(format: "Date: %@", taskDateFilter.label))
 
                     Menu {
                         ForEach(TaskStatusFilter.allCases) { filter in
@@ -247,10 +249,12 @@
                             ),
                             systemImage: "line.3.horizontal.decrease.circle"
                         )
+                        .labelStyle(.iconOnly)
                     }
                     .menuStyle(.borderlessButton)
-                    .fixedSize()
+                    .help(String(format: "Status: %@", taskStatusFilter.label))
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 TextField(
                     NSLocalizedString("timer.label.search", value: "Search", comment: "Search"),
@@ -798,6 +802,30 @@
                                         }
                                         .buttonStyle(.plain)
                                     }
+                                    
+                                    Divider()
+                                        .padding(.vertical, 4)
+                                    
+                                    // Timer Settings section
+                                    Button(action: {
+                                        showingModeMenu = false
+                                        settingsCoordinator.show(selecting: .timer)
+                                    }) {
+                                        HStack {
+                                            Image(systemName: "gearshape")
+                                                .foregroundColor(.accentColor)
+                                                .frame(width: 16)
+                                            Text(NSLocalizedString(
+                                                "timer.settings",
+                                                value: "Timer Settings",
+                                                comment: "Timer Settings"
+                                            ))
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                        }
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                    }
+                                    .buttonStyle(.plain)
                                 }
                                 .padding(.vertical, 8)
                                 .frame(minWidth: 180)

@@ -587,10 +587,8 @@
                 let semesterEnd = calendar.date(byAdding: .month, value: 2, to: now) ?? now
                 let semester = Semester(
                     id: UUID(),
-                    name: "Spring 2026",
                     startDate: semesterStart,
                     endDate: semesterEnd,
-                    isArchived: false,
                     isCurrent: true,
                     educationLevel: .college,
                     semesterTerm: .spring,
@@ -603,11 +601,11 @@
             
             // Sample courses with different colors
             let sampleCourses: [(title: String, code: String, color: String, instructor: String)] = [
-                ("Introduction to Computer Science", "CS 101", ColorTag.blue.hexValue, "Dr. Sarah Johnson"),
-                ("Calculus II", "MATH 201", ColorTag.purple.hexValue, "Prof. Michael Chen"),
-                ("World History", "HIST 150", ColorTag.green.hexValue, "Dr. Emily Rodriguez"),
-                ("Biology Lab", "BIO 120", ColorTag.orange.hexValue, "Prof. David Kim"),
-                ("Creative Writing", "ENG 225", ColorTag.pink.hexValue, "Dr. Jennifer Martinez")
+                ("Introduction to Computer Science", "CS 101", ColorTag.hex(for: .blue), "Dr. Sarah Johnson"),
+                ("Calculus II", "MATH 201", ColorTag.hex(for: .purple), "Prof. Michael Chen"),
+                ("World History", "HIST 150", ColorTag.hex(for: .green), "Dr. Emily Rodriguez"),
+                ("Biology Lab", "BIO 120", ColorTag.hex(for: .orange), "Prof. David Kim"),
+                ("Creative Writing", "ENG 225", ColorTag.hex(for: .pink), "Dr. Jennifer Martinez")
             ]
             
             var createdCourses: [Course] = []
@@ -660,32 +658,76 @@
                 let task = AppTask(
                     id: UUID(),
                     title: sample.title,
-                    type: sample.type,
-                    category: sample.type,
                     courseId: course.id,
-                    courseName: course.title,
-                    courseCode: course.code,
                     due: dueDate,
                     estimatedMinutes: sample.estimatedMinutes,
-                    isCompleted: sample.daysFromNow < 0,
-                    completedAt: sample.daysFromNow < 0 ? dueDate : nil,
+                    minBlockMinutes: 30,
+                    maxBlockMinutes: 90,
+                    difficulty: 0.5,
+                    importance: 0.7,
+                    type: sample.type,
                     locked: false,
-                    hasExplicitDueTime: false,
-                    priority: .medium,
-                    tags: [],
-                    notes: nil,
-                    attachments: [],
-                    subtasks: [],
-                    dependencies: [],
-                    recurrence: nil,
-                    isPersonal: false,
-                    createdAt: calendar.date(byAdding: .day, value: sample.daysFromNow - 14, to: now) ?? now,
-                    updatedAt: now
+                    isCompleted: sample.daysFromNow < 0,
+                    category: sample.type
                 )
                 assignmentsStore.addTask(task)
             }
             
-            // Sample grades
+            // Sample grades - Create graded assignments for each course
+            let sampleGradedAssignments: [(title: String, courseIndex: Int, earnedPoints: Double, possiblePoints: Double, weight: Double)] = [
+                // CS 101 - 92.5%
+                ("Midterm Exam", 0, 45, 50, 25),
+                ("Final Project", 0, 95, 100, 30),
+                ("Homework 1", 0, 48, 50, 10),
+                
+                // MATH 201 - 88.0%
+                ("Quiz 1", 1, 18, 20, 10),
+                ("Problem Set 3", 1, 44, 50, 20),
+                ("Final Exam", 1, 85, 100, 40),
+                
+                // HIST 150 - 95.0%
+                ("Essay 1", 2, 48, 50, 25),
+                ("Presentation", 2, 95, 100, 30),
+                ("Discussion Posts", 2, 19, 20, 15),
+                
+                // BIO 120 - 85.5%
+                ("Lab Report 1", 3, 42, 50, 20),
+                ("Lab Report 2", 3, 45, 50, 20),
+                ("Midterm", 3, 80, 100, 30),
+                
+                // ENG 225 - 90.0%
+                ("Short Story 1", 4, 45, 50, 30),
+                ("Short Story 2", 4, 48, 50, 30),
+                ("Workshop Participation", 4, 27, 30, 20)
+            ]
+            
+            for gradedAssignment in sampleGradedAssignments {
+                let course = createdCourses[gradedAssignment.courseIndex]
+                let completedDate = calendar.date(byAdding: .day, value: -Int.random(in: 3...20), to: now) ?? now
+                
+                let task = AppTask(
+                    id: UUID(),
+                    title: gradedAssignment.title,
+                    courseId: course.id,
+                    due: completedDate,
+                    estimatedMinutes: 60,
+                    minBlockMinutes: 30,
+                    maxBlockMinutes: 90,
+                    difficulty: 0.5,
+                    importance: 0.7,
+                    type: .homework,
+                    locked: false,
+                    isCompleted: true,
+                    gradeWeightPercent: gradedAssignment.weight,
+                    gradePossiblePoints: gradedAssignment.possiblePoints,
+                    gradeEarnedPoints: gradedAssignment.earnedPoints,
+                    category: .homework
+                )
+                
+                assignmentsStore.addTask(task)
+            }
+            
+            // Also add entries to GradesStore for compatibility
             let sampleGrades: [(courseIndex: Int, percent: Double, letter: String)] = [
                 (0, 92.5, "A"),
                 (1, 88.0, "B+"),
@@ -703,21 +745,8 @@
                 )
             }
             
-            // Create sample plans for upcoming assignments
-            let upcomingTasks = assignmentsStore.tasks.filter { task in
-                guard let due = task.due else { return false }
-                return due > now && due < calendar.date(byAdding: .day, value: 8, to: now)!
-            }
-            
-            for task in upcomingTasks {
-                let plan = AssignmentPlan(
-                    assignmentId: task.id,
-                    steps: generateSamplePlanSteps(for: task),
-                    createdAt: now,
-                    updatedAt: now
-                )
-                AssignmentPlansStore.shared.savePlan(plan)
-            }
+            // Trigger GPA recalculation with the new graded tasks
+            coursesStore.recalcGPA(tasks: assignmentsStore.tasks)
             
             // Trigger notifications
             NotificationCenter.default.post(name: .init("SampleDataLoaded"), object: nil)
@@ -730,25 +759,25 @@
             let currentMonth = calendar.component(.month, from: now)
             
             // Determine which semesters to create based on current month
-            let semestersToCreate: [(term: SemesterTerm, year: Int, isCurrent: Bool)] = {
+            let semestersToCreate: [(term: SemesterType, year: Int, isCurrent: Bool)] = {
                 if currentMonth >= 1 && currentMonth <= 5 {
                     // Spring semester - create Fall (previous), Spring (current), Summer (upcoming)
                     return [
                         (.fall, currentYear - 1, false),
                         (.spring, currentYear, true),
-                        (.summer, currentYear, false)
+                        (.summerI, currentYear, false)
                     ]
                 } else if currentMonth >= 6 && currentMonth <= 7 {
                     // Summer - create Spring (previous), Summer (current), Fall (upcoming)
                     return [
                         (.spring, currentYear, false),
-                        (.summer, currentYear, true),
+                        (.summerI, currentYear, true),
                         (.fall, currentYear, false)
                     ]
                 } else {
                     // Fall semester - create Summer (previous), Fall (current), Spring (next)
                     return [
-                        (.summer, currentYear, false),
+                        (.summerI, currentYear, false),
                         (.fall, currentYear, true),
                         (.spring, currentYear + 1, false)
                     ]
@@ -769,7 +798,7 @@
             }
         }
         
-        private func createSemester(term: SemesterTerm, year: Int, isCurrent: Bool) -> Semester {
+        private func createSemester(term: SemesterType, year: Int, isCurrent: Bool) -> Semester {
             let calendar = Calendar.current
             
             // Define semester date ranges
@@ -777,7 +806,7 @@
                 switch term {
                 case .spring:
                     return (1, 15, 5, 15, year - 1) // Jan 15 - May 15
-                case .summer:
+                case .summerI, .summerII:
                     return (6, 1, 7, 31, year - 1) // Jun 1 - Jul 31
                 case .fall:
                     return (8, 20, 12, 15, year) // Aug 20 - Dec 15
@@ -797,58 +826,13 @@
             
             return Semester(
                 id: UUID(),
-                name: "\(term.rawValue.capitalized) \(year)",
                 startDate: startDate,
                 endDate: endDate,
-                isArchived: false,
                 isCurrent: isCurrent,
                 educationLevel: .college,
                 semesterTerm: term,
                 academicYear: academicYear
             )
-        }
-        
-        private func generateSamplePlanSteps(for task: AppTask) -> [PlanStep] {
-            let baseSteps: [(String, Double)] = {
-                switch task.category {
-                case .project:
-                    return [
-                        ("Research and gather materials", 0.3),
-                        ("Create outline", 0.15),
-                        ("Write first draft", 0.35),
-                        ("Review and finalize", 0.2)
-                    ]
-                case .homework:
-                    return [
-                        ("Review lecture notes", 0.25),
-                        ("Solve problems", 0.6),
-                        ("Check work", 0.15)
-                    ]
-                case .reading:
-                    return [
-                        ("Read assigned chapters", 0.7),
-                        ("Take notes", 0.3)
-                    ]
-                case .exam:
-                    return [
-                        ("Review all materials", 0.4),
-                        ("Practice problems", 0.4),
-                        ("Mock test", 0.2)
-                    ]
-                default:
-                    return [("Complete assignment", 1.0)]
-                }
-            }()
-            
-            return baseSteps.enumerated().map { index, step in
-                PlanStep(
-                    id: UUID(),
-                    title: step.0,
-                    expectedMinutes: Int(Double(task.estimatedMinutes) * step.1),
-                    isCompleted: false,
-                    order: index
-                )
-            }
         }
     }
 
