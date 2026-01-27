@@ -8,14 +8,14 @@ Itori is a native SwiftUI application that combines intelligent scheduling, assi
 
 ### Key Features
 
-- **Intelligent Planner** — AI-powered scheduling that adapts to your workload, deadlines, and energy levels
+- **Intelligent Planner** — Scheduling that adapts to your workload, deadlines, and energy levels
 - **Assignment Management** — Track homework, projects, exams, and recurring tasks with automatic reminders
 - **Flashcard System** — Spaced repetition learning with multi-deck support and progress tracking
 - **Focus Timer** — Pomodoro and custom timer modes with session history and analytics
-- **Calendar Integration** — Native EventKit integration with conflict detection and smart scheduling
+- **Calendar Integration** — Native integration with conflict detection and smart scheduling
 - **Course Organization** — Semester-based course management with grade tracking and file organization
 - **Practice Tests** — Generate timed practice exams from your coursework
-- **Cross-Platform Sync** — Seamless iCloud synchronization across Mac, iPhone, and iPad
+- **Cross-Platform Sync** — Seamless iCloud synchronization across Mac, iPhone, Watch, and iPad
 
 ## Technical Architecture
 
