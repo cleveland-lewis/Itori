@@ -15,14 +15,16 @@
         case privacy
         case storage
         case developer
-        case subscription
+        case license // Changed from subscription
+        // case subscription // Commented out for future AI subscription
         case about
 
         var id: String { rawValue }
 
         var label: String {
             switch self {
-            case .subscription: "Subscription"
+            case .license: "License" // Changed from Subscription
+            // case .subscription: "Subscription" // Commented out
             case .general: "General"
             case .calendar: "Calendar"
             case .planner: "Planner"
@@ -42,7 +44,8 @@
 
         var systemImageName: String {
             switch self {
-            case .subscription: "seal"
+            case .license: "checkmark.seal.fill" // Changed from seal
+            // case .subscription: "seal" // Commented out
             case .general: "gearshape"
             case .calendar: "calendar"
             case .planner: "pencil.and.list.clipboard"

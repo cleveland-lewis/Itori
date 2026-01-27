@@ -363,15 +363,24 @@
                 }
 
                 Section("Demo Data") {
-                    Button {
-                        loadSampleData()
-                    } label: {
+                    Toggle(isOn: Binding(
+                        get: { settings.showSampleData },
+                        set: { newValue in
+                            settings.showSampleData = newValue
+                            settings.save()
+                            if newValue {
+                                loadSampleData()
+                            } else {
+                                removeSampleData()
+                            }
+                        }
+                    )) {
                         Label("Show Sample Data", systemImage: "sparkles")
                             .fontWeight(.semibold)
                     }
-                    .buttonStyle(.itoriLiquidProminent)
+                    .toggleStyle(.switch)
                     
-                    Text("Load sample courses, assignments, and grades to explore the app. Your current data remains saved and can be restored.")
+                    Text("Load sample courses and assignments to explore the app. Sample data is temporary, will not sync to your calendar, and disappears when you quit the app. Your real data remains saved.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -624,7 +633,7 @@
                     creditType: .credits,
                     meetingTimes: nil,
                     syllabus: nil,
-                    notes: nil,
+                    notes: "SAMPLE_DATA_DO_NOT_SYNC",
                     attachments: []
                 )
                 coursesStore.addCourse(course)
@@ -668,7 +677,8 @@
                     type: sample.type,
                     locked: false,
                     isCompleted: sample.daysFromNow < 0,
-                    category: sample.type
+                    category: sample.type,
+                    sourceUniqueKey: "SAMPLE_DATA_DO_NOT_SYNC"
                 )
                 assignmentsStore.addTask(task)
             }
@@ -721,7 +731,8 @@
                     gradeWeightPercent: gradedAssignment.weight,
                     gradePossiblePoints: gradedAssignment.possiblePoints,
                     gradeEarnedPoints: gradedAssignment.earnedPoints,
-                    category: .homework
+                    category: .homework,
+                    sourceUniqueKey: "SAMPLE_DATA_DO_NOT_SYNC"
                 )
                 
                 assignmentsStore.addTask(task)
@@ -831,8 +842,21 @@
                 isCurrent: isCurrent,
                 educationLevel: .college,
                 semesterTerm: term,
-                academicYear: academicYear
+                academicYear: academicYear,
+                notes: "SAMPLE_DATA_DO_NOT_SYNC"
             )
+        }
+        
+        private func removeSampleData() {
+            // Get sample course IDs before removing courses
+            let sampleCourseIds = coursesStore.courses.filter { 
+                $0.notes == "SAMPLE_DATA_DO_NOT_SYNC" 
+            }.map { $0.id }
+            
+            // Remove sample data from all stores
+            assignmentsStore.removeSampleData()
+            coursesStore.removeSampleData()
+            gradesStore.removeSampleData(sampleCourseIds: sampleCourseIds)
         }
     }
 

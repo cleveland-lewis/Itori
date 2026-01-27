@@ -145,6 +145,25 @@ final class GradesStore: ObservableObject {
             saveToiCloud()
         }
     }
+    
+    /// Remove grades for sample courses (identified by course notes field)
+    func removeSampleData(sampleCourseIds: [UUID]) {
+        let beforeCount = grades.count
+        grades = grades.filter { grade in
+            !sampleCourseIds.contains(grade.courseId)
+        }
+        let afterCount = grades.count
+        let removedCount = beforeCount - afterCount
+        
+        if removedCount > 0 {
+            print("🧹 Removed \(removedCount) sample grade entries")
+            save()
+            
+            if isOnline && isSyncEnabled {
+                saveToiCloud()
+            }
+        }
+    }
 
     private func save() {
         guard !isLoadingFromDisk else { return }

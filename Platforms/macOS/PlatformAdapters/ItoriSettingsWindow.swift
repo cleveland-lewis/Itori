@@ -94,8 +94,10 @@
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     switch selection {
-                    case .subscription:
-                        MacOSSubscriptionView()
+                    case .license: // Changed from subscription
+                        MacOSLicenseView()
+                    // case .subscription: // Commented out for future use
+                    //     MacOSSubscriptionView()
                     case .general:
                         GeneralSettingsView()
                     case .calendar:

@@ -216,6 +216,7 @@ enum SampleDataSeeder {
                 gradeWeightPercent: 5,
                 category: .homework,
                 dueTimeMinutes: 1020,
+                sourceUniqueKey: "SAMPLE_DATA_DO_NOT_SYNC",
                 notes: "Focus on recursion + memoization"
             ),
             AppTask(
@@ -233,6 +234,7 @@ enum SampleDataSeeder {
                 gradeWeightPercent: 20,
                 category: .exam,
                 dueTimeMinutes: 1080,
+                sourceUniqueKey: "SAMPLE_DATA_DO_NOT_SYNC",
                 notes: "Practice sets + past exams"
             ),
             AppTask(
@@ -250,6 +252,7 @@ enum SampleDataSeeder {
                 gradeWeightPercent: 10,
                 category: .project,
                 dueTimeMinutes: 900,
+                sourceUniqueKey: "SAMPLE_DATA_DO_NOT_SYNC",
                 notes: "Include annotated graphs + summary"
             ),
             AppTask(
@@ -270,6 +273,7 @@ enum SampleDataSeeder {
                 gradeEarnedPoints: 18,
                 category: .quiz,
                 dueTimeMinutes: 780,
+                sourceUniqueKey: "SAMPLE_DATA_DO_NOT_SYNC",
                 notes: "Completed in-class"
             ),
             AppTask(
@@ -290,6 +294,7 @@ enum SampleDataSeeder {
                 gradeEarnedPoints: 92,
                 category: .reading,
                 dueTimeMinutes: 1140,
+                sourceUniqueKey: "SAMPLE_DATA_DO_NOT_SYNC",
                 notes: "Submit with citations"
             ),
             AppTask(
@@ -307,6 +312,7 @@ enum SampleDataSeeder {
                 gradeWeightPercent: 15,
                 category: .project,
                 dueTimeMinutes: 960,
+                sourceUniqueKey: "SAMPLE_DATA_DO_NOT_SYNC",
                 notes: "Coordinate slides + speaking roles"
             )
         ]

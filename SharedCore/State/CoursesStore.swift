@@ -442,6 +442,31 @@ final class CoursesStore: ObservableObject {
         persist()
         recalcGPA(tasks: AssignmentsStore.shared.tasks)
     }
+    
+    /// Remove all sample data (courses and semesters marked with SAMPLE_DATA_DO_NOT_SYNC)
+    func removeSampleData() {
+        let beforeCoursesCount = courses.count
+        let beforeSemestersCount = semesters.count
+        
+        // Remove sample courses
+        courses = courses.filter { course in
+            course.notes != "SAMPLE_DATA_DO_NOT_SYNC"
+        }
+        
+        // Remove sample semesters
+        semesters = semesters.filter { semester in
+            semester.notes != "SAMPLE_DATA_DO_NOT_SYNC"
+        }
+        
+        let removedCourses = beforeCoursesCount - courses.count
+        let removedSemesters = beforeSemestersCount - semesters.count
+        
+        if removedCourses > 0 || removedSemesters > 0 {
+            print("🧹 Removed \(removedCourses) sample courses and \(removedSemesters) sample semesters")
+            persist()
+            recalcGPA(tasks: AssignmentsStore.shared.tasks)
+        }
+    }
 
     func addCourse(_ course: Course) {
         courses.append(course)

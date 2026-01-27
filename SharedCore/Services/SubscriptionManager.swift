@@ -17,11 +17,14 @@ final class SubscriptionManager: ObservableObject {
     private let productIdentifiers = [
         "com.itori.subscription.monthly", // Monthly subscription: $4.99/month
         "com.itori.subscription.yearly", // Yearly subscription: $49.99/year (17% savings)
+        "com.itori.lifetime.license", // Lifetime license: $9.99 one-time
         "6757490466",
         "6757490562",
         "6757490611",
         "6757490125"
     ]
+    
+    @Published private(set) var hasLifetimeLicense: Bool = false
 
     enum SubscriptionStatus {
         case unknown
@@ -86,9 +89,15 @@ final class SubscriptionManager: ObservableObject {
     func updateSubscriptionStatus() async {
         var activeSubscription: Product?
         var expirationDate: Date?
+        var foundLifetimeLicense = false
 
         for await result in Transaction.currentEntitlements {
             guard case let .verified(transaction) = result else { continue }
+            
+            // Check for lifetime license (non-subscription product)
+            if transaction.productID == "com.itori.lifetime.license" {
+                foundLifetimeLicense = true
+            }
 
             if let product = availableSubscriptions.first(where: { $0.id == transaction.productID }) {
                 activeSubscription = product
@@ -102,6 +111,8 @@ final class SubscriptionManager: ObservableObject {
                 purchasedSubscriptions.append(product)
             }
         }
+        
+        hasLifetimeLicense = foundLifetimeLicense
 
         if let _ = activeSubscription {
             if let expiration = expirationDate, expiration < Date() {
@@ -115,6 +126,10 @@ final class SubscriptionManager: ObservableObject {
     }
 
     var isSubscribed: Bool {
+        // Lifetime license counts as subscribed
+        if hasLifetimeLicense {
+            return true
+        }
         if case .subscribed = subscriptionStatus {
             return true
         }

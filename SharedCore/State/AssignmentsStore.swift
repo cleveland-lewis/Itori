@@ -559,6 +559,22 @@ final class AssignmentsStore: ObservableObject {
         }
         saveCache()
     }
+    
+    /// Remove all sample data tasks (marked with SAMPLE_DATA_DO_NOT_SYNC)
+    func removeSampleData() {
+        let beforeCount = tasks.count
+        tasks = tasks.filter { task in
+            task.sourceUniqueKey != "SAMPLE_DATA_DO_NOT_SYNC"
+        }
+        let afterCount = tasks.count
+        let removedCount = beforeCount - afterCount
+        if removedCount > 0 {
+            debugLog("🧹 Removed \(removedCount) sample data tasks")
+            updateAppBadge()
+            saveCache()
+            refreshGPA()
+        }
+    }
 
     private func refreshGPA() {
         Task { @MainActor in

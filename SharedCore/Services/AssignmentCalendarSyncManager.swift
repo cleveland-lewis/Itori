@@ -68,9 +68,12 @@ final class AssignmentCalendarSyncManager: ObservableObject {
             return
         }
 
-        // Sync assignments to calendar
+        // Sync assignments to calendar (exclude sample data)
         for assignment in assignments {
-            await syncAssignmentToCalendar(assignment, calendar: calendar)
+            // Skip sample data tasks
+            if !isSampleDataTask(assignment) {
+                await syncAssignmentToCalendar(assignment, calendar: calendar)
+            }
         }
 
         lastSyncDate = Date()
@@ -82,6 +85,12 @@ final class AssignmentCalendarSyncManager: ObservableObject {
     @discardableResult
     func syncAssignmentToCalendar(_ assignment: AppTask, calendar: EKCalendar? = nil) async -> String? {
         guard isSyncEnabled, authManager.isAuthorized else { return nil }
+        
+        // Don't sync sample data to calendar
+        if isSampleDataTask(assignment) {
+            LOG_SYNC(.info, "AssignmentSync", "Skipping sample data task: \(assignment.title)")
+            return nil
+        }
 
         let targetCalendar = calendar ?? getTargetCalendar()
         guard let targetCalendar else {
@@ -230,5 +239,13 @@ final class AssignmentCalendarSyncManager: ObservableObject {
 
     private enum SyncErrorType: Error {
         case noDueDate
+    }
+    
+    // MARK: - Sample Data Detection
+    
+    /// Check if a task is sample data by checking for the sample data marker
+    private func isSampleDataTask(_ task: AppTask) -> Bool {
+        // Check if task is marked as sample data
+        return task.sourceUniqueKey == "SAMPLE_DATA_DO_NOT_SYNC"
     }
 }

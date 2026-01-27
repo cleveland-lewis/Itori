@@ -73,7 +73,8 @@
         @ViewBuilder
         private func contentForCategory(_ category: SettingsToolbarIdentifier) -> some View {
             switch category {
-            case .subscription: MacOSSubscriptionView()
+            case .license: MacOSLicenseView() // Changed from subscription
+            // case .subscription: MacOSSubscriptionView() // Commented out for future use
             case .general: GeneralSettingsView()
             case .calendar: CalendarSettingsView()
             case .planner: PlannerSettingsView()

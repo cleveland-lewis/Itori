@@ -30,6 +30,14 @@
                 }
             }
         }
+        
+        func applicationWillTerminate(_: Notification) {
+            LOG_LIFECYCLE(.info, "AppTermination", "Cleaning up sample data before quit")
+            cleanupSampleData()
+            // Turn off sample data setting
+            AppSettingsModel.shared.showSampleData = false
+            AppSettingsModel.shared.save()
+        }
 
         func applicationSupportsSecureRestorableState(_: NSApplication) -> Bool { false }
 
@@ -39,6 +47,18 @@
 
         func application(_: NSApplication, willEncodeRestorableState _: NSCoder) {
             // noop
+        }
+        
+        private func cleanupSampleData() {
+            // Get sample course IDs before removing courses
+            let sampleCourseIds = CoursesStore.shared?.courses.filter { 
+                $0.notes == "SAMPLE_DATA_DO_NOT_SYNC" 
+            }.map { $0.id } ?? []
+            
+            // Remove sample data from all stores
+            AssignmentsStore.shared.removeSampleData()
+            CoursesStore.shared?.removeSampleData()
+            GradesStore.shared.removeSampleData(sampleCourseIds: sampleCourseIds)
         }
     }
 
